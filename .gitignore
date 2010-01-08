@@ -1,0 +1,11 @@
+apps/omar_back/*.war
+apps/omar_back/logs
+apps/omar_back/oms-all.txt
+apps/omar_back/oms-data.dat
+apps/omar_back/oms-failure.txt
+apps/omar_back/oms-skipped.txt
+apps/omar_back/oms-success.txt
+apps/omar_back/out
+apps/omar_back/stacktrace.log
+apps/omar_back/web-app/WEB-INF
+apps/omar_back/web-app/plugins
