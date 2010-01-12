@@ -14,7 +14,7 @@ class Repository
   */
 
   static constraints = {
-    baseDir(unique:true)
+    baseDir(unique:true, blank: false)
     scanStartDate(nullable: true)
     scanEndDate(nullable: true)
     rasterDataSets()
