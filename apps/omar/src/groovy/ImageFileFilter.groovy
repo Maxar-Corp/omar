@@ -75,7 +75,6 @@ class ImageFileFilter implements FileFilter
     {
       switch ( ext )
       {
-        case jp2Files:
         case cppFiles:
         case javaFiles:
         case programming:
