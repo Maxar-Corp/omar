@@ -47,7 +47,7 @@
   <table>
     <tr>
       <td width="120px">
-        <img src="${createLinkTo(dir: '/images', file: 'discover.gif')}" width="96" height="96" alt="">
+        <img src="${createLinkTo(dir: '/images', file: 'GoogleEarth_1.png')}" width="96" height="96" alt="">
       </td>
       <td>
         <ol>
