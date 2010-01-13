@@ -9,6 +9,7 @@ class VideoFile
   static constraints = {
     name(unique: true)
     type()
+    format()
   }
 
   static mapping = {
