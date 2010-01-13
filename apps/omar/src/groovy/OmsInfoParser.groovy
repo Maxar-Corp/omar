@@ -218,7 +218,7 @@ public class OmsInfoParser
           !key.startsWith("LINE_DEN") &&
           !key.startsWith("SAMP_NUM") &&
           !key.startsWith("SAMP_DEN") &&
-          !key.startsWith("SECONDARY_BE_NUMBER_") &&
+          !key.startsWith("SECONDARY_BE") &&
           !key.equals("ENABLED") &&
           !key.equals("ENABLE_CACHE")
       )
