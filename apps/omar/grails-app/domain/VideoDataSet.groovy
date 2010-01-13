@@ -8,7 +8,8 @@ class VideoDataSet
   Date endDate
 
   static hasMany = [fileObjects: VideoFile]
-  static belongsTo = [repository: Repository]
+  //static belongsTo = [repository: Repository]
+  Repository repository
 
   static mapping = {
     cache true

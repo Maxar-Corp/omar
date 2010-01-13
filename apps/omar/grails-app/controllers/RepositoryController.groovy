@@ -30,9 +30,40 @@ class RepositoryController
 
   def delete = {
     def repository = Repository.get(params.id)
+
     if ( repository )
     {
-      repository.delete()
+      //println "Deleting: ${this}"
+
+      Repository.withTransaction {
+        def rasterDataSets = RasterDataSet.findAllByRepository(repository, [max: 10])
+
+        while ( rasterDataSets?.size() > 0 )
+        {
+          rasterDataSets?.each {
+            //println "\nDeleting ${it}"
+            it.delete()
+          }
+
+          rasterDataSets = RasterDataSet.findAllByRepository(repository, [max: 10])
+        }
+
+
+        def videoDataSets = VideoDataSet.findAllByRepository(repository, [max: 10])
+
+        while ( videoDataSets?.size() > 0 )
+        {
+          videoDataSets?.each {
+            //println "\nDeleting ${it}"
+            it.delete()
+          }
+
+          videoDataSets = VideoDataSet.findAllByRepository(repository, [max: 10])
+        }
+
+        repository.delete()
+      }
+
       flash.message = "Repository ${params.id} deleted"
       redirect(action: list)
     }
@@ -117,7 +148,7 @@ class RepositoryController
       //println "Before"
       stagerService.runStager(repository)
       //println "After"
-      
+
       redirect(action: show, id: params.id)
     }
   }

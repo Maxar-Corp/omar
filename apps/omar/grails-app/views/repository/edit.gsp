@@ -35,6 +35,7 @@
             </td>
           </tr>
 
+          <%--
           <tr class="prop">
             <td valign="top" class="name">
               <label for="rasterDataSets">Raster Data Sets:</label>
@@ -66,7 +67,7 @@
 
             </td>
           </tr>
-
+          --%>
         </tbody>
       </table>
     </div>
