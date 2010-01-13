@@ -179,19 +179,19 @@
   <gui:resources components="['dialog', 'datePicker']"/>
 
   <%--
-   <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.6/js/yui/reset-fonts-grids/reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.6/js/yui/resize/assets/skins/sam/resize.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.6/js/yui/layout/assets/skins/sam/layout.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.6/js/yui/button/assets/skins/sam/button.css')}"/>
+   <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/reset-fonts-grids/reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/resize/assets/skins/sam/resize.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/layout/assets/skins/sam/layout.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/button/assets/skins/sam/button.css')}"/>
 
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/yahoo/yahoo-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/event/event-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/dom/dom-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/element/element-beta-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/dragdrop/dragdrop-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/resize/resize-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/animation/animation-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/layout/layout-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/yahoo/yahoo-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/event/event-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/dom/dom-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/element/element-beta-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/dragdrop/dragdrop-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/resize/resize-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/animation/animation-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/layout/layout-min.js')}"></script>
   --%>
 
   <openlayers:loadTheme theme="default"/>

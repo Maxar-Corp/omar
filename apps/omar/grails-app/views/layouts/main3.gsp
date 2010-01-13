@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'omar-2.0.css')}"/>
 
   <link rel="stylesheet" type="text/css"
-          href="${createLinkTo(dir: 'plugins/richui-0.6/js/yui/reset-fonts-grids',
+          href="${createLinkTo(dir: 'plugins/richui-0.7/js/yui/reset-fonts-grids',
                   file: 'reset-fonts-grids.css')}"/>
   <link rel="shortcut icon" href="${createLinkTo(dir: 'images', file: 'favicon.ico')}" type="image/x-icon"/>
   <g:layoutHead/>

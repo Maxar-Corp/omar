@@ -20,18 +20,18 @@
   </style>
 
 
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.6/js/yui/fonts/fonts-min.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.6/js/yui/paginator/assets/skins/sam/paginator.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.6/js/yui/datatable/assets/skins/sam/datatable.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/fonts/fonts-min.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/paginator/assets/skins/sam/paginator.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/datatable/assets/skins/sam/datatable.css')}"/>
 
 
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/yahoo-dom-event/yahoo-dom-event.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/connection/connection-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/json/json-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/element/element-beta-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/paginator/paginator-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/datasource/datasource-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.6/js/yui/datatable/datatable-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/yahoo-dom-event/yahoo-dom-event.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/connection/connection-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/json/json-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/element/element-beta-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/paginator/paginator-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/datasource/datasource-min.js')}"></script>
+  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/datatable/datatable-min.js')}"></script>
 
 
   <!--there is no custom header content for this example-->
