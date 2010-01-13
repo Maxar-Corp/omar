@@ -45,7 +45,7 @@
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
-  <resource:dateChooser/>
+  <resource:include components="dateChooser"/>
 
   <g:javascript>
     var aoiLayer;
