@@ -3,8 +3,6 @@ class VideoFile
   String name
   String type
   String format
-  String policy = 'POLICY_01'
-  String excludePolicy = 'POLICY_01'
 
   static belongsTo = [videoDataSet: VideoDataSet]
 
