@@ -197,7 +197,9 @@ public class OmsInfoParser
     def metadataXml = new MetadataXml()
 
     metadataXml.namevalue = writer.buffer
-    rasterEntry?.addToMetadataXml(metadataXml)
+
+    //rasterEntry?.addToMetadataXml(metadataXml)
+    rasterEntry.metadataXml = metadataXml
 
     //println rasterEntry.metadataXml.data
   }
