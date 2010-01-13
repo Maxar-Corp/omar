@@ -17,9 +17,6 @@ class RasterEntry
 
   //MetadataXml metadataXml  // Now a one-to-one
 
-  String policy = 'POLICY_01'
-  String excludePolicy = ''
-
   static belongsTo = [rasterDataSet: RasterDataSet]
 
   static hasMany = [
