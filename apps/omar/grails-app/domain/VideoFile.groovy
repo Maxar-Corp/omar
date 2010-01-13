@@ -9,8 +9,6 @@ class VideoFile
   static constraints = {
     name(unique: true)
     type()
-    policy()
-    excludePolicy()
   }
 
   static mapping = {
