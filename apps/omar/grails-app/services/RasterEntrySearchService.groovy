@@ -8,11 +8,14 @@ class RasterEntrySearchService
 
   static transactional = false
 
-  List<RasterEntry> runQuery(/*@WebParam (name = "rasterEntryQuery", header = true)*/ RasterEntryQuery rasterEntryQuery,
-                             /*@WebParam (name = "params", header = true)*/ Map<String, String> params)
+  List<RasterEntry> runQuery(
+  /*@WebParam (name = "rasterEntryQuery", header = true)*/
+  RasterEntryQuery rasterEntryQuery,
+  /*@WebParam (name = "params", header = true)*/
+  Map<String, String> params)
   {
     def clause = rasterEntryQuery.createClause()
-    
+
     def rasterEntries = RasterEntry.createCriteria().list(params) {
       def searches = [:]
 
@@ -20,40 +23,36 @@ class RasterEntrySearchService
         searches[name] = rasterEntryQuery?.searchTagValues[i]
       }
 
-      // This may be true of site, but not necssarily outside
-      //isNotNull("acquisitionType")
+      // This may be true of site, but not necessarily outside
+      //isNotNull("acquisitionDate")
 
-      metadataXml {
+      createAlias("metadataXml", "m")
 
-        searches?.each {name, value ->
+      searches?.each {name, value ->
 
-          String namevalue
+        String namevalue
 
-          switch ( name )
-          {
-            case "custom":
-              def pair = value?.split("=");
+        switch ( name )
+        {
+          case "custom":
+            def pair = value?.split("=");
 
-              if ( pair?.size() == 2 )
-              {
-                name = pair[0].trim()
-                value = pair[1].trim()
-                namevalue = "%<${name}>%${value}%</${name}>%" as String
-              }
-
-              break
-            default:
+            if ( pair?.size() == 2 )
+            {
+              name = pair[0].trim()
+              value = pair[1].trim()
               namevalue = "%<${name}>%${value}%</${name}>%" as String
-              break
-          }
-
-          if ( name && value && name != "null" )
-          {
-            //println namevalue
-            and {
-              ilike("namevalue", namevalue)
             }
-          }
+
+            break
+          default:
+            namevalue = "%<${name}>%${value}%</${name}>%" as String
+            break
+        }
+
+        if ( name && value && name != "null" )
+        {
+          ilike("m.namevalue", namevalue)
         }
       }
 
