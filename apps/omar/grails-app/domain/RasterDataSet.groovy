@@ -2,7 +2,8 @@ class RasterDataSet
 {
 
   static hasMany = [fileObjects: RasterFile, rasterEntries: RasterEntry]
-  static belongsTo = [repository: Repository]
+  //static belongsTo = [repository: Repository]
+  Repository repository
 
 //  static fetchMode = [
 //      fileObjects: "join"

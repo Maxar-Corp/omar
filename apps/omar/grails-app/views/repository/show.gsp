@@ -49,6 +49,7 @@
 
       </tr>
 
+      <%--
       <tr class="prop">
         <td valign="top" class="name">Raster Data Sets:</td>
 
@@ -70,6 +71,8 @@
         </td>
 
       </tr>
+     --%>
+
       </tbody>
     </table>
   </div>

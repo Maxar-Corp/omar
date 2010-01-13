@@ -4,7 +4,7 @@ class Repository
   Date scanStartDate
   Date scanEndDate
 
-  static hasMany = [rasterDataSets: RasterDataSet, videoDataSets: VideoDataSet]
+  //static hasMany = [rasterDataSets: RasterDataSet, videoDataSets: VideoDataSet]
 
   /*
    public String toString()
@@ -14,11 +14,11 @@ class Repository
   */
 
   static constraints = {
-    baseDir(unique:true, blank: false)
+    baseDir(unique: true, blank: false)
     scanStartDate(nullable: true)
     scanEndDate(nullable: true)
-    rasterDataSets()
-    videoDataSets()
+    //rasterDataSets()
+    //videoDataSets()
   }
 
   static mapping = {
