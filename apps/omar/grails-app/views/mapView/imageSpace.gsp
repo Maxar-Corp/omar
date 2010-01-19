@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>OMAR Up is up Viewer</title>
+  <title>OMAR Image Space Viewer</title>
   <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>
 
   <openlayers:loadMapToolBar/>
@@ -62,7 +62,7 @@
   <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}">Home</a></span>
   <span class="menuButton">
     <a href="${createLink(controller: "mapView", action: "index", params: [rasterEntryIds: rasterEntry?.id])}">
-      North is up
+      Ground Space
     </a>
   </span>
   <span class="menuButton">

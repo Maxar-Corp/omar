@@ -11,7 +11,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="main"/>
-  <title>OMAR North is up Viewer</title>
+  <title>OMAR Ground Space Viewer</title>
   <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>
 
   <openlayers:loadMapToolBar/>
@@ -82,7 +82,7 @@
   <g:if test="${rasterEntries?.size() == 1}">
     <span class="menuButton">
       <a href="${createLink(controller: "mapView", action: "imageSpace", id: (rasterEntries*.id).join(','))}">
-        Up is up
+        Image Space
       </a>
     </span>
   </g:if>

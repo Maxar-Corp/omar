@@ -188,11 +188,11 @@ function init()
       var map = null;
       var mapDiv = null;
 
-      if ( label == "Up is up")
+      if ( label == "Image Space")
       {
         map = maps['map1'];
       }
-      else if ( "North is up")
+      else if ( "Ground Space")
       {
         map = maps['map2'];
       }
@@ -245,8 +245,8 @@ function init()
 <%--
 <richui:tabView id="tabView" event="tabChanged(e);">
  <richui:tabLabels>
-   <richui:tabLabel selected="true" title="Up is up"/>
-   <richui:tabLabel title="North is up"/>
+   <richui:tabLabel selected="true" title="Image Space"/>
+   <richui:tabLabel title="Ground Space"/>
  </richui:tabLabels>
  <richui:tabContents>
 
