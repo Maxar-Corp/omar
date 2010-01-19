@@ -289,7 +289,7 @@ class RasterEntryController implements InitializingBean
       dateFormats.each {dateFormat ->
         try
         {
-          queryParams."${dateField}" = Date.parse(dateFormat, params.startDate)
+          queryParams."${dateField}" = Date.parse(dateFormat, params."${dateField}")
         }
         catch (Exception e)
         {
