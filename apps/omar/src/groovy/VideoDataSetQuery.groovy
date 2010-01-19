@@ -84,9 +84,16 @@ class VideoDataSetQuery
 
     if ( startDate && endDate )
     {
+//      range = Restrictions.or(
+//          Restrictions.between("startDate", startDate, endDate),
+//          Restrictions.between("endDate", startDate, endDate)
       range = Restrictions.or(
-          Restrictions.between("startDate", startDate, endDate),
-          Restrictions.between("endDate", startDate, endDate)
+          Restrictions.and(
+              Restrictions.ge("startDate", startDate),
+              Restrictions.le("startDate", endDate)),
+          Restrictions.and(
+              Restrictions.ge("endDate", startDate),
+              Restrictions.le("endDate", endDate))
       )
     }
     else
