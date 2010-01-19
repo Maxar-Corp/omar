@@ -472,16 +472,16 @@
       <div class="niceBoxBody">
         <ol>
           <li>
-            <label for='centerLon'>Lon:</label><br/>
-          </li>
-          <li>
-            <g:textField name="centerLon" value="${queryParams?.centerLon}"/>
-          </li>
-          <li>
             <label for='centerLat'>Lat:</label>
           </li>
           <li>
             <g:textField name="centerLat" value="${queryParams?.centerLat}"/>
+          </li>
+          <li>
+            <label for='centerLon'>Lon:</label><br/>
+          </li>
+          <li>
+            <g:textField name="centerLon" value="${queryParams?.centerLon}"/>
           </li>
           <li><br/></li>
           <li>
@@ -519,28 +519,28 @@
           </li>
           <li><br/></li>
           <li>
-            <label for='aoiMinLon'>West Lon:</label>
-          </li>
-          <li>
-            <input type="text" id="aoiMinLon" name="aoiMinLon" value="${fieldValue(bean: queryParams, field: 'aoiMinLon')}"/>
-          </li>
-          <li>
             <label for='aoiMaxLat'>North Lat:</label>
           </li>
           <li>
             <input type="text" id="aoiMaxLat" name="aoiMaxLat" value="${fieldValue(bean: queryParams, field: 'aoiMaxLat')}"/>
           </li>
           <li>
-            <label for='aoiMaxLon'>East Lon:</label>
+            <label for='aoiMinLon'>West Lon:</label>
           </li>
           <li>
-            <input type="text" id="aoiMaxLon" name="aoiMaxLon" value="${fieldValue(bean: queryParams, field: 'aoiMaxLon')}"/>
+            <input type="text" id="aoiMinLon" name="aoiMinLon" value="${fieldValue(bean: queryParams, field: 'aoiMinLon')}"/>
           </li>
           <li>
             <label for='aoiMinLat'>South Lat:</label>
           </li>
           <li>
             <input type="text" id="aoiMinLat" name="aoiMinLat" value="${fieldValue(bean: queryParams, field: 'aoiMinLat')}"/>
+          </li>
+          <li>
+            <label for='aoiMaxLon'>East Lon:</label>
+          </li>
+          <li>
+            <input type="text" id="aoiMaxLon" name="aoiMaxLon" value="${fieldValue(bean: queryParams, field: 'aoiMaxLon')}"/>
           </li>
           <li><br/></li>
           <li>
