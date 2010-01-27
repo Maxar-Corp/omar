@@ -13,7 +13,7 @@ class DataManagerService
 
     if ( file?.exists() )
     {
-      def xml = StagerUtil.getInfoSynchronized(file)
+      def xml = StagerUtil.getInfo(file)
 
       if ( xml )
       {
