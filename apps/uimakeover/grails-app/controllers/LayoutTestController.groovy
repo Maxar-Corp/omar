@@ -2,26 +2,34 @@ class LayoutTestController
 {
   //def defaultAction = "test1"
 
+  def wmsUtilsService
+
   def index = {
 
-    //def layersAddress = "http://hypercube.telascience.org/cgi-bin/haiti?map=/geo/haiti/mapfiles/4326.map&"
-    //def layersAddress = "http://hypercube.telascience.org/cgi-bin/mapserv?map=/home/racicot/haiti/mapfiles/basedata.map&"
-    def baseAddress = "http://${InetAddress.localHost.hostAddress}/tilecache/tilecache.py?"
-    def capabilitiesURL = "${baseAddress}service=WMS&version=1.1.1&request=GetCapabilities".toURL()
-    def capabilities = new XmlSlurper().parseText(capabilitiesURL.text)
+    //def baseAddress = "http://hypercube.telascience.org/cgi-bin/haiti?map=/geo/haiti/mapfiles/4326.map&"
+    //def baseAddress = "http://hypercube.telascience.org/cgi-bin/mapserv?map=/home/racicot/haiti/mapfiles/basedata.map&"
+    //def baseAddress = "http://${InetAddress.localHost.hostAddress}/tilecache/tilecache.py?"
+    //def baseAddress = "http://hypersphere.telascience.org/cgi-bin/bmng?"
+
+    //def baseAddress = "http://${InetAddress.localHost.hostAddress}/cgi-bin/mapserv?map=/data/bmng.map&"
+    def baseAddress = "http://hypersphere.telascience.org/geothumper/tilecache/tilecache.cgi?"
+
+    def layers = wmsUtilsService.getLayerList(baseAddress)
 
     def baseLayers = []
     def overlayLayers = []
 
-    capabilities.Capability.Layer.Layer.each {
-      switch ( it.Name as String )
+    layers.each {
+      switch ( it.name )
       {
         case "omar":
         case "basic":
-          baseLayers << [name: it.Name, title: it.Title, url: baseAddress]
+        case "world_topo_bathy":
+        case "Reference":  
+          baseLayers << it
           break
         default:
-          overlayLayers << [name: it.Name, title: it.Title, url: baseAddress]
+          overlayLayers << it
       }
     }
 
@@ -35,4 +43,34 @@ class LayoutTestController
   }
 
   def test1 = {}
+
+  def index2 = {
+    //def baseAddress = "http://hypercube.telascience.org/cgi-bin/haiti?map=/geo/haiti/mapfiles/4326.map&"
+    //def baseAddress = "http://hypercube.telascience.org/cgi-bin/mapserv?map=/home/racicot/haiti/mapfiles/basedata.map&"
+    def baseAddress = "http://${InetAddress.localHost.hostAddress}/tilecache/tilecache.py?"
+    def layers = wmsUtilsService.getLayerList(baseAddress)
+
+    def baseLayers = []
+    def overlayLayers = []
+
+    layers.each {
+      switch ( it.name )
+      {
+        case "omar":
+        case "basic":
+          baseLayers << it
+          break
+        default:
+          overlayLayers << it
+      }
+    }
+
+    return [
+        overlayLayers: overlayLayers,
+        baseLayers: baseLayers,
+        centerLon: -72.2,
+        centerLat: 19.0,
+        zoomLevel: 8
+    ]
+  }
 }

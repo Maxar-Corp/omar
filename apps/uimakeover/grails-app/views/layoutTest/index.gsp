@@ -29,32 +29,12 @@
   // define your init function
   var init = function()
   {
-    map = new OpenLayers.Map('map', {controls: []});
-    map.addControl(new OpenLayers.Control.LayerSwitcher());
-    map.addControl(new OpenLayers.Control.PanZoom());
-    map.addControl(new OpenLayers.Control.MousePosition());
-    map.addControl(new OpenLayers.Control.Scale());
-    map.addControl(new OpenLayers.Control.ScaleLine());
-
-    map.events.register("moveend", map, setCenterText);
-    map.events.register("zoomend", map, setView );
-
-    <g:each in="${baseLayers}">
-    map.addLayer( new OpenLayers.Layer.WMS('${it.title}', '${it.url}',
-      {layers: '${it.name}', format: 'image/jpg' },
-      {'isBaseLayer': true}, {buffer:0}));
-    </g:each>
-
-
-    <g:each in="${overlayLayers}">
-    map.addLayer( new OpenLayers.Layer.WMS('${it.title}', '${it.url}',
-      {layers: '${it.name}', format: 'image/png', transparent: true },
-      {'isBaseLayer': false}, {buffer:0}));
-    </g:each>
-
-    map.setCenter( new OpenLayers.LonLat( lon, lat ), zoom );
+    setupMapWidget();
+    setupBaseLayers();
+    setupOverlayLayers();
     setupAreaOfInterestLayer();
     setupToolbar();
+    setupView();
   };
 
 
@@ -99,7 +79,7 @@
     %{--$("aoiMinLat").value = ""--}%
   }
 
-  function setAOI( e )
+  var setAOI = function ( e )
   {
     var geom = e.feature.geometry;
     var bounds = geom.getBounds();
@@ -115,17 +95,50 @@
     aoiLayer.addFeatures(feature, {silent: true});
   }
 
-  function zoomIn()
+  var zoomIn = function ()
   {
     map.zoomIn();
   }
   
-  function zoomOut()
+  var zoomOut = function ()
   {
     map.zoomOut();
   }
 
-  function setupAreaOfInterestLayer()
+
+  var setupMapWidget = function()
+  {
+    map = new OpenLayers.Map('map', {controls: []});
+    map.addControl(new OpenLayers.Control.LayerSwitcher());
+    map.addControl(new OpenLayers.Control.PanZoom());
+    map.addControl(new OpenLayers.Control.MousePosition());
+    map.addControl(new OpenLayers.Control.Scale());
+    map.addControl(new OpenLayers.Control.ScaleLine());
+
+    map.events.register("moveend", map, setCenterText);
+    map.events.register("zoomend", map, setView );
+  }
+
+
+  var setupBaseLayers = function()
+  {
+    <g:each in="${baseLayers}">
+    map.addLayer( new OpenLayers.Layer.WMS('${it.title}', '${it.url}',
+      {layers: '${it.name}', format: 'image/jpeg' },
+      {'isBaseLayer': true}, {buffer:0}));
+    </g:each>
+  }
+
+  var setupOverlayLayers = function ()
+  {
+    <g:each in="${overlayLayers}">
+    map.addLayer( new OpenLayers.Layer.WMS('${it.title}', '${it.url}',
+      {layers: '${it.name}', format: 'image/png', transparent: true },
+      {'isBaseLayer': false}, {buffer:0}));
+    </g:each>    
+  }
+
+  var setupAreaOfInterestLayer = function ()
   {
     aoiLayer = new OpenLayers.Layer.Vector("Area of Interest");
     aoiLayer.events.register("featureadded", aoiLayer, setAOI);
@@ -145,11 +158,11 @@
     %{--}--}%
   }
 
-  function setupToolbar()
+  var setupToolbar = function ()
   {
     var controls = [];
     var defaultControl;
-    
+
     // Drag Pan
     controls.push(new OpenLayers.Control.MouseDefaults({title:'Drag to recenter map'}));
 
@@ -244,10 +257,15 @@
       {div: container,defaultControl: defaultControl,'displayClass': 'olControlPanel'}
       );
 
-    panel.addControls(controls);    
+    panel.addControls(controls);
     map.addControl(panel);
   }
 
+
+  var setupView = function()
+  {
+    map.setCenter( new OpenLayers.LonLat( lon, lat ), zoom );    
+  }
   </g:javascript>
 </head>
 <!-- define your page content -->
