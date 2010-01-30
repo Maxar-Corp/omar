@@ -9,3 +9,4 @@ apps/omar/out
 apps/omar/stacktrace.log
 apps/omar/web-app/WEB-INF
 apps/omar/web-app/plugins
+apps/uimakeover/target/*
