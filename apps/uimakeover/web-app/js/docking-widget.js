@@ -19,10 +19,10 @@ Event.onDOMReady( function()
     var layout1 = new YAHOO.widget.Layout( el, {
       parent: layout2,
       units: [
-        { position: 'top', height: 70, body: 'top1', header: 'Top', gutter: '5px', collapse: true, resize: true },
-        { position: 'right', header: 'Right', width: 300, resize: true, gutter: '5px', /*footer: 'Footer',*/ collapse: true, scroll: true, body: 'right1', animate: true },
-        { position: 'bottom', header: 'Bottom', height: 100, resize: true, body: 'bottom1', gutter: '5px', collapse: true },
-        { position: 'left', header: 'Left', width: 200, resize: true, body: 'left1', gutter: '5px', collapse: true, /*close: true,collapseSize: 50,*/  scroll: true, animate: true },
+        { position: 'top', height: 70, body: 'top1', header: 'Welcome to OMAR', gutter: '5px', collapse: true, resize: true },
+        { position: 'right', header: '&nbsp;', width: 300, resize: true, gutter: '5px', /*footer: 'Footer',*/ collapse: true, scroll: true, body: 'right1', animate: true },
+        { position: 'bottom', header: '&nbsp;', height: 100, resize: true, body: 'bottom1', gutter: '5px', collapse: true },
+        { position: 'left', header: 'Search Criteria:', width: 200, resize: true, body: 'left1', gutter: '5px', collapse: true, /*close: true,collapseSize: 50,*/  scroll: true, animate: true },
         { position: 'center', body: 'center1' }
       ]
     } );
