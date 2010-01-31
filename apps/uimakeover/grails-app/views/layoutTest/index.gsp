@@ -13,6 +13,30 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="main3"/>
 
+  <!-- clean up -->
+  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/container/assets/skins/sam/container.css" />
+  <link rel="stylesheet" type="text/css" href="http://js.bubbling-library.com/2.1/build/accordion/assets/accordion.css" />
+  <style type="text/css">
+  .myAccordion {
+    float: left;
+    margin-right: 15px;
+  }
+    .myAccordion .yui-cms-accordion .yui-cms-item {
+      width: 165px;
+    }
+      .myAccordion .yui-cms-accordion .yui-cms-item .bd .fixed {
+          height: 230px;
+      }
+
+  </style>
+  <!-- Dependency source files -->
+  <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/utilities/utilities.js"></script>
+  <script type="text/javascript" src="http://js.bubbling-library.com/2.1/build/bubbling/bubbling.js"></script>
+
+  <script type="text/javascript" src="http://js.bubbling-library.com/2.1/build/dispatcher/dispatcher.js"></script>
+  <script type="text/javascript" src="http://js.bubbling-library.com/2.1/build/accordion/accordion.js"></script>
+  <!-- clean up -->
+
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
@@ -52,8 +76,8 @@
   var setCenterText = function( e )
   {
     var center = map.getCenter();
-    %{--$("centerLon").value = center.lon;--}%
-    %{--$("centerLat").value = center.lat;--}%
+    $("centerLon").value = center.lon;
+    $("centerLat").value = center.lat;
   }
 
   var resized = function( mapWidth, mapHeight )
@@ -227,7 +251,8 @@
       {
         measure: function(evt)
         {
-          alert("Distance: " + evt.measure.toFixed(2) + evt.units);
+          //alert("Distance: " + evt.measure.toFixed(2) + evt.units);
+          document.getElementById('distanceMeasurement').innerHTML = "<b>Distance:</b> " + (evt.measure.toFixed(2) + evt.units) + " <a href='#' onclick=''>Clear Measurement</a>";
         }
       }
     });
@@ -242,7 +267,8 @@
       {
         measure: function(evt)
         {
-          alert("Area: " + evt.measure.toFixed(2) + evt.units);
+          //alert("Area: " + evt.measure.toFixed(2) + evt.units);
+          document.getElementById('areaMeasurement').innerHTML = "<b>Area:</b> " + (evt.measure.toFixed(2) + evt.units) + " <a href='#' onclick=''>Clear Measurement</a>";
         }
       }
     });
@@ -260,13 +286,13 @@
     panel.addControls(controls);
     map.addControl(panel);
   }
-
-
   var setupView = function()
   {
     map.setCenter( new OpenLayers.LonLat( lon, lat ), zoom );    
   }
+  
   </g:javascript>
+
 </head>
 <!-- define your page content -->
 <body class="yui-skin-sam">
@@ -279,9 +305,46 @@
 </content>
 
 <content tag="layout1.right.content">
+<b>Units:</b>
+<form action="#" name='units'>
+  <select name="mode" onchange="document.getElementById('units').innerHTML = units.mode.value">
+    <option value="DD">Decimal Degrees (DD)</option>
+    <option value="DMS">Degrees Minutes Seconds (DMS)</option>
+    <option value="MGRS">Military Grid Reference System (MGRS)</option>
+  </select>
+</form>
+
+  <div id="distanceMeasurement"></div>
+  <div id="areaMeasurement"></div>
 </content>
 
 <content tag="layout1.left.content">
+    <div class="myAccordion">
+      <div class="yui-cms-accordion multiple fade fixIE">
+
+        <div class="yui-cms-item yui-panel selected">
+          <div class="hd">
+            Map Center:
+          </div>
+          <div class="bd">
+            <div class="fixed">
+
+              <div id="units">
+                Center Latitude (DD):<br/>
+                <g:textField name="centerLat" value="${queryParams?.centerLat}"/><br/>
+                Center Longitude (DD):<br/>
+                <g:textField name="centerLon" value="${queryParams?.centerLon}"/><br/>
+              </div>
+
+            </div>
+          </div>
+          <div class="actions">
+            <a href="#" class="accordionToggleItem">&nbsp;</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
 </content>
 
 <content tag="layout1.center.content">
