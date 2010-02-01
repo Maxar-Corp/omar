@@ -17,6 +17,9 @@
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
 
+  <gui:resources components="['datePicker', 'expandablePanel']"/>
+
+
   <g:javascript src="mapping-widget.js"/>
   <g:javascript>
   // your own js code is here
@@ -24,14 +27,15 @@
   var lat = ${centerLat};
   var zoom = ${zoomLevel};
 
-  var baseLayers = new Array();
-  var overlayLayers = new Array();
 
   var mapWidget;
 
   // define your init function
   var init = function()
   {
+    var baseLayers = new Array();
+    var overlayLayers = new Array();
+
     <g:each in="${baseLayers}">
       baseLayers.push({title: '${it.title}', url: '${it.url}', name: '${it.name}'});
     </g:each>
@@ -70,10 +74,10 @@
   {
     //alert( "B: " + mapWidth + " " + mapHeight );
 
-    //Dom.get( "map" ).style.width = mapWidth + "px";
-    //Dom.get( "map" ).style.height = mapHeight + "px";
+    Dom.get( "map" ).style.width = mapWidth + "px";
+    Dom.get( "map" ).style.height = mapHeight + "px";
 
-    //mapWidget.updateSize();  
+    mapWidget.updateSize();
   };
 
 
@@ -123,6 +127,16 @@
 </content>
 
 <content tag="layout1.left.content">
+  <gui:expandablePanel title="Geospatial" expanded="true" bounce="false">
+    I am expanded.  Close me.
+  </gui:expandablePanel>
+  <gui:expandablePanel title="Temporal" expanded="true" bounce="false">    
+    <gui:datePicker id='startDate' includeTime="true"/>
+    <gui:datePicker id='endDate' includeTime="true"/>
+  </gui:expandablePanel>
+  <gui:expandablePanel title="Metadata" expanded="true" bounce="false">
+    I am expanded.  Close me.
+  </gui:expandablePanel>
 </content>
 
 <content tag="layout1.center.content">
