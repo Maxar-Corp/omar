@@ -4,11 +4,11 @@
     <facet type="web" name="GrailsWeb">
       <configuration>
         <webroots>
-          <root url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/bubbling-2.1.1/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/yui-2.7.0.1/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/openlayers-0.7/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/bean-fields-0.4/web-app" relative="/" />
+          <root url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/openlayers-0.7/web-app" relative="/" />
+          <root url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT/web-app" relative="/" />
+          <root url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/bubbling-2.1.1/web-app" relative="/" />
+          <root url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/bean-fields-0.4/web-app" relative="/" />
+          <root url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/yui-2.7.0.1/web-app" relative="/" />
         </webroots>
         <sourceRoots />
       </configuration>
@@ -16,27 +16,27 @@
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/bean-fields-0.4">
-      <sourceFolder url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/bean-fields-0.4/grails-app/taglib" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/bean-fields-0.4">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/bean-fields-0.4/grails-app/taglib" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/bubbling-2.1.1">
-      <sourceFolder url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/bubbling-2.1.1/src/groovy" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/bubbling-2.1.1/grails-app/taglib" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/bubbling-2.1.1">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/bubbling-2.1.1/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/bubbling-2.1.1/grails-app/taglib" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT">
-      <sourceFolder url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT/src/groovy" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT/grails-app/services" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT/grails-app/taglib" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT/grails-app/taglib" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/openlayers-0.7">
-      <sourceFolder url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/openlayers-0.7/grails-app/taglib" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/openlayers-0.7">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/openlayers-0.7/grails-app/taglib" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/tomcat-1.2.0">
-      <sourceFolder url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/tomcat-1.2.0/src/groovy" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/tomcat-1.2.0">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/tomcat-1.2.0/src/groovy" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/yui-2.7.0.1">
-      <sourceFolder url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/yui-2.7.0.1/src/groovy" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/yui-2.7.0.1/grails-app/taglib" isTestSource="false" />
+    <content url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/yui-2.7.0.1">
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/yui-2.7.0.1/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/yui-2.7.0.1/grails-app/taglib" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -44,13 +44,13 @@
     <orderEntry type="module-library" exported="">
       <library name="Grails User Library">
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/tomcat-1.2.0/lib" />
-          <root url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT/lib" />
+          <root url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT/lib" />
+          <root url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/tomcat-1.2.0/lib" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT/lib" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../.grails/1.2.0/projects/uimakeover/plugins/tomcat-1.2.0/lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/grails-ui-1.2-SNAPSHOT/lib" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../../../../../sbortman/.grails/1.2.0/projects/uimakeover/plugins/tomcat-1.2.0/lib" recursive="false" />
       </library>
     </orderEntry>
   </component>

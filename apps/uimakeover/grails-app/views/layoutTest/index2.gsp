@@ -40,7 +40,7 @@
       overlayLayers.push( {title: '${it.title}', url: '${it.url}', name: '${it.name}'} );
     </g:each>
 
-    mapWidget = new MappingWidget(lon, lat, zoom, baseLayers, overlayLayers);
+    mapWidget = new MappingWidget(lat, lon, zoom, baseLayers, overlayLayers);
   };
 
 

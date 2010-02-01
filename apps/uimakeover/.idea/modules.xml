@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/uimakeover.iml" filepath="$PROJECT_DIR$/uimakeover.iml" />
+      <module fileurl="file://$PROJECT_DIR$/uimakeover-grailsPlugins.iml" filepath="$PROJECT_DIR$/uimakeover-grailsPlugins.iml" />
     </modules>
   </component>
 </project>

@@ -58,8 +58,8 @@ function MappingWidget( centerLat, centerLon, zoomLevel, baseLayers, overlayLaye
      $("aoiMinLat").value = bounds.bottom
      */
 
-    this.aoiLayer.destroyFeatures( );
-    this.aoiLayer.addFeatures( feature, {silent: true} );
+    e.object.destroyFeatures( );
+    e.object.addFeatures( feature, {silent: true} );
   };
 
   this.zoomIn = function()
@@ -180,9 +180,10 @@ function MappingWidget( centerLat, centerLon, zoomLevel, baseLayers, overlayLaye
 
       var button1 = new OpenLayers.Control.Button( {title:'Clear Area of Interest',
         displayClass: "olControlClearAreaOfInterest",
-        trigger: this.clearAOI
+        trigger:  this.clearAOI
       } );
 
+      button1.aoiLayer = this.aoiLayer;
       controls.push( polygonControl );
       controls.push( button1 );
     }
