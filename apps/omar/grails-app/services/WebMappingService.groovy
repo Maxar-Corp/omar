@@ -63,12 +63,13 @@ class WebMappingService
   {
     RenderedImage image = null
     def enableOMS = true
-    def quickLookFlagString = wmsRequest?.quicklook_flag?:"true"
+    def quickLookFlagString = wmsRequest?.quicklook?:"true"
     def sharpenMode = wmsRequest?.sharpen_mode ?: ""
     def sharpenWidth = wmsRequest?.sharpen_width ?: ""
     def sharpenSigma = wmsRequest?.sharpen_sigma ?: ""
     def stretchMode = wmsRequest?.stretch_mode ?: "linear_auto_min_max"
     def stretchModeRegion = wmsRequest?.stretch_mode_region ?: "global"
+    def bands = wmsRequest?.bands?:""
     def entryId = 0
     def bounds = wmsRequest?.bbox?.split(',')
     switch ( mode )
@@ -184,6 +185,7 @@ class WebMappingService
             kwl.add("stretch_region", "${stretchModeRegion}")
             kwl.add("sharpen_width", "${sharpenWidth}")
             kwl.add("sharpen_sigma", "${sharpenSigma}")
+            kwl.add("bands", "${bands}")
             kwl.add("null_flip", wmsRequest?.null_flip)
             wmsMap.setChainParameters(kwl)
             wmsMap.getMap(
