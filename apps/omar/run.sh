@@ -13,6 +13,9 @@ case "$1" in
 dev)
 export mode="dev"
 ;;
+test)
+export mode="test"
+;;
 *)
 export mode="prod"
 ;;
