@@ -17,8 +17,15 @@ import java.awt.Toolkit
 
 import joms.oms.WmsMap
 import joms.oms.ossimKeywordlist
+import joms.oms.ossimKeywordlistVector
+import joms.oms.Util
+import joms.oms.ossimImageGeometryPtr
+import joms.oms.ossimImageGeometry
+import joms.oms.ossimGpt
+import joms.oms.ossimDpt
+import joms.oms.ossimGptVector
+import joms.oms.ossimDptVector
 import org.ossim.oms.image.omsImageSource
-
 import javax.imageio.ImageIO
 
 class WebMappingService
@@ -32,10 +39,31 @@ class WebMappingService
   boolean transactional = true
   def transparent = new TransparentFilter()
 
+  def createBilinearModel(RasterEntry rasterEntry)
+  {
+    def gptArray = new ossimGptVector();
+    def dptArray = new ossimDptVector();
+    def groundGeom = rasterEntry.groundGeom.geom
+    if(groundGeom.numPoints() >=4)
+    {
+      def w =   rasterEntry?.width as double
+      def h =   rasterEntry?.height as double
+       (0..<4).each{
+          def point = groundGeom.getPoint(it);
+          gptArray.add(new ossimGpt(point.y, point.x));
+       }
+       dptArray.add(new ossimDpt(0.0,0.0))
+       dptArray.add(new ossimDpt( w,0.0))
+       dptArray.add(new ossimDpt(w ,h))
+       dptArray.add(new ossimDpt(0.0,h))
+    }
+    return Util.createBilinearModel(dptArray, gptArray)
+  }
   RenderedImage getMap(WMSRequest wmsRequest)
   {
     RenderedImage image = null
     def enableOMS = true
+    def quickLookFlagString = wmsRequest?.quicklook_flag?:"true"
     def sharpenMode = wmsRequest?.sharpen_mode ?: ""
     def sharpenWidth = wmsRequest?.sharpen_width ?: ""
     def sharpenSigma = wmsRequest?.sharpen_sigma ?: ""
@@ -43,7 +71,6 @@ class WebMappingService
     def stretchModeRegion = wmsRequest?.stretch_mode_region ?: "global"
     def entryId = 0
     def bounds = wmsRequest?.bbox?.split(',')
-
     switch ( mode )
     {
 
@@ -117,45 +144,55 @@ class WebMappingService
         Point location = null
         byte[] data = new byte[width * height * 3]
 
-        def inputFilenames = []
-        def inputEntryIds = []
-
-        wmsRequest?.layers.split(',').each {
-          def rasterEntry = RasterEntry.get(it)
-          wmsMap.addFile(rasterEntry?.mainFile.name,
-              rasterEntry?.entryId?.toInteger())
-
-        }
-
-        if ( enableOMS )
+//        def kwlVector = new ossimKeywordlistVector();
+        if ( sharpenMode.equals("light") )
         {
-
-          def kwl = new ossimKeywordlist();
-          def stretchModes = []
-          def histogramFiles = []
-          if ( sharpenMode.equals("light") )
+          sharpenWidth = "3"
+          sharpenSigma = ".5"
+        }
+        else if ( sharpenMode.equals("heavy") )
+        {
+          sharpenWidth = "5"
+          sharpenSigma = "1"
+        }
+        def quickLookFlag = Boolean.valueOf(quickLookFlagString)
+        wmsRequest?.layers.split(',').each {
+          def geom = (ossimImageGeometry)null
+          def geomPtr = (ossimImageGeometryPtr)null
+          def rasterEntry = RasterEntry.get(it)
+          if(rasterEntry != null)
           {
-            sharpenWidth = "3"
-            sharpenSigma = ".5"
+            if(quickLookFlag)
+            {
+              geomPtr = createBilinearModel(rasterEntry)
+              if(geomPtr != null)
+              {
+                geom = geomPtr.get()
+              }
+            }
+            wmsMap.addFile(rasterEntry?.mainFile.name,
+                           rasterEntry?.entryId?.toInteger(),
+                           geom)
+            geom = (ossimImageGeometry)null
+            geomPtr = (ossimImageGeometryPtr)null
           }
-          else if ( sharpenMode.equals("heavy") )
-          {
-            sharpenWidth = "5"
-            sharpenSigma = "1"
-          }
-          kwl.add("stretch_mode", "${stretchMode}")
-          kwl.add("stretch_region", "${stretchModeRegion}")
-          kwl.add("sharpen_width", "${sharpenWidth}")
-          kwl.add("sharpen_sigma", "${sharpenSigma}")
-          kwl.add("null_flip", wmsRequest?.null_flip)
-          wmsMap.setChainParameters(kwl)
-          wmsMap.getMap(
-              wmsRequest.srs,
-              bounds[0] as Double, bounds[1] as Double, bounds[2] as Double, bounds[3] as Double,
-              Integer.parseInt(wmsRequest.width), Integer.parseInt(wmsRequest.height),
-              data
-          )
-
+        }
+         if ( enableOMS )
+        {
+            def kwl = new ossimKeywordlist();
+            kwl.add("stretch_mode", "${stretchMode}")
+            kwl.add("stretch_region", "${stretchModeRegion}")
+            kwl.add("sharpen_width", "${sharpenWidth}")
+            kwl.add("sharpen_sigma", "${sharpenSigma}")
+            kwl.add("null_flip", wmsRequest?.null_flip)
+            wmsMap.setChainParameters(kwl)
+            wmsMap.getMap(
+                wmsRequest.srs,
+                bounds[0] as Double, bounds[1] as Double, bounds[2] as Double, bounds[3] as Double,
+                Integer.parseInt(wmsRequest.width), Integer.parseInt(wmsRequest.height),
+                data
+            )
+            
           wmsMap.cleanUp();
           wmsMap = null;
 

@@ -24,6 +24,7 @@ class WMSRequest
   String sharpen_mode
   String sharpen_width
   String sharpen_sigma
+  String quicklook_flag
   String null_flip
   String exception
 
