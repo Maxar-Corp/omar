@@ -24,10 +24,11 @@ class WMSRequest
   String sharpen_mode
   String sharpen_width
   String sharpen_sigma
-  String quicklook_flag
+  String quicklook
   String null_flip
   String exception
-
+  String bands
+  
   public String toString()
   {
     return [bbox: bbox, width: width, height: height, format: format, layers: layers, srs: srs, service: service,
