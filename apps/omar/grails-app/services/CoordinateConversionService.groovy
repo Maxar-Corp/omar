@@ -32,7 +32,8 @@ class CoordinateConversionService
 
         //println newInput
 
-        output = coordUtil.dmsToDegrees(newInput)
+
+        output = new CoordinateUtility().dmsToDegrees(newInput)
 
 
         break
