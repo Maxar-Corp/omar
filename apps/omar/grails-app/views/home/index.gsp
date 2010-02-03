@@ -51,10 +51,10 @@
       </td>
       <td>
         <ol>
-          <li><g:link controller="kmlQuery" action="topImages">Top Images</g:link></li>
-          <li><g:link controller="kmlQuery" action="topVideos">Top Videos</g:link></li>
-          <li><g:link controller="kmlQuery" action="imageFootprints">Image footprints</g:link></li>
-          <li><g:link controller="kmlQuery" action="videoFootprints">Video footprints</g:link></li>
+          <li><g:link controller="kmlQuery" action="topImages">Last 10 Images</g:link></li>
+          <li><g:link controller="kmlQuery" action="topVideos">Last 10 Videos</g:link></li>
+          <li><g:link controller="kmlQuery" action="imageFootprints">Image Coverage</g:link></li>
+          <li><g:link controller="kmlQuery" action="videoFootprints">Video Coverage</g:link></li>
         </ol>
       </td>
     </tr>
