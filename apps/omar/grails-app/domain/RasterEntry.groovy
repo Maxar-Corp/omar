@@ -17,6 +17,8 @@ class RasterEntry
 
   MetadataXml metadataXml  // Now a one-to-one
 
+  RasterEntryMetadata rasterEntryMetadata
+
   static belongsTo = [rasterDataSet: RasterDataSet]
 
   static hasMany = [
