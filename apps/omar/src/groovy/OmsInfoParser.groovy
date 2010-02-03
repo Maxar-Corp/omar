@@ -140,6 +140,8 @@ public class OmsInfoParser
 
     initMetadataXml(rasterEntry)
 
+    initRasterEntryMetadata(rasterEntry)
+
     return rasterEntry
   }
 
@@ -281,6 +283,35 @@ public class OmsInfoParser
     rasterFile.format = rasterFileNode.@format
     rasterFile.type = rasterFileNode.@type
     return rasterFile
+  }
+
+
+  private initRasterEntryMetadata(rasterEntry)
+  {
+    rasterEntry.rasterEntryMetadata = new RasterEntryMetadata()
+
+    rasterEntry?.metadataTags?.each { metadataTag ->
+      switch ( metadataTag.name.toLowerCase() )
+      {
+        case "iid2":
+          rasterEntry.rasterEntryMetadata.imageId = metadataTag.value
+          break
+        case "tgtid":
+          rasterEntry.rasterEntryMetadata.targetId = metadataTag.value
+          break
+        case "isorce":
+          rasterEntry.rasterEntryMetadata.missionId = metadataTag.value
+          break
+        case "icat":
+          rasterEntry.rasterEntryMetadata.sensorId = metadataTag.value
+          break
+      }
+    }
+
+    if ( !rasterEntry.rasterEntryMetadata.imageId )
+    {
+      rasterEntry.rasterEntryMetadata.imageId = System.currentTimeMillis() as String
+    }
   }
 
 }
