@@ -11,6 +11,27 @@ import java.text.SimpleDateFormat
 
 class DateUtil
 {
+  def rng = new Random()
+
+  def createDateBetweenYears(def startYear, def endYear)
+  {
+    def year = startYear + rng.nextInt(endYear - startYear + 1)
+    def month = rng.nextInt(12)
+
+    def calendar = new GregorianCalendar(year, month, 1);
+    def day = rng.nextInt(calendar.getActualMaximum(Calendar.DAY_OF_MONTH) + 1)
+
+    def hour = rng.nextInt(24)
+    def minute = rng.nextInt(60)
+    def second = rng.nextInt(60)
+    def millisecond = rng.nextInt(1000)
+
+    def date = Date.parse("yyyy-MM-dd HH:mm:ss.SSS",
+        "${year}-${month}-${day} ${hour}:${minute}:${second}.${millisecond}")
+
+    return date
+  }
+  
   public Date parseDate(String dateString)
   {
     TimeZone utc = null
