@@ -17,7 +17,7 @@ class RasterEntry
 
   MetadataXml metadataXml  // Now a one-to-one
 
-  RasterEntryMetadata rasterEntryMetadata
+  RasterEntryMetadata metadata
 
   static belongsTo = [rasterDataSet: RasterDataSet]
 
@@ -75,7 +75,7 @@ class RasterEntry
     acquisitionDate(nullable: true)
     metadataTags()
 
-    rasterEntryMetadata(nullable: true)
+    metadata(nullable: true)
   }
   def getMetersPerPixel()
   {
