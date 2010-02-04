@@ -290,7 +290,7 @@ public class OmsInfoParser
   {
     rasterEntry.rasterEntryMetadata = new RasterEntryMetadata()
 
-    rasterEntry?.metadataTags?.each { metadataTag ->
+    rasterEntry?.metadataTags?.each {metadataTag ->
       switch ( metadataTag.name.toLowerCase() )
       {
         case "iid2":
@@ -304,6 +304,15 @@ public class OmsInfoParser
           break
         case "icat":
           rasterEntry.rasterEntryMetadata.sensorId = metadataTag.value
+          break
+
+      // Just for testing
+        case "file_type":
+          rasterEntry.rasterEntryMetadata.fileType = metadataTag.value
+          break
+
+        case "class_name":
+          rasterEntry.rasterEntryMetadata.className = metadataTag.value
           break
       }
     }
