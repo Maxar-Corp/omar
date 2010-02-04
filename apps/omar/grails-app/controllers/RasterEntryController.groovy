@@ -293,6 +293,7 @@ class RasterEntryController implements InitializingBean
     }
 
     def rasterEntries = null
+
     def queryParams = initRasterEntryQuery(params)
 
     if ( chainModel )
