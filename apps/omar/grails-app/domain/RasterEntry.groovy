@@ -74,6 +74,8 @@ class RasterEntry
     groundGeom(nullable: false)
     acquisitionDate(nullable: true)
     metadataTags()
+
+    rasterEntryMetadata(nullable: true)
   }
   def getMetersPerPixel()
   {
