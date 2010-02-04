@@ -11,26 +11,8 @@ class RasterEntryController implements InitializingBean
 
   def rasterEntrySearchService
 
-  public static final List tagHeaderList = [
-      "File Type",
-      "Class Name",
-      "Mission",
-      "Country",
-      "Target Id",
-      "Sensor",
-      "Image Id"
-  ]
-
-  public static final List tagNameList = [
-      "file_type",
-      "class_name",
-      "isorce",
-      "country",
-      "tgtid",
-      "icat",
-      "iid2"
-  ]
-
+  public static final List tagHeaderList
+  public static final List tagNameList
 
   def index = { redirect(action: list, params: params) }
 
@@ -333,7 +315,6 @@ class RasterEntryController implements InitializingBean
           PARAMS: params
       ]
 
-
 //      println "\nparams: ${params?.sort { it.key }}"
 //      println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
@@ -386,7 +367,7 @@ class RasterEntryController implements InitializingBean
     params.remove("_action_kmlnetworklink")
 
     params.dateSort = "false"
-    
+
     def serviceAddress = createLink(absolute: true, controller: "kmlQuery", action: "getkml", params: params)
 
     def kmlnode = {
@@ -429,5 +410,7 @@ class RasterEntryController implements InitializingBean
   {
     baseWMS = grailsApplication.config.wms.base
     dataWMS = grailsApplication.config.wms.data.raster
+    tagHeaderList = grailsApplication.config.rasterEntry.metadata.tagHeaderList
+    tagNameList = grailsApplication.config.rasterEntry.metadata.tagNameList
   }
 }
