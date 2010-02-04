@@ -190,7 +190,7 @@ rasterEntry.metadata.tagHeaderList = [
     "File Type",
     "Class Name",
     "Mission",
-    "Country",
+//    "Country",
     "Target Id",
     "Sensor",
     "Image Id"
@@ -205,7 +205,7 @@ switch ( rasterEntry.queryObject )
         "file_type",
         "class_name",
         "isorce",
-        "country",
+//        "country",
         "tgtid",
         "icat",
         "iid2"
@@ -222,8 +222,8 @@ switch ( rasterEntry.queryObject )
     rasterEntry.metadata.tagNameList = [
         "fileType",
         "className",
-        "missonId",
-        "country",
+        "missionId",
+//        "country",
         "targetId",
         "sensorId",
         "imageId"
