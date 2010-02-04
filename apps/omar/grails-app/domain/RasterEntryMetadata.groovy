@@ -13,6 +13,10 @@ class RasterEntryMetadata
   String organization
   String description
 
+  // Just for testing...
+  String fileType
+  String className
+
   static belongsTo = [rasterEntry: RasterEntry]
   
   static mapping = {
@@ -25,6 +29,10 @@ class RasterEntryMetadata
       missionId index: 'raster_entry_metadata_mission_id_idx'
       imageCategory index: 'raster_entry_metadata_image_category_idx'
       securityClassification index: 'raster_entry_metadata_security_classification_idx'
+
+      // Just for testing
+      fileType index: 'raster_entry_metadata_file_type_idx'
+      className index: 'raster_entry_metadata_class_name_idx'
     }
   }
   static constraints = {
@@ -41,5 +49,8 @@ class RasterEntryMetadata
     organization(nullable: true)
     description(nullable: true)
 
+    // Just for testing
+    fileType()
+    className()
   }
 }
