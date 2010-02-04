@@ -1,5 +1,5 @@
 //import javax.jws.WebParam
-import org.hibernate.FetchMode as FM
+
 
 class RasterEntrySearchService
 {
@@ -62,8 +62,8 @@ class RasterEntrySearchService
             }
           }
           break
-        case "rasterEntryMetadata":
-          createAlias("rasterEntryMetadata", "m")
+        case "metadata":
+          createAlias("metadata", "m")
           searches?.each {name, value ->
             if ( name && value )
             {

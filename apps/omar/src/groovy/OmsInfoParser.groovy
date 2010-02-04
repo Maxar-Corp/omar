@@ -294,60 +294,60 @@ public class OmsInfoParser
       switch ( metadataTag.name.toLowerCase() )
       {
       case "imageid":
-        rasterEntry.rasterEntryMetadata.imageId = metadataTag.value
+        rasterEntry.metadata.imageId = metadataTag.value
         break;
       case "targetid":
-        rasterEntry.rasterEntryMetadata.targetId = metadataTag.value
+        rasterEntry.metadata.targetId = metadataTag.value
         break;
       case "productid":
-        rasterEntry.rasterEntryMetadata.productId = metadataTag.value
+        rasterEntry.metadata.productId = metadataTag.value
         break;
       case "sensorid":
-        rasterEntry.rasterEntryMetadata.sensorId = metadataTag.value
+        rasterEntry.metadata.sensorId = metadataTag.value
         break;
       case "missionid":
-        rasterEntry.rasterEntryMetadata.missionId = metadataTag.value
+        rasterEntry.metadata.missionId = metadataTag.value
         break;
       case "imagecategory":
-        rasterEntry.rasterEntryMetadata.imageCategory = metadataTag.value
+        rasterEntry.metadata.imageCategory = metadataTag.value
         break;
       case "azimuthangle":
-        rasterEntry.rasterEntryMetadata.azimuthAngle = metadataTag.value
+        rasterEntry.metadata.azimuthAngle = metadataTag.value
         break;
       case "grazingangle":
-        rasterEntry.rasterEntryMetadata.grazingAngle = metadataTag.value
+        rasterEntry.metadata.grazingAngle = metadataTag.value
         break;
       case "securityclassification":
-        rasterEntry.rasterEntryMetadata.securityClassification = metadataTag.value
+        rasterEntry.metadata.securityClassification = metadataTag.value
         break;
       case "title":
-        rasterEntry.rasterEntryMetadata.title = metadataTag.value
+        rasterEntry.metadata.title = metadataTag.value
         break;
       case "organization":
-        rasterEntry.rasterEntryMetadata.organization = metadataTag.value
+        rasterEntry.metadata.organization = metadataTag.value
         break;
       case "description":
-        rasterEntry.rasterEntryMetadata.description = metadataTag.value
+        rasterEntry.metadata.description = metadataTag.value
         break;
       case "niirs":
-        rasterEntry.rasterEntryMetadata.niirs = metadataTag.value
+        rasterEntry.metadata.niirs = metadataTag.value
         break;
         
       // Just for testing
         case "filetype":
-          rasterEntry.rasterEntryMetadata.fileType = metadataTag.value
+          rasterEntry.metadata.fileType = metadataTag.value
           break
 
         case "classname":
-          rasterEntry.rasterEntryMetadata.className = metadataTag.value
+          rasterEntry.metadata.className = metadataTag.value
           break
       }
     }
 
-     println   "RASTERENTRY METADATA = ${rasterEntry.rasterEntryMetadata}"  
-    if ( !rasterEntry.rasterEntryMetadata.imageId )
+     println   "RASTERENTRY METADATA = ${rasterEntry.metadata}"
+    if ( !rasterEntry.metadata.imageId )
     {
-      rasterEntry.rasterEntryMetadata.imageId = System.currentTimeMillis() as String
+      rasterEntry.metadata.imageId = System.currentTimeMillis() as String
     }
   }
 
