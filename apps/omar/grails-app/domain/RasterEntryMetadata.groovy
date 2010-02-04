@@ -8,7 +8,7 @@ class RasterEntryMetadata
   String imageCategory
   Double azimuthAngle
   Double grazingAngle
-  String fileClassification
+  String securityClassification
   String title
   String organization
   String description
@@ -24,7 +24,7 @@ class RasterEntryMetadata
       sensorId index: 'raster_entry_metadata_sensor_id_idx'
       missionId index: 'raster_entry_metadata_mission_id_idx'
       imageCategory index: 'raster_entry_metadata_image_category_idx'
-      fileClassification index: 'raster_entry_metadata_file_classification_idx'
+      securityClassification index: 'raster_entry_metadata_file_classification_idx'
     }
   }
   static constraints = {
@@ -36,7 +36,7 @@ class RasterEntryMetadata
     imageCategory(nullable: true)
     azimuthAngle(nullable: true)
     grazingAngle(nullable: true)
-    fileClassification(nullable: true)
+    securityClassification(nullable: true)
     title(nullable: true)
     organization(nullable: true)
     description(nullable: true)
