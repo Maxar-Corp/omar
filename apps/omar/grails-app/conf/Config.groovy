@@ -1,4 +1,4 @@
-import grails.util.GrailsUtil
+import grails.util.Environment
 
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
@@ -41,6 +41,8 @@ grails.serverIP = InetAddress.localHost.hostAddress
 environments {
   development {
     grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0"
+  }
+  test {
   }
   production {
     grails.serverURL = "http://${grails.serverIP}/omar-2.0"
@@ -112,13 +114,13 @@ log4j = {
   warn 'org.mortbay.log'
 
   //trace 'org.hibernate.type'
-  
+
 }
 
 //log4j.logger.org.springframework.security='off,stdout'
 
 /** *********************************************************************************************************/
-wms.referenceDataDirectory="/data"
+wms.referenceDataDirectory = "/data"
 
 wms.mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" : ""
 //wms.serverAddress = InetAddress.localHost.hostAddress
@@ -135,8 +137,23 @@ wms.base = [
     format: "image/jpeg"
 ]
 
-wms.supportIE6 = false 
-wms.data.mapFile = "${wms.referenceDataDirectory}/omar-2.0-${GrailsUtil.isDevelopmentEnv() ? "dev" : "prod" }.map"
+wms.supportIE6 = true
+
+
+wms.data.mapFile = null
+
+switch ( Environment.current.name.toUpperCase() )
+{
+  case "DEVELOPMENT":
+    wms.data.mapFile = "${wms.referenceDataDirectory}/omar-2.0-dev.map"
+    break
+  case "PRODUCTION":
+    wms.data.mapFile = "${wms.referenceDataDirectory}/omar-2.0-prod.map"
+    break
+  case "TEST":
+    wms.data.mapFile = "${wms.referenceDataDirectory}/omar-2.0-test.map"
+    break
+}
 
 wms.data.raster = [
     url: "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${wms.data.mapFile}",
@@ -168,3 +185,59 @@ omar.release = '1.8.2'
 videoStreaming.flashDirRoot = "/Library/WebServer/Documents/videos"
 //videoStreaming.flashDirRoot = "/var/www/html/videos"
 videoStreaming.flashUrlRoot = "http://${grails.serverIP}/videos"
+
+rasterEntry.metadata.tagHeaderList = [
+    "File Type",
+    "Class Name",
+    "Mission",
+    "Country",
+    "Target Id",
+    "Sensor",
+    "Image Id"
+]
+
+rasterEntry.queryObject = "rasterEntryMetadata"
+
+switch ( rasterEntry.queryObject )
+{
+  case "metadataXml":
+    rasterEntry.metadata.tagNameList = [
+        "file_type",
+        "class_name",
+        "isorce",
+        "country",
+        "tgtid",
+        "icat",
+        "iid2"
+    ]
+
+    rasterEntry.searchTagData = [
+        [name: "custom", description: "Custom name=value"],
+        [name: "file_type", description: "File Type"],
+        [name: "class_name", description: "Class Name"]
+    ]
+    break
+
+  case "rasterEntryMetadata":
+    rasterEntry.metadata.tagNameList = [
+        "fileType",
+        "className",
+        "missonId",
+        "country",
+        "targetId",
+        "sensorId",
+        "imageId"
+    ]
+
+    rasterEntry.searchTagData = [
+        [name: "fileType", description: "File Type"],
+        [name: "className", description: "Class Name"],
+        [name: "missionId", description: "Mission"],
+        [name: "targetId", description: "BE Number"],
+        [name: "sensorId", description: "Sensor"],
+        [name: "imageId", description: "Image Id"]
+    ]
+
+    break
+}
+

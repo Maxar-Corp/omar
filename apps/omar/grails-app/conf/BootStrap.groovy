@@ -119,11 +119,12 @@ class BootStrap
     new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/rasterSearch/**").save()
 
 
-    List<Map<String, String>> searchTagData = [
-        [name: "custom", description: "Custom name=value"],
-        [name: "file_type", description: "File Type"],
-        [name: "class_name", description: "Class Name"]
-    ]
+//    List<Map<String, String>> searchTagData = [
+//        [name: "custom", description: "Custom name=value"],
+//        [name: "fileType", description: "File Type"],
+//        [name: "className", description: "Class Name"]
+//    ]
+    def searchTagData = grailsApplication.config.rasterEntry.searchTagData
 
     searchTagData.each {
       def searchTag = SearchTag.findByName(it.name)
