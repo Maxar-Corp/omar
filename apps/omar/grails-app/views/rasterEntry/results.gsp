@@ -95,14 +95,12 @@
                 <td><%=tags[rasterEntry]?.find { it.name == tagName }?.value?.encodeAsHTML()%></td>
                 --%>
 
-                <%--
-                <g:if test="${grailsApplication.config.rasterEntry.queryObject == 'metadataXml'}">
-                  <td><%=rasterEntry?.metadataTags?.find { it.name.equalsIgnoreCase(tagName) }?.value?.encodeAsHTML()%></td>
-                </g:if>
-                --%>
-
-                  <g:if test="${grailsApplication.config.rasterEntry.queryObject == 'rasterEntryMetadata'}">
-                    <td><%="${rasterEntry.rasterEntryMetadata."${tagName}"}"%></td>
+                  <g:if test="${grailsApplication.config.rasterEntry.queryObject == 'metadataXml'}">
+                    <td><%=rasterEntry?.metadataTags?.find { it.name.equalsIgnoreCase(tagName) }?.value?.encodeAsHTML()%></td>
+                  </g:if>
+                  
+                  <g:if test="${grailsApplication.config.rasterEntry.queryObject == 'metadata'}">
+                    <td><%="${rasterEntry.metadata."${tagName}"}"%></td>
                   </g:if>
 
                 </g:each>

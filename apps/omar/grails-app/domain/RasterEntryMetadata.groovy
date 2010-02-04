@@ -36,7 +36,7 @@ class RasterEntryMetadata
     }
   }
   static constraints = {
-    imageId(blank: false/*, unique: true*/)
+    imageId(nullable: true, blank: false/*, unique: true*/)
     targetId(nullable: true)
     productId(nullable: true)
     sensorId(nullable: true)
@@ -50,7 +50,7 @@ class RasterEntryMetadata
     description(nullable: true)
 
     // Just for testing
-    fileType()
-    className()
+    fileType(nullable: true)
+    className(nullable: true)
   }
 }

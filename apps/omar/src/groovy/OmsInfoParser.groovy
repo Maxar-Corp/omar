@@ -287,7 +287,7 @@ public class OmsInfoParser
 
   private initRasterEntryMetadata(rasterEntry)
   {
-    rasterEntry.rasterEntryMetadata = new RasterEntryMetadata()
+    rasterEntry.metadata = new RasterEntryMetadata()
 
 
     rasterEntry?.metadataTags?.each {metadataTag ->
