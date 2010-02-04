@@ -24,7 +24,7 @@ class RasterEntryMetadata
       sensorId index: 'raster_entry_metadata_sensor_id_idx'
       missionId index: 'raster_entry_metadata_mission_id_idx'
       imageCategory index: 'raster_entry_metadata_image_category_idx'
-      securityClassification index: 'raster_entry_metadata_file_classification_idx'
+      securityClassification index: 'raster_entry_metadata_security_classification_idx'
     }
   }
   static constraints = {
