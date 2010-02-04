@@ -147,12 +147,12 @@ public class OmsInfoParser
 
   private def initMetadataTags(metadataNode, rasterEntry)
   {
-    metadataNode.tag.each {tagNode ->
+    metadataNode.children().each {tagNode ->
 
       if ( tagNode.tag?.size() > 0 )
       {
 
-        def name = tagNode.@name.toString().toUpperCase()
+        def name = tagNode.name().toString().toUpperCase()
 
         //tagFile.append("${name}\n")
 
@@ -209,8 +209,8 @@ public class OmsInfoParser
   private MetadataTag initMetadataTag(tagNode)
   {
     def metadataTag = null
-    def name = tagNode.@name?.toString()
-    def value = tagNode?.toString()
+    def name = tagNode.name()?.toString().trim()
+    def value = tagNode?.text().toString().trim()
 
     if ( name && value )
     {
@@ -293,46 +293,46 @@ public class OmsInfoParser
     rasterEntry?.metadataTags?.each {metadataTag ->
       switch ( metadataTag.name.toLowerCase() )
       {
-      case "imageid":
-        rasterEntry.metadata.imageId = metadataTag.value
-        break;
-      case "targetid":
-        rasterEntry.metadata.targetId = metadataTag.value
-        break;
-      case "productid":
-        rasterEntry.metadata.productId = metadataTag.value
-        break;
-      case "sensorid":
-        rasterEntry.metadata.sensorId = metadataTag.value
-        break;
-      case "missionid":
-        rasterEntry.metadata.missionId = metadataTag.value
-        break;
-      case "imagecategory":
-        rasterEntry.metadata.imageCategory = metadataTag.value
-        break;
-      case "azimuthangle":
-        rasterEntry.metadata.azimuthAngle = metadataTag.value
-        break;
-      case "grazingangle":
-        rasterEntry.metadata.grazingAngle = metadataTag.value
-        break;
-      case "securityclassification":
-        rasterEntry.metadata.securityClassification = metadataTag.value
-        break;
-      case "title":
-        rasterEntry.metadata.title = metadataTag.value
-        break;
-      case "organization":
-        rasterEntry.metadata.organization = metadataTag.value
-        break;
-      case "description":
-        rasterEntry.metadata.description = metadataTag.value
-        break;
-      case "niirs":
-        rasterEntry.metadata.niirs = metadataTag.value
-        break;
-        
+        case "imageid":
+          rasterEntry.metadata.imageId = metadataTag.value
+          break;
+        case "targetid":
+          rasterEntry.metadata.targetId = metadataTag.value
+          break;
+        case "productid":
+          rasterEntry.metadata.productId = metadataTag.value
+          break;
+        case "sensorid":
+          rasterEntry.metadata.sensorId = metadataTag.value
+          break;
+        case "missionid":
+          rasterEntry.metadata.missionId = metadataTag.value
+          break;
+        case "imagecategory":
+          rasterEntry.metadata.imageCategory = metadataTag.value
+          break;
+        case "azimuthangle":
+          rasterEntry.metadata.azimuthAngle = metadataTag.value as Double
+          break;
+        case "grazingangle":
+          rasterEntry.metadata.grazingAngle = metadataTag.value as Double
+          break;
+        case "securityclassification":
+          rasterEntry.metadata.securityClassification = metadataTag.value
+          break;
+        case "title":
+          rasterEntry.metadata.title = metadataTag.value
+          break;
+        case "organization":
+          rasterEntry.metadata.organization = metadataTag.value
+          break;
+        case "description":
+          rasterEntry.metadata.description = metadataTag.value
+          break;
+        case "niirs":
+          rasterEntry.metadata.niirs = metadataTag.value
+          break;
+
       // Just for testing
         case "filetype":
           rasterEntry.metadata.fileType = metadataTag.value
@@ -344,7 +344,8 @@ public class OmsInfoParser
       }
     }
 
-     println   "RASTERENTRY METADATA = ${rasterEntry.metadata}"
+    //println "RASTERENTRY METADATA = ${rasterEntry.metadata}"
+    
     if ( !rasterEntry.metadata.imageId )
     {
       rasterEntry.metadata.imageId = System.currentTimeMillis() as String
