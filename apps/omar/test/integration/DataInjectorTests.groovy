@@ -1,18 +1,41 @@
-import groovy.xml.StreamingMarkupBuilder
 import java.text.SimpleDateFormat
-import java.util.GregorianCalendar
-import java.util.Date;
-import java.util.Calendar
-import java.util.Random
-import java.lang.Math
-import joms.oms.ossimGpt;
-import joms.oms.ossimDpt;
 
-class DataInjectorTests extends GroovyTestCase {
+import joms.oms.ossimGpt;
+
+
+class DataInjectorTests extends GroovyTestCase
+{
   boolean transactional = false
   def backgroundService
   def bgThreadManager
   int seedValue = 0
+
+  def dateUtil = new DateUtil()
+
+  static final IMAGE_CATEGORIES = [
+      VIS: "Visible Imagery MONO, RGB, If geo-referenced, presence of",
+      SL: "Side-Looking Radar RGB/LUT,YCbCr601, spatial location and positional",
+      TI: "Thermal Infrared MULTI accuracy is recommended.",
+      FL: "Forward Looking Infrared",
+      RD: "Radar",
+      EO: "Electro-optical",
+      OP: "Optical",
+      HR: "High Resolution Radar",
+      HS: "Hyperspectral",
+      CP: "Color Frame Photography",
+      BP: "Black/White Frame Photography",
+      SAR: "Synthetic Aperture Radar",
+      SARIQ: "SAR Radio Hologram",
+      IR: "Infrared",
+      MS: "Multispectral",
+      FP: "Fingerprints",
+      MRI: "Magnetic Resonance Imagery",
+      XRAY: "X-rays",
+      CAT: "CAT Scans",
+      VD: "Video"
+
+  ]
+
   def buildRasterXml(def mapping)
   {
     def result = """<oms>
@@ -144,7 +167,7 @@ class DataInjectorTests extends GroovyTestCase {
                   <tag name="isorce">${mapping.mission}</tag>
                   <tag name="pvtype">INT</tag>
                   <tag name="irep">MULTI</tag>
-                  <tag name="icat">MS</tag>
+                  <tag name="icat">${mapping.icat}</tag>
                   <tag name="abpp">11</tag>
                   <tag name="pjust">R</tag>
                   <tag name="icords">U</tag>
@@ -207,42 +230,50 @@ class DataInjectorTests extends GroovyTestCase {
 
     return result;
   }
-  synchronized def findRepositoryForFile(def file) {
+
+  synchronized def findRepositoryForFile(def file)
+  {
     def repositories = (Repository.list()?.sort { it.baseDir.size() })?.reverse()
     def repository = null
 
-    if (repositories) {
+    if ( repositories )
+    {
       def filename = file?.absolutePath
 
-      for (it in repositories) {
-        if (filename?.startsWith(it.baseDir)) {
+      for ( it in repositories )
+      {
+        if ( filename?.startsWith(it.baseDir) )
+        {
           repository = it
           break
         }
       }
     }
 
-    if (!repository) {
+    if ( !repository )
+    {
       repository = new Repository(baseDir: file?.parentFile?.absolutePath)
       repository.save(flush: true)
     }
 
     return repository
   }
+
   def buildMissionMap(int numberOfMissions)
   {
     def missionMap = [:]
     int idx = 0;
-    for(idx =0; idx < numberOfMissions; ++idx)
+    for ( idx = 0; idx < numberOfMissions; ++idx )
     {
       missionMap.put(idx, "Mission${idx}")
     }
 
     return missionMap;
   }
+
   void addRaster(def mapping)
   {
-    mapping.file = mapping.file_noext+".ntf"
+    mapping.file = mapping.file_noext + ".ntf"
     mapping.file_type = "nitf"
     def xml = buildRasterXml(mapping)
     def oms = new XmlSlurper().parseText(xml)
@@ -251,13 +282,14 @@ class DataInjectorTests extends GroovyTestCase {
 
     def rasterDataSets = omsInfoParser.processRasterDataSets(oms, repository)
     rasterDataSets.each {rasterDataSet ->
-        RasterDataSet result = rasterDataSet.save(flush:true)
- //       assertNotNull("Object not created: " + rasterDataSet, result)
-     }
+      RasterDataSet result = rasterDataSet.save()
+      //       assertNotNull("Object not created: " + rasterDataSet, result)
+    }
   }
+
   void addVideo(def mapping)
   {
-    mapping.file = mapping.file_noext+".mpeg"
+    mapping.file = mapping.file_noext + ".mpeg"
     mapping.file_type = "mpeg"
     def xml = buildVideoXml(mapping)
     def oms = new XmlSlurper().parseText(xml)
@@ -267,128 +299,139 @@ class DataInjectorTests extends GroovyTestCase {
 
     def dataSets = omsInfoParser.processVideoDataSets(oms, repository)
     dataSets.each {videoDataSet ->
-        VideoDataSet result = videoDataSet.save(flush:true)
+      VideoDataSet result = videoDataSet.save()
 //        assertNotNull("Object not created: " + videoDataSet, result)
-     }
+    }
   }
+
   void addRasters(int count)
   {
-    int cellId = 0;
-    def missions =  buildMissionMap(100)
-    def calendar = new GregorianCalendar()
-    long seed = calendar.getTimeInMillis()
-    def random = new Random(seedValue)
-    def gpt = new ossimGpt(0.0,0.0);
+    def missions = buildMissionMap(100)
+    def random = new Random()
+    def gpt = new ossimGpt(0.0, 0.0);
     def mpd = gpt.metersPerDegree();
-    for(cellId = 0; cellId < count;++cellId)
-    {
-      int missionKey = Math.abs(random.nextInt())%missions.size();
-      Date now = calendar.getTime();
-      calendar.add(Calendar.MINUTE, 5);
-      SimpleDateFormat isoDate   = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-      SimpleDateFormat imageDate = new SimpleDateFormat("dd-MM-yyyy")
-      SimpleDateFormat aqDate    = new SimpleDateFormat("yyyyMMddhhmmss")
-      double latCenter = -89.5 + 179*random.nextFloat()
-      double lonCenter = -179.5 + 359.5*random.nextFloat()
-      double latDelta = random.nextFloat()*0.5;
+
+    SimpleDateFormat isoDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+    SimpleDateFormat imageDate = new SimpleDateFormat("dd-MM-yyyy")
+    SimpleDateFormat acqDate = new SimpleDateFormat("yyyyMMddhhmmss")
+    def icatList = IMAGE_CATEGORIES.keySet().asList()
+
+    count.times {cellId ->
+
+      int missionKey = random.nextInt(missions.size());
+      Date date = dateUtil.createDateBetweenYears(2000, 2010);
+      double latCenter = -89.5 + 179 * random.nextFloat()
+      double lonCenter = -179.5 + 359.5 * random.nextFloat()
+      double latDelta = random.nextFloat() * 0.5;
       double lonDelta = 0.0;
-      if(latDelta < 0.01)
+
+      if ( latDelta < 0.01 )
       {
         latDelta = 0.1;
       }
+
       lonDelta = latDelta
-      double minLat = latCenter-latDelta;
-      double minLon = lonCenter-lonDelta;
-      double maxLat = latCenter+latDelta;
-      double maxLon = lonCenter+lonDelta;
+
+      double minLat = latCenter - latDelta;
+      double minLon = lonCenter - lonDelta;
+      double maxLat = latCenter + latDelta;
+      double maxLon = lonCenter + lonDelta;
       int pixelsWide = 4096;
       int pixelsHigh = 4096;
-      def mapping = [     file:"",
-                          file_noext:"/data/test_${cellId}",
-                          geom:"POLYGON((${minLon} ${maxLat},${maxLon} ${maxLat},${maxLon} ${minLat},${minLon} ${minLat},${minLon} ${maxLat}))",
-                          srs:"4326",
-                          title:"Test for Cell ${cellId}",
-                          tgtid: "Cell_${cellId}",
-                          iid1: "Cell_${cellId}",
-                          mission: missions.get(missionKey) as String,
-                          iso_start_date:isoDate.format( now ) as String,
-                          iso_end_date:isoDate.format( now ) as String,
-                          image_date:imageDate.format( now ) as String,
-                          aqdate:aqDate.format( now ) as String,
-                          path:"/data",
-                          file_type:"",
-                          width: pixelsWide as String,
-                          height: pixelsHigh as String,
-                          gsd_unit: "meters",
-                          gsd_dx: (((maxLon-minLon)/pixelsWide)*mpd.x) as String,
-                          gsd_dy: (((maxLat-minLat)/pixelsHigh)*mpd.y) as String
-                         ]
+
+      def mapping = [file: "",
+          file_noext: "/data/test_${cellId}",
+          geom: Geometry.createPolygon(minLon, minLat, maxLon, maxLat),
+          srs: "4326",
+          title: "Test for Cell ${cellId}",
+          tgtid: "Cell_${cellId}",
+          iid1: "Cell_${cellId}",
+          icat: icatList.get(random.nextInt(IMAGE_CATEGORIES.size())),
+          mission: missions.get(missionKey) as String,
+          iso_start_date: isoDate.format(date),
+          iso_end_date: isoDate.format(date),
+          image_date: imageDate.format(date),
+          aqdate: acqDate.format(date),
+          path: "/data",
+          file_type: "nitf",
+          width: pixelsWide as String,
+          height: pixelsHigh as String,
+          gsd_unit: "meters",
+          gsd_dx: (((maxLon - minLon) / pixelsWide) * mpd.x) as String,
+          gsd_dy: (((maxLat - minLat) / pixelsHigh) * mpd.y) as String
+      ]
+
       backgroundService.execute("ImageInsert", {
-       def mapHold = mapping;
         addRaster(mapping)
       })
-     }
-    
+    }
+
   }
+
   void addVideos(int count)
   {
-    int cellId = 0;
-    def missions =  buildMissionMap(100)
-    def calendar = new GregorianCalendar()
-    long seed = calendar.getTimeInMillis()
-    def random = new Random(seed)
-    for(cellId = 0; cellId < count;++cellId)
-    {
-      int missionKey = Math.abs(random.nextInt())%missions.size();
-      Date now      = calendar.getTime();
-      calendar.roll(Calendar.MINUTE, true);
-      Date duration = calendar.getTime();
-      calendar.add(Calendar.MINUTE, 5);
-      SimpleDateFormat isoDate   = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-      double latCenter = -89.5 + 179*random.nextFloat()
-      double lonCenter = -179.5 + 359.5*random.nextFloat()
-      double latDelta = random.nextFloat()*0.5;
-      double lonDelta = random.nextFloat()*0.5;
-      if(latDelta < 0.01)
+    def missions = buildMissionMap(100)
+    def random = new Random()
+
+    SimpleDateFormat isoDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+
+    count.times {cellId ->
+      int missionKey = random.nextInt(missions.size());
+      double latCenter = -89.5 + 179 * random.nextFloat()
+      double lonCenter = -179.5 + 359.5 * random.nextFloat()
+      double latDelta = random.nextFloat() * 0.5;
+      double lonDelta = random.nextFloat() * 0.5;
+      if ( latDelta < 0.01 )
       {
         latDelta = 0.1;
       }
       lonDelta = latDelta
-      double minLat = latCenter-latDelta;
-      double minLon = lonCenter-lonDelta;
-      double maxLat = latCenter+latDelta;
-      double maxLon = lonCenter+lonDelta;
+      double minLat = latCenter - latDelta;
+      double minLon = lonCenter - lonDelta;
+      double maxLat = latCenter + latDelta;
+      double maxLon = lonCenter + lonDelta;
       int pixelsWide = 720;
       int pixelsHigh = 480;
-      def mapping = [     file:"",
-                          file_noext:"/data/test_${cellId}",
-                          geom:"POLYGON((${minLon} ${maxLat},${maxLon} ${maxLat},${maxLon} ${minLat},${minLon} ${minLat},${minLon} ${maxLat}))",
-                          srs:"4326",
-                          iso_start_date:isoDate.format( now ) as String,
-                          iso_end_date:isoDate.format( duration ) as String,
-                          path:"/data",
-                          file_type:"",
-                          width: pixelsWide as String,
-                          height: pixelsHigh as String,
-                         ]
+
+      def calendar = Calendar.instance
+      def startDate = dateUtil.createDateBetweenYears(2000, 2010)
+
+      calendar.time = startDate.clone()
+      calendar.roll(Calendar.MINUTE, true)
+
+      def endDate = calendar.time
+
+      def mapping = [file: "",
+          file_noext: "/data/test_${cellId}",
+          geom: Geometry.createPolygon(minLon, minLat, maxLon, maxLat),
+          srs: "4326",
+          iso_start_date: isoDate.format(startDate),
+          iso_end_date: isoDate.format(endDate),
+          path: "/data",
+          file_type: "mpeg",
+          width: pixelsWide as String,
+          height: pixelsHigh as String,
+      ]
+
       backgroundService.execute("VideoInsert", {
-       def mapHold = mapping;
-        addVideo(mapHold)
+        addVideo(mapping)
       })
-     }
+    }
 
   }
-  void testSomething() {
-    int rasterCount = 1000
-    int videoCount  = 1000
+
+  void testSomething()
+  {
+    int rasterCount = 100000
+    int videoCount = 100000
     addVideos(videoCount);
-    while(VideoDataSet.count() < videoCount)
+    while ( VideoDataSet.count() < videoCount )
     {
       Thread.sleep(100);
     }
     addRasters(rasterCount);
 
-    while(RasterDataSet.count() < rasterCount)
+    while ( RasterDataSet.count() < rasterCount )
     {
       Thread.sleep(100);
     }
