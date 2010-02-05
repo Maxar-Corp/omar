@@ -11,7 +11,7 @@
 <head>
   <title>OMAR - Raster Search</title>
   <meta name="layout" content="main3"/>
- 
+
   <style type="text/css">
   #map {
     border: 1px solid black;
@@ -71,8 +71,7 @@
         "${dataWMS.title}",
         "${dataWMS.url}",
         { layers: "${dataWMS.layers}", format: "${dataWMS.format}", IMAGEFILTER: "true=true", transparent: true },
-        {'isBaseLayer': false},
-        {buffer:1}
+        {isBaseLayer:false,buffer:0,visibility:false}
       );
       map.addLayer(dataLayer);
     }
@@ -83,7 +82,7 @@
         "${baseWMS.title}",
         "${baseWMS.url}",
         {layers: '${baseWMS.layers}', format: "${baseWMS.format}" },
-        {buffer:1}
+        {isBaseLayer:true, buffer:0}
       );
       map.addLayer(baseLayer);
       map.setBaseLayer(baseLayer);
@@ -462,9 +461,9 @@
     <span class="menuButton">
       <a href="javascript:generateKML();">KML</a>
     </span>
-<%--
-    <div id="panel2" class="olControlPanel"></div>
---%>
+    <%--
+        <div id="panel2" class="olControlPanel"></div>
+    --%>
   </div>
   <div class="body">
     <h1 id="mapTitle">Search for Imagery:</h1>
@@ -593,7 +592,7 @@
                     noSelection="${['null':'Select One...']}"
                     name="searchTagNames[${i}]"
                     value="${queryParams?.searchTagNames[i]}"
-                    from="${SearchTag.list()}"
+                    from="${RasterEntrySearchTag.list()}"
                     optionKey="name" optionValue="description"/>
             </li>
             <li>

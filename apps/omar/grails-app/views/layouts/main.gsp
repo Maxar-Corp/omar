@@ -24,9 +24,8 @@
     </div>
   </div>
   <div id="ft">
-    <omar:securityClassificationBanner/>    
+    <omar:securityClassificationBanner/>
   </div>
 </div>
-
 </body>
 </html>

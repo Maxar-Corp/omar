@@ -534,7 +534,7 @@
                         noSelection="${['null':'Select One...']}"
                         name="searchTagNames[${i}]"
                         value="${queryParams?.searchTagNames[i]}"
-                        from="${SearchTag.list()}"
+                        from="${RasterEntrySearchTag.list()}"
                         optionKey="name" optionValue="description"/>
                 <g:textField name="searchTagValues[${i}]" value="${searchTagValue}"/>
               </g:each>

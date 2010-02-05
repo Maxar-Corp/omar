@@ -1,4 +1,4 @@
-class SearchTag {
+class RasterEntrySearchTag {
   String name
   String description
 
