@@ -14,7 +14,7 @@ public class OmsInfoParser
   def additionalTags
   //def tagFile = new File("tags.txt")
 
-  def disbleOldMetadata = false
+  def disbleOldMetadata = true
 
   public def processRasterDataSets(GPathResult oms, Repository repository = null)
   {
@@ -136,19 +136,15 @@ public class OmsInfoParser
 
     def metadataNode = rasterEntryNode.metadata
 
-    initMetadataTags(metadataNode, rasterEntry)
 
     additionalTags?.each {k, v -> re1.addToMetadataTags(new MetadataTag(name: k, value: v)) }
 
-    initRasterEntryMetadata(rasterEntry)
+    initRasterEntryMetadata(metadataNode, rasterEntry)
 
     if ( !disbleOldMetadata )
     {
+      initMetadataTags(metadataNode, rasterEntry)
       initMetadataXml(rasterEntry)
-    }
-    else
-    {
-      rasterEntry.metadataTags = null
     }
 
     return rasterEntry
@@ -294,62 +290,91 @@ public class OmsInfoParser
   }
 
 
-  private initRasterEntryMetadata(rasterEntry)
+  private initRasterEntryMetadata(metadataNode, rasterEntry)
   {
-    rasterEntry.metadata = new RasterEntryMetadata()
+    if ( !rasterEntry.metadata )
+    {
+      rasterEntry.metadata = new RasterEntryMetadata()
+    }
 
+    metadataNode.children().each {tagNode ->
 
-    rasterEntry?.metadataTags?.each {metadataTag ->
-      switch ( metadataTag.name.toLowerCase() )
+      if ( tagNode.tag?.size() > 0 )
       {
-        case "imageid":
-          rasterEntry.metadata.imageId = metadataTag.value
-          break;
-        case "targetid":
-          rasterEntry.metadata.targetId = metadataTag.value
-          break;
-        case "productid":
-          rasterEntry.metadata.productId = metadataTag.value
-          break;
-        case "sensorid":
-          rasterEntry.metadata.sensorId = metadataTag.value
-          break;
-        case "missionid":
-          rasterEntry.metadata.missionId = metadataTag.value
-          break;
-        case "imagecategory":
-          rasterEntry.metadata.imageCategory = metadataTag.value
-          break;
-        case "azimuthangle":
-          rasterEntry.metadata.azimuthAngle = metadataTag.value as Double
-          break;
-        case "grazingangle":
-          rasterEntry.metadata.grazingAngle = metadataTag.value as Double
-          break;
-        case "securityclassification":
-          rasterEntry.metadata.securityClassification = metadataTag.value
-          break;
-        case "title":
-          rasterEntry.metadata.title = metadataTag.value
-          break;
-        case "organization":
-          rasterEntry.metadata.organization = metadataTag.value
-          break;
-        case "description":
-          rasterEntry.metadata.description = metadataTag.value
-          break;
-        case "niirs":
-          rasterEntry.metadata.niirs = metadataTag.value
-          break;
+        def name = tagNode.name().toString().toUpperCase()
 
-      // Just for testing
-        case "filetype":
-          rasterEntry.metadata.fileType = metadataTag.value
-          break
+        switch ( name )
+        {
+//          case "DTED_ACC_RECORD":
+//          case "ICHIPB":
+//          case "PIAIMC":
+//          case "RPC00B":
+//          case "STDIDC":
+//          case "USE00A":
+//            break
+          default:
+            initRasterEntryMetadata(tagNode, rasterEntry)
+        }
+      }
+      else
+      {
+        def name = tagNode.name().toString().trim()
+        def value = tagNode.text().toString().trim()
 
-        case "classname":
-          rasterEntry.metadata.className = metadataTag.value
-          break
+        if ( name && value )
+        {
+          switch ( name.toLowerCase() )
+          {
+            case "imageid":
+              rasterEntry.metadata.imageId = value
+              break;
+            case "targetid":
+              rasterEntry.metadata.targetId = value
+              break;
+            case "productid":
+              rasterEntry.metadata.productId = value
+              break;
+            case "sensorid":
+              rasterEntry.metadata.sensorId = value
+              break;
+            case "missionid":
+              rasterEntry.metadata.missionId = value
+              break;
+            case "imagecategory":
+              rasterEntry.metadata.imageCategory = value
+              break;
+            case "azimuthangle":
+              rasterEntry.metadata.azimuthAngle = value as Double
+              break;
+            case "grazingangle":
+              rasterEntry.metadata.grazingAngle = value as Double
+              break;
+            case "securityclassification":
+              rasterEntry.metadata.securityClassification = value
+              break;
+            case "title":
+              rasterEntry.metadata.title = value
+              break;
+            case "organization":
+              rasterEntry.metadata.organization = value
+              break;
+            case "description":
+              rasterEntry.metadata.description = value
+              break;
+            case "niirs":
+              rasterEntry.metadata.niirs = value
+              break;
+
+          // Just for testing
+            case "filetype":
+              rasterEntry.metadata.fileType = value
+              break
+
+            case "classname":
+              rasterEntry.metadata.className = value
+              break
+          }
+        }
       }
     }
 
