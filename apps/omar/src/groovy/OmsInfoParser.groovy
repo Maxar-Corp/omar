@@ -326,9 +326,11 @@ public class OmsInfoParser
           switch ( name.toLowerCase() )
           {
             case "imageid":
+            case "iid2":
               rasterEntry.metadata.imageId = value
               break;
             case "targetid":
+            case "tgtid":
               rasterEntry.metadata.targetId = value
               break;
             case "productid":
@@ -338,24 +340,35 @@ public class OmsInfoParser
               rasterEntry.metadata.sensorId = value
               break;
             case "missionid":
+            case "isorce":
               rasterEntry.metadata.missionId = value
               break;
             case "imagecategory":
+            case "icat":
               rasterEntry.metadata.imageCategory = value
               break;
             case "azimuthangle":
+            case "angletonorth":
               rasterEntry.metadata.azimuthAngle = value as Double
               break;
             case "grazingangle":
               rasterEntry.metadata.grazingAngle = value as Double
               break;
+            case "oblang":
+              rasterEntry.metadata.grazingAngle = 90 - (value as Double)
+              break;
+            
             case "securityclassification":
+            case "isclas":
               rasterEntry.metadata.securityClassification = value
               break;
             case "title":
+            case "iid2":
+            case "ititle":
               rasterEntry.metadata.title = value
               break;
             case "organization":
+            case "oname"
               rasterEntry.metadata.organization = value
               break;
             case "description":
