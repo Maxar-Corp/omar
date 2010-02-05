@@ -10,7 +10,7 @@ class RasterEntrySearchTag {
   static mapping = {
     cache true
     columns {
-      name index: "search_tag_name_idx"
+      name index: "raster_entry_search_tag_name_idx"
     }
   }
 }

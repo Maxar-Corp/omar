@@ -11,12 +11,15 @@ class VideoDataSet
   //static belongsTo = [repository: Repository]
   Repository repository
 
+  VideoDataSetMetadata metadata
+
+
   static mapping = {
     cache true
     groundGeom type: GeometryType, column: 'ground_geom'
     columns {
       startDate column: 'start_date', index: 'video_data_set_start_date_idx'
-      endDate column: 'end_date', index: 'video_data_set_end_date_idx'              
+      endDate column: 'end_date', index: 'video_data_set_end_date_idx'
     }
   }
 
@@ -26,25 +29,17 @@ class VideoDataSet
     groundGeom(nullable: false)
     startDate(nullable: true)
     endDate(nullable: true)
+    metadata(nullable: true)
   }
 
   def getMainFile()
   {
-    def mainFile
-
-//    VideoFile.withTransaction {
-
-    mainFile = fileObjects?.find { it.type == 'main' }
+    def mainFile = fileObjects?.find { it.type == 'main' }
 
     if ( !mainFile )
     {
-//      println "lazy"
-
       mainFile = VideoFile.findByVideoDataSetAndType(this, "main")
     }
-//    else
-//      println "eager"
-//    }
 
     return mainFile
   }

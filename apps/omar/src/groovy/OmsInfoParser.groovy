@@ -14,7 +14,7 @@ public class OmsInfoParser
   def additionalTags
   //def tagFile = new File("tags.txt")
 
-  def disbleOldMetadata = true
+  def disbleOldMetadata = false
 
   public def processRasterDataSets(GPathResult oms, Repository repository = null)
   {
@@ -154,10 +154,10 @@ public class OmsInfoParser
   {
     metadataNode.children().each {tagNode ->
 
-      if ( tagNode.tag?.size() > 0 )
+      if ( tagNode.children().size() > 0 )
       {
 
-        def name = tagNode.name().toString().toUpperCase()
+        def name = tagNode.name().toString().trim().toUpperCase()
 
         //tagFile.append("${name}\n")
 
@@ -299,7 +299,7 @@ public class OmsInfoParser
 
     metadataNode.children().each {tagNode ->
 
-      if ( tagNode.tag?.size() > 0 )
+      if ( tagNode.children().size() > 0 )
       {
         def name = tagNode.name().toString().toUpperCase()
 
@@ -357,7 +357,7 @@ public class OmsInfoParser
             case "oblang":
               rasterEntry.metadata.grazingAngle = 90 - (value as Double)
               break;
-            
+
             case "securityclassification":
             case "isclas":
               rasterEntry.metadata.securityClassification = value
@@ -368,7 +368,7 @@ public class OmsInfoParser
               rasterEntry.metadata.title = value
               break;
             case "organization":
-            case "oname"
+            case "oname":
               rasterEntry.metadata.organization = value
               break;
             case "description":
@@ -380,10 +380,12 @@ public class OmsInfoParser
 
           // Just for testing
             case "filetype":
+            case "file_type":
               rasterEntry.metadata.fileType = value
               break
 
             case "classname":
+            case "class_name":
               rasterEntry.metadata.className = value
               break
           }
