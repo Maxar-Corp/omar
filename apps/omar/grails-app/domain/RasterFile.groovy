@@ -13,7 +13,6 @@ class RasterFile
   }
 
   static mapping = {
-    cache true
     columns {
       name index: 'raster_file_name_idx'
       type index: 'raster_file_type_idx'

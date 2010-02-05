@@ -8,15 +8,12 @@ class VideoDataSet
   Date endDate
 
   static hasMany = [fileObjects: VideoFile]
-  //static belongsTo = [repository: Repository]
   Repository repository
 
   VideoDataSetMetadata metadata
 
 
   static mapping = {
-    cache true
-    groundGeom type: GeometryType, column: 'ground_geom'
     columns {
       startDate column: 'start_date', index: 'video_data_set_start_date_idx'
       endDate column: 'end_date', index: 'video_data_set_end_date_idx'

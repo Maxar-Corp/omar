@@ -7,7 +7,6 @@ class AuthUser {
   static belongsTo = Role
 
   static mapping = {
-    cache true
     columns {
       username index: 'auth_user_username_idx'
       authorities column: 'authorities_id', joinTable: 'role_auth_user'

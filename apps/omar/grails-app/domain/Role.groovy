@@ -6,16 +6,15 @@ class Role
   static hasMany = [people: AuthUser]
 
   static mapping = {
-    cache true
     columns {
       authority index: 'role_authority_idx'
       people column: 'people_id', joinTable: 'role_auth_user'
     }
   }
 
-  /** description  */
+  /** description   */
   String description
-  /** ROLE String  */
+  /** ROLE String   */
   String authority = 'ROLE_'
 
   static constraints = {

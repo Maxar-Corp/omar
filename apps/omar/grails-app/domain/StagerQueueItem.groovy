@@ -9,7 +9,6 @@ class StagerQueueItem
   }
 
   static mapping = {
-    cache true
     columns {
       dataInfo type: 'text'
     }

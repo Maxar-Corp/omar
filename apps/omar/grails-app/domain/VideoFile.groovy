@@ -13,11 +13,10 @@ class VideoFile
   }
 
   static mapping = {
-    cache true
     columns {
       name index: 'video_file_name_idx'
       type index: 'video_file_type_idx'
-      format index: 'video_file_format_idx'            
+      format index: 'video_file_format_idx'
     }
   }
 }

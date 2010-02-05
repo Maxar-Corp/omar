@@ -22,15 +22,11 @@ class RasterEntry
   static belongsTo = [rasterDataSet: RasterDataSet]
 
   static hasMany = [
-      //metadataXml: MetadataXml,   // Get rid of one-to-many
       metadataTags: MetadataTag,
       fileObjects: RasterEntryFile
   ]
 
   static mapping = {
-    cache true
-    groundGeom type: GeometryType, column: 'ground_geom'
-    //metadataXml unique: true
     columns {
       acquisitionDate index: 'raster_entry_acquisition_date_idx'
     }

@@ -12,7 +12,6 @@ class MetadataXml
   }
 
   static mapping = {
-    cache true
     columns {
       namevalue type: 'text' , index: 'metadata_xml_namevalue_idx'
     }
