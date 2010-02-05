@@ -119,7 +119,7 @@
           <li>
             <g:select id="searchTag${it}.id" name='searchTag${it}.id' value="searchTag${it}.id"
                     noSelection="${['null':'Select One...']}"
-                    from='${SearchTag.list()}'
+                    from='${RasterEntrySearchTag.list()}'
                     optionKey="id" optionValue="description"></g:select>
           </li>
           <li>

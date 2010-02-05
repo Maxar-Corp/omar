@@ -127,11 +127,11 @@ class BootStrap
     def searchTagData = grailsApplication.config.rasterEntry.searchTagData
 
     searchTagData.each {
-      def searchTag = SearchTag.findByName(it.name)
+      def searchTag = RasterEntrySearchTag.findByName(it.name)
 
       if ( !searchTag )
       {
-        searchTag = new SearchTag(name: it.name, description: it.description)
+        searchTag = new RasterEntrySearchTag(name: it.name, description: it.description)
         searchTag.save()
       }
     }

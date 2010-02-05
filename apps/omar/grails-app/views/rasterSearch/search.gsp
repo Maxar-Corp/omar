@@ -309,6 +309,7 @@
         </gui:accordionElement>
         <gui:accordionElement title="Metadata Criteria" selected="true">
   --%>
+    <%--
     <div class="niceBox">
       <div class="niceBoxHd">Metadata Criteria:</div>
       <div class="niceBoxBody">
@@ -326,6 +327,7 @@
       </div>
     </div>
     <br/>
+    --%>
     <fieldset>
       <ol><li><g:submitButton name="Search"/></li></ol>
     </fieldset>
