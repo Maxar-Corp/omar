@@ -196,7 +196,7 @@ rasterEntry.metadata.tagHeaderList = [
     "Image Id"
 ]
 
-rasterEntry.queryObject = "rasterEntryMetadata"
+rasterEntry.queryObject = "metadata"
 
 switch ( rasterEntry.queryObject )
 {
@@ -218,7 +218,7 @@ switch ( rasterEntry.queryObject )
     ]
     break
 
-  case "rasterEntryMetadata":
+  case "metadata":
     rasterEntry.metadata.tagNameList = [
         "fileType",
         "className",
