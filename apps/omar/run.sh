@@ -36,6 +36,7 @@ grails ${mode} run-${style}
 ;;
 *)
 nohup grails ${mode} run-${style} & 
+echo $! > omar.pid
 ;;
 esac
 
