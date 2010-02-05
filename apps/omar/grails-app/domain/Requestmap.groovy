@@ -12,7 +12,6 @@ class Requestmap {
 	}
 
   static mapping = {
-    cache true
     columns {
       url index: 'requestmap_url_idx'
     }

@@ -20,7 +20,6 @@ class RasterEntryMetadata
   static belongsTo = [rasterEntry: RasterEntry]
   
   static mapping = {
-    cache true
     columns {
       imageId index: 'raster_entry_metadata_image_id_idx'
       targetId index: 'raster_entry_metadata_target_id_idx'

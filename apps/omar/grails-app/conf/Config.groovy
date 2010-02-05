@@ -1,5 +1,12 @@
 import grails.util.Environment
 
+
+grails.gorm.default.mapping = {
+  cache true
+  id generator: 'identity'
+  'user-type'(type: GeometryType, class: Geometry)
+}
+
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 

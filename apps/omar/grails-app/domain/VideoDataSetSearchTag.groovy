@@ -9,7 +9,6 @@ class VideoDataSetSearchTag
   }
 
   static mapping = {
-    cache true
     columns {
       name index: "video_data_set_search_tag_name_idx"
     }
