@@ -172,7 +172,7 @@
      rasterLayers = [
       new OpenLayers.Layer.WMS( "Raster", "${createLink(controller: 'ogc', action: 'wms')}",
       { layers: "${(rasterEntries*.id).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
-      {isBaseLayer: true, buffer:1, singleTile:true, ratio:1.0, transitionEffect: "resize"})
+      {isBaseLayer: true, buffer:0, singleTile:true, ratio:1.0, transitionEffect: "resize"})
     ];
 
     map.addLayers(rasterLayers);
