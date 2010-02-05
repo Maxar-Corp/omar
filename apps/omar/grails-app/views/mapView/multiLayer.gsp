@@ -88,7 +88,7 @@
               "${baseWMS.title}",
               "${baseWMS.url}",
       {layers: '${baseWMS.layers}', format: 'image/jpeg' },
-      {buffer:1}
+      {isBaseLayer: true, buffer:0, transitionEffect: "resize"}
               );
 
       map.addLayer(baseLayer);
@@ -105,7 +105,7 @@
                 "Raster ${rasterEntry.id}",
                 "${createLink( controller:'ogc', action:'wms')}",
         { layers: "${rasterEntry.id}", format: format, stretch_mode:"linear_auto_min_max", transparent:transparent  },
-        {isBaseLayer: false, buffer:1, singleTile:true, transitionEffect: "resize"}
+        {isBaseLayer: false, buffer:0, singleTile:true, ratio:1.0, transitionEffect: "resize"}
                 )
         <g:if test="${hasKML}">
 

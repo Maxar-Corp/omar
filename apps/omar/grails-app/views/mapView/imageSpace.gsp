@@ -146,7 +146,7 @@
       type:'jpeg',
       getURL: get_my_url,
       isBaseLayer: true,
-      buffer: 1,
+      buffer: 0,
       singleTile: true,
       ratio: 1.0,
       transitionEffect: "resize"
