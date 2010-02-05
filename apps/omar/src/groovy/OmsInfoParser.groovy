@@ -14,6 +14,8 @@ public class OmsInfoParser
   def additionalTags
   //def tagFile = new File("tags.txt")
 
+  def disbleOldMetadata = false
+
   public def processRasterDataSets(GPathResult oms, Repository repository = null)
   {
     def rasterDataSets = []
@@ -138,9 +140,16 @@ public class OmsInfoParser
 
     additionalTags?.each {k, v -> re1.addToMetadataTags(new MetadataTag(name: k, value: v)) }
 
-    initMetadataXml(rasterEntry)
-
     initRasterEntryMetadata(rasterEntry)
+
+    if ( !disbleOldMetadata )
+    {
+      initMetadataXml(rasterEntry)
+    }
+    else
+    {
+      rasterEntry.metadataTags = null
+    }
 
     return rasterEntry
   }
@@ -345,7 +354,7 @@ public class OmsInfoParser
     }
 
     //println "RASTERENTRY METADATA = ${rasterEntry.metadata}"
-    
+
     if ( !rasterEntry.metadata.imageId )
     {
       rasterEntry.metadata.imageId = System.currentTimeMillis() as String

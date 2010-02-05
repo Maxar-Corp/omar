@@ -30,7 +30,7 @@ class RasterEntry
   static mapping = {
     cache true
     groundGeom type: GeometryType, column: 'ground_geom'
-    metadataXml unique: true
+    //metadataXml unique: true
     columns {
       acquisitionDate index: 'raster_entry_acquisition_date_idx'
     }
@@ -69,14 +69,15 @@ class RasterEntry
     gsdX(nullable: true)
     gsdY(nullable: true)
 
-    //metadataXml()
+    metadataXml(nullable: true)
 
     groundGeom(nullable: false)
     acquisitionDate(nullable: true)
-    metadataTags()
+    metadataTags(nullable: true)
 
     metadata(nullable: true)
   }
+
   def getMetersPerPixel()
   {
     // need to check unit type but for mow assume meters
@@ -101,6 +102,6 @@ class RasterEntry
 //      println "eager"
 //    }
 
-    return mainFile
+      return mainFile
   }
 }
