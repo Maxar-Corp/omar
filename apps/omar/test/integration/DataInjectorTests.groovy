@@ -72,122 +72,122 @@ class DataInjectorTests extends GroovyTestCase
                   <when>${mapping.iso_start_date}</when>
                </TimeStamp>
                <metadata>
-                  <tag name="filepath">${mapping.path}</tag>
-                  <tag name="file_type">${mapping.file_type}</tag>
-                  <tag name="class_name">ossimNitfTileSource</tag>
-                  <tag name="tgtid">${mapping.tgtid}</tag>
-                  <tag name="enabled">1</tag>
-                  <tag name="entry">0</tag>
-                  <tag name="enable_cache">0</tag>
-                  <tag name="version">02.00</tag>
-                  <tag name="clevel">04</tag>
-                  <tag name="ostaid">DG</tag>
-                  <tag name="ftitle">${mapping.title}</tag>
-                  <tag name="fsclas">U</tag>
-                  <tag name="fscop">00000</tag>
-                  <tag name="fscpys">00000</tag>
-                  <tag name="encryp">0</tag>
-                  <tag name="oname">~~~DigitalGlobe</tag>
-                  <tag name="ophone">+1(800)496-1225</tag>
-                  <tag name="RPC00B">
-                     <tag name="ERR_BIAS">0082.22</tag>
-                     <tag name="ERR_RAND">0000.48</tag>
-                     <tag name="LINE_OFF">004472</tag>
-                     <tag name="SAMP_OFF">04114</tag>
-                     <tag name="LAT_OFF">+33.4988</tag>
-                     <tag name="LONG_OFF">+044.4176</tag>
-                     <tag name="HEIGHT_OFF">+0032</tag>
-                     <tag name="LINE_SCALE">004585</tag>
-                     <tag name="SAMP_SCALE">04167</tag>
-                     <tag name="LAT_SCALE">+00.0972</tag>
-                     <tag name="LONG_SCALE">+000.1072</tag>
-                     <tag name="HEIGHT_SCALE">+0500</tag>
-                     <tag name="LINE_DEN">1=+0.100000E+1, 10=+0.867430E-7, 11=-0.275673E-6, 12=+0.219225E-5, 13=-0.126615E-7, 14=-0.375694E-7, 15=+0.191249E-5, 16=+0.122368E-5, 17=+0.843962E-6, 18=-0.213671E-5, 19=+0.494775E-6, 2=+0.458927E-5, 20=-0.551516E-5, 3=+0.524360E-3, 4=+0.161583E-3, 5=+0.337472E-6, 6=-0.583822E-6, 7=-0.291401E-5, 8=-0.883754E-6, 9=+0.183139E-6</tag>
-                     <tag name="LINE_NUM">1=+0.106668E-2, 10=-0.143257E-5, 11=-0.110788E-5, 12=-0.501320E-5, 13=-0.379273E-6, 14=-0.198992E-6, 15=-0.110620E-5, 16=-0.131710E-5, 17=-0.493314E-6, 18=+0.106012E-4, 19=-0.208982E-5, 2=+0.507019E-2, 20=+0.106966E-5, 3=-0.979318E+0, 4=+0.255963E-1, 5=+0.358801E-5, 6=-0.169075E-3, 7=+0.190863E-3, 8=-0.472821E-3, 9=-0.524737E-3</tag>
-                     <tag name="SAMP_DEN">1=+0.100000E+1, 10=-0.389501E-6, 11=-0.759956E-6, 12=+0.875117E-5, 13=+0.431554E-6, 14=-0.292017E-5, 15=+0.112437E-6, 16=-0.137879E-7, 17=-0.559828E-7, 18=-0.182168E-4, 19=-0.343586E-7, 2=+0.683582E-4, 20=-0.258935E-7, 3=+0.554846E-3, 4=-0.607273E-3, 5=-0.699471E-7, 6=+0.987560E-6, 7=-0.151731E-6, 8=-0.116104E-5, 9=+0.108728E-5</tag>
-                     <tag name="SAMP_NUM">1=-0.133797E-3, 10=+0.957945E-6, 11=+0.685068E-6, 12=+0.253484E-6, 13=-0.970141E-6, 14=+0.212355E-6, 15=+0.153085E-6, 16=+0.265919E-6, 17=+0.000000E+0, 18=-0.218076E-5, 19=+0.102823E-5, 2=+0.995763E+0, 20=-0.245140E-6, 3=+0.602371E-2, 4=-0.102660E-1, 5=-0.559988E-3, 6=+0.618222E-3, 7=-0.343211E-3, 8=+0.737314E-4, 9=+0.115797E-4</tag>
-                  </tag>
-                  <tag name="STDIDC">
-                     <tag name="ACQDATE">${mapping.aqdate}</tag>
-                     <tag name="MISSION">QB02</tag>
-                     <tag name="PASS">06</tag>
-                     <tag name="OPNUM">000</tag>
-                     <tag name="STARTSEGMENT">AA</tag>
-                     <tag name="REPRONUM">00</tag>
-                     <tag name="REPLAYREGEN">000</tag>
-                     <tag name="STARTCOLUMN">001</tag>
-                     <tag name="STARTROW">00001</tag>
-                     <tag name="ENDSEGMENT">AA</tag>
-                     <tag name="ENDCOLUMN">009</tag>
-                     <tag name="ENDROW">00009</tag>
-                     <tag name="LOCATION">3336N04425E</tag>
-                  </tag>
-                  <tag name="USE00A">
-                     <tag name="ANGLETONORTH">270</tag>
-                     <tag name="MEANGSD">094.5</tag>
-                     <tag name="DYNAMICRANGE">02047</tag>
-                     <tag name="OBLANG">28.89</tag>
-                     <tag name="ROLLANG">-11.75</tag>
-                     <tag name="NREF">00</tag>
-                     <tag name="REVNUM">07994</tag>
-                     <tag name="NSEG">001</tag>
-                     <tag name="MAXLPSEG">008933</tag>
-                     <tag name="SUNEL">+51.1</tag>
-                     <tag name="SUNAZ">143.1</tag>
-                  </tag>
-                  <tag name="ICHIPB">
-                     <tag name="XFRM_FLAG">00</tag>
-                     <tag name="SCALE_FACTOR">0001.00000</tag>
-                     <tag name="ANAMRPH_CORR">00</tag>
-                     <tag name="SCANBLK_NUM">00</tag>
-                     <tag name="OP_ROW_11">00000000.500</tag>
-                     <tag name="OP_COL_11">00000000.500</tag>
-                     <tag name="OP_ROW_12">00000000.500</tag>
-                     <tag name="OP_COL_12">00004090.500</tag>
-                     <tag name="OP_ROW_21">00004095.500</tag>
-                     <tag name="OP_COL_21">00000000.500</tag>
-                     <tag name="OP_ROW_22">00004095.500</tag>
-                     <tag name="OP_COL_22">00004090.500</tag>
-                     <tag name="FI_ROW_11">00004096.500</tag>
-                     <tag name="FI_COL_11">00004096.500</tag>
-                     <tag name="FI_ROW_12">00004096.500</tag>
-                     <tag name="FI_COL_12">00008186.500</tag>
-                     <tag name="FI_ROW_21">00008191.500</tag>
-                     <tag name="FI_COL_21">00004096.500</tag>
-                     <tag name="FI_ROW_22">00008191.500</tag>
-                     <tag name="FI_COL_22">00008186.500</tag>
-                     <tag name="FI_ROW">00008933</tag>
-                     <tag name="FI_COL">00008245</tag>
-                  </tag>
-                  <tag name="iid1">${mapping.iid1}</tag>
-                  <tag name="idatim">${mapping.aqdate}</tag>
-                  <tag name="iid2">${mapping.iid1}</tag>
-                  <tag name="isclas">U</tag>
-                  <tag name="encryp">0</tag>
-                  <tag name="isorce">${mapping.mission}</tag>
-                  <tag name="pvtype">INT</tag>
-                  <tag name="irep">MULTI</tag>
-                  <tag name="icat">${mapping.icat}</tag>
-                  <tag name="abpp">11</tag>
-                  <tag name="pjust">R</tag>
-                  <tag name="icords">U</tag>
-                  <tag name="igeolo"></tag>
-                  <tag name="nicom">5</tag>
-                  <tag name="ic">NC</tag>
-                  <tag name="isync">0</tag>
-                  <tag name="imode">S</tag>
-                  <tag name="nbpr">0004</tag>
-                  <tag name="nbpc">0004</tag>
-                  <tag name="nppbh">1024</tag>
-                  <tag name="nppbv">1024</tag>
-                  <tag name="nbpp">16</tag>
-                  <tag name="idlvl">001</tag>
-                  <tag name="ialvl">000</tag>
-                  <tag name="iloc">0000000000</tag>
-                  <tag name="imag">1.0</tag>
-                  <tag name="source">QB02</tag>
-                  <tag name="image_date">${mapping.image_date}</tag>
-                  <tag name="image_title">${mapping.title}</tag>
+                  <filepath>${mapping.path}</filepath>
+                  <file_type>${mapping.file_type}</file_type>
+                  <class_name>ossimNitfTileSource</class_name>
+                  <tgtid>${mapping.tgtid}</tgtid>
+                  <enabled>1</enabled>
+                  <entry>0</entry>
+                  <enable_cache>0</enable_cache>
+                  <version>02.00</version>
+                  <clevel>04</clevel>
+                  <ostaid>DG</ostaid>
+                  <ftitle>${mapping.title}</ftitle>
+                  <fsclas>U</fsclas>
+                  <fscop>00000</fscop>
+                  <fscpys>00000</fscpys>
+                  <encryp>0</encryp>
+                  <oname>~~~DigitalGlobe</oname>
+                  <ophone>+1(800)496-1225</ophone>
+                  <RPC00B>
+                     <ERR_BIAS>0082.22</ERR_BIAS>
+                     <ERR_RAND>0000.48</ERR_RAND>
+                     <LINE_OFF>004472</LINE_OFF>
+                     <SAMP_OFF>04114</SAMP_OFF>
+                     <LAT_OFF>+33.4988</LAT_OFF>
+                     <LONG_OFF>+044.4176</LONG_OFF>
+                     <HEIGHT_OFF>+0032</HEIGHT_OFF>
+                     <LINE_SCALE>004585</LINE_SCALE>
+                     <SAMP_SCALE>04167</SAMP_SCALE>
+                     <LAT_SCALE>+00.0972</LAT_SCALE>
+                     <LONG_SCALE>+000.1072</LONG_SCALE>
+                     <HEIGHT_SCALE>+0500</HEIGHT_SCALE>
+                     <LINE_DEN>1=+0.100000E+1, 10=+0.867430E-7, 11=-0.275673E-6, 12=+0.219225E-5, 13=-0.126615E-7, 14=-0.375694E-7, 15=+0.191249E-5, 16=+0.122368E-5, 17=+0.843962E-6, 18=-0.213671E-5, 19=+0.494775E-6, 2=+0.458927E-5, 20=-0.551516E-5, 3=+0.524360E-3, 4=+0.161583E-3, 5=+0.337472E-6, 6=-0.583822E-6, 7=-0.291401E-5, 8=-0.883754E-6, 9=+0.183139E-6</LINE_DEN>
+                     <LINE_NUM>1=+0.106668E-2, 10=-0.143257E-5, 11=-0.110788E-5, 12=-0.501320E-5, 13=-0.379273E-6, 14=-0.198992E-6, 15=-0.110620E-5, 16=-0.131710E-5, 17=-0.493314E-6, 18=+0.106012E-4, 19=-0.208982E-5, 2=+0.507019E-2, 20=+0.106966E-5, 3=-0.979318E+0, 4=+0.255963E-1, 5=+0.358801E-5, 6=-0.169075E-3, 7=+0.190863E-3, 8=-0.472821E-3, 9=-0.524737E-3</LINE_NUM>
+                     <SAMP_DEN>1=+0.100000E+1, 10=-0.389501E-6, 11=-0.759956E-6, 12=+0.875117E-5, 13=+0.431554E-6, 14=-0.292017E-5, 15=+0.112437E-6, 16=-0.137879E-7, 17=-0.559828E-7, 18=-0.182168E-4, 19=-0.343586E-7, 2=+0.683582E-4, 20=-0.258935E-7, 3=+0.554846E-3, 4=-0.607273E-3, 5=-0.699471E-7, 6=+0.987560E-6, 7=-0.151731E-6, 8=-0.116104E-5, 9=+0.108728E-5</SAMP_DEN>
+                     <SAMP_NUM>1=-0.133797E-3, 10=+0.957945E-6, 11=+0.685068E-6, 12=+0.253484E-6, 13=-0.970141E-6, 14=+0.212355E-6, 15=+0.153085E-6, 16=+0.265919E-6, 17=+0.000000E+0, 18=-0.218076E-5, 19=+0.102823E-5, 2=+0.995763E+0, 20=-0.245140E-6, 3=+0.602371E-2, 4=-0.102660E-1, 5=-0.559988E-3, 6=+0.618222E-3, 7=-0.343211E-3, 8=+0.737314E-4, 9=+0.115797E-4</SAMP_NUM>
+                  </RPC00B>
+                  <STDIDC>
+                     <ACQDATE>${mapping.aqdate}</ACQDATE>
+                     <MISSION>QB02</MISSION>
+                     <PASS>06</PASS>
+                     <OPNUM>000</OPNUM>
+                     <STARTSEGMENT>AA</STARTSEGMENT>
+                     <REPRONUM>00</REPRONUM>
+                     <REPLAYREGEN>000</REPLAYREGEN>
+                     <STARTCOLUMN>001</STARTCOLUMN>
+                     <STARTROW>00001</STARTROW>
+                     <ENDSEGMENT>AA</ENDSEGMENT>
+                     <ENDCOLUMN>009</ENDCOLUMN>
+                     <ENDROW>00009</ENDROW>
+                     <LOCATION>3336N04425E</LOCATION>
+                  </STDIDC>
+                  <USE00A>
+                     <ANGLETONORTH>270</ANGLETONORTH>
+                     <MEANGSD>094.5</MEANGSD>
+                     <DYNAMICRANGE>02047</DYNAMICRANGE>
+                     <OBLANG>28.89</OBLANG>
+                     <ROLLANG>-11.75</ROLLANG>
+                     <NREF>00</NREF>
+                     <REVNUM>07994</REVNUM>
+                     <NSEG>001</NSEG>
+                     <MAXLPSEG>008933</MAXLPSEG>
+                     <SUNEL>+51.1</SUNEL>
+                     <SUNAZ>143.1</SUNAZ>
+                  </USE00A>
+                  <ICHIPB>
+                     <XFRM_FLAG>00</XFRM_FLAG>
+                     <SCALE_FACTOR>0001.00000</SCALE_FACTOR>
+                     <ANAMRPH_CORR>00</ANAMRPH_CORR>
+                     <SCANBLK_NUM>00</SCANBLK_NUM>
+                     <OP_ROW_11>00000000.500</OP_ROW_11>
+                     <OP_COL_11>00000000.500</OP_COL_11>
+                     <OP_ROW_12>00000000.500</OP_ROW_12>
+                     <OP_COL_12>00004090.500</OP_COL_12>
+                     <OP_ROW_21>00004095.500</OP_ROW_21>
+                     <OP_COL_21>00000000.500</OP_COL_21>
+                     <OP_ROW_22>00004095.500</OP_ROW_22>
+                     <OP_COL_22>00004090.500</OP_COL_22>
+                     <FI_ROW_11>00004096.500</FI_ROW_11>
+                     <FI_COL_11>00004096.500</FI_COL_11>
+                     <FI_ROW_12>00004096.500</FI_ROW_12>
+                     <FI_COL_12>00008186.500</FI_COL_12>
+                     <FI_ROW_21>00008191.500</FI_ROW_21>
+                     <FI_COL_21>00004096.500</FI_COL_21>
+                     <FI_ROW_22>00008191.500</FI_ROW_22>
+                     <FI_COL_22>00008186.500</FI_COL_22>
+                     <FI_ROW>00008933</FI_ROW>
+                     <FI_COL>00008245</FI_COL>
+                  </ICHIPB>
+                  <iid1>${mapping.iid1}</iid1>
+                  <idatim>${mapping.aqdate}</idatim>
+                  <iid2>${mapping.iid1}</iid2>
+                  <isclas>U</isclas>
+                  <encryp>0</encryp>
+                  <isorce>${mapping.mission}</isorce>
+                  <pvtype>INT</pvtype>
+                  <irep>MULTI</irep>
+                  <icat>${mapping.icat}</icat>
+                  <abpp>11</abpp>
+                  <pjust>R</pjust>
+                  <icords>U</icords>
+                  <igeolo></igeolo>
+                  <nicom>5</nicom>
+                  <ic>NC</ic>
+                  <isync>0</isync>
+                  <imode>S</imode>
+                  <nbpr>0004</nbpr>
+                  <nbpc>0004</nbpc>
+                  <nppbh>1024</nppbh>
+                  <nppbv>1024</nppbv>
+                  <nbpp>16</nbpp>
+                  <idlvl>001</idlvl>
+                  <ialvl>000</ialvl>
+                  <iloc>0000000000</iloc>
+                  <imag>1.0</imag>
+                  <source>QB02</source>
+                  <image_date>${mapping.image_date}</image_date>
+                  <image_title>${mapping.title}</image_title>
                </metadata>
             </RasterEntry>
          </rasterEntries>
@@ -216,13 +216,13 @@ class DataInjectorTests extends GroovyTestCase
             <end>${mapping.iso_end_date}</end>
          </TimeSpan>
          <metadata>
-            <tag name="organizational_program_number">+4</tag>
-            <tag name="security_classification">UNCLASSIFIED//</tag>
-            <tag name="release_instructions">US</tag>
-            <tag name="security_caveats">FOUO</tag>
-            <tag name='classification_comment'>SIC=#</tag>
-            <tag name="original_producer_name">sa</tag>
-            <tag name="image_source_sensor">EO Spotter</tag>
+            <organizational_program_number>+4</organizational_program_number>
+            <security_classification>UNCLASSIFIED//</security_classification>
+            <release_instructions>US</release_instructions>
+            <security_caveats>FOUO</security_caveats>
+            <classification_comment>SIC=#</classification_comment>
+            <original_producer_name>sa</original_producer_name>
+            <image_source_sensor>EO Spotter</image_source_sensor>
          </metadata>
       </VideoDataSet>
    </dataSets>
@@ -422,8 +422,8 @@ class DataInjectorTests extends GroovyTestCase
 
   void testSomething()
   {
-    int rasterCount = 100000
-    int videoCount = 100000
+    int rasterCount = 1000
+    int videoCount = 1000
     addVideos(videoCount);
     while ( VideoDataSet.count() < videoCount )
     {
