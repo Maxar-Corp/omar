@@ -36,26 +36,6 @@ class RasterEntry
     }
   }
 
-//  static fetchMode = [
-//      metadataTags: "eager"
-//  ]
-
-  /*
-  public String toString()
-  {
-    return [
-        entryId:entryId,
-        width:width,
-        height:height,
-        numberOfBands:numberOfBands,
-        bitDepth:bitDepth,
-        dataType:dataType,
-        groundGeom:groundGeom,
-        //srs:srs
-    ] as String
-  }
-  */
-
   static constraints = {
     entryId()
     width(min: 0l)
@@ -86,22 +66,13 @@ class RasterEntry
 
   def getMainFile()
   {
-    def mainFile = null
-
-//    RasterFile.withTransaction {
-
-    mainFile = rasterDataSet?.fileObjects?.find { it.type == 'main' }
+    def mainFile = rasterDataSet?.fileObjects?.find { it.type == 'main' }
 
     if ( !mainFile )
     {
-//      println "lazy"
-
       mainFile = RasterFile.findByRasterDataSetAndType(rasterDataSet, "main")
     }
-    else
-//      println "eager"
-//    }
 
-      return mainFile
+    return mainFile
   }
 }

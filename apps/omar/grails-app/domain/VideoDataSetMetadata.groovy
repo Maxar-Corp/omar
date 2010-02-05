@@ -1,0 +1,6 @@
+class VideoDataSetMetadata
+{
+
+  static constraints = {
+  }
+}
