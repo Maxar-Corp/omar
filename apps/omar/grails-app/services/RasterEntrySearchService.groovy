@@ -79,13 +79,18 @@ class RasterEntrySearchService
       }
     }
 
+    // HACK to force eager loading
     switch ( grailsApplication.config.rasterEntry.queryObject )
     {
       case "metadataXml":
-        // HACK to force eager loading
         rasterEntries?.each {
           it.metadataTags?.size()
           it.rasterDataSet?.fileObjects?.size()
+        }
+        break
+      case "metadata":
+        rasterEntries?.each {
+          it.mainFile
         }
         break
     }
