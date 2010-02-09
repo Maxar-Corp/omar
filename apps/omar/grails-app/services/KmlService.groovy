@@ -162,13 +162,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
       mkp.xmlDeclaration()
       kml("xmlns": "http://earth.google.com/kml/2.1") {
         Document() {
-//          name("Omar WMS")
           rasterIdx = 0
-//          Style(id:"checkHideChildrenExample"){
-//              ListStyle(){
-//                listItemType("checkHideChildren")
- //             }
-  //        }
            rasterEntries?.each {rasterEntry ->
             def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
 
@@ -219,7 +213,6 @@ class KmlService implements ApplicationContextAware, InitializingBean
                 }
             }
           }
-//          styleUrl("#checkHideChildrenExample")
         }
       }
     }
@@ -359,30 +352,6 @@ class KmlService implements ApplicationContextAware, InitializingBean
     return kmlbuilder.bind(kmlnode).toString()
   }
 
-
-/*
-  String createTopVideosKml()
-  {
-    def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "kmlQuery", action: "getVideosKml")
-    def kmlbuilder = new StreamingMarkupBuilder()
-
-    kmlbuilder.encoding = "UTF-8"
-    def kmlnode = {
-      mkp.xmlDeclaration()
-      kml("xmlns": "http://earth.google.com/kml/2.1") {
-        NetworkLink() {
-          name("Top Videos")
-          Link() {
-            href(kmlQueryUrl)
-            viewRefreshMode("onStop")
-            viewRefreshTime("2")
-          }
-        }
-      }
-    }
-    return kmlbuilder.bind(kmlnode).toString()
-  }
-*/  
   String buildUrl(String url, Map params)
   {
     def String result;
@@ -439,44 +408,6 @@ class KmlService implements ApplicationContextAware, InitializingBean
     }
     return kmlbuilder.bind(kmlnode).toString()
   }
-  /*
-  String createImageFootprint()
-  {
-    def url = buildUrl(grailsApplication.config.wms.data.raster.url,
-                           [VERSION: "1.1.1",
-                            REQUEST: "GetMap",
-                            LAYERS: "${grailsApplication.config.wms.data.raster.footprintLayers}",
-                            SRS: "EPSG:4326",
-                            WIDTH: "1024",
-                            HEIGHT: "1024",
-                            TRANSPARENT: "TRUE",
-                            FORMAT: "image/png"])
-    def kmlbuilder = new StreamingMarkupBuilder()
-    def kmlnode = {
-      mkp.xmlDeclaration()
-       kml("xmlns": "http://earth.google.com/kml/2.1") {
-           GroundOverlay() {
-             name("${grailsApplication.config.wms.data.raster.title}")
-            open("1")
-            visibility("1")
-            Icon() {
-              href(url)
-              viewRefreshMode("onStop")
-              viewRefreshTime("2")
-              viewBoundScale("1.0")
-            }
-             LatLonBox(){
-               north(90)
-               south(-90)
-               east(-180)
-               west(180)
-             }
-          }
-       }
-     }
-    return kmlbuilder.bind(kmlnode).toString()
-  }
-  */
   String createVideoFootprint(Map params)
   {
     def url = buildUrl(grailsApplication.config.wms.data.video.url,
@@ -515,44 +446,6 @@ class KmlService implements ApplicationContextAware, InitializingBean
     }
     return kmlbuilder.bind(kmlnode).toString()
   }
-/*
-  String createVideoFootprint()
-  {
-    def url = buildUrl(grailsApplication.config.wms.data.video.url,
-                           [VERSION: "1.1.1",
-                            REQUEST: "GetMap",
-                            LAYERS: "${grailsApplication.config.wms.data.video.footprintLayers}",
-                            SRS: "EPSG:4326",
-                            WIDTH: "1024",
-                            HEIGHT: "1024",
-                            TRANSPARENT: "TRUE",
-                            FORMAT: "image/png"])
-    def kmlbuilder = new StreamingMarkupBuilder()
-    def kmlnode = {
-      mkp.xmlDeclaration()
-       kml("xmlns": "http://earth.google.com/kml/2.1") {
-           GroundOverlay() {
-             name("${grailsApplication.config.wms.data.video.title}")
-            open("1")
-            visibility("1")
-            Icon() {
-              href(url)
-              viewRefreshMode("onStop")
-              viewRefreshTime("2")
-              viewBoundScale("1.0")
-            }
-             LatLonBox(){
-               north(90)
-               south(-90)
-               east(-180)
-               west(180)
-             }
-          }
-       }
-     }
-    return kmlbuilder.bind(kmlnode).toString()
-  }
-  */
   public void afterPropertiesSet()
   {
     tagLibBean = applicationContext.getBean("org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib")
