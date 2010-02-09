@@ -82,10 +82,15 @@ public class OmsInfoParser
         videoDataSet.groundGeom = Geometry.fromString("SRID=${srs};${wkt}")
       }
 
+      initVideoDataSetMetadata(videoDataSetNode.metadata, videoDataSet)
+      initVideoDataSetOtherTagsXml(videoDataSet.metadata)
+
       videoDataSet.repository = repository
       videoDataSets << videoDataSet
       //repository?.addToVideoDataSets(videoDataSet)
     }
+
+
 
     return videoDataSets
   }
@@ -140,6 +145,7 @@ public class OmsInfoParser
     additionalTags?.each {k, v -> re1.addToMetadataTags(new MetadataTag(name: k, value: v)) }
 
     initRasterEntryMetadata(metadataNode, rasterEntry)
+    initRasterEntryOtherTagsXml(rasterEntry.metadata)
 
     if ( !disbleOldMetadata )
     {
@@ -388,6 +394,8 @@ public class OmsInfoParser
             case "class_name":
               rasterEntry.metadata.className = value
               break
+            default:
+              rasterEntry.metadata.otherTagsMap[name] = value
           }
         }
       }
@@ -401,4 +409,72 @@ public class OmsInfoParser
     }
   }
 
+
+  private initVideoDataSetMetadata(metadataNode, videoDataSet)
+  {
+    if ( !videoDataSet.metadata )
+    {
+      videoDataSet.metadata = new VideoDataSetMetadata()
+    }
+
+    metadataNode.children().each {tagNode ->
+
+      if ( tagNode.children().size() > 0 )
+      {
+        def name = tagNode.name().toString().toUpperCase()
+
+        switch ( name )
+        {
+          default:
+            initVideoDataSetMetadata(tagNode, videoDataSet)
+        }
+      }
+      else
+      {
+        def name = tagNode.name().toString().trim()
+        def value = tagNode.text().toString().trim()
+
+        if ( name && value )
+        {
+          switch ( name.toLowerCase() )
+          {
+            default:
+              videoDataSet.metadata.otherTagsMap[name] = value
+          }
+        }
+      }
+    }
+  }
+
+  private initRasterEntryOtherTagsXml(RasterEntryMetadata rasterEntryMetadata)
+  {
+    if ( rasterEntryMetadata )
+    {
+      def builder = new groovy.xml.StreamingMarkupBuilder().bind {
+        metadata {
+          rasterEntryMetadata.otherTagsMap.each {k, v ->
+            "${k}"(v)
+          }
+        }
+      }
+
+      rasterEntryMetadata.otherTagsXml = builder.toString()
+    }
+  }
+
+  private initVideoDataSetOtherTagsXml(VideoDataSetMetadata videoDataSetMetadata)
+  {
+    if ( videoDataSetMetadata )
+    {
+      def builder = new groovy.xml.StreamingMarkupBuilder().bind {
+        metadata {
+          videoDataSetMetadata.otherTagsMap.each {k, v ->
+            "${k}"(v)
+          }
+        }
+      }
+
+      videoDataSetMetadata.otherTagsXml = builder.toString()
+    }
+  }
 }

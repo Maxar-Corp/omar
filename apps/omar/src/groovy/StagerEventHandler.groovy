@@ -123,24 +123,25 @@ class StagerEventHandler implements FileFilterEventListener
 
     if ( ++count % batchSize == 0 )
     {
-      try
-      {
-        cleanupGorm()
-      }
-      catch (Exception e)
-      {
-
-      }
+      cleanupGorm()      
     }
   }
 
 
   def cleanupGorm()
   {
-    def session = sessionFactory.currentSession
+    try
+    {
 
-    session.flush()
-    session.clear()
-    DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
+      def session = sessionFactory.currentSession
+
+      session.flush()
+      session.clear()
+      DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP.get().clear()
+    }
+    catch (Exception e)
+    {
+
+    }
   }
 }

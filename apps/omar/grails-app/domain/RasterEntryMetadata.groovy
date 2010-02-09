@@ -17,8 +17,15 @@ class RasterEntryMetadata
   String fileType
   String className
 
+  String otherTagsXml
+
   static belongsTo = [rasterEntry: RasterEntry]
-  
+
+  static transients = ["otherTagsMap"]
+
+  Map<String, String> otherTagsMap = [:]
+
+
   static mapping = {
     columns {
       imageId index: 'raster_entry_metadata_image_id_idx'
@@ -32,6 +39,8 @@ class RasterEntryMetadata
       // Just for testing
       fileType index: 'raster_entry_metadata_file_type_idx'
       className index: 'raster_entry_metadata_class_name_idx'
+
+      otherTagsXml type: 'text'//, index: 'raster_entry_metadata_other_tags_idx'
     }
   }
   static constraints = {
@@ -51,5 +60,7 @@ class RasterEntryMetadata
     // Just for testing
     fileType(nullable: true)
     className(nullable: true)
+
+    otherTagsXml(nullable: true, blank: false)
   }
 }
