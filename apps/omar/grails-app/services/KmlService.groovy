@@ -161,8 +161,8 @@ class KmlService implements ApplicationContextAware, InitializingBean
     def kmlnode = {
       mkp.xmlDeclaration()
       kml("xmlns": "http://earth.google.com/kml/2.1") {
-        Folder() {
-          name("Omar WMS")
+        Document() {
+//          name("Omar WMS")
           rasterIdx = 0
 //          Style(id:"checkHideChildrenExample"){
 //              ListStyle(){
@@ -228,6 +228,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
     kmlwriter << kmlbuilder.bind(kmlnode)
 
     String kmlText = kmlwriter.buffer
+
     return kmlText
   }
 
@@ -240,8 +241,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
     def kmlnode = {
       mkp.xmlDeclaration()
       kml("xmlns": "http://earth.google.com/kml/2.1") {
-        Folder() {
-          name("Omar Video Datasets")
+        Document() {
           videoEntries?.each {videoDataSet ->
             def startDate = (videoDataSet?.startDate) ? sdf.format(videoDataSet?.startDate) : null
             def endDate = (videoDataSet?.endDate) ? sdf.format(videoDataSet?.endDate) : null
