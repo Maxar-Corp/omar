@@ -49,7 +49,7 @@ class RasterEntry
 
     groundGeom(nullable: false)
     acquisitionDate(nullable: true)
-    metadataTags(nullable: true)
+    //metadataTags(nullable: true)
 
     metadata(nullable: true)
   }

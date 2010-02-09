@@ -30,7 +30,7 @@ class StagerService
         handler.sessionFactory = sessionFactory
 
         FileScanner.visitAllFiles(repository.baseDir as File, filter, processor)
-        handler.cleanupGorm()
+        //handler.cleanupGorm()
 
         def scanEndDate = new Date()
 
