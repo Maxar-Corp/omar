@@ -56,7 +56,6 @@ class KmlService implements ApplicationContextAware, InitializingBean
                       TRANSPARENT: "TRUE",
                       FORMAT: "image/png"
                   ])
-//                   println wmsURL
                   href(wmsURL)
                   viewRefreshMode("onStop")
                   viewRefreshTime("2")
@@ -117,7 +116,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
     {
       wmsParams.transparent = "TRUE"
     }
-
+    def bounds = wmsParams?.bbox?.split(',')
     wmsParams?.srs = "EPSG:4326"
     wmsParams?.remove("bbox");
     wmsParams.remove("action")
@@ -165,7 +164,12 @@ class KmlService implements ApplicationContextAware, InitializingBean
         Folder() {
           name("Omar WMS")
           rasterIdx = 0
-          rasterEntries?.each {rasterEntry ->
+//          Style(id:"checkHideChildrenExample"){
+//              ListStyle(){
+//                listItemType("checkHideChildren")
+ //             }
+  //        }
+           rasterEntries?.each {rasterEntry ->
             def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
 
             def groundCenterLon = (rasterEntry?.groundGeom?.bounds?.minLon + rasterEntry?.groundGeom?.bounds?.maxLon) * 0.5;
@@ -179,6 +183,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
                 name((rasterEntry.mainFile.name as File).name)
                 Snippet(maxLines:"0", "")
                 description(renderedHtml)
+
                 LookAt(){
                   longitude(groundCenterLon)
                   latitude(groundCenterLat)
@@ -188,6 +193,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
                   range(15000)
                   altitudeMode("clampToGround")
                 }
+
                 open("1")
                 visibility("1")
                 Icon() {
@@ -198,11 +204,12 @@ class KmlService implements ApplicationContextAware, InitializingBean
                   viewRefreshTime("2")
                   viewBoundScale("0.85")
                 }
+
                 LatLonBox() {
-                  north(rasterEntry?.groundGeom?.bounds?.maxLat)
-                  south(rasterEntry?.groundGeom?.bounds?.minLon)
-                  east(rasterEntry?.groundGeom?.bounds?.maxLat)
-                  west(rasterEntry?.groundGeom?.bounds?.minLat)
+                  north(bounds[2])
+                  south(bounds[1])
+                  east(bounds[0])
+                  west(bounds[3])
                 }
                 if ( acquisition )
                 {
@@ -212,6 +219,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
                 }
             }
           }
+//          styleUrl("#checkHideChildrenExample")
         }
       }
     }
@@ -276,7 +284,33 @@ class KmlService implements ApplicationContextAware, InitializingBean
     String kmlText = kmlwriter.buffer
     return kmlText
   }
+  
+  String createTopImagesKml(Map params)
+  {
+    def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "kmlQuery", action: "getImagesKml", params: params)
+    def kmlbuilder = new StreamingMarkupBuilder()
 
+    kmlbuilder.encoding = "UTF-8"
+    def kmlnode = {
+      mkp.xmlDeclaration()
+      kml("xmlns", "http://earth.google.com/kml/2.1"){
+        NetworkLink() {
+           name ("OMAR Last ${params.max} Images For View")
+           Link (){
+             href(kmlQueryUrl)
+             viewRefreshMode ("onRequest")
+           }
+         }
+        
+      }
+     }
+    def kmlwriter = new StringWriter()
+
+    kmlwriter << kmlbuilder.bind(kmlnode)
+    String kmlText = kmlwriter.buffer
+    return kmlText
+  }
+/*
   String createTopImagesKml()
   {
     def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "kmlQuery", action: "getImagesKml")
@@ -303,7 +337,30 @@ class KmlService implements ApplicationContextAware, InitializingBean
     String kmlText = kmlwriter.buffer
     return kmlText
   }
+*/
+  String createTopVideosKml(Map params)
+  {
+    def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "kmlQuery", action: "getVideosKml", params: params)
+    def kmlbuilder = new StreamingMarkupBuilder()
 
+    kmlbuilder.encoding = "UTF-8"
+    def kmlnode = {
+      mkp.xmlDeclaration()
+      kml("xmlns" , "http://earth.google.com/kml/2.1") {
+       NetworkLink() {
+        name("OMAR Last ${params.max} Videos For View")
+        Link () {
+          href(kmlQueryUrl)
+          viewRefreshMode ("onRequest")
+        }
+       }
+      }
+    }
+    return kmlbuilder.bind(kmlnode).toString()
+  }
+
+
+/*
   String createTopVideosKml()
   {
     def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "kmlQuery", action: "getVideosKml")
@@ -325,6 +382,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
     }
     return kmlbuilder.bind(kmlnode).toString()
   }
+*/  
   String buildUrl(String url, Map params)
   {
     def String result;
@@ -343,6 +401,45 @@ class KmlService implements ApplicationContextAware, InitializingBean
     }
     return "${result}${list}"
   }
+  String createImageFootprint(Map params)
+  {
+    def url = buildUrl(grailsApplication.config.wms.data.raster.url,
+            [VERSION: "1.1.1",
+                    REQUEST: "GetMap",
+                    LAYERS: "${grailsApplication.config.wms.data.raster.footprintLayers}",
+                    SRS: "EPSG:4326",
+                    WIDTH: "1024",
+                    HEIGHT: "512",
+                    TRANSPARENT: "TRUE",
+                    IMAGEFILTER: "acquisition_date>=(date(now())-integer'${params.imagedays}')",
+                    FORMAT: "image/png"])
+
+    def kmlbuilder = new StreamingMarkupBuilder()
+    def kmlnode ={
+      mkp.xmlDeclaration()
+      kml("xmlns", "http://earth.google.com/kml/2.1") {
+        GroundOverlay() {
+          name ("OMAR Last ${params.imagedays} Days Imagery Coverage")
+          open ("1")
+          visibility("1")
+          Icon () {
+            href (url)
+            viewRefreshMode("onStop")
+            viewRefreshTime("${grailsApplication.config.kml.viewRefreshTime}")
+            viewBoundScale("1.0")
+          }
+          LatLonBox () {
+            north(90)
+            south(-90)
+            east(180)
+            west(-180)
+          }
+        }
+      }
+    }
+    return kmlbuilder.bind(kmlnode).toString()
+  }
+  /*
   String createImageFootprint()
   {
     def url = buildUrl(grailsApplication.config.wms.data.raster.url,
@@ -379,6 +476,46 @@ class KmlService implements ApplicationContextAware, InitializingBean
      }
     return kmlbuilder.bind(kmlnode).toString()
   }
+  */
+  String createVideoFootprint(Map params)
+  {
+    def url = buildUrl(grailsApplication.config.wms.data.video.url,
+       [VERSION: "1.1.1",
+        REQUEST: "GetMap",
+        LAYERS: "${grailsApplication.config.wms.data.video.footprintLayers}",
+        SRS: "EPSG:4326",
+        WIDTH: "1024",
+        HEIGHT: "512",
+        TRANSPARENT: "TRUE",
+        VIDEOFILTER: "start_date>=(date(now())-integer'${params.videodays}')",
+        FORMAT: "image/png"])
+
+    def kmlbuilder = new StreamingMarkupBuilder()
+    def kmlnode = {
+      mkp.xmlDeclaration()
+      kml("xmlns": "http://earth.google.com/kml/2.1") {
+        GroundOverlay() {
+          name("OMAR Last ${params.imagedays} Days Video Coverage")
+          open("1")
+          visibility("1")
+          Icon() {
+            href(url)
+            viewRefreshMode ("onStop")
+            viewRefreshTime ("${grailsApplication.config.kml.viewRefreshTime}")
+            viewBoundScale ("1.0")
+          }
+          LatLonBox() {
+            north(90)
+            south(-90)
+            east(180)
+            west(-180)
+          }
+        }
+      }
+    }
+    return kmlbuilder.bind(kmlnode).toString()
+  }
+/*
   String createVideoFootprint()
   {
     def url = buildUrl(grailsApplication.config.wms.data.video.url,
@@ -415,6 +552,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
      }
     return kmlbuilder.bind(kmlnode).toString()
   }
+  */
   public void afterPropertiesSet()
   {
     tagLibBean = applicationContext.getBean("org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib")
