@@ -248,3 +248,9 @@ switch ( rasterEntry.queryObject )
     break
 }
 
+kml.maxImages=100
+kml.maxVideos=100
+kml.defaultImages=10
+kml.defaultVideos=10
+kml.daysCoverage=30
+kml.viewRefreshTime=2

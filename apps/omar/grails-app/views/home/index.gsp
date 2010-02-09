@@ -2,6 +2,27 @@
 <head>
   <title>Welcome to OMAR 2.0</title>
   <meta name="layout" content="main"/>
+  <g:javascript>
+
+    function submitImageView() {
+
+        document.imageView.submit();
+
+    }; function submitVideoView() {
+
+        document.videoView.submit();
+
+    }; function submitImageCoverage() {
+
+        document.imageFootprints.submit() ;
+
+    }; function submitVideoCoverage() {
+
+        document.videoFootprints.submit() ;
+
+    };    
+
+</g:javascript>
 </head>
 <body>
 <h1 style="margin-left:20px;font-size:200%;">Welcome to OMAR</h1>
@@ -43,21 +64,41 @@
 </div>
 
 <div>
-  <h1 style="font-size:150%">KML Queries:</h1>
+  <h1 style="font-size:150%">KML Network Links:</h1>
   <table>
     <tr>
       <td width="120px">
-        <img src="${createLinkTo(dir: '/images', file: 'GoogleEarth_1.png')}" width="96" height="96" alt="">
+        <img src="${createLinkTo(dir: '/images', file: 'GoogleEarth_1.png')}" width="96 " height="96" alt="">
       </td>
       <td>
-        <ol>
-          <li><g:link controller="kmlQuery" action="topImages">Last 10 Images</g:link></li>
-          <li><g:link controller="kmlQuery" action="topVideos">Last 10 Videos</g:link></li>
-          <li><g:link controller="kmlQuery" action="imageFootprints">Image Coverage</g:link></li>
-          <li><g:link controller="kmlQuery" action="videoFootprints">Video Coverage</g:link></li>
-        </ol>
-      </td>
-    </tr>
+         <ol>
+           <li>
+             <g:form name="imageView" url="[controller:'kmlQuery', action:'topImages']">
+               <g:textField name="maximages" size="2" value="${grailsApplication.config.kml.defaultImages}"/>
+               <a href="javascript:submitImageView();">Most Recent Images for View</a>
+             </g:form>
+           </li>
+           <li>
+             <g:form name="videoView" url="[controller:'kmlQuery', action:'topVideos']">
+               <g:textField name="maxvideos" size="2" value="${grailsApplication.config.kml.defaultVideos}"/>
+               <a href="javascript:submitVideoView();">Most Recent Videos for View</a>
+             </g:form>
+           </li>
+           <li>
+             <g:form name="imageFootprints" url="[controller:'kmlQuery', action:'imageFootprints']">
+               <g:textField name="imagedays" size="2" value="${grailsApplication.config.kml.daysCoverage}"/>
+               <a href="javascript:submitImageCoverage();">Most Recent Days Imagery Coverage</a>
+             </g:form>
+           </li>
+           <li>
+             <g:form name="videoFootprints" url="[controller:'kmlQuery', action:'videoFootprints']">
+               <g:textField name="videodays" size="2" value="${grailsApplication.config.kml.daysCoverage}"/>
+               <a href="javascript:submitVideoCoverage();">Most Recent Days Video Coverage</a>
+             </g:form>
+           </li>
+         </ol>
+       </td>
+     </tr>
   </table>
 </div>
 
