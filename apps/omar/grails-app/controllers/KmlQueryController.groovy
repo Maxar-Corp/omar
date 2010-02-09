@@ -58,7 +58,7 @@ class KmlQueryController implements InitializingBean
 
   def getImagesKml = {
     def wmsParams = [:]
-
+    def maxImages = grailsApplication.config.kml.maxImages
     // Convert param names to lower case
     params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
 
@@ -70,9 +70,9 @@ class KmlQueryController implements InitializingBean
       params?.aoiMaxLon = bounds[2]
       params?.aoiMaxLat = bounds[3]
     }
-    if ( params?.max == null || Integer.parseInt(params.max) > 100 )
+    if ( params?.max == null || Integer.parseInt(params.max) > maxImages )
     {
-      params?.max = 10
+      params?.max = maxImages
     }
 
     def queryParams = new RasterEntryQuery()
@@ -85,20 +85,19 @@ class KmlQueryController implements InitializingBean
       params.sort = 'acquisitionDate'
       queryParams.endDate = new Date()
     }
-//    println params
     log.info(queryParams.toMap())
 
     def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
     String kmlText = kmlService.createImagesKml(rasterEntries, wmsParams, params)
 
-    response.setHeader("Content-disposition", "attachment; filename=topImages.kml");
+    response.setHeader("Content-disposition", "attachment; filename=omar_last_${params.max}_images.kml");
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
   }
 
 
   def getVideosKml = {
     def wmsParams = [:]
-
+    def maxVideos = grailsApplication.config.kml.maxVideos
     // Convert param names to lower case
     params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
 
@@ -110,9 +109,9 @@ class KmlQueryController implements InitializingBean
       params?.aoiMaxLon = bounds[2]
       params?.aoiMaxLat = bounds[3]
     }
-    if ( params?.max == null || Integer.parseInt(params.max) > 100 )
+    if ( params?.max == null || Integer.parseInt(params.max) > maxVideos )
     {
-      params?.max = 10
+      params?.max = maxVideos
     }
 
     def queryParams = new VideoDataSetQuery()
@@ -131,24 +130,74 @@ class KmlQueryController implements InitializingBean
     def videoEntries = videoDataSetSearchService.runQuery(queryParams, params)
     String kmlText = kmlService.createVideosKml(videoEntries)
 
-    response.setHeader("Content-disposition", "attachment; filename=topImages.kml");
+    response.setHeader("Content-disposition", "attachment; filename=omar_last_${params.max}_videos.kml");
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
   }
 
+  def topImages =
+  {
+
+    if (!(params.maximages =~ /\d+/))
+      params.max = grailsApplication.config.kml.defaultImages
+    else
+      params.max = params.maximages.trim().toInteger()
+    if (params.max > grailsApplication.config.kml.maxImages)
+      params.max = grailsApplication.config.kml.maxImages
+    params.remove ("maximages")
+    params.stretch_mode_region = "viewport"
+    String kmlText = kmlService.createTopImagesKml(params)
+    response.setHeader("Content-disposition", "attachment; filename=omar_last_${params.max}_images_for_view.kml");
+    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
+  }
+/*
   def topImages = {
     String kmlText = kmlService.createTopImagesKml()
 
     response.setHeader("Content-disposition", "attachment; filename=topImages.kml");
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
   }
+*/
+  def topVideos = {
+    if (!(params.maxvideos =~ /\d+/))
+      params.max = grailsApplication.config.kml.defaultVideos
+    else
+      params.max = params.maxvideos.trim().toInteger()
+    if (params.max > grailsApplication.config.kml.maxVideos)
+      params.max = grailsApplication.config.kml.maxVideos
+    params.remove ("maxvideos")
 
+    String kmlText = kmlService.createTopVideosKml(params)
+    response.setHeader ("Content-disposition", "attachment; filename=omar_last_${params.max}_videos_for_view.kml");
+    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
+  }
+  
+/*
   def topVideos = {
     String kmlText = kmlService.createTopVideosKml()
 
     response.setHeader("Content-disposition", "attachment; filename=topVideos.kml");
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
   }
+*/
+  def imageFootprints= {
+    if ((params.imagedays == null) ||!(params.imagedays =~ /\d+/)) 
+      params.imagedays = grailsApplication.config.kml.daysCoverage
 
+    String kmlText = kmlService.createImageFootprint(params)
+    response.setHeader ("Content-disposition", "attachment; filename=omar_last_${params.imagedays}_days_imagery_coverage.kml");
+    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
+  }
+
+  def videoFootprints= {
+    if((params.videodays == null)||!(params.videodays =~ /\d+/))
+      params.videodays = grailsApplication.config.kml.daysCoverage
+
+    String kmlText = kmlService.createVideoFootprint(params)
+    response.setHeader("Content-disposition", "attachment; filename=omar_last_${params.videodays}_days_video_coverage.kml");
+    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
+  }
+  
+  /*
   def imageFootprints= {
     String kmlText = kmlService.createImageFootprint()
 
@@ -162,6 +211,7 @@ class KmlQueryController implements InitializingBean
     response.setHeader("Content-disposition", "attachment; filename=VideoFootprints.kml");
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
   }
+  */
   public void afterPropertiesSet()
   {
     flashDirRoot = grailsApplication.config.videoStreaming.flashDirRoot
