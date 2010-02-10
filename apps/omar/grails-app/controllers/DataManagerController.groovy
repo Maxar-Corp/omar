@@ -2,7 +2,8 @@ class DataManagerController
 {
   def dataManagerService
 
-  def index = { }
+  def index = {
+  }
 
   def addRaster = {
     def method = request.method.toUpperCase()
@@ -13,25 +14,48 @@ class DataManagerController
       case "GET":
         break
       case "POST":
-        def status = dataManagerService.addRaster(filename)
 
-        if ( status )
+        def testFile = new File(filename)
+        if(!testFile.exists())
         {
-          flash.message = "Raster with filename ${filename} added"
-          redirect(action: "index")
+          response.status = HtmlCodes.NOT_FOUND
+          flash.message = "Not Found: ${filename}"
+          render(flash.message)
+        }
+        else if(!testFile.canRead())
+        {
+          response.status = HtmlCodes.FORBIDDEN
+          flash.message = "Not Readable ${filename}"
+          render(flash.message)
         }
         else
         {
-          flash.message = "Unable to add Raster with filename ${filename}"
-          redirect(action: "index")
+          def status = dataManagerService.addRaster(filename)
+
+          if ( status )
+          {
+            response.status = HtmlCodes.OK
+            flash.message = "Added ${filename}"
+            render(flash.message)
+//          redirect(action: "index")
+          }
+          else
+          {
+            response.status = HtmlCodes.UNSUPPORTED_MEDIA_TYPE
+            flash.message = "Unable to add Raster with filename ${filename}"
+//          redirect(action: "index")
+            render(flash.message)
+          }
         }
 
         break
       default:
-        flash.message = "Unsupported method ${method} for action addRaster with filename ${filename}"
-        redirect(action: "index")
+       response.status = HtmlCodes.METHOD_NOT_ALLOWED
+       flash.message = "Unsupported method ${method} for action addRaster with filename ${filename}"
+//       redirect(action: "index")
+       render(flash.message)
+      break;
     }
-
   }
 
   def addVideo = {
@@ -43,23 +67,45 @@ class DataManagerController
       case "GET":
         break
       case "POST":
-        def status = dataManagerService.addVideo(filename)
-
-        if ( status )
+        def testFile = new File(filename)
+        if(!testFile.exists())
         {
-          flash.message = "Video with filename ${filename} added"
-          redirect(action: "index")
+           response.status = HtmlCodes.NOT_FOUND
+           flash.message = "Not found: ${filename} "
+           render(flash.message)
+        }
+        else if(!testFile.canRead())
+        {
+          response.status = HtmlCodes.FORBIDDEN
+          flash.message = "Not Readable: ${filename}"
+          render(flash.message)
         }
         else
         {
-          flash.message = "Unable to add Video with filename ${filename}"
-          redirect(action: "index")
+          def status = dataManagerService.addVideo(filename)
+
+          if ( status )
+          {
+            response.status = HtmlCodes.OK
+            flash.message = "Added ${filename}"
+            render(flash.message)
+           // redirect(action: "index")
+          }
+          else
+          {
+            response.status = HtmlCodes.UNSUPPORTED_MEDIA_TYPE
+            flash.message = "Unable to add Video with filename ${filename}"
+            render(flash.message)
+//            redirect(action: "index")
+          }
         }
 
         break
       default:
+        response.status = HtmlCodes.METHOD_NOT_ALLOWED
         flash.message = "Unsupported method ${method} for action addVideo with filename ${filename}"
-        redirect(action: "index")
+        render(flash.message)
+        //redirect(action: "index")
     }
 
   }
@@ -78,19 +124,25 @@ class DataManagerController
 
         if ( status )
         {
-          flash.message = "Raster with filename ${filename} deleted"
-          redirect(action: "index")
+          response.status = HtmlCodes.OK
+          flash.message = "Deleted ${filename}"
+          render(flash.message)
+//          redirect(action: "index")
         }
         else
         {
+          response.status = HtmlCodes.NOT_FOUND
           flash.message = "Unable to delete Raster with filename ${filename}"
-          redirect(action: "index")
+          render(flash.message)
+//          redirect(action: "index")
         }
 
         break
       default:
+        response.status = HtmlCodes.METHOD_NOT_ALLOWED
         flash.message = "Unsupported method ${method} for action removeRaster with filename ${filename}"
-        redirect(action: "index")
+        render(flash.message)
+//        redirect(action: "index")
     }
   }
 
@@ -108,19 +160,24 @@ class DataManagerController
 
         if ( status )
         {
-          flash.message = "Video with filename ${filename} deleted"
-          redirect(action: "index")
+          response.status = HtmlCodes.OK
+          flash.message = "Deleted ${filename} "
+          render(flash.message)
+//          redirect(action: "index")
         }
         else
         {
+          response.status = HtmlCodes.NOT_FOUND
           flash.message = "Unable to delete Video with filename ${filename}"
-          redirect(action: "index")
+//          redirect(action: "index")
+          render(flash.message)
         }
-
         break
       default:
+        response.status = HtmlCodes.METHOD_NOT_ALLOWED
         flash.message = "Unsupported method ${method} for action removeVideo with filename ${filename}"
-        redirect(action: "index")
+        render(flash.message)
+//        redirect(action: "index")
     }
   }
 
