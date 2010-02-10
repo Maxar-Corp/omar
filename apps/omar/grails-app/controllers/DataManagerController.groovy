@@ -8,52 +8,24 @@ class DataManagerController
   def addRaster = {
     def method = request.method.toUpperCase()
     def filename = params.filename
+    def httpStatusMessage = new HttpStatusMessage()
+    httpStatusMessage.status = HttpStatus.OK
+    httpStatusMessage.message = "Added raster ${filename}"
 
     switch ( method )
     {
       case "GET":
         break
       case "POST":
-
-        def testFile = new File(filename)
-        if(!testFile.exists())
-        {
-          response.status = HttpStatus.NOT_FOUND
-          flash.message = "Not Found: ${filename}"
-          render(flash.message)
-        }
-        else if(!testFile.canRead())
-        {
-          response.status = HttpStatus.FORBIDDEN
-          flash.message = "Not Readable ${filename}"
-          render(flash.message)
-        }
-        else
-        {
-          def status = dataManagerService.addRaster(filename)
-
-          if ( status )
-          {
-            response.status = HttpStatus.OK
-            flash.message = "Added ${filename}"
-            render(flash.message)
-//          redirect(action: "index")
-          }
-          else
-          {
-            response.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
-            flash.message = "Unable to add Raster with filename ${filename}"
-//          redirect(action: "index")
-            render(flash.message)
-          }
-        }
-
+        dataManagerService.addRaster(httpStatusMessage, filename)
+        response.status = httpStatusMessage.status
+        render (httpStatusMessage.message)
         break
       default:
-       response.status = HttpStatus.METHOD_NOT_ALLOWED
-       flash.message = "Unsupported method ${method} for action addRaster with filename ${filename}"
-//       redirect(action: "index")
-       render(flash.message)
+       httpStatusMessage.status = HttpStatus.METHOD_NOT_ALLOWED
+       httpStatusMessage.message = "Unsupported method ${method} for action addRaster with filename ${filename}"
+       response.status = httpStatusMessage.status
+       render(httpStatusMessage.message)
       break;
     }
   }
@@ -61,51 +33,27 @@ class DataManagerController
   def addVideo = {
     def method = request.method.toUpperCase()
     def filename = params.filename
+    def httpStatusMessage = new HttpStatusMessage()
+    httpStatusMessage.status = HttpStatus.OK
+    httpStatusMessage.message = "Added video ${filename}"
 
     switch ( method )
     {
       case "GET":
         break
       case "POST":
-        def testFile = new File(filename)
-        if(!testFile.exists())
-        {
-           response.status = HttpStatus.NOT_FOUND
-           flash.message = "Not found: ${filename} "
-           render(flash.message)
-        }
-        else if(!testFile.canRead())
-        {
-          response.status = HttpStatus.FORBIDDEN
-          flash.message = "Not Readable: ${filename}"
-          render(flash.message)
-        }
-        else
-        {
-          def status = dataManagerService.addVideo(filename)
+         dataManagerService.addVideo(httpStatusMessage, filename)
 
-          if ( status )
-          {
-            response.status = HttpStatus.OK
-            flash.message = "Added ${filename}"
-            render(flash.message)
-           // redirect(action: "index")
-          }
-          else
-          {
-            response.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
-            flash.message = "Unable to add Video with filename ${filename}"
-            render(flash.message)
-//            redirect(action: "index")
-          }
-        }
+        response.status = httpStatusMessage.status
+        render(httpStatusMessage.message)
 
         break
       default:
-        response.status = HttpStatus.METHOD_NOT_ALLOWED
-        flash.message = "Unsupported method ${method} for action addVideo with filename ${filename}"
+        httpStatusMessage.status = HttpStatus.METHOD_NOT_ALLOWED
+        httpStatusMessage.message = "Unsupported method ${method} for action addVideo with filename ${filename}"
+        response.status = httpStatusMessage.status
         render(flash.message)
-        //redirect(action: "index")
+        break;
     }
 
   }
@@ -113,6 +61,9 @@ class DataManagerController
   def removeRaster = {
     def method = request.method.toUpperCase()
     def filename = params.filename
+    def httpStatusMessage = new HttpStatusMessage()
+    httpStatusMessage.status = HttpStatus.OK
+    httpStatusMessage.message = "Removed raster ${filename}"
     
     switch ( method )
     {
@@ -120,35 +71,27 @@ class DataManagerController
         break
       case "POST":
       case "DELETE":
-        def status = dataManagerService.removeRaster(filename)
+        def status = dataManagerService.removeRaster(httpStatusMessage, filename)
 
-        if ( status )
-        {
-          response.status = HttpStatus.OK
-          flash.message = "Deleted ${filename}"
-          render(flash.message)
-//          redirect(action: "index")
-        }
-        else
-        {
-          response.status = HttpStatus.NOT_FOUND
-          flash.message = "Unable to delete Raster with filename ${filename}"
-          render(flash.message)
-//          redirect(action: "index")
-        }
+        response.status = httpStatusMessage.status
+        render(httpStatusMessage.message)
 
         break
       default:
-        response.status = HttpStatus.METHOD_NOT_ALLOWED
-        flash.message = "Unsupported method ${method} for action removeRaster with filename ${filename}"
-        render(flash.message)
-//        redirect(action: "index")
+        httpStatusMessage.status = HttpStatus.METHOD_NOT_ALLOWED
+        httpStatusMessage.message = "Unsupported method ${method} for action removeRaster with filename ${filename}"
+        response.status = httpStatusMessage.status
+        render(httpStatusMessage.message)
+        break
     }
   }
 
   def removeVideo = {
     def method = request.method.toUpperCase()
     def filename = params.filename
+    def httpStatusMessage = new HttpStatusMessage()
+    httpStatusMessage.status = HttpStatus.OK
+    httpStatusMessage.message = "Removed ${filename}"
 
     switch ( method )
     {
@@ -156,29 +99,16 @@ class DataManagerController
         break
       case "POST":
       case "DELETE":
-        def status = dataManagerService.removeVideo(filename)
+        def status = dataManagerService.removeVideo(httpStatusMessage, filename)
 
-        if ( status )
-        {
-          response.status = HttpStatus.OK
-          flash.message = "Deleted ${filename} "
-          render(flash.message)
-//          redirect(action: "index")
-        }
-        else
-        {
-          response.status = HttpStatus.NOT_FOUND
-          flash.message = "Unable to delete Video with filename ${filename}"
-//          redirect(action: "index")
-          render(flash.message)
-        }
+        response.status = httpStatusMessage.status
+        render(httpStatusMessage.message)
         break
       default:
-        response.status = HttpStatus.METHOD_NOT_ALLOWED
-        flash.message = "Unsupported method ${method} for action removeVideo with filename ${filename}"
-        render(flash.message)
-//        redirect(action: "index")
+        httpStatusMessage.status = HttpStatus.METHOD_NOT_ALLOWED
+        httpStatusMessage.message = "Unsupported method ${method} for action removeVideo with filename ${filename}"
+        response.status = httpStatusMessage.status
+        render(httpStatusMessage.message)
     }
   }
-
 }
