@@ -1,4 +1,4 @@
-public static class HtmlCodes {
+public static class HttpStatus {
   // Informational repsonses 1xx
   public static def CONTINUE    = 100
   public static def SWITCHING_PROTOCOLS = 101
