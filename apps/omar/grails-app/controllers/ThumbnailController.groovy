@@ -1,6 +1,7 @@
 import javax.imageio.ImageIO
 import org.springframework.beans.factory.InitializingBean
-import java.awt.image.BufferedImage
+import java.awt.image.*;
+import java.awt.*;
 
 class ThumbnailController implements InitializingBean
 {
@@ -24,61 +25,88 @@ class ThumbnailController implements InitializingBean
   }
   def show =
   {
-    def rasterEntry = RasterEntry.get(params.id)
-    if ( !rasterEntry )
+    try
     {
-      flash.message = "RasterEntry not found with id ${params.id}"
-      redirect(action: list)
+      def httpStatusMessage = new HttpStatusMessage()
+      httpStatusMessage.status = HttpStatus.OK
+      def rasterEntry = RasterEntry.get(params.id)
+      def image = (Image)null
+      def mimeType = "image/jpeg"
+      if ( !rasterEntry )
+      {
+        httpStatusMessage.message = "RasterEntry not found with id ${params.id}"
+        httpStatusMessage.status = HttpStatus.NOT_FOUND
+        image = ImageGenerator.createErrorImage(128, 128);
+      }
+      else
+      {
+          params.mimeType = mimeType
+          File outputFile = thumbnailService.getRasterEntryThumbnailFile(httpStatusMessage, rasterEntry, params)
+          if ( (httpStatusMessage.status == HttpStatus.OK)&&
+                  outputFile.exists() &&
+                  (outputFile.length() > 0) )
+          {
+            image = ImageIO.read(outputFile)
+          }
+          if(!image)
+          {
+            image = ImageGenerator.createErrorImage(128, 128);
+          }
+      }
+      httpStatusMessage.initializeResponse(response)
+      response.contentType = mimeType
+      ImageIO.write(image, "jpeg", response.outputStream)
     }
-    else
+    catch (Exception e)
     {
-      try
-      {
-        def mimeType = "image/jpeg"
-
-        params.mimeType = mimeType
-        
-        File outputFile = thumbnailService.getRasterEntryThumbnailFile(rasterEntry, params)
-
-        if ( outputFile.exists() && (outputFile.length() > 0) )
-        {
-          def image = ImageIO.read(outputFile)
-
-          response.contentType = mimeType
-          ImageIO.write(image, "jpeg", response.outputStream)
-        }
-      }
-      catch (Exception e)
-      {
-        println "Error: ${e.message}"
-      }
+      println "Error: ${e.message}"
     }
   }
 
 
   def frame = {
-    def videoDataSet = VideoDataSet.get(params.id)
-
-    if ( !videoDataSet )
+    try
     {
-      flash.message = "VideoDataSet not found with id ${params.id}"
-      redirect(action: list)
+      def videoDataSet = VideoDataSet.get(params.id)
+      def image = (Image)null
+      def mimeType = "image/jpeg"
+      def httpStatusMessage = new HttpStatusMessage()
+      httpStatusMessage.status = HttpStatus.OK
+
+      if ( !videoDataSet )
+      {
+        httpStatusMessage.message = "VideoDataSet not found with id ${params.id}"
+        httpStatusMessage.status = HttpStatus.NOT_FOUND
+      }
+      else
+      {
+        File outputFile = thumbnailService.getVideoDataSetThumbnailFile(httpStatusMessage, videoDataSet, params)
+
+        if(!outputFile.exists())
+        {
+          httpStatusMessage.message = "Unable to write thumbnail for video dataset ${videoDataSet.getMainFile()}"
+          httpStatusMessage.status = HttpStatus.NOT_FOUND
+        }
+        // check the statu for errors
+        if((httpStatusMessage.status == HttpStatus.OK))
+        {
+          image = ImageIO.read(outputFile)
+        }
+      }
+      if(httpStatusMessage.status != HttpStatus.OK)
+      {
+        if(!image)
+        {
+          image = ImageGenerator.createErrorImage(128, 128);
+        }
+      }
+      httpStatusMessage.initializeResponse(response)
+      response.contentType = "image/jpeg"
+      ImageIO.write(image, "jpeg", response.outputStream)
     }
-    else
+    catch (Exception e)
     {
-      try
-      {
-        File outputFile = thumbnailService.getVideoDataSetThumbnailFile(videoDataSet, params)
-
-        def image = ImageIO.read(outputFile)
-
-        response.contentType = "image/jpeg"
-        ImageIO.write(image, "jpeg", response.outputStream)
-      }
-      catch (Exception e)
-      {
-        println "Error: ${e.message}"
-      }
+      println "Error: ${e.message}"
     }
   }
 
