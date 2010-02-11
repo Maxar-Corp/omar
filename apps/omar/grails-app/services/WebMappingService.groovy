@@ -7,17 +7,9 @@ import java.awt.image.DataBuffer
 import java.awt.image.DataBufferByte
 import java.awt.Point
 import java.awt.Rectangle
-import java.awt.image.ComponentColorModel
-import java.awt.color.ColorSpace
-import java.awt.Transparency
-
-import java.awt.image.ImageFilter
-import java.awt.image.FilteredImageSource
-import java.awt.Toolkit
-
+import joms.oms.WmsView
 import joms.oms.WmsMap
 import joms.oms.ossimKeywordlist
-import joms.oms.ossimKeywordlistVector
 import joms.oms.Util
 import joms.oms.ossimImageGeometryPtr
 import joms.oms.ossimImageGeometry
@@ -130,6 +122,14 @@ class WebMappingService
 
       case LIBCALL:
 
+        WmsView view = new WmsView()
+        view.setProjection(wmsRequest.srs)
+        view.setViewDimensionsAndImageSize(bounds[0] as Double,
+                                           bounds[1] as Double,
+                                           bounds[2] as Double,
+                                           bounds[3] as Double,
+                                           Integer.parseInt(wmsRequest.width),
+                                           Integer.parseInt(wmsRequest.height))
         /*
         * BIL: pixelStride = 1, lineStride = 3*width, bandOffsets = {0, width, 2*width}
         * BSQ: pixelStride = 1, lineStride = width, bandOffsets = {0, width*height, 2*width*height}
@@ -163,22 +163,47 @@ class WebMappingService
           def rasterEntry = RasterEntry.get(it)
           if(rasterEntry != null)
           {
+            double scaleCheck = 1.0
+            geomPtr = createBilinearModel(rasterEntry)
             if(quickLookFlag)
             {
-              geomPtr = createBilinearModel(rasterEntry)
               if(geomPtr != null)
               {
                 geom = geomPtr.get()
               }
             }
-            wmsMap.addFile(rasterEntry?.mainFile.name,
-                           rasterEntry?.entryId?.toInteger(),
-                           geom)
+            // we will use a crude bilinear to test scale change to
+            // verify we have enough overviews to reproject the image
+            if(geomPtr != null)
+            {
+              scaleCheck = view.getScaleChangeFromInputToView(geomPtr.get())
+            }
+            // if we are near zooming to full res just add the image
+            if(scaleCheck >= 0.9)
+            {
+              wmsMap.addFile(rasterEntry?.mainFile.name,
+                             rasterEntry?.entryId?.toInteger(),
+                             geom)
+            }
+            // make sure we are within resolution level before adding an image
+            else if(scaleCheck > 0.0)
+            {
+              // check to see if the decimation puts us smaller than the bounding rect of the smallest
+              // res level scale
+              //
+              long maxSize = (rasterEntry.width > rasterEntry.height)?rasterEntry.width:rasterEntry.height
+              if((maxSize*scaleCheck) >= (maxSize/(2**rasterEntry.numberOfResLevels)))
+              {
+                wmsMap.addFile(rasterEntry?.mainFile.name,
+                               rasterEntry?.entryId?.toInteger(),
+                               geom)
+              }
+            }
             geom = (ossimImageGeometry)null
             geomPtr = (ossimImageGeometryPtr)null
           }
         }
-         if ( enableOMS )
+        if ( enableOMS )
         {
             def kwl = new ossimKeywordlist();
             kwl.add("stretch_mode", "${stretchMode}")
