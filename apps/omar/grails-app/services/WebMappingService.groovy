@@ -163,44 +163,56 @@ class WebMappingService
           def rasterEntry = RasterEntry.get(it)
           if(rasterEntry != null)
           {
-            double scaleCheck = 1.0
-            geomPtr = createBilinearModel(rasterEntry)
-            if(quickLookFlag)
+            def file = new File(rasterEntry?.mainFile.name)
+
+            if(!file.exists())
             {
-              if(geomPtr != null)
-              {
-                geom = geomPtr.get()
-              }
+
             }
-            // we will use a crude bilinear to test scale change to
-            // verify we have enough overviews to reproject the image
-            if(geomPtr != null)
+            else if(!file.canRead())
             {
-              scaleCheck = view.getScaleChangeFromInputToView(geomPtr.get())
             }
-            // if we are near zooming to full res just add the image
-            if(scaleCheck >= 0.9)
+            else
             {
-              wmsMap.addFile(rasterEntry?.mainFile.name,
-                             rasterEntry?.entryId?.toInteger(),
-                             geom)
+              double scaleCheck = 1.0
+               geomPtr = createBilinearModel(rasterEntry)
+               if(quickLookFlag)
+               {
+                 if(geomPtr != null)
+                 {
+                   geom = geomPtr.get()
+                 }
+               }
+               // we will use a crude bilinear to test scale change to
+               // verify we have enough overviews to reproject the image
+               if(geomPtr != null)
+               {
+                 scaleCheck = view.getScaleChangeFromInputToView(geomPtr.get())
+               }
+               // if we are near zooming to full res just add the image
+               if(scaleCheck >= 0.9)
+               {
+                 wmsMap.addFile(rasterEntry?.mainFile.name,
+                                rasterEntry?.entryId?.toInteger(),
+                                geom)
+               }
+               // make sure we are within resolution level before adding an image
+               else if(scaleCheck > 0.0)
+               {
+                 // check to see if the decimation puts us smaller than the bounding rect of the smallest
+                 // res level scale
+                 //
+                 long maxSize = (rasterEntry.width > rasterEntry.height)?rasterEntry.width:rasterEntry.height
+                 if((maxSize*scaleCheck) >= (maxSize/(2**rasterEntry.numberOfResLevels)))
+                 {
+                   wmsMap.addFile(rasterEntry?.mainFile.name,
+                                  rasterEntry?.entryId?.toInteger(),
+                                  geom)
+                 }
+               }
+               geom = (ossimImageGeometry)null
+               geomPtr = (ossimImageGeometryPtr)null
             }
-            // make sure we are within resolution level before adding an image
-            else if(scaleCheck > 0.0)
-            {
-              // check to see if the decimation puts us smaller than the bounding rect of the smallest
-              // res level scale
-              //
-              long maxSize = (rasterEntry.width > rasterEntry.height)?rasterEntry.width:rasterEntry.height
-              if((maxSize*scaleCheck) >= (maxSize/(2**rasterEntry.numberOfResLevels)))
-              {
-                wmsMap.addFile(rasterEntry?.mainFile.name,
-                               rasterEntry?.entryId?.toInteger(),
-                               geom)
-              }
-            }
-            geom = (ossimImageGeometry)null
-            geomPtr = (ossimImageGeometryPtr)null
           }
         }
         if ( enableOMS )
