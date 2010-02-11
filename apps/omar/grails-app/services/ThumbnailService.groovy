@@ -1,20 +1,46 @@
 import joms.oms.Video
+import java.awt.image.BufferedImage
 
 class ThumbnailService
 {
+  def nullImage = new BufferedImage(128,128,BufferedImage.TYPE_INT_RGB);
   boolean transactional = false
   static int rasterFileOutputLock
   static int videoFrameOutputLock
   def grailsApplication
 
-  def getThumbnail(String cacheDirPath, String thumbnailPrefix, int size, String mimeType,
-                   String inputFilename, String entryId, String projectionType, boolean overwrite = false)
+  def getThumbnail(HttpStatusMessage httpStatusMessage,
+                   String cacheDirPath, String thumbnailPrefix, int size, String mimeType,
+                   String inputFilename, String entryId, String projectionType,
+                   boolean overwrite = false)
   {
     def outputFile = new File(
         cacheDirPath,
         "${thumbnailPrefix}.jpg"
     )
+    httpStatusMessage.status = HttpStatus.OK
+    String parent = outputFile.getParent();  // Get the destination directory
+    File dir = new File(parent);          // Convert it to a file.
+    if (!dir.exists())
+    {
+      httpStatusMessage.status = HttpStatus.NOT_FOUND
+      httpStatusMessage.message = "Cache directory ${dir} does not exist and can't create raster thumbnail"
+    }
+    else if (dir.isFile())
+    {
+      httpStatusMessage.status = HttpStatus.NOT_FOUND
+      httpStatusMessage.message = "${dir} is not a directory and can't produce raster thumbnail"
+    }
+    else if (!dir.canWrite())
+    {
+      httpStatusMessage.status = HttpStatus.NOT_FOUND
+      httpStatusMessage.message = "${dir} is not writeable and can't create raster thumbnails"
+    }
 
+    if(httpStatusMessage.status != HttpStatus.OK)
+    {
+      return new File("")
+    }
     def histogramStretchType = "linear_auto_min_max"
 
     // for now we only support imagespace thumbnails
@@ -66,7 +92,7 @@ class ThumbnailService
     return outputFile
   }
 
-  public File getRasterEntryThumbnailFile(RasterEntry rasterEntry, Map params)
+  public File getRasterEntryThumbnailFile(def httpStatusMessage, RasterEntry rasterEntry, Map params)
   {
     def projectionType = params.projectionType;
     RasterDataSet rasterDataSet = rasterEntry.rasterDataSet
@@ -74,14 +100,34 @@ class ThumbnailService
     def size = params.size?.toInteger()
     def mimeType = params?.mimeType ?: "image/jpeg"
     boolean overwrite = params.overwrite ?: false
+    int resLevels = rasterEntry.numberOfResLevels;
+    int maxSize = rasterEntry.width > rasterEntry.height?rasterEntry.width:rasterEntry.height
 
     if ( !size )
-    size = grailsApplication.config.thumbnail.defaultSize
+      size = grailsApplication.config.thumbnail.defaultSize
+    if(size > maxSize)
+    {
+      size = maxSize
+    }
+
+    // check if size request for thumbnail can be generated
+    // we will allow generation to 1 r-level downsample.
+    // So if we have only 2 rlevels for an image but need 4 r-levels
+    // we will error out
+    //
+    int smallestWidth = maxSize/(2**resLevels)
+    
+    if( size < smallestWidth)
+    {
+      httpStatusMessage.status = HttpStatus.NOT_FOUND
+      httpStatusMessage.message = "Not enough overviews to satisfy request for ${rasterFile.name}"
+      return new File("")
+    }
 
     String cacheDirPath = grailsApplication.config.thumbnail.cacheDir
     String thumbnailPrefix = "${rasterEntry.id}-${size}-${projectionType}"
 
-    File outputFile = this.getThumbnail(
+    File outputFile = this.getThumbnail(httpStatusMessage,
         cacheDirPath,
         thumbnailPrefix,
         size,
@@ -94,15 +140,39 @@ class ThumbnailService
     return outputFile
   }
 
-  public File getVideoDataSetThumbnailFile(VideoDataSet videoDataSet, Map params)
+  public File getVideoDataSetThumbnailFile(def httpStatusMessage, VideoDataSet videoDataSet, Map params)
   {
     VideoFile videoFile = VideoFile.findWhere(videoDataSet: videoDataSet, type: "main")
     def size = params.size?.toInteger() ?: grailsApplication.config.thumbnail.defaultSize
     String cacheDirPath = grailsApplication.config.thumbnail.cacheDir
-    String thumbnailPrefix = "${videoDataSet.id}-${size}"
+    String thumbnailPrefix = "video-${videoDataSet.id}-${size}"
     boolean overwrite = params.overwrite ?: false
-    File outputFile = this.getFrame(cacheDirPath, thumbnailPrefix, size, videoFile.name, overwrite)
-
+    File dir = new File(cacheDirPath);          // Convert it to a file.
+    File outputFile = new File("")
+    if (!dir.exists())
+    {
+      httpStatusMessage.status = HttpStatus.NOT_FOUND
+      httpStatusMessage.message = "Cache directory ${dir} does not exist and can't create video thumbnail"
+    }
+    else if (dir.isFile())
+    {
+      httpStatusMessage.status = HttpStatus.NOT_FOUND
+      httpStatusMessage.message = "${dir} is not a directory and can't produce video thumbnail"
+    }
+    else if (!dir.canWrite())
+    {
+      httpStatusMessage.status = HttpStatus.NOT_FOUND
+      httpStatusMessage.message = "${dir} is not writeable and can't create video thumbnail"
+    }
+    else
+    {
+      outputFile = this.getFrame(cacheDirPath, thumbnailPrefix, size, videoFile.name, overwrite)
+    }
+    if(!outputFile.exists())
+    {
+      httpStatusMessage.status = HttpStatus.NOT_FOUND
+      httpStatusMessage.message = "Unable to write video thumbnail to directory ${cacheDirPath}"
+    }
     return outputFile
   }
 }
