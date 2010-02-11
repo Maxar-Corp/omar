@@ -16,6 +16,7 @@ class DataManagerController
     {
       case "GET":
         break
+      case "PUT":
       case "POST":
         dataManagerService.addRaster(httpStatusMessage, filename)
         response.status = httpStatusMessage.status
@@ -24,7 +25,8 @@ class DataManagerController
       default:
        httpStatusMessage.status = HttpStatus.METHOD_NOT_ALLOWED
        httpStatusMessage.message = "Unsupported method ${method} for action addRaster with filename ${filename}"
-       response.status = httpStatusMessage.status
+       httpStatusMessage.header.Allow = "GET, PUT, POST"
+       httpStatusMessage.initializeResponse(response)
        render(httpStatusMessage.message)
       break;
     }
@@ -42,6 +44,7 @@ class DataManagerController
       case "GET":
         break
       case "POST":
+      case "PUT":
          dataManagerService.addVideo(httpStatusMessage, filename)
 
         response.status = httpStatusMessage.status
@@ -51,8 +54,9 @@ class DataManagerController
       default:
         httpStatusMessage.status = HttpStatus.METHOD_NOT_ALLOWED
         httpStatusMessage.message = "Unsupported method ${method} for action addVideo with filename ${filename}"
-        response.status = httpStatusMessage.status
-        render(flash.message)
+        httpStatusMessage.header.Allow = "GET, POST, PUT"
+        httpStatusMessage.initializeResponse(response)
+        render(httpStatusMessage.message)
         break;
     }
 
@@ -80,8 +84,10 @@ class DataManagerController
       default:
         httpStatusMessage.status = HttpStatus.METHOD_NOT_ALLOWED
         httpStatusMessage.message = "Unsupported method ${method} for action removeRaster with filename ${filename}"
-        response.status = httpStatusMessage.status
+        httpStatusMessage.header.Allow = "GET, POST, DELETE"
+        httpStatusMessage.initializeResponse(response)
         render(httpStatusMessage.message)
+
         break
     }
   }
@@ -107,7 +113,8 @@ class DataManagerController
       default:
         httpStatusMessage.status = HttpStatus.METHOD_NOT_ALLOWED
         httpStatusMessage.message = "Unsupported method ${method} for action removeVideo with filename ${filename}"
-        response.status = httpStatusMessage.status
+        httpStatusMessage.header.Allow = "GET, POST, DELETE"
+        httpStatusMessage.initializeResponse(response)
         render(httpStatusMessage.message)
     }
   }

@@ -146,7 +146,7 @@ class DataManagerService
     else
     {
       httpStatusMessage.status = HttpStatus.NOT_FOUND
-      httpStatusMessage.message = "Raster not found: ${filename}"
+      httpStatusMessage.message = "Raster not found in the database: ${filename}"
     }
   }
 
@@ -166,7 +166,7 @@ class DataManagerService
     else
     {
       httpStatusMessage.status = HttpStatus.NOT_FOUND
-      httpStatusMessage.message = "Video not found: ${filename}"
+      httpStatusMessage.message = "Video not found in the database: ${filename}"
     }
   }
 
