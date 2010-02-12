@@ -156,8 +156,12 @@ class RasterEntryController implements InitializingBean
       def user = authenticateService.principal().username
       def starttime = System.currentTimeMillis()
 
-      def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      //def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      //def totalCount = rasterEntries?.totalCount
 
+      def xxx = rasterEntrySearchService.method3(queryParams, params)
+      def rasterEntries = xxx?.rasterEntries
+      def totalCount = xxx?.totalCount
 
       def endtime = System.currentTimeMillis()
 
@@ -176,7 +180,7 @@ class RasterEntryController implements InitializingBean
 
       println "=== search end ==="
 
-      chain(action: "results", model: [rasterEntries: rasterEntries], params: params)
+      chain(action: "results", model: [rasterEntries: rasterEntries, totalCount: totalCount], params: params)
     }
     else
     {
@@ -216,7 +220,12 @@ class RasterEntryController implements InitializingBean
       def user = authenticateService.principal().username
       def starttime = System.currentTimeMillis()
 
-      def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      //def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      //def totalCount = rasterEntries?.totalCount
+
+      def xxx = rasterEntrySearchService.method3(queryParams, params)
+      def rasterEntries = xxx?.rasterEntries
+      def totalCount = xxx?.totalCount
 
 
       def endtime = System.currentTimeMillis()
@@ -236,7 +245,7 @@ class RasterEntryController implements InitializingBean
 
       println "=== search end ==="
 
-      chain(action: "results", model: [rasterEntries: rasterEntries], params: params)
+      chain(action: "results", model: [rasterEntries: rasterEntries, totalCount: totalCount], params: params)
     }
     else
     {
@@ -293,16 +302,24 @@ class RasterEntryController implements InitializingBean
     }
 
     def rasterEntries = null
+    def totalCount = null
 
     def queryParams = initRasterEntryQuery(params)
 
     if ( chainModel )
     {
       rasterEntries = chainModel.rasterEntries
+      totalCount = chainModel.totalCount
     }
     else
     {
-      rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      //rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      //totalCount = rasterEntries?.totalCount
+
+      def xxx = rasterEntrySearchService.method3(queryParams, params)
+
+      rasterEntries = xxx?.rasterEntries
+      totalCount = xxx?.totalCount
 
       def endtime = System.currentTimeMillis()
       def user = authenticateService.principal()?.username
@@ -328,6 +345,7 @@ class RasterEntryController implements InitializingBean
 
     render(view: 'results', model: [
         rasterEntries: rasterEntries,
+        totalCount: totalCount,
         tagNameList: tagNameList,
         tagHeaderList: tagHeaderList,
         queryParams: queryParams

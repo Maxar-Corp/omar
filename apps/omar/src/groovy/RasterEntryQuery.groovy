@@ -65,7 +65,7 @@ class RasterEntryQuery
     return clause
   }
 
-  private Criterion createDateRange()
+  Criterion createDateRange(String dateColumnName = "acquisitionDate")
   {
     def range = null
 
@@ -87,30 +87,41 @@ class RasterEntryQuery
       //range = Restrictions.between("acquisitionDate", startDate, endDate)
 
       range = Restrictions.and(
-         Restrictions.ge("acquisitionDate", startDate),
-         Restrictions.le("acquisitionDate", endDate)
+          Restrictions.ge(dateColumnName, startDate),
+          Restrictions.le(dateColumnName, endDate)
       )
     }
     else
     {
       if ( startDate )
       {
-        range = Restrictions.ge("acquisitionDate", startDate)
+        range = Restrictions.ge(dateColumnName, startDate)
       }
       else if ( endDate )
       {
-        range = Restrictions.le("acquisitionDate", endDate)
+        range = Restrictions.le(dateColumnName, endDate)
       }
     }
 
     return range
   }
 
-  private IntersectsExpression createIntersection()
+  IntersectsExpression createIntersection(String geomColumnName = "groundGeom")
   {
     def intersects = null
 
+    Geometry groundGeom = getGroundGeom()
 
+    if ( groundGeom )
+    {
+      intersects = new IntersectsExpression(geomColumnName, groundGeom)
+    }
+
+    return intersects
+  }
+
+  def getGroundGeom()
+  {
     def srs = "4326"
     def wkt = null
     def bounds = null
@@ -167,10 +178,9 @@ class RasterEntryQuery
       //println wkt
       bounds = Geometry.fromString("SRID=${srs};${wkt}")
       //println bounds
-      intersects = new IntersectsExpression("groundGeom", bounds)
     }
 
-    return intersects
+    return bounds
   }
 
   def toMap()

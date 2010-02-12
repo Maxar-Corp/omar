@@ -97,4 +97,65 @@ class RasterEntrySearchService
 
     return rasterEntries
   }
+
+
+  Map<String, Object> method3(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
+  {
+
+    def x = {
+      createAlias("rasterEntry", "r")
+      if ( rasterEntryQuery?.groundGeom )
+      {
+        addToCriteria(rasterEntryQuery.createIntersection("r.groundGeom"))
+      }
+      if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
+      {
+        addToCriteria(rasterEntryQuery.createDateRange("r.acquisitionDate"))
+      }
+      if ( params?.max )
+      {
+        maxResults(params.max as Integer)
+      }
+//      if ( params?.sort && params.order )
+//      {
+//        order(params?.sort, params?.order)
+//      }
+      rasterEntryQuery.searchTagNames?.size()?.times {i ->
+        if ( rasterEntryQuery.searchTagNames[i] && rasterEntryQuery.searchTagValues[i] )
+        {
+          ilike(rasterEntryQuery.searchTagNames[i], "%${rasterEntryQuery.searchTagValues[i]}%")
+        }
+      }
+    }
+
+    def metadata = RasterEntryMetadata.withCriteria(x)
+    def c = RasterEntryMetadata.createCriteria()
+    //def metadata =  c.get( x )
+    //def metadata =  c.list( params, x )
+
+/*
+
+    def count = RasterEntryMetadata.withCriteria {
+        projections { countDistinct("id") }
+        createAlias("rasterEntry", "r")
+        addToCriteria( new IntersectsExpression( "r.groundGeom", groundGeom ) )
+    }
+
+
+    def count = RasterEntry.withCriteria {
+        projections { countDistinct("id") }
+        createAlias("metadata", "m")
+        addToCriteria( new IntersectsExpression( "groundGeom", groundGeom ) )
+    }
+*/
+
+
+    def foo = metadata?.collect {it.rasterEntry}
+
+    foo?.each { it.mainFile }
+
+    return [count: c.count(x), rasterEntries: foo]
+
+
+  }
 }
