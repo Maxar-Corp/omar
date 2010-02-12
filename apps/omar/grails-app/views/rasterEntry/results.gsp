@@ -182,7 +182,7 @@
 
 
   <div class="paginateButtons">
-    <g:paginate controller="rasterEntry" action="results" total="${rasterEntries?.totalCount ?: 0}"
+    <g:paginate controller="rasterEntry" action="results" total="${totalCount ?: 0}"
             max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
   </div>
 </div>
