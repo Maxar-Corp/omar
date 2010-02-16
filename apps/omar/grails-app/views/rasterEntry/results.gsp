@@ -75,10 +75,13 @@
             <thead>
             <tr>
               <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
-              <g:sortableColumn property="acquisitionDate" title="Aquisition Date" params="${queryParams.toMap()}"/>
+              <g:sortableColumn property="acquisitionDate" title="Acquisition Date" params="${queryParams.toMap()}"/>
 
-              <g:each in="${tagHeaderList}" var="tagHeader">
+              <g:each in="${(0..<tagHeaderList?.size())}" var="i">
+                <%--
                 <th>${tagHeader}</th>
+                --%>
+                <g:sortableColumn property="${tagNameList[i]}" title="${tagHeaderList[i]}" params="${queryParams.toMap()}"/>
               </g:each>
 
               <th>Thumbnail</th>
@@ -180,7 +183,11 @@
     </richui:tabContents>
   </richui:tabView>
 
-
+  <g:hiddenField name="totalCount" value="${totalCount ?: 0}"/>
+  <g:hiddenField name="max" value="${params.max}"/>
+  <g:hiddenField name="offset" value="${params.offset}"/>
+  <g:hiddenField name="queryParams" value="${queryParams.toMap()}"/>
+  
   <div class="paginateButtons">
     <g:paginate controller="rasterEntry" action="results" total="${totalCount ?: 0}"
             max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
