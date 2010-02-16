@@ -14,7 +14,7 @@ public class OmsInfoParser
   def additionalTags
   //def tagFile = new File("tags.txt")
 
-  def disbleOldMetadata = false
+  def disbleOldMetadata = true
 
   public def processRasterDataSets(GPathResult oms, Repository repository = null)
   {

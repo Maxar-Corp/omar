@@ -116,10 +116,30 @@ class RasterEntrySearchService
       {
         maxResults(params.max as Integer)
       }
-//      if ( params?.sort && params.order )
-//      {
-//        order(params?.sort, params?.order)
-//      }
+      if ( params?.offset )
+      {
+        firstResult(params.offset as Integer)
+      }
+      if ( params?.sort && params?.order )
+      {
+        def sortColumn
+
+        // HACK:  Need to find a better way to do this
+        switch ( params?.sort )
+        {
+          case "acquisitionDate":
+          case "width":
+          case "height":
+          case "numberOfBands":
+          case "bitDepth":
+          case "dataType":
+            sortColumn = "r.${params?.sort}"
+            break
+          default:
+            sortColumn = params?.sort
+        }
+        order(sortColumn, params?.order)
+      }
       rasterEntryQuery.searchTagNames?.size()?.times {i ->
         if ( rasterEntryQuery.searchTagNames[i] && rasterEntryQuery.searchTagValues[i] )
         {
@@ -128,20 +148,39 @@ class RasterEntrySearchService
       }
     }
 
+
     def metadata = RasterEntryMetadata.withCriteria(x)
-    def c = RasterEntryMetadata.createCriteria()
+
+
+    def foo = metadata?.collect {it.rasterEntry}
+
+    foo?.each { it.mainFile }
+
+
+    //def c = RasterEntryMetadata.createCriteria()
     //def metadata =  c.get( x )
     //def metadata =  c.list( params, x )
 
-/*
-
-    def count = RasterEntryMetadata.withCriteria {
-        projections { countDistinct("id") }
-        createAlias("rasterEntry", "r")
-        addToCriteria( new IntersectsExpression( "r.groundGeom", groundGeom ) )
+    def totalCount = RasterEntryMetadata.withCriteria {
+      projections { countDistinct("id") }
+      createAlias("rasterEntry", "r")
+      if ( rasterEntryQuery?.groundGeom )
+      {
+        addToCriteria(rasterEntryQuery.createIntersection("r.groundGeom"))
+      }
+      if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
+      {
+        addToCriteria(rasterEntryQuery.createDateRange("r.acquisitionDate"))
+      }
+      rasterEntryQuery.searchTagNames?.size()?.times {i ->
+        if ( rasterEntryQuery.searchTagNames[i] && rasterEntryQuery.searchTagValues[i] )
+        {
+          ilike(rasterEntryQuery.searchTagNames[i], "%${rasterEntryQuery.searchTagValues[i]}%")
+        }
+      }
     }
 
-
+/*
     def count = RasterEntry.withCriteria {
         projections { countDistinct("id") }
         createAlias("metadata", "m")
@@ -149,12 +188,9 @@ class RasterEntrySearchService
     }
 */
 
+//    def totalCount = c.count(x)
 
-    def foo = metadata?.collect {it.rasterEntry}
-
-    foo?.each { it.mainFile }
-
-    return [count: c.count(x), rasterEntries: foo]
+    return [totalCount: totalCount[0], rasterEntries: foo]
 
 
   }

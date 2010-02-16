@@ -128,18 +128,18 @@ class RasterEntryController implements InitializingBean
 
   def search = {
 
-    println "=== search start ==="
+    //println "=== search start ==="
 
     if ( !params.max )
     {
       params.max = 10;
     }
 
-    println "\nparams: ${params?.sort { it.key }}"
+    //println "\nparams: ${params?.sort { it.key }}"
 
     def queryParams = initRasterEntryQuery(params)
 
-    println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
+    //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
     if ( request.method == 'POST' )
     {
@@ -176,15 +176,15 @@ class RasterEntryController implements InitializingBean
 
       log.info(logData)
 
-      println logData
+      //println logData
 
-      println "=== search end ==="
+      //println "=== search end ==="
 
       chain(action: "results", model: [rasterEntries: rasterEntries, totalCount: totalCount], params: params)
     }
     else
     {
-      println "=== search end ==="
+      //println "=== search end ==="
 
       return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS, sidebar: "rasterSearch"]
     }
@@ -192,18 +192,18 @@ class RasterEntryController implements InitializingBean
 
   def search2 = {
 
-    println "=== search start ==="
+    //println "=== search start ==="
 
     if ( !params.max )
     {
       params.max = 10;
     }
 
-    println "\nparams: ${params?.sort { it.key }}"
+    //println "\nparams: ${params?.sort { it.key }}"
 
     def queryParams = initRasterEntryQuery(params)
 
-    println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
+    //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
     if ( request.method == 'POST' )
     {
@@ -241,15 +241,15 @@ class RasterEntryController implements InitializingBean
 
       log.info(logData)
 
-      println logData
+      //println logData
 
-      println "=== search end ==="
+      //println "=== search end ==="
 
       chain(action: "results", model: [rasterEntries: rasterEntries, totalCount: totalCount], params: params)
     }
     else
     {
-      println "=== search end ==="
+      //println "=== search end ==="
 
       return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS, sidebar: "rasterSearch"]
     }
@@ -321,6 +321,7 @@ class RasterEntryController implements InitializingBean
       rasterEntries = xxx?.rasterEntries
       totalCount = xxx?.totalCount
 
+
       def endtime = System.currentTimeMillis()
       def user = authenticateService.principal()?.username
 
@@ -333,8 +334,8 @@ class RasterEntryController implements InitializingBean
           PARAMS: params
       ]
 
-//      println "\nparams: ${params?.sort { it.key }}"
-//      println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
+      //println "\nparams: ${params?.sort { it.key }}"
+      //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
       log.info(logData)
 
