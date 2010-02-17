@@ -28,49 +28,12 @@ class RasterEntrySearchService
       //isNotNull("acquisitionDate")
 
 
-
-      switch ( grailsApplication.config.rasterEntry.queryObject )
-      {
-        case "metadataXml":
-          createAlias("metadataXml", "m")
-
-          searches?.each {name, value ->
-
-            String namevalue
-
-            switch ( name )
-            {
-              case "custom":
-                def pair = value?.split("=");
-
-                if ( pair?.size() == 2 )
-                {
-                  name = pair[0].trim()
-                  value = pair[1].trim()
-                  namevalue = "%<${name}>%${value}%</${name}>%" as String
-                }
-
-                break
-              default:
-                namevalue = "%<${name}>%${value}%</${name}>%" as String
-                break
-            }
-
-            if ( name && value && name != "null" )
-            {
-              ilike("m.namevalue", namevalue)
-            }
-          }
-          break
-        case "metadata":
-          createAlias("metadata", "m")
-          searches?.each {name, value ->
-            if ( name && value )
-            {
-              ilike("m.${name}", "%${value}%")
-            }
-          }
-          break
+      createAlias("metadata", "m")
+      searches?.each {name, value ->
+        if ( name && value )
+        {
+          ilike("m.${name}", "%${value}%")
+        }
       }
 
       if ( clause )
@@ -80,19 +43,9 @@ class RasterEntrySearchService
     }
 
     // HACK to force eager loading
-    switch ( grailsApplication.config.rasterEntry.queryObject )
-    {
-      case "metadataXml":
-        rasterEntries?.each {
-          it.metadataTags?.size()
-          it.rasterDataSet?.fileObjects?.size()
-        }
-        break
-      case "metadata":
-        rasterEntries?.each {
-          it.mainFile
-        }
-        break
+
+    rasterEntries?.each {
+      it.mainFile
     }
 
     return rasterEntries
@@ -155,7 +108,6 @@ class RasterEntrySearchService
     def foo = metadata?.collect {it.rasterEntry}
 
     foo?.each { it.mainFile }
-
 
     //def c = RasterEntryMetadata.createCriteria()
     //def metadata =  c.get( x )

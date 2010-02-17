@@ -78,9 +78,9 @@
               <g:sortableColumn property="acquisitionDate" title="Acquisition Date" params="${queryParams.toMap()}"/>
 
               <g:each in="${(0..<tagHeaderList?.size())}" var="i">
-                <%--
-                <th>${tagHeader}</th>
-                --%>
+              <%--
+              <th>${tagHeader}</th>
+              --%>
                 <g:sortableColumn property="${tagNameList[i]}" title="${tagHeaderList[i]}" params="${queryParams.toMap()}"/>
               </g:each>
 
@@ -98,13 +98,7 @@
                 <td><%=tags[rasterEntry]?.find { it.name == tagName }?.value?.encodeAsHTML()%></td>
                 --%>
 
-                  <g:if test="${grailsApplication.config.rasterEntry.queryObject == 'metadataXml'}">
-                    <td><%=rasterEntry?.metadataTags?.find { it.name.equalsIgnoreCase(tagName) }?.value?.encodeAsHTML()%></td>
-                  </g:if>
-                  
-                  <g:if test="${grailsApplication.config.rasterEntry.queryObject == 'metadata'}">
-                    <td><%="${rasterEntry.metadata."${tagName}"}"%></td>
-                  </g:if>
+                  <td><%="${rasterEntry.metadata."${tagName}"}"%></td>
 
                 </g:each>
 
@@ -187,7 +181,7 @@
   <g:hiddenField name="max" value="${params.max}"/>
   <g:hiddenField name="offset" value="${params.offset}"/>
   <g:hiddenField name="queryParams" value="${queryParams.toMap()}"/>
-  
+
   <div class="paginateButtons">
     <g:paginate controller="rasterEntry" action="results" total="${totalCount ?: 0}"
             max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>

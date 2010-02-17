@@ -15,14 +15,12 @@ class RasterEntry
   Geometry groundGeom
   Date acquisitionDate
 
-  MetadataXml metadataXml  // Now a one-to-one
 
   RasterEntryMetadata metadata
 
   static belongsTo = [rasterDataSet: RasterDataSet]
 
   static hasMany = [
-      metadataTags: MetadataTag,
       fileObjects: RasterEntryFile
   ]
 
@@ -45,11 +43,9 @@ class RasterEntry
     gsdX(nullable: true)
     gsdY(nullable: true)
 
-    metadataXml(nullable: true)
 
     groundGeom(nullable: false)
     acquisitionDate(nullable: true)
-    //metadataTags(nullable: true)
 
     metadata(nullable: true)
   }
