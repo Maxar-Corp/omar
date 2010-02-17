@@ -93,7 +93,7 @@ public class WMSCapabilities
         def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : ""
 
         def filename = file.name
-        def imageId = rasterEntry.metadataTags?.find { it.name == "iid2" }
+        def imageId = rasterEntry.metadata?.imageId
 
         // If there is an imageId,  display that as title for KML
         if ( imageId && imageId.value )

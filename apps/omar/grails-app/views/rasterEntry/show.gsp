@@ -84,6 +84,7 @@
 
         </tr>
 
+<%--
         <tr class="prop">
           <td valign="top" class="name">Metadata Tags:</td>
 
@@ -92,7 +93,7 @@
           </td>
 
         </tr>
-
+--%>
         <tr class="prop">
           <td valign="top" class="name">File Objects:</td>
 

@@ -14,8 +14,6 @@ public class OmsInfoParser
   def additionalTags
   //def tagFile = new File("tags.txt")
 
-  def disbleOldMetadata = true
-
   public def processRasterDataSets(GPathResult oms, Repository repository = null)
   {
     def rasterDataSets = []
@@ -141,107 +139,12 @@ public class OmsInfoParser
 
     def metadataNode = rasterEntryNode.metadata
 
-
-    additionalTags?.each {k, v -> re1.addToMetadataTags(new MetadataTag(name: k, value: v)) }
-
     initRasterEntryMetadata(metadataNode, rasterEntry)
     initRasterEntryOtherTagsXml(rasterEntry.metadata)
-
-    if ( !disbleOldMetadata )
-    {
-      initMetadataTags(metadataNode, rasterEntry)
-      initMetadataXml(rasterEntry)
-    }
 
     return rasterEntry
   }
 
-  private def initMetadataTags(metadataNode, rasterEntry)
-  {
-    metadataNode.children().each {tagNode ->
-
-      if ( tagNode.children().size() > 0 )
-      {
-
-        def name = tagNode.name().toString().trim().toUpperCase()
-
-        //tagFile.append("${name}\n")
-
-        switch ( name )
-        {
-//          case "DTED_ACC_RECORD":
-//          case "ICHIPB":
-//          case "PIAIMC":
-//          case "RPC00B":
-//          case "STDIDC":
-//          case "USE00A":
-//            break
-          default:
-            initMetadataTags(tagNode, rasterEntry)
-        }
-      }
-      else
-      {
-        MetadataTag metadataTag = initMetadataTag(tagNode)
-
-        if ( metadataTag )
-        {
-          rasterEntry.addToMetadataTags(metadataTag)
-        }
-      }
-    }
-  }
-
-  private def initMetadataXml(rasterEntry)
-  {
-    def writer = new StringWriter()
-    def metadataBuilder = new groovy.xml.MarkupBuilder(writer)
-
-    metadataBuilder.metadata {
-      rasterEntry?.metadataTags?.each {metadataTag ->
-        def name = metadataTag.name.toLowerCase()
-        def value = metadataTag.value
-
-        "${name}"(value)
-
-      }
-    }
-
-    def metadataXml = new MetadataXml()
-
-    metadataXml.namevalue = writer.buffer
-
-    //rasterEntry?.addToMetadataXml(metadataXml)
-    rasterEntry.metadataXml = metadataXml
-
-    //println rasterEntry.metadataXml.data
-  }
-
-  private MetadataTag initMetadataTag(tagNode)
-  {
-    def metadataTag = null
-    def name = tagNode.name()?.toString().trim()
-    def value = tagNode?.text().toString().trim()
-
-    if ( name && value )
-    {
-      def key = name.toUpperCase()
-
-      if ( !key.startsWith("LINE_NUM") &&
-          !key.startsWith("LINE_DEN") &&
-          !key.startsWith("SAMP_NUM") &&
-          !key.startsWith("SAMP_DEN") &&
-          !key.startsWith("SECONDARY_BE") &&
-          !key.equals("ENABLED") &&
-          !key.equals("ENABLE_CACHE")
-      )
-      {
-        metadataTag = new MetadataTag(name: name, value: value)
-      }
-    }
-
-    return metadataTag
-  }
 
   private def initGroundGeom(rasterEntryNode)
   {
@@ -327,6 +230,17 @@ public class OmsInfoParser
         def name = tagNode.name().toString().trim()
         def value = tagNode.text().toString().trim()
 
+
+// Need to add following check in there        
+//        if ( !key.startsWith("LINE_NUM") &&
+//            !key.startsWith("LINE_DEN") &&
+//            !key.startsWith("SAMP_NUM") &&
+//            !key.startsWith("SAMP_DEN") &&
+//            !key.startsWith("SECONDARY_BE") &&
+//            !key.equals("ENABLED") &&
+//            !key.equals("ENABLE_CACHE")
+
+
         if ( name && value )
         {
           switch ( name.toLowerCase() )
@@ -394,6 +308,7 @@ public class OmsInfoParser
             case "class_name":
               rasterEntry.metadata.className = value
               break
+
             default:
               rasterEntry.metadata.otherTagsMap[name] = value
           }

@@ -203,54 +203,29 @@ rasterEntry.metadata.tagHeaderList = [
     "Image Id"
 ]
 
-rasterEntry.queryObject = "metadata"
 
-switch ( rasterEntry.queryObject )
-{
-  case "metadataXml":
-    rasterEntry.metadata.tagNameList = [
-        "file_type",
-        "class_name",
-        "isorce",
+rasterEntry.metadata.tagNameList = [
+    "fileType",
+    "className",
+    "missionId",
 //        "country",
-        "tgtid",
-        "icat",
-        "iid2"
-    ]
+    "targetId",
+    "sensorId",
+    "imageId"
+]
 
-    rasterEntry.searchTagData = [
-        [name: "custom", description: "Custom name=value"],
-        [name: "file_type", description: "File Type"],
-        [name: "class_name", description: "Class Name"]
-    ]
-    break
+rasterEntry.searchTagData = [
+    [name: "fileType", description: "File Type"],
+    [name: "className", description: "Class Name"],
+    [name: "missionId", description: "Mission"],
+    [name: "targetId", description: "BE Number"],
+    [name: "sensorId", description: "Sensor"],
+    [name: "imageId", description: "Image Id"]
+]
 
-  case "metadata":
-    rasterEntry.metadata.tagNameList = [
-        "fileType",
-        "className",
-        "missionId",
-//        "country",
-        "targetId",
-        "sensorId",
-        "imageId"
-    ]
-
-    rasterEntry.searchTagData = [
-        [name: "fileType", description: "File Type"],
-        [name: "className", description: "Class Name"],
-        [name: "missionId", description: "Mission"],
-        [name: "targetId", description: "BE Number"],
-        [name: "sensorId", description: "Sensor"],
-        [name: "imageId", description: "Image Id"]
-    ]
-
-    break
-}
-
-kml.maxImages=100
-kml.maxVideos=100
-kml.defaultImages=10
-kml.defaultVideos=10
-kml.daysCoverage=30
-kml.viewRefreshTime=2
+kml.maxImages = 100
+kml.maxVideos = 100
+kml.defaultImages = 10
+kml.defaultVideos = 10
+kml.daysCoverage = 30
+kml.viewRefreshTime = 2
