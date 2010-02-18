@@ -58,11 +58,18 @@ class RasterEntry
 
   def getMainFile()
   {
-    def mainFile = rasterDataSet?.fileObjects?.find { it.type == 'main' }
+    def mainFile = null //rasterDataSet?.fileObjects?.find { it.type == 'main' }
 
     if ( !mainFile )
     {
-      mainFile = RasterFile.findByRasterDataSetAndType(rasterDataSet, "main")
+      //mainFile = RasterFile.findByRasterDataSetAndType(rasterDataSet, "main")
+
+      mainFile = RasterFile.createCriteria().get {
+        eq("type", "main")
+        createAlias("rasterDataSet", "d")
+        eq("rasterDataSet", this.rasterDataSet)
+      }
+
     }
 
     return mainFile

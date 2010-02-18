@@ -14,6 +14,8 @@ class RasterEntryController implements InitializingBean
   public static final List tagHeaderList
   public static final List tagNameList
 
+  def includeCount = true
+
   def index = { redirect(action: list, params: params) }
 
   // the delete, save and update actions only accept POST requests
@@ -156,12 +158,14 @@ class RasterEntryController implements InitializingBean
       def user = authenticateService.principal().username
       def starttime = System.currentTimeMillis()
 
-      //def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-      //def totalCount = rasterEntries?.totalCount
-
-      def xxx = rasterEntrySearchService.method3(queryParams, params)
+      def xxx = rasterEntrySearchService.runQuery(queryParams, params, includeCount)
       def rasterEntries = xxx?.rasterEntries
       def totalCount = xxx?.totalCount
+
+      def rasterFiles = RasterFile.createCriteria().list {
+        eq("type", "main")
+        inList("rasterDataSet", rasterEntries.rasterDataSet)
+      }
 
       def endtime = System.currentTimeMillis()
 
@@ -180,7 +184,7 @@ class RasterEntryController implements InitializingBean
 
       //println "=== search end ==="
 
-      chain(action: "results", model: [rasterEntries: rasterEntries, totalCount: totalCount], params: params)
+      chain(action: "results", model: [rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
     }
     else
     {
@@ -220,13 +224,14 @@ class RasterEntryController implements InitializingBean
       def user = authenticateService.principal().username
       def starttime = System.currentTimeMillis()
 
-      //def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-      //def totalCount = rasterEntries?.totalCount
-
-      def xxx = rasterEntrySearchService.method3(queryParams, params)
+      def xxx = rasterEntrySearchService.runQuery(queryParams, params, includeCount)
       def rasterEntries = xxx?.rasterEntries
       def totalCount = xxx?.totalCount
 
+      def rasterFiles = RasterFile.createCriteria().list {
+        eq("type", "main")
+        inList("rasterDataSet", rasterEntries.rasterDataSet)
+      }
 
       def endtime = System.currentTimeMillis()
 
@@ -245,7 +250,7 @@ class RasterEntryController implements InitializingBean
 
       //println "=== search end ==="
 
-      chain(action: "results", model: [rasterEntries: rasterEntries, totalCount: totalCount], params: params)
+      chain(action: "results", model: [rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
     }
     else
     {
@@ -303,6 +308,7 @@ class RasterEntryController implements InitializingBean
 
     def rasterEntries = null
     def totalCount = null
+    def rasterFiles = null
 
     def queryParams = initRasterEntryQuery(params)
 
@@ -310,17 +316,19 @@ class RasterEntryController implements InitializingBean
     {
       rasterEntries = chainModel.rasterEntries
       totalCount = chainModel.totalCount
+      rasterFiles = chainModel.rasterFiles
     }
     else
     {
-      //rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-      //totalCount = rasterEntries?.totalCount
-
-      def xxx = rasterEntrySearchService.method3(queryParams, params)
+      def xxx = rasterEntrySearchService.runQuery(queryParams, params, includeCount)
 
       rasterEntries = xxx?.rasterEntries
       totalCount = xxx?.totalCount
 
+      rasterFiles = RasterFile.createCriteria().list {
+        eq("type", "main")
+        inList("rasterDataSet", rasterEntries?.rasterDataSet)
+      }
 
       def endtime = System.currentTimeMillis()
       def user = authenticateService.principal()?.username
@@ -347,6 +355,7 @@ class RasterEntryController implements InitializingBean
     render(view: 'results', model: [
         rasterEntries: rasterEntries,
         totalCount: totalCount,
+        rasterFiles: rasterFiles,
         tagNameList: tagNameList,
         tagHeaderList: tagHeaderList,
         queryParams: queryParams

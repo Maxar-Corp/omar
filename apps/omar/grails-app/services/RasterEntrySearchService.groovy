@@ -9,52 +9,9 @@ class RasterEntrySearchService
 
   static transactional = false
 
-  List<RasterEntry> runQuery(
-  /*@WebParam (name = "rasterEntryQuery", header = true)*/
-  RasterEntryQuery rasterEntryQuery,
-  /*@WebParam (name = "params", header = true)*/
-  Map<String, String> params)
+
+  Map<String, Object> runQuery(RasterEntryQuery rasterEntryQuery, Map<String, String> params, boolean includeCount = true)
   {
-    def clause = rasterEntryQuery.createClause()
-
-    def rasterEntries = RasterEntry.createCriteria().list(params) {
-      def searches = [:]
-
-      rasterEntryQuery?.searchTagNames?.eachWithIndex {name, i ->
-        searches[name] = rasterEntryQuery?.searchTagValues[i]
-      }
-
-      // This may be true of site, but not necessarily outside
-      //isNotNull("acquisitionDate")
-
-
-      createAlias("metadata", "m")
-      searches?.each {name, value ->
-        if ( name && value )
-        {
-          ilike("m.${name}", "%${value}%")
-        }
-      }
-
-      if ( clause )
-      {
-        addToCriteria(clause)
-      }
-    }
-
-    // HACK to force eager loading
-
-    rasterEntries?.each {
-      it.mainFile
-    }
-
-    return rasterEntries
-  }
-
-
-  Map<String, Object> method3(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
-  {
-
     def x = {
       createAlias("rasterEntry", "r")
       if ( rasterEntryQuery?.groundGeom )
@@ -101,49 +58,35 @@ class RasterEntrySearchService
       }
     }
 
+    def metadata = RasterEntryMetadata.createCriteria().list(x)
+    def rasterEntries = metadata?.collect {it.rasterEntry}
 
-    def metadata = RasterEntryMetadata.withCriteria(x)
+    //rasterEntries?.each { it.mainFile }
 
+    def totalCount = null
 
-    def foo = metadata?.collect {it.rasterEntry}
-
-    foo?.each { it.mainFile }
-
-    //def c = RasterEntryMetadata.createCriteria()
-    //def metadata =  c.get( x )
-    //def metadata =  c.list( params, x )
-
-    def totalCount = RasterEntryMetadata.withCriteria {
-      projections { countDistinct("id") }
-      createAlias("rasterEntry", "r")
-      if ( rasterEntryQuery?.groundGeom )
-      {
-        addToCriteria(rasterEntryQuery.createIntersection("r.groundGeom"))
-      }
-      if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
-      {
-        addToCriteria(rasterEntryQuery.createDateRange("r.acquisitionDate"))
-      }
-      rasterEntryQuery.searchTagNames?.size()?.times {i ->
-        if ( rasterEntryQuery.searchTagNames[i] && rasterEntryQuery.searchTagValues[i] )
+    if ( includeCount )
+    {
+      totalCount = RasterEntryMetadata.createCriteria().get {
+        projections { rowCount() }
+        createAlias("rasterEntry", "r")
+        if ( rasterEntryQuery?.groundGeom )
         {
-          ilike(rasterEntryQuery.searchTagNames[i], "%${rasterEntryQuery.searchTagValues[i]}%")
+          addToCriteria(rasterEntryQuery.createIntersection("r.groundGeom"))
+        }
+        if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
+        {
+          addToCriteria(rasterEntryQuery.createDateRange("r.acquisitionDate"))
+        }
+        rasterEntryQuery.searchTagNames?.size()?.times {i ->
+          if ( rasterEntryQuery.searchTagNames[i] && rasterEntryQuery.searchTagValues[i] )
+          {
+            ilike(rasterEntryQuery.searchTagNames[i], "%${rasterEntryQuery.searchTagValues[i]}%")
+          }
         }
       }
     }
 
-/*
-    def count = RasterEntry.withCriteria {
-        projections { countDistinct("id") }
-        createAlias("metadata", "m")
-        addToCriteria( new IntersectsExpression( "groundGeom", groundGeom ) )
-    }
-*/
-
-//    def totalCount = c.count(x)
-
-    return [totalCount: totalCount[0], rasterEntries: foo]
-
-
+    return [totalCount: totalCount, rasterEntries: rasterEntries]
   }
 }
