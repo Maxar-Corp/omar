@@ -78,9 +78,6 @@
               <g:sortableColumn property="acquisitionDate" title="Acquisition Date" params="${queryParams.toMap()}"/>
 
               <g:each in="${(0..<tagHeaderList?.size())}" var="i">
-              <%--
-              <th>${tagHeader}</th>
-              --%>
                 <g:sortableColumn property="${tagNameList[i]}" title="${tagHeaderList[i]}" params="${queryParams.toMap()}"/>
               </g:each>
 
@@ -94,12 +91,7 @@
                 <td>${rasterEntry.acquisitionDate?.encodeAsHTML()}</td>
 
                 <g:each in="${tagNameList}" var="tagName">
-                <%--
-                <td><%=tags[rasterEntry]?.find { it.name == tagName }?.value?.encodeAsHTML()%></td>
-                --%>
-
                   <td><%="${rasterEntry.metadata."${tagName}"}"%></td>
-
                 </g:each>
 
                 <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
@@ -127,7 +119,8 @@
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
-                <td>${rasterEntry.mainFile?.name?.encodeAsHTML()}</td>
+                <g:set var="rasterFile" value="${rasterFiles.find { it.rasterDataSet == rasterEntry.rasterDataSet }}"/>
+                <td>${rasterFile?.name?.encodeAsHTML()}</td>
                 <td>${rasterEntry.entryId?.encodeAsHTML()}</td>
                 <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
                   <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>

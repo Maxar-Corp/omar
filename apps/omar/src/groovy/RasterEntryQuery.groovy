@@ -84,8 +84,6 @@ class RasterEntryQuery
 
     if ( startDate && endDate )
     {
-      //range = Restrictions.between("acquisitionDate", startDate, endDate)
-
       range = Restrictions.and(
           Restrictions.ge(dateColumnName, startDate),
           Restrictions.le(dateColumnName, endDate)
