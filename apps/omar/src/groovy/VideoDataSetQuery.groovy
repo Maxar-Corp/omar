@@ -65,7 +65,7 @@ class VideoDataSetQuery
     return clause
   }
 
-  private def createDateRange()
+  Criterion createDateRange(String startDateColumnName = "startDate", String endDateColumnName = "endDate")
   {
     def range = null
 
@@ -85,37 +85,49 @@ class VideoDataSetQuery
     if ( startDate && endDate )
     {
 //      range = Restrictions.or(
-//          Restrictions.between("startDate", startDate, endDate),
-//          Restrictions.between("endDate", startDate, endDate)
+//          Restrictions.between(startDateColumnName, startDate, endDate),
+//          Restrictions.between(endDateColumnName, startDate, endDate)
       range = Restrictions.or(
           Restrictions.and(
-              Restrictions.ge("startDate", startDate),
-              Restrictions.le("startDate", endDate)),
+              Restrictions.ge(startDateColumnName, startDate),
+              Restrictions.le(startDateColumnName, endDate)),
           Restrictions.and(
-              Restrictions.ge("endDate", startDate),
-              Restrictions.le("endDate", endDate))
+              Restrictions.ge(endDateColumnName, startDate),
+              Restrictions.le(endDateColumnName, endDate))
       )
     }
     else
     {
       if ( startDate )
       {
-        range = Restrictions.ge("endDate", startDate)
+        range = Restrictions.ge(endDateColumnName, startDate)
       }
       else if ( endDate )
       {
-        range = Restrictions.le("startDate", endDate)
+        range = Restrictions.le(startDateColumnName, endDate)
       }
     }
 
     return range
   }
 
-  private IntersectsExpression createIntersection()
+  IntersectsExpression createIntersection(String geomColumnName = "groundGeom")
   {
     def intersects = null
 
+    Geometry groundGeom = getGroundGeom()
 
+    if ( groundGeom )
+    {
+      intersects = new IntersectsExpression(geomColumnName, groundGeom)
+    }
+
+    return intersects
+  }
+
+
+  def getGroundGeom()
+  {
     def srs = "4326"
     def wkt = null
     def bounds = null
@@ -123,22 +135,35 @@ class VideoDataSetQuery
     switch ( searchMethod )
     {
       case BBOX_SEARCH:
+        def minLat, minLon, maxLat, maxLon
         if ( aoiMaxLat && aoiMinLon && aoiMinLat && aoiMaxLon )
         {
-          def coordinateConversionService = new CoordinateConversionService()
-
-          aoiMaxLat = coordinateConversionService.convertToDecimalDegrees(aoiMaxLat)
-          aoiMaxLon = coordinateConversionService.convertToDecimalDegrees(aoiMaxLon)
-          aoiMinLat = coordinateConversionService.convertToDecimalDegrees(aoiMinLat)
-          aoiMinLon = coordinateConversionService.convertToDecimalDegrees(aoiMinLon)
-
-          wkt = Geometry.createPolygon(
-              aoiMinLon,
-              aoiMinLat,
-              aoiMaxLon,
-              aoiMaxLat
-          )
+          minLat = aoiMinLat
+          minLon = aoiMinLon
+          maxLat = aoiMaxLat
+          maxLon = aoiMaxLon
         }
+        else
+        {
+          minLat = viewMinLat
+          minLon = viewMinLon
+          maxLat = viewMaxLat
+          maxLon = viewMaxLon
+        }
+
+        def coordinateConversionService = new CoordinateConversionService()
+
+        maxLat = coordinateConversionService.convertToDecimalDegrees(maxLat)
+        maxLon = coordinateConversionService.convertToDecimalDegrees(maxLon)
+        minLat = coordinateConversionService.convertToDecimalDegrees(minLat)
+        minLon = coordinateConversionService.convertToDecimalDegrees(minLon)
+
+        wkt = Geometry.createPolygon(
+            minLon,
+            minLat,
+            maxLon,
+            maxLat
+        )
         break
 
       case RADIUS_SEARCH:
@@ -148,6 +173,7 @@ class VideoDataSetQuery
 
           centerLat = coordinateConversionService.convertToDecimalDegrees(centerLat)
           centerLon = coordinateConversionService.convertToDecimalDegrees(centerLon)
+
           wkt = coordinateConversionService.computePointRadiusWKT(centerLon, centerLat, aoiRadius)
         }
         break
@@ -158,11 +184,11 @@ class VideoDataSetQuery
       //println wkt
       bounds = Geometry.fromString("SRID=${srs};${wkt}")
       //println bounds
-      intersects = new IntersectsExpression("groundGeom", bounds)
     }
 
-    return intersects
+    return bounds
   }
+
 
   def toMap()
   {

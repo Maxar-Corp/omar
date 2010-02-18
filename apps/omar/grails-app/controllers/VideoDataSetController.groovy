@@ -1,8 +1,7 @@
 import org.springframework.beans.factory.InitializingBean
 import groovy.xml.StreamingMarkupBuilder
- 
-import org.grails.plugins.springsecurity.service.AuthenticateService
 
+import org.grails.plugins.springsecurity.service.AuthenticateService
 
 //import grails.converters.*
 
@@ -136,18 +135,18 @@ class VideoDataSetController implements InitializingBean
 
   def search = {
 
-    println "=== search start ==="
+    //println "=== search start ==="
 
     if ( !params.max )
     {
       params.max = 10;
     }
 
-    println "\nparams: ${params?.sort { it.key }}"
+    //println "\nparams: ${params?.sort { it.key }}"
 
     def queryParams = initVideoDataSetQuery(params)
 
-    println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
+    //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
     if ( request.method == 'POST' )
     {
@@ -165,6 +164,13 @@ class VideoDataSetController implements InitializingBean
       def starttime = System.currentTimeMillis()
 
       def videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
+      def totalCount = videoDataSetSearchService.getCount(queryParams)
+
+      def videoFiles = VideoFile.createCriteria().list {
+        eq("type", "main")
+        inList("videoDataSet", videoDataSets)
+      }
+
 
 
       def endtime = System.currentTimeMillis()
@@ -180,15 +186,15 @@ class VideoDataSetController implements InitializingBean
 
       log.info(logData)
 
-      println logData
+      //println logData
 
-      println "=== search end ==="
+      //println "=== search end ==="
 
-      chain(action: "results", model: [videoDataSets: videoDataSets], params: params)
+      chain(action: "results", model: [videoDataSets: videoDataSets, totalCount: totalCount, videoFiles: videoFiles], params: params)
     }
     else
     {
-      println "=== search end ==="
+      //println "=== search end ==="
 
       return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
@@ -231,7 +237,7 @@ class VideoDataSetController implements InitializingBean
 
   def results = {
 
-    println "=== results start ==="
+    //println "=== results start ==="
 
     def starttime = System.currentTimeMillis()
 
@@ -241,15 +247,27 @@ class VideoDataSetController implements InitializingBean
     }
 
     def videoDataSets = null
+    def totalCount = null
+    def videoFiles = null
+
     def queryParams = initVideoDataSetQuery(params)
 
     if ( chainModel )
     {
       videoDataSets = chainModel.videoDataSets
+      totalCount = chainModel.totalCount
+      videoFiles = chainModel.videoFiles
     }
     else
     {
       videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
+      totalCount = videoDataSetSearchService.getCount(queryParams)
+
+      videoFiles = VideoFile.createCriteria().list {
+        eq("type", "main")
+        inList("videoDataSet", videoDataSets)
+      }
+
 
       def endtime = System.currentTimeMillis()
       def user = authenticateService.principal()?.username
@@ -264,18 +282,20 @@ class VideoDataSetController implements InitializingBean
       ]
 
 
-      println "\nparams: ${params?.sort { it.key }}"
-      println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
+      //println "\nparams: ${params?.sort { it.key }}"
+      //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
       log.info(logData)
 
-      println logData
+      //println logData
     }
 
-    println "=== results end ==="
+    //println "=== results end ==="
 
     render(view: 'results', model: [
         videoDataSets: videoDataSets,
+        videoFiles: videoFiles,
+        totalCount: totalCount,
         tagNameList: tagNameList,
         tagHeaderList: tagHeaderList,
         queryParams: queryParams
@@ -284,49 +304,50 @@ class VideoDataSetController implements InitializingBean
   }
 
   def kmlnetworklink = {
-      def kmlbuilder = new StreamingMarkupBuilder()
+    def kmlbuilder = new StreamingMarkupBuilder()
 
-      kmlbuilder.encoding = "UTF-8"
+    kmlbuilder.encoding = "UTF-8"
 
 
-      params.remove("_action_kmlnetworklink")
+    params.remove("_action_kmlnetworklink")
 
-      params.dateSort = "false"
+    params.dateSort = "false"
 
-      def serviceAddress = createLink(absolute: true, controller: "kmlQuery", action: "getVideosKml", params: params)
+    def serviceAddress = createLink(absolute: true, controller: "kmlQuery", action: "getVideosKml", params: params)
 
-      def kmlnode = {
-        mkp.xmlDeclaration()
-        kml("xmlns": "http://earth.google.com/kml/2.1") {
-          Folder() {
-            name("Videos")
+    def kmlnode = {
+      mkp.xmlDeclaration()
+      kml("xmlns": "http://earth.google.com/kml/2.1") {
+        Folder() {
+          name("Videos")
+          visibility("1")
+          open("1")
+          description("")
+          NetworkLink() {
+            name("Video Query")
             visibility("1")
             open("1")
             description("")
-            NetworkLink() {
-              name("Video Query")
-              visibility("1")
-              open("1")
-              description("")
-              refreshVisibility("0")
-              flyToView("0")
-              Link() {
-                href() {
-                  mkp.yieldUnescaped("<![CDATA[${serviceAddress}]]>")
-                }
-                refreshInterval("2000")
-                refreshMode("onRequest")
-                refreshTime("200")
+            refreshVisibility("0")
+            flyToView("0")
+            Link() {
+              href() {
+                mkp.yieldUnescaped("<![CDATA[${serviceAddress}]]>")
               }
+              refreshInterval("2000")
+              refreshMode("onRequest")
+              refreshTime("200")
             }
           }
         }
       }
-      kmlbuilder.bind(kmlnode)
-      response.setHeader("Content-disposition", "attachment; filename=singleRequestTopVideos.kml")
-      render(contentType: "application/vnd.google-earth.kml+xml", text: kmlbuilder.bind(kmlnode).toString(), encoding: "UTF-8")
-
     }
+    kmlbuilder.bind(kmlnode)
+    response.setHeader("Content-disposition", "attachment; filename=singleRequestTopVideos.kml")
+    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlbuilder.bind(kmlnode).toString(), encoding: "UTF-8")
+
+  }
+
   public void afterPropertiesSet()
   {
     baseWMS = grailsApplication.config.wms.base

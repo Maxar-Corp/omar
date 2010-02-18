@@ -31,11 +31,18 @@ class VideoDataSet
 
   def getMainFile()
   {
-    def mainFile = fileObjects?.find { it.type == 'main' }
+    def mainFile = null //videoDataSet?.fileObjects?.find { it.type == 'main' }
 
     if ( !mainFile )
     {
-      mainFile = VideoFile.findByVideoDataSetAndType(this, "main")
+      //mainFile = RasterFile.findByRasterDataSetAndType(videoDataSet, "main")
+
+      mainFile = VideoFile.createCriteria().get {
+        eq("type", "main")
+        createAlias("videoDataSet", "d")
+        eq("videoDataSet", this)
+      }
+
     }
 
     return mainFile

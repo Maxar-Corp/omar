@@ -67,26 +67,33 @@ class RasterEntrySearchService
 
     if ( includeCount )
     {
-      totalCount = RasterEntryMetadata.createCriteria().get {
-        projections { rowCount() }
-        createAlias("rasterEntry", "r")
-        if ( rasterEntryQuery?.groundGeom )
+      totalCount = getCount(rasterEntryQuery)
+    }
+
+    return [totalCount: totalCount, rasterEntries: rasterEntries]
+  }
+
+  int getCount(RasterEntryQuery rasterEntryQuery)
+  {
+    def totalCount = RasterEntryMetadata.createCriteria().get {
+      projections { rowCount() }
+      createAlias("rasterEntry", "r")
+      if ( rasterEntryQuery?.groundGeom )
+      {
+        addToCriteria(rasterEntryQuery.createIntersection("r.groundGeom"))
+      }
+      if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
+      {
+        addToCriteria(rasterEntryQuery.createDateRange("r.acquisitionDate"))
+      }
+      rasterEntryQuery.searchTagNames?.size()?.times {i ->
+        if ( rasterEntryQuery.searchTagNames[i] && rasterEntryQuery.searchTagValues[i] )
         {
-          addToCriteria(rasterEntryQuery.createIntersection("r.groundGeom"))
-        }
-        if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
-        {
-          addToCriteria(rasterEntryQuery.createDateRange("r.acquisitionDate"))
-        }
-        rasterEntryQuery.searchTagNames?.size()?.times {i ->
-          if ( rasterEntryQuery.searchTagNames[i] && rasterEntryQuery.searchTagValues[i] )
-          {
-            ilike(rasterEntryQuery.searchTagNames[i], "%${rasterEntryQuery.searchTagValues[i]}%")
-          }
+          ilike(rasterEntryQuery.searchTagNames[i], "%${rasterEntryQuery.searchTagValues[i]}%")
         }
       }
     }
 
-    return [totalCount: totalCount, rasterEntries: rasterEntries]
+    return totalCount
   }
 }

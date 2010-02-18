@@ -101,7 +101,8 @@
             <g:each in="${videoDataSets}" status="i" var="videoDataSet">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
-                <td>${videoDataSet.mainFile?.name?.encodeAsHTML()}</td>
+                <g:set var="videoFile" value="${videoFiles.find { it.videoDataSet == videoDataSet }}"/>
+                <td>${videoFile?.name?.encodeAsHTML()}</td>
                 <td>
                   <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.id)}">
                     <img src="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.id, params: [size: 128])}" alt="Show Frame"/>
@@ -117,7 +118,7 @@
   </richui:tabView>
 
   <div class="paginateButtons">
-    <g:paginate controller="videoDataSet" action="results" total="${videoDataSets.totalCount}"
+    <g:paginate controller="videoDataSet" action="results" total="${totalCount ?: 0}"
             max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
   </div>
 </div>

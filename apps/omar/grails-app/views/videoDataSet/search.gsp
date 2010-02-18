@@ -72,8 +72,7 @@
         "${dataWMS.title}",
         "${dataWMS.url}",
         { layers: "${dataWMS.layers}", format: "${dataWMS.format}", VIDEOFILTER: "true=true", transparent: true },
-        {'isBaseLayer': false},
-        {buffer:1}
+        {isBaseLayer:false,buffer:0,visibility:false}
       );
       map.addLayer(dataLayer);
     }
@@ -84,7 +83,7 @@
         "${baseWMS.title}",
         "${baseWMS.url}",
         {layers: '${baseWMS.layers}', format: "${baseWMS.format}" },
-        {buffer:1}
+        {isBaseLayer:true, buffer:0}
       );
       map.addLayer(baseLayer);
       map.setBaseLayer(baseLayer);
