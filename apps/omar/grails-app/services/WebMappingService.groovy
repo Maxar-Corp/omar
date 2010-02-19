@@ -1,20 +1,15 @@
 import java.awt.image.RenderedImage
 
-import java.awt.image.BufferedImage
-import java.awt.image.ColorModel
-import java.awt.image.WritableRaster
-import java.awt.image.DataBuffer
-import java.awt.image.DataBufferByte
-import java.awt.Point
-import java.awt.Rectangle
+import java.awt.image.*;
+import java.awt.*;
 import joms.oms.WmsView
+import joms.oms.ossimDpt
+import joms.oms.ossimGpt
 import joms.oms.WmsMap
 import joms.oms.ossimKeywordlist
 import joms.oms.Util
 import joms.oms.ossimImageGeometryPtr
 import joms.oms.ossimImageGeometry
-import joms.oms.ossimGpt
-import joms.oms.ossimDpt
 import joms.oms.ossimGptVector
 import joms.oms.ossimDptVector
 import org.ossim.oms.image.omsImageSource
@@ -22,6 +17,8 @@ import javax.imageio.ImageIO
 
 class WebMappingService
 {
+  def grailsApplication
+  def rasterEntrySearchService
 
   public static final String SYSCALL = "syscall"
   public static final String LIBCALL = "libcall"
@@ -50,6 +47,65 @@ class WebMappingService
        dptArray.add(new ossimDpt(0.0,h))
     }
     return Util.createBilinearModel(dptArray, gptArray)
+  }
+  void drawCoverage(Graphics2D g, WMSRequest wmsRequest, def geometries, def styleName)
+  {
+    def minx = -180.0
+    def maxx = 180.0
+    def miny = -90.0
+    def maxy = 90.0
+    if ( wmsRequest.bbox )
+    {
+      def bounds = wmsRequest.bbox.split(',')
+      minx = bounds[0] as double
+      miny = bounds[1] as double
+      maxx = bounds[2] as double
+      maxy = bounds[3] as double
+    }
+    def w  = wmsRequest.width as int
+    def h  = wmsRequest.height as int
+
+    
+    def wmsView = new WmsView()
+    def projPoint = new ossimGpt(maxy, minx)
+    def origin = new ossimDpt(0.0, 0.0)
+    def ls = new ossimDpt(0.0, 0.0)
+    wmsView.setProjection(wmsRequest.srs)
+    wmsView.setViewDimensionsAndImageSize(minx, miny, maxx, maxy, w, h)
+    def proj    = wmsView.getProjection()
+    proj.worldToLineSample(projPoint, origin)
+
+    def style = (HashMap)grailsApplication.config.wms.styles.get(styleName)
+    if(!style)
+    {
+      style = (HashMap)grailsApplication.config.wms.styles.get("default")
+    }
+    if(style)
+    {
+      g.setPaint(new Color(style.outlinecolor.r,
+                           style.outlinecolor.g,
+                           style.outlinecolor.b))
+      g.setStroke(new BasicStroke(style.width));
+    }
+    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                       RenderingHints.VALUE_ANTIALIAS_ON);
+    geometries.each {geom ->
+      def pointListx = new int[geom.numPoints()]
+      def pointListy = new int[geom.numPoints()]
+
+      def numPoints = geom.numPoints()
+      (0..<numPoints).each{
+        def point = geom.getPoint(it);
+        projPoint.setLatd(point.y);
+        projPoint.setLond(point.x);
+        proj.worldToLineSample(projPoint, ls);
+        ls.x -= origin.x;
+        ls.y -= origin.y;
+        pointListx[it] = (ls.x as int)
+        pointListy[it] = (ls.y as int)
+      }
+      g.drawPolyline(pointListx, pointListy, pointListx.size())
+    }
   }
   RenderedImage getMap(WMSRequest wmsRequest)
   {
