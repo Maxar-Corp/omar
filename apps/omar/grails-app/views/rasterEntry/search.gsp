@@ -376,37 +376,52 @@
 
       var hasStartDate = sday != "" && smonth != "" && syear != "";
       var startDate = "'" + smonth + "-" + sday + "-" + syear + "'";
+      var startDateNoQuote = syear+smonth+sday;
 
       var hasEndDate = eday != "" && emonth != "" && eyear != "";
       var endDate = "'" + emonth + "-" + eday + "-" + eyear + "'";
-      
+      var wmsTime = ""
       if ( hasStartDate )
       {
         var omarfilter = "acquisition_date>=" + startDate;
-
+        dataLayer.mergeNewParams({startDate:startDateNoQuote});
+        wmsTime = syear+sday+smonth
         if ( hasEndDate )
         {
+          wmsTime += "/"+eyear+emonth+eday
           omarfilter += " and acquisition_date<=" + endDate;
+          dataLayer.mergeNewParams({time:wmsTime});
         }
+        else
+        {
+          wmsTime += "/P1D"
+          dataLayer.mergeNewParams({time:""});
 
+        }
         //alert(omarfilter);
-        dataLayer.mergeNewParams({IMAGEFILTER: omarfilter });
+        dataLayer.mergeNewParams({IMAGEFILTER: omarfilter});
       }
       else
       {
+          dataLayer.mergeNewParams({startDate:""});
         if ( hasEndDate )
         {
+          wmsTime += "P1000Y/" + eyear+emonth+eday
           var omarfilter = "acquisition_date<=" + endDate;
 
           //alert(omarfilter);
-          dataLayer.mergeNewParams({IMAGEFILTER: omarfilter });
+//          dataLayer.mergeNewParams({IMAGEFILTER: omarfilter });
+          dataLayer.mergeNewParams({IMAGEFILTER: omarfilter});
+          dataLayer.mergeNewParams({time:wmsTime});
         }
         else
         {
           var omarfilter = "true=true";
 
           //alert(omarfilter);
+//          dataLayer.mergeNewParams({IMAGEFILTER: omarfilter });
           dataLayer.mergeNewParams({IMAGEFILTER: omarfilter });
+          dataLayer.mergeNewParams({time:""});
         }
       }
     }
