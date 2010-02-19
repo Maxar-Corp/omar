@@ -20,8 +20,8 @@ class OgcController {
 
     def tempMap = [:]
 
-    if (params.max == null || Integer.parseInt(params.max) > 1000) {
-      params.max = 1000
+    if (params.max == null){
+      params.max = grailsApplication.config.wms.maxvectorresults
     }
     // Convert param names to lower case
     params.each { tempMap.put(it.key.toLowerCase(), it.value)}

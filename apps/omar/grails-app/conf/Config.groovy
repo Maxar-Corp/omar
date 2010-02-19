@@ -195,6 +195,8 @@ wms.styles = [
                 width:1
         ]
 ]
+wms.maxvectorresults=10000
+
 thumbnail.cacheDir = (System.properties["os.name"] == "Windows XP") ? "c:/temp" : "${wms.referenceDataDirectory}/omar-cache"
 thumbnail.defaultSize = 512
 
