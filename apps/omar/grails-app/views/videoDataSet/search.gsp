@@ -44,7 +44,7 @@
 
 
   <openlayers:loadTheme theme="default"/>
-  <openlayers:loadMapToolBar/>  
+  <openlayers:loadMapToolBar/>
   <openlayers:loadJavascript/>
   <resource:include components="dateChooser"/>
 
@@ -383,35 +383,39 @@
 
       var hasEndDate = eday != "" && emonth != "" && eyear != "";
       var endDate = "'" + emonth + "-" + eday + "-" + eyear + "'";
+      var wmsTime = ""
 
       if ( hasStartDate && hasEndDate )
       {
+          wmsTime += syear+smonth+sday+"/"+eyear+emonth+eday;
         var omarfilter = "start_date between " + startDate + " and " + endDate + " or " +
             "end_date between " + startDate + " and " + endDate;
-        
+
         //alert(omarfilter);
-        dataLayer.mergeNewParams({VIDEOFILTER: omarfilter });
+        dataLayer.mergeNewParams({VIDEOFILTER: omarfilter,time:wmsTime});
       }
       else if ( hasStartDate )
       {
         var omarfilter = "end_date>=" + startDate;
+          wmsTime += syear+smonth+sday+"/P1000Y";
 
         //alert(omarfilter);
-        dataLayer.mergeNewParams({VIDEOFILTER: omarfilter });
+        dataLayer.mergeNewParams({VIDEOFILTER: omarfilter,time:wmsTime });
       }
       else if ( hasEndDate )
       {
         var omarfilter = "start_date<=" + endDate;
+          wmsTime += "P1000Y/"+eyear+emonth+eday;
 
         //alert(omarfilter);
-        dataLayer.mergeNewParams({VIDEOFILTER: omarfilter });
+        dataLayer.mergeNewParams({VIDEOFILTER: omarfilter,time:wmsTime });
       }
       else
       {
         var omarfilter = "true=true";
 
         //alert(omarfilter);
-        dataLayer.mergeNewParams({VIDEOFILTER: omarfilter });
+        dataLayer.mergeNewParams({VIDEOFILTER: omarfilter,time:wmsTime });
       }
     }
 
