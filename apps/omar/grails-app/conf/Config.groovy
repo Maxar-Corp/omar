@@ -127,7 +127,7 @@ log4j = {
 //log4j.logger.org.springframework.security='off,stdout'
 
 /** *********************************************************************************************************/
-wms.referenceDataDirectory = "/data"
+wms.referenceDataDirectory = "/data/omar"
 
 wms.mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" : ""
 //wms.serverAddress = InetAddress.localHost.hostAddress
@@ -163,21 +163,38 @@ switch ( Environment.current.name.toUpperCase() )
 }
 
 wms.data.raster = [
-    url: "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${wms.data.mapFile}",
+    url: "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0/ogc/footprints?styles=red",
     layers: (wms.supportIE6) ? "Imagery" : "ImageData",
     footprintLayers: "ImageFootprints",
     title: "OMAR Imagery Coverage",
-    format: (wms.supportIE6) ? "image/gif" : "image/png"
+    format: (wms.supportIE6) ? "image/gif" : "image/png",
+    styles: "red"
 ]
 
 wms.data.video = [
-    url: "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${wms.data.mapFile}",
+//    url: "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${wms.data.mapFile}",
+    url: "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0/ogc/footprints?styles=blue",
     layers: (wms.supportIE6) ? "Videos" : "VideoData",
     footprintLayers: "VideoFootprints",
     title: "OMAR Video Coverage",
-    format: (wms.supportIE6) ? "image/gif" : "image/png"
+    format: (wms.supportIE6) ? "image/gif" : "image/png",
+    styles: "blue"
 ]
 
+wms.styles = [
+        default: [
+                outlinecolor:[r:0,g:255,b:0],
+                width:1
+        ],
+        red: [
+                outlinecolor:[r:255,g:0,b:0],
+                width:1
+        ],
+        blue: [
+                outlinecolor:[r:0,g:0,b:255],
+                width:1
+        ]
+]
 thumbnail.cacheDir = (System.properties["os.name"] == "Windows XP") ? "c:/temp" : "${wms.referenceDataDirectory}/omar-cache"
 thumbnail.defaultSize = 512
 
