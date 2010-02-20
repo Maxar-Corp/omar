@@ -95,10 +95,14 @@
     <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
   </span>
   <span class="menuButton">
-    <label>Region:</label>
-    <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts()"/>
+      <label>Region:</label>
+      <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts()"/>
   </span>
-<%--
+  <span class="menuButton">
+      <label>Terrain Correction:</label>
+       <g:select id="terrain_correction" name="terrain_correction" from="${['false', 'true']}" onChange="changeTerrainCorrectionOps()"/>
+    </span>
+  <%--
   <div id="panel2" class="olControlPanel"></div>    
 --%>
 </div>
@@ -126,16 +130,30 @@
   }
   function init()
   {
-    var left = "${left}";
-    var bottom = "${bottom}";
-    var right = "${right}";
-    var top = "${top}";
+    var left = parseFloat("${left}");
+    var bottom = parseFloat("${bottom}");
+    var right = parseFloat("${right}");
+    var top = parseFloat("${top}");
+    var fullResScale = parseFloat("${fullResScale}");
+    var smallestScale = parseFloat("${minScaleFactor}")*fullResScale;
+    var largestScale = parseFloat("${maxScaleFactor}")*fullResScale;
 
-    map = new OpenLayers.Map("map", { controls: [], numZoomLevels: 32 });
+    var bounds    = new OpenLayers.Bounds(left, bottom, right, top);
 
-    var bounds = new OpenLayers.Bounds(left, bottom, right, top);
-
-    map.maxExtent = bounds;
+   if(smallestScale != 0.0)
+   {
+    map = new OpenLayers.Map("map", { controls: [],
+                                      maxExtent:bounds,
+                                      maxResolution:largestScale,
+                                      minResolution:smallestScale });
+   }
+   else
+   {
+    map = new OpenLayers.Map("map", { controls: [],
+                                      maxExtent:bounds,
+                                      minExtent:minBounds,
+                                      minResolution:'auto', maxResolution:'auto' });
+   }
     changeMapSize();
 
 
@@ -151,6 +169,7 @@
 
 
     var zoom = map.getZoomForExtent(bounds, true);
+//    var zoom = map.getZoomForResolution(fullResScale, false);
 
     map.setCenter(bounds.getCenterLonLat(), zoom);
   }
@@ -167,14 +186,13 @@
     var stretch_mode = $("stretch_mode").value;
     var stretch_mode_region = $("stretch_mode_region").value;
     var sharpen_mode = $("sharpen_mode").value;
-    
 
      rasterLayers = [
       new OpenLayers.Layer.WMS( "Raster", "${createLink(controller: 'ogc', action: 'wms')}",
       { layers: "${(rasterEntries*.id).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
-      {isBaseLayer: true, buffer:0, singleTile:true, ratio:1.0, transitionEffect: "resize"})
+      {isBaseLayer: true, buffer:0, singleTile:true, ratio:1.0, quicklook:false, transitionEffect: "resize",
+       displayOutsideMaxExtent:false})
     ];
-
     map.addLayers(rasterLayers);
 
        <g:each in="${kmlOverlays}" var="kmlOverlay" status="i">
@@ -246,6 +264,20 @@
       }
   }
 
+  function changeTerrainCorrectionOps()
+  {
+      var quicklook=true
+     var terrainCorrection = $("terrain_correction").value
+      if(terrainCorrection == "true")
+      {
+          quicklook = false
+      }
+
+    for ( var layer in rasterLayers )
+    {
+      rasterLayers[layer].mergeNewParams({quicklook:quicklook});
+    }
+  }
   function changeHistoOpts()
   {
     var stretch_mode = $("stretch_mode").value;
@@ -271,6 +303,11 @@
       map.zoomIn();
     }
 
+    function zoomInFullRes()
+    {
+        var zoom = map.getZoomForResolution(parseFloat("${fullResScale}"), true)
+        map.zoomTo(zoom)
+    }
     function zoomOut()
     {
       map.zoomOut();
@@ -282,9 +319,13 @@
         var zoomBoxButton = new OpenLayers.Control.ZoomBox(
         {title:"Zoom into an area by clicking and dragging"});
 
-        var zoomInButton = new OpenLayers.Control.Button({title:'Zoom in',
+       var zoomInButton = new OpenLayers.Control.Button({title:'Zoom in',
           displayClass: "olControlZoomIn",
           trigger: zoomIn
+        });
+       var zoomInFullResButton = new OpenLayers.Control.Button({title:'Zoom in full res',
+          displayClass: "olControlZoomIn",
+          trigger: zoomInFullRes
         });
 
         var zoomOutButton = new OpenLayers.Control.Button({title:'Zoom out',
@@ -304,7 +345,6 @@
           nextOptions: {title: "Next View" },
           previousOptions: {title: "Previous View"}
         });
-
 
         map.addControl(navButton);
 
@@ -339,6 +379,7 @@
           zoomOutButton,
           navButton.next, navButton.previous,
           new OpenLayers.Control.ZoomToMaxExtent({title:"Zoom to the max extent"}),
+                zoomInFullResButton,
           measureDistanceButton,
           measureAreaButton
         ]);

@@ -160,7 +160,7 @@ class OgcController {
 
     }
     catch (java.lang.Exception e) {
-      println e
+  //    println e
     }
     if (g) {
       g.dispose()
@@ -173,7 +173,7 @@ class OgcController {
 
     // Convert param names to lower case
     params.each { tempMap.put(it.key.toLowerCase(), it.value)}
-
+   // println params
     // Populate WMSCapabilities Request object
     def wmsRequest = new WMSRequest()
     def debugFlag = false;
