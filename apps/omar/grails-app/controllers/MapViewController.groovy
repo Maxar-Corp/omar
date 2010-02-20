@@ -1,7 +1,7 @@
 import org.springframework.beans.factory.InitializingBean
 
 import javax.media.jai.JAI
-
+import joms.oms.ossimUnitConversionTool
 class MapViewController implements InitializingBean
 {
   def grailsApplication
@@ -19,10 +19,27 @@ class MapViewController implements InitializingBean
 
     def rasterEntries = []
     def kmlOverlays = []
-
+    def unitConversion = new ossimUnitConversionTool(1.0)
+    def fullResScale = 0.0 // default to 1 unit per pixel
+    def minResLevels  = 0 // default to 1 unit per pixel
     rasterEntryIds.each {
       def rasterEntry = RasterEntry.get(it)
-
+      if(rasterEntry.gsdY)
+      {
+        unitConversion.setValue(rasterEntry.gsdY);
+        def testValue = unitConversion.getDegrees();
+        if((fullResScale == 0.0)||(testValue<fullResScale))
+        {
+           fullResScale = testValue
+        }
+      }
+      if(rasterEntry.numberOfResLevels)
+      {
+        if(minResLevels == 0 || rasterEntry.numberOfResLevels < minResLevels)
+        {
+          minResLevels = rasterEntry.numberOfResLevels
+        }
+      }
       rasterEntries << rasterEntry
 
       if ( left == null || rasterEntry.groundGeom?.bounds?.minLon < left )
@@ -58,8 +75,12 @@ class MapViewController implements InitializingBean
         kmlOverlays << kmlOverlay
       }
     }
+    if(minResLevels > 0)
+    {
+      --minResLevels
+    }
 
-    [rasterEntries: rasterEntries, left: left, top: top, right: right, bottom: bottom, kmlOverlays: kmlOverlays]
+    [rasterEntries: rasterEntries, fullResScale:fullResScale, minScaleFactor:0.125, maxScaleFactor:(2**minResLevels), left: left, top: top, right: right, bottom: bottom, kmlOverlays: kmlOverlays]
   }
 
   def getKML = {
