@@ -163,39 +163,44 @@ switch ( Environment.current.name.toUpperCase() )
 }
 
 wms.data.raster = [
-    url: "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0/ogc/footprints?styles=red",
+    url: "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0/ogc/footprints",
     layers: (wms.supportIE6) ? "Imagery" : "ImageData",
     footprintLayers: "ImageFootprints",
     title: "OMAR Imagery Coverage",
     format: (wms.supportIE6) ? "image/gif" : "image/png",
-    styles: "red"
+    styles: "green"
 ]
 
 wms.data.video = [
 //    url: "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${wms.data.mapFile}",
-    url: "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0/ogc/footprints?styles=blue",
+    url: "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0/ogc/footprints",
     layers: (wms.supportIE6) ? "Videos" : "VideoData",
     footprintLayers: "VideoFootprints",
     title: "OMAR Video Coverage",
     format: (wms.supportIE6) ? "image/gif" : "image/png",
-    styles: "blue"
+    styles: "red"
 ]
 
+// Note the colors are normalized floats
 wms.styles = [
         default: [
-                outlinecolor:[r:0,g:255,b:0],
-                width:1
+                outlinecolor:[r:0.0,g:1.0,b:0,a:1.0],
+                width:10
         ],
         red: [
-                outlinecolor:[r:255,g:0,b:0],
+                outlinecolor:[r:1.0,g:0.0,b:0.0,a:1.0],
+                width:1
+        ],
+        green: [
+                outlinecolor:[r:0.0,g:1.0,b:0.0,a:1.0],
                 width:1
         ],
         blue: [
-                outlinecolor:[r:0,g:0,b:255],
+                outlinecolor:[r:0.0,g:0.0,b:1.0,a:1.0],
                 width:1
         ]
 ]
-wms.maxvectorresults=10000
+wms.vector.maxcount=10000
 
 thumbnail.cacheDir = (System.properties["os.name"] == "Windows XP") ? "c:/temp" : "${wms.referenceDataDirectory}/omar-cache"
 thumbnail.defaultSize = 512
