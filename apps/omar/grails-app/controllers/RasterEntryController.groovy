@@ -1,11 +1,10 @@
 import org.springframework.beans.factory.InitializingBean
-import org.grails.plugins.springsecurity.service.AuthenticateService
 import groovy.xml.StreamingMarkupBuilder
 
 class RasterEntryController implements InitializingBean
 {
   def grailsApplication
-  AuthenticateService authenticateService
+  def authenticateService
   def baseWMS
   def dataWMS
 
@@ -162,9 +161,15 @@ class RasterEntryController implements InitializingBean
       def rasterEntries = xxx?.rasterEntries
       def totalCount = xxx?.totalCount
 
-      def rasterFiles = RasterFile.createCriteria().list {
-        eq("type", "main")
-        inList("rasterDataSet", rasterEntries.rasterDataSet)
+
+      def rasterFiles = []
+
+      if ( rasterEntries )
+      {
+        rasterFiles = RasterFile.createCriteria().list {
+          eq("type", "main")
+          inList("rasterDataSet", rasterEntries.rasterDataSet)
+        }
       }
 
       def endtime = System.currentTimeMillis()
@@ -228,9 +233,14 @@ class RasterEntryController implements InitializingBean
       def rasterEntries = xxx?.rasterEntries
       def totalCount = xxx?.totalCount
 
-      def rasterFiles = RasterFile.createCriteria().list {
-        eq("type", "main")
-        inList("rasterDataSet", rasterEntries.rasterDataSet)
+      def rasterFiles = []
+
+      if ( rasterEntries )
+      {
+        rasterFiles = RasterFile.createCriteria().list {
+          eq("type", "main")
+          inList("rasterDataSet", rasterEntries.rasterDataSet)
+        }
       }
 
       def endtime = System.currentTimeMillis()
@@ -325,9 +335,12 @@ class RasterEntryController implements InitializingBean
       rasterEntries = xxx?.rasterEntries
       totalCount = xxx?.totalCount
 
-      rasterFiles = RasterFile.createCriteria().list {
-        eq("type", "main")
-        inList("rasterDataSet", rasterEntries?.rasterDataSet)
+      if ( rasterEntries )
+      {
+        rasterFiles = RasterFile.createCriteria().list {
+          eq("type", "main")
+          inList("rasterDataSet", rasterEntries?.rasterDataSet)
+        }
       }
 
       def endtime = System.currentTimeMillis()
