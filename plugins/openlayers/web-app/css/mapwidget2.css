@@ -11,6 +11,11 @@ div.olControlScale {
   font-weight: bold;
 }
 
+.olControlNoSelect {
+	background-color:#dddddd;
+    margin: 5px;
+}
+
 .olControlPanel div {
   float: left;
   display: block;
@@ -128,4 +133,46 @@ div.olControlScale {
 
 .olControlPanel .olControlNavigationHistoryNextItemInactive {
   background-position: -22px -22px;                                                                                        
+}
+
+.olControlPanel .olControlMeasureDistanceItemActive {
+  width: 24px;
+  height: 24px;
+  background-color: orange;
+  background-image: url('../images/themes/gis/mActionMeasure.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlMeasureDistanceItemInactive {
+  width: 24px;
+  height: 24px; /*background-color: blue;*/
+  background-image: url('../images/themes/gis/mActionMeasure.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlMeasureAreaItemActive {
+  width: 24px;
+  height: 24px;
+  background-color: orange;
+  background-image: url('../images/themes/gis/mActionMeasureArea.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlMeasureAreaItemInactive {
+  width: 24px;
+  height: 24px; /*background-color: blue;*/
+  background-image: url('../images/themes/gis/mActionMeasureArea.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlZoomToLayerItemInactive {
+  width: 24px;
+  height: 24px; /*background-color: blue;*/
+  background-image: url('../images/themes/gis/mActionZoomToLayer.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
 }

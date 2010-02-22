@@ -1,4 +1,4 @@
-<plugin name='openlayers' version='0.5' grailsVersion='1.1.1 &gt; *'>
+<plugin name='openlayers' version='0.8' grailsVersion='1.2.0 &gt; *'>
   <author>Scott Bortman</author>
   <authorEmail>scott.bortman@gmail.com</authorEmail>
   <title>OpenLayers</title>
@@ -10,5 +10,10 @@
     <resource>UrlMappings</resource>
     <resource>OpenlayersTagLib</resource>
   </resources>
-  <dependencies />
+  <dependencies>
+    <resolvers>
+      <resolver type='grailsPlugins' name='grailsPlugins' />
+    </resolvers>
+  </dependencies>
+  <behavior />
 </plugin>
