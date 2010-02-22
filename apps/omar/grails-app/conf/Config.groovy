@@ -204,7 +204,13 @@ security.level = 'UNCLASS'
 //security.level = 'SECRET'
 //security.level = 'TOPSECRET'
 
-omar.release = '1.8.2'
+omar.release = '1.8.4'
+
+/** ********************************* CONDITIONALS FOR VIEWS **********************************************************************/
+// flags for different views
+// we can conditionally turn off browsing on the home page
+//
+views.home.browseEnabled = true
 
 /** *********************************************************************************************************/
 
