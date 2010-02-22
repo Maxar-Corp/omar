@@ -1,0 +1,131 @@
+div.olControlMousePosition {
+  font-family: Verdana;
+  font-size: 1.0em;
+  background-color: white;
+  color: black;
+}
+
+div.olControlScale {
+  background-color: #ffffff;
+  font-size: 1.0em;
+  font-weight: bold;
+}
+
+.olControlPanel div {
+  float: left;
+  display: block;
+  height: 30px;
+  width: 150px;
+  margin: 5px;
+  border: 1px solid #ccc;
+}
+
+.olControlPanel .olControlMouseDefaultsItemActive {
+  width: 22px;
+  height: 22px;
+  background-color: orange;
+  background-image: url('../js/theme/default/img/pan_on.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlMouseDefaultsItemInactive {
+  width: 22px;
+  height: 22px; /*background-color: blue;*/
+  background-image: url('../js/theme/default/img/pan_off.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlDrawFeatureItemActive {
+  width: 22px;
+  height: 22px;
+  background-color: orange;
+  background-image: url('../js/theme/default/img/draw_point_on.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlDrawFeatureItemInactive {
+  width: 22px;
+  height: 22px; /*background-color: blue;*/
+  background-image: url('../js/theme/default/img/draw_point_off.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlZoomBoxItemInactive {
+  width: 22px;
+  height: 22px; /*background-color: blue;*/
+  background-image: url('../js/theme/default/img/drag-rectangle-off.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlZoomBoxItemActive {
+  width: 22px;
+  height: 22px;
+  background-color: orange;
+  background-image: url('../js/theme/default/img/drag-rectangle-on.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlZoomToMaxExtentItemInactive {
+  width: 22px;
+  height: 22px; /*background-color: blue;*/
+  background-image: url('../js/img/zoom-world-mini.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlZoomInItemInactive {
+  width: 22px;
+  height: 22px; /*background-color: blue;*/
+  background-image: url('../js/img/zoom-plus-mini.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlZoomOutItemInactive {
+  width: 22px;
+  height: 22px; /*background-color: blue;*/
+  background-image: url('../js/img/zoom-minus-mini.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+
+.olControlPanel .olControlClearAreaOfInterestItemInactive {
+  width: 22px;
+  height: 22px; /*background-color: blue;*/
+  background-image: url('../js/theme/default/img/remove_point_off.png');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlNavigationHistory {
+/*background-color: blue;*/
+  background-image: url('../js/theme/default/img/navigation_history.png');
+  background-repeat: no-repeat;
+  width: 22px;
+  height: 22px;
+  background-size: 100%;
+
+}
+
+.olControlPanel .olControlNavigationHistoryPreviousItemActive {
+  background-position: 0px 0px;
+}
+
+.olControlPanel .olControlNavigationHistoryPreviousItemInactive {
+  background-position: 0px -22px;
+}
+
+.olControlPanel .olControlNavigationHistoryNextItemActive {
+  background-position: -22px 0px;
+}
+
+.olControlPanel .olControlNavigationHistoryNextItemInactive {
+  background-position: -22px -22px;                                                                                        
+}
