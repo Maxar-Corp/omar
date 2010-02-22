@@ -12,3 +12,4 @@ apps/omar/web-app/plugins
 apps/uimakeover/target/*
 apps/uimakeover/web-app/js/yui
 apps/uimakeover/web-app/js/yui-cms
+plugins/postgis/*.zip
