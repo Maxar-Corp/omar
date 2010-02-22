@@ -324,7 +324,7 @@
           trigger: zoomIn
         });
        var zoomInFullResButton = new OpenLayers.Control.Button({title:'Zoom in full res',
-          displayClass: "olControlZoomIn",
+          displayClass: "olControlZoomToLayer",
           trigger: zoomInFullRes
         });
 
