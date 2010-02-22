@@ -1,6 +1,6 @@
 class HomeController
 {
-
+  def grailsApplication
   def index = {
     def editableControllers = []
 
