@@ -21,7 +21,10 @@ class MapViewController implements InitializingBean
     def kmlOverlays = []
     def unitConversion = new ossimUnitConversionTool(1.0)
     def fullResScale = 0.0 // default to 1 unit per pixel
-    def minResLevels  = 0 // default to 1 unit per pixel
+//    def minResLevels  = 0 // default to 1 unit per pixel
+    def smallestScale = 0.0
+    def largestScale = 0.0
+    def testScale = 0.0
     rasterEntryIds.each {
       def rasterEntry = RasterEntry.get(it)
       if(rasterEntry.gsdY)
@@ -32,14 +35,27 @@ class MapViewController implements InitializingBean
         {
            fullResScale = testValue
         }
+        if(smallestScale == 0.0)
+        {
+          smallestScale = fullResScale
+          largestScale  = fullResScale
+        }
       }
       if(rasterEntry.numberOfResLevels)
       {
-        if(minResLevels == 0 || rasterEntry.numberOfResLevels < minResLevels)
+        testScale = 2**rasterEntry.numberOfResLevels*fullResScale;
+        if(testScale > largestScale)
         {
-          minResLevels = rasterEntry.numberOfResLevels
+          largestScale = testScale
         }
       }
+      // now allow at least 8x zoom in
+      testScale = 0.125*fullResScale
+      if(testScale<smallestScale)
+      {
+         smallestScale = testScale; 
+      }
+
       rasterEntries << rasterEntry
 
       if ( left == null || rasterEntry.groundGeom?.bounds?.minLon < left )
@@ -75,12 +91,12 @@ class MapViewController implements InitializingBean
         kmlOverlays << kmlOverlay
       }
     }
-    if(minResLevels > 0)
-    {
-      --minResLevels
-    }
-
-    [rasterEntries: rasterEntries, fullResScale:fullResScale, minScaleFactor:0.125, maxScaleFactor:(2**minResLevels), left: left, top: top, right: right, bottom: bottom, kmlOverlays: kmlOverlays]
+   // println "${left},${bottom},${right},${top}"
+    [rasterEntries: rasterEntries,
+            fullResScale:fullResScale,
+            smallestScale:smallestScale,
+            largestScale:largestScale,
+            left: left, top: top, right: right, bottom: bottom, kmlOverlays: kmlOverlays]
   }
 
   def getKML = {
