@@ -45,23 +45,24 @@
     </tr>
   </table>
 </div>
-
-<div>
-  <h1 style="font-size:150%">Browse:</h1>
-  <table>
-    <tr>
-      <td width="120px">
-        <img src="${createLinkTo(dir: '/images', file: 'globe_128.png')}" width="96" height="96" alt="">
-      </td>
-      <td>
-        <ol>
-          <li><g:link controller="rasterEntry" action="index">Imagery</g:link></li>
-          <li><g:link controller="videoDataSet" action="index">Video</g:link></li>
-        </ol>
-      </td>
-    </tr>
-  </table>
-</div>
+<g:if test="${grailsApplication.config.views?.home?.browseEnabled}">
+  <div>
+    <h1 style="font-size:150%">Browse:</h1>
+    <table>
+      <tr>
+        <td width="120px">
+          <img src="${createLinkTo(dir: '/images', file: 'globe_128.png')}" width="96" height="96" alt="">
+        </td>
+        <td>
+          <ol>
+            <li><g:link controller="rasterEntry" action="index">Imagery</g:link></li>
+            <li><g:link controller="videoDataSet" action="index">Video</g:link></li>
+          </ol>
+        </td>
+      </tr>
+    </table>
+  </div>
+</g:if>
 
 <div>
   <h1 style="font-size:150%">KML Network Links:</h1>
