@@ -21,7 +21,7 @@ class OgcController {
     def tempMap = [:]
 
     if (params.max == null){
-      params.max = grailsApplication.config.wms.maxvectorresults
+      params.max = grailsApplication.config.wms.vector.maxcount
     }
     // Convert param names to lower case
     params.each { tempMap.put(it.key.toLowerCase(), it.value)}
@@ -88,7 +88,7 @@ class OgcController {
           style = "default"
         }
         if (it == "Imagery" ||
-            it == "ImageryData") {
+            it == "ImageData") {
           def queryParams = new RasterEntryQuery()
           bindData(queryParams, params)
           queryParams.aoiMaxLat = maxy
