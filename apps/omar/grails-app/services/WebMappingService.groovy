@@ -64,7 +64,6 @@ class WebMappingService
     }
     def w  = wmsRequest.width as int
     def h  = wmsRequest.height as int
-
     
     def wmsView = new WmsView()
     def projPoint = new ossimGpt(maxy, minx)
@@ -82,10 +81,11 @@ class WebMappingService
     }
     if(style)
     {
-      g.setPaint(new Color(style.outlinecolor.r,
-                           style.outlinecolor.g,
-                           style.outlinecolor.b))
-      g.setStroke(new BasicStroke(style.width));
+      g.setPaint(new Color(style.outlinecolor.r*255 as int,
+                           style.outlinecolor.g*255 as int,
+                           style.outlinecolor.b*255 as int,
+                           style.outlinecolor.a*255 as int))
+      g.setStroke(new BasicStroke(style.width as int));
     }
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                        RenderingHints.VALUE_ANTIALIAS_ON);
@@ -273,6 +273,7 @@ class WebMappingService
         }
         if ( enableOMS )
         {
+          //println bounds
             def kwl = new ossimKeywordlist();
             kwl.add("stretch_mode", "${stretchMode}")
             kwl.add("stretch_region", "${stretchModeRegion}")
