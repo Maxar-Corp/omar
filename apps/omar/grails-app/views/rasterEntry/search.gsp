@@ -383,25 +383,23 @@
       var hasEndDate = eday != "" && emonth != "" && eyear != "";
       var endDate = "'" + emonth + "-" + eday + "-" + eyear + "'";
       var wmsTime = ""
+      var omarfilter = ""
       if ( hasStartDate )
       {
-        var omarfilter = "acquisition_date>=" + startDate;
+        omarfilter = "acquisition_date>=" + startDate;
         wmsParams["startDate"]=startDateNoQuote
         wmsTime = syear+sday+smonth
         if ( hasEndDate )
         {
           wmsTime += "/"+eyear+emonth+eday
           omarfilter += " and acquisition_date<=" + endDate;
-          wmsParams["time"] = wmsTime;
         }
         else
         {
           wmsTime += "/P1D"
-          wmsParams["time"] ="";
 
         }
         //alert(omarfilter);
-          wmsParams["IMAGEFILTER"]=omarfilter;
       }
       else
       {
@@ -409,21 +407,19 @@
         if ( hasEndDate )
         {
           wmsTime += "P1000Y/" + eyear+emonth+eday
-          var omarfilter = "acquisition_date<=" + endDate;
+          omarfilter = "acquisition_date<=" + endDate;
 
           //alert(omarfilter);
-          wmsParams["IMAGEFILTER"]=omarfilter;
-          wmsParams["time"]=wmsTime;
         }
         else
         {
-          var omarfilter = "true=true";
-
+          omarfilter = "true=true";
+          wmsTime = "";
           //alert(omarfilter);
-          wmsParams["IMAGEFILTER"] = omarfilter;
-          wmsParams["time"] = "";
         }
       }
+      wmsParams["IMAGEFILTER"] = omarfilter;
+      wmsParams["time"] = wmsTime;
       wmsParams["searchTagNames[0]"] =$("searchTagNames[0]").value;
       wmsParams["searchTagValues[0]"] =$("searchTagValues[0]").value;
       wmsParams["searchTagNames[1]"] =$("searchTagNames[1]").value;
@@ -602,13 +598,13 @@
             <label for='startDate'>Start Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="startDate" format="MM/dd/yyyy" value="${queryParams.startDate}"/>
+            <richui:dateChooser name="startDate" format="MM/dd/yyyy" value="${queryParams.startDate}" onChange="updateOmarFilters()"/>
           </li>
           <li>
             <label for='endDate'>End Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="endDate" format="MM/dd/yyyy" value="${queryParams.endDate}"/>
+            <richui:dateChooser name="endDate" format="MM/dd/yyyy" value="${queryParams.endDate}" onChange="updateOmarFilters()"/>
           </li>
         </ol>
       </div>
