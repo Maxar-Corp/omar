@@ -418,25 +418,22 @@
           //alert(omarfilter);
         }
       }
+      var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
+      var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
+      var idx = 0;
       wmsParams["IMAGEFILTER"] = omarfilter;
       wmsParams["time"] = wmsTime;
-      wmsParams["searchTagNames[0]"] =$("searchTagNames[0]").value;
-      wmsParams["searchTagValues[0]"] =$("searchTagValues[0]").value;
-      wmsParams["searchTagNames[1]"] =$("searchTagNames[1]").value;
-      wmsParams["searchTagValues[1]"] =$("searchTagValues[1]").value;
-      wmsParams["searchTagNames[2]"] =$("searchTagNames[2]").value;
-      wmsParams["searchTagValues[2]"] =$("searchTagValues[2]").value;
-      wmsParams["searchTagNames[3]"] =$("searchTagNames[3]").value;
-      wmsParams["searchTagValues[3]"] =$("searchTagValues[3]").value;
-      wmsParams["searchTagNames[4]"] =$("searchTagNames[4]").value;
-      wmsParams["searchTagValues[4]"] =$("searchTagValues[4]").value;
-      wmsParams["searchTagNames[5]"] =$("searchTagNames[5]").value;
-      wmsParams["searchTagValues[5]"] =$("searchTagValues[5]").value;
-      wmsParams["searchTagNames[6]"] =$("searchTagNames[6]").value;
-      wmsParams["searchTagValues[6]"] =$("searchTagValues[6]").value;
-      wmsParams["searchTagNames[7]"] =$("searchTagNames[7]").value;
-      wmsParams["searchTagValues[7]"] =$("searchTagValues[7]").value;
-
+      var tempName = "";
+      for(idx=0;idx<numberOfNames;++idx)
+      {
+        tempName = "searchTagNames[" + idx + "]";
+        wmsParams["searchTagNames["+idx+"]"] =$(tempName).value;
+      }
+      for(idx=0;idx<numberOfValues;++idx)
+      {
+        tempName = "searchTagValues[" + idx + "]";
+        wmsParams["searchTagValues["+idx+"]"] =$(tempName).value;
+      }
       dataLayer.mergeNewParams(wmsParams);
     }
     function setCurrentViewport()
