@@ -370,6 +370,7 @@
 
     function updateOmarFilters()
     {
+      var wmsParams = new Array();
       var sday = $("startDate_day").value;
       var smonth = $("startDate_month").value;
       var syear = $("startDate_year").value;
@@ -384,39 +385,38 @@
       var hasEndDate = eday != "" && emonth != "" && eyear != "";
       var endDate = "'" + emonth + "-" + eday + "-" + eyear + "'";
       var wmsTime = ""
-
+      var omarfilter = ""
       if ( hasStartDate && hasEndDate )
       {
-          wmsTime += syear+smonth+sday+"/"+eyear+emonth+eday;
-        var omarfilter = "start_date between " + startDate + " and " + endDate + " or " +
+         wmsTime += syear+smonth+sday+"/"+eyear+emonth+eday;
+         omarfilter = "start_date between " + startDate + " and " + endDate + " or " +
             "end_date between " + startDate + " and " + endDate;
 
         //alert(omarfilter);
-        dataLayer.mergeNewParams({VIDEOFILTER: omarfilter,time:wmsTime});
-      }
+       }
       else if ( hasStartDate )
       {
-        var omarfilter = "end_date>=" + startDate;
-          wmsTime += syear+smonth+sday+"/P1000Y";
+        omarfilter = "end_date>=" + startDate;
+        wmsTime += syear+smonth+sday+"/P1000Y";
 
         //alert(omarfilter);
-        dataLayer.mergeNewParams({VIDEOFILTER: omarfilter,time:wmsTime });
       }
       else if ( hasEndDate )
       {
-        var omarfilter = "start_date<=" + endDate;
-          wmsTime += "P1000Y/"+eyear+emonth+eday;
+        omarfilter = "start_date<=" + endDate;
+        wmsTime += "P1000Y/"+eyear+emonth+eday;
 
         //alert(omarfilter);
-        dataLayer.mergeNewParams({VIDEOFILTER: omarfilter,time:wmsTime });
       }
       else
       {
-        var omarfilter = "true=true";
+        omarfilter = "true=true";
 
         //alert(omarfilter);
-        dataLayer.mergeNewParams({VIDEOFILTER: omarfilter,time:wmsTime });
       }
+      wmsParams["VIDEOFILTER"] = omarfilter;
+      wmsParams["time"] = wmsTime;
+      dataLayer.mergeNewParams(wmsParams);
     }
 
     function searchForVideos()
@@ -457,6 +457,9 @@
     </span>
     <span class="menuButton">
       <a href="javascript:generateKML();">KML</a>
+    </span>
+    <span class="menuButton">
+      <a href="javascript:updateOmarFilters();">Update Footprints</a>
     </span>
   </div>
   <div class="body">
@@ -568,10 +571,6 @@
           </li>
           <li>
             <richui:dateChooser name="endDate" format="MM/dd/yyyy" value="${queryParams.endDate}"/>
-          </li>
-          <li><br/></li>
-          <li>
-            <input type="button" onclick="updateOmarFilters()" value="Update Footprints">
           </li>
         </ol>
       </div>
