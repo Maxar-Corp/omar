@@ -37,7 +37,8 @@ class WMSRequest
     return [bbox: bbox, width: width, height: height, format: format, layers: layers, srs: srs, service: service,
             version: version, request: request, transparent: transparent, bgcolor: bgcolor, styles: styles,
             stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode:sharpen_mode,
-            sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, time:time, null_flip:null_flip, exception: exception].sort { it.key } 
+            sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, time:time, null_flip:null_flip,
+            exception: exception, quicklook:quicklook].sort { it.key } 
   }
   String[] getDates()
   {
