@@ -367,6 +367,8 @@
 
     function updateOmarFilters()
     {
+      var wmsParams = new Array();
+
       var sday = $("startDate_day").value;
       var smonth = $("startDate_month").value;
       var syear = $("startDate_year").value;
@@ -384,22 +386,22 @@
       if ( hasStartDate )
       {
         var omarfilter = "acquisition_date>=" + startDate;
-        dataLayer.mergeNewParams({startDate:startDateNoQuote});
+        wmsParams["startDate"]=startDateNoQuote
         wmsTime = syear+sday+smonth
         if ( hasEndDate )
         {
           wmsTime += "/"+eyear+emonth+eday
           omarfilter += " and acquisition_date<=" + endDate;
-          dataLayer.mergeNewParams({time:wmsTime});
+          wmsParams["time"] = wmsTime;
         }
         else
         {
           wmsTime += "/P1D"
-          dataLayer.mergeNewParams({time:""});
+          wmsParams["time"] ="";
 
         }
         //alert(omarfilter);
-        dataLayer.mergeNewParams({IMAGEFILTER: omarfilter});
+          wmsParams["IMAGEFILTER"]=omarfilter;
       }
       else
       {
@@ -410,22 +412,37 @@
           var omarfilter = "acquisition_date<=" + endDate;
 
           //alert(omarfilter);
-//          dataLayer.mergeNewParams({IMAGEFILTER: omarfilter });
-          dataLayer.mergeNewParams({IMAGEFILTER: omarfilter});
-          dataLayer.mergeNewParams({time:wmsTime});
+          wmsParams["IMAGEFILTER"]=omarfilter;
+          wmsParams["time"]=wmsTime;
         }
         else
         {
           var omarfilter = "true=true";
 
           //alert(omarfilter);
-//          dataLayer.mergeNewParams({IMAGEFILTER: omarfilter });
-          dataLayer.mergeNewParams({IMAGEFILTER: omarfilter });
-          dataLayer.mergeNewParams({time:""});
+          wmsParams["IMAGEFILTER"] = omarfilter;
+          wmsParams["time"] = "";
         }
       }
-    }
+      wmsParams["searchTagNames[0]"] =$("searchTagNames[0]").value;
+      wmsParams["searchTagValues[0]"] =$("searchTagValues[0]").value;
+      wmsParams["searchTagNames[1]"] =$("searchTagNames[1]").value;
+      wmsParams["searchTagValues[1]"] =$("searchTagValues[1]").value;
+      wmsParams["searchTagNames[2]"] =$("searchTagNames[2]").value;
+      wmsParams["searchTagValues[2]"] =$("searchTagValues[2]").value;
+      wmsParams["searchTagNames[3]"] =$("searchTagNames[3]").value;
+      wmsParams["searchTagValues[3]"] =$("searchTagValues[3]").value;
+      wmsParams["searchTagNames[4]"] =$("searchTagNames[4]").value;
+      wmsParams["searchTagValues[4]"] =$("searchTagValues[4]").value;
+      wmsParams["searchTagNames[5]"] =$("searchTagNames[5]").value;
+      wmsParams["searchTagValues[5]"] =$("searchTagValues[5]").value;
+      wmsParams["searchTagNames[6]"] =$("searchTagNames[6]").value;
+      wmsParams["searchTagValues[6]"] =$("searchTagValues[6]").value;
+      wmsParams["searchTagNames[7]"] =$("searchTagNames[7]").value;
+      wmsParams["searchTagValues[7]"] =$("searchTagValues[7]").value;
 
+      dataLayer.mergeNewParams(wmsParams);
+    }
     function setCurrentViewport()
     {
       var bounds = map.getExtent();
@@ -475,6 +492,9 @@
     </span>
     <span class="menuButton">
       <a href="javascript:generateKML();">KML</a>
+    </span>
+    <span class="menuButton">
+      <a href="javascript:updateOmarFilters();">Update footprints</a>
     </span>
     <%--
         <div id="panel2" class="olControlPanel"></div>
@@ -590,10 +610,6 @@
           <li>
             <richui:dateChooser name="endDate" format="MM/dd/yyyy" value="${queryParams.endDate}"/>
           </li>
-          <li><br/></li>
-          <li>
-            <input type="button" onclick="updateOmarFilters( )" value="Update Footprints">
-          </li>
         </ol>
       </div>
     </div>
@@ -611,7 +627,7 @@
                     optionKey="name" optionValue="description"/>
             </li>
             <li>
-              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}"/>
+              <g:textField name="searchTagValues[${i}]" value="${searchTagValue} onChange="updateOmarFilters()"/>
             </li>
           </g:each>
         </ol>

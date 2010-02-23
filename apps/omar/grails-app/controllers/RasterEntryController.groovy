@@ -130,7 +130,6 @@ class RasterEntryController implements InitializingBean
   def search = {
 
     //println "=== search start ==="
-
     if ( !params.max )
     {
       params.max = 10;
