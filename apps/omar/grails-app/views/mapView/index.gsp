@@ -130,13 +130,13 @@
   }
   function init()
   {
-    var left = parseFloat("${left}");
+    var left   = parseFloat("${left}");
     var bottom = parseFloat("${bottom}");
-    var right = parseFloat("${right}");
-    var top = parseFloat("${top}");
+    var right  = parseFloat("${right}");
+    var top    = parseFloat("${top}");
     var fullResScale = parseFloat("${fullResScale}");
-    var smallestScale = parseFloat("${minScaleFactor}")*fullResScale;
-    var largestScale = parseFloat("${maxScaleFactor}")*fullResScale;
+    var smallestScale = parseFloat("${smallestScale}");
+    var largestScale = parseFloat("${largestScale}");
 
     var bounds    = new OpenLayers.Bounds(left, bottom, right, top);
 
@@ -169,7 +169,6 @@
 
 
     var zoom = map.getZoomForExtent(bounds, true);
-//    var zoom = map.getZoomForResolution(fullResScale, false);
 
     map.setCenter(bounds.getCenterLonLat(), zoom);
   }
