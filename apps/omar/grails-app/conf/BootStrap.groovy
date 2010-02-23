@@ -1,11 +1,10 @@
-import org.grails.plugins.springsecurity.service.AuthenticateService
 
 import grails.util.GrailsUtil
 
 class BootStrap
 {
 
-  AuthenticateService authenticateService
+  def authenticateService
   def grailsApplication
 
 
@@ -117,7 +116,6 @@ class BootStrap
     }
 
     new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/rasterSearch/**").save()
-
 
 //    List<Map<String, String>> searchTagData = [
 //        [name: "custom", description: "Custom name=value"],
