@@ -19,7 +19,8 @@ class RasterEntryMetadata
 
   String otherTagsXml
 
-  static belongsTo = [rasterEntry: RasterEntry]
+  //static belongsTo = [rasterEntry: RasterEntry]
+  RasterEntry rasterEntry
 
   static transients = ["otherTagsMap"]
 
@@ -62,5 +63,7 @@ class RasterEntryMetadata
     className(nullable: true)
 
     otherTagsXml(nullable: true, blank: false)
+
+    rasterEntry(nullable: true)
   }
 }
