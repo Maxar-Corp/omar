@@ -204,6 +204,7 @@ public class OmsInfoParser
     if ( !rasterEntry.metadata )
     {
       rasterEntry.metadata = new RasterEntryMetadata()
+      rasterEntry.metadata.rasterEntry = rasterEntry
     }
 
     metadataNode.children().each {tagNode ->
@@ -230,8 +231,7 @@ public class OmsInfoParser
         def name = tagNode.name().toString().trim()
         def value = tagNode.text().toString().trim()
 
-
-// Need to add following check in there        
+// Need to add following check in there
 //        if ( !key.startsWith("LINE_NUM") &&
 //            !key.startsWith("LINE_DEN") &&
 //            !key.startsWith("SAMP_NUM") &&
@@ -330,6 +330,7 @@ public class OmsInfoParser
     if ( !videoDataSet.metadata )
     {
       videoDataSet.metadata = new VideoDataSetMetadata()
+      videoDataSet.metadata.videoDataSet = videoDataSet
     }
 
     metadataNode.children().each {tagNode ->

@@ -6,9 +6,8 @@ class VideoDataSetMetadata
 
   Map<String, String> otherTagsMap = [:]
 
-
-  static belongsTo = [videoDataSet: VideoDataSet]
-
+  //static belongsTo = [videoDataSet: VideoDataSet]
+  VideoDataSet videoDataSet
 
   static mapping = {
     columns {
@@ -18,5 +17,6 @@ class VideoDataSetMetadata
 
   static constraints = {
     otherTagsXml(nullable: true, blank: false)
+    videoDataSet(nullable: true)
   }
 }

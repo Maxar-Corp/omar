@@ -10,7 +10,8 @@ class VideoDataSet
   static hasMany = [fileObjects: VideoFile]
   Repository repository
 
-  VideoDataSetMetadata metadata
+  //VideoDataSetMetadata metadata
+  static hasOne = [metadata: VideoDataSetMetadata]
 
 
   static mapping = {

@@ -16,7 +16,7 @@ class RasterEntry
   Date acquisitionDate
 
 
-  RasterEntryMetadata metadata
+  static hasOne = [metadata: RasterEntryMetadata]
 
   static belongsTo = [rasterDataSet: RasterDataSet]
 
