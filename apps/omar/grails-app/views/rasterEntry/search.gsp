@@ -71,7 +71,7 @@
         "${dataWMS.title}",
         "${dataWMS.url}",
         { layers: "${dataWMS.layers}", styles:"${dataWMS.styles}", format: "${dataWMS.format}", IMAGEFILTER: "true=true", transparent: true },
-        {isBaseLayer:false,buffer:0,visibility:false}
+        {isBaseLayer:false,buffer:0,visibility:false, singleTile:false, transitionEffect: "resize"}
       );
       map.addLayer(dataLayer);
     }
@@ -382,12 +382,12 @@
 
       var hasEndDate = eday != "" && emonth != "" && eyear != "";
       var endDate = "'" + emonth + "-" + eday + "-" + eyear + "'";
+      var endDateNoQuote = eyear+emonth+eday;
       var wmsTime = ""
       var omarfilter = ""
       if ( hasStartDate )
       {
         omarfilter = "acquisition_date>=" + startDate;
-        wmsParams["startDate"]=startDateNoQuote
         wmsTime = syear+sday+smonth
         if ( hasEndDate )
         {
@@ -397,13 +397,11 @@
         else
         {
           wmsTime += "/P1D"
-
         }
         //alert(omarfilter);
       }
       else
       {
-          dataLayer.mergeNewParams({startDate:""});
         if ( hasEndDate )
         {
           wmsTime += "P1000Y/" + eyear+emonth+eday
