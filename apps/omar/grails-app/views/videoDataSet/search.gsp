@@ -564,13 +564,13 @@
             <label for='startDate'>Start Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="startDate" format="MM/dd/yyyy" value="${queryParams.startDate}"/>
+            <richui:dateChooser name="startDate" format="MM/dd/yyyy" value="${queryParams.startDate} onChange="updateOmarFilters()"/>
           </li>
           <li>
             <label for='endDate'>End Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="endDate" format="MM/dd/yyyy" value="${queryParams.endDate}"/>
+            <richui:dateChooser name="endDate" format="MM/dd/yyyy" value="${queryParams.endDate}" onChange="updateOmarFilters()"/>
           </li>
         </ol>
       </div>
