@@ -19,13 +19,12 @@ class OgcController {
   def footprints = {
 
     def tempMap = [:]
-
+//     println params
     if (params.max == null){
       params.max = grailsApplication.config.wms.vector.maxcount
     }
     // Convert param names to lower case
     params.each { tempMap.put(it.key.toLowerCase(), it.value)}
-
     // Populate WMSCapabilities Request object
     def wmsRequest = new WMSRequest()
     bindData(wmsRequest, tempMap)
@@ -90,7 +89,8 @@ class OgcController {
         if (it == "Imagery" ||
             it == "ImageData") {
           def queryParams = new RasterEntryQuery()
-          bindData(queryParams, params)
+          //bindData(queryParams, tempParams)
+          queryParams.caseInsensitiveBind(params)
           queryParams.aoiMaxLat = maxy
           queryParams.aoiMinLat = miny
           queryParams.aoiMaxLon = maxx
@@ -160,7 +160,7 @@ class OgcController {
 
     }
     catch (java.lang.Exception e) {
-  //    println e
+//      println e
     }
     if (g) {
       g.dispose()
@@ -182,7 +182,7 @@ class OgcController {
     }
 
     bindData(wmsRequest, tempMap)
-
+  // println tempMap
     if (debugFlag) {
       println "Starting ${wmsRequest.layers}"
     }

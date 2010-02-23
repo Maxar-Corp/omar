@@ -34,7 +34,6 @@ class RasterSearchController implements InitializingBean
   static defaultAction = 'search'
 
   def search = {
-    //println params
     def queryParams = new RasterEntryQuery()
 
     bindData(queryParams, params)
@@ -88,6 +87,7 @@ class RasterSearchController implements InitializingBean
   }
 
   def results = {
+//    println params
 
     def starttime = System.currentTimeMillis()
 
