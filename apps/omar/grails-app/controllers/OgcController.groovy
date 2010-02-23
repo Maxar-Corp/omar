@@ -6,14 +6,12 @@ import java.awt.*;
 
 import javax.media.jai.JAI
 
-import org.grails.plugins.springsecurity.service.AuthenticateService
-
 class OgcController {
   def rasterEntrySearchService
   def videoDataSetSearchService
   def webMappingService
   def grailsApplication
-  AuthenticateService authenticateService
+  def authenticateService
   KmlService kmlService
 
   def footprints = {
