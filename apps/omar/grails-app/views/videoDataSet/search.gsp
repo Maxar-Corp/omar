@@ -72,7 +72,7 @@
         "${dataWMS.title}",
         "${dataWMS.url}",
         { layers: "${dataWMS.layers}", styles:"${dataWMS.styles}", format: "${dataWMS.format}", VIDEOFILTER: "true=true", transparent: true },
-        {isBaseLayer:false,buffer:0,visibility:false}
+        {isBaseLayer:false,buffer:0,visibility:false,transitionEffect: "resize"}
       );
       map.addLayer(dataLayer);
     }
@@ -83,7 +83,7 @@
         "${baseWMS.title}",
         "${baseWMS.url}",
         {layers: '${baseWMS.layers}', format: "${baseWMS.format}" },
-        {isBaseLayer:true, buffer:0}
+        {isBaseLayer:true, buffer:0,transitionEffect: "resize"}
       );
       map.addLayer(baseLayer);
       map.setBaseLayer(baseLayer);
