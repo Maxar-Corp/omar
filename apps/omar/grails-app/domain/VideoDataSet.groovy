@@ -16,8 +16,8 @@ class VideoDataSet
 
   static mapping = {
     columns {
-      startDate column: 'start_date', index: 'video_data_set_start_date_idx'
-      endDate column: 'end_date', index: 'video_data_set_end_date_idx'
+      startDate column: 'start_date', index: 'video_data_set_start_date_idx,video_data_set_time_idx'
+      endDate column: 'end_date', index: 'video_data_set_end_date_idx,video_data_set_time_idx'
     }
   }
 

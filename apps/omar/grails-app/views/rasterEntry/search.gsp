@@ -82,7 +82,7 @@
         "${baseWMS.title}",
         "${baseWMS.url}",
         {layers: '${baseWMS.layers}', format: "${baseWMS.format}" },
-        {isBaseLayer:true, buffer:0}
+        {isBaseLayer:true, buffer:0, transitionEffect: "resize"}
       );
       map.addLayer(baseLayer);
       map.setBaseLayer(baseLayer);
