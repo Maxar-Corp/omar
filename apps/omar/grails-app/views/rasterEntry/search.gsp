@@ -72,7 +72,7 @@
      dataLayer = new OpenLayers.Layer.WMS(
        "${dataWMS.title}",
        "${dataWMS.url}",
-       { layers: "${dataWMS.layers}", format: "${dataWMS.format}", IMAGEFILTER: "true=true", transparent: true },
+       { layers: "${dataWMS.layers}", styles:"${dataWMS.styles}", format: "${dataWMS.format}", IMAGEFILTER: "true=true", transparent: true },
        {isBaseLayer:false,buffer:0,visibility:false}
      );
      map.addLayer(dataLayer);
