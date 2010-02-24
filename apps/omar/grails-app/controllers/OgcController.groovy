@@ -268,7 +268,7 @@ class OgcController {
       }
     }
     catch (java.lang.Exception e) {
-      // println "OGC::WMS Error: ${e.message}"
+//       println "OGC::WMS Error: ${e.message}"
     }
     if (debugFlag) {
       println "done  ${wmsRequest.layers}"

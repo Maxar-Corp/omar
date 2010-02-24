@@ -1,3 +1,10 @@
+import joms.oms.ossimDpt
+import joms.oms.ossimGpt
+import joms.oms.ossimGptVector
+import joms.oms.ossimDptVector
+import joms.oms.Util
+
+
 class RasterEntry
 {
   String entryId
@@ -14,7 +21,7 @@ class RasterEntry
   String dataType
   Geometry groundGeom
   Date acquisitionDate
-
+  String tiePointSet
 
   static hasOne = [metadata: RasterEntryMetadata]
 
@@ -27,6 +34,7 @@ class RasterEntry
   static mapping = {
     columns {
       acquisitionDate index: 'raster_entry_acquisition_date_idx'
+      tiePointSet type: 'text'
     }
   }
 
@@ -46,7 +54,9 @@ class RasterEntry
 
     groundGeom(nullable: false)
     acquisitionDate(nullable: true)
-
+    
+    tiePointSet(nullable: true)
+    
     metadata(nullable: true)
   }
 
@@ -73,5 +83,53 @@ class RasterEntry
     }
 
     return mainFile
+  }
+  def createModelFromTiePointSet()
+  {
+    def gptArray = new ossimGptVector();
+    def dptArray = new ossimDptVector();
+    if(tiePointSet)
+    {
+      def tiepoints = new XmlSlurper().parseText(tiePointSet)
+      def imageCoordinates  = tiepoints.Image.toString().trim()
+      def groundCoordinates = tiepoints.Ground.toString().trim()
+      def splitImageCoordinates  = imageCoordinates.split(" ");
+      def splitGroundCoordinates = groundCoordinates.split(" ");
+      splitImageCoordinates.each{
+        def point = it.split(",")
+        if(point.size() >= 2)
+        {
+          dptArray.add(new ossimDpt(Double.parseDouble(point.getAt(0)),
+                                    Double.parseDouble(point.getAt(1))))
+        }
+      }
+      splitGroundCoordinates.each{
+        def point = it.split(",")
+        if(point.size() >= 2)
+        {
+          gptArray.add(new ossimGpt(Double.parseDouble(point.getAt(1)),
+                                    Double.parseDouble(point.getAt(0))))
+        }
+      }
+    }
+    else // lets do a fall back if the tiepoint set is not set.
+    {
+      def groundGeom = groundGeom.geom
+      if(groundGeom.numPoints() >=4)
+      {
+        def w = width as double
+        def h = height as double
+         (0..<4).each{
+            def point = groundGeom.getPoint(it);
+            gptArray.add(new ossimGpt(point.y, point.x));
+         }
+         dptArray.add(new ossimDpt(0.0,0.0))
+         dptArray.add(new ossimDpt( w,0.0))
+         dptArray.add(new ossimDpt(w ,h))
+         dptArray.add(new ossimDpt(0.0,h))
+      }
+    }
+
+    return Util.createBilinearModel(dptArray, gptArray)
   }
 }
