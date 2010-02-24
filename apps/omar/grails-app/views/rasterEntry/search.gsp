@@ -344,66 +344,75 @@
      $("aoiMaxLat").disabled = true;
    }
 
-   function updateOmarFilters()
-   {
-     var sday = $("startDate_day").value;
-     var smonth = $("startDate_month").value;
-     var syear = $("startDate_year").value;
-     var eday = $("endDate_day").value;
-     var emonth = $("endDate_month").value;
-     var eyear = $("endDate_year").value;
+function updateOmarFilters()
+    {
+      var wmsParams = new Array();
 
-     var hasStartDate = sday != "" && smonth != "" && syear != "";
-     var startDate = "'" + smonth + "-" + sday + "-" + syear + "'";
-     var startDateNoQuote = syear+smonth+sday;
+      var sday = $("startDate_day").value;
+      var smonth = $("startDate_month").value;
+      var syear = $("startDate_year").value;
+      var eday = $("endDate_day").value;
+      var emonth = $("endDate_month").value;
+      var eyear = $("endDate_year").value;
 
-     var hasEndDate = eday != "" && emonth != "" && eyear != "";
-     var endDate = "'" + emonth + "-" + eday + "-" + eyear + "'";
-     var wmsTime = ""
-     if ( hasStartDate )
-     {
-       var omarfilter = "acquisition_date>=" + startDate;
-       dataLayer.mergeNewParams({startDate:startDateNoQuote});
-       wmsTime = syear+sday+smonth
-       if ( hasEndDate )
-       {
-         wmsTime += "/"+eyear+emonth+eday
-         omarfilter += " and acquisition_date<=" + endDate;
-         dataLayer.mergeNewParams({time:wmsTime});
-       }
-       else
-       {
-         wmsTime += "/P1D"
-         dataLayer.mergeNewParams({time:""});
+      var hasStartDate = sday != "" && smonth != "" && syear != "";
+      var startDate = "'" + smonth + "-" + sday + "-" + syear + "'";
+      var startDateNoQuote = syear+smonth+sday;
 
-       }
-       //alert(omarfilter);
-       dataLayer.mergeNewParams({IMAGEFILTER: omarfilter});
-     }
-     else
-     {
-         dataLayer.mergeNewParams({startDate:""});
-       if ( hasEndDate )
-       {
-         wmsTime += "P1000Y/" + eyear+emonth+eday
-         var omarfilter = "acquisition_date<=" + endDate;
+      var hasEndDate = eday != "" && emonth != "" && eyear != "";
+      var endDate = "'" + emonth + "-" + eday + "-" + eyear + "'";
+      var endDateNoQuote = eyear+emonth+eday;
+      var wmsTime = ""
+      var omarfilter = ""
+      if ( hasStartDate )
+      {
+        omarfilter = "acquisition_date>=" + startDate;
+        wmsTime = syear+sday+smonth
+        if ( hasEndDate )
+        {
+          wmsTime += "/"+eyear+emonth+eday
+          omarfilter += " and acquisition_date<=" + endDate;
+        }
+        else
+        {
+          wmsTime += "/P1D"
+        }
+        //alert(omarfilter);
+      }
+      else
+      {
+        if ( hasEndDate )
+        {
+          wmsTime += "P1000Y/" + eyear+emonth+eday
+          omarfilter = "acquisition_date<=" + endDate;
 
-         //alert(omarfilter);
-//          dataLayer.mergeNewParams({IMAGEFILTER: omarfilter });
-         dataLayer.mergeNewParams({IMAGEFILTER: omarfilter});
-         dataLayer.mergeNewParams({time:wmsTime});
-       }
-       else
-       {
-         var omarfilter = "true=true";
-
-         //alert(omarfilter);
-//          dataLayer.mergeNewParams({IMAGEFILTER: omarfilter });
-         dataLayer.mergeNewParams({IMAGEFILTER: omarfilter });
-         dataLayer.mergeNewParams({time:""});
-       }
-     }
-   }
+          //alert(omarfilter);
+        }
+        else
+        {
+          omarfilter = "true=true";
+          wmsTime = "";
+          //alert(omarfilter);
+        }
+      }
+      var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
+      var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
+      var idx = 0;
+      wmsParams["IMAGEFILTER"] = omarfilter;
+      wmsParams["time"] = wmsTime;
+      var tempName = "";
+      for(idx=0;idx<numberOfNames;++idx)
+      {
+        tempName = "searchTagNames[" + idx + "]";
+        wmsParams["searchTagNames["+idx+"]"] =$(tempName).value;
+      }
+      for(idx=0;idx<numberOfValues;++idx)
+      {
+        tempName = "searchTagValues[" + idx + "]";
+        wmsParams["searchTagValues["+idx+"]"] =$(tempName).value;
+      }
+      dataLayer.mergeNewParams(wmsParams);
+    }
 
    function setCurrentViewport()
    {
@@ -438,6 +447,10 @@
    <span class="menuButton">
      <a href="javascript:generateKML();">KML</a>
    </span>
+   <span class="menuButton">
+     <a href="javascript:updateOmarFilters( );">Update Footprints</a>
+   </span>
+
    <span class="menuButton">
      Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS']}" onChange="setCenterText()"/>
    </span>
@@ -550,19 +563,15 @@
            <label for='startDate'>Start Date:</label>
          </li>
          <li>
-           <richui:dateChooser name="startDate" format="MM/dd/yyyy" value="${queryParams.startDate}"/>
+           <richui:dateChooser name="startDate" format="MM/dd/yyyy" value="${queryParams.startDate}" onChange="updateOmarFilters()"/>
          </li>
          <li>
            <label for='endDate'>End Date:</label>
          </li>
          <li>
-           <richui:dateChooser name="endDate" format="MM/dd/yyyy" value="${queryParams.endDate}"/>
+           <richui:dateChooser name="endDate" format="MM/dd/yyyy" value="${queryParams.endDate}" onChange="updateOmarFilters()"/>
          </li>
-         <li><br/></li>
-         <li>
-           <input type="button" onclick="updateOmarFilters( )" value="Update Footprints">
-         </li>
-       </ol>
+        </ol>
      </div>
    </div>
 
@@ -579,7 +588,7 @@
                    optionKey="name" optionValue="description"/>
            </li>
            <li>
-             <g:textField name="searchTagValues[${i}]" value="${searchTagValue}"/>
+             <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
            </li>
          </g:each>
        </ol>
