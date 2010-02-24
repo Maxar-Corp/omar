@@ -115,12 +115,16 @@ public class OmsInfoParser
     rasterEntry.numberOfResLevels = rasterEntryNode?.numberOfResLevels?.toInteger()
     rasterEntry.bitDepth = rasterEntryNode?.bitDepth?.toInteger()
     rasterEntry.dataType = rasterEntryNode?.dataType
-
+    rasterEntry.tiePointSet =""
+    if(rasterEntryNode?.TiePointSet)
+    {
+      rasterEntry.tiePointSet  ="<TiePointSet><Image><coordinates>${rasterEntryNode?.TiePointSet.Image.coordinates.toString().replaceAll("\n","")}</coordinates></Image>"
+      rasterEntry.tiePointSet +="<Ground><coordinates>${rasterEntryNode?.TiePointSet.Ground.coordinates.toString().replaceAll("\n","")}</coordinates></Ground></TiePointSet>"
+    }
     def gsdNode = rasterEntryNode?.gsd
     def dx = gsdNode?.@dx?.toString()
     def dy = gsdNode?.@dy?.toString()
     def gsdUnit = gsdNode?.@unit.toString()
-
     if ( dx && dy && gsdUnit )
     {
       rasterEntry.gsdX = (dx != "nan") ? dx?.toDouble() : null
@@ -131,6 +135,25 @@ public class OmsInfoParser
     rasterEntry.groundGeom = initGroundGeom(rasterEntryNode)
     rasterEntry.acquisitionDate = initAcquisitionDate(rasterEntryNode)
 
+    if(rasterEntry.groundGeom&&!rasterEntry.tiePointSet)
+    {
+      def groundGeom = rasterEntry.groundGeom.geom
+      def w =   rasterEntry?.width as double
+      def h =   rasterEntry?.height as double
+      if(groundGeom.numPoints() >=4)
+      {
+        rasterEntry.tiePointSet = "<TiePointSet><Image><coordinates>0.0,0.0 ${w},0.0 ${w},${h} 0.0,${h}</coordinates></Image><Ground><coordinates>"
+         (0..<4).each{
+            def point = groundGeom.getPoint(it);
+           rasterEntry.tiePointSet += "${point.x},${point.y}"
+           if(it != 3)
+           {
+             rasterEntry.tiePointSet += " "
+           }
+         }
+         rasterEntry.tiePointSet += "</coordinates></Ground></TiePointSet>"
+      }
+    }
     rasterEntryNode.fileObjects?.RasterEntryFile.each {rasterEntryFileNode ->
       RasterEntryFile rasterEntryFile = initRasterEntryFile(rasterEntryFileNode)
 
@@ -141,7 +164,6 @@ public class OmsInfoParser
 
     initRasterEntryMetadata(metadataNode, rasterEntry)
     initRasterEntryOtherTagsXml(rasterEntry.metadata)
-
     return rasterEntry
   }
 
