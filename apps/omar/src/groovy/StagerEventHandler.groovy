@@ -79,31 +79,38 @@ class StagerEventHandler implements FileFilterEventListener
 
   def void processData(FileFilterEvent fileEventObject)
   {
-    def oms = new XmlSlurper().parseText(fileEventObject.data)
-    def rasterDataSets = omsInfoParser.processRasterDataSets(oms, repository)
-    def videoDataSets = omsInfoParser.processVideoDataSets(oms, repository)
+    try
+    {
 
-    rasterDataSets?.each {rasterDataSet ->
-      if ( rasterDataSet.save() )
-      {
-        dataLog << fileEventObject.file << "\n"
+      def oms = new XmlSlurper().parseText(fileEventObject.data)
+      def rasterDataSets = omsInfoParser.processRasterDataSets(oms, repository)
+      def videoDataSets = omsInfoParser.processVideoDataSets(oms, repository)
+
+      rasterDataSets?.each {rasterDataSet ->
+        if ( rasterDataSet.save() )
+        {
+          dataLog << fileEventObject.file << "\n"
+        }
+        else
+        {
+          processFailureLog << fileEventObject.file << "\n"
+          rasterDataSet.errors.allErrors.each { println it }
+        }
       }
-      else
-      {
-        processFailureLog << fileEventObject.file << "\n"
-        rasterDataSet.errors.allErrors.each { println it }
+      videoDataSets?.each {videoDataSet ->
+        if ( videoDataSet.save() )
+        {
+          dataLog << fileEventObject.file << "\n"
+        }
+        else
+        {
+          processFailureLog << fileEventObject.file << "\n"
+        }
       }
     }
-
-    videoDataSets?.each {videoDataSet ->
-      if ( videoDataSet.save() )
-      {
-        dataLog << fileEventObject.file << "\n"
-      }
-      else
-      {
-        processFailureLog << fileEventObject.file << "\n"
-      }
+    catch(java.lang.Exception e)
+    {
+      processFailureLog << fileEventObject.file << "\n"
     }
 
 //    def stagerQueueItem = new StagerQueueItem(
