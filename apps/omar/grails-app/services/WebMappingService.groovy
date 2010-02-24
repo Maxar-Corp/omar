@@ -27,27 +27,35 @@ class WebMappingService
 
   boolean transactional = true
   def transparent = new TransparentFilter()
-
+/*
   def createBilinearModel(RasterEntry rasterEntry)
   {
     def gptArray = new ossimGptVector();
     def dptArray = new ossimDptVector();
-    def groundGeom = rasterEntry.groundGeom.geom
-    if(groundGeom.numPoints() >=4)
+    if(rasterEntry.tiePointSet)
     {
-      def w =   rasterEntry?.width as double
-      def h =   rasterEntry?.height as double
-       (0..<4).each{
-          def point = groundGeom.getPoint(it);
-          gptArray.add(new ossimGpt(point.y, point.x));
-       }
-       dptArray.add(new ossimDpt(0.0,0.0))
-       dptArray.add(new ossimDpt( w,0.0))
-       dptArray.add(new ossimDpt(w ,h))
-       dptArray.add(new ossimDpt(0.0,h))
+
+    }
+    else
+    {
+      def groundGeom = rasterEntry.groundGeom.geom
+      if(groundGeom.numPoints() >=4)
+      {
+        def w =   rasterEntry?.width as double
+        def h =   rasterEntry?.height as double
+         (0..<4).each{
+            def point = groundGeom.getPoint(it);
+            gptArray.add(new ossimGpt(point.y, point.x));
+         }
+         dptArray.add(new ossimDpt(0.0,0.0))
+         dptArray.add(new ossimDpt( w,0.0))
+         dptArray.add(new ossimDpt(w ,h))
+         dptArray.add(new ossimDpt(0.0,h))
+      }
     }
     return Util.createBilinearModel(dptArray, gptArray)
   }
+  */
   void drawCoverage(Graphics2D g, WMSRequest wmsRequest, def geometries, def styleName)
   {
     def minx = -180.0
@@ -231,9 +239,9 @@ class WebMappingService
             else
             {
               double scaleCheck = 1.0
-               geomPtr = createBilinearModel(rasterEntry)
                if(quickLookFlag)
                {
+                 geomPtr = rasterEntry.createModelFromTiePointSet();
                  if(geomPtr != null)
                  {
                    geom = geomPtr.get()
