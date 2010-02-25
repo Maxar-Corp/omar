@@ -443,7 +443,7 @@
   </g:javascript>
 
 </head>
-<body onload="init()" class="yui-skin-sam">
+<body onload="init()" class="yui-skin-sam" onresize="changeMapSize();">
 <content tag="banner">
   <img id="logo" src="${createLinkTo(dir: 'images', file: 'OMARLarge.png', absolute)}" alt="OMAR-2.0 Logo"/>
 </content>

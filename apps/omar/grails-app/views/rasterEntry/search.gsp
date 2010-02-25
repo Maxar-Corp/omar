@@ -47,7 +47,7 @@
  <openlayers:loadJavascript/>
  <resource:include components="dateChooser"/>
 
- <script type="text/javascript" src="${createLinkTo(dir: 'js', file: 'coordinateConversion.js')}"></script>
+ <g:javascript src="coordinateConversion.js"/>
 
  <g:javascript>
    var aoiLayer;
@@ -73,7 +73,7 @@
        "${dataWMS.title}",
        "${dataWMS.url}",
        { layers: "${dataWMS.layers}", styles:"${dataWMS.styles}", format: "${dataWMS.format}", IMAGEFILTER: "true=true", transparent: true },
-       {isBaseLayer:false,buffer:0,visibility:false}
+        {isBaseLayer:false,buffer:0,visibility:false,transitionEffect: "resize"}
      );
      map.addLayer(dataLayer);
    }
@@ -84,7 +84,7 @@
        "${baseWMS.title}",
        "${baseWMS.url}",
        {layers: '${baseWMS.layers}', format: "${baseWMS.format}" },
-       {isBaseLayer:true, buffer:0}
+        {isBaseLayer:true, buffer:0,transitionEffect: "resize"}
      );
      map.addLayer(baseLayer);
      map.setBaseLayer(baseLayer);
@@ -452,7 +452,7 @@ function updateOmarFilters()
  </g:javascript>
 
 </head>
-<body class="yui-skin-sam" onload="init( );">
+<body class="yui-skin-sam" onload="init( );" onresize="changeMapSize();">
 <content tag="banner">
  <img id="logo" src="${createLinkTo(dir: 'images', file: 'OMARLarge.png', absolute)}" alt="OMAR-2.0 Logo"/>
 </content>
