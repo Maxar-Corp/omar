@@ -31,7 +31,7 @@ public class OmsInfoParser
       rasterDataSetNode.rasterEntries.RasterEntry.each {rasterEntryNode ->
         RasterEntry rasterEntry = initRasterEntry(rasterEntryNode)
 
-        if ( rasterEntry.groundGeom )
+        if ( rasterEntry.metadata.groundGeom )
         {
           rasterDataSet.addToRasterEntries(rasterEntry)
         }
@@ -65,19 +65,21 @@ public class OmsInfoParser
       videoDataSet.width = videoDataSetNode?.width?.toLong()
       videoDataSet.height = videoDataSetNode?.height?.toLong()
 
+      videoDataSet.metadata = new VideoDataSetMetadata()
+      videoDataSet.metadata.videoDataSet = videoDataSet
 
       def start = videoDataSetNode?.TimeSpan?.begin?.toString()
       def end = videoDataSetNode?.TimeSpan?.end?.toString()
 
-      videoDataSet.startDate = dateUtil.parseDate(start)
-      videoDataSet.endDate = dateUtil.parseDate(end)
+      videoDataSet.metadata.startDate = dateUtil.parseDate(start)
+      videoDataSet.metadata.endDate = dateUtil.parseDate(end)
 
       def srs = videoDataSetNode?.groundGeom?.@srs?.toString() - "epsg:"
       def wkt = videoDataSetNode?.groundGeom
 
       if ( srs && wkt )
       {
-        videoDataSet.groundGeom = Geometry.fromString("SRID=${srs};${wkt}")
+        videoDataSet.metadata.groundGeom = Geometry.fromString("SRID=${srs};${wkt}")
       }
 
       initVideoDataSetMetadata(videoDataSetNode.metadata, videoDataSet)
@@ -115,11 +117,11 @@ public class OmsInfoParser
     rasterEntry.numberOfResLevels = rasterEntryNode?.numberOfResLevels?.toInteger()
     rasterEntry.bitDepth = rasterEntryNode?.bitDepth?.toInteger()
     rasterEntry.dataType = rasterEntryNode?.dataType
-    rasterEntry.tiePointSet =""
-    if(rasterEntryNode?.TiePointSet)
+    rasterEntry.tiePointSet = ""
+    if ( rasterEntryNode?.TiePointSet )
     {
-      rasterEntry.tiePointSet  ="<TiePointSet><Image><coordinates>${rasterEntryNode?.TiePointSet.Image.coordinates.toString().replaceAll("\n","")}</coordinates></Image>"
-      rasterEntry.tiePointSet +="<Ground><coordinates>${rasterEntryNode?.TiePointSet.Ground.coordinates.toString().replaceAll("\n","")}</coordinates></Ground></TiePointSet>"
+      rasterEntry.tiePointSet = "<TiePointSet><Image><coordinates>${rasterEntryNode?.TiePointSet.Image.coordinates.toString().replaceAll("\n", "")}</coordinates></Image>"
+      rasterEntry.tiePointSet += "<Ground><coordinates>${rasterEntryNode?.TiePointSet.Ground.coordinates.toString().replaceAll("\n", "")}</coordinates></Ground></TiePointSet>"
     }
     def gsdNode = rasterEntryNode?.gsd
     def dx = gsdNode?.@dx?.toString()
@@ -132,26 +134,29 @@ public class OmsInfoParser
       rasterEntry.gsdUnit = gsdUnit
     }
 
-    rasterEntry.groundGeom = initGroundGeom(rasterEntryNode)
-    rasterEntry.acquisitionDate = initAcquisitionDate(rasterEntryNode)
+    rasterEntry.metadata = new RasterEntryMetadata()
+    rasterEntry.metadata.rasterEntry = rasterEntry
+    rasterEntry.metadata.groundGeom = initGroundGeom(rasterEntryNode)
+    rasterEntry.metadata.acquisitionDate = initAcquisitionDate(rasterEntryNode)
 
-    if(rasterEntry.groundGeom&&!rasterEntry.tiePointSet)
+
+    if ( rasterEntry?.metadata?.groundGeom && !rasterEntry.tiePointSet )
     {
-      def groundGeom = rasterEntry.groundGeom.geom
-      def w =   rasterEntry?.width as double
-      def h =   rasterEntry?.height as double
-      if(groundGeom.numPoints() >=4)
+      def groundGeom = rasterEntry?.metadata?.groundGeom.geom
+      def w = rasterEntry?.width as double
+      def h = rasterEntry?.height as double
+      if ( groundGeom.numPoints() >= 4 )
       {
         rasterEntry.tiePointSet = "<TiePointSet><Image><coordinates>0.0,0.0 ${w},0.0 ${w},${h} 0.0,${h}</coordinates></Image><Ground><coordinates>"
-         (0..<4).each{
-            def point = groundGeom.getPoint(it);
-           rasterEntry.tiePointSet += "${point.x},${point.y}"
-           if(it != 3)
-           {
-             rasterEntry.tiePointSet += " "
-           }
-         }
-         rasterEntry.tiePointSet += "</coordinates></Ground></TiePointSet>"
+        (0..<4).each {
+          def point = groundGeom.getPoint(it);
+          rasterEntry.tiePointSet += "${point.x},${point.y}"
+          if ( it != 3 )
+          {
+            rasterEntry.tiePointSet += " "
+          }
+        }
+        rasterEntry.tiePointSet += "</coordinates></Ground></TiePointSet>"
       }
     }
     rasterEntryNode.fileObjects?.RasterEntryFile.each {rasterEntryFileNode ->

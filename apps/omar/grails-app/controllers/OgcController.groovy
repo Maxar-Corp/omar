@@ -6,7 +6,8 @@ import java.awt.*;
 
 import javax.media.jai.JAI
 
-class OgcController {
+class OgcController
+{
   def rasterEntrySearchService
   def videoDataSetSearchService
   def webMappingService
@@ -18,7 +19,8 @@ class OgcController {
 
     def tempMap = [:]
 //     println params
-    if (params.max == null){
+    if ( params.max == null )
+    {
       params.max = grailsApplication.config.wms.vector.maxcount
     }
     // Convert param names to lower case
@@ -27,25 +29,30 @@ class OgcController {
     def wmsRequest = new WMSRequest()
     bindData(wmsRequest, tempMap)
     // default to geographic bounds
-    if (!wmsRequest.srs) {
+    if ( !wmsRequest.srs )
+    {
       wmsRequest.srs = "EPSG:4326"
     }
     Graphics2D g = (Graphics2D) null
-    try {
+    try
+    {
       def image = (BufferedImage) null
-      if (wmsRequest.getTransparentFlag()) {
+      if ( wmsRequest.getTransparentFlag() )
+      {
         image = new BufferedImage(wmsRequest.width.toInteger(),
-                wmsRequest.height.toInteger(),
-                BufferedImage.TYPE_INT_ARGB)
+            wmsRequest.height.toInteger(),
+            BufferedImage.TYPE_INT_ARGB)
       }
-      else {
+      else
+      {
         image = new BufferedImage(wmsRequest.width.toInteger(),
-                wmsRequest.height.toInteger(),
-                BufferedImage.TYPE_INT_RGB)
+            wmsRequest.height.toInteger(),
+            BufferedImage.TYPE_INT_RGB)
       }
       g = image.createGraphics()
 
-      if (wmsRequest.bgcolor) {
+      if ( wmsRequest.bgcolor )
+      {
         g.setPaint(wmsRequest.getBackgroundColor())
         g.fillRect(0, 0, w, h)
       }
@@ -53,7 +60,8 @@ class OgcController {
       def maxx = 180.0
       def miny = -90.0
       def maxy = 90.0
-      if (wmsRequest.bbox) {
+      if ( wmsRequest.bbox )
+      {
         def bounds = wmsRequest.bbox.split(',')
         minx = bounds[0] as double
         miny = bounds[1] as double
@@ -62,13 +70,15 @@ class OgcController {
       }
 
       def dateRange = wmsRequest.getDateRange();
-      def startDate = (Date)null
-      def endDate   = (Date)null
-      if (dateRange) {
-        if (dateRange.size() > 0) {
+      def startDate = (Date) null
+      def endDate = (Date) null
+      if ( dateRange )
+      {
+        if ( dateRange.size() > 0 )
+        {
           startDate = dateRange[0]
-          if (dateRange.size() > 1)
-            endDate = dateRange[1]
+          if ( dateRange.size() > 1 )
+          endDate = dateRange[1]
         }
       }
       String[] styles = wmsRequest.styles?.split(",")
@@ -78,14 +88,17 @@ class OgcController {
       int styleIdx = 0
       def style = "default"
       layers.each {
-        try {
+        try
+        {
           style = styles[styleIdx]
         }
-        catch (java.lang.Exception e) {
+        catch (java.lang.Exception e)
+        {
           style = "default"
         }
-        if (it == "Imagery" ||
-            it == "ImageData") {
+        if ( it == "Imagery" ||
+            it == "ImageData" )
+        {
           def queryParams = new RasterEntryQuery()
           //bindData(queryParams, tempParams)
           queryParams.caseInsensitiveBind(params)
@@ -95,13 +108,15 @@ class OgcController {
           queryParams.aoiMinLon = minx
           queryParams.startDate = startDate
           queryParams.endDate = endDate
-          def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params, false).rasterEntries
+          def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
           rasterEntries.each {rasterEntry ->
-            geometries.add(rasterEntry.groundGeom.geom)
+//            geometries.add(rasterEntry.groundGeom.geom)
+            geometries.add(rasterEntry?.metadata?.groundGeom?.geom)
+
           }
         }
-        else if (it == "Videos" ||
-                 it == "VideoData")
+        else if ( it == "Videos" ||
+            it == "VideoData" )
         {
           def queryParams = new VideoDataSetQuery()
           bindData(queryParams, params)
@@ -122,16 +137,19 @@ class OgcController {
         ++styleIdx
       }
 
-      switch (wmsRequest?.format?.toLowerCase()) {
+      switch ( wmsRequest?.format?.toLowerCase() )
+      {
         case "jpeg":
         case "jpg":
         case "image/jpeg":
         case "image/jpg":
-          if (wmsRequest?.transparent?.equalsIgnoreCase("true")) {
+          if ( wmsRequest?.transparent?.equalsIgnoreCase("true") )
+          {
             wmsRequest.format = "image/png"
             response.contentType = "image/png"
           }
-          else {
+          else
+          {
             response.contentType = "image/jpeg"
           }
           break
@@ -148,19 +166,23 @@ class OgcController {
           break;
       }
       response.contentType = wmsRequest.format
-      if ((response.contentType == "image/gif") &&
-              (wmsRequest.getTransparentFlag())) {
+      if ( (response.contentType == "image/gif") &&
+          (wmsRequest.getTransparentFlag()) )
+      {
         ImageIO.write(ImageGenerator.convertRGBAToIndexed((BufferedImage) image), "gif", response.outputStream)
       }
-      else {
+      else
+      {
         ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
       }
 
     }
-    catch (java.lang.Exception e) {
+    catch (java.lang.Exception e)
+    {
 //      println e
     }
-    if (g) {
+    if ( g )
+    {
       g.dispose()
     }
   }
@@ -171,33 +193,40 @@ class OgcController {
 
     // Convert param names to lower case
     params.each { tempMap.put(it.key.toLowerCase(), it.value)}
-   // println params
+    // println params
     // Populate WMSCapabilities Request object
     def wmsRequest = new WMSRequest()
     def debugFlag = false;
-    if (tempMap.containsKey("debug")) {
+    if ( tempMap.containsKey("debug") )
+    {
       debugFlag = tempMap.debug.toString().equals("true");
     }
 
     bindData(wmsRequest, tempMap)
-  // println tempMap
-    if (debugFlag) {
+    // println tempMap
+    if ( debugFlag )
+    {
       println "Starting ${wmsRequest.layers}"
     }
-    try {
-      switch (wmsRequest?.request?.toLowerCase()) {
+    try
+    {
+      switch ( wmsRequest?.request?.toLowerCase() )
+      {
         case "getmap":
 
-          switch (wmsRequest?.format?.toLowerCase()) {
+          switch ( wmsRequest?.format?.toLowerCase() )
+          {
             case "jpeg":
             case "jpg":
             case "image/jpeg":
             case "image/jpg":
-              if (wmsRequest?.transparent?.equalsIgnoreCase("true")) {
+              if ( wmsRequest?.transparent?.equalsIgnoreCase("true") )
+              {
                 wmsRequest.format = "image/png"
                 response.contentType = "image/png"
               }
-              else {
+              else
+              {
                 response.contentType = "image/jpeg"
               }
               break
@@ -224,13 +253,13 @@ class OgcController {
           //def user = principal.username
 
           def logData = [
-                  TYPE: "wms_getmap",
-                  START: new Date(starttime),
-                  END: new Date(endtime),
-                  ELAPSE_TIME_MILLIS: endtime - starttime,
-                  //USER: user,
-                  PARAMS: wmsRequest,
-                  MODE: webMappingService.mode
+              TYPE: "wms_getmap",
+              START: new Date(starttime),
+              END: new Date(endtime),
+              ELAPSE_TIME_MILLIS: endtime - starttime,
+              //USER: user,
+              PARAMS: wmsRequest,
+              MODE: webMappingService.mode
           ]
           log.info(logData)
           break
@@ -267,10 +296,12 @@ class OgcController {
           println "ERROR: Unknown action: ${wmsRequest?.request}"
       }
     }
-    catch (java.lang.Exception e) {
+    catch (java.lang.Exception e)
+    {
 //       println "OGC::WMS Error: ${e.message}"
     }
-    if (debugFlag) {
+    if ( debugFlag )
+    {
       println "done  ${wmsRequest.layers}"
     }
 
@@ -287,7 +318,8 @@ class OgcController {
     def offsetY = Math.round(params.y?.toDouble() * tileHeight) as Integer;
 
 
-    try {
+    try
+    {
       //println "params: $params"
 
       def mode = "OSSIM"
@@ -295,7 +327,8 @@ class OgcController {
       def width
       def height
 
-      switch (mode) {
+      switch ( mode )
+      {
         case "JAI":
           image = JAI.create("imageread", inputFile)
 
@@ -324,7 +357,8 @@ class OgcController {
 //            numRLevels++
 //          }
           def maxDimension = width;
-          if (maxDimension < height) {
+          if ( maxDimension < height )
+          {
             maxDimension = height;
           }
           BigDecimal scale = (double) targetFullRect / (double) maxDimension;
@@ -341,14 +375,17 @@ class OgcController {
           String stretchModeRegion = params?.stretch_mode_region ?: "global"
           String viewportStretchMode = ""
 
-          if (stretchModeRegion.equals("viewport")) {
+          if ( stretchModeRegion.equals("viewport") )
+          {
             viewportStretchMode = stretchMode;
             stretchMode = "";
           }
-          else {
+          else
+          {
             viewportStretchMode = "";
           }
-          switch (mode2) {
+          switch ( mode2 )
+          {
             case "SYSCALL":
               def outputFile = File.createTempFile("ogcoms", ".jpg")
               def cmd = "icp --res-level ${resLevel} --start-sample ${startSample} --end-sample ${endSample} --start-line ${startLine} --end-line ${endLine}  --use-scalar-remapper --entry ${entry} --writer-prop 'create_external_geometry=false' ${outputType} ${inputFile}  ${outputFile}"
@@ -366,16 +403,16 @@ class OgcController {
               break
             case "LIBCALL":
               image = webMappingService.getUnprojectedTile(
-                      rect,
-                      inputFile,
-                      entry,
-                      stretchMode,
-                      viewportStretchMode,
-                      scale,
-                      startSample,
-                      endSample,
-                      startLine,
-                      endLine)
+                  rect,
+                  inputFile,
+                  entry,
+                  stretchMode,
+                  viewportStretchMode,
+                  scale,
+                  startSample,
+                  endSample,
+                  startLine,
+                  endLine)
 
               break
           }
@@ -384,7 +421,8 @@ class OgcController {
       response.contentType = "image/jpeg"
       ImageIO.write(image, "jpeg", response.outputStream)
     }
-    catch (Exception e) {
+    catch (Exception e)
+    {
 //      image = new BufferedImage(tileWidth, tileHeight, BufferedImage.TYPE_INT_RGB)
 
 //      response.contentType = "image/jpeg"

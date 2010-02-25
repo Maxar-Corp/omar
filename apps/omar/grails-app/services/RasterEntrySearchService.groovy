@@ -10,17 +10,17 @@ class RasterEntrySearchService
   static transactional = false
 
 
-  Map<String, Object> runQuery(RasterEntryQuery rasterEntryQuery, Map<String, String> params, boolean includeCount = true)
+  List<RasterEntryQuery> runQuery(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
     def x = {
       createAlias("rasterEntry", "r")
       if ( rasterEntryQuery?.groundGeom )
       {
-        addToCriteria(rasterEntryQuery.createIntersection("r.groundGeom"))
+        addToCriteria(rasterEntryQuery.createIntersection("groundGeom"))
       }
       if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
       {
-        addToCriteria(rasterEntryQuery.createDateRange("r.acquisitionDate"))
+        addToCriteria(rasterEntryQuery.createDateRange("acquisitionDate"))
       }
       if ( params?.max )
       {
@@ -37,7 +37,6 @@ class RasterEntrySearchService
         // HACK:  Need to find a better way to do this
         switch ( params?.sort )
         {
-          case "acquisitionDate":
           case "width":
           case "height":
           case "numberOfBands":
@@ -63,28 +62,20 @@ class RasterEntrySearchService
 
     //rasterEntries?.each { it.mainFile }
 
-    def totalCount = null
-
-    if ( includeCount )
-    {
-      totalCount = getCount(rasterEntryQuery)
-    }
-
-    return [totalCount: totalCount, rasterEntries: rasterEntries]
+    return rasterEntries
   }
 
   int getCount(RasterEntryQuery rasterEntryQuery)
   {
     def totalCount = RasterEntryMetadata.createCriteria().get {
       projections { rowCount() }
-      createAlias("rasterEntry", "r")
       if ( rasterEntryQuery?.groundGeom )
       {
-        addToCriteria(rasterEntryQuery.createIntersection("r.groundGeom"))
+        addToCriteria(rasterEntryQuery.createIntersection("groundGeom"))
       }
       if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
       {
-        addToCriteria(rasterEntryQuery.createDateRange("r.acquisitionDate"))
+        addToCriteria(rasterEntryQuery.createDateRange("acquisitionDate"))
       }
       rasterEntryQuery.searchTagNames?.size()?.times {i ->
         if ( rasterEntryQuery.searchTagNames[i] && rasterEntryQuery.searchTagValues[i] )

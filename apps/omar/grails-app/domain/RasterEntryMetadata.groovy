@@ -12,6 +12,10 @@ class RasterEntryMetadata
   String title
   String organization
   String description
+  
+  Geometry groundGeom
+  Date acquisitionDate
+  
 
   // Just for testing...
   String fileType
@@ -19,7 +23,6 @@ class RasterEntryMetadata
 
   String otherTagsXml
 
-  //static belongsTo = [rasterEntry: RasterEntry]
   RasterEntry rasterEntry
 
   static transients = ["otherTagsMap"]
@@ -42,8 +45,12 @@ class RasterEntryMetadata
       className index: 'raster_entry_metadata_class_name_idx'
 
       otherTagsXml type: 'text'//, index: 'raster_entry_metadata_other_tags_idx'
+
+      acquisitionDate index: 'raster_entry_metadata_acquisition_date_idx'
+
     }
   }
+
   static constraints = {
     imageId(nullable: true, blank: false/*, unique: true*/)
     targetId(nullable: true)
@@ -63,6 +70,10 @@ class RasterEntryMetadata
     className(nullable: true)
 
     otherTagsXml(nullable: true, blank: false)
+
+    groundGeom(nullable: false)
+    acquisitionDate(nullable: true)
+    
 
     rasterEntry(nullable: true)
   }

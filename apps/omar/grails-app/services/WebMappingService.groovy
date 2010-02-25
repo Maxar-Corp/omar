@@ -32,6 +32,8 @@ class WebMappingService
   {
     def gptArray = new ossimGptVector();
     def dptArray = new ossimDptVector();
+    def groundGeom = rasterEntry?.metadata?.groundGeom?.geom
+
     if(rasterEntry.tiePointSet)
     {
 

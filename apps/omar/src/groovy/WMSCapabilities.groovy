@@ -88,9 +88,11 @@ public class WMSCapabilities
       {
         def entryId = rasterEntry.entryId
         def srs = "EPSG:4326"//rasterEntry?.groundGeom?.srs
-        def bounds = rasterEntry?.groundGeom?.bounds
+//        def bounds = rasterEntry?.groundGeom?.bounds
+        def bounds = rasterEntry?.metadata?.groundGeom?.bounds
         def file = rasterEntry?.mainFile
-        def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : ""
+//        def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : ""
+        def acquisition = (rasterEntry?.metadata?.acquisitionDate) ? sdf.format(rasterEntry?.metadata?.acquisitionDate) : ""
 
         def filename = file.name
         def imageId = rasterEntry.metadata?.imageId
@@ -369,8 +371,6 @@ public class WMSCapabilities
     //return kmlwriter.buffer.toString().replace("&amp;", "&")
     return kmlwriter.buffer.toString()
   }
-
-
 
   /**
    * @param args

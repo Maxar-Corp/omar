@@ -2,6 +2,7 @@ import org.springframework.beans.factory.InitializingBean
 
 import javax.media.jai.JAI
 import joms.oms.ossimUnitConversionTool
+
 class MapViewController implements InitializingBean
 {
   def grailsApplication
@@ -27,55 +28,59 @@ class MapViewController implements InitializingBean
     def testScale = 0.0
     rasterEntryIds.each {
       def rasterEntry = RasterEntry.get(it)
-      if(rasterEntry.gsdY)
+      if ( rasterEntry.gsdY )
       {
         unitConversion.setValue(rasterEntry.gsdY);
         def testValue = unitConversion.getDegrees();
-        if((fullResScale == 0.0)||(testValue<fullResScale))
+        if ( (fullResScale == 0.0) || (testValue < fullResScale) )
         {
-           fullResScale = testValue
+          fullResScale = testValue
         }
-        if(smallestScale == 0.0)
+        if ( smallestScale == 0.0 )
         {
           smallestScale = fullResScale
-          largestScale  = fullResScale
+          largestScale = fullResScale
         }
       }
-      if(rasterEntry.numberOfResLevels)
+      if ( rasterEntry.numberOfResLevels )
       {
-        testScale = 2**rasterEntry.numberOfResLevels*fullResScale;
-        if(testScale > largestScale)
+        testScale = 2 ** rasterEntry.numberOfResLevels * fullResScale;
+        if ( testScale > largestScale )
         {
           largestScale = testScale
         }
       }
       // now allow at least 8x zoom in
-      testScale = 0.125*fullResScale
-      if(testScale<smallestScale)
+      testScale = 0.125 * fullResScale
+      if ( testScale < smallestScale )
       {
-         smallestScale = testScale; 
+        smallestScale = testScale;
       }
 
       rasterEntries << rasterEntry
 
-      if ( left == null || rasterEntry.groundGeom?.bounds?.minLon < left )
+//      def bounds = rasterEntry.groundGeom?.bounds
+      def bounds = rasterEntry?.metadata?.groundGeom?.bounds
+
+
+      if ( left == null || bounds?.minLon < left )
       {
-        left = rasterEntry?.groundGeom?.bounds?.minLon
+        left = bounds?.minLon
       }
 
-      if ( bottom == null || rasterEntry.groundGeom?.bounds?.minLat < bottom )
+      if ( bottom == null || bounds?.minLat < bottom )
       {
-        bottom = rasterEntry?.groundGeom?.bounds?.minLat
+        bottom = bounds?.minLat
       }
 
-      if ( right == null || rasterEntry.groundGeom?.bounds?.maxLon > right )
+      if ( right == null || bounds?.maxLon > right )
       {
-        right = rasterEntry?.groundGeom?.bounds?.maxLon
+        right = bounds?.maxLon
       }
 
-      if ( top == null || rasterEntry.groundGeom?.bounds?.maxLat > top )
+      if ( top == null || bounds?.maxLat > top )
       {
-        top = rasterEntry?.groundGeom?.bounds?.maxLat
+        top = bounds?.maxLat
       }
 
       def overlays = RasterEntryFile.findAllByTypeAndRasterEntry("kml", rasterEntry)
@@ -91,12 +96,12 @@ class MapViewController implements InitializingBean
         kmlOverlays << kmlOverlay
       }
     }
-   // println "${left},${bottom},${right},${top}"
+    // println "${left},${bottom},${right},${top}"
     [rasterEntries: rasterEntries,
-            fullResScale:fullResScale,
-            smallestScale:smallestScale,
-            largestScale:largestScale,
-            left: left, top: top, right: right, bottom: bottom, kmlOverlays: kmlOverlays]
+        fullResScale: fullResScale,
+        smallestScale: smallestScale,
+        largestScale: largestScale,
+        left: left, top: top, right: right, bottom: bottom, kmlOverlays: kmlOverlays]
   }
 
   def getKML = {
