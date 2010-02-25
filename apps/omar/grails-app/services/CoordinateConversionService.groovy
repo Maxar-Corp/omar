@@ -54,18 +54,13 @@ class CoordinateConversionService
   {
     WktUtility wktUtil = new WktUtility()
 
-//    println "${centerLon} ${centerLat} ${aoiRadius}"
 
     def centerGpt = new ossimGpt(Double.valueOf(centerLat),
         Double.valueOf(centerLon));
 
     double radius = Double.valueOf(aoiRadius);
     def unitType = ossimUnitType.OSSIM_METERS
-
-    def wkt = wktUtil.toWktPolygonGivenCenterRadius(centerGpt, radius, unitType, 360, -1)
-
-    //println wkt
-
+    def wkt = wktUtil.toWktGeometryGivenCenterRadius(centerGpt, radius, unitType, 360, -1)
 
     return wkt
 
