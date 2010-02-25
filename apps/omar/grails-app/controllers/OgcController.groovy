@@ -18,6 +18,7 @@ class OgcController
   def footprints = {
 
     def tempMap = [:]
+    Utility.removeEmptyParams(params)
 //     println params
     if ( params.max == null )
     {
@@ -81,7 +82,6 @@ class OgcController
           endDate = dateRange[1]
         }
       }
-      String[] styles = wmsRequest.styles?.split(",")
       String[] layers = wmsRequest.layers?.split(",")
 
       def geometries = []
@@ -102,6 +102,12 @@ class OgcController
           def queryParams = new RasterEntryQuery()
           //bindData(queryParams, tempParams)
           queryParams.caseInsensitiveBind(params)
+          if(!startDate&&!endDate)
+          {
+            startDate = DateUtil.parseDateGivenFormats(tempMap."startdate", [])
+            endDate   = DateUtil.parseDateGivenFormats(tempMap."enddate", [])
+          }
+          String[] styles = wmsRequest.styles?.split(",")
           queryParams.aoiMaxLat = maxy
           queryParams.aoiMinLat = miny
           queryParams.aoiMaxLon = maxx
@@ -124,11 +130,16 @@ class OgcController
           queryParams.aoiMinLat = miny
           queryParams.aoiMaxLon = maxx
           queryParams.aoiMinLon = minx
+          if(!startDate&&!endDate)
+          {
+            startDate = DateUtil.parseDateGivenFormats(tempMap."startdate", [])
+            endDate   = DateUtil.parseDateGivenFormats(tempMap."enddate", [])
+          }
           queryParams.startDate = startDate
           queryParams.endDate = endDate
           def videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
           videoDataSets.each {videoDataSet ->
-            geometries.add(videoDataSet.groundGeom.geom)
+            geometries.add(videoDataSet.metadata?.groundGeom.geom)
           }
         }
 
