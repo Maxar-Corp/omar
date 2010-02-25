@@ -1,7 +1,8 @@
 /**
  * AuthUser for user account.
  */
-class AuthUser {
+class AuthUser implements Serializable
+{
   static transients = ['pass']
   static hasMany = [authorities: Role]
   static belongsTo = Role
@@ -13,23 +14,22 @@ class AuthUser {
     }
   }
 
-
-  /** Username    */
+  /** Username     */
   String username
-  /** User Real Name   */
+  /** User Real Name    */
   String userRealName
-  /** MD5 Password    */
+  /** MD5 Password     */
   String passwd
-  /** enabled    */
+  /** enabled     */
   boolean enabled
 
   String email
   boolean emailShow
 
-  /** description    */
+  /** description     */
   String description = ''
 
-  /** plain password to create a MD5 password    */
+  /** plain password to create a MD5 password     */
   String pass = '[secret]'
 
   static constraints = {
