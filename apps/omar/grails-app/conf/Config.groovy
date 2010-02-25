@@ -52,7 +52,8 @@ environments {
   test {
   }
   production {
-    grails.serverURL = "http://${grails.serverIP}/omar-2.0"
+    grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0"
+//    grails.serverURL = "http://${grails.serverIP}/omar-2.0"
   }
 }
 
@@ -162,10 +163,11 @@ switch ( Environment.current.name.toUpperCase() )
     break
 }
 
+
 wms.data.raster = [
     url: "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0/ogc/footprints",
     layers: (wms.supportIE6) ? "Imagery" : "ImageData",
-    footprintLayers: "ImageFootprints",
+    footprintLayers: "Imagery",
     title: "OMAR Imagery Coverage",
     format: (wms.supportIE6) ? "image/gif" : "image/png",
     styles: "green"
@@ -175,7 +177,7 @@ wms.data.video = [
 //    url: "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${wms.data.mapFile}",
     url: "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0/ogc/footprints",
     layers: (wms.supportIE6) ? "Videos" : "VideoData",
-    footprintLayers: "VideoFootprints",
+    footprintLayers: "Videos",
     title: "OMAR Video Coverage",
     format: (wms.supportIE6) ? "image/gif" : "image/png",
     styles: "red"
@@ -185,7 +187,7 @@ wms.data.video = [
 wms.styles = [
         default: [
                 outlinecolor:[r:0.0,g:1.0,b:0,a:1.0],
-                width:10
+                width:1
         ],
         red: [
                 outlinecolor:[r:1.0,g:0.0,b:0.0,a:1.0],
