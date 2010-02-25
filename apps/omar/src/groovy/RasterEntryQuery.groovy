@@ -75,7 +75,7 @@ class RasterEntryQuery
       def value = tempParams.get(it)
       if(value)
       {
-        properties.put(it, value)
+        setProperty("${it}", value)
       }
     }
     // now check the lists
@@ -173,20 +173,25 @@ class RasterEntryQuery
           maxLat = viewMaxLat
           maxLon = viewMaxLon
         }
+        // only do a bounds if one exists
+        //
+        if(minLat&&maxLat&&minLon&&maxLon)
+        {
+          def coordinateConversionService = new CoordinateConversionService()
 
-        def coordinateConversionService = new CoordinateConversionService()
+          maxLat = coordinateConversionService.convertToDecimalDegrees(maxLat)
+          maxLon = coordinateConversionService.convertToDecimalDegrees(maxLon)
+          minLat = coordinateConversionService.convertToDecimalDegrees(minLat)
+          minLon = coordinateConversionService.convertToDecimalDegrees(minLon)
 
-        maxLat = coordinateConversionService.convertToDecimalDegrees(maxLat)
-        maxLon = coordinateConversionService.convertToDecimalDegrees(maxLon)
-        minLat = coordinateConversionService.convertToDecimalDegrees(minLat)
-        minLon = coordinateConversionService.convertToDecimalDegrees(minLon)
+          wkt = Geometry.createPolygon(
+              minLon,
+              minLat,
+              maxLon,
+              maxLat
+          )
+        }
 
-        wkt = Geometry.createPolygon(
-            minLon,
-            minLat,
-            maxLon,
-            maxLat
-        )
         break
 
       case RADIUS_SEARCH:
