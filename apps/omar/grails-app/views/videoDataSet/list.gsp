@@ -58,15 +58,15 @@
 
                 <td>${fieldValue(bean: videoDataSet, field: 'height')}</td>
 
-                <td>${fieldValue(bean: videoDataSet, field: 'startDate')}</td>
+                <td>${fieldValue(bean: videoDataSet?.metadata, field: 'startDate')}</td>
 
-                <td>${fieldValue(bean: videoDataSet, field: 'endDate')}</td>
+                <td>${fieldValue(bean: videoDataSet?.metadata, field: 'endDate')}</td>
 
 
-                <td>${videoDataSet.groundGeom?.bounds?.minLon?.encodeAsHTML()}</td>
-                <td>${videoDataSet.groundGeom?.bounds?.minLat?.encodeAsHTML()}</td>
-                <td>${videoDataSet.groundGeom?.bounds?.maxLon?.encodeAsHTML()}</td>
-                <td>${videoDataSet.groundGeom?.bounds?.maxLat?.encodeAsHTML()}</td>
+                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.minLon?.encodeAsHTML()}</td>
+                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.minLat?.encodeAsHTML()}</td>
+                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.maxLon?.encodeAsHTML()}</td>
+                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.maxLat?.encodeAsHTML()}</td>
 
 
                 <td>

@@ -16,11 +16,11 @@ class VideoDataSetSearchService
       createAlias("videoDataSet", "v")
       if ( videoDataSetQuery?.groundGeom )
       {
-        addToCriteria(videoDataSetQuery.createIntersection("v.groundGeom"))
+        addToCriteria(videoDataSetQuery.createIntersection("groundGeom"))
       }
       if ( videoDataSetQuery?.startDate || videoDataSetQuery?.endDate )
       {
-        addToCriteria(videoDataSetQuery.createDateRange("v.startDate", "v.endDate"))
+        addToCriteria(videoDataSetQuery.createDateRange("startDate", "endDate"))
       }
       if ( params?.max )
       {
@@ -37,8 +37,6 @@ class VideoDataSetSearchService
         // HACK:  Need to find a better way to do this
         switch ( params?.sort )
         {
-          case "startDate":
-          case "endDate":
           case "width":
           case "height":
             sortColumn = "v.${params?.sort}"
@@ -66,14 +64,13 @@ class VideoDataSetSearchService
   {
     def totalCount = VideoDataSetMetadata.createCriteria().get {
       projections { rowCount() }
-      createAlias("videoDataSet", "v")
       if ( videoDataSetQuery?.groundGeom )
       {
-        addToCriteria(videoDataSetQuery.createIntersection("v.groundGeom"))
+        addToCriteria(videoDataSetQuery.createIntersection("groundGeom"))
       }
       if ( videoDataSetQuery?.startDate || videoDataSetQuery?.endDate )
       {
-        addToCriteria(videoDataSetQuery.createDateRange("v.startDate", "v.endDate"))
+        addToCriteria(videoDataSetQuery.createDateRange("startDate", "endDate"))
       }
       videoDataSetQuery.searchTagNames?.size()?.times {i ->
         if ( videoDataSetQuery.searchTagNames[i] && videoDataSetQuery.searchTagValues[i] )

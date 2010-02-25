@@ -19,21 +19,16 @@ class RasterEntry
 
   Integer bitDepth
   String dataType
-  Geometry groundGeom
-  Date acquisitionDate
   String tiePointSet
 
   static hasOne = [metadata: RasterEntryMetadata]
 
   static belongsTo = [rasterDataSet: RasterDataSet]
 
-  static hasMany = [
-      fileObjects: RasterEntryFile
-  ]
+  static hasMany = [fileObjects: RasterEntryFile]
 
   static mapping = {
     columns {
-      acquisitionDate index: 'raster_entry_acquisition_date_idx'
       tiePointSet type: 'text'
     }
   }
@@ -51,10 +46,6 @@ class RasterEntry
     gsdX(nullable: true)
     gsdY(nullable: true)
 
-
-    groundGeom(nullable: false)
-    acquisitionDate(nullable: true)
-    
     tiePointSet(nullable: true)
     
     metadata(nullable: true)

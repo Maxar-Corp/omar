@@ -61,14 +61,14 @@
 
                 <td>${videoDataSet.height?.encodeAsHTML()}</td>
 
-                <td>${videoDataSet.startDate?.encodeAsHTML()}</td>
+                <td>${videoDataSet?.metadata?.startDate?.encodeAsHTML()}</td>
 
-                <td>${videoDataSet.endDate?.encodeAsHTML()}</td>
+                <td>${videoDataSet?.metadata?.endDate?.encodeAsHTML()}</td>
 
-                <td>${videoDataSet.groundGeom?.bounds?.minLon?.encodeAsHTML()}</td>
-                <td>${videoDataSet.groundGeom?.bounds?.minLat?.encodeAsHTML()}</td>
-                <td>${videoDataSet.groundGeom?.bounds?.maxLon?.encodeAsHTML()}</td>
-                <td>${videoDataSet.groundGeom?.bounds?.maxLat?.encodeAsHTML()}</td>
+                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.minLon?.encodeAsHTML()}</td>
+                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.minLat?.encodeAsHTML()}</td>
+                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.maxLon?.encodeAsHTML()}</td>
+                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.maxLat?.encodeAsHTML()}</td>
 
                 <%--
                 <td>${videoDataSet.groundGeom?.encodeAsHTML()}</td>

@@ -13,8 +13,6 @@ class RasterEntryController implements InitializingBean
   public static final List tagHeaderList
   public static final List tagNameList
 
-  def includeCount = true
-
   def index = { redirect(action: list, params: params) }
 
   // the delete, save and update actions only accept POST requests
@@ -156,9 +154,8 @@ class RasterEntryController implements InitializingBean
       def user = authenticateService.principal().username
       def starttime = System.currentTimeMillis()
 
-      def xxx = rasterEntrySearchService.runQuery(queryParams, params, includeCount)
-      def rasterEntries = xxx?.rasterEntries
-      def totalCount = xxx?.totalCount
+      def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      def totalCount = rasterEntrySearchService.getCount(queryParams)
 
 
       def rasterFiles = []
@@ -228,9 +225,8 @@ class RasterEntryController implements InitializingBean
       def user = authenticateService.principal().username
       def starttime = System.currentTimeMillis()
 
-      def xxx = rasterEntrySearchService.runQuery(queryParams, params, includeCount)
-      def rasterEntries = xxx?.rasterEntries
-      def totalCount = xxx?.totalCount
+      def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      def totalCount = rasterEntrySearchService.getCount(queryParams)
 
       def rasterFiles = []
 
@@ -329,10 +325,8 @@ class RasterEntryController implements InitializingBean
     }
     else
     {
-      def xxx = rasterEntrySearchService.runQuery(queryParams, params, includeCount)
-
-      rasterEntries = xxx?.rasterEntries
-      totalCount = xxx?.totalCount
+      rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      totalCount = rasterEntrySearchService.getCount(queryParams)
 
       if ( rasterEntries )
       {

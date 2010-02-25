@@ -55,10 +55,19 @@
                 <td>${rasterEntry.numberOfBands?.encodeAsHTML()}</td>
                 <td>${rasterEntry.bitDepth?.encodeAsHTML()}</td>
                 <td>${rasterEntry.dataType?.encodeAsHTML()}</td>
+
+                <%--
                 <td>${rasterEntry.groundGeom?.bounds?.minLon?.encodeAsHTML()}</td>
                 <td>${rasterEntry.groundGeom?.bounds?.minLat?.encodeAsHTML()}</td>
                 <td>${rasterEntry.groundGeom?.bounds?.maxLon?.encodeAsHTML()}</td>
                 <td>${rasterEntry.groundGeom?.bounds?.maxLat?.encodeAsHTML()}</td>
+                --%>
+                <td>${rasterEntry?.metadata?.groundGeom?.bounds?.minLon?.encodeAsHTML()}</td>
+                <td>${rasterEntry?.metadata?.groundGeom?.bounds?.minLat?.encodeAsHTML()}</td>
+                <td>${rasterEntry?.metadata?.groundGeom?.bounds?.maxLon?.encodeAsHTML()}</td>
+                <td>${rasterEntry?.metadata?.groundGeom?.bounds?.maxLat?.encodeAsHTML()}</td>
+
+
                 <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
                   <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                 </a></td>
@@ -75,6 +84,7 @@
             <thead>
             <tr>
               <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
+
               <g:sortableColumn property="acquisitionDate" title="Acquisition Date" params="${queryParams.toMap()}"/>
 
               <g:each in="${(0..<tagHeaderList?.size())}" var="i">
@@ -88,10 +98,14 @@
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
+
+                <%--
                 <td>${rasterEntry.acquisitionDate?.encodeAsHTML()}</td>
+                --%>
+                <td>${rasterEntry?.metadata?.acquisitionDate?.encodeAsHTML()}</td>
 
                 <g:each in="${tagNameList}" var="tagName">
-                  <td><%="${rasterEntry.metadata."${tagName}"}"%></td>
+                  <td><%="${rasterEntry?.metadata?."${tagName}"}"%></td>
                 </g:each>
 
                 <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
@@ -152,7 +166,10 @@
                   WMS GetCapabilities
                 </a></td>
                 <td>
+                  <%--
                   <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetMap", layers: rasterEntry.id, bbox: [rasterEntry?.groundGeom?.bounds?.minLon, rasterEntry?.groundGeom?.bounds?.minLat, rasterEntry?.groundGeom?.bounds?.maxLon, rasterEntry?.groundGeom?.bounds?.maxLat].join(","), srs: "epsg:4326", width: 1024, height: 512, format: "image/jpeg"])}">
+                  --%>
+                  <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetMap", layers: rasterEntry.id, bbox: [rasterEntry?.metadata?.groundGeom?.bounds?.minLon, rasterEntry?.metadata?.groundGeom?.bounds?.minLat, rasterEntry?.metadata?.groundGeom?.bounds?.maxLon, rasterEntry?.metadata?.groundGeom?.bounds?.maxLat].join(","), srs: "epsg:4326", width: 1024, height: 512, format: "image/jpeg"])}">
                     WMS GetMap</a>
                 </td>
                 <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: rasterEntry.id, format: "image/png", transparent: "true"])}">
