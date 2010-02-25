@@ -271,12 +271,19 @@ class RasterEntryController implements InitializingBean
 
     bindData(queryParams, params)
 
-    initializeDate(queryParams, "startDate", params)
-    initializeDate(queryParams, "endDate", params)
+    queryParams."startDate" = DateUtil.parseDateGivenFormats(params."startDate", [])
+    queryParams."endDate"   = DateUtil.parseDateGivenFormats(params."endDate", [])
+
+//    initializeDate(queryParams, "startDate", params)
+//    initializeDate(queryParams, "endDate", params)
 
     return queryParams
   }
-
+  private def initializeDate(RasterEntryQuery queryParams, String dateField, Map params)
+  {
+    queryParams."${dateField}" = DateUtil.parseDateGivenFormats(params."${dateField}", [])
+  }
+  /*
   private def initializeDate(RasterEntryQuery queryParams, String dateField, Map params)
   {
 
@@ -299,7 +306,7 @@ class RasterEntryController implements InitializingBean
       }
     }
   }
-
+  */
   def results = {
 
 //    println "=== results start ==="
