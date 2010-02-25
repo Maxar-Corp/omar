@@ -1,7 +1,7 @@
 /**
  * Role class for Authority.
  */
-class Role
+class Role implements Serializable
 {
   static hasMany = [people: AuthUser]
 
