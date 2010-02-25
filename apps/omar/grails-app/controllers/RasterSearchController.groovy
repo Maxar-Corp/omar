@@ -74,13 +74,13 @@ class RasterSearchController implements InitializingBean
       ]
 
       log.info(logData)
-      println logData
+      //println logData
 
       chain(action: "results", model: [rasterEntries: rasterEntries /*, tags: tags*/], params: params)
     }
     else
     {
-      println queryParams?.toMap()
+     // println queryParams?.toMap()
 
       return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
