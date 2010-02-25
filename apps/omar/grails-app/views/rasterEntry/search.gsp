@@ -411,6 +411,26 @@ function updateOmarFilters()
         tempName = "searchTagValues[" + idx + "]";
         wmsParams["searchTagValues["+idx+"]"] =$(tempName).value;
       }
+        /*
+      if($("bboxSearchButton").checked)
+      {
+       wmsParams["searchMethod"] = "BBOX";
+        wmsParams["aoiRadius"] = "";
+        wmsParams["centerLat"] = "";
+        wmsParams["centerLon"] = "";
+      }
+      else
+      {
+        wmsParams["searchMethod"] = "RADIUS";
+        wmsParams["aoiMaxLat"] = "";
+        wmsParams["aoiMaxLon"] = "";
+        wmsParams["aoiMinLon"] = "";
+        wmsParams["aoiMinLat"] = "";
+        wmsParams["aoiRadius"] = $("aoiRadius").value;
+        wmsParams["centerLat"] = $("centerLat").value;
+        wmsParams["centerLon"] = $("centerLon").value;  
+      }
+      */
       dataLayer.mergeNewParams(wmsParams);
     }
 
@@ -490,7 +510,7 @@ function updateOmarFilters()
          </li>
          <li><br/></li>
          <li>
-           <g:radio name="searchMethod" value="${RasterEntryQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.RADIUS_SEARCH}" onclick="toggleRadiusSearch()"/>
+           <g:radio name="searchMethod" id="radiusSearchButton" value="${RasterEntryQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.RADIUS_SEARCH}" onclick="toggleRadiusSearch()"/>
            <label>Use Radius Search</label>
          </li>
          <li><br/></li>
@@ -498,7 +518,7 @@ function updateOmarFilters()
            <label for='aoiRadius'>Radius in Meters:</label><br/>
          </li>
          <li>
-           <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}"/>
+           <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters()"/>
          </li>
          <li><br/></li>
          <li>
@@ -519,7 +539,7 @@ function updateOmarFilters()
        <input type="hidden" id="viewMaxLat" name="viewMaxLat" value="${fieldValue(bean: queryParams, field: 'viewMaxLat')}"/>
        <ol>
          <li>
-           <g:radio name="searchMethod" value="${RasterEntryQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.BBOX_SEARCH}" onclick="toggleBBoxSearch()"/>
+           <g:radio name="searchMethod" id="bboxSearchButton" value="${RasterEntryQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.BBOX_SEARCH}" onclick="toggleBBoxSearch()"/>
            <label>Use BBox Search</label>
          </li>
          <li><br/></li>
