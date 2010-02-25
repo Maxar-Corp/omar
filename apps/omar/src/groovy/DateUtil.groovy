@@ -83,4 +83,39 @@ class DateUtil
 
     return date
   }
+  static parseDateGivenFormats(String dateString, def dateFormats)
+  {
+
+    if(!dateFormats ||(dateFormats.size()<1))
+    {
+      dateFormats = [
+          "MM'/'DD'/'yyyy HH:mm:ss",
+              "yyyyMMdd'T'HH:mm:ss",
+              "yyyyMMdd'T'HH:mm:ss.ssss",
+
+      ]
+    }
+    if(!dateString)
+    {
+      return null
+    }
+    def format = new SimpleDateFormat()
+
+    dateFormats.each {dateFormat ->
+      try
+      {
+        format.applyPattern(dateFromat)
+        def date = fromat.parse(dateString)
+        if(date)
+        {
+          return date
+        }
+      }
+      catch (Exception e)
+      {
+//        println "Cannot parse ${dateString}: using ${dateFormat}"
+      }
+    }
+    return null
+  }
 }
