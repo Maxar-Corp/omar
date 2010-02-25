@@ -3,7 +3,7 @@ import java.text.SimpleDateFormat
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationContext
 import org.springframework.beans.factory.InitializingBean
-
+import java.text.DateFormat
 class KmlService implements ApplicationContextAware, InitializingBean
 {
 
@@ -378,15 +378,19 @@ class KmlService implements ApplicationContextAware, InitializingBean
 
   String createImageFootprint(Map params)
   {
+    def dateFormat = new SimpleDateFormat("yyyyMMdd");
+    def date       = new Date()
     def url = buildUrl(grailsApplication.config.wms.data.raster.url,
         [VERSION: "1.1.1",
             REQUEST: "GetMap",
             LAYERS: "${grailsApplication.config.wms.data.raster.footprintLayers}",
+            STYLES: "${grailsApplication.config.wms.data.raster.styles}",
             SRS: "EPSG:4326",
             WIDTH: "1024",
             HEIGHT: "512",
             TRANSPARENT: "TRUE",
-            IMAGEFILTER: "acquisition_date>=(date(now())-integer'${params.imagedays}')",
+            TIME:"P${params.days}D/${dateFormat.format(date)}",
+//            IMAGEFILTER: "acquisition_date>=(date(now())-integer'${params.imagedays}')",
             FORMAT: "image/png"])
 
     def kmlbuilder = new StreamingMarkupBuilder()
@@ -417,15 +421,19 @@ class KmlService implements ApplicationContextAware, InitializingBean
 
   String createVideoFootprint(Map params)
   {
+    def dateFormat = new SimpleDateFormat("yyyyMMdd");
+    def date       = new Date()
     def url = buildUrl(grailsApplication.config.wms.data.video.url,
         [VERSION: "1.1.1",
             REQUEST: "GetMap",
             LAYERS: "${grailsApplication.config.wms.data.video.footprintLayers}",
+            STYLES: "${grailsApplication.config.wms.data.video.styles}",
             SRS: "EPSG:4326",
             WIDTH: "1024",
             HEIGHT: "512",
+            TIME:"P${params.days}D/${dateFormat.format(date)}",
             TRANSPARENT: "TRUE",
-            VIDEOFILTER: "start_date>=(date(now())-integer'${params.videodays}')",
+//            VIDEOFILTER: "start_date>=(date(now())-integer'${params.videodays}')",
             FORMAT: "image/png"])
 
     def kmlbuilder = new StreamingMarkupBuilder()
