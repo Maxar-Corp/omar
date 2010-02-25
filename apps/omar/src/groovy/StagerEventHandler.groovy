@@ -94,7 +94,7 @@ class StagerEventHandler implements FileFilterEventListener
         else
         {
           processFailureLog << fileEventObject.file << "\n"
-          rasterDataSet.errors.allErrors.each { println it }
+          //rasterDataSet.errors.allErrors.each { println it }
         }
       }
       videoDataSets?.each {videoDataSet ->
