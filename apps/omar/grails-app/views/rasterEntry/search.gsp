@@ -367,10 +367,10 @@ function updateOmarFilters()
       if ( hasStartDate )
       {
         omarfilter = "acquisition_date>=" + startDate;
-        wmsTime = syear+sday+smonth
+        wmsTime = startDateNoQuote
         if ( hasEndDate )
         {
-          wmsTime += "/"+eyear+emonth+eday
+          wmsTime += "/"+endDateNoQuote
           omarfilter += " and acquisition_date<=" + endDate;
         }
         else
@@ -383,7 +383,7 @@ function updateOmarFilters()
       {
         if ( hasEndDate )
         {
-          wmsTime += "/" + eyear+emonth+eday
+          wmsTime += "/" + endDateNoQuote
           omarfilter = "acquisition_date<=" + endDate;
 
           //alert(omarfilter);
