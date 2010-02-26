@@ -30,7 +30,7 @@ div.olLayerDiv {
 }
 .olControlScale {
     right: 3px;
-    bottom: 3em;
+    bottom: 0em;
     display: block;
     position: absolute;
     font-size: smaller;
@@ -59,15 +59,6 @@ div.olLayerDiv {
     position: absolute;
     font-size: smaller;
 } 
-
-div.olControlMousePosition {
-    bottom: 0em;
-    right: 3px;
-    display: block;
-    position: absolute;
-    font-family: Arial;
-    font-size: smaller;
-}
 
 .olControlOverviewMapContainer {
     position: absolute;
