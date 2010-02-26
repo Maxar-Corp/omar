@@ -1,5 +1,6 @@
 //import javax.jws.WebParam
 import org.hibernate.FetchMode as FM
+import org.hibernate.CacheMode as CM
 
 class RasterEntrySearchService
 {
@@ -94,6 +95,7 @@ class RasterEntrySearchService
           ilike(rasterEntryQuery.searchTagNames[i], "%${rasterEntryQuery.searchTagValues[i]}%")
         }
       }
+      cacheMode(CM.GET)
     }
 
     def geometries = RasterEntryMetadata.createCriteria().list(x)
