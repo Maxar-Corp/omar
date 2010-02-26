@@ -125,7 +125,6 @@
        map.addControl(new OpenLayers.Control.LayerSwitcher());
        //map.addControl(new OpenLayers.Control.PanZoom());
        //map.addControl(new OpenLayers.Control.NavToolbar());
-       //map.addControl(new OpenLayers.Control.MousePosition());
        map.addControl(new OpenLayers.Control.Scale());
        //map.addControl(new OpenLayers.Control.Permalink("permalink"));
        map.addControl(new OpenLayers.Control.ScaleLine());
@@ -314,44 +313,7 @@
         $("aoiMaxLon").value = "";
         $("aoiMinLat").value = "";
       }
-     /*
-     function setAOI( e )
-      {
-        var geom = e.feature.geometry;
-        var bounds = geom.getBounds();
-        var feature = new OpenLayers.Feature.Vector(geom);
 
-        // HACK - Need a better way to this
-        $("aoiMinLon").value = bounds.left;
-        $("aoiMaxLat").value = bounds.top;
-        $("aoiMaxLon").value = bounds.right;
-        $("aoiMinLat").value = bounds.bottom;
-
-        aoiLayer.destroyFeatures();
-        aoiLayer.addFeatures(feature, {silent: true});
-
-      }
-      */
-
-    /*
-    function setView( e )
-    {
-      var bounds = map.getExtent();
-
-      $("viewMinLon").value = bounds.left;
-      $("viewMaxLat").value = bounds.top;
-      $("viewMaxLon").value = bounds.right;
-      $("viewMinLat").value = bounds.bottom;
-    }
-    */
-    /*
-    function setCenterText( e )
-    {
-      var center = map.getCenter();
-      $("centerLon").value = center.lon;
-      $("centerLat").value = center.lat;
-    }
-    */
     
     function setupQueryFields()
     {
@@ -455,14 +417,6 @@
       wmsParams["time"] = wmsTime;
       dataLayer.mergeNewParams(wmsParams);
     }
-
-    /*
-    function searchForVideos()
-    {
-      document.searchForm.action = "search";
-      document.searchForm.submit();
-    }
-    */
 
     function generateKML()
     {
