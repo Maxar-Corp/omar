@@ -1,5 +1,5 @@
 //import javax.jws.WebParam
-
+import org.hibernate.FetchMode as FM
 
 class RasterEntrySearchService
 {
@@ -13,7 +13,6 @@ class RasterEntrySearchService
   List<RasterEntryQuery> runQuery(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
     def x = {
-      createAlias("rasterEntry", "r")
       if ( rasterEntryQuery?.groundGeom )
       {
         addToCriteria(rasterEntryQuery.createIntersection("groundGeom"))
@@ -55,10 +54,12 @@ class RasterEntrySearchService
           ilike(rasterEntryQuery.searchTagNames[i], "%${rasterEntryQuery.searchTagValues[i]}%")
         }
       }
+      fetchMode("rasterEntry", FM.JOIN)
     }
 
     def metadata = RasterEntryMetadata.createCriteria().list(x)
     def rasterEntries = metadata?.collect {it.rasterEntry}
+//    def rasterEntries = metadata?.rasterEntry
 
     //rasterEntries?.each { it.mainFile }
 
