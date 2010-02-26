@@ -158,7 +158,7 @@
               }
 
               var ddOutput = document.getElementById('ddCoordinates');
-              ddOutput.innerHTML = "<b>DD:</b> " + lonLat.lat + "" + latHem + " " + lonLat.lon + "" + lonHem;
+              ddOutput.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
           }
       }));
 
