@@ -6,5 +6,4 @@ class Utility
     nullMap?.each {params?.remove(it.key)}
    
   }
-  static Date buildDate(String )
 }
