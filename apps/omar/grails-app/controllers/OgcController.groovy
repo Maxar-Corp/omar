@@ -102,10 +102,10 @@ class OgcController
           def queryParams = new RasterEntryQuery()
           //bindData(queryParams, tempParams)
           queryParams.caseInsensitiveBind(params)
-          if(!startDate&&!endDate)
+          if ( !startDate && !endDate )
           {
             startDate = DateUtil.parseDateGivenFormats(tempMap."startdate", [])
-            endDate   = DateUtil.parseDateGivenFormats(tempMap."enddate", [])
+            endDate = DateUtil.parseDateGivenFormats(tempMap."enddate", [])
           }
           String[] styles = wmsRequest.styles?.split(",")
           queryParams.aoiMaxLat = maxy
@@ -114,12 +114,10 @@ class OgcController
           queryParams.aoiMinLon = minx
           queryParams.startDate = startDate
           queryParams.endDate = endDate
-          def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-          rasterEntries.each {rasterEntry ->
-//            geometries.add(rasterEntry.groundGeom.geom)
-            geometries.add(rasterEntry?.metadata?.groundGeom?.geom)
 
-          }
+          def results = rasterEntrySearchService.getGeometries(queryParams, params)
+
+          geometries.addAll(results?.geom)
         }
         else if ( it == "Videos" ||
             it == "VideoData" )
@@ -130,17 +128,17 @@ class OgcController
           queryParams.aoiMinLat = miny
           queryParams.aoiMaxLon = maxx
           queryParams.aoiMinLon = minx
-          if(!startDate&&!endDate)
+          if ( !startDate && !endDate )
           {
             startDate = DateUtil.parseDateGivenFormats(tempMap."startdate", [])
-            endDate   = DateUtil.parseDateGivenFormats(tempMap."enddate", [])
+            endDate = DateUtil.parseDateGivenFormats(tempMap."enddate", [])
           }
           queryParams.startDate = startDate
           queryParams.endDate = endDate
-          def videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
-          videoDataSets.each {videoDataSet ->
-            geometries.add(videoDataSet.metadata?.groundGeom.geom)
-          }
+
+          def results = videoDataSetSearchService.getGeometries(queryParams, params)
+
+          geometries.addAll(results?.geom)
         }
 
         webMappingService.drawCoverage(g, wmsRequest, geometries, style)
