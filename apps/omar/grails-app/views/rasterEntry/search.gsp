@@ -375,7 +375,7 @@ function updateOmarFilters()
         }
         else
         {
-          wmsTime += "/P1D"
+          wmsTime += "/"
         }
         //alert(omarfilter);
       }
@@ -383,7 +383,7 @@ function updateOmarFilters()
       {
         if ( hasEndDate )
         {
-          wmsTime += "P1000Y/" + eyear+emonth+eday
+          wmsTime += "/" + eyear+emonth+eday
           omarfilter = "acquisition_date<=" + endDate;
 
           //alert(omarfilter);
