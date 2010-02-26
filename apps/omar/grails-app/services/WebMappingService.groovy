@@ -117,6 +117,7 @@ class WebMappingService
       g.drawPolyline(pointListx, pointListy, pointListx.size())
     }
   }
+  
   RenderedImage getMap(WMSRequest wmsRequest)
   {
     RenderedImage image = null

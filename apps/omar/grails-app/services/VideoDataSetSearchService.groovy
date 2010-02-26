@@ -13,7 +13,6 @@ class VideoDataSetSearchService
   Map<String, String> params)
   {
     def x = {
-      createAlias("videoDataSet", "v")
       if ( videoDataSetQuery?.groundGeom )
       {
         addToCriteria(videoDataSetQuery.createIntersection("groundGeom"))
