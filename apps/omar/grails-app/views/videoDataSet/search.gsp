@@ -48,6 +48,8 @@
   <openlayers:loadJavascript/>
   <resource:include components="dateChooser"/>
 
+  <g:javascript src="coordinateConversion.js"/>
+
   <g:javascript>
     var aoiLayer;
     var polygonControl;
@@ -123,13 +125,44 @@
        map.addControl(new OpenLayers.Control.LayerSwitcher());
        //map.addControl(new OpenLayers.Control.PanZoom());
        //map.addControl(new OpenLayers.Control.NavToolbar());
-       map.addControl(new OpenLayers.Control.MousePosition());
+       //map.addControl(new OpenLayers.Control.MousePosition());
        map.addControl(new OpenLayers.Control.Scale());
        //map.addControl(new OpenLayers.Control.Permalink("permalink"));
        map.addControl(new OpenLayers.Control.ScaleLine());
        map.addControl(new OpenLayers.Control.Attribution());
        map.events.register("moveend", map, setCenterText);
        map.events.register("zoomend", map, setView );
+
+      map.addControl(new OpenLayers.Control.MousePosition({
+          formatOutput: function(lonLat)
+          {
+              var dmsOutput = document.getElementById('dmsCoordinates');
+              dmsOutput.innerHTML = "<b>DMS:</b> " + ddToDms(lonLat.lat, "latitude") + " " + ddToDms(lonLat.lon, "longitude");
+
+              var latHem;
+              if(lonLat.lat < 0)
+              {
+                  latHem = " S";
+              }
+              else
+              {
+                  latHem = " N";
+              }
+
+              var lonHem;
+              if(lonLat.lon < 0)
+              {
+                  lonHem = " W";
+              }
+              else
+              {
+                  lonHem = " E";
+              }
+
+              var ddOutput = document.getElementById('ddCoordinates');
+              ddOutput.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
+          }
+      }));        
     }
 
     function setupMapView()
@@ -255,8 +288,10 @@
        setupMapView();
        setupQueryFields();
        //updateOmarFilters();
+        clearAOI();
     }
 
+    /*
     function goto()
     {
       var centerLon = $("centerLon").value;
@@ -266,6 +301,7 @@
 
       map.setCenter(center, zoom);
     }
+    */
 
      function clearAOI( e )
       {
@@ -278,7 +314,7 @@
         $("aoiMaxLon").value = "";
         $("aoiMinLat").value = "";
       }
-
+     /*
      function setAOI( e )
       {
         var geom = e.feature.geometry;
@@ -295,9 +331,9 @@
         aoiLayer.addFeatures(feature, {silent: true});
 
       }
+      */
 
-
-
+    /*
     function setView( e )
     {
       var bounds = map.getExtent();
@@ -307,15 +343,16 @@
       $("viewMaxLon").value = bounds.right;
       $("viewMinLat").value = bounds.bottom;
     }
-
-
+    */
+    /*
     function setCenterText( e )
     {
       var center = map.getCenter();
       $("centerLon").value = center.lon;
       $("centerLat").value = center.lat;
     }
-
+    */
+    
     function setupQueryFields()
     {
       var searchMethod = "${queryParams.searchMethod}";
@@ -419,11 +456,13 @@
       dataLayer.mergeNewParams(wmsParams);
     }
 
+    /*
     function searchForVideos()
     {
       document.searchForm.action = "search";
       document.searchForm.submit();
     }
+    */
 
     function generateKML()
     {
@@ -461,6 +500,9 @@
     <span class="menuButton">
       <a href="javascript:updateOmarFilters();">Update Footprints</a>
     </span>
+    <span class="menuButton">
+     Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS']}" onChange="setCenterText()"/>
+   </span>
   </div>
   <div class="body">
     <h1 id="mapTitle">Search for Video:</h1>
@@ -468,7 +510,13 @@
       <div class="message">${flash.message}</div>
     </g:if>
     <div id="map"></div>
-
+    <div class="niceBox">
+     <div class="niceBoxHd">Mouse Position:</div>
+     <div class="niceBoxBody">
+       <div id="ddCoordinates"></div>
+       <div id="dmsCoordinates"></div>
+     </div>
+   </div>
   </div>
 </content>
 <content tag="search">
