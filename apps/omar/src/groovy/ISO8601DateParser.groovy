@@ -74,7 +74,10 @@ class ISO8601DateParser
   }
   static def convertStringToSimpleDate(String dateString)
   {
-
+    if(dateString.size() < 1)
+    {
+      return (Date)null
+    }
     Date result = convertStringToSimpleDate(dateString, "yyyyMMdd")
 
     if(result)
@@ -146,18 +149,20 @@ class ISO8601DateParser
     OmarDuration endDuration   = convertStringToDuration(startEndSplit[0])
     if(startEndSplit.size()>0)
     {
-      startDuration = convertStringToDuration(startEndSplit[0])
+      String start =  startEndSplit[0].trim()
+      startDuration = convertStringToDuration(start)
       if(!startDuration)
       {
-        startDate   = convertStringToSimpleDate(startEndSplit[0])
+        startDate   = convertStringToSimpleDate(start)
       }
 
       if(startEndSplit.size() > 1)
       {
-        endDuration = convertStringToDuration(startEndSplit[1])
+        String end =  startEndSplit[1].trim()
+        endDuration = convertStringToDuration(end)
         if(!endDuration)
         {
-          endDate   = convertStringToSimpleDate(startEndSplit[1])
+          endDate   = convertStringToSimpleDate(end)
         }
       }
     }
