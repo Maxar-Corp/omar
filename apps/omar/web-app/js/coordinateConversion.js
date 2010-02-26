@@ -432,3 +432,122 @@ function searchForRasters()
     setCurrentViewport();
     document.searchForm.submit();
 }
+
+function searchForVideos()
+{
+    var centerLat = $("centerLat").value;
+    var centerLon = $("centerLon").value;
+
+    var latDmsRegExp = /^(\d{1,2})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([NnSs])?/
+    var lonDmsRegExp = /^(\d{1,3})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([EeWw])?/
+
+    if(centerLat.match(latDmsRegExp) && centerLon.match(lonDmsRegExp))
+    {
+        if(centerLat.match(latDmsRegExp))
+        {
+            var ctrlatDeg = parseInt(RegExp.$1, 10);
+            var ctrlatMin = parseInt(RegExp.$2, 10);
+            var ctrlatSec = parseInt(RegExp.$3, 10) + RegExp.$4;
+            var ctrlatHem = RegExp.$5;
+
+            if(ctrlatHem == "S" || ctrlatHem == "s")
+            {
+                ctrlatDeg = -ctrlatDeg;
+            }
+
+            $("centerLat").value = dmsToDd(ctrlatDeg, ctrlatMin, ctrlatSec);
+        }
+
+        if(centerLon.match(lonDmsRegExp))
+        {
+            var ctrlonDeg = parseInt(RegExp.$1, 10);
+            var ctrlonMin = parseInt(RegExp.$2, 10);
+            var ctrlonSec = parseInt(RegExp.$3, 10) + RegExp.$4;
+            var ctrlonHem = RegExp.$5;
+
+            if(ctrlonHem == "W" || ctrlonHem == "w")
+            {
+                ctrlonDeg = -ctrlonDeg;
+            }
+
+            $("centerLon").value = dmsToDd(ctrlonDeg, ctrlonMin, ctrlonSec);
+        }
+    }
+
+    var aoiMaxLatRegExp = /^(\d{1,2})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([NnSs])?/
+    var aoiMinLonRegExp = /^(\d{1,3})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([EeWw])?/
+    var aoiMinLatRegExp = /^(\d{1,2})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([NnSs])?/
+    var aoiMaxLonRegExp = /^(\d{1,3})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([EeWw])?/
+
+    var aoiMaxLat = $("aoiMaxLat").value;
+
+    if(aoiMaxLat.match(aoiMaxLatRegExp))
+    {
+        var aoiMaxlatDeg = parseInt(RegExp.$1, 10);
+        var aoiMaxlatMin = parseInt(RegExp.$2, 10);
+        var aoiMaxlatSec = parseInt(RegExp.$3, 10) + RegExp.$4;
+        var aoiMaxlatHem = RegExp.$5;
+
+        if(aoiMaxlatHem == "S" || aoiMaxlonHem == "s")
+        {
+            aoiMaxlatDeg = -aoiMaxlatDeg;
+        }
+
+        $("aoiMaxLat").value = dmsToDd(aoiMaxlatDeg, aoiMaxlatMin, aoiMaxlatSec);
+    }
+
+
+    var aoiMinLon = $("aoiMinLon").value;
+
+    if(aoiMinLon.match(aoiMinLonRegExp))
+    {
+        var aoiMinlonDeg = parseInt(RegExp.$1, 10);
+        var aoiMinlonMin = parseInt(RegExp.$2, 10);
+        var aoiMinlonSec = parseInt(RegExp.$3, 10) + RegExp.$4;
+        var aoiMinlonHem = RegExp.$5;
+
+        if(aoiMinlonHem == "W" || aoiMinlonHem == "w")
+        {
+            aoiMinlonDeg = -aoiMinlonDeg;
+        }
+
+        $("aoiMinLon").value = dmsToDd(aoiMinlonDeg, aoiMinlonMin, aoiMinlonSec);
+    }
+
+    var aoiMinLat = $("aoiMinLat").value;
+
+    if(aoiMinLat.match(aoiMinLatRegExp))
+    {
+        var aoiMinlatDeg = parseInt(RegExp.$1, 10);
+        var aoiMinlatMin = parseInt(RegExp.$2, 10);
+        var aoiMinlatSec = parseInt(RegExp.$3, 10) + RegExp.$4;
+        var aoiMinlatHem = RegExp.$5;
+
+        if(aoiMinlatHem == "S" || aoiMinlonHem == "s")
+        {
+            aoiMinlatDeg = -aoiMinlatDeg;
+        }
+
+        $("aoiMinLat").value = dmsToDd(aoiMinlatDeg, aoiMinlatMin, aoiMinlatSec);
+    }
+
+    var aoiMaxLon = $("aoiMaxLon").value;
+
+    if(aoiMaxLon.match(aoiMaxLonRegExp))
+    {
+        var aoiMaxlonDeg = parseInt(RegExp.$1, 10);
+        var aoiMaxlonMin = parseInt(RegExp.$2, 10);
+        var aoiMaxlonSec = parseInt(RegExp.$3, 10) + RegExp.$4;
+        var aoiMaxlonHem = RegExp.$5;
+
+        if(aoiMaxlonHem == "W" || aoiMaxlonHem == "w")
+        {
+            aoiMaxlonDeg = -aoiMaxlonDeg;
+        }
+
+        $("aoiMaxLon").value = dmsToDd(aoiMaxlonDeg, aoiMaxlonMin, aoiMaxlonSec);
+    }
+
+    document.searchForm.action = "search";
+      document.searchForm.submit();
+}
