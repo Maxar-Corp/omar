@@ -60,6 +60,8 @@
   </style>
 
   <openlayers:loadJavascript/>
+
+  <g:javascript src="coordinateConversion.js"/>
 </head>
 <body onload="init();" onresize="changeMapSize();">
 <div id="nav" class="nav">
@@ -112,6 +114,13 @@
     <div class="message">${flash.message}</div>
   </g:if>
   <div id="map"></div>
+  <div class="niceBox">
+   <div class="niceBoxHd">Mouse Position:</div>
+   <div class="niceBoxBody">
+    <div id="ddCoordinates"></div>
+    <div id="dmsCoordinates"></div>
+   </div>
+  </div>
 </div>
 <g:javascript>
   var map;
@@ -163,7 +172,7 @@
     map.addControl(new OpenLayers.Control.LayerSwitcher());
     //map.addControl(new OpenLayers.Control.PanZoom());
     //map.addControl(new OpenLayers.Control.NavToolbar());
-    map.addControl(new OpenLayers.Control.MousePosition());
+    //map.addControl(new OpenLayers.Control.MousePosition());
     map.addControl(new OpenLayers.Control.Scale());
     map.addControl(new OpenLayers.Control.ScaleLine());
 
@@ -171,6 +180,38 @@
     var zoom = map.getZoomForExtent(bounds, true);
 
     map.setCenter(bounds.getCenterLonLat(), zoom);
+
+    map.addControl(new OpenLayers.Control.MousePosition({
+          formatOutput: function(lonLat)
+          {
+              var dmsOutput = document.getElementById('dmsCoordinates');
+              dmsOutput.innerHTML = "<b>DMS:</b> " + ddToDms(lonLat.lat, "latitude") + " " + ddToDms(lonLat.lon, "longitude");
+
+              var latHem;
+              if(lonLat.lat < 0)
+              {
+                  latHem = " S";
+              }
+              else
+              {
+                  latHem = " N";
+              }
+
+              var lonHem;
+              if(lonLat.lon < 0)
+              {
+                  lonHem = " W";
+              }
+              else
+              {
+                  lonHem = " E";
+              }
+
+              var ddOutput = document.getElementById('ddCoordinates');
+              ddOutput.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
+          }
+      }));       
+
   }
 
   function setupLayers()
