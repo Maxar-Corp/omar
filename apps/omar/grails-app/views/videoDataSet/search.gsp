@@ -397,14 +397,14 @@
       else if ( hasStartDate )
       {
         omarfilter = "end_date>=" + startDate;
-        wmsTime += syear+smonth+sday+"/P1000Y";
+        wmsTime += syear+smonth+sday+"/";
 
         //alert(omarfilter);
       }
       else if ( hasEndDate )
       {
         omarfilter = "start_date<=" + endDate;
-        wmsTime += "P1000Y/"+eyear+emonth+eday;
+        wmsTime += "/"+eyear+emonth+eday;
 
         //alert(omarfilter);
       }
