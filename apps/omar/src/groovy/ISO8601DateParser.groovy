@@ -145,8 +145,8 @@ class ISO8601DateParser
     }
     Date         startDate = (Date)null
     Date         endDate   = (Date)null
-    OmarDuration startDuration = convertStringToDuration(startEndSplit[0])
-    OmarDuration endDuration   = convertStringToDuration(startEndSplit[0])
+    OmarDuration startDuration = (OmarDuration)null
+    OmarDuration endDuration   = (OmarDuration)null
     if(startEndSplit.size()>0)
     {
       String start =  startEndSplit[0].trim()
@@ -175,10 +175,6 @@ class ISO8601DateParser
         endDuration.addTo(calendar);
         endDate = calendar.getTime();
       }
-      else if(!endDate)
-      {
-        return [startDate]
-      }
     }
     else if(endDate)
     {
@@ -189,10 +185,6 @@ class ISO8601DateParser
         calendar.setTime(endDate);
         startDuration.addTo(calendar);
         startDate = calendar.getTime();
-      }
-      else
-      {
-        return [] // need at least some kind of start
       }
     }
 
