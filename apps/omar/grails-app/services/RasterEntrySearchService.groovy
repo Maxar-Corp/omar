@@ -66,6 +66,41 @@ class RasterEntrySearchService
     return rasterEntries
   }
 
+
+
+  List<Geometry> getGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
+  {
+    def x = {
+      projections { property("groundGeom") }
+      if ( rasterEntryQuery?.groundGeom )
+      {
+        addToCriteria(rasterEntryQuery.createIntersection("groundGeom"))
+      }
+      if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
+      {
+        addToCriteria(rasterEntryQuery.createDateRange("acquisitionDate"))
+      }
+      if ( params?.max )
+      {
+        maxResults(params.max as Integer)
+      }
+      if ( params?.offset )
+      {
+        firstResult(params.offset as Integer)
+      }
+      rasterEntryQuery.searchTagNames?.size()?.times {i ->
+        if ( rasterEntryQuery.searchTagNames[i] && rasterEntryQuery.searchTagValues[i] )
+        {
+          ilike(rasterEntryQuery.searchTagNames[i], "%${rasterEntryQuery.searchTagValues[i]}%")
+        }
+      }
+    }
+
+    def geometries = RasterEntryMetadata.createCriteria().list(x)
+
+    return geometries
+  }
+
   int getCount(RasterEntryQuery rasterEntryQuery)
   {
     def totalCount = RasterEntryMetadata.createCriteria().get {
