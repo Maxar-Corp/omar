@@ -230,7 +230,7 @@
      rasterLayers = [
       new OpenLayers.Layer.WMS( "Raster", "${createLink(controller: 'ogc', action: 'wms')}",
       { layers: "${(rasterEntries*.id).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
-      {isBaseLayer: true, buffer:0, singleTile:true, ratio:1.0, quicklook:false, transitionEffect: "resize",
+      {isBaseLayer: true, buffer:0, singleTile:true, ratio:1.0, terrain_correction:false, transitionEffect: "resize",
        displayOutsideMaxExtent:false})
     ];
     map.addLayers(rasterLayers);
@@ -306,16 +306,9 @@
 
   function changeTerrainCorrectionOps()
   {
-      var quicklook=true
-     var terrainCorrection = $("terrain_correction").value
-      if(terrainCorrection == "true")
-      {
-          quicklook = false
-      }
-
     for ( var layer in rasterLayers )
     {
-      rasterLayers[layer].mergeNewParams({quicklook:quicklook});
+      rasterLayers[layer].mergeNewParams({terrain_correction:$("terrain_correction").value});
     }
   }
   function changeHistoOpts()
