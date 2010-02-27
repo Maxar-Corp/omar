@@ -64,9 +64,11 @@ class KmlQueryController implements InitializingBean
     def wmsParams = [:]
     def maxImages = grailsApplication.config.kml.maxImages
     // Convert param names to lower case
-    params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
-
     Utility.removeEmptyParams(params)
+    params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
+    wmsParams = Utility.keepOnlyGetMapWMSParams(wmsParams, ["sharpen_mode", "stretch_mode", "stretch_mode_region","terrain_correction"])
+    wmsParams.remove("elevation")
+    wmsParams.remove("time")
 
     if ( wmsParams?.bbox )
     {
