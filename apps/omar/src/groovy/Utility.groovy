@@ -24,7 +24,7 @@ class Utility
                               "info_format", "i", "j"
                               ])
   }
-  static Map keepOnlyGetMapWMSParams(def map, def additionalParamList)
+  static Map keepOnlyParams(def map, def params)
   {
     def tempParams = new CaseInsensitiveMap()
     map.each { tempParams.put(it.key, it.value)}
@@ -33,13 +33,14 @@ class Utility
                               "transparent", "bgcolor", "exceptions", "time",
                               "elevation"
                               ]
-    if(additionalParam)
+    if(params)
     {
-      additionalParamters.each{
-        listOfParams.add(it) 
+      params.each{
+//        println "adding ${it}"
+        listOfParams.add(it)
       }
     }
 
-    return tempParams.subMap()
+    return tempParams.subMap(listOfParams)
   }
 }

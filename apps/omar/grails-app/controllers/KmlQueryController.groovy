@@ -66,7 +66,13 @@ class KmlQueryController implements InitializingBean
     // Convert param names to lower case
     Utility.removeEmptyParams(params)
     params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
-    wmsParams = Utility.keepOnlyGetMapWMSParams(wmsParams, ["sharpen_mode", "stretch_mode", "stretch_mode_region","terrain_correction"])
+    wmsParams = Utility.keepOnlyParams(wmsParams,
+            ["stretch_mode",
+             "stretch_mode_region",
+             "sharpen_mode",
+             "terrain_correction",
+             "null_flip",
+             "bands"])
     wmsParams.remove("elevation")
     wmsParams.remove("time")
 
