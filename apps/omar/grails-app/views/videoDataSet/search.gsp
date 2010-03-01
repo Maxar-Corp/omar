@@ -73,7 +73,7 @@
       dataLayer = new OpenLayers.Layer.WMS(
         "${dataWMS.title}",
         "${dataWMS.url}",
-        { layers: "${dataWMS.layers}", styles:"${dataWMS.styles}",styles:"${dataWMS.styles}", format: "${dataWMS.format}", VIDEOFILTER: "true=true", transparent: true },
+        { layers: "${dataWMS.layers}", styles:"${dataWMS.styles}",styles:"${dataWMS.styles}", format: "${dataWMS.format}",  transparent: true },
         {isBaseLayer:false,buffer:0,visibility:false,transitionEffect: "resize"}
       );
       map.addLayer(dataLayer);
@@ -286,7 +286,7 @@
        setupToolbar();
        setupMapView();
        setupQueryFields();
-       //updateOmarFilters();
+       updateOmarFilters();
        // clearAOI();
     }
 
@@ -413,14 +413,24 @@
 
         //alert(omarfilter);
       }
-      wmsParams["VIDEOFILTER"] = omarfilter;
       wmsParams["time"] = wmsTime;
       dataLayer.mergeNewParams(wmsParams);
     }
 
+   function setCurrentViewport()
+   {
+     var bounds = map.getExtent();
+     $("viewMinLon").value = bounds.left;
+     $("viewMaxLat").value = bounds.top;
+     $("viewMaxLon").value = bounds.right;
+     $("viewMinLat").value = bounds.bottom;
+   }
+    
+
     function generateKML()
     {
       document.searchForm.action = "kmlnetworklink";
+     setCurrentViewport();
       document.searchForm.submit();
     }
 
@@ -436,7 +446,7 @@
   </g:javascript>
 
 </head>
-<body onload="init()" class="yui-skin-sam" onresize="changeMapSize();">
+<body onload="init( )" class="yui-skin-sam" onresize="changeMapSize( );">
 <content tag="banner">
   <img id="logo" src="${createLinkTo(dir: 'images', file: 'OMARLarge.png', absolute)}" alt="OMAR-2.0 Logo"/>
 </content>
@@ -455,8 +465,8 @@
       <a href="javascript:updateOmarFilters();">Update Footprints</a>
     </span>
     <span class="menuButton">
-     Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS']}" onChange="setCenterText()"/>
-   </span>
+      Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS']}" onChange="setCenterText()"/>
+    </span>
   </div>
   <div class="body">
     <h1 id="mapTitle">Search for Video:</h1>
@@ -465,12 +475,12 @@
     </g:if>
     <div id="map"></div>
     <div class="niceBox">
-     <div class="niceBoxHd">Mouse Position:</div>
-     <div class="niceBoxBody">
-       <div id="ddCoordinates"></div>
-       <div id="dmsCoordinates"></div>
-     </div>
-   </div>
+      <div class="niceBoxHd">Mouse Position:</div>
+      <div class="niceBoxBody">
+        <div id="ddCoordinates"></div>
+        <div id="dmsCoordinates"></div>
+      </div>
+    </div>
   </div>
 </content>
 <content tag="search">
@@ -506,7 +516,7 @@
           <li><br/></li>
           <li>
             <span class="formButton">
-              <input type="button" onclick="goto()" value="Set Center">
+              <input type="button" onclick="goto( )" value="Set Center">
             </span>
           </li>
         </ol>
@@ -552,7 +562,7 @@
           </li>
           <li><br/></li>
           <li>
-            <input type="button" onclick="clearAOI()" value="Clear AOI">
+            <input type="button" onclick="clearAOI( )" value="Clear AOI">
           </li>
         </ol>
       </div>
@@ -566,7 +576,7 @@
             <label for='startDate'>Start Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="startDate" format="MM/dd/yyyy" value="${queryParams.startDate} onChange="updateOmarFilters()"/>
+            <richui:dateChooser name="startDate" format="MM/dd/yyyy" value="${queryParams.startDate} onChange=" updateOmarFilters()"/>
           </li>
           <li>
             <label for='endDate'>End Date:</label>

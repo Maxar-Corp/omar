@@ -72,7 +72,7 @@
      dataLayer = new OpenLayers.Layer.WMS(
        "${dataWMS.title}",
        "${dataWMS.url}",
-       { layers: "${dataWMS.layers}", styles:"${dataWMS.styles}", format: "${dataWMS.format}", IMAGEFILTER: "true=true", transparent: true },
+       { layers: "${dataWMS.layers}", styles:"${dataWMS.styles}", format: "${dataWMS.format}", transparent: true },
         {isBaseLayer:false,buffer:0,visibility:false,transitionEffect: "resize"}
      );
      map.addLayer(dataLayer);
@@ -398,7 +398,6 @@ function updateOmarFilters()
       var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
       var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
       var idx = 0;
-      wmsParams["IMAGEFILTER"] = omarfilter;
       wmsParams["time"] = wmsTime;
       var tempName = "";
       for(idx=0;idx<numberOfNames;++idx)

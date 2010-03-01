@@ -166,12 +166,15 @@ class VideoDataSetController implements InitializingBean
       def videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
       def totalCount = videoDataSetSearchService.getCount(queryParams)
 
-      def videoFiles = VideoFile.createCriteria().list {
-        eq("type", "main")
-        inList("videoDataSet", videoDataSets)
+      def videoFiles = []
+
+      if ( videoDataSets )
+      {
+        videoFiles = VideoFile.createCriteria().list {
+          eq("type", "main")
+          inList("videoDataSet", videoDataSets)
+        }
       }
-
-
 
       def endtime = System.currentTimeMillis()
 
@@ -263,11 +266,13 @@ class VideoDataSetController implements InitializingBean
       videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
       totalCount = videoDataSetSearchService.getCount(queryParams)
 
-      videoFiles = VideoFile.createCriteria().list {
-        eq("type", "main")
-        inList("videoDataSet", videoDataSets)
+      if ( videoDataSets )
+      {
+        videoFiles = VideoFile.createCriteria().list {
+          eq("type", "main")
+          inList("videoDataSet", videoDataSets)
+        }
       }
-
 
       def endtime = System.currentTimeMillis()
       def user = authenticateService.principal()?.username
@@ -280,7 +285,6 @@ class VideoDataSetController implements InitializingBean
           USER: user,
           PARAMS: params
       ]
-
 
       //println "\nparams: ${params?.sort { it.key }}"
       //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"

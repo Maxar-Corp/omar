@@ -125,13 +125,12 @@ class VideoDataSetQuery
     return intersects
   }
 
-
   def getGroundGeom()
   {
     def srs = "4326"
     def wkt = null
     def bounds = null
-
+    
     switch ( searchMethod )
     {
       case BBOX_SEARCH:
