@@ -277,7 +277,7 @@
       setupMapView();
       setupQueryFields();
       updateOmarFilters();
-      clearAOI(); //dl
+      //clearAOI(); //dl
    }
 
     function clearAOI( e )
