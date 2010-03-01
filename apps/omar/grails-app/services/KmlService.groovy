@@ -28,7 +28,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
         Folder() {
           name("OMAR_WMS")
           rasterEntries?.each {rasterEntry ->
-            def acquisition = (rasterEntry?.metadata?.acquisitionDate) ? sdf.format(rasterEntry?.metdata?.acquisitionDate) : null
+            def acquisition = (rasterEntry?.metadata?.acquisitionDate) ? sdf.format(rasterEntry?.metadata?.acquisitionDate) : null
 
             def bounds = rasterEntry?.metadata?.groundGeom?.bounds
 
