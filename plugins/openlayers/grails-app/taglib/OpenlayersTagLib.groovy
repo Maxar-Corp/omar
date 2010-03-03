@@ -20,8 +20,6 @@ class OpenlayersTagLib
   }
 
   def loadMapToolBar = { attrs ->
-
-
     if (ie6Boolean == 'true')
     {
 
@@ -40,4 +38,3 @@ class OpenlayersTagLib
   }
 
 }
-
