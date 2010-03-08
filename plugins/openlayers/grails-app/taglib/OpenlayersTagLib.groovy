@@ -1,6 +1,7 @@
 class OpenlayersTagLib
 {
   static namespace = 'openlayers'
+  def grailsApplication
 
   def loadJavascript = { attrs ->
     def path = createLinkTo( dir:"${pluginContextPath}/js", file:"OpenLayers.js" )
@@ -18,9 +19,9 @@ class OpenlayersTagLib
   }
 
   def loadMapToolBar = { attrs ->
-    if (grailsApplication.config.wms.supportIE6 == 'true')
+if (grailsApplication.config.wms.supportIE6)
     {
-
+    
     def theme = attrs['theme'] ?: 'default'
     def path = createLinkTo( dir:"${pluginContextPath}/css", file:"mapwidget3.css" )
     def output = "<link rel='stylesheet' href='${path}' type='text/css'/>"
