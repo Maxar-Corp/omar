@@ -1,3 +1,4 @@
+package org.ossim.postgis
 /**
  * Created by IntelliJ IDEA.
  * User: sbortman

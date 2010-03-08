@@ -1,5 +1,5 @@
 class PostgisGrailsPlugin {
-    def version = 0.9
+    def version = 0.10
     def dependsOn = [:]
 
     def author = "Scott Bortman"

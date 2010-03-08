@@ -1,4 +1,4 @@
-<plugin name='postgis' version='0.9' grailsVersion='1.2.0 &gt; *'>
+<plugin name='postgis' version='0.10' grailsVersion='1.2.0 &gt; *'>
   <author>Scott Bortman</author>
   <authorEmail>scott.bortman@gmail.com</authorEmail>
   <title>PostGIS</title>
