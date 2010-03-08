@@ -1,0 +1,19 @@
+<plugin name='openlayers' version='0.9' grailsVersion='1.2.1 &gt; *'>
+  <author>Scott Bortman</author>
+  <authorEmail>scott.bortman@gmail.com</authorEmail>
+  <title>OpenLayers</title>
+  <description>OpenLayers 2.8 bundle for use within Grails environment.
+</description>
+  <documentation>http://grails.org/Openlayers+Plugin</documentation>
+  <resources>
+    <resource>DataSource</resource>
+    <resource>UrlMappings</resource>
+    <resource>OpenlayersTagLib</resource>
+  </resources>
+  <dependencies>
+    <resolvers>
+      <resolver type='grailsPlugins' name='grailsPlugins' />
+    </resolvers>
+  </dependencies>
+  <behavior />
+</plugin>
