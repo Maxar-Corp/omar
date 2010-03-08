@@ -1,5 +1,6 @@
+package org.ossim.postgis
 /*
- * PostGISDialect.java
+ * org.ossim.postgis.PostGISDialect.java
  * 
  * PostGIS extension for PostgreSQL JDBC driver - EJB3 Tutorial
  * 
@@ -19,7 +20,7 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
  * http://www.gnu.org.
  * 
- * $Id: PostGISDialect.java 2531 2006-11-22 10:42:17Z mschaber $
+ * $Id: org.ossim.postgis.PostGISDialect.java 2531 2006-11-22 10:42:17Z mschaber $
  */
 //package org.postgis.hibernate;
 

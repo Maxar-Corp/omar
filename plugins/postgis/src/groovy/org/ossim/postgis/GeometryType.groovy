@@ -1,5 +1,6 @@
+package org.ossim.postgis
 /*
- * GeometryType.java
+ * org.ossim.postgis.GeometryType.java
  * 
  * PostGIS extension for PostgreSQL JDBC driver - EJB3 Tutorial
  * 
@@ -19,11 +20,11 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
  * http://www.gnu.org.
  * 
- * $Id: GeometryType.java 2531 2006-11-22 10:42:17Z mschaber $
+ * $Id: org.ossim.postgis.GeometryType.java 2531 2006-11-22 10:42:17Z mschaber $
  */
 //package org.postgis.hibernate;
 
-import java.io.Serializable;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -1,5 +1,6 @@
+package org.ossim.postgis
 /*
- * ContainsExpression.java
+ * org.ossim.postgis.IntersectsExpression.java
  * 
  * PostGIS extension for PostgreSQL JDBC driver - EJB3 Tutorial
  * 
@@ -19,12 +20,10 @@
  * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA or visit the web at
  * http://www.gnu.org.
  * 
- * $Id: PostGISDialect.java 2531 2007-04-27 10:42:17Z mschaber $
+ * $Id: org.ossim.postgis.PostGISDialect.java 2531 2007-04-27 10:42:17Z mschaber $
  */
 //package org.postgis.hibernate;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.EntityMode;
@@ -34,19 +33,18 @@ import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.function.StandardSQLFunction;
-import org.hibernate.engine.TypedValue;
+import org.hibernate.engine.TypedValue
 
 /**
  * @author nbarker
- *
  */
-public class ContainsExpression implements Criterion
+public class IntersectsExpression implements Criterion
 {
   private static final long serialVersionUID = 1L;
   private String propertyName;
   private Geometry geom;
 
-  public ContainsExpression(String propertyName, Geometry geom)
+  public IntersectsExpression(String propertyName, Geometry geom)
   {
     this.propertyName = propertyName;
     this.geom = geom;
@@ -63,10 +61,10 @@ public class ContainsExpression implements Criterion
     String[] columns = criteriaQuery.getColumnsUsingProjection(criteria, propertyName);
 
     if ( columns.length != 1 )
-      throw new HibernateException("\"contains\" may only be used with single-column properties");
+      throw new HibernateException("\"intersects\" may only be used with single-column properties");
     if ( dialect instanceof PostGISDialect )
     {
-      StandardSQLFunction function = (StandardSQLFunction) dialect.getFunctions().get(PostGISDialect.NAMESPACE + "contains");
+      StandardSQLFunction function = (StandardSQLFunction) dialect.getFunctions().get(PostGISDialect.NAMESPACE + "intersects");
       List args = new ArrayList();
       args.add(columns[0]);
       args.add("?");
@@ -75,13 +73,13 @@ public class ContainsExpression implements Criterion
     }
     else
     {
-      throw new HibernateException("\"contains\" may only be used with a spatial hibernate dialect");
+      throw new HibernateException("\"intersects\" may only be used with a spatial hibernate dialect");
     }
   }
 
   public String toString()
   {
-    return propertyName + " contains " + geom;
+    return propertyName + " intersects " + geom;
   }
 
 }
