@@ -2,8 +2,6 @@ class OpenlayersTagLib
 {
   static namespace = 'openlayers'
 
-  def ie6Boolean = 'false'
-
   def loadJavascript = { attrs ->
     def path = createLinkTo( dir:"${pluginContextPath}/js", file:"OpenLayers.js" )
     def output = "<script type='text/javascript' src='${path}'></script>"
@@ -20,7 +18,7 @@ class OpenlayersTagLib
   }
 
   def loadMapToolBar = { attrs ->
-    if (ie6Boolean == 'true')
+    if (grailsApplication.config.wms.supportIE6 == 'true')
     {
 
     def theme = attrs['theme'] ?: 'default'
