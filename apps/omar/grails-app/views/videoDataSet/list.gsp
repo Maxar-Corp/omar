@@ -63,10 +63,11 @@
                 <td>${fieldValue(bean: videoDataSet?.metadata, field: 'endDate')}</td>
 
 
-                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.minLon?.encodeAsHTML()}</td>
-                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.minLat?.encodeAsHTML()}</td>
-                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.maxLon?.encodeAsHTML()}</td>
-                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.maxLat?.encodeAsHTML()}</td>
+                <g:set var="bounds" value="${videoDataSet?.metadata?.groundGeom?.bounds}"/>
+                <td>${bounds?.minLon?.encodeAsHTML()}</td>
+                <td>${bounds?.minLat?.encodeAsHTML()}</td>
+                <td>${bounds?.maxLon?.encodeAsHTML()}</td>
+                <td>${bounds?.maxLat?.encodeAsHTML()}</td>
 
 
                 <td>

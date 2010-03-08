@@ -21,7 +21,7 @@ security {
 	errorPage = null
 
 	/** login user domain class name and fields */
-	loginUserDomainClass = "AuthUser"
+	loginUserDomainClass = "org.ossim.omar.AuthUser"
 	userName = 'username'
 	password = 'passwd'
 	enabled = 'enabled'
@@ -36,13 +36,13 @@ security {
 	 * Authority domain class authority field name
 	 * authorityFieldInList
 	 */
-	authorityDomainClass = "Role"
+	authorityDomainClass = "org.ossim.omar.Role"
 	authorityField = 'authority'
 
 	/** use RequestMap from DomainClass */
 	useRequestMapDomainClass = true
-	/** Requestmap domain class (if useRequestMapDomainClass = true) */
-	requestMapClass = "Requestmap"
+	/** org.ossim.omar.Requestmap domain class (if useRequestMapDomainClass = true) */
+	requestMapClass = "org.ossim.omar.Requestmap"
 	requestMapPathField = 'url'
 	requestMapConfigAttributeField = 'configAttribute'
 

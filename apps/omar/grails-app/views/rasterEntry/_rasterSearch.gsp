@@ -1,4 +1,4 @@
-<g:form action="search" method="post">
+<%@ page import="org.ossim.omar.RasterEntrySearchTag" %><g:form action="search" method="post">
 
   <div class="niceBox">
     <div class="niceBoxHd">Map Center:</div>

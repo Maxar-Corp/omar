@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.ossim.omar.VideoDataSetQuery; org.ossim.omar.VideoDataSetSearchTag" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <title>OMAR - Video Search</title>
@@ -56,6 +56,7 @@
     var map;
     var dataLayer;
 
+    String.prototype.leftPad = function (l, c) { return new Array(l - this.length + 1).join(c || '0') + this; }
 
     function changeMapSize()
     {
@@ -131,37 +132,7 @@
        map.addControl(new OpenLayers.Control.Attribution());
        map.events.register("moveend", map, setCenterText);
        map.events.register("zoomend", map, setView );
-
-      map.addControl(new OpenLayers.Control.MousePosition({
-          formatOutput: function(lonLat)
-          {
-              var dmsOutput = document.getElementById('dmsCoordinates');
-              dmsOutput.innerHTML = "<b>DMS:</b> " + ddToDms(lonLat.lat, "latitude") + " " + ddToDms(lonLat.lon, "longitude");
-
-              var latHem;
-              if(lonLat.lat < 0)
-              {
-                  latHem = " S";
-              }
-              else
-              {
-                  latHem = " N";
-              }
-
-              var lonHem;
-              if(lonLat.lon < 0)
-              {
-                  lonHem = " W";
-              }
-              else
-              {
-                  lonHem = " E";
-              }
-
-              var ddOutput = document.getElementById('ddCoordinates');
-              ddOutput.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
-          }
-      }));        
+        map.events.register('mousemove',map,handleMouseMove); 
     }
 
     function setupMapView()
@@ -178,6 +149,52 @@
       map.setCenter(bounds.getCenterLonLat(), zoom);
 
     }
+
+    function handleMouseMove(evt)
+    {
+    var lonLat = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x , evt.xy.y) );
+    var dmsOutput = document.getElementById('dmsCoordinates');
+
+
+    if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
+    {
+        dmsOutput.innerHTML = "<b>DMS:</b> ";
+    }
+    else
+    {
+        dmsOutput.innerHTML = "<b>DMS:</b> " + ddToDms(lonLat.lat, "latitude") + " " + ddToDms(lonLat.lon, "longitude");
+    }
+
+    var latHem;
+    if(lonLat.lat < 0)
+    {
+        latHem = " S";
+    }
+    else
+    {
+        latHem = " N";
+    }
+
+    var lonHem;
+    if(lonLat.lon < 0)
+    {
+        lonHem = " W";
+    }
+    else
+    {
+        lonHem = " E";
+    }
+
+    var ddOutput = document.getElementById('ddCoordinates');
+    if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
+    {
+        ddOutput.innerHTML = "<b>DD:</b> ";
+    }
+    else
+    {
+        ddOutput.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
+    }
+}
 
     function zoomIn()
     {
@@ -370,50 +387,109 @@
     function updateOmarFilters()
     {
       var wmsParams = new Array();
+
       var sday = $("startDate_day").value;
       var smonth = $("startDate_month").value;
       var syear = $("startDate_year").value;
+      var shour = $("startDate_hour").value;
+      var sminute = $("startDate_minute").value;
+
+
       var eday = $("endDate_day").value;
       var emonth = $("endDate_month").value;
       var eyear = $("endDate_year").value;
+      var ehour = $("endDate_hour").value;
+      var eminute = $("endDate_minute").value;
 
+      var hasStartDate = sday != "" && smonth != "" && syear != "" && shour != "" && sminute != "";
+      //var startDate = "'" + smonth + "-" + sday + "-" + syear + "'";
 
-      var hasStartDate = sday != "" && smonth != "" && syear != "";
-      var startDate =  "'" + smonth + "-" + sday + "-" + syear + "'";
+      var startDateNoQuote = syear + smonth.leftPad(2) + sday.leftPad(2) + 'T'
+          + shour.leftPad(2) +':' + sminute.leftPad(2) + ':' + '00Z';
 
       var hasEndDate = eday != "" && emonth != "" && eyear != "";
-      var endDate = "'" + emonth + "-" + eday + "-" + eyear + "'";
+      //var endDate = "'" + emonth + "-" + eday + "-" + eyear + "'";
+      var endDateNoQuote = eyear + emonth.leftPad(2) + eday.leftPad(2) + 'T'
+        + ehour.leftPad(2) + ':' + eminute.leftPad(2) +':'+'00Z';
+
       var wmsTime = ""
-      var omarfilter = ""
-      if ( hasStartDate && hasEndDate )
-      {
-         wmsTime += syear+smonth+sday+"/"+eyear+emonth+eday;
-         omarfilter = "start_date between " + startDate + " and " + endDate + " or " +
-            "end_date between " + startDate + " and " + endDate;
+      //var omarfilter = ""
 
-        //alert(omarfilter);
-       }
-      else if ( hasStartDate )
+      if ( hasStartDate )
       {
-        omarfilter = "end_date>=" + startDate;
-        wmsTime += syear+smonth+sday+"/";
+        //omarfilter = "acquisition_date>=" + startDate;
 
-        //alert(omarfilter);
-      }
-      else if ( hasEndDate )
-      {
-        omarfilter = "start_date<=" + endDate;
-        wmsTime += "/"+eyear+emonth+eday;
+        wmsTime = startDateNoQuote
 
+        if ( hasEndDate )
+        {
+          wmsTime += "/"+endDateNoQuote
+          //omarfilter += " and acquisition_date<=" + endDate;
+        }
+        else
+        {
+          wmsTime += "/"
+        }
         //alert(omarfilter);
       }
       else
       {
-        omarfilter = "true=true";
+        if ( hasEndDate )
+        {
+          wmsTime += "/" + endDateNoQuote
+          //omarfilter = "acquisition_date<=" + endDate;
 
-        //alert(omarfilter);
+          //alert(omarfilter);
+        }
+        else
+        {
+          //omarfilter = "true=true";
+          wmsTime = "";
+          //alert(omarfilter);
+        }
       }
+
+      var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
+      var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
+      var idx = 0;
+
       wmsParams["time"] = wmsTime;
+
+      var tempName = "";
+
+      for(idx=0;idx<numberOfNames;++idx)
+      {
+        tempName = "searchTagNames[" + idx + "]";
+        wmsParams["searchTagNames["+idx+"]"] =$(tempName).value;
+      }
+
+      for(idx=0;idx<numberOfValues;++idx)
+      {
+        tempName = "searchTagValues[" + idx + "]";
+        wmsParams["searchTagValues["+idx+"]"] =$(tempName).value;
+      }
+        /*
+      if($("bboxSearchButton").checked)
+      {
+       wmsParams["searchMethod"] = "BBOX";
+        wmsParams["aoiRadius"] = "";
+        wmsParams["centerLat"] = "";
+        wmsParams["centerLon"] = "";
+      }
+      else
+      {
+        wmsParams["searchMethod"] = "RADIUS";
+        wmsParams["aoiMaxLat"] = "";
+        wmsParams["aoiMaxLon"] = "";
+        wmsParams["aoiMinLon"] = "";
+        wmsParams["aoiMinLat"] = "";
+        wmsParams["aoiRadius"] = $("aoiRadius").value;
+        wmsParams["centerLat"] = $("centerLat").value;
+        wmsParams["centerLon"] = $("centerLon").value;
+      }
+      */
+
+      //alert(wmsTime);
       dataLayer.mergeNewParams(wmsParams);
     }
 
@@ -426,6 +502,10 @@
      $("viewMinLat").value = bounds.bottom;
    }
     
+   function updateFootprints()
+   {
+      dataLayer.redraw(true);
+   }
 
     function generateKML()
     {
@@ -462,7 +542,7 @@
       <a href="javascript:generateKML();">KML</a>
     </span>
     <span class="menuButton">
-      <a href="javascript:updateOmarFilters();">Update Footprints</a>
+      <a href="javascript:updateFootprints();">Update Footprints</a>
     </span>
     <span class="menuButton">
       Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS']}" onChange="setCenterText()"/>
@@ -576,38 +656,40 @@
             <label for='startDate'>Start Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="startDate" format="MM/dd/yyyy" value="${queryParams.startDate} onChange=" updateOmarFilters()"/>
+            <richui:dateChooser name="startDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.startDate}" onChange="updateOmarFilters()"/>
+            <g:hiddenField name="startDate_timezone" value="UTC"/>
           </li>
           <li>
             <label for='endDate'>End Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="endDate" format="MM/dd/yyyy" value="${queryParams.endDate}" onChange="updateOmarFilters()"/>
+            <richui:dateChooser name="endDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.endDate}" onChange="updateOmarFilters()"/>
+            <g:hiddenField name="endDate_timezone" value="UTC"/>
           </li>
         </ol>
       </div>
     </div>
-  <%--
-      <div class="niceBox">
-        <div class="niceBoxHd">Metadata Criteria:</div>
-        <div class="niceBoxMetadataBody">
-          <ol>
-            <g:each in="${queryParams?.searchTagValues}" var="searchTagValue" status="i">
-              <g:select
-                      noSelection="${['null':'Select One...']}"
-                      name="searchTagNames[${i}]"
-                      value="${queryParams?.searchTagNames[i]}"
-                      from="${SearchTag.list()}"
-                      optionKey="name" optionValue="description"/>
-              </li>
-              <li>
-                <g:textField name="searchTagValues[${i}]" value="${searchTagValue}"/>
-              </li>
-            </g:each>
-          </ol>
-        </div>
+    
+    <div class="niceBox">
+      <div class="niceBoxHd">Metadata Criteria:</div>
+      <div class="niceBoxMetadataBody">
+        <ol>
+          <g:each in="${queryParams?.searchTagValues}" var="searchTagValue" status="i">
+            <g:select
+                    noSelection="${['null':'Select One...']}"
+                    name="searchTagNames[${i}]"
+                    value="${queryParams?.searchTagNames[i]}"
+                    from="${VideoDataSetSearchTag.list()}"
+                    optionKey="name" optionValue="description"/>
+            </li>
+            <li>
+              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
+            </li>
+          </g:each>
+        </ol>
       </div>
-  --%>
+    </div>
+
     <div class="niceBox">
       <div class="niceBoxHd">Options:</div>
       <div class="niceBoxBody">

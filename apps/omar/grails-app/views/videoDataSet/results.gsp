@@ -61,14 +61,15 @@
 
                 <td>${videoDataSet.height?.encodeAsHTML()}</td>
 
-                <td>${videoDataSet?.metadata?.startDate?.encodeAsHTML()}</td>
+                <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="GMT" date="${videoDataSet?.metadata?.startDate}"/></td>
 
-                <td>${videoDataSet?.metadata?.endDate?.encodeAsHTML()}</td>
+                <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="GMT" date="${videoDataSet?.metadata?.endDate}"/></td>
 
-                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.minLon?.encodeAsHTML()}</td>
-                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.minLat?.encodeAsHTML()}</td>
-                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.maxLon?.encodeAsHTML()}</td>
-                <td>${videoDataSet?.metadata?.groundGeom?.bounds?.maxLat?.encodeAsHTML()}</td>
+                <g:set var="bounds" value="${videoDataSet?.metadata?.groundGeom?.bounds}"/>
+                <td>${bounds?.minLon?.encodeAsHTML()}</td>
+                <td>${bounds?.minLat?.encodeAsHTML()}</td>
+                <td>${bounds?.maxLon?.encodeAsHTML()}</td>
+                <td>${bounds?.maxLat?.encodeAsHTML()}</td>
 
                 <%--
                 <td>${videoDataSet.groundGeom?.encodeAsHTML()}</td>

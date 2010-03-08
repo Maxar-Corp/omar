@@ -1,4 +1,6 @@
 import grails.util.Environment
+import org.ossim.postgis.Geometry
+import org.ossim.postgis.GeometryType
 
 
 grails.gorm.default.mapping = {
@@ -47,66 +49,31 @@ grails.serverIP = InetAddress.localHost.hostAddress
 // set per-environment serverURL stem for creating absolute links
 environments {
   development {
-    grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0"
+    grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
   }
   test {
+    grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
   }
   production {
-    grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0"
-//    grails.serverURL = "http://${grails.serverIP}/omar-2.0"
+    grails.serverURL = "http://${grails.serverIP}/${appName}"
+
   }
 }
 
 // log4j configuration
 log4j = {
-//  //  Comment out stdout and log to a file
-//  // appender.stdout = "org.apache.log4j.ConsoleAppender"
-//  // appender.'stdout.layout' = "org.apache.log4j.PatternLayout"
-//  // appender.'stdout.layout.ConversionPattern' = '[%r] %c{2} %m%n'
-//  appender.errors = "org.apache.log4j.FileAppender"
-//  appender.'errors.layout' = "org.apache.log4j.PatternLayout"
-//  appender.'errors.layout.ConversionPattern' = '[%r] %c{2} %m%n'
-//  appender.'errors.File' = "logs/stacktrace.log"
-//  appender.information = "org.apache.log4j.RollingFileAppender"
-//  appender.'information.layout' = "org.apache.log4j.PatternLayout"
-//  appender.'information.layout.ConversionPattern' = '[%r] %c{2} %m%n'
-//  appender.'information.File' = "logs/omar.log"
-//
-//  rootLogger = "error"
-//  logger {
-//    grails = "error"
-//    StackTrace = "error,errors"
-//    org {
-//      codehaus.groovy.grails.web.servlet = "error"
-//      codehaus.groovy.grails.web.pages = "error"
-//      codehaus.groovy.grails.web.sitemesh = "error"
-//      codehaus.groovy.grails."web.mapping.filter" = "error"
-//      codehaus.groovy.grails."web.mapping" = "error"
-//      codehaus.groovy.grails.commons = "info"
-//      codehaus.groovy.grails.plugins = "error"
-//      codehaus.groovy.grails.orm.hibernate = "error"
-//      springframework = "off"
-//      hibernate = "off"
-//    }
-//  }
-//
-//  logger {
-//    grails = "info,information"
-//    org {
-//// all the logging is in the controllers right now
-//      codehaus.groovy.grails.app.controller = "info,information"
-//      springframework = "off"
-//      hibernate = "off"
-//    }
-//  }
-//  additivity.StackTrace = false
-
   // Example of changing the log pattern for the default console
   // appender:
   //
-  //appenders {
-  //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-  //}
+  appenders {
+    appender new org.apache.log4j.DailyRollingFileAppender(name: "omarAppender",
+        datePattern: "'.'yyyy-MM-dd",
+        file: "/tmp/logs/omar.log",
+        layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n'))
+  }
+
+  info omarAppender: 'grails.app',
+      additivity:false  
 
   error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
       'org.codehaus.groovy.grails.web.pages', //  GSP
@@ -117,29 +84,27 @@ log4j = {
       'org.codehaus.groovy.grails.plugins', // plugins
       'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
       'org.springframework',
-      'org.hibernate'
+      'org.hibernate',
+      'net.sf.ehcache.hibernate'
 
   warn 'org.mortbay.log'
-
-  //trace 'org.hibernate.type'
-
 }
 
 //log4j.logger.org.springframework.security='off,stdout'
 
 /** *********************************************************************************************************/
-wms.referenceDataDirectory = "/data/omar"
+wms.referenceDataDirectory = "/data"
 
 wms.mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" : ""
 //wms.serverAddress = InetAddress.localHost.hostAddress
 wms.serverAddress = grails.serverIP
 
 
-wms.base.useTileCache = false
+wms.base.useTileCache = true
 wms.base.mapFile = "${wms.referenceDataDirectory}/bmng.map"
 
 wms.base = [
-    url: (wms.base.useTileCache) ? "http://${wms.serverAddress}/tilecache/tilecache.cgi" : "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${wms.base.mapFile}",
+    url: (wms.base.useTileCache) ? "http://${wms.serverAddress}/tilecache/tilecache.py" : "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${wms.base.mapFile}",
     layers: (wms.base.useTileCache) ? "omar" : "Reference",
     title: "Reference Data",
     format: "image/jpeg"
@@ -165,7 +130,7 @@ switch ( Environment.current.name.toUpperCase() )
 
 
 wms.data.raster = [
-    url: "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0/ogc/footprints",
+    url: "${grails.serverURL}/ogc/footprints",
     layers: (wms.supportIE6) ? "Imagery" : "ImageData",
     footprintLayers: "Imagery",
     title: "OMAR Imagery Coverage",
@@ -175,7 +140,7 @@ wms.data.raster = [
 
 wms.data.video = [
 //    url: "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${wms.data.mapFile}",
-    url: "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/omar-2.0/ogc/footprints",
+    url: "${grails.serverURL}/ogc/footprints",
     layers: (wms.supportIE6) ? "Videos" : "VideoData",
     footprintLayers: "Videos",
     title: "OMAR Video Coverage",
@@ -185,24 +150,24 @@ wms.data.video = [
 
 // Note the colors are normalized floats
 wms.styles = [
-        default: [
-                outlinecolor:[r:0.0,g:1.0,b:0,a:1.0],
-                width:1
-        ],
-        red: [
-                outlinecolor:[r:1.0,g:0.0,b:0.0,a:1.0],
-                width:1
-        ],
-        green: [
-                outlinecolor:[r:0.0,g:1.0,b:0.0,a:1.0],
-                width:1
-        ],
-        blue: [
-                outlinecolor:[r:0.0,g:0.0,b:1.0,a:1.0],
-                width:1
-        ]
+    default: [
+        outlinecolor: [r: 0.0, g: 1.0, b: 0, a: 1.0],
+        width: 1
+    ],
+    red: [
+        outlinecolor: [r: 1.0, g: 0.0, b: 0.0, a: 1.0],
+        width: 1
+    ],
+    green: [
+        outlinecolor: [r: 0.0, g: 1.0, b: 0.0, a: 1.0],
+        width: 1
+    ],
+    blue: [
+        outlinecolor: [r: 0.0, g: 0.0, b: 1.0, a: 1.0],
+        width: 1
+    ]
 ]
-wms.vector.maxcount=10000
+wms.vector.maxcount = 10000
 
 thumbnail.cacheDir = (System.properties["os.name"] == "Windows XP") ? "c:/temp" : "${wms.referenceDataDirectory}/omar-cache"
 thumbnail.defaultSize = 512
@@ -213,7 +178,7 @@ security.level = 'UNCLASS'
 
 omar.release = '1.8.4'
 
-/** ********************************* CONDITIONALS FOR VIEWS **********************************************************************/
+/** ********************************* CONDITIONALS FOR VIEWS             **********************************************************************/
 // flags for different views
 // we can conditionally turn off browsing on the home page
 //
