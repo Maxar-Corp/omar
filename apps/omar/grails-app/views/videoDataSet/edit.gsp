@@ -1,3 +1,4 @@
+<%@ page import="org.ossim.omar.Repository" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -44,6 +45,7 @@
             </td>
           </tr>
 
+<%--
           <tr class="prop">
             <td valign="top" class="name">
               <label for="height">Ground Geom:</label>
@@ -70,7 +72,8 @@
               <g:datePicker name="endDate" value="${videoDataSet?.endDate}"></g:datePicker>
             </td>
           </tr>
-
+--%>
+        
           <tr class="prop">
             <td valign="top" class="name">
               <label for="fileObjects">File Objects:</label>

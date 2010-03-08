@@ -56,17 +56,11 @@
                 <td>${rasterEntry.bitDepth?.encodeAsHTML()}</td>
                 <td>${rasterEntry.dataType?.encodeAsHTML()}</td>
 
-                <%--
-                <td>${rasterEntry.groundGeom?.bounds?.minLon?.encodeAsHTML()}</td>
-                <td>${rasterEntry.groundGeom?.bounds?.minLat?.encodeAsHTML()}</td>
-                <td>${rasterEntry.groundGeom?.bounds?.maxLon?.encodeAsHTML()}</td>
-                <td>${rasterEntry.groundGeom?.bounds?.maxLat?.encodeAsHTML()}</td>
-                --%>
-                <td>${rasterEntry?.metadata?.groundGeom?.bounds?.minLon?.encodeAsHTML()}</td>
-                <td>${rasterEntry?.metadata?.groundGeom?.bounds?.minLat?.encodeAsHTML()}</td>
-                <td>${rasterEntry?.metadata?.groundGeom?.bounds?.maxLon?.encodeAsHTML()}</td>
-                <td>${rasterEntry?.metadata?.groundGeom?.bounds?.maxLat?.encodeAsHTML()}</td>
-
+                <g:set var="bounds" value="${rasterEntry?.metadata?.groundGeom?.bounds}"/>
+                <td>${bounds?.minLon?.encodeAsHTML()}</td>
+                <td>${bounds?.minLat?.encodeAsHTML()}</td>
+                <td>${bounds?.maxLon?.encodeAsHTML()}</td>
+                <td>${bounds?.maxLat?.encodeAsHTML()}</td>
 
                 <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
                   <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
@@ -99,10 +93,9 @@
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
 
-                <%--
-                <td>${rasterEntry.acquisitionDate?.encodeAsHTML()}</td>
-                --%>
-                <td>${rasterEntry?.metadata?.acquisitionDate?.encodeAsHTML()}</td>
+
+                <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="0" date="${rasterEntry?.metadata?.acquisitionDate}"/></td>
+
 
                 <g:each in="${tagNameList}" var="tagName">
                   <td><%="${rasterEntry?.metadata?."${tagName}"}"%></td>

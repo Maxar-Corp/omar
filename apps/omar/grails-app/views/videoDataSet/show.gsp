@@ -42,6 +42,7 @@
 
         </tr>
 
+<%--
         <tr class="prop">
           <td valign="top" class="name">Ground Geom:</td>
 
@@ -62,7 +63,8 @@
           <td valign="top" class="value">${fieldValue(bean: videoDataSet, field: 'endDate')}</td>
 
         </tr>
-
+--%>
+      
         <tr class="prop">
           <td valign="top" class="name">File Objects:</td>
 

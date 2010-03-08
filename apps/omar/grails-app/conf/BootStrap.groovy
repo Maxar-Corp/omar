@@ -1,5 +1,12 @@
 
 import grails.util.GrailsUtil
+import org.ossim.omar.AuthUser
+import org.ossim.omar.Role
+import org.ossim.omar.RasterDataSet
+import org.ossim.omar.RasterEntrySearchTag
+import org.ossim.omar.Repository
+import org.ossim.omar.Requestmap
+import org.ossim.omar.VideoDataSet
 
 class BootStrap
 {
@@ -117,11 +124,6 @@ class BootStrap
 
     new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/rasterSearch/**").save()
 
-//    List<Map<String, String>> searchTagData = [
-//        [name: "custom", description: "Custom name=value"],
-//        [name: "fileType", description: "File Type"],
-//        [name: "className", description: "Class Name"]
-//    ]
     def searchTagData = grailsApplication.config.rasterEntry.searchTagData
 
     searchTagData.each {

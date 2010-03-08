@@ -1,3 +1,4 @@
+<%@ page import="org.ossim.omar.RasterDataSet" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -80,6 +81,7 @@
           </td>
         </tr>
 
+        <%--
         <tr class="prop">
           <td valign="top" class="name">
             <label for="groundGeom">Ground Geom:</label>
@@ -97,7 +99,8 @@
             <input type="text" id="acquisitionDate" name="acquisitionDate" value="${fieldValue(bean: rasterEntry, field: 'acquisitionDate')}"/>
           </td>
         </tr>
-
+       --%>
+  
         <%--
         <tr class="prop">
             <td valign="top" class="name">

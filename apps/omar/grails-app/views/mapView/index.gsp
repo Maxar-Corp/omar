@@ -24,13 +24,14 @@
     border: 1px solid black;
   }
 
+/*
   div.olControlMousePosition {
     font-family: Verdana;
     font-size: 1.0em;
     background-color: white;
     color: black;
   }
-
+*/
   div.olControlScale {
     background-color: #ffffff;
     font-size: 1.0em;
@@ -168,7 +169,7 @@
 
     setupToolbar();
     setupLayers();
-
+    map.events.register('mousemove',map,handleMouseMove);
     map.addControl(new OpenLayers.Control.LayerSwitcher());
     //map.addControl(new OpenLayers.Control.PanZoom());
     //map.addControl(new OpenLayers.Control.NavToolbar());
@@ -181,39 +182,53 @@
 
     map.setCenter(bounds.getCenterLonLat(), zoom);
 
-    map.addControl(new OpenLayers.Control.MousePosition({
-          formatOutput: function(lonLat)
-          {
-              var dmsOutput = document.getElementById('dmsCoordinates');
-              dmsOutput.innerHTML = "<b>DMS:</b> " + ddToDms(lonLat.lat, "latitude") + " " + ddToDms(lonLat.lon, "longitude");
-
-              var latHem;
-              if(lonLat.lat < 0)
-              {
-                  latHem = " S";
-              }
-              else
-              {
-                  latHem = " N";
-              }
-
-              var lonHem;
-              if(lonLat.lon < 0)
-              {
-                  lonHem = " W";
-              }
-              else
-              {
-                  lonHem = " E";
-              }
-
-              var ddOutput = document.getElementById('ddCoordinates');
-              ddOutput.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
-          }
-      }));       
 
   }
+    function handleMouseMove(evt)
+    {
+    var lonLat = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x , evt.xy.y) );
+    var dmsOutput = document.getElementById('dmsCoordinates');
 
+
+    if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
+    {
+        dmsOutput.innerHTML = "<b>DMS:</b> ";
+    }
+    else
+    {
+        dmsOutput.innerHTML = "<b>DMS:</b> " + ddToDms(lonLat.lat, "latitude") + " " + ddToDms(lonLat.lon, "longitude");
+    }
+
+    var latHem;
+    if(lonLat.lat < 0)
+    {
+        latHem = " S";
+    }
+    else
+    {
+        latHem = " N";
+    }
+
+    var lonHem;
+    if(lonLat.lon < 0)
+    {
+        lonHem = " W";
+    }
+    else
+    {
+        lonHem = " E";
+    }
+
+    var ddOutput = document.getElementById('ddCoordinates');
+    if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
+    {
+        ddOutput.innerHTML = "<b>DD:</b> ";
+    }
+    else
+    {
+        ddOutput.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
+    }
+}
   function setupLayers()
   {
 

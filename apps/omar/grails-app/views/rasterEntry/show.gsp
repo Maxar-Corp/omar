@@ -70,11 +70,10 @@
 
         </tr>
 
+        <%--
         <tr class="prop">
           <td valign="top" class="name">Ground Geom:</td>
-
           <td valign="top" class="value">${fieldValue(bean: rasterEntry, field: 'groundGeom')}</td>
-
         </tr>
 
         <tr class="prop">
@@ -83,6 +82,7 @@
           <td valign="top" class="value">${fieldValue(bean: rasterEntry, field: 'acquisitionDate')}</td>
 
         </tr>
+        --%>
 
 <%--
         <tr class="prop">
