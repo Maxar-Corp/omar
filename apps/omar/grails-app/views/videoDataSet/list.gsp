@@ -36,9 +36,13 @@
 
               <g:sortableColumn property="height" title="Height" params="${[repositoryId:params.repositoryId]}"/>
 
+              <%--
               <g:sortableColumn property="startDate" title="Start Date"/>
-
               <g:sortableColumn property="endDate" title="End Date"/>
+              --%>
+
+              <th>Start Date</th>
+              <th>End Date</th>
 
               <th>Min Lon</th>
               <th>Min Lat</th>

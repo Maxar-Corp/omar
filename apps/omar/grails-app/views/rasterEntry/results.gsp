@@ -34,11 +34,20 @@
             <thead>
             <tr>
               <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
+              <%--
               <g:sortableColumn property="width" title="Width" params="${queryParams.toMap()}"/>
               <g:sortableColumn property="height" title="Height" params="${queryParams.toMap()}"/>
               <g:sortableColumn property="numberOfBands" title="Number of Bands" params="${queryParams.toMap()}"/>
               <g:sortableColumn property="bitDepth" title="Bit Depth" params="${queryParams.toMap()}"/>
               <g:sortableColumn property="dataType" title="Data Type" params="${queryParams.toMap()}"/>
+              --%>
+
+              <th>Width</th>
+              <th>Height</th>
+              <th>Num Bands</th>
+              <th>Num Bits</th>
+              <th>Data Type</th>
+
               <th>Min Lon</th>
               <th>Min Lat</th>
               <th>Max Lon</th>

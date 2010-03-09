@@ -32,12 +32,15 @@
 
               <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
 
+              <%--
               <g:sortableColumn property="width" title="Width" params="${queryParams.toMap()}"/>
-
               <g:sortableColumn property="height" title="Height" params="${queryParams.toMap()}"/>
+              --%>
+
+              <th>Width</th>
+              <th>Height</th>
 
               <g:sortableColumn property="startDate" title="Start Date" params="${queryParams.toMap()}"/>
-
               <g:sortableColumn property="endDate" title="End Date" params="${queryParams.toMap()}"/>
 
               <%--
