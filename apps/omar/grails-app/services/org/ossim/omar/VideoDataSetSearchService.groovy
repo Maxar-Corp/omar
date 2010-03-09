@@ -38,19 +38,21 @@ class VideoDataSetSearchService
       }
       if ( params?.sort && params?.order )
       {
-        def sortColumn
+        def sortColumn = null
 
         // HACK:  Need to find a better way to do this
         switch ( params?.sort )
         {
-          case "width":
-          case "height":
-            sortColumn = "v.${params?.sort}"
-            break
-          default:
+          case "id":
+          case "startDate":
+          case "endDate":
             sortColumn = params?.sort
+            break
         }
-        order(sortColumn, params?.order)
+        if ( sortColumn )
+        {
+          order(sortColumn, params?.order)
+        }
       }
       videoDataSetQuery.searchTagNames?.size()?.times {i ->
         String name = videoDataSetQuery.searchTagNames[i]

@@ -1,5 +1,6 @@
 package org.ossim.omar
 //import javax.jws.WebParam
+
 import org.hibernate.FetchMode as FM
 import org.hibernate.CacheMode as CM
 import org.ossim.omar.RasterEntryMetadata
@@ -38,22 +39,34 @@ class RasterEntrySearchService
       }
       if ( params?.sort && params?.order )
       {
-        def sortColumn
+        def sortColumn = null
 
         // HACK:  Need to find a better way to do this
         switch ( params?.sort )
         {
-          case "width":
-          case "height":
-          case "numberOfBands":
-          case "bitDepth":
-          case "dataType":
-            sortColumn = "r.${params?.sort}"
-            break
-          default:
+          case "id":
+          case "imageId":
+          case "targetId":
+          case "productId":
+          case "sensorId":
+          case "missionId":
+          case "imageCategory":
+          case "azimuthAngle":
+          case "grazingAngle":
+          case "securityClassification":
+          case "title":
+          case "organization":
+          case "description":
+          case "acquisitionDate":
+          case "fileType":
+          case "className":
             sortColumn = params?.sort
+            break
         }
-        order(sortColumn, params?.order)
+        if ( sortColumn )
+        {
+          order(sortColumn, params?.order)
+        }
       }
       rasterEntryQuery.searchTagNames?.size()?.times {i ->
         String name = rasterEntryQuery.searchTagNames[i]
