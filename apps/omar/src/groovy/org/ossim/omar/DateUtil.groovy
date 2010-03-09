@@ -39,9 +39,12 @@ class DateUtil
     TimeZone utc = null
     SimpleDateFormat sdf = null
     Date date = null
-
     switch ( dateString )
     {
+      case ~/[0-9]{4}[0-1][0-9][0-3][0-9]/:
+        sdf = new SimpleDateFormat("yyyyMMdd");
+//        println "one: ${dateString}"
+        break
       case ~/[0-9]{4}-[0-1][0-9]-[0-3][0-9]/:
         sdf = new SimpleDateFormat("yyyy-MM-dd");
         //println "one: ${dateString}"
@@ -213,9 +216,8 @@ class DateUtil
 
     switch ( dateString )
     {
-      case ~/[0-9]{4}/:
-        format = "yyyyMMdd"
-        break
+      case ~/[0-9]{4}[0-9]{2}[0-9]{2}/:
+        format = "yyyyMMdd";        break
       case ~/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[zZ]/:
         format = "yyyy-MM-dd'T'hh:mm:ss'Z'"
         timeZone = TimeZone.getTimeZone("UTC")
