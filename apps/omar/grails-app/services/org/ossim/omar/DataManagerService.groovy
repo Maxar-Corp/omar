@@ -5,10 +5,22 @@ import org.ossim.omar.RasterFile
 import org.ossim.omar.Repository
 import org.ossim.omar.VideoFile
 
+/**
+ * This is a service class that manages adding and removing data within the OMAR tables.
+ * Currently we implement the add and remove for raster and video.
+ */
 class DataManagerService
 {
   boolean transactional = true
 
+  /**
+   * This service allows one to add a raster to the omar tables.  
+   *
+   * @param httpStatusMessage Is used to populate the http response.  This will
+   *                          identify the status code messages and any additional
+   *                          header paramters that need to be added to the response.
+   * @param filename is the file you wish to add to the OMAR tables
+   */
   def addRaster(def httpStatusMessage, def filename)
   {
     httpStatusMessage.status  = HttpStatus.OK
