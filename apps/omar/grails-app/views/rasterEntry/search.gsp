@@ -82,14 +82,18 @@
 
    function setupBaseLayer()
    {
-     var baseLayer = new OpenLayers.Layer.WMS(
-       "${baseWMS.title}",
-       "${baseWMS.url}",
-       {layers: '${baseWMS.layers}', format: "${baseWMS.format}" },
+     var baseLayer = null;
+
+     <g:each var="foo" in="${baseWMS}">
+     baseLayer = new OpenLayers.Layer.WMS(
+       "${foo.title}",
+       "${foo.url}",
+       {layers: '${foo.layers}', format: "${foo.format}" },
         {isBaseLayer:true, buffer:0,transitionEffect: "resize"}
      );
      map.addLayer(baseLayer);
      map.setBaseLayer(baseLayer);
+     </g:each>
    }
 
    function setupAoiLayer()
