@@ -73,7 +73,7 @@ log4j = {
   }
 
   info omarAppender: 'grails.app',
-      additivity:false  
+      additivity: false
 
   error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
       'org.codehaus.groovy.grails.web.pages', //  GSP
@@ -104,10 +104,12 @@ wms.base.useTileCache = true
 wms.base.mapFile = "${wms.referenceDataDirectory}/bmng.map"
 
 wms.base = [
-    url: (wms.base.useTileCache) ? "http://${wms.serverAddress}/tilecache/tilecache.py" : "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${wms.base.mapFile}",
-    layers: (wms.base.useTileCache) ? "omar" : "Reference",
-    title: "Reference Data",
-    format: "image/jpeg"
+    [
+        url: (wms.base.useTileCache) ? "http://${wms.serverAddress}/tilecache/tilecache.py" : "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${wms.base.mapFile}",
+        layers: (wms.base.useTileCache) ? "omar" : "Reference",
+        title: "Reference Data",
+        format: "image/jpeg"
+    ]
 ]
 
 wms.supportIE6 = true
@@ -178,7 +180,7 @@ security.level = 'UNCLASS'
 
 omar.release = '1.8.4'
 
-/** ********************************* CONDITIONALS FOR VIEWS             **********************************************************************/
+/** ********************************* CONDITIONALS FOR VIEWS              **********************************************************************/
 // flags for different views
 // we can conditionally turn off browsing on the home page
 //

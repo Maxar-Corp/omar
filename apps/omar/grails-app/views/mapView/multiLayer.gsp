@@ -72,6 +72,23 @@
       mapDiv.style.height = Math.round(mapTitle.offsetWidth / 2) + "px";
       map.updateSize();
     }
+
+    function setupBaseLayer()
+    {
+      var baseLayer = null;
+
+      <g:each var="foo" in="${baseWMS}">
+      baseLayer = new OpenLayers.Layer.WMS(
+        "${foo.title}",
+        "${foo.url}",
+        {layers: '${foo.layers}', format: "${foo.format}" },
+         {isBaseLayer:true, buffer:0,transitionEffect: "resize"}
+      );
+      map.addLayer(baseLayer);
+      map.setBaseLayer(baseLayer);
+      </g:each>
+    }
+
     function init()
     {
       var left = ${left};
@@ -84,15 +101,8 @@
       var format = "image/png";
       var transparent = true;
 
-      var baseLayer = new OpenLayers.Layer.WMS(
-              "${baseWMS.title}",
-              "${baseWMS.url}",
-      {layers: '${baseWMS.layers}', format: 'image/jpeg' },
-      {isBaseLayer: true, buffer:0, transitionEffect: "resize"}
-              );
-
-      map.addLayer(baseLayer);
-
+      setupBaseLayer();
+      
       var layers = [
 
 
