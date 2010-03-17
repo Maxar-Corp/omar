@@ -325,7 +325,7 @@ public class OmsInfoParser
               rasterEntry.metadata.description = value
               break;
             case "niirs":
-              rasterEntry.metadata.niirs = value
+              rasterEntry.metadata.niirs = value as Double
               break;
 
           // Just for testing

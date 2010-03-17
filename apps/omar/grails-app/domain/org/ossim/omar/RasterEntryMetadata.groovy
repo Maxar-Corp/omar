@@ -18,7 +18,8 @@ class RasterEntryMetadata
   String title
   String organization
   String description
-  
+  Double niirs                         
+
   Geometry groundGeom
   Date acquisitionDate
   
@@ -68,6 +69,7 @@ class RasterEntryMetadata
     grazingAngle(nullable: true)
     securityClassification(nullable: true)
     title(nullable: true)
+    niirs(nullable: true)
     organization(nullable: true)
     description(nullable: true)
 
