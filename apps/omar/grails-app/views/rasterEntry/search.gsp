@@ -47,454 +47,44 @@
   <openlayers:loadJavascript/>
   <resource:include components="dateChooser"/>
 
+  <g:javascript src="rasterVideo.js"/>
   <g:javascript src="coordinateConversion.js"/>
 
   <g:javascript>
-   var aoiLayer;
-   var polygonControl;
-   var map;
-   var dataLayer;
-
-   String.prototype.leftPad = function (l, c) { return new Array(l - this.length + 1).join(c || '0') + this; }
-
-
-   function changeMapSize()
-   {
-     var mapTitle = $("mapTitle");
-     var mapDiv = $("map");
-
-     mapDiv.style.width = mapTitle.offsetWidth + "px";
-     mapDiv.style.height = Math.round( mapTitle.offsetWidth / 2) + "px";
-
-     map.updateSize();
-   }
-
-   function setupDataLayer()
-   {
-     dataLayer = new OpenLayers.Layer.WMS(
-       "${dataWMS.title}",
-       "${dataWMS.url}",
-       { layers: "${dataWMS.layers}", styles:"${dataWMS.styles}", format: "${dataWMS.format}", transparent: true },
-        {isBaseLayer:false,buffer:0,visibility:false,transitionEffect: "resize"}
-     );
-     map.addLayer(dataLayer);
-   }
-
-   function setupBaseLayer()
-   {
-     var baseLayer = null;
-
-     <g:each var="foo" in="${baseWMS}">
-     baseLayer = new OpenLayers.Layer.WMS(
-       "${foo.title}",
-       "${foo.url}",
-       {layers: '${foo.layers}', format: "${foo.format}" },
-        {isBaseLayer:true, buffer:0,transitionEffect: "resize"}
-     );
-     map.addLayer(baseLayer);
-     map.setBaseLayer(baseLayer);
-     </g:each>
-   }
-
-   function setupAoiLayer()
-   {
-
-     aoiLayer = new OpenLayers.Layer.Vector("Area of Interest");
-     aoiLayer.events.register("featureadded", aoiLayer, setAOI );
-
-     var polyOptions = {sides: 4, irregular: true} ;
-
-     polygonControl = new OpenLayers.Control.DrawFeature( aoiLayer, OpenLayers.Handler.RegularPolygon,
-        {handlerOptions: polyOptions});
-
-     map.addLayer(aoiLayer);
-     map.addControl(polygonControl);
-
-     var aoiMinLon = "${queryParams?.aoiMinLon ?: ''}";
-     var aoiMinLat = "${queryParams?.aoiMinLat ?: ''}";
-     var aoiMaxLon = "${queryParams?.aoiMaxLon ?: ''}";
-     var aoiMaxLat = "${queryParams?.aoiMaxLat ?: ''}";
-
-     if ( aoiMinLon && aoiMinLat && aoiMaxLon && aoiMaxLat )
-     {
-       var bounds = new OpenLayers.Bounds( aoiMinLon, aoiMinLat, aoiMaxLon, aoiMaxLat );
-       var feature = new OpenLayers.Feature.Vector(bounds.toGeometry());
-
-       aoiLayer.addFeatures(feature, {silent: true});
-     }
-   }
-
-   function setupMapWidget()
-   {
-      map = new OpenLayers.Map("map", { controls: [], format: 'DMS'});
-      map.addControl(new OpenLayers.Control.LayerSwitcher());
-      //map.addControl(new OpenLayers.Control.PanZoom());
-      //map.addControl(new OpenLayers.Control.NavToolbar());
-      map.addControl(new OpenLayers.Control.Scale());
-      //map.addControl(new OpenLayers.Control.Permalink("permalink"));
-      map.addControl(new OpenLayers.Control.ScaleLine());
-      map.addControl(new OpenLayers.Control.Attribution());
-      map.events.register("moveend", map, setCenterText);
-      map.events.register("zoomend", map, setView );
-      map.events.register('mousemove',map,handleMouseMove);
-   }
-
-    function handleMouseMove(evt)
-    {
-    var lonLat = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x , evt.xy.y) );
-    var dmsOutput = document.getElementById('dmsCoordinates');
-
-
-    if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
-    {
-        dmsOutput.innerHTML = "<b>DMS:</b> ";
-    }
-    else
-    {
-        dmsOutput.innerHTML = "<b>DMS:</b> " + ddToDms(lonLat.lat, "latitude") + " " + ddToDms(lonLat.lon, "longitude");
-    }
-        
-    var latHem;
-    if(lonLat.lat < 0)
-    {
-        latHem = " S";
-    }
-    else
-    {
-        latHem = " N";
-    }
-
-    var lonHem;
-    if(lonLat.lon < 0)
-    {
-        lonHem = " W";
-    }
-    else
-    {
-        lonHem = " E";
-    }
-
-    var ddOutput = document.getElementById('ddCoordinates');
-    if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
-    {
-        ddOutput.innerHTML = "<b>DD:</b> ";
-    }
-    else
-    {
-        ddOutput.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
-    }
-}
-   function setupMapView()
-   {
-     var viewMinLon = "${queryParams?.viewMinLon ?: -180}";
-     var viewMinLat = "${queryParams?.viewMinLat ?: -90}";
-     var viewMaxLon = "${queryParams?.viewMaxLon ?: 180}";
-     var viewMaxLat = "${queryParams?.viewMaxLat ?: 90}";
-
-     var bounds = new OpenLayers.Bounds(viewMinLon, viewMinLat, viewMaxLon, viewMaxLat);
-     var zoom = map.getZoomForExtent(bounds, true);
-
-
-     map.setCenter(bounds.getCenterLonLat(), zoom);
-   }
-
-   function zoomIn()
-   {
-     map.zoomIn();
-   }
-
-   function zoomOut()
-   {
-     map.zoomOut();
-
-   }
-     function setupToolbar()
-     {
-       var zoomBoxButton = new OpenLayers.Control.ZoomBox(
-       {title:"Zoom into an area by clicking and dragging"});
-
-       var zoomInButton = new OpenLayers.Control.Button({title:'Zoom in',
-         displayClass: "olControlZoomIn",
-         trigger: zoomIn
-       });
-
-       var zoomOutButton = new OpenLayers.Control.Button({title:'Zoom out',
-         displayClass: "olControlZoomOut",
-         trigger: zoomOut
-       });
-
-       var polyOptions = {sides: 4, irregular: true};
-
-       var polygonControl = new OpenLayers.Control.DrawFeature(aoiLayer, OpenLayers.Handler.RegularPolygon,
-       {handlerOptions: polyOptions, title: "Specify Area of Interest"});
-
-       var clearAoiButton = new OpenLayers.Control.Button({title:'Clear Area of Interest',
-         displayClass: "olControlClearAreaOfInterest",
-         trigger: clearAOI
-       });
-
-       var container = $("panel2");
-
-       var panel = new OpenLayers.Control.Panel(
-       { div: container,defaultControl: zoomBoxButton,'displayClass': 'olControlPanel'}
-               );
-
-       var navButton = new OpenLayers.Control.NavigationHistory({
-         nextOptions: {title: "Next View" },
-         previousOptions: {title: "Previous View"}
-       });
-
-       map.addControl(navButton);
-
-       var measureDistanceButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
-         title: "Measure Distance",
-         displayClass: "olControlMeasureDistance",
-         eventListeners:
-         {
-           measure: function(evt)
-           {
-             alert("Distance: " + evt.measure.toFixed(2) + evt.units);
-           }
-         }
-       });
-
-       var measureAreaButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, {
-         title: "Measure Area",
-         displayClass: "olControlMeasureArea",
-         eventListeners:
-         {
-           measure: function(evt)
-           {
-             alert("Area: " + evt.measure.toFixed(2) + evt.units);
-           }
-         }
-       });
-
-       panel.addControls([
-         new OpenLayers.Control.MouseDefaults({title:'Drag to recenter map'}),
-         zoomBoxButton,
-         zoomInButton,
-         zoomOutButton,
-         navButton.next, navButton.previous,
-         new OpenLayers.Control.ZoomToMaxExtent({title:"Zoom to the max extent"}),
-         polygonControl,
-         clearAoiButton,
-         measureDistanceButton,
-         measureAreaButton
-       ]);
-
-       map.addControl(panel);
-     }
-
-   function init()
-   {
-      setupMapWidget();
-      setupDataLayer();
-      setupBaseLayer();
-      changeMapSize();
-      setupAoiLayer();
-      setupToolbar();
-      setupMapView();
-      setupQueryFields();
-      updateOmarFilters();
-      //clearAOI(); //dl
-   }
-
-    function clearAOI( e )
-     {
-       aoiLayer.destroyFeatures();
-
-
-       // HACK - Need a better way to this
-       $("aoiMinLon").value = "";
-       $("aoiMaxLat").value = "";
-       $("aoiMaxLon").value = "";
-       $("aoiMinLat").value = "";
-     }
-
-  function setupQueryFields()
-   {
-     var searchMethod = "${queryParams.searchMethod}";
-
-     if ( searchMethod == "${RasterEntryQuery.RADIUS_SEARCH}")
-     {
-       toggleRadiusSearch();
-     }
-     else if ( searchMethod == "${RasterEntryQuery.BBOX_SEARCH}" )
-     {
-       toggleBBoxSearch();
-     }
-   }
-
-   function toggleRadiusSearch()
-   {
-     enableRadiusSearch();
-     disableBBoxSearch();
-   }
-
-   function toggleBBoxSearch()
-   {
-     enableBBoxSearch();
-     disableRadiusSearch();
-   }
-
-   function enableRadiusSearch()
-   {
-     $("aoiRadius").disabled = false;
-   }
-
-   function enableBBoxSearch()
-   {
-     $("aoiMinLon").disabled = false;
-     $("aoiMinLat").disabled = false;
-     $("aoiMaxLon").disabled = false;
-     $("aoiMaxLat").disabled = false;
-   }
-
-   function disableRadiusSearch()
-   {
-     $("aoiRadius").disabled = true;
-   }
-
-   function disableBBoxSearch()
-   {
-     $("aoiMinLon").disabled = true;
-     $("aoiMinLat").disabled = true;
-     $("aoiMaxLon").disabled = true;
-     $("aoiMaxLat").disabled = true;
-   }
-
-    function updateOmarFilters()
-    {
-      var wmsParams = new Array();
-
-      var sday = $("startDate_day").value;
-      var smonth = $("startDate_month").value;
-      var syear = $("startDate_year").value;
-      var shour = $("startDate_hour").value;
-      var sminute = $("startDate_minute").value;
-
-
-      var eday = $("endDate_day").value;
-      var emonth = $("endDate_month").value;
-      var eyear = $("endDate_year").value;
-      var ehour = $("endDate_hour").value;
-      var eminute = $("endDate_minute").value;
-
-      var hasStartDate = sday != "" && smonth != "" && syear != "" && shour != "" && sminute != "";
-      //var startDate = "'" + smonth + "-" + sday + "-" + syear + "'";
-
-      var startDateNoQuote = syear + smonth.leftPad(2) + sday.leftPad(2) + 'T'
-          + shour.leftPad(2) +':' + sminute.leftPad(2) + ':' + '00Z';
-
-      var hasEndDate = eday != "" && emonth != "" && eyear != "";
-      //var endDate = "'" + emonth + "-" + eday + "-" + eyear + "'";
-      var endDateNoQuote = eyear + emonth.leftPad(2) + eday.leftPad(2) + 'T'
-        + ehour.leftPad(2) + ':' + eminute.leftPad(2) +':'+'00Z';
-      
-      var wmsTime = ""
-      //var omarfilter = ""
-
-      if ( hasStartDate )
-      {
-        //omarfilter = "acquisition_date>=" + startDate;
-
-        wmsTime = startDateNoQuote
-
-        if ( hasEndDate )
-        {
-          wmsTime += "/"+endDateNoQuote
-          //omarfilter += " and acquisition_date<=" + endDate;
-        }
-        else
-        {
-          wmsTime += "/"
-        }
-        //alert(omarfilter);
-      }
-      else
-      {
-        if ( hasEndDate )
-        {
-          wmsTime += "/" + endDateNoQuote
-          //omarfilter = "acquisition_date<=" + endDate;
-
-          //alert(omarfilter);
-        }
-        else
-        {
-          //omarfilter = "true=true";
-          wmsTime = "";
-          //alert(omarfilter);
-        }
-      }
-
+  var setupBaseLayers = function()
+  {
+      var baseLayer = null;
+
+      <g:each var="foo" in="${baseWMS}">
+    baseLayer = new OpenLayers.Layer.WMS("${foo.title}", "${foo.url}",
+    {layers: "${foo.layers}", format: "${foo.format}"},
+    {isBaseLayer: true, buffer: 0,transitionEffect: "resize"});
+
+    map.addLayer(baseLayer);
+    map.setBaseLayer(baseLayer);
+  </g:each>
+  };
+
+var raster = new RasterVideo();
+
+  function init()
+  {
+      raster.setupMapWidget();
+      setupBaseLayers();
+      raster.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
+      raster.changeMapSize();
+      raster.setupAoiLayer();
+      raster.setupToolBar();
+      raster.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
+      raster.setupQueryFields("${queryParams.searchMethod}");
       var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
       var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
-      var idx = 0;
-
-      wmsParams["time"] = wmsTime;
-
-      var tempName = "";
-
-      for(idx=0;idx<numberOfNames;++idx)
-      {
-        tempName = "searchTagNames[" + idx + "]";
-        wmsParams["searchTagNames["+idx+"]"] =$(tempName).value;
-      }
-
-      for(idx=0;idx<numberOfValues;++idx)
-      {
-        tempName = "searchTagValues[" + idx + "]";
-        wmsParams["searchTagValues["+idx+"]"] =$(tempName).value;
-      }
-        /*
-      if($("bboxSearchButton").checked)
-      {
-       wmsParams["searchMethod"] = "BBOX";
-        wmsParams["aoiRadius"] = "";
-        wmsParams["centerLat"] = "";
-        wmsParams["centerLon"] = "";
-      }
-      else
-      {
-        wmsParams["searchMethod"] = "RADIUS";
-        wmsParams["aoiMaxLat"] = "";
-        wmsParams["aoiMaxLon"] = "";
-        wmsParams["aoiMinLon"] = "";
-        wmsParams["aoiMinLat"] = "";
-        wmsParams["aoiRadius"] = $("aoiRadius").value;
-        wmsParams["centerLat"] = $("centerLat").value;
-        wmsParams["centerLon"] = $("centerLon").value;  
-      }
-      */
-
-      //alert(wmsTime);
-      dataLayer.mergeNewParams(wmsParams);
-    }
-   function updateFootprints()
-   {
-      dataLayer.redraw(true);  
-   }
-   function setCurrentViewport()
-   {
-     var bounds = map.getExtent();
-     $("viewMinLon").value = bounds.left;
-     $("viewMaxLat").value = bounds.top;
-     $("viewMaxLon").value = bounds.right;
-     $("viewMinLat").value = bounds.bottom;
-   }
-
-   function generateKML()
-   {
-     document.searchForm.action = "kmlnetworklink";
-     setCurrentViewport();
-     document.searchForm.submit();
-   }
+      raster.updateOmarFilters($("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value, $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value, numberOfNames, numberOfValues);
+  }
   </g:javascript>
 
 </head>
-<body class="yui-skin-sam" onload="init( );" onresize="changeMapSize( );">
+<body onload="init( );" onresize="raster.changeMapSize( );">
 <content tag="banner">
   <img id="logo" src="${createLinkTo(dir: 'images', file: 'OMARLarge.png', absolute)}" alt="OMAR-2.0 Logo"/>
 </content>
@@ -504,17 +94,17 @@
         <a class="home" href="${createLinkTo(dir: '')}">Home</a>
       </span>
       <span class="menuButton">
-        <a href="javascript:searchForRasters();">Search</a>
+        <a href="javascript:raster.searchForRasters();">Search</a>
       </span>
       <span class="menuButton">
-        <a href="javascript:generateKML();">KML</a>
+        <a href="javascript:raster.generateKML();">KML</a>
       </span>
       <span class="menuButton">
-        <a href="javascript:updateFootprints( );">Update Footprints</a>
+        <a href="javascript:raster.updateFootprints( );">Update Footprints</a>
       </span>
 
       <span class="menuButton">
-        Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS']}" onChange="setCenterText()"/>
+        Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS']}" onChange="raster.setTextFields()"/>
       </span>
     </div>
     <div class="body">
@@ -552,7 +142,7 @@
           </li>
           <li><br/></li>
           <li>
-            <g:radio name="searchMethod" id="radiusSearchButton" value="${RasterEntryQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.RADIUS_SEARCH}" onclick="toggleRadiusSearch()"/>
+            <g:radio name="searchMethod" id="radiusSearchButton" value="${RasterEntryQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.RADIUS_SEARCH}" onclick="raster.toggleRadiusSearch()"/>
             <label>Use Radius Search</label>
           </li>
           <li><br/></li>
@@ -560,12 +150,12 @@
             <label for='aoiRadius'>Radius in Meters:</label><br/>
           </li>
           <li>
-            <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters()"/>
+            <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="raster.updateOmarFilters()"/>
           </li>
           <li><br/></li>
           <li>
             <span class="formButton">
-              <input type="button" onclick="goto( )" value="Set Center">
+              <input type="button" onclick="raster.goto( )" value="Set Center">
             </span>
           </li>
         </ol>
@@ -581,7 +171,7 @@
         <input type="hidden" id="viewMaxLat" name="viewMaxLat" value="${fieldValue(bean: queryParams, field: 'viewMaxLat')}"/>
         <ol>
           <li>
-            <g:radio name="searchMethod" id="bboxSearchButton" value="${RasterEntryQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.BBOX_SEARCH}" onclick="toggleBBoxSearch()"/>
+            <g:radio name="searchMethod" id="bboxSearchButton" value="${RasterEntryQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.BBOX_SEARCH}" onclick="raster.toggleBBoxSearch()"/>
             <label>Use BBox Search</label>
           </li>
           <li><br/></li>
@@ -611,7 +201,7 @@
           </li>
           <li><br/></li>
           <li>
-            <input type="button" onclick="clearAOI( )" value="Clear AOI">
+            <input type="button" onclick="raster.clearAOI( )" value="Clear AOI">
           </li>
         </ol>
       </div>
@@ -625,14 +215,14 @@
             <label for='startDate'>Start Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="startDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.startDate}" onChange="updateOmarFilters()"/>
+            <richui:dateChooser name="startDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.startDate}" onChange="raster.updateOmarFilters()"/>
             <g:hiddenField name="startDate_timezone" value="UTC"/>
           </li>
           <li>
             <label for='endDate'>End Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="endDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.endDate}" onChange="updateOmarFilters()"/>
+            <richui:dateChooser name="endDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.endDate}" onChange="raster.updateOmarFilters()"/>
             <g:hiddenField name="endDate_timezone" value="UTC"/>
           </li>
         </ol>
@@ -652,7 +242,7 @@
                     optionKey="name" optionValue="description"/>
             </li>
             <li>
-              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
+              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="raster.updateOmarFilters()"/>
             </li>
           </g:each>
         </ol>
