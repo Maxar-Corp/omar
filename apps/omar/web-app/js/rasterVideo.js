@@ -435,7 +435,7 @@ function RasterVideo()
   {
     return new Array( l - this.length + 1 ).join( c || '0' ) + this;
   };
-  this.updateOmarFilters = function( startDay, startMonth, startYear, startHour, startMinute, endDay, endMonth, endYear, endHour, eMinute, numberOfNames, numberOfValues )
+  this.updateOmarFilters = function( startDay, startMonth, startYear, startHour, startMinute, endDay, endMonth, endYear, endHour, endMinute, numberOfNames, numberOfValues )
   {
     this.wmsParams = new Array( );
 
@@ -443,7 +443,7 @@ function RasterVideo()
     this.startDateNoQuote = startYear + startMonth.leftPad( 2 ) + startDay.leftPad( 2 ) + 'T' + startHour.leftPad( 2 ) + ':' + startMinute.leftPad( 2 ) + ':' + '00Z';
 
     this.hasEndDate = endDay != "" && endMonth != "" && endYear != "";
-    this.endDateNoQuote = endYear + endMonth.leftPad( 2 ) + endDay.leftPad( 2 ) + 'T' + endHour.leftPad( 2 ) + ':' + eminute.leftPad( 2 ) + ':' + '00Z';
+    this.endDateNoQuote = endYear + endMonth.leftPad( 2 ) + endDay.leftPad( 2 ) + 'T' + endHour.leftPad( 2 ) + ':' + endMinute.leftPad( 2 ) + ':' + '00Z';
 
     this.wmsTime = "";
 
@@ -477,6 +477,7 @@ function RasterVideo()
 
     this.tempName = "";
 
+    
     for ( this.idx = 0; this.idx < numberOfNames; ++this.idx )
     {
       this.tempName = "searchTagNames[" + this.idx + "]";
