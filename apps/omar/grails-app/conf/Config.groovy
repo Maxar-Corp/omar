@@ -222,6 +222,11 @@ rasterEntry.searchTagData = [
     [name: "imageId", description: "Image Id"]
 ]
 
+videoDataSet.searchTagData = [
+    [name: "otherTagsXml.filename=", description: "Feed"]
+]
+
+
 kml.maxImages = 100
 kml.maxVideos = 100
 kml.defaultImages = 10
