@@ -69,6 +69,7 @@ class RasterEntryQuery
 
     return clause
   }
+
   void caseInsensitiveBind(def params)
   {
     def keys = properties.keySet()

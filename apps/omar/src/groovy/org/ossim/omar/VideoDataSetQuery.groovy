@@ -13,6 +13,7 @@ import org.hibernate.criterion.Criterion
 
 import org.ossim.postgis.IntersectsExpression
 import org.ossim.postgis.Geometry
+import org.apache.commons.collections.map.CaseInsensitiveMap
 
 class VideoDataSetQuery
 {
@@ -176,6 +177,39 @@ class VideoDataSetQuery
     return bounds
   }
 
+
+  void caseInsensitiveBind(def params)
+  {
+    def keys = properties.keySet()
+    def tempParams = new CaseInsensitiveMap()
+    params.each { tempParams.put(it.key, it.value)}
+
+    keys.each{
+      def value = tempParams.get(it)
+      if(value)
+      {
+        setProperty("${it}", value)
+      }
+    }
+    // now check the lists
+    def idx = 0
+    def value = tempParams.get("searchTagNames[${idx}]")
+    while(value)
+    {
+      searchTagNames[idx] = value
+      ++idx
+      value = tempParams.get("searchTagNames[${idx}]")
+    }
+    idx = 0
+    value = tempParams.get("searchTagValues[${idx}]")
+    while(value)
+    {
+      searchTagValues[idx] = value
+      ++idx
+      value = tempParams.get("searchTagValues[${idx}]")
+    }
+  }
+  
 
   def toMap()
   {
