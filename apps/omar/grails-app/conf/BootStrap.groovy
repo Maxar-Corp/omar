@@ -1,4 +1,3 @@
-
 import grails.util.GrailsUtil
 import org.ossim.omar.AuthUser
 import org.ossim.omar.Role
@@ -7,6 +6,7 @@ import org.ossim.omar.RasterEntrySearchTag
 import org.ossim.omar.Repository
 import org.ossim.omar.Requestmap
 import org.ossim.omar.VideoDataSet
+import org.ossim.omar.VideoDataSetSearchTag
 
 class BootStrap
 {
@@ -135,6 +135,19 @@ class BootStrap
         searchTag.save()
       }
     }
+
+    searchTagData = grailsApplication.config.videoDataSet.searchTagData
+
+    searchTagData.each {
+      def searchTag = VideoDataSetSearchTag.findByName(it.name)
+
+      if ( !searchTag )
+      {
+        searchTag = new VideoDataSetSearchTag(name: it.name, description: it.description)
+        searchTag.save()
+      }
+    }
+
 
     if ( GrailsUtil.isDevelopmentEnv() )
     {
