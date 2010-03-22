@@ -126,7 +126,7 @@ class OgcController
         else if ( it == "Videos" || it == "VideoData" )
         {
           def queryParams = new VideoDataSetQuery()
-          bindData(queryParams, params)
+          queryParams.caseInsensitiveBind(params)
           queryParams.aoiMaxLat = maxy
           queryParams.aoiMinLat = miny
           queryParams.aoiMaxLon = maxx
