@@ -171,7 +171,7 @@ function RasterVideo()
 
         if(mouseLonLat.lat > "90" || mouseLonLat.lat < "-90" || mouseLonLat.lon > "180" || mouseLonLat.lon < "-180") // redundant
         {
-            this.dmsOutput.innerHTML = "<b>DMS:</b> Out of geospatial bounds.";
+            dmsOutput.innerHTML = "<b>DMS:</b> Out of geospatial bounds.";
         }
         else
         {
@@ -329,7 +329,7 @@ function RasterVideo()
         var container = $("panel2");
 
         var panel = new OpenLayers.Control.Panel(
-        {div: container,defaultControl: this.zoomBoxButton, displayClass: "olControlPanel"} );
+        {div: container,defaultControl: zoomBoxButton, displayClass: "olControlPanel"} );
 
         panel.addControls([
             recenterButton,
