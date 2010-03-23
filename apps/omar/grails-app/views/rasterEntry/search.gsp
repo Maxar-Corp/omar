@@ -47,7 +47,7 @@
   <openlayers:loadJavascript/>
   <resource:include components="dateChooser"/>
 
-  <g:javascript src="rasterVideo.js"/>
+  <g:javascript src="mapwidget.js"/>
   <g:javascript src="coordinateConversion.js"/>
 
   <g:javascript>
@@ -68,7 +68,7 @@
 var raster = new RasterVideo();
 
   function init()
-  {
+  {   
       raster.setupMapWidget();
       setupBaseLayers();
       raster.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
@@ -94,7 +94,7 @@ var raster = new RasterVideo();
         <a class="home" href="${createLinkTo(dir: '')}">Home</a>
       </span>
       <span class="menuButton">
-        <a href="javascript:raster.searchForRasters();">Search</a>
+        <a href="javascript:raster.search();">Search</a>
       </span>
       <span class="menuButton">
         <a href="javascript:raster.generateKML();">KML</a>
@@ -118,6 +118,7 @@ var raster = new RasterVideo();
         <div class="niceBoxBody">
           <div id="ddCoordinates"></div>
           <div id="dmsCoordinates"></div>
+          <div id="utmCoordinates"></div>
         </div>
       </div>
     </div>
