@@ -48,7 +48,7 @@
   <openlayers:loadJavascript/>
   <resource:include components="dateChooser"/>
 
-  <g:javascript src="rasterVideo.js"/>
+  <g:javascript src="mapwidget.js"/>
   <g:javascript src="coordinateConversion.js"/>
 
   <g:javascript>
@@ -103,7 +103,7 @@
       <a class="home" href="${createLinkTo(dir: '')}">Home</a>
     </span>
     <span class="menuButton">
-      <a href="javascript:video.searchForRasters();">Search</a>
+      <a href="javascript:video.search();">Search</a>
     </span>
     <span class="menuButton">
       <a href="javascript:video.generateKML();">KML</a>
@@ -126,6 +126,7 @@
       <div class="niceBoxBody">
         <div id="ddCoordinates"></div>
         <div id="dmsCoordinates"></div>
+        <div id="utmCoordinates"></div>
       </div>
     </div>
   </div>
