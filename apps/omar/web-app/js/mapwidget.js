@@ -187,7 +187,7 @@ function RasterVideo()
         }
         else
         {
-            utmOutput.innerHTML = "<b>UTM:</b> " + convert.btnToUTM_OnClick(mouseLonLat.lat, mouseLonLat.lon);
+            utmOutput.innerHTML = "<b>UTM:</b> " + convert.getUtm(mouseLonLat.lat, mouseLonLat.lon);
         }
     };
 
