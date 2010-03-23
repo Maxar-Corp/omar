@@ -116,9 +116,13 @@ var raster = new RasterVideo();
       <div class="niceBox">
         <div class="niceBoxHd">Mouse Position:</div>
         <div class="niceBoxBody">
-          <div id="ddCoordinates"></div>
-          <div id="dmsCoordinates"></div>
-          <div id="utmCoordinates"></div>
+          <table>
+            <tr>
+             <td width=200><div id="ddCoordinates"></div></td>
+             <td width=200><div id="dmsCoordinates"></div></td>
+             <td width=200><div id="utmCoordinates"></div></td>
+            </tr>
+          </table>
         </div>
       </div>
     </div>
