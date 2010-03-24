@@ -51,40 +51,40 @@
   <g:javascript src="coordinateConversion.js"/>
 
   <g:javascript>
-  var setupBaseLayers = function()
-  {
-      var baseLayer = null;
 
-      <g:each var="foo" in="${baseWMS}">
-    baseLayer = new OpenLayers.Layer.WMS("${foo.title}", "${foo.url}",
-    {layers: "${foo.layers}", format: "${foo.format}"},
-    {isBaseLayer: true, buffer: 0,transitionEffect: "resize"});
-
-    map.addLayer(baseLayer);
-    map.setBaseLayer(baseLayer);
-  </g:each>
-  };
-
-var raster = new RasterVideo();
+var mapWidget = new MapWidget();
 
   function init()
-  {   
-      raster.setupMapWidget();
+  {
+      var setupBaseLayers = function()
+      {
+          var baseLayer = null;
+
+          <g:each var="foo" in="${baseWMS}">
+            baseLayer = new OpenLayers.Layer.WMS("${foo.title}", "${foo.url}",
+            {layers: "${foo.layers}", format: "${foo.format}"},
+            {isBaseLayer: true, buffer: 0,transitionEffect: "resize"});
+
+            mapWidget.setupBaseLayers(baseLayer);
+          </g:each>
+      };
+
+      mapWidget.setupMapWidget();
       setupBaseLayers();
-      raster.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
-      raster.changeMapSize();
-      raster.setupAoiLayer();
-      raster.setupToolBar();
-      raster.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
-      raster.setupQueryFields("${queryParams.searchMethod}");
+      mapWidget.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
+      mapWidget.changeMapSize();
+      mapWidget.setupAoiLayer();
+      mapWidget.setupToolBar();
+      mapWidget.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
+      mapWidget.setupQueryFields("${queryParams.searchMethod}");
       var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
       var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
-      raster.updateOmarFilters($("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value, $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value, numberOfNames, numberOfValues);
+      mapWidget.updateOmarFilters($("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value, $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value, numberOfNames, numberOfValues);
   }
   </g:javascript>
 
 </head>
-<body onload="init( );" onresize="raster.changeMapSize( );">
+<body onload="init( );" onresize="mapWidget.changeMapSize( );">
 <content tag="banner">
   <img id="logo" src="${createLinkTo(dir: 'images', file: 'OMARLarge.png', absolute)}" alt="OMAR-2.0 Logo"/>
 </content>
@@ -94,17 +94,17 @@ var raster = new RasterVideo();
         <a class="home" href="${createLinkTo(dir: '')}">Home</a>
       </span>
       <span class="menuButton">
-        <a href="javascript:raster.search();">Search</a>
+        <a href="javascript:mapWidget.search();">Search</a>
       </span>
       <span class="menuButton">
-        <a href="javascript:raster.generateKML();">KML</a>
+        <a href="javascript:mapWidget.generateKML();">KML</a>
       </span>
       <span class="menuButton">
-        <a href="javascript:raster.updateFootprints( );">Update Footprints</a>
+        <a href="javascript:mapWidget.updateFootprints( );">Update Footprints</a>
       </span>
 
       <span class="menuButton">
-        Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS']}" onChange="raster.setTextFields()"/>
+        Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS']}" onChange="mapWidget.setTextFields()"/>
       </span>
     </div>
     <div class="body">
@@ -147,7 +147,7 @@ var raster = new RasterVideo();
           </li>
           <li><br/></li>
           <li>
-            <g:radio name="searchMethod" id="radiusSearchButton" value="${RasterEntryQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.RADIUS_SEARCH}" onclick="raster.toggleRadiusSearch()"/>
+            <g:radio name="searchMethod" id="radiusSearchButton" value="${RasterEntryQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.RADIUS_SEARCH}" onclick="mapWidget.toggleRadiusSearch()"/>
             <label>Use Radius Search</label>
           </li>
           <li><br/></li>
@@ -155,12 +155,12 @@ var raster = new RasterVideo();
             <label for='aoiRadius'>Radius in Meters:</label><br/>
           </li>
           <li>
-            <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="raster.updateOmarFilters()"/>
+            <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="mapWidget.updateOmarFilters()"/>
           </li>
           <li><br/></li>
           <li>
             <span class="formButton">
-              <input type="button" onclick="raster.goto( )" value="Set Center">
+              <input type="button" onclick="mapWidget.goto( )" value="Set Center">
             </span>
           </li>
         </ol>
@@ -176,7 +176,7 @@ var raster = new RasterVideo();
         <input type="hidden" id="viewMaxLat" name="viewMaxLat" value="${fieldValue(bean: queryParams, field: 'viewMaxLat')}"/>
         <ol>
           <li>
-            <g:radio name="searchMethod" id="bboxSearchButton" value="${RasterEntryQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.BBOX_SEARCH}" onclick="raster.toggleBBoxSearch()"/>
+            <g:radio name="searchMethod" id="bboxSearchButton" value="${RasterEntryQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBBoxSearch()"/>
             <label>Use BBox Search</label>
           </li>
           <li><br/></li>
@@ -206,7 +206,7 @@ var raster = new RasterVideo();
           </li>
           <li><br/></li>
           <li>
-            <input type="button" onclick="raster.clearAOI( )" value="Clear AOI">
+            <input type="button" onclick="mapWidget.clearAOI( )" value="Clear AOI">
           </li>
         </ol>
       </div>
@@ -247,7 +247,7 @@ var raster = new RasterVideo();
                     optionKey="name" optionValue="description"/>
             </li>
             <li>
-              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="raster.updateOmarFilters()"/>
+              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="mapWidget.updateOmarFilters()"/>
             </li>
           </g:each>
         </ol>
