@@ -1,17 +1,47 @@
-function RasterVideo()
+function MapWidget()
 {
+    var map;
+    this.baseLayer = null;
+    this.dataLayer = null;
+    var aoiLayer = null;
+
+    var convert = new CoordinateConversion();
+
     this.setupMapWidget = function()
     {
         map = new OpenLayers.Map("map", {controls: []});
 
+        map.addControl(new OpenLayers.Control.Attribution());
         map.addControl(new OpenLayers.Control.LayerSwitcher());
         map.addControl(new OpenLayers.Control.Scale());
         map.addControl(new OpenLayers.Control.ScaleLine());
-        map.addControl(new OpenLayers.Control.Attribution());
 
+        map.events.register("mousemove", map, this.setMousePosition);
         map.events.register("moveend", map, this.setCenterLatLonText);
         map.events.register("zoomend", map, this.setBoundLatLonText);
-        map.events.register("mousemove", map, this.setMousePosition);
+    };
+
+    this.setMousePosition = function(evt)
+    {
+        var mouseLonLat = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
+
+        var ddOutput = document.getElementById("ddCoordinates");
+        var dmsOutput = document.getElementById("dmsCoordinates");
+        var utmOutput = document.getElementById("utmCoordinates");
+
+        if(mouseLonLat.lat > "90" || mouseLonLat.lat < "-90" || mouseLonLat.lon > "180" || mouseLonLat.lon < "-180")
+        {
+            ddOutput.innerHTML = "<b>DD:</b> Out of geospatial bounds.";
+            dmsOutput.innerHTML = "<b>DMS:</b> Out of geospatial bounds.";
+            utmOutput.innerHTML = "<b>UTM:</b> Out of geospatial bounds.";
+        }
+
+        else
+        {
+            ddOutput.innerHTML = "<b>DD:</b> " + mouseLonLat.lat + " " + mouseLonLat.lon;
+            dmsOutput.innerHTML = "<b>DMS:</b> " + convert.ddToDms(mouseLonLat.lat, "latitude") + " " + convert.ddToDms(mouseLonLat.lon, "longitude");
+            utmOutput.innerHTML = "<b>UTM:</b> " + convert.getUtm(mouseLonLat.lat, mouseLonLat.lon);
+        }
     };
 
     this.setTextFields = function()
@@ -20,27 +50,22 @@ function RasterVideo()
         this.setBoundLatLonText();
     };
 
-    var convert = new CoordinateConversion();
-
     this.setCenterLatLonText = function()
     {
-        var center = map.getCenter();
+        var center = map.getCenter( );
 
-        // Decimal Degrees
         if ($("unitsMode").value == "DD")
         {
             $("centerLat").value = center.lat;
             $("centerLon").value = center.lon;
         }
 
-        // Degrees Minutes Seconds
         if ($("unitsMode").value == "DMS")
         {
             $("centerLat").value = convert.ddToDms(center.lat, "latitude");
             $("centerLon").value = convert.ddToDms(center.lon, "longitude");
         }
 
-        // Military Grid Reference System
         if($("unitsMode").value == "MGRS")
         {
 
@@ -49,7 +74,6 @@ function RasterVideo()
 
     this.setBoundLatLonText = function()
     {
-        // Decimal Degrees
         if($("unitsMode").value == "DD")
         {
             var latDmsRegExp = /^(\d{1,2})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([NnSs])?/
@@ -116,7 +140,6 @@ function RasterVideo()
             }
         }
 
-        // Degrees Minutes Seconds
         if($("unitsMode").value == "DMS")
         {
             var latDdRegExp = /^(\-?\d{1,2})(\.\d+)?$/
@@ -143,52 +166,25 @@ function RasterVideo()
             }
         }
 
-        // Military Grid Reference System
         if($("unitsMode").value == "MGRS")
         {
 
-        }
+        }  
     };
 
-    this.setMousePosition = function(evt)
+    this.setupBaseLayers = function(baseLayer)
     {
-        var mouseLonLat = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
+        map.addLayer(baseLayer);
+        map.setBaseLayer(baseLayer);
+    };
 
-        // Decimal Degrees
-        var ddOutput = document.getElementById("ddCoordinates");
+    this.setupDataLayer = function(dataWmsTitle, dataWmsUrl, dataWmsLayers, dataWmsStyles, dataWmsFormat)
+    {
+        dataLayer = new OpenLayers.Layer.WMS(dataWmsTitle, dataWmsUrl,
+        {layers: dataWmsLayers, styles: dataWmsStyles, format: dataWmsFormat, transparent: true},
+        {isBaseLayer: false, buffer: 0, visibility: true, transitionEffect: "resize"});
 
-        if(mouseLonLat.lat > "90" || mouseLonLat.lat < "-90" || mouseLonLat.lon > "180" || mouseLonLat.lon < "-180")
-        {
-            ddOutput.innerHTML = "<b>DD:</b> Out of geospatial bounds.";
-        }
-        else
-        {
-            ddOutput.innerHTML = "<b>DD:</b> " + mouseLonLat.lat + " " + mouseLonLat.lon;
-        }
-
-        // Degrees Minutes Seconds
-        var dmsOutput = document.getElementById("dmsCoordinates");
-
-        if(mouseLonLat.lat > "90" || mouseLonLat.lat < "-90" || mouseLonLat.lon > "180" || mouseLonLat.lon < "-180") // redundant
-        {
-            dmsOutput.innerHTML = "<b>DMS:</b> Out of geospatial bounds.";
-        }
-        else
-        {
-            dmsOutput.innerHTML = "<b>DMS:</b> " + convert.ddToDms(mouseLonLat.lat, "latitude") + " " + convert.ddToDms(mouseLonLat.lon, "longitude");
-        }
-
-        // Universal Transverse Mercator
-        var utmOutput = document.getElementById("utmCoordinates");
-
-        if(mouseLonLat.lat > "90" || mouseLonLat.lat < "-90" || mouseLonLat.lon > "180" || mouseLonLat.lon < "-180") // redundant
-        {
-            utmOutput.innerHTML = "<b>UTM:</b> Out of geospatial bounds.";
-        }
-        else
-        {
-            utmOutput.innerHTML = "<b>UTM:</b> " + convert.getUtm(mouseLonLat.lat, mouseLonLat.lon);
-        }
+        map.addLayer(dataLayer);
     };
 
     this.changeMapSize = function()
@@ -202,17 +198,6 @@ function RasterVideo()
         map.updateSize();
     };
 
-    // setupBaseLayers goes here
-
-    this.setupDataLayer = function(dataWmsTitle, dataWmsUrl, dataWmsLayers, dataWmsStyles, dataWmsFormat)
-    {
-        dataLayer = new OpenLayers.Layer.WMS(dataWmsTitle, dataWmsUrl,
-        {layers: dataWmsLayers, styles: dataWmsStyles, format: dataWmsFormat, transparent: true},
-        {isBaseLayer: false, buffer: 0, visibility: true, transitionEffect: "resize"} );
-
-        map.addLayer(dataLayer);
-    };
-
     this.setupAoiLayer = function()
     {
         aoiLayer = new OpenLayers.Layer.Vector("Area of Interest");
@@ -220,8 +205,8 @@ function RasterVideo()
 
         var polyOptions = {sides: 4, irregular: true};
 
-        polygonControl = new OpenLayers.Control.DrawFeature(aoiLayer, OpenLayers.Handler.RegularPolygon,
-        {handlerOptions: polyOptions} );
+        var polygonControl = new OpenLayers.Control.DrawFeature(aoiLayer, OpenLayers.Handler.RegularPolygon,
+        {handlerOptions: polyOptions});
 
         map.addLayer(aoiLayer);
         map.addControl(polygonControl);
@@ -240,13 +225,12 @@ function RasterVideo()
         }
     };
 
-    this.setAOI = function( e )
+    this.setAOI = function(e)
     {
         var geom = e.feature.geometry;
         var bounds = geom.getBounds();
         var feature = new OpenLayers.Feature.Vector(geom);
 
-        // Decimal Degrees
         if($("unitsMode").value == "DD")
         {
             $("aoiMinLon").value = bounds.left;
@@ -255,7 +239,6 @@ function RasterVideo()
             $("aoiMinLat").value = bounds.bottom;
         }
 
-        // Degrees Minutes Seconds
         if($("unitsMode").value == "DMS")
         {
             $("aoiMinLon").value = convert.ddToDms(bounds.left, "longitude");
@@ -264,7 +247,6 @@ function RasterVideo()
             $("aoiMinLat").value = convert.ddToDms(bounds.bottom, "latitude");
         }
 
-        // Military Grid Reference System
         if($("unitsMode").value == "MGRS")
         {
 
@@ -306,30 +288,16 @@ function RasterVideo()
 
         var measureDistanceButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Path,
         {title: "Measure Distance", displayClass: "olControlMeasureDistance",
-        eventListeners:
-        {
-            measure: function(evt)
-            {
-                alert("Distance: " + evt.measure.toFixed(3) + evt.units);
-            }
-        }
-        });
+        eventListeners: {measure: function(evt){alert("Distance: " + evt.measure.toFixed(3) + evt.units);}}});
 
         var measureAreaButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon,
         {title: "Measure Area", displayClass: "olControlMeasureArea",
-        eventListeners:
-        {
-            measure: function(evt)
-            {
-                alert("Area: " + evt.measure.toFixed(3) + evt.units);
-            }
-        }
-        });
+        eventListeners: {measure: function(evt){alert("Area: " + evt.measure.toFixed(3) + evt.units);}}});
 
         var container = $("panel2");
 
         var panel = new OpenLayers.Control.Panel(
-        {div: container,defaultControl: zoomBoxButton, displayClass: "olControlPanel"} );
+        {div: container,defaultControl: zoomBoxButton, displayClass: "olControlPanel"});
 
         panel.addControls([
             recenterButton,
@@ -427,7 +395,7 @@ function RasterVideo()
 
     String.prototype.leftPad = function ( l, c )
     {
-        return new Array( l - this.length + 1 ).join( c || '0' ) + this;
+        return new Array(l - this.length + 1).join(c || '0') + this;
     };
 
     this.updateOmarFilters = function(startDay, startMonth, startYear, startHour, startMinute, endDay, endMonth, endYear, endHour, endMinute, numberOfNames, numberOfValues)
@@ -505,20 +473,8 @@ function RasterVideo()
 
     this.updateFootprints = function()
     {
-        this.dataLayer.redraw(true);
+        dataLayer.redraw(true);
     };
-
-
-
-
-
-
-
-
-
-
-
-
 
     this.search = function()
     {
@@ -694,11 +650,11 @@ function RasterVideo()
         }
     };
 
-  this.setMapCenter = function( latitude, longitude )
-  {
-      var zoom = map.getZoom( );
-      var center = new OpenLayers.LonLat(longitude, latitude);
+    this.setMapCenter = function( latitude, longitude )
+    {
+        var zoom = map.getZoom( );
+        var center = new OpenLayers.LonLat(longitude, latitude);
 
-      map.setCenter(center, zoom);
-  };
+        map.setCenter(center, zoom);
+    };
 }

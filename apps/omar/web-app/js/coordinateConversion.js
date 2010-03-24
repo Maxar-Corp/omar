@@ -375,6 +375,6 @@ function CoordinateConversion()
 
         var foo2 = xy[1];
   
-        return foo + " " + foo2 + " Zone " + zone;
+        return "Easting: " + foo + " Northing: " + foo2 + " Zone " + zone;
     };
 }
