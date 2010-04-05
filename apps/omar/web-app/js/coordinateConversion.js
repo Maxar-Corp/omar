@@ -38,19 +38,19 @@ function CoordinateConversion()
             dms = degrees + " " + minutes + " " + seconds;
         }
 
-        if(hemisphere == "latitude" && decimalDegrees > 0)
+        if(hemisphere == "lat" && decimalDegrees > 0)
         {
             dms = dms + " N";
         }
-        else if(hemisphere == "latitude" && decimalDegrees < 0)
+        else if(hemisphere == "lat" && decimalDegrees < 0)
         {
             dms = dms + " S";
         }
-        else if(hemisphere == "longitude" && decimalDegrees > 0)
+        else if(hemisphere == "lon" && decimalDegrees > 0)
         {
             dms = dms + " E";
         }
-        else if(hemisphere == "longitude" && decimalDegrees < 0)
+        else if(hemisphere == "lon" && decimalDegrees < 0)
         {
             dms = dms + " W";
         }
@@ -83,8 +83,444 @@ function CoordinateConversion()
         return (radians * (180 / Math.PI));
     };
 
+    // Decimal Degrees to Military Grid Reference System
+    this.ddToMgrs = function(lat, lon)
+    {
+        var K0 = 0.9996; // scale factor
+        var A1 = 6378137.0 * K0;
+        var B1 = 6356752.3142 * K0;
+        K0 = 0;
+        var N0 = 0;
+        var E0 = 500000;
 
-    // utm -- still need to clean up
+        var N1 = (A1 - B1) / (A1 + B1); // n
+        var N2 = N1 * N1;
+        var N3 = N2 * N1;
+        var E2 = ((A1 * A1) - (B1 * B1)) / (A1 * A1); // e^2
+
+        var latRad = lat * (Math.PI / 180.0);
+        var lonRad = lon * (Math.PI / 180.0);
+
+        var latRadSin = Math.sin(latRad);
+
+        var latRadCos = Math.cos(latRad);
+        var latRadCos2 = latRadCos * latRadCos;
+        var latRadCos3 = latRadCos2 * latRadCos;
+
+        var latRadTan = latRadSin / latRadCos;
+        var latRadTan2 = latRadTan * latRadTan;
+
+        var K3 = latRad - K0;
+        var K4 = latRad + K0;
+
+        var Merid = Math.floor((lon) / 6) * 6 + 3;
+        if ((lat >= 72) && (lon >= 0))
+        {
+            if (lon < 9)
+            {
+                Merid=3;
+            }
+
+            else if (lon<21)
+            {
+                Merid=15;
+            }
+
+            else if (lon<33)
+            {
+                Merid=27;
+            }
+
+            else if (lon<42)
+            {
+                Merid=39;
+            }
+        }
+
+        if((lat >= 56) && (lat < 64))
+        {
+            if ((lon >= 3) && (lon < 12))
+            {
+                Merid=9;
+            }
+        }
+
+        var L0 = Merid * (Math.PI / 180.0); // Long of True Origin (3,9,15 etc)
+
+        // Arc of Meridian
+        var J3 = K3 *(1 + N1 + 1.25 * (N2 + N3));
+        var J4 = Math.sin(K3) * Math.cos(K4) * (3 * (N1 + N2 + 0.875 * N3));
+        var J5 = Math.sin(2 * K3) * Math.cos(2 * K4) * (1.875 * (N2 + N3));
+        var J6 = Math.sin(3 * K3) * Math.cos(3 * K4) * 35 / 24 * N3;
+        var M = (J3 - J4 + J5 - J6) * B1;
+
+        var Temp = 1 - E2 * latRadSin * latRadSin;
+        var V = A1 / Math.sqrt(Temp);
+        var R = V * (1 - E2) / Temp;
+        var H2 = V / R - 1.0;
+
+        var P = lonRad - L0;
+        var P2 = P * P;
+        var P4 = P2 * P2;
+        J3 = M + N0;
+        J4 = V / 2 * latRadSin * latRadCos;
+        J5 = V / 24 * latRadSin * (latRadCos3) * (5 - (latRadTan2) + 9 * H2);
+        J6 = V / 720 * latRadSin * latRadCos3 * latRadCos2 * (61 - 58 * (latRadTan2) + latRadTan2 * latRadTan2);
+        var North = J3 + P2 * J4 + P4 * J5 + P4* P2 * J6;
+
+        var Area = "UTM2";
+        var South = (lat < 0);
+
+        if (((Area=='UTM1') || (Area=='UTM2')) && South)
+        {
+            North = North + 10000000.0; // UTM S hemisphere
+        }
+
+        var J7 = V * latRadCos;
+        var J8 = V / 6 * latRadCos3 * (V / R - latRadTan2);
+        var J9 = V / 120 * latRadCos3 * latRadCos2;
+        J9 = J9 * (5 - 18 * latRadTan2 + latRadTan2 * latRadTan2 + 14 * H2 - 58 * latRadTan2 * H2);
+
+        var East = E0 + P * J7 + P2 * P * J8 + P4 * P * J9;
+        var IEast = Math.round(East);
+        var INorth = Math.round(North);
+        var EastStr = '' + Math.abs(IEast);
+        var NorthStr = '' + Math.abs(INorth);
+
+        while (EastStr.length<7)
+        {
+            EastStr = '0' + EastStr;
+        }
+
+        while (NorthStr.length<7)
+        {
+            NorthStr = '0' + NorthStr;
+        }
+
+        var GR100km = eval(EastStr.substring(1,2) + NorthStr.substring(1, 2));
+        var GRremainder = EastStr.substring(2,7) + '' + NorthStr.substring(2, 7);
+
+        var LonZone = (Merid - 3) / 6 + 31;
+
+        var GR;
+
+        if (LonZone % 1 != 0)
+        {
+            GR = 'non-UTM central meridian';
+        }
+
+        else
+        {
+            if (IEast < 100000 || lat < -80 || IEast > 899999 || lat >= 84)
+            {
+                GR = 'outside UTM grid area';
+            }
+
+            else
+            {
+                var Letters = 'ABCDEFGHJKLMNPQRSTUVWXYZ'
+                var Pos = Math.round(lat / 8 - 0.5) + 10 + 2;
+                var LatZone = Letters.substring(Pos, Pos + 1);
+
+                if (LatZone > 'X')
+                {
+                    LatZone = 'X';
+                }
+
+                Pos = Math.round(Math.abs(INorth) / 100000 - 0.5);
+
+                while (Pos > 19)
+                {
+                   Pos = Pos - 20;
+                }
+
+                if (LonZone % 2 == 0)
+                {
+                    Pos = Pos + 5;
+                    if (Pos>19)
+                    {
+                        Pos = Pos - 20;
+                    }
+                }
+
+                var N100km = Letters.substring(Pos, Pos + 1);
+                Pos = GR100km / 10 - 1;
+                P = LonZone;
+                while (P > 3)
+                {
+                    P = P - 3;
+                }
+
+                Pos = Pos + ((P - 1) * 8);
+                var E100km = Letters.substring(Pos, Pos + 1);
+                GR = LonZone + "" + LatZone + "" + E100km + "" + N100km + "" + GRremainder + "";
+            }
+        }
+        return(GR);
+    };
+
+    this.mgrsToUtm = function(mgrsString)
+    {
+        var mgrsRegExp = /^(\d{1,2})([C-X])([A-Z])([A-Z])(\d{0,5})(\d{0,5})?/
+
+        if (mgrsString.match(mgrsRegExp))
+        {
+            var zone = RegExp.$1;
+            var zdl = RegExp.$2;
+            var c1 = RegExp.$3;
+            var c2 = RegExp.$4;
+            var E = RegExp.$5;
+            var N = RegExp.$6;
+
+            var u={};
+            var ok=MGRStoUTM(zone,zdl,c1,c2,E,N,u);
+
+            var northing = null;
+
+            if(u.N<0)
+            {
+                northing = u.N+10000000;
+            }
+            else
+            {
+                northing = u.N;
+            }
+            var s=(u.N<0)?"S":"N";
+
+            if(u.N<0)
+            {
+                u.N+=10000000;
+            }
+
+            latlon = new Array(2);
+            var x, y, southhemi;
+
+
+            x = u.E;
+
+            y = u.N;
+
+            if ((u.zone < 1) || (60 < u.zone))
+            {
+                alert ("The UTM zone you entered is out of range.  " +
+                       "Please enter a number in the range [1, 60].");
+                return false;
+            }
+
+            var mgrsRegExp = /^(\d{1,2})([a-zA-Z])([a-zA-Z])([a-zA-Z])(\d{10})?/
+
+            if($("centerMgrs").value.match(mgrsRegExp))
+            {
+                var lonZone = parseInt(RegExp.$1, 10);
+                var latZone = RegExp.$2;
+                var easting = RegExp.$3;
+                var northing = RegExp.$4;
+                var remainder = parseInt(RegExp.$5, 10);
+            }
+
+            if (latZone == "C" || latZone == "D" || latZone == "E" || latZone == "F" || latZone == "G" || latZone == "H"
+                    || latZone == "J" || latZone == "K" || latZone == "L" || latZone == "M")
+            {
+                southhemi = true;
+            }
+            else
+            {
+                southhemi = false;
+            }
+
+            UTMXYToLatLon (x, y, u.zone, southhemi, latlon);
+
+            var lat = ( RadToDeg (latlon[1]));
+            var lon = ( RadToDeg (latlon[0]));
+
+            return lon + " " + lat;
+        }
+
+        else
+        {
+            alert("Error: Not a valid MGRS String.");
+        }
+    };
+
+    var UTMzdlChars="CDEFGHJKLMNPQRSTUVWXX";
+
+    function UTMzdl(latDeg)
+    {
+        if(-80<=latDeg&&latDeg<=84)
+            return UTMzdlChars.charAt(Math.floor((latDeg+80)/8));
+        else
+        {
+            alert("No zdl: UTM is not valid for Lat "+latDeg);  //Not normally reached
+            return "";
+        }
+    }
+
+    function UTMNtoZDL(N)
+    {
+        var latDeg=N*82.82/(92*100000);
+        //alert("latdeg="+latDeg);
+        return UTMzdl(latDeg);
+    }
+
+    function ZoneLatToN(d,E)
+    {
+        var c= [[ 0,      0.000,833978.557,   0.000,0.0000000000],
+                [ 8, 884297.851,830743.842,1205.908,0.0072920001],
+                [16,1768935.376,821099.997,2318.642,0.0144411176],
+                [24,2654226.538,805227.189,3252.171,0.0213074192],
+                [32,3540435.693,783423.227,3934.216,0.0277567819],
+                [40,4427757.219,756099.648,4311.838,0.0336635858],
+                [48,5316300.224,723775.915,4355.565,0.0389131714],
+                [56,6206079.587,687071.439,4061.740,0.0434040145],
+                [64,7097014.163,646695.227,3452.887,0.0470495860],
+                [72,7988932.503,603433.054,2576.040,0.0497798833],
+                [80,8881585.816,558132.215,1499.140,0.0515426300],
+                [84,9328093.831,534994.655, 911.352,0.0520499036]];    //    special value for N Hemisphere
+
+        var d1=(d==84)?11:Math.abs(d)/8;
+
+        var N0=c[d1][1];
+        var E1=c[d1][2];
+        var k =c[d1][4];
+
+        var E10=E1-500000;
+
+        var x=(E-500000.)/E10;
+
+        var N=N0+k*x*(E-500000.)/(1+Math.sqrt(1-k*k*x*x));
+
+        return(d>0)?N:-N;
+    }
+
+    function UTMtoZDL(E,N)
+    {
+        var d;
+
+        if(N<=ZoneLatToN(84,E))
+        {
+            for(d=72;d>=-72;d-=8)
+            {
+                if(ZoneLatToN(d,E)<N)return UTMzdl(d+4);
+            }
+        }
+
+        alert("Invalid Northing: cannot compute ZDL");
+
+        return "";
+    }
+
+    function MGRSdigits(EorN,u,n)
+    {
+        var v=(EorN+1e7+1e-4)/10000000+"0000000000000000";
+        u.x100=Number(v.substr(2,2));
+        u.r100=v.substr(4,n);
+        //alert(v+"\n"+u.x100+"\n"+u.r100);
+    }
+
+    var MGRSchars="ABCDEFGHJKLMNPQRSTUVWXYZ";
+
+    function MGRSletters(zone,E100,N100,u)
+    {
+        //alert("Zone "+zone+"\nE100="+E100+"\nN100="+N100);
+
+        var j=E100-1;
+        var e8=8*(zone-1)+j;
+        u.c1=MGRSchars.charAt(e8%24);
+        u.c2=MGRSchars.charAt((N100+100+((zone%2)?0:5))%20);    //NB advance 2nd letter by 5 for odd zones
+    }
+
+    function UTMtoMGRS(zone,E,N,d,u)
+    {
+        if(zone<1||zone>60||Math.round(zone)!=zone)
+        {
+            alert("Invalid Zone");
+            return false;
+        }
+
+        u.zone=zone;
+
+        var zdl=UTMtoZDL(E,N);
+
+        if(zdl.length!=1)
+        {
+            //alert("Invalid UTM");
+            return false;
+        }
+
+        u.zdl=zdl;
+
+        var e={},n={};
+
+        MGRSdigits(E,e,d);
+        MGRSdigits(N,n,d);
+
+        var E100=e.x100,N100=n.x100;
+
+        MGRSletters(zone,E100,N100,u);
+
+        u.E=e.r100;
+        u.N=n.r100;
+
+        return true;
+    }
+
+    function zdlMedianLat(zdl)
+    {
+        if(zdl=="X")
+        {
+            return 78;            //not 76; X is 72 to 84
+        }
+        var i=UTMzdlChars.indexOf(zdl);
+        if(i<0)
+        {
+            alert('Invalid zone designation letter "'+zdl+'"');
+            quit();
+        }
+        return -76+8*i
+    }
+
+    function MGRStoUTM(zone,zdl,c1,c2,er,nr,u)
+    {
+        //alert("MGRStoUTM "+c1+" "+c2+" "+er+" "+nr);
+
+        if(zone<1||zone>60||Math.round(zone)!=zone)
+        {
+            alert("Invalid Zone");
+            return false;
+        }
+
+        u.zone=zone;
+
+        var n1=MGRSchars.indexOf(c1);
+        var n2=MGRSchars.indexOf(c2);
+
+        if(n1<0||n2<0)
+        {
+            alert("Invalid MGRS square characters");
+            return false;
+        }
+
+        var E0=1+n1%8;
+        var N0=(20+n2-((zone%2)?0:5))%20;
+
+        var approxN=zdlMedianLat(zdl)*100/90; // approx median northing of zdl in units of 100km
+
+        N0+=Math.round((approxN-N0)/20)*20;   // add a multiple of 2000km to get the MGRS square closest
+                                              // to approxN (letters repeat every 20*100km=2000km)
+
+        d=er.length;
+
+        if(nr.length!=d)
+        {
+            alert("MGRS Easting and Northing must have\nthe same number of digits");
+            return false;
+        }
+
+        u.E=E0*100000+Number(er)*Math.pow(10,5-d);
+        u.N=N0*100000+Number(nr)*Math.pow(10,5-d);
+
+        return true;
+    }
 
     var pi = 3.14159265358979;
 
@@ -98,6 +534,11 @@ function CoordinateConversion()
     function DegToRad (deg)
     {
         return (deg / 180.0 * pi)
+    }
+
+    function RadToDeg (rad)
+    {
+        return (rad / pi * 180.0)
     }
 
     function ArcLengthOfMeridian (phi)
@@ -127,21 +568,21 @@ function CoordinateConversion()
         /* Precalculate epsilon */
         epsilon = (315.0 * Math.pow (n, 4.0) / 512.0);
 
-    /* Now calculate the sum of the series and return */
-    result = alpha
-        * (phi + (beta * Math.sin (2.0 * phi))
+        /* Now calculate the sum of the series and return */
+        result = alpha
+            * (phi + (beta * Math.sin (2.0 * phi))
             + (gamma * Math.sin (4.0 * phi))
             + (delta * Math.sin (6.0 * phi))
             + (epsilon * Math.sin (8.0 * phi)));
 
-    return result;
+        return result;
     }
 
     function UTMCentralMeridian (zone)
     {
         var cmeridian;
 
-        cmeridian = DegToRad(-183.0 + (zone * 6.0));
+        cmeridian = DegToRad (-183.0 + (zone * 6.0));
 
         return cmeridian;
     }
@@ -240,7 +681,7 @@ function CoordinateConversion()
             + (t / 720.0 * N * Math.pow (Math.cos (phi), 6.0) * l6coef * Math.pow (l, 6.0))
             + (t / 40320.0 * N * Math.pow (Math.cos (phi), 8.0) * l8coef * Math.pow (l, 8.0));
 
-        return;
+        return true;
     }
 
     function MapXYToLatLon (x, y, lambda0, philambda)
@@ -303,12 +744,12 @@ function CoordinateConversion()
         x3poly = -1.0 - 2 * tf2 - nuf2;
 
         x4poly = 5.0 + 3.0 * tf2 + 6.0 * nuf2 - 6.0 * tf2 * nuf2
-        	- 3.0 * (nuf2 *nuf2) - 9.0 * tf2 * (nuf2 * nuf2);
+            - 3.0 * (nuf2 *nuf2) - 9.0 * tf2 * (nuf2 * nuf2);
 
         x5poly = 5.0 + 28.0 * tf2 + 24.0 * tf4 + 6.0 * nuf2 + 8.0 * tf2 * nuf2;
 
         x6poly = -61.0 - 90.0 * tf2 - 45.0 * tf4 - 107.0 * nuf2
-        	+ 162.0 * tf2 * nuf2;
+            + 162.0 * tf2 * nuf2;
 
         x7poly = -61.0 - 662.0 * tf2 - 1320.0 * tf4 - 720.0 * (tf4 * tf2);
 
@@ -316,17 +757,17 @@ function CoordinateConversion()
 
         /* Calculate latitude */
         philambda[0] = phif + x2frac * x2poly * (x * x)
-        	+ x4frac * x4poly * Math.pow (x, 4.0)
-        	+ x6frac * x6poly * Math.pow (x, 6.0)
-        	+ x8frac * x8poly * Math.pow (x, 8.0);
+            + x4frac * x4poly * Math.pow (x, 4.0)
+            + x6frac * x6poly * Math.pow (x, 6.0)
+            + x8frac * x8poly * Math.pow (x, 8.0);
 
         /* Calculate longitude */
         philambda[1] = lambda0 + x1frac * x
-        	+ x3frac * x3poly * Math.pow (x, 3.0)
-        	+ x5frac * x5poly * Math.pow (x, 5.0)
-        	+ x7frac * x7poly * Math.pow (x, 7.0);
+            + x3frac * x3poly * Math.pow (x, 3.0)
+            + x5frac * x5poly * Math.pow (x, 5.0)
+            + x7frac * x7poly * Math.pow (x, 7.0);
 
-        return;
+        return true;
     }
 
     function LatLonToUTMXY (lat, lon, zone, xy)
@@ -358,23 +799,6 @@ function CoordinateConversion()
         cmeridian = UTMCentralMeridian (zone);
         MapXYToLatLon (x, y, cmeridian, latlon);
 
-        return;
+        return true;
     }
-
-    this.getUtm = function(latitude, longitude)
-    {
-        var xy = new Array(2);
-
-        // Compute the UTM zone.
-        zone = Math.floor ((longitude + 180.0) / 6) + 1;
-
-        zone = LatLonToUTMXY (this.degToRad (latitude), this.degToRad (longitude), zone, xy);
-
-        /* Set the output controls.  */
-        var foo = xy[0];
-
-        var foo2 = xy[1];
-  
-        return "Easting: " + foo + " Northing: " + foo2 + " Zone " + zone;
-    };
 }
