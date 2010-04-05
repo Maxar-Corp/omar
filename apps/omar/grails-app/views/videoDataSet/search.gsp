@@ -104,7 +104,7 @@ var mapWidget = new MapWidget();
       <a href="javascript:mapWidget.updateFootprints();">Update Footprints</a>
     </span>
     <span class="menuButton">
-      Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS']}" onChange="mapWidget.setTextFields()"/>
+      Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS', 'MGRS']}" onChange="mapWidget.setTextFields()"/>
     </span>
   </div>
   <div class="body">
@@ -120,7 +120,7 @@ var mapWidget = new MapWidget();
           <tr>
             <td width=200><div id="ddCoordinates"></div></td>
             <td width=200><div id="dmsCoordinates"></div></td>
-            <td width=200><div id="utmCoordinates"></div></td>
+            <td width=200><div id="mgrsCoordinates"></div></td>
           </tr>
         </table>
       </div>
@@ -143,7 +143,13 @@ var mapWidget = new MapWidget();
             <label for='centerLon'>Lon:</label><br/>
           </li>
           <li>
-            <g:textField name="centerLon" value="${queryParams?.centerLon}"/>
+            <g:textField name="centerLon" value="${queryParams?.centerLon}"/><br/>&nbsp;<br/>
+          </li>
+          <li>
+            <label for='centerMgrs'>MGRS:</label><br/>
+          </li>
+          <li>
+            <g:textField name="centerMgrs" value=""/>
           </li>
           <li><br/></li>
           <li>
@@ -202,7 +208,19 @@ var mapWidget = new MapWidget();
             <label for='aoiMaxLon'>East Lon:</label>
           </li>
           <li>
-            <input type="text" id="aoiMaxLon" name="aoiMaxLon" value="${fieldValue(bean: queryParams, field: 'aoiMaxLon')}"/>
+            <input type="text" id="aoiMaxLon" name="aoiMaxLon" value="${fieldValue(bean: queryParams, field: 'aoiMaxLon')}"/><br/>&nbsp;<br/>
+          </li>
+          <li>
+            <label for='aoiMgrsNe'>MGRS NE:</label>
+          </li>
+          <li>
+            <input type="text" id="aoiMgrsNe" name="aoiMgrsNe" value=""/>
+          </li>
+          <li>
+            <label for='aoiMgrsSw'>MGRS SW:</label>
+          </li>
+          <li>
+            <input type="text" id="aoiMgrsSw" name="aoiMgrsSw" value=""/>
           </li>
           <li><br/></li>
           <li>
