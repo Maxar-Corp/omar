@@ -61,7 +61,6 @@
   </style>
 
   <openlayers:loadJavascript/>
-
   <g:javascript src="coordinateConversion.js"/>
 </head>
 <body onload="init();" onresize="changeMapSize();">
@@ -116,18 +115,24 @@
   </g:if>
   <div id="map"></div>
   <div class="niceBox">
-   <div class="niceBoxHd">Mouse Position:</div>
-   <div class="niceBoxBody">
-    <div id="ddCoordinates"></div>
-    <div id="dmsCoordinates"></div>
-   </div>
-  </div>
+        <div class="niceBoxHd">Mouse Position:</div>
+        <div class="niceBoxBody">
+          <table>
+            <tr>
+             <td width=200><div id="ddCoordinates"></div></td>
+             <td width=200><div id="dmsCoordinates"></div></td>
+             <td width=200><div id="mgrsCoordinates"></div></td>
+            </tr>
+          </table>
+        </div>
+      </div>
 </div>
 <g:javascript>
   var map;
   var rasterLayers;
   var kmlLayers;
   var select;
+  var convert = new CoordinateConversion();
   
   function changeMapSize()
   {
@@ -188,15 +193,17 @@
     {
     var lonLat = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x , evt.xy.y) );
     var dmsOutput = document.getElementById('dmsCoordinates');
-
+    var mgrsOutput = document.getElementById('mgrsCoordinates');
 
     if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
     {
         dmsOutput.innerHTML = "<b>DMS:</b> ";
+        mgrsOutput.innerHTML = "<b>MGRS:</b> ";
     }
     else
     {
-        dmsOutput.innerHTML = "<b>DMS:</b> " + ddToDms(lonLat.lat, "latitude") + " " + ddToDms(lonLat.lon, "longitude");
+        dmsOutput.innerHTML = "<b>DMS:</b> " + convert.ddToDms(lonLat.lat, "latitude") + " " + convert.ddToDms(lonLat.lon, "longitude");
+        mgrsOutput.innerHTML = "<b>MGRS:</b> " + convert.ddToMgrs(lonLat.lat, lonLat.lon);
     }
 
     var latHem;
