@@ -72,14 +72,11 @@ var mapWidget = new MapWidget();
     mapWidget.setupMapWidget();
     setupBaseLayers();
     mapWidget.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
-      mapWidget.changeMapSize();
-      mapWidget.setupAoiLayer();
-      mapWidget.setupToolBar();
-      mapWidget.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
-      mapWidget.setupQueryFields("${queryParams.searchMethod}");
-      var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
-      var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
-      mapWidget.updateOmarFilters($("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value, $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value, numberOfNames, numberOfValues);
+    mapWidget.changeMapSize();
+    mapWidget.setupAoiLayer();
+    mapWidget.setupToolBar();
+    mapWidget.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
+    mapWidget.setupQueryFields("${queryParams.searchMethod}");
 
     var minLon = ${queryParams?.aoiMinLon ?: 'null'};
     var minLat = ${queryParams?.aoiMinLat ?: 'null'};
@@ -90,7 +87,22 @@ var mapWidget = new MapWidget();
     {
       mapWidget.initAOI(minLon, minLat, maxLon, maxLat);
     }
+
+    updateOmarFilters();
   }
+
+  function updateOmarFilters()
+  {
+    var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
+    var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
+
+    mapWidget.updateOmarFilters(
+        $("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value,
+        $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value,
+        numberOfNames, numberOfValues
+        );
+  }
+
   </g:javascript>
 
 </head>
@@ -110,7 +122,7 @@ var mapWidget = new MapWidget();
       <a href="javascript:mapWidget.generateKML();">KML</a>
     </span>
     <span class="menuButton">
-      <a href="javascript:mapWidget.updateFootprints( );">Update Footprints</a>
+      <a href="javascript:updateOmarFilters( );">Update Footprints</a>
     </span>
 
     <span class="menuButton">
@@ -171,7 +183,7 @@ var mapWidget = new MapWidget();
             <label for='aoiRadius'>Radius in Meters:</label><br/>
           </li>
           <li>
-            <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="mapWidget.updateOmarFilters()"/>
+            <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters()"/>
           </li>
           <li><br/></li>
           <li>
@@ -248,14 +260,14 @@ var mapWidget = new MapWidget();
             <label for='startDate'>Start Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="startDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.startDate}" onChange="raster.updateOmarFilters()"/>
+            <richui:dateChooser name="startDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.startDate}" onChange="updateOmarFilters()"/>
             <g:hiddenField name="startDate_timezone" value="UTC"/>
           </li>
           <li>
             <label for='endDate'>End Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="endDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.endDate}" onChange="raster.updateOmarFilters()"/>
+            <richui:dateChooser name="endDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.endDate}" onChange="updateOmarFilters()"/>
             <g:hiddenField name="endDate_timezone" value="UTC"/>
           </li>
         </ol>
@@ -275,7 +287,7 @@ var mapWidget = new MapWidget();
                     optionKey="name" optionValue="description"/>
             </li>
             <li>
-              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="mapWidget.updateOmarFilters()"/>
+              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
             </li>
           </g:each>
         </ol>
