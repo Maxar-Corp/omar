@@ -61,17 +61,17 @@ var mapWidget = new MapWidget();
           var baseLayer = null;
 
           <g:each var="foo" in="${baseWMS}">
-            baseLayer = new OpenLayers.Layer.WMS("${foo.title}", "${foo.url}",
+    baseLayer = new OpenLayers.Layer.WMS("${foo.title}", "${foo.url}",
             {layers: "${foo.layers}", format: "${foo.format}"},
             {isBaseLayer: true, buffer: 0,transitionEffect: "resize"});
 
             mapWidget.setupBaseLayers(baseLayer);
-          </g:each>
-      };
+  </g:each>
+    };
 
-      mapWidget.setupMapWidget();
-      setupBaseLayers();
-      mapWidget.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
+    mapWidget.setupMapWidget();
+    setupBaseLayers();
+    mapWidget.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
       mapWidget.changeMapSize();
       mapWidget.setupAoiLayer();
       mapWidget.setupToolBar();
@@ -80,6 +80,16 @@ var mapWidget = new MapWidget();
       var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
       var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
       mapWidget.updateOmarFilters($("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value, $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value, numberOfNames, numberOfValues);
+
+    var minLon = ${queryParams?.aoiMinLon ?: 'null'};
+    var minLat = ${queryParams?.aoiMinLat ?: 'null'};
+    var maxLon = ${queryParams?.aoiMaxLon ?: 'null'};
+    var maxLat = ${queryParams?.aoiMaxLat ?: 'null'};
+
+    if ( minLon && minLat && maxLon && maxLat)
+    {
+      mapWidget.initAOI(minLon, minLat, maxLon, maxLat);
+    }
   }
   </g:javascript>
 
@@ -89,43 +99,43 @@ var mapWidget = new MapWidget();
   <img id="logo" src="${createLinkTo(dir: 'images', file: 'OMARLarge.png', absolute)}" alt="OMAR-2.0 Logo"/>
 </content>
 <content tag="main">
-    <div id="nav" class="nav">
-      <span class="menuButton">
-        <a class="home" href="${createLinkTo(dir: '')}">Home</a>
-      </span>
-      <span class="menuButton">
-        <a href="javascript:mapWidget.search();">Search</a>
-      </span>
-      <span class="menuButton">
-        <a href="javascript:mapWidget.generateKML();">KML</a>
-      </span>
-      <span class="menuButton">
-        <a href="javascript:mapWidget.updateFootprints( );">Update Footprints</a>
-      </span>
+  <div id="nav" class="nav">
+    <span class="menuButton">
+      <a class="home" href="${createLinkTo(dir: '')}">Home</a>
+    </span>
+    <span class="menuButton">
+      <a href="javascript:mapWidget.search();">Search</a>
+    </span>
+    <span class="menuButton">
+      <a href="javascript:mapWidget.generateKML();">KML</a>
+    </span>
+    <span class="menuButton">
+      <a href="javascript:mapWidget.updateFootprints( );">Update Footprints</a>
+    </span>
 
-      <span class="menuButton">
-        Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS', 'MGRS']}" onChange="mapWidget.setTextFields()"/>
-      </span>
-    </div>
-    <div class="body">
-      <h1 id="mapTitle">Search for Imagery:</h1>
-      <g:if test="${flash.message}">
-        <div class="message">${flash.message}</div>
-      </g:if>
-      <div id="map"></div>
-      <div class="niceBox">
-        <div class="niceBoxHd">Mouse Position:</div>
-        <div class="niceBoxBody">
-          <table>
-            <tr>
-             <td width=200><div id="ddCoordinates"></div></td>
-             <td width=200><div id="dmsCoordinates"></div></td>
-             <td width=200><div id="mgrsCoordinates"></div></td>
-            </tr>
-          </table>
-        </div>
+    <span class="menuButton">
+      Units: <g:select id="unitsMode" name="unitsMode" from="${['DD', 'DMS', 'MGRS']}" onChange="mapWidget.setTextFields()"/>
+    </span>
+  </div>
+  <div class="body">
+    <h1 id="mapTitle">Search for Imagery:</h1>
+    <g:if test="${flash.message}">
+      <div class="message">${flash.message}</div>
+    </g:if>
+    <div id="map"></div>
+    <div class="niceBox">
+      <div class="niceBoxHd">Mouse Position:</div>
+      <div class="niceBoxBody">
+        <table>
+          <tr>
+            <td width=200><div id="ddCoordinates"></div></td>
+            <td width=200><div id="dmsCoordinates"></div></td>
+            <td width=200><div id="mgrsCoordinates"></div></td>
+          </tr>
+        </table>
       </div>
     </div>
+  </div>
 </content>
 <content tag="search">
   <g:form name="searchForm">
