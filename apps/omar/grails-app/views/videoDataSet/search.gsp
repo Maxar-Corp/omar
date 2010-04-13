@@ -81,6 +81,16 @@ var mapWidget = new MapWidget();
       var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
       var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
       mapWidget.updateOmarFilters($("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value, $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value, numberOfNames, numberOfValues);
+
+    var minLon = ${queryParams?.aoiMinLon ?: 'null'};
+    var minLat = ${queryParams?.aoiMinLat ?: 'null'};
+    var maxLon = ${queryParams?.aoiMaxLon ?: 'null'};
+    var maxLat = ${queryParams?.aoiMaxLat ?: 'null'};
+
+    if ( minLon && minLat && maxLon && maxLat)
+    {
+      mapWidget.initAOI(minLon, minLat, maxLon, maxLat);
+    }    
   }
   </g:javascript>
 
