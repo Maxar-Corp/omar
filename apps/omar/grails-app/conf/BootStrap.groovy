@@ -20,8 +20,8 @@ class BootStrap
     joms.oms.Init.instance().initialize()
 
     // Fix for "no such property save"  bug in grails 1.1.x.   Should be fixed in 1.2.x
-    RasterDataSet.get(-1)
-    VideoDataSet.get(-1)
+    //RasterDataSet.get(-1)
+    //VideoDataSet.get(-1)
 
     def userRole = Role.findByAuthority("ROLE_USER")
 
