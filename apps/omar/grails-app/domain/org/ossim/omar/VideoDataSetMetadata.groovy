@@ -12,7 +12,7 @@ class VideoDataSetMetadata
   String otherTagsXml
 
   static transients = ["otherTagsMap"]
-  
+
   Map<String, String> otherTagsMap = [:]
 
   VideoDataSet videoDataSet
@@ -31,5 +31,79 @@ class VideoDataSetMetadata
     startDate(nullable: true)
     endDate(nullable: true)
     groundGeom(nullable: true)
+  }
+
+  static initVideoDataSetMetadata(def metadataNode, def videoDataSet)
+  {
+    if ( !videoDataSet.metadata )
+    {
+      videoDataSet.metadata = new VideoDataSetMetadata()
+      videoDataSet.metadata.videoDataSet = videoDataSet
+    }
+
+    metadataNode.children().each {tagNode ->
+
+      if ( tagNode.children().size() > 0 )
+      {
+        def name = tagNode.name().toString().toUpperCase()
+
+        switch ( name )
+        {
+          default:
+            initVideoDataSetMetadata(tagNode, videoDataSet)
+        }
+      }
+      else
+      {
+        def name = tagNode.name().toString().trim()
+        def value = tagNode.text().toString().trim()
+
+        if ( name && value )
+        {
+          switch ( name.toLowerCase() )
+          {
+            default:
+              videoDataSet.metadata.otherTagsMap[name] = value
+          }
+        }
+      }
+    }
+  }
+
+  static def initVideoDataSetOtherTagsXml(VideoDataSetMetadata videoDataSetMetadata)
+  {
+    if ( videoDataSetMetadata )
+    {
+      def builder = new groovy.xml.StreamingMarkupBuilder().bind {
+        metadata {
+          videoDataSetMetadata.otherTagsMap.each {k, v ->
+            "${k}"(v)
+          }
+        }
+      }
+
+      videoDataSetMetadata.otherTagsXml = builder.toString()
+    }
+  }
+
+  static VideoDataSetMetadata initVideoDataSetMetadata(def videoDataSetNode)
+  {
+    VideoDataSetMetadata videoDataSetMetadata = new VideoDataSetMetadata()
+
+    def start = videoDataSetNode?.TimeSpan?.begin?.toString()
+    def end = videoDataSetNode?.TimeSpan?.end?.toString()
+
+    videoDataSetMetadata.startDate = DateUtil.parseDate(start)
+    videoDataSetMetadata.endDate = DateUtil.parseDate(end)
+
+    def srs = videoDataSetNode?.groundGeom?.@srs?.toString() - "epsg:"
+    def wkt = videoDataSetNode?.groundGeom
+
+    if ( srs && wkt )
+    {
+      videoDataSetMetadata.groundGeom = Geometry.fromString("SRID=${srs};${wkt}")
+    }
+
+    return videoDataSetMetadata
   }
 }

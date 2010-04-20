@@ -8,4 +8,27 @@ class RasterDataSet
 
   static mapping = {
   }
+
+  static RasterDataSet initRasterDataSet(rasterDataSetNode, rasterDataSet = null)
+  {
+    rasterDataSet = rasterDataSet ?: new RasterDataSet()
+
+    rasterDataSetNode.fileObjects.RasterFile.each {rasterFileNode ->
+      RasterFile rasterFile = RasterFile.initRasterFile(rasterFileNode)
+
+      rasterDataSet.addToFileObjects(rasterFile)
+    }
+
+    rasterDataSetNode.rasterEntries.RasterEntry.each {rasterEntryNode ->
+      RasterEntry rasterEntry = RasterEntry.initRasterEntry(rasterEntryNode)
+
+      if ( rasterEntry.metadata.groundGeom )
+      {
+        rasterDataSet.addToRasterEntries(rasterEntry)
+      }
+    }
+
+
+    return rasterDataSet
+  }
 }

@@ -24,4 +24,15 @@ class VideoFile
       videoDataSet index: 'video_file_vds_type'
     }
   }
+
+
+  static VideoFile initVideoFile(def videoFileNode)
+  {
+    def videoFile = new VideoFile()
+
+    videoFile.name = videoFileNode.name
+    videoFile.format = videoFileNode.@format
+    videoFile.type = videoFileNode.@type
+    return videoFile
+  }
 }

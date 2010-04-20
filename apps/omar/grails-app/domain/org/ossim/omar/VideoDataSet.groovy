@@ -42,4 +42,26 @@ class VideoDataSet
 
     return mainFile
   }
+
+  static VideoDataSet initVideoDataSet(def videoDataSetNode)
+  {
+    def videoDataSet = new VideoDataSet()
+
+    videoDataSetNode.fileObjects.VideoFile.each {videoFileNode ->
+      VideoFile videoFile = VideoFile.initVideoFile(videoFileNode)
+
+      videoDataSet.addToFileObjects(videoFile)
+    }
+
+    videoDataSet.width = videoDataSetNode?.width?.toLong()
+    videoDataSet.height = videoDataSetNode?.height?.toLong()
+
+    videoDataSet.metadata = VideoDataSetMetadata.initVideoDataSetMetadata(videoDataSetNode)
+    videoDataSet.metadata.videoDataSet = videoDataSet
+
+    VideoDataSetMetadata.initVideoDataSetMetadata(videoDataSetNode.metadata, videoDataSet)
+    VideoDataSetMetadata.initVideoDataSetOtherTagsXml(videoDataSet.metadata)
+    
+    return videoDataSet
+  }
 }

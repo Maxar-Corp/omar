@@ -34,7 +34,7 @@ class DateUtil
     return date
   }
 
-  public Date parseDate(String dateString)
+  public static Date parseDate(String dateString)
   {
     TimeZone utc = null
     SimpleDateFormat sdf = null
@@ -217,7 +217,8 @@ class DateUtil
     switch ( dateString )
     {
       case ~/[0-9]{4}[0-9]{2}[0-9]{2}/:
-        format = "yyyyMMdd";        break
+        format = "yyyyMMdd";
+        break
       case ~/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}[zZ]/:
         format = "yyyy-MM-dd'T'hh:mm:ss'Z'"
         timeZone = TimeZone.getTimeZone("UTC")

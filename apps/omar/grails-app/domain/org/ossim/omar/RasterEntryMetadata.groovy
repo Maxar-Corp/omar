@@ -18,11 +18,10 @@ class RasterEntryMetadata
   String title
   String organization
   String description
-  Double niirs                         
+  Double niirs
 
   Geometry groundGeom
   Date acquisitionDate
-  
 
   // Just for testing...
   String fileType
@@ -81,8 +80,156 @@ class RasterEntryMetadata
 
     groundGeom(nullable: false)
     acquisitionDate(nullable: true)
-    
+
 
     rasterEntry(nullable: true)
+  }
+
+  static initRasterEntryMetadata(def metadataNode, def rasterEntry)
+  {
+    if ( !rasterEntry.metadata )
+    {
+      rasterEntry.metadata = new RasterEntryMetadata()
+      rasterEntry.metadata.rasterEntry = rasterEntry
+    }
+
+    metadataNode.children().each {tagNode ->
+
+      if ( tagNode.children().size() > 0 )
+      {
+        def name = tagNode.name().toString().toUpperCase()
+
+        switch ( name )
+        {
+//          case "DTED_ACC_RECORD":
+//          case "ICHIPB":
+//          case "PIAIMC":
+//          case "RPC00B":
+//          case "STDIDC":
+//          case "USE00A":
+//            break
+          default:
+            initRasterEntryMetadata(tagNode, rasterEntry)
+        }
+      }
+      else
+      {
+        def name = tagNode.name().toString().trim()
+        def value = tagNode.text().toString().trim()
+
+// Need to add following check in there
+//        if ( !key.startsWith("LINE_NUM") &&
+//            !key.startsWith("LINE_DEN") &&
+//            !key.startsWith("SAMP_NUM") &&
+//            !key.startsWith("SAMP_DEN") &&
+//            !key.startsWith("SECONDARY_BE") &&
+//            !key.equals("ENABLED") &&
+//            !key.equals("ENABLE_CACHE")
+
+
+        if ( name && value )
+        {
+          switch ( name.toLowerCase() )
+          {
+            case "imageid":
+            case "iid2":
+              rasterEntry.metadata.imageId = value
+              break;
+            case "targetid":
+            case "tgtid":
+              rasterEntry.metadata.targetId = value
+              break;
+            case "productid":
+              rasterEntry.metadata.productId = value
+              break;
+            case "sensorid":
+              rasterEntry.metadata.sensorId = value
+              break;
+            case "missionid":
+            case "isorce":
+              rasterEntry.metadata.missionId = value
+              break;
+            case "imagecategory":
+            case "icat":
+              rasterEntry.metadata.imageCategory = value
+              break;
+            case "azimuthangle":
+            case "angletonorth":
+              rasterEntry.metadata.azimuthAngle = value as Double
+              break;
+            case "grazingangle":
+              rasterEntry.metadata.grazingAngle = value as Double
+              break;
+            case "oblang":
+              rasterEntry.metadata.grazingAngle = 90 - (value as Double)
+              break;
+
+            case "securityclassification":
+            case "isclas":
+              rasterEntry.metadata.securityClassification = value
+              break;
+            case "title":
+            case "iid2":
+            case "ititle":
+              rasterEntry.metadata.title = value
+              break;
+            case "organization":
+            case "oname":
+              rasterEntry.metadata.organization = value
+              break;
+            case "description":
+              rasterEntry.metadata.description = value
+              break;
+            case "niirs":
+              rasterEntry.metadata.niirs = value as Double
+              break;
+
+          // Just for testing
+            case "filetype":
+            case "file_type":
+              rasterEntry.metadata.fileType = value
+              break
+
+            case "classname":
+            case "class_name":
+              rasterEntry.metadata.className = value
+              break
+
+            default:
+              rasterEntry.metadata.otherTagsMap[name] = value
+          }
+        }
+      }
+    }
+
+    //println "RASTERENTRY METADATA = ${rasterEntry.metadata}"
+
+    if ( !rasterEntry.metadata.imageId )
+    {
+      rasterEntry.metadata.imageId = System.currentTimeMillis() as String
+    }
+  }
+
+  static initRasterEntryOtherTagsXml(RasterEntryMetadata rasterEntryMetadata)
+  {
+    if ( rasterEntryMetadata )
+    {
+      def builder = new groovy.xml.StreamingMarkupBuilder().bind {
+        metadata {
+          rasterEntryMetadata.otherTagsMap.each {k, v ->
+            "${k}"(v)
+          }
+        }
+      }
+
+      rasterEntryMetadata.otherTagsXml = builder.toString()
+    }
+  }
+
+  static Date initAcquisitionDate(rasterEntryNode)
+  {
+    def when = rasterEntryNode?.TimeStamp?.when
+
+    return DateUtil.parseDate(when?.toString())
   }
 }
