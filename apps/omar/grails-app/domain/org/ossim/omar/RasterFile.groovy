@@ -24,4 +24,14 @@ class RasterFile
       rasterDataSet index: 'raster_file_rds_type_idx'
     }
   }
+  
+  static RasterFile initRasterFile(def rasterFileNode)
+  {
+    def rasterFile = new RasterFile()
+
+    rasterFile.name = rasterFileNode.name
+    rasterFile.format = rasterFileNode.@format
+    rasterFile.type = rasterFileNode.@type
+    return rasterFile
+  }
 }
