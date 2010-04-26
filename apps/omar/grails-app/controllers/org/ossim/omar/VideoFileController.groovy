@@ -1,5 +1,8 @@
 package org.ossim.omar
 
+import grails.converters.XML
+import grails.converters.JSON
+
 class VideoFileController
 {
 
@@ -10,14 +13,14 @@ class VideoFileController
 
   def list = {
     if ( !params.max )
-      params.max = 10
+    params.max = 10
 
     def videoFileList = null
 
     if ( params.videoDataSetId )
     {
       def videoDataSet = VideoDataSet.get(params.videoDataSetId)
-      
+
       videoFileList = VideoFile.createCriteria().list(params) {
         eq("videoDataSet", videoDataSet)
       }
@@ -27,7 +30,11 @@ class VideoFileController
       videoFileList = VideoFile.createCriteria().list(params) {}
     }
 
-    [videoFileList: videoFileList]
+    withFormat {
+      html { [videoFileList: videoFileList] }
+      xml { render videoFileList as XML }
+      json { render videoFileList as JSON }
+    }
   }
 
   def show = {
@@ -39,7 +46,13 @@ class VideoFileController
       redirect(action: list)
     }
     else
-    { return [videoFile: videoFile] }
+    {
+      withFormat {
+        html { [videoFile: videoFile] }
+        xml { render videoFile as XML }
+        xml { render videoFile as JSON }
+      }
+    }
   }
 
   def delete = {

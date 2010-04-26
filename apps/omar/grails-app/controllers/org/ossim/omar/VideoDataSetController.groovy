@@ -4,8 +4,9 @@ import org.springframework.beans.factory.InitializingBean
 import groovy.xml.StreamingMarkupBuilder
 
 import org.grails.plugins.springsecurity.service.AuthenticateService
+import grails.converters.JSON
+import grails.converters.deep.XML
 
-//import grails.converters.*
 
 class VideoDataSetController implements InitializingBean
 {
@@ -43,14 +44,12 @@ class VideoDataSetController implements InitializingBean
       videoDataSetList = VideoDataSet.createCriteria().list(params) {}
     }
 
-    [videoDataSetList: videoDataSetList]
-    /*
+    //[videoDataSetList: videoDataSetList]
     withFormat {
-      html { [ videoDataSetList: videoDataSetList ] }
+      html { [videoDataSetList: videoDataSetList] }
       xml { render videoDataSetList as XML }
       json { render videoDataSetList as JSON }
     }
-    */
   }
 
   def show = {
@@ -62,7 +61,13 @@ class VideoDataSetController implements InitializingBean
       redirect(action: list)
     }
     else
-    { return [videoDataSet: videoDataSet] }
+    {
+      withFormat {
+        html { [videoDataSet: videoDataSet] }
+        xml { render videoDataSet as XML }
+        json { render videoDataSet as JSON }
+      }
+    }
   }
 
   def delete = {
