@@ -181,8 +181,7 @@ class VideoDataSetQuery
   void caseInsensitiveBind(def params)
   {
     def keys = properties.keySet()
-    def tempParams = new CaseInsensitiveMap()
-    params.each { tempParams.put(it.key, it.value)}
+    def tempParams = new CaseInsensitiveMap(params)
 
     keys.each{
       def value = tempParams.get(it)
