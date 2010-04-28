@@ -1,5 +1,5 @@
 class OpenlayersGrailsPlugin {
-    def version = 0.9
+    def version = 0.10
     def dependsOn = [:]
 
     // TODO Fill in these fields
@@ -7,7 +7,7 @@ class OpenlayersGrailsPlugin {
     def authorEmail = "scott.bortman@gmail.com"
     def title = "OpenLayers"
     def description = '''\
-OpenLayers 2.8 bundle for use within Grails environment.
+OpenLayers 2.9 bundle for use within Grails environment.
 '''
 
     // URL to the plugin's documentation
