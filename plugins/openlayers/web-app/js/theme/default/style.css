@@ -1,5 +1,5 @@
 div.olMap {
-	z-index: 0;
+    z-index: 0;
     padding: 0px!important;
     margin: 0px!important;
     cursor: default;
@@ -30,12 +30,14 @@ div.olLayerDiv {
 }
 .olControlScale {
     right: 3px;
-    bottom: 0em;
+    bottom: 3em;
     display: block;
     position: absolute;
     font-size: smaller;
 }
 .olControlScaleLine {
+   display: block;
+   position: absolute;
    left: 10px;
    bottom: 15px;
    font-size: xx-small;
@@ -59,6 +61,15 @@ div.olLayerDiv {
     position: absolute;
     font-size: smaller;
 } 
+
+div.olControlMousePosition {
+    bottom: 0em;
+    right: 3px;
+    display: block;
+    position: absolute;
+    font-family: Arial;
+    font-size: smaller;
+}
 
 .olControlOverviewMapContainer {
     position: absolute;
@@ -205,12 +216,12 @@ div.olLayerDiv {
 .olControlEditingToolbar .olControlDrawFeaturePolygonItemActive { 
   background-position: -26px -23px ;                                                                   
 }
-.olControlSaveFeaturesItemActive { 
+div.olControlSaveFeaturesItemActive { 
     background-image: url(img/save_features_on.png);
     background-repeat: no-repeat;
     background-position: 0px 1px;
 }
-.olControlSaveFeaturesItemInactive { 
+div.olControlSaveFeaturesItemInactive { 
     background-image: url(img/save_features_off.png);
     background-repeat: no-repeat;
     background-position: 0px 1px;
@@ -313,6 +324,12 @@ div.olLayerDiv {
  -moz-user-select: none;
 }
 
+.olImageLoadError {
+    background-color: pink;
+    opacity: 0.5;
+    filter: alpha(opacity=50); /* IE */
+}
+
 /**
  * Cursor styles
  */
@@ -331,4 +348,50 @@ div.olLayerDiv {
 }
 .olControlDragFeatureActive.olControlDragFeatureOver.olDragDown {
     cursor: -moz-grabbing;
+}
+
+/**
+ * Layer switcher
+ */
+.olControlLayerSwitcher {
+    position: absolute;
+    top: 25px;
+    right: 0px;
+    width: 20em;
+    font-family: sans-serif;
+    font-weight: bold;
+    margin-top: 3px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+    font-size: smaller;
+    color: white;
+    background-color: transparent;
+}
+
+.olControlLayerSwitcher .layersDiv {
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    padding-right: 75px;
+    background-color: darkblue;
+    width: 100%;
+    height: 100%;
+}
+
+.olControlLayerSwitcher .layersDiv .baseLbl,
+.olControlLayerSwitcher .layersDiv .dataLbl {
+    margin-top: 3px;
+    margin-left: 3px;
+    margin-bottom: 3px;
+}
+
+.olControlLayerSwitcher .layersDiv .baseLayersDiv,
+.olControlLayerSwitcher .layersDiv .dataLayersDiv {
+    padding-left: 10px;
+}
+
+.olControlLayerSwitcher .maximizeDiv,
+.olControlLayerSwitcher .minimizeDiv {
+    top: 5px;
+    right: 0px;
 }
