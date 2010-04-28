@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage
 import java.awt.*;
 
 import javax.media.jai.JAI
+import org.apache.commons.collections.map.CaseInsensitiveMap
 
 class OgcController
 {
@@ -103,9 +104,14 @@ class OgcController
         if ( it == "Imagery" || it == "ImageData" )
         {
           def queryParams = new RasterEntryQuery()
-          //bindData(queryParams, tempParams)
+          //def tempParams = new CaseInsensitiveMap(params)
 
+
+
+          //bindData(queryParams, tempParams)
           queryParams.caseInsensitiveBind(params)
+
+          //println queryParams.toMap()
 
           if ( !startDate && !endDate )
           {
