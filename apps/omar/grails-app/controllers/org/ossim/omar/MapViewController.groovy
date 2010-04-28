@@ -235,4 +235,46 @@ class MapViewController implements InitializingBean
     baseWMS = grailsApplication.config.wms.base
     dataWMS = grailsApplication.config.wms.data.raster
   }
+
+  def iview = {
+    def rasterEntry = RasterEntry.get(params.id)
+
+    def inputFile = rasterEntry.mainFile.name
+    def width
+    def height
+
+    def mode = "OSSIM"
+
+    switch ( mode )
+    {
+      case "JAI":
+        def image = JAI.create("imageread", inputFile)
+        width = image.width
+        height = image.height
+        break
+
+      case "OSSIM":
+
+        width = rasterEntry?.width
+        height = rasterEntry?.height
+
+        break
+    }
+
+    //println "${[width: width, height: height, inputFile: inputFile, entry: rasterEntry.entryId]}"
+
+    def numRLevels = 1
+    def tileSize = 256
+
+    while ( width > tileSize )
+    {
+      width /= 2
+      height /= 2
+      numRLevels++
+    }
+
+
+    [width: rasterEntry?.width, height: rasterEntry?.height, numRLevels: numRLevels, rasterEntry: rasterEntry]
+    
+  }
 }
