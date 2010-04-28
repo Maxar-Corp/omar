@@ -4,10 +4,10 @@ import java.text.SimpleDateFormat
 
 class ISO8601DateParser
 {
-  static def convertStringToSimpleDate(String dateString, String pattern)
+  static Date convertStringToSimpleDate(String dateString, String pattern)
   {
     def simpleDateFormat = new SimpleDateFormat(pattern)
-    def result = (Date) null
+    Date result = null
 
     try
     {
@@ -20,7 +20,7 @@ class ISO8601DateParser
     }
     catch (java.lang.Exception e)
     {
-      result = (Date) null
+      result = null
     }
 
     return result
