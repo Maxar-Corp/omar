@@ -107,12 +107,12 @@ var mapWidget = new MapWidget();
 </head>
 <body onload="init( )" class="yui-skin-sam" onresize="changeMapSize( );">
 <content tag="banner">
-  <img id="logo" src="${createLinkTo(dir: 'images', file: 'OMARLarge.png', absolute)}" alt="OMAR-2.0 Logo"/>
+  <img id="logo" src="${resource(dir: 'images', file: 'OMARLarge.png')}" alt="OMAR-2.0 Logo"/>
 </content>
 <content tag="main">
   <div id="nav" class="nav">
     <span class="menuButton">
-      <a class="home" href="${createLinkTo(dir: '')}">Home</a>
+      <a class="home" href="${resource(dir: '')}">Home</a>
     </span>
     <span class="menuButton">
       <a href="javascript:mapWidget.search();">Search</a>

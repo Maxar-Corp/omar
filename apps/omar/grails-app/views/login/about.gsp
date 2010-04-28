@@ -12,7 +12,7 @@
   <body>
 
 <div align=center>
- <img id="logo" src="${createLinkTo(dir: 'images', file: 'OMAR_AboutHalf.png', absolute)}" alt="OMAR-2.0 Logo"/><br />
+ <img id="logo" src="${resource(dir: 'images', file: 'OMAR_AboutHalf.png')}" alt="OMAR-2.0 Logo"/><br />
 </div>
 
 <div align=center><h3>OMAR<br />
@@ -30,7 +30,7 @@
 </div>
 
 <div align=center>
- <img id="logo" src="${createLinkTo(dir: 'images', file: 'RBT.png', absolute)}" alt="OMAR-2.0 Logo"/><br />
+ <img id="logo" src="${resource(dir: 'images', file: 'RBT.png')}" alt="OMAR-2.0 Logo"/><br />
   <a href="http://www.radiantblue.com">Radiant Blue Technologies</a>
 </div>
 

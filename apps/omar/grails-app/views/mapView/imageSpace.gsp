@@ -10,7 +10,7 @@
 <html>
 <head>
   <title>OMAR Image Space Viewer</title>
-  <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>
+  <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
@@ -59,7 +59,7 @@
 </head>
 <body onload="init()" onresize="changeMapSize()">
 <div class="nav">
-  <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}">Home</a></span>
+  <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
   <span class="menuButton">
     <a href="${createLink(controller: "mapView", action: "index", params: [rasterEntryIds: rasterEntry?.id])}">
       Ground Space

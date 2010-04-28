@@ -1,13 +1,13 @@
 <html>
 <head>
   <title><g:layoutTitle default="Grails"/></title>
-  <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>
-  <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'omar-2.0.css')}"/>
+  <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
+  <link rel="stylesheet" href="${resource(dir: 'css', file: 'omar-2.0.css')}"/>
 
   <link rel="stylesheet" type="text/css"
-          href="${createLinkTo(dir: 'plugins/richui-0.7/js/yui/reset-fonts-grids',
+          href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids',
                   file: 'reset-fonts-grids.css')}"/>
-  <link rel="shortcut icon" href="${createLinkTo(dir: 'images', file: 'favicon.ico')}" type="image/x-icon"/>
+  <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon"/>
   <g:layoutHead/>
   <g:javascript library="application"/>
 </head>
@@ -15,7 +15,7 @@
 <div id="doc3" class="yui-t2">
   <div id="hd">
     <omar:securityClassificationBanner/>
-    <img id="logo" src="${createLinkTo(dir: 'images', file: 'OMARLarge.png', absolute)}" alt="OMAR-2.0 Logo"/>
+    <img id="logo" src="${resource(dir: 'images', file: 'OMARLarge.png')}" alt="OMAR-2.0 Logo"/>
   </div>
   <div id="bd">
     <div id="yui-main">

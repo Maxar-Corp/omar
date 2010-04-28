@@ -7,7 +7,7 @@
   </head>
   <body>
     <div class="nav">
-      <span class="menuButton"><a href="${createLinkTo(dir:'')}">Home</a></span>
+      <span class="menuButton"><a href="${resource(dir:'')}">Home</a></span>
     </div>
     <div class="body">
       <h1>Edit Profile</h1>

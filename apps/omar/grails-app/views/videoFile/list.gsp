@@ -6,7 +6,7 @@
 </head>
 <body>
 <div class="nav">
-  <span class="menuButton"><a class="home" href="${createLinkTo(dir: '')}">Home</a></span>
+  <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
   <g:ifAllGranted role="ROLE_ADMIN">
     <span class="menuButton"><g:link class="create" action="create">New VideoFile</g:link></span>
   </g:ifAllGranted>

@@ -361,6 +361,8 @@
     Dom.get( "map" ).style.height = mapHeight + "px";
 
     map.updateSize( );
+    alert( mapWidth + " " + mapHeight);
+
   }
 
 </g:javascript>
