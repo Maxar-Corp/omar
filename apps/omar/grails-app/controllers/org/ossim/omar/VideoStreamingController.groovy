@@ -84,7 +84,7 @@ class VideoStreamingController implements InitializingBean
       File mpegFile = videoDataSet.mainFile.name as File
       File flvFile = "${flashDirRoot}/${mpegFile.name}.flv" as File
       URL flvUrl = new URL("${flashUrlRoot}/${flvFile.name}")
-      def flashPlayerUrl = createLinkTo(dir: "js", file: "player.swf", absolute: true)
+      def flashPlayerUrl = resource(dir: "js", file: "player.swf", absolute: true)
 
 
       def descriptionText = "<![CDATA[<embed type='application/x-shockwave-flash' src='${flashPlayerUrl}' width='${videoDataSet.width}' height='${videoDataSet.height}' flashvars='file=${flvUrl}'></embed>]]>"
