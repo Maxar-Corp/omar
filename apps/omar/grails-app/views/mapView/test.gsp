@@ -37,19 +37,19 @@
   }
   </style>
 
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/reset-fonts-grids/reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/resize/assets/skins/sam/resize.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/layout/assets/skins/sam/layout.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/button/assets/skins/sam/button.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/resize/assets/skins/sam', file: 'resize.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/layout/assets/skins/sam', file: 'layout.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
 
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/yahoo/yahoo-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/event/event-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/dom/dom-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/element/element-beta-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/dragdrop/dragdrop-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/resize/resize-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/animation/animation-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/layout/layout-min.js')}"></script>
+  <g:javascript plugin="richui" src="yui/yahoo/yahoo-min.js"/>
+  <g:javascript plugin="richui" src="yui/event/event-min.js"/>
+  <g:javascript plugin="richui" src="yui/dom/dom-min.js"/>
+  <g:javascript plugin="richui" src="yui/element/element-min.js"/>
+  <g:javascript plugin="richui" src="yui/dragdrop/dragdrop-min.js"/>
+  <g:javascript plugin="richui" src="yui/resize/resize-min.js"/>
+  <g:javascript plugin="richui" src="yui/animation/animation-min.js"/>
+  <g:javascript plugin="richui" src="yui/layout/layout-min.js"/>
 
 
   <openlayers:loadTheme theme="default"/>
@@ -88,20 +88,20 @@
     var Dom = YAHOO.util.Dom,
             Event = YAHOO.util.Event;
 
-    Event.onDOMReady(function()
+    Event.onDOMReady( function()
     {
-      var map = new OpenLayers.Map('map');
+      var map = new OpenLayers.Map( 'map' );
 
       //map.addLayer(aoiLayer);
-      map.setBaseLayer(baseLayer);
-      map.addControl(new OpenLayers.Control.LayerSwitcher());
-      map.addControl(new OpenLayers.Control.PanZoom());
-      map.addControl(new OpenLayers.Control.NavToolbar());
-      map.addControl(new OpenLayers.Control.MousePosition());
-      map.addControl(new OpenLayers.Control.Scale());
-      map.addControl(new OpenLayers.Control.Permalink("permalink"));
-      map.addControl(new OpenLayers.Control.ScaleLine());
-      map.addControl(new OpenLayers.Control.Attribution());
+      map.setBaseLayer( baseLayer );
+      map.addControl( new OpenLayers.Control.LayerSwitcher( ) );
+      map.addControl( new OpenLayers.Control.PanZoom( ) );
+      map.addControl( new OpenLayers.Control.NavToolbar( ) );
+      map.addControl( new OpenLayers.Control.MousePosition( ) );
+      map.addControl( new OpenLayers.Control.Scale( ) );
+      map.addControl( new OpenLayers.Control.Permalink( "permalink" ) );
+      map.addControl( new OpenLayers.Control.ScaleLine( ) );
+      map.addControl( new OpenLayers.Control.Attribution( ) );
 
       var dataLayer = new OpenLayers.Layer.WMS(
               "${dataWMS.title}",
@@ -111,7 +111,7 @@
       {buffer:1}
               );
 
-      map.addLayer(dataLayer);
+      map.addLayer( dataLayer );
 
       var baseLayer = new OpenLayers.Layer.WMS(
               "${baseWMS.title}",
@@ -120,9 +120,9 @@
       {buffer:1}
               );
 
-      map.addLayer(baseLayer);
+      map.addLayer( baseLayer );
 
-      var layout = new YAHOO.widget.Layout({
+      var layout = new YAHOO.widget.Layout( {
         units: [
           {
             position: 'top',
@@ -170,34 +170,34 @@
             body: 'center1'
           }
         ]
-      });
+      } );
 
-      layout.subscribe("resize", function( ev )
+      layout.subscribe( "resize", function( ev )
       {
-        var c = this.getUnitByPosition('center');
-        var mapWidth = c.get('width');
-        var mapHeight = Math.round(mapWidth / 2);
+        var c = this.getUnitByPosition( 'center' );
+        var mapWidth = c.get( 'width' );
+        var mapHeight = Math.round( mapWidth / 2 );
 
-        Dom.get("map").style.width = mapWidth + "px";
-        Dom.get("map").style.height = mapHeight + "px";
+        Dom.get( "map" ).style.width = mapWidth + "px";
+        Dom.get( "map" ).style.height = mapHeight + "px";
 
-        map.updateSize();
-
-
-      });
+        map.updateSize( );
 
 
-      layout.render();
-      map.zoomToMaxExtent();
+      } );
 
-    });
-  })();
+
+      layout.render( );
+      map.zoomToMaxExtent( );
+
+    } );
+  })( );
 
   function foo()
   {
-    var centerDiv = this.getUnitByPosition('center');
+    var centerDiv = this.getUnitByPosition( 'center' );
 
-    alert(centerDiv.get('width'));
+    alert( centerDiv.get( 'width' ) );
   }
 </script>
 </body>

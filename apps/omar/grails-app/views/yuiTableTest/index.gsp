@@ -6,13 +6,13 @@
   <title>Server-side Pagination and Sorting for Dynamic Data</title>
 
   <style type="text/css">
-  /*
-  margin and padding on body element
-  can introduce errors in determining
-  element position and are not recommended;
-  we turn them off as a foundation for YUI
-  CSS treatments.
-  */
+    /*
+    margin and padding on body element
+    can introduce errors in determining
+    element position and are not recommended;
+    we turn them off as a foundation for YUI
+    CSS treatments.
+    */
   body {
     margin: 0;
     padding: 0;
@@ -20,18 +20,18 @@
   </style>
 
 
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/fonts/fonts-min.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/paginator/assets/skins/sam/paginator.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/datatable/assets/skins/sam/datatable.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/fonts', file: 'fonts-min.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/paginator/assets/skins/sam', file: 'paginator.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/datatable/assets/skins/sam', file: 'datatable.css')}"/>
 
 
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/yahoo-dom-event/yahoo-dom-event.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/connection/connection-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/json/json-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/element/element-beta-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/paginator/paginator-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/datasource/datasource-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/datatable/datatable-min.js')}"></script>
+  <g:javascript plugin="richui" src="js/yui/yahoo-dom-event/yahoo-dom-event.js"/>
+  <g:javascript plugin="richui" src="js/yui/connection/connection-min.js"/>
+  <g:javascript plugin="richui" src="js/yui/json/json-min.js"/>
+  <g:javascript plugin="richui" src="js/yui/element/element-min.js"/>
+  <g:javascript plugin="richui" src="js/yui/paginator/paginator-min.js"/>
+  <g:javascript plugin="richui" src="js/yui/datasource/datasource-min.js"/>
+  <g:javascript plugin="richui" src="js/yui/datatable/datatable-min.js"/>
 
 
   <!--there is no custom header content for this example-->
@@ -89,12 +89,12 @@
     // Custom parser
     var stringToDate = function( sData )
     {
-      var array = sData.split("-");
-      return new Date(array[1] + " " + array[0] + ", " + array[2]);
+      var array = sData.split( "-" );
+      return new Date( array[1] + " " + array[0] + ", " + array[2] );
     };
 
     // DataSource instance
-    var myDataSource = new YAHOO.util.DataSource("/omar-2.0/yuiTableTest/getData?");
+    var myDataSource = new YAHOO.util.DataSource( "/omar-2.0/yuiTableTest/getData?" );
     myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
     myDataSource.responseSchema = {
       resultsList: "records",
@@ -129,11 +129,11 @@
       initialRequest: "sort=id&dir=asc&startIndex=0&results=25", // Initial request for first page of data
       dynamicData: true, // Enables dynamic server-driven data
       sortedBy : {key:"id", dir:YAHOO.widget.DataTable.CLASS_ASC}, // Sets UI initial sort arrow
-      paginator: new YAHOO.widget.Paginator({ rowsPerPage:25 }) // Enables pagination
+      paginator: new YAHOO.widget.Paginator( { rowsPerPage:25 } ) // Enables pagination
     };
 
     // DataTable instance
-    var myDataTable = new YAHOO.widget.DataTable("dynamicdata", myColumnDefs, myDataSource, myConfigs);
+    var myDataTable = new YAHOO.widget.DataTable( "dynamicdata", myColumnDefs, myDataSource, myConfigs );
     // Update totalRecords on the fly wit
     // h value from server
     myDataTable.handleDataReturnPayload = function( oRequest, oResponse, oPayload )
@@ -147,7 +147,7 @@
       dt: myDataTable
     };
 
-  }();
+  }( );
 </script>
 </body>
 </html>

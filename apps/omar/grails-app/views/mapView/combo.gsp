@@ -12,7 +12,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="main"/>
   <title>OMAR Map Viewer</title>
-  <link rel="stylesheet" href="${createLinkTo(dir: 'css', file: 'main.css')}"/>
+  <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
 
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
@@ -231,7 +231,7 @@ function init()
 <body onload="init()" <%--onresize="changeMapSize()"--%>>
 <div class="nav">
   <span class="menuButton">
-    <a class="home" href="${createLinkTo(dir: '')}">Home</a>
+    <a class="home" href="${resource(dir: '')}">Home</a>
     <button name="" onclick="imageToWorld()">Image to World</button>
     <button onclick="worldToImage()">World to Image</button>    
   </span>

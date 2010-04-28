@@ -34,7 +34,7 @@
   <table>
     <tr>
       <td width="120px">
-        <img src="${createLinkTo(dir: '/images', file: 'discover.gif')}" alt="">
+        <img src="${resource(dir: 'images', file: 'discover.gif')}" alt="">
       </td>
       <td>
         <ol>
@@ -51,7 +51,7 @@
     <table>
       <tr>
         <td width="120px">
-          <img src="${createLinkTo(dir: '/images', file: 'globe_128.png')}" width="96" height="96" alt="">
+          <img src="${resource(dir: 'images', file: 'globe_128.png')}" width="96" height="96" alt="">
         </td>
         <td>
           <ol>
@@ -69,7 +69,7 @@
   <table>
     <tr>
       <td width="120px">
-        <img src="${createLinkTo(dir: '/images', file: 'GoogleEarth_1.png')}" width="96 " height="96" alt="">
+        <img src="${resource(dir: 'images', file: 'GoogleEarth_1.png')}" width="96 " height="96" alt="">
       </td>
       <td>
          <ol>
@@ -109,7 +109,7 @@
     <tr>
       <td>
         <a href="${createLink(controller: "logout")}">
-          <img src="${createLinkTo(dir: '/images', file: 'logout.png')}" width="96" height="96" alt="">
+          <img src="${resource(dir: 'images', file: 'logout.png')}" width="96" height="96" alt="">
         </a>
       </td>
     </tr>
@@ -122,7 +122,7 @@
     <table>
       <tr>
         <td width="120px">
-          <img src="${createLinkTo(dir: '/images', file: 'use.gif')}" alt="">
+          <img src="${resource(dir: 'images', file: 'use.gif')}" alt="">
         </td>
         <td>
           <ol>
@@ -140,7 +140,7 @@
     <table>
       <tr>
         <td width="120px">
-          <img src="${createLinkTo(dir: '/images', file: 'extend.gif')}" alt="">
+          <img src="${resource(dir: 'images', file: 'extend.gif')}" alt="">
         </td>
         <td>
           <ol>

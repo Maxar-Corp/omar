@@ -64,7 +64,7 @@
     width: 22px;
     height: 22px;
     background-color: orange;
-    background-image: url("${createLinkTo( file: 'plugins/openlayers-0.4/js/theme/default/img/pan_on.png')}");
+    background-image: url("${resource( plugin: 'openlayers', dir: 'js/theme/default/img', file: 'pan_on.png')}");
     background-repeat: no-repeat;
     background-size: 100%;
   }
@@ -72,7 +72,7 @@
   .olControlPanel .olControlMouseDefaultsItemInactive {
     width: 22px;
     height: 22px; /*background-color: blue;*/
-    background-image: url("${createLinkTo( file: 'plugins/openlayers-0.4/js/theme/default/img/pan_off.png')}");
+    background-image: url("${resource( plugin: 'openlayers', dir: 'js/theme/default/img', file: 'pan_off.png')}");
     background-repeat: no-repeat;
     background-size: 100%;
   }
@@ -81,7 +81,7 @@
     width: 22px;
     height: 22px;
     background-color: orange;
-    background-image: url("${createLinkTo( file: 'plugins/openlayers-0.4/js/theme/default/img/draw_point_on.png')}");
+    background-image: url("${resource( plugin: 'openlayers', dir: 'js/theme/default/img', file: 'draw_point_on.png')}");
     background-repeat: no-repeat;
     background-size: 100%;
   }
@@ -89,7 +89,7 @@
   .olControlPanel .olControlDrawFeatureItemInactive {
     width: 22px;
     height: 22px; /*background-color: blue;*/
-    background-image: url("${createLinkTo( file: 'plugins/openlayers-0.4/js/theme/default/img/draw_point_off.png')}");
+    background-image: url("${resource( plugin: 'openlayers', dir: 'js/theme/default/img', file: 'draw_point_off.png')}");
     background-repeat: no-repeat;
     background-size: 100%;
   }
@@ -97,7 +97,7 @@
   .olControlPanel .olControlZoomBoxItemInactive {
     width: 22px;
     height: 22px; /*background-color: blue;*/
-    background-image: url("${createLinkTo( file: 'plugins/openlayers-0.4/js/theme/default/img/drag-rectangle-off.png')}");
+    background-image: url("${resource( plugin: 'openlayers', dir: 'js/theme/default/img', file: 'drag-rectangle-off.png')}");
     background-repeat: no-repeat;
     background-size: 100%;
   }
@@ -106,7 +106,7 @@
     width: 22px;
     height: 22px;
     background-color: orange;
-    background-image: url("${createLinkTo( file: 'plugins/openlayers-0.4/js/theme/default/img/drag-rectangle-on.png')}");
+    background-image: url("${resource( plugin: 'openlayers', dir: 'js/theme/default/img', file: 'drag-rectangle-on.png')}");
     background-repeat: no-repeat;
     background-size: 100%;
   }
@@ -114,7 +114,7 @@
   .olControlPanel .olControlZoomToMaxExtentItemInactive {
     width: 22px;
     height: 22px; /*background-color: blue;*/
-    background-image: url("${createLinkTo( file: 'plugins/openlayers-0.4/js/img/zoom-world-mini.png')}");
+    background-image: url("${resource( plugin: 'openlayers', dir: 'js/img', file: 'zoom-world-mini.png')}");
     background-repeat: no-repeat;
     background-size: 100%;
   }
@@ -122,14 +122,14 @@
   .olControlPanel .olControlClearAreaOfInterestItemInactive {
     width: 22px;
     height: 22px; /*background-color: blue;*/
-    background-image: url("${createLinkTo( file: 'plugins/openlayers-0.4/js/theme/default/img/remove_point_off.png')}");
+    background-image: url("${resource( plugin: 'openlayers', dir: 'js/theme/default/img', file: 'remove_point_off.png')}");
     background-repeat: no-repeat;
     background-size: 100%;
   }
 
   .olControlPanel .olControlNavigationHistory {
   /*background-color: blue;*/
-    background-image: url("${createLinkTo( file: 'plugins/openlayers-0.4/js/theme/default/img/navigation_history.png')}");
+    background-image: url("${resource( plugin: 'openlayers', dir: 'js/theme/default/img', file: 'navigation_history.png')}");
     background-repeat: no-repeat;
     width: 22px;
     height: 22px;
@@ -179,19 +179,19 @@
   <gui:resources components="['dialog', 'datePicker']"/>
 
   <%--
-   <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/reset-fonts-grids/reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/resize/assets/skins/sam/resize.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/layout/assets/skins/sam/layout.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${createLinkTo(file: 'plugins/richui-0.7/js/yui/button/assets/skins/sam/button.css')}"/>
+   <link rel="stylesheet" type="text/css" href="${resource(file: 'plugins/richui-0.7/js/yui/reset-fonts-grids/reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(file: 'plugins/richui-0.7/js/yui/resize/assets/skins/sam/resize.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(file: 'plugins/richui-0.7/js/yui/layout/assets/skins/sam/layout.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(file: 'plugins/richui-0.7/js/yui/button/assets/skins/sam/button.css')}"/>
 
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/yahoo/yahoo-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/event/event-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/dom/dom-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/element/element-beta-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/dragdrop/dragdrop-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/resize/resize-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/animation/animation-min.js')}"></script>
-  <script type="text/javascript" src="${createLinkTo(file: 'plugins/richui-0.7/js/yui/layout/layout-min.js')}"></script>
+  <script type="text/javascript" src="${resource(file: 'plugins/richui-0.7/js/yui/yahoo/yahoo-min.js')}"></script>
+  <script type="text/javascript" src="${resource(file: 'plugins/richui-0.7/js/yui/event/event-min.js')}"></script>
+  <script type="text/javascript" src="${resource(file: 'plugins/richui-0.7/js/yui/dom/dom-min.js')}"></script>
+  <script type="text/javascript" src="${resource(file: 'plugins/richui-0.7/js/yui/element/element-beta-min.js')}"></script>
+  <script type="text/javascript" src="${resource(file: 'plugins/richui-0.7/js/yui/dragdrop/dragdrop-min.js')}"></script>
+  <script type="text/javascript" src="${resource(file: 'plugins/richui-0.7/js/yui/resize/resize-min.js')}"></script>
+  <script type="text/javascript" src="${resource(file: 'plugins/richui-0.7/js/yui/animation/animation-min.js')}"></script>
+  <script type="text/javascript" src="${resource(file: 'plugins/richui-0.7/js/yui/layout/layout-min.js')}"></script>
   --%>
 
   <openlayers:loadTheme theme="default"/>
@@ -203,7 +203,7 @@
 
 </head>
 
-<body class=" yui-skin-sam" onresize="changeMapSize()">
+<body class=" yui-skin-sam" onresize="changeMapSize( )">
 <div id="top1">
   <div id="panel2" class="olControlPanel"></div>
 </div>
@@ -241,7 +241,7 @@
           <li><br/></li>
           <li>
             <span class="formButton">
-              <input type="button" onclick="goto()" value="Set Center">
+              <input type="button" onclick="goto( )" value="Set Center">
             </span>
           </li>
         </ol>
@@ -263,7 +263,7 @@
             <li><label for="aoiMaxLat">Max Lat:</label></li>
             <li><input type="text" id="aoiMaxLat" name="aoiMaxLat" value="${queryParams?.aoiMaxLat}"/></li>
             <li><br/></li>
-            <li><button onclick="">Set</button><input type="button" onclick="clearAOI()" value="Clear"></li>
+            <li><button onclick="">Set</button><input type="button" onclick="clearAOI( )" value="Clear"></li>
           </ol>
         </fieldset>
       </div>
@@ -309,25 +309,25 @@
         </gui:accordionElement>
         <gui:accordionElement title="Metadata Criteria" selected="true">
   --%>
-    <%--
-    <div class="niceBox">
-      <div class="niceBoxHd">Metadata Criteria:</div>
-      <div class="niceBoxBody">
-        <ol>
-          <li>
-            <g:select id="searchTag.id" name='searchTag.id' value="${queryParams?.searchTag?.id}"
-                    noSelection="${['null':'Select One...']}"
-                    from='${SearchTag.list()}'
-                    optionKey="id" optionValue="description"></g:select>
-          </li>
-          <li>
-            <input type="text" id="searchTagValue" name="searchTagValue" value="${fieldValue(bean: queryParams, field: 'searchTagValue')}"/>
-          </li>
-        </ol>
-      </div>
+  <%--
+  <div class="niceBox">
+    <div class="niceBoxHd">Metadata Criteria:</div>
+    <div class="niceBoxBody">
+      <ol>
+        <li>
+          <g:select id="searchTag.id" name='searchTag.id' value="${queryParams?.searchTag?.id}"
+                  noSelection="${['null':'Select One...']}"
+                  from='${SearchTag.list()}'
+                  optionKey="id" optionValue="description"></g:select>
+        </li>
+        <li>
+          <input type="text" id="searchTagValue" name="searchTagValue" value="${fieldValue(bean: queryParams, field: 'searchTagValue')}"/>
+        </li>
+      </ol>
     </div>
-    <br/>
-    --%>
+  </div>
+  <br/>
+  --%>
     <fieldset>
       <ol><li><g:submitButton name="Search"/></li></ol>
     </fieldset>
