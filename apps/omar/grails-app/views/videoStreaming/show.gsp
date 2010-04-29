@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <meta content="main" name="layout"/>
+  <meta content="main5" name="layout"/>
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
   <style type="text/css">
   #centerid {

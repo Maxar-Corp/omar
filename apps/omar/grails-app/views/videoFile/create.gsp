@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main"/>
+  <meta name="layout" content="main5"/>
   <title>Create VideoFile</title>
 </head>
 <body>
