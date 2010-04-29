@@ -9,7 +9,7 @@
 <html>
 <head>
   <title>DataManager - addVideo</title>
-  <meta name="layout" content="main"/>
+  <meta name="layout" content="main5"/>
 </head>
 <body>
 <div class="nav">

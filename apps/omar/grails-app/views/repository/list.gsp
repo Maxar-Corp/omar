@@ -1,7 +1,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main"/>
+  <meta name="layout" content="main5"/>
   <title>Repository List</title>
 </head>
 <body>
@@ -19,30 +19,30 @@
   <div class="list">
     <table>
       <thead>
-        <tr>
+      <tr>
 
-          <g:sortableColumn property="id" title="Id"/>
+        <g:sortableColumn property="id" title="Id"/>
 
-          <g:sortableColumn property="baseDir" title="Base Dir"/>
+        <g:sortableColumn property="baseDir" title="Base Dir"/>
 
-          <g:sortableColumn property="scanStartDate" title="Scan Start Date"/>
+        <g:sortableColumn property="scanStartDate" title="Scan Start Date"/>
 
-          <g:sortableColumn property="scanEndDate" title="Scan End Date"/>
+        <g:sortableColumn property="scanEndDate" title="Scan End Date"/>
 
-        </tr>
+      </tr>
       </thead>
       <tbody>
-        <g:each in="${repositoryList}" status="i" var="repository">
-          <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+      <g:each in="${repositoryList}" status="i" var="repository">
+        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
-            <td><g:link action="show" id="${repository.id}">${fieldValue(bean: repository, field: 'id')}</g:link></td>
+          <td><g:link action="show" id="${repository.id}">${fieldValue(bean: repository, field: 'id')}</g:link></td>
 
-            <td>${fieldValue(bean: repository, field: 'baseDir')}</td>
-            <td>${fieldValue(bean: repository, field: 'scanStartDate')}</td>
-            <td>${fieldValue(bean: repository, field: 'scanEndDate')}</td>
+          <td>${fieldValue(bean: repository, field: 'baseDir')}</td>
+          <td>${fieldValue(bean: repository, field: 'scanStartDate')}</td>
+          <td>${fieldValue(bean: repository, field: 'scanEndDate')}</td>
 
-          </tr>
-        </g:each>
+        </tr>
+      </g:each>
       </tbody>
     </table>
   </div>
