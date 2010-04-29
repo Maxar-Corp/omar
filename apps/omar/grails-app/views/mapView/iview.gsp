@@ -195,7 +195,7 @@
           init( );
         } );
 
-        outerLayout.on( 'resize', function()
+        innerLayout.on( 'resize', function()
         {
           var c = innerLayout.getUnitByPosition( 'center' );
           var mapWidth = c.get( 'width' );
