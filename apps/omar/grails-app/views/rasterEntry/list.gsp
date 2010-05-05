@@ -1,18 +1,21 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main5"/>
+  <meta name="layout" content="main8"/>
   <title>RasterEntry List</title>
   <resource:tabView/>
 </head>
 <body>
-<div class="nav">
-  <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
-  <g:ifAllGranted role="ROLE_ADMIN">
-    <span class="menuButton"><g:link class="create" action="create">New RasterEntry</g:link></span>
-  </g:ifAllGranted>
-  <span class="menuButton"><g:link action="search">Search</g:link></span></div>
-<div class="body">
+<content tag="hd">
+  <div class="nav">
+    <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
+    <g:ifAllGranted role="ROLE_ADMIN">
+      <span class="menuButton"><g:link class="create" action="create">New RasterEntry</g:link></span>
+    </g:ifAllGranted>
+    <span class="menuButton"><g:link action="search">Search</g:link></span></div>
+</content>
+
+<content tag="bd">
   <h1>RasterEntry List</h1>
   <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
@@ -67,7 +70,7 @@
                 <td>${rasterEntry.numberOfBands?.encodeAsHTML()}</td>
 
                 <td>${rasterEntry.numberOfResLevels?.encodeAsHTML()}</td>
-                
+
                 <td>${rasterEntry.bitDepth?.encodeAsHTML()}</td>
 
                 <g:set var="bounds" value="${rasterEntry?.metadata?.groundGeom?.bounds}"/>
@@ -121,9 +124,12 @@
       </richui:tabContent>
     </richui:tabContents>
   </richui:tabView>
+</content>
+<content tag="ft">
   <div class="paginateButtons">
     <g:paginate total="${rasterEntryList.totalCount}" params="${[rasterDataSet:params.rasterDataSetId]}"/>
   </div>
+</content>
 </div>
 </body>
 </html>

@@ -1,19 +1,21 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main5"/>
+  <meta name="layout" content="main8"/>
   <title>VideoDataSet List</title>
   <resource:tabView/>
 </head>
 <body>
-<div class="nav">
-  <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
-  <g:ifAllGranted role="ROLE_ADMIN">
-    <span class="menuButton"><g:link class="create" action="create">New VideoDataSet</g:link></span>
-  </g:ifAllGranted>
-  <span class="menuButton"><g:link action="search">Search</g:link></span></div>
+<content tag="hd">
+  <div class="nav">
+    <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
+    <g:ifAllGranted role="ROLE_ADMIN">
+      <span class="menuButton"><g:link class="create" action="create">New VideoDataSet</g:link></span>
+    </g:ifAllGranted>
+    <span class="menuButton"><g:link action="search">Search</g:link></span></div>
 </div>
-<div class="body">
+</content>
+<content tag="bd">
   <h1>VideoDataSet List</h1>
   <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
@@ -122,9 +124,11 @@
       </richui:tabContent>
     </richui:tabContents>
   </richui:tabView>
+</content>
+<content tag="ft">
   <div class="paginateButtons">
     <g:paginate total="${videoDataSetList.totalCount}" params="${[repositoryId:params.repositoryId]}"/>
   </div>
-</div>
+</content>
 </body>
 </html>
