@@ -14,7 +14,7 @@
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
-  <meta name="layout" content="main"/>
+  <meta name="layout" content="main6"/>
   <style type="text/css">
   #map {
     width: 100%;
@@ -57,42 +57,54 @@
 
   <openlayers:loadJavascript/>
 </head>
-<body onload="init()" onresize="changeMapSize()">
-<div class="nav">
-  <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
-  <span class="menuButton">
-    <a href="${createLink(controller: "mapView", action: "index", params: [rasterEntryIds: rasterEntry?.id])}">
-      Ground Space
-    </a>
-  </span>
-  <span class="menuButton">
-    <label>Stretch:</label>
-    <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
-  </span>
-  <span class="menuButton">
-    <label>Region:</label>
-    <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts()"/>
-  </span>
+<body>
+<content tag="hd">
+  <div class="nav">
+    <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
+    <span class="menuButton">
+      <a href="${createLink(controller: "mapView", action: "index", params: [rasterEntryIds: rasterEntry?.id])}">
+        Ground Space
+      </a>
+    </span>
+    <span class="menuButton">
+      <label>Stretch:</label>
+      <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
+    </span>
+    <span class="menuButton">
+      <label>Region:</label>
+      <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts()"/>
+    </span>
+  </div>
 </div>
-</div>
-<div class="body">
+</content>
+<content tag="bd">
+  <%--
   <h1 id="mapTitle">${rasterEntry?.mainFile?.name}</h1>
   <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
   </g:if>
+  --%>
   <div id="map"></div>
 </div>
-<g:javascript>
+</content>
+<content tag="ft">
+  <g:javascript>
   var map;
   var layer;
 
-  function changeMapSize()
+  function changeMapSize(mapWidth, mapHeight)
   {
-    var mapTitle = document.getElementById("mapTitle");
-    var mapDiv = document.getElementById("map");
+//    var mapTitle = document.getElementById("mapTitle");
+//    var mapDiv = document.getElementById("map");
+//
+//    mapDiv.style.width = mapTitle.offsetWidth + "px";
+//    mapDiv.style.height = Math.round(mapTitle.offsetWidth / 2) + "px";
 
-    mapDiv.style.width = mapTitle.offsetWidth + "px";
-    mapDiv.style.height = Math.round(mapTitle.offsetWidth / 2) + "px";
+    var Dom = YAHOO.util.Dom;
+
+    Dom.get( "map" ).style.width = mapWidth + "px";
+    Dom.get( "map" ).style.height = mapHeight + "px";
+    
     map.updateSize();
   }
   
@@ -128,7 +140,7 @@
       return url + path;
   }
 
-  function init()
+  function init(mapWidth, mapHeight)
   {
     map = new OpenLayers.Map('map', { controls: [], numZoomLevels: 32 } );
     map.addControl(new OpenLayers.Control.LayerSwitcher())
@@ -159,7 +171,7 @@
     );
 
 
-    changeMapSize();
+    changeMapSize(mapWidth, mapHeight);
     
     map.addLayers([layer]);
     map.zoomToMaxExtent();
@@ -219,8 +231,8 @@
 
         map.addControl(panel);
       }
-  
-</g:javascript>
 
+  </g:javascript>
+</content>
 </body>
 </html>

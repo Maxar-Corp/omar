@@ -10,7 +10,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main"/>
+  <meta name="layout" content="main6"/>
   <title>OMAR Ground Space Multi-Viewer</title>
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
 
@@ -60,219 +60,230 @@
   </style>
 
   <openlayers:loadJavascript/>
-  <script type="text/javascript">
+
+</head>
+<body>
+<content tag="hd">
+  <div class="nav">
+    <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
+    <span class="menuButton">
+      <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.id).join(',')])}">
+        WMS GetCapabilities
+      </a>
+    </span>
+    <span class="menuButton">
+      <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: (rasterEntries*.id).join(',')])}">
+        Generate KML
+      </a>
+    </span>
+    <span class="menuButton">
+      <a href="${createLink(controller: "mapView", action: "index", params: [rasterEntryIds: (rasterEntries*.id).join(',')])}">
+        Single Layer
+      </a>
+    </span>
+    <g:if test="${rasterEntries?.size() == 1}">
+      <span class="menuButton">
+        <a href="${createLink(controller: "mapView", action: "imageSpace", id: (rasterEntries*.id).join(','))}">
+          Image Space
+        </a>
+      </span>
+    </g:if>
+
+  </div>
+</content>
+<content tag="bd">
+  <%--
+  <h1 id="mapTitle">${rasterEntries*.mainFile.name}</h1>
+  <g:if test="${flash.message}">
+    <div class="message">${flash.message}</div>
+  </g:if>
+  --%>
+  <div id="map"></div>
+</content>
+<content tag="ft">
+  <g:javascript>
     var map;
 
-    function changeMapSize()
+    function changeMapSize(mapWidth, mapHeight)
     {
-      var mapTitle = document.getElementById("mapTitle");
-      var mapDiv = document.getElementById("map");
+//      var mapTitle = document.getElementById( "mapTitle" );
+//      var mapDiv = document.getElementById( "map" );
+//
+//      mapDiv.style.width = mapTitle.offsetWidth + "px";
+//      mapDiv.style.height = Math.round( mapTitle.offsetWidth / 2 ) + "px";
+    var Dom = YAHOO.util.Dom;
 
-      mapDiv.style.width = mapTitle.offsetWidth + "px";
-      mapDiv.style.height = Math.round(mapTitle.offsetWidth / 2) + "px";
-      map.updateSize();
+    Dom.get( "map" ).style.width = mapWidth + "px";
+    Dom.get( "map" ).style.height = mapHeight + "px";
+
+      map.updateSize( );
     }
 
     function setupBaseLayer()
     {
       var baseLayer = null;
 
-      <g:each var="foo" in="${baseWMS}">
-      baseLayer = new OpenLayers.Layer.WMS(
-        "${foo.title}",
-        "${foo.url}",
-        {layers: '${foo.layers}', format: "${foo.format}" },
-         {isBaseLayer:true, buffer:0,transitionEffect: "resize"}
-      );
-      map.addLayer(baseLayer);
-      map.setBaseLayer(baseLayer);
-      </g:each>
+    <g:each var="foo" in="${baseWMS}">
+    baseLayer = new OpenLayers.Layer.WMS(
+    "${foo.title}",
+              "${foo.url}",
+      {layers: '${foo.layers}', format: "${foo.format}" },
+      {isBaseLayer:true, buffer:0,transitionEffect: "resize"}
+              );
+      map.addLayer( baseLayer );
+      map.setBaseLayer( baseLayer );
+  </g:each>
     }
 
-    function init()
-    {
-      var left = ${left};
+  function init(mapWidth, mapHeight)
+  {
+  var left = ${left};
       var bottom = ${bottom};
       var right = ${right};
       var top = ${top};
 
-      map = new OpenLayers.Map("map", { controls: [], numZoomLevels: 32 });
+      map = new OpenLayers.Map( "map", { controls: [], numZoomLevels: 32 } );
 
       var format = "image/png";
       var transparent = true;
 
-      setupBaseLayer();
-      
+      setupBaseLayer( );
+
       var layers = [
 
 
 
-        <g:each var="rasterEntry" in="${rasterEntries}" status="i">
+    <g:each var="rasterEntry" in="${rasterEntries}" status="i">
 
-        <g:if test="${i > 0}">,</g:if>
+      <g:if test="${i > 0}">,</g:if>
 
-        new OpenLayers.Layer.WMS(
-                "Raster ${rasterEntry.id}",
-                "${createLink( controller:'ogc', action:'wms')}",
+      new OpenLayers.Layer.WMS(
+      "Raster ${rasterEntry.id}",
+                "${createLink(controller: 'ogc', action: 'wms')}",
         { layers: "${rasterEntry.id}", format: format, stretch_mode:"linear_auto_min_max", transparent:transparent  },
         {isBaseLayer: false, buffer:0, singleTile:true, ratio:1.0, transitionEffect: "resize"}
                 )
-        <g:if test="${hasKML}">
+      <g:if test="${hasKML}">
 
-        , new OpenLayers.Layer.Vector("KML", {
-          projection: map.displayProjection,
-          strategies: [new OpenLayers.Strategy.Fixed()],
-          protocol: new OpenLayers.Protocol.HTTP({
-            url: "${createLink( controller:'rasterEntry', action:'getKML', params:[rasterEntryIds:rasterEntry.id])}",
-            format: new OpenLayers.Format.KML({
+        , new OpenLayers.Layer.Vector( "KML", {
+     projection: map.displayProjection,
+     strategies: [new OpenLayers.Strategy.Fixed( )],
+     protocol: new OpenLayers.Protocol.HTTP( {
+       url: "${createLink(controller: 'rasterEntry', action: 'getKML', params: [rasterEntryIds: rasterEntry.id])}",
+            format: new OpenLayers.Format.KML( {
               extractStyles: true,
               extractAttributes: true
-            })
-          })
-        })
-        </g:if>
-        </g:each>
-      ];
+            } )
+          } )
+        } )
+      </g:if>
+    </g:each>
+    ];
 
 
-      map.addLayers(layers);
-      map.addControl(new OpenLayers.Control.LayerSwitcher())
-      //map.addControl(new OpenLayers.Control.PanZoom())
-      //map.addControl(new OpenLayers.Control.NavToolbar())
-      map.addControl(new OpenLayers.Control.MousePosition());
-      map.addControl(new OpenLayers.Control.Scale());
-      map.addControl(new OpenLayers.Control.Permalink("permalink"));
-      map.addControl(new OpenLayers.Control.ScaleLine());
-      map.addControl(new OpenLayers.Control.Attribution());
+     map.addLayers( layers );
+     map.addControl( new OpenLayers.Control.LayerSwitcher( ) )
+     //map.addControl(new OpenLayers.Control.PanZoom())
+     //map.addControl(new OpenLayers.Control.NavToolbar())
+     map.addControl( new OpenLayers.Control.MousePosition( ) );
+     map.addControl( new OpenLayers.Control.Scale( ) );
+     map.addControl( new OpenLayers.Control.Permalink( "permalink" ) );
+     map.addControl( new OpenLayers.Control.ScaleLine( ) );
+     map.addControl( new OpenLayers.Control.Attribution( ) );
 
 
+     var bounds = new OpenLayers.Bounds( left, bottom, right, top );
 
-      var bounds = new OpenLayers.Bounds(left, bottom, right, top);
+     map.maxExtent = bounds;
+     changeMapSize( mapWidth, mapHeight );
+     setupToolbar( );
 
-      map.maxExtent = bounds;
-      changeMapSize();
-      setupToolbar();
-      
-      var zoom = map.getZoomForExtent(bounds, true);
+     var zoom = map.getZoomForExtent( bounds, true );
 
-      map.setCenter(bounds.getCenterLonLat(), zoom);
+     map.setCenter( bounds.getCenterLonLat( ), zoom );
     }
 
     function zoomIn()
     {
-      map.zoomIn();
+     map.zoomIn( );
     }
 
     function zoomOut()
     {
-      map.zoomOut();
+     map.zoomOut( );
 
     }
-      function setupToolbar()
-      {
+    function setupToolbar()
+    {
 
-        var zoomBoxButton = new OpenLayers.Control.ZoomBox(
-        {title:"Zoom into an area by clicking and dragging"});
+     var zoomBoxButton = new OpenLayers.Control.ZoomBox(
+     {title:"Zoom into an area by clicking and dragging"} );
 
-        var zoomInButton = new OpenLayers.Control.Button({title:'Zoom in',
-          displayClass: "olControlZoomIn",
-          trigger: zoomIn
-        });
+     var zoomInButton = new OpenLayers.Control.Button( {title:'Zoom in',
+       displayClass: "olControlZoomIn",
+       trigger: zoomIn
+     } );
 
-        var zoomOutButton = new OpenLayers.Control.Button({title:'Zoom out',
-          displayClass: "olControlZoomOut",
-          trigger: zoomOut
-        });
+     var zoomOutButton = new OpenLayers.Control.Button( {title:'Zoom out',
+       displayClass: "olControlZoomOut",
+       trigger: zoomOut
+     } );
 
-        var container = $("panel2");
+     var container = $( "panel2" );
 
-        var panel = new OpenLayers.Control.Panel(
-        { div: container,defaultControl: zoomBoxButton,'displayClass': 'olControlPanel'}
-                );
-
-
-        var navButton = new OpenLayers.Control.NavigationHistory({
-          nextOptions: {title: "Next View" },
-          previousOptions: {title: "Previous View"}
-        });
+     var panel = new OpenLayers.Control.Panel(
+     { div: container,defaultControl: zoomBoxButton,'displayClass': 'olControlPanel'}
+             );
 
 
-        map.addControl(navButton);
+     var navButton = new OpenLayers.Control.NavigationHistory( {
+       nextOptions: {title: "Next View" },
+       previousOptions: {title: "Previous View"}
+     } );
 
-          var measureDistanceButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
-          title: "Measure Distance",
-          displayClass: "olControlMeasureDistance",
-          eventListeners:
-          {
-            measure: function(evt)
-            {
-              alert("Distance: " + evt.measure.toFixed(2) + evt.units);
-            }
-          }
-        });
 
-        var measureAreaButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, {
-          title: "Measure Area",
-          displayClass: "olControlMeasureArea",
-          eventListeners:
-          {
-            measure: function(evt)
-            {
-              alert("Area: " + evt.measure.toFixed(2) + evt.units);
-            }
-          }
-        });
+     map.addControl( navButton );
 
-        panel.addControls([
-          new OpenLayers.Control.MouseDefaults({title:'Drag to recenter map'}),
-          zoomBoxButton,
-          zoomInButton,
-          zoomOutButton,
-          navButton.next, navButton.previous,
-          new OpenLayers.Control.ZoomToMaxExtent({title:"Zoom to the max extent"}),
-          measureDistanceButton,
-          measureAreaButton
-        ]);
+     var measureDistanceButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Path, {
+       title: "Measure Distance",
+       displayClass: "olControlMeasureDistance",
+       eventListeners:
+       {
+         measure: function( evt )
+         {
+           alert( "Distance: " + evt.measure.toFixed( 2 ) + evt.units );
+         }
+       }
+     } );
 
-        map.addControl(panel);
-      }
-  
-  </script>
+     var measureAreaButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Polygon, {
+       title: "Measure Area",
+       displayClass: "olControlMeasureArea",
+       eventListeners:
+       {
+         measure: function( evt )
+         {
+           alert( "Area: " + evt.measure.toFixed( 2 ) + evt.units );
+         }
+       }
+     } );
 
-</head>
-<body onload="init()" onresize="changeMapSize()">
-<div class="nav">
-  <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
-  <span class="menuButton">
-    <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.id).join(',')])}">
-      WMS GetCapabilities
-    </a>
-  </span>
-  <span class="menuButton">
-    <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: (rasterEntries*.id).join(',')])}">
-      Generate KML
-    </a>
-  </span>
-  <span class="menuButton">
-    <a href="${createLink(controller: "mapView", action: "index", params: [rasterEntryIds: (rasterEntries*.id).join(',')])}">
-     Single Layer
-    </a>
-  </span>
-  <g:if test="${rasterEntries?.size() == 1}">
-    <span class="menuButton">
-      <a href="${createLink(controller: "mapView", action: "imageSpace", id: (rasterEntries*.id).join(','))}">
-        Image Space
-      </a>
-    </span>
-  </g:if>
+     panel.addControls( [
+       new OpenLayers.Control.MouseDefaults( {title:'Drag to recenter map'} ),
+       zoomBoxButton,
+       zoomInButton,
+       zoomOutButton,
+       navButton.next, navButton.previous,
+       new OpenLayers.Control.ZoomToMaxExtent( {title:"Zoom to the max extent"} ),
+       measureDistanceButton,
+       measureAreaButton
+     ] );
 
-</div>
-<div class="body">
-  <h1 id="mapTitle">${rasterEntries*.mainFile.name}</h1>
-  <g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
-  </g:if>
-  <div id="map"></div>
-</div>
+     map.addControl( panel );
+    }
+
+  </g:javascript>
+
+</content>
 </body>
 </html>

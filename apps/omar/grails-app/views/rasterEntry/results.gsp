@@ -1,19 +1,21 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main5"/>
+  <meta name="layout" content="main8"/>
   <title>Raster Entry Search Results</title>
   <resource:tabView/>
 </head>
 <body>
-<div class="nav">
-  <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
-  <span class="menuButton"><g:link action="search">New Search</g:link></span>
-  <span class="menuButton">
-    <a href="${createLink(action: "search", params: params)}">Edit Search</a>
-  </span>
-</div>
-<div class="body">
+<content tag="hd">
+  <div class="nav">
+    <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
+    <span class="menuButton"><g:link action="search">New Search</g:link></span>
+    <span class="menuButton">
+      <a href="${createLink(action: "search", params: params)}">Edit Search</a>
+    </span>
+  </div>
+</content>
+<content tag="bd">
   <h1>Raster Entry Search Results</h1>
   <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
@@ -194,10 +196,12 @@
   <g:hiddenField name="offset" value="${params.offset}"/>
   <g:hiddenField name="queryParams" value="${queryParams.toMap()}"/>
 
+</content>
+<content tag="ft">
   <div class="paginateButtons">
     <g:paginate controller="rasterEntry" action="results" total="${totalCount ?: 0}"
             max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
   </div>
-</div>
+</content>
 </body>
 </html>

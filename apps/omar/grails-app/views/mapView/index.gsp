@@ -10,7 +10,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main"/>
+  <meta name="layout" content="main7"/>
   <title>OMAR Ground Space Viewer</title>
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
 
@@ -24,14 +24,14 @@
     border: 1px solid black;
   }
 
-/*
-  div.olControlMousePosition {
-    font-family: Verdana;
-    font-size: 1.0em;
-    background-color: white;
-    color: black;
-  }
-*/
+    /*
+      div.olControlMousePosition {
+        font-family: Verdana;
+        font-size: 1.0em;
+        background-color: white;
+        color: black;
+      }
+    */
   div.olControlScale {
     background-color: #ffffff;
     font-size: 1.0em;
@@ -63,87 +63,103 @@
   <openlayers:loadJavascript/>
   <g:javascript src="coordinateConversion.js"/>
 </head>
-<body onload="init();" onresize="changeMapSize();">
-<div id="nav" class="nav">
-  <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
-  <span class="menuButton">
-    <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.id).join(',')])}">
-      WMS GetCapabilities
-    </a>
-  </span>
-  <span class="menuButton">
-    <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: (rasterEntries*.id).join(',')])}">
-      Generate KML
-    </a>
-  </span>
-  <span class="menuButton">
-    <a href="${createLink(controller: "mapView", action: "multiLayer", params: [rasterEntryIds: (rasterEntries*.id).join(',')])}">
-      Multi-Layer
-    </a>
-  </span>
-  <g:if test="${rasterEntries?.size() == 1}">
+<body>
+<content tag="hd">
+  <div class="nav">
+    <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
     <span class="menuButton">
-      <a href="${createLink(controller: "mapView", action: "imageSpace", id: (rasterEntries*.id).join(','))}">
-        Image Space
+      <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.id).join(',')])}">
+        WMS GetCapabilities
       </a>
     </span>
-  </g:if>
-  <span class="menuButton">
-    <label>Sharpen:</label>
-    <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
-  </span>
-  <span class="menuButton">
-    <label>Stretch:</label>
-    <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
-  </span>
-  <span class="menuButton">
+    <span class="menuButton">
+      <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: (rasterEntries*.id).join(',')])}">
+        Generate KML
+      </a>
+    </span>
+    <span class="menuButton">
+      <a href="${createLink(controller: "mapView", action: "multiLayer", params: [rasterEntryIds: (rasterEntries*.id).join(',')])}">
+        Multi-Layer
+      </a>
+    </span>
+    <g:if test="${rasterEntries?.size() == 1}">
+      <span class="menuButton">
+        <a href="${createLink(controller: "mapView", action: "imageSpace", id: (rasterEntries*.id).join(','))}">
+          Image Space
+        </a>
+      </span>
+    </g:if>
+    <span class="menuButton">
+      <label>Sharpen:</label>
+      <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
+    </span>
+    <span class="menuButton">
+      <label>Stretch:</label>
+      <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
+    </span>
+    <span class="menuButton">
       <label>Region:</label>
       <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts()"/>
-  </span>
-  <span class="menuButton">
-      <label>Terrain Correction:</label>
-       <g:select id="terrain_correction" name="terrain_correction" from="${['false', 'true']}" onChange="changeTerrainCorrectionOps()"/>
     </span>
+    <span class="menuButton">
+      <label>Terrain Correction:</label>
+      <g:select id="terrain_correction" name="terrain_correction" from="${['false', 'true']}" onChange="changeTerrainCorrectionOps()"/>
+    </span>
+    <%--
+      <div id="panel2" class="olControlPanel"></div>
+    --%>
+  </div>
+</content>
+<content tag="bd">
   <%--
-  <div id="panel2" class="olControlPanel"></div>    
---%>
-</div>
-<div class="body">
   <h1 id="mapTitle">${rasterEntries*.mainFile.name}</h1>
   <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
   </g:if>
+  --%>
   <div id="map"></div>
-  <div class="niceBox">
-        <div class="niceBoxHd">Mouse Position:</div>
-        <div class="niceBoxBody">
-          <table>
-            <tr>
-             <td width=200><div id="ddCoordinates"></div></td>
-             <td width=200><div id="dmsCoordinates"></div></td>
-             <td width=200><div id="mgrsCoordinates"></div></td>
-            </tr>
-          </table>
-        </div>
-      </div>
 </div>
-<g:javascript>
+</content>
+<content tag="ft">
+  <div class="niceBox">
+    <div class="niceBoxHd">Mouse Position:</div>
+    <div class="niceBoxBody">
+      <table>
+        <tr>
+          <td width=200><div id="ddCoordinates"></div></td>
+          <td width=200><div id="dmsCoordinates"></div></td>
+          <td width=200><div id="mgrsCoordinates"></div></td>
+        </tr>
+      </table>
+    </div>
+  </div>>
+  <g:javascript>
   var map;
   var rasterLayers;
   var kmlLayers;
   var select;
   var convert = new CoordinateConversion();
   
-  function changeMapSize()
+  function changeMapSize( mapWidth, mapHeight )
   {
-    var mapTitle = document.getElementById("mapTitle");
-    var mapDiv = document.getElementById("map");
+//    var mapTitle = document.getElementById("mapTitle");
+//    var mapDiv = document.getElementById("map");
+//
+//    mapDiv.style.width = mapTitle.offsetWidth + "px";
+//    mapDiv.style.height = Math.round(mapTitle.offsetWidth / 2) + "px";
+    
+    var Dom = YAHOO.util.Dom;
 
-    mapDiv.style.width = mapTitle.offsetWidth + "px";
-    mapDiv.style.height = Math.round(mapTitle.offsetWidth / 2) + "px";
+    Dom.get( "map" ).style.width = mapWidth + "px";
+    Dom.get( "map" ).style.height = mapHeight + "px";
+
+//        alert( mapWidth + ' ' + mapHeight );
+
+    map.updateSize();
     map.updateSize();
   }
-  function init()
+
+  function init( mapWidth, mapHeight )
   {
     var left   = parseFloat("${left}");
     var bottom = parseFloat("${bottom}");
@@ -169,7 +185,7 @@
                                       minExtent:minBounds,
                                       minResolution:'auto', maxResolution:'auto' });
    }
-    changeMapSize();
+    changeMapSize( mapWidth, mapHeight );
 
 
     setupToolbar();
@@ -257,13 +273,13 @@
     ];
     map.addLayers(rasterLayers);
 
-       <g:each in="${kmlOverlays}" var="kmlOverlay" status="i">
+    <g:each in="${kmlOverlays}" var="kmlOverlay" status="i">
 
-         if ( ! kmlLayers ) {
-            kmlLayers = new Array();
-         }
+      if ( ! kmlLayers ) {
+        kmlLayers = new Array();
+     }
 
-    var kmlLayer =  new OpenLayers.Layer.Vector("${kmlOverlay.name}", {
+ var kmlLayer =  new OpenLayers.Layer.Vector("${kmlOverlay.name}", {
       projection: map.displayProjection,
       strategies: [new OpenLayers.Strategy.Fixed()],
       protocol: new OpenLayers.Protocol.HTTP({
@@ -286,24 +302,24 @@
     map.addControl(select);
     select.activate();
 
-  </g:each>
+    </g:each>
 
 
 
 
-  }
+    }
 
-  function onPopupClose(evt)
-  {
-      select.unselectAll();
-  }
+function onPopupClose(evt)
+{
+ select.unselectAll();
+}
 
-  function onFeatureSelect(event)
-  {
-      var feature = event.feature;
-      // Since KML is user-generated, do naive protection against
-      // Javascript.
-      var content = "<h2>"+feature.attributes.name + "</h2>" + feature.attributes.description;
+function onFeatureSelect(event)
+{
+ var feature = event.feature;
+ // Since KML is user-generated, do naive protection against
+ // Javascript.
+ var content = "<h2>"+feature.attributes.name + "</h2>" + feature.attributes.description;
       if (content.search("<script") != -1) {
           content = "Content contained Javascript! Escaped content below.<br />" + content.replace(/</g, "&lt;");
       }
@@ -441,8 +457,9 @@
 
         map.addControl(panel);
       }
-  
-</g:javascript>
+
+  </g:javascript>
+</content>
 
 </body>
 </html>
