@@ -193,7 +193,7 @@ class RasterEntryController implements InitializingBean
     {
       //println "=== search end ==="
 
-      return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS, sidebar: "rasterSearch"]
+      return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
   }
 
@@ -263,7 +263,7 @@ class RasterEntryController implements InitializingBean
     {
       //println "=== search end ==="
 
-      return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS, sidebar: "rasterSearch"]
+      return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
   }
 
