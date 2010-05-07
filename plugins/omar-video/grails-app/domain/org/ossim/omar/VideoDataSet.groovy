@@ -30,7 +30,7 @@ class VideoDataSet
 
     if ( !mainFile )
     {
-      //mainFile = org.ossim.omar.RasterFile.findByRasterDataSetAndType(videoDataSet, "main")
+      //mainFile = org.ossim.omar.VideoFile.findByVideoDataSetAndType(videoDataSet, "main")
 
       mainFile = VideoFile.createCriteria().get {
         eq("type", "main")

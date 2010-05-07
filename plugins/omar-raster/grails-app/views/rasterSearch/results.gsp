@@ -7,9 +7,7 @@
 </head>
 <body>
 <div class="nav">
-  <span class="menuButton">
-	<g:link class="home" controller="home">Home</g:link>
-  </span>
+  <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
   <span class="menuButton"><g:link action="search">New Search</g:link></span>
   <span class="menuButton">
     <g:link action="search" params="${queryParams.toMap()}">Edit Search</g:link>
