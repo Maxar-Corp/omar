@@ -51,7 +51,7 @@
 <body>
 <content tag="hd">
   <div class="nav">
-    <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
+    <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
     <span class="menuButton">
       <a href="${createLink(controller: "mapView", action: "index", params: [rasterEntryIds: rasterEntry?.id])}">
         Ground Space
