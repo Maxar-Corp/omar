@@ -16,6 +16,7 @@
         <fileset id="Grails" name="Grails" removed="false">
           <file>file://$MODULE_DIR$/web-app/WEB-INF/applicationContext.xml</file>
           <file>file://$MODULE_DIR$/web-app/WEB-INF/applicationContext.xml</file>
+          <file>file://$MODULE_DIR$/web-app/WEB-INF/applicationContext.xml</file>
         </fileset>
       </configuration>
     </facet>
@@ -26,7 +27,18 @@
         </descriptors>
         <webroots>
           <root url="file://$MODULE_DIR$/src/templates/war" relative="/WEB-INF" />
+          <root url="file://$MODULE_DIR$/web-app" relative="/" />
         </webroots>
+        <sourceRoots>
+          <root url="file://$MODULE_DIR$/grails-app/controllers" />
+          <root url="file://$MODULE_DIR$/grails-app/domain" />
+          <root url="file://$MODULE_DIR$/grails-app/services" />
+          <root url="file://$MODULE_DIR$/grails-app/taglib" />
+          <root url="file://$MODULE_DIR$/src/groovy" />
+          <root url="file://$MODULE_DIR$/src/java" />
+          <root url="file://$MODULE_DIR$/test/integration" />
+          <root url="file://$MODULE_DIR$/test/unit" />
+        </sourceRoots>
       </configuration>
     </facet>
   </component>
@@ -41,9 +53,12 @@
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/unit" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/grails-app/utils" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="grails-1.2.2" level="application" />
+    <orderEntry type="library" name="grails-1.2.2" level="application" />
     <orderEntry type="library" name="grails-1.2.1" level="application" />
     <orderEntry type="library" name="Grails 1.2.1" level="project" />
     <orderEntry type="module-library">
@@ -57,6 +72,13 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="omar-grailsPlugins" />
+    <orderEntry type="module" module-name="omar-grailsPlugin-postgis" />
+    <orderEntry type="module" module-name="omar-grailsPlugin-openlayers" />
+    <orderEntry type="module" module-name="omar-grailsPlugin-omar-oms" />
+    <orderEntry type="module" module-name="omar-grailsPlugin-omar-video" />
+    <orderEntry type="module" module-name="omar-grailsPlugin-omar-core" />
+    <orderEntry type="module" module-name="omar-grailsPlugin-omar-security" />
+    <orderEntry type="module" module-name="omar-grailsPlugin-omar-raster`" />
   </component>
 </module>
 

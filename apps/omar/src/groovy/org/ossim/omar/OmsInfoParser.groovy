@@ -52,32 +52,4 @@ public class OmsInfoParser
 
     return videoDataSets
   }
-
-
-
-  static def initGroundGeom(rasterEntryNode)
-  {
-    def wkt = rasterEntryNode?.groundGeom?.toString().trim()
-    def srs = rasterEntryNode?.groundGeom?.@srs?.toString().trim()
-    def groundGeom = null
-
-    if ( wkt && srs )
-    {
-      try
-      {
-        srs -= "epsg:"
-
-        def geomString = "SRID=${srs};${wkt}"
-
-        groundGeom = Geometry.fromString(geomString)
-      }
-      catch (Exception e)
-      {
-        System.err.println("Cannt create geom for: srs=${srs} wkt=${wkt}")
-      }
-
-    }
-
-    return groundGeom
-  }
 }
