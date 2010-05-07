@@ -8,9 +8,7 @@
 <body>
 
 <div class="nav">
-  <span class="menuButton">
-	<g:link class="home" controller="home">Home</g:link>
-  </span>
+  <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
   <span class="menuButton"><g:link class="create" action="create">New AuthUser</g:link></span>
 </div>
 

@@ -6,9 +6,7 @@
     <title>Edit Profile</title>
   </head>
   <body>
-    <div class="nav">
-	<g:link class="home" controller="home">Home</g:link>
-    </div>
+    <div class="nav"><g:link class="home" uri="/">Home</g:link></div>
     <div class="body">
       <h1>Edit Profile</h1>
       <g:if test="${flash.message}">
