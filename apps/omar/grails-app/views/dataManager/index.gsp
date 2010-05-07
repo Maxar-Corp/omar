@@ -14,7 +14,7 @@
 </head>
 <body>
 <div class="nav">
-  <span class="menuButton"><a class="home" href="${resource(dir: '')}">Home</a></span>
+  <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
 </div>
 <div class="body">
   <g:if test="${flash.message}">

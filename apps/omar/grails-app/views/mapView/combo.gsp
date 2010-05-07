@@ -231,7 +231,7 @@ function init()
 <body onload="init()" <%--onresize="changeMapSize()"--%>>
 <div class="nav">
   <span class="menuButton">
-    <a class="home" href="${resource(dir: '')}">Home</a>
+   <g:link class="home" uri="/">Home</g:link> 
     <button name="" onclick="imageToWorld()">Image to World</button>
     <button onclick="worldToImage()">World to Image</button>    
   </span>
