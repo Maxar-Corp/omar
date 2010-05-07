@@ -22,7 +22,7 @@ grails.gorm.default.mapping = {
 // }
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
-//    xml: ['text/xml', 'application/xml'],
+    xml: ['text/xml', 'application/xml'],
     text: 'text-plain',
     js: 'text/javascript',
     rss: 'application/rss+xml',
@@ -44,6 +44,8 @@ grails.converters.encoding = "UTF-8"
 grails.enable.native2ascii = true
 
 grails.serverIP = InetAddress.localHost.hostAddress
+//grails.serverIP = "scott-6a8076558:8080"
+
 //grails.serverIP = "172.16.90.130"
 
 // set per-environment serverURL stem for creating absolute links

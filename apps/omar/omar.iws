@@ -1,170 +1,449 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ChangeListManager" verified="true">
-    <list default="true" readonly="true" id="592945f9-0257-41e9-a82f-f216c3016fbd" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/rasterDataSet/create.gsp" afterPath="$PROJECT_DIR$/grails-app/views/rasterDataSet/create.gsp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/grails-app/domain/org" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/MapObject.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/MapObject.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/StagerQueueItem.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/StagerQueueItem.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/rasterDataSet/edit.gsp" afterPath="$PROJECT_DIR$/grails-app/views/rasterDataSet/edit.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/java/AbstractFilter.java" afterPath="$PROJECT_DIR$/src/java/org/ossim/omar/AbstractFilter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/grails-app/services/org" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/grails-app/services/org/ossim/omar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/rasterSearch/results2.gsp" afterPath="$PROJECT_DIR$/grails-app/views/rasterSearch/results2.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/WMSCapabilities.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/WMSCapabilities.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/org" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/ProxyServiceTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/ProxyServiceTests.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/videoDataSet/edit.gsp" afterPath="$PROJECT_DIR$/grails-app/views/videoDataSet/edit.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/ThumbnailService.groovy" afterPath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/ThumbnailService.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/RasterFileTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterFileTests.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/conf/DataSource.groovy" afterPath="$PROJECT_DIR$/grails-app/conf/DataSource.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/RasterEntrySearchTag.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterEntrySearchTag.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/VideoDataSetQuery.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/VideoDataSetQuery.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/LoginController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/LoginController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/VideoStreamingControllerTests.groovy" afterPath="$PROJECT_DIR$/test/unit/org/ossim/omar/VideoStreamingControllerTests.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/videoDataSet/create.gsp" afterPath="$PROJECT_DIR$/grails-app/views/videoDataSet/create.gsp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/org/ossim/omar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/conf/Config.groovy" afterPath="$PROJECT_DIR$/grails-app/conf/Config.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/unit/org/ossim" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/RasterSearchController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterSearchController.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/integration/org" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/role/list.gsp" afterPath="$PROJECT_DIR$/grails-app/views/role/list.gsp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/groovy/org" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/VideoDataSetSearchService.groovy" afterPath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/VideoDataSetSearchService.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/StagerService.groovy" afterPath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/StagerService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/conf/BootStrap.groovy" afterPath="$PROJECT_DIR$/grails-app/conf/BootStrap.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/StagerEventHandler.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/StagerEventHandler.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/videoFile/edit.gsp" afterPath="$PROJECT_DIR$/grails-app/views/videoFile/edit.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/taglib/OmarTagLib.groovy" afterPath="$PROJECT_DIR$/grails-app/taglib/org/ossim/omar/OmarTagLib.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/Utility.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/Utility.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/grails-app/taglib/org/ossim" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/VideoFileTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/VideoFileTests.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/grails-app/services/org/ossim" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/ImageFileFilter.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/ImageFileFilter.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/CoordinateConversionService.groovy" afterPath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/CoordinateConversionService.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/RegisterController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RegisterController.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/user/list.gsp" afterPath="$PROJECT_DIR$/grails-app/views/user/list.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/videoFile/create.gsp" afterPath="$PROJECT_DIR$/grails-app/views/videoFile/create.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/CaptchaController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/CaptchaController.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application.properties" afterPath="$PROJECT_DIR$/application.properties" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/FileFilterEvent.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/FileFilterEvent.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/RasterEntrySearchTagController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterEntrySearchTagController.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/requestmap/list.gsp" afterPath="$PROJECT_DIR$/grails-app/views/requestmap/list.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/EmailerService.groovy" afterPath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/EmailerService.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/RasterEntryFile.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterEntryFile.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/ImageArchiveServiceTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/ImageArchiveServiceTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/VideoDataSetSearchTagTests.groovy" afterPath="$PROJECT_DIR$/test/unit/org/ossim/omar/VideoDataSetSearchTagTests.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/conf/SecurityConfig.groovy" afterPath="$PROJECT_DIR$/grails-app/conf/SecurityConfig.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/RasterFileController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterFileController.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/integration/org/ossim" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/videoDataSet/search.gsp" afterPath="$PROJECT_DIR$/grails-app/views/videoDataSet/search.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/HttpStatus.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/HttpStatus.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntry/edit.gsp" afterPath="$PROJECT_DIR$/grails-app/views/rasterEntry/edit.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/ISO8601DateParser.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/ISO8601DateParser.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/MapViewController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/MapViewController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/HttpStatusMessage.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/HttpStatusMessage.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/FileFilterEventListener.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/FileFilterEventListener.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/HomeControllerTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/HomeControllerTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/KmlQueryControllerTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/KmlQueryControllerTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/RasterEntrySearchServiceTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterEntrySearchServiceTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/OmsInfoParser.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/OmsInfoParser.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/OgcController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/OgcController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/RasterEntryFileTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterEntryFileTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/RasterDataSet.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterDataSet.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/Repository.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/Repository.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/LayerObject.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/LayerObject.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/RepositoryTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/RepositoryTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/RasterEntryMetadata.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterEntryMetadata.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/unit/org" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/OmarDuration.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/OmarDuration.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/VideoFileController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/VideoFileController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/Requestmap.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/Requestmap.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/DateUtil.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/DateUtil.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/HomeController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/HomeController.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/grails-app/taglib/org" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/RasterEntryTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterEntryTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/FileListing.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/FileListing.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/rasterFile/create.gsp" afterPath="$PROJECT_DIR$/grails-app/views/rasterFile/create.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/VideoStreamingController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/VideoStreamingController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/VideoDataSetMetadataTests.groovy" afterPath="$PROJECT_DIR$/test/unit/org/ossim/omar/VideoDataSetMetadataTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/RasterEntrySearchTagTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterEntrySearchTagTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/RoleController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RoleController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/RequestmapController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RequestmapController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/YuiTableTestController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/YuiTableTestController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/RepositoryControllerTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/RepositoryControllerTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/RasterEntrySearchService.groovy" afterPath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/RasterEntrySearchService.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/groovy/org/ossim" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/ImageDetector.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/ImageDetector.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/KmlService.groovy" afterPath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/KmlService.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/ThumbnailController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/ThumbnailController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/VideoDataSetController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/VideoDataSetController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/RasterEntrySearchTagControllerTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterEntrySearchTagControllerTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/FileProcessor.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/FileProcessor.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/RasterEntryMetadataTests.groovy" afterPath="$PROJECT_DIR$/test/unit/org/ossim/omar/RasterEntryMetadataTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/DataGeneratorControllerTests.groovy" afterPath="$PROJECT_DIR$/test/unit/org/ossim/omar/DataGeneratorControllerTests.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/ImageGenerator.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/ImageGenerator.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/RasterDataSetControllerTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterDataSetControllerTests.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lib/joms.jar" afterPath="$PROJECT_DIR$/lib/joms.jar" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/IviewServiceTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/IviewServiceTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/RepositoryController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RepositoryController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/StagerServiceTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/StagerServiceTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/VideoDataSetSearchTagControllerTests.groovy" afterPath="$PROJECT_DIR$/test/unit/org/ossim/omar/VideoDataSetSearchTagControllerTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/java/DataManagerClient.java" afterPath="$PROJECT_DIR$/src/java/org/ossim/omar/DataManagerClient.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/DataManagerService.groovy" afterPath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/DataManagerService.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntry/_rasterSearch.gsp" afterPath="$PROJECT_DIR$/grails-app/views/rasterEntry/_rasterSearch.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntryFile/edit.gsp" afterPath="$PROJECT_DIR$/grails-app/views/rasterEntryFile/edit.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/java/TransparentFilter.java" afterPath="$PROJECT_DIR$/src/java/org/ossim/omar/TransparentFilter.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/RasterDataSetTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterDataSetTests.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/grails-app/controllers/org" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntry/search.gsp" afterPath="$PROJECT_DIR$/grails-app/views/rasterEntry/search.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/VideoDataSetMetadata.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/VideoDataSetMetadata.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/rasterFile/edit.gsp" afterPath="$PROJECT_DIR$/grails-app/views/rasterFile/edit.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/ThumbnailControllerTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/ThumbnailControllerTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/VideoDataSetSearchTagController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/VideoDataSetSearchTagController.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/grails-app/taglib/org/ossim/omar" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/WebMappingService.groovy" afterPath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/WebMappingService.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/VideoDataSetSearchTag.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/VideoDataSetSearchTag.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/VideoDataSetTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/VideoDataSetTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/KmlQueryController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/KmlQueryController.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/yuiTableTest/foo.gsp" afterPath="$PROJECT_DIR$/grails-app/views/yuiTableTest/foo.gsp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/java/org/ossim" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/RasterFile.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterFile.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntryFile/create.gsp" afterPath="$PROJECT_DIR$/grails-app/views/rasterEntryFile/create.gsp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/VideoDataSetSearchServiceTests.groovy" afterPath="$PROJECT_DIR$/test/unit/org/ossim/omar/VideoDataSetSearchServiceTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/RasterEntryQuery.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/RasterEntryQuery.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/RasterEntryFileController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterEntryFileController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/LogoutController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/LogoutController.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/test/unit/org/ossim/omar" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/UserController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/UserController.groovy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar-grailsPlugins.iml" afterPath="$PROJECT_DIR$/omar-grailsPlugins.iml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/IviewService.groovy" afterPath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/IviewService.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/RasterDataSetController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterDataSetController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/RasterEntryController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterEntryController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/Role.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/Role.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar.iws" afterPath="$PROJECT_DIR$/omar.iws" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/StagerUtil.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/StagerUtil.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/ThumbnailServiceTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/ThumbnailServiceTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/WMSRequest.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/WMSRequest.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/RasterFileControllerTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterFileControllerTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/DataGeneratorController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/DataGeneratorController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/java/ThumbnailGenerator.java" afterPath="$PROJECT_DIR$/src/java/org/ossim/omar/ThumbnailGenerator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntry/create.gsp" afterPath="$PROJECT_DIR$/grails-app/views/rasterEntry/create.gsp" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/DataInjectorTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/DataInjectorTests.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/AuthUser.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/AuthUser.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/VideoDataSet.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/VideoDataSet.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/DataManagerController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/DataManagerController.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/FileScanner.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/FileScanner.groovy" />
+  <component name="ChangeListManager">
+    <list default="true" readonly="true" id="e9d4c3f3-857e-47fc-b644-5d0029faa3b1" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/domain" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/dataManagerClient.sh" afterPath="$PROJECT_DIR$/dataManagerClient.sh" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/VideoFile.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/VideoFile.groovy" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/RasterEntry.groovy" afterPath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterEntry.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/web-app" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/conf/DataSource.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/src" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterDataSet.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/domain/org/ossim/omar/RasterDataSet.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/conf" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterEntry.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/domain/org/ossim/omar/RasterEntry.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterEntrySearchTagTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration/org/ossim/omar/RasterEntrySearchTagTests.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoDataSet/search.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet/search.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/web-app/WEB-INF/tld/grails.tld" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntry" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/src/groovy/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/OmarRasterGrailsPlugin.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/src/groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/src/groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/unit/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/domain" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RequestmapController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/controllers/org/ossim/omar/RequestmapController.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/LoginController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/controllers/org/ossim/omar/LoginController.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoDataSet/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet/list.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/web-app/images" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/utils" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/omar-grailsPlugin-postgis-grailsPlugins.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/test/unit" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/web-app/WEB-INF/applicationContext.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterEntrySearchTag.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/domain/org/ossim/omar/RasterEntrySearchTag.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/controllers" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/views/error.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/web-app/WEB-INF/tld/grails.tld" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/org/ossim/omar/VideoDataSetMetadataTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/unit/org/ossim/omar/VideoDataSetMetadataTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar.iml" afterPath="$PROJECT_DIR$/omar.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/web-app/js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/conf/BuildConfig.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/org/ossim/omar/VideoDataSetSearchServiceTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/unit/org/ossim/omar/VideoDataSetSearchServiceTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/conf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/src/groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/services" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/OmarVideoGrailsPlugin.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/EmailerService.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/services/org/ossim/omar/EmailerService.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/services" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/conf/UrlMappings.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration/org/ossim" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/web-app/WEB-INF/sitemesh.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/scripts/_Uninstall.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntry/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/show.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RegisterController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/controllers/org/ossim/omar/RegisterController.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterEntrySearchTagControllerTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration/org/ossim/omar/RasterEntrySearchTagControllerTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app/META-INF" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/openlayers/plugin.xml" afterPath="$PROJECT_DIR$/../../plugins/openlayers/plugin.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/domain/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/controllers" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/application.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/scripts/_Upgrade.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/services" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterEntryFileController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/controllers/org/ossim/omar/RasterEntryFileController.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/services/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/WEB-INF/applicationContext.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/src/groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/web-app/WEB-INF/sitemesh.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/.settings/org.codehaus.groovy.eclipse.preferences.prefs" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/repository/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/create.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/layouts" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/role/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/create.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoFile/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile/create.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/scripts" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web-app/js/coordinateConversion.js" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/js/coordinateConversion.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/unit/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/src/java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/web-app/WEB-INF/tld/spring.tld" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/repository" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/error.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app/WEB-INF/sitemesh.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/i18n" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoFile/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile/show.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/role" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/conf/spring" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterFileControllerTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration/org/ossim/omar/RasterFileControllerTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/web-app/WEB-INF/sitemesh.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/requestmap/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap/show.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoDataSet/results.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet/results.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/utils" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/controllers/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/domain/org/ossim" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/.classpath" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoStreaming/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoStreaming/show.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterDataSetController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/controllers/org/ossim/omar/RasterDataSetController.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoDataSet" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/integration/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/application.properties" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoDataSet/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet/edit.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterFile" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/.settings" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/RasterEntryQuery.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/src/groovy/org/ossim/omar/RasterEntryQuery.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/scripts/_Uninstall.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/conf/hibernate" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/scripts" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/controllers/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/omar-grailsPlugin-omar-security-grailsPlugins.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/WEB-INF/tld/spring.tld" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/views/layouts" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/login" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/login" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/conf/DataSource.groovy" afterPath="$PROJECT_DIR$/grails-app/conf/DataSource.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/VideoFile.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/domain/org/ossim/omar/VideoFile.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/lib" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/omar-grailsPlugin-omar-core-grailsPlugins.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/src/groovy/org/ossim" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/requestmap/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap/create.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/web-app" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/.classpath" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterDataSet/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet/show.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/OmarSecurityGrailsPlugin.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app/WEB-INF/tld/grails.tld" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/web-app/WEB-INF/tld" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/web-app/WEB-INF" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoDataSet/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet/show.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterFile/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile/edit.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/domain/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/conf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app/WEB-INF/tld" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/controllers/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/.settings/org.codehaus.groovy.eclipse.preferences.prefs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/conf/UrlMappings.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/Role.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/domain/org/ossim/omar/Role.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/user/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/create.gsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/postgis/postgis.ipr" afterPath="$PROJECT_DIR$/../../plugins/postgis/postgis.ipr" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/unit" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/integration/org/ossim" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/src/groovy/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/.classpath" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/scripts/_Upgrade.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/integration" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/role/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/edit.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntry/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/create.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/taglib" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/controllers" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/domain" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/.classpath" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/conf/hibernate" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterSearch/results2.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterSearch/results2.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterDataSetTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration/org/ossim/omar/RasterDataSetTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/WEB-INF/tld" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/lib" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/web-app/images" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/integration/org" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/VideoDataSetSearchTagController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/controllers/org/ossim/omar/VideoDataSetSearchTagController.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/.settings" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/scripts" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app/js" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/CaptchaController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/controllers/org/ossim/omar/CaptchaController.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoDataSet/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet/create.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/register/index.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/index.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/web-app/js" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/DateUtil.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-core/src/groovy/org/ossim/omar/DateUtil.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/controllers" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/omar-grailsPlugin-omar-video-grailsPlugins.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/conf/DataSource.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/web-app/WEB-INF/tld" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web-app/js/mapwidget.js" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/js/mapwidget.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/scripts/_Upgrade.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/unit/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/services/org/ossim" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/domain/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/.project" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/web-app/META-INF" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterSearch" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterSearch" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/conf/Config.groovy" afterPath="$PROJECT_DIR$/grails-app/conf/Config.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/web-app/WEB-INF/applicationContext.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/error.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web-app/js/swfobject.js" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app/js/swfobject.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/.settings/org.codehaus.groovy.eclipse.preferences.prefs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/scripts/_Install.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/conf/spring" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/role/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/list.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/joms.jar" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/lib/joms.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/domain" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/conf/BuildConfig.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/scripts/_Uninstall.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/src" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/conf/BuildConfig.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/services/org" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntry/search.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/search.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/conf/DataSource.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterEntryTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration/org/ossim/omar/RasterEntryTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/OmsInfoParser.groovy" afterPath="$PROJECT_DIR$/src/groovy/org/ossim/omar/OmsInfoParser.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/omar-grailsPlugin-omar-oms-grailsPlugins.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/services/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/services/org/ossim" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/src/java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/controllers/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/error.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterFileController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/controllers/org/ossim/omar/RasterFileController.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterEntrySearchServiceTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration/org/ossim/omar/RasterEntrySearchServiceTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/error.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/OmarOmsGrailsPlugin.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/lib" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterDataSet/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet/list.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/.settings" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/conf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/.project" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/.classpath" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/taglib" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/views" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/login/about.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/login/about.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntry/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/list.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app/images" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/postgis/plugin.xml" afterPath="$PROJECT_DIR$/../../plugins/postgis/plugin.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/domain/org/ossim" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/web-app/css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/web-app/css" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/org/ossim/omar/RasterEntryMetadataTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/unit/org/ossim/omar/RasterEntryMetadataTests.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntryFile/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile/list.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/test" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/lib" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntryFile" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/web-app/css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/scripts/_Install.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterEntryFile.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/domain/org/ossim/omar/RasterEntryFile.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/register" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application.properties" afterPath="$PROJECT_DIR$/application.properties" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/VideoDataSetController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/controllers/org/ossim/omar/VideoDataSetController.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/src/java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/conf/UrlMappings.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/user/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/edit.gsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/postgis/postgis.iws" afterPath="$PROJECT_DIR$/../../plugins/postgis/postgis.iws" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/web-app/js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/utils" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/controllers/org/ossim" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/conf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/conf/spring" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/test" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/test/integration" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterFile/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile/create.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/VideoDataSetQuery.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/src/groovy/org/ossim/omar/VideoDataSetQuery.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/OmarCoreGrailsPlugin.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar.ipr" afterPath="$PROJECT_DIR$/omar.ipr" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/conf/spring" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/layouts" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/domain" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/META-INF" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/src/groovy/org/ossim" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterDataSetControllerTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration/org/ossim/omar/RasterDataSetControllerTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/utils" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/scripts/_Install.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/src/groovy/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/services" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/scripts/_Upgrade.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/web-app/META-INF" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/taglib" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/user/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/show.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterEntryFileTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration/org/ossim/omar/RasterEntryFileTests.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/org/ossim/omar/RasterFileTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration/org/ossim/omar/RasterFileTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/services/org/ossim/omar" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/LogoutController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/controllers/org/ossim/omar/LogoutController.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/org/ossim/omar/VideoDataSetTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/integration/org/ossim/omar/VideoDataSetTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/test/integration/org/ossim/omar/ThumbnailControllerTests.groovy" afterPath="$PROJECT_DIR$/test/integration/org/ossim/omar/ThumbnailControllerTests.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/integration/org/ossim/omar/VideoFileTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/integration/org/ossim/omar/VideoFileTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/services/org/ossim" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/test/integration" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/.settings/org.codehaus.groovy.eclipse.preferences.prefs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/conf/DataSource.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/domain/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/scripts" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/login/openIdAuth.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/login/openIdAuth.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/src/java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoFile/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile/edit.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/src/groovy/org/ossim" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/user/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/list.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterSearchController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/controllers/org/ossim/omar/RasterSearchController.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/requestmap/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap/edit.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/conf/DataSource.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterEntrySearchTagController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/controllers/org/ossim/omar/RasterEntrySearchTagController.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/ThumbnailController.groovy" afterPath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/ThumbnailController.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/unit/org/ossim" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/repository/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/list.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/domain/org/ossim" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/user" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RepositoryController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/controllers/org/ossim/omar/RepositoryController.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/scripts/_Uninstall.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/conf/UrlMappings.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/domain/org/ossim/omar" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/mail-1.4.jar" afterPath="$PROJECT_DIR$/../../plugins/omar-security/lib/mail-1.4.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/layouts" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/conf/hibernate" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/src/groovy/org" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/VideoFileController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/controllers/org/ossim/omar/VideoFileController.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/src/groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/web-app/images" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/VideoDataSet.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/domain/org/ossim/omar/VideoDataSet.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app/WEB-INF/applicationContext.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/i18n" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/test/integration" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/web-app/WEB-INF/tld" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/conf/hibernate" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/services" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/controllers/org/ossim" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/.settings" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/conf/UrlMappings.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntryFile/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile/edit.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/org/ossim/omar/VideoStreamingControllerTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/unit/org/ossim/omar/VideoStreamingControllerTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/services/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/conf/spring" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoFile" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/repository/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/show.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/application.properties" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntryFile/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile/create.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/unit/org/ossim" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/Repository.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/domain/org/ossim/omar/Repository.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterEntryController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/controllers/org/ossim/omar/RasterEntryController.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterDataSet/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet/create.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/register/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/show.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/VideoDataSetSearchTag.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/domain/org/ossim/omar/VideoDataSetSearchTag.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/CoordinateConversionService.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/services/org/ossim/omar/CoordinateConversionService.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/domain/org/ossim/omar" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/VideoDataSetSearchService.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/services/org/ossim/omar/VideoDataSetSearchService.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/i18n" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterEntryMetadata.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/domain/org/ossim/omar/RasterEntryMetadata.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/lib" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/taglib" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/.settings/org.codehaus.groovy.eclipse.preferences.prefs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/controllers" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/i18n" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/register/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/edit.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/taglib" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/images" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/lib/activation-1.1.jar" afterPath="$PROJECT_DIR$/../../plugins/omar-security/lib/activation-1.1.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/application.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/services/org" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterFile.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/domain/org/ossim/omar/RasterFile.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/WEB-INF" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/omar-grailsPlugin-omar-raster`-grailsPlugins.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/conf/BuildConfig.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/test" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/test/unit" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/omar-grailsPlugin-openlayers-grailsPlugins.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/scripts/_Install.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/test/integration/org/ossim/omar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar.iws" afterPath="$PROJECT_DIR$/omar.iws" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/controllers/org/ossim" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoStreaming" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoStreaming" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/unit/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/src/groovy/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/domain/org" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/postgis/postgis-grailsPlugins.iml" afterPath="$PROJECT_DIR$/../../plugins/postgis/postgis-grailsPlugins.iml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RoleController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/controllers/org/ossim/omar/RoleController.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/conf/BuildConfig.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/RasterEntrySearchService.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/services/org/ossim/omar/RasterEntrySearchService.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterFile/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile/list.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/services/org/ossim" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/controllers/org/ossim/omar" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web-app/js/player.swf" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app/js/player.swf" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/role/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/show.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntryFile/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile/show.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/AuthUser.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/domain/org/ossim/omar/AuthUser.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/web-app" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterDataSet/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet/edit.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/services/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/src" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/web-app/WEB-INF/tld/spring.tld" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/requestmap" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/application.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/i18n" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/postgis/application.properties" afterPath="$PROJECT_DIR$/../../plugins/postgis/application.properties" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/web-app/WEB-INF" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/VideoDataSetMetadata.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/domain/org/ossim/omar/VideoDataSetMetadata.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/VideoStreamingController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/controllers/org/ossim/omar/VideoStreamingController.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/unit" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/org/ossim/omar/VideoDataSetSearchTagControllerTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/unit/org/ossim/omar/VideoDataSetSearchTagControllerTests.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar-grailsPlugins.iml" afterPath="$PROJECT_DIR$/omar-grailsPlugins.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/controllers/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/scripts/_Upgrade.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/web-app/WEB-INF/tld/grails.tld" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app/css" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/login/auth.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/login/auth.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/WEB-INF/sitemesh.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/domain/org/ossim/omar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/web-app/WEB-INF" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/controllers/org/ossim/omar" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntry/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/edit.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/web-app/META-INF" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app/WEB-INF" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/WEB-INF/tld/grails.tld" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/test/unit/org/ossim/omar/VideoDataSetSearchTagTests.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-video/test/unit/org/ossim/omar/VideoDataSetSearchTagTests.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/domain/org/ossim" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/src/java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/src" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/scripts/_Install.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/UserController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/controllers/org/ossim/omar/UserController.groovy" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterDataSet" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoDataSetSearchTag" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSetSearchTag" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/scripts/_Uninstall.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/.settings" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/web-app/WEB-INF/tld/spring.tld" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterFile/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile/show.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/web-app/WEB-INF/applicationContext.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/web-app/WEB-INF/tld/spring.tld" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/controllers/org" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/repository/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/edit.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterSearch/search.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterSearch/search.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/layouts" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/test/unit" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/utils" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/src/groovy/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/services/org" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/.project" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/src" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/requestmap/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap/list.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/controllers/org/ossim" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterEntry/results.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/results.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/videoFile/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile/list.gsp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-video/.project" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/grails-app/conf/hibernate" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/views/rasterSearch/results.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterSearch/results.gsp" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/Requestmap.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/domain/org/ossim/omar/Requestmap.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-core/scripts" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/.project" />
     </list>
     <ignored path="omar.iws" />
+    <ignored path="$USER_HOME_GRIFFON$/" />
+    <ignored path="$USER_HOME_GRAILS$/" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -222,37 +501,46 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="OmsInfoParser.groovy" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="ThumbnailController.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/ThumbnailController.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="20" column="74" selection-start="468" selection-end="468" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OmsInfoParser.groovy" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/groovy/org/ossim/omar/OmsInfoParser.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="195" column="64" selection-start="6174" selection-end="6174" vertical-scroll-proportion="-127.5">
+            <state line="12" column="30" selection-start="267" selection-end="267" vertical-scroll-proportion="0.18946302">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RasterEntryQuery.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/groovy/org/ossim/omar/RasterEntryQuery.groovy">
+      <file leaf-file-name="HomeController.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/HomeController.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="6" selection-start="455" selection-end="455" vertical-scroll-proportion="0.0">
+            <state line="1" column="6" selection-start="29" selection-end="29" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="VideoDataSetQuery.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/groovy/org/ossim/omar/VideoDataSetQuery.groovy">
+      <file leaf-file-name="index.gsp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/grails-app/views/home/index.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="6" selection-start="394" selection-end="394" vertical-scroll-proportion="0.0">
+            <state line="44" column="36" selection-start="1253" selection-end="1253" vertical-scroll-proportion="-1.5454545">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DataInjectorTests.groovy" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/test/integration/org/ossim/omar/DataInjectorTests.groovy">
+      <file leaf-file-name="Config.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/grails-app/conf/Config.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="200" column="29" selection-start="9389" selection-end="9389" vertical-scroll-proportion="0.25869566">
+            <state line="53" column="101" selection-start="2041" selection-end="2041" vertical-scroll-proportion="-12.115385">
               <folding />
             </state>
           </provider>
@@ -268,18 +556,22 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/grails-app/services/org/ossim/omar/RasterEntrySearchService.groovy" />
-        <option value="$PROJECT_DIR$/grails-app/services/org/ossim/omar/VideoDataSetSearchService.groovy" />
-        <option value="$PROJECT_DIR$/src/groovy/org/ossim/omar/RasterEntryQuery.groovy" />
-        <option value="$PROJECT_DIR$/src/groovy/org/ossim/omar/VideoDataSetQuery.groovy" />
-        <option value="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterEntryMetadata.groovy" />
-        <option value="$PROJECT_DIR$/grails-app/domain/org/ossim/omar/VideoDataSetMetadata.groovy" />
-        <option value="$PROJECT_DIR$/grails-app/conf/Config.groovy" />
-        <option value="$PROJECT_DIR$/grails-app/conf/DataSource.groovy" />
-        <option value="$PROJECT_DIR$/grails-app/conf/BootStrap.groovy" />
-        <option value="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/HomeController.groovy" />
+        <option value="$PROJECT_DIR$/grails-app/views/rasterEntry/results.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/layouts/main7.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/layouts/main8.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/videoDataSet/list.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/videoDataSet/results.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/mapView/multiLayer.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/mapView/index.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/mapView/imageSpace.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/rasterSearch/search.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterSearchController.groovy" />
+        <option value="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterEntryController.groovy" />
+        <option value="$PROJECT_DIR$/grails-app/views/query/search.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/query/results.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/QueryController.groovy" />
+        <option value="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/ThumbnailController.groovy" />
         <option value="$PROJECT_DIR$/src/groovy/org/ossim/omar/OmsInfoParser.groovy" />
-        <option value="$PROJECT_DIR$/test/integration/org/ossim/omar/DataInjectorTests.groovy" />
       </list>
     </option>
   </component>
@@ -336,11 +628,20 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Favorites" />
       <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+          </PATH>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="omar" />
@@ -357,27 +658,175 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="web-app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="groovy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="grails-app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="grails-app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="services" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="grails-app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="domain" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="grails-app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="controllers" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
+      <pane id="Favorites" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="project.structure.last.edited" value="Project" />
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
+    <property name="project.structure.proportion" value="0.0" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="MemberChooser.showClasses" value="true" />
-    <property name="project.structure.side.proportion" value="0.2" />
     <property name="GoToClass.includeLibraries" value="false" />
+    <property name="project.structure.side.proportion" value="0.2" />
     <property name="MemberChooser.copyJavadoc" value="false" />
-  </component>
-  <component name="RecentsManager">
-    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
-      <recent name="org.ossim.omar" />
-    </key>
   </component>
   <component name="RunManager">
     <configuration default="true" type="GrailsRunConfigurationType" factoryName="Grails">
@@ -393,21 +842,10 @@
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
-    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit" break_at_first_line="false" browser="DEFAULT" class_file="" class="" config_file="" directory="" file="" is_config_by_xml="false" is_groups_set="false" method_class="" method_file="" method="" open_page_automatically="false" scope="Class" stop_session_after_first_page="true" web_path="">
-      <option name="excludedGroups">
-        <set />
-      </option>
-      <option name="includedGroups">
-        <set />
-      </option>
-      <option name="mappings">
-        <list />
-      </option>
-      <option name="sessionId" value="" />
+    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
       <method>
         <option name="AntTarget" enabled="false" />
         <option name="BuildArtifacts" enabled="false" />
-        <option name="FtpUpload" enabled="false" />
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
@@ -424,6 +862,40 @@
       </method>
     </configuration>
     <configuration default="true" type="FlexUnitRunConfigurationType" factoryName="FlexUnit" air_descriptor_path="" air_program_params="" air_publisher_id="" air_root_dir_path="" air_run_mode="AppDescriptor" class_name="" html_or_swf_file_path="" main_class_name="" method_name="" module_name="" output_log_level="" package_name="" port="0" run_mode="HtmlOrSwfFile" scope="Class" socket_policy_port="0" url_to_launch="http://">
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" />
+      <extension name="snapshooter" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
       <method>
         <option name="AntTarget" enabled="false" />
         <option name="BuildArtifacts" enabled="false" />
@@ -496,6 +968,20 @@
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
+    <configuration default="true" type="GroovyScriptRunConfiguration" factoryName="Groovy Script">
+      <module name="" />
+      <setting name="path" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="$PROJECT_DIR$" />
+      <setting name="debug" value="false" />
+      <method>
+        <option name="AntTarget" enabled="false" />
+        <option name="BuildArtifacts" enabled="false" />
+        <option name="Make" enabled="true" />
+        <option name="Maven.BeforeRunTask" enabled="false" />
+      </method>
+    </configuration>
     <configuration default="false" name="Grails:omar" type="GrailsRunConfigurationType" factoryName="Grails">
       <module name="omar" />
       <setting name="vmparams" value="" />
@@ -511,7 +997,10 @@
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
-  <component name="SvnConfiguration">
+  <component name="StructureViewFactory">
+    <option name="ACTIVE_ACTIONS" value="ALPHA_COMPARATOR" />
+  </component>
+  <component name="SvnConfiguration" maxAnnotateRevisions="500">
     <option name="USER" value="" />
     <option name="PASSWORD" value="" />
     <option name="LAST_MERGED_REVISION" />
@@ -523,7 +1012,7 @@
     <option name="DETECT_NESTED_COPIES" value="false" />
     <option name="IGNORE_SPACES_IN_ANNOTATE" value="true" />
     <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
-    <configuration useDefault="false">$PROJECT_DIR$/../../../../../../../sbortman/.subversion</configuration>
+    <configuration useDefault="false">$PROJECT_DIR$/../../../../../sbortman/.subversion</configuration>
     <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
     <supportedVersion>125</supportedVersion>
   </component>
@@ -534,6 +1023,34 @@
           <option name="myVcsRoot" value="$PROJECT_DIR$" />
           <option name="myCopyRoot" value="$PROJECT_DIR$" />
         </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-oms" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-oms" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-core" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-core" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-video" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-video" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/openlayers" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/openlayers" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/postgis" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/postgis" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-raster" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-raster" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-security" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-security" />
+        </SvnCopyRootSimple>
       </list>
     </option>
     <option name="myMoreRealMappingRoots">
@@ -542,42 +1059,74 @@
           <option name="myVcsRoot" value="$PROJECT_DIR$" />
           <option name="myCopyRoot" value="$PROJECT_DIR$" />
         </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-oms" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-oms" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-core" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-core" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-video" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-video" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/openlayers" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/openlayers" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/postgis" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/postgis" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-raster" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-raster" />
+        </SvnCopyRootSimple>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-security" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-security" />
+        </SvnCopyRootSimple>
       </list>
     </option>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="592945f9-0257-41e9-a82f-f216c3016fbd" name="Default" comment="" />
-      <created>1267832246254</created>
-      <updated>1267832246254</updated>
+      <changelist id="e9d4c3f3-857e-47fc-b644-5d0029faa3b1" name="Default" comment="" />
+      <created>1268317364318</created>
+      <updated>1268317364318</updated>
     </task>
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1920" height="1109" extended-state="6" />
-    <editor active="true" />
+    <frame x="0" y="22" width="1920" height="1110" extended-state="0" />
+    <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32906404" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="DBHelper" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994652" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Grails View" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24919786" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32994652" sideWeight="0.66403943" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Grails" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32994652" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24064171" sideWeight="0.66403943" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="DBOutput" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32906404" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Grails" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32941177" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32906404" sideWeight="0.0" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32906404" sideWeight="0.0" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -591,6 +1140,8 @@
     <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
     <option name="PERFORM_ROLLBACK_IN_BACKGROUND" value="false" />
     <option name="CHECK_LOCALLY_CHANGED_CONFLICTS_IN_BACKGROUND" value="true" />
+    <option name="ENABLE_BACKGROUND_PROCESSES" value="false" />
+    <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="LAST_COMMIT_MESSAGE" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
@@ -614,120 +1165,70 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/grails-app/conf/Config.groovy">
+    <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/main8.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="140" column="75" selection-start="5107" selection-end="5107" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="156" column="53" selection-start="4324" selection-end="4324" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/conf/DataSource.groovy">
+    <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/main5.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="31" selection-start="264" selection-end="264" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
+        <state line="59" column="26" selection-start="2071" selection-end="2091" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/conf/BootStrap.groovy">
+    <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/main.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="126" column="0" selection-start="3698" selection-end="3698" vertical-scroll-proportion="0.0">
+        <state line="13" column="51" selection-start="571" selection-end="616" vertical-scroll-proportion="0.22972973" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/OgcController.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="171" column="85" selection-start="4932" selection-end="4932" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grails-app/views/query/search.gsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="0" selection-start="294" selection-end="294" vertical-scroll-proportion="0.2361111" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grails-app/views/query/results.gsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="12" column="41" selection-start="300" selection-end="300" vertical-scroll-proportion="0.21794872" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/QueryController.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="0" selection-start="254" selection-end="254" vertical-scroll-proportion="0.3361082" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/ThumbnailController.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="20" column="74" selection-start="468" selection-end="468" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/HomeController.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="1" column="6" selection-start="29" selection-end="29" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/grails-app/views/home/index.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="146" column="53" selection-start="4471" selection-end="4490" vertical-scroll-proportion="-49.64">
+        <state line="44" column="36" selection-start="1253" selection-end="1253" vertical-scroll-proportion="-1.5454545">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/VideoStreamingController.groovy">
+    <entry file="file://$PROJECT_DIR$/grails-app/conf/Config.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="92" column="70" selection-start="2818" selection-end="2826" vertical-scroll-proportion="0.3326087">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/HomeController.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="0" selection-start="614" selection-end="614" vertical-scroll-proportion="0.43128964">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/domain/org/ossim/omar/RasterEntryMetadata.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="6" selection-start="100" selection-end="100" vertical-scroll-proportion="0.108510636">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="org.jetbrains.plugins.grails.perspectives.DomainClassesRelationsEditorProvider">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/domain/org/ossim/omar/VideoDataSetMetadata.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="6" selection-start="101" selection-end="101" vertical-scroll-proportion="0.11027027">
-          <folding />
-        </state>
-      </provider>
-      <provider editor-type-id="org.jetbrains.plugins.grails.perspectives.DomainClassesRelationsEditorProvider">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/services/org/ossim/omar/CoordinateConversionService.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="64" column="35" selection-start="1488" selection-end="1496" vertical-scroll-proportion="0.9646202">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/services/org/ossim/omar/RasterEntrySearchService.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="33" selection-start="255" selection-end="263" vertical-scroll-proportion="0.14151925">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/services/org/ossim/omar/VideoDataSetSearchService.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="6" selection-start="173" selection-end="173" vertical-scroll-proportion="0.1550152">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/services/org/ossim/omar/WebMappingService.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="34" selection-start="262" selection-end="270" vertical-scroll-proportion="0.21564482">
+        <state line="53" column="101" selection-start="2041" selection-end="2041" vertical-scroll-proportion="-12.115385">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/groovy/org/ossim/omar/OmsInfoParser.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="195" column="64" selection-start="6174" selection-end="6174" vertical-scroll-proportion="-127.5">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/groovy/org/ossim/omar/RasterEntryQuery.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="6" selection-start="455" selection-end="455" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/groovy/org/ossim/omar/VideoDataSetQuery.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="6" selection-start="394" selection-end="394" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test/integration/org/ossim/omar/DataInjectorTests.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="200" column="29" selection-start="9389" selection-end="9389" vertical-scroll-proportion="0.25869566">
+        <state line="12" column="30" selection-start="267" selection-end="267" vertical-scroll-proportion="0.18946302">
           <folding />
         </state>
       </provider>

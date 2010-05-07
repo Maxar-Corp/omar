@@ -90,7 +90,7 @@ class ThumbnailController implements InitializingBean
           httpStatusMessage.message = "Unable to write thumbnail for video dataset ${videoDataSet.getMainFile()}"
           httpStatusMessage.status = HttpStatus.NOT_FOUND
         }
-        // check the statu for errors
+        // check the status for errors
         if((httpStatusMessage.status == HttpStatus.OK))
         {
           image = ImageIO.read(outputFile)

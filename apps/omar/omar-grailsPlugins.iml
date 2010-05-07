@@ -4,10 +4,27 @@
     <facet type="web" name="GrailsWeb">
       <configuration>
         <webroots>
-          <root url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/openlayers-0.9/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/postgis-0.9/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/richui-0.7/web-app" relative="/" />
-          <root url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/postgis-0.10/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/openlayers-0.9/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.7/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/postgis-0.10/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/postgis-0.10/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/openlayers-0.9/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.7/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/openlayers-0.9/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/postgis-0.10/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.7/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/openlayers-0.9/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.7/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/postgis-0.10/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/p6spy-0.5/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.7/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/postgis-0.10/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/openlayers-0.9/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.7/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.7/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.7/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.7/web-app" relative="/" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.8/web-app" relative="/" />
         </webroots>
         <sourceRoots />
       </configuration>
@@ -15,53 +32,48 @@
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/acegi-0.5.2">
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/acegi-0.5.2/src/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/acegi-0.5.2/src/groovy" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/acegi-0.5.2/grails-app/controllers" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/acegi-0.5.2/grails-app/services" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/acegi-0.5.2/grails-app/taglib" isTestSource="false" />
+    <content url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/acegi-0.5.3">
+      <sourceFolder url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/acegi-0.5.3/src/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/acegi-0.5.3/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/acegi-0.5.3/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/acegi-0.5.3/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/acegi-0.5.3/grails-app/taglib" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/background-thread-1.5">
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/background-thread-1.5/src/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/background-thread-1.5/grails-app/services" isTestSource="false" />
+    <content url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/background-thread-1.6">
+      <sourceFolder url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/background-thread-1.6/src/java" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/background-thread-1.6/grails-app/services" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/openlayers-0.9">
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/openlayers-0.9/grails-app/taglib" isTestSource="false" />
+    <content url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.8">
+      <sourceFolder url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.8/src/groovy" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.8/grails-app/controllers" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.8/grails-app/services" isTestSource="false" />
+      <sourceFolder url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.8/grails-app/taglib" isTestSource="false" />
     </content>
-    <content url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/postgis-0.10">
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/postgis-0.10/src/groovy" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/richui-0.7">
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/richui-0.7/src/groovy" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/richui-0.7/grails-app/controllers" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/richui-0.7/grails-app/services" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/richui-0.7/grails-app/taglib" isTestSource="false" />
-    </content>
-    <content url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/tomcat-1.2.1">
-      <sourceFolder url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/tomcat-1.2.1/src/groovy" isTestSource="false" />
+    <content url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/tomcat-1.2.2">
+      <sourceFolder url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/tomcat-1.2.2/src/groovy" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Grails 1.2.1" level="project" />
     <orderEntry type="module-library" exported="">
       <library name="Grails User Library">
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/acegi-0.5.2/lib" />
-          <root url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/richui-0.7/lib" />
-          <root url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/p6spy-0.4/lib" />
-          <root url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/tomcat-1.2.1/lib" />
-          <root url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/postgis-0.10/lib" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/tomcat-1.2.2/lib" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/tomcat-1.2.2/lib" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/p6spy-0.5/lib" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/acegi-0.5.3/lib" />
+          <root url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.8/lib" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/acegi-0.5.2/lib" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/p6spy-0.4/lib" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/postgis-0.10/lib" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/richui-0.7/lib" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../../../../../../sbortman/.grails/1.2.1/projects/omar/plugins/tomcat-1.2.1/lib" recursive="false" />
+        <jarDirectory url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/acegi-0.5.3/lib" recursive="false" />
+        <jarDirectory url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/p6spy-0.5/lib" recursive="false" />
+        <jarDirectory url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/richui-0.8/lib" recursive="false" />
+        <jarDirectory url="file://$USER_HOME_GRAILS$/1.2.2/projects/omar/plugins/tomcat-1.2.2/lib" recursive="false" />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Grails 1.2.2" level="project" />
+    <orderEntry type="library" name="Grails 1.2.1" level="project" />
+    <orderEntry type="library" name="grails-1.2.2" level="application" />
   </component>
 </module>
 
