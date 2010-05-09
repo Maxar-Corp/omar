@@ -121,15 +121,15 @@ wms.data.mapFile = null
 
 switch ( Environment.current.name.toUpperCase() )
 {
-  case "DEVELOPMENT":
-    wms.data.mapFile = "${wms.referenceDataDirectory}/omar-2.0-dev.map"
-    break
-  case "PRODUCTION":
-    wms.data.mapFile = "${wms.referenceDataDirectory}/omar-2.0-prod.map"
-    break
-  case "TEST":
-    wms.data.mapFile = "${wms.referenceDataDirectory}/omar-2.0-test.map"
-    break
+case "DEVELOPMENT":
+  wms.data.mapFile = "${wms.referenceDataDirectory}/omar-2.0-dev.map"
+  break
+case "PRODUCTION":
+  wms.data.mapFile = "${wms.referenceDataDirectory}/omar-2.0-prod.map"
+  break
+case "TEST":
+  wms.data.mapFile = "${wms.referenceDataDirectory}/omar-2.0-test.map"
+  break
 }
 
 
@@ -182,7 +182,7 @@ security.level = 'UNCLASS'
 
 omar.release = '1.8.4'
 
-/** ********************************* CONDITIONALS FOR VIEWS              **********************************************************************/
+/** ********************************* CONDITIONALS FOR VIEWS               **********************************************************************/
 // flags for different views
 // we can conditionally turn off browsing on the home page
 //
