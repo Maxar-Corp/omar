@@ -37,4 +37,5 @@ grails.plugin.location.'omar-security'='../../plugins/omar-security'
 grails.plugin.location.'omar-video'='../../plugins/omar-video'
 grails.plugin.location.'omar-raster`'='../../plugins/omar-raster'
 grails.plugin.location.'omar-core'='../../plugins/omar-core'
+grails.plugin.location.'omar-stager'='../../plugins/omar-stager'
 
