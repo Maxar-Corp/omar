@@ -90,7 +90,7 @@ function MapWidget()
         {
             this.setMapCenter($("centerLat").value, $("centerLon").value);
         }
-                    
+
         $("aoiRadius2").value = $("aoiRadius").value;
         $("aoiRadius3").value = $("aoiRadius").value;
     };
@@ -438,7 +438,7 @@ function MapWidget()
     };
 
     this.changeMapSize = function()
-    {     
+    {
         var mapTitle = $("mapTitle");
         var mapDiv = $("map");
 
@@ -709,7 +709,7 @@ function MapWidget()
     };
 
     this.togglePointRadiusCheckBox = function()
-    {                 
+    {
         $("radiusSearchButton").checked = true;
         $("radiusSearchButton2").checked = true;
         $("radiusSearchButton3").checked = true;
@@ -730,7 +730,7 @@ function MapWidget()
         $("radiusSearchButton3").checked = false;
     };
 
-    ///
+    ////check this code
 
   this.setBoundLatLonText = function()
   {                               /*
@@ -830,12 +830,12 @@ function MapWidget()
 
     else if ( $( "units" ).value == "MGRS" )
     {
-      
+
     }   */
   };
 
     ///
-    
+
   String.prototype.leftPad = function ( l, c )
   {
     return new Array( l - this.length + 1 ).join( c || '0' ) + this;
