@@ -61,7 +61,7 @@
   </style>
 
   <openlayers:loadJavascript/>
-  <g:javascript src="coordinateConversion.js"/>
+  <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
 </head>
 <body>
 <content tag="hd">
