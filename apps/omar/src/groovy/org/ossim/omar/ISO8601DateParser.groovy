@@ -175,7 +175,7 @@ class ISO8601DateParser
     * @return null if unable to produce a period and a valid period object otherwise
     *
     */
-  static def parsePeriod(String iso8601Period)
+  static org.joda.time.Period parsePeriod(String iso8601Period)
   {
     org.joda.time.Period result = null;
     PeriodFormatter periodFormatter = ISOPeriodFormat.standard();
@@ -222,7 +222,7 @@ class ISO8601DateParser
    * @return null if unable to produce a DateTime else a valid DateTime object
    *
    */
-  static def parseDateTime(String iso8601DateTime)
+  static org.joda.time.DateTime parseDateTime(String iso8601DateTime)
   {
     org.joda.time.DateTime result = null;
 
@@ -317,7 +317,7 @@ class ISO8601DateParser
 
    /**
     * Sets up a WMS interval parser and uses the parsePeriod and parseDateTime
-    * parsers to constrcut the intervals.  We currently do not support periodicity
+    * parsers to construct the intervals.  We currently do not support periodicity
     * but we do support intervals and interval lists.  For example:
     * P1Y/1999,2000/P10Y
     *
