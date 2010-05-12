@@ -66,15 +66,17 @@
   <omar:securityClassificationBanner/>
 </div>
 <div id="content">
-  <div id="hd">
+  <div id="north">
+	<div id="hd">
     <img id="logo" src="${resource(dir: 'images', file: 'OMARLarge.png')}" alt="OMAR-2.0 Logo"/>
-    <g:pageProperty name="page.hd"/>
+    </div>
+    <g:pageProperty name="page.north"/>
   </div>
-  <div id="ft">
-    <g:pageProperty name="page.ft"/>
+  <div id="south">
+    <g:pageProperty name="page.south"/>
   </div>
-  <div id="bd">
-    <g:pageProperty name="page.bd"/>
+  <div id="center">
+    <g:pageProperty name="page.center"/>
   </div>
 </div>
 
@@ -117,17 +119,17 @@
           units: [
             {
               position: 'top',
-              height: 135,
-              body: 'hd'
+              height: 130,
+              body: 'north'
             },
             {
               position: 'bottom',
-              height: 65,
-              body: 'ft'
+              height: 60,
+              body: 'south'
             },
             {
               position: 'center',
-              body: 'bd'
+              body: 'center'
             }
           ]
         } );
