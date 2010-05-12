@@ -12,8 +12,8 @@ class RasterEntryController implements InitializingBean
 
   def rasterEntrySearchService
 
-  public static final List tagHeaderList
-  public static final List tagNameList
+  public static List tagHeaderList
+  public static List tagNameList
 
   def index = { redirect(action: list, params: params) }
 
@@ -193,7 +193,7 @@ class RasterEntryController implements InitializingBean
     {
       //println "=== search end ==="
 
-      return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
+      render ( view: "search1", model:  [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS] )
     }
   }
 
