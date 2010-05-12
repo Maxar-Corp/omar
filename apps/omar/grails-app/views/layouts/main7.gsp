@@ -119,7 +119,7 @@
           units: [
             {
               position: 'top',
-              height: 130,
+              height: 135,
               body: 'north'
             },
             {

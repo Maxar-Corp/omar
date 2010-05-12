@@ -6,7 +6,7 @@
   <resource:tabView/>
 </head>
 <body>
-<content tag="hd">
+<content tag="north">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
     <g:ifAllGranted role="ROLE_ADMIN">
@@ -15,7 +15,7 @@
     <span class="menuButton"><g:link action="search">Search</g:link></span></div>
 </content>
 
-<content tag="bd">
+<content tag="center">
   <h1>RasterEntry List</h1>
   <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
@@ -125,7 +125,7 @@
     </richui:tabContents>
   </richui:tabView>
 </content>
-<content tag="ft">
+<content tag="south">
   <div class="paginateButtons">
     <g:paginate total="${rasterEntryList.totalCount}" params="${[rasterDataSet:params.rasterDataSetId]}"/>
   </div>

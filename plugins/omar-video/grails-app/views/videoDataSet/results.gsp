@@ -6,7 +6,7 @@
   <resource:tabView/>
 </head>
 <body>
-<content tag="hd">
+<content tag="north">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
     <span class="menuButton"><g:link action="search">New Search</g:link></span>
@@ -15,7 +15,7 @@
     </span>
   </div>
 </content>
-<content tag="bd">
+<content tag="center">
   <h1>Video Data Set Search Results</h1>
   <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
@@ -124,7 +124,7 @@
   </richui:tabView>
 
 </content>
-<content tag="ft">
+<content tag="south">
   <div class="paginateButtons">
     <g:paginate controller="videoDataSet" action="results" total="${totalCount ?: 0}"
             max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
