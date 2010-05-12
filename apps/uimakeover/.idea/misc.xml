@@ -24,6 +24,10 @@
     <option name="LOCALE" />
     <option name="OPEN_IN_BROWSER" value="true" />
   </component>
+  <component name="LiquibaseProjectComponent">
+    <option name="outputChangeLogFile" />
+    <option name="rootChangeLogFile" />
+  </component>
   <component name="ProjectDetails">
     <option name="projectName" value="uimakeover" />
   </component>

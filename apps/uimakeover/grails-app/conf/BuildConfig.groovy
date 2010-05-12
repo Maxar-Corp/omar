@@ -29,3 +29,5 @@ grails.project.dependency.resolution = {
     }
 
 }
+
+grails.plugin.location.openlayers='../../plugins/openlayers'
