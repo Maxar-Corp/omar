@@ -155,7 +155,7 @@
 
 //        alert( mapWidth + ' ' + mapHeight );
 
-    map.updateSize();
+    //map.updateSize();
     map.updateSize();
   }
 
