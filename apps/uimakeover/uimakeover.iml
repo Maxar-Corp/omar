@@ -31,6 +31,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="grails-1.2.2" level="application" />
     <orderEntry type="library" name="grails-1.2.0" level="application" />
     <orderEntry type="module-library">
       <library name="Grails User Library">
@@ -43,6 +44,7 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="uimakeover-grailsPlugins" />
+    <orderEntry type="module" module-name="uimakeover-grailsPlugin-openlayers" />
   </component>
 </module>
 

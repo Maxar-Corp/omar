@@ -13,29 +13,6 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="main3"/>
 
-  <!-- clean up -->
-  <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.7.0/build/container/assets/skins/sam/container.css" />
-  <link rel="stylesheet" type="text/css" href="http://js.bubbling-library.com/2.1/build/accordion/assets/accordion.css" />
-  <style type="text/css">
-  .myAccordion {
-    float: left;
-    margin-right: 15px;
-  }
-    .myAccordion .yui-cms-accordion .yui-cms-item {
-      width: 165px;
-    }
-      .myAccordion .yui-cms-accordion .yui-cms-item .bd .fixed {
-          height: 230px;
-      }
-
-  </style>
-  <!-- Dependency source files -->
-  <script type="text/javascript" src="http://yui.yahooapis.com/2.7.0/build/utilities/utilities.js"></script>
-  <script type="text/javascript" src="http://js.bubbling-library.com/2.1/build/bubbling/bubbling.js"></script>
-
-  <script type="text/javascript" src="http://js.bubbling-library.com/2.1/build/dispatcher/dispatcher.js"></script>
-  <script type="text/javascript" src="http://js.bubbling-library.com/2.1/build/accordion/accordion.js"></script>
-  <!-- clean up -->
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
