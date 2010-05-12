@@ -6,7 +6,7 @@
   <resource:tabView/>
 </head>
 <body>
-<content tag="hd">
+<content tag="north">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
     <g:ifAllGranted role="ROLE_ADMIN">
@@ -15,7 +15,7 @@
     <span class="menuButton"><g:link action="search">Search</g:link></span></div>
 </div>
 </content>
-<content tag="bd">
+<content tag="center">
   <h1>VideoDataSet List</h1>
   <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
@@ -117,7 +117,7 @@
 
               </tr>
             </g:each>
-            </tbody>
+            </tbodycenter>
           </table>
         </div>
 
@@ -125,7 +125,7 @@
     </richui:tabContents>
   </richui:tabView>
 </content>
-<content tag="ft">
+<content tag="south">
   <div class="paginateButtons">
     <g:paginate total="${videoDataSetList.totalCount}" params="${[repositoryId:params.repositoryId]}"/>
   </div>
