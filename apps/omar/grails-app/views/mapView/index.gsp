@@ -64,7 +64,7 @@
   <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
 </head>
 <body>
-<content tag="hd">
+<content tag="north">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
     <span class="menuButton">
@@ -110,7 +110,7 @@
     --%>
   </div>
 </content>
-<content tag="bd">
+<content tag="center">
   <%--
   <h1 id="mapTitle">${rasterEntries*.mainFile.name}</h1>
   <g:if test="${flash.message}">
@@ -120,7 +120,7 @@
   <div id="map"></div>
 </div>
 </content>
-<content tag="ft">
+<content tag="south">
   <div class="niceBox">
     <div class="niceBoxHd">Mouse Position:</div>
     <div class="niceBoxBody">
@@ -132,7 +132,7 @@
         </tr>
       </table>
     </div>
-  </div>>
+  </div>
   <g:javascript>
   var map;
   var rasterLayers;

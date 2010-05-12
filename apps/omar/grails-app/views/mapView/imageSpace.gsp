@@ -58,7 +58,7 @@
   <openlayers:loadJavascript/>
 </head>
 <body>
-<content tag="hd">
+<content tag="north">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
     <span class="menuButton">
@@ -77,7 +77,7 @@
   </div>
 </div>
 </content>
-<content tag="bd">
+<content tag="center">
   <%--
   <h1 id="mapTitle">${rasterEntry?.mainFile?.name}</h1>
   <g:if test="${flash.message}">
@@ -87,7 +87,7 @@
   <div id="map"></div>
 </div>
 </content>
-<content tag="ft">
+<content tag="south">
   <g:javascript>
   var map;
   var layer;
