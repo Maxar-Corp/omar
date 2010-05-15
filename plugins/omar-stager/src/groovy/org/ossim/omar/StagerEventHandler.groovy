@@ -1,6 +1,8 @@
 package org.ossim.omar
 
 import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
+import org.springframework.context.ApplicationContextAware
+import org.springframework.context.ApplicationContext
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,7 +11,7 @@ import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
  * Time: 7:36:57 PM
  * To change this template use File | Settings | File Templates.
  */
-class StagerEventHandler implements FileFilterEventListener
+class StagerEventHandler implements FileFilterEventListener, ApplicationContextAware
 {
   def prefix
   def processSuccessLog
@@ -19,14 +21,15 @@ class StagerEventHandler implements FileFilterEventListener
   def rejectFileLog
   def dataLog
 
-  def omsInfoParser = new OmsInfoParser()
   def repository
 
   def count = 0
   def batchSize = 100
   def sessionFactory
 
-  public StagerEventHandler(String output = ".", String prefix = "oms")
+  ApplicationContext applicationContext
+
+  public def init(String output = ".", String prefix = "oms")
   {
     File logDir = new File(output)
 
@@ -85,34 +88,29 @@ class StagerEventHandler implements FileFilterEventListener
     {
 
       def oms = new XmlSlurper().parseText(fileEventObject.data)
-      def rasterDataSets = omsInfoParser.processRasterDataSets(oms, repository)
-      def videoDataSets = omsInfoParser.processVideoDataSets(oms, repository)
+      def omsInfoParsers = applicationContext.getBeansOfType(OmsInfoParser.class)
 
-      rasterDataSets?.each {rasterDataSet ->
-        if ( rasterDataSet.save() )
-        {
-          dataLog << fileEventObject.file << "\n"
-        }
-        else
-        {
-          processFailureLog << fileEventObject.file << "\n"
-          //rasterDataSet.errors.allErrors.each { println it }
-        }
-      }
-      videoDataSets?.each {videoDataSet ->
-        if ( videoDataSet.save() )
-        {
-          dataLog << fileEventObject.file << "\n"
-        }
-        else
-        {
-          processFailureLog << fileEventObject.file << "\n"
+
+      omsInfoParsers?.each { name, value ->
+
+        def dataSets = value.processDataSets(oms, repository)
+
+        dataSets?.each {dataSet ->
+          if ( dataSet.save() )
+          {
+            dataLog << fileEventObject.file << "\n"
+          }
+          else
+          {
+            processFailureLog << fileEventObject.file << "\n"
+            //dataSet.errors.allErrors.each { println it }
+          }
         }
       }
     }
-    catch(java.lang.Exception e)
+    catch (java.lang.Exception e)
     {
-      processFailureLog << fileEventObject.file << "\n"
+      processFailureLog << "${fileEventObject.file} ${e.message}" << "\n"
     }
 
 //    def stagerQueueItem = new org.ossim.omar.StagerQueueItem(
@@ -132,7 +130,7 @@ class StagerEventHandler implements FileFilterEventListener
 
     if ( ++count % batchSize == 0 )
     {
-      cleanupGorm()      
+      cleanupGorm()
     }
   }
 
