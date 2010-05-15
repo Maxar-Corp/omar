@@ -1,17 +1,18 @@
 package org.ossim.omar
 
 import joms.oms.DataInfo
-import org.ossim.omar.RasterFile
-import org.ossim.omar.Repository
-import org.ossim.omar.VideoFile
+import org.springframework.context.ApplicationContextAware
+import org.springframework.context.ApplicationContext
 
 /**
  * This is a service class that manages adding and removing data within the OMAR tables.
  * Currently we implement the add and remove for raster and video.
  */
-class DataManagerService
+class DataManagerService implements ApplicationContextAware
 {
   boolean transactional = true
+
+  ApplicationContext applicationContext
 
   /**
    * This service allows one to add a raster to the omar tables.  
@@ -23,18 +24,18 @@ class DataManagerService
    */
   def addRaster(def httpStatusMessage, def filename)
   {
-    httpStatusMessage.status  = HttpStatus.OK
+    httpStatusMessage.status = HttpStatus.OK
     httpStatusMessage.message = "Added raster ${filename}"
 
     def file = filename as File
 
-    if(!file?.exists())
+    if ( !file?.exists() )
     {
       httpStatusMessage.status = HttpStatus.NOT_FOUND
       httpStatusMessage.message = "Not Found: ${filename}"
       log.error(httpStatusMessage.message)
     }
-    else if(!file?.canRead())
+    else if ( !file?.canRead() )
     {
       httpStatusMessage.status = HttpStatus.FORBIDDEN
       httpStatusMessage.message = "Not Readable ${filename}"
@@ -47,12 +48,13 @@ class DataManagerService
       if ( xml )
       {
         def oms = new XmlSlurper().parseText(xml)
-        def omsInfoParser = new OmsInfoParser()
+        def omsInfoParser = applicationContext.getBean("rasterInfoParser")
         def repository = findRepositoryForFile(file)
-        def rasterDataSets = omsInfoParser.processRasterDataSets(oms, repository)
-        if(rasterDataSets.size() < 1)
+        def rasterDataSets = omsInfoParser.processDataSets(oms, repository)
+
+        if ( rasterDataSets.size() < 1 )
         {
-          httpStatusMessage.status  = HttpStatus.UNSUPPORTED_MEDIA_TYPE
+          httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
           httpStatusMessage.message = "Not a raster file: ${file}"
           log.error(httpStatusMessage.message)
         }
@@ -63,16 +65,16 @@ class DataManagerService
             if ( rasterDataSet.save() )
             {
               //stagerHandler.processSuccessful(file, xml)
-              httpStatusMessage.status  = HttpStatus.OK
+              httpStatusMessage.status = HttpStatus.OK
               log.info(httpStatusMessage.message)
-             }
-             else
-             {
-               httpStatusMessage.status  = HttpStatus.UNSUPPORTED_MEDIA_TYPE
-               httpStatusMessage.message = "Unable to save image ${file}, image probably already exists"
-               log.error(httpStatusMessage.message)
-               //stagerHandler.processRejected(file)
-             }
+            }
+            else
+            {
+              httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
+              httpStatusMessage.message = "Unable to save image ${file}, image probably already exists"
+              log.error(httpStatusMessage.message)
+              //stagerHandler.processRejected(file)
+            }
           }
           //new org.ossim.omar.StagerQueueItem(file: file.absolutePath, baseDir: parent.baseDir, dataInfo: xml).save()
         }
@@ -80,7 +82,7 @@ class DataManagerService
       else
       {
         httpStatusMessage.message = "Unable to get information on file ${file}"
-        httpStatusMessage.status  = HttpStatus.UNSUPPORTED_MEDIA_TYPE
+        httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
         log.error(httpStatusMessage.message)
       }
     }
@@ -88,18 +90,18 @@ class DataManagerService
 
   def addVideo(def httpStatusMessage, def filename)
   {
-    httpStatusMessage.status  = HttpStatus.OK
+    httpStatusMessage.status = HttpStatus.OK
     httpStatusMessage.message = "Added video ${filename}"
 
     def file = filename as File
 
-    if(!file?.exists())
+    if ( !file?.exists() )
     {
       httpStatusMessage.status = HttpStatus.NOT_FOUND
       httpStatusMessage.message = "Video Not Found: ${filename}"
       log.error(httpStatusMessage.message)
     }
-    else if(!file?.canRead())
+    else if ( !file?.canRead() )
     {
       httpStatusMessage.status = HttpStatus.FORBIDDEN
       httpStatusMessage.message = "Video Not Readable ${filename}"
@@ -117,12 +119,13 @@ class DataManagerService
         if ( xml )
         {
           def oms = new XmlSlurper().parseText(xml)
-          def omsInfoParser = new OmsInfoParser()
+          def omsInfoParser = applicationContext.getBean("videoInfoParser")
           def repository = findRepositoryForFile(file)
-          def videoDataSets = omsInfoParser.processVideoDataSets(oms, repository)
-          if(videoDataSets.size() < 1)
+          def videoDataSets = omsInfoParser.processDataSets(oms, repository)
+
+          if ( videoDataSets.size() < 1 )
           {
-            httpStatusMessage.status  = HttpStatus.UNSUPPORTED_MEDIA_TYPE
+            httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
             httpStatusMessage.message = "Not a video file: ${file}"
             log.error(httpStatusMessage.message)
           }
@@ -131,7 +134,7 @@ class DataManagerService
             videoDataSets.each {videoDataSet ->
               if ( !videoDataSet.save() )
               {
-                httpStatusMessage.status  = HttpStatus.UNSUPPORTED_MEDIA_TYPE
+                httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
                 httpStatusMessage.message = "Unable to save ${file}, the file probably alread exists"
                 log.error(httpStatusMessage.message)
                 //stagerHandler.processRejected(file)
@@ -147,17 +150,17 @@ class DataManagerService
         else
         {
           httpStatusMessage.message = "Unable to save information on file ${file}"
-          httpStatusMessage.status  = HttpStatus.UNSUPPORTED_MEDIA_TYPE
+          httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
           log.error(httpStatusMessage.message)
         }
       }
       else
       {
-         httpStatusMessage.message = "Unable to get information on file ${file}"
-         httpStatusMessage.status  = HttpStatus.UNSUPPORTED_MEDIA_TYPE
+        httpStatusMessage.message = "Unable to get information on file ${file}"
+        httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
         log.error(httpStatusMessage.message)
       }
- 
+
       dataInfo.close()
       dataInfo.delete();
     }

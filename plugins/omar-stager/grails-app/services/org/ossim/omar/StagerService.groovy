@@ -1,14 +1,18 @@
 package org.ossim.omar
 
 import org.ossim.omar.Repository
+import org.springframework.context.ApplicationContextAware
+import org.springframework.context.ApplicationContext
 
-class StagerService
+class StagerService implements ApplicationContextAware
 {
 
   boolean transactional = true
 
   def backgroundService
   def sessionFactory
+
+  ApplicationContext applicationContext
 
   def runStager(Repository repository)
   {
@@ -26,7 +30,9 @@ class StagerService
 
         def filter = new ImageFileFilter()
         def processor = new ImageDetector()
-        def handler = new StagerEventHandler("logs", "repository-${repository.id}")
+        def handler = applicationContext.getBean("stagerEventHandler")
+
+        handler.init("logs", "repository-${repository.id}")
 
         filter.addFileFilterEventListener(handler)
         processor.addFileFilterEventListener(handler)
