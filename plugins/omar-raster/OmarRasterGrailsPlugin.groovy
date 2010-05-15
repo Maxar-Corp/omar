@@ -15,7 +15,7 @@ class OmarRasterGrailsPlugin {
     def authorEmail = "sbortman@radiantblue.com"
     def title = "OMAR Raster"
     def description = '''\\
-OMAR Raster Handling
+OMAR Raster support
 '''
 
     // URL to the plugin's documentation
