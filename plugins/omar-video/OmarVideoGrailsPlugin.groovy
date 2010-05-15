@@ -27,6 +27,7 @@ Brief description of the plugin.
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)
+    	videoInfoParser(org.ossim.omar.VideoInfoParser)
     }
 
     def doWithDynamicMethods = { ctx ->
