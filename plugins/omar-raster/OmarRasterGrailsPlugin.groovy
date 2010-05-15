@@ -1,6 +1,6 @@
 class OmarRasterGrailsPlugin {
     // the plugin version
-    def version = "0.1"
+    def version = "0.2"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.2.2 > *"
     // the other plugins this plugin depends on
@@ -11,11 +11,11 @@ class OmarRasterGrailsPlugin {
     ]
 
     // TODO Fill in these fields
-    def author = "Your name"
-    def authorEmail = ""
-    def title = "Plugin summary/headline"
+    def author = "Scott Bortman"
+    def authorEmail = "sbortman@radiantblue.com"
+    def title = "OMAR Raster"
     def description = '''\\
-Brief description of the plugin.
+OMAR Raster Handling
 '''
 
     // URL to the plugin's documentation
@@ -27,6 +27,7 @@ Brief description of the plugin.
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)
+    	rasterInfoParser(org.ossim.omar.RasterInfoParser)
     }
 
     def doWithDynamicMethods = { ctx ->
