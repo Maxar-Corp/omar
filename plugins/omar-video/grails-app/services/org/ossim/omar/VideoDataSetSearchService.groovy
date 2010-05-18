@@ -84,7 +84,7 @@ class VideoDataSetSearchService
   }
 
 
-  synchronized List<Geometry>  getGeometries(VideoDataSetQuery videoDataSetQuery, Map<String, String> params)
+  List<Geometry>  getGeometries(VideoDataSetQuery videoDataSetQuery, Map<String, String> params)
   {
     def x = {
       projections { property("groundGeom") }
