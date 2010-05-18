@@ -147,16 +147,26 @@ class OgcController
           queryParams.startDate = startDate
           queryParams.endDate = endDate
 
-//          println "video: ${queryParams.toMap()}"
+ //         println "video: ${queryParams.toMap()}"
           def results = videoDataSetSearchService.getGeometries(queryParams, params)
-
-          geometries.addAll(results?.geom)
+//          println "RESULTS\n${results}"
+          results.each(){
+            if(it.getNumGeometries()>1)
+            {
+              (0..it.getNumGeometries()-1).each(){geomIdx->
+                 geometries.add(it.getGeometryN(geomIdx))
+               }
+            }
+            else
+            {
+              geometries.add(it)
+            }
+          }
         }
         else
         {
           log.info("Layer ${it} is not understood for footprint drawing.  Only layers Imagery or Videos accepted")
         }
-
         webMappingService.drawCoverage(g, wmsRequest, geometries, style)
         geometries.clear()
         ++styleIdx
@@ -204,7 +214,7 @@ class OgcController
     }
     catch (java.lang.Exception e)
     {
-      println e
+ //     println e
     }
     if ( g )
     {
