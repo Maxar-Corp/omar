@@ -5,7 +5,8 @@ import org.ossim.omar.VideoDataSetMetadata
 
 //import javax.jws.WebParam
 
-import org.ossim.postgis.Geometry
+//import org.ossim.postgis.Geometry
+import com.vividsolutions.jts.geom.Geometry
 
 class VideoDataSetSearchService
 {
@@ -83,7 +84,7 @@ class VideoDataSetSearchService
   }
 
 
-  List<Geometry> getGeometries(VideoDataSetQuery videoDataSetQuery, Map<String, String> params)
+  synchronized List<Geometry>  getGeometries(VideoDataSetQuery videoDataSetQuery, Map<String, String> params)
   {
     def x = {
       projections { property("groundGeom") }
@@ -123,10 +124,9 @@ class VideoDataSetSearchService
           }
         }
       }
+      cacheMode(CacheMode.GET)
     }
-
     def geometries = VideoDataSetMetadata.createCriteria().list(x)
-
     return geometries
   }
 
