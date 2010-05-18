@@ -31,11 +31,13 @@ grails.project.dependency.resolution = {
 
 }
 
-grails.plugin.location.postgis='../../plugins/postgis'
-grails.plugin.location.openlayers='../../plugins/openlayers'
-grails.plugin.location.'omar-oms'='../../plugins/omar-oms'
-grails.plugin.location.'omar-security'='../../plugins/omar-security'
-grails.plugin.location.'omar-video'='../../plugins/omar-video'
-grails.plugin.location.'omar-raster`'='../../plugins/omar-raster'
-grails.plugin.location.'omar-core'='../../plugins/omar-core'
-grails.plugin.location.'omar-stager'='../../plugins/omar-stager'
+grails.plugin.location.postgis="${System.getenv('OMAR_HOME')}/../../plugins/postgis"
+grails.plugin.location.'omar-core'="${System.getenv('OMAR_HOME')}/../../plugins/omar-core"
+grails.plugin.location.'omar-oms'="${System.getenv('OMAR_HOME')}/../../plugins/omar-oms"
+grails.plugin.location.'omar-stager'="${System.getenv('OMAR_HOME')}/../../plugins/omar-stager"
+grails.plugin.location.'omar-raster'="${System.getenv('OMAR_HOME')}/../../plugins/omar-raster"
+grails.plugin.location.'omar-video'="${System.getenv('OMAR_HOME')}/../../plugins/omar-video"
+grails.plugin.location.'omar-security'="${System.getenv('OMAR_HOME')}/../../plugins/omar-security"
+grails.plugin.location.openlayers="${System.getenv('OMAR_HOME')}/../../plugins/openlayers"
+
+
