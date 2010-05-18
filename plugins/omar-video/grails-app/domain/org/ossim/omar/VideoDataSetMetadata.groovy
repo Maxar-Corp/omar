@@ -102,13 +102,13 @@ class VideoDataSetMetadata
     videoDataSetMetadata.endDate = DateUtil.parseDate(end)
 
 
-//    if ( videoDataSetNode?.groundGeom )
-//    {
+    if ( videoDataSetNode?.groundGeom?.size() != 0 )
+    {
 //      println   videoDataSetNode?.groundGeom
-//      videoDataSetMetadata.groundGeom = initGroundGeom(videoDataSetNode?.groundGeom)
-//    }
-//    else if ( videoDataSetNode?.spatialMetadata )
-//    {
+      videoDataSetMetadata.groundGeom = initGroundGeom(videoDataSetNode?.groundGeom)
+    }
+    else if ( videoDataSetNode?.spatialMetadata )
+    {
 	//println "HERE"
        def srsId = 4326;
 	   videoDataSetNode?.spatialMetadata?.groundGeom?.each { groundGeomNode ->
@@ -123,7 +123,7 @@ class VideoDataSetMetadata
             videoDataSetMetadata.groundGeom?.setSRID(srsId);
 		  }
 	   }
-//    }
+    }
     //println videoDataSetMetadata.groundGeom
 
     return videoDataSetMetadata
