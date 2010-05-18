@@ -5,7 +5,9 @@ dataSource {
   driverClassName = (useP6Spy) ? "com.p6spy.engine.spy.P6SpyDriver" : "org.postgis.DriverWrapper"
   username = "postgres"
   password = "postgres"
-  dialect = "org.ossim.postgis.PostGISDialectNG"
+//  dialect = "org.ossim.postgis.PostGISDialectNG"
+  dialect = org.hibernatespatial.postgis.PostgisDialect
+
 //  loggingSql = true
 }
 hibernate {

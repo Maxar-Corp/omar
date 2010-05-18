@@ -127,7 +127,9 @@ class OgcController
 
           def results = rasterEntrySearchService.getGeometries(queryParams, params)
 
-          geometries.addAll(results?.geom)
+          //geometries.addAll(results?.geom)
+          geometries.addAll(results)
+
         }
         else if ( it == "Videos" || it == "VideoData" )
         {
@@ -202,7 +204,7 @@ class OgcController
     }
     catch (java.lang.Exception e)
     {
-//      println e
+      println e
     }
     if ( g )
     {

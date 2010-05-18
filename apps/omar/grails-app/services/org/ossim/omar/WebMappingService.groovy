@@ -102,12 +102,18 @@ class WebMappingService
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                        RenderingHints.VALUE_ANTIALIAS_ON);
     geometries.each {geom ->
-      def pointListx = new int[geom.numPoints()]
-      def pointListy = new int[geom.numPoints()]
+      //def pointListx = new int[geom.numPoints()]
+      //def pointListy = new int[geom.numPoints()]
 
-      def numPoints = geom.numPoints()
+      def coordinates = geom.coordinates
+      def pointListx = new int[coordinates.size()]
+      def pointListy = new int[coordinates.size()]
+
+      //def numPoints = geom.numPoints()
+      def numPoints = coordinates.size()
       (0..<numPoints).each{
-        def point = geom.getPoint(it);
+        //def point = geom.getPoint(it);
+        def point = coordinates[it];
         projPoint.setLatd(point.y);
         projPoint.setLond(point.x);
         proj.worldToLineSample(projPoint, ls);
