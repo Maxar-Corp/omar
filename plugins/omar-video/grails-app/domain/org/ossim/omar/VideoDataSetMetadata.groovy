@@ -101,28 +101,29 @@ class VideoDataSetMetadata
     videoDataSetMetadata.startDate = DateUtil.parseDate(start)
     videoDataSetMetadata.endDate = DateUtil.parseDate(end)
 
-/*
-    if ( videoDataSetNode?.groundGeom )
-    {
-      videoDataSetMetadata.groundGeom = initGroundGeom(videoDataSetNode?.groundGeom)
-    }
-    else if ( videoDataSetNode?.spatialMetadata )
-    {
-	println "HERE"
-*/	
+
+//    if ( videoDataSetNode?.groundGeom )
+//    {
+//      println   videoDataSetNode?.groundGeom
+//      videoDataSetMetadata.groundGeom = initGroundGeom(videoDataSetNode?.groundGeom)
+//    }
+//    else if ( videoDataSetNode?.spatialMetadata )
+//    {
+	//println "HERE"
+       def srsId = 4326;
 	   videoDataSetNode?.spatialMetadata?.groundGeom?.each { groundGeomNode ->
 		  if ( videoDataSetMetadata.groundGeom == null )
 		  {
-			videoDataSetMetadata.groundGeom = initGroundGeom(groundGeomNode) 
+			videoDataSetMetadata.groundGeom = initGroundGeom(groundGeomNode)
+            srsId =   videoDataSetMetadata.groundGeom?.getSRID()
 		  }
 		  else
 		  { 
 			videoDataSetMetadata.groundGeom =  videoDataSetMetadata.groundGeom.union(initGroundGeom(groundGeomNode))
-		  }	
+            videoDataSetMetadata.groundGeom?.setSRID(srsId);
+		  }
 	   }
-/*	
-    }
-*/
+//    }
     //println videoDataSetMetadata.groundGeom
 
     return videoDataSetMetadata
@@ -140,11 +141,12 @@ class VideoDataSetMetadata
       {
         srs -= "epsg:"
 
-        //def geomString = "SRID=${srs};${wkt}"
+//        def geomString = "SRID=${srs};${wkt}"
 
         //groundGeom = Geometry.fromString(geomString)
         groundGeom = new WKTReader().read(wkt)
 		groundGeom.setSRID(Integer.parseInt(srs))
+//        println "GROUND GEOM ============= ${groundGeom}"
       }
       catch (Exception e)
       {
