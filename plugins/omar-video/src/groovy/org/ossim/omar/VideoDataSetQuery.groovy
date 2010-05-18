@@ -116,7 +116,7 @@ class VideoDataSetQuery
     def intersects = null
 
     Geometry groundGeom = getGroundGeom()
-
+	
     if ( groundGeom )
     {
       //intersects = new IntersectsExpression(geomColumnName, groundGeom)
@@ -150,22 +150,24 @@ class VideoDataSetQuery
           maxLat = viewMaxLat
           maxLon = viewMaxLon
         }
+        // only do a bounds if one exists
+        //
+        if(minLat&&maxLat&&minLon&&maxLon)
+        {
+          def coordinateConversionService = new CoordinateConversionService()
 
-        def coordinateConversionService = new CoordinateConversionService()
+          maxLat = coordinateConversionService.convertToDecimalDegrees(maxLat)
+          maxLon = coordinateConversionService.convertToDecimalDegrees(maxLon)
+          minLat = coordinateConversionService.convertToDecimalDegrees(minLat)
+          minLon = coordinateConversionService.convertToDecimalDegrees(minLon)
 
-        maxLat = coordinateConversionService.convertToDecimalDegrees(maxLat)
-        maxLon = coordinateConversionService.convertToDecimalDegrees(maxLon)
-        minLat = coordinateConversionService.convertToDecimalDegrees(minLat)
-        minLon = coordinateConversionService.convertToDecimalDegrees(minLon)
+          //wkt = Geometry.createPolygon(
+          //    minLon,
+          //    minLat,
+          //    maxLon,
+          //    maxLat
+          //)
 
-       /*
-        wkt = Geometry.createPolygon(
-            minLon,
-            minLat,
-            maxLon,
-            maxLat
-        )
-        */
 		def geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326)	
 
 		minLon = Double.parseDouble(minLon)
@@ -181,7 +183,8 @@ class VideoDataSetQuery
 
 
 		wkt = polygon.toText()	
-        
+        }
+
         break
 
       case RADIUS_SEARCH:
@@ -208,6 +211,7 @@ class VideoDataSetQuery
 
     return bounds
   }
+
 
 
   void caseInsensitiveBind(def params)
