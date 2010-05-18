@@ -7,7 +7,8 @@ import org.ossim.omar.RasterEntryMetadata
 import org.hibernate.FetchMode
 import org.hibernate.CacheMode
 
-import org.ossim.postgis.Geometry
+//import org.ossim.postgis.Geometry
+import com.vividsolutions.jts.geom.Polygon
 
 class RasterEntrySearchService
 {
@@ -102,7 +103,7 @@ class RasterEntrySearchService
 
 
 
-  List<Geometry> getGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
+  List<Polygon> getGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
     def x = {
       projections { property("groundGeom") }

@@ -6,7 +6,10 @@ import joms.oms.ossimGptVector
 import joms.oms.ossimDptVector
 import joms.oms.Util
 
-import org.ossim.postgis.Geometry
+//import org.ossim.postgis.Geometry
+
+import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.io.WKTReader
 
 class RasterEntry
 {
@@ -158,7 +161,7 @@ class RasterEntry
 
     rasterEntry.metadata = new RasterEntryMetadata()
     rasterEntry.metadata.rasterEntry = rasterEntry
-    rasterEntry.metadata.groundGeom = initGroundGeom(rasterEntryNode)
+    rasterEntry.metadata.groundGeom = initGroundGeom(rasterEntryNode?.groundGeom)
     rasterEntry.metadata.acquisitionDate = RasterEntryMetadata.initAcquisitionDate(rasterEntryNode)
 
 
@@ -196,10 +199,10 @@ class RasterEntry
     return rasterEntry
   }
 
- static def initGroundGeom(rasterEntryNode)
+  static Geometry initGroundGeom(def groundGeomNode)
   {
-    def wkt = rasterEntryNode?.groundGeom?.toString().trim()
-    def srs = rasterEntryNode?.groundGeom?.@srs?.toString().trim()
+    def wkt = groundGeomNode?.toString().trim()
+    def srs = groundGeomNode?.@srs?.toString().trim()
     def groundGeom = null
 
     if ( wkt && srs )
@@ -208,9 +211,11 @@ class RasterEntry
       {
         srs -= "epsg:"
 
-        def geomString = "SRID=${srs};${wkt}"
+        //def geomString = "SRID=${srs};${wkt}"
 
-        groundGeom = Geometry.fromString(geomString)
+        //groundGeom = Geometry.fromString(geomString)
+        groundGeom = new WKTReader().read(wkt)
+		groundGeom.setSRID(Integer.parseInt(srs))
       }
       catch (Exception e)
       {

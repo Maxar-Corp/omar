@@ -2,7 +2,9 @@ package org.ossim.omar
 
 import org.ossim.omar.RasterEntry
 
-import org.ossim.postgis.Geometry
+//import org.ossim.postgis.Geometry
+import com.vividsolutions.jts.geom.Polygon
+
 
 class RasterEntryMetadata
 {
@@ -20,7 +22,9 @@ class RasterEntryMetadata
   String description
   Double niirs
 
-  Geometry groundGeom
+  //Geometry groundGeom
+  Polygon groundGeom
+	
   Date acquisitionDate
 
   // Just for testing...
@@ -53,7 +57,9 @@ class RasterEntryMetadata
       otherTagsXml type: 'text'//, index: 'raster_entry_metadata_other_tags_idx'
 
       acquisitionDate index: 'raster_entry_metadata_acquisition_date_idx'
-
+	  
+	  groundGeom type: org.hibernatespatial.GeometryUserType
+    
     }
   }
 
