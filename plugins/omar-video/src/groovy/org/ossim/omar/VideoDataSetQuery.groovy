@@ -11,8 +11,19 @@ import java.text.SimpleDateFormat;
 import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
 
-import org.ossim.postgis.IntersectsExpression
-import org.ossim.postgis.Geometry
+//import org.ossim.postgis.IntersectsExpression
+//import org.ossim.postgis.Geometry
+
+import com.vividsolutions.jts.geom.Polygon
+import com.vividsolutions.jts.io.WKTReader
+import org.hibernatespatial.criterion.SpatialFilter
+import com.vividsolutions.jts.geom.Coordinate
+import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.geom.GeometryFactory
+import com.vividsolutions.jts.geom.PrecisionModel
+
+
+
 import org.apache.commons.collections.map.CaseInsensitiveMap
 
 class VideoDataSetQuery
@@ -46,7 +57,7 @@ class VideoDataSetQuery
 
   def createClause()
   {
-    IntersectsExpression intersects = createIntersection()
+    Criterion intersects = createIntersection()
     Criterion range = createDateRange()
 
     def clause = null
@@ -100,7 +111,7 @@ class VideoDataSetQuery
     return range
   }
 
-  IntersectsExpression createIntersection(String geomColumnName = "groundGeom")
+  Criterion createIntersection(String geomColumnName = "groundGeom")
   {
     def intersects = null
 
@@ -108,7 +119,8 @@ class VideoDataSetQuery
 
     if ( groundGeom )
     {
-      intersects = new IntersectsExpression(geomColumnName, groundGeom)
+      //intersects = new IntersectsExpression(geomColumnName, groundGeom)
+      intersects = new SpatialFilter(geomColumnName, groundGeom)
     }
 
     return intersects
@@ -146,12 +158,30 @@ class VideoDataSetQuery
         minLat = coordinateConversionService.convertToDecimalDegrees(minLat)
         minLon = coordinateConversionService.convertToDecimalDegrees(minLon)
 
+       /*
         wkt = Geometry.createPolygon(
             minLon,
             minLat,
             maxLon,
             maxLat
         )
+        */
+		def geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326)	
+
+		minLon = Double.parseDouble(minLon)
+		minLat = Double.parseDouble(minLat)
+		maxLon = Double.parseDouble(maxLon)
+		maxLat = Double.parseDouble(maxLat)
+
+		def coords = [   
+			new Coordinate(minLon, minLat), new Coordinate(minLon, maxLat), new Coordinate(maxLon, maxLat), new Coordinate(maxLon, minLat), new Coordinate(minLon, minLat) 
+		] as Coordinate[]
+
+		def polygon = geometryFactory.createPolygon( geometryFactory.createLinearRing(coords), null)
+
+
+		wkt = polygon.toText()	
+        
         break
 
       case RADIUS_SEARCH:
@@ -170,7 +200,9 @@ class VideoDataSetQuery
     if ( wkt )
     {
       //println wkt
-      bounds = Geometry.fromString("SRID=${srs};${wkt}")
+      //bounds = Geometry.fromString("SRID=${srs};${wkt}")
+      bounds = new WKTReader().read(wkt)
+      bounds?.setSRID(Integer.parseInt(srs))
       //println bounds
     }
 

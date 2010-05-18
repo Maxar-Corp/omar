@@ -2,11 +2,15 @@ package org.ossim.omar
 
 import org.ossim.omar.VideoDataSet
 
-import org.ossim.postgis.Geometry
+//import org.ossim.postgis.Geometry
+import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.io.WKTReader
+
 
 class VideoDataSetMetadata
 {
   Geometry groundGeom
+ 
   Date startDate
   Date endDate
   String otherTagsXml
@@ -96,14 +100,57 @@ class VideoDataSetMetadata
     videoDataSetMetadata.startDate = DateUtil.parseDate(start)
     videoDataSetMetadata.endDate = DateUtil.parseDate(end)
 
-    def srs = videoDataSetNode?.groundGeom?.@srs?.toString() - "epsg:"
-    def wkt = videoDataSetNode?.groundGeom
-
-    if ( srs && wkt )
+/*
+    if ( videoDataSetNode?.groundGeom )
     {
-      videoDataSetMetadata.groundGeom = Geometry.fromString("SRID=${srs};${wkt}")
+      videoDataSetMetadata.groundGeom = initGroundGeom(videoDataSetNode?.groundGeom)
     }
+    else if ( videoDataSetNode?.spatialMetadata )
+    {
+	println "HERE"
+*/	
+	   videoDataSetNode?.spatialMetadata?.groundGeom?.each { groundGeomNode ->
+		  if ( videoDataSetMetadata.groundGeom == null ) 
+		  {
+			videoDataSetMetadata.groundGeom = initGroundGeom(groundGeomNode) 
+		  }
+		  else
+		  { 
+			videoDataSetMetadata.groundGeom =  videoDataSetMetadata.groundGeom.union(initGroundGeom(groundGeomNode))
+		  }	
+	   }
+/*	
+    }
+*/
+    //println videoDataSetMetadata.groundGeom
 
     return videoDataSetMetadata
+  }
+
+  static Geometry initGroundGeom(def groundGeomNode)
+  {
+    def wkt = groundGeomNode?.toString().trim()
+    def srs = groundGeomNode?.@srs?.toString().trim()
+    def groundGeom = null
+
+    if ( wkt && srs )
+    {
+      try
+      {
+        srs -= "epsg:"
+
+        //def geomString = "SRID=${srs};${wkt}"
+
+        //groundGeom = Geometry.fromString(geomString)
+        groundGeom = new WKTReader().read(wkt)
+		groundGeom.setSRID(Integer.parseInt(srs))
+      }
+      catch (Exception e)
+      {
+        System.err.println("Cannt create geom for: srs=${srs} wkt=${wkt}")
+      }
+    }
+
+    return groundGeom
   }
 }
