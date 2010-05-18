@@ -16,7 +16,7 @@ import joms.oms.ossimImageGeometry
 import org.ossim.oms.image.omsImageSource
 import javax.imageio.ImageIO
 import org.ossim.omar.RasterEntry
-
+ 
 class WebMappingService
 {
   def grailsApplication
@@ -101,6 +101,7 @@ class WebMappingService
     }
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                        RenderingHints.VALUE_ANTIALIAS_ON);
+
     geometries.each {geom ->
       //def pointListx = new int[geom.numPoints()]
       //def pointListy = new int[geom.numPoints()]
