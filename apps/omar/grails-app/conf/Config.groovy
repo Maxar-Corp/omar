@@ -1,12 +1,12 @@
 import grails.util.Environment
-import org.ossim.postgis.Geometry
-import org.ossim.postgis.GeometryType
-
+//import org.ossim.postgis.Geometry
+//import org.ossim.postgis.GeometryType
+import com.vividsolutions.jts.geom.Geometry
 
 grails.gorm.default.mapping = {
   cache true
   id generator: 'identity'
-  'user-type'(type: GeometryType, class: Geometry)
+//  'user-type'(type: GeometryType, class: Geometry)
 }
 
 // locations to search for config files that get merged into the main config
@@ -43,7 +43,8 @@ grails.converters.encoding = "UTF-8"
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
 
-grails.serverIP = InetAddress.localHost.hostAddress
+grails.serverIP="localhost"
+//grails.serverIP = InetAddress.localHost.hostAddress
 //grails.serverIP = "scott-6a8076558:8080"
 
 //grails.serverIP = "172.16.90.130"
@@ -95,14 +96,14 @@ log4j = {
 //log4j.logger.org.springframework.security='off,stdout'
 
 /** *********************************************************************************************************/
-wms.referenceDataDirectory = "/data"
+wms.referenceDataDirectory = "/data/omar"
 
 wms.mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" : ""
 //wms.serverAddress = InetAddress.localHost.hostAddress
 wms.serverAddress = grails.serverIP
 
 
-wms.base.useTileCache = true
+wms.base.useTileCache = false
 wms.base.mapFile = "${wms.referenceDataDirectory}/bmng.map"
 
 wms.base = [
