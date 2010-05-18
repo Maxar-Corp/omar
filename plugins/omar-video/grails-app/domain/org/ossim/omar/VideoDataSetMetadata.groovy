@@ -26,6 +26,7 @@ class VideoDataSetMetadata
       otherTagsXml type: 'text'//, index: 'video_data_set_metadata_other_tags_idx'
       startDate column: 'start_date', type: 'timestamp', index: 'video_data_set_metadata_start_date_idx,video_data_set_time_idx'
       endDate column: 'end_date', type: 'timestamp', index: 'video_data_set_metadata_end_date_idx,video_data_set_time_idx'
+      groundGeom type: org.hibernatespatial.GeometryUserType
     }
   }
 
@@ -110,7 +111,7 @@ class VideoDataSetMetadata
 	println "HERE"
 */	
 	   videoDataSetNode?.spatialMetadata?.groundGeom?.each { groundGeomNode ->
-		  if ( videoDataSetMetadata.groundGeom == null ) 
+		  if ( videoDataSetMetadata.groundGeom == null )
 		  {
 			videoDataSetMetadata.groundGeom = initGroundGeom(groundGeomNode) 
 		  }
