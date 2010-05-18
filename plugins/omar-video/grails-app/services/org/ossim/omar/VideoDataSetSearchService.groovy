@@ -2,6 +2,10 @@ package org.ossim.omar
 
 import org.ossim.omar.VideoDataSet
 import org.ossim.omar.VideoDataSetMetadata
+import org.hibernate.CacheMode as CM
+import org.hibernate.CacheMode
+import org.hibernate.FetchMode as FM
+import org.hibernate.FetchMode
 
 //import javax.jws.WebParam
 
