@@ -102,14 +102,12 @@ class VideoDataSetMetadata
     videoDataSetMetadata.endDate = DateUtil.parseDate(end)
 
 
-    if ( videoDataSetNode?.groundGeom?.size() != 0 )
+    if ( videoDataSetNode?.groundGeom?.toString() )
     {
-//      println   videoDataSetNode?.groundGeom
-      videoDataSetMetadata.groundGeom = initGroundGeom(videoDataSetNode?.groundGeom)
+     videoDataSetMetadata.groundGeom = initGroundGeom(videoDataSetNode?.groundGeom)
     }
-    else if ( videoDataSetNode?.spatialMetadata )
+    else if ( videoDataSetNode?.spatialMetadata?.toString() )
     {
-	//println "HERE"
        def srsId = 4326;
 	   videoDataSetNode?.spatialMetadata?.groundGeom?.each { groundGeomNode ->
 		  if ( videoDataSetMetadata.groundGeom == null )
