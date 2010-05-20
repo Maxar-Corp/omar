@@ -664,7 +664,7 @@ function MapWidget()
         var container = $("toolBar");
 
         var toolBar = new OpenLayers.Control.Panel(
-        {div: container,defaultControl: panButton, displayClass: "olControlPanel"});
+        {div: container,defaultControl: zoomBoxButton, displayClass: "olControlPanel"});
 
         toolBar.addControls([
             panButton,
