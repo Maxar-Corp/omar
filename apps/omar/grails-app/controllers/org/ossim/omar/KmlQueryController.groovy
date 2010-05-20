@@ -155,9 +155,8 @@ class KmlQueryController implements InitializingBean
     }
     // println params
     log.info(queryParams.toMap())
-
     def videoEntries = videoDataSetSearchService.runQuery(queryParams, params)
-    String kmlText = kmlService.createVideosKml(videoEntries)
+    String kmlText = kmlService.createVideosKml(videoEntries, params)
 
     response.setHeader("Content-disposition", "attachment; filename=omar_last_${params.max}_videos.kml");
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
