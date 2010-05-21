@@ -94,9 +94,12 @@ class KmlQueryController implements InitializingBean
     def queryParams = new RasterEntryQuery()
 
     bindData(queryParams, params)
-    queryParams."startDate" = DateUtil.parseDateGivenFormats(params."startDate", [])
-    queryParams."endDate"   = DateUtil.parseDateGivenFormats(params."endDate", [])
- 
+//    queryParams."startDate" = DateUtil.parseDateGivenFormats(params."startDate", [])
+//   queryParams."endDate"   = DateUtil.parseDateGivenFormats(params."endDate", [])
+    def startDate = DateUtil.parseDateGivenFormats(params."startDate", [])
+    if (startDate) queryParams."startDate" = startDate
+    def endDate = DateUtil.parseDateGivenFormats(params."endDate", [])
+    if (endDate) queryParams."endDate" = endDate
     if ( !params?.containsKey("dateSort") || params?.dateSort == "true" )
     {
       params.order = 'desc'

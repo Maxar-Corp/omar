@@ -184,11 +184,21 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                 viewRefreshTime("1")
                 viewBoundScale("0.85")
               }
-              LatLonBox() {
-                north(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
-                south(rasterEntry?.metadata?.groundGeom?.bounds?.minLon)
-                east(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
-                west(rasterEntry?.metadata?.groundGeom?.bounds?.minLat)
+              if(bbox)
+              {
+                north(bbox[2])
+                south(bbox[1])
+                east(bbox[0])
+                west(bbox[3])
+              }
+              else
+              {
+                LatLonBox() {
+                  north(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
+                  south(rasterEntry?.metadata?.groundGeom?.bounds?.minLon)
+                  east(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
+                  west(rasterEntry?.metadata?.groundGeom?.bounds?.minLat)
+                }
               }
               if (acquisition) {
                 TimeStamp() {
@@ -374,7 +384,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     }
 
     wmsParams?.srs = "EPSG:4326"
-    wmsParams?.remove("bbox");
+    def bbox = wmsParams?.bbox;
     wmsParams.remove("action")
     wmsParams.remove("controller")
     def rasterIdx = 0
@@ -454,10 +464,21 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                 viewBoundScale("0.85")
               }
               LatLonBox() {
-                north(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
-                south(rasterEntry?.metadata?.groundGeom?.bounds?.minLon)
-                east(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
-                west(rasterEntry?.metadata?.groundGeom?.bounds?.minLat)
+
+                if(bbox)
+                {
+                  north(bbox[2])
+                  south(bbox[1])
+                  east(bbox[0])
+                  west(bbox[3])
+                }
+                else
+                {
+                    north(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
+                    south(rasterEntry?.metadata?.groundGeom?.bounds?.minLon)
+                    east(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
+                    west(rasterEntry?.metadata?.groundGeom?.bounds?.minLat)
+                }
               }
               if (acquisition) {
                 TimeStamp() {
@@ -744,6 +765,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
             viewRefreshMode("onStop")
             viewRefreshTime("${grailsApplication.config.kml.viewRefreshTime}")
             viewBoundScale("1.0")
+
           }
           LatLonBox() {
             north(90)
