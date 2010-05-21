@@ -177,7 +177,11 @@ class DateUtil
           }
         }
       }
-      else
+      else if(params[dateField] instanceof Date)
+      {
+        date = params[dateField]
+      }
+      else if(params[dateField] instanceof String)
       {
         date = parseDateGivenFormats(params[dateField], [])
       }
