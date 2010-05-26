@@ -57,7 +57,39 @@ class DataManagerController
       break;
     }
   }
-
+  def updateRaster={
+    def method = request.method.toUpperCase()
+    def httpStatusMessage = new HttpStatusMessage()
+    httpStatusMessage.status = HttpStatus.OK
+    def rasterName = null
+    if(params.id)
+    {
+      rasterName = params.id;
+    }
+    else if(params.filename)
+    {
+      rasterName = params.filename
+    }
+    httpStatusMessage.message = "Update raster ${rasterName}"
+    switch ( method )
+    {
+      case "GET":
+      case "PUT":
+      case "POST":
+        dataManagerService.updateRaster(httpStatusMessage, params)
+        response.status = httpStatusMessage.status
+        render (httpStatusMessage.message)
+        break
+      default:
+       httpStatusMessage.status = HttpStatus.METHOD_NOT_ALLOWED
+       httpStatusMessage.message = "Unsupported method ${method} for action addRaster with value ${rasterName}"
+       httpStatusMessage.header.Allow = "GET,PUT,POST"
+       httpStatusMessage.initializeResponse(response)
+       render(httpStatusMessage.message)
+      break;
+    }
+    
+  }
   /**
     * renders a response back to the caller to notify if the video was added successfully
     * or not.  For adding a video you must use the http method POST or PUT. If you are going through the
