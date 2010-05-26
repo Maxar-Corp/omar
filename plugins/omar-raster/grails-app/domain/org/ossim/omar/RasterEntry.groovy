@@ -7,7 +7,8 @@ import joms.oms.ossimDptVector
 import joms.oms.Util
 
 //import org.ossim.postgis.Geometry
-
+import java.util.regex.Pattern
+import java.lang.String
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.io.WKTReader
 
@@ -130,10 +131,9 @@ class RasterEntry
 
     return Util.createBilinearModel(dptArray, gptArray)
   }
-
-  static RasterEntry initRasterEntry(def rasterEntryNode)
+  static RasterEntry initRasterEntry(def rasterEntryNode, RasterEntry rasterEntry=null)
   {
-    def rasterEntry = new RasterEntry()
+    rasterEntry = rasterEntry ?: new RasterEntry()
 
     rasterEntry.entryId = rasterEntryNode.entryId
     rasterEntry.width = rasterEntryNode?.width?.toLong()
@@ -142,7 +142,6 @@ class RasterEntry
     rasterEntry.numberOfResLevels = rasterEntryNode?.numberOfResLevels?.toInteger()
     rasterEntry.bitDepth = rasterEntryNode?.bitDepth?.toInteger()
     rasterEntry.dataType = rasterEntryNode?.dataType
-    rasterEntry.tiePointSet = ""
     if ( rasterEntryNode?.TiePointSet )
     {
       rasterEntry.tiePointSet = "<TiePointSet><Image><coordinates>${rasterEntryNode?.TiePointSet.Image.coordinates.toString().replaceAll("\n", "")}</coordinates></Image>"
@@ -158,12 +157,13 @@ class RasterEntry
       rasterEntry.gsdY = (dy != "nan") ? dy?.toDouble() : null
       rasterEntry.gsdUnit = gsdUnit
     }
-
-    rasterEntry.metadata = new RasterEntryMetadata()
+    if(!rasterEntry.metadata)
+    {
+      rasterEntry.metadata = new RasterEntryMetadata()
+    }
     rasterEntry.metadata.rasterEntry = rasterEntry
     rasterEntry.metadata.groundGeom = initGroundGeom(rasterEntryNode?.groundGeom)
     rasterEntry.metadata.acquisitionDate = RasterEntryMetadata.initAcquisitionDate(rasterEntryNode)
-
 
     if ( rasterEntry?.metadata?.groundGeom && !rasterEntry.tiePointSet )
     {
