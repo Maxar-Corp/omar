@@ -87,7 +87,77 @@ class DataManagerService implements ApplicationContextAware
       }
     }
   }
+  def updateRaster(def httpStatusMessage, def params)
+  {
+    if(params.id)
+    {
+      def rasterEntry = RasterEntry.get(params.id)
 
+       if(rasterEntry)
+       {
+         def omsInfoParser = applicationContext.getBean("rasterInfoParser")
+         def dataInfo = new DataInfo()
+         def canOpen = dataInfo.open(rasterEntry.mainFile?.name)
+
+         if ( canOpen )
+         {
+           def xml = dataInfo.getImageInfo(rasterEntry.entryId as int)?.trim()
+           dataInfo.close()
+           if ( xml )
+           {
+             def oms = new XmlSlurper().parseText(xml)
+             RasterEntry.initRasterEntry(oms?.dataSets?.RasterDataSet?.rasterEntries?.RasterEntry, rasterEntry)
+             rasterEntry.save()
+           }
+         }
+       }
+      else
+       {
+         httpStatusMessage.message = "Query could not find record id  ${params.id} to update"
+         httpStatusMessage.status = HttpStatus.NOT_FOUND
+       }
+    }
+    else if(params.filename)
+    {
+      def result = RasterDataSet.createCriteria().list {
+        fileObjects {
+          and {
+            eq('type', "main")
+            like('name', "%${params.filename}%")
+          }
+        }
+      }
+      if(result.size()>0)
+      {
+        result.each {dataset ->
+          dataset.fileObjects.each {fileObject ->
+            dataset.rasterEntries.each{rasterEntry->
+              def dataInfo = new DataInfo()
+              def canOpen = dataInfo.open(fileObject.name)
+
+              if ( canOpen )
+              {
+                def xml = dataInfo.getImageInfo(rasterEntry.entryId as int)?.trim()
+                dataInfo.close()
+                dataInfo = null;
+                if ( xml )
+                {
+                  def oms = new XmlSlurper().parseText(xml)
+                  rasterEntry.initRasterEntry(oms?.dataSets?.RasterDataSet?.rasterEntries?.RasterEntry)
+                  rasterEntry.save()
+                }
+              }
+            }
+          }
+        }
+      }
+      else
+      {
+        httpStatusMessage.message = "Query could not find file  ${params.filename} to update"
+        httpStatusMessage.status = HttpStatus.NOT_FOUND
+      }
+    }
+  }
   def addVideo(def httpStatusMessage, def filename)
   {
     httpStatusMessage.status = HttpStatus.OK
