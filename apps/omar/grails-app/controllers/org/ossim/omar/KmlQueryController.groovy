@@ -138,7 +138,17 @@ class KmlQueryController implements InitializingBean
     {
       params?.max = maxVideos
     }
-    
+    if(params?.googleClientVersion)
+    {
+      if((params?.googleClientVersion[0] as int)>4)
+      {
+        params.embed = true
+      }
+      else
+      {
+        params.embed = false
+      }
+    }
     def queryParams = new VideoDataSetQuery()
 
     bindData(queryParams, params)

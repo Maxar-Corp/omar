@@ -184,22 +184,12 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                 viewRefreshTime("1")
                 viewBoundScale("0.85")
               }
-              if(bbox)
-              {
-                north(bbox[2])
-                south(bbox[1])
-                east(bbox[0])
-                west(bbox[3])
-              }
-              else
-              {
-                LatLonBox() {
+              LatLonBox() {
                   north(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
                   south(rasterEntry?.metadata?.groundGeom?.bounds?.minLon)
                   east(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
                   west(rasterEntry?.metadata?.groundGeom?.bounds?.minLat)
                 }
-              }
               if (acquisition) {
                 TimeStamp() {
                   when(acquisition)
@@ -385,6 +375,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
 
     wmsParams?.srs = "EPSG:4326"
     def bbox = wmsParams?.bbox;
+    wmsParams?.remove("bbox");
     wmsParams.remove("action")
     wmsParams.remove("controller")
     def rasterIdx = 0
@@ -474,7 +465,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                 }
                 else
                 {
-                    north(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
+                  north(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
                     south(rasterEntry?.metadata?.groundGeom?.bounds?.minLon)
                     east(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
                     west(rasterEntry?.metadata?.groundGeom?.bounds?.minLat)
@@ -644,6 +635,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
           name("OMAR Last ${params.max} Images For View")
           Link() {
             href(kmlQueryUrl)
+            httpQuery("googleClientVersion=[clientVersion]")
             viewRefreshMode("onRequest")
           }
         }
@@ -669,6 +661,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
           name("OMAR Last ${params.max} Videos For View")
           Link() {
             href(kmlQueryUrl)
+            httpQuery("googleClientVersion=[clientVersion]")
             viewRefreshMode("onRequest")
           }
         }
