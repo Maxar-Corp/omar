@@ -7,7 +7,7 @@ import com.vividsolutions.jts.geom.PrecisionModel
 
 class PostgisGrailsPlugin
 {
-  def version = 0.12
+  def version = 0.13
   def dependsOn = [:]
 
   def author = "Scott Bortman"

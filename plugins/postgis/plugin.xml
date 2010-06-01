@@ -1,4 +1,4 @@
-<plugin name='postgis' version='0.10' grailsVersion='1.2.2 &gt; *'>
+<plugin name='postgis' version='0.13' grailsVersion='1.3.1 &gt; *'>
   <author>Scott Bortman</author>
   <authorEmail>scott.bortman@gmail.com</authorEmail>
   <title>PostGIS</title>
@@ -6,13 +6,10 @@
     </description>
   <documentation>http://grails.org/Postgis+Plugin</documentation>
   <resources>
+    <resource>BuildConfig</resource>
     <resource>DataSource</resource>
     <resource>UrlMappings</resource>
   </resources>
-  <dependencies>
-    <resolvers>
-      <resolver type='grailsPlugins' name='grailsPlugins' />
-    </resolvers>
-  </dependencies>
+  <dependencies />
   <behavior />
 </plugin>
