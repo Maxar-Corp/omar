@@ -1,4 +1,4 @@
-includeTargets << grailsScript("Init")
+includeTargets << grailsScript("_GrailsArgParsing")
 
 Ant.property(environment: "env")
 
@@ -9,6 +9,7 @@ target('default': "The description of the script goes here!") {
 }
 
 target(doStuff: "The implementation task") {
+  depends(parseArguments)
   def config = new ConfigSlurper(grailsEnv).parse(new File("${basedir}/grails-app/conf/DataSource.groovy").toURL())
 
   /*
@@ -20,19 +21,19 @@ target(doStuff: "The implementation task") {
 
   def fileName
 
-  if ( !args )
+  if ( !argsMap?.params )
   {
     Ant.input(addProperty: "file.name", message: "Please enter the name of the file to run:")
     fileName = Ant.antProject.properties."file.name"
   }
   else
   {
-    fileName = args
+    fileName = argsMap?.params[0]
   }
 
   if ( (fileName as File)?.exists() )
   {
-    new AntBuilder().sql(
+    Ant.sql(
         driver: config.dataSource.driverClassName,
         url: config.dataSource.url,
         userid: config.dataSource.username,
