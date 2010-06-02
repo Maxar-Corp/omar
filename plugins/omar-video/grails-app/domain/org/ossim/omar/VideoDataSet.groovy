@@ -13,7 +13,6 @@ class VideoDataSet
   static hasMany = [fileObjects: VideoFile]
   Repository repository
 
-//  static hasOne = [metadata: VideoDataSetMetadata]
   Geometry groundGeom
 
   Date startDate
