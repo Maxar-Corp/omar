@@ -39,5 +39,6 @@ grails.plugin.location.'omar-raster'="${System.getenv('OMAR_HOME')}/../../plugin
 grails.plugin.location.'omar-video'="${System.getenv('OMAR_HOME')}/../../plugins/omar-video"
 grails.plugin.location.'omar-security'="${System.getenv('OMAR_HOME')}/../../plugins/omar-security"
 grails.plugin.location.openlayers="${System.getenv('OMAR_HOME')}/../../plugins/openlayers"
+grails.plugin.location.geoscript="${System.getenv('OMAR_HOME')}/../../plugins/geoscript"
 
 

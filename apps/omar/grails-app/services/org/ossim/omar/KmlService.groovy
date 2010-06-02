@@ -109,7 +109,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
               Width: rasterEntry.width,
               Height: rasterEntry.height,
               Bands: rasterEntry.numberOfBands,
-              Acquistion_Date: rasterEntry.metadata?.acquisitionDate,
+              Acquistion_Date: rasterEntry.acquisitionDate,
               Meters_per_pixel: mpp]
       def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [rasterEntryIds: rasterEntry.id])
 
@@ -144,10 +144,10 @@ class KmlService implements ApplicationContextAware, InitializingBean {
         Folder() {
           name("OMAR_WMS")
           rasterEntries?.each {rasterEntry ->
-            def acquisition = (rasterEntry?.metadata?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
+            def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
 
-            def groundCenterLon = (rasterEntry?.metadata?.groundGeom?.bounds?.minLon + rasterEntry?.metadata?.groundGeom?.bounds?.maxLon) * 0.5;
-            def groundCenterLat = (rasterEntry?.metadata?.groundGeom?.bounds?.minLat + rasterEntry?.metadata?.groundGeom?.bounds?.maxLat) * 0.5;
+            def groundCenterLon = (rasterEntry?.groundGeom?.bounds?.minLon + rasterEntry?.groundGeom?.bounds?.maxLon) * 0.5;
+            def groundCenterLat = (rasterEntry?.groundGeom?.bounds?.minLat + rasterEntry?.groundGeom?.bounds?.maxLat) * 0.5;
 
             def renderedHtml = "${descriptionMap.get(rasterIdx)}"
             rasterIdx++
@@ -185,10 +185,10 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                 viewBoundScale("0.85")
               }
               LatLonBox() {
-                  north(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
-                  south(rasterEntry?.metadata?.groundGeom?.bounds?.minLon)
-                  east(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
-                  west(rasterEntry?.metadata?.groundGeom?.bounds?.minLat)
+                  north(rasterEntry?.groundGeom?.bounds?.maxLat)
+                  south(rasterEntry?.groundGeom?.bounds?.minLon)
+                  east(rasterEntry?.groundGeom?.bounds?.maxLat)
+                  west(rasterEntry?.groundGeom?.bounds?.minLat)
                 }
               if (acquisition) {
                 TimeStamp() {
@@ -351,8 +351,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
 
   String createImagesKml(List<RasterEntry> rasterEntries, Map wmsParams, Map params) {
     def kmlbuilder = new StreamingMarkupBuilder()
-    def width = 1024;
-    def height = 1024;
+//    def width = 1024;
+//    def height = 1024;
 
     kmlbuilder.encoding = "UTF-8"
 
@@ -372,10 +372,11 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     if (!params?.containsKey("transparent")) {
       wmsParams.transparent = "TRUE"
     }
-
     wmsParams?.srs = "EPSG:4326"
     def bbox = wmsParams?.bbox;
     wmsParams?.remove("bbox");
+  //  wmsParams?.remove("width");
+  //  wmsParams?.remove("height");
     wmsParams.remove("action")
     wmsParams.remove("controller")
     def rasterIdx = 0
@@ -387,7 +388,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
               Width: rasterEntry.width,
               Height: rasterEntry.height,
               Bands: rasterEntry.numberOfBands,
-              Acquistion_Date: rasterEntry.metadata?.acquisitionDate,
+              Acquistion_Date: rasterEntry?.acquisitionDate,
               Meters_per_pixel: mpp]
       def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [rasterEntryIds: rasterEntry.id])
 
@@ -422,10 +423,10 @@ class KmlService implements ApplicationContextAware, InitializingBean {
           name("Omar WMS")
           rasterIdx = 0
           rasterEntries?.each {rasterEntry ->
-            def acquisition = (rasterEntry?.metadata?.acquisitionDate) ? sdf.format(rasterEntry?.metadata?.acquisitionDate) : null
+            def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
 
-            def groundCenterLon = (rasterEntry?.metadata?.groundGeom?.bounds?.minLon + rasterEntry?.metadata?.groundGeom?.bounds?.maxLon) * 0.5;
-            def groundCenterLat = (rasterEntry?.metadata?.groundGeom?.bounds?.minLat + rasterEntry?.metadata?.groundGeom?.bounds?.maxLat) * 0.5;
+            def groundCenterLon = (rasterEntry?.groundGeom?.bounds?.minLon + rasterEntry?.groundGeom?.bounds?.maxLon) * 0.5;
+            def groundCenterLat = (rasterEntry?.groundGeom?.bounds?.minLat + rasterEntry?.groundGeom?.bounds?.maxLat) * 0.5;
             wmsParams?.layers = rasterEntry?.id
 
             def renderedHtml = "${descriptionMap.get(rasterIdx)}"
@@ -453,6 +454,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                 viewRefreshMode("onStop")
                 viewRefreshTime("1")
                 viewBoundScale("0.85")
+//                viewFormat("BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&amp;width=[horizPixels]&amp;height=[vertPixels]")
               }
               LatLonBox() {
 
@@ -465,10 +467,10 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                 }
                 else
                 {
-                  north(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
-                    south(rasterEntry?.metadata?.groundGeom?.bounds?.minLon)
-                    east(rasterEntry?.metadata?.groundGeom?.bounds?.maxLat)
-                    west(rasterEntry?.metadata?.groundGeom?.bounds?.minLat)
+                  north(rasterEntry?.groundGeom?.bounds?.maxLat)
+                    south(rasterEntry?.groundGeom?.bounds?.minLon)
+                    east(rasterEntry?.groundGeom?.bounds?.maxLat)
+                    west(rasterEntry?.groundGeom?.bounds?.minLat)
                 }
               }
               if (acquisition) {
@@ -635,7 +637,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
           name("OMAR Last ${params.max} Images For View")
           Link() {
             href(kmlQueryUrl)
-            httpQuery("googleClientVersion=[clientVersion]")
+            httpQuery("googleClientVersion=[clientVersion];")
             viewRefreshMode("onRequest")
           }
         }

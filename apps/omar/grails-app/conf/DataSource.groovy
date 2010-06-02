@@ -22,20 +22,20 @@ environments {
     dataSource {
       dbCreate = "create-drop" // one of 'create', 'create-drop','update'
       //dbCreate = "update"
-      url = "jdbc:postgresql_postGIS:omardb-2.0-dev"
+      url = "jdbc:postgresql_postGIS:omardb-dev"
     }
   }
   test {
     dataSource {
       dbCreate = "update"
       //url = "jdbc:postgresql_postGIS:omardb-2.0-test"
-      url = "jdbc:postgresql_postGIS:dbupgrade"
+      url = "jdbc:postgresql_postGIS:omardb-test"
     }
   }
   production {
     dataSource {
       dbCreate = "update"
-      url = "jdbc:postgresql_postGIS:omardb-2.0-prod"
+      url = "jdbc:postgresql_postGIS:omardb-prod"
     }
   }
 }

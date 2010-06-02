@@ -62,7 +62,7 @@ class MapViewController implements InitializingBean
       rasterEntries << rasterEntry
 
 //      def bounds = rasterEntry.groundGeom?.bounds
-      def bounds = rasterEntry?.metadata?.groundGeom?.bounds
+      def bounds = rasterEntry?.groundGeom?.bounds
 
 
       if ( left == null || bounds?.minLon < left )
@@ -153,24 +153,24 @@ class MapViewController implements InitializingBean
 
       rasterEntries << rasterEntry
 
-      if ( left == null || rasterEntry.metadata.groundGeom?.bounds?.minLon < left )
+      if ( left == null || rasterEntry.groundGeom?.bounds?.minLon < left )
       {
-        left = rasterEntry.metadata.groundGeom?.bounds?.minLon
+        left = rasterEntry.groundGeom?.bounds?.minLon
       }
 
-      if ( bottom == null || rasterEntry.metadata.groundGeom?.bounds?.minLat < bottom )
+      if ( bottom == null || rasterEntry.groundGeom?.bounds?.minLat < bottom )
       {
-        bottom = rasterEntry.metadata.groundGeom?.bounds?.minLat
+        bottom = rasterEntry.groundGeom?.bounds?.minLat
       }
 
-      if ( right == null || rasterEntry.metadata.groundGeom?.bounds?.maxLon > right )
+      if ( right == null || rasterEntry.groundGeom?.bounds?.maxLon > right )
       {
-        right = rasterEntry.metadata.groundGeom?.bounds?.maxLon
+        right = rasterEntry.groundGeom?.bounds?.maxLon
       }
 
-      if ( top == null || rasterEntry.metadata.groundGeom?.bounds?.maxLat > top )
+      if ( top == null || rasterEntry.groundGeom?.bounds?.maxLat > top )
       {
-        top = rasterEntry.metadata.groundGeom?.bounds?.maxLat
+        top = rasterEntry.groundGeom?.bounds?.maxLat
       }
 
       RasterEntryFile.findAllByTypeAndRasterEntry("kml", rasterEntry)?.each {kmlFile ->
