@@ -195,34 +195,35 @@ videoStreaming.flashDirRoot = "/Library/WebServer/Documents/videos"
 //videoStreaming.flashDirRoot = "/var/www/html/videos"
 videoStreaming.flashUrlRoot = "http://${grails.serverIP}/videos"
 
-rasterEntry.metadata.tagHeaderList = [
+rasterEntry.tagHeaderList = [
     "File Type",
     "Class Name",
     "Mission",
-//    "Country",
+    "Country",
     "Target Id",
     "Sensor",
     "Image Id"
 ]
 
 
-rasterEntry.metadata.tagNameList = [
+rasterEntry.tagNameList = [
     "fileType",
     "className",
     "missionId",
-//        "country",
+    "countryCode",
     "targetId",
     "sensorId",
-    "imageId"
+    "title"
 ]
 
 rasterEntry.searchTagData = [
     [name: "fileType", description: "File Type"],
     [name: "className", description: "Class Name"],
     [name: "missionId", description: "Mission"],
+    [name: "countryCode", description: "Country"],
     [name: "targetId", description: "BE Number"],
     [name: "sensorId", description: "Sensor"],
-    [name: "imageId", description: "Image Id"]
+    [name: "title", description: "Image Id"]
 ]
 
 videoDataSet.searchTagData = [
