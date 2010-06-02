@@ -66,11 +66,11 @@
 
                 <td>${videoDataSet.height?.encodeAsHTML()}</td>
 
-                <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="GMT" date="${videoDataSet?.metadata?.startDate}"/></td>
+                <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="GMT" date="${videoDataSet?.startDate}"/></td>
 
-                <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="GMT" date="${videoDataSet?.metadata?.endDate}"/></td>
+                <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="GMT" date="${videoDataSet?.endDate}"/></td>
 
-                <g:set var="bounds" value="${videoDataSet?.metadata?.groundGeom?.bounds}"/>
+                <g:set var="bounds" value="${videoDataSet?.groundGeom?.bounds}"/>
                 <td>${bounds?.minLon?.encodeAsHTML()}</td>
                 <td>${bounds?.minLat?.encodeAsHTML()}</td>
                 <td>${bounds?.maxLon?.encodeAsHTML()}</td>
