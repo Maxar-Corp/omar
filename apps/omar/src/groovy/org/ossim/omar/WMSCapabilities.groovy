@@ -91,13 +91,13 @@ public class WMSCapabilities
         def entryId = rasterEntry.entryId
         def srs = "EPSG:4326"//rasterEntry?.groundGeom?.srs
 //        def bounds = rasterEntry?.groundGeom?.bounds
-        def bounds = rasterEntry?.metadata?.groundGeom?.bounds
+        def bounds = rasterEntry?.groundGeom?.bounds
         def file = rasterEntry?.mainFile
 //        def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : ""
-        def acquisition = (rasterEntry?.metadata?.acquisitionDate) ? sdf.format(rasterEntry?.metadata?.acquisitionDate) : ""
+        def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : ""
 
         def filename = file.name
-        def imageId = rasterEntry.metadata?.imageId
+        def imageId = rasterEntry.imageId
 
         // If there is an imageId,  display that as title for KML
         if ( imageId && imageId.value )

@@ -58,7 +58,7 @@ environments {
     grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
   }
   production {
-    grails.serverURL = "http://${grails.serverIP}/${appName}"
+    grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
 
   }
 }

@@ -214,7 +214,7 @@ class OgcController
     }
     catch (java.lang.Exception e)
     {
- //     println e
+//      println e
     }
     if ( g )
     {
@@ -225,10 +225,8 @@ class OgcController
   def wms = {
 
     def tempMap = [:]
-
     // Convert param names to lower case
-    params.each { tempMap.put(it.key.toLowerCase(), it.value)}
-    // println params
+    params?.each { tempMap.put(it.key.toLowerCase(), it.value)}
     // Populate org.ossim.omar.WMSCapabilities Request object
     def wmsRequest = new WMSRequest()
 
