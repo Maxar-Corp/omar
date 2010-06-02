@@ -548,7 +548,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
 
           videoEntries.reverse().each { videoDataSet ->
             def filename = videoDataSet.mainFile?.name
-            def groundGeom = videoDataSet.metadata?.groundGeom as String
+            def groundGeom = videoDataSet.groundGeom as String
             def list = []
             def point = null
             def polygons = []
@@ -556,7 +556,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
             // for now we will use a simple test to see if the current geometry is a polygon
             // or a multi geom and then fix.
             // We  now use Java Topology Suite
-            videoDataSet.metadata?.groundGeom.each() {geom ->
+            videoDataSet.groundGeom.each() {geom ->
                 // for now until we have a utility to get access to all polgons we will assume multi
                 // geom and each is a poly
                 //
@@ -589,10 +589,10 @@ class KmlService implements ApplicationContextAware, InitializingBean {
               name(flashbasename)
               def createFlvUrl = tagLibBean.createLink(absolute: true, controller: "videoStreaming", action: "show", id: videoDataSet.id)
               if (embed) {
-                description("<table width=\"720\"><tr><td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td></tr><tr><td></td></tr><tr><td><b>START TIME:</b> ${videoDataSet.metadata?.startDate}</td></tr><tr><td><b>END TIME:</b> ${videoDataSet.metadata?.endDate}</td></tr><tr><td><b>MIN LAT:</b> ${videoDataSet.metadata?.groundGeom?.bounds?.minLat}</td></tr><tr><td><b>MIN LON: </b> ${videoDataSet.metadata?.groundGeom?.bounds?.minLon}</td></tr><tr><td><b>MAX LAT:</b> ${videoDataSet.metadata?.groundGeom?.bounds?.maxLat}</td></tr><tr><td><b>MAX LON:</b> ${videoDataSet.metadata?.groundGeom?.bounds?.maxLon}</td></tr><tr><td><embed type=\"application/x-shockwave-flash\" src=\"${flashPlayerUrl}\" width=\"720\" height=\"480\" flashvars=\"file=${flvUrl}&autostart=true\"</embed><td><tr></table>")
+                description("<table width=\"720\"><tr><td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td></tr><tr><td></td></tr><tr><td><b>START TIME:</b> ${videoDataSet.startDate}</td></tr><tr><td><b>END TIME:</b> ${videoDataSet.endDate}</td></tr><tr><td><b>MIN LAT:</b> ${videoDataSet.groundGeom?.bounds?.minLat}</td></tr><tr><td><b>MIN LON: </b> ${videoDataSet.groundGeom?.bounds?.minLon}</td></tr><tr><td><b>MAX LAT:</b> ${videoDataSet.groundGeom?.bounds?.maxLat}</td></tr><tr><td><b>MAX LON:</b> ${videoDataSet.groundGeom?.bounds?.maxLon}</td></tr><tr><td><embed type=\"application/x-shockwave-flash\" src=\"${flashPlayerUrl}\" width=\"720\" height=\"480\" flashvars=\"file=${flvUrl}&autostart=true\"</embed><td><tr></table>")
               }
               else {
-                description("<table><tr><td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td></tr><tr><td></td></tr><tr><td><b>START TIME:</b> ${videoDataSet.metadata?.startDate}</td></tr><tr><td><b>END TIME:</b> ${videoDataSet.metadata?.endDate}</td></tr><tr><td><b>MIN LAT:</b> ${videoDataSet.metadata?.groundGeom?.bounds?.minLat}</td></tr><tr><td><b>MIN LON: </b> ${videoDataSet.metadata?.groundGeom?.bounds?.minLon}</td></tr><tr><td><b>MAX LAT:</b> ${videoDataSet.metadata?.groundGeom?.bounds?.maxLat}</td></tr><tr><td><b>MAX LON:</b> ${videoDataSet.metadata?.groundGeom?.bounds?.maxLon}</td></tr></table>")
+                description("<table><tr><td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td></tr><tr><td></td></tr><tr><td><b>START TIME:</b> ${videoDataSet.startDate}</td></tr><tr><td><b>END TIME:</b> ${videoDataSet.endDate}</td></tr><tr><td><b>MIN LAT:</b> ${videoDataSet.groundGeom?.bounds?.minLat}</td></tr><tr><td><b>MIN LON: </b> ${videoDataSet.groundGeom?.bounds?.minLon}</td></tr><tr><td><b>MAX LAT:</b> ${videoDataSet.groundGeom?.bounds?.maxLat}</td></tr><tr><td><b>MAX LON:</b> ${videoDataSet.groundGeom?.bounds?.maxLon}</td></tr></table>")
               }
               Snippet("<a href='${createFlvUrl}'>CLICK TO PLAY</a>")
               MultiGeometry() {
@@ -612,9 +612,9 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                   coordinates("${point}")
                 }
               } // END MultiGeometry()
-              if (videoDataSet?.metadata?.startDate) {
+              if (videoDataSet?.startDate) {
                 TimeStamp() {
-                  when(osdf.format(new Date(isdf.parse(videoDataSet?.metadata?.startDate as String) as String)))
+                  when(osdf.format(new Date(isdf.parse(videoDataSet?.startDate as String) as String)))
                 }
               }
             }

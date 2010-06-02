@@ -64,12 +64,12 @@
 
                 <td>${fieldValue(bean: videoDataSet, field: 'height')}</td>
 
-                <td>${fieldValue(bean: videoDataSet?.metadata, field: 'startDate')}</td>
+                <td>${fieldValue(bean: videoDataSet, field: 'startDate')}</td>
 
-                <td>${fieldValue(bean: videoDataSet?.metadata, field: 'endDate')}</td>
+                <td>${fieldValue(bean: videoDataSet, field: 'endDate')}</td>
 
 
-                <g:set var="bounds" value="${videoDataSet?.metadata?.groundGeom?.bounds}"/>
+                <g:set var="bounds" value="${videoDataSet?.groundGeom?.bounds}"/>
                 <td>${bounds?.minLon?.encodeAsHTML()}</td>
                 <td>${bounds?.minLat?.encodeAsHTML()}</td>
                 <td>${bounds?.maxLon?.encodeAsHTML()}</td>

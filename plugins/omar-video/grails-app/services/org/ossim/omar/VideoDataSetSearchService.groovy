@@ -1,7 +1,6 @@
 package org.ossim.omar
 
 import org.ossim.omar.VideoDataSet
-import org.ossim.omar.VideoDataSetMetadata
 import org.hibernate.CacheMode as CM
 import org.hibernate.CacheMode
 import org.hibernate.FetchMode as FM
@@ -82,9 +81,7 @@ class VideoDataSetSearchService
     }
 
 
-    def metadata = VideoDataSetMetadata.createCriteria().list(x)
-
-    return metadata*.videoDataSet
+    return VideoDataSet.createCriteria().list(x)
   }
 
 
@@ -130,13 +127,15 @@ class VideoDataSetSearchService
       }
       cacheMode(CacheMode.GET)
     }
-    def geometries = VideoDataSetMetadata.createCriteria().list(x)
-    return geometries
+
+    return VideoDataSet.createCriteria().list(x)
+    //def geometries = VideoDataSetMetadata.createCriteria().list(x)
+    //return geometries
   }
 
   int getCount(VideoDataSetQuery videoDataSetQuery)
   {
-    def totalCount = VideoDataSetMetadata.createCriteria().get {
+    def totalCount = VideoDataSet.createCriteria().get {
       projections { rowCount() }
       if ( videoDataSetQuery?.groundGeom )
       {

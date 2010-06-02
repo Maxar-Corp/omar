@@ -9,6 +9,7 @@ import com.vividsolutions.jts.io.WKTReader
 
 class VideoDataSetMetadata
 {
+  /*
   Geometry groundGeom
  
   Date startDate
@@ -154,4 +155,5 @@ class VideoDataSetMetadata
 
     return groundGeom
   }
+  */
 }
