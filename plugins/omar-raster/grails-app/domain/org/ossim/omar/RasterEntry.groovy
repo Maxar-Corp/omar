@@ -10,6 +10,7 @@ import joms.oms.Util
 import java.util.regex.Pattern
 import java.lang.String
 import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.geom.Polygon
 import com.vividsolutions.jts.io.WKTReader
 
 class RasterEntry
@@ -28,7 +29,39 @@ class RasterEntry
   String dataType
   String tiePointSet
 
-  static hasOne = [metadata: RasterEntryMetadata]
+  /****************** BEGIN ADDING TAGS FROM MetaData to here ******************/
+  String imageId
+  String targetId
+  String productId
+  String sensorId
+  String missionId
+  String imageCategory
+  Double azimuthAngle
+  Double grazingAngle
+  String securityClassification
+  String title
+  String organization
+  String description
+  Double niirs
+
+  //Geometry groundGeom
+  Polygon groundGeom
+
+  Date acquisitionDate
+
+  // Just for testing...
+  String fileType
+  String className
+
+  String otherTagsXml
+
+  static transients = ["otherTagsMap"]
+
+  Map<String, String> otherTagsMap = [:]
+
+  /****************** END ADDING TAGS FROM MetaData to here ******************/
+
+//  static hasOne = [metadata: RasterEntryMetadata]
 
   static belongsTo = [rasterDataSet: RasterDataSet]
 
@@ -37,6 +70,27 @@ class RasterEntry
   static mapping = {
     columns {
       tiePointSet type: 'text'
+
+      /*  BEGIN MAPPINGS from RasterEntryMetadata merged to here */
+      imageId index: 'raster_entry_image_id_idx'
+      targetId index: 'raster_entry_target_id_idx'
+      productId index: 'raster_entry_product_id_idx'
+      sensorId index: 'raster_entry_sensor_id_idx'
+      missionId index: 'raster_entry_mission_id_idx'
+      imageCategory index: 'raster_entry_image_category_idx'
+      securityClassification index: 'raster_entry_security_classification_idx'
+
+      // Just for testing
+      fileType index: 'raster_entry_file_type_idx'
+      className index: 'raster_entry_class_name_idx'
+
+      otherTagsXml type: 'text'//, index: 'raster_entry_metadata_other_tags_idx'
+
+      acquisitionDate index: 'raster_entry_acquisition_date_idx'
+
+	  groundGeom type: org.hibernatespatial.GeometryUserType
+      /*  END MAPPINGS from RasterEntryMetadata merged to here */
+
     }
   }
 
@@ -55,7 +109,34 @@ class RasterEntry
 
     tiePointSet(nullable: true)
 
-    metadata(nullable: true)
+//    metadata(nullable: true)
+    /* BEGIN contraints from RasterEntryMEtadata */
+    imageId(nullable: true, blank: false/*, unique: true*/)
+    targetId(nullable: true)
+    productId(nullable: true)
+    sensorId(nullable: true)
+    missionId(nullable: true)
+    imageCategory(nullable: true)
+    azimuthAngle(nullable: true)
+    grazingAngle(nullable: true)
+    securityClassification(nullable: true)
+    title(nullable: true)
+    niirs(nullable: true)
+    organization(nullable: true)
+    description(nullable: true)
+
+    // Just for testing
+    fileType(nullable: true)
+    className(nullable: true)
+
+    otherTagsXml(nullable: true, blank: false)
+
+    groundGeom(nullable: false)
+    acquisitionDate(nullable: true)
+    /* END contraints from RasterEntryMEtadata */
+
+//    rasterEntry(nullable: true)
+    
   }
 
   def getMetersPerPixel()
@@ -128,7 +209,10 @@ class RasterEntry
         dptArray.add(new ossimDpt(0.0, h))
       }
     }
-
+    if((gptArray.size() < 1)||(dptArray.size() < 1))
+    {
+       return null
+    }
     return Util.createBilinearModel(dptArray, gptArray)
   }
   static RasterEntry initRasterEntry(def rasterEntryNode, RasterEntry rasterEntry=null)
@@ -157,19 +241,19 @@ class RasterEntry
       rasterEntry.gsdY = (dy != "nan") ? dy?.toDouble() : null
       rasterEntry.gsdUnit = gsdUnit
     }
-    if(!rasterEntry.metadata)
-    {
-      rasterEntry.metadata = new RasterEntryMetadata()
-    }
-    rasterEntry.metadata.rasterEntry = rasterEntry
-    rasterEntry.metadata.groundGeom = initGroundGeom(rasterEntryNode?.groundGeom)
-    rasterEntry.metadata.acquisitionDate = RasterEntryMetadata.initAcquisitionDate(rasterEntryNode)
+ //   if(!rasterEntry.metadata)
+ //   {
+ //     rasterEntry.metadata = new RasterEntryMetadata()
+ //   }
+//    rasterEntry.metadata.rasterEntry = rasterEntry
+    rasterEntry.groundGeom = initGroundGeom(rasterEntryNode?.groundGeom)
+    rasterEntry.acquisitionDate = initAcquisitionDate(rasterEntryNode)
 
-    if ( rasterEntry?.metadata?.groundGeom && !rasterEntry.tiePointSet )
+    if ( rasterEntry.groundGeom && !rasterEntry.tiePointSet )
     {
-      def groundGeom = rasterEntry?.metadata?.groundGeom.geom
-      def w = rasterEntry?.width as double
-      def h = rasterEntry?.height as double
+      def groundGeom = rasterEntry?.groundGeom.geom
+      def w = rasterEntry.width as double
+      def h = rasterEntry.height as double
       if ( groundGeom.numPoints() >= 4 )
       {
         rasterEntry.tiePointSet = "<TiePointSet><Image><coordinates>0.0,0.0 ${w},0.0 ${w},${h} 0.0,${h}</coordinates></Image><Ground><coordinates>"
@@ -184,17 +268,16 @@ class RasterEntry
         rasterEntry.tiePointSet += "</coordinates></Ground></TiePointSet>"
       }
     }
-
     rasterEntryNode.fileObjects?.RasterEntryFile.each {rasterEntryFileNode ->
-      RasterEntryFile rasterEntryFile = RasterEntryFile.initRasterEntryFile(rasterEntryFileNode)
+    RasterEntryFile rasterEntryFile = RasterEntryFile.initRasterEntryFile(rasterEntryFileNode)
 
       rasterEntry.addToFileObjects(rasterEntryFile)
     }
 
     def metadataNode = rasterEntryNode.metadata
 
-    RasterEntryMetadata.initRasterEntryMetadata(metadataNode, rasterEntry)
-    RasterEntryMetadata.initRasterEntryOtherTagsXml(rasterEntry.metadata)
+    initRasterEntryMetadata(metadataNode, rasterEntry)
+    initRasterEntryOtherTagsXml(rasterEntry)
 
     return rasterEntry
   }
@@ -226,4 +309,151 @@ class RasterEntry
 
     return groundGeom
   }  
+  static initRasterEntryMetadata(def metadataNode, def rasterEntry)
+  {
+//    if ( !rasterEntry.metadata )
+//    {
+//      rasterEntry.metadata = new RasterEntryMetadata()
+//      rasterEntry.metadata.rasterEntry = rasterEntry
+//    }
+
+    metadataNode.children().each {tagNode ->
+
+      if ( tagNode.children().size() > 0 )
+      {
+        def name = tagNode.name().toString().toUpperCase()
+
+        switch ( name )
+        {
+//          case "DTED_ACC_RECORD":
+//          case "ICHIPB":
+//          case "PIAIMC":
+//          case "RPC00B":
+//          case "STDIDC":
+//          case "USE00A":
+//            break
+          default:
+            initRasterEntryMetadata(tagNode, rasterEntry)
+        }
+      }
+      else
+      {
+        def name = tagNode.name().toString().trim()
+        def value = tagNode.text().toString().trim()
+
+// Need to add following check in there
+//        if ( !key.startsWith("LINE_NUM") &&
+//            !key.startsWith("LINE_DEN") &&
+//            !key.startsWith("SAMP_NUM") &&
+//            !key.startsWith("SAMP_DEN") &&
+//            !key.startsWith("SECONDARY_BE") &&
+//            !key.equals("ENABLED") &&
+//            !key.equals("ENABLE_CACHE")
+
+
+        if ( name && value )
+        {
+          switch ( name.toLowerCase() )
+          {
+            case "imageid":
+            case "iid2":
+              rasterEntry.imageId = value
+              break;
+            case "targetid":
+            case "tgtid":
+              rasterEntry.targetId = value
+              break;
+            case "productid":
+              rasterEntry.productId = value
+              break;
+            case "sensorid":
+              rasterEntry.sensorId = value
+              break;
+            case "missionid":
+            case "isorce":
+              rasterEntry.missionId = value
+              break;
+            case "imagecategory":
+            case "icat":
+              rasterEntry.imageCategory = value
+              break;
+            case "azimuthangle":
+            case "angletonorth":
+              rasterEntry.azimuthAngle = value as Double
+              break;
+            case "grazingangle":
+              rasterEntry.grazingAngle = value as Double
+              break;
+            case "oblang":
+              rasterEntry.grazingAngle = 90 - (value as Double)
+              break;
+
+            case "securityclassification":
+            case "isclas":
+              rasterEntry.securityClassification = value
+              break;
+            case "title":
+            case "iid2":
+            case "ititle":
+              rasterEntry.title = value
+              break;
+            case "organization":
+            case "oname":
+              rasterEntry.organization = value
+              break;
+            case "description":
+              rasterEntry.description = value
+              break;
+            case "niirs":
+              rasterEntry.niirs = value as Double
+              break;
+
+          // Just for testing
+            case "filetype":
+            case "file_type":
+              rasterEntry.fileType = value
+              break
+
+            case "classname":
+            case "class_name":
+              rasterEntry.className = value
+              break
+
+            default:
+              rasterEntry.otherTagsMap[name] = value
+          }
+        }
+      }
+    }
+
+    //println "RASTERENTRY METADATA = ${rasterEntry.metadata}"
+
+    if ( !rasterEntry.imageId )
+    {
+      rasterEntry.imageId = System.currentTimeMillis() as String
+    }
+  }
+
+  static initRasterEntryOtherTagsXml(RasterEntry rasterEntry)
+  {
+    if ( rasterEntry)
+    {
+      def builder = new groovy.xml.StreamingMarkupBuilder().bind {
+        metadata {
+          rasterEntry.otherTagsMap.each {k, v ->
+            "${k}"(v)
+          }
+        }
+      }
+
+      rasterEntry.otherTagsXml = builder.toString()
+    }
+  }
+
+  static Date initAcquisitionDate(rasterEntryNode)
+  {
+    def when = rasterEntryNode?.TimeStamp?.when
+
+    return DateUtil.parseDate(when?.toString())
+  }
 }
