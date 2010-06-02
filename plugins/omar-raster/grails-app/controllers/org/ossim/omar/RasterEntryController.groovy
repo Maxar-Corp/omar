@@ -430,7 +430,7 @@ class RasterEntryController implements InitializingBean
   {
     baseWMS = grailsApplication.config.wms.base
     dataWMS = grailsApplication.config.wms.data.raster
-    tagHeaderList = grailsApplication.config.rasterEntry.metadata.tagHeaderList
-    tagNameList = grailsApplication.config.rasterEntry.metadata.tagNameList
+    tagHeaderList = grailsApplication.config.rasterEntry.tagHeaderList
+    tagNameList = grailsApplication.config.rasterEntry.tagNameList
   }
 }

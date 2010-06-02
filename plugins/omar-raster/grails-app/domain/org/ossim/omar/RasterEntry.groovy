@@ -42,6 +42,7 @@ class RasterEntry
   String title
   String organization
   String description
+  String countryCode
   Double niirs
 
   //Geometry groundGeom
@@ -71,7 +72,6 @@ class RasterEntry
     columns {
       tiePointSet type: 'text'
 
-      /*  BEGIN MAPPINGS from RasterEntryMetadata merged to here */
       imageId index: 'raster_entry_image_id_idx'
       targetId index: 'raster_entry_target_id_idx'
       productId index: 'raster_entry_product_id_idx'
@@ -79,6 +79,7 @@ class RasterEntry
       missionId index: 'raster_entry_mission_id_idx'
       imageCategory index: 'raster_entry_image_category_idx'
       securityClassification index: 'raster_entry_security_classification_idx'
+      countryCode index: 'raster_entry_countryCode_idx'
 
       // Just for testing
       fileType index: 'raster_entry_file_type_idx'
@@ -89,7 +90,6 @@ class RasterEntry
       acquisitionDate index: 'raster_entry_acquisition_date_idx'
 
 	  groundGeom type: org.hibernatespatial.GeometryUserType
-      /*  END MAPPINGS from RasterEntryMetadata merged to here */
 
     }
   }
@@ -109,8 +109,6 @@ class RasterEntry
 
     tiePointSet(nullable: true)
 
-//    metadata(nullable: true)
-    /* BEGIN contraints from RasterEntryMEtadata */
     imageId(nullable: true, blank: false/*, unique: true*/)
     targetId(nullable: true)
     productId(nullable: true)
@@ -124,6 +122,7 @@ class RasterEntry
     niirs(nullable: true)
     organization(nullable: true)
     description(nullable: true)
+    countryCode(nullable: true)
 
     // Just for testing
     fileType(nullable: true)
@@ -133,10 +132,8 @@ class RasterEntry
 
     groundGeom(nullable: false)
     acquisitionDate(nullable: true)
-    /* END contraints from RasterEntryMEtadata */
 
-//    rasterEntry(nullable: true)
-    
+
   }
 
   def getMetersPerPixel()
@@ -241,11 +238,6 @@ class RasterEntry
       rasterEntry.gsdY = (dy != "nan") ? dy?.toDouble() : null
       rasterEntry.gsdUnit = gsdUnit
     }
- //   if(!rasterEntry.metadata)
- //   {
- //     rasterEntry.metadata = new RasterEntryMetadata()
- //   }
-//    rasterEntry.metadata.rasterEntry = rasterEntry
     rasterEntry.groundGeom = initGroundGeom(rasterEntryNode?.groundGeom)
     rasterEntry.acquisitionDate = initAcquisitionDate(rasterEntryNode)
 
@@ -369,6 +361,11 @@ class RasterEntry
             case "sensorid":
               rasterEntry.sensorId = value
               break;
+            case "country":
+            case "countryCode":
+              rasterEntry.countryCode = value
+              break;
+            case "mission":
             case "missionid":
             case "isorce":
               rasterEntry.missionId = value
