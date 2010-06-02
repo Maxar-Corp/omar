@@ -22,7 +22,7 @@ class RasterDataSet
     rasterDataSetNode.rasterEntries.RasterEntry.each {rasterEntryNode ->
       RasterEntry rasterEntry = RasterEntry.initRasterEntry(rasterEntryNode)
 
-      if ( rasterEntry.metadata.groundGeom )
+      if ( rasterEntry.groundGeom )
       {
         rasterDataSet.addToRasterEntries(rasterEntry)
       }

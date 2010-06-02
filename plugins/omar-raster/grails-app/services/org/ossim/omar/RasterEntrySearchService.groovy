@@ -3,7 +3,7 @@ package org.ossim.omar
 
 import org.hibernate.FetchMode as FM
 import org.hibernate.CacheMode as CM
-import org.ossim.omar.RasterEntryMetadata
+//import org.ossim.omar.RasterEntryMetadata
 import org.hibernate.FetchMode
 import org.hibernate.CacheMode
 
@@ -91,9 +91,9 @@ class RasterEntrySearchService
       }
       fetchMode("rasterEntry", FetchMode.JOIN)
     }
-
-    def metadata = RasterEntryMetadata.createCriteria().list(x)
-    def rasterEntries = metadata?.collect {it.rasterEntry}
+    def rasterEntries = RasterEntry.createCriteria().list(x)
+//    def metadata = RasterEntry.createCriteria().list(x)
+//    def rasterEntries = metadata?.collect {it.rasterEntry}
 //    def rasterEntries = metadata?.rasterEntry
 
     //rasterEntries?.each { it.mainFile }
@@ -146,14 +146,14 @@ class RasterEntrySearchService
       cacheMode(CacheMode.GET)
     }
 
-    def geometries = RasterEntryMetadata.createCriteria().list(x)
+    def geometries = RasterEntry.createCriteria().list(x)
 
     return geometries
   }
 
   int getCount(RasterEntryQuery rasterEntryQuery)
   {
-    def totalCount = RasterEntryMetadata.createCriteria().get {
+    def totalCount = RasterEntry.createCriteria().get {
       projections { rowCount() }
       if ( rasterEntryQuery?.groundGeom )
       {

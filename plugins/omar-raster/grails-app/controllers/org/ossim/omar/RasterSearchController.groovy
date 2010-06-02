@@ -111,7 +111,6 @@ class RasterSearchController implements InitializingBean
     {
 
       rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-
 // This was the old way
 //      def metadataTags = MetadataTag.createCriteria().list {
 //        inList("rasterEntry", rasterEntries)

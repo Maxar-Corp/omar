@@ -1,13 +1,12 @@
 package org.ossim.omar
 
 import org.ossim.omar.RasterEntry
-
-//import org.ossim.postgis.Geometry
 import com.vividsolutions.jts.geom.Polygon
 
 
 class RasterEntryMetadata
 {
+  /*
   String imageId
   String targetId
   String productId
@@ -38,9 +37,10 @@ class RasterEntryMetadata
   static transients = ["otherTagsMap"]
 
   Map<String, String> otherTagsMap = [:]
-
+    */
 
   static mapping = {
+    /*
     columns {
       imageId index: 'raster_entry_metadata_image_id_idx'
       targetId index: 'raster_entry_metadata_target_id_idx'
@@ -61,10 +61,12 @@ class RasterEntryMetadata
 	  groundGeom type: org.hibernatespatial.GeometryUserType
     
     }
+    */
   }
 
   static constraints = {
-    imageId(nullable: true, blank: false/*, unique: true*/)
+    /*
+    imageId(nullable: true, blank: false)
     targetId(nullable: true)
     productId(nullable: true)
     sensorId(nullable: true)
@@ -89,8 +91,9 @@ class RasterEntryMetadata
 
 
     rasterEntry(nullable: true)
+  */
   }
-
+         /*
   static initRasterEntryMetadata(def metadataNode, def rasterEntry)
   {
     if ( !rasterEntry.metadata )
@@ -238,4 +241,5 @@ class RasterEntryMetadata
 
     return DateUtil.parseDate(when?.toString())
   }
+  */
 }

@@ -12,8 +12,8 @@ class RasterEntryController implements InitializingBean
 
   def rasterEntrySearchService
 
-  public static List tagHeaderList
-  public static List tagNameList
+  public static final List tagHeaderList
+  public static final List tagNameList
 
   def index = { redirect(action: list, params: params) }
 
@@ -193,7 +193,7 @@ class RasterEntryController implements InitializingBean
     {
       //println "=== search end ==="
 
-      render ( view: "search1", model:  [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS] )
+      return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
   }
 
@@ -257,6 +257,7 @@ class RasterEntryController implements InitializingBean
 
       //println "=== search end ==="
 
+      println "_________________________\n${rasterEntries.size()}"
       chain(action: "results", model: [rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
     }
     else
@@ -341,7 +342,7 @@ class RasterEntryController implements InitializingBean
     }
 
 //    println "=== results end ==="
-
+  
     render(view: 'results', model: [
         rasterEntries: rasterEntries,
         totalCount: totalCount,
