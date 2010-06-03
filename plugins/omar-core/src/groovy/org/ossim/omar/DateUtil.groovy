@@ -3,6 +3,10 @@ package org.ossim.omar
 import java.math.MathContext
 import java.text.SimpleDateFormat
 
+import javax.servlet.http.HttpServletRequest
+
+import org.codehaus.groovy.grails.web.servlet.mvc.GrailsParameterMap
+
 /**
  * Created by IntelliJ IDEA.
  * User: sbortman
@@ -89,40 +93,42 @@ class DateUtil
     return date
   }
 
-  static parseDateGivenFormats(String dateString, def dateFormats)
+  static parseDateGivenFormats(String dateString, def dateFormats=null)
   {
+	def date = null
 
-    if ( !dateFormats || (dateFormats.size() < 1) )
+    if ( !dateFormats )
     {
       dateFormats = [
+		  "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
           "MM'/'DD'/'yyyy HH:mm:ss",
           "yyyyMMdd'T'HH:mm:ss",
           "yyyyMMdd'T'HH:mm:ss.ssss",
-
+		  "EEE MMM dd HH:mm:ss ZZZ yyyy"
       ]
     }
-    if ( !dateString )
-    {
-      return null
-    }
-    def format = new SimpleDateFormat()
 
-    dateFormats.each {dateFormat ->
-      try
-      {
-        format.applyPattern(dateFromat)
-        def date = fromat.parse(dateString)
-        if ( date )
-        {
-          return date
-        }
-      }
-      catch (Exception e)
-      {
-//        println "Cannot parse ${dateString}: using ${dateFormat}"
-      }
-    }
-    return null
+    if ( dateString )
+    {
+      	for ( def dateFormat in dateFormats )
+		{
+			try
+      		{
+        		date = Date.parse(dateFormat, dateString)
+
+        		if ( date )
+        		{
+          			break
+        		}
+      		}
+      		catch (Exception e)
+      		{
+       println "Cannot parse ${dateString}: using ${dateFormat}"
+      		}
+		}
+	}
+
+    return date
   }
 
   public static Date initializeDate(String dateField, Map params)
@@ -131,62 +137,31 @@ class DateUtil
 
     if ( params[dateField] )
     {
-      if ( params[dateField] == "struct" )
+      if ( params[dateField] ==~ "(date.)?struct" )
       {
-        if ( params["${dateField}_year"] && params["${dateField}_month"] && params["${dateField}_day"] )
-        {
-          def year = (params["${dateField}_year"]?.isInteger()) ? params["${dateField}_year"]?.toInteger() : null
-          def month = (params["${dateField}_month"]?.isInteger()) ? params["${dateField}_month"]?.toInteger() : null
-          def day = (params["${dateField}_day"]?.isInteger()) ? params["${dateField}_day"]?.toInteger() : null
-
-          if ( year != null && month != null && day != null )
-          {
-            def calendar = new GregorianCalendar()
-
-            calendar.set(Calendar.YEAR, year)
-            calendar.set(Calendar.MONTH, month - 1)
-            calendar.set(Calendar.DAY_OF_MONTH, day)
-
-            if ( params["${dateField}_hour"] && params["${dateField}_minute"] )
-            {
-              def hour = (params["${dateField}_hour"]?.isInteger()) ? params["${dateField}_hour"]?.toInteger() : null
-              def minute = (params["${dateField}_minute"]?.isInteger()) ? params["${dateField}_minute"]?.toInteger() : null
-
-              if ( hour != null && minute != null )
-              {
-                calendar.set(Calendar.HOUR_OF_DAY, hour)
-                calendar.set(Calendar.MINUTE, minute)
-                calendar.set(Calendar.SECOND, 0)
-              }
-            }
-            else
-            {
-              calendar.set(Calendar.HOUR_OF_DAY, 0)
-              calendar.set(Calendar.MINUTE, 0)
-              calendar.set(Calendar.SECOND, 0)
-            }
-
-            if ( params["${dateField}_timezone"] )
-            {
-              def timezone = TimeZone.getTimeZone(params["${dateField}_timezone"])
-
-              calendar.timeZone = timezone ?: TimeZone.getDefault()
-            }
-
-            date = calendar.time
-          }
-        }
+		println "STRUCT ${params[dateField]}"
+	    def paramMap = new GrailsParameterMap(params, {} as HttpServletRequest)
+		date = paramMap.getProperty(dateField)		
       }
       else if(params[dateField] instanceof Date)
       {
+		println "DATE ${params[dateField]}"
         date = params[dateField]
       }
       else if(params[dateField] instanceof String)
       {
-        date = parseDateGivenFormats(params[dateField], [])
+		println "STRING ${params[dateField]}"
+        date = parseDateGivenFormats(params[dateField])
       }
     }
 
+	if ( date && params["${dateField}_timezone"])
+	{
+		def tz = params["${dateField}_timezone"]
+		println "TZ ${tz} "
+		date = setTimeZoneForDate( date, TimeZone.getTimeZone(tz))
+	}
+	
     return date
   }
 
@@ -272,4 +247,27 @@ class DateUtil
 
     return formatter
   }
+
+	static Date setTimeZoneForDate( Date date, TimeZone timeZone )
+	{
+		Date dateWithTZ = null
+	
+		if ( date && timeZone )
+		{
+			Calendar input = Calendar.instance
+            Calendar output = Calendar.getInstance(timeZone)
+			
+			input.time = date
+			output.set(Calendar.YEAR, input.get(Calendar.YEAR))
+			output.set(Calendar.MONTH, input.get(Calendar.MONTH))
+			output.set(Calendar.DAY_OF_MONTH, input.get(Calendar.DAY_OF_MONTH))
+			output.set(Calendar.HOUR_OF_DAY, input.get(Calendar.HOUR_OF_DAY))
+			output.set(Calendar.MINUTE, input.get(Calendar.MINUTE))
+			output.set(Calendar.SECOND, input.get(Calendar.SECOND))
+			output.set(Calendar.MILLISECOND, input.get(Calendar.MILLISECOND))
+    		dateWithTZ = output.time
+		}
+	
+		return dateWithTZ	
+	}
 }
