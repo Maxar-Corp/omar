@@ -238,9 +238,9 @@ class RasterEntryQuery
 
   def toMap()
   {
-    SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-    String startDateText = (startDate) ? formatter.format(startDate) : "";
-    String endDateText = (endDate) ? formatter.format(endDate) : "";
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    String startDateText = (startDate) ? formatter.format(startDate) : null;
+    String endDateText = (endDate) ? formatter.format(endDate) : null;
 
     def data = [
         aoiMaxLat: aoiMaxLat, aoiMinLon: aoiMinLon, aoiMinLat: aoiMinLat, aoiMaxLon: aoiMaxLon,
