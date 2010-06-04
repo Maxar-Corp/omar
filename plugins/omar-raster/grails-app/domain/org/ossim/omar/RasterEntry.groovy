@@ -49,7 +49,9 @@ class RasterEntry
   Polygon groundGeom
 
   Date acquisitionDate
-
+  Date accessDate
+  Date ingestDate
+  
   // Just for testing...
   String fileType
   String className
@@ -82,12 +84,14 @@ class RasterEntry
       countryCode index: 'raster_entry_countryCode_idx'
 
       // Just for testing
-      fileType index: 'raster_entry_file_type_idx'
+      fileType index: 'raster_entry_filetype_idx'
       className index: 'raster_entry_class_name_idx'
 
       otherTagsXml type: 'text'//, index: 'raster_entry_metadata_other_tags_idx'
 
       acquisitionDate index: 'raster_entry_acquisition_date_idx'
+      accessDate index: 'raster_entry_access_date_idx'
+      ingestDate index: 'raster_entry_ingest_date_idx'
 
 	  groundGeom type: org.hibernatespatial.GeometryUserType
 
@@ -123,7 +127,9 @@ class RasterEntry
     organization(nullable: true)
     description(nullable: true)
     countryCode(nullable: true)
-
+    accessDate(nullable: true)
+    ingestDate(nullable:true)
+    
     // Just for testing
     fileType(nullable: true)
     className(nullable: true)
@@ -132,10 +138,34 @@ class RasterEntry
 
     groundGeom(nullable: false)
     acquisitionDate(nullable: true)
-
-
   }
 
+  def beforeInsert = {
+    if(!ingestDate)
+    {
+      ingestDate = new Date();
+    }
+  }
+  def adjustAccessTimeIfNeeded(def optionalEveryNHours=null)
+  {
+    if(!accessDate)
+    {
+      accessDate = new Date();
+    }
+    else
+    {
+      def everyNHours = optionalEveryNHours?optionalEveryNHours:24.0
+      Date current = new Date();
+      long currentAccessMil = accessDate.getTime()
+      long currentMil       = current.getTime()
+      double millisPerHour   = 3600000 // 60*60*1000  <seconds>*<minutes in an hour>*<milliseconds>
+      double hours          = (currentMil-currentAccessMil)/millisPerHour
+      if(hours > everyNHours)
+      {
+        accessDate = current
+      }
+    }
+  }
   def getMetersPerPixel()
   {
     // need to check unit type but for mow assume meters
