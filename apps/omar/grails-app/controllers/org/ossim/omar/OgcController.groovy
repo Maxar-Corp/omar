@@ -322,8 +322,8 @@ class OgcController
     }
     catch (java.lang.Exception e)
     {
-      log.error("exception! ${e.message}")
-       println "OGC::WMS Error: ${e.message}"
+      log.error("OGC::WMS exception: ${e.message}")
+//       println "OGC::WMS Error: ${e.message}"
     }
     return null
   }
