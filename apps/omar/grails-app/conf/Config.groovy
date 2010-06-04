@@ -223,7 +223,8 @@ rasterEntry.searchTagData = [
     [name: "countryCode", description: "Country"],
     [name: "targetId", description: "BE Number"],
     [name: "sensorId", description: "Sensor"],
-    [name: "title", description: "Image Id"]
+    [name: "title", description: "Image Id"],
+    [name: "niirs", description: "niirs"]
 ]
 
 videoDataSet.searchTagData = [
