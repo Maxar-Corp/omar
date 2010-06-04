@@ -214,7 +214,7 @@ class OgcController
     }
     catch (java.lang.Exception e)
     {
-//      println e
+      log.error("Exception OGC:FOOTPRINTS: ${e.message}")
     }
     if ( g )
     {
@@ -323,7 +323,7 @@ class OgcController
     catch (java.lang.Exception e)
     {
       log.error("exception! ${e.message}")
-//       println "OGC::WMS Error: ${e.message}"
+       println "OGC::WMS Error: ${e.message}"
     }
     return null
   }
