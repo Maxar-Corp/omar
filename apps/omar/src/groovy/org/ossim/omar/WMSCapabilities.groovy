@@ -81,10 +81,17 @@ public class WMSCapabilities
         getMapURL: serviceAddress
     )
 
-
+    def rasterEntry = null
     layers?.each {layer ->
-
-      def rasterEntry = RasterEntry.get(layer)
+      rasterEntry = null
+      try
+      {
+        rasterEntry = RasterEntry.get(layer)
+      }
+      catch(Exception e)
+      {
+        rasterEntry = null
+      }
 
       if ( rasterEntry )
       {
