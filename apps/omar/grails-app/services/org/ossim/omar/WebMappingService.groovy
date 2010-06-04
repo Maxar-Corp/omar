@@ -208,7 +208,6 @@ class WebMappingService
         Point location = null
         byte[] data = new byte[width * height * 3]
 
-//        def kwlVector = new ossimKeywordlistVector();
         if ( sharpenMode.equals("light") )
         {
           sharpenWidth = "3"
@@ -231,11 +230,11 @@ class WebMappingService
           //def rasterEntry = RasterEntry.get(it)
           if(rasterEntry != null)
           {
+            rasterEntry.adjustAccessTimeIfNeeded(24) // adjust every 24 hours
             def file = new File(rasterEntry?.mainFile.name)
 
             if(!file.exists())
             {
-
             }
             else if(!file.canRead())
             {
