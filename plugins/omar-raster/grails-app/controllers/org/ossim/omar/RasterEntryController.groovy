@@ -129,18 +129,18 @@ class RasterEntryController implements InitializingBean
 
   def search = {
 
-    println "=== search start ==="
+//    println "=== search start ==="
 
     if ( !params.max )
     {
       params.max = 10;
     }
 
-    println "\nparams: ${params?.sort { it.key }}"
+//    println "\nparams: ${params?.sort { it.key }}"
 
     def queryParams = initRasterEntryQuery(params)
 
-    println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
+//    println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
     if ( request.method == 'POST' )
     {
@@ -186,13 +186,13 @@ class RasterEntryController implements InitializingBean
 
       //println logData
 
-      println "=== search end ==="
+//      println "=== search end ==="
 
       chain(action: "results", model: [rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
     }
     else
     {
-      println "=== search end ==="
+//      println "=== search end ==="
 
       return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
@@ -290,7 +290,7 @@ class RasterEntryController implements InitializingBean
 
   def results = {
 
-    println "=== results start ==="
+//    println "=== results start ==="
 
     def starttime = System.currentTimeMillis()
 
@@ -336,15 +336,15 @@ class RasterEntryController implements InitializingBean
           PARAMS: params
       ]
 
-      println "\nparams: ${params?.sort { it.key }}"
-      println "\nqueryParams: ${queryParams?.toMap()}"
+//      println "\nparams: ${params?.sort { it.key }}"
+//      println "\nqueryParams: ${queryParams?.toMap()}"
 
       log.info(logData)
 
 //      println logData
     }
 
-    println "=== results end ==="
+//    println "=== results end ==="
   
     render(view: 'results', model: [
         rasterEntries: rasterEntries,
