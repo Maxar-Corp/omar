@@ -6,7 +6,7 @@ import org.hibernate.CacheMode as CM
 //import org.ossim.omar.RasterEntryMetadata
 import org.hibernate.FetchMode
 import org.hibernate.CacheMode
-
+import org.hibernate.criterion.*
 //import org.ossim.postgis.Geometry
 import com.vividsolutions.jts.geom.Polygon
 
@@ -21,27 +21,18 @@ class RasterEntrySearchService
 
   List<RasterEntryQuery> runQuery(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
-    def x = {
-      if ( rasterEntryQuery?.groundGeom )
-      {
-        addToCriteria(rasterEntryQuery.createIntersection("groundGeom"))
-      }
-      if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
-      {
-        addToCriteria(rasterEntryQuery.createDateRange("acquisitionDate"))
-      }
+    def criteria = RasterEntry.createCriteria();
       if ( params?.max )
       {
-        maxResults(params.max as Integer)
+        criteria.setMaxResults(params.max as Integer)
       }
       if ( params?.offset )
       {
-        firstResult(params.offset as Integer)
+        criteria.setFirstResult(params.offset as Integer)
       }
       if ( params?.sort && params?.order )
       {
         def sortColumn = null
-
         // HACK:  Need to find a better way to do this
         switch ( params?.sort )
         {
@@ -61,42 +52,21 @@ class RasterEntrySearchService
           case "acquisitionDate":
           case "fileType":
           case "className":
+          case "niirs":
             sortColumn = params?.sort
             break
         }
         if ( sortColumn )
         {
-          order(sortColumn, params?.order)
+          def order = params?.order
+          Order ordering = order=="asc"?Order.asc(sortColumn):Order.desc(sortColumn)
+          criteria.addOrder(ordering)
         }
       }
-      rasterEntryQuery.searchTagNames?.size()?.times {i ->
-        String name = rasterEntryQuery.searchTagNames[i]
-        String value = rasterEntryQuery.searchTagValues[i]
 
-        if ( name && value )
-        {
-          def results = Utility.parseSearchTag(name, value)
-
-          if ( results["property"] == "otherTagsXml" )
-          {
-            String tag = results["tag"].trim()
-            String content = results["content"].trim()
-            ilike("otherTagsXml", "%<${tag}>%${content}%</${tag}>%")
-          }
-          else
-          {
-            ilike(results["property"], "%${results['value']}%")
-          }
-        }
-      }
-      fetchMode("rasterEntry", FetchMode.JOIN)
-    }
-    def rasterEntries = RasterEntry.createCriteria().list(x)
-//    def metadata = RasterEntry.createCriteria().list(x)
-//    def rasterEntries = metadata?.collect {it.rasterEntry}
-//    def rasterEntries = metadata?.rasterEntry
-
-    //rasterEntries?.each { it.mainFile }
+    criteria.setFetchMode("rasterEntry", FetchMode.JOIN)
+    rasterEntryQuery.addToCriteria(criteria)
+    def rasterEntries = criteria.getInstance().list();
 
     return rasterEntries
   }
@@ -105,87 +75,29 @@ class RasterEntrySearchService
 
   List<Polygon> getGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
-    def x = {
-      projections { property("groundGeom") }
-      if ( rasterEntryQuery?.groundGeom )
-      {
-        addToCriteria(rasterEntryQuery.createIntersection("groundGeom"))
-      }
-      if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
-      {
-        addToCriteria(rasterEntryQuery.createDateRange("acquisitionDate"))
-      }
-      if ( params?.max )
-      {
-        maxResults(params.max as Integer)
-      }
-      if ( params?.offset )
-      {
-        firstResult(params.offset as Integer)
-      }
-      rasterEntryQuery.searchTagNames?.size()?.times {i ->
-        String name = rasterEntryQuery.searchTagNames[i]
-        String value = rasterEntryQuery.searchTagValues[i]
-
-        if ( name && value )
-        {
-          def results = Utility.parseSearchTag(name, value)
-
-          if ( results["property"] == "otherTagsXml" )
-          {
-            String tag = results["tag"].trim()
-            String content = results["content"].trim()
-            ilike("otherTagsXml", "%<${tag}>%${content}%</${tag}>%")
-          }
-          else
-          {
-            ilike(results["property"], "%${results['value']}%")
-          }
-        }
-      }
-      cacheMode(CacheMode.GET)
+    def criteria = RasterEntry.createCriteria();
+    criteria.setProjection(Projections.property("groundGeom"))
+    if ( params?.offset )
+    {
+      criteria.setFirstResult(params.offset as Integer)
     }
-
-    def geometries = RasterEntry.createCriteria().list(x)
-
+    if ( params?.max )
+    {
+      criteria.setMaxResults(params.max as Integer)
+    }
+    criteria.setCacheMode(CacheMode.GET)
+    //criteria.add(x)
+    rasterEntryQuery.addToCriteria(criteria)
+    def geometries = criteria.getInstance().list()
     return geometries
   }
 
   int getCount(RasterEntryQuery rasterEntryQuery)
   {
-    def totalCount = RasterEntry.createCriteria().get {
-      projections { rowCount() }
-      if ( rasterEntryQuery?.groundGeom )
-      {
-        addToCriteria(rasterEntryQuery.createIntersection("groundGeom"))
-      }
-      if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
-      {
-        addToCriteria(rasterEntryQuery.createDateRange("acquisitionDate"))
-      }
-      rasterEntryQuery.searchTagNames?.size()?.times {i ->
-        String name = rasterEntryQuery.searchTagNames[i]
-        String value = rasterEntryQuery.searchTagValues[i]
-
-        if ( name && value )
-        {
-          def results = Utility.parseSearchTag(name, value)
-
-          if ( results["property"] == "otherTagsXml" )
-          {
-            String tag = results["tag"].trim()
-            String content = results["content"].trim()
-            def searchString = "%<${tag}>%${content}%</${tag}>%"
-            ilike("otherTagsXml", searchString)
-          }
-          else
-          {
-            def searchString = "%${results['value']}%"
-            ilike(results["property"], searchString)
-          }
-        }
-      }
-    }
+    def criteria = RasterEntry.createCriteria();
+    rasterEntryQuery.addToCriteria(criteria)
+    criteria.setProjection(Projections.rowCount());
+    def totalCount = criteria.getInstance().list().get(0) as int
 
     return totalCount
   }

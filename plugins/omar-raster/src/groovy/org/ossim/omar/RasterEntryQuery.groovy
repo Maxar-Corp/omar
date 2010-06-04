@@ -6,7 +6,9 @@ package org.ossim.omar
  * Time: 1:48:33 PM
  * To change this template use File | Settings | File Templates.
  */
-
+import org.springframework.context.ApplicationContextAware
+import org.springframework.context.ApplicationContext
+import org.springframework.beans.factory.InitializingBean
 import java.text.SimpleDateFormat;
 import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
@@ -25,8 +27,9 @@ import com.vividsolutions.jts.geom.PrecisionModel
 
 class RasterEntryQuery
 {
+  def grailsApplication
   public static final String RADIUS_SEARCH = "RADIUS"
-  public static final String BBOX_SEARCH = "BBOX"
+  public static final String BBOX_SEARCH   = "BBOX"
 
   String searchMethod = RasterEntryQuery.BBOX_SEARCH
 
@@ -48,6 +51,7 @@ class RasterEntryQuery
 
   String aoiRadius
 
+  String niirs
 
   List<String> searchTagNames = ["", "", "", "", "", "", "", ""]
   List<String> searchTagValues = ["", "", "", "", "", "", "", ""]
@@ -149,7 +153,52 @@ class RasterEntryQuery
 
     return intersects
   }
+  void addToCriteria(def criteria)
+  {
+    if ( groundGeom )
+    {
+      criteria.add(createIntersection("groundGeom"))
+    }
+    if ( startDate || endDate )
+    {
+      criteria.add(createDateRange("acquisitionDate"))
+    }
+    // we will support 2 ways to populate certain fields.  We will support array
+    // or direct.  niirs will be direct field or an array
+    if(niirs)
+    {
+       criteria.ge("niirs", niirs as double)
+    }
+    searchTagNames?.size()?.times {i ->
+      String name = searchTagNames[i]
+      String value = searchTagValues[i]
 
+      if ( name && value )
+      {
+        def results = Utility.parseSearchTag(name, value)
+
+        if ( results["property"] == "otherTagsXml" )
+        {
+          String tag = results["tag"].trim()
+          String content = results["content"].trim()
+          criteria.add(criteria.ilike("otherTagsXml", "%<${tag}>%${content}%</${tag}>%"))
+        }
+        else
+        {
+          String prop = results["property"]
+          prop = prop.toLowerCase()
+          if(prop == "niirs" && !niirs)
+          {
+            criteria.ge("niirs", results['value'] as double)
+          }
+          else
+          {
+            criteria.ilike(results["property"], "%${results['value']}%")
+          }
+        }
+      }
+    }
+  }
   def getGroundGeom()
   {
     def srs = "4326"
@@ -246,9 +295,9 @@ class RasterEntryQuery
         aoiMaxLat: aoiMaxLat, aoiMinLon: aoiMinLon, aoiMinLat: aoiMinLat, aoiMaxLon: aoiMaxLon,
         startDate: startDateText, endDate: endDateText,
         centerLat: centerLat, centerLon: centerLon, aoiRadius: aoiRadius, searchMethod: searchMethod,
-        viewMaxLat: viewMaxLat, viewMinLon: viewMinLon, viewMinLat: viewMinLat, viewMaxLon: viewMaxLon
+        viewMaxLat: viewMaxLat, viewMinLon: viewMinLon, viewMinLat: viewMinLat, viewMaxLon: viewMaxLon,
+        niirs: niirs
     ]
-
     (0..<searchTagValues.size()).each {
       data["searchTagNames[${it}]"] = searchTagNames[it]
       data["searchTagValues[${it}]"] = searchTagValues[it]
@@ -270,5 +319,4 @@ class RasterEntryQuery
 
     return map
   }
-
 }
