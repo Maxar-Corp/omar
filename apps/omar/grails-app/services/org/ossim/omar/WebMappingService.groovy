@@ -29,37 +29,24 @@ class WebMappingService
 
   boolean transactional = true
   def transparent = new TransparentFilter()
-/*
-  def createBilinearModel(org.ossim.omar.RasterEntry rasterEntry)
+  static def getNamedImageLayers(def params)
   {
-    def gptArray = new ossimGptVector();
-    def dptArray = new ossimDptVector();
-    def groundGeom = rasterEntry?.metadata?.groundGeom?.geom
-
-    if(rasterEntry.tiePointSet)
-    {
-
-    }
-    else
-    {
-      def groundGeom = rasterEntry.groundGeom.geom
-      if(groundGeom.numPoints() >=4)
-      {
-        def w =   rasterEntry?.width as double
-        def h =   rasterEntry?.height as double
-         (0..<4).each{
-            def point = groundGeom.getPoint(it);
-            gptArray.add(new ossimGpt(point.y, point.x));
-         }
-         dptArray.add(new ossimDpt(0.0,0.0))
-         dptArray.add(new ossimDpt( w,0.0))
-         dptArray.add(new ossimDpt(w ,h))
-         dptArray.add(new ossimDpt(0.0,h))
+    return RasterEntry.createCriteria().list(){
+      or{
+        params.each(){name->
+          try
+          {
+            eq('id', java.lang.Long.valueOf(name))
+          }
+          catch(java.lang.Exception e)
+          {
+            eq('title', name)
+            eq('imageId',name)
+          }
+        }
       }
     }
-    return Util.createBilinearModel(dptArray, gptArray)
   }
-  */
   void drawCoverage(Graphics2D g, WMSRequest wmsRequest, def geometries, def styleName)
   {
     def minx = -180.0
@@ -233,10 +220,15 @@ class WebMappingService
           sharpenSigma = "1"
         }
         def terrainCorrectionFlag = Boolean.valueOf(terrainCorrectionFlagString)
+        def names = []
         wmsRequest?.layers.split(',').each {
+          names.add(it)
+        }
+        def rasterEntries = getNamedImageLayers(names)
+        rasterEntries.each{ rasterEntry->
           def geom = (ossimImageGeometry)null
           def geomPtr = (ossimImageGeometryPtr)null
-          def rasterEntry = RasterEntry.get(it)
+          //def rasterEntry = RasterEntry.get(it)
           if(rasterEntry != null)
           {
             def file = new File(rasterEntry?.mainFile.name)
