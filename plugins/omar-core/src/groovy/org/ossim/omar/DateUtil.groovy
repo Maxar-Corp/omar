@@ -123,7 +123,7 @@ class DateUtil
       		}
       		catch (Exception e)
       		{
-       println "Cannot parse ${dateString}: using ${dateFormat}"
+//       println "Cannot parse ${dateString}: using ${dateFormat}"
       		}
 		}
 	}
@@ -139,18 +139,18 @@ class DateUtil
     {
       if ( params[dateField] ==~ "(date.)?struct" )
       {
-		println "STRUCT ${params[dateField]}"
+//		println "STRUCT ${params[dateField]}"
 	    def paramMap = new GrailsParameterMap(params, {} as HttpServletRequest)
 		date = paramMap.getProperty(dateField)		
       }
       else if(params[dateField] instanceof Date)
       {
-		println "DATE ${params[dateField]}"
+//		println "DATE ${params[dateField]}"
         date = params[dateField]
       }
       else if(params[dateField] instanceof String)
       {
-		println "STRING ${params[dateField]}"
+//		println "STRING ${params[dateField]}"
         date = parseDateGivenFormats(params[dateField])
       }
     }
@@ -158,7 +158,7 @@ class DateUtil
 	if ( date && params["${dateField}_timezone"])
 	{
 		def tz = params["${dateField}_timezone"]
-		println "TZ ${tz} "
+//		println "TZ ${tz} "
 		date = setTimeZoneForDate( date, TimeZone.getTimeZone(tz))
 	}
 	
