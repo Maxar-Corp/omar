@@ -27,7 +27,7 @@ class StagerUtil
       ImageStager imageStager = new ImageStager()
 
       imageStager.filename = file.absolutePath
-
+      imageStager.setUseFastHistogramStagingFlag(true)
       def generated = imageStager.stageAll()
 
       imageStager.delete()
