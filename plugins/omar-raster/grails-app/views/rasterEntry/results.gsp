@@ -138,7 +138,19 @@
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <g:set var="rasterFile" value="${rasterFiles.find { it.rasterDataSet == rasterEntry.rasterDataSet }}"/>
-                <td>${rasterFile?.name?.encodeAsHTML()}</td>
+
+                <td>
+                  <g:ifAllGranted role="ROLE_DOWNLOAD">
+                    <a href=${grailsApplication.config.image.download.prefix}${rasterFile?.name?.encodeAsHTML()}>
+                  </g:ifAllGranted>
+
+                  ${rasterFile?.name?.encodeAsHTML()}
+
+                  <g:ifAllGranted role="ROLE_DOWNLOAD">
+                    </a>
+                  </g:ifAllGranted>
+                </td>
+
                 <td>${rasterEntry.entryId?.encodeAsHTML()}</td>
                 <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
                   <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
