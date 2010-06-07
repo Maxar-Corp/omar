@@ -108,7 +108,19 @@
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
                 <g:set var="videoFile" value="${videoFiles.find { it.videoDataSet == videoDataSet }}"/>
-                <td>${videoFile?.name?.encodeAsHTML()}</td>
+
+                <td>
+                  <g:ifAllGranted role="ROLE_DOWNLOAD">
+                    <a href=${grailsApplication.config.image.download.prefix}${videoFile?.name?.encodeAsHTML()}>
+                  </g:ifAllGranted>
+
+                  ${videoFile?.name?.encodeAsHTML()}
+
+                  <g:ifAllGranted role="ROLE_DOWNLOAD">
+                    </a>
+                  </g:ifAllGranted>
+                </td>
+
                 <td>
                   <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.id)}">
                     <img src="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.id, params: [size: 128])}" alt="Show Frame"/>
