@@ -146,7 +146,7 @@ class RasterEntry
       ingestDate = new Date();
     }
   }
-  def adjustAccessTimeIfNeeded(def optionalEveryNHours=null)
+  def adjustAccessTimeIfNeeded(def everyNHours=24)
   {
     if(!accessDate)
     {
@@ -154,7 +154,6 @@ class RasterEntry
     }
     else
     {
-      def everyNHours = optionalEveryNHours?optionalEveryNHours:24.0
       Date current = new Date();
       long currentAccessMil = accessDate.getTime()
       long currentMil       = current.getTime()
@@ -219,21 +218,21 @@ class RasterEntry
         }
       }
     }
-    else // lets do a fall back if the tiepoint set is not set.
+    else if(groundGeom) // lets do a fall back if the tiepoint set is not set.
     {
-      def groundGeom = groundGeom.geom
-      if ( groundGeom.numPoints() >= 4 )
+      def coordinates = groundGeom.getCoordinates();
+      if ( coordinates.size() >= 4 )
       {
         def w = width as double
         def h = height as double
         (0..<4).each {
-          def point = groundGeom.getPoint(it);
-          gptArray.add(new ossimGpt(point.y, point.x));
+          def point = coordinates[it];
+          gptArray.add(new ossimGpt(coordinates[it].y, coordinates[it].x));
         }
         dptArray.add(new ossimDpt(0.0, 0.0))
-        dptArray.add(new ossimDpt(w, 0.0))
-        dptArray.add(new ossimDpt(w, h))
-        dptArray.add(new ossimDpt(0.0, h))
+        dptArray.add(new ossimDpt(w-1, 0.0))
+        dptArray.add(new ossimDpt(w-1, h-1))
+        dptArray.add(new ossimDpt(0.0, h-1))
       }
     }
     if((gptArray.size() < 1)||(dptArray.size() < 1))
