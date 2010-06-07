@@ -80,6 +80,7 @@ class BootStrap
 
       admin.addToAuthorities(userRole)
       admin.addToAuthorities(adminRole)
+      admin.addToAuthorities(downloadRole)
       admin.save()
     }
 
