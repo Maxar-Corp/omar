@@ -96,7 +96,7 @@ log4j = {
 //log4j.logger.org.springframework.security='off,stdout'
 
 /** *********************************************************************************************************/
-wms.referenceDataDirectory = "/data/omar"
+wms.referenceDataDirectory = "/data/"
 
 wms.mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" : ""
 //wms.serverAddress = InetAddress.localHost.hostAddress
@@ -182,6 +182,8 @@ security.level = 'UNCLASS'
 //security.level = 'TOPSECRET'
 
 omar.release = '1.8.4'
+
+image.download.prefix = "http://${grails.serverIP}"
 
 /** ********************************* CONDITIONALS FOR VIEWS               **********************************************************************/
 // flags for different views
