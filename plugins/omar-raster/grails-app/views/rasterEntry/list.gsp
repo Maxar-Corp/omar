@@ -108,9 +108,17 @@
 
                 <td><g:link action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
 
+                <td>
+                  <g:ifAllGranted role="ROLE_DOWNLOAD">
+                    <a href=${grailsApplication.config.image.download.prefix}${rasterEntry.mainFile?.name?.encodeAsHTML()}>
+                  </g:ifAllGranted>
 
-                <td>${rasterEntry.mainFile?.name?.encodeAsHTML()}</td>
+                  ${rasterEntry.mainFile?.name?.encodeAsHTML()}
 
+                  <g:ifAllGranted role="ROLE_DOWNLOAD">
+                    </a>
+                  </g:ifAllGranted>
+                </td>
 
                 <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
                   <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
