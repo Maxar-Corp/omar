@@ -107,7 +107,17 @@
 
                 <td><g:link action="show" id="${videoDataSet.id}">${fieldValue(bean: videoDataSet, field: 'id')}</g:link></td>
 
-                <td>${videoDataSet.mainFile?.name?.encodeAsHTML()}</td>
+                <td>
+                  <g:ifAllGranted role="ROLE_DOWNLOAD">
+                    <a href=${grailsApplication.config.image.download.prefix}${videoDataSet.mainFile?.name?.encodeAsHTML()}>
+                  </g:ifAllGranted>
+
+                  ${videoDataSet.mainFile?.name?.encodeAsHTML()}
+
+                  <g:ifAllGranted role="ROLE_DOWNLOAD">
+                    </a>
+                  </g:ifAllGranted>
+                </td>
 
                 <td>
                   <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.id)}">
