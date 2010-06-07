@@ -28,11 +28,10 @@ class ThumbnailService
     httpStatusMessage.status = HttpStatus.OK
     String parent = outputFile.getParent();  // Get the destination directory
     File dir = new File(parent);          // Convert it to a file.
-    if (!dir.exists())
+    if(outputFile.exists()&&!overwrite)
     {
-      httpStatusMessage.status = HttpStatus.NOT_FOUND
-      httpStatusMessage.message = "Cache directory ${dir} does not exist and can't create raster thumbnail"
-      log.error(httpStatusMessage)
+      httpStatusMessage.status = HttpStatus.OK
+      return outputFile
     }
     else if (dir.isFile())
     {
@@ -46,7 +45,6 @@ class ThumbnailService
       httpStatusMessage.message = "${dir} is not writeable and can't create raster thumbnails"
       log.error(httpStatusMessage)
     }
-
     if(httpStatusMessage.status != HttpStatus.OK)
     {
       return new File("")
@@ -59,7 +57,6 @@ class ThumbnailService
     {
       projectionType = "imagespace"
     }
-
     if ( !outputFile.exists() || overwrite )
     {
       synchronized(rasterFileOutputLock)
