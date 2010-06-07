@@ -39,6 +39,13 @@ class BootStrap
       adminRole.save()
     }
 
+    def downloadRole = Role.findByAuthority("ROLE_DOWNLOAD")
+
+    if ( !downloadRole )
+    {
+      downloadRole = new Role(authority: "ROLE_DOWNLOAD", description: "download")
+      downloadRole.save()
+    }
 
     def user = AuthUser.findByUsername("user")
 
