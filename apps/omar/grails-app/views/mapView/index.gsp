@@ -64,7 +64,17 @@
   <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
 </head>
 <body>
+
 <content tag="north">
+  <g:form name="wmsParams" method="POST" url="[action:'wms',controller:'ogc']">
+    <input type="hidden" name="sharpen_mode" value="none"/>
+    <input type="hidden" name="stretch_mode" value="linear_auto_min_max"/>
+    <input type="hidden" name="stretch_mode_region" value="global"/>
+    <input type="hidden" name="request" value=""/>
+    <input type="hidden" name="layers" value=""/>
+    <input type="hidden" name="bbox" value=""/>
+    <input type="hidden" name="terrain_correction" value=""/>
+  </g:form>
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
     <span class="menuButton">
@@ -73,9 +83,7 @@
       </a>
     </span>
     <span class="menuButton">
-      <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: (rasterEntries*.id).join(',')])}">
-        Generate KML
-      </a>
+      <a href="javascript:getKML(${(rasterEntries*.id).join(',')})"> Generate KML </a>
     </span>
     <span class="menuButton">
       <a href="${createLink(controller: "mapView", action: "multiLayer", params: [rasterEntryIds: (rasterEntries*.id).join(',')])}">
@@ -139,7 +147,19 @@
   var kmlLayers;
   var select;
   var convert = new CoordinateConversion();
-  
+  function getKML(layers)
+  {
+     var extent = map.getExtent()
+     var wmsParamForm = document.getElementById('wmsParams')
+     wmsParamForm.sharpen_mode.value = $("sharpen_mode").value
+     wmsParamForm.stretch_mode_region.value = $("stretch_mode_region").value
+     wmsParamForm.stretch_mode.value = $("stretch_mode").value
+     wmsParamForm.terrain_correction.value = $("terrain_correction").value
+     wmsParamForm.request.value = "GetKML"
+     wmsParamForm.layers.value = layers
+     wmsParamForm.bbox.value = extent.toBBOX()
+     wmsParamForm.submit()
+  }
   function changeMapSize( mapWidth, mapHeight )
   {
 //    var mapTitle = document.getElementById("mapTitle");
