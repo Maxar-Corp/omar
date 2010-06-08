@@ -312,7 +312,7 @@ class OgcController
             def file = (rasterEntry.mainFile.name as File).name
             filename = "${file}.kml"
           }
-          def kml = kmlService.createKml(rasterEntryList)
+          def kml = kmlService.createKml(rasterEntryList, tempMap)
           response.setHeader("Content-disposition", "attachment; filename=${filename}")
           render(contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8")
           break
