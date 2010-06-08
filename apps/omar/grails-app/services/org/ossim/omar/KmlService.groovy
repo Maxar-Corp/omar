@@ -19,87 +19,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
   def flashDirRoot
   def flashUrlRoot
 
-/*
-  String createKml(List<RasterEntry> rasterEntries)
-  {
+  String createKml(List<RasterEntry> rasterEntries, Map wmsParams) {
     def kmlbuilder = new StreamingMarkupBuilder()
-    def width = 1024;
-    def height = 1024;
-
-    kmlbuilder.encoding = "UTF-8"
-    def kmlnode = {
-      mkp.xmlDeclaration()
-      kml("xmlns": "http://earth.google.com/kml/2.1") {
-        Folder() {
-          name("OMAR_WMS")
-          rasterEntries?.each {rasterEntry ->
-            def acquisition = (rasterEntry?.metadata?.acquisitionDate) ? sdf.format(rasterEntry?.metadata?.acquisitionDate) : null
-
-            def bounds = rasterEntry?.metadata?.groundGeom?.bounds
-
-            def groundCenterLon = (bounds?.minLon + bounds?.maxLon) * 0.5;
-            def groundCenterLat = (bounds?.minLat + bounds?.maxLat) * 0.5;
-
-            Folder() {
-              name((rasterEntry.mainFile.name as File).name)
-              Placemark() {
-                name((rasterEntry.mainFile.name as File).name)
-
-                Point() {
-                  coordinates("${groundCenterLon},${groundCenterLat},0")
-                }
-              }
-              GroundOverlay() {
-                open("1")
-                visibility("1")
-                Icon() {
-                  def wmsURL = tagLibBean.createLink(absolute: true, controller: "ogc", action: "wms", params: [
-                      version: "1.1.1",
-                      REQUEST: "GetMap",
-                      layers: rasterEntry?.id,
-                      SRS: "EPSG:4326",
-                      WIDTH: "${width}",
-                      HEIGHT: "${height}",
-                      TRANSPARENT: "TRUE",
-                      FORMAT: "image/png"
-                  ])
-                  href(wmsURL)
-                  viewRefreshMode("onStop")
-                  viewRefreshTime("2")
-                  viewBoundScale("0.85")
-                }
-                LatLonBox() {
-                  north(bounds?.maxLat)
-                  south(bounds?.minLon)
-                  east(bounds?.maxLat)
-                  west(bounds?.minLat)
-                }
-                if ( acquisition )
-                {
-                  TimeStamp() {
-                    when(acquisition)
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    def kmlwriter = new StringWriter()
-
-    kmlwriter << kmlbuilder.bind(kmlnode)
-
-    String kmlText = kmlwriter.buffer
-    return kmlText
-  }
-*/
-
-  String createKml(List<RasterEntry> rasterEntries) {
-    def kmlbuilder = new StreamingMarkupBuilder()
-    def width = 1024;
-    def height = 1024;
-
     def rasterIdx = 0
     def descriptionMap = [:]
     rasterEntries?.each {rasterEntry ->
@@ -136,14 +57,31 @@ class KmlService implements ApplicationContextAware, InitializingBean {
       }
       descriptionMap.put(rasterIdx, descriptionBuilder.toString())
     }
-
-    kmlbuilder.encoding = "UTF-8"
+    if(!wmsParams?.width)
+    {
+      wmsParams?.width = "1024"
+    }
+    if(!wmsParams?.height)
+    {
+      wmsParams?.height = "1024"
+    }
+    wmsParams.remove("action")
+    wmsParams.remove("controller")
+    wmsParams?.version= "1.1.1"
+    wmsParams?.request= "GetMap"
+    wmsParams?.srs= "EPSG:4326"
+    wmsParams?.transparent= "TRUE"
+    wmsParams?.format= "image/png"
+    kmlbuilder.encoding= "UTF-8"
+    def bbox = wmsParams?.bbox;
+    wmsParams?.remove("bbox");
     def kmlnode = {
       mkp.xmlDeclaration()
       kml("xmlns": "http://earth.google.com/kml/2.1") {
         Folder() {
           name("OMAR_WMS")
           rasterEntries?.each {rasterEntry ->
+            wmsParams?.layers="${rasterEntry?.id}"
             def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
 
             def groundCenterLon = (rasterEntry?.groundGeom?.bounds?.minLon + rasterEntry?.groundGeom?.bounds?.maxLon) * 0.5;
@@ -168,16 +106,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
               open("1")
               visibility("1")
               Icon() {
-                def wmsURL = tagLibBean.createLink(absolute: true, controller: "ogc", action: "wms", params: [
-                        version: "1.1.1",
-                        REQUEST: "GetMap",
-                        layers: rasterEntry?.id,
-                        SRS: "EPSG:4326",
-                        WIDTH: "${width}",
-                        HEIGHT: "${height}",
-                        TRANSPARENT: "TRUE",
-                        FORMAT: "image/png"
-                ])
+                def wmsURL = tagLibBean.createLink(absolute: true, controller: "ogc", action: "wms", params: wmsParams)
 //                   println wmsURL
                 href(wmsURL)
                 viewRefreshMode("onStop")
@@ -185,11 +114,22 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                 viewBoundScale("0.85")
               }
               LatLonBox() {
-                  north(rasterEntry?.groundGeom?.bounds?.maxLat)
-                  south(rasterEntry?.groundGeom?.bounds?.minLon)
-                  east(rasterEntry?.groundGeom?.bounds?.maxLat)
-                  west(rasterEntry?.groundGeom?.bounds?.minLat)
-                }
+
+                 if(bbox)
+                 {
+                   north(bbox[2])
+                   south(bbox[1])
+                   east(bbox[0])
+                   west(bbox[3])
+                 }
+                 else
+                 {
+                   north(rasterEntry?.groundGeom?.bounds?.maxLat)
+                   south(rasterEntry?.groundGeom?.bounds?.minLon)
+                   east(rasterEntry?.groundGeom?.bounds?.maxLat)
+                   west(rasterEntry?.groundGeom?.bounds?.minLat)
+                 }
+               }
               if (acquisition) {
                 TimeStamp() {
                   when(acquisition)
@@ -207,147 +147,6 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     String kmlText = kmlwriter.buffer
     return kmlText
   }
-/*
-  String createImagesKml(List<RasterEntry> rasterEntries, Map wmsParams, Map params)
-  {
-    def kmlbuilder = new StreamingMarkupBuilder()
-    def width = 1024;
-    def height = 1024;
-
-    kmlbuilder.encoding = "UTF-8"
-
-    wmsParams?.request = "GetMap"
-    if ( !params?.containsKey("version") )
-    {
-      wmsParams.version = "1.1.1"
-    }
-    if ( !params?.containsKey("width") )
-    {
-      wmsParams.width = "1024"
-    }
-    if ( !params?.containsKey("height") )
-    {
-      wmsParams.height = "1024"
-    }
-    if ( !params?.containsKey("format") )
-    {
-      wmsParams.format = "image/png"
-    }
-    if ( !params?.containsKey("transparent") )
-    {
-      wmsParams.transparent = "TRUE"
-    }
-    def bbox = wmsParams?.bbox?.split(',')
-    wmsParams?.srs = "EPSG:4326"
-    wmsParams?.remove("bbox");
-    wmsParams.remove("action")
-    wmsParams.remove("controller")
-    def rasterIdx = 0
-    def descriptionMap = [:]
-    rasterEntries?.each {rasterEntry ->
-      def mpp = rasterEntry.getMetersPerPixel()
-      def fieldMap = [File: (rasterEntry.mainFile.name as File).name,
-          Entry_Id: rasterEntry.entryId,
-          Width: rasterEntry.width,
-          Height: rasterEntry.height,
-          Bands: rasterEntry.numberOfBands,
-          Acquistion_Date: rasterEntry?.metadata?.acquisitionDate,
-          Meters_per_pixel: mpp]
-      def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [rasterEntryIds: rasterEntry.id])
-
-      def descriptionBuilder = new StreamingMarkupBuilder().bind {
-        body() {
-          table() {
-            tr() {
-              td("Image link:")
-              td() {
-                p() {
-                  font(size: 5)
-                  a(href: imageUrl, "Browse image")
-                }
-              }
-            }
-            fieldMap.each {k, v ->
-              tr() {
-                td("${k}:")
-                td(v)
-              }
-            }
-          }
-        }
-      }
-      descriptionMap.put(rasterIdx, descriptionBuilder.toString())
-      rasterIdx++;
-    }
-    def kmlnode = {
-      mkp.xmlDeclaration()
-      kml("xmlns": "http://earth.google.com/kml/2.1") {
-        Document() {
-          rasterIdx = 0
-          rasterEntries?.each {rasterEntry ->
-            def acquisition = (rasterEntry?.metadata?.acquisitionDate) ? sdf.format(rasterEntry?.metadata?.acquisitionDate) : null
-
-            def bounds = rasterEntry?.metadata?.groundGeom?.bounds
-
-            def groundCenterLon = (bounds?.minLon + bounds?.maxLon) * 0.5;
-            def groundCenterLat = (bounds?.minLat + bounds?.maxLat) * 0.5;
-            wmsParams?.layers = rasterEntry?.id
-
-            def renderedHtml = "${descriptionMap.get(rasterIdx)}"
-            rasterIdx++
-
-            GroundOverlay() {
-              name((rasterEntry.mainFile.name as File).name)
-              Snippet(maxLines: "0", "")
-              description(renderedHtml)
-
-              LookAt() {
-                longitude(groundCenterLon)
-                latitude(groundCenterLat)
-                altitude(0.0)
-                heading(0.0)
-                tilt(0.0)
-                range(15000)
-                altitudeMode("clampToGround")
-              }
-
-              open("1")
-              visibility("1")
-              Icon() {
-                def wmsURL = tagLibBean.createLink(absolute: true, controller: "ogc", action: "wms", params: wmsParams)
-
-                href(wmsURL)
-                viewRefreshMode("onStop")
-                viewRefreshTime("2")
-                viewBoundScale("0.85")
-              }
-
-              LatLonBox() {
-                north(bbox[2])
-                south(bbox[1])
-                east(bbox[0])
-                west(bbox[3])
-              }
-              if ( acquisition )
-              {
-                TimeStamp() {
-                  when(acquisition)
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    def kmlwriter = new StringWriter()
-
-    kmlwriter << kmlbuilder.bind(kmlnode)
-
-    String kmlText = kmlwriter.buffer
-
-    return kmlText
-  }
-*/
 
   String createImagesKml(List<RasterEntry> rasterEntries, Map wmsParams, Map params) {
     def kmlbuilder = new StreamingMarkupBuilder()
