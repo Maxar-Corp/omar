@@ -96,7 +96,7 @@ log4j = {
 //log4j.logger.org.springframework.security='off,stdout'
 
 /** *********************************************************************************************************/
-wms.referenceDataDirectory = "/data/"
+wms.referenceDataDirectory = "/data/omar"
 
 wms.mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" : ""
 //wms.serverAddress = InetAddress.localHost.hostAddress
