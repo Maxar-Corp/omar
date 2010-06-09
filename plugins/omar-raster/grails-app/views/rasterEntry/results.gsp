@@ -4,8 +4,28 @@
   <meta name="layout" content="main8"/>
   <title>Raster Entry Search Results</title>
   <resource:tabView/>
+  <g:javascript plugin="omar-core" src="prototype.js"/>
+
+  <g:javascript>
+   var globalActiveIndex=${rasterEntryResultCurrentTab}
+   function updateSession(event){
+    var link = "${createLink(action: "updateSession", controller: "rasterEntry")}"
+    var activeIndex = tabView.get('activeIndex');
+    // only send a message if we change state this way it's fast
+    //
+    if(activeIndex != globalActiveIndex)
+    {
+      globalActiveIndex = tabView.get('activeIndex');
+      new Ajax.Request(link+"?"+"rasterEntryResultCurrentTab="+activeIndex, {
+        method: 'post'
+      });
+    }
+  }
+  </g:javascript>
 </head>
-<body>
+
+<body >
+
 <content tag="north">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
@@ -22,11 +42,32 @@
   </g:if>
 
   <richui:tabView id="tabView">
+    <omar:observe element="tabView" event="mouseover" function="updateSession"/>
     <richui:tabLabels>
-      <richui:tabLabel title="Image"/>
-      <richui:tabLabel selected="true" title="Metadata"/>
-      <richui:tabLabel title="File"/>
-      <richui:tabLabel title="Links"/>
+      <g:if test="${session.rasterEntryResultCurrentTab == 0}">
+         <richui:tabLabel selected="true" title="Image"/>
+      </g:if>
+      <g:else>
+        <richui:tabLabel title="Image"/>
+      </g:else>
+      <g:if test="${session.rasterEntryResultCurrentTab == 1}">
+         <richui:tabLabel selected="true" title="Metadata"/>
+      </g:if>
+      <g:else>
+        <richui:tabLabel title="Metadata"/>
+      </g:else>
+      <g:if test="${session.rasterEntryResultCurrentTab == 2}">
+         <richui:tabLabel selected="true" title="File"/>
+      </g:if>
+      <g:else>
+        <richui:tabLabel title="File"/>
+      </g:else>
+      <g:if test="${session.rasterEntryResultCurrentTab == 3}">
+         <richui:tabLabel selected="true" title="Links"/>
+      </g:if>
+      <g:else>
+        <richui:tabLabel title="Links"/>
+      </g:else>
     </richui:tabLabels>
 
     <richui:tabContents>
@@ -202,17 +243,18 @@
       </richui:tabContent>
     </richui:tabContents>
   </richui:tabView>
-
   <g:hiddenField name="totalCount" value="${totalCount ?: 0}"/>
   <g:hiddenField name="max" value="${params.max}"/>
   <g:hiddenField name="offset" value="${params.offset}"/>
   <g:hiddenField name="queryParams" value="${queryParams.toMap()}"/>
+  <g:hiddenField name="rasterEntryResultCurrentTab" value="${rasterEntryResultCurrentTab}"/>
 
 </content>
 <content tag="south">
   <div class="paginateButtons">
-    <g:paginate controller="rasterEntry" action="results" total="${totalCount ?: 0}"
+    <g:paginate event="testing('tabView');" controller="rasterEntry" action="results" total="${totalCount ?: 0}"
             max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
+    <omar:observe classes="${['step','prevLink','nextLink']}" event="click" function="updateSession"/>
   </div>
 </content>
 </body>
