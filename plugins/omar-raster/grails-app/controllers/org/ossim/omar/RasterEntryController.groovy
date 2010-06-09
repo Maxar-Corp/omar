@@ -287,7 +287,13 @@ class RasterEntryController implements InitializingBean
 
     return queryParams
   }
-
+  def updateSession = {
+    if("${params.rasterEntryResultCurrentTab}" != "")
+    {
+      session.rasterEntryResultCurrentTab = params.rasterEntryResultCurrentTab as Long
+    }
+    response.status = 202
+  }
   def results = {
 
 //    println "=== results start ==="
@@ -298,13 +304,16 @@ class RasterEntryController implements InitializingBean
     {
       params.max = 10
     }
-
+    if(!session.rasterEntryResultCurrentTab&&(session.rasterEntryResultCurrentTab!=0))
+    {
+      session.rasterEntryResultCurrentTab = new Long(0)
+    }
+    params.rasterEntryResultCurrentTab = session.rasterEntryResultCurrentTab
     def rasterEntries = null
     def totalCount = null
     def rasterFiles = null
 
     def queryParams = initRasterEntryQuery(params)
-
     if ( chainModel )
     {
       rasterEntries = chainModel.rasterEntries
@@ -314,7 +323,7 @@ class RasterEntryController implements InitializingBean
     else
     {
       rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-      totalCount = rasterEntrySearchService.getCount(queryParams)
+      totalCount    = rasterEntrySearchService.getCount(queryParams)
 
       if ( rasterEntries )
       {
@@ -352,7 +361,8 @@ class RasterEntryController implements InitializingBean
         rasterFiles: rasterFiles,
         tagNameList: tagNameList,
         tagHeaderList: tagHeaderList,
-        queryParams: queryParams
+        queryParams: queryParams,
+        rasterEntryResultCurrentTab:session.rasterEntryResultCurrentTab
     ])
 
   }
