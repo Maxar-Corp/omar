@@ -9,6 +9,7 @@ class SessionController {
     params.remove("controller")
     params.each{k,v->
       session[k] = v
+//      println "session[${k}] = ${session[k]}"
     }
     response.status = 202
   }
