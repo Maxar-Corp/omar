@@ -288,9 +288,10 @@ class RasterEntryController implements InitializingBean
     return queryParams
   }
   def updateSession = {
-    if("${params.rasterEntryResultCurrentTab}" != "")
-    {
-      session.rasterEntryResultCurrentTab = params.rasterEntryResultCurrentTab as Long
+    params.remove("action")
+    params.remove("controller")
+    params.each{k,v->
+      session[k] = v
     }
     response.status = 202
   }
@@ -304,11 +305,10 @@ class RasterEntryController implements InitializingBean
     {
       params.max = 10
     }
-    if(!session.rasterEntryResultCurrentTab&&(session.rasterEntryResultCurrentTab!=0))
+    if(!session.rasterEntryResultCurrentTab&&("${session.rasterEntryResultCurrentTab}"!="0"))
     {
-      session.rasterEntryResultCurrentTab = new Long(0)
+      session["rasterEntryResultCurrentTab"] = "0"
     }
-    params.rasterEntryResultCurrentTab = session.rasterEntryResultCurrentTab
     def rasterEntries = null
     def totalCount = null
     def rasterFiles = null
@@ -362,6 +362,8 @@ class RasterEntryController implements InitializingBean
         tagNameList: tagNameList,
         tagHeaderList: tagHeaderList,
         queryParams: queryParams,
+        sessionAction:"updateSession",
+        sessionController:"rasterEntry",
         rasterEntryResultCurrentTab:session.rasterEntryResultCurrentTab
     ])
 
