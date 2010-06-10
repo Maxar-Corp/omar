@@ -4,6 +4,24 @@
   <meta name="layout" content="main8"/>
   <title>Video Data Set Search Results</title>
   <resource:tabView/>
+  <g:javascript plugin="omar-core" src="prototype/prototype.js"/>
+
+  <g:javascript>
+   var globalActiveIndex=${videoDataSetResultCurrentTab};
+   function updateSession(event){
+    var link = "${createLink(action: sessionAction, controller: sessionController)}"
+    var activeIndex = tabView.get('activeIndex').toString();
+    // only send a message if we change state this way it's fast
+    //
+    if(activeIndex != globalActiveIndex)
+    {
+      globalActiveIndex = activeIndex.toString();
+      new Ajax.Request(link+"?"+"videoDataSetResultCurrentTab="+activeIndex, {
+        method: 'post'
+      });
+    }
+  }
+  </g:javascript>
 </head>
 <body>
 <content tag="north">
@@ -21,9 +39,20 @@
     <div class="message">${flash.message}</div>
   </g:if>
   <richui:tabView id="tabView">
+    <omar:observe element="tabView" event="mouseover" function="updateSession"/>
     <richui:tabLabels>
-      <richui:tabLabel title="Video" selected="true"/>
-      <richui:tabLabel title="File"/>
+      <g:if test="${videoDataSetResultCurrentTab == '0'}">
+        <richui:tabLabel title="Video" selected="true"/>
+      </g:if>
+      <g:else>
+        <richui:tabLabel title="Video"/>
+      </g:else>
+      <g:if test="${videoDataSetResultCurrentTab == '1'}">
+        <richui:tabLabel title="File" selected="true"/>
+      </g:if>
+      <g:else>
+        <richui:tabLabel title="File"/>
+      </g:else>
     </richui:tabLabels>
     <richui:tabContents>
       <richui:tabContent>
