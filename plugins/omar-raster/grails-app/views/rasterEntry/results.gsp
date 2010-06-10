@@ -4,7 +4,7 @@
   <meta name="layout" content="main8"/>
   <title>Raster Entry Search Results</title>
   <resource:tabView/>
-  <g:javascript plugin="omar-core" src="prototype.js"/>
+  <g:javascript plugin="omar-core" src="prototype/prototype.js"/>
 
   <g:javascript>
    var globalActiveIndex=${rasterEntryResultCurrentTab}
@@ -87,9 +87,9 @@
 
               <th>Width</th>
               <th>Height</th>
-              <th>Num Bands</th>
-              <th>Num Bits</th>
-              <th>Data Type</th>
+              <th>Bands</th>
+              <th>Bits</th>
+              <th>Meters Per Pixel</th>
 
               <th>Min Lon</th>
               <th>Min Lat</th>
@@ -106,7 +106,7 @@
                 <td>${rasterEntry.height?.encodeAsHTML()}</td>
                 <td>${rasterEntry.numberOfBands?.encodeAsHTML()}</td>
                 <td>${rasterEntry.bitDepth?.encodeAsHTML()}</td>
-                <td>${rasterEntry.dataType?.encodeAsHTML()}</td>
+                <td>${rasterEntry.metersPerPixel.encodeAsHTML()}</td>
 
                 <g:set var="bounds" value="${rasterEntry?.groundGeom?.bounds}"/>
                 <td>${bounds?.minLon?.encodeAsHTML()}</td>

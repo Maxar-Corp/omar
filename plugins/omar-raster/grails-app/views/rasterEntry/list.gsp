@@ -41,12 +41,13 @@
 
               <g:sortableColumn property="height" title="Height" params="${[rasterDataSetId:params.rasterDataSetId]}"/>
 
-              <g:sortableColumn property="numberOfBands" title="Number Of Bands" params="${[rasterDataSetId:params.rasterDataSetId]}"/>
+              <g:sortableColumn property="numberOfBands" title="Bands" params="${[rasterDataSetId:params.rasterDataSetId]}"/>
 
-              <g:sortableColumn property="numberOfResLevels" title="Number Of R-Levels" params="${[rasterDataSetId:params.rasterDataSetId]}"/>
+              <g:sortableColumn property="numberOfResLevels" title="R-Levels" params="${[rasterDataSetId:params.rasterDataSetId]}"/>
 
               <g:sortableColumn property="bitDepth" title="Bit Depth" params="${[rasterDataSetId:params.rasterDataSetId]}"/>
 
+              <th>Meters Per Pixel</th>
               <th>Min Lon</th>
               <th>Min Lat</th>
               <th>Max Lon</th>
@@ -72,8 +73,9 @@
                 <td>${rasterEntry.numberOfResLevels?.encodeAsHTML()}</td>
 
                 <td>${rasterEntry.bitDepth?.encodeAsHTML()}</td>
+                <td>${rasterEntry.metersPerPixel}</td>
 
-                <g:set var="bounds" value="${rasterEntry?.metadata?.groundGeom?.bounds}"/>
+                <g:set var="bounds" value="${rasterEntry?.groundGeom?.bounds}"/>
                 <td>${bounds?.minLon?.encodeAsHTML()}</td>
                 <td>${bounds?.minLat?.encodeAsHTML()}</td>
                 <td>${bounds?.maxLon?.encodeAsHTML()}</td>
