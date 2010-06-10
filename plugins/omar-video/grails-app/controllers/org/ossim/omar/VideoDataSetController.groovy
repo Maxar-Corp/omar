@@ -199,7 +199,10 @@ class VideoDataSetController implements InitializingBean
 
       //println "=== search end ==="
 
-      chain(action: "results", model: [videoDataSets: videoDataSets, totalCount: totalCount, videoFiles: videoFiles], params: params)
+      chain(action: "results",
+              model: [videoDataSets: videoDataSets, totalCount: totalCount, videoFiles: videoFiles],
+              params: params
+      )
     }
     else
     {
@@ -283,13 +286,20 @@ class VideoDataSetController implements InitializingBean
 
     //println "=== results end ==="
 
+    if(!session.videoDataSetResultCurrentTab&&("${session.videoDataSetResultCurrentTab}"!="0"))
+    {
+      session["videoDataSetResultCurrentTab"] = "0"
+    }
     render(view: 'results', model: [
         videoDataSets: videoDataSets,
         videoFiles: videoFiles,
         totalCount: totalCount,
         tagNameList: tagNameList,
         tagHeaderList: tagHeaderList,
-        queryParams: queryParams
+        queryParams: queryParams,
+        sessionAction:"updateSession",
+        sessionController:"session",
+        videoDataSetResultCurrentTab:session["videoDataSetResultCurrentTab"]
     ])
 
   }
