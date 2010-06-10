@@ -131,6 +131,7 @@ class BootStrap
     }
 
     new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/rasterSearch/**").save()
+    new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/session/**").save()
 
     def searchTagData = grailsApplication.config.rasterEntry.searchTagData
 
