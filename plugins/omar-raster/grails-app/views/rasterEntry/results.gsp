@@ -9,13 +9,13 @@
   <g:javascript>
    var globalActiveIndex=${rasterEntryResultCurrentTab}
    function updateSession(event){
-    var link = "${createLink(action: "updateSession", controller: "rasterEntry")}"
-    var activeIndex = tabView.get('activeIndex');
+    var link = "${createLink(action: sessionAction, controller: sessionController)}"
+    var activeIndex = tabView.get('activeIndex').toString();
     // only send a message if we change state this way it's fast
     //
     if(activeIndex != globalActiveIndex)
     {
-      globalActiveIndex = tabView.get('activeIndex');
+      globalActiveIndex = activeIndex.toString();
       new Ajax.Request(link+"?"+"rasterEntryResultCurrentTab="+activeIndex, {
         method: 'post'
       });
@@ -44,25 +44,25 @@
   <richui:tabView id="tabView">
     <omar:observe element="tabView" event="mouseover" function="updateSession"/>
     <richui:tabLabels>
-      <g:if test="${session.rasterEntryResultCurrentTab == 0}">
+      <g:if test="${rasterEntryResultCurrentTab == '0'}">
          <richui:tabLabel selected="true" title="Image"/>
       </g:if>
       <g:else>
         <richui:tabLabel title="Image"/>
       </g:else>
-      <g:if test="${session.rasterEntryResultCurrentTab == 1}">
+      <g:if test="${rasterEntryResultCurrentTab == '1'}">
          <richui:tabLabel selected="true" title="Metadata"/>
       </g:if>
       <g:else>
         <richui:tabLabel title="Metadata"/>
       </g:else>
-      <g:if test="${session.rasterEntryResultCurrentTab == 2}">
+      <g:if test="${rasterEntryResultCurrentTab == '2'}">
          <richui:tabLabel selected="true" title="File"/>
       </g:if>
       <g:else>
         <richui:tabLabel title="File"/>
       </g:else>
-      <g:if test="${session.rasterEntryResultCurrentTab == 3}">
+      <g:if test="${rasterEntryResultCurrentTab == '3'}">
          <richui:tabLabel selected="true" title="Links"/>
       </g:if>
       <g:else>
@@ -247,7 +247,6 @@
   <g:hiddenField name="max" value="${params.max}"/>
   <g:hiddenField name="offset" value="${params.offset}"/>
   <g:hiddenField name="queryParams" value="${queryParams.toMap()}"/>
-  <g:hiddenField name="rasterEntryResultCurrentTab" value="${rasterEntryResultCurrentTab}"/>
 
 </content>
 <content tag="south">
