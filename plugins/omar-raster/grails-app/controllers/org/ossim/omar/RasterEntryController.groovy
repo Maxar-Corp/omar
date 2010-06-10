@@ -287,14 +287,6 @@ class RasterEntryController implements InitializingBean
 
     return queryParams
   }
-  def updateSession = {
-    params.remove("action")
-    params.remove("controller")
-    params.each{k,v->
-      session[k] = v
-    }
-    response.status = 202
-  }
   def results = {
 
 //    println "=== results start ==="
@@ -363,7 +355,7 @@ class RasterEntryController implements InitializingBean
         tagHeaderList: tagHeaderList,
         queryParams: queryParams,
         sessionAction:"updateSession",
-        sessionController:"rasterEntry",
+        sessionController:"session",
         rasterEntryResultCurrentTab:session.rasterEntryResultCurrentTab
     ])
 
