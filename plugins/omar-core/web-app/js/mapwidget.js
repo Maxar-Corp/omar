@@ -14,7 +14,14 @@ function MapWidget()
         map.events.register("mousemove", map, this.handleMouseHover);
         map.events.register("moveend", map, this.setPointRadiusText);
         map.events.register("zoomend", map, this.setBoundLatLonText);
-    };
+
+        var  isiPad = navigator.userAgent.match(/iPad/i)  != null;
+
+        if (isiPad)
+        {
+            this.touchhandler = new TouchHandler( map, 4 );
+        }
+        };
 
     var convert = new CoordinateConversion();
 
