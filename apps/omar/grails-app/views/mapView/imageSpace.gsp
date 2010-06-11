@@ -15,6 +15,11 @@
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
   <meta name="layout" content="main6"/>
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
+
   <style type="text/css">
   #map {
     width: 100%;
@@ -56,6 +61,8 @@
   }  </style>
 
   <openlayers:loadJavascript/>
+
+  <g:javascript plugin="omar-core" src="touch.js"/>
 </head>
 <body>
 <content tag="north">
@@ -177,6 +184,7 @@
     map.zoomToMaxExtent();
     setupToolbar();
 
+    this.touchhandler = new TouchHandler( map, 4 );  
   }
 
     function zoomIn()
