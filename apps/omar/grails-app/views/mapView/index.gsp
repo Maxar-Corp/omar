@@ -11,6 +11,11 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="main7"/>
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
+  
   <title>OMAR Ground Space Viewer</title>
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
 
@@ -62,6 +67,8 @@
 
   <openlayers:loadJavascript/>
   <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
+
+  <g:javascript plugin="omar-core" src="touch.js"/>
 </head>
 <body>
 
@@ -223,7 +230,7 @@
 
     map.setCenter(bounds.getCenterLonLat(), zoom);
 
-
+    this.touchhandler = new TouchHandler( map, 4 );
   }
     function handleMouseMove(evt)
     {
