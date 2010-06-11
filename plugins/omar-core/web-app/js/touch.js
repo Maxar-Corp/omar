@@ -1,5 +1,5 @@
-
-m: http://docs.opengeo.org/demo/OL/ (whit)
+/* touch.js
+ * from: http://docs.opengeo.org/demo/OL/ (whit)
  * cleaned up by: Anders Brownworth http://anders.com/
  */
 
@@ -13,7 +13,7 @@ TouchHandler = OpenLayers.Class( {
     /*
      * parameters
      * limitPansPerMove - {Number} experimenting if we can less jerky panning by
-     * limiting the number of pan calls. the higher the number the more pan calls skipped.  
+     * limiting the number of pan calls. the higher the number the more pan calls skipped.
      */
 
     initialize: function( map, limitPansPerMove ) {
@@ -173,4 +173,3 @@ function xystr( event ) {
     return coords;
 
 };
-
