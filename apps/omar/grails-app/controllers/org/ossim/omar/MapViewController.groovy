@@ -12,6 +12,12 @@ class MapViewController implements InitializingBean
   def baseWMS
   def dataWMS
 
+  def afterInterceptor = { model, modelAndView ->
+    if (request['isMobile']) {
+      modelAndView.viewName = modelAndView.viewName + "_mobile"
+    }
+  }
+
   def index = {
 
     def rasterEntryIds = params.rasterEntryIds?.split(',')
