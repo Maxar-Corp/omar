@@ -12,6 +12,10 @@
   <title>OMAR - Raster Search</title>
   <meta name="layout" content="main9"/>
 
+   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
+
   <style type="text/css">
     div.niceBox {
     margin-top: 3px;
@@ -77,8 +81,12 @@
   <openlayers:loadJavascript/>
   <resource:include components="dateChooser"/>
 
+
   <g:javascript plugin="omar-core" src="mapwidget.js"/>
   <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
+
+  <g:javascript plugin="omar-core" src="touch.js"/>
+   
 
   <g:javascript>
     var mapWidget = new MapWidget();
