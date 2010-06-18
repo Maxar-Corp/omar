@@ -524,16 +524,15 @@
 </content>
 
 <content tag="right">
-  <div class="niceBox">
-    <div class="niceBoxHd">Map Mensuration:</div>
-    <div class="niceBoxBody">
-      Path Units: <g:select id="pathUnits" name="pathUnits" from="${['kilometer', 'meter', 'centimeter','feet','inch','league','nautical league','microinch','mile','millimeter','yard']}"/>
-      <div id="pathMeasurementOutput"></div><br/>
-      <div id="clearPathMeasurementOutput"></div>
 
-      <div id="areaMeasurementOutput"></div>
-    </div>
-  </div>
+
+
+  <div id="layerswitcher" class="olControlLayerSwitcher"></div>
+    
+
+
+
+
 </content>
 
 <content tag="bottom">
@@ -541,6 +540,7 @@
     <ul class="yui-nav">
       <li class="selected"><a href="#tab1"><em>Mouse Hover</em></a></li>
       <li><a href="#tab2"><em>Mouse Click</em></a></li>
+       <li><a href="#tab3"><em>Mensuration</em></a></li>
     </ul>
 
     <div class="yui-content">
@@ -570,7 +570,22 @@
         </font>
       </div>
 
-    </div>
+      <div id="tab3">
+           <font size=-2>
+          <table borderColor=transparent>
+            <tr>
+              <td width=200>
+                Path Units: <g:select id="pathUnits" name="pathUnits" from="${['kilometer', 'meter', 'centimeter','feet','inch','league','nautical league','microinch','mile','millimeter','yard']}"/>
+      </td>
+            <td width=200>
+               <div id="pathMeasurementOutput"></div>
+              </td>
+               <td width=200>
+               <div id="areaMeasurementOutput"></div>
+              </td>
+            </tr>
+      </table>
+           </font>
   </div>
 
   <script>
