@@ -15,7 +15,7 @@
 <body>
 
 <div align=center>
-  <img id="omarLogo" src="${resource(dir: 'images', file: 'OMAR_AboutHalf.png')}" alt="OMAR-2.0 Logo"/><br/>
+  <img id="omarLogo" src="${resource(plugin: 'omar', dir: 'images', file: 'OMAR_AboutHalf.png')}" alt="OMAR-2.0 Logo"/><br/>
 </div>
 
 <div align=center>
@@ -34,7 +34,7 @@
 </div>
 
 <div align=center>
-  <img id="rbtLogo" src="${resource(dir: 'images', file: 'RBT.png')}" alt="OMAR-2.0 Logo"/><br/>
+  <img id="rbtLogo" src="${resource(plugin: 'omar', dir: 'images', file: 'RBT.png')}" alt="OMAR-2.0 Logo"/><br/>
   <a href="http://www.radiantblue.com">Radiant Blue Technologies</a>
 </div>
 
