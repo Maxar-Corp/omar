@@ -37,6 +37,10 @@ class LoginController {
 		}
 	}
 
+    def about = {
+      render(view: 'about')
+    }
+
 	/**
 	 * Show the login page.
 	 */

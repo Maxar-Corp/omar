@@ -63,7 +63,7 @@
   </style>
 </head>
 <body>
-<div align="center"><a href="${createLink(view: "login", action: "about.gsp")}">About OMAR</a></div>
+<div align="center"><a href="${createLink(view: "login", action: "about")}">About OMAR</a></div>
 <div id='login'>
   <div class='inner'>
     <g:if test='${flash.message}'>
