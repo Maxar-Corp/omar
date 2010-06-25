@@ -146,32 +146,41 @@
 <body onload="init();" onresize="mapWidget.changeMapSize();">
 
 <content tag="top">
-  <table>
-    <tr>
-      <td>
+
+     <div id="rastermenubar" class="yuimenubar yuimenubarnav">
+
+         <div class="bd">
+             <ul class="first-of-type">
+
+                 <li class="yuimenubaritem first-of-type">
+                     <a class="yuimenubaritemlabel" href="#omar">OMAR</a>
+
+                 </li>
+                 <li class="yuimenubaritem">
+                     <a class="yuimenubaritemlabel" href="#kml">KML</a>
+
+                 </li>
+                 <li class="yuimenubaritem">
+                     <a class="yuimenubaritemlabel" href="#footprints">Footprints</a>
+
+                 </li>
+
+                 <li class="yuimenubaritem">
+                     <a class="yuimenubaritemlabel" href="#search">Search</a>
+                 </li>
+
+             </ul>
+         </div>
+     </div>
+
+
         <div id="toolBar" class="olControlPanel"></div>
-      </td>
-      <td>
-        <span class="menuButton">
-          <g:link class="home" uri="/">Home</g:link>
-        </span>
-        <span class="menuButton">
-          <a href="javascript:mapWidget.search();">Search OMAR</a>
-        </span>
-        <span class="menuButton">
-          <a href="javascript:mapWidget.generateKML();">Generate KML</a>
-        </span>
-        <span class="menuButton">
-          <a href="javascript:updateOmarFilters();">Update Footprints</a>
-        </span>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <img id="logo" src="${resource(dir: 'images', file: 'toolBar.png')}"/>
-      </td>
-    </tr>
-  </table>
+                       
+
+
+
+
+
 </content>
 
 <content tag="left">
@@ -570,29 +579,147 @@
         </font>
       </div>
 
-      <div id="tab3">
-           <font size=-2>
+       <div id="tab3">
+        <font size=-2>
           <table borderColor=transparent>
             <tr>
-              <td width=200>
-                Path Units: <g:select id="pathUnits" name="pathUnits" from="${['kilometer', 'meter', 'centimeter','feet','inch','league','nautical league','microinch','mile','millimeter','yard']}"/>
-      </td>
-            <td width=200>
-               <div id="pathMeasurementOutput"></div>
-              </td>
-               <td width=200>
-               <div id="areaMeasurementOutput"></div>
-              </td>
+              <td width=200>Path Units: <g:select id="pathUnits" name="pathUnits" from="${['kilometer', 'meter', 'centimeter','feet','inch','league','nautical league','microinch','mile','millimeter','yard']}"/></td>
+              <td width=200><div id="pathMeasurementOutput"></div></td>
+              <td width=200><div id="areaMeasurementOutput"></div></td>
+
             </tr>
-      </table>
-           </font>
-  </div>
+          </table>
+        </font>
+      </div>
 
   <script>
     (function() {
       var tabView = new YAHOO.widget.TabView('demo2');
     })();
-  </script>
+
+    /*
+                  Initialize and render the MenuBar when its elements are ready
+                  to be scripted.
+             */
+
+ function rasterMenuBar() {
+                 /*
+                     This code is from this example:
+                     http://developer.yahoo.com/yui/examples/menu/topnavfromjs.html
+                 */
+
+                 /*
+                      Instantiate a MenuBar:  The first argument passed to the
+                      constructor is the id of the element in the page
+                      representing the MenuBar; the second is an object literal
+                      of configuration properties.
+                 */
+
+                 var oMenuBar = new YAHOO.widget.MenuBar("rastermenubar", {
+                                                             zindex: 1,
+                                                             autosubmenudisplay: true,
+                                                             hidedelay: 750,
+                                                             lazyload: false });
+
+
+
+                 /*
+                      Define an array of object literals, each containing
+                      the data necessary to create a submenu.
+                 */
+
+                 var aSubmenuData = [
+
+                     {
+                         id: "omar",
+                         itemdata: [
+                             { text: "Home", url: "${createLink(controller: "home")}" },
+                             { text: "About", url: "${createLink(plugin: "omar-security", controller: "login", action: "about")}" },
+                             { text: "Logout", url: "${createLink(controller: "logout")}" }
+
+                         ]
+                     },
+
+                     {
+                         id: "kml",
+                         itemdata: [
+                             { text: "Generate KML", url: "javascript:mapWidget.generateKML();" }
+                         ]
+                     },
+
+                     {
+                         id: "footprints",
+                         itemdata: [
+                             { text: "Update Footprints", url: "javascript:updateOmarFilters();" }
+                         ]
+                     },
+
+                     {
+                         id: "search",
+                         itemdata: [
+                             { text: "Search Rasters", url: "javascript:mapWidget.search();" }
+                         ]
+                     },
+
+                     {
+                         id: "mensuration",
+                         itemdata: [
+                           {
+                             text: "Path Unit Mode",
+                             submenu: {
+                               id: "pathUnitMode",
+                               itemdata: [
+                                 { text: "kilometer", url: "javascript:mapWidget.foo2('kilometer');" },
+                                  { text: "meter", url: "javascript:mapWidget.foo2('meter');" },
+                                { text: "centimeter", url: "javascript:mapWidget.foo('centimeter');" },
+                                { text: "feet", url: "javascript:mapWidget.foo('feet');" },
+                                { text: "inch", url: "javascript:mapWidget.foo('inch');" },
+                                { text: "league", url: "javascript:mapWidget.foo('league');" },
+                                { text: "nautical league", url: "javascript:mapWidget.foo('nautical_league');" },
+                                { text: "microinch", url: "javascript:mapWidget.foo('microinch');" },
+                                { text: "mile", url: "javascript:mapWidget.foo('mile');" },
+                                { text: "millimeter", url: "javascript:mapWidget.foo('millimeter');" },
+                                { text: "yard", url: "javascript:mapWidget.foo('yard');" }
+                               ]
+                                                                 }
+
+                                                     }
+                         ]
+                     }
+
+                 ];
+
+
+ 
+
+                 /*
+                      Subscribe to the "beforerender" event, adding a submenu
+                      to each of the items in the MenuBar instance.
+                 */
+
+                 oMenuBar.subscribe("beforeRender", function () {
+
+                     if (this.getRoot() == this) {
+
+                         this.getItem(0).cfg.setProperty("submenu", aSubmenuData[0]);
+                         this.getItem(1).cfg.setProperty("submenu", aSubmenuData[1]);
+                         this.getItem(2).cfg.setProperty("submenu", aSubmenuData[2]);
+                         this.getItem(3).cfg.setProperty("submenu", aSubmenuData[3]);
+                         this.getItem(4).cfg.setProperty("submenu", aSubmenuData[4]);
+                     }
+
+                 });
+
+                 /*
+                      Call the "render" method with no arguments since the
+                      markup for this MenuBar instance is already exists in
+                      the page.
+                 */
+                 oMenuBar.render();
+
+                 }
+      </script>
+
 </content>
 
 </body>
