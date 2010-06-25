@@ -73,7 +73,7 @@
     <form action='${request.contextPath}/j_spring_security_check' method='POST' id='loginForm' class='cssform'>
       <p>
         <label for='j_username'>Login ID</label>
-        <input type='text' class='text_' name='j_username' id='j_username'/>
+        <input autocorrect='off' type='text' class='text_' name='j_username' id='j_username'/>
       </p>
       <p>
         <label for='j_password'>Password</label>
