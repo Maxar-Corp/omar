@@ -18,10 +18,7 @@
 
     <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/fonts', file: 'fonts-min.css')}"/>
     <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/tabview/assets/skins/sam', file: 'tabview.css')}"/>
-
-
-
-
+    <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
     <g:javascript plugin='richui' src="yui/yahoo/yahoo-min.js"/>
     <g:javascript plugin='richui' src="yui/event/event-min.js"/>
@@ -35,6 +32,9 @@
     <g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
     <g:javascript plugin='richui' src="yui/tabview/tabview-min.js"/>
 
+    <g:javascript plugin='richui' src="yui/utilities/utilities.js"/>
+    <g:javascript plugin='richui' src="yui/container/container_core-min.js"/>
+    <g:javascript plugin='richui' src="yui/menu/menu-min.js"/>
 
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'omar-2.0.css')}"/>
@@ -43,7 +43,15 @@
           href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids',
                   file: 'reset-fonts-grids.css')}"/>
   <link rel="shortcut icon" href="${resource(dir: 'images', file: 'favicon.ico')}" type="image/x-icon"/>
-  <g:layoutHead/>
+
+       <style>
+      .yui-skin-sam .yui-layout .yui-layout-unit-top,
+      .yui-skin-sam .yui-layout .yui-layout-unit-top div.yui-layout-bd-nohd {
+        overflow: visible;
+      }
+    </style>
+
+    <g:layoutHead/>
      <g:javascript library="application"/>
 
   </head>
@@ -102,7 +110,7 @@
                     units: [
                         { position: 'top', height: 60, body: 'top1', gutter: '0px', maxHeight: 80 },
                         { position: 'left', header: '', width: 200, resize: false, proxy: false, body: 'left1', collapse: true, gutter: '0px 0px 0px 0px', scroll: true, maxWidth: 200 },
-                        { position: 'center', header: 'Welcome to OMAR', body: 'center1', body: 'center1', gutter: '0px 0px 0px 0px', scroll: false },
+                        { position: 'center', header: '&nbsp;', body: 'center1', body: 'center1', gutter: '0px 0px 0px 0px', scroll: false },
                         { position: 'right', header: '', width: 200, resize: false, proxy: false, body: 'right1', collapse: true, gutter: '0px 0px 0px 0px', maxWidth: 200 },
                         { position: 'bottom', height: 60, body: 'bottom1', gutter: '0px', maxHeight: 80 }
                     ]
@@ -122,9 +130,18 @@
                 });
               });
 
-              layout2.render();
+                //Listen for the render event
+        layout2.on('render', function() {
+            //Now give the top unit a zindex to make it and it's menus go above the other units
+            layout2.getUnitByPosition('top').setStyle('zIndex', 10000);
+            //Create the menu
+            rasterMenuBar();
+       });
+
+               layout2.render();
             });
-          layout.render();
+
+       layout.render();
         });
     })();
 
