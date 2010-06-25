@@ -670,7 +670,7 @@ function MapWidget()
             {
                 var areaMeasurement = document.getElementById("areaMeasurementOutput");
 
-                areaMeasurement.innerHTML = "<b>Area:</b> " + evt.measure.toFixed(3) + evt.units;
+                areaMeasurement.innerHTML = "<b>Area:</b> " + evt.measure.toFixed(3) + evt.units + "&#178;";
             }}});
 
         var container = $("toolBar");
