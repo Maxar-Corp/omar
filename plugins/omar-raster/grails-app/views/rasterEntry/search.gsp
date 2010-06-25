@@ -169,6 +169,12 @@
                      <a class="yuimenubaritemlabel" href="#search">Search</a>
                  </li>
 
+
+               <li class="yuimenubaritem">
+                   <a class="yuimenubaritemlabel" href="#mensuration">Mensuration</a>
+               </li>
+
+
              </ul>
          </div>
      </div>
@@ -176,9 +182,11 @@
 
         <div id="toolBar" class="olControlPanel"></div>
                        
+                <input type="hidden" id="pathUnits" name="pathUnits" value="1" />
+            
 
-
-
+  <div id="pathMeasurementOutput"></div>
+             <div id="areaMeasurementOutput"></div>
 
 
 </content>
@@ -549,7 +557,6 @@
     <ul class="yui-nav">
       <li class="selected"><a href="#tab1"><em>Mouse Hover</em></a></li>
       <li><a href="#tab2"><em>Mouse Click</em></a></li>
-       <li><a href="#tab3"><em>Mensuration</em></a></li>
     </ul>
 
     <div class="yui-content">
@@ -579,18 +586,7 @@
         </font>
       </div>
 
-       <div id="tab3">
-        <font size=-2>
-          <table borderColor=transparent>
-            <tr>
-              <td width=200>Path Units: <g:select id="pathUnits" name="pathUnits" from="${['kilometer', 'meter', 'centimeter','feet','inch','league','nautical league','microinch','mile','millimeter','yard']}"/></td>
-              <td width=200><div id="pathMeasurementOutput"></div></td>
-              <td width=200><div id="areaMeasurementOutput"></div></td>
-
-            </tr>
-          </table>
-        </font>
-      </div>
+       
 
   <script>
     (function() {
@@ -669,23 +665,30 @@
                              submenu: {
                                id: "pathUnitMode",
                                itemdata: [
-                                 { text: "kilometer", url: "javascript:mapWidget.foo2('kilometer');" },
-                                  { text: "meter", url: "javascript:mapWidget.foo2('meter');" },
-                                { text: "centimeter", url: "javascript:mapWidget.foo('centimeter');" },
-                                { text: "feet", url: "javascript:mapWidget.foo('feet');" },
-                                { text: "inch", url: "javascript:mapWidget.foo('inch');" },
-                                { text: "league", url: "javascript:mapWidget.foo('league');" },
-                                { text: "nautical league", url: "javascript:mapWidget.foo('nautical_league');" },
-                                { text: "microinch", url: "javascript:mapWidget.foo('microinch');" },
-                                { text: "mile", url: "javascript:mapWidget.foo('mile');" },
-                                { text: "millimeter", url: "javascript:mapWidget.foo('millimeter');" },
-                                { text: "yard", url: "javascript:mapWidget.foo('yard');" }
+                                 { text: "kilometer", url: "javascript:mapWidget.setPathUnits('kilometer');" },
+                                  { text: "meter", url: "javascript:mapWidget.setPathUnits('meter');" },
+                                { text: "centimeter", url: "javascript:mapWidget.setPathUnits('centimeter');" },
+                                { text: "feet", url: "javascript:mapWidget.setPathUnits('feet');" },
+                                { text: "inch", url: "javascript:mapWidget.setPathUnits('inch');" },
+                                { text: "league", url: "javascript:mapWidget.setPathUnits('league');" },
+                                { text: "nautical league", url: "javascript:mapWidget.setPathUnits('nauticalleague');" },
+                                { text: "microinch", url: "javascript:mapWidget.setPathUnits('microinch');" },
+                                { text: "mile", url: "javascript:mapWidget.setPathUnits('mile');" },
+                                { text: "millimeter", url: "javascript:mapWidget.setPathUnits('millimeter');" },
+                                { text: "yard", url: "javascript:mapWidget.setPathUnits('yard');" }
                                ]
-                                                                 }
+                            }
 
-                                                     }
-                         ]
-                     }
+                        },
+                        { text: "Clear Path Measurment", url: "javascript:mapWidget.clearPathMeasurement();" },
+                                 { text: "Clear Area Measurment", url: "javascript:mapWidget.clearAreaMeasurement();" }
+
+                    ]
+
+
+
+            }
+
 
                  ];
 
