@@ -44,6 +44,9 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="cstars-footprints-grailsPlugins" />
+    <orderEntry type="module" module-name="cstars-footprints-grailsPlugin-postgis" />
+    <orderEntry type="module" module-name="cstars-footprints-grailsPlugin-geoscript" />
+    <orderEntry type="module" module-name="cstars-footprints-grailsPlugin-openlayers" />
   </component>
 </module>
 

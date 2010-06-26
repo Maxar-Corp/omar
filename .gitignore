@@ -1,4 +1,5 @@
 apps/cstars-footprints/ShapeFiles
+apps/cstars-footprints/stacktrace.log
 apps/cstars-footprints/target
 apps/omar/*.war
 apps/omar/logs
