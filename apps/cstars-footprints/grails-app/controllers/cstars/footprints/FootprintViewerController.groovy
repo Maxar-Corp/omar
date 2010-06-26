@@ -17,7 +17,7 @@ class FootprintViewerController
         createAlias("parent", "p")
         eq("p.sensor", sensor)
       }
-    }.groupBy { it.parent.sensor.name }
+    }.groupBy { it.parent.sensor.name }.sort { it.key }
 
     footprints?.each { k, v -> footprints[k] = v.collect { it.groundGeom.toString() } }
     

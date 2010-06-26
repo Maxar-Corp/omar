@@ -28,8 +28,8 @@
   }
 
   #map {
-    width: 512px;
-    height: 225px;
+    width: 1024px;
+    height: 512px;
     border: 1px solid #ccc;
   }
 
@@ -71,7 +71,7 @@
   <openlayers:loadJavascript/>
 
   <script type="text/javascript">
-    var map, vectors, formats;
+    var map, vectors, formats, select;
     function updateFormats()
     {
       var in_options = {
@@ -128,12 +128,14 @@
       map.addLayers( [wms, vectors] );
       map.addControl( new OpenLayers.Control.MousePosition() );
       map.addControl( new OpenLayers.Control.EditingToolbar( vectors ) );
+      map.addControl( new OpenLayers.Control.LayerSwitcher( /*{'div':OpenLayers.Util.getElement('layerswitcher')}*/ ) );
 
       var options = {
         hover: true,
         onSelect: serialize
       };
-      var select = new OpenLayers.Control.SelectFeature( vectors, options );
+
+      select = new OpenLayers.Control.SelectFeature( [vectors], options );
       map.addControl( select );
       select.activate();
 
@@ -168,7 +170,7 @@
             var bounds;
 
             for ( x in json )
-            {              
+            {
               var features = json[x];
 
               if ( features )
@@ -178,11 +180,11 @@
                   features = [features];
                 }
 
-                alert( x + ': ' + features.length );
+                //alert( x + ': ' + features.length );
 
                 for ( var i = 0; i < features.length; ++i )
                 {
-                  var wkt = wktReader.read(features[i]);
+                  var wkt = wktReader.read( features[i] );
 
                   if ( !bounds )
                   {
@@ -194,10 +196,16 @@
                   }
                 }
 
-                vectors.addFeatures( [wkt] );
+                //vectors.addFeatures( [wkt] );
+                var footprintLayer = new OpenLayers.Layer.Vector( x );
+
+                footprintLayer.addFeatures( [wkt] );
+                map.addLayer( footprintLayer );
+                select.layers.concat(footprintLayer);
               }
             }
 
+            select.activate();
             map.zoomToExtent( bounds );
           }
         }
