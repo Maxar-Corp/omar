@@ -165,6 +165,8 @@
           var wktReader = new OpenLayers.Format.WKT();
           var json = jsonReader.read( transport.responseText );
 
+          var footprints = new Array();
+
           if ( json && json.constructor != Array )
           {
             var bounds;
@@ -203,10 +205,20 @@
                 //vectors.addFeatures( [wkt] );
 
                 map.addLayer( footprintLayer );
-                select.layers.concat( footprintLayer );
+                footprints.push( footprintLayer );
               }
             }
 
+            var options = {
+              hover: true,
+              onSelect: serialize
+            };
+            
+            footprints.push(vectors);
+
+            select.deactivate();
+            select.initialize(footprints, options);
+            select.activate();
             map.zoomToExtent( bounds );
           }
         }
