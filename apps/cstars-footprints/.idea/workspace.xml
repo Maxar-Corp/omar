@@ -72,7 +72,7 @@
       <file leaf-file-name="index.gsp" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/grails-app/views/footprintViewer/index.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="208" column="0" selection-start="5751" selection-end="5751" vertical-scroll-proportion="0.7380952">
+            <state line="199" column="0" selection-start="5468" selection-end="5468" vertical-scroll-proportion="0.51547617">
               <folding>
                 <element signature="tag#div#1;tag#div#1;tag#body#0;tag#html#0" expanded="false" />
               </folding>
@@ -728,7 +728,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/grails-app/views/footprintViewer/index.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="208" column="0" selection-start="5751" selection-end="5751" vertical-scroll-proportion="0.7380952">
+        <state line="199" column="0" selection-start="5468" selection-end="5468" vertical-scroll-proportion="0.51547617">
           <folding>
             <element signature="tag#div#1;tag#div#1;tag#body#0;tag#html#0" expanded="false" />
           </folding>

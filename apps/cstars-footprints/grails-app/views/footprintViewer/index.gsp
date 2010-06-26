@@ -182,6 +182,8 @@
 
                 //alert( x + ': ' + features.length );
 
+                var footprintLayer = new OpenLayers.Layer.Vector( x );
+
                 for ( var i = 0; i < features.length; ++i )
                 {
                   var wkt = wktReader.read( features[i] );
@@ -194,18 +196,17 @@
                   {
                     bounds.extend( wkt.geometry.getBounds() );
                   }
+
+                  footprintLayer.addFeatures( [wkt] );
                 }
 
                 //vectors.addFeatures( [wkt] );
-                var footprintLayer = new OpenLayers.Layer.Vector( x );
 
-                footprintLayer.addFeatures( [wkt] );
                 map.addLayer( footprintLayer );
-                select.layers.concat(footprintLayer);
+                select.layers.concat( footprintLayer );
               }
             }
 
-            select.activate();
             map.zoomToExtent( bounds );
           }
         }
