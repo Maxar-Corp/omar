@@ -72,7 +72,7 @@
       <file leaf-file-name="index.gsp" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/grails-app/views/footprintViewer/index.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="180" column="49" selection-start="4881" selection-end="4881" vertical-scroll-proportion="0.575">
+            <state line="208" column="0" selection-start="5751" selection-end="5751" vertical-scroll-proportion="0.7380952">
               <folding>
                 <element signature="tag#div#1;tag#div#1;tag#body#0;tag#html#0" expanded="false" />
               </folding>
@@ -83,7 +83,7 @@
       <file leaf-file-name="FootprintViewerController.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grails-app/controllers/cstars/footprints/FootprintViewerController.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="4" selection-start="510" selection-end="510" vertical-scroll-proportion="-14.384615">
+            <state line="14" column="52" selection-start="294" selection-end="294" vertical-scroll-proportion="-9.153846">
               <folding />
             </state>
           </provider>
@@ -721,14 +721,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/grails-app/controllers/cstars/footprints/FootprintViewerController.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="4" selection-start="510" selection-end="510" vertical-scroll-proportion="-14.384615">
+        <state line="14" column="52" selection-start="294" selection-end="294" vertical-scroll-proportion="-9.153846">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/grails-app/views/footprintViewer/index.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="180" column="49" selection-start="4881" selection-end="4881" vertical-scroll-proportion="0.575">
+        <state line="208" column="0" selection-start="5751" selection-end="5751" vertical-scroll-proportion="0.7380952">
           <folding>
             <element signature="tag#div#1;tag#div#1;tag#body#0;tag#html#0" expanded="false" />
           </folding>
