@@ -16,7 +16,11 @@ class MobileDeviceFilters
          before = {
            if (request.getHeader('user-agent') =~ /(?i)ipad/) {
              request['isMobile'] = true
-           } else {
+           }
+           else if (request.getHeader('user-agent') =~ /(?i)iphone/) {
+              request['isMobile'] = true
+           }
+           else {
              request['isMobile'] = false
            }
            return true // keep processing other filters and the action
