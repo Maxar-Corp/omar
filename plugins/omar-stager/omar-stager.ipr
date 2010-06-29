@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactManager">
+    <artifact type="exploded-war" name="omar-stager:GrailsWeb exploded">
+      <root id="root">
+        <element id="javaee-facet-resources" facet="omar-stager/web/GrailsWeb" />
+      </root>
+    </artifact>
+  </component>
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
     <resourceExtensions>
@@ -169,6 +176,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/omar-stager.iml" filepath="$PROJECT_DIR$/omar-stager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/omar-stager-grailsPlugin-omar-core.iml" filepath="$PROJECT_DIR$/omar-stager-grailsPlugin-omar-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/omar-stager-grailsPlugin-omar-oms.iml" filepath="$PROJECT_DIR$/omar-stager-grailsPlugin-omar-oms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/omar-stager-grailsPlugin-postgis.iml" filepath="$PROJECT_DIR$/omar-stager-grailsPlugin-postgis.iml" />
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="1.6" project-jdk-type="JavaSDK">
@@ -273,6 +283,8 @@
         <root url="jar:///opt/grails-1.2.2/dist/grails-web-1.2.2.jar!/" />
         <root url="jar:///opt/grails-1.2.2/dist/grails-webflow-1.2.2.jar!/" />
       </CLASSES>
+      <JAVADOC />
+      <SOURCES />
     </library>
   </component>
 </project>
