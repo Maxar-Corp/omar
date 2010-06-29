@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>DataManager - addRaster</title>
+  <title>DataManager - ${opType}</title>
   <meta name="layout" content="main5"/>
 </head>
 <body>
@@ -18,7 +18,7 @@
 </div>
 
 <div class="body">
-  <g:form action="addRaster" method="POST">
+  <g:form action="${opType}" method="POST">
     <div class="dialog">
       <label labelFor="">Filename:</label>
       <g:textField name="filename"/>
@@ -27,7 +27,16 @@
     </div>
     <div class="buttons">
       <span class="button">
-        <span class="button"><g:actionSubmit class="save" value="Add Raster"/></span>
+        <span class="button">
+		<g:if test="${op == 'add'}">
+			<g:actionSubmit class="save" value="Add ${type}"/>
+		</g:if>
+		<g:elseif test="${op == 'remove'}">
+			<g:actionSubmit class="delete" value="Remove ${type}"/>
+		</g:elseif>
+		<g:elseif test="development">
+			<g:actionSubmit class="edit" value="Update ${type}"/>
+		</g:elseif>
       </span>
     </div>
   </g:form>
