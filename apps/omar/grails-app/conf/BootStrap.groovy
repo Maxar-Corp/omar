@@ -1,4 +1,6 @@
 import grails.util.GrailsUtil
+
+
 import org.ossim.omar.AuthUser
 import org.ossim.omar.Role
 import org.ossim.omar.RasterDataSet
@@ -52,13 +54,13 @@ class BootStrap
     if ( !user )
     {
       user = new AuthUser(
-          username: "user",
-          userRealName: "user",
-          passwd: authenticateService.passwordEncoder("user"),
-          enabled: true,
-          email: "user@user.com",
-          emailShow: false,
-          description: "Normal User"
+              username: "user",
+              userRealName: "user",
+              passwd: authenticateService.passwordEncoder("user"),
+              enabled: true,
+              email: "user@user.com",
+              emailShow: false,
+              description: "Normal User"
       )
       user.addToAuthorities(userRole)
       user.save()
@@ -69,13 +71,13 @@ class BootStrap
     if ( !admin )
     {
       admin = new AuthUser(
-          username: "admin",
-          userRealName: "admin",
-          passwd: authenticateService.passwordEncoder("admin"),
-          enabled: true,
-          email: "admin@admin.com",
-          emailShow: false,
-          description: "Super User"
+              username: "admin",
+              userRealName: "admin",
+              passwd: authenticateService.passwordEncoder("admin"),
+              enabled: true,
+              email: "admin@admin.com",
+              emailShow: false,
+              description: "Super User"
       )
 
       admin.addToAuthorities(userRole)
@@ -90,7 +92,7 @@ class BootStrap
     }
 
     def adminControllers = [
-        "user", "role"
+            "user", "role"
     ]
 
     adminControllers.each {adminController ->

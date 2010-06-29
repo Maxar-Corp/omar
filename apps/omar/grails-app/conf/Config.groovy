@@ -103,7 +103,7 @@ wms.mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" :
 wms.serverAddress = grails.serverIP
 
 
-wms.base.useTileCache = false
+wms.base.useTileCache = true
 wms.base.mapFile = "${wms.referenceDataDirectory}/bmng.map"
 
 wms.base = [

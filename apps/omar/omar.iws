@@ -1,37 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="e9d4c3f3-857e-47fc-b644-5d0029faa3b1" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/ImageFileFilter.groovy" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/HttpStatus.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-core/src/groovy/org/ossim/omar/HttpStatus.groovy" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/FileFilterEventListener.groovy" afterPath="" />
+    <list default="true" readonly="true" id="3ec25788-14d6-4cfa-b450-52b7d567ec70" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-stager/grails-app/views/dataManager/action.gsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-stager/omar-stager.iws" afterPath="$PROJECT_DIR$/../../plugins/omar-stager/omar-stager.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster-grailsPlugin-omar-oms.iml" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster-grailsPlugin-omar-oms.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar-grailsPlugin-omar-core.iml" afterPath="$PROJECT_DIR$/omar-grailsPlugin-omar-core.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster.iml" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/openlayers/plugin.xml" afterPath="$PROJECT_DIR$/../../plugins/openlayers/plugin.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/grails-app/views/dataManager/addVideo.gsp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/ImageDetector.groovy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/HttpStatus.groovy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/HttpStatusMessage.groovy" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar.ipr" afterPath="$PROJECT_DIR$/omar.ipr" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/grails-app/views/dataManager/removeVideo.gsp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/grails-app/views/dataManager/index.gsp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/DataGeneratorController.groovy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/FileScanner.groovy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/grails-app/services/org/ossim/omar/StagerService.groovy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/StagerEventHandler.groovy" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/postgis/plugin.xml" afterPath="$PROJECT_DIR$/../../plugins/postgis/plugin.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/omar-grailsPlugin-geoscript.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/omar-security.iml" afterPath="$PROJECT_DIR$/../../plugins/omar-security/omar-security.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar-grailsPlugin-postgis.iml" afterPath="$PROJECT_DIR$/omar-grailsPlugin-postgis.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/omar-security.iws" afterPath="$PROJECT_DIR$/../../plugins/omar-security/omar-security.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar-grailsPlugin-omar-raster.iml" afterPath="$PROJECT_DIR$/omar-grailsPlugin-omar-raster.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-security/omar-security-grailsPlugins.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/conf/Config.groovy" afterPath="$PROJECT_DIR$/grails-app/conf/Config.groovy" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/grails-app/views/dataManager/removeRaster.gsp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/FileFilterEvent.groovy" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/web-app/WEB-INF/tld/grails.tld" afterPath="$PROJECT_DIR$/../../plugins/omar-security/web-app/WEB-INF/tld/grails.tld" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-stager/grails-app/controllers/org/ossim/omar/DataManagerController.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-stager/grails-app/controllers/org/ossim/omar/DataManagerController.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar-grailsPlugins.iml" afterPath="$PROJECT_DIR$/omar-grailsPlugins.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-stager/web-app/WEB-INF/tld/grails.tld" afterPath="$PROJECT_DIR$/../../plugins/omar-stager/web-app/WEB-INF/tld/grails.tld" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster.iws" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application.properties" afterPath="$PROJECT_DIR$/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar-grailsPlugin-omar-oms.iml" afterPath="$PROJECT_DIR$/omar-grailsPlugin-omar-oms.iml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../plugins/omar-stager/grails-app/views/dataManager/addRaster.gsp" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar-grailsPlugin-omar-security.iml" afterPath="$PROJECT_DIR$/omar-grailsPlugin-omar-security.iml" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../plugins/omar-stager/grails-app/views/dataManager/removeVideo.gsp" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/conf/BuildConfig.groovy" afterPath="$PROJECT_DIR$/grails-app/conf/BuildConfig.groovy" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-stager/grails-app/conf/DataManagerUrlMappings.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-stager/omar-stager.ipr" afterPath="$PROJECT_DIR$/../../plugins/omar-stager/omar-stager.ipr" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster-grailsPlugin-omar-stager.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-oms/lib/joms.jar" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/lib/joms.jar" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster.ipr" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster.ipr" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar.ipr" afterPath="$PROJECT_DIR$/omar.ipr" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/conf/BootStrap.groovy" afterPath="$PROJECT_DIR$/grails-app/conf/BootStrap.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-stager/omar-stager.iml" afterPath="$PROJECT_DIR$/../../plugins/omar-stager/omar-stager.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/omar-grailsPlugin-omar-stager-grailsPlugins.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/omar-security.ipr" afterPath="$PROJECT_DIR$/../../plugins/omar-security/omar-security.ipr" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/geoscript/grails-app/controllers/geoscript/BufferController.groovy" afterPath="$PROJECT_DIR$/../../plugins/geoscript/grails-app/controllers/geoscript/BufferController.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar.iml" afterPath="$PROJECT_DIR$/omar.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster-grailsPlugin-postgis.iml" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster-grailsPlugin-postgis.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar-grailsPlugin-omar-video.iml" afterPath="$PROJECT_DIR$/omar-grailsPlugin-omar-video.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar.iws" afterPath="$PROJECT_DIR$/omar.iws" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/HttpStatusMessage.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-core/src/groovy/org/ossim/omar/HttpStatusMessage.groovy" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/grails-app/views/dataManager/addRaster.gsp" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/FileProcessor.groovy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/grails-app/views/dataManager" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/OmsInfoParser.groovy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/DataManagerController.groovy" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/src/groovy/org/ossim/omar/FileListing.groovy" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster-grailsPlugin-omar-core.iml" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster-grailsPlugin-omar-core.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-stager/src/groovy/org/ossim/omar/ImageFileFilter.groovy" afterPath="$PROJECT_DIR$/../../plugins/omar-stager/src/groovy/org/ossim/omar/ImageFileFilter.groovy" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/application.properties" afterPath="$PROJECT_DIR$/../../plugins/omar-security/application.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/web-app/WEB-INF/tld/grails.tld" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/web-app/WEB-INF/tld/grails.tld" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-stager/application.properties" afterPath="$PROJECT_DIR$/../../plugins/omar-stager/application.properties" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../plugins/omar-stager/grails-app/views/dataManager/removeRaster.gsp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../../plugins/omar-stager/grails-app/views/dataManager/addVideo.gsp" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar-grailsPlugin-openlayers.iml" afterPath="$PROJECT_DIR$/omar-grailsPlugin-openlayers.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/omar-grailsPlugin-omar-stager.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/application.properties" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/application.properties" />
     </list>
     <ignored path="$USER_HOME_GRAILS$/" />
-    <ignored path="omar.iws" />
-    <ignored path=".idea/workspace.xml" />
     <ignored path="$USER_HOME_GRIFFON$/" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -89,28 +111,28 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="BootStrap.groovy" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/grails-app/conf/BootStrap.groovy">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="31" column="21" selection-start="708" selection-end="708" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="Config.groovy" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grails-app/conf/Config.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="150" column="90" selection-start="5145" selection-end="5145" vertical-scroll-proportion="0.0">
+            <state line="3" column="47" selection-start="150" selection-end="150" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="StagerUtil.groovy" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/groovy/org/ossim/omar/StagerUtil.groovy">
+      <file leaf-file-name="BuildConfig.groovy" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/grails-app/conf/BuildConfig.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="6" selection-start="246" selection-end="246" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Utility.groovy" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/groovy/org/ossim/omar/Utility.groovy">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="6" selection-start="92" selection-end="92" vertical-scroll-proportion="0.068895645">
+            <state line="20" column="48" selection-start="811" selection-end="811" vertical-scroll-proportion="0.37077427">
               <folding />
             </state>
           </provider>
@@ -126,22 +148,7 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/grails-app/views/layouts/main7.gsp" />
-        <option value="$PROJECT_DIR$/grails-app/views/layouts/main8.gsp" />
-        <option value="$PROJECT_DIR$/grails-app/views/videoDataSet/list.gsp" />
-        <option value="$PROJECT_DIR$/grails-app/views/videoDataSet/results.gsp" />
-        <option value="$PROJECT_DIR$/grails-app/views/mapView/multiLayer.gsp" />
-        <option value="$PROJECT_DIR$/grails-app/views/mapView/index.gsp" />
-        <option value="$PROJECT_DIR$/grails-app/views/mapView/imageSpace.gsp" />
-        <option value="$PROJECT_DIR$/grails-app/views/rasterSearch/search.gsp" />
-        <option value="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterSearchController.groovy" />
-        <option value="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/RasterEntryController.groovy" />
-        <option value="$PROJECT_DIR$/grails-app/views/query/search.gsp" />
-        <option value="$PROJECT_DIR$/grails-app/views/query/results.gsp" />
-        <option value="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/QueryController.groovy" />
-        <option value="$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/ThumbnailController.groovy" />
-        <option value="$PROJECT_DIR$/src/groovy/org/ossim/omar/OmsInfoParser.groovy" />
-        <option value="$PROJECT_DIR$/grails-app/conf/Config.groovy" />
+        <option value="$PROJECT_DIR$/grails-app/conf/BuildConfig.groovy" />
       </list>
     </option>
   </component>
@@ -199,6 +206,7 @@
     </navigator>
     <panes>
       <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -206,231 +214,19 @@
               <option name="myItemId" value="omar" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="web-app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="groovy" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="grails-app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="grails-app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="grails-app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="services" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="grails-app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="domain" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="grails-app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="controllers" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="omar" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="grails-app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="conf" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
       <pane id="Favorites" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="project.structure.last.edited" value="Modules" />
     <property name="GoToFile.includeJavaFiles" value="false" />
-    <property name="project.structure.proportion" value="0.0" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="recentsLimit" value="5" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
-    <property name="project.structure.side.proportion" value="0.2" />
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="MemberChooser.copyJavadoc" value="false" />
   </component>
@@ -448,13 +244,6 @@
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
-    <configuration default="true" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
     <configuration default="true" type="Remote" factoryName="Remote">
       <option name="USE_SOCKET_TRANSPORT" value="true" />
       <option name="SERVER_MODE" value="false" />
@@ -464,48 +253,6 @@
       <method>
         <option name="AntTarget" enabled="false" />
         <option name="BuildArtifacts" enabled="false" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="FlexUnitRunConfigurationType" factoryName="FlexUnit" air_descriptor_path="" air_program_params="" air_publisher_id="" air_root_dir_path="" air_run_mode="AppDescriptor" class_name="" html_or_swf_file_path="" main_class_name="" method_name="" module_name="" output_log_level="" package_name="" port="0" run_mode="HtmlOrSwfFile" scope="Class" socket_policy_port="0" url_to_launch="http://">
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Make" enabled="true" />
-        <option name="Maven.BeforeRunTask" enabled="false" />
-      </method>
-    </configuration>
-    <configuration default="true" type="TestNG" factoryName="TestNG">
-      <extension name="coverage" enabled="false" merge="false" />
-      <extension name="snapshooter" />
-      <module name="" />
-      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
-      <option name="ALTERNATIVE_JRE_PATH" />
-      <option name="SUITE_NAME" />
-      <option name="PACKAGE_NAME" />
-      <option name="MAIN_CLASS_NAME" />
-      <option name="METHOD_NAME" />
-      <option name="GROUP_NAME" />
-      <option name="TEST_OBJECT" value="CLASS" />
-      <option name="VM_PARAMETERS" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" />
-      <option name="OUTPUT_DIRECTORY" />
-      <option name="ANNOTATION_TYPE" />
-      <option name="ENV_VARIABLES" />
-      <option name="PASS_PARENT_ENVS" value="true" />
-      <option name="TEST_SEARCH_SCOPE">
-        <value defaultName="moduleWithDependencies" />
-      </option>
-      <option name="USE_DEFAULT_REPORTERS" value="false" />
-      <option name="PROPERTIES_FILE" />
-      <envs />
-      <properties />
-      <listeners />
-      <method>
-        <option name="AntTarget" enabled="false" />
-        <option name="BuildArtifacts" enabled="false" />
-        <option name="Make" enabled="true" />
         <option name="Maven.BeforeRunTask" enabled="false" />
       </method>
     </configuration>
@@ -603,9 +350,6 @@
     </list>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
-  <component name="StructureViewFactory">
-    <option name="ACTIVE_ACTIONS" value="ALPHA_COMPARATOR" />
-  </component>
   <component name="SvnConfiguration" maxAnnotateRevisions="500">
     <option name="USER" value="" />
     <option name="PASSWORD" value="" />
@@ -615,7 +359,7 @@
     <option name="MERGE_DIFF_USE_ANCESTRY" value="true" />
     <option name="UPDATE_LOCK_ON_DEMAND" value="false" />
     <option name="IGNORE_SPACES_IN_MERGE" value="false" />
-    <option name="DETECT_NESTED_COPIES" value="false" />
+    <option name="DETECT_NESTED_COPIES" value="true" />
     <option name="IGNORE_SPACES_IN_ANNOTATE" value="true" />
     <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
     <configuration useDefault="false">$PROJECT_DIR$/../../../../../sbortman/.subversion</configuration>
@@ -629,30 +373,6 @@
           <option name="myVcsRoot" value="$PROJECT_DIR$" />
           <option name="myCopyRoot" value="$PROJECT_DIR$" />
         </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-oms" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-oms" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-core" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-core" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-video" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-video" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/openlayers" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/openlayers" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/postgis" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/postgis" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-security" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-security" />
-        </SvnCopyRootSimple>
       </list>
     </option>
     <option name="myMoreRealMappingRoots">
@@ -661,70 +381,42 @@
           <option name="myVcsRoot" value="$PROJECT_DIR$" />
           <option name="myCopyRoot" value="$PROJECT_DIR$" />
         </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-oms" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-oms" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-core" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-core" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-video" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-video" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/openlayers" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/openlayers" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/postgis" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/postgis" />
-        </SvnCopyRootSimple>
-        <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$/../../plugins/omar-security" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$/../../plugins/omar-security" />
-        </SvnCopyRootSimple>
       </list>
     </option>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="e9d4c3f3-857e-47fc-b644-5d0029faa3b1" name="Default" comment="" />
-      <created>1268317364318</created>
-      <updated>1268317364318</updated>
+      <changelist id="3ec25788-14d6-4cfa-b450-52b7d567ec70" name="Default" comment="" />
+      <created>1277234764389</created>
+      <updated>1277234764389</updated>
     </task>
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="22" width="1920" height="1110" extended-state="0" />
-    <editor active="false" />
+    <frame x="0" y="22" width="1920" height="1090" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="DBHelper" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Grails View" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24919786" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Dependency Viewer" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24064171" sideWeight="0.66403943" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32994652" sideWeight="0.6628749" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="DBOutput" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32906404" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Grails" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32941177" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32906404" sideWeight="0.0" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32988626" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -737,7 +429,7 @@
     <option name="PERFORM_CHECKOUT_IN_BACKGROUND" value="true" />
     <option name="PERFORM_ADD_REMOVE_IN_BACKGROUND" value="true" />
     <option name="PERFORM_ROLLBACK_IN_BACKGROUND" value="false" />
-    <option name="CHECK_LOCALLY_CHANGED_CONFLICTS_IN_BACKGROUND" value="true" />
+    <option name="CHECK_LOCALLY_CHANGED_CONFLICTS_IN_BACKGROUND" value="false" />
     <option name="ENABLE_BACKGROUND_PROCESSES" value="false" />
     <option name="CHANGED_ON_SERVER_INTERVAL" value="60" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
@@ -763,112 +455,25 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/main8.gsp">
+    <entry file="file://$PROJECT_DIR$/grails-app/conf/BootStrap.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="156" column="53" selection-start="4324" selection-end="4324" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/main5.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="59" column="26" selection-start="2071" selection-end="2091" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/main.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="51" selection-start="571" selection-end="616" vertical-scroll-proportion="0.22972973" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/OgcController.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="171" column="85" selection-start="4932" selection-end="4932" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/views/query/search.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="0" selection-start="294" selection-end="294" vertical-scroll-proportion="0.2361111" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/views/query/results.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="41" selection-start="300" selection-end="300" vertical-scroll-proportion="0.21794872" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/QueryController.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="0" selection-start="254" selection-end="254" vertical-scroll-proportion="0.3361082" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/ThumbnailController.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="74" selection-start="468" selection-end="468" vertical-scroll-proportion="0.0" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/controllers/org/ossim/omar/HomeController.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1" column="6" selection-start="29" selection-end="29" vertical-scroll-proportion="0.017970402" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/grails-app/views/home/index.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="44" column="36" selection-start="1253" selection-end="1253" vertical-scroll-proportion="0.13076924" />
+        <state line="31" column="21" selection-start="708" selection-end="708" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/grails-app/conf/Config.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="150" column="90" selection-start="5145" selection-end="5145" vertical-scroll-proportion="0.0">
+        <state line="3" column="47" selection-start="150" selection-end="150" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/groovy/org/ossim/omar/StagerUtil.groovy">
+    <entry file="file://$PROJECT_DIR$/grails-app/conf/BuildConfig.groovy">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="12" column="6" selection-start="246" selection-end="246" vertical-scroll-proportion="0.0">
+        <state line="20" column="48" selection-start="811" selection-end="811" vertical-scroll-proportion="0.37077427">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/groovy/org/ossim/omar/Utility.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="6" selection-start="92" selection-end="92" vertical-scroll-proportion="0.068895645">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <UIState>
-          <splitter-proportions>
-            <SplitterProportionsDataImpl>
-              <option name="proportions">
-                <list>
-                  <option value="0.2" />
-                  <option value="0.5" />
-                </list>
-              </option>
-            </SplitterProportionsDataImpl>
-          </splitter-proportions>
-          <last-edited>omar:GrailsWeb exploded</last-edited>
-          <settings />
-        </UIState>
-      </state>
-      <state key="Copyright.UI">
-        <UIState>
-          <splitter-proportions>
-            <SplitterProportionsDataImpl />
-          </splitter-proportions>
-        </UIState>
-      </state>
-      <state key="ScopeChooserConfigurable.UI">
-        <UIState>
-          <splitter-proportions>
-            <SplitterProportionsDataImpl />
-          </splitter-proportions>
-          <settings />
-        </UIState>
-      </state>
-    </states>
   </component>
 </project>
 
