@@ -189,7 +189,9 @@ def processDirectory(def directory)
 target(main: "The description of the script goes here!") {
   depends(parseArguments)
 
-  Init.instance().initialize()
+  def ossimArgs = ["omar", "--disable-notify", "ALL"]
+
+  Init.instance().initialize(ossimArgs.size(), ossimArgs as String[])
 
   def file
 
