@@ -3,7 +3,6 @@ package org.ossim.omar
 import org.springframework.beans.factory.InitializingBean
 
 import javax.media.jai.JAI
-import joms.oms.ossimUnitConversionTool
 
 class MapViewController implements InitializingBean
 {
@@ -11,86 +10,26 @@ class MapViewController implements InitializingBean
 
   def baseWMS
   def dataWMS
+  def webMappingService
 
   def afterInterceptor = { model, modelAndView ->
-    if (request['isMobile']) {
+    if ( request['isMobile'] )
+    {
       modelAndView.viewName = modelAndView.viewName + "_mobile"
     }
   }
 
   def index = {
 
-    def rasterEntryIds = params.rasterEntryIds?.split(',')
-    def left = null
-    def right = null
-    def top = null
-    def bottom = null
+    def rasterEntryIds = params.rasterEntryIds?.split(',')?.collect { it.toLong() }
 
-    def rasterEntries = []
+    def rasterEntries = RasterEntry.withCriteria {
+      inList("id", rasterEntryIds)
+    }
+
     def kmlOverlays = []
-    def unitConversion = new ossimUnitConversionTool(1.0)
-    def fullResScale = 0.0 // default to 1 unit per pixel
-//    def minResLevels  = 0 // default to 1 unit per pixel
-    def smallestScale = 0.0
-    def largestScale = 0.0
-    def testScale = 0.0
-    rasterEntryIds.each {
-      def rasterEntry = RasterEntry.get(it)
-      if ( rasterEntry.gsdY )
-      {
-        unitConversion.setValue(rasterEntry.gsdY);
-        def testValue = unitConversion.getDegrees();
-        if ( (fullResScale == 0.0) || (testValue < fullResScale) )
-        {
-          fullResScale = testValue
-        }
-        if ( smallestScale == 0.0 )
-        {
-          smallestScale = fullResScale
-          largestScale = fullResScale
-        }
-      }
-      if ( rasterEntry.numberOfResLevels )
-      {
-        testScale = 2 ** rasterEntry.numberOfResLevels * fullResScale;
-        if ( testScale > largestScale )
-        {
-          largestScale = testScale
-        }
-      }
-      // now allow at least 8x zoom in
-      testScale = 0.125 * fullResScale
-      if ( testScale < smallestScale )
-      {
-        smallestScale = testScale;
-      }
 
-      rasterEntries << rasterEntry
-
-//      def bounds = rasterEntry.groundGeom?.bounds
-      def bounds = rasterEntry?.groundGeom?.bounds
-
-
-      if ( left == null || bounds?.minLon < left )
-      {
-        left = bounds?.minLon
-      }
-
-      if ( bottom == null || bounds?.minLat < bottom )
-      {
-        bottom = bounds?.minLat
-      }
-
-      if ( right == null || bounds?.maxLon > right )
-      {
-        right = bounds?.maxLon
-      }
-
-      if ( top == null || bounds?.maxLat > top )
-      {
-        top = bounds?.maxLat
-      }
-
+    rasterEntries.each { rasterEntry ->
       def overlays = RasterEntryFile.findAllByTypeAndRasterEntry("kml", rasterEntry)
 
       overlays?.each {overlay ->
@@ -104,12 +43,15 @@ class MapViewController implements InitializingBean
         kmlOverlays << kmlOverlay
       }
     }
-    // println "${left},${bottom},${right},${top}"
-    [rasterEntries: rasterEntries,
-        fullResScale: fullResScale,
-        smallestScale: smallestScale,
-        largestScale: largestScale,
-        left: left, top: top, right: right, bottom: bottom, kmlOverlays: kmlOverlays]
+
+    def model = [:]
+
+    model.rasterEntries = rasterEntries
+    model.kmlOverlays = kmlOverlays
+    model.putAll(webMappingService.computeScales(rasterEntries))
+    model.putAll(webMappingService.computeBounds(rasterEntries))
+
+    return model
   }
 
   def getKML = {
@@ -143,50 +85,29 @@ class MapViewController implements InitializingBean
 
   def multiLayer = {
 
-    def rasterEntryIds = params.rasterEntryIds?.split(',')
-    def left = null
-    def right = null
-    def top = null
-    def bottom = null
+    def rasterEntryIds = params.rasterEntryIds?.split(',')?.collect { it.toLong() }
 
-    def rasterEntries = []
+    def rasterEntries = RasterEntry.withCriteria {
+      inList("id", rasterEntryIds)
+    }
+    
     def kmlOverlays = []
 
-    def hasKML = false
-
-    rasterEntryIds.each {
-      def rasterEntry = RasterEntry.get(it)
-
-      rasterEntries << rasterEntry
-
-      if ( left == null || rasterEntry.groundGeom?.bounds?.minLon < left )
-      {
-        left = rasterEntry.groundGeom?.bounds?.minLon
-      }
-
-      if ( bottom == null || rasterEntry.groundGeom?.bounds?.minLat < bottom )
-      {
-        bottom = rasterEntry.groundGeom?.bounds?.minLat
-      }
-
-      if ( right == null || rasterEntry.groundGeom?.bounds?.maxLon > right )
-      {
-        right = rasterEntry.groundGeom?.bounds?.maxLon
-      }
-
-      if ( top == null || rasterEntry.groundGeom?.bounds?.maxLat > top )
-      {
-        top = rasterEntry.groundGeom?.bounds?.maxLat
-      }
+    rasterEntries.each { rasterEntry ->
 
       RasterEntryFile.findAllByTypeAndRasterEntry("kml", rasterEntry)?.each {kmlFile ->
-        kmlOverays << kmlFile
+        kmlOverlays << kmlFile
       }
     }
 
-    [rasterEntries: rasterEntries, kmlOverays: kmlOverlays,
-        left: left, top: top, right: right, bottom: bottom,
-        baseWMS: baseWMS]
+    def model = [:]
+
+    model.rasterEntries = rasterEntries
+    model.kmlOverlays = kmlOverlays
+    model.baseWMS= baseWMS
+    model.putAll(webMappingService.computeBounds(rasterEntries))
+
+    return model
   }
 
   def test = {
@@ -206,18 +127,18 @@ class MapViewController implements InitializingBean
 
     switch ( mode )
     {
-      case "JAI":
-        def image = JAI.create("imageread", inputFile)
-        width = image.width
-        height = image.height
-        break
+    case "JAI":
+      def image = JAI.create("imageread", inputFile)
+      width = image.width
+      height = image.height
+      break
 
-      case "OSSIM":
+    case "OSSIM":
 
-        width = rasterEntry?.width
-        height = rasterEntry?.height
+      width = rasterEntry?.width
+      height = rasterEntry?.height
 
-        break
+      break
     }
 
     //println "${[width: width, height: height, inputFile: inputFile, entry: rasterEntry.entryId]}"
@@ -253,18 +174,18 @@ class MapViewController implements InitializingBean
 
     switch ( mode )
     {
-      case "JAI":
-        def image = JAI.create("imageread", inputFile)
-        width = image.width
-        height = image.height
-        break
+    case "JAI":
+      def image = JAI.create("imageread", inputFile)
+      width = image.width
+      height = image.height
+      break
 
-      case "OSSIM":
+    case "OSSIM":
 
-        width = rasterEntry?.width
-        height = rasterEntry?.height
+      width = rasterEntry?.width
+      height = rasterEntry?.height
 
-        break
+      break
     }
 
     //println "${[width: width, height: height, inputFile: inputFile, entry: rasterEntry.entryId]}"
@@ -281,6 +202,6 @@ class MapViewController implements InitializingBean
 
 
     [width: rasterEntry?.width, height: rasterEntry?.height, numRLevels: numRLevels, rasterEntry: rasterEntry]
-    
+
   }
 }

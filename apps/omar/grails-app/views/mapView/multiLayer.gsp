@@ -12,8 +12,8 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="main6"/>
 
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
 
   <title>OMAR Ground Space Multi-Viewer</title>
@@ -169,7 +169,7 @@
         { layers: "${rasterEntry.id}", format: format, stretch_mode:"linear_auto_min_max", transparent:transparent  },
         {isBaseLayer: false, buffer:0, singleTile:true, ratio:1.0, transitionEffect: "resize"}
                 )
-      <g:if test="${hasKML}">
+      <g:if test="${kmlOverlays}">
 
         , new OpenLayers.Layer.Vector( "KML", {
      projection: map.displayProjection,

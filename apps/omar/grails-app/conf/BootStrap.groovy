@@ -162,7 +162,7 @@ class BootStrap
 
     if ( GrailsUtil.isDevelopmentEnv() )
     {
-      def baseDirs = ["/Users/sbortman/projects/data", "/Volumes/Passport/data"]
+      def baseDirs = ["/data/uav", "/Volumes/Iomega_HDD/data"]
 
       baseDirs.each {baseDir ->
         def repository = Repository.findByBaseDir(baseDir)
