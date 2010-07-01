@@ -2,13 +2,16 @@ import grails.util.Environment
 //import org.ossim.postgis.Geometry
 //import org.ossim.postgis.GeometryType
 import com.vividsolutions.jts.geom.Geometry
+import org.joda.time.*
+import org.joda.time.contrib.hibernate.*
 
 grails.gorm.default.mapping = {
   cache true
   id generator: 'identity'
+  "user-type" type: PersistentDateTime, class: DateTime
+  "user-type" type: PersistentLocalDate, class: LocalDate
 //  'user-type'(type: GeometryType, class: Geometry)
 }
-
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
 
@@ -103,7 +106,7 @@ wms.mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" :
 wms.serverAddress = grails.serverIP
 
 
-wms.base.useTileCache = true
+wms.base.useTileCache = false
 wms.base.mapFile = "${wms.referenceDataDirectory}/bmng.map"
 
 wms.base = [
