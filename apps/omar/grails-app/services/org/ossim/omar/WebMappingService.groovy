@@ -266,6 +266,9 @@ class WebMappingService {
               if (geomPtr != null) {
                 scaleCheck = view.getScaleChangeFromInputToView(geomPtr.get())
               }
+              if (rasterEntry?.numberOfBands > viewableBandCount) {
+                viewableBandCount = 3
+              }
               // if we are near zooming to full res just add the image
               if (scaleCheck >= 0.9) {
                 wmsMap.addFile(rasterEntry?.mainFile.name,
@@ -279,9 +282,6 @@ class WebMappingService {
                 //
                 long maxSize = (rasterEntry.width > rasterEntry.height) ? rasterEntry.width : rasterEntry.height
                 if ((maxSize * scaleCheck) >= (maxSize / (2 ** rasterEntry.numberOfResLevels))) {
-                  if (rasterEntry?.numberOfBands > viewableBandCount) {
-                    viewableBandCount = 3
-                  }
                   wmsMap.addFile(rasterEntry?.mainFile.name,
                           rasterEntry?.entryId?.toInteger(),
                           geom)
