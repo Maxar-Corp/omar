@@ -37,9 +37,9 @@ class KmlQueryController implements InitializingBean
 
     bindData(queryParams, params)
 
-    queryParams."startDate" = DateUtil.parseDateGivenFormats(params."startDate", [])
-    queryParams."endDate"   = DateUtil.parseDateGivenFormats(params."endDate", [])
-    
+    queryParams.startDate = DateUtil.initializeDate("startDate", params)
+    queryParams.endDate   = DateUtil.initializeDate("endDate", params)
+
     if ( !params.containsKey("dateSort") || params?.dateSort == "true" )
     {
       params.order = 'desc'
@@ -56,7 +56,7 @@ class KmlQueryController implements InitializingBean
 //    println "kml  params: ${params}"
 
     def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-    String kmlText = kmlService.createKml(rasterEntries)
+    String kmlText = kmlService.createKml(rasterEntries, wmsParams)
 
     response.setHeader("Content-disposition", "attachment; filename=topImages.kml");
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
@@ -94,12 +94,9 @@ class KmlQueryController implements InitializingBean
     def queryParams = new RasterEntryQuery()
 
     bindData(queryParams, params)
-//    queryParams."startDate" = DateUtil.parseDateGivenFormats(params."startDate", [])
-//   queryParams."endDate"   = DateUtil.parseDateGivenFormats(params."endDate", [])
-    def startDate = DateUtil.parseDateGivenFormats(params."startDate", [])
-    if (startDate) queryParams."startDate" = startDate
-    def endDate = DateUtil.parseDateGivenFormats(params."endDate", [])
-    if (endDate) queryParams."endDate" = endDate
+    queryParams.startDate = DateUtil.initializeDate("startDate", params)
+    queryParams.endDate   = DateUtil.initializeDate("endDate", params)
+    
     if ( !params?.containsKey("dateSort") || params?.dateSort == "true" )
     {
       params.order = 'desc'
@@ -152,9 +149,8 @@ class KmlQueryController implements InitializingBean
     def queryParams = new VideoDataSetQuery()
 
     bindData(queryParams, params)
-
-    queryParams."startDate" = DateUtil.parseDateGivenFormats(params."startDate", [])
-    queryParams."endDate"   = DateUtil.parseDateGivenFormats(params."endDate", [])
+    queryParams.startDate = DateUtil.initializeDate("startDate", params)
+    queryParams.endDate   = DateUtil.initializeDate("endDate", params)
     
     if ( !params?.containsKey("dateSort") || params?.dateSort == "true" )
     {

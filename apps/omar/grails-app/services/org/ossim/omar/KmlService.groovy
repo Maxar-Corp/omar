@@ -9,7 +9,8 @@ import org.springframework.beans.factory.InitializingBean
 import org.ossim.omar.RasterEntry
 import org.ossim.omar.VideoDataSet
 
-class KmlService implements ApplicationContextAware, InitializingBean {
+class KmlService implements ApplicationContextAware, InitializingBean
+{
 
   boolean transactional = false
   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -19,7 +20,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
   def flashDirRoot
   def flashUrlRoot
 
-  String createKml(List<RasterEntry> rasterEntries, Map wmsParams) {
+  String createKml(List<RasterEntry> rasterEntries, Map wmsParams)
+  {
     def kmlbuilder = new StreamingMarkupBuilder()
     def rasterIdx = 0
     def descriptionMap = [:]
@@ -57,22 +59,22 @@ class KmlService implements ApplicationContextAware, InitializingBean {
       }
       descriptionMap.put(rasterIdx, descriptionBuilder.toString())
     }
-    if(!wmsParams?.width)
+    if ( !wmsParams?.width )
     {
       wmsParams?.width = "1024"
     }
-    if(!wmsParams?.height)
+    if ( !wmsParams?.height )
     {
       wmsParams?.height = "1024"
     }
     wmsParams.remove("action")
     wmsParams.remove("controller")
-    wmsParams?.version= "1.1.1"
-    wmsParams?.request= "GetMap"
-    wmsParams?.srs= "EPSG:4326"
-    wmsParams?.transparent= "TRUE"
-    wmsParams?.format= "image/png"
-    kmlbuilder.encoding= "UTF-8"
+    wmsParams?.version = "1.1.1"
+    wmsParams?.request = "GetMap"
+    wmsParams?.srs = "EPSG:4326"
+    wmsParams?.transparent = "TRUE"
+    wmsParams?.format = "image/png"
+    kmlbuilder.encoding = "UTF-8"
     def bbox = wmsParams?.bbox;
     wmsParams?.remove("bbox");
     def kmlnode = {
@@ -81,7 +83,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
         Folder() {
           name("OMAR_WMS")
           rasterEntries?.each {rasterEntry ->
-            wmsParams?.layers="${rasterEntry?.id}"
+            wmsParams?.layers = "${rasterEntry?.id}"
             def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
 
             def groundCenterLon = (rasterEntry?.groundGeom?.bounds?.minLon + rasterEntry?.groundGeom?.bounds?.maxLon) * 0.5;
@@ -113,24 +115,26 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                 viewRefreshTime("1")
                 viewBoundScale("0.85")
               }
-              LatLonBox() {
 
-                 if(bbox)
-                 {
-                   north(bbox[2])
-                   south(bbox[1])
-                   east(bbox[0])
-                   west(bbox[3])
-                 }
-                 else
-                 {
-                   north(rasterEntry?.groundGeom?.bounds?.maxLat)
-                   south(rasterEntry?.groundGeom?.bounds?.minLon)
-                   east(rasterEntry?.groundGeom?.bounds?.maxLat)
-                   west(rasterEntry?.groundGeom?.bounds?.minLat)
-                 }
-               }
-              if (acquisition) {
+              LatLonBox() {
+                if ( bbox )
+                {
+                  north(bbox[3])
+                  south(bbox[1])
+                  east(bbox[2])
+                  west(bbox[0])
+                }
+                else
+                {
+                  def bounds = rasterEntry?.groundGeom?.bounds
+                  north(bounds?.maxLat)
+                  south(bounds?.minLat)
+                  east(bounds?.maxLon)
+                  west(bounds?.minLon)
+                }
+              }
+              if ( acquisition )
+              {
                 TimeStamp() {
                   when(acquisition)
                 }
@@ -140,6 +144,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
         }
       }
     }
+
     def kmlwriter = new StringWriter()
 
     kmlwriter << kmlbuilder.bind(kmlnode)
@@ -148,7 +153,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     return kmlText
   }
 
-  String createImagesKml(List<RasterEntry> rasterEntries, Map wmsParams, Map params) {
+  String createImagesKml(List<RasterEntry> rasterEntries, Map wmsParams, Map params)
+  {
     def kmlbuilder = new StreamingMarkupBuilder()
 //    def width = 1024;
 //    def height = 1024;
@@ -156,26 +162,31 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     kmlbuilder.encoding = "UTF-8"
 
     wmsParams?.request = "GetMap"
-    if (!params?.containsKey("version")) {
+    if ( !params?.containsKey("version") )
+    {
       wmsParams.version = "1.1.1"
     }
-    if (!params?.containsKey("width")) {
+    if ( !params?.containsKey("width") )
+    {
       wmsParams.width = "1024"
     }
-    if (!params?.containsKey("height")) {
+    if ( !params?.containsKey("height") )
+    {
       wmsParams.height = "1024"
     }
-    if (!params?.containsKey("format")) {
+    if ( !params?.containsKey("format") )
+    {
       wmsParams.format = "image/png"
     }
-    if (!params?.containsKey("transparent")) {
+    if ( !params?.containsKey("transparent") )
+    {
       wmsParams.transparent = "TRUE"
     }
     wmsParams?.srs = "EPSG:4326"
     def bbox = wmsParams?.bbox;
     wmsParams?.remove("bbox");
-  //  wmsParams?.remove("width");
-  //  wmsParams?.remove("height");
+    //  wmsParams?.remove("width");
+    //  wmsParams?.remove("height");
     wmsParams.remove("action")
     wmsParams.remove("controller")
     def rasterIdx = 0
@@ -256,23 +267,24 @@ class KmlService implements ApplicationContextAware, InitializingBean {
 //                viewFormat("BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&amp;width=[horizPixels]&amp;height=[vertPixels]")
               }
               LatLonBox() {
-
-                if(bbox)
+                if ( bbox )
                 {
-                  north(bbox[2])
+                  north(bbox[3])
                   south(bbox[1])
-                  east(bbox[0])
-                  west(bbox[3])
+                  east(bbox[2])
+                  west(bbox[0])
                 }
                 else
                 {
-                  north(rasterEntry?.groundGeom?.bounds?.maxLat)
-                    south(rasterEntry?.groundGeom?.bounds?.minLon)
-                    east(rasterEntry?.groundGeom?.bounds?.maxLat)
-                    west(rasterEntry?.groundGeom?.bounds?.minLat)
+                  def bounds = rasterEntry?.groundGeom?.bounds
+                  north(bounds?.maxLat)
+                  south(bounds?.minLat)
+                  east(bounds?.maxLon)
+                  west(bounds?.minLon)
                 }
               }
-              if (acquisition) {
+              if ( acquisition )
+              {
                 TimeStamp() {
                   when(acquisition)
                 }
@@ -290,7 +302,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     return kmlText
   }
 
-  String createVideosKml(List<VideoDataSet> videoEntries, Map params) {
+  String createVideosKml(List<VideoDataSet> videoEntries, Map params)
+  {
     Boolean embed = params.embed
     SimpleDateFormat isdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
     SimpleDateFormat osdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -356,25 +369,28 @@ class KmlService implements ApplicationContextAware, InitializingBean {
             // or a multi geom and then fix.
             // We  now use Java Topology Suite
             videoDataSet.groundGeom.each() {geom ->
-                // for now until we have a utility to get access to all polgons we will assume multi
-                // geom and each is a poly
-                //
+              // for now until we have a utility to get access to all polgons we will assume multi
+              // geom and each is a poly
+              //
               (0..geom.getNumGeometries() - 1).each() {geomIdx ->
-                 def poly = geom.getGeometryN(geomIdx) as com.vividsolutions.jts.geom.Polygon
-                 if (poly) {
-                   kmlPoly = ""
-                   def ring = poly.getExteriorRing();
-                   def coordinates = ring.getCoordinates();
-                   if (coordinates.size() > 0) {
-                     (0..coordinates.size() - 1).each() {coordIdx ->
-                       kmlPoly = "${kmlPoly} ${coordinates[coordIdx].x},${coordinates[coordIdx].y}"
-                       if (!point) {
-                         point = "${coordinates[coordIdx].x},${coordinates[coordIdx].y}"
-                       }
-                     }
-                   }
-                   polygons.add(kmlPoly)
-                 }
+                def poly = geom.getGeometryN(geomIdx) as com.vividsolutions.jts.geom.Polygon
+                if ( poly )
+                {
+                  kmlPoly = ""
+                  def ring = poly.getExteriorRing();
+                  def coordinates = ring.getCoordinates();
+                  if ( coordinates.size() > 0 )
+                  {
+                    (0..coordinates.size() - 1).each() {coordIdx ->
+                      kmlPoly = "${kmlPoly} ${coordinates[coordIdx].x},${coordinates[coordIdx].y}"
+                      if ( !point )
+                      {
+                        point = "${coordinates[coordIdx].x},${coordinates[coordIdx].y}"
+                      }
+                    }
+                  }
+                  polygons.add(kmlPoly)
+                }
               }
             }
 
@@ -387,10 +403,12 @@ class KmlService implements ApplicationContextAware, InitializingBean {
               def flashbasename = filename.split("/")[-1] + ".flv"
               name(flashbasename)
               def createFlvUrl = tagLibBean.createLink(absolute: true, controller: "videoStreaming", action: "show", id: videoDataSet.id)
-              if (embed) {
+              if ( embed )
+              {
                 description("<table width=\"720\"><tr><td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td></tr><tr><td></td></tr><tr><td><b>START TIME:</b> ${videoDataSet.startDate}</td></tr><tr><td><b>END TIME:</b> ${videoDataSet.endDate}</td></tr><tr><td><b>MIN LAT:</b> ${videoDataSet.groundGeom?.bounds?.minLat}</td></tr><tr><td><b>MIN LON: </b> ${videoDataSet.groundGeom?.bounds?.minLon}</td></tr><tr><td><b>MAX LAT:</b> ${videoDataSet.groundGeom?.bounds?.maxLat}</td></tr><tr><td><b>MAX LON:</b> ${videoDataSet.groundGeom?.bounds?.maxLon}</td></tr><tr><td><embed type=\"application/x-shockwave-flash\" src=\"${flashPlayerUrl}\" width=\"720\" height=\"480\" flashvars=\"file=${flvUrl}&autostart=true\"</embed><td><tr></table>")
               }
-              else {
+              else
+              {
                 description("<table><tr><td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td></tr><tr><td></td></tr><tr><td><b>START TIME:</b> ${videoDataSet.startDate}</td></tr><tr><td><b>END TIME:</b> ${videoDataSet.endDate}</td></tr><tr><td><b>MIN LAT:</b> ${videoDataSet.groundGeom?.bounds?.minLat}</td></tr><tr><td><b>MIN LON: </b> ${videoDataSet.groundGeom?.bounds?.minLon}</td></tr><tr><td><b>MAX LAT:</b> ${videoDataSet.groundGeom?.bounds?.maxLat}</td></tr><tr><td><b>MAX LON:</b> ${videoDataSet.groundGeom?.bounds?.maxLon}</td></tr></table>")
               }
               Snippet("<a href='${createFlvUrl}'>CLICK TO PLAY</a>")
@@ -411,7 +429,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                   coordinates("${point}")
                 }
               } // END MultiGeometry()
-              if (videoDataSet?.startDate) {
+              if ( videoDataSet?.startDate )
+              {
                 TimeStamp() {
                   when(osdf.format(new Date(isdf.parse(videoDataSet?.startDate as String) as String)))
                 }
@@ -424,7 +443,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     return kmlbuilder.bind(kmlnode).toString()
   }
 
-  String createTopImagesKml(Map params) {
+  String createTopImagesKml(Map params)
+  {
     def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "kmlQuery", action: "getImagesKml", params: params)
     def kmlbuilder = new StreamingMarkupBuilder()
 
@@ -450,7 +470,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
   }
 
 
-  String createTopVideosKml(Map params) {
+  String createTopVideosKml(Map params)
+  {
     def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "kmlQuery", action: "getVideosKml", params: params)
     def kmlbuilder = new StreamingMarkupBuilder()
 
@@ -471,24 +492,28 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     return kmlbuilder.bind(kmlnode).toString()
   }
 
-  String buildUrl(String url, Map params) {
+  String buildUrl(String url, Map params)
+  {
     def String result;
     def list = []
     params.each {k, v ->
       list << "$k=$v"
     }
     list = list.join("&")
-    if (url.indexOf("?") == -1) {
+    if ( url.indexOf("?") == -1 )
+    {
       result = "${url}?"
     }
-    else {
+    else
+    {
       result = "${url}&"
     }
     return "${result}${list}"
   }
 
 
-  String createImageFootprint(Map params) {
+  String createImageFootprint(Map params)
+  {
     def dateFormat = new SimpleDateFormat("yyyyMMdd");
     def date = new Date()
     def url = buildUrl(grailsApplication.config.wms.data.raster.url,
@@ -530,7 +555,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     return kmlbuilder.bind(kmlnode).toString()
   }
 
-  String createVideoFootprint(Map params) {
+  String createVideoFootprint(Map params)
+  {
     def dateFormat = new SimpleDateFormat("yyyyMMdd");
     def date = new Date()
     def url = buildUrl(grailsApplication.config.wms.data.video.url,
@@ -573,7 +599,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     return kmlbuilder.bind(kmlnode).toString()
   }
 
-  public void afterPropertiesSet() {
+  public void afterPropertiesSet()
+  {
     tagLibBean = applicationContext.getBean("org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib")
     flashDirRoot = grailsApplication.config.videoStreaming.flashDirRoot
     flashUrlRoot = grailsApplication.config.videoStreaming.flashUrlRoot
