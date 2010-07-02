@@ -180,13 +180,13 @@ public class WMSCapabilities
                   Get() {
                     OnlineResource(
                         "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": map.getCapabilitiesURL.replace("&", "&amp;")
+                        "xlink:href": map.getCapabilitiesURL //.replace("&", "&amp;")
                     )
                   }
                   Post {
                     OnlineResource(
                         "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": map.getCapabilitiesURL.replace("&", "&amp;")
+                        "xlink:href": map.getCapabilitiesURL //.replace("&", "&amp;")
                     )
                   }
                 }
@@ -201,13 +201,13 @@ public class WMSCapabilities
                   Get() {
                     OnlineResource(
                         "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": map.getMapURL.replace("&", "&amp;")
+                        "xlink:href": map.getMapURL//.replace("&", "&amp;")
                     )
                   }
                   Post {
                     OnlineResource(
                         "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": map.getMapURL.replace("&", "&amp;")
+                        "xlink:href": map.getMapURL //.replace("&", "&amp;")
                     )
                   }
                 }
