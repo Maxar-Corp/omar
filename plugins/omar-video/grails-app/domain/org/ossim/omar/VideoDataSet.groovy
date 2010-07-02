@@ -3,7 +3,7 @@ package org.ossim.omar
 import org.ossim.omar.Repository
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.io.WKTReader
-
+import org.joda.time.DateTime
 class VideoDataSet
 {
 
@@ -15,8 +15,8 @@ class VideoDataSet
 
   Geometry groundGeom
 
-  Date startDate
-  Date endDate
+  DateTime startDate
+  DateTime endDate
   String otherTagsXml
 
   static transients = ["otherTagsMap"]
