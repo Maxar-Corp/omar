@@ -1,4 +1,3 @@
-includeTargets << grailsScript("_GrailsArgParsing")
 
 Ant.property(environment: "env")
 
