@@ -12,6 +12,7 @@ import java.lang.String
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.Polygon
 import com.vividsolutions.jts.io.WKTReader
+import org.joda.time.DateTime
 
 class RasterEntry
 {
@@ -48,9 +49,9 @@ class RasterEntry
   //Geometry groundGeom
   Polygon groundGeom
 
-  Date acquisitionDate
-  Date accessDate
-  Date ingestDate
+  DateTime acquisitionDate
+  DateTime accessDate
+  DateTime ingestDate
   
   // Just for testing...
   String fileType
@@ -91,7 +92,7 @@ class RasterEntry
 
       acquisitionDate index: 'raster_entry_acquisition_date_idx'
       accessDate index: 'raster_entry_access_date_idx'
-      ingestDate index: 'raster_entry_ingest_date_idx'
+      ingestDate index: 'raster_entry_ingest_date_idx' 
 
 	  groundGeom type: org.hibernatespatial.GeometryUserType
 
@@ -143,19 +144,19 @@ class RasterEntry
   def beforeInsert = {
     if(!ingestDate)
     {
-      ingestDate = new Date();
+      ingestDate = new DateTime();
     }
   }
   def adjustAccessTimeIfNeeded(def everyNHours=24)
   {
     if(!accessDate)
     {
-      accessDate = new Date();
+      accessDate = new DateTime();
     }
     else
     {
-      Date current = new Date();
-      long currentAccessMil = accessDate.getTime()
+      DateTime current = new DateTime();
+      long currentAccessMil = accessDate.getMillis()
       long currentMil       = current.getTime()
       double millisPerHour   = 3600000 // 60*60*1000  <seconds>*<minutes in an hour>*<milliseconds>
       double hours          = (currentMil-currentAccessMil)/millisPerHour
