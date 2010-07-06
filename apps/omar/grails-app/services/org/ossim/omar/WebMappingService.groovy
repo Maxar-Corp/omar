@@ -9,6 +9,9 @@ import joms.oms.ossimDpt
 import joms.oms.ossimGpt
 import joms.oms.WmsMap
 import joms.oms.ossimKeywordlist
+import joms.oms.ossimGptVector
+import joms.oms.ossimDptVector
+import joms.oms.Util
 
 import joms.oms.ossimImageGeometryPtr
 import joms.oms.ossimImageGeometry
@@ -277,7 +280,7 @@ class WebMappingService
             double scaleCheck = 1.0
             if ( !terrainCorrectionFlag )
             {
-              geomPtr = rasterEntry.createModelFromTiePointSet();
+              geomPtr = createModelFromTiePointSet(rasterEntry);
               if ( geomPtr != null )
               {
                 geom = geomPtr.get()
@@ -572,6 +575,59 @@ class WebMappingService
 
     return [left: left, right: right, top: top, bottom: bottom]
   }
+
+  def createModelFromTiePointSet(def rasterEntry)
+  {
+    def gptArray = new ossimGptVector();
+    def dptArray = new ossimDptVector();
+    if ( rasterEntry?.tiePointSet )
+    {
+      def tiepoints = new XmlSlurper().parseText(rasterEntry?.tiePointSet)
+      def imageCoordinates = tiepoints.Image.toString().trim()
+      def groundCoordinates = tiepoints.Ground.toString().trim()
+      def splitImageCoordinates = imageCoordinates.split(" ");
+      def splitGroundCoordinates = groundCoordinates.split(" ");
+      splitImageCoordinates.each {
+        def point = it.split(",")
+        if ( point.size() >= 2 )
+        {
+          dptArray.add(new ossimDpt(Double.parseDouble(point.getAt(0)),
+                  Double.parseDouble(point.getAt(1))))
+        }
+      }
+      splitGroundCoordinates.each {
+        def point = it.split(",")
+        if ( point.size() >= 2 )
+        {
+          gptArray.add(new ossimGpt(Double.parseDouble(point.getAt(1)),
+                  Double.parseDouble(point.getAt(0))))
+        }
+      }
+    }
+    else if ( rasterEntry?.groundGeom ) // lets do a fall back if the tiepoint set is not set.
+    {
+      def coordinates = rasterEntry?.groundGeom.getCoordinates();
+      if ( coordinates.size() >= 4 )
+      {
+        def w = width as double
+        def h = height as double
+        (0..<4).each {
+          def point = coordinates[it];
+          gptArray.add(new ossimGpt(coordinates[it].y, coordinates[it].x));
+        }
+        dptArray.add(new ossimDpt(0.0, 0.0))
+        dptArray.add(new ossimDpt(w - 1, 0.0))
+        dptArray.add(new ossimDpt(w - 1, h - 1))
+        dptArray.add(new ossimDpt(0.0, h - 1))
+      }
+    }
+    if ( (gptArray.size() < 1) || (dptArray.size() < 1) )
+    {
+      return null
+    }
+    return Util.createBilinearModel(dptArray, gptArray)
+  }
+  
 }
 
 

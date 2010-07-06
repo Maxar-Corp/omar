@@ -47,6 +47,7 @@
     <orderEntry type="module" module-name="omar-grailsPlugin-omar-oms" />
     <orderEntry type="module" module-name="omar-grailsPlugin-omar-stager" />
     <orderEntry type="module" module-name="omar-grailsPlugin-omar-core" />
+    <orderEntry type="module" module-name="omar-grailsPlugin-omar-video-grailsPlugins" />
   </component>
 </module>
 
