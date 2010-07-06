@@ -1,12 +1,9 @@
 package org.ossim.omar
 
-import joms.oms.ossimDpt
-import joms.oms.ossimGpt
-import joms.oms.ossimGptVector
-import joms.oms.ossimDptVector
-import joms.oms.Util
+
 
 //import org.ossim.postgis.Geometry
+
 import java.util.regex.Pattern
 import java.lang.String
 import com.vividsolutions.jts.geom.Geometry
@@ -30,7 +27,7 @@ class RasterEntry
   String dataType
   String tiePointSet
 
-  /****************** BEGIN ADDING TAGS FROM MetaData to here ******************/
+  /** **************** BEGIN ADDING TAGS FROM MetaData to here  ******************/
   String imageId
   String targetId
   String productId
@@ -49,10 +46,12 @@ class RasterEntry
   //Geometry groundGeom
   Polygon groundGeom
 
-  DateTime acquisitionDate
+  //DateTime acquisitionDate
+  Date acquisitionDate
+
   DateTime accessDate
   DateTime ingestDate
-  
+
   // Just for testing...
   String fileType
   String className
@@ -63,7 +62,7 @@ class RasterEntry
 
   Map<String, String> otherTagsMap = [:]
 
-  /****************** END ADDING TAGS FROM MetaData to here ******************/
+  /** **************** END ADDING TAGS FROM MetaData to here  ******************/
 
 //  static hasOne = [metadata: RasterEntryMetadata]
 
@@ -94,7 +93,7 @@ class RasterEntry
       accessDate index: 'raster_entry_access_date_idx'
       ingestDate index: 'raster_entry_ingest_date_idx' 
 
-	  groundGeom type: org.hibernatespatial.GeometryUserType
+      groundGeom type: org.hibernatespatial.GeometryUserType
 
     }
   }
@@ -129,8 +128,8 @@ class RasterEntry
     description(nullable: true)
     countryCode(nullable: true)
     accessDate(nullable: true)
-    ingestDate(nullable:true)
-    
+    ingestDate(nullable: true)
+
     // Just for testing
     fileType(nullable: true)
     className(nullable: true)
@@ -142,14 +141,15 @@ class RasterEntry
   }
 
   def beforeInsert = {
-    if(!ingestDate)
+    if ( !ingestDate )
     {
       ingestDate = new DateTime();
     }
   }
-  def adjustAccessTimeIfNeeded(def everyNHours=24)
+
+  def adjustAccessTimeIfNeeded(def everyNHours = 24)
   {
-    if(!accessDate)
+    if ( !accessDate )
     {
       accessDate = new DateTime();
     }
@@ -157,15 +157,16 @@ class RasterEntry
     {
       DateTime current = new DateTime();
       long currentAccessMil = accessDate.getMillis()
-      long currentMil       = current.getTime()
-      double millisPerHour   = 3600000 // 60*60*1000  <seconds>*<minutes in an hour>*<milliseconds>
-      double hours          = (currentMil-currentAccessMil)/millisPerHour
-      if(hours > everyNHours)
+      long currentMil = current.getTime()
+      double millisPerHour = 3600000 // 60*60*1000  <seconds>*<minutes in an hour>*<milliseconds>
+      double hours = (currentMil - currentAccessMil) / millisPerHour
+      if ( hours > everyNHours )
       {
         accessDate = current
       }
     }
   }
+
   def getMetersPerPixel()
   {
     // need to check unit type but for mow assume meters
@@ -191,58 +192,7 @@ class RasterEntry
     return mainFile
   }
 
-  def createModelFromTiePointSet()
-  {
-    def gptArray = new ossimGptVector();
-    def dptArray = new ossimDptVector();
-    if ( tiePointSet )
-    {
-      def tiepoints = new XmlSlurper().parseText(tiePointSet)
-      def imageCoordinates = tiepoints.Image.toString().trim()
-      def groundCoordinates = tiepoints.Ground.toString().trim()
-      def splitImageCoordinates = imageCoordinates.split(" ");
-      def splitGroundCoordinates = groundCoordinates.split(" ");
-      splitImageCoordinates.each {
-        def point = it.split(",")
-        if ( point.size() >= 2 )
-        {
-          dptArray.add(new ossimDpt(Double.parseDouble(point.getAt(0)),
-              Double.parseDouble(point.getAt(1))))
-        }
-      }
-      splitGroundCoordinates.each {
-        def point = it.split(",")
-        if ( point.size() >= 2 )
-        {
-          gptArray.add(new ossimGpt(Double.parseDouble(point.getAt(1)),
-              Double.parseDouble(point.getAt(0))))
-        }
-      }
-    }
-    else if(groundGeom) // lets do a fall back if the tiepoint set is not set.
-    {
-      def coordinates = groundGeom.getCoordinates();
-      if ( coordinates.size() >= 4 )
-      {
-        def w = width as double
-        def h = height as double
-        (0..<4).each {
-          def point = coordinates[it];
-          gptArray.add(new ossimGpt(coordinates[it].y, coordinates[it].x));
-        }
-        dptArray.add(new ossimDpt(0.0, 0.0))
-        dptArray.add(new ossimDpt(w-1, 0.0))
-        dptArray.add(new ossimDpt(w-1, h-1))
-        dptArray.add(new ossimDpt(0.0, h-1))
-      }
-    }
-    if((gptArray.size() < 1)||(dptArray.size() < 1))
-    {
-       return null
-    }
-    return Util.createBilinearModel(dptArray, gptArray)
-  }
-  static RasterEntry initRasterEntry(def rasterEntryNode, RasterEntry rasterEntry=null)
+  static RasterEntry initRasterEntry(def rasterEntryNode, RasterEntry rasterEntry = null)
   {
     rasterEntry = rasterEntry ?: new RasterEntry()
 
@@ -291,7 +241,7 @@ class RasterEntry
       }
     }
     rasterEntryNode.fileObjects?.RasterEntryFile.each {rasterEntryFileNode ->
-    RasterEntryFile rasterEntryFile = RasterEntryFile.initRasterEntryFile(rasterEntryFileNode)
+      RasterEntryFile rasterEntryFile = RasterEntryFile.initRasterEntryFile(rasterEntryFileNode)
 
       rasterEntry.addToFileObjects(rasterEntryFile)
     }
@@ -320,7 +270,7 @@ class RasterEntry
 
         //groundGeom = Geometry.fromString(geomString)
         groundGeom = new WKTReader().read(wkt)
-		groundGeom.setSRID(Integer.parseInt(srs))
+        groundGeom.setSRID(Integer.parseInt(srs))
       }
       catch (Exception e)
       {
@@ -330,7 +280,8 @@ class RasterEntry
     }
 
     return groundGeom
-  }  
+  }
+
   static initRasterEntryMetadata(def metadataNode, def rasterEntry)
   {
 //    if ( !rasterEntry.metadata )
@@ -354,8 +305,8 @@ class RasterEntry
 //          case "STDIDC":
 //          case "USE00A":
 //            break
-          default:
-            initRasterEntryMetadata(tagNode, rasterEntry)
+        default:
+          initRasterEntryMetadata(tagNode, rasterEntry)
         }
       }
       else
@@ -377,77 +328,77 @@ class RasterEntry
         {
           switch ( name.toLowerCase() )
           {
-            case "imageid":
-            case "iid2":
-              rasterEntry.imageId = value
-              break;
-            case "targetid":
-            case "tgtid":
-              rasterEntry.targetId = value
-              break;
-            case "productid":
-              rasterEntry.productId = value
-              break;
-            case "sensorid":
-              rasterEntry.sensorId = value
-              break;
-            case "country":
-            case "countryCode":
-              rasterEntry.countryCode = value
-              break;
-            case "mission":
-            case "missionid":
-            case "isorce":
-              rasterEntry.missionId = value
-              break;
-            case "imagecategory":
-            case "icat":
-              rasterEntry.imageCategory = value
-              break;
-            case "azimuthangle":
-            case "angletonorth":
-              rasterEntry.azimuthAngle = value as Double
-              break;
-            case "grazingangle":
-              rasterEntry.grazingAngle = value as Double
-              break;
-            case "oblang":
-              rasterEntry.grazingAngle = 90 - (value as Double)
-              break;
+          case "imageid":
+          case "iid2":
+            rasterEntry.imageId = value
+            break;
+          case "targetid":
+          case "tgtid":
+            rasterEntry.targetId = value
+            break;
+          case "productid":
+            rasterEntry.productId = value
+            break;
+          case "sensorid":
+            rasterEntry.sensorId = value
+            break;
+          case "country":
+          case "countryCode":
+            rasterEntry.countryCode = value
+            break;
+          case "mission":
+          case "missionid":
+          case "isorce":
+            rasterEntry.missionId = value
+            break;
+          case "imagecategory":
+          case "icat":
+            rasterEntry.imageCategory = value
+            break;
+          case "azimuthangle":
+          case "angletonorth":
+            rasterEntry.azimuthAngle = value as Double
+            break;
+          case "grazingangle":
+            rasterEntry.grazingAngle = value as Double
+            break;
+          case "oblang":
+            rasterEntry.grazingAngle = 90 - (value as Double)
+            break;
 
-            case "securityclassification":
-            case "isclas":
-              rasterEntry.securityClassification = value
-              break;
-            case "title":
-            case "iid2":
-            case "ititle":
-              rasterEntry.title = value
-              break;
-            case "organization":
-            case "oname":
-              rasterEntry.organization = value
-              break;
-            case "description":
-              rasterEntry.description = value
-              break;
-            case "niirs":
-              rasterEntry.niirs = value as Double
-              break;
+          case "securityclassification":
+          case "isclas":
+            rasterEntry.securityClassification = value
+            break;
+          case "title":
+          case "iid2":
+          case "ititle":
+            rasterEntry.title = value
+            break;
+          case "organization":
+          case "oname":
+            rasterEntry.organization = value
+            break;
+          case "description":
+            rasterEntry.description = value
+            break;
+          case "niirs":
+            rasterEntry.niirs = value as Double
+            break;
 
           // Just for testing
-            case "filetype":
-            case "file_type":
-              rasterEntry.fileType = value
-              break
+          case "filetype":
+          case "file_type":
+            rasterEntry.fileType = value
+            break
 
-            case "classname":
-            case "class_name":
-              rasterEntry.className = value
-              break
+          case "classname":
+          case "class_name":
+            rasterEntry.className = value
+            break
 
-            default:
-              rasterEntry.otherTagsMap[name] = value
+          default:
+            rasterEntry.otherTagsMap[name] = value
           }
         }
       }
@@ -463,7 +414,7 @@ class RasterEntry
 
   static initRasterEntryOtherTagsXml(RasterEntry rasterEntry)
   {
-    if ( rasterEntry)
+    if ( rasterEntry )
     {
       def builder = new groovy.xml.StreamingMarkupBuilder().bind {
         metadata {

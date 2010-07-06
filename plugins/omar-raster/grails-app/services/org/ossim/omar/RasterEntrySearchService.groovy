@@ -4,10 +4,12 @@ package org.ossim.omar
 import org.hibernate.FetchMode as FM
 import org.hibernate.CacheMode as CM
 //import org.ossim.omar.RasterEntryMetadata
+
 import org.hibernate.FetchMode
 import org.hibernate.CacheMode
 import org.hibernate.criterion.*
 //import org.ossim.postgis.Geometry
+
 import com.vividsolutions.jts.geom.Polygon
 
 class RasterEntrySearchService
@@ -22,51 +24,52 @@ class RasterEntrySearchService
   List<RasterEntryQuery> runQuery(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
     def criteria = RasterEntry.createCriteria();
-      if ( params?.max )
+    if ( params?.max )
+    {
+      criteria.setMaxResults(params.max as Integer)
+    }
+    if ( params?.offset )
+    {
+      criteria.setFirstResult(params.offset as Integer)
+    }
+    if ( params?.sort && params?.order )
+    {
+      def sortColumn = null
+      // HACK:  Need to find a better way to do this
+      switch ( params?.sort )
       {
-        criteria.setMaxResults(params.max as Integer)
+      case "id":
+      case "imageId":
+      case "targetId":
+      case "productId":
+      case "sensorId":
+      case "missionId":
+      case "imageCategory":
+      case "azimuthAngle":
+      case "grazingAngle":
+      case "securityClassification":
+      case "title":
+      case "organization":
+      case "description":
+      case "acquisitionDate":
+      case "fileType":
+      case "className":
+      case "niirs":
+        sortColumn = params?.sort
+        break
       }
-      if ( params?.offset )
+      if ( sortColumn )
       {
-        criteria.setFirstResult(params.offset as Integer)
+        def order = params?.order
+        Order ordering = order == "asc" ? Order.asc(sortColumn) : Order.desc(sortColumn)
+        criteria.addOrder(ordering)
       }
-      if ( params?.sort && params?.order )
-      {
-        def sortColumn = null
-        // HACK:  Need to find a better way to do this
-        switch ( params?.sort )
-        {
-          case "id":
-          case "imageId":
-          case "targetId":
-          case "productId":
-          case "sensorId":
-          case "missionId":
-          case "imageCategory":
-          case "azimuthAngle":
-          case "grazingAngle":
-          case "securityClassification":
-          case "title":
-          case "organization":
-          case "description":
-          case "acquisitionDate":
-          case "fileType":
-          case "className":
-          case "niirs":
-            sortColumn = params?.sort
-            break
-        }
-        if ( sortColumn )
-        {
-          def order = params?.order
-          Order ordering = order=="asc"?Order.asc(sortColumn):Order.desc(sortColumn)
-          criteria.addOrder(ordering)
-        }
-      }
+    }
 
     criteria.setFetchMode("rasterEntry", FetchMode.JOIN)
     rasterEntryQuery.addToCriteria(criteria)
-    def rasterEntries = criteria.getInstance().list();
+
+    def rasterEntries = criteria.instance.list();
 
     return rasterEntries
   }
@@ -88,7 +91,7 @@ class RasterEntrySearchService
     criteria.setCacheMode(CacheMode.GET)
     //criteria.add(x)
     rasterEntryQuery.addToCriteria(criteria)
-    def geometries = criteria.getInstance().list()
+    def geometries = criteria.instance.list()
     return geometries
   }
 
@@ -97,7 +100,7 @@ class RasterEntrySearchService
     def criteria = RasterEntry.createCriteria();
     rasterEntryQuery.addToCriteria(criteria)
     criteria.setProjection(Projections.rowCount());
-    def totalCount = criteria.getInstance().list().get(0) as int
+    def totalCount = criteria.instance.list().get(0) as int
 
     return totalCount
   }
