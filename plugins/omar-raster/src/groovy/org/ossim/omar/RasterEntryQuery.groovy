@@ -6,6 +6,7 @@ package org.ossim.omar
  * Time: 1:48:33 PM
  * To change this template use File | Settings | File Templates.
  */
+
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationContext
 import org.springframework.beans.factory.InitializingBean
@@ -29,7 +30,7 @@ class RasterEntryQuery
 {
   def grailsApplication
   public static final String RADIUS_SEARCH = "RADIUS"
-  public static final String BBOX_SEARCH   = "BBOX"
+  public static final String BBOX_SEARCH = "BBOX"
 
   String searchMethod = RasterEntryQuery.BBOX_SEARCH
 
@@ -87,9 +88,9 @@ class RasterEntryQuery
     def keys = properties.keySet()
     def tempParams = new CaseInsensitiveMap(params)
 
-    keys.each{
+    keys.each {
       def value = tempParams.get(it)
-      if(value)
+      if ( value )
       {
         setProperty("${it}", value)
       }
@@ -97,7 +98,7 @@ class RasterEntryQuery
     // now check the lists
     def idx = 0
     def value = tempParams.get("searchTagNames[${idx}]")
-    while(value)
+    while ( value )
     {
       searchTagNames[idx] = value
       ++idx
@@ -105,14 +106,14 @@ class RasterEntryQuery
     }
     idx = 0
     value = tempParams.get("searchTagValues[${idx}]")
-    while(value)
+    while ( value )
     {
       searchTagValues[idx] = value
       ++idx
       value = tempParams.get("searchTagValues[${idx}]")
     }
   }
-  
+
   Criterion createDateRange(String dateColumnName = "acquisitionDate")
   {
     def range = null
@@ -120,8 +121,8 @@ class RasterEntryQuery
     if ( startDate && endDate )
     {
       range = Restrictions.and(
-          Restrictions.ge(dateColumnName, startDate),
-          Restrictions.le(dateColumnName, endDate)
+              Restrictions.ge(dateColumnName, startDate),
+              Restrictions.le(dateColumnName, endDate)
       )
     }
     else
@@ -144,7 +145,7 @@ class RasterEntryQuery
     def intersects = null
 
     Geometry groundGeom = getGroundGeom()
-	
+
     if ( groundGeom )
     {
       //intersects = new IntersectsExpression(geomColumnName, groundGeom)
@@ -153,6 +154,7 @@ class RasterEntryQuery
 
     return intersects
   }
+
   void addToCriteria(def criteria)
   {
     if ( groundGeom )
@@ -165,9 +167,9 @@ class RasterEntryQuery
     }
     // we will support 2 ways to populate certain fields.  We will support array
     // or direct.  niirs will be direct field or an array
-    if(niirs)
+    if ( niirs )
     {
-       criteria.ge("niirs", niirs as double)
+      criteria.ge("niirs", niirs as double)
     }
     searchTagNames?.size()?.times {i ->
       String name = searchTagNames[i]
@@ -187,7 +189,7 @@ class RasterEntryQuery
         {
           String prop = results["property"]
           prop = prop.toLowerCase()
-          if(prop == "niirs" && !niirs)
+          if ( prop == "niirs" && !niirs )
           {
             criteria.ge("niirs", results['value'] as double)
           }
@@ -199,6 +201,7 @@ class RasterEntryQuery
       }
     }
   }
+
   def getGroundGeom()
   {
     def srs = "4326"
@@ -207,70 +210,70 @@ class RasterEntryQuery
 
     switch ( searchMethod )
     {
-      case BBOX_SEARCH:
-        def minLat, minLon, maxLat, maxLon
-        if ( aoiMaxLat && aoiMinLon && aoiMinLat && aoiMaxLon )
-        {
-          minLat = aoiMinLat
-          minLon = aoiMinLon
-          maxLat = aoiMaxLat
-          maxLon = aoiMaxLon
-        }
-        else
-        {
-          minLat = viewMinLat
-          minLon = viewMinLon
-          maxLat = viewMaxLat
-          maxLon = viewMaxLon
-        }
-        // only do a bounds if one exists
-        //
-        if(minLat&&maxLat&&minLon&&maxLon)
-        {
-          def coordinateConversionService = new CoordinateConversionService()
+    case BBOX_SEARCH:
+      def minLat, minLon, maxLat, maxLon
+      if ( aoiMaxLat && aoiMinLon && aoiMinLat && aoiMaxLon )
+      {
+        minLat = aoiMinLat
+        minLon = aoiMinLon
+        maxLat = aoiMaxLat
+        maxLon = aoiMaxLon
+      }
+      else
+      {
+        minLat = viewMinLat
+        minLon = viewMinLon
+        maxLat = viewMaxLat
+        maxLon = viewMaxLon
+      }
+      // only do a bounds if one exists
+      //
+      if ( minLat && maxLat && minLon && maxLon )
+      {
+        def coordinateConversionService = new CoordinateConversionService()
 
-          maxLat = coordinateConversionService.convertToDecimalDegrees(maxLat)
-          maxLon = coordinateConversionService.convertToDecimalDegrees(maxLon)
-          minLat = coordinateConversionService.convertToDecimalDegrees(minLat)
-          minLon = coordinateConversionService.convertToDecimalDegrees(minLon)
+        maxLat = coordinateConversionService.convertToDecimalDegrees(maxLat)
+        maxLon = coordinateConversionService.convertToDecimalDegrees(maxLon)
+        minLat = coordinateConversionService.convertToDecimalDegrees(minLat)
+        minLon = coordinateConversionService.convertToDecimalDegrees(minLon)
 
-          //wkt = Geometry.createPolygon(
-          //    minLon,
-          //    minLat,
-          //    maxLon,
-          //    maxLat
-          //)
+        //wkt = Geometry.createPolygon(
+        //    minLon,
+        //    minLat,
+        //    maxLon,
+        //    maxLat
+        //)
 
-		def geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326)	
+        def geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326)
 
-		minLon = Double.parseDouble(minLon)
-		minLat = Double.parseDouble(minLat)
-		maxLon = Double.parseDouble(maxLon)
-		maxLat = Double.parseDouble(maxLat)
+        minLon = Double.parseDouble(minLon)
+        minLat = Double.parseDouble(minLat)
+        maxLon = Double.parseDouble(maxLon)
+        maxLat = Double.parseDouble(maxLat)
 
-		def coords = [   
-			new Coordinate(minLon, minLat), new Coordinate(minLon, maxLat), new Coordinate(maxLon, maxLat), new Coordinate(maxLon, minLat), new Coordinate(minLon, minLat) 
-		] as Coordinate[]
+        def coords = [
+                new Coordinate(minLon, minLat), new Coordinate(minLon, maxLat), new Coordinate(maxLon, maxLat), new Coordinate(maxLon, minLat), new Coordinate(minLon, minLat)
+        ] as Coordinate[]
 
-		def polygon = geometryFactory.createPolygon( geometryFactory.createLinearRing(coords), null)
+        def polygon = geometryFactory.createPolygon(geometryFactory.createLinearRing(coords), null)
 
 
-		wkt = polygon.toText()	
-        }
+        wkt = polygon.toText()
+      }
 
-        break
+      break
 
-      case RADIUS_SEARCH:
-        if ( centerLon && centerLat && aoiRadius )
-        {
-          def coordinateConversionService = new CoordinateConversionService()
+    case RADIUS_SEARCH:
+      if ( centerLon && centerLat && aoiRadius )
+      {
+        def coordinateConversionService = new CoordinateConversionService()
 
-          centerLat = coordinateConversionService.convertToDecimalDegrees(centerLat)
-          centerLon = coordinateConversionService.convertToDecimalDegrees(centerLon)
+        centerLat = coordinateConversionService.convertToDecimalDegrees(centerLat)
+        centerLon = coordinateConversionService.convertToDecimalDegrees(centerLon)
 
-          wkt = coordinateConversionService.computePointRadiusWKT(centerLon, centerLat, aoiRadius)
-        }
-        break
+        wkt = coordinateConversionService.computePointRadiusWKT(centerLon, centerLat, aoiRadius)
+      }
+      break
     }
 
     if ( wkt )
@@ -292,11 +295,11 @@ class RasterEntryQuery
     String endDateText = (endDate) ? formatter.format(endDate) : null;
 
     def data = [
-        aoiMaxLat: aoiMaxLat, aoiMinLon: aoiMinLon, aoiMinLat: aoiMinLat, aoiMaxLon: aoiMaxLon,
-        startDate: startDateText, endDate: endDateText,
-        centerLat: centerLat, centerLon: centerLon, aoiRadius: aoiRadius, searchMethod: searchMethod,
-        viewMaxLat: viewMaxLat, viewMinLon: viewMinLon, viewMinLat: viewMinLat, viewMaxLon: viewMaxLon,
-        niirs: niirs
+            aoiMaxLat: aoiMaxLat, aoiMinLon: aoiMinLon, aoiMinLat: aoiMinLat, aoiMaxLon: aoiMaxLon,
+            startDate: startDateText, endDate: endDateText,
+            centerLat: centerLat, centerLon: centerLon, aoiRadius: aoiRadius, searchMethod: searchMethod,
+            viewMaxLat: viewMaxLat, viewMinLon: viewMinLon, viewMinLat: viewMinLat, viewMaxLon: viewMaxLon,
+            niirs: niirs
     ]
     (0..<searchTagValues.size()).each {
       data["searchTagNames[${it}]"] = searchTagNames[it]

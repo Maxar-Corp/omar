@@ -15,8 +15,12 @@ class VideoDataSet
 
   Geometry groundGeom
 
-  DateTime startDate
-  DateTime endDate
+//  DateTime startDate
+//  DateTime endDate
+  Date startDate
+  Date endDate
+
+
   String otherTagsXml
 
   static transients = ["otherTagsMap"]
