@@ -189,6 +189,7 @@
       <module fileurl="file://$PROJECT_DIR$/omar-grailsPlugin-omar-stager.iml" filepath="$PROJECT_DIR$/omar-grailsPlugin-omar-stager.iml" />
       <module fileurl="file://$PROJECT_DIR$/omar-grailsPlugin-omar-stager-grailsPlugins.iml" filepath="$PROJECT_DIR$/omar-grailsPlugin-omar-stager-grailsPlugins.iml" />
       <module fileurl="file://$PROJECT_DIR$/omar-grailsPlugin-omar-video.iml" filepath="$PROJECT_DIR$/omar-grailsPlugin-omar-video.iml" />
+      <module fileurl="file://$PROJECT_DIR$/omar-grailsPlugin-omar-video-grailsPlugins.iml" filepath="$PROJECT_DIR$/omar-grailsPlugin-omar-video-grailsPlugins.iml" />
       <module fileurl="file://$PROJECT_DIR$/omar-grailsPlugin-openlayers.iml" filepath="$PROJECT_DIR$/omar-grailsPlugin-openlayers.iml" />
       <module fileurl="file://$PROJECT_DIR$/omar-grailsPlugin-postgis.iml" filepath="$PROJECT_DIR$/omar-grailsPlugin-postgis.iml" />
       <module fileurl="file://$PROJECT_DIR$/omar-grailsPlugins.iml" filepath="$PROJECT_DIR$/omar-grailsPlugins.iml" />

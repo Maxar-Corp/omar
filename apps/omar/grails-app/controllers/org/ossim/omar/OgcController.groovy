@@ -125,7 +125,11 @@ class OgcController
           queryParams.startDate = startDate
           queryParams.endDate = endDate
 
+          //println queryParams.toMap()
+          
           def results = rasterEntrySearchService.getGeometries(queryParams, params)
+
+          //println results?.size()
 
           //geometries.addAll(results?.geom)
           geometries.addAll(results)
