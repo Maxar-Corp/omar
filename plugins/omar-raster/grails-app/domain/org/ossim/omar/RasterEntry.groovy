@@ -157,7 +157,7 @@ class RasterEntry
     {
       DateTime current = new DateTime();
       long currentAccessMil = accessDate.getMillis()
-      long currentMil = current.getTime()
+      long currentMil = current.getMillis()
       double millisPerHour = 3600000 // 60*60*1000  <seconds>*<minutes in an hour>*<milliseconds>
       double hours = (currentMil - currentAccessMil) / millisPerHour
       if ( hours > everyNHours )
