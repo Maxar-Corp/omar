@@ -6,7 +6,7 @@ class DataGeneratorController {
     def rasterList = RasterEntry.list()
     def out = new StringBuffer()
     rasterList.each{x ->
-          def bounds = x.metadata?.groundGeom.bounds;
+          def bounds = x.groundGeom.bounds;
           out.append( """${x.id},"${bounds.minLon},${bounds.minLat},${bounds.maxLon},${bounds.maxLat}"\n""")
       }
    render(contentType:"text/plain",text:out.toString());
@@ -15,7 +15,7 @@ class DataGeneratorController {
       def videoList = VideoDataSet.list()
       def out = new StringBuffer()
       videoList.each{x ->
-          def bounds = x.metadata?.groundGeom.bounds;
+          def bounds = x.groundGeom.bounds;
           out.append( """${x.id},"${bounds.minLon},${bounds.minLat},${bounds.maxLon},${bounds.maxLat}"\n""")
       }
       render(contentType:"text/plain",text:out.toString());
