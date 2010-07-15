@@ -1,5 +1,7 @@
 #!/bin/bash
 export JAVA_OPTS="-Xmx1024m -Xms256m -Djava.awt.headless=true"
+#export JAVA_OPTS="-Xmx1024m -Xms256m -Djava.awt.headless=true -Dsun.rmi.dgc.client.gcInterval=10000 -Dsun.rmi.dgc.server.gcInterval=10000 -XX:+PrintGCDetails -verbose:gc"
+#export JAVA_OPTS="-Xmx1024m -Xms256m -Djava.awt.headless=true -Xcheck:jni -server -verbose:jni"
 #export JAVA_OPTS="-Xmx1024m -Xms256m -Xmn512m -ParallelGCThreads=4 -XX:+UseParallelOldGC -Djava.awt.headless=true"
 #export JAVA_OPTS="-server -Xcomp -Xbatch -Xss1m -Xms256m -Xmx1024m -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:NewSize=128m -XX:MaxPermSize=128M -XX:CMSInitiatingOccupancyFraction=80" 
 

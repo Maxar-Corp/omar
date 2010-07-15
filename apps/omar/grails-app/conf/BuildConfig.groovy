@@ -38,6 +38,7 @@ grails.plugin.location.'omar-stager'="../../plugins/omar-stager"
 grails.plugin.location.'omar-raster'="../../plugins/omar-raster"
 grails.plugin.location.'omar-video'="../../plugins/omar-video"
 grails.plugin.location.'omar-security'="../../plugins/omar-security"
+grails.plugin.location.'omar-jmeter'="../../plugins/omar-jmeter"
 grails.plugin.location.openlayers="../../plugins/openlayers"
 grails.plugin.location.geoscript="../../plugins/geoscript"
 
