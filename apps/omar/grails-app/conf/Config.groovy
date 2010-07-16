@@ -184,7 +184,6 @@ security.level = 'UNCLASS'
 //security.level = 'SECRET'
 //security.level = 'TOPSECRET'
 
-omar.release = '1.8.4'
 
 image.download.prefix = "http://${grails.serverIP}"
 
