@@ -11,6 +11,7 @@ import org.hibernate.criterion.*
 //import org.ossim.postgis.Geometry
 
 import com.vividsolutions.jts.geom.Polygon
+import org.hibernate.ScrollableResults
 
 class RasterEntrySearchService
 {
@@ -79,21 +80,80 @@ class RasterEntrySearchService
   List<Polygon> getGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
     def criteria = RasterEntry.createCriteria();
+
     criteria.setProjection(Projections.property("groundGeom"))
+
     if ( params?.offset )
     {
       criteria.setFirstResult(params.offset as Integer)
     }
+
     if ( params?.max )
     {
       criteria.setMaxResults(params.max as Integer)
     }
+
     criteria.setCacheMode(CacheMode.GET)
-    //criteria.add(x)
     rasterEntryQuery.addToCriteria(criteria)
+
     def geometries = criteria.instance.list()
+
     return geometries
   }
+
+  ScrollableResults scrollGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
+  {
+    def x = {
+      projections { property("groundGeom") }
+
+      if ( rasterEntryQuery?.groundGeom )
+      {
+        addToCriteria(rasterEntryQuery.createIntersection("groundGeom"))
+      }
+
+      if ( rasterEntryQuery?.startDate || rasterEntryQuery?.endDate )
+      {
+        addToCriteria(rasterEntryQuery.createDateRange("startDate", "endDate"))
+      }
+
+      if ( params?.max )
+      {
+        maxResults(params.max as Integer)
+      }
+
+      if ( params?.offset )
+      {
+        firstResult(params.offset as Integer)
+      }
+
+      rasterEntryQuery.searchTagNames?.size()?.times {i ->
+        String name = rasterEntryQuery.searchTagNames[i]
+        String value = rasterEntryQuery.searchTagValues[i]
+
+        if ( name && value )
+        {
+          def results = Utility.parseSearchTag(name, value)
+
+          if ( results["property"] == "otherTagsXml" )
+          {
+            String tag = results["tag"].trim()
+            String content = results["content"].trim()
+            ilike("otherTagsXml", "%<${tag}>%${content}%</${tag}>%")
+          }
+          else
+          {
+            ilike(results["property"], "%${results['value']}%")
+          }
+        }
+      }
+
+      cacheMode(CacheMode.GET)
+    }
+
+    return RasterEntry.createCriteria().scroll(x)
+  }
+
+
 
   int getCount(RasterEntryQuery rasterEntryQuery)
   {
