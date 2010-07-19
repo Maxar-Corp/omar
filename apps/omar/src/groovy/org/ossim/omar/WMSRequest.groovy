@@ -37,10 +37,10 @@ class WMSRequest
   public String toString()
   {
     return [bbox: bbox, width: width, height: height, format: format, layers: layers, srs: srs, service: service,
-        version: version, request: request, transparent: transparent, bgcolor: bgcolor, styles: styles,
-        stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
-        sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, time: time, null_flip: null_flip,
-        exception: exception, terrain_correction: terrain_correction].sort { it.key }
+            version: version, request: request, transparent: transparent, bgcolor: bgcolor, styles: styles,
+            stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
+            sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, time: time, null_flip: null_flip,
+            exception: exception, terrain_correction: terrain_correction].sort { it.key }
   }
 
   String[] getDates()
@@ -57,7 +57,7 @@ class WMSRequest
     {
       (0..<dates.size()).each {
         def range = ISO8601DateParser.getDateRange(dates[it])
-        
+
         if ( range.size() > 0 )
         {
           result.add(range[0])
@@ -72,7 +72,7 @@ class WMSRequest
     return result
   }
 
-  def getBackgroundColor =
+  def getBackgroundColor()
   {
     def result = new Color(0, 0, 0)
     if ( bgcolor )
@@ -81,14 +81,15 @@ class WMSRequest
       {
         // skip 0x
         result = new Color(Integer.decode("0x" + bgcolor[2] + bgcolor[3]),
-            Integer.decode("0x" + bgcolor[4] + bgcolor[5]),
-            Integer.decode("0x" + bgcolor[6] + bgcolor[7]))
+                Integer.decode("0x" + bgcolor[4] + bgcolor[5]),
+                Integer.decode("0x" + bgcolor[6] + bgcolor[7]))
       }
     }
 
     return result
   }
-  def getTransparentFlag =
+
+  def getTransparentFlag()
   {
     def result = false;
     if ( transparent )
@@ -96,5 +97,39 @@ class WMSRequest
       result = Boolean.toBoolean(transparent)
     }
     return result
+  }
+
+  def getFormat()
+  {
+
+    switch ( format?.toLowerCase() )
+    {
+    case "jpeg":
+    case "jpg":
+    case "image/jpeg":
+    case "image/jpg":
+      if ( transparent?.equalsIgnoreCase("true") )
+      {
+        format = "image/png"
+      }
+      else
+      {
+        format = "image/png"
+      }
+      break
+    case "png":
+    case "image/png":
+      format = "image/png"
+      break
+    case "gif":
+    case "image/gif":
+      format = "image/gif"
+      break
+    default:
+      format = "image/png"
+      break;
+    }
+
+    return format
   }
 }
