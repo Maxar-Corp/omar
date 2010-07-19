@@ -4,11 +4,7 @@ Ant.property(environment: "env")
 
 grailsHome = Ant.project.properties."environment.GRAILS_HOME"
 
-target('default': "The description of the script goes here!") {
-  doStuff()
-}
-
-target(doStuff: "The implementation task") {
+target(main: "Add a Geometry column to a table") {
 
   def config = new ConfigSlurper(grailsEnv).parse(new File("${basedir}/grails-app/conf/DataSource.groovy").toURL())
 
@@ -103,3 +99,5 @@ target(doStuff: "The implementation task") {
 
   sql.close()
 }
+
+setDefaultTarget(main)

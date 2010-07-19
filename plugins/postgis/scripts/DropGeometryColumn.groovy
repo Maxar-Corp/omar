@@ -6,11 +6,7 @@ Ant.property(environment: "env")
 
 grailsHome = Ant.project.properties."environment.GRAILS_HOME"
 
-target('default': "The description of the script goes here!") {
-  doStuff()
-}
-
-target(doStuff: "The implementation task") {
+target(main: "Drop a Geometry column from a table") {
   def config = new ConfigSlurper(grailsEnv).parse(new File("${basedir}/grails-app/conf/DataSource.groovy").toURL())
 
   /*
@@ -43,3 +39,5 @@ target(doStuff: "The implementation task") {
   sql.execute(sqlText)
   sql.close()
 }
+
+setDefaultTarget(main)
