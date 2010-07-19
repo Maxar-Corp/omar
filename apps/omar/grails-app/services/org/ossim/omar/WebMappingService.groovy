@@ -39,11 +39,16 @@ import java.awt.image.IndexColorModel
 import java.awt.image.ImageFilter
 import java.awt.image.FilteredImageSource
 import java.awt.Toolkit
+import java.awt.geom.AffineTransform
+import org.geotools.geometry.jts.LiteShape
+import geoscript.geom.MultiPolygon
 
 class WebMappingService
 {
   def grailsApplication
   def rasterEntrySearchService
+  def videoDataSetSearchService
+
 
   public static final String SYSCALL = "syscall"
   public static final String LIBCALL = "libcall"
@@ -97,6 +102,7 @@ class WebMappingService
     def maxx = 180.0
     def miny = -90.0
     def maxy = 90.0
+
     if ( wmsRequest.bbox )
     {
       def bounds = wmsRequest.bbox.split(',')
@@ -105,31 +111,38 @@ class WebMappingService
       maxx = bounds[2] as double
       maxy = bounds[3] as double
     }
+
     def w = wmsRequest.width as int
     def h = wmsRequest.height as int
-
     def wmsView = new WmsView()
     def projPoint = new ossimGpt(maxy, minx)
     def origin = new ossimDpt(0.0, 0.0)
     def ls = new ossimDpt(0.0, 0.0)
+
     wmsView.setProjection(wmsRequest.srs)
     wmsView.setViewDimensionsAndImageSize(minx, miny, maxx, maxy, w, h)
+
     def proj = wmsView.getProjection()
+
     proj.worldToLineSample(projPoint, origin)
 
-    def style = (HashMap) grailsApplication.config.wms.styles.get(styleName)
+    def style = grailsApplication.config.wms.styles.get(styleName)
+
     if ( !style )
     {
-      style = (HashMap) grailsApplication.config.wms.styles.get("default")
+      style = grailsApplication.config.wms.styles.get("default")
     }
+
     if ( style )
     {
       g.setPaint(new Color(style.outlinecolor.r * 255 as int,
               style.outlinecolor.g * 255 as int,
               style.outlinecolor.b * 255 as int,
               style.outlinecolor.a * 255 as int))
-      g.setStroke(new BasicStroke(style.width as int));
+
+      g.setStroke(new BasicStroke(style.width as int))
     }
+
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON);
 
@@ -154,6 +167,7 @@ class WebMappingService
         pointListx[it] = (ls.x as int)
         pointListy[it] = (ls.y as int)
       }
+
       g.drawPolyline(pointListx, pointListy, pointListx.size())
     }
   }
@@ -627,7 +641,174 @@ class WebMappingService
     }
     return Util.createBilinearModel(dptArray, gptArray)
   }
-  
+
+
+  def wmsToScreen(double minx, double miny, double maxx, double maxy, int imageWidth, int imageHeight)
+  {
+    // Extent width and height
+    double extentWidth = maxx - minx
+    double extentHeight = maxy - miny
+
+    // Scale
+    double scaleX = extentWidth > 0 ? imageWidth / extentWidth : java.lang.Double.MAX_VALUE
+    double scaleY = extentHeight > 0 ? imageHeight / extentHeight : 1.0 as double
+
+
+    double tx = -minx * scaleX
+    double ty = (miny * scaleY) + (imageHeight)
+
+    // AffineTransform
+    return new AffineTransform(scaleX, 0.0d, 0.0d, -scaleY, tx, ty)
+
+  }
+
+
+  def drawToGraphics(Graphics2D g2d, AffineTransform atx, def geoms)
+  {
+    try
+    {
+/*
+      println "Before"
+
+      g2d.color = Color.BLACK
+      Composite c = g2d.composite
+      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+      g2d.stroke = new BasicStroke(2)
+
+      if ( !(geoms instanceof List) )
+      {
+        geoms = [geoms]
+      }
+
+      geoms.each {g ->
+        LiteShape shp = new LiteShape(g.g, atx, false)
+        if ( g instanceof Polygon || g instanceof MultiPolygon )
+        {
+          g2d.color = Color.WHITE
+          g2d.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, new Float(0.5).floatValue())
+          //g2d.fill(shp)
+          g2d.draw(shp)
+        }
+        g2d.composite = c
+        g2d.color = Color.BLACK
+        g2d.draw(shp)
+      }
+
+      println "After"
+*/
+      print geoms
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace()
+    }
+
+  }
+
+  def drawLayer(def style, String layer, Map params, Date startDate, Date endDate, WMSRequest wmsRequest, Graphics2D g2d)
+  {
+    def queryParams = null
+    def searchService = null
+
+    def width = wmsRequest.width.toInteger()
+    def height = wmsRequest.height.toInteger()
+
+    def minx = -180.0
+    def maxx = 180.0
+    def miny = -90.0
+    def maxy = 90.0
+
+    if ( wmsRequest.bbox )
+    {
+      def bounds = wmsRequest.bbox.split(',')
+      minx = bounds[0] as double
+      miny = bounds[1] as double
+      maxx = bounds[2] as double
+      maxy = bounds[3] as double
+    }
+
+    if ( layer == "Imagery" || layer == "ImageData" )
+    {
+      queryParams = new RasterEntryQuery()
+      searchService = rasterEntrySearchService
+    }
+    else if ( layer == "Videos" || layer == "VideoData" )
+    {
+      queryParams = new VideoDataSetQuery()
+      searchService = videoDataSetSearchService
+    }
+    else
+    {
+      log.info("Layer ${layer} is not understood for footprint drawing.  Only layers Imagery or Videos accepted")
+    }
+
+
+    queryParams.caseInsensitiveBind(params)
+
+    queryParams.with {
+      aoiMaxLat = maxy
+      aoiMinLat = miny
+      aoiMaxLon = maxx
+      aoiMinLon = minx
+    }
+
+    if ( !startDate && !endDate )
+    {
+      startDate = DateUtil.initializeDate("startDate", params)
+      endDate = DateUtil.initializeDate("endDate", params)
+    }
+
+    queryParams.startDate = startDate
+    queryParams.endDate = endDate
+
+    //println "HERE"
+
+
+    def affine = wmsToScreen(minx, miny, maxx, maxy, width, height)
+    def results = searchService.scrollGeometries(queryParams, params)
+    def status = results.first()
+    def count = 0
+
+
+    g2d.color = new Color(
+            style.outlinecolor.r as float,
+            style.outlinecolor.g as float,
+            style.outlinecolor.b as float,
+            style.outlinecolor.a as float
+    )
+
+    Composite c = g2d.composite
+    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
+    g2d.stroke = new BasicStroke(style.width)
+
+    while ( status )
+    {
+      def geom = results.get(0)
+
+      LiteShape shp = new LiteShape(geom, affine, false)
+
+      /*
+      if ( g instanceof Polygon || g instanceof MultiPolygon )
+      {
+        g2d.color = Color.WHITE
+        g2d.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, new Float(0.5).floatValue())
+        //g2d.fill(shp)
+        g2d.draw(shp)
+      }
+      */
+
+      g2d.composite = c
+      //g2d.color = new Color(style.outlinecolor.r, style.outlinecolor.g, style.outlinecolor.b, style.outlinecolor.a)
+      g2d.draw(shp)
+
+      status = results.next()
+
+      //if ( ++count % 1000 == 0 ) println "count: ${count}"
+    }
+
+    results.close()
+  }
+
 }
 
 
