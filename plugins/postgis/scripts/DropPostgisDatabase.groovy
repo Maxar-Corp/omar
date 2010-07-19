@@ -4,11 +4,7 @@ Ant.property(environment: "env")
 
 grailsHome = Ant.project.properties."environment.GRAILS_HOME"
 
-target('default': "The description of the script goes here!") {
-  doStuff()
-}
-
-target(doStuff: "The implementation task") {
+target(main: "Drop the PostGIS database instance") {
   def config = new ConfigSlurper(grailsEnv).parse(new File("${basedir}/grails-app/conf/DataSource.groovy").toURL())
 
   def databaseName = config.dataSource.url.split(":")[-1]
@@ -37,3 +33,5 @@ target(doStuff: "The implementation task") {
       }
 
 }
+
+setDefaultTarget(main)
