@@ -190,7 +190,7 @@ class RegisterController
 
     def pass = authenticateService.passwordEncoder(params.passwd)
     person.passwd = pass
-    person.enabled = false
+    person.enabled = true
     person.emailShow = true
     person.description = ''
     if ( person.save() )
