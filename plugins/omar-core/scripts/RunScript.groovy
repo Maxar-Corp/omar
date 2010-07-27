@@ -3,13 +3,31 @@ import org.springframework.orm.hibernate3.SessionFactoryUtils
 import org.springframework.orm.hibernate3.SessionHolder
 import org.springframework.transaction.support.TransactionSynchronizationManager
 
+includeTargets << grailsScript("_GrailsBootstrap")
+includeTargets << grailsScript("_GrailsRun")
+includeTargets << grailsScript("_GrailsSettings")
+includeTargets << grailsScript("_GrailsClean")
 
-includeTargets << grailsScript("Init")
+target(main: "Execute the specified script after starting up the application environment") {
+  depends(checkVersion, configureProxy, packageApp, classpath)
+  runScript()
+}
 
-grailsHome = Ant.project.properties."environment.GRAILS_HOME"
-
-includeTargets << grailsScript("Package")
-includeTargets << grailsScript("Bootstrap")
+target(runScript: "Main implementation that executes the specified script after starting up the application environment") {
+  parseArguments()
+  if ( argsMap["params"].size() == 0 )
+  {
+    event("StatusError", ["Required script name parameter is missing"])
+    System.exit 1
+  }
+  compile()
+  loadApp()
+  configureApp()
+  configureHibernateSession()
+  argsMap["params"].each { scriptFile ->
+    executeScript(scriptFile, classLoader)
+  }
+}
 
 def configureHibernateSession()
 {
@@ -33,66 +51,4 @@ def executeScript(scriptFile, classLoader)
   }
 }
 
-
-target(runScript: "Main implementation that executes the specified script after starting up the application environment") {
-  parseArguments()
-  if ( argsMap["params"].size() == 0 )
-  {
-    event("StatusError", ["Required script name parameter is missing"])
-    System.exit 1
-  }
-  compile()
-  //classLoader = new URLClassLoader([classesDir.toURL()] as URL[], rootLoader)
-  //Thread.currentThread().setContextClassLoader(classLoader)
-  loadApp()
-  configureApp()
-  configureHibernateSession()
-  argsMap["params"].each { scriptFile ->
-    //executeScript(scriptFile, classLoader)
-    executeScript(scriptFile, grailsApp.classLoader)
-  }
-}
-
-
-target(main: "The description of the script goes here!") {
-  depends(checkVersion, configureProxy, packageApp, classpath)
-  runScript()
-
-}
-
 setDefaultTarget(main)
-
-//
-//target('default': "Execute the specified script after starting up the application environment") {
-//}
-//
-//
-//
-//// this argument parsing target has actually been submitted as a patch to Init.groovy after some feedback
-//// on the grails user mailing list and will hopefully be in the next release of grails.
-//// Vote it up if you like it: http://jira.codehaus.org/browse/GRAILS-2663
-//
-//argsMap = [params: []]
-//
-//target(parseArguments: "Parse the arguments passed on the command line") {
-//  args?.tokenize().each {  token ->
-//    def nameValueSwitch = token =~ "--?(.*)=(.*)"
-//    if ( nameValueSwitch.matches() )
-//    { // this token is a name/value pair (ex: --foo=bar or -z=qux)
-//      argsMap[nameValueSwitch[0][1]] = nameValueSwitch[0][2]
-//    }
-//    else
-//    {
-//      def nameOnlySwitch = token =~ "--?(.*)"
-//      if ( nameOnlySwitch.matches() )
-//      {  // this token is just a switch (ex: -force or --help)
-//        argsMap[nameOnlySwitch[0][1]] = true
-//      }
-//      else
-//      { // single item tokens, append in order to an array of params
-//        argsMap["params"] << token
-//      }
-//    }
-//  }
-//  event("StatusUpdate", ["Done parsing arguments: $argsMap"])
-//}
