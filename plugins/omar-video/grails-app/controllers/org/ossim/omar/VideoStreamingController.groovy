@@ -65,7 +65,7 @@ class VideoStreamingController implements InitializingBean
     def videoDataSetList = [videoDataSet]
     
     File mpegFile = videoDataSet.mainFile.name as File
-    def kml = kmlService.createVideosKml(videoDataSetList)
+    def kml = kmlService.createVideosKml(videoDataSetList, params)
     response.setHeader("Content-disposition", "attachment; filename=${mpegFile}.kml")
     render(contentType: "application/vnd.google-earth.kml+xml", text: "${kml}", encoding: "UTF-8")
 
