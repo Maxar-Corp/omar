@@ -19,23 +19,15 @@
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/layout/assets/skins/sam', file: 'layout.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
 
-  <g:javascript plugin='richui' src="yui/yahoo/yahoo-min.js"/>
-  <g:javascript plugin='richui' src="yui/event/event-min.js"/>
-  <g:javascript plugin='richui' src="yui/dom/dom-min.js"/>
-  <g:javascript plugin='richui' src="yui/element/element-min.js"/>
-  <g:javascript plugin='richui' src="yui/dragdrop/dragdrop-min.js"/>
-  <g:javascript plugin='richui' src="yui/resize/resize-min.js"/>
-  <g:javascript plugin='richui' src="yui/animation/animation-min.js"/>
-  <g:javascript plugin='richui' src="yui/layout/layout-min.js"/>
 
   <style>
-  /*
-  margin and padding on body element
-  can introduce errors in determining
-  element position and are not recommended;
-  we turn them off as a foundation for YUI
-  CSS treatments.
-  */
+    /*
+    margin and padding on body element
+    can introduce errors in determining
+    element position and are not recommended;
+    we turn them off as a foundation for YUI
+    CSS treatments.
+    */
 
   body {
     margin: 0;
@@ -82,6 +74,16 @@
 </div>
 
 </body>
+
+<g:javascript plugin='richui' src="yui/yahoo/yahoo-min.js"/>
+<g:javascript plugin='richui' src="yui/event/event-min.js"/>
+<g:javascript plugin='richui' src="yui/dom/dom-min.js"/>
+<g:javascript plugin='richui' src="yui/element/element-min.js"/>
+<g:javascript plugin='richui' src="yui/dragdrop/dragdrop-min.js"/>
+<g:javascript plugin='richui' src="yui/resize/resize-min.js"/>
+<g:javascript plugin='richui' src="yui/animation/animation-min.js"/>
+<g:javascript plugin='richui' src="yui/layout/layout-min.js"/>
+
 <g:javascript>
   (function()
   {
@@ -111,10 +113,10 @@
         ]
       } );
 
-      outerLayout.render( );
+      outerLayout.render();
     } );
 
-  })( );
+  })();
 </g:javascript>
 
 </html>
