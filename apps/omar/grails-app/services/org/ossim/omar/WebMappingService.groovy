@@ -55,7 +55,8 @@ class WebMappingService
   public static final String BLANK = "blank"
   def mode = LIBCALL
 
-  boolean transactional = true
+  static transactional = false
+
   def transparent = new TransparentFilter()
 
   static def getWmsImageLayers(def params)
@@ -787,18 +788,15 @@ class WebMappingService
 
       LiteShape shp = new LiteShape(geom, affine, false)
 
-      /*
-      if ( g instanceof Polygon || g instanceof MultiPolygon )
+      if ( style.fillcolor && ( g instanceof Polygon || g instanceof MultiPolygon ) )
       {
-        g2d.color = Color.WHITE
+        g2d.color = new Color(style.fillcolor.r, style.fillcolor.g, style.fillcolor.b, style.fillcolor.a)
         g2d.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, new Float(0.5).floatValue())
-        //g2d.fill(shp)
-        g2d.draw(shp)
+        g2d.fill(shp)
       }
-      */
 
       g2d.composite = c
-      //g2d.color = new Color(style.outlinecolor.r, style.outlinecolor.g, style.outlinecolor.b, style.outlinecolor.a)
+      g2d.color = new Color(style.outlinecolor.r, style.outlinecolor.g, style.outlinecolor.b, style.outlinecolor.a)
       g2d.draw(shp)
 
       status = results.next()
