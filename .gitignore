@@ -1,3 +1,6 @@
+apps/cstars-footprints/*.iml
+apps/cstars-footprints/*.ipr
+apps/cstars-footprints/.idea
 apps/cstars-footprints/ShapeFiles
 apps/cstars-footprints/stacktrace.log
 apps/cstars-footprints/target
