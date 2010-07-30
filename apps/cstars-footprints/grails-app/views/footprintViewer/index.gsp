@@ -68,9 +68,8 @@
   --%>
 
   <openlayers:loadTheme/>
-  <openlayers:loadJavascript/>
 
-  <script type="text/javascript">
+  <g:javascript>
     var map, vectors, formats, select;
     function updateFormats()
     {
@@ -286,7 +285,7 @@
       }
     })();
 
-  </script>
+  </g:javascript>
 
 </head>
 <body onload="init()">
@@ -353,5 +352,6 @@
     <textarea id="output"></textarea>
   </div>
 </div>
+<openlayers:loadJavascript/>
 </body>
 </html>
