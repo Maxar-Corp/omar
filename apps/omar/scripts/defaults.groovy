@@ -47,8 +47,7 @@ if ( !user )
           emailShow: false,
           description: "Normal User"
   )
-  user.addToAuthorities(userRole)
-  user.save()
+  user.addToAuthorities(userRole).save(flush: true)
 }
 
 def admin = AuthUser.findByUsername("admin")
@@ -65,10 +64,7 @@ if ( !admin )
           description: "Super User"
   )
 
-  admin.addToAuthorities(userRole)
-  admin.addToAuthorities(adminRole)
-  admin.addToAuthorities(downloadRole)
-  admin.save()
+  admin.addToAuthorities(userRole).addToAuthorities(adminRole).addToAuthorities(downloadRole).save(flush: true)
 }
 
 if ( !Requestmap.findByUrl("/home/**") )
