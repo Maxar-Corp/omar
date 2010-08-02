@@ -40,5 +40,5 @@ grails.plugin.location.'omar-video'="../../plugins/omar-video"
 grails.plugin.location.'omar-security'="../../plugins/omar-security"
 grails.plugin.location.openlayers="../../plugins/openlayers"
 grails.plugin.location.geoscript="../../plugins/geoscript"
-grails.plugin.location.'omar-mobile'="../../plugins/omar-mobile"
+//grails.plugin.location.'omar-mobile'="../../plugins/omar-mobile"
 
