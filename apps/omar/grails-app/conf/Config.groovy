@@ -217,7 +217,7 @@ rasterEntry.tagNameList = [
     "countryCode",
     "targetId",
     "sensorId",
-    "title"
+    "imageId"
 ]
 
 rasterEntry.searchTagData = [
@@ -227,7 +227,7 @@ rasterEntry.searchTagData = [
     [name: "countryCode", description: "Country"],
     [name: "targetId", description: "BE Number"],
     [name: "sensorId", description: "Sensor"],
-    [name: "title", description: "Image Id"],
+    [name: "imageId", description: "Image Id"],
     [name: "niirs", description: "niirs"]
 ]
 

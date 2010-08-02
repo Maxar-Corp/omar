@@ -251,6 +251,14 @@ class RasterEntry
     initRasterEntryMetadata(metadataNode, rasterEntry)
     initRasterEntryOtherTagsXml(rasterEntry)
 
+    if ( !rasterEntry.imageId )
+    {
+      def mainFile = rasterEntry.rasterDataSet.getMainFileFromObjects()
+      if(mainFile)
+      {
+        rasterEntry.imageId = "${rasterEntry.entryId}-${mainFile.name}"
+      }
+    }
     return rasterEntry
   }
 
@@ -371,7 +379,6 @@ class RasterEntry
             rasterEntry.securityClassification = value
             break;
           case "title":
-          case "iid2":
           case "ititle":
             rasterEntry.title = value
             break;
@@ -406,10 +413,6 @@ class RasterEntry
 
     //println "RASTERENTRY METADATA = ${rasterEntry.metadata}"
 
-    if ( !rasterEntry.imageId )
-    {
-      rasterEntry.imageId = System.currentTimeMillis() as String
-    }
   }
 
   static initRasterEntryOtherTagsXml(RasterEntry rasterEntry)
