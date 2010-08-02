@@ -20,7 +20,9 @@ class RasterDataSet
     }
 
     rasterDataSetNode.rasterEntries.RasterEntry.each {rasterEntryNode ->
-      RasterEntry rasterEntry = RasterEntry.initRasterEntry(rasterEntryNode)
+      RasterEntry rasterEntry = new RasterEntry();
+      rasterEntry.rasterDataSet = rasterDataSet;
+      RasterEntry.initRasterEntry(rasterEntryNode, rasterEntry)
 
       if ( rasterEntry.groundGeom )
       {
@@ -30,5 +32,9 @@ class RasterDataSet
 
 
     return rasterDataSet
+  }
+  def getMainFileFromObjects()
+  {
+    return fileObjects?.find { it.type == 'main' }
   }
 }
