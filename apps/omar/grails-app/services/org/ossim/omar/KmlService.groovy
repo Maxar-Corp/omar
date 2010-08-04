@@ -34,7 +34,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
               Bands: rasterEntry.numberOfBands,
               Acquistion_Date: rasterEntry.acquisitionDate,
               Meters_per_pixel: mpp]
-      def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [rasterEntryIds: rasterEntry.id])
+      def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [rasterEntryIds: rasterEntry.imageId])
 
       def descriptionBuilder = new StreamingMarkupBuilder().bind {
         body() {
@@ -237,7 +237,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
 
             def groundCenterLon = (rasterEntry?.groundGeom?.bounds?.minLon + rasterEntry?.groundGeom?.bounds?.maxLon) * 0.5;
             def groundCenterLat = (rasterEntry?.groundGeom?.bounds?.minLat + rasterEntry?.groundGeom?.bounds?.maxLat) * 0.5;
-            wmsParams?.layers = rasterEntry?.id
+            wmsParams?.layers = rasterEntry?.imageId
 
             def renderedHtml = "${descriptionMap.get(rasterIdx)}"
             rasterIdx++

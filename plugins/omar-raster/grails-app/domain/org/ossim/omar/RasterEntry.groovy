@@ -253,10 +253,12 @@ class RasterEntry
 
     if ( !rasterEntry.imageId )
     {
-      def mainFile = rasterEntry.rasterDataSet.getMainFileFromObjects()
+      def mainFile = rasterEntry.rasterDataSet.getFileFromObjects("main")
       if(mainFile)
       {
-        rasterEntry.imageId = "${rasterEntry.entryId}-${mainFile.name}"
+        def filename = mainFile.name
+        filename = filename.replaceAll("/|\\\\", "_")
+        rasterEntry.imageId = "${rasterEntry.entryId}-${filename}"
       }
     }
     return rasterEntry
