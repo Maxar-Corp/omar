@@ -6,7 +6,7 @@
  To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="org.ossim.omar.RasterEntryQuery; org.ossim.omar.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.ossim.omar.BaseQuery; org.ossim.omar.RasterEntryQuery; org.ossim.omar.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <title>OMAR - Raster Search</title>
@@ -208,7 +208,7 @@
           <div class="niceBoxBody">
             <ol>
               <li>
-                <g:checkBox name="searchMethod" id="radiusSearchButton" value="${RasterEntryQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
+                <g:checkBox name="searchMethod" id="radiusSearchButton" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
                 <label>Use Radius Search</label>
               </li>
               <li><br/></li>
@@ -252,7 +252,7 @@
 
             <ol>
               <li>
-                <g:checkBox name="searchMethod" id="bboxSearchButton" value="${RasterEntryQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
+                <g:checkBox name="searchMethod" id="bboxSearchButton" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
                 <label>Use BBox Search</label>
             </li>
             <li><br/></li>

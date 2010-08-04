@@ -338,7 +338,10 @@ class RasterEntry
           {
           case "imageid":
           case "iid2":
-            rasterEntry.imageId = value
+            if(value)
+            {
+              rasterEntry.imageId = value
+            }
             break;
           case "targetid":
           case "tgtid":
@@ -380,11 +383,17 @@ class RasterEntry
             break;
           case "title":
           case "ititle":
-            rasterEntry.title = value
+            if(value)
+            {
+              rasterEntry.title = value
+            }
             break;
           case "organization":
           case "oname":
-            rasterEntry.organization = value
+            if(value)
+            {
+              rasterEntry.organization = value
+            }
             break;
           case "description":
             rasterEntry.description = value
@@ -396,12 +405,18 @@ class RasterEntry
           // Just for testing
           case "filetype":
           case "file_type":
-            rasterEntry.fileType = value
+            if(value)
+            {
+              rasterEntry.fileType = value
+            }
             break
 
           case "classname":
           case "class_name":
-            rasterEntry.className = value
+            if(value)
+            {
+              rasterEntry.className = value
+            }
             break
 
           default:
