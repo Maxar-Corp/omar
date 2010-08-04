@@ -63,6 +63,24 @@ public class WMSCapabilities
 
   def map
 
+  static def getWmsImageLayers(def layers)
+  {
+    return RasterEntry.createCriteria().list() {
+      or {
+        layers.each() {name ->
+          try
+          {
+            eq('id', java.lang.Long.valueOf(name))
+          }
+          catch (java.lang.Exception e)
+          {
+            eq('title', name)
+            eq('imageId', name)
+          }
+        }
+      }
+    }
+  }
 
   public WMSCapabilities(def layers, def serviceAddress)
   {
@@ -80,19 +98,9 @@ public class WMSCapabilities
         getCapabilitiesURL: "${serviceAddress}?layers=${layers?.join(',')}&",
         getMapURL: serviceAddress
     )
+    def rasterEntries = getWmsImageLayers(layers)
 
-    def rasterEntry = null
-    layers?.each {layer ->
-      rasterEntry = null
-      try
-      {
-        rasterEntry = RasterEntry.get(layer)
-      }
-      catch(Exception e)
-      {
-        rasterEntry = null
-      }
-
+    rasterEntries?.each {rasterEntry ->
       if ( rasterEntry )
       {
         def entryId = rasterEntry.entryId

@@ -8,6 +8,7 @@ package org.ossim.omar
  */
 
 import java.awt.Color
+import org.hibernate.criterion.*
 
 class WMSRequest
 {
@@ -34,6 +35,9 @@ class WMSRequest
   String bands
   String time
 
+  /**
+   * This is a query param to control the max results when building the criteria
+   */
   public String toString()
   {
     return [bbox: bbox, width: width, height: height, format: format, layers: layers, srs: srs, service: service,
@@ -131,5 +135,85 @@ class WMSRequest
     }
 
     return format
+  }
+  def createDateRangeRestriction()
+  {
+    def dateColumnName = "acquisitionDate"
+    def disj = Restrictions.disjunction();
+
+    def intervals = ISO8601DateParser.parseWMSIntervals(time)
+    intervals.each{interval->
+      def startDate = new Date(interval.getStart().getMillis());
+      def endDate   = new Date(interval.getEnd().getMillis());
+      if(interval.toDurationMillis() == 0)
+      {
+        def range = null
+
+        if ( startDate && endDate )
+        {
+          disj.add(Restrictions.eq(dateColumnName, startDate))
+        }
+      }
+      else
+      {
+        disj.add(Restrictions.and(Restrictions.ge(dateColumnName, startDate),
+                                  Restrictions.le(dateColumnName, endDate)
+                                 )
+                )
+      }
+    }
+    return disj
+  }
+  def createClause()
+  {
+    def names = []
+    if(layers)
+    {
+      layers.split(',').each
+      {
+        names.add(it)
+      }
+    }
+    def  result = Restrictions.conjunction()
+    RasterEntryQuery rasterQuery = new RasterEntryQuery()
+    if ( bbox )
+    {
+      def bounds = bbox.split(',')
+      rasterQuery.aoiMinLon = bounds[0]
+      rasterQuery.aoiMinLat = bounds[1]
+      rasterQuery.aoiMaxLon = bounds[2]
+      rasterQuery.aoiMaxLat = bounds[3]
+    }
+    
+    result.add(rasterQuery.createIntersection())
+    
+//    def maxResults = 10
+/*
+    try
+    {
+      maxResults = java.lang.Long.valueOf(max)
+    }
+    catch(java.lang.Exception e)
+    {
+      maxResults = 10
+    }
+    c.setMaxResults(maxResults)
+*/
+    def disj = Restrictions.disjunction();
+    names.each() {name ->
+      try
+      {
+        def value = java.lang.Long.valueOf(name)
+        disj.add(Restrictions.eq('id', value))
+      }
+      catch (java.lang.Exception e)
+      {
+        disj.add(Restrictions.eq('title', name))
+        disj.add(Restrictions.eq('imageId', name))
+      }
+    }
+    result.add(disj)
+    result.add(createDateRangeRestriction())
+    return result
   }
 }
