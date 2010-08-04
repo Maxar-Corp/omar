@@ -139,7 +139,6 @@ class OgcController
   }
 
   def wms = {
-
     def tempMap = [:]
     // Convert param names to lower case
     params?.each { tempMap.put(it.key.toLowerCase(), it.value)}
@@ -210,7 +209,6 @@ class OgcController
         render(contentType: "text/xml", text: capabilities)
         break
       case "getkml":
-
         def wmsParams = [:]
 
         // Convert param names to lower case
@@ -220,15 +218,28 @@ class OgcController
 
         //  def serviceAddress = createLink(controller: "ogc", action: "wms", absolute: true)
         //  def kml = webMappingService.getKML(wmsRequest, serviceAddress)
-        def rasterEntryList = []
         def filename = "image.kml"
-        params?.layers.split(',').each {item ->
-          def rasterEntry = RasterEntry.get(item)
-          rasterEntryList.add(rasterEntry)
-          def file = (rasterEntry.mainFile.name as File).name
-          filename = "${file}.kml"
+        def rasterEntries = RasterEntry.createCriteria().list() {
+                                   or {
+                                     rasterIdList.each() {name ->
+                                       try
+                                       {
+                                         eq('id', java.lang.Long.valueOf(name))
+                                       }
+                                       catch (java.lang.Exception e)
+                                       {
+                                         eq('title', name)
+                                         eq('imageId', name)
+                                       }
+                                     }
+                                   }
+                           }
+        if(rasterEntries.size>0)
+        {
+            def file = (rasterEntries[0].mainFile.name as File).name
+            filename = "${file}.kml"
         }
-        def kml = kmlService.createKml(rasterEntryList, tempMap)
+        def kml = kmlService.createKml(rasterEntries, tempMap)
         response.setHeader("Content-disposition", "attachment; filename=${filename}")
         render(contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8")
         break
