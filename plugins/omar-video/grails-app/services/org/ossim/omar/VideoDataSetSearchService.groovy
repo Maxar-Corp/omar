@@ -140,21 +140,12 @@ class VideoDataSetSearchService
     //return geometries
   }
 
-
-  ScrollableResults scrollGeometries(VideoDataSetQuery videoDataSetQuery, Map<String, String> params)
+  void scrollGeometries(VideoDataSetQuery videoDataSetQuery, Map<String, String> params, Closure closure)
   {
+    def criteriaBuilder = VideoDataSet.createCriteria();
+
     def x = {
       projections { property("groundGeom") }
-
-      if ( videoDataSetQuery?.groundGeom )
-      {
-        addToCriteria(videoDataSetQuery.createIntersection("groundGeom"))
-      }
-
-      if ( videoDataSetQuery?.startDate || videoDataSetQuery?.endDate )
-      {
-        addToCriteria(videoDataSetQuery.createDateRange("startDate", "endDate"))
-      }
 
       if ( params?.max )
       {
@@ -165,32 +156,26 @@ class VideoDataSetSearchService
       {
         firstResult(params.offset as Integer)
       }
-
-      videoDataSetQuery.searchTagNames?.size()?.times {i ->
-        String name = videoDataSetQuery.searchTagNames[i]
-        String value = videoDataSetQuery.searchTagValues[i]
-
-        if ( name && value )
-        {
-          def results = Utility.parseSearchTag(name, value)
-
-          if ( results["property"] == "otherTagsXml" )
-          {
-            String tag = results["tag"].trim()
-            String content = results["content"].trim()
-            ilike("otherTagsXml", "%<${tag}>%${content}%</${tag}>%")
-          }
-          else
-          {
-            ilike(results["property"], "%${results['value']}%")
-          }
-        }
-      }
-
       cacheMode(CacheMode.GET)
     }
 
-    return VideoDataSet.createCriteria().scroll(x)
+    def criteria = criteriaBuilder.buildCriteria(x)
+
+    criteria.add(videoDataSetQuery?.createClause())
+
+    def results = criteria.scroll()
+    def status = results.first()
+
+    while ( status )
+    {
+      def geom = results.get(0)
+
+      closure.call(geom)
+
+      status = results.next()
+    }
+
+    results.close()
   }
 
 

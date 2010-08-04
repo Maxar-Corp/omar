@@ -7,12 +7,8 @@ package org.ossim.omar
  * To change this template use File | Settings | File Templates.
  */
 
-import java.text.SimpleDateFormat;
 import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
-
-
-import org.apache.commons.collections.map.CaseInsensitiveMap
 
 class VideoDataSetQuery extends BaseQuery
 {
@@ -72,58 +68,4 @@ class VideoDataSetQuery extends BaseQuery
 
     return range
   }
-
-  void caseInsensitiveBind(def params)
-  {
-    def keys = properties.keySet()
-    def tempParams = new CaseInsensitiveMap(params)
-
-    keys.each{
-      def value = tempParams.get(it)
-      if(value)
-      {
-        setProperty("${it}", value)
-      }
-    }
-    // now check the lists
-    def idx = 0
-    def value = tempParams.get("searchTagNames[${idx}]")
-    while(value)
-    {
-      searchTagNames[idx] = value
-      ++idx
-      value = tempParams.get("searchTagNames[${idx}]")
-    }
-    idx = 0
-    value = tempParams.get("searchTagValues[${idx}]")
-    while(value)
-    {
-      searchTagValues[idx] = value
-      ++idx
-      value = tempParams.get("searchTagValues[${idx}]")
-    }
-  }
-  
-
-  def toMap()
-  {
-    SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-    String startDateText = (startDate) ? formatter.format(startDate) : "";
-    String endDateText = (endDate) ? formatter.format(endDate) : "";
-
-    def data = [
-        aoiMaxLat: aoiMaxLat, aoiMinLon: aoiMinLon, aoiMinLat: aoiMinLat, aoiMaxLon: aoiMaxLon,
-        startDate: startDateText, endDate: endDateText,
-        centerLat: centerLat, centerLon: centerLon, aoiRadius: aoiRadius, searchMethod: searchMethod,
-        viewMaxLat: viewMaxLat, viewMinLon: viewMinLon, viewMinLat: viewMinLat, viewMaxLon: viewMaxLon
-    ]
-
-    (0..<searchTagValues.size()).each {
-      data["searchTagNames[${it}]"] = searchTagNames[it]
-      data["searchTagValues[${it}]"] = searchTagValues[it]
-    }
-
-    data.sort { it.key }
-  }
-
 }

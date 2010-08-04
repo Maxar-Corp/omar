@@ -766,9 +766,6 @@ class WebMappingService
 
 
     def affine = wmsToScreen(minx, miny, maxx, maxy, width, height)
-    def results = searchService.scrollGeometries(queryParams, params)
-    def status = results.first()
-    def count = 0
 
 
     g2d.color = new Color(
@@ -782,13 +779,11 @@ class WebMappingService
     g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
     g2d.stroke = new BasicStroke(style.width)
 
-    while ( status )
-    {
-      def geom = results.get(0)
 
+    def closure = { geom ->
       LiteShape shp = new LiteShape(geom, affine, false)
 
-      if ( style.fillcolor && ( g instanceof Polygon || g instanceof MultiPolygon ) )
+      if ( style.fillcolor && (g instanceof Polygon || g instanceof MultiPolygon) )
       {
         g2d.color = new Color(style.fillcolor.r, style.fillcolor.g, style.fillcolor.b, style.fillcolor.a)
         g2d.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, new Float(0.5).floatValue())
@@ -799,15 +794,10 @@ class WebMappingService
       g2d.color = new Color(style.outlinecolor.r, style.outlinecolor.g, style.outlinecolor.b, style.outlinecolor.a)
       g2d.draw(shp)
 
-      status = results.next()
-
-      //if ( ++count % 1000 == 0 ) println "count: ${count}"
     }
 
-    results.close()
+    searchService.scrollGeometries(queryParams, params, closure)
   }
 
 }
-
-
 
