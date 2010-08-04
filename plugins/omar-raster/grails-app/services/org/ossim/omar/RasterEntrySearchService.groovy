@@ -67,7 +67,7 @@ class RasterEntrySearchService
           addOrder(ordering)
         }
         setFetchMode("rasterEntry", FetchMode.JOIN)
-    }
+      }
     }
     def criteria = criteriaBuilder.buildCriteria(x)
     criteria.add(rasterEntryQuery?.createClause())
@@ -141,7 +141,7 @@ class RasterEntrySearchService
     def criteria = criteriaBuilder.buildCriteria(x)
     criteria.add(rasterEntryQuery?.createClause())
 
-    return  criteria.list()
+    return criteria.list()
     /*
     def criteria = RasterEntry.createCriteria();
 
@@ -166,29 +166,43 @@ class RasterEntrySearchService
     */
   }
 
-  ScrollableResults scrollGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
+  void scrollGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params, Closure closure)
   {
     def criteriaBuilder = RasterEntry.createCriteria();
+
     def x = {
       projections { property("groundGeom") }
 
       if ( params?.max )
-       {
-         maxResults(params.max as Integer)
-       }
+      {
+        maxResults(params.max as Integer)
+      }
 
-       if ( params?.offset )
-       {
-         firstResult(params.offset as Integer)
-       }
+      if ( params?.offset )
+      {
+        firstResult(params.offset as Integer)
+      }
       cacheMode(CacheMode.GET)
     }
+
     def criteria = criteriaBuilder.buildCriteria(x)
+
     criteria.add(rasterEntryQuery?.createClause())
-    return criteria.scroll()
+
+    def results = criteria.scroll()
+    def status = results.first()
+
+    while ( status )
+    {
+      def geom = results.get(0)
+
+      closure.call(geom)
+
+      status = results.next()
+    }
+
+    results.close()
   }
-
-
 
   int getCount(RasterEntryQuery rasterEntryQuery)
   {

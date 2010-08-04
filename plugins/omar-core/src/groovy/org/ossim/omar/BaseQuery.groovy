@@ -7,6 +7,8 @@ import com.vividsolutions.jts.geom.PrecisionModel
 import com.vividsolutions.jts.io.WKTReader
 import org.hibernate.criterion.Criterion
 import org.hibernatespatial.criterion.SpatialFilter
+import java.text.SimpleDateFormat
+import org.apache.commons.collections.map.CaseInsensitiveMap
 
 /**
  * Created by IntelliJ IDEA.
@@ -57,7 +59,8 @@ class BaseQuery
 
     return intersects
   }
-  def getGroundGeom()
+
+  Geometry getGroundGeom()
   {
     def srs = "4326"
     def wkt = null
@@ -142,4 +145,57 @@ class BaseQuery
 
     return bounds
   }
+
+  void caseInsensitiveBind(def params)
+  {
+    def keys = properties.keySet()
+    def tempParams = new CaseInsensitiveMap(params)
+
+    keys.each{
+      def value = tempParams.get(it)
+      if(value)
+      {
+        setProperty("${it}", value)
+      }
+    }
+    // now check the lists
+    def idx = 0
+    def value = tempParams.get("searchTagNames[${idx}]")
+    while(value)
+    {
+      searchTagNames[idx] = value
+      ++idx
+      value = tempParams.get("searchTagNames[${idx}]")
+    }
+    idx = 0
+    value = tempParams.get("searchTagValues[${idx}]")
+    while(value)
+    {
+      searchTagValues[idx] = value
+      ++idx
+      value = tempParams.get("searchTagValues[${idx}]")
+    }
+  }
+
+
+  def toMap()
+  {
+    SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
+    String startDateText = (startDate) ? formatter.format(startDate) : "";
+    String endDateText = (endDate) ? formatter.format(endDate) : "";
+
+    def data = [
+        aoiMaxLat: aoiMaxLat, aoiMinLon: aoiMinLon, aoiMinLat: aoiMinLat, aoiMaxLon: aoiMaxLon,
+        startDate: startDateText, endDate: endDateText,
+        centerLat: centerLat, centerLon: centerLon, aoiRadius: aoiRadius, searchMethod: searchMethod,
+        viewMaxLat: viewMaxLat, viewMinLon: viewMinLon, viewMinLat: viewMinLat, viewMaxLon: viewMaxLon
+    ]
+
+    (0..<searchTagValues.size()).each {
+      data["searchTagNames[${it}]"] = searchTagNames[it]
+      data["searchTagValues[${it}]"] = searchTagValues[it]
+    }
+
+    data.sort { it.key }
+  }  
 }
