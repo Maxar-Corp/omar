@@ -85,12 +85,12 @@
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
     <span class="menuButton">
-      <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.id).join(',')])}">
+      <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.imageId).join(',')])}">
         WMS GetCapabilities
       </a>
     </span>
     <span class="menuButton">
-      <a href="javascript:getKML(${(rasterEntries*.id).join(',')})"> Generate KML </a>
+      <a href="javascript:getKML('${(rasterEntries*.imageId).join(',')}')"> Generate KML </a>
     </span>
     <span class="menuButton">
       <a href="${createLink(controller: "mapView", action: "multiLayer", params: [rasterEntryIds: (rasterEntries*.id).join(',')])}">
@@ -294,7 +294,7 @@
 
      rasterLayers = [
       new OpenLayers.Layer.WMS( "Raster", "${createLink(controller: 'ogc', action: 'wms')}",
-      { layers: "${(rasterEntries*.id).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
+      { layers: "${(rasterEntries*.imageId).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
       {isBaseLayer: true, buffer:0, singleTile:true, ratio:1.0, terrain_correction:false, transitionEffect: "resize",
        displayOutsideMaxExtent:false})
     ];

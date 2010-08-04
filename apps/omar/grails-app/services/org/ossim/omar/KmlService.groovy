@@ -83,7 +83,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
         Folder() {
           name("OMAR_WMS")
           rasterEntries?.each {rasterEntry ->
-            wmsParams?.layers = "${rasterEntry?.id}"
+            wmsParams?.layers = "${rasterEntry?.imageId}"
             def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
 
             def groundCenterLon = (rasterEntry?.groundGeom?.bounds?.minLon + rasterEntry?.groundGeom?.bounds?.maxLon) * 0.5;
