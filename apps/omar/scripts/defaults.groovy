@@ -143,7 +143,7 @@ searchTagData.each {
 
 if ( GrailsUtil.isDevelopmentEnv() )
 {
-  def baseDirs = ["/data/uav", "/Volumes/Iomega_HDD/data"]
+  def baseDirs = ["/","/data/uav", "/Volumes/Iomega_HDD/data"]
 
   baseDirs.each {baseDir ->
     def repository = Repository.findByBaseDir(baseDir)
