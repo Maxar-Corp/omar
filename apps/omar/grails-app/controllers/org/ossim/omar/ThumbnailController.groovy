@@ -31,8 +31,8 @@ class ThumbnailController implements InitializingBean
     {
       def httpStatusMessage = new HttpStatusMessage()
       httpStatusMessage.status = HttpStatus.OK
-      def rasterEntry = RasterEntry.get(params.id)
-      def image = (Image)null
+      def rasterEntry = RasterEntry.findByImageId(params.id) ?:RasterEntry.get(params.id);
+      def image = null
       def mimeType = "image/jpeg"
       if ( !rasterEntry )
       {
