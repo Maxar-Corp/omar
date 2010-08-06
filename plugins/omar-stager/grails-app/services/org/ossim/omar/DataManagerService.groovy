@@ -334,7 +334,7 @@ class DataManagerService implements ApplicationContextAware
        }
        catch (java.lang.Exception e)
        {
-         log.error(${e.message})
+         log.error(e.message)
          httpStatusMessage.status  = HttpStatus.EXPECTATION_FAILED
          httpStatusMessage.message = "Error adding ${fileObject}"
        }
