@@ -42,7 +42,7 @@ class DataManagerController
 	        break
 	      case "POST":
 	      case "DELETE":
-	        def status = dataManagerService."${params.opType}"(httpStatusMessage, params.filename)
+	        def status = dataManagerService."${params.opType}"(httpStatusMessage, params)
 
 	        response.status = httpStatusMessage.status
 	        render(httpStatusMessage.message)
