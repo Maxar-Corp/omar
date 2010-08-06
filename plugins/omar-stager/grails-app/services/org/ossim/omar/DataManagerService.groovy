@@ -320,7 +320,7 @@ class DataManagerService implements ApplicationContextAware
                {
                  log.error("Error saving ${fileObject.name}, could already exist")
                  httpStatusMessage.status  = HttpStatus.EXPECTATION_FAILED
-                 httpStatusMessage.message = "Error Saving ${fileObject}, could already exist"
+                 httpStatusMessage.message = "Error Saving ${fileObject.name}, could already exist"
                }
              }
            }
