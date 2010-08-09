@@ -586,69 +586,69 @@ function MapWidget()
         document.searchForm.submit();
     };
 
-    this.goto = function()
-    {
-        var latDdRegExp = /^(\-?\d{1,2})(\.\d+)?$/
-        var lonDdRegExp = /^(\-?\d{1,3})(\.\d+)?$/
-
-        var latDmsRegExp = /^(\d{1,2})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([NnSs])?/
-        var lonDmsRegExp = /^(\d{1,3})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([EeWw])?/
-
-        if($("centerLat").value.match(latDdRegExp) && $("centerLon").value.match(lonDdRegExp))
-        {
-            this.setMapCenter($("centerLat").value, $("centerLon").value );
-        }
-        else if($("centerLat" ).value.match(latDmsRegExp ) && $("centerLon").value.match(lonDmsRegExp))
-        {
-            if($("centerLat").value.match(latDmsRegExp))
-            {
-                var latDeg = parseInt(RegExp.$1, 10);
-                var latMin = parseInt(RegExp.$2, 10);
-                var latSec = parseInt(RegExp.$3, 10) + RegExp.$4;
-                var latHem = RegExp.$5;
-
-                if(latHem == "S" || latHem == "s")
-                {
-                    latDeg = -latDeg;
-                }
-            }
-
-            if($("centerLon").value.match(lonDmsRegExp))
-            {
-                var lonDeg = parseInt(RegExp.$1, 10);
-                var lonMin = parseInt(RegExp.$2, 10);
-                var lonSec = parseInt(RegExp.$3, 10) + RegExp.$4;
-                var lonHem = RegExp.$5;
-
-                if(lonHem == "W" || lonHem == "w")
-                {
-                    lonDeg = -lonDeg;
-                }
-            }
-
-            this.setMapCenter(convert.dmsToDd(latDeg, latMin, latSec), convert.dmsToDd(lonDeg, lonMin, lonSec));
-        }
-        else
-        {
-            alert("Invalid DMS Format.\n\n" +
-                  "Valid Examples: \n" +
-                  "DDDMMSS.SSS[NnSsEeWw]\n\n" +
-                  "0 00 00.000 N\n" +
-                  "00000.000N\n" +
-                  "12 34 56.123 N\n" +
-                  "123456.123N\n" +
-                  "90 00 00 N\n" +
-                  "900000N\n" +
-                  "90 00 00 S\n" +
-                  "900000S\n" +
-                  "123 46 07.891 E\n" +
-                  "1234607.891E\n" +
-                  "180 00 00 E\n" +
-                  "1800000E\n" +
-                  "180 00 00 W\n" +
-                  "1800000W");
-        }
-    };
+//    this.goto = function()
+//    {
+//        var latDdRegExp = /^(\-?\d{1,2})(\.\d+)?$/
+//        var lonDdRegExp = /^(\-?\d{1,3})(\.\d+)?$/
+//
+//        var latDmsRegExp = /^(\d{1,2})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([NnSs])?/
+//        var lonDmsRegExp = /^(\d{1,3})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([EeWw])?/
+//
+//        if($("centerLat").value.match(latDdRegExp) && $("centerLon").value.match(lonDdRegExp))
+//        {
+//            this.setMapCenter($("centerLat").value, $("centerLon").value );
+//        }
+//        else if($("centerLat" ).value.match(latDmsRegExp ) && $("centerLon").value.match(lonDmsRegExp))
+//        {
+//            if($("centerLat").value.match(latDmsRegExp))
+//            {
+//                var latDeg = parseInt(RegExp.$1, 10);
+//                var latMin = parseInt(RegExp.$2, 10);
+//                var latSec = parseInt(RegExp.$3, 10) + RegExp.$4;
+//                var latHem = RegExp.$5;
+//
+//                if(latHem == "S" || latHem == "s")
+//                {
+//                    latDeg = -latDeg;
+//                }
+//            }
+//
+//            if($("centerLon").value.match(lonDmsRegExp))
+//            {
+//                var lonDeg = parseInt(RegExp.$1, 10);
+//                var lonMin = parseInt(RegExp.$2, 10);
+//                var lonSec = parseInt(RegExp.$3, 10) + RegExp.$4;
+//                var lonHem = RegExp.$5;
+//
+//                if(lonHem == "W" || lonHem == "w")
+//                {
+//                    lonDeg = -lonDeg;
+//                }
+//            }
+//
+//            this.setMapCenter(convert.dmsToDd(latDeg, latMin, latSec), convert.dmsToDd(lonDeg, lonMin, lonSec));
+//        }
+//        else
+//        {
+//            alert("Invalid DMS Format.\n\n" +
+//                  "Valid Examples: \n" +
+//                  "DDDMMSS.SSS[NnSsEeWw]\n\n" +
+//                  "0 00 00.000 N\n" +
+//                  "00000.000N\n" +
+//                  "12 34 56.123 N\n" +
+//                  "123456.123N\n" +
+//                  "90 00 00 N\n" +
+//                  "900000N\n" +
+//                  "90 00 00 S\n" +
+//                  "900000S\n" +
+//                  "123 46 07.891 E\n" +
+//                  "1234607.891E\n" +
+//                  "180 00 00 E\n" +
+//                  "1800000E\n" +
+//                  "180 00 00 W\n" +
+//                  "1800000W");
+//        }
+//    };
 
     this.setMapCenter = function( latitude, longitude )
     {
