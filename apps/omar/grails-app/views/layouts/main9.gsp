@@ -69,7 +69,7 @@
   <omar:securityClassificationBanner/>
 </div>
 
-<script>
+<g:javascript>
 
   (function()
   {
@@ -97,7 +97,7 @@
           units: [
             { position: 'top', height: 60, body: 'top1', gutter: '0px', maxHeight: 80 },
             { position: 'left', header: '', width: 200, resize: false, proxy: false, body: 'left1', collapse: true, gutter: '0px 0px 0px 0px', scroll: true, maxWidth: 200 },
-            { position: 'center', header: '&nbsp;', body: 'center1', body: 'center1', gutter: '0px 0px 0px 0px', scroll: false },
+            { position: 'center', body: 'center1', body: 'center1', gutter: '0px 0px 0px 0px', scroll: false },
             { position: 'right', header: '', width: 200, resize: false, proxy: false, body: 'right1', collapse: true, gutter: '0px 0px 0px 0px', maxWidth: 200 },
             { position: 'bottom', height: 60, body: 'bottom1', gutter: '0px', maxHeight: 80 }
           ]
@@ -134,7 +134,8 @@
     } );
   })();
 
-</script>
+</g:javascript>
+
 <g:javascript library="application"/>
 <g:javascript plugin='richui' src="yui/yahoo/yahoo-min.js"/>
 <g:javascript plugin='richui' src="yui/event/event-min.js"/>
@@ -151,6 +152,8 @@
 <g:javascript plugin='richui' src="yui/utilities/utilities.js"/>
 <g:javascript plugin='richui' src="yui/container/container_core-min.js"/>
 <g:javascript plugin='richui' src="yui/menu/menu-min.js"/>
+
+<g:pageProperty name="page.javascript"/>
 
 </body>
 </html>
