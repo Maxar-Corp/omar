@@ -21,7 +21,8 @@ class KmlQueryController implements InitializingBean
 
     if ( wmsParams?.bbox )
     {
-      def bounds = params.BBOX?.split(',')
+      def bounds = params.bbox?.split(',')
+      if(bounds.length >=4)
       params.aoiMinLon = bounds[0]
       params.aoiMinLat = bounds[1]
       params.aoiMaxLon = bounds[2]
