@@ -39,7 +39,7 @@
   <g:layoutHead/>
 
 </head>
-<body class="${pageProperty(name: 'body.class')}" onload="${pageProperty(name: 'body.onload')}" onresize="${pageProperty(name: 'body.onresize')}" class="yui-skin-sam">
+<body class="${pageProperty(name: 'body.class')}" onload="${pageProperty(name: 'body.onload')}" onresize="${pageProperty(name: 'body.onresize')}">
 
 <div id="header1">
   <omar:securityClassificationBanner/>
@@ -137,9 +137,14 @@
 </g:javascript>
 
 <g:javascript library="application"/>
+
+<%--
 <g:javascript plugin='richui' src="yui/yahoo/yahoo-min.js"/>
 <g:javascript plugin='richui' src="yui/event/event-min.js"/>
 <g:javascript plugin='richui' src="yui/dom/dom-min.js"/>
+--%>
+
+<g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
 <g:javascript plugin='richui' src="yui/element/element-min.js"/>
 <g:javascript plugin='richui' src="yui/dragdrop/dragdrop-min.js"/>
 <g:javascript plugin='richui' src="yui/resize/resize-min.js"/>

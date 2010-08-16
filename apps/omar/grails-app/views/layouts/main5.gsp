@@ -47,7 +47,6 @@
   </style>
 
   <g:layoutHead/>
-  <g:javascript library="application"/>
 </head>
 <body class="yui-skin-sam">
 
@@ -75,9 +74,13 @@
 
 </body>
 
+<g:javascript library="application"/>
+<%--
 <g:javascript plugin='richui' src="yui/yahoo/yahoo-min.js"/>
 <g:javascript plugin='richui' src="yui/event/event-min.js"/>
 <g:javascript plugin='richui' src="yui/dom/dom-min.js"/>
+--%>
+<g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
 <g:javascript plugin='richui' src="yui/element/element-min.js"/>
 <g:javascript plugin='richui' src="yui/dragdrop/dragdrop-min.js"/>
 <g:javascript plugin='richui' src="yui/resize/resize-min.js"/>
