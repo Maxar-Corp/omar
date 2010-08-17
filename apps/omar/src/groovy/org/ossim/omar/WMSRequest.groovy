@@ -35,16 +35,20 @@ class WMSRequest
   String bands
   String time
 
+  def toMap()
+  {
+     return [bbox: bbox, width: width, height: height, format: format, layers: layers, srs: srs, service: service,
+            version: version, request: request, transparent: transparent, bgcolor: bgcolor, styles: styles,
+            stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
+            sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, time: time, null_flip: null_flip,
+            exception: exception, terrain_correction: terrain_correction].sort { it.key }
+  }
   /**
    * This is a query param to control the max results when building the criteria
    */
   public String toString()
   {
-    return [bbox: bbox, width: width, height: height, format: format, layers: layers, srs: srs, service: service,
-            version: version, request: request, transparent: transparent, bgcolor: bgcolor, styles: styles,
-            stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
-            sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, time: time, null_flip: null_flip,
-            exception: exception, terrain_correction: terrain_correction].sort { it.key }
+    return toMap()
   }
 
   String[] getDates()
@@ -136,6 +140,7 @@ class WMSRequest
 
     return format
   }
+  /*
   def createDateRangeRestriction()
   {
     def dateColumnName = "acquisitionDate"
@@ -184,21 +189,9 @@ class WMSRequest
       rasterQuery.aoiMaxLon = bounds[2]
       rasterQuery.aoiMaxLat = bounds[3]
     }
-    
+
     result.add(rasterQuery.createIntersection())
     
-//    def maxResults = 10
-/*
-    try
-    {
-      maxResults = java.lang.Long.valueOf(max)
-    }
-    catch(java.lang.Exception e)
-    {
-      maxResults = 10
-    }
-    c.setMaxResults(maxResults)
-*/
     def disj = Restrictions.disjunction();
     names.each() {name ->
       try
@@ -216,4 +209,5 @@ class WMSRequest
     result.add(createDateRangeRestriction())
     return result
   }
+  */
 }
