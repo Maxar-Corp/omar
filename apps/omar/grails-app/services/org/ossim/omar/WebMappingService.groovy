@@ -292,6 +292,9 @@ class WebMappingService
                         rasterEntry?.entryId?.toInteger(),
                         geom)
               }
+              else
+              {
+              }
             }
             geom = (ossimImageGeometry) null
             geomPtr = (ossimImageGeometryPtr) null
@@ -301,7 +304,10 @@ class WebMappingService
       int pixelStride = viewableBandCount
       int lineStride = viewableBandCount * width
       int[] bandOffsets = null;
-      if ( viewableBandCount == 1 ) bandOffsets = [0] as int[]
+      if ( viewableBandCount == 1 )
+      {
+        bandOffsets = [0] as int[]
+      }
       else bandOffsets = [0, 1, 2] as int[]
       byte[] data = new byte[width * height * viewableBandCount]
       if ( enableOMS )
