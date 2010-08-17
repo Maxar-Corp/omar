@@ -110,8 +110,8 @@
                 --%>
 
                 <td>
-                  <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.id)}">
-                    <img src="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.id, params: [size: 128])}" alt="Show Frame"/>
+                  <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.videoId)}">
+                    <img src="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.videoId, params: [size: 128])}" alt="Show Frame"/>
                   </a>
 
                 </td>
@@ -151,8 +151,8 @@
                 </td>
 
                 <td>
-                  <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.id)}">
-                    <img src="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.id, params: [size: 128])}" alt="Show Frame"/>
+                  <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.videoId)}">
+                    <img src="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.videoId, params: [size: 128])}" alt="Show Frame"/>
                   </a>
                 </td>
               </tr>
