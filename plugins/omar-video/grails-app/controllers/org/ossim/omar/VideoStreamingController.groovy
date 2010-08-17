@@ -14,7 +14,7 @@ class VideoStreamingController implements InitializingBean
     def flvUrl
     def title
 
-    def videoDataSet = VideoDataSet.get(params.id)
+    def videoDataSet = VideoDataSet.findByVideoId(params.id)?:VideoDataSet.get(params.id)
 
     if ( videoDataSet )
     {
@@ -61,7 +61,7 @@ class VideoStreamingController implements InitializingBean
 
   def getKML = {
 
-    def videoDataSet = VideoDataSet.get(params.id)
+    def videoDataSet = VideoDataSet.findByVideoId(params.id)?:VideoDataSet.get(params.id)
     def videoDataSetList = [videoDataSet]
     
     File mpegFile = videoDataSet.mainFile.name as File
