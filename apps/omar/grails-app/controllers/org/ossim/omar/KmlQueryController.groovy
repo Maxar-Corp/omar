@@ -55,9 +55,12 @@ class KmlQueryController implements InitializingBean
 
 //    println "kml  queryParams: ${queryParams.toMap()}"
 //    println "kml  params: ${params}"
-
+    String kmlText = ""
     def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-    String kmlText = kmlService.createKml(rasterEntries, wmsParams)
+    if(!rasterEntries.empty)
+    {
+      kmlText = kmlService.createKml(rasterEntries, wmsParams);
+    }
 
     response.setHeader("Content-disposition", "attachment; filename=topImages.kml");
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
