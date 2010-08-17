@@ -58,45 +58,6 @@ class WebMappingService
   static transactional = false
 
   def transparent = new TransparentFilter()
-
-  static def getWmsImageLayers(def params)
-  {
-    def names = []
-    params?.layers.split(',').each {
-      names.add(it)
-    }
-    RasterEntryQuery rasterQuery = null
-    if ( params.bbox )
-    {
-      rasterQuery = new RasterEntryQuery()
-      def bounds = params.bbox.split(',')
-      rasterQuery.aoiMinLon = bounds[0]
-      rasterQuery.aoiMinLat = bounds[1]
-      rasterQuery.aoiMaxLon = bounds[2]
-      rasterQuery.aoiMaxLat = bounds[3]
-    }
-
-    return RasterEntry.createCriteria().list() {
-      or {
-        names.each() {name ->
-          try
-          {
-            eq('id', java.lang.Long.valueOf(name))
-          }
-          catch (java.lang.Exception e)
-          {
-            eq('title', name)
-            eq('imageId', name)
-          }
-        }
-      }
-      if ( rasterQuery )
-      {
-        addToCriteria(rasterQuery.createIntersection())
-      }
-    }
-  }
-
   void drawCoverage(Graphics2D g, WMSRequest wmsRequest, def geometries, def styleName)
   {
     def minx = -180.0
@@ -274,7 +235,7 @@ class WebMappingService
         sharpenSigma = "1"
       }
       def terrainCorrectionFlag = Boolean.valueOf(terrainCorrectionFlagString)
-      def rasterEntries = getWmsImageLayers(wmsRequest)
+      def rasterEntries  = new WMSQuery().caseInsensitiveBind(wmsRequest.toMap()).rasterEntriesAsList
       rasterEntries.each { rasterEntry ->
         def geom = (ossimImageGeometry) null
         def geomPtr = (ossimImageGeometryPtr) null
