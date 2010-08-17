@@ -6,16 +6,17 @@ class RasterDataSet
 
   Repository repository
 
+  static constraints = {
+    repository(nullable: true)
+  }
   static mapping = {
   }
 
   static RasterDataSet initRasterDataSet(rasterDataSetNode, rasterDataSet = null)
   {
     rasterDataSet = rasterDataSet ?: new RasterDataSet()
-
     rasterDataSetNode.fileObjects.RasterFile.each {rasterFileNode ->
       RasterFile rasterFile = RasterFile.initRasterFile(rasterFileNode)
-
       rasterDataSet.addToFileObjects(rasterFile)
     }
 
@@ -29,7 +30,6 @@ class RasterDataSet
         rasterDataSet.addToRasterEntries(rasterEntry)
       }
     }
-
 
     return rasterDataSet
   }
