@@ -54,7 +54,15 @@ class DataManagerService implements ApplicationContextAware
 
       if ( xml )
       {
-        if(params.background)
+        def background =false;
+        try{
+          background = params.background?Boolean.valueOf(params.background):false
+        }
+        catch(Exception e)
+        {
+          
+        }
+        if(background)
         {
           log.info("submitting ${filename} for background processing")
           DataManagerQueueItem.addItem([file:"${filename}", dataManagerAction:"addRaster"],
@@ -77,18 +85,27 @@ class DataManagerService implements ApplicationContextAware
           {
 
             rasterDataSets.each {rasterDataSet ->
-              if ( rasterDataSet.save() )
-              {
-                //stagerHandler.processSuccessful(filename, xml)
-                httpStatusMessage.status = HttpStatus.OK
-                log.info(httpStatusMessage.message)
+              def savedRaster = true
+              try{
+                if ( rasterDataSet.save() )
+                {
+                  //stagerHandler.processSuccessful(filename, xml)
+                  httpStatusMessage.status = HttpStatus.OK
+                  log.info(httpStatusMessage.message)
+                }
+                else
+                {
+                  savedRaster = false
+                  httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
+                  httpStatusMessage.message = "Unable to save image ${filename}, image probably already exists"
+                  log.error(httpStatusMessage.message)
+                }
               }
-              else
+              catch(Exception e)
               {
                 httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
-                httpStatusMessage.message = "Unable to save image ${filename}, image probably already exists"
+                httpStatusMessage.message = "Unable to save image ${filename}, image probably already exists\n${e.message}"
                 log.error(httpStatusMessage.message)
-                //stagerHandler.processRejected(filename)
               }
             }
             //new org.ossim.omar.DataManagerQueueItem(file: filename.absolutePath, baseDir: parent.baseDir, dataInfo: xml).save()
@@ -255,9 +272,9 @@ class DataManagerService implements ApplicationContextAware
   def removeRaster(def httpStatusMessage, def params)
   {
     def status = false
-    def file = params.filename as File
+    def filename = params.filename as File
 
-    def rasterFile = RasterFile.findByNameAndType(file.absolutePath, "main")
+    def rasterFile = RasterFile.findByNameAndType(filename.absolutePath, "main")
 
     if ( rasterFile )
     {
@@ -277,9 +294,9 @@ class DataManagerService implements ApplicationContextAware
   def removeVideo(def httpStatusMessage, def params)
   {
     def status = false
-    def file = params.filename as File
+    def filename = params.filename as File
 
-    def videoFile = VideoFile.findByNameAndType(file.absolutePath, "main")
+    def videoFile = VideoFile.findByNameAndType(filename.absolutePath, "main")
 
     if ( videoFile )
     {
