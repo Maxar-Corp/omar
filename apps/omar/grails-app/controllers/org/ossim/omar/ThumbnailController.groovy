@@ -70,7 +70,7 @@ class ThumbnailController implements InitializingBean
   def frame = {
     try
     {
-      def videoDataSet = VideoDataSet.get(params.id)
+      def videoDataSet = VideoDataSet.findByVideoId(params.id) ?:VideoDataSet.get(params.id);
       def image = (Image)null
       def mimeType = "image/jpeg"
       def httpStatusMessage = new HttpStatusMessage()
