@@ -74,7 +74,11 @@ class WMSQuery extends BaseQuery
     }
     def  result = Restrictions.conjunction()
 
-    result.add(createIntersection())
+    def geomIntersect = createIntersection()
+    if(geomIntersect)
+    {
+      result.add(geomIntersect)
+    }
 
     def disj = Restrictions.disjunction();
     names.each() {name ->
@@ -89,7 +93,11 @@ class WMSQuery extends BaseQuery
       }
     }
     result.add(disj)
-    result.add(createDateRangeRestrictionRaster())
+    def dateIntersect = createDateRangeRestrictionRaster()
+    if(dateIntersect)
+    {
+      result.add(dateIntersect)
+    }
     return result
   }
   def getRasterEntriesAsList()
@@ -139,6 +147,7 @@ class WMSQuery extends BaseQuery
       // we will add support for a general query that is similar to the last 10 or last N images.
     }
     layers = layersCopy
+
     return result;
 
   }
