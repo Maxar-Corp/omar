@@ -20,7 +20,7 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
 class BaseQuery
 {
   def grailsApplication
-
+       
   public static final String RADIUS_SEARCH = "RADIUS"
   public static final String BBOX_SEARCH = "BBOX"
   String searchMethod = BBOX_SEARCH
@@ -89,12 +89,10 @@ class BaseQuery
       if ( minLat && maxLat && minLon && maxLon )
       {
         def coordinateConversionService = new CoordinateConversionService()
-
-        maxLat = coordinateConversionService.convertToDecimalDegrees(maxLat)
-        maxLon = coordinateConversionService.convertToDecimalDegrees(maxLon)
-        minLat = coordinateConversionService.convertToDecimalDegrees(minLat)
-        minLon = coordinateConversionService.convertToDecimalDegrees(minLon)
-
+        def maxLatDD = Double.valueOf(coordinateConversionService.convertToDecimalDegrees(maxLat))
+        def maxLonDD = Double.valueOf(coordinateConversionService.convertToDecimalDegrees(maxLon))
+        def minLatDD = Double.valueOf(coordinateConversionService.convertToDecimalDegrees(minLat))
+        def minLonDD = Double.valueOf(coordinateConversionService.convertToDecimalDegrees(minLon))
         //wkt = Geometry.createPolygon(
         //    minLon,
         //    minLat,
@@ -104,13 +102,13 @@ class BaseQuery
 
         def geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326)
 
-        minLon = Double.parseDouble(minLon)
-        minLat = Double.parseDouble(minLat)
-        maxLon = Double.parseDouble(maxLon)
-        maxLat = Double.parseDouble(maxLat)
 
         def coords = [
-                new Coordinate(minLon, minLat), new Coordinate(minLon, maxLat), new Coordinate(maxLon, maxLat), new Coordinate(maxLon, minLat), new Coordinate(minLon, minLat)
+                new Coordinate(minLonDD, minLatDD),
+                new Coordinate(minLonDD, maxLatDD),
+                new Coordinate(maxLonDD, maxLatDD),
+                new Coordinate(maxLonDD, minLatDD),
+                new Coordinate(minLonDD, minLatDD)
         ] as Coordinate[]
 
         def polygon = geometryFactory.createPolygon(geometryFactory.createLinearRing(coords), null)
@@ -146,7 +144,7 @@ class BaseQuery
     return bounds
   }
 
-  void caseInsensitiveBind(def params)
+  def caseInsensitiveBind(def params)
   {
     def keys = properties.keySet()
     def tempParams = new CaseInsensitiveMap(params)
@@ -175,6 +173,8 @@ class BaseQuery
       ++idx
       value = tempParams.get("searchTagValues[${idx}]")
     }
+
+    return this
   }
 
 
