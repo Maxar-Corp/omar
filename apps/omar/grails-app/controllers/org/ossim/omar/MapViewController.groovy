@@ -21,17 +21,30 @@ class MapViewController implements InitializingBean
 
   def index = {
 
-    def rasterEntryIds = params.rasterEntryIds?.split(',')?.collect { it.toLong() }
-
+    def rasterEntryIds = params.rasterEntryIds?.split(',')
     def rasterEntries = RasterEntry.withCriteria {
-      inList("id", rasterEntryIds)
+      or
+      {
+        rasterEntryIds.each{id->
+          try{
+            eq("id", Long.valueOf(id))
+          }
+          catch(Exception e)
+          {
+            eq("imageId", id)
+          }
+        }
+      }
+//      or{
+//        inList("id", rasterEntryIds)
+//        inList("imageId", rasterEntryIds)
+//      }
     }
 
     def kmlOverlays = []
 
     rasterEntries.each { rasterEntry ->
       def overlays = RasterEntryFile.findAllByTypeAndRasterEntry("kml", rasterEntry)
-
       overlays?.each {overlay ->
 
         def kmlOverlay = [:]
