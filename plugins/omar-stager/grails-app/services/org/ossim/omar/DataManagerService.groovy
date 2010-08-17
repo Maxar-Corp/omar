@@ -54,36 +54,45 @@ class DataManagerService implements ApplicationContextAware
 
       if ( xml )
       {
-        def oms = new XmlSlurper().parseText(xml)
-        def omsInfoParser = applicationContext.getBean("rasterInfoParser")
-        def repository = findRepositoryForFile(filename)
-        def rasterDataSets = omsInfoParser.processDataSets(oms, repository)
-
-        if ( rasterDataSets.size() < 1 )
+        if(params.background)
         {
-          httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
-          httpStatusMessage.message = "Not a raster file: ${filename}"
-          log.error(httpStatusMessage.message)
+          log.info("submitting ${filename} for background processing")
+          DataManagerQueueItem.addItem([file:"${filename}", dataManagerAction:"addRaster"],
+                                       true);
         }
         else
         {
+          def oms = new XmlSlurper().parseText(xml)
+          def omsInfoParser = applicationContext.getBean("rasterInfoParser")
+          def repository = findRepositoryForFile(filename)
+          def rasterDataSets = omsInfoParser.processDataSets(oms, repository)
 
-          rasterDataSets.each {rasterDataSet ->
-            if ( rasterDataSet.save() )
-            {
-              //stagerHandler.processSuccessful(filename, xml)
-              httpStatusMessage.status = HttpStatus.OK
-              log.info(httpStatusMessage.message)
-            }
-            else
-            {
-              httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
-              httpStatusMessage.message = "Unable to save image ${filename}, image probably already exists"
-              log.error(httpStatusMessage.message)
-              //stagerHandler.processRejected(filename)
-            }
+          if ( rasterDataSets.size() < 1 )
+          {
+            httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
+            httpStatusMessage.message = "Not a raster file: ${filename}"
+            log.error(httpStatusMessage.message)
           }
-          //new org.ossim.omar.StagerQueueItem(file: filename.absolutePath, baseDir: parent.baseDir, dataInfo: xml).save()
+          else
+          {
+
+            rasterDataSets.each {rasterDataSet ->
+              if ( rasterDataSet.save() )
+              {
+                //stagerHandler.processSuccessful(filename, xml)
+                httpStatusMessage.status = HttpStatus.OK
+                log.info(httpStatusMessage.message)
+              }
+              else
+              {
+                httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
+                httpStatusMessage.message = "Unable to save image ${filename}, image probably already exists"
+                log.error(httpStatusMessage.message)
+                //stagerHandler.processRejected(filename)
+              }
+            }
+            //new org.ossim.omar.DataManagerQueueItem(file: filename.absolutePath, baseDir: parent.baseDir, dataInfo: xml).save()
+          }
         }
       }
       else
@@ -221,7 +230,7 @@ class DataManagerService implements ApplicationContextAware
                 log.info("Added file ${file}")
               }
             }
-            //new org.ossim.omar.StagerQueueItem(file: file.absolutePath, baseDir: parent.baseDir, dataInfo: xml).save()
+            //new org.ossim.omar.DataManagerQueueItem(file: file.absolutePath, baseDir: parent.baseDir, dataInfo: xml).save()
           }
         }
         else
