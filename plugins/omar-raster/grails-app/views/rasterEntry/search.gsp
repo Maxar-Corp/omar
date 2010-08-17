@@ -584,7 +584,7 @@
             {
               id: "kml",
               itemdata: [
-                { text: "Generate KML", url: "javascript:mapWidget.generateKML();" }
+                { text: "KML Static Bookmark", url: "javascript:mapWidget.generateKML();" }
               ]
             },
 
