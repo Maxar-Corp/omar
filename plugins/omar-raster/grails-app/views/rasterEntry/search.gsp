@@ -708,7 +708,6 @@
     var minLat = ${queryParams?.aoiMinLat ?: 'null'};
     var maxLon = ${queryParams?.aoiMaxLon ?: 'null'};
     var maxLat = ${queryParams?.aoiMaxLat ?: 'null'};
-     alert ("SEARCH METHOD ${queryParams.searchMethod}");
     if ( minLon && minLat && maxLon && maxLat)
     {
       mapWidget.initAOI(minLon, minLat, maxLon, maxLat);
