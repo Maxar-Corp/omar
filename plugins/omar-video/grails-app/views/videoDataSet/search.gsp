@@ -13,33 +13,33 @@
   <meta name="layout" content="main9"/>
 
   <style type="text/css">
-    div.niceBox {
+  div.niceBox {
     margin-top: 3px;
     margin-bottom: 8px;
     background-color: #F0F8FF;
     border: 1px solid #000000;
-    }
+  }
 
-    div.niceBoxHd {
+  div.niceBoxHd {
     font-size: 87%;
     font-weight: bold;
     padding: 2px;
     color: white;
     background-color: #003366;
-    }
+  }
 
-    div.niceBoxBody {
+  div.niceBoxBody {
     font-size: 87%;
     padding: 3px;
-    }
+  }
 
-    div.niceBoxMetadataBody {
+  div.niceBoxMetadataBody {
     font-size: 87%;
     padding: 3px;
     height: 80px;
     overflow-x: hidden;
     overflow-y: scroll;
-    }
+  }
   </style>
 
   <style type="text/css">
@@ -75,7 +75,7 @@
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
-  <resource:include components="dateChooser"/>
+  <resource:include components="dateChooser, tabView"/>
 
   <g:javascript plugin="omar-core" src="mapwidget.js"/>
   <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
@@ -90,13 +90,13 @@
         var baseLayer = null;
 
         <g:each var="foo" in="${baseWMS}">
-          baseLayer = new OpenLayers.Layer.WMS("${foo.title}", "${foo.url}",
+    baseLayer = new OpenLayers.Layer.WMS("${foo.title}", "${foo.url}",
             {layers: "${foo.layers}", format: "${foo.format}"},
             {isBaseLayer: true, buffer: 0,transitionEffect: "resize"});
 
             mapWidget.setupBaseLayers(baseLayer);
-        </g:each>
-      };
+  </g:each>
+    };
 
     mapWidget.setupMapWidget();
     setupBaseLayers();
@@ -135,7 +135,7 @@
 
 </head>
 
-<body  class="yui-skin-sam" onload="init();" onresize="mapWidget.changeMapSize();">
+<body class="yui-skin-sam" onload="init();" onresize="mapWidget.changeMapSize();">
 
 <content tag="top">
   <table>
@@ -169,285 +169,299 @@
 <content tag="left">
   <g:form name="searchForm">
 
-    <div id="demo" class="yui-navset">
-      <ul class="yui-nav">
-        <li class="selected"><a href="#dd"><em>DD</em></a></li>
-        <li><a href="#dms"><em>DMS</em></a></li>
-        <li><a href="#mgrs"><em>MGRS</em></a></li>
-      </ul>
+    <richui:tabView id="demo">
+      <richui:tabLabels>
+        <richui:tabLabel selected="true" title="DD"/>
+        <richui:tabLabel title="DMS"/>
+        <richui:tabLabel title="MGRS"/>
+      </richui:tabLabels>
+      <richui:tabContents>
+        <richui:tabContent>
+          <div id="dd">
+            <div class="niceBox">
+              <div class="niceBoxHd">Map Center:</div>
+              <div class="niceBoxBody">
+                <ol>
+                  <li>
+                    <g:checkBox name="searchMethod" id="radiusSearchButton" value="${RasterEntryQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
+                    <label>Use Radius Search</label>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <label for='centerLat'>Latitude:</label>
+                  </li>
+                  <li>
+                    <g:textField name="centerLat" value="${queryParams?.centerLat}"/>
+                  </li>
+                  <li>
+                    <label for='centerLon'>Longitude:</label>
+                  </li>
+                  <li>
+                    <g:textField name="centerLon" value="${queryParams?.centerLon}"/>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <label for='aoiRadius'>Radius in Meters:</label>
+                  </li>
+                  <li>
+                    <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters()"/>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <span class="formButton">
+                      <input type="button" onclick="mapWidget.setCenterDd()" value="Set Center">
+                    </span>
+                  </li>
+                </ol>
+              </div>
+            </div>
 
-      <div class="yui-content">
-        <div id="dd">
-          <div class="niceBox">
-          <div class="niceBoxHd">Map Center:</div>
-          <div class="niceBoxBody">
-            <ol>
-              <li>
-                <g:checkBox name="searchMethod" id="radiusSearchButton" value="${RasterEntryQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
-                <label>Use Radius Search</label>
-              </li>
-              <li><br/></li>
-              <li>
-                <label for='centerLat'>Latitude:</label>
-              </li>
-              <li>
-                <g:textField name="centerLat" value="${queryParams?.centerLat}"/>
-              </li>
-              <li>
-                <label for='centerLon'>Longitude:</label>
-              </li>
-              <li>
-                <g:textField name="centerLon" value="${queryParams?.centerLon}"/>
-              </li>
-              <li><br/></li>
-              <li>
-                <label for='aoiRadius'>Radius in Meters:</label>
-              </li>
-              <li>
-                <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters()"/>
-              </li>
-              <li><br/></li>
-              <li>
-                <span class="formButton">
-                  <input type="button" onclick="mapWidget.setCenterDd()" value="Set Center">
-                </span>
-              </li>
-            </ol>
-          </div>
-          </div>
+            <div class="niceBox">
+              <div class="niceBoxHd">Geospatial Criteria:</div>
+              <div class="niceBoxBody">
 
-          <div class="niceBox">
-          <div class="niceBoxHd">Geospatial Criteria:</div>
-          <div class="niceBoxBody">
+                <input type="hidden" id="viewMinLon" name="viewMinLon" value="${fieldValue(bean: queryParams, field: 'viewMinLon')}"/>
+                <input type="hidden" id="viewMinLat" name="viewMinLat" value="${fieldValue(bean: queryParams, field: 'viewMinLat')}"/>
+                <input type="hidden" id="viewMaxLon" name="viewMaxLon" value="${fieldValue(bean: queryParams, field: 'viewMaxLon')}"/>
+                <input type="hidden" id="viewMaxLat" name="viewMaxLat" value="${fieldValue(bean: queryParams, field: 'viewMaxLat')}"/>
 
-            <input type="hidden" id="viewMinLon" name="viewMinLon" value="${fieldValue(bean: queryParams, field: 'viewMinLon')}"/>
-            <input type="hidden" id="viewMinLat" name="viewMinLat" value="${fieldValue(bean: queryParams, field: 'viewMinLat')}"/>
-            <input type="hidden" id="viewMaxLon" name="viewMaxLon" value="${fieldValue(bean: queryParams, field: 'viewMaxLon')}"/>
-            <input type="hidden" id="viewMaxLat" name="viewMaxLat" value="${fieldValue(bean: queryParams, field: 'viewMaxLat')}"/>
+                <ol>
+                  <li>
+                    <g:checkBox name="searchMethod" id="bboxSearchButton" value="${RasterEntryQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
+                    <label>Use BBox Search</label>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <label for='aoiMaxLat'>North Latitude:</label>
+                  </li>
+                  <li>
+                    <input type="text" id="aoiMaxLat" name="aoiMaxLat" value="${fieldValue(bean: queryParams, field: 'aoiMaxLat')}"/>
+                  </li>
+                  <li>
+                    <label for='aoiMinLon'>West Longitude:</label>
+                  </li>
+                  <li>
+                    <input type="text" id="aoiMinLon" name="aoiMinLon" value="${fieldValue(bean: queryParams, field: 'aoiMinLon')}"/>
+                  </li>
+                  <li>
+                    <label for='aoiMinLat'>South Latitude:</label>
+                  </li>
+                  <li>
+                    <input type="text" id="aoiMinLat" name="aoiMinLat" value="${fieldValue(bean: queryParams, field: 'aoiMinLat')}"/>
+                  </li>
+                  <li>
+                    <label for='aoiMaxLon'>East Longitude:</label>
+                  </li>
+                  <li>
+                    <input type="text" id="aoiMaxLon" name="aoiMaxLon" value="${fieldValue(bean: queryParams, field: 'aoiMaxLon')}"/>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <span class="formButton">
+                      <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
+                    </span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </richui:tabContent>
+        <richui:tabContent>
+          <div id="dms">
+            <div class="niceBox">
+              <div class="niceBoxHd">Map Center:</div>
+              <div class="niceBoxBody">
+                <ol>
+                  <li>
+                    <g:checkBox name="searchMethod" id="radiusSearchButton2" onclick="mapWidget.togglePointRadiusCheckBox()"/>
+                    <label>Use Radius Search</label>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <label for='centerLat'>Latitude:</label>
+                  </li>
+                  <li>
+                    <g:textField name="centerLatDms" value=""/>
+                  </li>
+                  <li>
+                    <label for='centerLon'>Longitude:</label>
+                  </li>
+                  <li>
+                    <g:textField name="centerLonDms" value=""/>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <label for='aoiRadius'>Radius in Meters:</label>
+                  </li>
+                  <li>
+                    <g:textField name="aoiRadius2"/>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <span class="formButton">
+                      <input type="button" onclick="mapWidget.setCenterDms()" value="Set Center">
+                    </span>
+                  </li>
+                </ol>
+              </div>
+            </div>
 
-            <ol>
-              <li>
-                <g:checkBox name="searchMethod" id="bboxSearchButton" value="${RasterEntryQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == RasterEntryQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
-                <label>Use BBox Search</label>
-            </li>
-            <li><br/></li>
-            <li>
-              <label for='aoiMaxLat'>North Latitude:</label>
-            </li>
-            <li>
-              <input type="text" id="aoiMaxLat" name="aoiMaxLat" value="${fieldValue(bean: queryParams, field: 'aoiMaxLat')}"/>
-            </li>
-            <li>
-              <label for='aoiMinLon'>West Longitude:</label>
-            </li>
-            <li>
-              <input type="text" id="aoiMinLon" name="aoiMinLon" value="${fieldValue(bean: queryParams, field: 'aoiMinLon')}"/>
-            </li>
-            <li>
-              <label for='aoiMinLat'>South Latitude:</label>
-            </li>
-            <li>
-              <input type="text" id="aoiMinLat" name="aoiMinLat" value="${fieldValue(bean: queryParams, field: 'aoiMinLat')}"/>
-            </li>
-            <li>
-              <label for='aoiMaxLon'>East Longitude:</label>
-            </li>
-            <li>
-              <input type="text" id="aoiMaxLon" name="aoiMaxLon" value="${fieldValue(bean: queryParams, field: 'aoiMaxLon')}"/>
-            </li>
-            <li><br/></li>
-            <li>
-              <span class="formButton">
-                <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
-              </span>
-            </li>
-          </ol>
+            <div class="niceBox">
+              <div class="niceBoxHd">Geospatial Criteria:</div>
+              <div class="niceBoxBody">
+                <ol>
+                  <li>
+                    <g:checkBox name="searchMethod" id="bboxSearchButton2" onclick="mapWidget.toggleBboxCheckBox()"/>
+                    <label>Use BBox Search</label>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <label for='aoiMaxLat'>North Latitude:</label>
+                  </li>
+                  <li>
+                    <input type="text" id="aoiMaxLatDms" name="aoiMaxLatDms"/>
+                  </li>
+                  <li>
+                    <label for='aoiMinLon'>West Longitude:</label>
+                  </li>
+                  <li>
+                    <input type="text" id="aoiMinLonDms" name="aoiMinLonDms"/>
+                  </li>
+                  <li>
+                    <label for='aoiMinLat'>South Latitude:</label>
+                  </li>
+                  <li>
+                    <input type="text" id="aoiMinLatDms" name="aoiMinLatDms"/>
+                  </li>
+                  <li>
+                    <label for='aoiMaxLon'>East Longitude:</label>
+                  </li>
+                  <li>
+                    <input type="text" id="aoiMaxLonDms" name="aoiMaxLonDms"/>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <span class="formButton">
+                      <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
+                    </span>
+                  </li>
+                </ol>
+              </div>
+            </div>
           </div>
-          </div>
-        </div>
+        </richui:tabContent>
+        <richui:tabContent>
+          <div id="mgrs">
+            <div class="niceBox">
+              <div class="niceBoxHd">Map Center:</div>
+              <div class="niceBoxBody">
+                <ol>
+                  <li>
+                    <g:checkBox name="searchMethod" id="radiusSearchButton3" onclick="mapWidget.togglePointRadiusCheckBox()"/>
+                    <label>Use Radius Search</label>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <label for='centerLat'>MGRS:</label>
+                  </li>
+                  <li>
+                    <g:textField name="centerMgrs" value=""/>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <label for='aoiRadius'>Radius in Meters:</label>
+                  </li>
+                  <li>
+                    <g:textField name="aoiRadius3"/>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <span class="formButton">
+                      <input type="button" onclick="mapWidget.setCenterMgrs()" value="Set Center">
+                    </span>
+                  </li>
+                </ol>
+              </div>
+            </div>
 
-        <div id="dms">
-          <div class="niceBox">
-          <div class="niceBoxHd">Map Center:</div>
-          <div class="niceBoxBody">
-            <ol>
-              <li>
-                <g:checkBox name="searchMethod" id="radiusSearchButton2" onclick="mapWidget.togglePointRadiusCheckBox()"/>
-                <label>Use Radius Search</label>
-              </li>
-              <li><br/></li>
-              <li>
-                <label for='centerLat'>Latitude:</label>
-              </li>
-              <li>
-                <g:textField name="centerLatDms" value=""/>
-              </li>
-              <li>
-                <label for='centerLon'>Longitude:</label>
-              </li>
-              <li>
-                <g:textField name="centerLonDms" value=""/>
-              </li>
-              <li><br/></li>
-               <li>
-                <label for='aoiRadius'>Radius in Meters:</label>
-              </li>
-              <li>
-                <g:textField name="aoiRadius2"/>
-              </li>
-              <li><br/></li>
-              <li>
-                <span class="formButton">
-                  <input type="button" onclick="mapWidget.setCenterDms()" value="Set Center">
-                </span>
-              </li>
-            </ol>
+            <div class="niceBox">
+              <div class="niceBoxHd">Geospatial Criteria:</div>
+              <div class="niceBoxBody">
+                <ol>
+                  <li>
+                    <g:checkBox name="searchMethod" id="bboxSearchButton3" onclick="mapWidget.toggleBboxCheckBox()"/>
+                    <label>Use BBox Search</label>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <label for='aoiNeMgrs'>MGRS NE:</label>
+                  </li>
+                  <li>
+                    <input type="text" id="aoiNeMgrs" name="aoiNeMgrs" value=""/>
+                  </li>
+                  <li>
+                    <label for='aoiSwMgrs'>MGRS SW:</label>
+                  </li>
+                  <li>
+                    <input type="text" id="aoiSwMgrs" name="aoiSwMgrs" value=""/>
+                  </li>
+                  <li><br/></li>
+                  <li>
+                    <span class="formButton">
+                      <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
+                    </span>
+                  </li>
+                </ol>
+              </div>
+            </div>
           </div>
-          </div>
-
-          <div class="niceBox">
-          <div class="niceBoxHd">Geospatial Criteria:</div>
-          <div class="niceBoxBody">
-            <ol>
-              <li>
-                <g:checkBox name="searchMethod" id="bboxSearchButton2" onclick="mapWidget.toggleBboxCheckBox()"/>
-                <label>Use BBox Search</label>
-              </li>
-              <li><br/></li>
-              <li>
-                <label for='aoiMaxLat'>North Latitude:</label>
-              </li>
-              <li>
-                <input type="text" id="aoiMaxLatDms" name="aoiMaxLatDms"/>
-              </li>
-              <li>
-                <label for='aoiMinLon'>West Longitude:</label>
-              </li>
-              <li>
-                <input type="text" id="aoiMinLonDms" name="aoiMinLonDms"/>
-              </li>
-              <li>
-                <label for='aoiMinLat'>South Latitude:</label>
-              </li>
-              <li>
-                <input type="text" id="aoiMinLatDms" name="aoiMinLatDms"/>
-              </li>
-              <li>
-                <label for='aoiMaxLon'>East Longitude:</label>
-              </li>
-              <li>
-                <input type="text" id="aoiMaxLonDms" name="aoiMaxLonDms"/>
-              </li>
-              <li><br/></li>
-              <li>
-                <span class="formButton">
-                  <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
-                </span>
-              </li>
-            </ol>
-          </div>
-          </div>
-        </div>
-
-        <div id="mgrs">
-          <div class="niceBox">
-          <div class="niceBoxHd">Map Center:</div>
-          <div class="niceBoxBody">
-            <ol>
-              <li>
-                <g:checkBox name="searchMethod" id="radiusSearchButton3" onclick="mapWidget.togglePointRadiusCheckBox()"/>
-                <label>Use Radius Search</label>
-              </li>
-              <li><br/></li>
-              <li>
-                <label for='centerLat'>MGRS:</label>
-              </li>
-              <li>
-                <g:textField name="centerMgrs" value=""/>
-              </li>
-              <li><br/></li>
-              <li>
-                <label for='aoiRadius'>Radius in Meters:</label>
-              </li>
-              <li>
-                <g:textField name="aoiRadius3"/>
-              </li>
-              <li><br/></li>
-              <li>
-                <span class="formButton">
-                  <input type="button" onclick="mapWidget.setCenterMgrs()" value="Set Center">
-                </span>
-              </li>
-            </ol>
-          </div>
-          </div>
-
-          <div class="niceBox">
-          <div class="niceBoxHd">Geospatial Criteria:</div>
-          <div class="niceBoxBody">
-            <ol>
-              <li>
-                <g:checkBox name="searchMethod" id="bboxSearchButton3" onclick="mapWidget.toggleBboxCheckBox()"/>
-                <label>Use BBox Search</label>
-              </li>
-              <li><br/></li>
-              <li>
-                <label for='aoiNeMgrs'>MGRS NE:</label>
-              </li>
-              <li>
-                <input type="text" id="aoiNeMgrs" name="aoiNeMgrs" value=""/>
-              </li>
-              <li>
-                <label for='aoiSwMgrs'>MGRS SW:</label>
-              </li>
-              <li>
-                <input type="text" id="aoiSwMgrs" name="aoiSwMgrs" value=""/>
-              </li>
-              <li><br/></li>
-              <li>
-                <span class="formButton">
-                  <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
-                </span>
-              </li>
-            </ol>
-          </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
+        </richui:tabContent>
+      </richui:tabContents>
+    </richui:tabView>
     <input type="hidden" id="units" name="units"/>
 
     <script>
-      (function() {
-        var tabView = new YAHOO.widget.TabView('demo');
+      (function()
+      {
+        var tabView = new YAHOO.widget.TabView( 'demo' );
 
-        var tab0 = tabView.getTab(0);
-        var tab1 = tabView.getTab(1);
-        var tab2 = tabView.getTab(2);
+        var tab0 = tabView.getTab( 0 );
+        var tab1 = tabView.getTab( 1 );
+        var tab2 = tabView.getTab( 2 );
 
-        function handleClickDd(e) {
-          $("units").value = "DD";
+        function handleClickDd( e )
+        {
+          $( "units" ).value = "DD";
         }
 
-        function handleClickDms(e) {
-          $("units").value = "DMS";
+        function handleClickDms( e )
+        {
+          $( "units" ).value = "DMS";
         }
 
-        function handleClickMgrs(e) {
-          $("units").value = "MGRS";
+        function handleClickMgrs( e )
+        {
+          $( "units" ).value = "MGRS";
         }
 
-        tab0.addListener('click', handleClickDd);
-        tab1.addListener('click', handleClickDms);
-        tab2.addListener('click', handleClickMgrs);
+        tab0.addListener( 'click', handleClickDd );
+        tab1.addListener( 'click', handleClickDms );
+        tab2.addListener( 'click', handleClickMgrs );
       })();
     </script>
-
+    
     <style type="text/css">
-      div.datechooser { display:none; position:absolute; left:10px; top:10px; z-index:2}
-      div.datechooser table.yui-calendar { width: 150px;}
+    div.datechooser {
+      display: none;
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      z-index: 2
+    }
+
+    div.datechooser table.yui-calendar {
+      width: 150px;
+    }
     </style>
 
     <div class="niceBox">
@@ -566,8 +580,9 @@
   </div>
 
   <script>
-    (function() {
-      var tabView = new YAHOO.widget.TabView('demo2');
+    (function()
+    {
+      var tabView = new YAHOO.widget.TabView( 'demo2' );
     })();
   </script>
 </content>
