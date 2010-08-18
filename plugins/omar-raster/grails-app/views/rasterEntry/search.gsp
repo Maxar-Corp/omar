@@ -82,7 +82,7 @@
 
 </head>
 
-<body onload="init();" onresize="mapWidget.changeMapSize();">
+<body onLoad="init();" onresize="mapWidget.changeMapSize();">
 
 <content tag="top">
 
@@ -235,7 +235,7 @@
               <div class="niceBoxBody">
                 <ol>
                   <li>
-                    <g:checkBox name="searchMethod" id="radiusSearchButton2" onclick="mapWidget.togglePointRadiusCheckBox()"/>
+                    <g:checkBox name="searchMethod2" id="radiusSearchButton2" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
                     <label>Use Radius Search</label>
                   </li>
                   <li><br/></li>
@@ -272,7 +272,7 @@
               <div class="niceBoxBody">
                 <ol>
                   <li>
-                    <g:checkBox name="searchMethod" id="bboxSearchButton2" onclick="mapWidget.toggleBboxCheckBox()"/>
+                    <g:checkBox name="searchMethod2" id="bboxSearchButton2" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
                     <label>Use BBox Search</label>
                   </li>
                   <li><br/></li>
@@ -318,7 +318,7 @@
               <div class="niceBoxBody">
                 <ol>
                   <li>
-                    <g:checkBox name="searchMethod" id="radiusSearchButton3" onclick="mapWidget.togglePointRadiusCheckBox()"/>
+                    <g:checkBox name="searchMethod3" id="radiusSearchButton3" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
                     <label>Use Radius Search</label>
                   </li>
                   <li><br/></li>
@@ -349,7 +349,7 @@
               <div class="niceBoxBody">
                 <ol>
                   <li>
-                    <g:checkBox name="searchMethod" id="bboxSearchButton3" onclick="mapWidget.toggleBboxCheckBox()"/>
+                    <g:checkBox name="searchMethod3" id="bboxSearchButton3" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
                     <label>Use BBox Search</label>
                   </li>
                   <li><br/></li>
@@ -690,7 +690,7 @@
             {isBaseLayer: true, buffer: 0,transitionEffect: "resize"});
 
             mapWidget.setupBaseLayers(baseLayer);
-  </g:each>
+         </g:each>
     };
 
     mapWidget.setupMapWidget();
@@ -708,10 +708,22 @@
     var minLat = ${queryParams?.aoiMinLat ?: 'null'};
     var maxLon = ${queryParams?.aoiMaxLon ?: 'null'};
     var maxLat = ${queryParams?.aoiMaxLat ?: 'null'};
-
+     alert ("SEARCH METHOD ${queryParams.searchMethod}");
     if ( minLon && minLat && maxLon && maxLat)
     {
       mapWidget.initAOI(minLon, minLat, maxLon, maxLat);
+    }
+    if("${queryParams.searchMethod}" == "BBOX")
+    {
+       mapWidget.toggleBboxCheckBox()
+    }
+    else if("${queryParams.searchMethod}" == "RADIUS")
+    {
+       mapWidget.togglePointRadiusCheckBox()
+    }
+    else
+    {
+       mapWidget.toggleBboxCheckBox()
     }
 
     updateOmarFilters();
