@@ -120,14 +120,15 @@ class BaseQuery
       break
 
     case RADIUS_SEARCH:
-      if ( centerLon && centerLat && aoiRadius )
+      def defaultRadius = aoiRadius?:"0"
+      if ( centerLon && centerLat)
       {
         def coordinateConversionService = new CoordinateConversionService()
 
         centerLat = coordinateConversionService.convertToDecimalDegrees(centerLat)
         centerLon = coordinateConversionService.convertToDecimalDegrees(centerLon)
 
-        wkt = coordinateConversionService.computePointRadiusWKT(centerLon, centerLat, aoiRadius)
+        wkt = coordinateConversionService.computePointRadiusWKT(centerLon, centerLat, defaultRadius)
       }
       break
     }
