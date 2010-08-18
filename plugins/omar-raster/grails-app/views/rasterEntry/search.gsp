@@ -82,7 +82,7 @@
 
 </head>
 
-<body onLoad="init();" onresize="mapWidget.changeMapSize();">
+<body  class="yui-skin-sam" onLoad="init();" onresize="mapWidget.changeMapSize();">
 
 <content tag="top">
 
