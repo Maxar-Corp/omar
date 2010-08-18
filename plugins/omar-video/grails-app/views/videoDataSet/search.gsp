@@ -135,7 +135,7 @@
 
 </head>
 
-<body onload="init();" onresize="mapWidget.changeMapSize();">
+<body  class="yui-skin-sam" onload="init();" onresize="mapWidget.changeMapSize();">
 
 <content tag="top">
   <table>
