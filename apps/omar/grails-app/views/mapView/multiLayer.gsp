@@ -64,9 +64,6 @@
 
   </style>
 
-  <openlayers:loadJavascript/>
-
-  <g:javascript plugin="omar-core" src="touch.js"/>
 </head>
 <body>
 <content tag="north">
@@ -107,6 +104,9 @@
   <div id="map"></div>
 </content>
 <content tag="south">
+  <openlayers:loadJavascript/>
+  <g:javascript plugin="omar-core" src="touch.js"/>
+
   <g:javascript>
     var map;
 
