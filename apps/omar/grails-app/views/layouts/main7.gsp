@@ -19,14 +19,6 @@
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/layout/assets/skins/sam', file: 'layout.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
 
-  <g:javascript plugin='richui' src="yui/yahoo/yahoo-min.js"/>
-  <g:javascript plugin='richui' src="yui/event/event-min.js"/>
-  <g:javascript plugin='richui' src="yui/dom/dom-min.js"/>
-  <g:javascript plugin='richui' src="yui/element/element-min.js"/>
-  <g:javascript plugin='richui' src="yui/dragdrop/dragdrop-min.js"/>
-  <g:javascript plugin='richui' src="yui/resize/resize-min.js"/>
-  <g:javascript plugin='richui' src="yui/animation/animation-min.js"/>
-  <g:javascript plugin='richui' src="yui/layout/layout-min.js"/>
 
   <style>
     /*
@@ -55,7 +47,6 @@
   </style>
 
   <g:layoutHead/>
-  <g:javascript library="application"/>
 </head>
 <body class="yui-skin-sam">
 
@@ -67,8 +58,8 @@
 </div>
 <div id="content">
   <div id="north">
-	<div id="hd">
-    <img id="logo" src="${resource(dir: 'images', file: 'OMARLarge.png')}" alt="OMAR-2.0 Logo"/>
+    <div id="hd">
+      <img id="logo" src="${resource(dir: 'images', file: 'OMARLarge.png')}" alt="OMAR-2.0 Logo"/>
     </div>
     <g:pageProperty name="page.north"/>
   </div>
@@ -81,6 +72,14 @@
 </div>
 
 </body>
+<g:javascript library="application"/>
+<g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
+<g:javascript plugin='richui' src="yui/element/element-min.js"/>
+<g:javascript plugin='richui' src="yui/dragdrop/dragdrop-min.js"/>
+<g:javascript plugin='richui' src="yui/resize/resize-min.js"/>
+<g:javascript plugin='richui' src="yui/animation/animation-min.js"/>
+<g:javascript plugin='richui' src="yui/layout/layout-min.js"/>
+
 <g:javascript>
   (function()
   {
@@ -156,14 +155,14 @@
         } );
 
 
-        innerLayout.render( );
+        innerLayout.render();
       } );
 
 
-      outerLayout.render( );
+      outerLayout.render();
     } );
 
-  })( );
+  })();
 </g:javascript>
 
 </html>

@@ -64,11 +64,6 @@
   }
 
   </style>
-
-  <openlayers:loadJavascript/>
-  <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
-
-  <g:javascript plugin="omar-core" src="touch.js"/>
 </head>
 <body>
 
@@ -148,6 +143,11 @@
       </table>
     </div>
   </div>
+
+  <openlayers:loadJavascript/>
+  <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
+  <g:javascript plugin="omar-core" src="touch.js"/>
+
   <g:javascript>
   var map;
   var rasterLayers;

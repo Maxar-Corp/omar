@@ -46,7 +46,6 @@
     list-style: none;
   }  </style>
 
-  <openlayers:loadJavascript/>
 </head>
 <body>
 <content tag="north">
@@ -75,6 +74,7 @@
   </g:if>
   --%>
   <div id="map"></div>
+  <openlayers:loadJavascript/>  
   <g:javascript>
   var map;
   var layer;
