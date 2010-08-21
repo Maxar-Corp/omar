@@ -115,6 +115,32 @@
       <label>Terrain Correction:</label>
       <g:select id="terrain_correction" name="terrain_correction" from="${['false', 'true']}" onChange="changeTerrainCorrectionOps()"/>
     </span>
+    
+    <span class="menuButton">
+      <label>Band Selection:</label>
+
+      <g:if test="${rasterEntries.numberOfBands == [6]}">
+        <g:select id="band_order" name="band_order" from="${['0,1,2,3,4,5','0','1','2','3','4','5']}" onChange="changeBandSelection()"/>
+      </g:if>
+
+      <g:if test="${rasterEntries.numberOfBands == [4]}">
+        <g:select id="band_order" name="band_order" from="${['0,1,2,3','0','1','2','3']}" onChange="changeBandSelection()"/>
+      </g:if>
+
+      <g:if test="${rasterEntries.numberOfBands == [3]}">
+        <g:select id="band_order" name="band_order" from="${['0,1,2','0','1','2']}" onChange="changeBandSelection()"/>
+      </g:if>
+
+      <g:if test="${rasterEntries.numberOfBands == [2]}">
+        <g:select id="band_order" name="band_order" from="${['0,1','0','1']}" onChange="changeBandSelection()"/>
+      </g:if>
+
+      <g:if test="${rasterEntries.numberOfBands == [1]}">
+        <g:select id="band_order" name="band_order" from="${['0']}" onChange="changeBandSelection()"/>
+      </g:if>
+
+      </span>
+
     <%--
       <div id="panel2" class="olControlPanel"></div>
     --%>
@@ -292,7 +318,7 @@
     var stretch_mode_region = $("stretch_mode_region").value;
     var sharpen_mode = $("sharpen_mode").value;
 
-     rasterLayers = [
+      rasterLayers = [
       new OpenLayers.Layer.WMS( "Raster", "${createLink(controller: 'ogc', action: 'wms')}",
       { layers: "${(rasterEntries*.imageId).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
       {isBaseLayer: true, buffer:0, singleTile:true, ratio:1.0, terrain_correction:false, transitionEffect: "resize",
@@ -330,10 +356,6 @@
     select.activate();
 
     </g:each>
-
-
-
-
     }
 
 function onPopupClose(evt)
@@ -395,8 +417,17 @@ function onFeatureSelect(event)
       rasterLayers[layer].mergeNewParams({sharpen_mode:sharpen_mode});
     }
   }
+  function changeBandSelection()
+  {
+      var band_order = $("band_order").value;
 
-    function zoomIn()
+      for ( var layer in rasterLayers )
+      {
+        rasterLayers[layer].mergeNewParams({bands:band_order});
+      }
+  }
+
+  function zoomIn()
     {
       map.zoomIn();
     }
