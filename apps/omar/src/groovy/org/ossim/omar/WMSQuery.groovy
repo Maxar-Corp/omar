@@ -89,7 +89,8 @@ class WMSQuery extends BaseQuery
       }
       catch (java.lang.Exception e)
       {
-        disj.add(Restrictions.like('imageId', name))
+        disj.add(Restrictions.eq('imageId', name))
+        disj.add(Restrictions.eq('indexId', name))
       }
     }
     result.add(disj)

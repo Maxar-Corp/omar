@@ -220,20 +220,21 @@ class OgcController
         //  def kml = webMappingService.getKML(wmsRequest, serviceAddress)
         def filename = "image.kml"
         def rasterEntries = RasterEntry.createCriteria().list() {
-                                   or {
-                                     rasterIdList.each() {name ->
-                                       try
-                                       {
-                                         eq('id', java.lang.Long.valueOf(name))
-                                       }
-                                       catch (java.lang.Exception e)
-                                       {
-                                         eq('title', name)
-                                         eq('imageId', name)
-                                       }
-                                     }
-                                   }
-                           }
+          rasterIdList.each() {name ->
+            try
+            {
+              eq('id', java.lang.Long.valueOf(name))
+            }
+            catch (java.lang.Exception e)
+            {
+              or
+              {
+                eq('indexId', name)
+                eq('imageId', name)
+              }
+            }
+          }
+          }
         if(rasterEntries.size>0)
         {
             def file = (rasterEntries[0].mainFile.name as File).name

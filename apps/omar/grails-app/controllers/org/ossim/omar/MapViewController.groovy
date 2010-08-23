@@ -20,7 +20,15 @@ class MapViewController implements InitializingBean
   }
 
   def index = {
+    WMSQuery query = new WMSQuery();
+    def rasterEntries = []
+    if(params.rasterEntryIds)
+    {
+      query.layers = params.rasterEntryIds
 
+      rasterEntries = query.getRasterEntriesAsList()
+    }
+    /*
     def rasterEntryIds = params.rasterEntryIds?.split(',')
     def rasterEntries = RasterEntry.withCriteria {
       or
@@ -31,7 +39,7 @@ class MapViewController implements InitializingBean
           }
           catch(Exception e)
           {
-            eq("imageId", id)
+            eq("indexId", id)
           }
         }
       }
@@ -40,7 +48,7 @@ class MapViewController implements InitializingBean
 //        inList("imageId", rasterEntryIds)
 //      }
     }
-
+    */
     def kmlOverlays = []
 
     rasterEntries.each { rasterEntry ->
@@ -98,12 +106,14 @@ class MapViewController implements InitializingBean
 
   def multiLayer = {
 
-    def rasterEntryIds = params.rasterEntryIds?.split(',')?.collect { it.toLong() }
+    WMSQuery query = new WMSQuery();
+    def rasterEntries = []
+    if(params.layers)
+    {
+      query.layers = params.layers
 
-    def rasterEntries = RasterEntry.withCriteria {
-      inList("id", rasterEntryIds)
+      rasterEntries = query.getRasterEntriesAsList()
     }
-    
     def kmlOverlays = []
 
     rasterEntries.each { rasterEntry ->
@@ -130,7 +140,7 @@ class MapViewController implements InitializingBean
   def imageSpace = {
     //println params
 
-    def rasterEntry = RasterEntry.get(params.id)
+    def rasterEntry = RasterEntry.findByIndexId(params.layers)?:RasterEntry.get(params.layers)
 
     def inputFile = rasterEntry.mainFile.name
     def width

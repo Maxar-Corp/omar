@@ -26,6 +26,7 @@ class RasterEntry
   Integer bitDepth
   String dataType
   String tiePointSet
+  String indexId
 
   /** **************** BEGIN ADDING TAGS FROM MetaData to here  ******************/
   String imageId
@@ -74,6 +75,7 @@ class RasterEntry
     columns {
       tiePointSet type: 'text'
 
+      indexId index: 'raster_entry_index_id_idx'
       imageId index: 'raster_entry_image_id_idx'
       targetId index: 'raster_entry_target_id_idx'
       productId index: 'raster_entry_product_id_idx'
@@ -113,6 +115,7 @@ class RasterEntry
 
     tiePointSet(nullable: true)
 
+    indexId(nullable:false, unique:true, blank: false)
     imageId(nullable: true, blank: false/*, unique: true*/)
     targetId(nullable: true)
     productId(nullable: true)
@@ -144,6 +147,16 @@ class RasterEntry
     if ( !ingestDate )
     {
       ingestDate = new DateTime();
+      if(!indexId)
+      {
+        def mainFile = rasterEntry.rasterDataSet.getFileFromObjects("main")
+        if(mainFile)
+        {
+          def value = "${entryId}-${mainFile}"
+          println "============================="
+          indexId = mainFile.omarIndexId;
+        }
+      }
     }
   }
 
@@ -251,19 +264,14 @@ class RasterEntry
     initRasterEntryMetadata(metadataNode, rasterEntry)
     initRasterEntryOtherTagsXml(rasterEntry)
 
-    if ( !rasterEntry.imageId )
+    def mainFile = rasterEntry.rasterDataSet.getFileFromObjects("main")
+    def filename = mainFile?.name
+    if(!rasterEntry.indexId)
     {
-      def mainFile = rasterEntry.rasterDataSet.getFileFromObjects("main")
-      if(mainFile)
-      {
-        def filename = mainFile.name
-        filename = filename.replaceAll("/|\\\\", "_")
-        rasterEntry.imageId = "${rasterEntry.entryId}-${filename}"
-      }
+      rasterEntry.indexId = "${rasterEntry.entryId}-${filename}".encodeAsSHA256()
     }
     return rasterEntry
   }
-
   static Geometry initGroundGeom(def groundGeomNode)
   {
     def wkt = groundGeomNode?.toString().trim()
@@ -339,7 +347,7 @@ class RasterEntry
           switch ( name.toLowerCase() )
           {
           case "imageid":
-          case "iid2":
+          case "iid":
             if(value)
             {
               rasterEntry.imageId = value
@@ -385,6 +393,7 @@ class RasterEntry
             break;
           case "title":
           case "ititle":
+          case "iid2":
             if(value)
             {
               rasterEntry.title = value
