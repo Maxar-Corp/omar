@@ -43,7 +43,7 @@
   </span>
 
   <span class="menuButton">
-    <a href="${createLink(controller: "mapView", action: "index", params: [rasterEntryIds: rasterEntry?.id])}">
+    <a href="${createLink(controller: "mapView", action: "index", params: [layers: rasterEntry?.indexId])}">
       Ground Space
       </a>
   </span>
