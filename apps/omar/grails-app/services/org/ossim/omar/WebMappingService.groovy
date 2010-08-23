@@ -138,7 +138,7 @@ class WebMappingService
   {
     RenderedImage image = null
     def enableOMS = true
-    def terrainCorrectionFlagString = wmsRequest?.terrain_correction ?: "false"
+    def quickLookFlagString = wmsRequest?.quick_look ?: "true"
     def sharpenMode = wmsRequest?.sharpen_mode ?: ""
     def sharpenWidth = wmsRequest?.sharpen_width ?: ""
     def sharpenSigma = wmsRequest?.sharpen_sigma ?: ""
@@ -234,7 +234,7 @@ class WebMappingService
         sharpenWidth = "5"
         sharpenSigma = "1"
       }
-      def terrainCorrectionFlag = Boolean.valueOf(terrainCorrectionFlagString)
+      def quickLookFlag = Boolean.valueOf(quickLookFlagString)
       def rasterEntries  = new WMSQuery().caseInsensitiveBind(wmsRequest.toMap()).rasterEntriesAsList
       rasterEntries.each { rasterEntry ->
         def geom = (ossimImageGeometry) null
@@ -254,7 +254,7 @@ class WebMappingService
           else
           {
             double scaleCheck = 1.0
-            if ( !terrainCorrectionFlag )
+            if ( quickLookFlag )
             {
               geomPtr = createModelFromTiePointSet(rasterEntry);
               if ( geomPtr != null )

@@ -22,9 +22,9 @@ class MapViewController implements InitializingBean
   def index = {
     WMSQuery query = new WMSQuery();
     def rasterEntries = []
-    if(params.rasterEntryIds)
+    if(params.layers)
     {
-      query.layers = params.rasterEntryIds
+      query.layers = params.layers
 
       rasterEntries = query.getRasterEntriesAsList()
     }
