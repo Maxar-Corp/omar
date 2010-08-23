@@ -234,6 +234,7 @@ class WebMappingService
         sharpenWidth = "5"
         sharpenSigma = "1"
       }
+      def bandSelectorCount = bands?bands.split(",").length:0
       def quickLookFlag = Boolean.valueOf(quickLookFlagString)
       def rasterEntries  = new WMSQuery().caseInsensitiveBind(wmsRequest.toMap()).rasterEntriesAsList
       rasterEntries.each { rasterEntry ->
@@ -299,6 +300,17 @@ class WebMappingService
             geom = (ossimImageGeometry) null
             geomPtr = (ossimImageGeometryPtr) null
           }
+        }
+      }
+      if(bandSelectorCount>0)
+      {
+        if(bandSelectorCount >= 3)
+        {
+          viewableBandCount = 3;
+        }
+        else
+        {
+          viewableBandCount = 1;
         }
       }
       int pixelStride = viewableBandCount
