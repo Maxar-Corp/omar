@@ -9,7 +9,7 @@
 <%@ page import="org.ossim.omar.BaseQuery; org.ossim.omar.VideoDataSetQuery; org.ossim.omar.VideoDataSetSearchTag" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>OMAR - Raster Search</title>
+  <title>OMAR - Video Search</title>
   <meta name="layout" content="main9"/>
 
   <style type="text/css">
