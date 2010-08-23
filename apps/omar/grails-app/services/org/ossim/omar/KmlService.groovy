@@ -34,7 +34,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
               Bands: rasterEntry.numberOfBands,
               Acquistion_Date: rasterEntry.acquisitionDate,
               Meters_per_pixel: mpp]
-      def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [rasterEntryIds: rasterEntry.indexId])
+      def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [layers: rasterEntry.indexId])
 
       def descriptionBuilder = new StreamingMarkupBuilder().bind {
         body() {
@@ -200,7 +200,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
               Bands: rasterEntry.numberOfBands,
               Acquistion_Date: rasterEntry?.acquisitionDate,
               Meters_per_pixel: mpp]
-      def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [rasterEntryIds: rasterEntry.indexId])
+      def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [layers: rasterEntry.indexId])
 
       def descriptionBuilder = new StreamingMarkupBuilder().bind {
         body() {
