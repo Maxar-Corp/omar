@@ -77,8 +77,11 @@ class KmlService implements ApplicationContextAware, InitializingBean
     wmsParams?.transparent = "TRUE"
     wmsParams?.format = "image/png"
     kmlbuilder.encoding = "UTF-8"
+
     def bbox = wmsParams?.bbox;
+
     wmsParams?.remove("bbox");
+    
     def kmlnode = {
       mkp.xmlDeclaration()
       kml("xmlns": "http://earth.google.com/kml/2.1") {
@@ -87,9 +90,9 @@ class KmlService implements ApplicationContextAware, InitializingBean
           rasterEntries?.each {rasterEntry ->
             wmsParams?.layers = "${rasterEntry?.indexId}"
             def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
-
-            def groundCenterLon = (rasterEntry?.groundGeom?.bounds?.minLon + rasterEntry?.groundGeom?.bounds?.maxLon) * 0.5;
-            def groundCenterLat = (rasterEntry?.groundGeom?.bounds?.minLat + rasterEntry?.groundGeom?.bounds?.maxLat) * 0.5;
+            def bounds = rasterEntry?.groundGeom?.bounds
+            def groundCenterLon = (bounds?.minLon + bounds?.maxLon) * 0.5;
+            def groundCenterLat = (bounds?.minLat + bounds?.maxLat) * 0.5;
 
             def renderedHtml = "${descriptionMap.get(rasterIdx)}"
             rasterIdx++
@@ -128,7 +131,6 @@ class KmlService implements ApplicationContextAware, InitializingBean
                 }
                 else
                 {
-                  def bounds = rasterEntry?.groundGeom?.bounds
                   north(bounds?.maxLat)
                   south(bounds?.minLat)
                   east(bounds?.maxLon)
@@ -236,9 +238,9 @@ class KmlService implements ApplicationContextAware, InitializingBean
           rasterIdx = 0
           rasterEntries?.each {rasterEntry ->
             def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
-
-            def groundCenterLon = (rasterEntry?.groundGeom?.bounds?.minLon + rasterEntry?.groundGeom?.bounds?.maxLon) * 0.5;
-            def groundCenterLat = (rasterEntry?.groundGeom?.bounds?.minLat + rasterEntry?.groundGeom?.bounds?.maxLat) * 0.5;
+            def bounds = rasterEntry?.groundGeom?.bounds
+            def groundCenterLon = (bounds?.minLon + bounds?.maxLon) * 0.5;
+            def groundCenterLat = (bounds?.minLat + bounds?.maxLat) * 0.5;
             wmsParams?.layers = rasterEntry?.indexId
 
             def renderedHtml = "${descriptionMap.get(rasterIdx)}"
@@ -247,7 +249,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
             GroundOverlay() {
               name((rasterEntry.mainFile.name as File).name)
               Snippet(maxLines: "0", "")
-              description(renderedHtml)
+              description { mkp.yieldUnescaped("<![CDATA[${renderedHtml}]]>") }
               LookAt() {
                 longitude(groundCenterLon)
                 latitude(groundCenterLat)
@@ -262,7 +264,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
               Icon() {
                 def wmsURL = tagLibBean.createLink(absolute: true, controller: "ogc", action: "wms", params: wmsParams)
 
-                href(wmsURL)
+                href { mkp.yieldUnescaped("<![CDATA[${wmsURL}]]>") }
                 viewRefreshMode("onStop")
                 viewRefreshTime("1")
                 viewBoundScale("0.85")
@@ -278,7 +280,6 @@ class KmlService implements ApplicationContextAware, InitializingBean
                 }
                 else
                 {
-                  def bounds = rasterEntry?.groundGeom?.bounds
                   north(bounds?.maxLat)
                   south(bounds?.minLat)
                   east(bounds?.maxLon)
