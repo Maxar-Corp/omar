@@ -33,6 +33,8 @@
             <thead>
             <tr>
 
+              <th>Thumbnail</th>
+              
               <g:sortableColumn property="id" title="Id" params="${[rasterDataSetId:params.rasterDataSetId]}"/>
 
               <g:sortableColumn property="entryId" title="Entry Id" params="${[rasterDataSetId:params.rasterDataSetId]}"/>
@@ -52,13 +54,17 @@
               <th>Min Lat</th>
               <th>Max Lon</th>
               <th>Max Lat</th>
-              <th>Thumbnail</th>
 
             </tr>
             </thead>
             <tbody>
             <g:each in="${rasterEntryList}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                  <img src="${createLink(controller: 'thumbnail', action: 'show', params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
+                </a></td>
+                
 
                 <td><g:link action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
 
@@ -81,10 +87,6 @@
                 <td>${bounds?.maxLon?.encodeAsHTML()}</td>
                 <td>${bounds?.maxLat?.encodeAsHTML()}</td>
 
-                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
-                </a></td>
-
               </tr>
             </g:each>
             </tbody>
@@ -97,16 +99,21 @@
             <thead>
             <tr>
 
+              <th>Thumbnail</th>
+              
               <g:sortableColumn property="id" title="Id" params="${[rasterDataSetId:params.rasterDataSetId]}"/>
 
               <th>Filename</th>
-              <th>Thumbnail</th>
 
             </tr>
             </thead>
             <tbody>
             <g:each in="${rasterEntryList}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                  <img src="${createLink(controller: 'thumbnail', action: 'show', params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
+                </a></td>                
 
                 <td><g:link action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
 
@@ -121,10 +128,6 @@
                     </a>
                   </g:ifAllGranted>
                 </td>
-
-                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
-                </a></td>
 
               </tr>
             </g:each>

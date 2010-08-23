@@ -70,79 +70,26 @@
     float: left;
     margin: 5px;
   }
+
+  div.datechooser {
+    display: none;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index: 2
+  }
+
+  div.datechooser table.yui-calendar {
+    width: 150px;
+  }
+
+
   </style>
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
-  <openlayers:loadJavascript/>
   <resource:include components="dateChooser, tabView"/>
 
-  <g:javascript plugin="omar-core" src="mapwidget.js"/>
-  <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
-
-  <g:javascript>
-    var mapWidget = new MapWidget();
-
-    function init()
-    {
-      var setupBaseLayers = function()
-      {
-        var baseLayer = null;
-
-        <g:each var="foo" in="${baseWMS}">
-    baseLayer = new OpenLayers.Layer.WMS("${foo.title}", "${foo.url}",
-            {layers: "${foo.layers}", format: "${foo.format}"},
-            {isBaseLayer: true, buffer: 0,transitionEffect: "resize"});
-
-            mapWidget.setupBaseLayers(baseLayer);
-  </g:each>
-    };
-    mapWidget.setupMapWidget();
-    setupBaseLayers();
-    mapWidget.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
-    mapWidget.changeMapSize();
-    mapWidget.setupAoiLayer();
-    mapWidget.setupToolBar();
-    mapWidget.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
-   // mapWidget.setupQueryFields("${queryParams.searchMethod}");
-
-    var minLon = ${queryParams?.aoiMinLon ?: 'null'};
-    var minLat = ${queryParams?.aoiMinLat ?: 'null'};
-    var maxLon = ${queryParams?.aoiMaxLon ?: 'null'};
-    var maxLat = ${queryParams?.aoiMaxLat ?: 'null'};
-
-    if ( minLon && minLat && maxLon && maxLat)
-    {
-      mapWidget.initAOI(minLon, minLat, maxLon, maxLat);
-    }
-    if("${queryParams.searchMethod}" == "BBOX")
-    {
-       mapWidget.toggleBboxCheckBox()
-    }
-    else if("${queryParams.searchMethod}" == "RADIUS")
-    {
-       mapWidget.togglePointRadiusCheckBox()
-    }
-    else
-    {
-       mapWidget.toggleBboxCheckBox()
-    }
- 
-    updateOmarFilters();
-  }
-
-  function updateOmarFilters()
-  {
-    var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
-    var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
-
-    mapWidget.updateOmarFilters(
-        $("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value,
-        $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value,
-        numberOfNames, numberOfValues
-        );
-  }
-  </g:javascript>
 
 </head>
 
@@ -431,49 +378,37 @@
     </richui:tabView>
     <input type="hidden" id="units" name="units"/>
 
-    <script>
-      (function()
-      {
-        var tabView = new YAHOO.widget.TabView( 'demo' );
-
-        var tab0 = tabView.getTab( 0 );
-        var tab1 = tabView.getTab( 1 );
-        var tab2 = tabView.getTab( 2 );
-
-        function handleClickDd( e )
+  <%--
+      <script>
+        (function()
         {
-          $( "units" ).value = "DD";
-        }
+          var tabView = new YAHOO.widget.TabView( 'demo' );
 
-        function handleClickDms( e )
-        {
-          $( "units" ).value = "DMS";
-        }
+          var tab0 = tabView.getTab( 0 );
+          var tab1 = tabView.getTab( 1 );
+          var tab2 = tabView.getTab( 2 );
 
-        function handleClickMgrs( e )
-        {
-          $( "units" ).value = "MGRS";
-        }
+          function handleClickDd( e )
+          {
+            $( "units" ).value = "DD";
+          }
 
-        tab0.addListener( 'click', handleClickDd );
-        tab1.addListener( 'click', handleClickDms );
-        tab2.addListener( 'click', handleClickMgrs );
-      })();
-    </script>
-    
-    <style type="text/css">
-    div.datechooser {
-      display: none;
-      position: absolute;
-      left: 10px;
-      top: 10px;
-      z-index: 2
-    }
+          function handleClickDms( e )
+          {
+            $( "units" ).value = "DMS";
+          }
 
-    div.datechooser table.yui-calendar {
-      width: 150px;
-    }
-    </style>
+          function handleClickMgrs( e )
+          {
+            $( "units" ).value = "MGRS";
+          }
+
+          tab0.addListener( 'click', handleClickDd );
+          tab1.addListener( 'click', handleClickDms );
+          tab2.addListener( 'click', handleClickMgrs );
+        })();
+      </script>
+  --%>
 
     <div class="niceBox">
       <div class="niceBoxHd">Temporal Criteria:</div>
@@ -503,11 +438,11 @@
         <ol>
           <g:each in="${queryParams?.searchTagValues}" var="searchTagValue" status="i">
             <g:select
-                    noSelection="${['null':'Select One...']}"
-                    name="searchTagNames[${i}]"
-                    value="${queryParams?.searchTagNames[i]}"
-                    from="${VideoDataSetSearchTag.list()}"
-                    optionKey="name" optionValue="description"/>
+                noSelection="${['null':'Select One...']}"
+                name="searchTagNames[${i}]"
+                value="${queryParams?.searchTagNames[i]}"
+                from="${VideoDataSetSearchTag.list()}"
+                optionKey="name" optionValue="description"/>
             </li>
             <li>
               <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
@@ -554,48 +489,113 @@
 </content>
 
 <content tag="bottom">
-  <div id="demo2" class="yui-navset">
-    <ul class="yui-nav">
-      <li class="selected"><a href="#tab1"><em>Mouse Hover</em></a></li>
-      <li><a href="#tab2"><em>Mouse Click</em></a></li>
-    </ul>
 
-    <div class="yui-content">
+  <richui:tabView id="demo2">
 
-      <div id="tab1">
-        <font size=-2>
-          <table borderColor=transparent>
-            <tr>
-              <td width=200><div id="mouseHoverDdOutput"></div></td>
-              <td width=200><div id="mouseHoverDmsOutput"></div></td>
-              <td width=200><div id="mouseHoverMgrsOutput"></div></td>
-            </tr>
-          </table>
-        </font>
-      </div>
+    <richui:tabLabels>
+      <richui:tabLabel selected="true" title="Mouse Hover"/>
+      <richui:tabLabel title="Mouse Click"/>
+    </richui:tabLabels>
 
-      <div id="tab2">
-        <font size=-2>
-          <table borderColor=transparent>
-            <tr>
-              <td width=200><div id="mouseClickDdOutput">Select the pan button and click on the map.</div></td>
-              <td width=200><div id="mouseClickDmsOutput"></div></td>
-              <td width=200><div id="mouseClickMgrsOutput"></div></td>
+    <richui:tabContents>
+      <richui:tabContent>
+        <div id="tab1">
+          <font size=-2>
+            <table borderColor=transparent>
+              <tr>
+                <td width=200><div id="mouseHoverDdOutput"></div></td>
+                <td width=200><div id="mouseHoverDmsOutput"></div></td>
+                <td width=200><div id="mouseHoverMgrsOutput"></div></td>
+              </tr>
+            </table>
+          </font>
+        </div>
+      </richui:tabContent>
+      <richui:tabContent>
+        <div id="tab2">
+          <font size=-2>
+            <table borderColor=transparent>
+              <tr>
+                <td width=200><div id="mouseClickDdOutput">Select the pan button and click on the map.</div></td>
+                <td width=200><div id="mouseClickDmsOutput"></div></td>
+                <td width=200><div id="mouseClickMgrsOutput"></div></td>
 
-            </tr>
-          </table>
-        </font>
-      </div>
+              </tr>
+            </table>
+          </font>
+        </div>
+      </richui:tabContent>
+    </richui:tabContents>
+  </richui:tabView>
 
-    </div>
-  </div>
+  <openlayers:loadJavascript/>
+  <g:javascript plugin="omar-core" src="mapwidget.js"/>
+  <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
 
-  <script>
-    (function()
+  <g:javascript>
+    var mapWidget = new MapWidget();
+
+    function init()
     {
-      var tabView = new YAHOO.widget.TabView( 'demo2' );
-    })();
-  </script>
+      var setupBaseLayers = function()
+      {
+        var baseLayer = null;
+
+        <g:each var="foo" in="${baseWMS}">
+    baseLayer = new OpenLayers.Layer.WMS("${foo.title}", "${foo.url}",
+            {layers: "${foo.layers}", format: "${foo.format}"},
+            {isBaseLayer: true, buffer: 0,transitionEffect: "resize"});
+
+            mapWidget.setupBaseLayers(baseLayer);
+  </g:each>
+    };
+    mapWidget.setupMapWidget();
+    setupBaseLayers();
+    mapWidget.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
+    mapWidget.changeMapSize();
+    mapWidget.setupAoiLayer();
+    mapWidget.setupToolBar();
+    mapWidget.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
+   // mapWidget.setupQueryFields("${queryParams.searchMethod}");
+
+    var minLon = ${queryParams?.aoiMinLon ?: 'null'};
+    var minLat = ${queryParams?.aoiMinLat ?: 'null'};
+    var maxLon = ${queryParams?.aoiMaxLon ?: 'null'};
+    var maxLat = ${queryParams?.aoiMaxLat ?: 'null'};
+
+    if ( minLon && minLat && maxLon && maxLat)
+    {
+      mapWidget.initAOI(minLon, minLat, maxLon, maxLat);
+    }
+    if("${queryParams.searchMethod}" == "BBOX")
+    {
+       mapWidget.toggleBboxCheckBox()
+    }
+    else if("${queryParams.searchMethod}" == "RADIUS")
+    {
+       mapWidget.togglePointRadiusCheckBox()
+    }
+    else
+    {
+       mapWidget.toggleBboxCheckBox()
+    }
+
+    updateOmarFilters();
+  }
+
+  function updateOmarFilters()
+  {
+    var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
+    var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
+
+    mapWidget.updateOmarFilters(
+        $("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value,
+        $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value,
+        numberOfNames, numberOfValues
+        );
+  }
+  </g:javascript>
+  
 </content>
 
 </body>

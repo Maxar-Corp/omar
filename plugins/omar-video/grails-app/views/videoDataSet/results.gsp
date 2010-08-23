@@ -61,6 +61,8 @@
             <thead>
             <tr>
 
+              <th>Thumbnail</th>
+
               <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
 
               <%--
@@ -82,12 +84,15 @@
               <th>Min Lat</th>
               <th>Max Lon</th>
               <th>Max Lat</th>
-              <th>Thumbnail</th>
             </tr>
             </thead>
             <tbody>
             <g:each in="${videoDataSets}" status="i" var="videoDataSet">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+
+                <td><a href="${createLink(controller: 'videoStreaming', action: 'show', params: [id: videoDataSet.indexId])}">
+                  <img src="${createLink(controller: 'thumbnail', action: 'frame', params: [id: videoDataSet.indexId, size: 128])}" alt="Show Frame"/>
+                </a></td>
 
                 <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
 
@@ -109,12 +114,6 @@
                 <td>${videoDataSet.groundGeom?.encodeAsHTML()}</td>
                 --%>
 
-                <td>
-                  <a href="${createLink(controller: 'videoStreaming', action: 'show', params: [id:videoDataSet.indexId])}">
-                    <img src="${createLink(controller: 'thumbnail', action: 'frame', params: [id: videoDataSet.indexId, size: 128])}" alt="Show Frame"/>
-                  </a>
-
-                </td>
               </tr>
             </g:each>
             </tbody>
@@ -126,15 +125,17 @@
           <table>
             <thead>
             <tr>
-
+              <th>Thumbnail</th>
               <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
               <th>Filename</th>
-              <th>Thumbnail</th>
             </tr>
             </thead>
             <tbody>
             <g:each in="${videoDataSets}" status="i" var="videoDataSet">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                <td><a href="${createLink(controller: 'videoStreaming', action: 'show', params: [id: videoDataSet.indexId])}">
+                  <img src="${createLink(controller: 'thumbnail', action: 'frame', params: [id: videoDataSet.indexId, size: 128])}" alt="Show Frame"/>
+                </a></td>
                 <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
                 <g:set var="videoFile" value="${videoFiles.find { it.videoDataSet == videoDataSet }}"/>
 
@@ -150,11 +151,6 @@
                   </g:ifAllGranted>
                 </td>
 
-                <td>
-                  <a href="${createLink(controller: 'videoStreaming', action: 'show', params: [id: videoDataSet.indexId])}">
-                    <img src="${createLink(controller: 'thumbnail', action: 'frame', params: [id: videoDataSet.indexId, size: 128])}" alt="Show Frame"/>
-                  </a>
-                </td>
               </tr>
             </g:each>
             </tbody>
@@ -168,7 +164,7 @@
 <content tag="south">
   <div class="paginateButtons">
     <g:paginate controller="videoDataSet" action="results" total="${totalCount ?: 0}"
-            max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
+        max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
   </div>
 </content>
 </body>
