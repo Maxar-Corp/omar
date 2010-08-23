@@ -81,7 +81,7 @@
                 <td>${bounds?.maxLon?.encodeAsHTML()}</td>
                 <td>${bounds?.maxLat?.encodeAsHTML()}</td>
 
-                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.indexId])}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: 'thumbnail', action: 'show', params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                 </a></td>
 
@@ -122,7 +122,7 @@
                   </g:ifAllGranted>
                 </td>
 
-                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.indexId])}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: 'thumbnail', action: 'show', params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                 </a></td>
 
