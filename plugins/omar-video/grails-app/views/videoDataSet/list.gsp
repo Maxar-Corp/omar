@@ -77,8 +77,8 @@
 
 
                 <td>
-                  <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.videoId)}">
-                    <img src="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.videoId, params: [size: 128])}" alt="Show Frame"/>
+                  <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.indexId)}">
+                    <img src="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.indexId, params: [size: 128])}" alt="Show Frame"/>
                   </a>
                 </td>
 

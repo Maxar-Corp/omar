@@ -81,8 +81,8 @@
                 <td>${bounds?.maxLon?.encodeAsHTML()}</td>
                 <td>${bounds?.maxLat?.encodeAsHTML()}</td>
 
-                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.imageId, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
+                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.indexId])}">
+                  <img src="${createLink(controller: 'thumbnail', action: 'show', params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                 </a></td>
 
               </tr>
@@ -122,8 +122,8 @@
                   </g:ifAllGranted>
                 </td>
 
-                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
+                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.indexId])}">
+                  <img src="${createLink(controller: 'thumbnail', action: 'show', params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                 </a></td>
 
               </tr>

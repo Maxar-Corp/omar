@@ -80,21 +80,21 @@
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
     <span class="menuButton">
-      <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.imageId).join(',')])}">
+      <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.indexId).join(',')])}">
         WMS GetCapabilities
       </a>
     </span>
     <span class="menuButton">
-      <a href="javascript:getKML('${(rasterEntries*.imageId).join(',')}')"> Generate KML </a>
+      <a href="javascript:getKML('${(rasterEntries*.indexId).join(',')}')"> Generate KML </a>
     </span>
     <span class="menuButton">
-      <a href="${createLink(controller: "mapView", action: "multiLayer", params: [rasterEntryIds: (rasterEntries*.id).join(',')])}">
+      <a href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: (rasterEntries*.indexId).join(',')])}">
         Multi-Layer
       </a>
     </span>
     <g:if test="${rasterEntries?.size() == 1}">
       <span class="menuButton">
-        <a href="${createLink(controller: "mapView", action: "imageSpace", id: (rasterEntries*.id).join(','))}">
+        <a href="${createLink(controller: "mapView", action: "imageSpace", params:[layers: (rasterEntries*.indexId).join(',')])}">
           Image Space
         </a>
       </span>
@@ -320,7 +320,7 @@
 
       rasterLayers = [
       new OpenLayers.Layer.WMS( "Raster", "${createLink(controller: 'ogc', action: 'wms')}",
-      { layers: "${(rasterEntries*.imageId).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
+      { layers: "${(rasterEntries*.indexId).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
       {isBaseLayer: true, buffer:0, singleTile:true, ratio:1.0, terrain_correction:false, transitionEffect: "resize",
        displayOutsideMaxExtent:false})
     ];
