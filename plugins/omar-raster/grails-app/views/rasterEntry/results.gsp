@@ -232,14 +232,14 @@
                   <%--
                   <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetMap", layers: rasterEntry.imageId, bbox: [rasterEntry?.groundGeom?.bounds?.minLon, rasterEntry?.groundGeom?.bounds?.minLat, rasterEntry?.groundGeom?.bounds?.maxLon, rasterEntry?.groundGeom?.bounds?.maxLat].join(","), srs: "epsg:4326", width: 1024, height: 512, format: "image/jpeg"])}">
                   --%>
-                  <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetMap", layers: rasterEntry.imageId, bbox: [rasterEntry?.groundGeom?.bounds?.minLon, rasterEntry?.groundGeom?.bounds?.minLat, rasterEntry?.groundGeom?.bounds?.maxLon, rasterEntry?.groundGeom?.bounds?.maxLat].join(","), srs: "epsg:4326", width: 1024, height: 512, format: "image/jpeg"])}">
+                  <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetMap", layers: rasterEntry.indexId, bbox: [rasterEntry?.groundGeom?.bounds?.minLon, rasterEntry?.groundGeom?.bounds?.minLat, rasterEntry?.groundGeom?.bounds?.maxLon, rasterEntry?.groundGeom?.bounds?.maxLat].join(","), srs: "epsg:4326", width: 1024, height: 512, format: "image/jpeg"])}">
                     WMS GetMap</a>
                 </td>
-                <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: rasterEntry.imageId, format: "image/png", transparent: "true"])}">
+                <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: rasterEntry.indexId, format: "image/png", transparent: "true"])}">
                   Generate KML
                 </a></td>
                 <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.imageId, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
+                  <img src="${createLink(controller: 'thumbnail', action: 'show', params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                 </a></td>
               </tr>
             </g:each>
