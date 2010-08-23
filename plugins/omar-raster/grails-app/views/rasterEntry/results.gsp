@@ -82,6 +82,8 @@
           <table>
             <thead>
             <tr>
+              <th>Thumbnail</th>
+
               <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
               <%--
               <g:sortableColumn property="width" title="Width" params="${queryParams.toMap()}"/>
@@ -101,12 +103,14 @@
               <th>Min Lat</th>
               <th>Max Lon</th>
               <th>Max Lat</th>
-              <th>Thumbnail</th>
             </tr>
             </thead>
             <tbody>
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
+                </a></td>                
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <td>${rasterEntry.width?.encodeAsHTML()}</td>
                 <td>${rasterEntry.height?.encodeAsHTML()}</td>
@@ -119,10 +123,6 @@
                 <td>${bounds?.minLat?.encodeAsHTML()}</td>
                 <td>${bounds?.maxLon?.encodeAsHTML()}</td>
                 <td>${bounds?.maxLat?.encodeAsHTML()}</td>
-
-                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
-                </a></td>
               </tr>
             </g:each>
             </tbody>
@@ -135,6 +135,8 @@
           <table>
             <thead>
             <tr>
+              <th>Thumbnail</th>
+
               <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
 
               <g:sortableColumn property="acquisitionDate" title="Acquisition Date" params="${queryParams.toMap()}"/>
@@ -143,25 +145,23 @@
                 <g:sortableColumn property="${tagNameList[i]}" title="${tagHeaderList[i]}" params="${queryParams.toMap()}"/>
               </g:each>
 
-              <th>Thumbnail</th>
             </tr>
             </thead>
             <tbody>
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
+                </a></td>
+
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
 
-
                 <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="0" date="${rasterEntry?.acquisitionDate}"/></td>
-
 
                 <g:each in="${tagNameList}" var="tagName">
                   <td><%="${rasterEntry?."${tagName}"}"%></td>
                 </g:each>
 
-                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
-                </a></td>
               </tr>
             </g:each>
             </tbody>
@@ -174,15 +174,18 @@
           <table>
             <thead>
             <tr>
+              <th>Thumbnail</th>
               <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
               <th>Filename</th>
               <g:sortableColumn property="entryId" title="Entry Id" params="${queryParams.toMap()}"/>
-              <th>Thumbnail</th>
             </tr>
             </thead>
             <tbody>
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
+                </a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <g:set var="rasterFile" value="${rasterFiles.find { it.rasterDataSet == rasterEntry.rasterDataSet }}"/>
 
@@ -199,9 +202,6 @@
                 </td>
 
                 <td>${rasterEntry.entryId?.encodeAsHTML()}</td>
-                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
-                </a></td>
               </tr>
             </g:each>
             </tbody>
@@ -214,16 +214,19 @@
           <table>
             <thead>
             <tr>
+              <th>Thumbnail</th>
               <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
               <th>WMS GetCapabilities</th>
               <th>WMS GetMap</th>
               <th>Generate KML</th>
-              <th>Thumbnail</th>
             </tr>
             </thead>
             <tbody>
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                  <img src="${createLink(controller: 'thumbnail', action: 'show', params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
+                </a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: rasterEntry.indexId])}">
                   WMS GetCapabilities
@@ -237,9 +240,6 @@
                 </td>
                 <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: rasterEntry.indexId, format: "image/png", transparent: "true"])}">
                   Generate KML
-                </a></td>
-                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                 </a></td>
               </tr>
             </g:each>
