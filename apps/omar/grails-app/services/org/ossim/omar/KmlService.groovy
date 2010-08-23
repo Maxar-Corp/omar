@@ -36,7 +36,9 @@ class KmlService implements ApplicationContextAware, InitializingBean
               Meters_per_pixel: mpp]
       def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [layers: rasterEntry.indexId])
 
-      def descriptionBuilder = new StreamingMarkupBuilder().bind {
+      def descriptionWriter = new StringWriter()
+
+      descriptionWriter << new StreamingMarkupBuilder().bind {
         body() {
           table() {
             tr() {
@@ -57,7 +59,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
           }
         }
       }
-      descriptionMap.put(rasterIdx, descriptionBuilder.toString())
+      descriptionMap.put(rasterIdx, descriptionWriter.toString())
     }
     if ( !wmsParams?.width )
     {
@@ -95,7 +97,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
             GroundOverlay() {
               name((rasterEntry.mainFile.name as File).name)
               Snippet(maxLines: "0", "")
-              description(renderedHtml)
+              description { mkp.yieldUnescaped("<![CDATA[${renderedHtml}]]>") }
               LookAt() {
                 longitude(groundCenterLon)
                 latitude(groundCenterLat)
@@ -110,7 +112,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
               Icon() {
                 def wmsURL = tagLibBean.createLink(absolute: true, controller: "ogc", action: "wms", params: wmsParams)
 //                   println wmsURL
-                href(wmsURL)
+                href { mkp.yieldUnescaped("<![CDATA[${wmsURL}]]>") }
                 viewRefreshMode("onStop")
                 viewRefreshTime("1")
                 viewBoundScale("0.85")
