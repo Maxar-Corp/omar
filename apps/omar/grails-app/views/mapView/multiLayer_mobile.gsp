@@ -44,14 +44,14 @@
   </span>
 
   <span class="menuButton">
-    <a href="${createLink(controller: "mapView", action: "index", params: [rasterEntryIds: (rasterEntries*.id).join(',')])}">
+    <a href="${createLink(controller: "mapView", action: "index", params: [layers: (rasterEntries*.indexId).join(',')])}">
       Single Layer
     </a>
   </span>
 
   <g:if test="${rasterEntries?.size() == 1}">
     <span class="menuButton">
-      <a href="${createLink(controller: "mapView", action: "imageSpace", id: (rasterEntries*.id).join(','))}">
+      <a href="${createLink(controller: "mapView", action: "imageSpace", params: [layers: (rasterEntries*.id).join(',')])}">
         Image Space
       </a>
     </span>
