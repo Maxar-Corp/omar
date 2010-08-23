@@ -32,6 +32,8 @@
             <thead>
             <tr>
 
+              <th>Thumbnail</th>
+              
               <g:sortableColumn property="id" title="Id" params="${[repositoryId:params.repositoryId]}"/>
 
               <g:sortableColumn property="width" title="Width" params="${[repositoryId:params.repositoryId]}"/>
@@ -50,13 +52,18 @@
               <th>Min Lat</th>
               <th>Max Lon</th>
               <th>Max Lat</th>
-              <th>Thumbnail</th>
 
             </tr>
             </thead>
             <tbody>
             <g:each in="${videoDataSetList}" status="i" var="videoDataSet">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+
+                <td>
+                  <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.indexId)}">
+                    <img src="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.indexId, params: [size: 128])}" alt="Show Frame"/>
+                  </a>
+                </td>
 
                 <td><g:link action="show" id="${videoDataSet.id}">${fieldValue(bean: videoDataSet, field: 'id')}</g:link></td>
 
@@ -76,11 +83,6 @@
                 <td>${bounds?.maxLat?.encodeAsHTML()}</td>
 
 
-                <td>
-                  <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.indexId)}">
-                    <img src="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.indexId, params: [size: 128])}" alt="Show Frame"/>
-                  </a>
-                </td>
 
               </tr>
             </g:each>
@@ -93,17 +95,23 @@
           <table>
             <thead>
             <tr>
+              <th>Thumbnail</th>
 
               <g:sortableColumn property="id" title="Id" params="${[repositoryId:params.repositoryId]}"/>
 
               <th>Filename</th>
-              <th>Thumbnail</th>
 
             </tr>
             </thead>
             <tbody>
             <g:each in="${videoDataSetList}" status="i" var="videoDataSet">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+
+                <td>
+                  <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.id)}">
+                    <img src="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.id, params: [size: 128])}" alt="Show Frame"/>
+                  </a>
+                </td>
 
                 <td><g:link action="show" id="${videoDataSet.id}">${fieldValue(bean: videoDataSet, field: 'id')}</g:link></td>
 
@@ -119,11 +127,6 @@
                   </g:ifAllGranted>
                 </td>
 
-                <td>
-                  <a href="${createLink(controller: 'videoStreaming', action: 'show', id: videoDataSet.id)}">
-                    <img src="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.id, params: [size: 128])}" alt="Show Frame"/>
-                  </a>
-                </td>
 
               </tr>
             </g:each>
