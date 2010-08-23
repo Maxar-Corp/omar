@@ -120,7 +120,7 @@
                 <td>${bounds?.maxLon?.encodeAsHTML()}</td>
                 <td>${bounds?.maxLat?.encodeAsHTML()}</td>
 
-                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                 </a></td>
               </tr>
@@ -159,7 +159,7 @@
                   <td><%="${rasterEntry?."${tagName}"}"%></td>
                 </g:each>
 
-                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                 </a></td>
               </tr>
@@ -199,7 +199,7 @@
                 </td>
 
                 <td>${rasterEntry.entryId?.encodeAsHTML()}</td>
-                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                 </a></td>
               </tr>
@@ -225,7 +225,7 @@
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
-                <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: rasterEntry.imageId])}">
+                <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: rasterEntry.indexId])}">
                   WMS GetCapabilities
                 </a></td>
                 <td>
@@ -238,7 +238,7 @@
                 <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: rasterEntry.indexId, format: "image/png", transparent: "true"])}">
                   Generate KML
                 </a></td>
-                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: 'thumbnail', action: 'show', params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                 </a></td>
               </tr>
