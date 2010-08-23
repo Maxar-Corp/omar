@@ -34,7 +34,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
               Bands: rasterEntry.numberOfBands,
               Acquistion_Date: rasterEntry.acquisitionDate,
               Meters_per_pixel: mpp]
-      def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [rasterEntryIds: rasterEntry.imageId])
+      def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [rasterEntryIds: rasterEntry.indexId])
 
       def descriptionBuilder = new StreamingMarkupBuilder().bind {
         body() {
@@ -83,7 +83,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
         Folder() {
           name("OMAR_WMS")
           rasterEntries?.each {rasterEntry ->
-            wmsParams?.layers = "${rasterEntry?.imageId}"
+            wmsParams?.layers = "${rasterEntry?.indexId}"
             def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
 
             def groundCenterLon = (rasterEntry?.groundGeom?.bounds?.minLon + rasterEntry?.groundGeom?.bounds?.maxLon) * 0.5;
@@ -200,7 +200,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
               Bands: rasterEntry.numberOfBands,
               Acquistion_Date: rasterEntry?.acquisitionDate,
               Meters_per_pixel: mpp]
-      def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [rasterEntryIds: rasterEntry.imageId])
+      def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView", params: [rasterEntryIds: rasterEntry.indexId])
 
       def descriptionBuilder = new StreamingMarkupBuilder().bind {
         body() {
@@ -237,7 +237,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
 
             def groundCenterLon = (rasterEntry?.groundGeom?.bounds?.minLon + rasterEntry?.groundGeom?.bounds?.maxLon) * 0.5;
             def groundCenterLat = (rasterEntry?.groundGeom?.bounds?.minLat + rasterEntry?.groundGeom?.bounds?.maxLat) * 0.5;
-            wmsParams?.layers = rasterEntry?.imageId
+            wmsParams?.layers = rasterEntry?.indexId
 
             def renderedHtml = "${descriptionMap.get(rasterIdx)}"
             rasterIdx++
@@ -402,7 +402,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
               styleUrl("#red")
               def flashbasename = filename.split("/")[-1] + ".flv"
               name(flashbasename)
-              def createFlvUrl = tagLibBean.createLink(absolute: true, controller: "videoStreaming", action: "show", id: videoDataSet.videoId)
+              def createFlvUrl = tagLibBean.createLink(absolute: true, controller: "videoStreaming", action: "show", id: videoDataSet.indeId)
               if ( embed )
               {
                 description("<table width=\"720\"><tr><td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td></tr><tr><td></td></tr><tr><td><b>START TIME:</b> ${videoDataSet.startDate}</td></tr><tr><td><b>END TIME:</b> ${videoDataSet.endDate}</td></tr><tr><td><b>MIN LAT:</b> ${videoDataSet.groundGeom?.bounds?.minLat}</td></tr><tr><td><b>MIN LON: </b> ${videoDataSet.groundGeom?.bounds?.minLon}</td></tr><tr><td><b>MAX LAT:</b> ${videoDataSet.groundGeom?.bounds?.maxLat}</td></tr><tr><td><b>MAX LON:</b> ${videoDataSet.groundGeom?.bounds?.maxLon}</td></tr><tr><td><embed type=\"application/x-shockwave-flash\" src=\"${flashPlayerUrl}\" width=\"720\" height=\"480\" flashvars=\"file=${flvUrl}&autostart=true\"</embed><td><tr></table>")

@@ -31,7 +31,7 @@ class ThumbnailController implements InitializingBean
     {
       def httpStatusMessage = new HttpStatusMessage()
       httpStatusMessage.status = HttpStatus.OK
-      def rasterEntry = RasterEntry.findByImageId(params.id) ?:RasterEntry.get(params.id);
+      def rasterEntry = RasterEntry.findByIndexId(params.id) ?:RasterEntry.get(params.id);
       def image = null
       def mimeType = "image/jpeg"
       if ( !rasterEntry )
@@ -70,7 +70,7 @@ class ThumbnailController implements InitializingBean
   def frame = {
     try
     {
-      def videoDataSet = VideoDataSet.findByVideoId(params.id) ?:VideoDataSet.get(params.id);
+      def videoDataSet = VideoDataSet.findByIndexId(params.id) ?:VideoDataSet.get(params.id);
       def image = (Image)null
       def mimeType = "image/jpeg"
       def httpStatusMessage = new HttpStatusMessage()

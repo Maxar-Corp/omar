@@ -44,7 +44,7 @@ class RasterEntryController implements InitializingBean
 
   def show = {
 
-    def rasterEntry = RasterEntry.get(params.id)
+    def rasterEntry = RasterEntry.findByIndexId(params.id)?:RasterEntry.get(params.id);
 
 
     if ( !rasterEntry )
@@ -57,7 +57,7 @@ class RasterEntryController implements InitializingBean
   }
 
   def delete = {
-    def rasterEntry = RasterEntry.get(params.id)
+    def rasterEntry = RasterEntry.findByIndexId(params.id) ?:RasterEntry.get(params.id);
     if ( rasterEntry )
     {
       rasterEntry.delete()
@@ -72,7 +72,7 @@ class RasterEntryController implements InitializingBean
   }
 
   def edit = {
-    def rasterEntry = RasterEntry.get(params.id)
+    def rasterEntry = RasterEntry.findByIndexId(params.id) ?:RasterEntry.get(params.id);
 
     if ( !rasterEntry )
     {
@@ -86,7 +86,7 @@ class RasterEntryController implements InitializingBean
   }
 
   def update = {
-    def rasterEntry = RasterEntry.get(params.id)
+    def rasterEntry = RasterEntry.findByIndexId(params.id) ?:RasterEntry.get(params.id);
     if ( rasterEntry )
     {
       rasterEntry.properties = params

@@ -26,11 +26,11 @@ class VideoDataSet
   static transients = ["otherTagsMap"]
 
   Map<String, String> otherTagsMap = [:]
-  String videoId
+  String indexId
 
   static mapping = {
     columns {
-      videoId index: 'video_data_set_video_id_idx'
+      indexId index: 'video_data_set_index_id_idx'
       otherTagsXml type: 'text'//, index: 'video_data_set_metadata_other_tags_idx'
       startDate column: 'start_date', type: 'timestamp', index: 'video_data_set_start_date_idx,video_data_set_time_idx'
       endDate column: 'end_date', type: 'timestamp', index: 'video_data_set_end_date_idx,video_data_set_time_idx'
@@ -45,7 +45,7 @@ class VideoDataSet
     startDate(nullable: true)
     endDate(nullable: true)
     groundGeom(nullable: true)
-    videoId(nullable: false, blank: false/*, unique: true*/)
+    indexId(nullable: false, blank: false, unique: true)
 //    metadata(nullable: true)
   }
 
@@ -117,14 +117,14 @@ class VideoDataSet
     def metadataNode = videoDataSetNode?.metadata
     initVideoDataSetMetadata(metadataNode, videoDataSet)
     initVideoDataSetOtherTagsXml(videoDataSet)
-    if ( !videoDataSet.videoId )
+    if ( !videoDataSet.indexId )
     {
       def mainFile = videoDataSet.getFileFromObjects("main")
       if(mainFile)
       {
         def filename = mainFile.name
         filename = filename.replaceAll("/|\\\\", "_")
-        videoDataSet.videoId = "${filename}"
+        videoDataSet.indexId = "${filename}".encodeAsSHA256()
       }
     }
     

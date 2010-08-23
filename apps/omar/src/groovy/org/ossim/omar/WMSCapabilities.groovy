@@ -75,7 +75,7 @@ public class WMSCapabilities
           catch (java.lang.Exception e)
           {
             eq('title', name)
-            eq('imageId', name)
+            eq('indexId', name)
           }
         }
       }
@@ -112,17 +112,17 @@ public class WMSCapabilities
         def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : ""
 
         def filename = file.name
-        def imageId = rasterEntry.imageId
+        def indexId = rasterEntry.indexId
 
-        // If there is an imageId,  display that as title for KML
-        if ( imageId && imageId.value )
-        {
-          filename = imageId.value
-        }
+        // If there is an indexId,  display that as title for KML
+//        if ( indexId && indexId.value )
+//        {
+//          filename = indexId.value
+//        }
 
         map.layers << new LayerObject(
-            name: rasterEntry.id,
-            title: rasterEntry.id,
+            name: rasterEntry.indexId,
+            title: rasterEntry.title,
             description: "The absolute path to this file is ${file.name} and its entry id is ${entryId}",
             srs: srs,
             minX: bounds.minLon,
