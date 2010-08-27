@@ -76,7 +76,7 @@ class KmlQueryController implements InitializingBean
             ["stretch_mode",
                     "stretch_mode_region",
                     "sharpen_mode",
-                    "quick_look",
+                    "quicklook",
                     "null_flip",
                     "bands"])
     wmsParams.remove("elevation")
