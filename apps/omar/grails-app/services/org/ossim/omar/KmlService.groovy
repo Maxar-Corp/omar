@@ -61,14 +61,14 @@ class KmlService implements ApplicationContextAware, InitializingBean
       }
       descriptionMap.put(rasterIdx, descriptionWriter.toString())
     }
-    if ( !wmsParams?.width )
-    {
-      wmsParams?.width = "1024"
-    }
-    if ( !wmsParams?.height )
-    {
-      wmsParams?.height = "1024"
-    }
+//    if ( !wmsParams?.width )
+//    {
+//      wmsParams?.width = "1024"
+//    }
+ //   if ( !wmsParams?.height )
+//    {
+//      wmsParams?.height = "1024"
+//    }
     wmsParams.remove("action")
     wmsParams.remove("controller")
     wmsParams?.version = "1.1.1"
@@ -119,6 +119,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
                 viewRefreshMode("onStop")
                 viewRefreshTime("1")
                 viewBoundScale("0.85")
+                viewFormat("""BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&width=[horizPixels]&height=[vertPixels]""")
               }
 
               LatLonBox() {
