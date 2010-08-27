@@ -160,8 +160,6 @@ class KmlService implements ApplicationContextAware, InitializingBean
   String createImagesKml(List<RasterEntry> rasterEntries, Map wmsParams, Map params)
   {
     def kmlbuilder = new StreamingMarkupBuilder()
-//    def width = 1024;
-//    def height = 1024;
 
     kmlbuilder.encoding = "UTF-8"
 
@@ -170,14 +168,14 @@ class KmlService implements ApplicationContextAware, InitializingBean
     {
       wmsParams.version = "1.1.1"
     }
-    if ( !params?.containsKey("width") )
-    {
-      wmsParams.width = "1024"
-    }
-    if ( !params?.containsKey("height") )
-    {
-      wmsParams.height = "1024"
-    }
+//    if ( !params?.containsKey("width") )
+//    {
+//      wmsParams.width = "1024"
+//    }
+//    if ( !params?.containsKey("height") )
+//    {
+//      wmsParams.height = "1024"
+//    }
     if ( !params?.containsKey("format") )
     {
       wmsParams.format = "image/png"
@@ -189,8 +187,8 @@ class KmlService implements ApplicationContextAware, InitializingBean
     wmsParams?.srs = "EPSG:4326"
     def bbox = wmsParams?.bbox;
     wmsParams?.remove("bbox");
-    //  wmsParams?.remove("width");
-    //  wmsParams?.remove("height");
+    wmsParams?.remove("width");
+    wmsParams?.remove("height");
     wmsParams.remove("action")
     wmsParams.remove("controller")
     def rasterIdx = 0
@@ -268,7 +266,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
                 viewRefreshMode("onStop")
                 viewRefreshTime("1")
                 viewBoundScale("0.85")
-//                viewFormat("BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&amp;width=[horizPixels]&amp;height=[vertPixels]")
+                viewFormat("""BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&width=[horizPixels]&height=[vertPixels]""")
               }
               LatLonBox() {
                 if ( bbox )
