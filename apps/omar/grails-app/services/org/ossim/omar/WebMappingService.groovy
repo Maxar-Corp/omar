@@ -138,7 +138,7 @@ class WebMappingService
   {
     RenderedImage image = null
     def enableOMS = true
-    def quickLookFlagString = wmsRequest?.quick_look ?: "true"
+    def quickLookFlagString = wmsRequest?.quicklook ?: "true"
     def sharpenMode = wmsRequest?.sharpen_mode ?: ""
     def sharpenWidth = wmsRequest?.sharpen_width ?: ""
     def sharpenSigma = wmsRequest?.sharpen_sigma ?: ""

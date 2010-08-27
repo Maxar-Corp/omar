@@ -75,7 +75,7 @@
     <input type="hidden" name="request" value=""/>
     <input type="hidden" name="layers" value=""/>
     <input type="hidden" name="bbox" value=""/>
-    <input type="hidden" name="quick_look" value=""/>
+    <input type="hidden" name="quicklook" value=""/>
   </g:form>
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
@@ -113,7 +113,7 @@
     </span>
     <span class="menuButton">
       <label>Quick look:</label>
-      <g:select id="quick_look" name="quick_look" from="${['true', 'false']}" onChange="changeQuickLookOps()"/>
+      <g:select id="quicklook" name="quicklook" from="${['true', 'false']}" onChange="changeQuickLookOps()"/>
     </span>
     
     <span class="menuButton">
@@ -176,7 +176,7 @@
      wmsParamForm.sharpen_mode.value = $("sharpen_mode").value
      wmsParamForm.stretch_mode_region.value = $("stretch_mode_region").value
      wmsParamForm.stretch_mode.value = $("stretch_mode").value
-     wmsParamForm.quick_look.value = $("quick_look").value
+     wmsParamForm.quicklook.value = $("quicklook").value
      wmsParamForm.request.value = "GetKML"
      wmsParamForm.layers.value = layers
      wmsParamForm.bbox.value = extent.toBBOX()
@@ -310,7 +310,7 @@
       rasterLayers = [
       new OpenLayers.Layer.WMS( "Raster", "${createLink(controller: 'ogc', action: 'wms')}",
       { layers: "${(rasterEntries*.indexId).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
-      {isBaseLayer: true, buffer:0, singleTile:true, ratio:1.0, quick_look:true, transitionEffect: "resize",
+      {isBaseLayer: true, buffer:0, singleTile:true, ratio:1.0, quicklook:true, transitionEffect: "resize",
        displayOutsideMaxExtent:false})
     ];
     map.addLayers(rasterLayers);
@@ -384,7 +384,7 @@ function onFeatureSelect(event)
   {
     for ( var layer in rasterLayers )
     {
-      rasterLayers[layer].mergeNewParams({quick_look:$("quick_look").value});
+      rasterLayers[layer].mergeNewParams({quicklook:$("quicklook").value});
     }
   }
   function changeHistoOpts()

@@ -29,7 +29,7 @@ class WMSRequest
   String sharpen_mode
   String sharpen_width
   String sharpen_sigma
-  String quick_look
+  String quicklook
   String null_flip
   String exception
   String bands
@@ -41,7 +41,7 @@ class WMSRequest
             version: version, request: request, transparent: transparent, bgcolor: bgcolor, styles: styles,
             stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
             sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, time: time, null_flip: null_flip,
-            exception: exception, quick_look: quick_look].sort { it.key }
+            exception: exception, quicklook: quicklook].sort { it.key }
   }
   /**
    * This is a query param to control the max results when building the criteria
