@@ -117,29 +117,18 @@
     </span>
     
     <span class="menuButton">
-      <label>Band Selection:</label>
-
-      <g:if test="${rasterEntries.numberOfBands == [6]}">
-        <g:select id="band_order" name="band_order" from="${['0,1,2,3,4,5','0','1','2','3','4','5']}" onChange="changeBandSelection()"/>
+      <g:if test="${rasterEntries.numberOfBands.get(0) == 1}">
       </g:if>
 
-      <g:if test="${rasterEntries.numberOfBands == [4]}">
-        <g:select id="band_order" name="band_order" from="${['0,1,2,3','0','1','2','3']}" onChange="changeBandSelection()"/>
+      <g:if test="${rasterEntries.numberOfBands.get(0) == 2}">
+        <g:select id="band_order" name="band_order" from="${['0,1','1,0','0','1']}" onChange="changeBandSelection()" />
       </g:if>
 
-      <g:if test="${rasterEntries.numberOfBands == [3]}">
-        <g:select id="band_order" name="band_order" from="${['0,1,2','0','1','2']}" onChange="changeBandSelection()"/>
+      <g:if test="${rasterEntries.numberOfBands.get(0) >= 3}">
+        <label>Band Selection:</label>
+        <g:select id="band_order" name="band_order" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandSelection()" />
       </g:if>
-
-      <g:if test="${rasterEntries.numberOfBands == [2]}">
-        <g:select id="band_order" name="band_order" from="${['0,1','0','1']}" onChange="changeBandSelection()"/>
-      </g:if>
-
-      <g:if test="${rasterEntries.numberOfBands == [1]}">
-        <g:select id="band_order" name="band_order" from="${['0']}" onChange="changeBandSelection()"/>
-      </g:if>
-
-      </span>
+    </span>
 
     <%--
       <div id="panel2" class="olControlPanel"></div>
