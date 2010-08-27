@@ -22,11 +22,13 @@ class KmlQueryController implements InitializingBean
     if ( wmsParams?.bbox )
     {
       def bounds = params.bbox?.split(',')
-      if ( bounds.length >= 4 )
+      if ( bounds.size() >= 4 )
+      {
         params.aoiMinLon = bounds[0]
-      params.aoiMinLat = bounds[1]
-      params.aoiMaxLon = bounds[2]
-      params.aoiMaxLat = bounds[3]
+        params.aoiMinLat = bounds[1]
+        params.aoiMaxLon = bounds[2]
+        params.aoiMaxLat = bounds[3]
+      }
     }
 
     if ( params.max == null || Integer.parseInt(params.max) > 100 )
@@ -125,7 +127,7 @@ class KmlQueryController implements InitializingBean
     def maxVideos = grailsApplication.config.kml.maxVideos
     // Convert param names to lower case
     params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
-    
+
     //Utility.removeEmptyParams(params)
 
     if ( wmsParams?.bbox )
@@ -179,17 +181,28 @@ class KmlQueryController implements InitializingBean
   def topImages =
   {
     if ( !(params.maximages =~ /\d+/) )
+    {
       params.max = grailsApplication.config.kml.defaultImages
+    }
     else
+    {
       params.max = params.maximages.trim().toInteger()
+    }
+
     if ( params.max > grailsApplication.config.kml.maxImages )
+    {
       params.max = grailsApplication.config.kml.maxImages
+    }
+
     params.remove("maximages")
     params.stretch_mode_region = "viewport"
+
     String kmlText = kmlService.createTopImagesKml(params)
+
     response.setHeader("Content-disposition", "attachment; filename=omar_last_${params.max}_images_for_view.kml");
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
   }
+
 /*
   def topImages = {
     String kmlText = kmlService.createTopImagesKml()
@@ -198,13 +211,14 @@ class KmlQueryController implements InitializingBean
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
   }
 */
+
   def topVideos = {
     if ( !(params.maxvideos =~ /\d+/) )
-      params.max = grailsApplication.config.kml.defaultVideos
+    params.max = grailsApplication.config.kml.defaultVideos
     else
       params.max = params.maxvideos.trim().toInteger()
     if ( params.max > grailsApplication.config.kml.maxVideos )
-      params.max = grailsApplication.config.kml.maxVideos
+    params.max = grailsApplication.config.kml.maxVideos
     params.remove("maxvideos")
 
     String kmlText = kmlService.createTopVideosKml(params)
@@ -223,7 +237,7 @@ class KmlQueryController implements InitializingBean
   def imageFootprints = {
     params.days = params.imagedays
     if ( (params.imagedays == null) || !(params.imagedays =~ /\d+/) )
-      params.days = grailsApplication.config.kml.daysCoverage
+    params.days = grailsApplication.config.kml.daysCoverage
     params.remove("imagedays")
 
     String kmlText = kmlService.createImageFootprint(params)
@@ -234,7 +248,7 @@ class KmlQueryController implements InitializingBean
   def videoFootprints = {
     params.days = params.videodays
     if ( (params.videodays == null) || !(params.videodays =~ /\d+/) )
-      params.days = grailsApplication.config.kml.daysCoverage
+    params.days = grailsApplication.config.kml.daysCoverage
     params.remove("videodays")
     String kmlText = kmlService.createVideoFootprint(params)
     response.setHeader("Content-disposition", "attachment; filename=omar_last_${params.days}_days_video_coverage.kml");
