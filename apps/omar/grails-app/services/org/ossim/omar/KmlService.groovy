@@ -81,7 +81,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
     def bbox = wmsParams?.bbox;
 
     wmsParams?.remove("bbox");
-    
+
     def kmlnode = {
       mkp.xmlDeclaration()
       kml("xmlns": "http://earth.google.com/kml/2.1") {
@@ -404,15 +404,51 @@ class KmlService implements ApplicationContextAware, InitializingBean
               def flashbasename = filename.split("/")[-1] + ".flv"
               name(flashbasename)
               def createFlvUrl = tagLibBean.createLink(absolute: true, controller: "videoStreaming", action: "show", id: videoDataSet.indexId)
+              def descriptionText = ""
+              def bounds = videoDataSet.groundGeom?.bounds
               if ( embed )
               {
-                description("<table width=\"720\"><tr><td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td></tr><tr><td></td></tr><tr><td><b>START TIME:</b> ${videoDataSet.startDate}</td></tr><tr><td><b>END TIME:</b> ${videoDataSet.endDate}</td></tr><tr><td><b>MIN LAT:</b> ${videoDataSet.groundGeom?.bounds?.minLat}</td></tr><tr><td><b>MIN LON: </b> ${videoDataSet.groundGeom?.bounds?.minLon}</td></tr><tr><td><b>MAX LAT:</b> ${videoDataSet.groundGeom?.bounds?.maxLat}</td></tr><tr><td><b>MAX LON:</b> ${videoDataSet.groundGeom?.bounds?.maxLon}</td></tr><tr><td><embed type=\"application/x-shockwave-flash\" src=\"${flashPlayerUrl}\" width=\"720\" height=\"480\" flashvars=\"file=${flvUrl}&autostart=true\"</embed><td><tr></table>")
+                descriptionText = """
+                  <table width="720">
+                    <tr>
+                      <td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td>
+                    </tr>
+                    <tr><td></td></tr>
+                    <tr><td><b>START TIME:</b> ${videoDataSet.startDate}</td></tr>
+                    <tr><td><b>END TIME:</b> ${videoDataSet.endDate}</td></tr>
+                    <tr><td><b>MIN LAT:</b> ${bounds?.minLat}</td></tr>
+                    <tr><td><b>MIN LON: </b> ${bounds?.minLon}</td></tr>
+                    <tr><td><b>MAX LAT:</b> ${bounds?.maxLat}</td></tr>
+                    <tr><td><b>MAX LON:</b> ${bounds?.maxLon}</td></tr>
+                    <tr><td>
+                      <embed type="application/x-shockwave-flash" src="${flashPlayerUrl}"
+                        width="720" height="480" flashvars="file=${flvUrl}&autostart=true"</embed>
+                    <td><tr>
+                  </table>
+                """
               }
               else
               {
-                description("<table><tr><td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td></tr><tr><td></td></tr><tr><td><b>START TIME:</b> ${videoDataSet.startDate}</td></tr><tr><td><b>END TIME:</b> ${videoDataSet.endDate}</td></tr><tr><td><b>MIN LAT:</b> ${videoDataSet.groundGeom?.bounds?.minLat}</td></tr><tr><td><b>MIN LON: </b> ${videoDataSet.groundGeom?.bounds?.minLon}</td></tr><tr><td><b>MAX LAT:</b> ${videoDataSet.groundGeom?.bounds?.maxLat}</td></tr><tr><td><b>MAX LON:</b> ${videoDataSet.groundGeom?.bounds?.maxLon}</td></tr></table>")
+                descriptionText = """
+                  <table>
+                    <tr><td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td></tr>
+                    <tr><td></td></tr>
+                    <tr><td><b>START TIME:</b> ${videoDataSet.startDate}</td></tr>
+                    <tr><td><b>END TIME:</b> ${videoDataSet.endDate}</td></tr>
+                    <tr><td><b>MIN LAT:</b> ${bounds?.minLat}</td></tr>
+                    <tr><td><b>MIN LON: </b> ${bounds?.minLon}</td></tr>
+                    <tr><td><b>MAX LAT:</b> ${bounds?.maxLat}</td></tr>
+                    <tr><td><b>MAX LON:</b> ${bounds?.maxLon}</td></tr>
+                  </table>"
+                """
               }
-              Snippet("<a href='${createFlvUrl}'>CLICK TO PLAY</a>")
+
+              description {
+                mkp.yieldUnescaped("<![CDATA[${descriptionText}]]>")
+              }
+
+              Snippet{ mkp.yieldUnescaped( "<![CDATA[<a href='${createFlvUrl}'>CLICK TO PLAY</a>]]>" ) }
+
               MultiGeometry() {
                 polygons.each { polygon ->
                   Polygon() {
@@ -450,23 +486,29 @@ class KmlService implements ApplicationContextAware, InitializingBean
     def kmlbuilder = new StreamingMarkupBuilder()
 
     kmlbuilder.encoding = "UTF-8"
+
     def kmlnode = {
       mkp.xmlDeclaration()
       kml("xmlns", "http://earth.google.com/kml/2.1") {
         NetworkLink() {
           name("OMAR Last ${params.max} Images For View")
           Link() {
-            href(kmlQueryUrl)
+            href{              
+              mkp.yieldUnescaped("<![CDATA[${kmlQueryUrl}]]>")
+            }
             httpQuery("googleClientVersion=[clientVersion];")
             viewRefreshMode("onRequest")
           }
         }
       }
     }
+
     def kmlwriter = new StringWriter()
 
     kmlwriter << kmlbuilder.bind(kmlnode)
+
     String kmlText = kmlwriter.buffer
+    
     return kmlText
   }
 
@@ -483,7 +525,9 @@ class KmlService implements ApplicationContextAware, InitializingBean
         NetworkLink() {
           name("OMAR Last ${params.max} Videos For View")
           Link() {
-            href(kmlQueryUrl)
+            href{
+              mkp.yieldUnescaped("<![CDATA[${kmlQueryUrl}]]>")
+            }
             httpQuery("googleClientVersion=[clientVersion]")
             viewRefreshMode("onRequest")
           }
