@@ -92,6 +92,13 @@
       <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts()" />
     </span>
 
+    <g:if test="${rasterEntry?.numberOfBands == 1}">
+      <span class="menuButton">
+        <label>Band:</label>
+       <g:select id="bands" name="bands" from="${['0']}" onChange="changeBandsOpts()" />
+       </span>
+    </g:if>
+
     <g:if test="${rasterEntry?.numberOfBands == 2}">
       <span class="menuButton">
         <label>Bands:</label>
