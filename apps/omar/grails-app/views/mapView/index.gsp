@@ -142,6 +142,7 @@
       <span class="menuButton">
         <label>Bands:</label>
         <g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()" />
+      </span>
     </g:if>
 
     <span class="menuButton">
