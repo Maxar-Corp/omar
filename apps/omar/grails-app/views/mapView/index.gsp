@@ -23,6 +23,9 @@
   <openlayers:loadTheme theme="default"/>
 
   <style type="text/css">
+
+  td { font-size: 10px; }
+
   #map {
     width: 100%;
     height: 100%;
@@ -65,33 +68,46 @@
 
   </style>
 </head>
+
 <body>
 
 <content tag="north">
   <g:form name="wmsParams" method="POST" url="[action:'wms',controller:'ogc']">
-    <input type="hidden" name="sharpen_mode" value="none"/>
-    <input type="hidden" name="stretch_mode" value="linear_auto_min_max"/>
-    <input type="hidden" name="stretch_mode_region" value="global"/>
-    <input type="hidden" name="request" value=""/>
-    <input type="hidden" name="layers" value=""/>
-    <input type="hidden" name="bbox" value=""/>
-    <input type="hidden" name="quicklook" value=""/>
+    <input type="hidden" name="sharpen_mode" value="none" />
+    <input type="hidden" name="stretch_mode" value="linear_auto_min_max" />
+    <input type="hidden" name="stretch_mode_region" value="global" />
+    <input type="hidden" name="bands" value="" />
+    <input type="hidden" name="quicklook" value="" />
+    <input type="hidden" name="request" value="" />
+    <input type="hidden" name="layers" value="" />
+    <input type="hidden" name="bbox" value="" />
   </g:form>
+
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
+    <span class="menuButton">
+      <g:link class="home" uri="/">
+        Home
+      </g:link>
+    </span>
+
     <span class="menuButton">
       <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.indexId).join(',')])}">
         WMS GetCapabilities
       </a>
     </span>
+
     <span class="menuButton">
-      <a href="javascript:getKML('${(rasterEntries*.indexId).join(',')}')"> Generate KML </a>
+      <a href="javascript:getKML('${(rasterEntries*.indexId).join(',')}')">
+        Generate KML
+      </a>
     </span>
+
     <span class="menuButton">
       <a href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: (rasterEntries*.indexId).join(',')])}">
         Multi-Layer
       </a>
     </span>
+
     <g:if test="${rasterEntries?.size() == 1}">
       <span class="menuButton">
         <a href="${createLink(controller: "mapView", action: "imageSpace", params:[layers: (rasterEntries*.indexId).join(',')])}">
@@ -99,65 +115,54 @@
         </a>
       </span>
     </g:if>
+
     <span class="menuButton">
       <label>Sharpen:</label>
-      <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
+      <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()" />
     </span>
+
     <span class="menuButton">
       <label>Stretch:</label>
-      <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
+      <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()" />
     </span>
+
     <span class="menuButton">
       <label>Region:</label>
-      <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts()"/>
+      <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts() "/>
     </span>
+
+    <g:if test="${rasterEntries.numberOfBands.get(0) == 2}">
+      <span class="menuButton">
+        <label>Bands:</label>
+        <g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()" />
+      </span>
+    </g:if>
+
+    <g:if test="${rasterEntries.numberOfBands.get(0) >= 3}">
+      <span class="menuButton">
+        <label>Bands:</label>
+        <g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()" />
+    </g:if>
+
     <span class="menuButton">
-      <label>Quick look:</label>
-      <g:select id="quicklook" name="quicklook" from="${['true', 'false']}" onChange="changeQuickLookOps()"/>
+      <label>Quick Look:</label>
+      <g:select id="quicklook" name="quicklook" from="${['true', 'false']}" onChange="changeQuickLookOpts()" />
     </span>
-    
-    <span class="menuButton">
-      <g:if test="${rasterEntries.numberOfBands.get(0) == 1}">
-      </g:if>
-
-      <g:if test="${rasterEntries.numberOfBands.get(0) == 2}">
-        <g:select id="band_order" name="band_order" from="${['0,1','1,0','0','1']}" onChange="changeBandSelection()" />
-      </g:if>
-
-      <g:if test="${rasterEntries.numberOfBands.get(0) >= 3}">
-        <label>Band Selection:</label>
-        <g:select id="band_order" name="band_order" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandSelection()" />
-      </g:if>
-    </span>
-
-    <%--
-      <div id="panel2" class="olControlPanel"></div>
-    --%>
   </div>
 </content>
+
 <content tag="center">
-  <%--
-  <h1 id="mapTitle">${rasterEntries*.mainFile.name}</h1>
-  <g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
-  </g:if>
-  --%>
   <div id="map"></div>
-</div>
 </content>
+
 <content tag="south">
-  <div class="niceBox">
-    <div class="niceBoxHd">Mouse Position:</div>
-    <div class="niceBoxBody">
-      <table>
-        <tr>
-          <td width=200><div id="ddCoordinates"></div></td>
-          <td width=200><div id="dmsCoordinates"></div></td>
-          <td width=200><div id="mgrsCoordinates"></div></td>
-        </tr>
-      </table>
-    </div>
-  </div>
+  <table>
+    <tr>
+      <td width="200px"><div id="ddMousePosition">&nbsp;</div></td>
+      <td width="200px"><div id="dmsMousePosition">&nbsp;</div></td>
+      <td width="200px"><div id="mgrsMousePosition">&nbsp;</div></td>
+    </tr>
+  </table>
 
   <openlayers:loadJavascript/>
   <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
@@ -176,6 +181,7 @@
      wmsParamForm.sharpen_mode.value = $("sharpen_mode").value
      wmsParamForm.stretch_mode_region.value = $("stretch_mode_region").value
      wmsParamForm.stretch_mode.value = $("stretch_mode").value
+     wmsParamForm.bands.value = $("bands").value
      wmsParamForm.quicklook.value = $("quicklook").value
      wmsParamForm.request.value = "GetKML"
      wmsParamForm.layers.value = layers
@@ -229,7 +235,6 @@
    }
     changeMapSize( mapWidth, mapHeight );
 
-
     setupToolbar();
     setupLayers();
     map.events.register('mousemove',map,handleMouseMove);
@@ -240,7 +245,6 @@
     map.addControl(new OpenLayers.Control.Scale());
     map.addControl(new OpenLayers.Control.ScaleLine());
 
-
     var zoom = map.getZoomForExtent(bounds, true);
 
     map.setCenter(bounds.getCenterLonLat(), zoom);
@@ -250,8 +254,8 @@
     function handleMouseMove(evt)
     {
     var lonLat = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x , evt.xy.y) );
-    var dmsOutput = document.getElementById('dmsCoordinates');
-    var mgrsOutput = document.getElementById('mgrsCoordinates');
+    var dmsOutput = document.getElementById('dmsMousePosition');
+    var mgrsOutput = document.getElementById('mgrsMousePosition');
 
     if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
     {
@@ -284,7 +288,7 @@
         lonHem = " E";
     }
 
-    var ddOutput = document.getElementById('ddCoordinates');
+    var ddOutput = document.getElementById('ddMousePosition');
     if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
     {
         ddOutput.innerHTML = "<b>DD:</b> ";
@@ -380,7 +384,7 @@ function onFeatureSelect(event)
       }
   }
 
-  function changeQuickLookOps()
+  function changeQuickLookOpts()
   {
     for ( var layer in rasterLayers )
     {
@@ -406,13 +410,13 @@ function onFeatureSelect(event)
       rasterLayers[layer].mergeNewParams({sharpen_mode:sharpen_mode});
     }
   }
-  function changeBandSelection()
+  function changeBandsOpts()
   {
-      var band_order = $("band_order").value;
+      var bands = $("bands").value;
 
       for ( var layer in rasterLayers )
       {
-        rasterLayers[layer].mergeNewParams({bands:band_order});
+        rasterLayers[layer].mergeNewParams({bands:bands});
       }
   }
 
