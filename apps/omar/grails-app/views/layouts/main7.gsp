@@ -123,7 +123,7 @@
             },
             {
               position: 'bottom',
-              height: 60,
+              height: 30,
               body: 'south'
             },
             {
