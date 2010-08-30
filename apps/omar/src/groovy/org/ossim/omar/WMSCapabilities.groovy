@@ -359,10 +359,11 @@ public class WMSCapabilities
               open("1")
               visibility("1")
               Icon() {
-                href("${map.getMapURL}?version=${version}&REQUEST=GetMap&layers=${layer?.name}&SRS=${layer?.srs}&WIDTH=512&HEIGHT=512&TRANSPARENT=TRUE&FORMAT=image/png&")
+                href("${map.getMapURL}?version=${version}&REQUEST=GetMap&layers=${layer?.name}&SRS=${layer?.srs}&TRANSPARENT=TRUE&FORMAT=image/png&")
                 viewRefreshMode("onStop")
                 viewRefreshTime("2")
                 viewBoundScale("0.85")
+                viewFormat("""BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&width=[horizPixels]&height=[vertPixels]""")
               }
               LatLonBox() {
                 north(layer?.maxY)
