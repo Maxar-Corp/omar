@@ -149,6 +149,13 @@
       <label>Quick Look:</label>
       <g:select id="quicklook" name="quicklook" from="${['true', 'false']}" onChange="changeQuickLookOpts()" />
     </span>
+
+    <span class="menuButton">
+      <label>Center:</label>
+      <g:textField name="center" value="${queryParams?.center}"/>
+      <input type="button" onclick="setCenter()" value="Go">
+    </span>
+    
   </div>
 </content>
 
@@ -245,6 +252,7 @@
     //map.addControl(new OpenLayers.Control.MousePosition());
     map.addControl(new OpenLayers.Control.Scale());
     map.addControl(new OpenLayers.Control.ScaleLine());
+    map.events.register("moveend", map, this.setCenterText);
 
     var zoom = map.getZoomForExtent(bounds, true);
 
@@ -418,6 +426,45 @@ function onFeatureSelect(event)
       for ( var layer in rasterLayers )
       {
         rasterLayers[layer].mergeNewParams({bands:bands});
+      }
+  }
+
+  function setCenterText()
+  {
+      var center = map.getCenter();
+      $("center").value = center.lat + ", " + center.lon;
+  }
+
+  function setCenter()
+  {
+      var centerRegExp = /^(\-?\d{1,2}\.?\d+)(\,\s)(\-?\d{1,3}\.?\d+)$/
+
+      if ($("center").value.match(centerRegExp))
+      {
+          var centerLat = RegExp.$1;
+          var centerLon = RegExp.$3;
+
+          if (centerLat >= parseFloat("${top}") || centerLat <= parseFloat("${bottom}") ||
+                  centerLon >= parseFloat("${right}") || centerLon <= parseFloat("${left}"))
+          {
+              alert("Error: Latitude/Longitude input is outside the image extent.\n\n" +
+                      "Latitude input must be between " + parseFloat("${bottom}") + " and " + parseFloat("${top}") + ".\n\n" +
+                      "Longitude input must be between " + parseFloat("${left}") + " and " + parseFloat("${right}") + ".");
+          }
+
+          else
+          {
+              var zoom = map.getZoom();
+              var center = new OpenLayers.LonLat(centerLon, centerLat);
+
+              map.setCenter(center, zoom);
+          }
+      }
+
+      else
+      {
+          var ctrEx = map.getCenter();
+          alert("Error: Invalid Latitude/Longitude input.\n\nEx. " + ctrEx.lat + ", " + ctrEx.lon);
       }
   }
 
