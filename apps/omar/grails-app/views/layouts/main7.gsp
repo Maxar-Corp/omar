@@ -119,6 +119,7 @@
             {
               position: 'top',
               height: 135,
+              resize: true, 
               body: 'north'
             },
             {
