@@ -8,6 +8,7 @@ import org.springframework.beans.factory.InitializingBean
 
 import org.ossim.omar.RasterEntry
 import org.ossim.omar.VideoDataSet
+import org.apache.commons.io.FilenameUtils
 
 class KmlService implements ApplicationContextAware, InitializingBean
 {
@@ -65,7 +66,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
 //    {
 //      wmsParams?.width = "1024"
 //    }
- //   if ( !wmsParams?.height )
+    //   if ( !wmsParams?.height )
 //    {
 //      wmsParams?.height = "1024"
 //    }
@@ -361,7 +362,6 @@ class KmlService implements ApplicationContextAware, InitializingBean
           }
 
           videoEntries.reverse().each { videoDataSet ->
-            def filename = videoDataSet.mainFile?.name
             def groundGeom = videoDataSet.groundGeom as String
             def list = []
             def point = null
@@ -402,7 +402,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
             def flashPlayerUrl = tagLibBean.createLinkTo(dir: "js", file: "player.swf", absolute: true)
             Placemark() {
               styleUrl("#red")
-              def flashbasename = filename.split("/")[-1] + ".flv"
+              def flashbasename = "${FilenameUtils.getBaseName(videoDataSet.mainFile?.name)}.flv"
               name(flashbasename)
               def createFlvUrl = tagLibBean.createLink(absolute: true, controller: "videoStreaming", action: "show", id: videoDataSet.indexId)
               def descriptionText = ""
@@ -411,16 +411,13 @@ class KmlService implements ApplicationContextAware, InitializingBean
               {
                 descriptionText = """
                   <table width="720">
-                    <tr>
-                      <td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td>
-                    </tr>
-                    <tr><td></td></tr>
-                    <tr><td><b>START TIME:</b> ${videoDataSet.startDate}</td></tr>
-                    <tr><td><b>END TIME:</b> ${videoDataSet.endDate}</td></tr>
-                    <tr><td><b>MIN LAT:</b> ${bounds?.minLat}</td></tr>
-                    <tr><td><b>MIN LON: </b> ${bounds?.minLon}</td></tr>
-                    <tr><td><b>MAX LAT:</b> ${bounds?.maxLat}</td></tr>
-                    <tr><td><b>MAX LON:</b> ${bounds?.maxLon}</td></tr>
+                    <caption><a href='${createFlvUrl}'>CLICK TO PLAY</a><br/></caption>
+                    <tr><th align="right">START TIME:</th><td>${videoDataSet.startDate}</td></tr>
+                    <tr><th align="right">END TIME:</th><td align="left">${videoDataSet.endDate}</td></tr>
+                    <tr><th align="right">MIN LAT:</th><td align="left">${bounds?.minLat}</td></tr>
+                    <tr><th align="right">MIN LON:</th><td align="left">${bounds?.minLon}</td></tr>
+                    <tr><th align="right">MAX LAT:</th><td align="left">${bounds?.maxLat}</td></tr>
+                    <tr><th align="right">MAX LON:</th><td align="left">${bounds?.maxLon}</td></tr>
                     <tr><td>
                       <embed type="application/x-shockwave-flash" src="${flashPlayerUrl}"
                         width="720" height="480" flashvars="file=${flvUrl}&autostart=true"</embed>
@@ -432,15 +429,14 @@ class KmlService implements ApplicationContextAware, InitializingBean
               {
                 descriptionText = """
                   <table>
-                    <tr><td><a href='${createFlvUrl}'>CLICK TO PLAY</a></td></tr>
-                    <tr><td></td></tr>
-                    <tr><td><b>START TIME:</b> ${videoDataSet.startDate}</td></tr>
-                    <tr><td><b>END TIME:</b> ${videoDataSet.endDate}</td></tr>
-                    <tr><td><b>MIN LAT:</b> ${bounds?.minLat}</td></tr>
-                    <tr><td><b>MIN LON: </b> ${bounds?.minLon}</td></tr>
-                    <tr><td><b>MAX LAT:</b> ${bounds?.maxLat}</td></tr>
-                    <tr><td><b>MAX LON:</b> ${bounds?.maxLon}</td></tr>
-                  </table>"
+                    <caption><a href='${createFlvUrl}'>CLICK TO PLAY</a><br/></caption>
+                    <tr><th align="right">START TIME:</th><td align="left">${videoDataSet.startDate}</td></tr>
+                    <tr><th align="right">END TIME:</th><td align="left">${videoDataSet.endDate}</td></tr>
+                    <tr><th align="right">MIN LAT:</th><td align="left">${bounds?.minLat}</td></tr>
+                    <tr><th align="right">MIN LON: </th><td align="left">${bounds?.minLon}</td></tr>
+                    <tr><th align="right">MAX LAT:</th><td align="left">${bounds?.maxLat}</td></tr>
+                    <tr><th align="right">MAX LON:</th><td align="left">${bounds?.maxLon}</td></tr>
+                  </table>
                 """
               }
 
@@ -448,7 +444,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
                 mkp.yieldUnescaped("<![CDATA[${descriptionText}]]>")
               }
 
-              Snippet{ mkp.yieldUnescaped( "<![CDATA[<a href='${createFlvUrl}'>CLICK TO PLAY</a>]]>" ) }
+              Snippet { mkp.yieldUnescaped("<![CDATA[<a href='${createFlvUrl}'>CLICK TO PLAY</a>]]>") }
 
               MultiGeometry() {
                 polygons.each { polygon ->
@@ -494,7 +490,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
         NetworkLink() {
           name("OMAR Last ${params.max} Images For View")
           Link() {
-            href{              
+            href {
               mkp.yieldUnescaped("<![CDATA[${kmlQueryUrl}]]>")
             }
             httpQuery("googleClientVersion=[clientVersion];")
@@ -509,7 +505,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
     kmlwriter << kmlbuilder.bind(kmlnode)
 
     String kmlText = kmlwriter.buffer
-    
+
     return kmlText
   }
 
@@ -526,7 +522,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
         NetworkLink() {
           name("OMAR Last ${params.max} Videos For View")
           Link() {
-            href{
+            href {
               mkp.yieldUnescaped("<![CDATA[${kmlQueryUrl}]]>")
             }
             httpQuery("googleClientVersion=[clientVersion]")
