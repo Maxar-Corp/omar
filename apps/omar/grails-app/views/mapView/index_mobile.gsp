@@ -21,6 +21,7 @@
  
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
+  <openlayers:loadJavascript/>
 
   <style type="text/css">
     #map {
@@ -30,7 +31,6 @@
     }
   </style>
 
-  <openlayers:loadJavascript/>
 
   <g:javascript plugin="omar-core" src="touch.js"/>
 </head>

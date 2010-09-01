@@ -14,6 +14,8 @@
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
+  <openlayers:loadJavascript/>
+  
   <meta name="layout" content="main6"/>
   <style type="text/css">
   #map {
@@ -74,7 +76,6 @@
   </g:if>
   --%>
   <div id="map"></div>
-  <openlayers:loadJavascript/>  
   <g:javascript>
   var map;
   var layer;
