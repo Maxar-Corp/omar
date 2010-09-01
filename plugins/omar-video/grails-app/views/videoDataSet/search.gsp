@@ -18,6 +18,8 @@
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
+  <openlayers:loadJavascript/>
+  
   <resource:include components="dateChooser, tabView"/>
 
   <style type="text/css">
@@ -412,7 +414,6 @@
 </content>
 
 <content tag="javascript">
-  <openlayers:loadJavascript/>
   <g:javascript plugin="omar-core" src="mapwidget.js"/>
   <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
 

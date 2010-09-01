@@ -14,6 +14,8 @@
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
+  <openlayers:loadJavascript/>
+  
   <meta name="layout" content="main6"/>
 
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -127,7 +129,6 @@
 </div>
 </content>
 <content tag="south">
-  <openlayers:loadJavascript/>
   <g:javascript plugin="omar-core" src="touch.js"/>
   
   <g:javascript>

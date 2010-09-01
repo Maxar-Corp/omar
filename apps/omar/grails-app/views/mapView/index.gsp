@@ -21,6 +21,7 @@
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
+  <openlayers:loadJavascript/>
 
   <style type="text/css">
 
@@ -172,7 +173,6 @@
     </tr>
   </table>
 
-  <openlayers:loadJavascript/>
   <g:javascript plugin="omar-core" src="coordinateConversion.js"/>
   <g:javascript plugin="omar-core" src="touch.js"/>
 
