@@ -76,8 +76,8 @@
           units: [
             { position: 'top', height: 26, body: 'top1', gutter: '0px', maxHeight: 80 },
             { position: 'left', header: '', width: 200, resize: false, proxy: false, body: 'left1', collapse: true, gutter: '0px 0px 0px 0px', scroll: true, maxWidth: 200 },
-            { position: 'center', body: 'center1', body: 'center1', gutter: '0px 0px 0px 0px', scroll: false },
-            { position: 'right', header: '', width: 200, resize: false, proxy: false, body: 'right1', collapse: true, gutter: '0px 0px 0px 0px', maxWidth: 200 },
+            { position: 'center', body: 'center1', gutter: '0px 0px 0px 0px', scroll: false },
+            { position: 'right', header: '', width: 200, resize: false, proxy: false, body: 'right1', collapse: true, gutter: '0px 0px 0px 0px', maxWidth: 200 }
           ]
         } );
 
