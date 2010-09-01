@@ -19,26 +19,6 @@ import joms.oms.ossimUnitConversionTool
 
 import org.ossim.oms.image.omsImageSource
 import javax.imageio.ImageIO
-import org.ossim.omar.RasterEntry
-import java.awt.image.RenderedImage
-
-import java.awt.image.BufferedImage
-import java.awt.image.ColorModel
-import java.awt.image.WritableRaster
-import java.awt.image.DataBuffer
-import java.awt.image.DataBufferByte
-import java.awt.Point
-import java.awt.Rectangle
-import java.awt.image.ComponentColorModel
-import java.awt.color.ColorSpace
-import java.awt.Transparency
-import javax.imageio.ImageTypeSpecifier
-import java.awt.image.SampleModel
-import java.awt.image.IndexColorModel
-
-import java.awt.image.ImageFilter
-import java.awt.image.FilteredImageSource
-import java.awt.Toolkit
 import java.awt.geom.AffineTransform
 import org.geotools.geometry.jts.LiteShape
 import geoscript.geom.MultiPolygon
@@ -357,24 +337,10 @@ class WebMappingService
       {
         if ( viewableBandCount == 1 )
         {
-          ImageTypeSpecifier isp = ImageTypeSpecifier.createGrayscale(8, DataBuffer.TYPE_BYTE, false);
-          ColorModel colorModel
-          SampleModel sampleModel = isp.getSampleModel(width as Integer, height as Integer)
-          if ( !wmsRequest?.transparent?.equalsIgnoreCase("true") )
-          {
-            colorModel = isp.getColorModel();
-          }
-          else
-          {
-            int[] lut = new int[256]
-            (0..<lut.length).each {i ->
-              lut[i] = ((0xff << 24) | (i << 16) | (i << 8) | (i));
-            }
-            lut[0] = 0xff000000
-            colorModel = new IndexColorModel(8, lut.length, lut, 0, true, 0, DataBuffer.TYPE_BYTE)
-          }
-          WritableRaster raster = WritableRaster.createWritableRaster(sampleModel, dataBuffer, null)
-          image = new BufferedImage(colorModel, raster, false, null);
+          image = Utility.convertToColorIndexModel(dataBuffer,
+                                                   width as Integer,
+                                                   height as Integer,
+                                                   wmsRequest?.transparent?.equalsIgnoreCase("true"))
         }
         else
         {
@@ -415,7 +381,112 @@ class WebMappingService
 
     return image;
   }
+  def convertToIndexModel()
+  {
 
+  }
+  BufferedImage getUnprojectedTile(Rectangle rect,
+                                   String inputFile,
+                                   int entry,
+                                   def inputBandCount,
+                                   BigDecimal scale,
+                                   int startSample, int endSample, int startLine, int endLine,
+                                   def params)
+  {
+    def sharpenMode = params.sharpen_mode?:""
+    def bands = params?.bands ?: ""
+    int viewableBandCount = 1
+    if ( sharpenMode.equals("light") )
+    {
+      params.sharpen_width = "3"
+      params.sharpen_sigma = ".5"
+    }
+    else if ( sharpenMode.equals("heavy") )
+    {
+      params.sharpen_width = "5"
+      params.sharpen_sigma = "1"
+    }
+    if(inputBandCount > 3)
+    {
+      viewableBandCount = 3
+    }
+    def bandSelectorCount = bands?bands.split(",").length:0
+    if(bandSelectorCount>0)
+    {
+      if(bandSelectorCount >= 3)
+      {
+        viewableBandCount = 3;
+      }
+      else
+      {
+        viewableBandCount = 1;
+      }
+    }
+//    println params
+//    println rect
+//    println "${inputFile} ${entry}"
+//    println stretchMode
+//    println viewportStretchMode
+//    println scale
+//    println "${startSample} ${endSample} ${startLine} ${endLine}"
+
+    byte[] data = new byte[rect.width * rect.height * 3]
+    def kwl = new ossimKeywordlist();
+    params.each {name,value ->
+      kwl.add(name, value)
+    }
+    kwl.add("viewable_bands", "${viewableBandCount}")
+    WmsMap.getUnprojectedMap(
+            inputFile,
+            entry,
+            scale,
+            startSample, endSample, startLine, endLine,
+            data,
+            kwl
+    )
+    DataBuffer dataBuffer = new DataBufferByte(data, data.size())
+    int pixelStride = viewableBandCount
+    int lineStride = viewableBandCount * rect.width
+    int[] bandOffsets = null;
+    if ( viewableBandCount == 1 )
+    {
+      bandOffsets = [0] as int[]
+    }
+    else
+    {
+      bandOffsets = [0, 1, 2] as int[]
+    }
+    def image;
+    if ( viewableBandCount == 1 )
+    {
+      image = Utility.convertToColorIndexModel(dataBuffer, rect.width as Integer, rect.height as Integer, false)
+    }
+    else
+    {
+      Point location = null
+      WritableRaster raster = WritableRaster.createInterleavedRaster(
+              dataBuffer,
+              rect.width as Integer,
+              rect.height as Integer,
+              lineStride,
+              pixelStride,
+              bandOffsets,
+              location)
+
+      ColorModel colorModel = omsImageSource.createColorModel(raster.sampleModel)
+
+      boolean isRasterPremultiplied = true
+      Hashtable<?, ?> properties = null
+
+      image = new BufferedImage(
+              colorModel,
+              raster,
+              isRasterPremultiplied,
+              properties)
+    }
+
+    return image
+  }
 
   String getCapabilities(WMSRequest wmsRequest, String serviceAddress)
   {
@@ -431,65 +502,6 @@ class WebMappingService
     def wmsCapabilities = new WMSCapabilities(layers, serviceAddress)
 
     return wmsCapabilities.getKML()
-  }
-
-  BufferedImage getUnprojectedTile(
-  Rectangle rect,
-  String inputFile,
-  int entry,
-  String stretchMode,
-  String viewportStretchMode,
-  BigDecimal scale,
-  int startSample, int endSample, int startLine, int endLine
-  )
-  {
-
-//    println rect
-//    println "${inputFile} ${entry}"
-//    println stretchMode
-//    println viewportStretchMode
-//    println scale
-//    println "${startSample} ${endSample} ${startLine} ${endLine}"
-
-    byte[] data = new byte[rect.width * rect.height * 3]
-
-    WmsMap.getUnprojectedMap(
-            inputFile, entry,
-            "",
-            stretchMode,
-            viewportStretchMode,
-            "",
-            scale,
-            startSample, endSample, startLine, endLine,
-            data
-    )
-    DataBuffer dataBuffer = new DataBufferByte(data, data.size())
-    int pixelStride = 3
-    int lineStride = 3 * rect.width
-    int[] bandOffsets = [0, 1, 2] as int[]
-    Point location = null
-    WritableRaster raster = WritableRaster.createInterleavedRaster(
-            dataBuffer,
-            rect.width as Integer,
-            rect.height as Integer,
-            lineStride,
-            pixelStride,
-            bandOffsets,
-            location)
-
-    ColorModel colorModel = omsImageSource.createColorModel(raster.sampleModel)
-
-    boolean isRasterPremultiplied = true
-    Hashtable<?, ?> properties = null
-
-    BufferedImage image = new BufferedImage(
-            colorModel,
-            raster,
-            isRasterPremultiplied,
-            properties
-    )
-
-    return image
   }
 
   def computeScales(def rasterEntries)

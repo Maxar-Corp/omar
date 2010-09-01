@@ -255,8 +255,12 @@ class OgcController
     }
     return null
   }
-
+  def zoomify = {
+    println params
+  }
+  
   def getTile = {
+    log.info(params)
     def image = null
     def tileWidth = params.tileWidth?.toInteger()
     def tileHeight = params.tileHeight?.toInteger()
@@ -266,8 +270,6 @@ class OgcController
 
     try
     {
-      //println "params: $params"
-
       def mode = "OSSIM"
       Rectangle rect = new Rectangle(offsetX, offsetY, tileWidth, tileHeight)
       def width
@@ -291,17 +293,11 @@ class OgcController
 
         width = rasterEntry?.width
         height = rasterEntry?.height
-
+        def bands = rasterEntry?.numberOfBands
         def numRLevels = 1
         def tileSize = 256
         def targetFullRect = (2 ** params.z?.toInteger()) * tileSize;
 
-//          while ( width > tileSize )
-//          {
-//            width /= 2
-//            height /= 2
-//            numRLevels++
-//          }
         def maxDimension = width;
         if ( maxDimension < height )
         {
@@ -332,33 +328,18 @@ class OgcController
         }
         switch ( mode2 )
         {
-        case "SYSCALL":
-          def outputFile = File.createTempFile("ogcoms", ".jpg")
-          def cmd = "icp --res-level ${resLevel} --start-sample ${startSample} --end-sample ${endSample} --start-line ${startLine} --end-line ${endLine}  --use-scalar-remapper --entry ${entry} --writer-prop 'create_external_geometry=false' ${outputType} ${inputFile}  ${outputFile}"
-
-          //println "$cmd"
-
-          def process = cmd.execute()
-
-          process.consumeProcessOutput()
-          process.waitFor();
-          image = ImageIO.read(outputFile)
-          outputFile.delete()
-          // delete the geom file
-          new File(outputFile.absolutePath - "jpg" + "geom").delete()
-          break
         case "LIBCALL":
           image = webMappingService.getUnprojectedTile(
                   rect,
                   inputFile,
                   entry,
-                  stretchMode,
-                  viewportStretchMode,
+                  bands as Integer,
                   scale,
                   startSample,
                   endSample,
                   startLine,
-                  endLine)
+                  endLine,
+                  params)
 
           break
         }
@@ -369,6 +350,7 @@ class OgcController
     }
     catch (Exception e)
     {
+      log.error(e.message)
 //      image = new BufferedImage(tileWidth, tileHeight, BufferedImage.TYPE_INT_RGB)
 
 //      response.contentType = "image/jpeg"
