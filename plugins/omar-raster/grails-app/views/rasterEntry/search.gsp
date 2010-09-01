@@ -18,6 +18,8 @@
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
+  <openlayers:loadJavascript />
+  
   <resource:include components="dateChooser, tabView"/>
 
   <style type="text/css">
@@ -36,22 +38,9 @@
   </style>
 </head>
 
-<body class="yui-skin-sam" onLoad="init();" onresize="mapWidget.changeMapSize();">
+<body class="yui-skin-sam" onLoad="init();">
 
 <content tag="top">
-
-  <g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
-  <g:javascript plugin='richui' src="yui/element/element-min.js"/>
-  <g:javascript plugin='richui' src="yui/button/button-min.js"/>
-
-  <script type="text/javascript">
-    YAHOO.example.init = function () {
-      var oLinkButton1 = new YAHOO.widget.Button({ type: "link", id: "linkbutton4", label: "OMAR Home", href: "${createLink(controller: "home")}", container: "linkbuttonsfromjavascript" });
-      var oLinkButton2 = new YAHOO.widget.Button({ type: "link", id: "linkbutton5", label: "Generate KML", href: "javascript:mapWidget.generateKML();", container: "linkbuttonsfromjavascript" });
-      var oLinkButton3 = new YAHOO.widget.Button({ type: "link", id: "linkbutton6", label: "Update Footprints", href: "javascript:updateOmarFilters();", container: "linkbuttonsfromjavascript" });
-      var oLinkButton4 = new YAHOO.widget.Button({ type: "link", id: "linkbutton6", label: "Search Rasters", href: "javascript:mapWidget.search();", container: "linkbuttonsfromjavascript" });
-    } ();
-  </script>
 
   <div id="linkbuttonsfromjavascript"></div>
 
@@ -412,7 +401,10 @@
 </content>
 
 <content tag="javascript">
-  <openlayers:loadJavascript />
+  <g:javascript plugin='richui' src="yui/button/button-min.js"/>
+
+  
+
   <g:javascript plugin="omar-core" src="mapwidget.js" />
   <g:javascript plugin="omar-core" src="coordinateConversion.js" />
   <g:javascript plugin="omar-core" src="touch.js" />
@@ -485,6 +477,16 @@
         );
   }
   </g:javascript>
+
+  <g:javascript>
+    YAHOO.example.init = function () {
+      var oLinkButton1 = new YAHOO.widget.Button({ type: "link", id: "linkbutton4", label: "OMAR Home", href: "${createLink(controller: "home")}", container: "linkbuttonsfromjavascript" });
+      var oLinkButton2 = new YAHOO.widget.Button({ type: "link", id: "linkbutton5", label: "Generate KML", href: "javascript:mapWidget.generateKML();", container: "linkbuttonsfromjavascript" });
+      var oLinkButton3 = new YAHOO.widget.Button({ type: "link", id: "linkbutton6", label: "Update Footprints", href: "javascript:updateOmarFilters();", container: "linkbuttonsfromjavascript" });
+      var oLinkButton4 = new YAHOO.widget.Button({ type: "link", id: "linkbutton6", label: "Search Rasters", href: "javascript:mapWidget.search();", container: "linkbuttonsfromjavascript" });
+    } ();
+  </g:javascript>
+  
 </content>
 
 </body>

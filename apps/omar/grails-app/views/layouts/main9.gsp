@@ -22,7 +22,7 @@
   <g:layoutHead/>
 
 </head>
-<body class="${pageProperty(name: 'body.class')}" onload="${pageProperty(name: 'body.onload')}" onresize="${pageProperty(name: 'body.onresize')}">
+<body class="${pageProperty(name: 'body.class')}" onload="${pageProperty(name: 'body.onload')}">
 
 <div id="header1">
   <omar:securityClassificationBanner/>
