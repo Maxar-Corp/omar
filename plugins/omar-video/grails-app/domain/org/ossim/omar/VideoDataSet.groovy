@@ -92,7 +92,7 @@ class VideoDataSet
     videoDataSet.startDate = DateUtil.parseDate(start)
     videoDataSet.endDate = DateUtil.parseDate(end)
 
-
+    def defaultGeometry;
     if ( videoDataSetNode?.groundGeom?.toString() )
     {
      videoDataSet.groundGeom = initGroundGeom(videoDataSetNode?.groundGeom)
@@ -103,6 +103,11 @@ class VideoDataSet
 	   videoDataSetNode?.spatialMetadata?.groundGeom?.each { groundGeomNode ->
          def sensorDistance = groundGeomNode?.@sensorDistance?.toString().trim()
          def elevation      = groundGeomNode.@elevation?.toString().trim()
+         // just in case we will make sure that we have at least one goemetry
+         if(!defaultGeometry)
+         {
+            defaultGeometry = initGroundGeom(groundGeomNode)
+         }
          if(sensorDistance&&elevation)
          {
            double ratio = (sensorDistance as Double)/(elevation as Double);
@@ -122,7 +127,10 @@ class VideoDataSet
          }
 	   }
     }
-
+    if(!videoDataSet.groundGeom)
+    {
+      videoDataSet.groundGeom = defaultGeometry
+    }
     def metadataNode = videoDataSetNode?.metadata
     initVideoDataSetMetadata(metadataNode, videoDataSet)
     initVideoDataSetOtherTagsXml(videoDataSet)
