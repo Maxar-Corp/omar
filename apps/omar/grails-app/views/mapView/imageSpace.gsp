@@ -133,6 +133,7 @@
   <g:javascript>
   var map;
   var layer;
+    var format = "image/jpeg";
 
   function changeMapSize(mapWidth, mapHeight)
   {
@@ -158,7 +159,20 @@
 
   layer.mergeNewParams({stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region});
 }
+  function changeSharpenOpts()
+  {
+    var sharpen_mode = $("sharpen_mode").value;
 
+    layer.mergeNewParams({sharpen_mode:sharpen_mode});
+  }
+
+  function changeBandsOpts()
+  {
+      var bands = $("bands").value;
+
+      layer.mergeNewParams({bands:bands});
+  }
+  
   function get_my_url (bounds)
   {
       var res = this.map.getResolution();
@@ -170,7 +184,7 @@
       var stretch_mode_region = $("stretch_mode_region").value;
       var bands = $("bands").value;
 
-      var path = "?z=" + z + "&x=" + x + "&y=" + y + "&format=" + this.type
+      var path = "?z=" + z + "&x=" + x + "&y=" + y + "&format=" + this.format
           + "&tileWidth=" + this.tileSize.w + "&tileHeight=" + this.tileSize.h
           + "&id=" + ${rasterEntry?.id}
           + "&sharpen_mode=" + sharpen_mode
@@ -189,47 +203,52 @@
 
   function init(mapWidth, mapHeight)
   {
-    map = new OpenLayers.Map('map', { controls: [], numZoomLevels: 32 } );
-    map.addControl(new OpenLayers.Control.LayerSwitcher())
-    //map.addControl(new OpenLayers.Control.PanZoom())
-    //map.addControl(new OpenLayers.Control.NavToolbar())
-    map.addControl(new OpenLayers.Control.MousePosition());
-    map.addControl(new OpenLayers.Control.Scale());
-    map.addControl(new OpenLayers.Control.ScaleLine());
-
+    var width = parseFloat("${rasterEntry.width}");
+    var height = parseFloat("${rasterEntry.height}");
+    var url = "${createLink(controller: 'ogc', action: 'getTile')}";
+    var resLevels = parseFloat("${rasterEntry.numberOfResLevels}")
+    // full res is included in resLevels so we need to add 2 more to give us
+    // an 8x zoom  
+	map = new OpenLayers.Map("map", {controls:[], numZoomLevels:(resLevels+2)});
     var options = {
-      maxExtent: new OpenLayers.Bounds(0,0,${width},${height}),
-      maxResolution: ${width} / map.getTileSize().w,
-        numZoomLevels: 30,
-//        numZoomLevels: ${numRLevels},
-      type:'jpeg',
+	  controls: [],
+	  maxExtent: new OpenLayers.Bounds(0, 0,width, height),
       getURL: get_my_url,
       isBaseLayer: true,
-      buffer: 0,
-      singleTile: true,
+      maxResolution: width / map.getTileSize().w,
       ratio: 1.0,
-      transitionEffect: "resize"
+      transitionEffect: "resize",
+      units:'pixel',
+      singleTile:true,
+      format: format
     };
 
-    layer = new OpenLayers.Layer.TMS("Layer",
-        "${createLink(controller: 'ogc', action: 'getTile')}",
-        options
-    );
+    layer = new OpenLayers.Layer.TMS( "Image Space Viewer",
+                                      url, options);
+	map.addLayer(layer);
+	map.addControl(new OpenLayers.Control.MousePosition());
+	map.addControl(new OpenLayers.Control.MouseDefaults());
+	map.addControl(new OpenLayers.Control.KeyboardDefaults());
 
+
+    map.setBaseLayer(layer);
     changeMapSize(mapWidth, mapHeight);
-    
-    map.addLayers([layer]);
     map.zoomToMaxExtent();
     setupToolbar();
-
-    this.touchhandler = new TouchHandler( map, 4 );  
+    this.touchhandler = new TouchHandler( map, 4 );
   }
 
     function zoomIn()
     {
       map.zoomIn();
     }
-
+    function zoomInFullRes()
+    {
+        // we are image space so set to a 1:1 scale
+        var zoom = map.getZoomForResolution(1.0, true)
+        map.zoomTo(zoom)
+    }
+ 
     function zoomOut()
     {
       map.zoomOut();
@@ -246,6 +265,11 @@
           trigger: zoomIn
         });
 
+       var zoomInFullResButton = new OpenLayers.Control.Button({title:'Zoom in full res',
+          displayClass: "olControlZoomToLayer",
+          trigger: zoomInFullRes
+        });
+          
         var zoomOutButton = new OpenLayers.Control.Button({title:'Zoom out',
           displayClass: "olControlZoomOut",
           trigger: zoomOut
@@ -297,8 +321,9 @@
           zoomOutButton,
           navButton.next, navButton.previous,
           new OpenLayers.Control.ZoomToMaxExtent({title:"Zoom to the max extent"}),
-          measureDistanceButton,
-          measureAreaButton
+          zoomInFullResButton
+//          measureDistanceButton,
+//          measureAreaButton
         ]);
 
         map.addControl(panel);
