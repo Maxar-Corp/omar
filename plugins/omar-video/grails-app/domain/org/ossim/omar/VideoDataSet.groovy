@@ -101,16 +101,25 @@ class VideoDataSet
     {
        def srsId = 4326;
 	   videoDataSetNode?.spatialMetadata?.groundGeom?.each { groundGeomNode ->
-		  if ( videoDataSet.groundGeom == null )
-		  {
-			videoDataSet.groundGeom = initGroundGeom(groundGeomNode)
-            srsId =   videoDataSet.groundGeom?.getSRID()
-		  }
-		  else
-		  {
-			videoDataSet.groundGeom =  videoDataSet.groundGeom.union(initGroundGeom(groundGeomNode))
-            videoDataSet.groundGeom?.setSRID(srsId);
-		  }
+         def sensorDistance = groundGeomNode?.@sensorDistance?.toString().trim()
+         def elevation      = groundGeomNode.@elevation?.toString().trim()
+         if(sensorDistance&&elevation)
+         {
+           double ratio = (sensorDistance as Double)/(elevation as Double);
+           if(ratio < 20)
+           {
+             if ( videoDataSet.groundGeom == null )
+             {
+               videoDataSet.groundGeom = initGroundGeom(groundGeomNode)
+               srsId =   videoDataSet.groundGeom?.getSRID()
+             }
+             else
+             {
+               videoDataSet.groundGeom =  videoDataSet.groundGeom.union(initGroundGeom(groundGeomNode))
+               videoDataSet.groundGeom?.setSRID(srsId);
+             }
+           }
+         }
 	   }
     }
 
