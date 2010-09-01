@@ -138,8 +138,8 @@ class MapViewController implements InitializingBean
   }
 
   def imageSpace = {
-    //println params
-
+    //log.info(params)
+    //println (params)
     def rasterEntry = RasterEntry.findByIndexId(params.layers)?:RasterEntry.get(params.layers)
 
     def inputFile = rasterEntry.mainFile.name
@@ -166,18 +166,15 @@ class MapViewController implements InitializingBean
 
     //println "${[width: width, height: height, inputFile: inputFile, entry: rasterEntry.entryId]}"
 
-    def numRLevels = 1
-    def tileSize = 256
-
-    while ( width > tileSize )
-    {
-      width /= 2
-      height /= 2
-      numRLevels++
-    }
 
 
-    [width: rasterEntry?.width, height: rasterEntry?.height, numRLevels: numRLevels, rasterEntry: rasterEntry]
+    def model = [:]
+
+//    model.width = rasterEntry?.width
+//    model.height = rasterEntry?.height
+//    model.numRLevels = rasterEntry.numberOfResLevels
+    model.rasterEntry = rasterEntry
+    return model
   }
 
   public void afterPropertiesSet()
@@ -210,8 +207,6 @@ class MapViewController implements InitializingBean
 
       break
     }
-
-    //println "${[width: width, height: height, inputFile: inputFile, entry: rasterEntry.entryId]}"
 
     def numRLevels = 1
     def tileSize = 256

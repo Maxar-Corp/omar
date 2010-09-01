@@ -1,6 +1,13 @@
 package org.ossim.omar
 
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import java.awt.image.BufferedImage
+import java.awt.image.ColorModel
+import java.awt.image.WritableRaster
+import javax.imageio.ImageTypeSpecifier
+import java.awt.image.SampleModel
+import java.awt.image.IndexColorModel
+import java.awt.image.DataBuffer;
 
 class Utility
 {
@@ -8,6 +15,28 @@ class Utility
   {
     def nullMap = params?.findAll {entry -> (entry.value == "" || entry.value == "null")}
     nullMap?.each {params?.remove(it.key)}
+  }
+  static def convertToColorIndexModel(def dataBuffer, def width, def height, def transparentFlag)
+  {
+    ImageTypeSpecifier isp = ImageTypeSpecifier.createGrayscale(8, DataBuffer.TYPE_BYTE, false);
+    ColorModel colorModel
+    SampleModel sampleModel = isp.getSampleModel(width, height)
+    if ( !transparentFlag )
+    {
+      colorModel = isp.getColorModel();
+    }
+    else
+    {
+      int[] lut = new int[256]
+      (0..<lut.length).each {i ->
+        lut[i] = ((0xff << 24) | (i << 16) | (i << 8) | (i));
+      }
+      lut[0] = 0xff000000
+      colorModel = new IndexColorModel(8, lut.length, lut, 0, true, 0, DataBuffer.TYPE_BYTE)
+    }
+    WritableRaster raster = WritableRaster.createWritableRaster(sampleModel, dataBuffer, null)
+    return new BufferedImage(colorModel, raster, false, null);
+   
   }
   /**
    * This will extract all WMS paramters this includes GetMap, GetCapabilities, and
