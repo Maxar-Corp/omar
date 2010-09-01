@@ -227,20 +227,10 @@
 
     var bounds    = new OpenLayers.Bounds(left, bottom, right, top);
 
-   if(smallestScale != 0.0)
-   {
     map = new OpenLayers.Map("map", { controls: [],
                                       maxExtent:bounds,
                                       maxResolution:largestScale,
                                       minResolution:smallestScale });
-   }
-   else
-   {
-    map = new OpenLayers.Map("map", { controls: [],
-                                      maxExtent:bounds,
-                                      minExtent:minBounds,
-                                      minResolution:'auto', maxResolution:'auto' });
-   }
     changeMapSize( mapWidth, mapHeight );
 
     setupToolbar();
