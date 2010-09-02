@@ -6,7 +6,7 @@ import com.vividsolutions.jts.io.WKTReader
 import org.joda.time.DateTime
 class VideoDataSet
 {
-
+  String filename
   long width
   long height
 
@@ -31,6 +31,7 @@ class VideoDataSet
   static mapping = {
     columns {
       indexId index: 'video_data_set_index_id_idx'
+      filename index: 'video_data_set_filename_idx'
       otherTagsXml type: 'text'//, index: 'video_data_set_metadata_other_tags_idx'
       startDate column: 'start_date', type: 'timestamp', index: 'video_data_set_start_date_idx,video_data_set_time_idx'
       endDate column: 'end_date', type: 'timestamp', index: 'video_data_set_end_date_idx,video_data_set_time_idx'
@@ -41,6 +42,7 @@ class VideoDataSet
   static constraints = {
     width(min: 0L)
     height(min: 0L)
+    filename(nullable: true)
     otherTagsXml(nullable: true, blank: false)
     startDate(nullable: true)
     endDate(nullable: true)
@@ -134,17 +136,24 @@ class VideoDataSet
     def metadataNode = videoDataSetNode?.metadata
     initVideoDataSetMetadata(metadataNode, videoDataSet)
     initVideoDataSetOtherTagsXml(videoDataSet)
+    def mainFile = videoDataSet.getFileFromObjects("main")
+    def filename
+    if(mainFile)
+    {
+      filename = mainFile.name
+    }
+    if(!videoDataSet.filename&&filename)
+    {
+      videoDataSet.filename = (filename as File).getName()
+    }
     if ( !videoDataSet.indexId )
     {
-      def mainFile = videoDataSet.getFileFromObjects("main")
-      if(mainFile)
+      if(filename)
       {
-        def filename = mainFile.name
-        filename = filename.replaceAll("/|\\\\", "_")
+        def tempFilename = filename.replaceAll("/|\\\\", "_")
         videoDataSet.indexId = "${filename}".encodeAsSHA256()
       }
     }
-    
     return videoDataSet
   }
   static def initVideoDataSetOtherTagsXml(VideoDataSet videoDataSet)
