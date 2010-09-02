@@ -481,7 +481,7 @@
   <g:javascript>
     YAHOO.example.init = function () {
       var oLinkButton1 = new YAHOO.widget.Button({ type: "link", id: "linkbutton4", label: "OMAR Home", href: "${createLink(controller: "home")}", container: "linkbuttonsfromjavascript" });
-      var oLinkButton2 = new YAHOO.widget.Button({ type: "link", id: "linkbutton5", label: "Generate KML", href: "javascript:mapWidget.generateKML();", container: "linkbuttonsfromjavascript" });
+      var oLinkButton2 = new YAHOO.widget.Button({ type: "link", id: "linkbutton5", label: "Static KML Bookmark", href: "javascript:mapWidget.generateKML();", container: "linkbuttonsfromjavascript" });
       var oLinkButton3 = new YAHOO.widget.Button({ type: "link", id: "linkbutton6", label: "Update Footprints", href: "javascript:updateOmarFilters();", container: "linkbuttonsfromjavascript" });
       var oLinkButton4 = new YAHOO.widget.Button({ type: "link", id: "linkbutton6", label: "Search Rasters", href: "javascript:mapWidget.search();", container: "linkbuttonsfromjavascript" });
     } ();
