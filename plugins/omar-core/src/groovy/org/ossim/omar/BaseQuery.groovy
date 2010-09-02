@@ -42,8 +42,8 @@ class BaseQuery
   Date startDate
   Date endDate
  
-  List<String> searchTagNames = ["", "", "", "", "", "", "", ""]
-  List<String> searchTagValues = ["", "", "", "", "", "", "", ""]
+  List<String> searchTagNames = ["", "", "", "", "", "", "", "", ""]
+  List<String> searchTagValues = ["", "", "", "", "", "", "", "", ""]
 
   Criterion createIntersection(String geomColumnName = "groundGeom")
   {

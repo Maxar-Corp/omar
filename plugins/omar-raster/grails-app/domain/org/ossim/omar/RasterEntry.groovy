@@ -29,12 +29,14 @@ class RasterEntry
   String indexId
 
   /** **************** BEGIN ADDING TAGS FROM MetaData to here  ******************/
+  String filename
   String imageId
   String targetId
   String productId
   String sensorId
   String missionId
   String imageCategory
+  String imageRepresentation
   Double azimuthAngle
   Double grazingAngle
   String securityClassification
@@ -42,6 +44,7 @@ class RasterEntry
   String organization
   String description
   String countryCode
+  String beNumber
   Double niirs
 
   //Geometry groundGeom
@@ -76,14 +79,17 @@ class RasterEntry
       tiePointSet type: 'text'
 
       indexId index: 'raster_entry_index_id_idx'
+      filename index: 'raster_entry_filename_idx'
       imageId index: 'raster_entry_image_id_idx'
       targetId index: 'raster_entry_target_id_idx'
       productId index: 'raster_entry_product_id_idx'
       sensorId index: 'raster_entry_sensor_id_idx'
       missionId index: 'raster_entry_mission_id_idx'
       imageCategory index: 'raster_entry_image_category_idx'
+      imageRepresentation index: 'raster_entry_image_representation_idx'
       securityClassification index: 'raster_entry_security_classification_idx'
-      countryCode index: 'raster_entry_countryCode_idx'
+      countryCode index: 'raster_entry_country_code_idx'
+      beNumber index: 'raster_entry_be_number_idx'
 
       // Just for testing
       fileType index: 'raster_entry_filetype_idx'
@@ -115,13 +121,15 @@ class RasterEntry
 
     tiePointSet(nullable: true)
 
-    indexId(nullable:false, unique:true, blank: false)
+    filename(nullable:true)
+    indexId(nullable:false, unique:false, blank: false)
     imageId(nullable: true, blank: false/*, unique: true*/)
     targetId(nullable: true)
     productId(nullable: true)
     sensorId(nullable: true)
     missionId(nullable: true)
     imageCategory(nullable: true)
+    imageRepresentation(nullable: true)
     azimuthAngle(nullable: true)
     grazingAngle(nullable: true)
     securityClassification(nullable: true)
@@ -130,6 +138,7 @@ class RasterEntry
     organization(nullable: true)
     description(nullable: true)
     countryCode(nullable: true)
+    beNumber(nullable: true)
     accessDate(nullable: true)
     ingestDate(nullable: true)
 
@@ -153,7 +162,6 @@ class RasterEntry
         if(mainFile)
         {
           def value = "${entryId}-${mainFile}"
-          println "============================="
           indexId = mainFile.omarIndexId;
         }
       }
@@ -258,7 +266,6 @@ class RasterEntry
 
       rasterEntry.addToFileObjects(rasterEntryFile)
     }
-
     def metadataNode = rasterEntryNode.metadata
 
     initRasterEntryMetadata(metadataNode, rasterEntry)
@@ -266,6 +273,10 @@ class RasterEntry
 
     def mainFile = rasterEntry.rasterDataSet.getFileFromObjects("main")
     def filename = mainFile?.name
+    if(!rasterEntry.filename&&filename)
+    {
+      rasterEntry.filename = (filename as File).getName()
+    }
     if(!rasterEntry.indexId)
     {
       rasterEntry.indexId = "${rasterEntry.entryId}-${filename}".encodeAsSHA256()
@@ -346,77 +357,131 @@ class RasterEntry
         {
           switch ( name.toLowerCase() )
           {
+            case "filename":
+              if(value&&!rasterEntry.filename)
+              {
+                rasterEntry.filename = (value as File).getName()
+              }
+              break;
           case "imageid":
           case "iid":
-            if(value)
+            if(value&&!rasterEntry.imageId)
             {
               rasterEntry.imageId = value
             }
             break;
+          case "irep":
+            if(value&&!rasterEntry.imageRepresentation)
+            {
+              rasterEntry.imageRepresentation = value
+            }
+            break;
           case "targetid":
           case "tgtid":
-            rasterEntry.targetId = value
+            if(value&&!rasterEntry.targetId)
+            {
+              rasterEntry.targetId = value
+            }
             break;
           case "productid":
-            rasterEntry.productId = value
+            if(value&&!rasterEntry.productId)
+            {
+              rasterEntry.productId = value
+            }
+            break;
+          case "benumber":
+            if(value)
+            {
+              rasterEntry.beNumber = value;
+            }
             break;
           case "sensorid":
-            rasterEntry.sensorId = value
+            if(value&&!rasterEntry.sensorId)
+            {
+              rasterEntry.sensorId = value
+            }
             break;
           case "country":
           case "countryCode":
-            rasterEntry.countryCode = value
+            if(value&&!rasterEntry.countryCode)
+            {
+              rasterEntry.countryCode = value
+            }
             break;
           case "mission":
           case "missionid":
           case "isorce":
-            rasterEntry.missionId = value
+            if(value&&!rasterEntry.missionId)
+            {
+              rasterEntry.missionId = value
+            }
             break;
           case "imagecategory":
           case "icat":
-            rasterEntry.imageCategory = value
+            if(value&&!rasterEntry.imageCategory)
+            {
+              rasterEntry.imageCategory = value
+            }
             break;
           case "azimuthangle":
           case "angletonorth":
-            rasterEntry.azimuthAngle = value as Double
+            if(value&&!rasterEntry.azimuthAngle)
+            {
+              rasterEntry.azimuthAngle = value as Double
+            }
             break;
           case "grazingangle":
-            rasterEntry.grazingAngle = value as Double
+            if(value&&!rasterEntry.grazingAngle)
+            {
+              rasterEntry.grazingAngle = value as Double
+            }
             break;
           case "oblang":
-            rasterEntry.grazingAngle = 90 - (value as Double)
+            if(value&&!rasterEntry.grazingAngle)
+            {
+              rasterEntry.grazingAngle = 90 - (value as Double)
+            }
             break;
 
           case "securityclassification":
           case "isclas":
-            rasterEntry.securityClassification = value
+            if(value&&!rasterEntry.securityClassification)
+            {
+              rasterEntry.securityClassification = value
+            }
             break;
           case "title":
           case "ititle":
           case "iid2":
-            if(value)
+            if(value&&!rasterEntry.title)
             {
               rasterEntry.title = value
             }
             break;
           case "organization":
           case "oname":
-            if(value)
+            if(value&&!rasterEntry.organization)
             {
               rasterEntry.organization = value
             }
             break;
           case "description":
-            rasterEntry.description = value
+            if(value&&!rasterEntry.description)
+            {
+              rasterEntry.description = value
+            }
             break;
           case "niirs":
-            rasterEntry.niirs = value as Double
+            if(value&&!rasterEntry.niirs)
+            {
+              rasterEntry.niirs = value as Double
+            }
             break;
 
           // Just for testing
           case "filetype":
           case "file_type":
-            if(value)
+            if(value&&!rasterEntry.fileType)
             {
               rasterEntry.fileType = value
             }
@@ -424,7 +489,7 @@ class RasterEntry
 
           case "classname":
           case "class_name":
-            if(value)
+            if(value&&!rasterEntry.className)
             {
               rasterEntry.className = value
             }
@@ -456,7 +521,6 @@ class RasterEntry
       rasterEntry.otherTagsXml = builder.toString()
     }
   }
-
   static Date initAcquisitionDate(rasterEntryNode)
   {
     def when = rasterEntryNode?.TimeStamp?.when
