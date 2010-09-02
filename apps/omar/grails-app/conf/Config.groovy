@@ -14,6 +14,8 @@ grails.gorm.default.mapping = {
 }
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
+grails.config.locations = ["file:${userHome}/${appName}-config.groovy",
+                           "file:${System.env.OSSIM_INSTALL_PREFIX}/${appName}/config.groovy"]
 
 // grails.config.locations = [ "classpath:${appName}-config.properties",
 //                             "classpath:${appName}-config.groovy",
@@ -65,19 +67,28 @@ environments {
 
   }
 }
-
+/*
 // log4j configuration
 log4j = {
   // Example of changing the log pattern for the default console
   // appender:
   //
   appenders {
+    appender new org.apache.log4j.DailyRollingFileAppender(name: "omarDataManagerAppender",
+        datePattern: "'.'yyyy-MM-dd",
+        file: "/tmp/logs/omarDataManagerAppender.log",
+        maxFileSize: 1024,
+        layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n'))
     appender new org.apache.log4j.DailyRollingFileAppender(name: "omarAppender",
         datePattern: "'.'yyyy-MM-dd",
         file: "/tmp/logs/omar.log",
+        maxFileSize:1024,
         layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n'))
   }
 
+//  info 'omarDataManagerAppender': 'grails.app.service.org.ossim.omar.DataManagerService',
+  info 'omarDataManagerAppender': '*DataManagerService',
+      additivity: false
   info omarAppender: 'grails.app',
       additivity: false
 
@@ -95,11 +106,12 @@ log4j = {
 
   warn 'org.mortbay.log'
 }
-
+  */
 //log4j.logger.org.springframework.security='off,stdout'
 
 /** *********************************************************************************************************/
-wms.referenceDataDirectory = "/data/omar"
+wms.referenceDataDirectory = wms.referenceDataDirectory?:"/data/omar"
+
 
 wms.mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" : ""
 //wms.serverAddress = InetAddress.localHost.hostAddress
@@ -205,6 +217,7 @@ rasterEntry.tagHeaderList = [
     "Mission",
     "Country",
     "Target Id",
+    "BE",
     "Sensor",
     "Image Id"
 ]
@@ -216,8 +229,9 @@ rasterEntry.tagNameList = [
     "missionId",
     "countryCode",
     "targetId",
+    "beNumber",
     "sensorId",
-    "imageId"
+    "title"
 ]
 
 rasterEntry.searchTagData = [
@@ -225,9 +239,10 @@ rasterEntry.searchTagData = [
     [name: "className", description: "Class Name"],
     [name: "missionId", description: "Mission"],
     [name: "countryCode", description: "Country"],
-    [name: "targetId", description: "BE Number"],
+    [name: "targetId", description: "Target Id"],
+    [name: "beNumber", description: "BE Number"],
     [name: "sensorId", description: "Sensor"],
-    [name: "imageId", description: "Image Id"],
+    [name: "title", description: "Image Id"],
     [name: "niirs", description: "niirs"]
 ]
 
