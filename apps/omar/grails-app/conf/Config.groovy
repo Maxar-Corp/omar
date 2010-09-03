@@ -67,7 +67,6 @@ environments {
 
   }
 }
-/*
 // log4j configuration
 log4j = {
   // Example of changing the log pattern for the default console
@@ -106,7 +105,6 @@ log4j = {
 
   warn 'org.mortbay.log'
 }
-  */
 //log4j.logger.org.springframework.security='off,stdout'
 
 /** *********************************************************************************************************/
