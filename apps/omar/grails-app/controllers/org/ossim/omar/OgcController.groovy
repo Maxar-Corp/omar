@@ -255,9 +255,6 @@ class OgcController
     }
     return null
   }
-  def zoomify = {
-    println params
-  }
   
   def getTile = {
     log.info(params)
