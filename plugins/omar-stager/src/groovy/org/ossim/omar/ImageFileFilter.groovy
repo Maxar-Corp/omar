@@ -55,7 +55,7 @@ class ImageFileFilter implements FileFilter
     def imageSupport = ~/(ovr|spec|kwl|his|omd|statistics|geom|prj|aux|hdr|dim|key)/
     def elevationSupport = ~/(bin|avg|min|max)/
     def worldFiles = ~/(gfw|jpw|pgw|tfw|nfw|sdw|jgw)/
-    def vectorSupport = ~/(sbn|sbx|shx|dbf)/
+    def vectorSupport = ~/(sbn|sbx|shx|dbf|shp)/
     def documentation = ~/(txt|xml|xsl|xls|[x]html|htm[l]?|pdf|doc|rtf)/
     def archive = ~/zip|tar|gz|tgz|bz2/
     def macStuff = ~/ds_store/
