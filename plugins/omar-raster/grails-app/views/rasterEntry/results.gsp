@@ -3,17 +3,15 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="main8"/>
 
-   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
 
   <title>Raster Entry Search Results</title>
-  <resource:tabView/>
   <g:javascript plugin="omar-core" src="prototype/prototype.js"/>
-
   <g:javascript>
    var globalActiveIndex=${rasterEntryResultCurrentTab}
-   function updateSession(event){
-    var link = "${createLink(action: sessionAction, controller: sessionController)}"
+  function updateSession(event){
+var link = "${createLink(action: sessionAction, controller: sessionController)}"
     var activeIndex = tabView.get('activeIndex').toString();
     // only send a message if we change state this way it's fast
     //
@@ -25,12 +23,14 @@
       });
     }
   }
-
    //
-  </g:javascript>
+</g:javascript>
+  
+  <resource:tabView/>
+
 </head>
 
-<body >
+<body>
 
 <content tag="north">
   <div class="nav">
@@ -51,25 +51,25 @@
     <omar:observe element="tabView" event="mouseover" function="updateSession"/>
     <richui:tabLabels>
       <g:if test="${rasterEntryResultCurrentTab == '0'}">
-         <richui:tabLabel selected="true" title="Image"/>
+        <richui:tabLabel selected="true" title="Image"/>
       </g:if>
       <g:else>
         <richui:tabLabel title="Image"/>
       </g:else>
       <g:if test="${rasterEntryResultCurrentTab == '1'}">
-         <richui:tabLabel selected="true" title="Metadata"/>
+        <richui:tabLabel selected="true" title="Metadata"/>
       </g:if>
       <g:else>
         <richui:tabLabel title="Metadata"/>
       </g:else>
       <g:if test="${rasterEntryResultCurrentTab == '2'}">
-         <richui:tabLabel selected="true" title="File"/>
+        <richui:tabLabel selected="true" title="File"/>
       </g:if>
       <g:else>
         <richui:tabLabel title="File"/>
       </g:else>
       <g:if test="${rasterEntryResultCurrentTab == '3'}">
-         <richui:tabLabel selected="true" title="Links"/>
+        <richui:tabLabel selected="true" title="Links"/>
       </g:if>
       <g:else>
         <richui:tabLabel title="Links"/>
@@ -85,20 +85,24 @@
               <th>Thumbnail</th>
 
               <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
-              <%--
+
               <g:sortableColumn property="width" title="Width" params="${queryParams.toMap()}"/>
               <g:sortableColumn property="height" title="Height" params="${queryParams.toMap()}"/>
               <g:sortableColumn property="numberOfBands" title="Number of Bands" params="${queryParams.toMap()}"/>
               <g:sortableColumn property="bitDepth" title="Bit Depth" params="${queryParams.toMap()}"/>
+              <g:sortableColumn property="metersPerPixel" title="Meters Per Pixel" params="${queryParams.toMap()}"/>
+
+              <%--
               <g:sortableColumn property="dataType" title="Data Type" params="${queryParams.toMap()}"/>
               --%>
 
+              <%--
               <th>Width</th>
               <th>Height</th>
               <th>Bands</th>
               <th>Bits</th>
               <th>Meters Per Pixel</th>
-
+              --%>
               <th>Min Lon</th>
               <th>Min Lat</th>
               <th>Max Lon</th>
@@ -110,7 +114,7 @@
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
-                </a></td>                
+                </a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <td>${rasterEntry.width?.encodeAsHTML()}</td>
                 <td>${rasterEntry.height?.encodeAsHTML()}</td>
@@ -159,7 +163,8 @@
                 <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="0" date="${rasterEntry?.acquisitionDate}"/></td>
 
                 <g:each in="${tagNameList}" var="tagName">
-                  <td><%="${rasterEntry?."${tagName}"}"%></td>
+                  <g:set var="foo" value='${rasterEntry?.properties[tagName]}'/>
+                  <td>${foo?.encodeAsHTML()}</td>
                 </g:each>
 
               </tr>
@@ -258,9 +263,10 @@
 <content tag="south">
   <div class="paginateButtons">
     <g:paginate event="testing('tabView');" controller="rasterEntry" action="results" total="${totalCount ?: 0}"
-            max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
+        max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
     <omar:observe classes="${['step','prevLink','nextLink']}" event="click" function="updateSession"/>
   </div>
 </content>
+
 </body>
 </html>
