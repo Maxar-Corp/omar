@@ -14,8 +14,10 @@ grails.gorm.default.mapping = {
 }
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
-grails.config.locations = ["file:${userHome}/${appName}-config.groovy",
-                           "file:${System.env.OSSIM_INSTALL_PREFIX}/${appName}/config.groovy"]
+if(System.env.OMAR_CONFIG)
+{
+   grails.config.locations = ["file:${System.env.OMAR_CONFIG}"]
+}
 
 // grails.config.locations = [ "classpath:${appName}-config.properties",
 //                             "classpath:${appName}-config.groovy",
@@ -76,7 +78,6 @@ log4j = {
     appender new org.apache.log4j.DailyRollingFileAppender(name: "omarDataManagerAppender",
         datePattern: "'.'yyyy-MM-dd",
         file: "/tmp/logs/omarDataManagerAppender.log",
-        maxFileSize: 1024,
         layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n'))
     appender new org.apache.log4j.DailyRollingFileAppender(name: "omarAppender",
         datePattern: "'.'yyyy-MM-dd",
