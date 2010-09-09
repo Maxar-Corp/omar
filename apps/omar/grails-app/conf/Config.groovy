@@ -82,7 +82,6 @@ log4j = {
     appender new org.apache.log4j.DailyRollingFileAppender(name: "omarAppender",
         datePattern: "'.'yyyy-MM-dd",
         file: "/tmp/logs/omar.log",
-        maxFileSize:1024,
         layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n'))
   }
 
