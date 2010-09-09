@@ -109,7 +109,7 @@ var link = "${createLink(action: sessionAction, controller: sessionController)}"
               <th>Max Lat</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody style="overflow:auto">
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
@@ -151,7 +151,7 @@ var link = "${createLink(action: sessionAction, controller: sessionController)}"
 
             </tr>
             </thead>
-            <tbody>
+            <tbody style="overflow:auto">
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
@@ -185,7 +185,7 @@ var link = "${createLink(action: sessionAction, controller: sessionController)}"
               <g:sortableColumn property="entryId" title="Entry Id" params="${queryParams.toMap()}"/>
             </tr>
             </thead>
-            <tbody>
+            <tbody style="overflow:auto">
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
@@ -226,7 +226,7 @@ var link = "${createLink(action: sessionAction, controller: sessionController)}"
               <th>Generate KML</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody style="overflow:auto">
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
