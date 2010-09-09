@@ -4,9 +4,24 @@ Ant.property(environment: "env")
 
 grailsHome = Ant.project.properties."environment.GRAILS_HOME"
 
+def loadConfig()
+{
+  def dataSourceFile = "${basedir}/grails-app/conf/DataSource.groovy" as File
+  def applicationPropertiesFile = "${basedir}/application.properties" as File
+  def configSlurper = new ConfigSlurper(grailsEnv)
+  def applicationProperties = new Properties()
+
+  applicationProperties.load(applicationPropertiesFile.newReader())
+  configSlurper.binding = [appVersion: applicationProperties['app.version'] ?: '']
+
+  def config = configSlurper.parse(dataSourceFile.toURL())
+
+  return config
+}
 
 target(main: "Create a new instance of a PostGIS database") {
-  def config = new ConfigSlurper(grailsEnv).parse(new File("${basedir}/grails-app/conf/DataSource.groovy").toURL())
+  //def config = new ConfigSlurper(grailsEnv).parse(new File("${basedir}/grails-app/conf/DataSource.groovy").toURL())
+  def config = loadConfig()
 
   def databaseName = config.dataSource.url.split(":")[-1]
 
