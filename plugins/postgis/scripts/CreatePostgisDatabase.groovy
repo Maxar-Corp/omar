@@ -20,7 +20,7 @@ def loadConfig()
 }
 
 target(main: "Execute an SQL file") {
-  depends(parseArguments)
+//  depends(parseArguments)
   //def config = new ConfigSlurper(grailsEnv).parse(new File("${basedir}/grails-app/conf/DataSource.groovy").toURL())
   def config = loadConfig()
 
