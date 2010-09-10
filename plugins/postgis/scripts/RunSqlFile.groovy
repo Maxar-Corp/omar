@@ -55,6 +55,7 @@ target(main: "Execute an SQL file") {
 
   if ( (fileName as File)?.exists() )
   {
+    /*
     Ant.exec(executable: "${pgHome}/bin/psql")
         {
           arg(value: "-U")
@@ -64,7 +65,8 @@ target(main: "Execute an SQL file") {
           arg(value: "-f")
           arg(value: "${fileName}")
         }
-    /*
+        */
+
     Ant.sql(
         driver: config.dataSource.driverClassName,
         url: config.dataSource.url,
@@ -74,7 +76,7 @@ target(main: "Execute an SQL file") {
         onerror: "continue",
         autocommit: true
     )
-    */
+    
   }
   else
   {
