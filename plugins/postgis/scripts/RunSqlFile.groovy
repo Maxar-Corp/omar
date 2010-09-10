@@ -34,7 +34,15 @@ target(main: "Execute an SQL file") {
   */
 
   def fileName
+  def databaseName = config.dataSource.url.split(":")[-1]
 
+  def pgHome = Ant.antProject.properties."env.PG_HOME"
+  if ( !pgHome )
+  {
+    System.err.println("PG_HOME environment not set")
+    System.exit(-1)
+  }
+ 
   if ( !argsMap?.params )
   {
     Ant.input(addProperty: "file.name", message: "Please enter the name of the file to run:")
@@ -47,6 +55,16 @@ target(main: "Execute an SQL file") {
 
   if ( (fileName as File)?.exists() )
   {
+    Ant.exec(executable: "${pgHome}/bin/psql")
+        {
+          arg(value: "-U")
+          arg(value: "${config.dataSource.username}")
+          arg(value: "-d")
+          arg(value: "${databaseName}")
+          arg(value: "-f")
+          arg(value: "${fileName}")
+        }
+    /*
     Ant.sql(
         driver: config.dataSource.driverClassName,
         url: config.dataSource.url,
@@ -56,6 +74,7 @@ target(main: "Execute an SQL file") {
         onerror: "continue",
         autocommit: true
     )
+    */
   }
   else
   {

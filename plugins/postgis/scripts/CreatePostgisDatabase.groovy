@@ -19,21 +19,14 @@ def loadConfig()
   return config
 }
 
-target(main: "Execute an SQL file") {
-//  depends(parseArguments)
+target(main: "Create a new instance of a PostGIS database") {
   //def config = new ConfigSlurper(grailsEnv).parse(new File("${basedir}/grails-app/conf/DataSource.groovy").toURL())
   def config = loadConfig()
 
-//  /*
-  println "${config.dataSource.driverClassName}"
-  println "${config.dataSource.username}"
-  println "${config.dataSource.password}"
-  println "${config.dataSource.url}"
-//  */
-
-  def fileName
-  def pgHome = Ant.antProject.properties."env.PG_HOME"
   def databaseName = config.dataSource.url.split(":")[-1]
+
+  def pgHome = Ant.antProject.properties."env.PG_HOME"
+  def postgisHome = Ant.antProject.properties."env.POSTGIS_HOME"
 
   if ( !pgHome )
   {
@@ -41,17 +34,32 @@ target(main: "Execute an SQL file") {
     System.exit(-1)
   }
 
-  if ( !argsMap?.params )
+  if ( !postgisHome )
   {
-    Ant.input(addProperty: "file.name", message: "Please enter the name of the file to run:")
-    fileName = Ant.antProject.properties."file.name"
-  }
-  else
-  {
-    fileName = argsMap?.params[0]
+    System.err.println("POSTGIS_HOME environment not set")
+    System.exit(-1)
   }
 
-  if ( (fileName as File)?.exists() )
+  Ant.exec(executable: "${pgHome}/bin/createdb")
+      {
+        arg(value: "-U")
+        arg(value: "${config.dataSource.username}")
+        arg(value: "${databaseName}")
+      }
+
+  Ant.exec(executable: "${pgHome}/bin/createlang")
+      {
+        arg(value: "-U")
+        arg(value: "${config.dataSource.username}")
+        arg(value: "plpgsql")
+        arg(value: "${databaseName}")
+      }
+
+
+  File postgisSqlFile = findPostgisSqlFile(postgisHome)
+  File spatialRefSysFile = "${postgisHome}/spatial_ref_sys.sql" as File
+
+  if ( postgisSqlFile?.exists() && spatialRefSysFile.exists() )
   {
     Ant.exec(executable: "${pgHome}/bin/psql")
         {
@@ -60,24 +68,22 @@ target(main: "Execute an SQL file") {
           arg(value: "-d")
           arg(value: "${databaseName}")
           arg(value: "-f")
-          arg(value: "${fileName}")
+          arg(value: postgisSqlFile.absolutePath)
         }
 
-/*
-    Ant.sql(
-        driver: config.dataSource.driverClassName,
-        url: config.dataSource.url,
-        userid: config.dataSource.username,
-        password: config.dataSource.password,
-        src: fileName,
-        onerror: "continue",
-        autocommit: true
-    )
-*/
+    Ant.exec(executable: "${pgHome}/bin/psql")
+        {
+          arg(value: "-U")
+          arg(value: "${config.dataSource.username}")
+          arg(value: "-d")
+          arg(value: "${databaseName}")
+          arg(value: "-f")
+          arg(value: spatialRefSysFile.absolutePath)
+        }
   }
   else
   {
-    System.err.println("Cannot find file: ${fileName}")
+    System.err.println("Cannot find SQL files necessary for PostGIS installation.")
     System.exit(-1)
   }
 }
