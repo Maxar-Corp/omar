@@ -2,11 +2,12 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="layout" content="main5" />
+    <meta name="layout" content="main" />
     <title>Edit Profile</title>
   </head>
   <body>
-    <div class="nav"><g:link class="home" uri="/">Home</g:link></div>
+  <content tag="content">
+    <div class="nav"><g:link class="home" uri="/">OMAR Home</g:link></div>
     <div class="body">
       <h1>Edit Profile</h1>
       <g:if test="${flash.message}">
@@ -100,5 +101,6 @@
       </g:form>
 
     </div>
+    </content>
   </body>
 </html>

@@ -2,12 +2,13 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="layout" content="main5" />
+    <meta name="layout" content="main" />
     <title>User Registration</title>         
   </head>
   <body>
+  <content tag="content">
     <div class="nav">
-      <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
+      <span class="menuButton"><g:link class="home" uri="/">OMAR Home</g:link></span>
     </div>
     <div class="body">
       <h1>User Registration</h1>
@@ -101,5 +102,6 @@
             
       </g:form>
     </div>
+    </content>   
   </body>
 </html>

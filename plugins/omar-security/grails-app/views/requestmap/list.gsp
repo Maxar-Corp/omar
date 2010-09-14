@@ -2,12 +2,13 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-		<meta name="layout" content="main5" />
+		<meta name="layout" content="main" />
 		<title>Requestmap List</title>
 	</head>
 	<body>
+    <content tag="content">
 		<div class="nav">
-			<span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
+			<span class="menuButton"><g:link class="home" uri="/">OMAR Home</g:link></span>
 			<span class="menuButton"><g:link class="create" action="create">New Requestmap</g:link></span>
 		</div>
 		<div class="body">
@@ -59,6 +60,7 @@ org.springframework.util.StringUtils.commaDelimitedListToStringArray(requestmap.
 			</div>
 
 		</div>
+      </content>
 	</body>
 </html>
 
