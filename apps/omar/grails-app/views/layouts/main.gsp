@@ -12,9 +12,20 @@
 
 <body class="yui-skin-sam">
 
-<div id="top1"><p><omar:securityClassificationBanner/></p></div>
-<div id="bottom1"><p><omar:securityClassificationBanner/></p></div>
-<div id="center1"><p><g:pageProperty name="page.content"/></p></div>
+<div id="top1">
+  <p><omar:securityClassificationBanner/></p>
+</div>
+
+<div id="bottom1">
+  <p><omar:securityClassificationBanner/></p>
+</div>
+
+<div id="center1">
+  <div align="center">
+    <img src="${resource(dir: 'images', file: 'omarLogo.png')}" alt="OMAR Logo" />
+  </div>
+  <p><g:pageProperty name="page.content"/></p>
+</div>
 
 <g:javascript library="application" />
 <g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
