@@ -1,12 +1,13 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main5"/>
+  <meta name="layout" content="main"/>
   <title>RasterDataSet List</title>
 </head>
 <body>
+<content tag="content">
 <div class="nav">
-  <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
+  <span class="menuButton"><g:link class="home" uri="/">OMAR Home</g:link></span>
   <g:ifAllGranted role="ROLE_ADMIN">
     <span class="menuButton"><g:link class="create" action="create">New RasterDataSet</g:link></span>
   </g:ifAllGranted>
@@ -44,5 +45,6 @@
     <g:paginate total="${rasterDataSetList.totalCount}" params="${[repositoryId:params.repositoryId]}"/>
   </div>
 </div>
+  </content>
 </body>
 </html>
