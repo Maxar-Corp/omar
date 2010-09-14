@@ -83,6 +83,27 @@
 </div>
 
 <div>
+  <h1 style="font-size:150%">Report:</h1>
+  <table>
+    <tr>
+      <td width="120px">
+        <img src="${resource(dir: 'images', file: 'report.png')}" width="96 " height="96" alt="">
+      </td>
+      <td>
+        <ol>
+          <li>
+           <g:link plugin="omar-core" controller="report" action="create">Create Report</g:link> 
+          </li>
+          <li>
+           <g:link plugin="omar-core" controller="report" action="list">List Reports</g:link> 
+          </li>
+        </ol>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div>
   <h1 style="font-size:150%">Logout</h1>
   <table>
     <tr>
