@@ -1,12 +1,13 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main5"/>
+  <meta name="layout" content="main"/>
   <title>Show Repository</title>
 </head>
 <body>
+<content tag="content">
 <div class="nav">
-  <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
+  <span class="menuButton"><g:link class="home" uri="/">OMAR Home</g:link></span>
   <span class="menuButton"><g:link class="list" action="list">Repository List</g:link></span>
   <g:ifAllGranted role="ROLE_ADMIN">
     <span class="menuButton"><g:link class="create" action="create">New Repository</g:link></span>
@@ -87,5 +88,6 @@
     </g:form>
   </div>
 </div>
+  </content>
 </body>
 </html>
