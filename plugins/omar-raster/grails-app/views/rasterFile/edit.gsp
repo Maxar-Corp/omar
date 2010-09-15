@@ -3,31 +3,30 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="main"/>
-  <title>Edit RasterFile</title>
+  <title>OMAR: Edit Raster File ${rasterFile.id}</title>
 </head>
 <body>
 <content tag="content">
-<div class="nav">
-  <span class="menuButton"><g:link class="home" uri="/">OMAR Home</g:link></span>
-  <span class="menuButton"><g:link class="list" action="list">RasterFile List</g:link></span>
-  <span class="menuButton"><g:link class="create" action="create">New RasterFile</g:link></span>
-</div>
-<div class="body">
-  <h1>Edit RasterFile</h1>
-  <g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
-  </g:if>
-  <g:hasErrors bean="${rasterFile}">
-    <div class="errors">
-      <g:renderErrors bean="${rasterFile}" as="list"/>
-    </div>
-  </g:hasErrors>
-  <g:form method="post">
-    <input type="hidden" name="id" value="${rasterFile?.id}"/>
-    <div class="dialog">
-      <table>
-        <tbody>
-
+  <div class="nav">
+    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
+    <span class="menuButton"><g:link class="list" action="list">Raster File List</g:link></span>
+    <span class="menuButton"><g:link class="create" action="create">Create Raster File</g:link></span>
+  </div>
+  <div class="body">
+    <h1>Edit Raster File ${rasterFile.id}</h1>
+    <g:if test="${flash.message}">
+      <div class="message">${flash.message}</div>
+    </g:if>
+    <g:hasErrors bean="${rasterFile}">
+      <div class="errors">
+        <g:renderErrors bean="${rasterFile}" as="list"/>
+      </div>
+    </g:hasErrors>
+    <g:form method="post">
+      <input type="hidden" name="id" value="${rasterFile?.id}"/>
+      <div class="dialog">
+        <table>
+          <tbody>
           <tr class="prop">
             <td valign="top" class="name">
               <label for="name">Name:</label>
@@ -36,7 +35,6 @@
               <input type="text" id="name" name="name" value="${fieldValue(bean: rasterFile, field: 'name')}"/>
             </td>
           </tr>
-
           <tr class="prop">
             <td valign="top" class="name">
               <label for="type">Type:</label>
@@ -45,7 +43,6 @@
               <input type="text" id="type" name="type" value="${fieldValue(bean: rasterFile, field: 'type')}"/>
             </td>
           </tr>
-
           <tr class="prop">
             <td valign="top" class="name">
               <label for="rasterDataSet">Raster Data Set:</label>
@@ -54,16 +51,15 @@
               <g:select optionKey="id" from="${RasterDataSet.list()}" name="rasterDataSet.id" value="${rasterFile?.rasterDataSet?.id}"></g:select>
             </td>
           </tr>
-
-        </tbody>
-      </table>
-    </div>
-    <div class="buttons">
-      <span class="button"><g:actionSubmit class="save" value="Update"/></span>
-      <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
-    </div>
-  </g:form>
-</div>
-  </content>
+          </tbody>
+        </table>
+      </div>
+      <div class="buttons">
+        <span class="button"><g:actionSubmit class="save" value="Update"/></span>
+        <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
+      </div>
+    </g:form>
+  </div>
+</content>
 </body>
 </html>
