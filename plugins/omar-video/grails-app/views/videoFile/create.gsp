@@ -3,29 +3,28 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="main"/>
-  <title>Create VideoFile</title>
+  <title>OMAR: Create Video File</title>
 </head>
 <body>
 <content tag="content">
-<div class="nav">
-  <span class="menuButton"><g:link class="home" uri="/">OMAR Home</g:link></span>
-  <span class="menuButton"><g:link class="list" action="list">VideoFile List</g:link></span>
-</div>
-<div class="body">
-  <h1>Create VideoFile</h1>
-  <g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
-  </g:if>
-  <g:hasErrors bean="${videoFile}">
-    <div class="errors">
-      <g:renderErrors bean="${videoFile}" as="list"/>
-    </div>
-  </g:hasErrors>
-  <g:form action="save" method="post">
-    <div class="dialog">
-      <table>
-        <tbody>
-
+  <div class="nav">
+    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
+    <span class="menuButton"><g:link class="list" action="list">Video File List</g:link></span>
+  </div>
+  <div class="body">
+    <h1>Create Video File</h1>
+    <g:if test="${flash.message}">
+      <div class="message">${flash.message}</div>
+    </g:if>
+    <g:hasErrors bean="${videoFile}">
+      <div class="errors">
+        <g:renderErrors bean="${videoFile}" as="list"/>
+      </div>
+    </g:hasErrors>
+    <g:form action="save" method="post">
+      <div class="dialog">
+        <table>
+          <tbody>
           <tr class="prop">
             <td valign="top" class="name">
               <label for="name">Name:</label>
@@ -34,7 +33,6 @@
               <input type="text" id="name" name="name" value="${fieldValue(bean: videoFile, field: 'name')}"/>
             </td>
           </tr>
-
           <tr class="prop">
             <td valign="top" class="name">
               <label for="type">Type:</label>
@@ -43,7 +41,6 @@
               <input type="text" id="type" name="type" value="${fieldValue(bean: videoFile, field: 'type')}"/>
             </td>
           </tr>
-
           <tr class="prop">
             <td valign="top" class="name">
               <label for="videoDataSet">Video Data Set:</label>
@@ -52,15 +49,14 @@
               <g:select optionKey="id" from="${VideoDataSet.list()}" name="videoDataSet.id" value="${videoFile?.videoDataSet?.id}"></g:select>
             </td>
           </tr>
-
-        </tbody>
-      </table>
-    </div>
-    <div class="buttons">
-      <span class="button"><input class="save" type="submit" value="Create"/></span>
-    </div>
-  </g:form>
-</div>
-  </content>
+          </tbody>
+        </table>
+      </div>
+      <div class="buttons">
+        <span class="button"><input class="save" type="submit" value="Create"/></span>
+      </div>
+    </g:form>
+  </div>
+</content>
 </body>
 </html>
