@@ -6,6 +6,10 @@ import groovy.xml.StreamingMarkupBuilder
 import grails.converters.JSON
 import grails.converters.deep.XML
 
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+
 
 class VideoDataSetController implements InitializingBean
 {
@@ -23,6 +27,33 @@ class VideoDataSetController implements InitializingBean
 
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
+
+  def listData = {
+    def videoList = VideoDataSet.list(params)
+    response.setHeader("Cache-Control", "no-store")
+    render(contentType: "text/json") {
+      totalRecords(VideoDataSet.count())
+      records {
+        for (r in videoList) {
+          def foo = r.startDate.toString()
+          def foo2 = r.endDate.toString()
+          def bounds =  r.groundGeom.bounds;
+          VideoDataSet(
+                  id: r.id,
+                  thumbnail: r.id,
+                  filename: r.filename,
+                  width: r.width,
+                  height: r.height,
+                  startDate: foo,
+                  endDate: foo2,
+                  minLon: bounds.minLon,
+                  minLat: bounds.minLat,
+                  maxLon: bounds.maxLon,
+                  maxLat: bounds.maxLat)
+        }
+      }
+    }
+  }
 
   def list = {
     if ( !params.max )
@@ -50,6 +81,19 @@ class VideoDataSetController implements InitializingBean
       json { render videoDataSetList as JSON }
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   def show = {
     def videoDataSet = VideoDataSet.get(params.id)
