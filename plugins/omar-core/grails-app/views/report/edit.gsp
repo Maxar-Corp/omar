@@ -10,7 +10,9 @@
 <content tag="content">
   <div class="nav">
     <span class="menuButton"><a class="home" href="${createLink(uri: '/')}">OMAR™ Home</a></span>
-    <span class="menuButton"><g:link class="list" action="list">Report List</g:link></span>
+    <g:ifAllGranted role="ROLE_ADMIN">
+      <span class="menuButton"><g:link class="list" action="list">Report List</g:link></span>
+    </g:ifAllGranted>
     <span class="menuButton"><g:link class="create" action="create">Create Report</g:link></span>
   </div>
   <div class="body">
