@@ -85,7 +85,7 @@ adminControllers.each {adminController ->
   }
 }
 
-def domainControllers = (((grailsApplication.domainClasses)*.logicalPropertyName).sort()) - ["authUser", "dataSet", "role", "requestmap"]
+def domainControllers = (((grailsApplication.domainClasses)*.logicalPropertyName).sort()) - ["authUser", "dataSet", "role", "requestmap", "report"]
 
 domainControllers.each {domainController ->
   domainController = domainController.toLowerCase()
