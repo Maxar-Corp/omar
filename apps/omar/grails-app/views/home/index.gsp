@@ -94,9 +94,11 @@
           <li>
            <g:link plugin="omar-core" controller="report" action="create">Create Report</g:link> 
           </li>
+          <g:ifAllGranted role="ROLE_ADMIN">
           <li>
            <g:link plugin="omar-core" controller="report" action="list">List Reports</g:link> 
           </li>
+            </g:ifAllGranted>
         </ol>
       </td>
     </tr>
