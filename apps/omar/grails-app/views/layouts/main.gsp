@@ -21,7 +21,7 @@
 
 <div id="center1">
   <div align="center">
-    <img src="${resource(dir: 'images', file: 'omarLogo.png')}" alt="OMAR Logo" />
+    <g:link class="home" uri="/"><img src="${resource(dir: 'images', file: 'omarLogo.png')}" alt="OMAR Logo" /></g:link>
   </div>
   <p><g:pageProperty name="page.content"/></p>
 </div>
@@ -45,7 +45,7 @@
       units: [
         { position: 'top', height: 25, body: 'top1' },
         { position: 'bottom', height: 25, body: 'bottom1' },
-        { position: 'center', body: 'center1' }
+        { position: 'center', body: 'center1', scroll: true }
       ]
     });
     layout.render();
