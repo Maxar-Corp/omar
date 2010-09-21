@@ -33,7 +33,7 @@
               <label for="name"><g:message code="report.name.label" default="Name" /></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: reportInstance, field: 'name', 'errors')}">
-              <g:textField name="name" value="${reportInstance?.name}" />
+              <g:textField name="name" value="${loggedInUserInfo(field:'username')}" />
             </td>
           </tr>
           <tr class="prop">
@@ -41,7 +41,7 @@
               <label for="email"><g:message code="report.email.label" default="Email" /></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: reportInstance, field: 'email', 'errors')}">
-              <g:textField name="email" value="${reportInstance?.email}" />
+              <g:textField name="email" value="${loggedInUserInfo(field:'email')}" />
             </td>
           </tr>
           <tr class="prop">
