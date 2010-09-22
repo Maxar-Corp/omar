@@ -17,7 +17,9 @@
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/resize/assets/skins/sam', file: 'resize.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/layout/assets/skins/sam', file: 'layout.css')}"/>
+  <%--
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
+  --%>
 
 
   <style>
@@ -71,13 +73,16 @@
   </div>
 </div>
 
-</body>
 <g:javascript library="application"/>
 <g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
 <g:javascript plugin='richui' src="yui/element/element-min.js"/>
 <g:javascript plugin='richui' src="yui/dragdrop/dragdrop-min.js"/>
 <g:javascript plugin='richui' src="yui/resize/resize-min.js"/>
+
+<%--
 <g:javascript plugin='richui' src="yui/animation/animation-min.js"/>
+--%>
+
 <g:javascript plugin='richui' src="yui/layout/layout-min.js"/>
 
 <g:javascript>
@@ -119,7 +124,7 @@
             {
               position: 'top',
               height: 135,
-              resize: true, 
+              resize: true,
               body: 'north'
             },
             {
@@ -165,5 +170,7 @@
 
   })();
 </g:javascript>
+<g:layoutBody/>
+</body>
 
 </html>
