@@ -53,4 +53,10 @@ class OmarCoreTagLib
     }
   }
 
+  def bundle = { attrs, body ->
+    def files = attrs.files
+
+    out << createLink(controller: 'compressor', action: 'compress',
+            params: [files: files.join(','), contentType: attrs.contentType])
+  }
 }
