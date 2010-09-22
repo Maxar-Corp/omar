@@ -92,13 +92,13 @@
       <td>
         <ol>
           <li>
-           <g:link plugin="omar-core" controller="report" action="create">Create Report</g:link> 
+            <g:link plugin="omar-core" controller="report" action="create">Create Report</g:link>
           </li>
           <g:ifAllGranted role="ROLE_ADMIN">
-          <li>
-           <g:link plugin="omar-core" controller="report" action="list">List Reports</g:link> 
-          </li>
-            </g:ifAllGranted>
+            <li>
+              <g:link plugin="omar-core" controller="report" action="list">List Reports</g:link>
+            </li>
+          </g:ifAllGranted>
         </ol>
       </td>
     </tr>
@@ -158,22 +158,22 @@
 <g:javascript>
   function submitImageView()
   {
-    document.imageView.submit( );
+    document.imageView.submit();
   }
 
   function submitVideoView()
   {
-    document.videoView.submit( );
+    document.videoView.submit();
   }
 
   function submitImageCoverage()
   {
-    document.imageFootprints.submit( );
+    document.imageFootprints.submit();
   }
 
   function submitVideoCoverage()
   {
-    document.videoFootprints.submit( );
+    document.videoFootprints.submit();
   }
 </g:javascript>
 </body>
