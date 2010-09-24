@@ -183,12 +183,16 @@ var select;
 var convert = new CoordinateConversion();
 function getKML(layers)
 {
+    var numberOfBands =parseInt("${rasterEntries.numberOfBands.get(0)}")
    var extent = map.getExtent()
    var wmsParamForm = document.getElementById('wmsParams')
    wmsParamForm.sharpen_mode.value = $("sharpen_mode").value
    wmsParamForm.stretch_mode_region.value = $("stretch_mode_region").value
    wmsParamForm.stretch_mode.value = $("stretch_mode").value
-   wmsParamForm.bands.value = $("bands").value
+   if(numberOfBands > 1)
+    {
+      wmsParamForm.bands.value = $("bands").value
+    }
    wmsParamForm.quicklook.value = $("quicklook").value
    wmsParamForm.request.value = "GetKML"
    wmsParamForm.layers.value = layers
