@@ -30,4 +30,8 @@ grails.project.dependency.resolution = {
 
 }
 
+grails.plugin.location.'omar-core'='../../plugins/omar-core'
+grails.plugin.location.'omar-oms'='../../plugins/omar-oms'
 grails.plugin.location.openlayers='../../plugins/openlayers'
+grails.plugin.location.postgis='../../plugins/postgis'
+
