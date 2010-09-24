@@ -74,15 +74,10 @@
 
 <content tag="north">
   <g:form name="wmsParams" method="POST" url="[action:'wms',controller:'ogc']">
-    <input type="hidden" name="sharpen_mode" value="none"/>
-    <input type="hidden" name="stretch_mode" value="linear_auto_min_max"/>
-    <input type="hidden" name="stretch_mode_region" value="global"/>
-    <input type="hidden" name="bands" value=""/>
-    <input type="hidden" name="quicklook" value=""/>
     <input type="hidden" name="request" value=""/>
     <input type="hidden" name="layers" value=""/>
     <input type="hidden" name="bbox" value=""/>
-  </g:form>
+
 
   <div class="nav">
     <span class="menuButton">
@@ -158,6 +153,7 @@
     </span>
 
   </div>
+    </g:form>
 </content>
 
 <content tag="center">
