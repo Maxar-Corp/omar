@@ -1,5 +1,5 @@
 class OpenlayersGrailsPlugin {
-    def version = 0.10
+    def version = 0.12
     def dependsOn = [:]
 
     // TODO Fill in these fields
