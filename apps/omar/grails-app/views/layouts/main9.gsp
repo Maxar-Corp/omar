@@ -114,16 +114,15 @@
               var mapWidth = center.get('width');
           var mapHeight = center.get('height');
           mapWidget.changeMapSize(mapWidth, mapHeight);
+      });
 
-
-        center.on('resize', function() {
-          var mapWidth = center.get('width');
+      layout.on('resize', function() {
+        var center = layout.getUnitByPosition('center');
+              var mapWidth = center.get('width');
           var mapHeight = center.get('height');
           mapWidget.changeMapSize(mapWidth, mapHeight);
-        });
-
-
       });
+
        // style.display = 'none';
 
     ////////
