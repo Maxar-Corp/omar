@@ -121,7 +121,7 @@ mapFile="${wms.referenceDataDirectory}/bmng.map"
 wms.base.layers = [
     [
         url: (useTileCache) ? "http://${wms.serverAddress}/tilecache/tilecache.py" : "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
-        layers: (wms.base.useTileCache) ? "omar" : "Reference",
+        layers: (useTileCache) ? "omar" : "Reference",
         title: "Reference Data",
         format: "image/jpeg"
     ]
