@@ -9,10 +9,11 @@ class LayoutTestController
     def baseAddresses = [
         //"http://hypercube.telascience.org/cgi-bin/haiti?map=/geo/haiti/mapfiles/4326.map&",
         //"http://hypercube.telascience.org/cgi-bin/mapserv?map=/home/racicot/haiti/mapfiles/basedata.map&",
-        "http://${InetAddress.localHost.hostAddress}/tilecache/tilecache.py?"
+        //"http://${InetAddress.localHost.hostAddress}/tilecache/tilecache.py?"
         //"http://hypersphere.telascience.org/cgi-bin/bmng?",
         //"http://${InetAddress.localHost.hostAddress}/cgi-bin/mapserv?map=/data/bmng.map&",
         //"http://hypersphere.telascience.org/geothumper/tilecache/tilecache.cgi?"
+            "http://localhost/tilecache/tilecache.py?"
     ]
 
     def baseLayers = []
@@ -36,7 +37,7 @@ class LayoutTestController
       }
     }
 
-    return [
+    render view: "lite", model: [
         overlayLayers: overlayLayers,
         baseLayers: baseLayers,
         centerLon: -72.2,
