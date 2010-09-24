@@ -116,17 +116,17 @@ wms.mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" :
 wms.serverAddress = grails.serverIP
 
 
-wms.base.useTileCache = false
-wms.base.mapFile = "${wms.referenceDataDirectory}/bmng.map"
-
-wms.base = [
+useTileCache = false
+mapFile="${wms.referenceDataDirectory}/bmng.map"
+wms.base.layers = [
     [
-        url: (wms.base.useTileCache) ? "http://${wms.serverAddress}/tilecache/tilecache.py" : "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${wms.base.mapFile}",
+        url: (useTileCache) ? "http://${wms.serverAddress}/tilecache/tilecache.py" : "http://${wms.serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
         layers: (wms.base.useTileCache) ? "omar" : "Reference",
         title: "Reference Data",
         format: "image/jpeg"
     ]
 ]
+
 
 wms.supportIE6 = true
 
