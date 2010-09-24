@@ -92,11 +92,11 @@
       <td>
         <ol>
           <li>
-            <g:link plugin="omar-core" controller="report" action="create">Create Report</g:link>
+            <g:link plugin="omar-core" controller="report" action="create">User Feedback</g:link>
           </li>
           <g:ifAllGranted role="ROLE_ADMIN">
             <li>
-              <g:link plugin="omar-core" controller="report" action="list">List Reports</g:link>
+              <g:link plugin="omar-core" controller="report" action="list">View Feedback</g:link>
             </li>
           </g:ifAllGranted>
         </ol>
