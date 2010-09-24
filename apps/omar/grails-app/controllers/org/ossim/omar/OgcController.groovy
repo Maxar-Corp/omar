@@ -181,8 +181,14 @@ class OgcController
 
         def starttime = System.currentTimeMillis()
         def image = webMappingService.getMap(wmsRequest)
-
-        ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
+        if(!image)
+        {
+          log.error("No image found for layers ${wmsRequest.layers}")
+        }
+        else
+        {
+          ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
+        }
 
         def endtime = System.currentTimeMillis()
         def principal = authenticateService.principal()
@@ -230,7 +236,7 @@ class OgcController
               or
               {
                 eq('indexId', name)
-                eq('imageId', name)
+                eq('title', name)
               }
             }
           }
