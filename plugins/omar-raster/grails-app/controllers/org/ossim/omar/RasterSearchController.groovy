@@ -150,7 +150,7 @@ class RasterSearchController implements InitializingBean
 
   public void afterPropertiesSet()
   {
-    baseWMS = grailsApplication.config.wms.base
+    baseWMS = grailsApplication.config.wms.base.layers
     dataWMS = grailsApplication.config.wms.data.raster
   }
 }
