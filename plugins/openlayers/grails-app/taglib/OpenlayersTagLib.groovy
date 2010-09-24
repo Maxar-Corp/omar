@@ -19,6 +19,7 @@ class OpenlayersTagLib
   }
 
   def loadMapToolBar = {attrs ->
+    /*
     if ( grailsApplication.config.wms.supportIE6 )
     {
 
@@ -29,11 +30,14 @@ class OpenlayersTagLib
     }
     else
     {
+    */
       def theme = attrs['theme'] ?: 'default'
       def path = resource(plugin: "openlayers", dir: "css", file: "mapwidget2.css")
       def output = "<link rel='stylesheet' href='${path}' type='text/css'/>"
       out << output
+    /*
     }
+    */
   }
 
 }
