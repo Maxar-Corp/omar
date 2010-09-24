@@ -321,14 +321,15 @@ class WebMappingService
                 data
         )
 
-        wmsMap.cleanUp();
-        wmsMap = null;
 
       }
       else
       {
         new java.util.Random().nextBytes(data)
       }
+      wmsMap.cleanUp();
+      wmsMap.delete()
+      wmsMap = null;
 
       DataBuffer dataBuffer = new DataBufferByte(data, data.size())
 
@@ -787,7 +788,7 @@ class WebMappingService
 
     }
 
-    searchService.scrollGeometries(queryParams, params, closure)
+    searchService?.scrollGeometries(queryParams, params, closure)
   }
 
 }
