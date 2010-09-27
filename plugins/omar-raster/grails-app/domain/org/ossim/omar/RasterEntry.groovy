@@ -477,12 +477,18 @@ class RasterEntry
               rasterEntry.organization = value
             }
             break;
-          case "description":
-            if(value&&!rasterEntry.description)
-            {
-              rasterEntry.description = value
-            }
-            break;
+            case "description":
+              if(value&&!rasterEntry.description)
+              {
+                rasterEntry.description = value
+              }
+              break;
+            case "wac":
+              if(value&&!rasterEntry.wacCode)
+              {
+                rasterEntry.wac = value as Integer
+              }
+              break;
           case "niirs":
             if(value&&!rasterEntry.niirs)
             {
