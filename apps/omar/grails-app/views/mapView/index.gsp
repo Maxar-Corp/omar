@@ -127,14 +127,14 @@
       <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts() "/>
     </span>
 
-    <g:if test="${rasterEntries.numberOfBands.get(0) == 2}">
+    <g:if test="${rasterEntries?.numberOfBands.get(0) == 2}">
       <span class="menuButton">
         <label>Bands:</label>
         <g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()"/>
       </span>
     </g:if>
 
-    <g:if test="${rasterEntries.numberOfBands.get(0) >= 3}">
+    <g:if test="${rasterEntries?.numberOfBands.get(0) >= 3}">
       <span class="menuButton">
         <label>Bands:</label>
         <g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()"/>
@@ -181,7 +181,7 @@ var select;
 var convert = new CoordinateConversion();
 function getKML(layers)
 {
-    var numberOfBands =parseInt("${rasterEntries.numberOfBands.get(0)}")
+    var numberOfBands = parseInt("${rasterEntries?.numberOfBands.get(0)}")
    var extent = map.getExtent()
    var wmsParamForm = document.getElementById('wmsParams')
    wmsParamForm.sharpen_mode.value = $("sharpen_mode").value
