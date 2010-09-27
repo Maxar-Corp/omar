@@ -41,15 +41,20 @@ class RasterEntry
   Double grazingAngle
   String securityClassification
   String title
+  String isorce
   String organization
   String description
   String countryCode
   String beNumber
   Double niirs
-
+  Integer wacCode
+  double sunElevation
+  double sunAzimuth
+  double cloudCover
+  BigInteger styleId
+  boolean keepForever
   //Geometry groundGeom
   Polygon groundGeom
-
   //DateTime acquisitionDate
   Date acquisitionDate
 
@@ -135,13 +140,20 @@ class RasterEntry
     securityClassification(nullable: true)
     title(nullable: true)
     niirs(nullable: true)
+    isorce(nullable: true)
+    wacCode(nullable: true)
+    sunElevation(nullable: true)
+    sunAzimuth(nullable: true)
+    cloudCover(nullable: true)
     organization(nullable: true)
     description(nullable: true)
     countryCode(nullable: true)
     beNumber(nullable: true)
     accessDate(nullable: true)
     ingestDate(nullable: true)
-
+    styleId(nullable: true)
+    keepForever(nullable: true)
+    
     // Just for testing
     fileType(nullable: true)
     className(nullable: true)
