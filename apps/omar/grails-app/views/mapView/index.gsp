@@ -73,13 +73,13 @@
 <body>
 
 <content tag="north">
-  <g:form name="wmsParams" method="POST" url="[action:'wms',controller:'ogc']">
+
+  <div class="nav">
+    <g:form name="wmsParams" method="POST" url="[action:'wms',controller:'ogc']">
     <input type="hidden" name="request" value=""/>
     <input type="hidden" name="layers" value=""/>
     <input type="hidden" name="bbox" value=""/>
-  </g:form>
-   
-  <div class="nav">
+
     <span class="menuButton">
       <g:link class="home" uri="/">
         Home
@@ -145,6 +145,8 @@
       <label>Quick Look:</label>
       <g:select id="quicklook" name="quicklook" from="${['true', 'false']}" onChange="changeQuickLookOpts()"/>
     </span>
+
+     </g:form>
 
     <span class="menuButton">
       <label>Center:</label>
