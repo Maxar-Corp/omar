@@ -77,8 +77,8 @@
     <input type="hidden" name="request" value=""/>
     <input type="hidden" name="layers" value=""/>
     <input type="hidden" name="bbox" value=""/>
-
-
+  </g:form>
+   
   <div class="nav">
     <span class="menuButton">
       <g:link class="home" uri="/">
@@ -148,12 +148,10 @@
 
     <span class="menuButton">
       <label>Center:</label>
-      <g:textField name="center" value="${queryParams?.center}"/>
-      <input type="button" onclick="setCenter()" value="Go">
+      <g:textField name="center" value="${queryParams?.center}" onChange="setCenter()"/>
     </span>
-
   </div>
-    </g:form>
+
 </content>
 
 <content tag="center">
