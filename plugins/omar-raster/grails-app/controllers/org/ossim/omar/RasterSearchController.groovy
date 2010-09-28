@@ -123,9 +123,20 @@ class RasterSearchController implements InitializingBean
 
   def list = {
     params.max = Math.min(params.max ? params.int('max') : 10, 100)
+    params.offset = params.offset ?: 0
+    params.sort = params.sort ?: "id"
+    params.order = params.order ?: "asc"
 
-    def rasterEntryList = RasterEntry.list(params)
-    def rasterEntryTotal = RasterEntry.count()
+    def queryParams = new RasterEntryQuery()
+
+    bindData(queryParams, params)
+
+//    println "list->queryParams: ${queryParams.toMap()}"
+
+    def initialRequest = g.createLink(action: "query.json", params: queryParams.toMap())
+
+
+    initialRequest = initialRequest.substring(initialRequest.indexOf('?') + 1)
 
     def myColumnDefs = [
             [key: 'id', label: 'Id', sortable: true, resizeable: true],
@@ -159,7 +170,7 @@ class RasterSearchController implements InitializingBean
             [key: "maxLon", parser: "number"],
             [key: "maxLat", parser: "number"],
             [key: "acquisitionDate"],
-            [key: "filename"]            
+            [key: "filename"]
     ]
 
     for ( i in 0..<tagNameList.size() )
@@ -171,8 +182,7 @@ class RasterSearchController implements InitializingBean
     }
 
     return [
-            rasterEntryList: rasterEntryList,
-            rasterEntryTotal: rasterEntryTotal,
+            initialRequest: initialRequest,
             myColumnDefs: myColumnDefs as JSON,
             fields: fields as JSON
     ]
@@ -181,13 +191,24 @@ class RasterSearchController implements InitializingBean
 
   def query = {
 
-    //println params
+    params.max = Math.min(params.max ? params.int('max') : 10, 100)
+    params.offset = params.offset ?: 0
+    params.sort = params.sort ?: "id"
+    params.order = params.order ?: "asc"
 
-    def rasterEntryList = RasterEntry.list(params)
-    def rasterEntryTotal = RasterEntry.count()
+    def queryParams = new RasterEntryQuery()
+
+    bindData(queryParams, params)
+
+//    println "query->queryParams: ${queryParams.toMap()}"
+
+    def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+    def rasterEntryTotal = rasterEntrySearchService.getCount(queryParams)
 
 
-    def results = rasterEntryList.collect {
+//    println "total: ${rasterEntryTotal}"
+
+    def results = rasterEntries.collect {
       def bounds = it.groundGeom?.bounds
 
       def records = [
@@ -228,7 +249,7 @@ class RasterSearchController implements InitializingBean
       xml {
         def data = [
                 totalRecords: rasterEntryTotal,
-                results: rasterEntryList
+                results: results
         ]
 
         render contentType: "application/xml", text: data as XML

@@ -70,7 +70,9 @@
       };
 
       // DataSource instance
-      var myDataSource = new YAHOO.util.DataSource( "${createLink(action: 'query.json')}?" );
+      var myDataSource = new YAHOO.util.DataSource(
+              "${createLink(action: 'query.json')}?" );
+        
       myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
       myDataSource.responseSchema = {
         resultsList: "results",
@@ -83,7 +85,7 @@
       // DataTable configuration
       var myConfigs = {
         // Initial request for first page of data
-        initialRequest: "max=${params.max ?: 10}&offset=${params.offset ?: 0}&sort=${params.sort ?: "id"}&order=${params.order ?: "asc"}&",
+        initialRequest: "${initialRequest}",
         // Enables dynamic server-driven data
         dynamicData: true,
         // Sets UI initial sort arrow
@@ -99,15 +101,21 @@
                  "&sort=" + state.sortedBy.key +
                  "&order=" + ((state.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "asc" : "desc");
 
-          if (this.customQueryString != null) {
-              query += '&' + this.customQueryString;
+          if ("${initialRequest}" != null) {
+              query += '&' + "${initialRequest}";
           }
 
+/*
+          if (this.customQueryString != null) {
+              query += '&' + this.customQueryString;
+              alert(query);
+          }
 
           // tack on any user filters
           for (filterBy in this.userFilters) {
               query += '&filterBy=' + filterBy + '&filterOn=' + this.userFilters[filterBy];
           }
+*/
 
           return query;
         }
