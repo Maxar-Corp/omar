@@ -1,184 +1,125 @@
-<html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main"/>
-  <title>Raster Entry Search Results</title>
-  <resource:tabView/>
-</head>
-<body>
+<body class="yui-skin-sam">
 <div class="nav">
-  <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
-  <span class="menuButton"><g:link action="search">New Search</g:link></span>
-  <span class="menuButton">
-    <g:link action="search" params="${queryParams.toMap()}">Edit Search</g:link>
-  </span>
+  <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
+  <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]"/></g:link></span>
 </div>
 <div class="body">
-  <h1>Raster Entry Search Results</h1>
+  <h1><g:message code="default.list.label" args="[entityName]"/></h1>
   <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
   </g:if>
 
-  <richui:tabView id="tabView">
-    <richui:tabLabels>
-      <richui:tabLabel title="Image"/>
-      <richui:tabLabel selected="true" title="Metadata"/>
-      <richui:tabLabel title="File"/>
-      <richui:tabLabel title="Links"/>
-    </richui:tabLabels>
+  <div id="dynamicdata"></div>
+  <%--
 
-    <richui:tabContents>
-      <richui:tabContent>
-        <div class="list">
-          <table>
-            <thead>
-            <tr>
-              <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
-              <g:sortableColumn property="width" title="Width" params="${queryParams.toMap()}"/>
-              <g:sortableColumn property="height" title="Height" params="${queryParams.toMap()}"/>
-              <g:sortableColumn property="numberOfBands" title="Number of Bands" params="${queryParams.toMap()}"/>
-              <g:sortableColumn property="bitDepth" title="Bit Depth" params="${queryParams.toMap()}"/>
-              <g:sortableColumn property="dataType" title="Data Type" params="${queryParams.toMap()}"/>
-              <th>Min Lon</th>
-              <th>Min Lat</th>
-              <th>Max Lon</th>
-              <th>Max Lat</th>
-              <th>Thumbnail</th>
-            </tr>
-            </thead>
-            <tbody>
-            <g:each in="${rasterEntries}" status="i" var="rasterEntry">
-              <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
-                <td>${rasterEntry.width?.encodeAsHTML()}</td>
-                <td>${rasterEntry.height?.encodeAsHTML()}</td>
-                <td>${rasterEntry.numberOfBands?.encodeAsHTML()}</td>
-                <td>${rasterEntry.bitDepth?.encodeAsHTML()}</td>
-                <td>${rasterEntry.dataType?.encodeAsHTML()}</td>
-                <td>${rasterEntry.groundGeom?.bounds?.minLon?.encodeAsHTML()}</td>
-                <td>${rasterEntry.groundGeom?.bounds?.minLat?.encodeAsHTML()}</td>
-                <td>${rasterEntry.groundGeom?.bounds?.maxLon?.encodeAsHTML()}</td>
-                <td>${rasterEntry.groundGeom?.bounds?.maxLat?.encodeAsHTML()}</td>
-                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
-                </a></td>
-              </tr>
-            </g:each>
-            </tbody>
-          </table>
-        </div>
-      </richui:tabContent>
+  <g:javascript plugin='richui' src='yui/yahoo-dom-event/yahoo-dom-event.js'/>
+  <g:javascript plugin='richui' src='yui/connection/connection-min.js'/>
+  <g:javascript plugin='richui' src='yui/json/json-min.js'/>
+  <g:javascript plugin='richui' src='yui/element/element-min.js'/>
+  <g:javascript plugin='richui' src='yui/paginator/paginator-min.js'/>
+  <g:javascript plugin='richui' src='yui/datasource/datasource-min.js'/>
+  <g:javascript plugin='richui' src='yui/datatable/datatable-min.js'/>
+  --%>
 
-      <richui:tabContent>
-        <div class="list">
-          <table>
-            <thead>
-            <tr>
-              <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
-              <g:sortableColumn property="acquisitionDate" title="Aquisition Date" params="${queryParams.toMap()}"/>
+  <script type="text/javascript" src="${scratch.bundle(contentType: 'text/javascript', files: [
+      resource(plugin: 'richui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'),
+      resource(plugin: 'richui', dir: 'js/yui/connection', file: 'connection-min.js'),
+      resource(plugin: 'richui', dir: 'js/yui/json', file: 'json-min.js'),
+      resource(plugin: 'richui', dir: 'js/yui/element', file: 'element-min.js'),
+      resource(plugin: 'richui', dir: 'js/yui/paginator', file: 'paginator-min.js'),
+      resource(plugin: 'richui', dir: 'js/yui/datasource', file: 'datasource-min.js'),
+      resource(plugin: 'richui', dir: 'js/yui/datatable', file: 'datatable-min.js')
+  ])}"></script>
 
-              <g:each in="${tagHeaderList}" var="tagHeader">
-                <th>${tagHeader}</th>
-              </g:each>
+  <g:javascript>
+    YAHOO.example.DynamicData = function()
+    {
+      // Column definitions
+      var myColumnDefs = [
+          {'key': 'id','label': 'Id','sortable': true,'resizeable': true},
+          {'key': 'name','label': 'Name','sortable': true,'resizeable': true},
+          {'key': 'country','label': 'Country','sortable': true,'resizeable': true},
+          {'key': 'population','label': 'Population','sortable': true,'resizeable': true},
+          {'key': 'capital','label': 'Capital','sortable': true,'resizeable': true},
+          {'key': 'latitude','label': 'Latitude','sortable': true,'resizeable': true},
+          {'key': 'longitude','label': 'Longitude','sortable': true,'resizeable': true}
+      ];
 
-              <th>Thumbnail</th>
-            </tr>
-            </thead>
-            <tbody>
-            <g:each in="${rasterEntries}" status="i" var="rasterEntry">
-              <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
-                <td>${rasterEntry.acquisitionDate?.encodeAsHTML()}</td>
+      // Custom parser
+      var stringToDate = function( sData )
+      {
+        var array = sData.split( "-" );
+        return new Date( array[1] + " " + array[0] + ", " + array[2] );
+      };
 
-                <g:each in="${tagNameList}" var="tagName">
-                <%--
-                <td><%=tags[rasterEntry]?.find { it.name == tagName }?.value?.encodeAsHTML()%></td>
-                --%>
+      // DataSource instance
+      var myDataSource = new YAHOO.util.DataSource( "${createLink(action: 'query.json')}?" );
+      myDataSource.responseType = YAHOO.util.DataSource.TYPE_JSON;
+      myDataSource.responseSchema = {
+        resultsList: "results",
+        fields: [
+          {key:"id", parser:"number"},
+          {key:"name"},
+          {key:"country"},
+          {key:"population", parser:"number"},
+          {key:"capital"},
+          {key:"latitude", parser:"number"},
+          {key:"longitude", parser:"number"}
+        ],
+        metaFields: {
+          totalRecords: "totalRecords" // Access to value in the server response
+        }
+      };
 
-                  <td><%=rasterEntry?.metadataTags?.find { it.name == tagName }?.value?.encodeAsHTML()%></td>
+      // DataTable configuration
+      var myConfigs = {
+        // Initial request for first page of data
+        initialRequest: "max=${params.max ?: 10}&offset=${params.offset ?: 0}&sort=${params.sort ?: "id"}&order=${params.order ?: "asc"}&",
+        // Enables dynamic server-driven data
+        dynamicData: true,
+        // Sets UI initial sort arrow
+        sortedBy : {key:"id", dir:YAHOO.widget.DataTable.CLASS_ASC},
+        // Enables pagination
+        paginator: new YAHOO.widget.Paginator( { rowsPerPage: ${params.max} } ),
 
-                  <%--
-                  <td>FOO</td>
-                  --%>
-                </g:each>
+        // Change query string to match service
+        generateRequest: function(state) {
 
-                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
-                </a></td>
-              </tr>
-            </g:each>
-            </tbody>
-          </table>
-        </div>
-      </richui:tabContent>
+          var query = "offset=" + state.pagination.recordOffset +
+                 "&max=" + state.pagination.rowsPerPage +
+                 "&sort=" + state.sortedBy.key +
+                 "&order=" + ((state.sortedBy.dir === YAHOO.widget.DataTable.CLASS_ASC) ? "asc" : "desc");
 
-      <richui:tabContent>
-        <div class="list">
-          <table>
-            <thead>
-            <tr>
-              <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
-              <th>Filename</th>
-              <g:sortableColumn property="entryId" title="Entry Id" params="${queryParams.toMap()}"/>
-              <th>Thumbnail</th>
-            </tr>
-            </thead>
-            <tbody>
-            <g:each in="${rasterEntries}" status="i" var="rasterEntry">
-              <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
-                <td>${rasterEntry.mainFile?.name?.encodeAsHTML()}</td>
-                <td>${rasterEntry.entryId?.encodeAsHTML()}</td>
-                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
-                </a></td>
-              </tr>
-            </g:each>
-            </tbody>
-          </table>
-        </div>
-      </richui:tabContent>
-
-      <richui:tabContent>
-        <div class="list">
-          <table>
-            <thead>
-            <tr>
-              <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
-              <th>WMS GetCapabilities</th>
-              <th>WMS GetMap</th>
-              <th>Generate KML</th>
-              <th>Thumbnail</th>
-            </tr>
-            </thead>
-            <tbody>
-            <g:each in="${rasterEntries}" status="i" var="rasterEntry">
-              <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
-                <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: rasterEntry.id])}">
-                  WMS GetCapabilities
-                </a></td>
-                <td></td>
-                <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: rasterEntry.id, format: "image/png", transparent: "true"])}">
-                  Generate KML
-                </a></td>
-                <td><a href="${createLink(controller: "mapView", params: [rasterEntryIds: rasterEntry.id])}">
-                  <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
-                </a></td>
-              </tr>
-            </g:each>
-            </tbody>
-          </table>
-        </div>
-      </richui:tabContent>
-    </richui:tabContents>
-  </richui:tabView>
+          if (this.customQueryString != null) {
+              query += '&' + this.customQueryString;
+          }
 
 
-  <div class="paginateButtons">
-    <g:paginate controller="rasterEntry" action="results" total="${rasterEntries?.totalCount ?: 0}"
-            max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
-  </div>
-</div>
+          // tack on any user filters
+          for (filterBy in this.userFilters) {
+              query += '&filterBy=' + filterBy + '&filterOn=' + this.userFilters[filterBy];
+          }
+
+          return query;
+        }
+      };
+
+      // DataTable instance
+      var myDataTable = new YAHOO.widget.DataTable( "dynamicdata", myColumnDefs, myDataSource, myConfigs );
+      // Update totalRecords on the fly with value from server
+      myDataTable.handleDataReturnPayload = function( oRequest, oResponse, oPayload )
+      {
+        oPayload.totalRecords = oResponse.meta.totalRecords;
+        return oPayload;
+      }
+
+      return {
+        ds: myDataSource,
+        dt: myDataTable
+      };
+
+    }();
+  </g:javascript>
+
 </body>
 </html>
