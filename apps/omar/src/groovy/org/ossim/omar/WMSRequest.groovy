@@ -9,6 +9,7 @@ package org.ossim.omar
 
 import java.awt.Color
 import org.hibernate.criterion.*
+import org.apache.commons.collections.map.CaseInsensitiveMap
 
 class WMSRequest
 {
@@ -34,7 +35,6 @@ class WMSRequest
   String exception
   String bands
   String time
-
   def toMap()
   {
      return [bbox: bbox, width: width, height: height, format: format, layers: layers, srs: srs, service: service,
@@ -109,7 +109,6 @@ class WMSRequest
 
   def getFormat()
   {
-
     switch ( format?.toLowerCase() )
     {
     case "jpeg":
@@ -135,7 +134,7 @@ class WMSRequest
       break
     default:
       format = "image/png"
-      break;
+      break
     }
 
     return format
