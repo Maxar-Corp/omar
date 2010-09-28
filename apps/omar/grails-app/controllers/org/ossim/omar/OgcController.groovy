@@ -141,7 +141,7 @@ class OgcController
     def wmsRequest = new WMSRequest()
 
     Utility.simpleCaseInsensitiveBind(wmsRequest, params);
-    // println tempMap
+    def tempMap = new CaseInsensitiveMap(params)
     try
     {
       switch ( wmsRequest?.request?.toLowerCase() )
@@ -236,12 +236,18 @@ class OgcController
             }
           }
           }
-        if(rasterEntries.size>0)
+        def kml = null;
+        if(rasterEntries?.size>0)
         {
             def file = (rasterEntries[0].mainFile.name as File).name
             filename = "${file}.kml"
+           kml = kmlService.createKml(rasterEntries, wmsRequest.toMap())
         }
-        def kml = kmlService.createKml(rasterEntries, tempMap)
+        else
+        {
+          kml = ""
+          filename = "empty.kml"
+        }
         response.setHeader("Content-disposition", "attachment; filename=${filename}")
         render(contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8")
         break
