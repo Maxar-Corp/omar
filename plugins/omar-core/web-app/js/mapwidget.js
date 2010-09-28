@@ -472,14 +472,20 @@ function MapWidget()
          $("pathUnits").value = pathUnit;
      };
     
+       //////////////////////////////////
+
+    /////////////////////
+    //
+    //
+
 
     this.setupToolBar = function()
     {
         var panButton = new OpenLayers.Control.MouseDefaults(
-        {title: "Click and drag to pan map."});
+        { title: "Click and drag to pan map." });
 
         var zoomInButton = new OpenLayers.Control.Button(
-        {title: "Click to zoom in.", displayClass: "olControlZoomIn", trigger: this.zoomIn});
+        { title: "Click to zoom in.", displayClass: "olControlZoomIn", trigger: this.zoomIn });
 
         var zoomOutButton = new OpenLayers.Control.Button(
         {title: "Click to zoom out.", displayClass: "olControlZoomOut", trigger: this.zoomOut});
@@ -497,21 +503,20 @@ function MapWidget()
         {title: "Click to clear area of interest", displayClass: "olControlClearAreaOfInterest", trigger: this.clearAOI});
 
         var measureDistanceButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path,
-        {title: "Measure Distance", displayClass: "olControlMeasureDistance", persist: true,
-            eventListeners: {measure: function( evt )
+        { title: "Measure Distance", displayClass: "olControlMeasureDistance", persist: true,
+            eventListeners: { measure: function( evt )
             {
-                var pathMeasurement = document.getElementById("pathMeasurementOutput");
+                var message = "Alert: Not to use for targeting.\n";
 
-                if ($("pathUnits").value == "centimeter")
+                if ($("pathUnits").value == "kilometer")
                 {
                     if (evt.units == "km")
                     {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 100000) + " cm";
+                        alert(message + "Path: " + (evt.measure.toFixed(3)) + " km");
                     }
-
                     else if (evt.units == "m")
                     {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 100) + " cm";
+                        alert(message + "Path: " + (evt.measure.toFixed(3) * 0.001) + " km");
                     }
                 }
 
@@ -519,64 +524,12 @@ function MapWidget()
                 {
                     if (evt.units == "km")
                     {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 3280.839895) + " ft";
+                        alert(message + "Path: " + (evt.measure.toFixed(3) * 3280.839895) + " ft");
                     }
 
                     else if (evt.units == "m")
                     {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 3.280839895) + " ft";
-                    }
-                }
-
-                else if ($("pathUnits").value == "inch")
-                {
-                    if (evt.units == "km")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 39370.07874) + " in";
-                    }
-
-                    else if (evt.units == "m")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 39.37007874) + " in";
-                    }
-                }
-
-                else if ($("pathUnits").value == "kilometer")
-                {
-                    if (evt.units == "km")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 1) + " km";
-                    }
-
-                    else if (evt.units == "m")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 0.001) + " km";
-                    }
-                }
-
-                else if ($("pathUnits").value == "league")
-                {
-                    if (evt.units == "km")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 0.20712331461) + " l";
-                    }
-
-                    else if (evt.units == "m")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 0.00020712331461) + " l";
-                    }
-                }
-
-                else if ($("pathUnits").value == "nauticalleague")
-                {
-                    if (evt.units == "km")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 0.17998560115) + " nl";
-                    }
-
-                    else if (evt.units == "m")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 0.00017998560115) + " nl";
+                        alert(message + "Path: " + (evt.measure.toFixed(3) * 3.280839895) + " ft");
                     }
                 }
 
@@ -584,25 +537,12 @@ function MapWidget()
                 {
                     if (evt.units == "km")
                     {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 1000) + " m";
+                        alert(message + "Path: " + (evt.measure.toFixed(3) * 1000) + " m");
                     }
 
                     else if (evt.units == "m")
                     {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 1) + " m";
-                    }
-                }
-
-                else if ($("pathUnits").value == "microinch")
-                {
-                    if (evt.units == "km")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 39370078740) + " micro in";
-                    }
-
-                    else if (evt.units == "m")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 39370078.74) + " micro in";
+                        alert(message + "Path: " + (evt.measure.toFixed(3)) + " m");
                     }
                 }
 
@@ -610,25 +550,12 @@ function MapWidget()
                 {
                     if (evt.units == "km")
                     {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 0.62137119224) + " mi";
+                        alert(message + "Path: " + (evt.measure.toFixed(3) * 0.62137119224) + " mi");
                     }
 
                     else if (evt.units == "m")
                     {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 0.00062137119224) + " mi";
-                    }
-                }
-
-                else if ($("pathUnits").value == "millimeter")
-                {
-                    if (evt.units == "km")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 1000000) + " ml";
-                    }
-
-                    else if (evt.units == "m")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 1000) + " ml";
+                        alert(message + "Path: " + (evt.measure.toFixed(3) * 0.00062137119224) + " mi");
                     }
                 }
 
@@ -636,31 +563,13 @@ function MapWidget()
                 {
                     if (evt.units == "km")
                     {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 1093.6132983) + " yd";
+                        alert(message + "Path: " + (evt.measure.toFixed(3) * 1093.6132983) + " yd");
                     }
 
                     else if (evt.units == "m")
                     {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 1.0936132983) + " yd";
+                        alert(message + "Path: " + (evt.measure.toFixed(3) * 1.0936132983) + " yd"); 
                     }
-                }
-
-                else
-                {
-
-
-                if (evt.units == "km")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 1) + " km";
-                    }
-
-                    else if (evt.units == "m")
-                    {
-                        pathMeasurement.innerHTML = "<b>Path:</b> " + (evt.measure.toFixed(3) * 0.001) + " km";
-                    }    
-
-
-
                 }
             }}});
 
@@ -668,9 +577,7 @@ function MapWidget()
         {title: "Measure Area", displayClass: "olControlMeasureArea", persist: true,
             eventListeners: {measure: function(evt)
             {
-                var areaMeasurement = document.getElementById("areaMeasurementOutput");
-
-                areaMeasurement.innerHTML = "<b>Area:</b> " + evt.measure.toFixed(3) + evt.units + "&#178;";
+                alert("Area: " + evt.measure.toFixed(3) + " " + evt.units + "^2");
             }}});
 
         var container = $("toolBar");
