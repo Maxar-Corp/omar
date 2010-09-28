@@ -27,7 +27,6 @@ class OgcController
     {
       params.max = grailsApplication.config.wms.vector.maxcount
     }
-    println params
     // Convert param names to lower case
 //    def tempMap = new CaseInsensitiveMap(params)
 
@@ -183,7 +182,6 @@ class OgcController
         }
         else
         {
-          println "CONTENET TYPE RESPONSE ============= ${response.contentType}"
           ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
         }
 
