@@ -57,6 +57,7 @@ class RasterEntry
   Polygon groundGeom
   //DateTime acquisitionDate
   Date acquisitionDate
+  Integer validModel
 
   DateTime accessDate
   DateTime ingestDate
@@ -95,6 +96,7 @@ class RasterEntry
       securityClassification index: 'raster_entry_security_classification_idx'
       countryCode index: 'raster_entry_country_code_idx'
       beNumber index: 'raster_entry_be_number_idx'
+      validModel index: 'raster_entry_valid_model_idx'
 
       // Just for testing
       fileType index: 'raster_entry_filetype_idx'
@@ -153,7 +155,7 @@ class RasterEntry
     ingestDate(nullable: true)
     styleId(nullable: true)
     keepForever(nullable: true)
-    
+    validModel(nullable: true)
     // Just for testing
     fileType(nullable: true)
     className(nullable: true)
