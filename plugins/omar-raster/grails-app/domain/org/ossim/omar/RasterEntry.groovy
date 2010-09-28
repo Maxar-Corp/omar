@@ -48,11 +48,11 @@ class RasterEntry
   String beNumber
   Double niirs
   Integer wacCode
-  double sunElevation
-  double sunAzimuth
-  double cloudCover
+  Double sunElevation
+  Double sunAzimuth
+  Double cloudCover
   BigInteger styleId
-  boolean keepForever
+  Boolean keepForever
   //Geometry groundGeom
   Polygon groundGeom
   //DateTime acquisitionDate
