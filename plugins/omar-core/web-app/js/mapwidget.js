@@ -217,8 +217,23 @@ function MapWidget()
         var bounds = new OpenLayers.Bounds(minLon, minLat, maxLon, maxLat);
         var feature = new OpenLayers.Feature.Vector(bounds.toGeometry());
 
+        $("aoiMinLon").value = bounds.left;
+        $("aoiMaxLat").value = bounds.top;
+        $("aoiMaxLon").value = bounds.right;
+        $("aoiMinLat").value = bounds.bottom;
+
+        $("aoiMinLonDms").value = convert.ddToDms(bounds.left, "lon");
+        $("aoiMaxLatDms").value = convert.ddToDms(bounds.top, "lat");
+        $("aoiMaxLonDms").value = convert.ddToDms(bounds.right, "lon");
+        $("aoiMinLatDms").value = convert.ddToDms(bounds.bottom, "lat");
+
+        $("aoiNeMgrs").value = convert.ddToMgrs(bounds.top, bounds.right);
+        $("aoiSwMgrs").value = convert.ddToMgrs(bounds.bottom, bounds.left);
+        
         aoiLayer.destroyFeatures();
         aoiLayer.addFeatures(feature, {silent: true});
+
+
     };
 
     this.clearAOI = function(e)
@@ -648,7 +663,6 @@ function MapWidget()
         $("radiusSearchButton2").checked = false;
         $("radiusSearchButton3").checked = false;
     };
-
     ////check this code
 
   this.setBoundLatLonText = function()
