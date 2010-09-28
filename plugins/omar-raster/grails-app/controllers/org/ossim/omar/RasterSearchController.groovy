@@ -18,10 +18,28 @@ class RasterSearchController implements InitializingBean
 
   static defaultAction = 'search'
 
-  def search = {
+  def thumbnailSize = 128
+
+  private def initRasterEntryQuery(Map params)
+  {
     def queryParams = new RasterEntryQuery()
 
     bindData(queryParams, params)
+
+    queryParams.startDate = DateUtil.initializeDate("startDate", params)
+    queryParams.endDate   = DateUtil.initializeDate("endDate", params)
+
+//    println "params: ${params}"
+//    println "startDate: ${queryParams.startDate}"
+//    println "endDate: ${queryParams.endDate}"
+
+
+    return queryParams
+  }
+  
+
+  def search = {
+    def queryParams = initRasterEntryQuery(params)
 
     if ( request.method == 'POST' )
     {
@@ -69,9 +87,7 @@ class RasterSearchController implements InitializingBean
 
     def rasterEntries = null
     def tags = null
-    def queryParams = new RasterEntryQuery()
-
-    bindData(queryParams, params)
+    def queryParams = initRasterEntryQuery(params)
 
     if ( chainModel )
     {
@@ -122,14 +138,13 @@ class RasterSearchController implements InitializingBean
 
 
   def list = {
+
     params.max = Math.min(params.max ? params.int('max') : 10, 100)
     params.offset = params.offset ?: 0
     params.sort = params.sort ?: "id"
     params.order = params.order ?: "asc"
 
-    def queryParams = new RasterEntryQuery()
-
-    bindData(queryParams, params)
+    def queryParams = initRasterEntryQuery(params)
 
 //    println "list->queryParams: ${queryParams.toMap()}"
 
@@ -139,6 +154,7 @@ class RasterSearchController implements InitializingBean
     initialRequest = initialRequest.substring(initialRequest.indexOf('?') + 1)
 
     def myColumnDefs = [
+            [key: 'thumbnail', label: 'Thumbnail', sortable: false, resizeable: true, width: thumbnailSize, formatter: "thumbnail"],
             [key: 'id', label: 'Id', sortable: true, resizeable: true],
             [key: 'entryId', label: 'Entry Id', sortable: true, resizeable: true],
             [key: 'width', label: 'Width', sortable: true, resizeable: true],
@@ -157,6 +173,7 @@ class RasterSearchController implements InitializingBean
     ]
 
     def fields = [
+            [key: "thumbnail"],
             [key: "id", parser: "number"],
             [key: "entryId"],
             [key: "width", parser: "number"],
@@ -196,22 +213,22 @@ class RasterSearchController implements InitializingBean
     params.sort = params.sort ?: "id"
     params.order = params.order ?: "asc"
 
-    def queryParams = new RasterEntryQuery()
-
-    bindData(queryParams, params)
+    def queryParams = initRasterEntryQuery(params)
 
 //    println "query->queryParams: ${queryParams.toMap()}"
 
     def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
     def rasterEntryTotal = rasterEntrySearchService.getCount(queryParams)
 
-
 //    println "total: ${rasterEntryTotal}"
 
     def results = rasterEntries.collect {
       def bounds = it.groundGeom?.bounds
+      def thumbnailURL = g.createLink(controller: "thumbnail", action: "show", id: it.id, params: [size: thumbnailSize])
+      def thumbnailTarget = g.createLink(controller: "mapView", action: "index", params: [layers: it.indexId])
 
       def records = [
+              thumbnail: [url: thumbnailURL, href: thumbnailTarget],
               id: it.id,
               entryId: it.entryId,
               width: it.width,
