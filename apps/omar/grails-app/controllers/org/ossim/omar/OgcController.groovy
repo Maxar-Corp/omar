@@ -23,19 +23,19 @@ class OgcController
 
   def footprints = {
     Utility.removeEmptyParams(params)
-
     if ( params.max == null )
     {
       params.max = grailsApplication.config.wms.vector.maxcount
     }
-
+    println params
     // Convert param names to lower case
-    def tempMap = new CaseInsensitiveMap(params)
+//    def tempMap = new CaseInsensitiveMap(params)
 
     // Populate org.ossim.omar.WMSCapabilities Request object
     def wmsRequest = new WMSRequest()
 
-    bindData(wmsRequest, tempMap)
+    Utility.simpleCaseInsensitiveBind(wmsRequest, params);
+//    bindData(wmsRequest, tempMap)
 
     // default to geographic bounds
     if ( !wmsRequest.srs )
@@ -116,7 +116,6 @@ class OgcController
                 wmsRequest,
                 g2d)
       }
-
       if ( (wmsRequest.format == "image/gif") && wmsRequest.transparentFlag )
       {
         image = ImageGenerator.convertRGBAToIndexed(image)
@@ -139,13 +138,10 @@ class OgcController
   }
 
   def wms = {
-    def tempMap = [:]
-    // Convert param names to lower case
-    params?.each { tempMap.put(it.key.toLowerCase(), it.value)}
     // Populate org.ossim.omar.WMSCapabilities Request object
     def wmsRequest = new WMSRequest()
 
-    bindData(wmsRequest, tempMap)
+    Utility.simpleCaseInsensitiveBind(wmsRequest, params);
     // println tempMap
     try
     {
@@ -187,6 +183,7 @@ class OgcController
         }
         else
         {
+          println "CONTENET TYPE RESPONSE ============= ${response.contentType}"
           ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
         }
 
