@@ -16,6 +16,19 @@ class Utility
     def nullMap = params?.findAll {entry -> (entry.value == "" || entry.value == "null")}
     nullMap?.each {params?.remove(it.key)}
   }
+  static void simpleCaseInsensitiveBind(def target, def paramMap)
+  {
+    def keys = target.properties.keySet()
+    def tempParams = new CaseInsensitiveMap(paramMap)
+
+    keys.each{
+      def value = tempParams.get(it)
+      if(value)
+      {
+        target.setProperty("${it}", value)
+      }
+    }
+  }
   static def convertToColorIndexModel(def dataBuffer, def width, def height, def transparentFlag)
   {
     ImageTypeSpecifier isp = ImageTypeSpecifier.createGrayscale(8, DataBuffer.TYPE_BYTE, false);
