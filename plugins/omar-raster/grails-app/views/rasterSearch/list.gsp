@@ -57,6 +57,11 @@
 ])}"></script>
 
 <g:javascript>
+    YAHOO.widget.DataTable.Formatter.thumbnail = function( elLiner, oRecord, oColumn, oData )
+    {
+      elLiner.innerHTML = "<a href='" + oData.href + "'><img src='" + oData.url + "'></a>";
+    };
+
     YAHOO.example.DynamicData = function()
     {
       // Column definitions
