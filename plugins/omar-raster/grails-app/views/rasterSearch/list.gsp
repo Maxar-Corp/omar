@@ -1,7 +1,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main8"/>
+  <meta name="layout" content="main10"/>
   <g:set var="entityName" value="${message(code: 'rasterEntry.label', default: 'RasterEntry')}"/>
   <title><g:message code="default.list.label" args="[entityName]"/></title>
 
@@ -17,6 +17,7 @@
       resource(plugin: 'richui', dir: 'js/yui/datatable/assets/skins/sam', file: 'datatable.css')
   ])}"/>
   --%>
+  
 </head>
 <body class="yui-skin-sam">
 <content tag="north">
@@ -27,7 +28,7 @@
 </content>
 <content tag="center">
   <div class="body">
-    <h1><g:message code="default.list.label" args="[entityName]"/></h1>
+    %{--<h1><g:message code="default.list.label" args="[entityName]"/></h1>--}%
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
@@ -60,6 +61,11 @@
     YAHOO.widget.DataTable.Formatter.thumbnail = function( elLiner, oRecord, oColumn, oData )
     {
       elLiner.innerHTML = "<a href='" + oData.href + "'><img src='" + oData.url + "'></a>";
+    };
+
+    YAHOO.widget.DataTable.Formatter.link = function( elLiner, oRecord, oColumn, oData )
+    {
+      elLiner.innerHTML = "<a href='" + oData.href + "'>" + oData.label + "</a>";
     };
 
     YAHOO.example.DynamicData = function()
@@ -127,7 +133,7 @@
       };
 
       // DataTable instance
-      var myDataTable = new YAHOO.widget.ScrollingDataTable( "dynamicdata", myColumnDefs, myDataSource, myConfigs );
+      var myDataTable = new YAHOO.widget.DataTable( "dynamicdata", myColumnDefs, myDataSource, myConfigs );
       // Update totalRecords on the fly with value from server
       myDataTable.handleDataReturnPayload = function( oRequest, oResponse, oPayload )
       {
