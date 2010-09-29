@@ -11,8 +11,16 @@
 <head>
   <title><g:layoutTitle default="Grails"/></title>
 
+<%--
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'omar-2.0.css')}"/>
+--%>
+
+  <link rel="stylesheet" type="text/css" href="${omar.bundle(contentType: 'text/css', files: [
+      resource(dir: 'css', file: 'main.css'),
+      resource(dir: 'css', file: 'omar-2.0.css')
+  ])}"/>
+
 
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
   <%--
@@ -22,7 +30,6 @@
   <%--
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
   --%>
-
 
   <style>
     /*
@@ -49,7 +56,6 @@
   }
 
   </style>
-
   <g:layoutHead/>
 </head>
 <body class="yui-skin-sam">
@@ -75,16 +81,19 @@
   </div>
 </div>
 
+<%--
 <g:javascript library="application"/>
 <g:javascript library="prototype"/>
 <g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
 <g:javascript plugin='richui' src="yui/element/element-min.js"/>
-<%--
-<g:javascript plugin='richui' src="yui/dragdrop/dragdrop-min.js"/>
-<g:javascript plugin='richui' src="yui/resize/resize-min.js"/>
-<g:javascript plugin='richui' src="yui/animation/animation-min.js"/>
---%>
 <g:javascript plugin='richui' src="yui/layout/layout-min.js"/>
+--%>
+
+<script type="text/javascript" src="${omar.bundle(contentType: 'text/javascript', files: [
+    resource(plugin: 'richui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'),
+    resource(plugin: 'richui', dir: 'js/yui/element', file: 'element-min.js'),
+    resource(plugin: 'richui', dir: 'js/yui/layout', file: 'layout-min.js')    
+])}"></script>
 
 <g:javascript>
   (function()
@@ -172,11 +181,7 @@
   })();
 </g:javascript>
 
-
-
-
 <g:layoutBody/>
 
 </body>
-
 </html>
