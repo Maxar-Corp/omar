@@ -57,7 +57,7 @@ class RasterEntry
   Polygon groundGeom
   //DateTime acquisitionDate
   Date acquisitionDate
-  Integer validModel
+  Boolean validModel
 
   DateTime accessDate
   DateTime ingestDate
@@ -295,6 +295,10 @@ class RasterEntry
     {
       rasterEntry.indexId = "${rasterEntry.entryId}-${filename}".encodeAsSHA256()
     }
+    if(!rasterEntry.validModel)
+    {
+      rasterEntry.validModel = true
+    }
     return rasterEntry
   }
   static Geometry initGroundGeom(def groundGeomNode)
@@ -514,7 +518,12 @@ class RasterEntry
               rasterEntry.className = value
             }
             break
-
+          case "validmodel":
+              if(value&&!rasterEntry.className)
+              {
+                rasterEntry.validModel = value as Boolean
+              }
+            break;
           default:
             rasterEntry.otherTagsMap[name] = value
           }
