@@ -1,23 +1,23 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main10"/>
+  <meta name="layout" content="main8"/>
   <g:set var="entityName" value="${message(code: 'rasterEntry.label', default: 'RasterEntry')}"/>
   <title><g:message code="default.list.label" args="[entityName]"/></title>
 
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/fonts', file: 'fonts-min.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/paginator/assets/skins/sam', file: 'paginator.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/datatable/assets/skins/sam', file: 'datatable.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
 
   <%--
-  <link rel="stylesheet" type="text/css" href="${scratch.bundle(contentType: 'text/css', files: [
+  <link rel="stylesheet" type="text/css" href="${omar.bundle(contentType: 'text/css', files: [
       resource(plugin: 'richui', dir: 'js/yui/fonts', file: 'fonts-min.css'),
       resource(plugin: 'richui', dir: 'js/yui/paginator/assets/skins/sam', file: 'paginator.css'),
       resource(plugin: 'richui', dir: 'js/yui/datatable/assets/skins/sam', file: 'datatable.css')
   ])}"/>
   --%>
-  
+
 </head>
 <body class="yui-skin-sam">
 <content tag="north">
@@ -26,9 +26,12 @@
     <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]"/></g:link></span>
   </div>
 </content>
+<content tag="south">
+  <div id="radiobuttonsfromjavascript"></div>
+</content>
 <content tag="center">
   <div class="body">
-    %{--<h1><g:message code="default.list.label" args="[entityName]"/></h1>--}%
+  %{--<h1><g:message code="default.list.label" args="[entityName]"/></h1>--}%
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
@@ -48,13 +51,12 @@
 --%>
 
 <script type="text/javascript" src="${omar.bundle(contentType: 'text/javascript', files: [
-    resource(plugin: 'richui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'),
     resource(plugin: 'richui', dir: 'js/yui/connection', file: 'connection-min.js'),
     resource(plugin: 'richui', dir: 'js/yui/json', file: 'json-min.js'),
-    resource(plugin: 'richui', dir: 'js/yui/element', file: 'element-min.js'),
     resource(plugin: 'richui', dir: 'js/yui/paginator', file: 'paginator-min.js'),
     resource(plugin: 'richui', dir: 'js/yui/datasource', file: 'datasource-min.js'),
-    resource(plugin: 'richui', dir: 'js/yui/datatable', file: 'datatable-min.js')
+    resource(plugin: 'richui', dir: 'js/yui/datatable', file: 'datatable-min.js'),
+    resource(plugin: 'richui', dir: 'js/yui/button', file: 'button-min.js')    
 ])}"></script>
 
 <g:javascript>
@@ -141,11 +143,61 @@
         return oPayload;
       }
 
+      var oButtonGroup3 = new YAHOO.widget.ButtonGroup({
+                                      id:  "buttongroup3",
+                                      name:  "radiofield3",
+                                      container:  "radiobuttonsfromjavascript" });
+
+      oButtonGroup3.addButtons([
+
+          { label: "Image", value: "image", checked: true },
+          { label: "Metadata", value: "metadata" },
+          { label: "File", value: "file" },
+          { label: "Links", value: "links" }
+
+      ]);
+
+
+      var showGroup = function ( group )
+      {
+         for ( var i in myColumnDefs )
+         {
+            var column = myDataTable.getColumn(myColumnDefs[i].key);
+
+            if (column)
+            {
+              myDataTable.hideColumn(column);
+
+              if( group == myColumnDefs[i].group )
+              {
+                myDataTable.showColumn(column);
+              }
+            }
+          }
+
+          myDataTable.showColumn(myDataTable.getColumn("id"));
+          myDataTable.showColumn(myDataTable.getColumn("thumbnail"));          
+      };
+
+      // "checkedButtonChange" event handler for each ButtonGroup instance
+      var onCheckedButtonChange = function ( p_oEvent )
+      {
+          if( p_oEvent.newValue )
+          {
+            showGroup( p_oEvent.newValue.get("value") );
+          }
+      };
+
+      showGroup("image");
+      myDataTable.showColumn(myDataTable.getColumn("id"));
+      myDataTable.showColumn(myDataTable.getColumn("thumbnail"));
+
+      oButtonGroup3.on("checkedButtonChange", onCheckedButtonChange);
+        
       return {
         ds: myDataSource,
         dt: myDataTable
       };
-
     }();
 </g:javascript>
 

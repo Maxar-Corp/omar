@@ -47,13 +47,11 @@
   .yui-skin-sam .yui-layout .yui-layout-unit div.yui-layout-bd {
     background-color: #FFFFFF;
   }
-
   </style>
 
   <g:layoutHead/>
 </head>
 <body class="yui-skin-sam">
-
 <div id="header">
   <omar:securityClassificationBanner/>
 </div>
@@ -67,9 +65,9 @@
     </div>
     <g:pageProperty name="page.north"/>
   </div>
-  %{--<div id="south">--}%
-    %{--<g:pageProperty name="page.south"/>--}%
-  %{--</div>--}%
+  <div id="left">
+    <g:pageProperty name="page.west"/>
+  </div>
   <div id="center">
     <g:pageProperty name="page.center"/>
   </div>
@@ -114,7 +112,6 @@
         ]
       } );
 
-
       outerLayout.on( 'render', function()
       {
         var el = outerLayout.getUnitByPosition( 'center' ).get( 'wrap' );
@@ -127,11 +124,7 @@
               height: 125,
               body: 'north'
             },
-//            {
-//              position: 'bottom',
-//              height: 40,
-//              body: 'south'
-//            },
+            { position: 'left', header: '', width: 100, resize: false, proxy: false, body: 'left', collapse: true, gutter: '0px 0px 0px 0px', scroll: true, maxWidth: 200 },
             {
               position: 'center',
               body: 'center',
@@ -149,7 +142,6 @@
           //alert( mapWidth + ' ' + mapHeight );
           init( mapWidth, mapHeight );
 
-
           c.on( 'resize', function()
           {
             var c1 = innerLayout.getUnitByPosition( 'center' );
@@ -161,22 +153,15 @@
           } );
         } );
 
-
         innerLayout.render();
       } );
 
-
       outerLayout.render();
     } );
-
   })();
 </g:javascript>
-
-
-
 
 <g:layoutBody/>
 
 </body>
-
 </html>

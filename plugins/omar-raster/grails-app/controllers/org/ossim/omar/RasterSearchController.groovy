@@ -154,24 +154,24 @@ class RasterSearchController implements InitializingBean
     initialRequest = initialRequest.substring(initialRequest.indexOf('?') + 1)
 
     def myColumnDefs = [
-            [key: 'thumbnail', label: 'Thumbnail', sortable: false, resizeable: true, width: thumbnailSize, formatter: "thumbnail"],
-            [key: 'id', label: 'Id', sortable: true, resizeable: true],
-            [key: 'entryId', label: 'Entry Id', sortable: true, resizeable: true],
-            [key: 'width', label: 'Width', sortable: true, resizeable: true],
-            [key: 'height', label: 'Height', sortable: true, resizeable: true],
-            [key: 'numberOfBands', label: 'Num Bands', sortable: true, resizeable: true],
-            [key: 'numberOfResLevels', label: 'Num Res Levels', sortable: true, resizeable: true],
-            [key: 'bitDepth', label: 'Bit Depth', sortable: true, resizeable: true],
-            [key: 'metersPerPixel', label: 'Meters Per Pixel', sortable: false, resizeable: true],
-            [key: 'minLon', label: 'Min Lon', sortable: false, resizeable: true],
-            [key: 'minLat', label: 'Min Lat', sortable: false, resizeable: true],
-            [key: 'maxLon', label: 'Max Lon', sortable: false, resizeable: true],
-            [key: 'maxLat', label: 'Max Lat', sortable: false, resizeable: true],
-            [key: 'acquisitionDate', label: 'Acquisition Date', sortable: true, resizeable: true],
-            [key: 'filename', label: 'Filename', sortable: true, resizeable: true],
-            [key: 'wmsCapabilities', label: 'WMS Capabilities', sortable: true, resizeable: true, formatter: "link"],
-            [key: 'wmsGetMap', label: 'WMS GetMap', sortable: true, resizeable: true, formatter: "link"],
-            [key: 'generateKML', label: 'Generate KML', sortable: true, resizeable: true, formatter: "link"]
+            [key: 'thumbnail', label: 'Thumbnail', sortable: false, resizeable: true, width: thumbnailSize, formatter: "thumbnail", group: "thumbnail"],
+            [key: 'id', label: 'Id', sortable: true, resizeable: true, group: ""],
+            [key: 'entryId', label: 'Entry Id', sortable: true, resizeable: true, group: "file"],
+            [key: 'width', label: 'Width', sortable: true, resizeable: true, group: "image"],
+            [key: 'height', label: 'Height', sortable: true, resizeable: true, group: "image"],
+            [key: 'numberOfBands', label: 'Num Bands', sortable: true, resizeable: true, group: "image"],
+            [key: 'numberOfResLevels', label: 'Num Res Levels', sortable: true, resizeable: true, group: "image"],
+            [key: 'bitDepth', label: 'Bit Depth', sortable: true, resizeable: true, group: "image"],
+            [key: 'metersPerPixel', label: 'Meters Per Pixel', sortable: false, resizeable: true, group: "image"],
+            [key: 'minLon', label: 'Min Lon', sortable: false, resizeable: true, group: "metadata"],
+            [key: 'minLat', label: 'Min Lat', sortable: false, resizeable: true, group: "metadata"],
+            [key: 'maxLon', label: 'Max Lon', sortable: false, resizeable: true, group: "metadata"],
+            [key: 'maxLat', label: 'Max Lat', sortable: false, resizeable: true, group: "metadata"],
+            [key: 'acquisitionDate', label: 'Acquisition Date', sortable: true, resizeable: true, group: "metadata"],
+            [key: 'filename', label: 'Filename', sortable: true, resizeable: true, group: "file"],
+            [key: 'wmsCapabilities', label: 'WMS Capabilities', sortable: true, resizeable: true, formatter: "link", group: "links"],
+            [key: 'wmsGetMap', label: 'WMS GetMap', sortable: true, resizeable: true, formatter: "link", group: "links"],
+            [key: 'generateKML', label: 'Generate KML', sortable: true, resizeable: true, formatter: "link", group: "links"]
     ]
 
     def fields = [
@@ -198,7 +198,7 @@ class RasterSearchController implements InitializingBean
     for ( i in 0..<tagNameList.size() )
     {
       myColumnDefs << [key: tagNameList[i], label: tagHeaderList[i],
-              sortable: true, resizeable: true]
+              sortable: true, resizeable: true, group: "metadata"]
 
       fields << [key: tagNameList[i]]
     }
