@@ -27,6 +27,7 @@ class VideoDataSet
 
   Map<String, String> otherTagsMap = [:]
   String indexId
+  BigInteger styleId
 
   static mapping = {
     columns {
@@ -48,6 +49,7 @@ class VideoDataSet
     endDate(nullable: true)
     groundGeom(nullable: true)
     indexId(nullable: false, blank: false, unique: true)
+    styleId(nullable: false)
 //    metadata(nullable: true)
   }
 
