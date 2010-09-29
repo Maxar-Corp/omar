@@ -49,7 +49,7 @@ class VideoDataSet
     endDate(nullable: true)
     groundGeom(nullable: true)
     indexId(nullable: false, blank: false, unique: true)
-    styleId(nullable: false)
+    styleId(nullable: true)
 //    metadata(nullable: true)
   }
 
