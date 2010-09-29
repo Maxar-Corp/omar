@@ -57,7 +57,7 @@ class RasterEntry
   Polygon groundGeom
   //DateTime acquisitionDate
   Date acquisitionDate
-  Boolean validModel
+  Integer validModel
 
   DateTime accessDate
   DateTime ingestDate
@@ -297,7 +297,7 @@ class RasterEntry
     }
     if(!rasterEntry.validModel)
     {
-      rasterEntry.validModel = true
+      rasterEntry.validModel = 1
     }
     return rasterEntry
   }
@@ -521,7 +521,7 @@ class RasterEntry
           case "validmodel":
               if(value&&!rasterEntry.className)
               {
-                rasterEntry.validModel = value as Boolean
+                rasterEntry.validModel = value as Integer
               }
             break;
           default:
