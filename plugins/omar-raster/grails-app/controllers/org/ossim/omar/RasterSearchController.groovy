@@ -27,7 +27,7 @@ class RasterSearchController implements InitializingBean
     bindData(queryParams, params)
 
     queryParams.startDate = DateUtil.initializeDate("startDate", params)
-    queryParams.endDate   = DateUtil.initializeDate("endDate", params)
+    queryParams.endDate = DateUtil.initializeDate("endDate", params)
 
 //    println "params: ${params}"
 //    println "startDate: ${queryParams.startDate}"
@@ -36,7 +36,7 @@ class RasterSearchController implements InitializingBean
 
     return queryParams
   }
-  
+
 
   def search = {
     def queryParams = initRasterEntryQuery(params)
@@ -168,8 +168,10 @@ class RasterSearchController implements InitializingBean
             [key: 'maxLon', label: 'Max Lon', sortable: false, resizeable: true],
             [key: 'maxLat', label: 'Max Lat', sortable: false, resizeable: true],
             [key: 'acquisitionDate', label: 'Acquisition Date', sortable: true, resizeable: true],
-            [key: 'filename', label: 'Filename', sortable: true, resizeable: true]
-
+            [key: 'filename', label: 'Filename', sortable: true, resizeable: true],
+            [key: 'wmsCapabilities', label: 'WMS Capabilities', sortable: true, resizeable: true, formatter: "link"],
+            [key: 'wmsGetMap', label: 'WMS GetMap', sortable: true, resizeable: true, formatter: "link"],
+            [key: 'generateKML', label: 'Generate KML', sortable: true, resizeable: true, formatter: "link"]
     ]
 
     def fields = [
@@ -187,7 +189,10 @@ class RasterSearchController implements InitializingBean
             [key: "maxLon", parser: "number"],
             [key: "maxLat", parser: "number"],
             [key: "acquisitionDate"],
-            [key: "filename"]
+            [key: "filename"],
+            [key: 'wmsCapabilities'],
+            [key: 'wmsGetMap'],
+            [key: 'generateKML']
     ]
 
     for ( i in 0..<tagNameList.size() )
@@ -226,6 +231,10 @@ class RasterSearchController implements InitializingBean
       def bounds = it.groundGeom?.bounds
       def thumbnailURL = g.createLink(controller: "thumbnail", action: "show", id: it.id, params: [size: thumbnailSize])
       def thumbnailTarget = g.createLink(controller: "mapView", action: "index", params: [layers: it.indexId])
+      def wmsCapabilities = g.createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: it.indexId])
+      def bbox = "${bounds.minLon},${bounds.minLat},${bounds.maxLon},${bounds.maxLat}"
+      def wmsGetMap = g.createLink(controller: "ogc", action: "wms", params: [request: "GetMap", layers: it.indexId, bbox: bbox, srs: "epsg:4326", width: 1024, height: 512, format: "image/jpeg"])
+      def generateKML = g.createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: it.indexId, format: "image/png", transparent: true])
 
       def records = [
               thumbnail: [url: thumbnailURL, href: thumbnailTarget],
@@ -242,7 +251,10 @@ class RasterSearchController implements InitializingBean
               maxLon: bounds.maxLon,
               maxLat: bounds.maxLat,
               acquisitionDate: it.acquisitionDate,
-              filename: it.mainFile.name
+              filename: it.mainFile.name,
+              wmsCapabilities: [href: wmsCapabilities, label: "WMS Capabilities"],
+              wmsGetMap: [href: wmsGetMap, label: "WMS GetMap"],
+              generateKML: [href: generateKML, label: "Generate KML"]
       ]
 
 
