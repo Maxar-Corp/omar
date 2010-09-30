@@ -11,8 +11,15 @@
 <head>
   <title><g:layoutTitle default="Grails"/></title>
 
+  <%--
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'omar-2.0.css')}"/>
+  --%>
+
+  <link rel="stylesheet" type="text/css" href="${omar.bundle(contentType: 'text/css', files: [
+      resource(dir: 'css', file: 'main.css'),
+      resource(dir: 'css', file: 'omar-2.0.css')
+  ])}"/>
 
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/resize/assets/skins/sam', file: 'resize.css')}"/>
@@ -68,22 +75,37 @@
   <div id="south">
     <g:pageProperty name="page.south"/>
   </div>
+  <div id="west">
+    <g:pageProperty name="page.west"/>
+  </div>
   <div id="center">
     <g:pageProperty name="page.center"/>
   </div>
 </div>
 
+<%--
 <g:javascript library="application"/>
 <g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
 <g:javascript plugin='richui' src="yui/element/element-min.js"/>
 <g:javascript plugin='richui' src="yui/dragdrop/dragdrop-min.js"/>
 <g:javascript plugin='richui' src="yui/resize/resize-min.js"/>
-
+--%>
 <%--
 <g:javascript plugin='richui' src="yui/animation/animation-min.js"/>
 --%>
-
+<%--
 <g:javascript plugin='richui' src="yui/layout/layout-min.js"/>
+--%>
+
+
+<script type="text/javascript" src="${omar.bundle(contentType: 'text/javascript', files: [
+    resource(dir: 'js', file: 'application.js'),
+    resource(plugin: 'richui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'),
+    resource(plugin: 'richui', dir: 'js/yui/element', file: 'element-min.js'),
+    resource(plugin: 'richui', dir: 'js/yui/dragdrop', file: 'dragdrop-min.js'),
+    resource(plugin: 'richui', dir: 'js/yui/resize', file: 'resize-min.js'),
+    resource(plugin: 'richui', dir: 'js/yui/layout', file: 'layout-min.js')
+])}"></script>
 
 <g:javascript>
   (function()
@@ -124,7 +146,7 @@
             {
               position: 'top',
               height: 135,
-              resize: true,
+              resize: false,
               body: 'north'
             },
             {
@@ -132,6 +154,7 @@
               height: 30,
               body: 'south'
             },
+            { position: 'left', header: '', width: 200, resize: false, proxy: false, body: 'west', collapse: true, gutter: '0px 0px 0px 0px', scroll: true, maxWidth: 200 },
             {
               position: 'center',
               body: 'center'
@@ -155,11 +178,18 @@
             var mapWidth = c1.get( 'width' );
             var mapHeight = c1.get( 'height' );
 
-            //alert( mapWidth + ' ' + mapHeight );
+            alert( mapWidth + ' ' + mapHeight );
             changeMapSize( mapWidth, mapHeight );
           } );
         } );
 
+        innerLayout.on( 'resize', function()
+        {
+          var center = innerLayout.getUnitByPosition( 'center' );
+          var mapWidth = center.get( 'width' );
+          var mapHeight = center.get( 'height' );
+          changeMapSize( mapWidth, mapHeight );
+        } );
 
         innerLayout.render();
       } );
