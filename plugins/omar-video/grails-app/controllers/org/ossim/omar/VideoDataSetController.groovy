@@ -6,16 +6,13 @@ import groovy.xml.StreamingMarkupBuilder
 import grails.converters.JSON
 import grails.converters.deep.XML
 
-import java.util.regex.Matcher
-import java.util.regex.Pattern
-
-
-
 class VideoDataSetController implements InitializingBean
 {
 
   public static final List tagHeaderList = []
   public static final List tagNameList = []
+
+  def thumbnailSize = 128
 
   def baseWMS
   def dataWMS
@@ -27,33 +24,6 @@ class VideoDataSetController implements InitializingBean
 
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
-
-  def listData = {
-    def videoList = VideoDataSet.list(params)
-    response.setHeader("Cache-Control", "no-store")
-    render(contentType: "text/json") {
-      totalRecords(VideoDataSet.count())
-      records {
-        for (r in videoList) {
-          def foo = r.startDate.toString()
-          def foo2 = r.endDate.toString()
-          def bounds =  r.groundGeom.bounds;
-          VideoDataSet(
-                  id: r.id,
-                  thumbnail: r.id,
-                  filename: r.filename,
-                  width: r.width,
-                  height: r.height,
-                  startDate: foo,
-                  endDate: foo2,
-                  minLon: bounds.minLon,
-                  minLat: bounds.minLat,
-                  maxLon: bounds.maxLon,
-                  maxLat: bounds.maxLat)
-        }
-      }
-    }
-  }
 
   def list = {
     if ( !params.max )
@@ -81,19 +51,6 @@ class VideoDataSetController implements InitializingBean
       json { render videoDataSetList as JSON }
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   def show = {
     def videoDataSet = VideoDataSet.get(params.id)
@@ -398,4 +355,132 @@ class VideoDataSetController implements InitializingBean
     baseWMS = grailsApplication.config.wms.base.layers
     dataWMS = grailsApplication.config.wms.data.video
   }
+
+  def listTest = {
+    params.max = Math.min(params.max ? params.int('max') : 10, 100)
+    params.offset = params.offset ?: 0
+    params.sort = params.sort ?: "id"
+    params.order = params.order ?: "asc"
+
+    def queryParams = initVideoDataSetQuery(params)
+
+    def initialRequest = g.createLink(action: "query.json", params: queryParams.toMap())
+    initialRequest = initialRequest.substring(initialRequest.indexOf('?') + 1)
+
+    def myColumnDefs = [
+            [key: 'thumbnail', label: 'Thumbnail', sortable: false, resizeable: true, width: thumbnailSize, formatter: 'thumbnail'],
+            [key: 'id', label: 'Id', sortable: true, resizeable: true],
+            [key: 'width', label: 'Width', sortable: true, resizeable: true],
+            [key: 'height', label: 'Height', sortable: true, resizeable: true],
+            [key: 'startDate', label: 'Start Date', sortable: false, resizeable: true],
+            [key: 'endDate', label: 'End Date', sortable: false, resizeable: true],
+            [key: 'minLon', label: 'Min Lon', sortable: false, resizeable: true],
+            [key: 'minLat', label: 'Min Lat', sortable: false, resizeable: true],
+            [key: 'maxLon', label: 'Max Lon', sortable: false, resizeable: true],
+            [key: 'maxLat', label: 'Max Lat', sortable: false, resizeable: true],
+            [key: 'filename', label: 'Filename', sortable: true, resizeable: true]
+    ]
+
+    def fields = [
+            [key: 'thumbnail'],
+            [key: 'id'],
+            [key: 'width'],
+            [key: 'height'],
+            [key: 'startDate'],
+            [key: 'endDate'],
+            [key: 'minLon'],
+            [key: 'minLat'],
+            [key: 'maxLon'],
+            [key: 'maxLat'],
+            [key: 'filename']
+    ]
+
+    return [
+            initialRequest: initialRequest,
+            myColumnDefs: myColumnDefs as JSON,
+            fields: fields as JSON
+    ]
+  }
+
+  def query = {
+    params.max = Math.min(params.max ? params.int('max') : 10, 100)
+    params.offset = params.offset ?: 0
+    params.sort = params.sort ?: "id"
+    params.order = params.order ?: "asc"
+
+    def queryParams = initVideoDataSetQuery(params)
+
+    def videoDataSet = videoDataSetSearchService.runQuery(queryParams, params)
+    def videoDataSetTotal = videoDataSetSearchService.getCount(queryParams)
+
+    def results = videoDataSet.collect {
+      def thumbnailURL = g.createLink(controller: "thumbnail", action: "frame", id: it.id, params: [size: thumbnailSize])
+      def thumbnailTarget = g.createLink(controller: "videoStreaming", action: "show", params: [id: it.indexId])
+      def startDate = it.startDate.toString()
+      def endDate = it.endDate.toString()
+      def bounds = it.groundGeom?.bounds
+
+      def records = [
+              thumbnail: [url: thumbnailURL, href: thumbnailTarget],
+              id: it.id,
+              width: it.width,
+              height: it.height,
+              startDate: startDate,
+              endDate: endDate,
+              minLon: bounds.minLon,
+              minLat: bounds.minLat,
+              maxLon: bounds.maxLon,
+              maxLat: bounds.maxLat,
+              filename: it.mainFile.name
+      ]
+      return records
+    }
+
+    withFormat {
+      json {
+        def data = [
+                totalRecords: videoDataSetTotal,
+                results: results
+        ]
+
+        render contentType: "application/json", text: data as JSON
+      }
+      xml {
+        def data = [
+                totalRecords: videoDataSetTotal,
+                results: results
+        ]
+
+        render contentType: "application/xml", text: data as XML
+      }
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 }
