@@ -31,7 +31,7 @@
 </content>
 <content tag="center">
   <div class="body">
-    %{--<h1><g:message code="default.list.label" args="[entityName]"/></h1>--}%
+  %{--<h1><g:message code="default.list.label" args="[entityName]"/></h1>--}%
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
@@ -40,8 +40,8 @@
 </content>
 
 <content tag="south">
-    <div id="paging"></div>
-  </content>
+  <div id="paging"></div>
+</content>
 
 <script type="text/javascript" src="${omar.bundle(contentType: 'text/javascript', files: [
     resource(plugin: 'richui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'),
@@ -85,7 +85,7 @@
 var myPaginator = new YAHOO.widget.Paginator({
       containers: "paging",
       rowsPerPage: 10,
-      template : "{FirstPageLink} {PreviousPageLink} <strong>{PageLinks}</strong> {NextPageLink} {LastPageLink} {CurrentPageReport} <input name='pageNumber' value='1' size='14' type='text' onchange='gotoPage(this.value)'>"
+      template : "{FirstPageLink} {PreviousPageLink} <strong>{PageLinks}</strong> {NextPageLink} {LastPageLink} {CurrentPageReport} <input name='pageNumber' value='1' size='14' type='text' onchange='gotoPage( this.value )'>"
 
     });
 

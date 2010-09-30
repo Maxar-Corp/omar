@@ -372,13 +372,13 @@ class VideoDataSetController implements InitializingBean
             [key: 'id', label: 'Id', sortable: true, resizeable: true],
             [key: 'width', label: 'Width', sortable: true, resizeable: true],
             [key: 'height', label: 'Height', sortable: true, resizeable: true],
-            [key: 'startDate', label: 'Start Date', sortable: false, resizeable: true],
-            [key: 'endDate', label: 'End Date', sortable: false, resizeable: true],
+            [key: 'startDate', label: 'Start Date', sortable: true, resizeable: true],
+            [key: 'endDate', label: 'End Date', sortable: true, resizeable: true],
             [key: 'minLon', label: 'Min Lon', sortable: false, resizeable: true],
             [key: 'minLat', label: 'Min Lat', sortable: false, resizeable: true],
             [key: 'maxLon', label: 'Max Lon', sortable: false, resizeable: true],
             [key: 'maxLat', label: 'Max Lat', sortable: false, resizeable: true],
-            [key: 'filename', label: 'Filename', sortable: true, resizeable: true]
+            [key: 'filename', label: 'Filename', sortable: false, resizeable: true]
     ]
 
     def fields = [
@@ -425,12 +425,12 @@ class VideoDataSetController implements InitializingBean
               id: it.id,
               width: it.width,
               height: it.height,
-              startDate: startDate,
-              endDate: endDate,
-              minLon: bounds.minLon,
-              minLat: bounds.minLat,
-              maxLon: bounds.maxLon,
-              maxLat: bounds.maxLat,
+              startDate: startDate ?: "",
+              endDate: endDate ?: "",
+              minLon: bounds?.minLon,
+              minLat: bounds?.minLat,
+              maxLon: bounds?.maxLon,
+              maxLat: bounds?.maxLat,
               filename: it.mainFile.name
       ]
       return records
