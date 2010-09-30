@@ -75,79 +75,74 @@
 <content tag="north">
 
   <div class="nav">
-    <g:form name="wmsParams" method="POST" url="[action:'wms',controller:'ogc']">
-      <input type="hidden" name="request" value=""/>
-      <input type="hidden" name="layers" value=""/>
-      <input type="hidden" name="bbox" value=""/>
 
-      <span class="menuButton">
-        <g:link class="home" uri="/">
-          Home
-        </g:link>
-      </span>
+    <span class="menuButton">
+      <g:link class="home" uri="/">
+        Home
+      </g:link>
+    </span>
 
+    <span class="menuButton">
+      <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.indexId).join(',')])}">
+        WMS GetCapabilities
+      </a>
+    </span>
+
+    <span class="menuButton">
+      <a href="javascript:getKML('${(rasterEntries*.indexId).join(',')}')">
+        Generate KML
+      </a>
+    </span>
+
+    <span class="menuButton">
+      <a href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: (rasterEntries*.indexId).join(',')])}">
+        Multi-Layer
+      </a>
+    </span>
+
+    <g:if test="${rasterEntries?.size() == 1}">
       <span class="menuButton">
-        <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.indexId).join(',')])}">
-          WMS GetCapabilities
+        <a href="${createLink(controller: "mapView", action: "imageSpace", params: [layers: (rasterEntries*.indexId).join(',')])}">
+          Image Space
         </a>
       </span>
+    </g:if>
 
-      <span class="menuButton">
-        <a href="javascript:getKML('${(rasterEntries*.indexId).join(',')}')">
-          Generate KML
-        </a>
-      </span>
-
-      <span class="menuButton">
-        <a href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: (rasterEntries*.indexId).join(',')])}">
-          Multi-Layer
-        </a>
-      </span>
-
-      <g:if test="${rasterEntries?.size() == 1}">
+  <%--
         <span class="menuButton">
-          <a href="${createLink(controller: "mapView", action: "imageSpace", params: [layers: (rasterEntries*.indexId).join(',')])}">
-            Image Space
-          </a>
+          <label>Sharpen:</label>
+          <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
         </span>
-      </g:if>
 
-    <%--
+        <span class="menuButton">
+          <label>Stretch:</label>
+          <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
+        </span>
+
+        <span class="menuButton">
+          <label>Region:</label>
+          <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts() "/>
+        </span>
+
+        <g:if test="${rasterEntries?.numberOfBands.get(0) == 2}">
           <span class="menuButton">
-            <label>Sharpen:</label>
-            <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
+            <label>Bands:</label>
+            <g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()"/>
           </span>
+        </g:if>
 
+        <g:if test="${rasterEntries?.numberOfBands.get(0) >= 3}">
           <span class="menuButton">
-            <label>Stretch:</label>
-            <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
+            <label>Bands:</label>
+            <g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()"/>
           </span>
+        </g:if>
 
-          <span class="menuButton">
-            <label>Region:</label>
-            <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts() "/>
-          </span>
-
-          <g:if test="${rasterEntries?.numberOfBands.get(0) == 2}">
-            <span class="menuButton">
-              <label>Bands:</label>
-              <g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()"/>
-            </span>
-          </g:if>
-
-          <g:if test="${rasterEntries?.numberOfBands.get(0) >= 3}">
-            <span class="menuButton">
-              <label>Bands:</label>
-              <g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()"/>
-            </span>
-          </g:if>
-
-          <span class="menuButton">
-            <label>Quick Look:</label>
-            <g:select id="quicklook" name="quicklook" from="${['true', 'false']}" onChange="changeQuickLookOpts()"/>
-          </span>
-    --%>
-    </g:form>
+        <span class="menuButton">
+          <label>Quick Look:</label>
+          <g:select id="quicklook" name="quicklook" from="${['true', 'false']}" onChange="changeQuickLookOpts()"/>
+        </span>
+  --%>
   <%--
       <span class="menuButton">
         <label>Center:</label>
@@ -169,51 +164,57 @@
 </content>
 
 <content tag="west">
-  <div class="niceBox">
-    <div class="niceBoxHd">Map Center:</div>
-    <div class="niceBoxBody">
-      <g:textField name="center" value="${queryParams?.center}" onChange="setCenter()" size="30"/>
+  <g:form name="wmsParams" method="POST" url="[action:'wms',controller:'ogc']">
+    <input type="hidden" name="request" value=""/>
+    <input type="hidden" name="layers" value=""/>
+    <input type="hidden" name="bbox" value=""/>
+
+    <div class="niceBox">
+      <div class="niceBoxHd">Map Center:</div>
+      <div class="niceBoxBody">
+        <g:textField name="center" value="${queryParams?.center}" onChange="setCenter()" size="30"/>
+      </div>
     </div>
-  </div>
 
-  <div class="niceBox">
-    <div class="niceBoxHd">Image Adjustments:</div>
-    <div class="niceBoxBody">
-      <ol>
-        <li>Sharpen:</li>
-        <li>
-          <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
-        </li>
-        <li>Stretch:</li>
-        <li>
-          <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
-        </li>
-        <li>Region:</li>
-        <li>
-          <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts() "/>
-        </li>
-
-        <g:if test="${rasterEntries?.numberOfBands.get(0) == 2}">
-          <li>Bands:</li>
+    <div class="niceBox">
+      <div class="niceBoxHd">Image Adjustments:</div>
+      <div class="niceBoxBody">
+        <ol>
+          <li>Sharpen:</li>
           <li>
-            <g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()"/>
+            <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
           </li>
-        </g:if>
-
-        <g:if test="${rasterEntries?.numberOfBands.get(0) >= 3}">
-          <li>Bands:</li>
+          <li>Stretch:</li>
           <li>
-            <g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()"/>
+            <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
           </li>
-        </g:if>
+          <li>Region:</li>
+          <li>
+            <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts() "/>
+          </li>
 
-        <li>Quick Look:</li>
-        <li>
-          <g:select id="quicklook" name="quicklook" from="${['true', 'false']}" onChange="changeQuickLookOpts()"/>
-        </li>
-      </ol>
+          <g:if test="${rasterEntries?.numberOfBands.get(0) == 2}">
+            <li>Bands:</li>
+            <li>
+              <g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()"/>
+            </li>
+          </g:if>
+
+          <g:if test="${rasterEntries?.numberOfBands.get(0) >= 3}">
+            <li>Bands:</li>
+            <li>
+              <g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()"/>
+            </li>
+          </g:if>
+
+          <li>Quick Look:</li>
+          <li>
+            <g:select id="quicklook" name="quicklook" from="${['true', 'false']}" onChange="changeQuickLookOpts()"/>
+          </li>
+        </ol>
+      </div>
     </div>
-  </div>
+  </g:form>
 </content>
 
 <content tag="center">
