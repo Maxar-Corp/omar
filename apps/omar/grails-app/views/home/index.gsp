@@ -1,12 +1,12 @@
 <html>
 <head>
-  <title>Welcome to OMAR 2.0</title>
+  <title>Welcome to OMAR</title>
   <meta name="layout" content="main4"/>
 </head>
 <body>
-<h1 style="margin-left:20px;font-size:200%;">Welcome to OMAR</h1>
-<p style="margin-left:20px;width:80%">Please select an action from the following options:
-</p>
+<div align="center">
+    <g:link class="home" uri="/"><img src="${resource(dir: 'images', file: 'omarLogo.png')}" alt="OMAR Logo" /></g:link>
+  </div>
 
 <div>
   <h1 style="font-size:150%">Search:</h1>
