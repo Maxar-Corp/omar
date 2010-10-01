@@ -1,7 +1,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main"/>
+  <meta name="layout" content="generatedViews"/>
   <title>OMAR: Video File List</title>
 </head>
 <body>
@@ -13,7 +13,7 @@
     </g:ifAllGranted>
   </div>
   <div class="body">
-    <h1>Video File List</h1>
+    <h1>OMAR: Video File List</h1>
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>

@@ -1,9 +1,9 @@
 <%@ page import="org.ossim.omar.RasterEntrySearchTag" %>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="layout" content="main" />
-  <g:set var="entityName" value="${message(code: 'rasterEntrySearchTag.label', default: 'RasterEntrySearchTag')}" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="layout" content="generatedViews"/>
+  <g:set var="entityName" value="${message(code: 'rasterEntrySearchTag.label', default: 'RasterEntrySearchTag')}"/>
   <title>OMAR: Raster Search Tag List</title>
 </head>
 <body>
@@ -13,7 +13,7 @@
     <span class="menuButton"><g:link class="create" action="create">Create Raster Search Tag</g:link></span>
   </div>
   <div class="body">
-    <h1>Raster Search Tag List</h1>
+    <h1>OMAR: Raster Search Tag List</h1>
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
@@ -21,9 +21,9 @@
       <table>
         <thead>
         <tr>
-          <g:sortableColumn property="id" title="${message(code: 'rasterEntrySearchTag.id.label', default: 'Id')}" />
-          <g:sortableColumn property="name" title="${message(code: 'rasterEntrySearchTag.name.label', default: 'Name')}" />
-          <g:sortableColumn property="description" title="${message(code: 'rasterEntrySearchTag.description.label', default: 'Description')}" />
+          <g:sortableColumn property="id" title="${message(code: 'rasterEntrySearchTag.id.label', default: 'Id')}"/>
+          <g:sortableColumn property="name" title="${message(code: 'rasterEntrySearchTag.name.label', default: 'Name')}"/>
+          <g:sortableColumn property="description" title="${message(code: 'rasterEntrySearchTag.description.label', default: 'Description')}"/>
         </tr>
         </thead>
         <tbody>
@@ -38,7 +38,7 @@
       </table>
     </div>
     <div class="paginateButtons">
-      <g:paginate total="${rasterEntrySearchTagInstanceTotal}" />
+      <g:paginate total="${rasterEntrySearchTagInstanceTotal}"/>
     </div>
   </div>
 </content>

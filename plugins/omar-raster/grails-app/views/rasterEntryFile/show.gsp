@@ -1,7 +1,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main"/>
+  <meta name="layout" content="generatedViews"/>
   <title>OMAR: Show Raster File ${rasterEntryFile.id}</title>
 </head>
 <body>
@@ -14,7 +14,7 @@
     </g:ifAllGranted>
   </div>
   <div class="body">
-    <h1>Show Raster File ${rasterEntryFile.id}</h1>
+    <h1>OMAR: Show Raster File ${rasterEntryFile.id}</h1>
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>

@@ -8,7 +8,6 @@
           <root url="file://$MODULE_DIR$/web-app" relative="/" />
         </webroots>
         <sourceRoots />
-        <context-artifact name="omar-stager:GrailsWeb exploded" />
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">

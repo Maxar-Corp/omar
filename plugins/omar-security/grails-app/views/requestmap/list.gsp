@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main" />
+  <meta name="layout" content="generatedViews"/>
   <title>OMAR: Permission List</title>
 </head>
 <body>
@@ -12,7 +12,7 @@
 	<span class="menuButton"><g:link class="create" action="create">Create Permission</g:link></span>
   </div>
   <div class="body">
-    <h1>Permission List</h1>
+    <h1>OMAR: Permission List</h1>
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
 	</g:if>
@@ -20,9 +20,9 @@
       <table>
         <thead>
         <tr>
-          <g:sortableColumn property="id" title="Id" />
-		  <g:sortableColumn property="url" title="URL" />
-		  <g:sortableColumn property="configAttribute" title="Roles" />
+          <g:sortableColumn property="id" title="Id"/>
+		  <g:sortableColumn property="url" title="URL"/>
+		  <g:sortableColumn property="configAttribute" title="Roles"/>
 		</tr>
         </thead>
         <tbody>
@@ -48,7 +48,7 @@ org.springframework.util.StringUtils.commaDelimitedListToStringArray(requestmap.
       </table>
     </div>
     <div class="paginateButtons">
-      <g:paginate total="${Requestmap.count()}" />
+      <g:paginate total="${Requestmap.count()}"/>
     </div>
   </div>
 </content>

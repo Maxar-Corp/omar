@@ -2,31 +2,33 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main5"/>
-  <title>Edit VideoDataSet</title>
+  <meta name="layout" content="generatedViews"/>
+  <title>OMAR: Edit Video Data Set ${fieldValue(bean: videoDataSet, field: 'id')}</title>
 </head>
 <body>
-<div class="nav">
-  <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
-  <span class="menuButton"><g:link class="list" action="list">VideoDataSet List</g:link></span>
-  <span class="menuButton"><g:link class="create" action="create">New VideoDataSet</g:link></span>
-</div>
-<div class="body">
-  <h1>Edit VideoDataSet</h1>
-  <g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
-  </g:if>
-  <g:hasErrors bean="${videoDataSet}">
-    <div class="errors">
-      <g:renderErrors bean="${videoDataSet}" as="list"/>
-    </div>
-  </g:hasErrors>
-  <g:form method="post">
-    <input type="hidden" name="id" value="${videoDataSet?.id}"/>
-    <div class="dialog">
-      <table>
-        <tbody>
-
+<content tag="content">
+  <div class="nav">
+    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
+    <span class="menuButton"><g:link class="list" action="list">Video Data Set List</g:link></span>
+    <g:ifAllGranted role="ROLE_ADMIN">
+      <span class="menuButton"><g:link class="create" action="create">Create Video Data Set</g:link></span>
+    </g:ifAllGranted>
+  </div>
+  <div class="body">
+    <h1>OMAR: Edit Video Data Set ${fieldValue(bean: videoDataSet, field: 'id')}</h1>
+    <g:if test="${flash.message}">
+      <div class="message">${flash.message}</div>
+    </g:if>
+    <g:hasErrors bean="${videoDataSet}">
+      <div class="errors">
+        <g:renderErrors bean="${videoDataSet}" as="list"/>
+      </div>
+    </g:hasErrors>
+    <g:form method="post">
+      <input type="hidden" name="id" value="${videoDataSet?.id}"/>
+      <div class="dialog">
+        <table>
+          <tbody>
           <tr class="prop">
             <td valign="top" class="name">
               <label for="width">Width:</label>
@@ -35,7 +37,6 @@
               <input type="text" id="width" name="width" value="${fieldValue(bean: videoDataSet, field: 'width')}"/>
             </td>
           </tr>
-
           <tr class="prop">
             <td valign="top" class="name">
               <label for="height">Height:</label>
@@ -44,8 +45,7 @@
               <input type="text" id="height" name="height" value="${fieldValue(bean: videoDataSet, field: 'height')}"/>
             </td>
           </tr>
-
-<%--
+          <%--
           <tr class="prop">
             <td valign="top" class="name">
               <label for="height">Ground Geom:</label>
@@ -54,7 +54,6 @@
               <input type="text" id="groundGeom" name="height" value="${fieldValue(bean: videoDataSet, field: 'groundGeom')}"/>
             </td>
           </tr>
-
           <tr class="prop">
             <td valign="top" class="name">
               <label for="startDate">Start Date:</label>
@@ -63,7 +62,6 @@
               <g:datePicker name="startDate" value="${videoDataSet?.startDate}"></g:datePicker>
             </td>
           </tr>
-
           <tr class="prop">
             <td valign="top" class="name">
               <label for="endDate">End Date:</label>
@@ -72,24 +70,20 @@
               <g:datePicker name="endDate" value="${videoDataSet?.endDate}"></g:datePicker>
             </td>
           </tr>
---%>
-        
+          --%>
           <tr class="prop">
             <td valign="top" class="name">
               <label for="fileObjects">File Objects:</label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: videoDataSet, field: 'fileObjects', 'errors')}">
-
               <ul>
                 <g:each var="f" in="${videoDataSet?.fileObjects?}">
                   <li><g:link controller="videoFile" action="show" id="${f.id}">${f?.encodeAsHTML()}</g:link></li>
                 </g:each>
               </ul>
               <g:link controller="videoFile" params="['videoDataSet.id':videoDataSet?.id]" action="create">Add VideoFile</g:link>
-
             </td>
           </tr>
-
           <tr class="prop">
             <td valign="top" class="name">
               <label for="repository">Repository:</label>
@@ -98,15 +92,15 @@
               <g:select optionKey="id" from="${Repository.list()}" name="repository.id" value="${videoDataSet?.repository?.id}"></g:select>
             </td>
           </tr>
-
-        </tbody>
-      </table>
-    </div>
-    <div class="buttons">
-      <span class="button"><g:actionSubmit class="save" value="Update"/></span>
-      <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
-    </div>
-  </g:form>
-</div>
+          </tbody>
+        </table>
+      </div>
+      <div class="buttons">
+        <span class="button"><g:actionSubmit class="save" value="Update"/></span>
+        <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
+      </div>
+    </g:form>
+  </div>
+</content>
 </body>
 </html>

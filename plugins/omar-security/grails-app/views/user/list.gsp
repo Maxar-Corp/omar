@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main"/>
+  <meta name="layout" content="generatedViews"/>
   <title>OMAR: User List</title>
 </head>
 <body>
@@ -12,7 +12,7 @@
     <span class="menuButton"><g:link class="create" action="create">Create User</g:link></span>
   </div>
   <div class="body">
-    <h1>User List</h1>
+    <h1>OMAR: User List</h1>
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
