@@ -47,7 +47,7 @@ class RasterEntry
   String countryCode
   String beNumber
   Double niirs
-  Integer wacCode
+  String wacCode
   Double sunElevation
   Double sunAzimuth
   Double cloudCover
@@ -492,7 +492,7 @@ class RasterEntry
             case "wac":
               if(value&&!rasterEntry.wacCode)
               {
-                rasterEntry.wac = value as Integer
+                rasterEntry.wacCode = value
               }
               break;
           case "niirs":
