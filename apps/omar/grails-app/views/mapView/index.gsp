@@ -164,10 +164,7 @@
 </content>
 
 <content tag="west">
-  <g:form name="wmsParams" method="POST" url="[action:'wms',controller:'ogc']">
-    <input type="hidden" name="request" value=""/>
-    <input type="hidden" name="layers" value=""/>
-    <input type="hidden" name="bbox" value=""/>
+
 
     <div class="niceBox">
       <div class="niceBoxHd">Map Center:</div>
@@ -175,6 +172,11 @@
         <g:textField name="center" value="${queryParams?.center}" onChange="setCenter()" size="30"/>
       </div>
     </div>
+
+   <g:form name="wmsParams" method="POST" url="[action:'wms',controller:'ogc']">
+    <input type="hidden" name="request" value=""/>
+    <input type="hidden" name="layers" value=""/>
+    <input type="hidden" name="bbox" value=""/>
 
     <div class="niceBox">
       <div class="niceBoxHd">Image Adjustments:</div>

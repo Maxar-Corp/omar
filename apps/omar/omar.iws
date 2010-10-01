@@ -15,66 +15,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="3ec25788-14d6-4cfa-b450-52b7d567ec70" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster.iml" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/omar-raster.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/conf/Config.groovy" afterPath="$PROJECT_DIR$/grails-app/conf/Config.groovy" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile/edit.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile/edit.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/report/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/report/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSetSearchTag/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSetSearchTag/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSetSearchTag/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSetSearchTag/edit.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/edit.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/list.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/edit.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/application.properties" afterPath="$PROJECT_DIR$/application.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntrySearchTag/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntrySearchTag/list.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/login/about.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/login/about.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntrySearchTag/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntrySearchTag/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/report/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/report/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile/list.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap/list.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-oms/lib/joms.jar" afterPath="$PROJECT_DIR$/../../plugins/omar-oms/lib/joms.jar" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/list.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSetSearchTag/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSetSearchTag/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/index.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/index.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSetSearchTag/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSetSearchTag/list.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/list.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/edit.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet/list.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntrySearchTag/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntrySearchTag/edit.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-stager/omar-stager.iml" afterPath="$PROJECT_DIR$/../../plugins/omar-stager/omar-stager.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile/create.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile/create.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/report/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/report/list.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoFile/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntrySearchTag/show.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntrySearchTag/show.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-video/grails-app/views/videoDataSet/edit.gsp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar.iws" afterPath="$PROJECT_DIR$/omar.iws" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterDataSet/edit.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/requestmap/edit.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/report/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/report/edit.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile/list.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/edit.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile/list.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntryFile/list.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/edit.gsp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile/edit.gsp" afterPath="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterFile/edit.gsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/mapView/index.gsp" afterPath="$PROJECT_DIR$/grails-app/views/mapView/index.gsp" />
     </list>
     <ignored path="$USER_HOME_GRAILS$/" />
     <ignored path="$USER_HOME_GRIFFON$/" />
@@ -206,10 +148,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="generatedViews.gsp" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="generatedViews.gsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/generatedViews.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="15" selection-start="438" selection-end="438" vertical-scroll-proportion="0.11197512">
+            <state line="6" column="15" selection-start="438" selection-end="438" vertical-scroll-proportion="-3.6">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.gsp" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/grails-app/views/mapView/index.gsp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="178" column="47" selection-start="4892" selection-end="4892" vertical-scroll-proportion="0.40201005">
               <folding />
             </state>
           </provider>
@@ -225,7 +176,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/create.gsp" />
         <option value="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/show.gsp" />
         <option value="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/edit.gsp" />
         <option value="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/create.gsp" />
@@ -241,6 +191,7 @@
         <option value="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/show.gsp" />
         <option value="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/login/about.gsp" />
         <option value="$PROJECT_DIR$/grails-app/views/layouts/generatedViews.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/mapView/index.gsp" />
       </list>
     </option>
   </component>
@@ -854,7 +805,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="layouts" />
+              <option name="myItemId" value="mapView" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1218,13 +1169,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/show.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="4" selection-start="369" selection-end="629" vertical-scroll-proportion="-2.6086957">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/edit.gsp">
       <provider selected="true" editor-type-id="text-editor">
         <state line="150" column="7" selection-start="7039" selection-end="7039" vertical-scroll-proportion="-12.195652">
@@ -1325,7 +1269,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/generatedViews.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="15" selection-start="438" selection-end="438" vertical-scroll-proportion="0.11197512">
+        <state line="6" column="15" selection-start="438" selection-end="438" vertical-scroll-proportion="-3.6">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grails-app/views/mapView/index.gsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="178" column="47" selection-start="4892" selection-end="4892" vertical-scroll-proportion="0.40201005">
           <folding />
         </state>
       </provider>
