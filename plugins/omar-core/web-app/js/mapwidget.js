@@ -493,7 +493,7 @@ function MapWidget()
     //
     //
 
-
+     var message = "Alert: Not to use for targeting.\n";
     this.setupToolBar = function()
     {
         var panButton = new OpenLayers.Control.MouseDefaults(
@@ -521,7 +521,7 @@ function MapWidget()
         { title: "Measure Distance", displayClass: "olControlMeasureDistance", persist: true,
             eventListeners: { measure: function( evt )
             {
-                var message = "Alert: Not to use for targeting.\n";
+
 
                 if ($("pathUnits").value == "kilometer")
                 {
@@ -592,7 +592,7 @@ function MapWidget()
         {title: "Measure Area", displayClass: "olControlMeasureArea", persist: true,
             eventListeners: {measure: function(evt)
             {
-                alert("Area: " + evt.measure.toFixed(3) + " " + evt.units + "^2");
+                alert(message + "Area: " + evt.measure.toFixed(3) + " " + evt.units + "^2");
             }}});
 
         var container = $("toolBar");
