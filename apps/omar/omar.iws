@@ -16,6 +16,9 @@
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="3ec25788-14d6-4cfa-b450-52b7d567ec70" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar.iws" afterPath="$PROJECT_DIR$/omar.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/mapView/multiLayer.gsp" afterPath="$PROJECT_DIR$/grails-app/views/mapView/multiLayer.gsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/layouts/main6.gsp" afterPath="$PROJECT_DIR$/grails-app/views/layouts/main6.gsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/mapView/imageSpace.gsp" afterPath="$PROJECT_DIR$/grails-app/views/mapView/imageSpace.gsp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/mapView/index.gsp" afterPath="$PROJECT_DIR$/grails-app/views/mapView/index.gsp" />
     </list>
     <ignored path="$USER_HOME_GRAILS$/" />
@@ -76,73 +79,46 @@
   <component name="FileColors" enabled="true" enabledForTabs="true" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="create.gsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/create.gsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="36" selection-start="1669" selection-end="1681" vertical-scroll-proportion="-10.173913">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="edit.gsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/edit.gsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="60" column="72" selection-start="2314" selection-end="2314" vertical-scroll-proportion="-15.652174">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="list.gsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/list.gsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="14" selection-start="496" selection-end="496" vertical-scroll-proportion="-3.652174">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="create.gsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/create.gsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="98" column="6" selection-start="3874" selection-end="4015" vertical-scroll-proportion="-10.347826">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="index.gsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/index.gsp">
+        <entry file="file://$PROJECT_DIR$/grails-app/views/mapView/index.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="0" selection-start="214" selection-end="327" vertical-scroll-proportion="-2.0869565">
+            <state line="519" column="5" selection-start="14596" selection-end="15391" vertical-scroll-proportion="-1.1521739">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="edit.gsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/edit.gsp">
+      <file leaf-file-name="rasterViews.gsp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/rasterViews.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="3" column="45" selection-start="116" selection-end="130" vertical-scroll-proportion="-0.7826087">
+            <state line="149" column="24" selection-start="4180" selection-end="4182" vertical-scroll-proportion="-5.15">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="show.gsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/show.gsp">
+      <file leaf-file-name="imageSpace.gsp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/grails-app/views/mapView/imageSpace.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="12" column="4" selection-start="348" selection-end="375" vertical-scroll-proportion="-3.1304348">
+            <state line="118" column="12" selection-start="3206" selection-end="3206" vertical-scroll-proportion="-9.652174">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="about.gsp" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/login/about.gsp">
+      <file leaf-file-name="multiLayer.gsp" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/grails-app/views/mapView/multiLayer.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="25" column="22" selection-start="1045" selection-end="1045" vertical-scroll-proportion="-6.521739">
+            <state line="279" column="9" selection-start="7421" selection-end="7421" vertical-scroll-proportion="-72.78261">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main6.gsp" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/main6.gsp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="126" column="24" selection-start="3266" selection-end="3266" vertical-scroll-proportion="0.7838258">
               <folding />
             </state>
           </provider>
@@ -151,16 +127,7 @@
       <file leaf-file-name="generatedViews.gsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/generatedViews.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="15" selection-start="438" selection-end="438" vertical-scroll-proportion="-3.6">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.gsp" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/grails-app/views/mapView/index.gsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="178" column="47" selection-start="4892" selection-end="4892" vertical-scroll-proportion="0.40201005">
+            <state line="33" column="3" selection-start="1013" selection-end="1077" vertical-scroll-proportion="-19.8">
               <folding />
             </state>
           </provider>
@@ -176,10 +143,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/show.gsp" />
-        <option value="$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/edit.gsp" />
-        <option value="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/create.gsp" />
-        <option value="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/list.gsp" />
         <option value="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/show.gsp" />
         <option value="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/edit.gsp" />
         <option value="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/list.gsp" />
@@ -191,7 +154,11 @@
         <option value="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/register/show.gsp" />
         <option value="$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/login/about.gsp" />
         <option value="$PROJECT_DIR$/grails-app/views/layouts/generatedViews.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/layouts/rasterViews.gsp" />
         <option value="$PROJECT_DIR$/grails-app/views/mapView/index.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/mapView/imageSpace.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/mapView/multiLayer.gsp" />
+        <option value="$PROJECT_DIR$/grails-app/views/layouts/main6.gsp" />
       </list>
     </option>
   </component>
@@ -693,6 +660,38 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="web-app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar-core" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="web-app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar-core" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="grails-app" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -806,6 +805,28 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="mapView" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="omar" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="grails-app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="views" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="layouts" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1169,55 +1190,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../../plugins/omar-raster/grails-app/views/rasterEntry/edit.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="150" column="7" selection-start="7039" selection-end="7039" vertical-scroll-proportion="-12.195652">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/list.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="52" selection-start="716" selection-end="716" vertical-scroll-proportion="-5.7391305">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/show.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="70" selection-start="1553" selection-end="1553" vertical-scroll-proportion="-11.217391">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/edit.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="60" column="72" selection-start="2314" selection-end="2314" vertical-scroll-proportion="-15.652174">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/show.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="64" column="59" selection-start="2287" selection-end="2287" vertical-scroll-proportion="-16.695652">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/edit.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="115" column="117" selection-start="4726" selection-end="4726" vertical-scroll-proportion="-30.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/role/create.gsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="36" selection-start="1669" selection-end="1681" vertical-scroll-proportion="-10.173913">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../plugins/omar-security/grails-app/views/user/list.gsp">
       <provider selected="true" editor-type-id="text-editor">
         <state line="14" column="14" selection-start="496" selection-end="496" vertical-scroll-proportion="-3.652174">
@@ -1267,16 +1239,65 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/main7.gsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="5733" vertical-scroll-proportion="94.45">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../plugins/omar-core/grails-app/views/repository/create.gsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../plugins/omar-core/web-app/js/mapwidget.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="559" column="23" selection-start="19936" selection-end="19997" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/generatedViews.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="15" selection-start="438" selection-end="438" vertical-scroll-proportion="-3.6">
+        <state line="33" column="3" selection-start="1013" selection-end="1077" vertical-scroll-proportion="-19.8">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grails-app/views/mapView/imageSpace.gsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="118" column="12" selection-start="3206" selection-end="3206" vertical-scroll-proportion="-9.652174">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/grails-app/views/mapView/index.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="178" column="47" selection-start="4892" selection-end="4892" vertical-scroll-proportion="0.40201005">
+        <state line="519" column="5" selection-start="14596" selection-end="15391" vertical-scroll-proportion="-1.1521739">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grails-app/views/mapView/multiLayer.gsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="279" column="9" selection-start="7421" selection-end="7421" vertical-scroll-proportion="-72.78261">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/rasterViews.gsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="149" column="24" selection-start="4180" selection-end="4182" vertical-scroll-proportion="-5.15">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/main6.gsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="126" column="24" selection-start="3266" selection-end="3266" vertical-scroll-proportion="0.7838258">
           <folding />
         </state>
       </provider>
