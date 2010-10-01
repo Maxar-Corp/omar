@@ -15,8 +15,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="3ec25788-14d6-4cfa-b450-52b7d567ec70" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../../plugins/omar-core/web-app/js/mapwidget.js" afterPath="$PROJECT_DIR$/../../plugins/omar-core/web-app/js/mapwidget.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/omar.iws" afterPath="$PROJECT_DIR$/omar.iws" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/grails-app/views/layouts/main6.gsp" afterPath="$PROJECT_DIR$/grails-app/views/layouts/main6.gsp" />
     </list>
     <ignored path="$USER_HOME_GRAILS$/" />
     <ignored path="$USER_HOME_GRIFFON$/" />
@@ -88,7 +88,7 @@
       <file leaf-file-name="rasterViews.gsp" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/rasterViews.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="149" column="24" selection-start="4180" selection-end="4182" vertical-scroll-proportion="-5.15">
+            <state line="116" column="7" selection-start="3414" selection-end="3477" vertical-scroll-proportion="-11.15">
               <folding />
             </state>
           </provider>
@@ -112,19 +112,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main6.gsp" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="main6.gsp" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/main6.gsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="126" column="24" selection-start="3266" selection-end="3266" vertical-scroll-proportion="-25.2">
+            <state line="95" column="69" selection-start="2632" selection-end="2632" vertical-scroll-proportion="0.7013997">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mapwidget.js" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="mapwidget.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../plugins/omar-core/web-app/js/mapwidget.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="495" column="56" selection-start="17273" selection-end="17273" vertical-scroll-proportion="-1.1764706">
+            <state line="495" column="56" selection-start="17273" selection-end="17273" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -163,8 +163,8 @@
         <option value="$PROJECT_DIR$/grails-app/views/mapView/index.gsp" />
         <option value="$PROJECT_DIR$/grails-app/views/mapView/imageSpace.gsp" />
         <option value="$PROJECT_DIR$/grails-app/views/mapView/multiLayer.gsp" />
-        <option value="$PROJECT_DIR$/grails-app/views/layouts/main6.gsp" />
         <option value="$PROJECT_DIR$/../../plugins/omar-core/web-app/js/mapwidget.js" />
+        <option value="$PROJECT_DIR$/grails-app/views/layouts/main6.gsp" />
       </list>
     </option>
   </component>
@@ -1125,23 +1125,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../../plugins/omar-core/web-app/js/mapwidget.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="495" column="56" selection-start="17273" selection-end="17273" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/rasterViews.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="149" column="24" selection-start="4180" selection-end="4182" vertical-scroll-proportion="-5.15">
+        <state line="116" column="7" selection-start="3414" selection-end="3477" vertical-scroll-proportion="-11.15">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/grails-app/views/layouts/main6.gsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="126" column="24" selection-start="3266" selection-end="3266" vertical-scroll-proportion="-25.2">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../plugins/omar-core/web-app/js/mapwidget.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="495" column="56" selection-start="17273" selection-end="17273" vertical-scroll-proportion="-1.1764706">
+        <state line="95" column="69" selection-start="2632" selection-end="2632" vertical-scroll-proportion="0.7013997">
           <folding />
         </state>
       </provider>

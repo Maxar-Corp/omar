@@ -93,6 +93,8 @@
     var Event = YAHOO.util.Event;
     var Layout = YAHOO.widget.Layout;
 
+      YAHOO.util.Dom.setStyle(document.body, 'visibility', 'hidden');
+
     Event.onDOMReady( function()
     {
       var outerLayout = new Layout( {
@@ -165,6 +167,7 @@
       } );
 
 
+        YAHOO.util.Dom.setStyle(document.body, 'visibility', 'visible');
       outerLayout.render();
     } );
 
