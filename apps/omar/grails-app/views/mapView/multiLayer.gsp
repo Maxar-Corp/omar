@@ -16,7 +16,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
 
-  <title>OMAR Ground Space Multi-Viewer</title>
+  <title>OMAR: Ground Space Multi-Viewer</title>
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
@@ -67,7 +67,7 @@
 <body>
 <content tag="north">
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
+    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
     <span class="menuButton">
       <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.id).join(',')])}">
         WMS GetCapabilities
@@ -80,13 +80,13 @@
     </span>
     <span class="menuButton">
       <a href="${createLink(controller: "mapView", action: "index", params: [layers: (rasterEntries*.indexId).join(',')])}">
-        Single Layer
+        Single Layer Viewer
       </a>
     </span>
     <g:if test="${rasterEntries?.size() == 1}">
       <span class="menuButton">
         <a href="${createLink(controller: "mapView", action: "imageSpace", params: [layers:(rasterEntries*.indexId).join(',')])}">
-          Image Space
+          Image Space Viewer
         </a>
       </span>
     </g:if>
@@ -253,29 +253,31 @@ var left = ${left};
 
    map.addControl( navButton );
 
-   var measureDistanceButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Path, {
-     title: "Measure Distance",
-     displayClass: "olControlMeasureDistance",
-     eventListeners:
-     {
-       measure: function( evt )
-       {
-         alert( "Distance: " + evt.measure.toFixed( 2 ) + evt.units );
-       }
-     }
-   } );
+     var message = "Alert: Not to use for targeting.\n";
 
-   var measureAreaButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Polygon, {
-     title: "Measure Area",
-     displayClass: "olControlMeasureArea",
-     eventListeners:
-     {
-       measure: function( evt )
-       {
-         alert( "Area: " + evt.measure.toFixed( 2 ) + evt.units );
-       }
-     }
-   } );
+              var measureDistanceButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
+        title: "Measure Distance",
+        displayClass: "olControlMeasureDistance",
+        eventListeners:
+        {
+          measure: function(evt)
+          {
+            alert(message + "Path: " + evt.measure.toFixed(3) + " " + evt.units);
+          }
+        }
+      });
+
+      var measureAreaButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, {
+        title: "Measure Area",
+        displayClass: "olControlMeasureArea",
+        eventListeners:
+        {
+          measure: function(evt)
+          {
+            alert(message + "Area: " + evt.measure.toFixed(3) + " " + evt.units);
+          }
+        }
+      });
 
    panel.addControls( [
      new OpenLayers.Control.MouseDefaults( {title:'Drag to recenter map'} ),

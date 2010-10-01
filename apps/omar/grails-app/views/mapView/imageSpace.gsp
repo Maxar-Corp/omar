@@ -9,12 +9,12 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>OMAR Image Space Viewer</title>
+  <title>OMAR: Image Space Viewer</title>
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
 
-  <meta name="layout" content="main6"/>
+  <meta name="layout" content="rasterViews"/>
 
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -68,53 +68,65 @@
   <div class="nav">
 
     <span class="menuButton">
-      <g:link class="home" uri="/">Home</g:link>
+      <g:link class="home" uri="/">
+        OMAR™ Home
+      </g:link>
     </span>
 
     <span class="menuButton">
       <a href="${createLink(controller: "mapView", action: "index", params: [layers: rasterEntry?.indexId])}">
-        Ground Space
+        Ground Space Viewer
       </a>
     </span>
 
-    <span class="menuButton">
-      <label>Sharpen:</label>
-      <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()" />
-    </span>
 
-    <span class="menuButton">
-      <label>Stretch:</label>
-      <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()" />
-    </span>
-
-    <span class="menuButton">
-      <label>Region:</label>
-      <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts()" />
-    </span>
-
-    <g:if test="${rasterEntry?.numberOfBands == 1}">
-      <span class="menuButton">
-        <label>Band:</label>
-       <g:select id="bands" name="bands" from="${['0']}" onChange="changeBandsOpts()" />
-       </span>
-    </g:if>
-
-    <g:if test="${rasterEntry?.numberOfBands == 2}">
-      <span class="menuButton">
-        <label>Bands:</label>
-        <g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()" />
-      </span>
-    </g:if>
-
-    <g:if test="${rasterEntry?.numberOfBands >= 3}">
-      <span class="menuButton">
-        <label>Bands:</label>
-        <g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()" />
-      </span>
-    </g:if>
     
   </div>
 </content>
+
+<content tag="west">
+  <div class="niceBox">
+        <div class="niceBoxHd">Image Adjustments:</div>
+        <div class="niceBoxBody">
+          <ol>
+            <li>Sharpen:</li>
+            <li>
+              <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
+            </li>
+            <li>Stretch:</li>
+            <li>
+              <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()" />
+            </li>
+            <li>Region:</li>
+            <li>
+              <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts()" />
+            </li>
+
+            <g:if test="${rasterEntry?.numberOfBands == 1}">
+              <li>Band:</li>
+              <li><g:select id="bands" name="bands" from="${['0']}" onChange="changeBandsOpts()" /> </li>
+            </g:if>
+            <g:if test="${rasterEntry?.numberOfBands == 2}">
+              <li>Bands:</li>
+              <li><g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()" /></li>
+            </g:if>
+            <g:if test="${rasterEntry?.numberOfBands >= 3}">
+              <li>Bands:</li>
+              <li><g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()" /></li>
+            </g:if>
+          </ol>
+        </div>
+      </div>
+
+  </content>
+
+
+
+
+
+
+
+
 
 <content tag="center">
   <%--

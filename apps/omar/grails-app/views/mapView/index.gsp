@@ -1,25 +1,15 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: sbortman
-  Date: Sep 26, 2008
-  Time: 11:04:28 AM
-  To change this template use File | Settings | File Templates.
---%>
-
-<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main7"/>
-
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-  <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
-
-  <title>OMAR Ground Space Viewer</title>
+  <meta name="layout" content="rasterViews"/>
+  <title>OMAR: Ground Space Viewer</title>
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
+
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
 
   <style type="text/css">
 
@@ -78,7 +68,7 @@
 
     <span class="menuButton">
       <g:link class="home" uri="/">
-        Home
+        OMAR™ Home
       </g:link>
     </span>
 
@@ -96,71 +86,19 @@
 
     <span class="menuButton">
       <a href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: (rasterEntries*.indexId).join(',')])}">
-        Multi-Layer
+        Multi Layer Viewer
       </a>
     </span>
 
     <g:if test="${rasterEntries?.size() == 1}">
       <span class="menuButton">
         <a href="${createLink(controller: "mapView", action: "imageSpace", params: [layers: (rasterEntries*.indexId).join(',')])}">
-          Image Space
+          Image Space Viewer
         </a>
       </span>
     </g:if>
-
-  <%--
-        <span class="menuButton">
-          <label>Sharpen:</label>
-          <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
-        </span>
-
-        <span class="menuButton">
-          <label>Stretch:</label>
-          <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
-        </span>
-
-        <span class="menuButton">
-          <label>Region:</label>
-          <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts() "/>
-        </span>
-
-        <g:if test="${rasterEntries?.numberOfBands.get(0) == 2}">
-          <span class="menuButton">
-            <label>Bands:</label>
-            <g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()"/>
-          </span>
-        </g:if>
-
-        <g:if test="${rasterEntries?.numberOfBands.get(0) >= 3}">
-          <span class="menuButton">
-            <label>Bands:</label>
-            <g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()"/>
-          </span>
-        </g:if>
-
-        <span class="menuButton">
-          <label>Quick Look:</label>
-          <g:select id="quicklook" name="quicklook" from="${['true', 'false']}" onChange="changeQuickLookOpts()"/>
-        </span>
-  --%>
-  <%--
-      <span class="menuButton">
-        <label>Center:</label>
-        <g:textField name="center" value="${queryParams?.center}" onChange="setCenter()"/>
-      </span>
-  --%>
   </div>
 
-</content>
-
-<content tag="south">
-  <table>
-    <tr>
-      <td width="200px"><div id="ddMousePosition">&nbsp;</div></td>
-      <td width="200px"><div id="dmsMousePosition">&nbsp;</div></td>
-      <td width="200px"><div id="mgrsMousePosition">&nbsp;</div></td>
-    </tr>
-  </table>
 </content>
 
 <content tag="west">
@@ -216,18 +154,22 @@
         </ol>
       </div>
     </div>
+
+     <div class="niceBox">
+      <div class="niceBoxHd">Mouse Position:</div>
+      <div class="niceBoxBody">
+        <div id="ddMousePosition">&nbsp;</div>
+        <div id="dmsMousePosition">&nbsp;</div>
+        <div id="mgrsMousePosition">&nbsp;</div>
+      </div>
+    </div>
+
   </g:form>
 </content>
 
 <content tag="center">
   <div id="map"></div>
 </content>
-
-<%--
-
-<g:javascript plugin="omar-core" src="coordinateConversion.js"/>
-<g:javascript plugin="omar-core" src="touch.js"/>
---%>
 
 
 <openlayers:loadJavascript/>
@@ -575,6 +517,8 @@ function zoomIn()
 
       map.addControl(navButton);
 
+        var message = "Alert: Not to use for targeting.\n";
+
               var measureDistanceButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
         title: "Measure Distance",
         displayClass: "olControlMeasureDistance",
@@ -582,7 +526,7 @@ function zoomIn()
         {
           measure: function(evt)
           {
-            alert("Distance: " + evt.measure.toFixed(2) + evt.units);
+            alert(message + "Path: " + evt.measure.toFixed(3) + " " + evt.units);
           }
         }
       });
@@ -594,7 +538,7 @@ function zoomIn()
         {
           measure: function(evt)
           {
-            alert("Area: " + evt.measure.toFixed(2) + evt.units);
+            alert(message + "Area: " + evt.measure.toFixed(3) + " " + evt.units);
           }
         }
       });
