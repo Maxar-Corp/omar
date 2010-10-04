@@ -30,4 +30,4 @@ grails.project.dependency.resolution = {
   }
 }
 
-grails.plugin.location.postgis='../postgis'
+grails.plugin.location.postgis="../../plugins/postgis"
