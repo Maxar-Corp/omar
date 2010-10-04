@@ -9,7 +9,7 @@ grails.project.dependency.resolution = {
         // excludes 'ehcache'
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
-    repositories {        
+    repositories {
         grailsPlugins()
         grailsHome()
 
@@ -30,6 +30,6 @@ grails.project.dependency.resolution = {
 
 }
 
-grails.plugin.location.'omar-core'='../omar-core'
-grails.plugin.location.'omar-oms'='../omar-oms'
-grails.plugin.location.postgis='../postgis'
+grails.plugin.location.'omar-core'="../../plugins/omar-core"
+grails.plugin.location.'omar-oms'="../../plugins/omar-oms"
+grails.plugin.location.postgis="../../plugins/postgis"

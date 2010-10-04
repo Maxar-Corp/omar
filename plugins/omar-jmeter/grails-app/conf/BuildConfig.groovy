@@ -30,9 +30,9 @@ grails.project.dependency.resolution = {
     }
 }
 
-grails.plugin.location.postgis='../postgis'
-grails.plugin.location.'omar-oms'='../omar-oms'
-grails.plugin.location.'omar-core'='../omar-core'
-grails.plugin.location.'omar-stager'='../omar-stager'
-grails.plugin.location.'omar-video'='../omar-video'
+grails.plugin.location.postgis="../../plugins/postgis"
+grails.plugin.location.'omar-oms'="../../plugins/omar-oms"
+grails.plugin.location.'omar-core'="../../plugins/omar-core"
+grails.plugin.location.'omar-stager'="../../plugins/omar-stager"
+grails.plugin.location.'omar-video'="../../plugins/omar-video"
 
