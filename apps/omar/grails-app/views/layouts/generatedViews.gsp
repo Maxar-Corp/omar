@@ -1,6 +1,8 @@
 <html>
 <head>
   <title><g:layoutTitle default="Grails" /></title>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="minimum-scale=1.0, width=device-width, user-scalable=no" name="viewport"/>
   <link rel="stylesheet" href="${resource(dir:'css',file:'main.css')}" />
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/layout/assets/skins/sam', file: 'layout.css')}"/>

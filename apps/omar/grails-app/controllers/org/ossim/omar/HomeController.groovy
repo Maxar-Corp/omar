@@ -1,6 +1,16 @@
 package org.ossim.omar
 class HomeController
 {
+  def afterInterceptor = { model, modelAndView ->
+    if ( request['isMobile'] )
+    {
+      if(modelAndView.viewName == "/home/index")
+      {
+        modelAndView.viewName = modelAndView.viewName + "_mobile"
+      }
+    }
+  }
+  
   def grailsApplication
   def index = {
     def editableControllers = []
