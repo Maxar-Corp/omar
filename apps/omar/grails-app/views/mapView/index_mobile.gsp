@@ -1,29 +1,12 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: dlucas
-  Date: June 11, 2010
-  Time: 11:04:28 AM
-  To change this template use File | Settings | File Templates.
---%>
-
-<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
-
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main7_mobile"/>
-
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-  <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
-
-  <title>OMAR Ground Space Viewer</title>
- 
-  <openlayers:loadMapToolBar/>
-  <openlayers:loadTheme theme="default"/>
-  <openlayers:loadJavascript/>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="minimum-scale=1.0, width=device-width, user-scalable=no" name="viewport"/>
+  <link rel="stylesheet" href="${resource(plugin: 'omar', dir: 'css', file: 'main.css')}"/>
+  <title>OMAR: Ground Space Viewer</title>
 
   <style type="text/css">
+
     #map {
       width: 100%;
       height: 100%;
@@ -31,286 +14,208 @@
     }
   </style>
 
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/fonts/assets/skins/sam', file: 'fonts-min.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/container/assets/skins/sam', file: 'container.css')}"/>
 
-  <g:javascript plugin="omar-core" src="touch.js"/>
 </head>
 
-<body>
+<body onload="init()" class="yui-skin-sam">
 
-<content tag="north">
+<div class="nav">
+  <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
+  <span class="menuButton"><g:link url="javascript:zoomIn();">Zoom In</g:link></span>
+  <span class="menuButton"><g:link url="javascript:zoomOut();">Zoom Out</g:link></span>
+  <span class="menuButton"><g:link url="javascript:zoomMaxExtent();">Max Extent</g:link></span>
+  <span class="menuButton"><g:link url="javascript:zoomFullRes();">Full Res</g:link></span>
+  <span class="menuButton"><button id="show">Image Adjustment</button></span>
+</div>
+
+<div class="body">
+  <div id="map"></div>
+</div>
+
+<div id="dialog1" class="yui-pe-content">
+<div class="hd">Image Adjustments:</div>
+
+<div class="bd">
   <g:form name="wmsParams" method="POST" url="[action:'wms',controller:'ogc']">
-    <input type="hidden" name="sharpen_mode" value="none"/>
-    <input type="hidden" name="stretch_mode" value="linear_auto_min_max"/>
-    <input type="hidden" name="stretch_mode_region" value="global"/>
     <input type="hidden" name="request" value=""/>
     <input type="hidden" name="layers" value=""/>
     <input type="hidden" name="bbox" value=""/>
-    <input type="hidden" name="quicklook" value=""/>
+
+    <b>Image Sharpen:</b><p>
+    <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/></p>
+
+    <p>&nbsp;</p>
+
+    <b>Histogram Stretch:</b>
+    <p><g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/></p>
+
+    <p><b>Region Stretch:</b></p>
+    <p><g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts() "/></p>
+
+    <p>&nbsp;</p>
+
+    <g:if test="${rasterEntries?.numberOfBands.get(0) == 2}">
+      <b>Band Combinations:</b>
+      <p><g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()"/> </p>
+    </g:if>
+
+    <g:if test="${rasterEntries?.numberOfBands.get(0) >= 3}">
+      <b>Band Combinations:</b>
+      <p><g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()"/></p>
+    </g:if>
+
+    <p>&nbsp;</p>
+
+    <b>Terrain Correction:</b>
+    <p><g:select id="quicklook" name="quicklook" from="${['true', 'false']}" onChange="changeQuickLookOpts()"/></p>
   </g:form>
+</div>
+</div>
 
-  <span class="menuButton">
-    <g:link class="home" uri="/">OMAR&#0153;</g:link>
-  </span>
+</body>
 
-  <span class="menuButton">
-    <a href="${createLink(controller: "mapView", action: "multiLayer", params: [rasterEntryIds: (rasterEntries*.id).join(',')])}">
-      Multi-Layer
-    </a>
-  </span>
+<g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
+<g:javascript plugin='richui' src="yui/element/element-min.js"/>
+<g:javascript plugin='richui' src="yui/container/container-min.js"/>
 
-  <g:if test="${rasterEntries?.size() == 1}">
-    <span class="menuButton">
-      <a href="${createLink(controller: "mapView", action: "imageSpace", id: (rasterEntries*.id).join(','))}">
-        Image Space
-      </a>
-    </span>
-  </g:if>
+<script>
+YAHOO.namespace("example.container");
 
-  <span class="menuButton">
-    <label>Sharpen:</label>
-    <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
-  </span>
+YAHOO.util.Event.onDOMReady(function () {
 
-  <span class="menuButton">
-    <label>Stretch:</label>
-    <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
-  </span>
+	var handleCancel = function() {
+		this.cancel();
+	};
 
-  <span class="menuButton">
-    <label>Region:</label>
-    <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts()"/>
-  </span>
+	YAHOO.example.container.dialog1 = new YAHOO.widget.Dialog("dialog1",
+							{ width : "30em",
+							  fixedcenter : true,
+							  visible : false,
+                              zIndex: 99999,
+							  constraintoviewport : true,
+							  buttons : [ { text:"Close", handler:handleCancel, isDefault:true }]
+							});
 
-  <span class="menuButton">
-    <label>Terrain Correction:</label>
-    <g:select id="quicklook" name="quicklook" from="${['false', 'true']}" onChange="changeQuickLookOps()"/>
-  </span>
+	YAHOO.example.container.dialog1.render();
 
-    <span class="menuButton">
-      <g:if test="${rasterEntries.numberOfBands.get(0) == 1}">
-      </g:if>
+	YAHOO.util.Event.addListener("show", "click", YAHOO.example.container.dialog1.show, YAHOO.example.container.dialog1, true);
+	YAHOO.util.Event.addListener("hide", "click", YAHOO.example.container.dialog1.hide, YAHOO.example.container.dialog1, true);
+});
+</script>
+   
 
-      <g:if test="${rasterEntries.numberOfBands.get(0) == 2}">
-        <g:select id="band_order" name="band_order" from="${['0,1','1,0','0','1']}" onChange="changeBandSelection()" />
-      </g:if>
+<script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
+        resource(plugin: "openlayers", dir: "js", file: "OpenLayers.js"),
+        resource(plugin: 'omar-core', dir: 'js', file: 'jquery.js'),
+        resource(plugin: 'omar-core', dir: 'js', file: 'MultitouchHandler.js'),
+        resource(plugin: 'omar-core', dir: 'js', file: 'MultitouchNavigation.js')
+])}'></script>
 
-      <g:if test="${rasterEntries.numberOfBands.get(0) >= 3}">
-        <label>Band Selection:</label>
-        <g:select id="band_order" name="band_order" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandSelection()" />
-      </g:if>
-    </span>
+<script type="text/javascript">
+  var map = null;
+  var rasterLayers;
 
-  <span class="menuButton">
-    <a href=javascript:zoomInFullRes()>Zoom To Full Resolution</a>
-  </span>
-</content>
+  function init() {
+    var left   = parseFloat("${left}");
+    var bottom = parseFloat("${bottom}");
+    var right  = parseFloat("${right}");
+    var top    = parseFloat("${top}");
+    var fullResScale = parseFloat("${fullResScale}");
+    var smallestScale = parseFloat("${smallestScale}");
+    var largestScale = parseFloat("${largestScale}");
 
-<content tag="center">
-  <div id="map"></div>
-</content>
+    var bounds = new OpenLayers.Bounds(left, bottom, right, top);
 
-<content tag="south">
+    map = new OpenLayers.Map("map", {controls: [],
+      maxExtent:bounds,
+      maxResolution:largestScale,
+      minResolution:smallestScale});
 
-  <g:javascript>
-   var map;
-   var rasterLayers;
-   var kmlLayers;
-   var select;
+    setupLayers();
 
-   function init( mapWidth, mapHeight )
-   {
-   var left   = parseFloat("${left}");
-   var bottom = parseFloat("${bottom}");
-   var right  = parseFloat("${right}");
-   var top    = parseFloat("${top}");
-   var fullResScale = parseFloat("${fullResScale}");
-   var smallestScale = parseFloat("${smallestScale}");
-   var largestScale = parseFloat("${largestScale}");
+    var zoom = map.getZoomForExtent(bounds, true);
 
-   var bounds    = new OpenLayers.Bounds(left, bottom, right, top);
+    map.setCenter(bounds.getCenterLonLat(), zoom);
 
-   if(smallestScale != 0.0)
-   {
-   map = new OpenLayers.Map("map", { controls: [],
-                                     maxExtent:bounds,
-                                     maxResolution:largestScale,
-                                     minResolution:smallestScale });
-   }
-   else
-   {
-   map = new OpenLayers.Map("map", { controls: [],
-                                     maxExtent:bounds,
-                                     minExtent:minBounds,
-                                     minResolution:'auto', maxResolution:'auto' });
-   }
-   changeMapSize( mapWidth, mapHeight );
+    var touchControl = new OpenLayers.Control.MultitouchNavigation();
+	map.addControl(touchControl);
+}
 
-   setupLayers();
+function setupLayers()
+{
+  var format = "image/jpeg";
+  var transparent = false;
 
-   map.addControl(new OpenLayers.Control.Scale());
-   map.addControl(new OpenLayers.Control.ScaleLine());
+  var stretch_mode = $("stretch_mode").value;
+  var stretch_mode_region = $("stretch_mode_region").value;
+  var sharpen_mode = $("sharpen_mode").value;
 
-   var zoom = map.getZoomForExtent(bounds, true);
+    rasterLayers = [
+    new OpenLayers.Layer.WMS( "Raster", "${createLink(controller: 'ogc', action: 'wms')}",
+    { layers: "${(rasterEntries*.indexId).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
+    {isBaseLayer: true, buffer:0, singleTile:false, ratio:1.0, quicklook:false,
+     displayOutsideMaxExtent:false})
+  ];
+  map.addLayers(rasterLayers);
+}
 
-   map.setCenter(bounds.getCenterLonLat(), zoom);
-
-   this.touchhandler = new TouchHandler( map, 4 );
-   }
-
-   function getKML(layers)
-   {
-   var extent = map.getExtent()
-   var wmsParamForm = document.getElementById('wmsParams')
-   wmsParamForm.sharpen_mode.value = $("sharpen_mode").value
-   wmsParamForm.stretch_mode_region.value = $("stretch_mode_region").value
-   wmsParamForm.stretch_mode.value = $("stretch_mode").value
-   wmsParamForm.quicklook.value = $("quicklook").value
-   wmsParamForm.request.value = "GetKML"
-   wmsParamForm.layers.value = layers
-   wmsParamForm.bbox.value = extent.toBBOX()
-   wmsParamForm.submit()
-   }
-
-   function changeMapSize( mapWidth, mapHeight )
-   {
-   var Dom = YAHOO.util.Dom;
-
-   Dom.get( "map" ).style.width = mapWidth + "px";
-   Dom.get( "map" ).style.height = mapHeight + "px";
-
-   map.updateSize();
-   }
-
-   function setupLayers()
-   {
-   var format = "image/jpeg";
-   // var format = "image/png";
-   // var format = "image/gif";
-   var transparent = false;
-
-   var stretch_mode = $("stretch_mode").value;
-   var stretch_mode_region = $("stretch_mode_region").value;
-   var sharpen_mode = $("sharpen_mode").value;
-
-   rasterLayers = [
-   new OpenLayers.Layer.WMS( "Raster", "${createLink(controller: 'ogc', action: 'wms')}",
-   { layers: "${(rasterEntries*.id).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
-   {isBaseLayer: true, buffer:0, singleTile:true, ratio:1.0, quicklook:true, transitionEffect: "resize",
-   displayOutsideMaxExtent:false})
-   ];
-
-   map.addLayers(rasterLayers);
-
-   <g:each in="${kmlOverlays}" var="kmlOverlay" status="i">
-
-       if ( ! kmlLayers ) {
-         kmlLayers = new Array();
-      }
-
-      var kmlLayer =  new OpenLayers.Layer.Vector("${kmlOverlay.name}", {
-       projection: map.displayProjection,
-       strategies: [new OpenLayers.Strategy.Fixed()],
-       protocol: new OpenLayers.Protocol.HTTP({
-         url: "${kmlOverlay.url}",
-         format: new OpenLayers.Format.KML({
-           extractStyles: true,
-           extractAttributes: true
-         })
-       })
-      });
-
-     kmlLayers[${i}] = kmlLayer;
-     kmlLayer.events.on({
-         "featureselected": onFeatureSelect,
-         "featureunselected": onFeatureUnselect
-     });
-
-     map.addLayers(kmlLayers);
-    select = new OpenLayers.Control.SelectFeature(kmlLayers);
-     map.addControl(select);
-     select.activate();
-
-     </g:each>
-     }
-
-     function onPopupClose(evt)
-     {
-      select.unselectAll();
-     }
-
-     function onFeatureSelect(event)
-     {
-      var feature = event.feature;
-      // Since KML is user-generated, do naive protection against
-      // Javascript.
-      var content = "<h2>"+feature.attributes.name + "</h2>" + feature.attributes.description;
-       if (content.search("<script") != -1) {
-           content = "Content contained Javascript! Escaped content below.<br />" + content.replace(/</g, "&lt;");
-       }
-       popup = new OpenLayers.Popup.FramedCloud("chicken",
-                                feature.geometry.getBounds().getCenterLonLat(),
-                                new OpenLayers.Size(100,100),
-                                content,
-                                null, true, onPopupClose);
-       feature.popup = popup;
-       map.addPopup(popup);
-   }
-
-   function onFeatureUnselect(event)
-   {
-       var feature = event.feature;
-       if(feature.popup) {
-           map.removePopup(feature.popup);
-           feature.popup.destroy();
-           delete feature.popup;
-       }
-   }
-
-   function changeQuickLookOps()
-   {
-     for ( var layer in rasterLayers )
-     {
-       rasterLayers[layer].mergeNewParams({quicklook:$("quicklook").value});
-     }
-   }
-   function changeHistoOpts()
-   {
-     var stretch_mode = $("stretch_mode").value;
-     var stretch_mode_region = $("stretch_mode_region").value;
-
-     for ( var layer in rasterLayers )
-     {
-       rasterLayers[layer].mergeNewParams({stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region});
-     }
-   }
-   function changeSharpenOpts()
-   {
-     var sharpen_mode = $("sharpen_mode").value;
-
-     for ( var layer in rasterLayers )
-     {
-       rasterLayers[layer].mergeNewParams({sharpen_mode:sharpen_mode});
-     }
-   }
-
-
-    function changeBandSelection()
+  function changeQuickLookOpts()
   {
-      var band_order = $("band_order").value;
-
-      for ( var layer in rasterLayers )
-      {
-        rasterLayers[layer].mergeNewParams({bands:band_order});
-      }
+    var quicklook = document.getElementById('quicklook').value;
+    for (var layer in rasterLayers)
+    {
+      rasterLayers[layer].mergeNewParams({quicklook:quicklook});
+    }
   }
 
-     function zoomInFullRes()
-     {
-         var zoom = map.getZoomForResolution(parseFloat("${fullResScale}"), true)
-         map.zoomTo(zoom)
-     }
-   </g:javascript>
-             </content>
- </body>
- </html>
- 
+  function changeHistoOpts()
+  {
+    var stretch_mode = document.getElementById('stretch_mode').value;
+    var stretch_mode_region = document.getElementById('stretch_mode_region').value;
+    for (var layer in rasterLayers)
+    {
+      rasterLayers[layer].mergeNewParams({stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region});
+    }
+  }
+
+  function changeSharpenOpts()
+  {
+    var sharpen_mode = document.getElementById('sharpen_mode').value;
+    for (var layer in rasterLayers)
+    {
+      rasterLayers[layer].mergeNewParams({sharpen_mode:sharpen_mode});
+    }
+  }
+
+  function changeBandsOpts()
+  {
+    var bands = document.getElementById('bands').value;
+    for (var layer in rasterLayers)
+    {
+      rasterLayers[layer].mergeNewParams({bands:bands});
+    }
+  }
+
+  function zoomIn() {
+    map.zoomIn();
+  }
+
+  function zoomOut() {
+    map.zoomOut();
+  }
+
+  function zoomMaxExtent() {
+    map.zoomToMaxExtent();
+  }
+
+  function zoomFullRes()
+  {
+      var zoom = map.getZoomForResolution(parseFloat("${fullResScale}"), true);
+      map.zoomTo(zoom);
+  }
+</script>
+
+</html>

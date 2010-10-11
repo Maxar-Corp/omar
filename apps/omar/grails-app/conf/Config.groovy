@@ -50,8 +50,8 @@ grails.converters.encoding = "UTF-8"
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
 
-grails.serverIP="localhost"
-//grails.serverIP = InetAddress.localHost.hostAddress
+//grails.serverIP="localhost"
+grails.serverIP = InetAddress.localHost.hostAddress
 //grails.serverIP = "scott-6a8076558:8080"
 
 //grails.serverIP = "172.16.90.130"
@@ -65,7 +65,7 @@ environments {
     grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
   }
   production {
-    grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
+    grails.serverURL = "http://${grails.serverIP}/${appName}"
 
   }
 }

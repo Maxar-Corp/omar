@@ -42,6 +42,28 @@ class RasterEntryController implements InitializingBean
     [rasterEntryList: rasterEntryList]
   }
 
+    def list_mobile = {
+      if ( !params.max )
+      params.max = 10
+
+      def rasterEntryList = RasterEntry.createCriteria().list(params) {}
+
+      if ( params.rasterDataSetId )
+      {
+        def rasterDataSet = RasterDataSet.get(params.rasterDataSetId)
+
+        rasterEntryList = RasterEntry.createCriteria().list(params) {
+          eq("rasterDataSet", rasterDataSet)
+        }
+      }
+      else
+      {
+        rasterEntryList = RasterEntry.createCriteria().list(params) {}
+      }
+
+      [rasterEntryList: rasterEntryList]
+    }
+
   def show = {
 
     def rasterEntry = RasterEntry.findByIndexId(params.id)?:RasterEntry.get(params.id);
@@ -126,7 +148,6 @@ class RasterEntryController implements InitializingBean
     }
   }
 
-
   def search = {
 
 //    println "=== search start ==="
@@ -198,21 +219,20 @@ class RasterEntryController implements InitializingBean
     }
   }
 
-/*
-  def search2 = {
+  def search_mobile = {
 
-    //println "=== search start ==="
+//    println "=== search start ==="
 
     if ( !params.max )
     {
       params.max = 10;
     }
 
-    //println "\nparams: ${params?.sort { it.key }}"
+//    println "\nparams: ${params?.sort { it.key }}"
 
     def queryParams = initRasterEntryQuery(params)
 
-    //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
+//    println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
     if ( request.method == 'POST' )
     {
@@ -231,6 +251,7 @@ class RasterEntryController implements InitializingBean
 
       def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
       def totalCount = rasterEntrySearchService.getCount(queryParams)
+
 
       def rasterFiles = []
 
@@ -257,19 +278,17 @@ class RasterEntryController implements InitializingBean
 
       //println logData
 
-      //println "=== search end ==="
+//      println "=== search end ==="
 
-      println "_________________________\n${rasterEntries.size()}"
-      chain(action: "results", model: [rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
+      chain(action: "results_mobile", model: [rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
     }
     else
     {
-      //println "=== search end ==="
+//      println "=== search end ==="
 
       return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
   }
-*/
 
   private def initRasterEntryQuery(Map params)
   {
@@ -361,6 +380,81 @@ class RasterEntryController implements InitializingBean
 
   }
 
+  def results_mobile = {
+
+//    println "=== results start ==="
+
+     def starttime = System.currentTimeMillis()
+
+     if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
+     {
+       params.max = 10
+     }
+     if(!session.rasterEntryResultCurrentTab&&("${session.rasterEntryResultCurrentTab}"!="0"))
+     {
+       session["rasterEntryResultCurrentTab"] = "0"
+     }
+     def rasterEntries = null
+     def totalCount = null
+     def rasterFiles = null
+
+     def queryParams = initRasterEntryQuery(params)
+     if ( chainModel )
+     {
+       rasterEntries = chainModel.rasterEntries
+       totalCount = chainModel.totalCount
+       rasterFiles = chainModel.rasterFiles
+     }
+     else
+     {
+       rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+       totalCount    = rasterEntrySearchService.getCount(queryParams)
+
+       if ( rasterEntries )
+       {
+         rasterFiles = RasterFile.createCriteria().list {
+           eq("type", "main")
+           inList("rasterDataSet", rasterEntries?.rasterDataSet)
+         }
+       }
+
+       def endtime = System.currentTimeMillis()
+       def user = authenticateService.principal()?.username
+
+       def logData = [
+           TYPE: "raster_search",
+           START: new Date(starttime),
+           END: new Date(endtime),
+           ELAPSE_TIME_MILLIS: endtime - starttime,
+           USER: user,
+           PARAMS: params
+       ]
+
+//      println "\nparams: ${params?.sort { it.key }}"
+//      println "\nqueryParams: ${queryParams?.toMap()}"
+
+       log.info(logData)
+
+//      println logData
+     }
+
+//    println "=== results end ==="
+
+
+     render(view: 'results_mobile', model: [
+         rasterEntries: rasterEntries,
+         totalCount: totalCount,
+         rasterFiles: rasterFiles,
+         tagNameList: tagNameList,
+         tagHeaderList: tagHeaderList,
+         queryParams: queryParams,
+         sessionAction:"updateSession",
+         sessionController:"session",
+         rasterEntryResultCurrentTab:session.rasterEntryResultCurrentTab
+     ])
+
+   }
+  
   def getKML = {
 
     def rasterEntry = RasterEntry.get(params.rasterEntryIds)
