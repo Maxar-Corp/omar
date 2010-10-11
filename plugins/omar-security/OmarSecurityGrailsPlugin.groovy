@@ -11,18 +11,18 @@ class OmarSecurityGrailsPlugin {
     ]
 
     // TODO Fill in these fields
-    def author = "Your name"
-    def authorEmail = ""
-    def title = "Plugin summary/headline"
-    def description = '''\\
-Brief description of the plugin.
+      def author = "Scott Bortman"
+      def authorEmail = "sbortman@radiantblue.com"
+      def title = "OMAR Security"
+      def description = '''\\
+    This module contains the customizations for OMAR's security model.
 '''
 
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/omar-security"
 
     def doWithWebDescriptor = { xml ->
-        // TODO Implement additions to web.xml (optional), this event occurs before 
+        // TODO Implement additions to web.xml (optional), this event occurs before
     }
 
     def doWithSpring = {
