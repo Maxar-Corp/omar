@@ -22,12 +22,26 @@ OMAR Raster support
     def documentation = "http://grails.org/plugin/omar-raster"
 
     def doWithWebDescriptor = { xml ->
-        // TODO Implement additions to web.xml (optional), this event occurs before 
+        def filters = xml.filter
+        def lastFilter = filters[-1]
+
+        lastFilter + {
+          'filter-mapping' {
+            'filter-name'('gzipFilter')
+            'url-pattern'('/rasterEntry/search')
+          }
+        }
+        lastFilter + {
+          'filter-mapping' {
+            'filter-name'('gzipFilter')
+            'url-pattern'('/rasterEntry/results')
+          }
+        }
     }
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)
-    	rasterInfoParser(org.ossim.omar.RasterInfoParser)
+        rasterInfoParser(org.ossim.omar.RasterInfoParser)
     }
 
     def doWithDynamicMethods = { ctx ->

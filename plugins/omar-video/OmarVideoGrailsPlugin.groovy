@@ -22,12 +22,26 @@ OMAR plugin for video support
     def documentation = "http://grails.org/plugin/omar-video"
 
     def doWithWebDescriptor = { xml ->
-        // TODO Implement additions to web.xml (optional), this event occurs before 
+        def filters = xml.filter
+        def lastFilter = filters[-1]
+
+        lastFilter + {
+          'filter-mapping' {
+            'filter-name'('gzipFilter')
+            'url-pattern'('/videoDataSet/search')
+          }
+        }
+        lastFilter + {
+          'filter-mapping' {
+            'filter-name'('gzipFilter')
+            'url-pattern'('/videoDataSet/results')
+          }
+        }
     }
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)
-    	videoInfoParser(org.ossim.omar.VideoInfoParser)
+        videoInfoParser(org.ossim.omar.VideoInfoParser)
     }
 
     def doWithDynamicMethods = { ctx ->
