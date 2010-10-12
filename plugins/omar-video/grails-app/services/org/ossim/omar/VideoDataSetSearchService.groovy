@@ -12,12 +12,16 @@ import org.hibernate.FetchMode
 
 import com.vividsolutions.jts.geom.Geometry
 import org.hibernate.ScrollableResults
+import org.springframework.beans.factory.InitializingBean
 
-class VideoDataSetSearchService
+class VideoDataSetSearchService implements InitializingBean
 {
   //static expose = ['xfire']
 
   static transactional = true
+
+  def grailsApplication
+  def propertyNames
 
   List<VideoDataSet> runQuery(
   /*@WebParam (name = "videoDataSetQuery", header = true)*/
@@ -48,20 +52,9 @@ class VideoDataSetSearchService
 
       if ( params?.sort && params?.order )
       {
-        def sortColumn = null
-
-        // HACK:  Need to find a better way to do this
-        switch ( params?.sort )
+        if ( params?.sort == "id" || params?.sort in propertyNames )
         {
-        case "id":
-        case "startDate":
-        case "endDate":
-          sortColumn = params?.sort
-          break
-        }
-        if ( sortColumn )
-        {
-          order(sortColumn, params?.order)
+          order(params?.sort, params?.order)
         }
       }
 
@@ -214,5 +207,10 @@ class VideoDataSetSearchService
     }
 
     return totalCount
+  }
+
+  void afterPropertiesSet()
+  {
+    propertyNames = grailsApplication.getDomainClass("org.ossim.omar.VideoDataSet")?.properties.name
   }
 }
