@@ -10,8 +10,8 @@
   <g:javascript plugin="omar-core" src="prototype/prototype.js"/>
   <g:javascript>
    var globalActiveIndex=${rasterEntryResultCurrentTab}
-  function updateSession(event){
-var link = "${createLink(action: sessionAction, controller: sessionController)}"
+    function updateSession(event){
+ var link = "${createLink(action: sessionAction, controller: sessionController)}"
     var activeIndex = tabView.get('activeIndex').toString();
     // only send a message if we change state this way it's fast
     //
@@ -24,8 +24,8 @@ var link = "${createLink(action: sessionAction, controller: sessionController)}"
     }
   }
    //
-</g:javascript>
-  
+  </g:javascript>
+
   <resource:tabView/>
 
 </head>
@@ -90,7 +90,6 @@ var link = "${createLink(action: sessionAction, controller: sessionController)}"
               <g:sortableColumn property="height" title="Height" params="${queryParams.toMap()}"/>
               <g:sortableColumn property="numberOfBands" title="Number of Bands" params="${queryParams.toMap()}"/>
               <g:sortableColumn property="bitDepth" title="Bit Depth" params="${queryParams.toMap()}"/>
-              <g:sortableColumn property="metersPerPixel" title="Meters Per Pixel" params="${queryParams.toMap()}"/>
 
               <%--
               <g:sortableColumn property="dataType" title="Data Type" params="${queryParams.toMap()}"/>
@@ -101,8 +100,9 @@ var link = "${createLink(action: sessionAction, controller: sessionController)}"
               <th>Height</th>
               <th>Bands</th>
               <th>Bits</th>
-              <th>Meters Per Pixel</th>
               --%>
+
+              <th>Meters Per Pixel</th>
               <th>Min Lon</th>
               <th>Min Lat</th>
               <th>Max Lon</th>
