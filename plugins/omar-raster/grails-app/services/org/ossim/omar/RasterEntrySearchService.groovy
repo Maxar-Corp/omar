@@ -12,8 +12,9 @@ import org.hibernate.criterion.*
 
 import com.vividsolutions.jts.geom.Polygon
 import org.hibernate.ScrollableResults
+import org.springframework.beans.factory.InitializingBean
 
-class RasterEntrySearchService
+class RasterEntrySearchService implements InitializingBean
 {
   def grailsApplication
 
@@ -21,6 +22,7 @@ class RasterEntrySearchService
 
   static transactional = false
 
+  def propertyNames
 
   List<RasterEntryQuery> runQuery(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
@@ -36,94 +38,24 @@ class RasterEntrySearchService
       }
       if ( params?.sort && params?.order )
       {
-        def sortColumn = null
-        // HACK:  Need to find a better way to do this
-        switch ( params?.sort )
+        if ( params?.sort == "id" || params?.sort in propertyNames )
         {
-        case "id":
-        case "imageId":
-        case "targetId":
-        case "productId":
-        case "sensorId":
-        case "missionId":
-        case "imageCategory":
-        case "azimuthAngle":
-        case "grazingAngle":
-        case "securityClassification":
-        case "title":
-        case "organization":
-        case "description":
-        case "acquisitionDate":
-        case "fileType":
-        case "className":
-        case "niirs":
-          sortColumn = params?.sort
-          break
-        }
-        if ( sortColumn )
-        {
+          def sortColumn = params?.sort
           def order = params?.order
-          Order ordering = order == "asc" ? Order.asc(sortColumn) : Order.desc(sortColumn)
+          def ordering = (order == "asc") ? Order.asc(sortColumn) : Order.desc(sortColumn)
+
           addOrder(ordering)
         }
+
         setFetchMode("rasterEntry", FetchMode.JOIN)
       }
     }
+
     def criteria = criteriaBuilder.buildCriteria(x)
+
     criteria.add(rasterEntryQuery?.createClause())
+
     return criteria.list()
-
-    /*
-    def criteria = RasterEntry.createCriteria();
-    if ( params?.max )
-    {
-      criteria.setMaxResults(params.max as Integer)
-    }
-    if ( params?.offset )
-    {
-      criteria.setFirstResult(params.offset as Integer)
-    }
-    if ( params?.sort && params?.order )
-    {
-      def sortColumn = null
-      // HACK:  Need to find a better way to do this
-      switch ( params?.sort )
-      {
-      case "id":
-      case "imageId":
-      case "targetId":
-      case "productId":
-      case "sensorId":
-      case "missionId":
-      case "imageCategory":
-      case "azimuthAngle":
-      case "grazingAngle":
-      case "securityClassification":
-      case "title":
-      case "organization":
-      case "description":
-      case "acquisitionDate":
-      case "fileType":
-      case "className":
-      case "niirs":
-        sortColumn = params?.sort
-        break
-      }
-      if ( sortColumn )
-      {
-        def order = params?.order
-        Order ordering = order == "asc" ? Order.asc(sortColumn) : Order.desc(sortColumn)
-        criteria.addOrder(ordering)
-      }
-    }
-
-    criteria.setFetchMode("rasterEntry", FetchMode.JOIN)
-    rasterEntryQuery.addToCriteria(criteria)
-
-    def rasterEntries = criteria.instance.list();
-
-    return rasterEntries
-    */
   }
 
 
@@ -216,5 +148,10 @@ class RasterEntrySearchService
     criteria.add(rasterEntryQuery?.createClause())
     def totalCount = criteria.list().get(0) as int
     return totalCount
+  }
+
+  void afterPropertiesSet()
+  {
+    propertyNames = grailsApplication.getDomainClass("org.ossim.omar.RasterEntry")?.properties.name
   }
 }
