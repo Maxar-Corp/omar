@@ -493,7 +493,7 @@ function MapWidget()
     //
     //
 
-     var message = "Alert: Not to use for targeting.\n";
+     var message = "Alert: Not certified for targeting.\n";
     this.setupToolBar = function()
     {
         var panButton = new OpenLayers.Control.MouseDefaults(
