@@ -7,7 +7,7 @@ import javax.media.jai.JAI
 class MapViewController implements InitializingBean
 {
   def grailsApplication
-
+  def format
   def baseWMS
   def dataWMS
   def webMappingService
@@ -128,6 +128,7 @@ class MapViewController implements InitializingBean
     model.rasterEntries = rasterEntries
     model.kmlOverlays = kmlOverlays
     model.baseWMS= baseWMS
+    model.format = format?:"image/png"
     model.putAll(webMappingService.computeBounds(rasterEntries))
 
     return model
@@ -181,6 +182,7 @@ class MapViewController implements InitializingBean
   {
     baseWMS = grailsApplication.config.wms.base.layers
     dataWMS = grailsApplication.config.wms.data.raster
+    format  = grailsApplication.config.wms.supportIE6?"image/gif":"image/png"
   }
 
   def iview = {
