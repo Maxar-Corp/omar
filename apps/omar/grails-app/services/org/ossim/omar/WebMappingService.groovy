@@ -333,7 +333,7 @@ class WebMappingService
 
       DataBuffer dataBuffer = new DataBufferByte(data, data.size())
 
-
+      def transparentFlag = wmsRequest?.transparent?.equalsIgnoreCase("true")
       try
       {
         if ( viewableBandCount == 1 )
@@ -341,7 +341,7 @@ class WebMappingService
           image = Utility.convertToColorIndexModel(dataBuffer,
                                                    width as Integer,
                                                    height as Integer,
-                                                   wmsRequest?.transparent?.equalsIgnoreCase("true"))
+                                                   transparentFlag)
         }
         else
         {
@@ -365,6 +365,14 @@ class WebMappingService
                   isRasterPremultiplied,
                   properties
           )
+          if ( image && transparentFlag )
+          {
+            image = TransparentFilter.fixTransparency(new TransparentFilter(), image)
+          }
+          if(wmsRequest?.format?.equalsIgnoreCase("image/gif"))
+          {
+            image = ImageGenerator.convertRGBAToIndexed(image)
+          }
         }
       }
       catch (Exception e)
@@ -374,10 +382,6 @@ class WebMappingService
       break
     }
 
-    if ( image && wmsRequest?.transparent?.equalsIgnoreCase("true") && (viewableBandCount == 3) )
-    {
-      image = TransparentFilter.fixTransparency(transparent, image)
-    }
 
 
     return image;
