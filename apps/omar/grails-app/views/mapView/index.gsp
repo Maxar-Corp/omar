@@ -517,7 +517,7 @@ function zoomIn()
 
       map.addControl(navButton);
 
-        var message = "Alert: Not to use for targeting.\n";
+        var message = "Alert: Not certified for targeting.\n";
 
               var measureDistanceButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
         title: "Measure Distance",
