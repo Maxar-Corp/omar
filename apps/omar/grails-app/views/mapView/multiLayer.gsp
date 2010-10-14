@@ -151,7 +151,7 @@ var left = ${left};
 
     map = new OpenLayers.Map( "map", { controls: [], numZoomLevels: 32 } );
 
-    var format = "image/png";
+    var format = "${format}";
     var transparent = true;
 
     setupBaseLayer( );
