@@ -88,7 +88,9 @@
       </p>
     </form>
   </div>
-  <a href="${createLink(controller: "register", action: "index")}">Click here to register</a>
+  <g:if  test='${registerFlag}'>
+    <a href="${createLink(controller: "register", action: "index")}">Click here to register</a>
+  </g:if>
 </div>
 <script type='text/javascript'>
   <!--
