@@ -16,11 +16,11 @@
 
 RETVAL=$?
 PROG="omar"
-CATALINA_HOME="/opt/radiantblue/tomcat"
+CATALINA_HOME="/opt/radiantblue/apache-tomcat-6.0.29"
 OMAR_LOG_DIR="/var/log/omar"
 OMAR_ERROR_LOG=$OMAR_LOG_DIR/error_log
-OMAR_USER="omar"
-OMAR_GROUP="omar"
+OMAR_USER="jason4151"
+OMAR_GROUP="jason4151"
 
 # Must be exported in order for catatlina to generate pid file
 export CATALINA_PID="/var/run/omar/omar.pid"
@@ -55,16 +55,16 @@ start() {
           	RETVAL="$?"
 		    if [ "$RETVAL" -eq 0 ]; then 
 		        	echo_success
-		            echo -ne "\n"
+		            echo -en "\n"
 		    	else
 		            echo_failure
-		            echo -ne "\n"
+		            echo -en "\n"
 					exit 1
 		    fi
 	else
 		echo $"CATALINA_HOME does not exist..."
 		echo_failure
-		echo -ne "\n"
+		echo -en "\n"
 		exit 1
 	fi
 }
@@ -76,11 +76,11 @@ stop() {
 		read PID < $CATALINA_PID
         if checkpid $PID 2>&1; then
             echo -ne $"Stopping $PROG: "
-			/bin/su $OMAR_USER $CATALINA_HOME/bin/shutdown.sh >> $OMAR_ERROR_LOG 2>&1
+			/bin/su - $OMAR_USER $CATALINA_HOME/bin/shutdown.sh >> $OMAR_ERROR_LOG 2>&1
 			RETVAL="$?"
 			if [ "$RETVAL" -eq 0 ]; then
 				echo_success
-				echo -ne "\n"
+				echo -en "\n"
 			else
 				until [ "$(ps -p $PID | grep -c $PID)" -eq "0" ]; do
 				echo -ne "\nWaiting on $PROG process to exit..."
@@ -91,13 +91,13 @@ stop() {
 						kill -9 $PID
 					fi
 					echo_success
-					echo -ne "\n"
+					echo -en "\n"
 			fi
 		fi
 	else
 		echo -ne $"Stopping $PROG: "
 		echo_failure
-		echo -ne "\n"
+		echo -en "\n"
 	fi
 }
 
@@ -139,19 +139,19 @@ echo_success() {
 		echo -n "[  "
 		echo -en "\\033[0;32m"
 		echo -n $"OK"
-		echo -en "\\033[0;30m"
+		echo -en "\\033[0;39m"
 		echo -n "  ]"
-		echo -ne "\r"
+		echo -en "\r"
 	elif [ -e "/etc/SuSE-release" ]; then
 		echo -en "\\033[60G"
 		echo -en "\\033[1;32m"
 		echo -n $"done"
 		echo -en "\\033[0;30m"
-		echo -ne "\r"
+		echo -en "\r"
 	else
 		echo -en "\\033[60G"
 		echo "OK"
-		echo -ne "\r"
+		echo -en "\r"
 	fi
 	return 0
 }
@@ -162,19 +162,19 @@ echo_failure() {
 		echo -n "["
 		echo -en "\\033[0;31m"
 		echo -n $"FAILED"
-		echo -en "\\033[0;30m"
+		echo -en "\\033[0;39m"
 		echo -n "]"
-		echo -ne "\r"
+		echo -en "\r"
 	elif [ -e "/etc/SuSE-release" ]; then
 		echo -en "\\033[60G"
 		echo -en "\\033[0;31m"
 		echo -n $"failed"
 		echo -en "\\033[0;30m"
-		echo -ne "\r"
+		echo -en "\r"
 	else
 		echo -en "\\033[60G"
 		echo "FAILED"
-		echo -ne "\r"
+		echo -en "\r"
 	fi
     return 1
 }
