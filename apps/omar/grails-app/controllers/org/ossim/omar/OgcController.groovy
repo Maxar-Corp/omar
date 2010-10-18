@@ -200,6 +200,7 @@ class OgcController
                 END_TIME: new Date(endtime),
                 ELAPSE_CHIP_TIME_SECONDS:  (endChipTime - starttime)/1000.0,
                 ELAPSE_WRITE_TIME_SECONDS: (endtime - endChipTime)/1000.0,
+                ELAPSE_TIME: (endtime-starttime),
                 //USER: user,
                 PARAMS: wmsRequest,
                 MODE: webMappingService.mode
