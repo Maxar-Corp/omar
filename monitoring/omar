@@ -1,0 +1,204 @@
+#!/bin/bash
+#
+# omar      Starts and stops the dedicated OMAR Tomcat server.
+#
+# Created by Jason Moskowitz on 2010-09-07.
+# Copyright 2010 RadiantBlue Technologies Inc., All rights reserved.
+#
+# chkconfig: 3 80 20
+# Provides: OMAR
+# Required-Start: $network $syslog
+# Required-Stop: $network $syslog
+# Default-Start:
+# Default-Stop:
+# Description: OMAR start, stop and restart script
+# Short-Description: start, stop and restart OMAR
+
+RETVAL=$?
+PROG="omar"
+CATALINA_HOME="/opt/radiantblue/tomcat"
+OMAR_LOG_DIR="/var/log/omar"
+OMAR_ERROR_LOG=$OMAR_LOG_DIR/error_log
+OMAR_USER="ossim"
+OMAR_GROUP="ossim"
+
+# Must be exported in order for catatlina to generate pid file
+export CATALINA_PID="/var/run/omar/omar.pid"
+
+start() {
+	if [ -f "$CATALINA_HOME/bin/startup.sh" ]; then	
+	 	# Make omar lock file dir and change ownership to omar user
+		if [ ! -d /var/run/omar ]; then
+				mkdir -p /var/run/omar
+				chown $OMAR_USER:$OMAR_GROUP /var/run/omar
+		fi
+		# Make omar log directory and change ownership to omar user
+		if [ ! -d "$OMAR_LOG_DIR" ]; then
+				mkdir -p $OMAR_LOG_DIR
+				chown $OMAR_USER:$OMAR_GROUP $OMAR_LOG_DIR
+		fi
+		# Check for running instance
+	 	if [ -e "$CATALINA_PID" ]; then
+	           read PID < $CATALINA_PID	
+	                if checkpid $PID 2>&1; then
+	                    echo $"$PROG process is already running..."
+	                        return 1
+	                        echo_failure
+	                    else
+	                        echo "Lock file found but no $PROG process running for (pid $PID)"
+	                        echo "Removing old lock file..."
+							rm -rf $CATALINA_PID
+	                fi
+	     fi
+			echo -ne $"Starting $PROG: "
+            /bin/su - $OMAR_USER $CATALINA_HOME/bin/startup.sh >> $OMAR_ERROR_LOG 2>&1
+          	RETVAL="$?"
+		    if [ "$RETVAL" -eq 0 ]; then 
+		        	echo_success
+		            echo -ne "\n"
+		    	else
+		            echo_failure
+		            echo -ne "\n"
+					exit 1
+		    fi
+	else
+		echo $"CATALINA_HOME does not exist..."
+		echo_failure
+		echo -ne "\n"
+		exit 1
+	fi
+}
+
+stop() {
+    COUNT="0"
+    WAIT="10"
+    if [ -e "$CATALINA_PID" ]; then
+		read PID < $CATALINA_PID
+        if checkpid $PID 2>&1; then
+            echo -ne $"Stopping $PROG: "
+			/bin/su $OMAR_USER $CATALINA_HOME/bin/shutdown.sh >> $OMAR_ERROR_LOG 2>&1
+			RETVAL="$?"
+			if [ "$RETVAL" -eq 0 ]; then
+				echo_success
+				echo -ne "\n"
+			else
+				until [ "$(ps -p $PID | grep -c $PID)" -eq "0" ]; do
+				echo -ne "\nWaiting on $PROG process to exit..."
+				let COUNT="${COUNT}+1"
+				done
+					if [ "$COUNT" -gt "$WAIT" ]; then
+						echo -ne "\nKilling $PROG process which did not shutdown properly after $WAIT seconds"
+						kill -9 $PID
+					fi
+					echo_success
+					echo -ne "\n"
+			fi
+		fi
+	else
+		echo -ne $"Stopping $PROG: "
+		echo_failure
+		echo -ne "\n"
+	fi
+}
+
+status() {
+  RETVAL="1"
+    if [ -e "$CATALINA_PID" ]; then
+        read PID < $CATALINA_PID
+        if checkpid $PID 2>&1; then
+            echo "$PROG (pid $PID) is running..."
+            RETVAL="0"
+        else
+            echo "Lock file found but no process running for (pid $PID)"
+        fi
+    else
+        PID="$(pgrep -u $OMAR_USER java)"
+        if [ -n "$PID" ]; then
+            echo "$PROG running (pid $PID) but no PID file exists"
+            RETVAL="0"
+        else
+            echo "$PROG is stopped"
+            RETVAL="1"
+        fi
+    fi
+    return $RETVAL
+}
+
+# Check if pid is running
+checkpid() {
+	local PID
+	for PID in $* ; do
+		[ -d "/proc/$PID" ] && return 0
+	done
+	return 1
+}	
+
+echo_success() {
+	if [ -e "/etc/redhat-release" ]; then
+		echo -en "\\033[60G"
+		echo -n "[  "
+		echo -en "\\033[0;32m"
+		echo -n $"OK"
+		echo -en "\\033[0;30m"
+		echo -n "  ]"
+		echo -ne "\r"
+	elif [ -e "/etc/SuSE-release" ]; then
+		echo -en "\\033[60G"
+		echo -en "\\033[1;32m"
+		echo -n $"done"
+		echo -en "\\033[0;30m"
+		echo -ne "\r"
+	else
+		echo -en "\\033[60G"
+		echo "OK"
+		echo -ne "\r"
+	fi
+	return 0
+}
+
+echo_failure() {
+	if [ -e "/etc/redhat-release" ]; then
+		echo -en "\\033[60G"
+		echo -n "["
+		echo -en "\\033[0;31m"
+		echo -n $"FAILED"
+		echo -en "\\033[0;30m"
+		echo -n "]"
+		echo -ne "\r"
+	elif [ -e "/etc/SuSE-release" ]; then
+		echo -en "\\033[60G"
+		echo -en "\\033[0;31m"
+		echo -n $"failed"
+		echo -en "\\033[0;30m"
+		echo -ne "\r"
+	else
+		echo -en "\\033[60G"
+		echo "FAILED"
+		echo -ne "\r"
+	fi
+    return 1
+}
+
+# See how we were called.
+case "$1" in
+ start)
+	start
+	;;
+ stop)
+	stop
+ 	;;
+restart)
+	stop
+    sleep 2
+    start
+    ;;
+status)
+	status
+	;;	
+ *)
+ 	echo $"Usage: $PROG {start|stop|restart|status}"
+	exit 1
+	;;
+esac
+
+exit $RETVAL
