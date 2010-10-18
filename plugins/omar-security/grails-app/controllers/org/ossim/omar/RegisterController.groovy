@@ -1,5 +1,6 @@
 package org.ossim.omar
 
+import org.springframework.beans.factory.InitializingBean
 import org.grails.plugins.springsecurity.service.AuthenticateService
 
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken as AuthToken
@@ -12,9 +13,9 @@ import org.springframework.security.context.SecurityContextHolder
 /**
  * Actions over org.ossim.omar.AuthUser object.
  */
-class RegisterController
+class RegisterController implements InitializingBean
 {
-
+  def autoEnableUserFlag
   EmailerService emailerService
   AuthenticateService authenticateService
   def daoAuthenticationProvider
@@ -190,7 +191,7 @@ class RegisterController
 
     def pass = authenticateService.passwordEncoder(params.passwd)
     person.passwd = pass
-    person.enabled = true
+    person.enabled = autoEnableUserFlag
     person.emailShow = true
     person.description = ''
     if ( person.save() )
@@ -225,13 +226,17 @@ class RegisterController
 //      SecurityContextHolder.context.authentication = authtoken
 
       session.invalidate()
-      
-      redirect(uri: '/')
+
+       redirect(uri: '/')
     }
     else
     {
       person.passwd = ''
       render(view: 'index', model: [person: person])
     }
+  }
+  public void afterPropertiesSet()
+  {
+    autoEnableUserFlag = grailsApplication.config.login?.registration?.autoEnableUserFlag
   }
 }
