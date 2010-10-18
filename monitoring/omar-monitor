@@ -1,0 +1,39 @@
+#!/bin/bash
+#
+# omar-monitor      Monitors the OMAR server and restarts it if an failure occurs.
+#
+#  Created by Jason Moskowitz on 2010-09-07.
+#  Copyright 2010 RadiantBlue Technologies Inc., All rights reserved.
+#
+
+OMAR_SCRIPT="/etc/init.d/omar"
+OMAR_LOG_DIR="/var/log/omar"
+OMAR_ERROR_FILE=${OMAR_LOG_DIR}/error_log
+MAILTO="root"
+MAILLOG="false"
+PROG="omar"
+
+# Restart OMAR instance
+restart_instance() {
+  $OMAR_SCRIPT start
+  sleep 3
+  echo "["`date`"]" "OMAR Tomcat process has been restarted due to a failure on $HOSTNAME." >> $OMAR_ERROR_FILE
+  
+	if [ $MAILLOG = "true" ]; then
+  		mail_log
+	fi
+}
+
+# Email error log to specified user
+mail_log() {
+mailx -s "$HOSTNAME $PROG Error" $MAILTO < tail -n 10 $OMAR_ERROR_FILE
+}
+
+# Check for running OMAR and start new instance if there is a problem
+if [ -e "$OMAR_SCRIPT" ]; then
+	$OMAR_SCRIPT status
+		if [ $? -eq 1 ]; then
+			echo "$PROG process is not running and will be started..."
+			restart_instance
+		fi
+fi

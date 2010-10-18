@@ -1,0 +1,1 @@
+*/1 * * * * root /opt/radiantblue/bin/omar-monitor > /dev/null
