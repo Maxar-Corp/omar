@@ -1,5 +1,6 @@
 package org.ossim.omar
 
+import org.springframework.beans.factory.InitializingBean
 import org.codehaus.groovy.grails.plugins.springsecurity.RedirectUtils
 import org.grails.plugins.springsecurity.service.AuthenticateService
 
@@ -11,12 +12,12 @@ import org.springframework.security.ui.webapp.AuthenticationProcessingFilter
 /**
  * Login Controller (Example).
  */
-class LoginController {
-
+class LoginController implements InitializingBean{
+     def registerFlag;
 	/**
 	 * Dependency injection for the authentication service.
 	 */
-	AuthenticateService authenticateService
+	def authenticateService
 
 	/**
 	 * Dependency injection for OpenIDConsumer.
@@ -45,6 +46,8 @@ class LoginController {
 	 * Show the login page.
 	 */
 	def auth = {
+      def model =[:]
+      model.registerFlag = registerFlag
 		nocache(response)
 		if (isLoggedIn()) {
 			redirect(uri: '/')
@@ -54,7 +57,7 @@ class LoginController {
 			render(view: 'openIdAuth')
 		}
 		else {
-			render(view: 'auth')
+			render(view: 'auth', model:model)
 		}
 	}
 
@@ -155,4 +158,8 @@ class LoginController {
 		response.setIntHeader ('Expires', -1) //prevents caching at the proxy server 
 		response.addHeader('cache-Control', 'private') //IE5.x only
 	}
+  public void afterPropertiesSet()
+  {
+    registerFlag = grailsApplication.config.login?.registration?.enabled
+  }
 }
