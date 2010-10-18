@@ -137,6 +137,7 @@ class OgcController
   }
 
   def wms = {
+    def starttime = System.currentTimeMillis()
     // Populate org.ossim.omar.WMSCapabilities Request object
     def wmsRequest = new WMSRequest()
 
@@ -174,8 +175,8 @@ class OgcController
           break
         }
 
-        def starttime = System.currentTimeMillis()
         def image = webMappingService.getMap(wmsRequest)
+        def endChipTime = System.currentTimeMillis()
         if(!image)
         {
           log.error("No image found for layers ${wmsRequest.layers}")
@@ -194,9 +195,11 @@ class OgcController
 
         def logData = [
                 TYPE: "wms_getmap",
-                START: new Date(starttime),
-                END: new Date(endtime),
-                ELAPSE_TIME_MILLIS: endtime - starttime,
+                START_TIME: new Date(starttime),
+                END_CHIP_TIME: new Date(endChipTime),
+                END_TIME: new Date(endtime),
+                ELAPSE_CHIP_TIME_SECONDS:  (endChipTime - starttime)/1000.0,
+                ELAPSE_WRITE_TIME_SECONDS: (endtime - endChipTime)/1000.0,
                 //USER: user,
                 PARAMS: wmsRequest,
                 MODE: webMappingService.mode
