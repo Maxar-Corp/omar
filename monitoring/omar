@@ -19,8 +19,8 @@ PROG="omar"
 CATALINA_HOME="/opt/radiantblue/apache-tomcat-6.0.29"
 OMAR_LOG_DIR="/var/log/omar"
 OMAR_ERROR_LOG=$OMAR_LOG_DIR/error_log
-OMAR_USER="jason4151"
-OMAR_GROUP="jason4151"
+OMAR_USER="omar"
+OMAR_GROUP="omar"
 
 # Must be exported in order for catatlina to generate pid file
 export CATALINA_PID="/var/run/omar/omar.pid"
