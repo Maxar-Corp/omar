@@ -16,7 +16,7 @@
 
 RETVAL=$?
 PROG="omar"
-CATALINA_HOME="/opt/radiantblue/apache-tomcat-6.0.29"
+CATALINA_HOME="/opt/radiantblue/tomcat"
 OMAR_LOG_DIR="/var/log/omar"
 OMAR_ERROR_LOG=$OMAR_LOG_DIR/error_log
 OMAR_USER="omar"
