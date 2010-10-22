@@ -121,7 +121,7 @@ class WMSRequest
       }
       else
       {
-        format = "image/png"
+        format = "image/jpeg"
       }
       break
     case "png":
@@ -137,7 +137,7 @@ class WMSRequest
       break
     }
 
-    return format
+    format
   }
   /*
   def createDateRangeRestriction()
