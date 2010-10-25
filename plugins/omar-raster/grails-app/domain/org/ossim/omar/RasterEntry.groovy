@@ -14,6 +14,7 @@ import org.joda.time.DateTime
 class RasterEntry
 {
   String entryId
+  String excludePolicy
   Long width
   Long height
   Integer numberOfBands
@@ -40,6 +41,7 @@ class RasterEntry
   Double azimuthAngle
   Double grazingAngle
   String securityClassification
+  String securityCode
   String title
   String isorce
   String organization
@@ -62,6 +64,7 @@ class RasterEntry
   DateTime accessDate
   DateTime ingestDate
 
+  BigInteger releaseId
   // Just for testing...
   String fileType
   String className
@@ -94,6 +97,7 @@ class RasterEntry
       imageCategory index: 'raster_entry_image_category_idx'
       imageRepresentation index: 'raster_entry_image_representation_idx'
       securityClassification index: 'raster_entry_security_classification_idx'
+      securityCode index: 'raster_entry_security_code_idx'
       countryCode index: 'raster_entry_country_code_idx'
       beNumber index: 'raster_entry_be_number_idx'
       validModel index: 'raster_entry_valid_model_idx'
@@ -106,7 +110,8 @@ class RasterEntry
 
       acquisitionDate index: 'raster_entry_acquisition_date_idx'
       accessDate index: 'raster_entry_access_date_idx'
-      ingestDate index: 'raster_entry_ingest_date_idx' 
+      ingestDate index: 'raster_entry_ingest_date_idx'
+      releaseId index: 'raster_entry_release_id_idx' 
 
       groundGeom type: org.hibernatespatial.GeometryUserType
 
@@ -115,6 +120,7 @@ class RasterEntry
 
   static constraints = {
     entryId()
+    excludePolicy(nullable:true)
     width(min: 0l)
     height(min: 0l)
     numberOfBands(min: 0)
@@ -140,6 +146,7 @@ class RasterEntry
     azimuthAngle(nullable: true)
     grazingAngle(nullable: true)
     securityClassification(nullable: true)
+    securityCode(nullable: true)
     title(nullable: true)
     niirs(nullable: true)
     isorce(nullable: true)
@@ -153,6 +160,7 @@ class RasterEntry
     beNumber(nullable: true)
     accessDate(nullable: true)
     ingestDate(nullable: true)
+    releaseId(nullable: true)
     styleId(nullable: true)
     keepForever(nullable: true)
     validModel(nullable: true)
@@ -295,7 +303,7 @@ class RasterEntry
     {
       rasterEntry.indexId = "${rasterEntry.entryId}-${filename}".encodeAsSHA256()
     }
-    if(!rasterEntry.validModel)
+    if(rasterEntry.validModel==null)
     {
       rasterEntry.validModel = 1
     }
@@ -521,7 +529,7 @@ class RasterEntry
           case "validmodel":
               if(value&&!rasterEntry.className)
               {
-                rasterEntry.validModel = value as Integer
+                  rasterEntry.validModel = value as Integer
               }
             break;
           default:
