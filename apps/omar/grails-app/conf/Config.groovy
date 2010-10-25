@@ -108,7 +108,7 @@ log4j = {
 //log4j.logger.org.springframework.security='off,stdout'
 
 /** *********************************************************************************************************/
-wms.referenceDataDirectory = wms.referenceDataDirectory?:"/data"
+wms.referenceDataDirectory = wms.referenceDataDirectory?:"/data/omar"
 
 
 wms.mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" : ""
@@ -116,7 +116,7 @@ wms.mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" :
 wms.serverAddress = grails.serverIP
 
 
-useTileCache = false
+useTileCache = true
 mapFile="${wms.referenceDataDirectory}/bmng.map"
 wms.base.layers = [
     [
@@ -255,3 +255,6 @@ kml.defaultImages = 10
 kml.defaultVideos = 10
 kml.daysCoverage = 30
 kml.viewRefreshTime = 2
+
+
+sessionTimeout = 60
