@@ -43,8 +43,8 @@ Blue #D8E4F1
 div.niceBox {
   margin-top: 3px;
   margin-bottom: 8px;
-  background-color: #CCFFBF;
-  border: 1px solid #2A8400;
+  background-color: #F0F8FF;
+  border: 1px solid #000000;
 }
 
 div.niceBoxHd {
@@ -52,7 +52,7 @@ div.niceBoxHd {
   font-weight: bold;
   padding: 2px;
   color: white;
-  background-color: #2AD400;
+  background-color: #003366;
 }
 
 div.niceBoxBody {
