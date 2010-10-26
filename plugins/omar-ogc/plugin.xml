@@ -1,0 +1,16 @@
+<plugin name='omar-ogc' version='0.1' grailsVersion='1.3.5 &gt; *'>
+  <author>Your name</author>
+  <title>Plugin summary/headline</title>
+  <description>\
+Brief description of the plugin.
+</description>
+  <documentation>http://grails.org/plugin/omar-ogc</documentation>
+  <resources>
+    <resource>BuildConfig</resource>
+    <resource>Config</resource>
+    <resource>DataSource</resource>
+    <resource>UrlMappings</resource>
+  </resources>
+  <dependencies />
+  <behavior />
+</plugin>

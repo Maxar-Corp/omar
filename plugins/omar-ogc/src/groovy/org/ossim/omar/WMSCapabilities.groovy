@@ -21,66 +21,47 @@ public class WMSCapabilities
   def sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
   def getCapabilitiesFormats = [
-      "application/vnd.ogc.wms_xml"
+          "application/vnd.ogc.wms_xml"
   ]
 
   def getMapFormats = [
-      "image/png",
-      //"image/gif",
-      "image/jpeg",
-      //"image/tiff",
-      //"image/nitf",
-      //"image/jp2",
-      //"image/vnd.wap.wbmp",
-      //"image/svg+xml"
+          "image/png",
+          //"image/gif",
+          "image/jpeg",
+          //"image/tiff",
+          //"image/nitf",
+          //"image/jp2",
+          //"image/vnd.wap.wbmp",
+          //"image/svg+xml"
   ]
 
   def getFeatureInfoFormats = [
-      "text/plain",
-      "application/vnd.ogc.gml"
+          "text/plain",
+          "application/vnd.ogc.gml"
   ]
 
   def describeLayerFormats = [
-      "text/xml"
+          "text/xml"
   ]
 
   def getLegendGraphicFormats = [
-      "image/png",
-      "image/gif",
-      "image/jpeg",
-      //"image/vnd.wap.wbmp"
+          "image/png",
+          "image/gif",
+          "image/jpeg",
+          //"image/vnd.wap.wbmp"
   ]
 
   def getStylesFormats = [
-      "text/xml"
+          "text/xml"
   ]
 
   def exceptionFormats = [
-      "application/vnd.ogc.se_xml",
-      "application/vnd.ogc.se_inimage",
-      "application/vnd.ogc.se_blank"
+          "application/vnd.ogc.se_xml",
+          "application/vnd.ogc.se_inimage",
+          "application/vnd.ogc.se_blank"
   ]
 
   def map
-
-  static def getWmsImageLayers(def layers)
-  {
-    return RasterEntry.createCriteria().list() {
-      or {
-        layers.each() {name ->
-          try
-          {
-            eq('id', java.lang.Long.valueOf(name))
-          }
-          catch (java.lang.Exception e)
-          {
-            eq('title', name)
-            eq('indexId', name)
-          }
-        }
-      }
-    }
-  }
 
   public WMSCapabilities(def layers, def serviceAddress)
   {
@@ -88,17 +69,16 @@ public class WMSCapabilities
     //println "${layers} ${serviceAddress}"
 
     map = new MapObject(
-        name: "OMAR",
-        title: "Imagery from OMAR",
-        srs: "EPSG:4326",
-        minX: -180,
-        minY: -90,
-        maxX: 180,
-        maxY: 90,
-        getCapabilitiesURL: "${serviceAddress}?layers=${layers?.join(',')}&",
-        getMapURL: serviceAddress
+            name: "OMAR",
+            title: "Imagery from OMAR",
+            srs: "EPSG:4326",
+            minX: -180,
+            minY: -90,
+            maxX: 180,
+            maxY: 90,
+            getCapabilitiesURL: "${serviceAddress}?layers=${layers?.join(',')}&",
+            getMapURL: serviceAddress
     )
-    def rasterEntries = getWmsImageLayers(layers)
 
     rasterEntries?.each {rasterEntry ->
       if ( rasterEntry )
@@ -121,16 +101,16 @@ public class WMSCapabilities
 //        }
 
         map.layers << new LayerObject(
-            name: rasterEntry.indexId,
-            title: rasterEntry.title,
-            description: "The absolute path to this file is ${file.name} and its entry id is ${entryId}",
-            srs: srs,
-            minX: bounds.minLon,
-            minY: bounds.minLat,
-            maxX: bounds.maxLon,
-            maxY: bounds.maxLat,
-            filename: filename,
-            acquisition: acquisition
+                name: rasterEntry.indexId,
+                title: rasterEntry.title,
+                description: "The absolute path to this file is ${file.name} and its entry id is ${entryId}",
+                srs: srs,
+                minX: bounds.minLon,
+                minY: bounds.minLat,
+                maxX: bounds.maxLon,
+                maxY: bounds.maxLat,
+                filename: filename,
+                acquisition: acquisition
         )
       }
     }
@@ -157,8 +137,8 @@ public class WMSCapabilities
             }
           }
           OnlineResource(
-              "xmlns:xlink": "http://www.w3.org/1999/xlink",
-              "xlink:href": ""
+                  "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                  "xlink:href": ""
           )
           ContactInformation() {
             ContactPersonPrimary() {
@@ -187,14 +167,14 @@ public class WMSCapabilities
                 HTTP() {
                   Get() {
                     OnlineResource(
-                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": map.getCapabilitiesURL //.replace("&", "&amp;")
+                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                            "xlink:href": map.getCapabilitiesURL //.replace("&", "&amp;")
                     )
                   }
                   Post {
                     OnlineResource(
-                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": map.getCapabilitiesURL //.replace("&", "&amp;")
+                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                            "xlink:href": map.getCapabilitiesURL //.replace("&", "&amp;")
                     )
                   }
                 }
@@ -208,14 +188,14 @@ public class WMSCapabilities
                 HTTP() {
                   Get() {
                     OnlineResource(
-                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": map.getMapURL//.replace("&", "&amp;")
+                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                            "xlink:href": map.getMapURL//.replace("&", "&amp;")
                     )
                   }
                   Post {
                     OnlineResource(
-                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": map.getMapURL //.replace("&", "&amp;")
+                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                            "xlink:href": map.getMapURL //.replace("&", "&amp;")
                     )
                   }
                 }
@@ -230,14 +210,14 @@ public class WMSCapabilities
                 HTTP() {
                   Get() {
                     OnlineResource(
-                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": ""
+                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                            "xlink:href": ""
                     )
                   }
                   Post {
                     OnlineResource(
-                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": ""
+                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                            "xlink:href": ""
                     )
                   }
                 }
@@ -251,14 +231,14 @@ public class WMSCapabilities
                 HTTP() {
                   Get() {
                     OnlineResource(
-                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": ""
+                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                            "xlink:href": ""
                     )
                   }
                   Post {
                     OnlineResource(
-                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": ""
+                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                            "xlink:href": ""
                     )
                   }
                 }
@@ -272,14 +252,14 @@ public class WMSCapabilities
                 HTTP() {
                   Get() {
                     OnlineResource(
-                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": ""
+                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                            "xlink:href": ""
                     )
                   }
                   Post {
                     OnlineResource(
-                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": ""
+                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                            "xlink:href": ""
                     )
                   }
                 }
@@ -293,14 +273,14 @@ public class WMSCapabilities
                 HTTP() {
                   Get() {
                     OnlineResource(
-                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": ""
+                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                            "xlink:href": ""
                     )
                   }
                   Post {
                     OnlineResource(
-                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                        "xlink:href": ""
+                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                            "xlink:href": ""
                     )
                   }
                 }
