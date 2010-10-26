@@ -22,7 +22,7 @@ class MapViewController implements InitializingBean
   def index = {
     WMSQuery query = new WMSQuery();
     def rasterEntries = []
-    if(params.layers)
+    if ( params.layers )
     {
       query.layers = params.layers
 
@@ -108,7 +108,7 @@ class MapViewController implements InitializingBean
 
     WMSQuery query = new WMSQuery();
     def rasterEntries = []
-    if(params.layers)
+    if ( params.layers )
     {
       query.layers = params.layers
 
@@ -127,8 +127,8 @@ class MapViewController implements InitializingBean
 
     model.rasterEntries = rasterEntries
     model.kmlOverlays = kmlOverlays
-    model.baseWMS= baseWMS
-    model.format = format?:"image/png"
+    model.baseWMS = baseWMS
+    model.format = format ?: "image/png"
     model.putAll(webMappingService.computeBounds(rasterEntries))
 
     return model
@@ -141,7 +141,7 @@ class MapViewController implements InitializingBean
   def imageSpace = {
     //log.info(params)
     //println (params)
-    def rasterEntry = RasterEntry.findByIndexId(params.layers)?:RasterEntry.get(params.layers)
+    def rasterEntry = RasterEntry.findByIndexId(params.layers) ?: RasterEntry.get(params.layers)
 
     def inputFile = rasterEntry.mainFile.name
     def width
@@ -182,7 +182,7 @@ class MapViewController implements InitializingBean
   {
     baseWMS = grailsApplication.config.wms.base.layers
     dataWMS = grailsApplication.config.wms.data.raster
-    format  = grailsApplication.config.wms.supportIE6?"image/gif":"image/png"
+    format = grailsApplication.config.wms.supportIE6 ? "image/gif" : "image/png"
   }
 
   def iview = {

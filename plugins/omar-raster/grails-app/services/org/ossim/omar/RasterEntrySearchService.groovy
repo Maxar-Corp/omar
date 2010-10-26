@@ -141,13 +141,32 @@ class RasterEntrySearchService implements InitializingBean
     def criteriaBuilder = RasterEntry.createCriteria();
     def x =
     {
-      def queryObject = rasterEntryQuery
       projections { rowCount()}
     }
     def criteria = criteriaBuilder.buildCriteria(x)
     criteria.add(rasterEntryQuery?.createClause())
     def totalCount = criteria.list().get(0) as int
     return totalCount
+  }
+
+
+  def getWmsImageLayers(def layers)
+  {
+    return RasterEntry.createCriteria().list() {
+      or {
+        layers.each() {name ->
+          try
+          {
+            eq('id', java.lang.Long.valueOf(name))
+          }
+          catch (java.lang.Exception e)
+          {
+            eq('title', name)
+            eq('indexId', name)
+          }
+        }
+      }
+    }
   }
 
   void afterPropertiesSet()

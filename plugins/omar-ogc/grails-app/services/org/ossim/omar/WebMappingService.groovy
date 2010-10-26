@@ -38,6 +38,7 @@ class WebMappingService
   static transactional = false
 
   def transparent = new TransparentFilter()
+
   void drawCoverage(Graphics2D g, WMSRequest wmsRequest, def geometries, def styleName)
   {
     def minx = -180.0
@@ -214,9 +215,9 @@ class WebMappingService
         sharpenWidth = "5"
         sharpenSigma = "1"
       }
-      def bandSelectorCount = bands?bands.split(",").length:0
+      def bandSelectorCount = bands ? bands.split(",").length : 0
       def quickLookFlag = Boolean.valueOf(quickLookFlagString)
-      def rasterEntries  = new WMSQuery().caseInsensitiveBind(wmsRequest.toMap()).rasterEntriesAsList
+      def rasterEntries = new WMSQuery().caseInsensitiveBind(wmsRequest.toMap()).rasterEntriesAsList
       rasterEntries.each { rasterEntry ->
         def geom = (ossimImageGeometry) null
         def geomPtr = (ossimImageGeometryPtr) null
@@ -282,9 +283,9 @@ class WebMappingService
           }
         }
       }
-      if(bandSelectorCount>0)
+      if ( bandSelectorCount > 0 )
       {
-        if(bandSelectorCount >= 3)
+        if ( bandSelectorCount >= 3 )
         {
           viewableBandCount = 3;
         }
@@ -339,9 +340,9 @@ class WebMappingService
         if ( viewableBandCount == 1 )
         {
           image = Utility.convertToColorIndexModel(dataBuffer,
-                                                   width as Integer,
-                                                   height as Integer,
-                                                   transparentFlag)
+                  width as Integer,
+                  height as Integer,
+                  transparentFlag)
         }
         else
         {
@@ -369,7 +370,7 @@ class WebMappingService
           {
             image = TransparentFilter.fixTransparency(new TransparentFilter(), image)
           }
-          if(wmsRequest?.format?.equalsIgnoreCase("image/gif"))
+          if ( wmsRequest?.format?.equalsIgnoreCase("image/gif") )
           {
             image = ImageGenerator.convertRGBAToIndexed(image)
           }
@@ -386,10 +387,12 @@ class WebMappingService
 
     return image;
   }
+
   def convertToIndexModel()
   {
 
   }
+
   BufferedImage getUnprojectedTile(Rectangle rect,
                                    String inputFile,
                                    int entry,
@@ -398,7 +401,7 @@ class WebMappingService
                                    int startSample, int endSample, int startLine, int endLine,
                                    def params)
   {
-    def sharpenMode = params.sharpen_mode?:""
+    def sharpenMode = params.sharpen_mode ?: ""
     def bands = params?.bands ?: ""
     int viewableBandCount = 1
     if ( sharpenMode.equals("light") )
@@ -411,14 +414,14 @@ class WebMappingService
       params.sharpen_width = "5"
       params.sharpen_sigma = "1"
     }
-    if(inputBandCount > 3)
+    if ( inputBandCount > 3 )
     {
       viewableBandCount = 3
     }
-    def bandSelectorCount = bands?bands.split(",").length:0
-    if(bandSelectorCount>0)
+    def bandSelectorCount = bands ? bands.split(",").length : 0
+    if ( bandSelectorCount > 0 )
     {
-      if(bandSelectorCount >= 3)
+      if ( bandSelectorCount >= 3 )
       {
         viewableBandCount = 3;
       }
@@ -437,7 +440,7 @@ class WebMappingService
 
     byte[] data = new byte[rect.width * rect.height * 3]
     def kwl = new ossimKeywordlist();
-    params.each {name,value ->
+    params.each {name, value ->
       kwl.add(name, value)
     }
     kwl.add("viewable_bands", "${viewableBandCount}")
@@ -496,7 +499,8 @@ class WebMappingService
   String getCapabilities(WMSRequest wmsRequest, String serviceAddress)
   {
     def layers = wmsRequest?.layers?.split(',')
-    def wmsCapabilites = new WMSCapabilities(layers, serviceAddress)
+    def rasterEntries = rasterEntrySearchService.getWmsImageLayers(layers)
+    def wmsCapabilites = new WMSCapabilities(rasterEntries, serviceAddress)
 
     return wmsCapabilites.getCapabilities()
   }
@@ -504,7 +508,8 @@ class WebMappingService
   String getKML(WMSRequest wmsRequest, String serviceAddress)
   {
     def layers = wmsRequest?.layers?.split(',')
-    def wmsCapabilities = new WMSCapabilities(layers, serviceAddress)
+    def rasterEntries = rasterEntrySearchService.getWmsImageLayers(layers)
+    def wmsCapabilities = new WMSCapabilities(rasterEntries, serviceAddress)
 
     return wmsCapabilities.getKML()
   }
@@ -724,14 +729,17 @@ class WebMappingService
       maxy = bounds[3] as double
     }
 
+    // SCOTTIE HACK - Need to make this pluggable
     if ( layer == "Imagery" || layer == "ImageData" )
     {
-      queryParams = new RasterEntryQuery()
+      //queryParams = new RasterEntryQuery()
+      queryParams = Class.forName("org.ossim.omar.RasterEntryQuery").newInstance()
       searchService = rasterEntrySearchService
     }
     else if ( layer == "Videos" || layer == "VideoData" )
     {
-      queryParams = new VideoDataSetQuery()
+      //queryParams = new VideoDataSetQuery()
+      queryParams = Class.forName("org.ossim.omar.VideoDataSetQuery").newInstance()
       searchService = videoDataSetSearchService
     }
     else
