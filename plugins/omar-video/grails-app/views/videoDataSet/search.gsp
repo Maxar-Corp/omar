@@ -345,8 +345,19 @@
   </g:form>
 </content>
 <content tag="center">
-  <h1 id="mapTitle"></h1>
-  <div id="map"></div>
+  <table>
+    <tr>
+      <td>
+        <div id="toolBar" class="olControlPanel"></div>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <h1 id="mapTitle"></h1>
+        <div id="map"></div>
+      </td>
+    </tr>
+  </table>
   <table>
     <tr>
       <td width="200px"><div id="mouseHoverDdOutput">&nbsp;</div></td>
