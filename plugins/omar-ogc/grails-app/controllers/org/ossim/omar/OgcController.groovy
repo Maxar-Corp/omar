@@ -22,6 +22,8 @@ class OgcController
   def kmlService
 
   def footprints = {
+
+
     Utility.removeEmptyParams(params)
     if ( params.max == null )
     {
@@ -29,6 +31,7 @@ class OgcController
     }
     // Convert param names to lower case
 //    def tempMap = new CaseInsensitiveMap(params)
+
 
     // Populate org.ossim.omar.WMSCapabilities Request object
     def wmsRequest = new WMSRequest()
@@ -84,6 +87,7 @@ class OgcController
         }
       }
 
+
       String[] layers = wmsRequest.layers?.split(",")
       String[] styles = wmsRequest.styles?.split(",")
 
@@ -115,6 +119,7 @@ class OgcController
                 wmsRequest,
                 g2d)
       }
+      
       if ( (wmsRequest.format == "image/gif") && wmsRequest.transparentFlag )
       {
         image = ImageGenerator.convertRGBAToIndexed(image)
