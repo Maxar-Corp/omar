@@ -258,3 +258,4 @@ kml.viewRefreshTime = 2
 
 
 sessionTimeout = 60
+defaultOverlayVisiblity = false
