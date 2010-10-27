@@ -733,20 +733,34 @@ class WebMappingService
     if ( layer == "Imagery" || layer == "ImageData" )
     {
       //queryParams = new RasterEntryQuery()
-      queryParams = Class.forName("org.ossim.omar.RasterEntryQuery").newInstance()
+      try
+      {
+        queryParams = Class.forName("org.ossim.omar.RasterEntryQuery", true,
+                Thread.currentThread().getContextClassLoader()).newInstance()
+      }
+      catch (Exception e)
+      { e.printStackTrace() }
+
       searchService = rasterEntrySearchService
+
     }
     else if ( layer == "Videos" || layer == "VideoData" )
     {
       //queryParams = new VideoDataSetQuery()
-      queryParams = Class.forName("org.ossim.omar.VideoDataSetQuery").newInstance()
+      try
+      {
+        queryParams = Class.forName("org.ossim.omar.VideoDataSetQuery", true,
+                Thread.currentThread().getContextClassLoader()).newInstance()
+      }
+      catch (Exception e)
+      { e.printStackTrace() }
+
       searchService = videoDataSetSearchService
     }
     else
     {
       log.info("Layer ${layer} is not understood for footprint drawing.  Only layers Imagery or Videos accepted")
     }
-
 
     queryParams.caseInsensitiveBind(params)
 
