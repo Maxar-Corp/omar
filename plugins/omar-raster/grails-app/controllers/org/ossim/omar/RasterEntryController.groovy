@@ -12,8 +12,8 @@ class RasterEntryController implements InitializingBean
 
   def rasterEntrySearchService
 
-  public static List tagHeaderList
-  public static List tagNameList
+  def tagHeaderList
+  def tagNameList
 
   def index = { redirect(action: list, params: params) }
 

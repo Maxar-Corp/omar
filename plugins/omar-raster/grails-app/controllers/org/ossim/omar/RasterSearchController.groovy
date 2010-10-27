@@ -13,8 +13,8 @@ class RasterSearchController implements InitializingBean
   def authenticateService
   def rasterEntrySearchService
 
-  public List tagHeaderList
-  public List tagNameList
+  def tagHeaderList
+  def tagNameList
 
   static defaultAction = 'search'
 
