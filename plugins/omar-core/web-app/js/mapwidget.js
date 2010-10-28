@@ -6,8 +6,7 @@ function MapWidget()
     {
         map = new OpenLayers.Map("map", {controls: []});
 
-        //map.addControl(new OpenLayers.Control.LayerSwitcher());
-          map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher')}));
+        map.addControl(new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerswitcher'), roundedCorner: false}));
 
         map.addControl(new OpenLayers.Control.Scale());
         map.addControl(new OpenLayers.Control.ScaleLine());
