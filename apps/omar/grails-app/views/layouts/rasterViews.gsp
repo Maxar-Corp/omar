@@ -41,6 +41,7 @@
   body {
     margin: 0;
     padding: 0;
+    visibility: hidden;
   }
 
   /* Set the background color */
@@ -114,7 +115,7 @@
     var Event = YAHOO.util.Event;
     var Layout = YAHOO.widget.Layout;
 
-       YAHOO.util.Dom.setStyle(document.body, 'visibility', 'hidden');
+    //   YAHOO.util.Dom.setStyle(document.body, 'visibility', 'hidden');
 
     Event.onDOMReady( function()
     {
