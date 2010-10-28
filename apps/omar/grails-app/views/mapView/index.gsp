@@ -7,8 +7,8 @@
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
 
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
 
   <style type="text/css">
@@ -103,15 +103,14 @@
 
 <content tag="west">
 
-
-    <div class="niceBox">
-      <div class="niceBoxHd">Map Center:</div>
-      <div class="niceBoxBody">
-        <g:textField name="center" value="${queryParams?.center}" onChange="setCenter()" size="30"/>
-      </div>
+  <div class="niceBox">
+    <div class="niceBoxHd">Map Center:</div>
+    <div class="niceBoxBody">
+      <g:textField name="center" value="${queryParams?.center}" onChange="setCenter()" size="30"/>
     </div>
+  </div>
 
-   <g:form name="wmsParams" method="POST" url="[action:'wms',controller:'ogc']">
+  <g:form name="wmsParams" method="POST" url="[action:'wms',controller:'ogc']">
     <input type="hidden" name="request" value=""/>
     <input type="hidden" name="layers" value=""/>
     <input type="hidden" name="bbox" value=""/>
@@ -149,13 +148,16 @@
 
           <li>Quick Look:</li>
           <li>
-            <g:select id="quicklook" name="quicklook" from="${['true', 'false']}" onChange="changeQuickLookOpts()"/>
+            <g:select id="quicklook" name="quicklook"
+                from="${[[name: 'On', value: 'true'], [name: 'Off', value: 'false']]}"
+                optionValue="name" optionKey="value"
+                onChange="changeQuickLookOpts()"/>
           </li>
         </ol>
       </div>
     </div>
 
-     <div class="niceBox">
+    <div class="niceBox">
       <div class="niceBoxHd">Mouse Position:</div>
       <div class="niceBoxBody">
         <div id="ddMousePosition">&nbsp;</div>
@@ -400,6 +402,7 @@ function changeQuickLookOpts()
     rasterLayers[layer].mergeNewParams({quicklook:$("quicklook").value});
   }
 }
+
 function changeHistoOpts()
 {
   var stretch_mode = $("stretch_mode").value;
