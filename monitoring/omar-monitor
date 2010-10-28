@@ -17,7 +17,7 @@ OMAR_SCRIPT="/etc/init.d/omar"
 OMAR_LOG_DIR="/var/log/omar"
 OMAR_ERROR_LOG=${OMAR_LOG_DIR}/error_log
 MAILTO="root"
-MAILLOG="true"
+MAILLOG="false"
 PROG="omar"
 RETVAL=$?
 
