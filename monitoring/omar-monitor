@@ -6,34 +6,89 @@
 #  Copyright 2010 RadiantBlue Technologies Inc., All rights reserved.
 #
 
+#CONFIG_FILE="/etc/omar.conf"
+#
+#if [ -f $CONFIG_FILE ]; then
+#	. $CONFIG_FILE
+#fi
+
+OMAR_URL="http://omar.ossim.org/omar/runningg"
 OMAR_SCRIPT="/etc/init.d/omar"
 OMAR_LOG_DIR="/var/log/omar"
-OMAR_ERROR_FILE=${OMAR_LOG_DIR}/error_log
+OMAR_ERROR_LOG=${OMAR_LOG_DIR}/error_log
 MAILTO="root"
-MAILLOG="false"
+MAILLOG="true"
 PROG="omar"
+RETVAL=$?
 
-# Restart OMAR instance
+# Restart OMAR Tomcat server
 restart_instance() {
-  $OMAR_SCRIPT start
+  $OMAR_SCRIPT restart
   sleep 3
-  echo "["`date`"]" "OMAR Tomcat process has been restarted due to a failure on $HOSTNAME." >> $OMAR_ERROR_FILE
-  
+  echo "["`date`"]" "OMAR Tomcat process has been restarted due to a failure on $HOSTNAME." >> $OMAR_ERROR_LOG  
 	if [ $MAILLOG = "true" ]; then
   		mail_log
 	fi
+	exit 0
 }
 
-# Email error log to specified user
+# Email last 15 lines of OMAR error log to specified user
 mail_log() {
-mailx -s "$HOSTNAME $PROG Error" $MAILTO < tail -n 10 $OMAR_ERROR_FILE
+	tail -n 15 $OMAR_ERROR_LOG | mail -s "$HOSTNAME $PROG error" $MAILTO
 }
 
-# Check for running OMAR and start new instance if there is a problem
+# Query the OMAR URL to verify that it is accessible 
+monitor() {
+	COUNT="0"
+    WAIT="10"
+	# Check to see if OMAR URL variable is set
+	if [ -z "$OMAR_URL" ]; then
+		echo "$PROG URL has not been set..."
+		echo "Unable to check the accessibility of the $PROG site..."
+		# If the OMAR URL is not set then check the status of the OMAR Tomcat process
+		status
+	else
+		/usr/bin/curl -fsm 5 $OMAR_URL -o /dev/null
+		if [ $? -eq 0 ]; then
+			echo "$PROG server is running..."
+			exit 0
+			else
+				# If server does not respond, then wait 10 seconds and recheck
+				echo "$PROG server did not respond"
+				echo "Waiting $WAIT seconds for response..."
+				until [ $COUNT -eq "10" ]; do
+					let COUNT="${COUNT}+1"
+					sleep 1
+				done
+					# Now recheck.
+					#/usr/bin/curl -fsm 5 $OMAR_URL -o /dev/null
+					/usr/bin/curl -fsm 5 $OMAR_URL -o /dev/null
+					if [ $? -eq 0 ]; then
+						echo "$PROG server is now responding..."
+						exit 0
+					else
+						# If we reach this point then the OMAR server has not responded and we log it and restart the OMAR Tomcat server
+						echo "["`date`"]" "Unable to communicate with $PROG server on $HOSTNAME." >> $OMAR_ERROR_LOG
+						restart_instance
+					fi
+		fi
+	fi
+}
+
+# Check for running OMAR Tomcat process and start new instance if there is a problem
+status() {
 if [ -e "$OMAR_SCRIPT" ]; then
+	echo "Checking status of $PROG process..."
 	$OMAR_SCRIPT status
 		if [ $? -eq 1 ]; then
 			echo "$PROG process is not running and will be started..."
 			restart_instance
 		fi
+	else
+	echo "OMAR init script does not exist..."
+	exit 1
 fi
+}
+
+# Run monitor
+monitor
