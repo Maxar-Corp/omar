@@ -216,7 +216,19 @@ class WebMappingService
         sharpenSigma = "1"
       }
       def bandSelectorCount = bands ? bands.split(",").length : 0
-      def quickLookFlag = Boolean.valueOf(quickLookFlagString)
+
+
+      def quickLookFlag = false
+
+      switch ( quickLookFlagString?.toLowerCase() )
+      {
+      case "true":
+      case "on":
+        quickLookFlag = true
+        break
+      }
+
+
       def rasterEntries = new WMSQuery().caseInsensitiveBind(wmsRequest.toMap()).rasterEntriesAsList
       rasterEntries.each { rasterEntry ->
         def geom = (ossimImageGeometry) null
