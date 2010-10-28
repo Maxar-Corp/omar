@@ -12,7 +12,7 @@
 #	. $CONFIG_FILE
 #fi
 
-OMAR_URL="http://omar.ossim.org/omar/runningg"
+OMAR_URL="http://omar.ossim.org/omar/running"
 OMAR_SCRIPT="/etc/init.d/omar"
 OMAR_LOG_DIR="/var/log/omar"
 OMAR_ERROR_LOG=${OMAR_LOG_DIR}/error_log
@@ -40,7 +40,7 @@ mail_log() {
 # Query the OMAR URL to verify that it is accessible 
 monitor() {
 	COUNT="0"
-    WAIT="10"
+	WAIT="10"
 	# Check to see if OMAR URL variable is set
 	if [ -z "$OMAR_URL" ]; then
 		echo "$PROG URL has not been set..."
@@ -61,7 +61,6 @@ monitor() {
 					sleep 1
 				done
 					# Now recheck.
-					#/usr/bin/curl -fsm 5 $OMAR_URL -o /dev/null
 					/usr/bin/curl -fsm 5 $OMAR_URL -o /dev/null
 					if [ $? -eq 0 ]; then
 						echo "$PROG server is now responding..."
