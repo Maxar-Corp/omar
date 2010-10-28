@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# omar-monitor      Monitors the OMAR server and restarts it if an failure occurs.
+# omar-monitor      Monitors the OMAR server and process and restarts it if a failure occurs.
 #
 #  Created by Jason Moskowitz on 2010-09-07.
 #  Copyright 2010 RadiantBlue Technologies Inc., All rights reserved.
