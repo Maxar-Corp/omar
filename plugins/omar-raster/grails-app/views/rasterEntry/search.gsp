@@ -375,7 +375,7 @@
       <div id="areaMeasurementOutput"></div>
     </div>
   </div>
-  <div id="layerswitcher" class="olControlLayerSwitcher" style="position: relative;"></div>
+  <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
 </content>
 
 <openlayers:loadJavascript />
