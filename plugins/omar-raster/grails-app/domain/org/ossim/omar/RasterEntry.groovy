@@ -4,8 +4,6 @@ package org.ossim.omar
 
 //import org.ossim.postgis.Geometry
 
-import java.util.regex.Pattern
-import java.lang.String
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.Polygon
 import com.vividsolutions.jts.io.WKTReader
