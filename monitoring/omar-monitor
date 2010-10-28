@@ -12,6 +12,7 @@
 #	. $CONFIG_FILE
 #fi
 
+RETVAL=$?
 OMAR_URL="http://omar.ossim.org/omar/running"
 OMAR_SCRIPT="/etc/init.d/omar"
 OMAR_LOG_DIR="/var/log/omar"
@@ -19,7 +20,6 @@ OMAR_ERROR_LOG=${OMAR_LOG_DIR}/error_log
 MAILTO="root"
 MAILLOG="false"
 PROG="omar"
-RETVAL=$?
 
 # Restart OMAR Tomcat server
 restart_instance() {
@@ -49,7 +49,7 @@ monitor() {
 		status
 	else
 		/usr/bin/curl -fsm 5 $OMAR_URL -o /dev/null
-		if [ $? -eq 0 ]; then
+		if [ "$RETVAL" -eq 0 ]; then
 			echo "$PROG server is running..."
 			exit 0
 			else
@@ -62,7 +62,7 @@ monitor() {
 				done
 					# Now recheck.
 					/usr/bin/curl -fsm 5 $OMAR_URL -o /dev/null
-					if [ $? -eq 0 ]; then
+					if [ "$RETVAL" -eq 0 ]; then
 						echo "$PROG server is now responding..."
 						exit 0
 					else
