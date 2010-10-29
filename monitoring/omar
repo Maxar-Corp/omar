@@ -14,6 +14,12 @@
 # Description: OMAR start, stop and restart script
 # Short-Description: start, stop and restart OMAR
 
+#CONFIG_FILE="/etc/omar.conf"
+#
+#if [ -f $CONFIG_FILE ]; then
+#	. $CONFIG_FILE
+#fi
+
 RETVAL=$?
 PROG="omar"
 CATALINA_HOME="/opt/radiantblue/tomcat"
@@ -146,7 +152,7 @@ echo_success() {
 		echo -en "\\033[60G"
 		echo -en "\\033[1;32m"
 		echo -n $"done"
-		echo -en "\\033[0;30m"
+		echo -en "\\033[0;39m"
 		echo -en "\r"
 	else
 		echo -en "\\033[60G"
@@ -169,7 +175,7 @@ echo_failure() {
 		echo -en "\\033[60G"
 		echo -en "\\033[0;31m"
 		echo -n $"failed"
-		echo -en "\\033[0;30m"
+		echo -en "\\033[0;39m"
 		echo -en "\r"
 	else
 		echo -en "\\033[60G"
