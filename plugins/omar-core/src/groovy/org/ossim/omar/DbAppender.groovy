@@ -29,7 +29,6 @@ public class DbAppender extends org.apache.log4j.AppenderSkeleton
   }
   public void activateOptions()
   {
-    println "DbAppender:activateOptions: *********************"
     this.closed=false
   }
   boolean requiresLayout()
