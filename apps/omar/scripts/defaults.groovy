@@ -64,7 +64,7 @@ if ( !admin )
           description: "Super User"
   )
 
-  admin.addToAuthorities(userRole).addToAuthorities(adminRole).addToAuthorities(downloadRole).save(flush: true)
+  admin.addToAuthorities(userRole).addToAuthorities(adminRole).save(flush: true)
 }
 
 if ( !Requestmap.findByUrl("/home/**") )
