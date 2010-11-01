@@ -4,7 +4,9 @@ import grails.util.Environment
 import com.vividsolutions.jts.geom.Geometry
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
+import org.apache.log4j.spi.LoggingEvent
 
+import java.sql.Connection
 grails.gorm.default.mapping = {
   cache true
   id generator: 'identity'
@@ -59,22 +61,71 @@ grails.serverIP = InetAddress.localHost.hostAddress
 // set per-environment serverURL stem for creating absolute links
 environments {
   development {
+    databaseName="omardb-${appVersion}-dev"
     grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
   }
   test {
+    databaseName="omardb-${appVersion}-test"
     grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
   }
   production {
+    databaseName="omardb-${appVersion}-prod"
     grails.serverURL = "http://${grails.serverIP}/${appName}"
 
   }
 }
+
 // log4j configuration
 log4j = {
   // Example of changing the log pattern for the default console
   // appender:
   //
   appenders {
+    appender new org.ossim.omar.DbAppender(  name: "wmsLoggingAppender",
+            threshold: org.apache.log4j.Level.INFO,
+            modifyParametersClosure: {map->
+              def newMap = [:]
+              map.each{k,v->
+                try{
+                  switch(k)
+                  {
+                    case "width":
+                    case "height":
+                      newMap."${k}" = v as Long
+                      break
+                    case "internal_time":
+                    case "render_time":
+                    case "total_time":
+                    case "mean_gsd":
+                      newMap."${k}" = v as Double
+                      break
+                    case "start_date":
+                    case "end_date":
+                      def dateTime  = org.ossim.omar.ISO8601DateParser.parseDateTime(v)
+                      newMap."${k}" =  new java.sql.Timestamp(dateTime.millis)
+                      break
+                    default:
+                      newMap."${k}" = "${v}" as String
+                  }
+                }
+                catch(Exception e)
+                {
+                  println "PROBLEMS with ${k}"
+                  println "ERROR = ${e}"
+                  newMap."${k}" = v
+                }
+              }
+              newMap
+            },
+            sqlStatement: """INSERT INTO wms_log(version, width, height, layers, style,
+                                                 format, request, internal_time, render_time, total_time,
+                                                 start_date, end_date, user_name, ip, url, mean_gsd,
+                                                 geometry) VALUES
+                             (0, :width, :height, :layers, :style,
+                              :format, :request, :internal_time, :render_time, :total_time,
+                              :start_date, :end_date, :user_name, :ip, :url, :mean_gsd,
+                              ST_GeomFromText(:geometry, 4326))"""
+            )
     appender new org.apache.log4j.DailyRollingFileAppender(name: "omarDataManagerAppender",
         datePattern: "'.'yyyy-MM-dd",
         file: "/tmp/logs/omarDataManagerAppender.log",
@@ -85,11 +136,9 @@ log4j = {
         layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n'))
   }
 
-//  info 'omarDataManagerAppender': 'grails.app.service.org.ossim.omar.DataManagerService',
-  info 'omarDataManagerAppender': '*DataManagerService',
-      additivity: false
-  info omarAppender: 'grails.app',
-      additivity: false
+  info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: true
+  info 'omarDataManagerAppender': '*DataManagerService', additivity: false
+  info omarAppender: 'grails.app', additivity: false
 
   error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
       'org.codehaus.groovy.grails.web.pages', //  GSP
@@ -248,6 +297,13 @@ videoDataSet.searchTagData = [
     [name: "otherTagsXml.filename=", description: "Feed"]
 ]
 
+login{
+  registration
+  {
+    enabled=true
+    autoEnableUserFlag=true
+  }
+}
 
 kml.maxImages = 100
 kml.maxVideos = 100
