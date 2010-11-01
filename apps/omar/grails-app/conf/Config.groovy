@@ -93,14 +93,14 @@ log4j = {
                     case "height":
                       newMap."${k}" = v as Long
                       break
-                    case "internal_time":
-                    case "render_time":
-                    case "total_time":
-                    case "mean_gsd":
+                    case "internalTime":
+                    case "renderTime":
+                    case "totalTime":
+                    case "meanGsd":
                       newMap."${k}" = v as Double
                       break
-                    case "start_date":
-                    case "end_date":
+                    case "startDate":
+                    case "endDate":
                       def dateTime  = org.ossim.omar.ISO8601DateParser.parseDateTime(v)
                       newMap."${k}" =  new java.sql.Timestamp(dateTime.millis)
                       break
@@ -117,14 +117,12 @@ log4j = {
               }
               newMap
             },
-            sqlStatement: """INSERT INTO wms_log(version, width, height, layers, style,
-                                                 format, request, internal_time, render_time, total_time,
-                                                 start_date, end_date, user_name, ip, url, mean_gsd,
-                                                 geometry) VALUES
-                             (0, :width, :height, :layers, :style,
-                              :format, :request, :internal_time, :render_time, :total_time,
-                              :start_date, :end_date, :user_name, :ip, :url, :mean_gsd,
-                              ST_GeomFromText(:geometry, 4326))"""
+            tableMapping: [width:":width", height: ":height", layers:":layers", styles:":styles",
+                           format: ":format", request:":request", internal_time:":internalTime",
+                           render_time:":renderTime", total_time:":totalTime", start_date:":startDate",
+                           end_date:":endDate", user_name:":userName", ip:":ip", url:":url", mean_gsd:":meanGsd",
+                           geometry: "ST_GeomFromText(:geometry, 4326)"],
+            tableName: "wms_log"
             )
     appender new org.apache.log4j.DailyRollingFileAppender(name: "omarDataManagerAppender",
         datePattern: "'.'yyyy-MM-dd",
