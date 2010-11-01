@@ -79,7 +79,6 @@ apps/omar/grails-app/views/thumbnail/*.iml
 apps/omar/grails-app/views/yuiTableTest/*.iml
 apps/omar/lib/*.iml
 apps/omar/mapserver/*.iml
-apps/omar/monitoring/*.iml
 apps/omar/plugins/*.iml
 apps/omar/scripts/*.iml
 apps/omar/src/*.iml
