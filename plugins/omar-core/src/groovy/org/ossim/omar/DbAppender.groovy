@@ -5,7 +5,9 @@ package org.ossim.omar
 public class DbAppender extends org.apache.log4j.AppenderSkeleton
 
 {
-  protected String sqlStatement = ""
+  private String sqlStatement = ""
+  protected def tableMapping = [:]
+  protected String tableName = ""
   def sql = null
   def modifyParametersClosure
   def shell
@@ -20,7 +22,10 @@ public class DbAppender extends org.apache.log4j.AppenderSkeleton
     def newParams = modifyParametersClosure(params)
     try
     {
-      sql.execute(sqlStatement, newParams)
+      if(sqlStatement)
+      {
+        sql.execute(sqlStatement, newParams)
+      }
     }
     catch(Exception e)
     {
@@ -30,6 +35,22 @@ public class DbAppender extends org.apache.log4j.AppenderSkeleton
   public void activateOptions()
   {
     this.closed=false
+    initializeSqlStatement()
+  }
+  void initializeSqlStatement()
+  {
+    sqlStatement = ""
+    if(tableMapping.size() > 0)
+    {
+      def keys = []
+      def values = []
+      tableMapping.each{k,v->
+        keys += ["${k}"]
+        values += ["${v}"]
+      }
+
+      sqlStatement =  "INSERT INTO ${tableName}("  + keys.join(",") + ") VALUES (" + values.join(",") + ")"
+    }
   }
   boolean requiresLayout()
   {
