@@ -17,27 +17,20 @@ class OgcController
   def rasterEntrySearchService
   def videoDataSetSearchService
   def webMappingService
+  def wmsLogService
   def grailsApplication
   def authenticateService
   def kmlService
 
   def footprints = {
-
-
     Utility.removeEmptyParams(params)
     if ( params.max == null )
     {
       params.max = grailsApplication.config.wms.vector.maxcount
     }
-    // Convert param names to lower case
-//    def tempMap = new CaseInsensitiveMap(params)
-
-
-    // Populate org.ossim.omar.WMSCapabilities Request object
     def wmsRequest = new WMSRequest()
 
     Utility.simpleCaseInsensitiveBind(wmsRequest, params);
-//    bindData(wmsRequest, tempMap)
 
     // default to geographic bounds
     if ( !wmsRequest.srs )
@@ -142,11 +135,18 @@ class OgcController
   }
 
   def wms = {
-    def starttime = System.currentTimeMillis()
+    def starttime    = System.currentTimeMillis()
+    def internaltime = starttime
+    def rendertime   = starttime
+    def endtime      = starttime
     // Populate org.ossim.omar.WMSCapabilities Request object
     def wmsRequest = new WMSRequest()
 
+
     Utility.simpleCaseInsensitiveBind(wmsRequest, params);
+    def wmsLogParams = wmsRequest.toMap()
+    wmsLogParams.start_date = new Date()
+
     def tempMap = new CaseInsensitiveMap(params)
     try
     {
@@ -181,7 +181,7 @@ class OgcController
         }
 
         def image = webMappingService.getMap(wmsRequest)
-        def endChipTime = System.currentTimeMillis()
+        internaltime = System.currentTimeMillis()
         if(!image)
         {
           log.error("No image found for layers ${wmsRequest.layers}")
@@ -190,33 +190,28 @@ class OgcController
         {
           ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
         }
-
-        def endtime = System.currentTimeMillis()
-        def principal = authenticateService.principal()
-
-        //if ( principal != "anonymousUser" )
-        //{
-        //def user = principal.username
-
-        def logData = [
-                TYPE: "wms_getmap",
-                START_TIME: new Date(starttime),
-                END_CHIP_TIME: new Date(endChipTime),
-                END_TIME: new Date(endtime),
-                ELAPSE_CHIP_TIME_SECONDS:  (endChipTime - starttime)/1000.0,
-                ELAPSE_WRITE_TIME_SECONDS: (endtime - endChipTime)/1000.0,
-                ELAPSE_TIME: (endtime-starttime)/1000.0,
-                //USER: user,
-                PARAMS: wmsRequest,
-                MODE: webMappingService.mode
-        ]
-        log.info(logData)
+        wmsLogParams.domain = authenticateService.userDomain()
+        wmsLogParams.user_name = "nobody"
+        def domain = null
+        wmsLogParams.ip = request.getHeader('X-Forwarded-For')
+        if(!wmsLogParams.ip)
+        {
+          wmsLogParams.ip = request.getRemoteAddr()
+        }
+        if(wmsLogParams.domain)
+        {
+          def authUser = AuthUser.get(wmsLogParams.domain.id)
+          wmsLogParams.user_name = authUser?.username
+          wmsLogParams.domain = authUser?.email.split('@')[1]
+        }
+        
         break
       case "getcapabilities":
         def serviceAddress = createLink(controller: "ogc", action: "wms", absolute: true) as String
         def capabilities = webMappingService?.getCapabilities(wmsRequest, serviceAddress)
-
+        intenaltime =  System.currentTimeMillis();
         render(contentType: "text/xml", text: capabilities)
+        rendertime  =  System.currentTimeMillis();
         break
       case "getkml":
         def wmsParams = [:]
@@ -263,6 +258,14 @@ class OgcController
       default:
         log.error("ERROR: Unknown action: ${wmsRequest?.request}")
       }
+      
+      endtime                    = System.currentTimeMillis()
+      wmsLogParams.end_date      = new Date()
+      wmsLogParams.internal_time = (internaltime-starttime)/1000.0
+      wmsLogParams.render_time   = (endtime-internaltime)/1000.0
+      wmsLogParams.total_time    = (endtime-starttime)/1000.0
+      wmsLogParams.url           = createLink([controller:'ogc', action:'wms',absolute:true, params:params])
+      wmsLogService.logParams(wmsLogParams)
     }
     catch (java.lang.Exception e)
     {
