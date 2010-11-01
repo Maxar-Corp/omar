@@ -4,15 +4,18 @@ import grails.converters.JSON
 import org.ossim.postgis.Geometry
 import joms.oms.ossimGpt
 import joms.oms.ossimDpt
+import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
+
 class WmsLogService {
   static transactional = true
   def fixLogParamsForRouting(def params)
   {
     def paramsSave = new HashMap(params)
-    def startDate  = new org.joda.time.DateTime(paramsSave.start_date.time).toDateTime(org.joda.time.DateTimeZone.UTC)
-    def endDate    = new org.joda.time.DateTime(paramsSave.end_date.time).toDateTime(org.joda.time.DateTimeZone.UTC)
-    paramsSave.start_date = startDate.toString()
-    paramsSave.end_date   = endDate.toString()
+    def startDate  = new DateTime(paramsSave.startDate.time).toDateTime(DateTimeZone.UTC)
+    def endDate    = new DateTime(paramsSave.endDate.time).toDateTime(DateTimeZone.UTC)
+    paramsSave.startDate = startDate.toString()
+    paramsSave.endDate   = endDate.toString()
 
     def bboxSplit = paramsSave.bbox?.split(',')
     if(bboxSplit?.size() == 4)
@@ -33,7 +36,7 @@ class WmsLogService {
         def metersX = (maxX-minX)*dpt.x;
         if(paramsSave.width&&paramsSave.height)
         {
-           paramsSave.mean_gsd = ((metersX/(paramsSave.width as Double))+
+           paramsSave.meanGsd = ((metersX/(paramsSave.width as Double))+
                                  ((metersY/(paramsSave.height as Double))))*0.5
         }
       }
@@ -42,8 +45,6 @@ class WmsLogService {
         log.error(e)
       }
     }
-    paramsSave.url    = paramsSave.url?.size()>2048?paramsSave?.url[0..2047]:paramsSave?.url
-    paramsSave.layers = paramsSave.layers?.size()>2048?paramsSave?.layers[0..2047]:paramsSave?.layers
  
     paramsSave.each{k,v->
       paramsSave."${k}" ='"' + v + '"'

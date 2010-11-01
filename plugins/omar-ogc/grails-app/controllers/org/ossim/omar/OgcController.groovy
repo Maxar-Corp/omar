@@ -145,7 +145,7 @@ class OgcController
 
     Utility.simpleCaseInsensitiveBind(wmsRequest, params);
     def wmsLogParams = wmsRequest.toMap()
-    wmsLogParams.start_date = new Date()
+    wmsLogParams.startDate = new Date()
 
     def tempMap = new CaseInsensitiveMap(params)
     try
@@ -191,7 +191,7 @@ class OgcController
           ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
         }
         wmsLogParams.domain = authenticateService.userDomain()
-        wmsLogParams.user_name = "nobody"
+        wmsLogParams.userName = "nobody"
         def domain = null
         wmsLogParams.ip = request.getHeader('X-Forwarded-For')
         if(!wmsLogParams.ip)
@@ -201,7 +201,7 @@ class OgcController
         if(wmsLogParams.domain)
         {
           def authUser = AuthUser.get(wmsLogParams.domain.id)
-          wmsLogParams.user_name = authUser?.username
+          wmsLogParams.userName = authUser?.username
           wmsLogParams.domain = authUser?.email.split('@')[1]
         }
         
@@ -260,11 +260,14 @@ class OgcController
       }
       
       endtime                    = System.currentTimeMillis()
-      wmsLogParams.end_date      = new Date()
-      wmsLogParams.internal_time = (internaltime-starttime)/1000.0
-      wmsLogParams.render_time   = (endtime-internaltime)/1000.0
-      wmsLogParams.total_time    = (endtime-starttime)/1000.0
-      wmsLogParams.url           = createLink([controller:'ogc', action:'wms',absolute:true, params:params])
+      def urlTemp = createLink([controller:'ogc', action:'wms',absolute:true, params:params])
+      wmsLogParams.with{
+        endDate      = new Date()
+        internalTime = (internaltime-starttime)/1000.0
+        renderTime   = (endtime-internaltime)/1000.0
+        totalTime    = (endtime-starttime)/1000.0
+        url           = urlTemp
+      }
       wmsLogService.logParams(wmsLogParams)
     }
     catch (java.lang.Exception e)
