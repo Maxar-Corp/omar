@@ -9,6 +9,7 @@ package org.ossim.omar
 
 import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
+import org.hibernate.criterion.MatchMode
 
 class RasterEntryQuery extends BaseQuery
 {
@@ -93,7 +94,8 @@ class RasterEntryQuery extends BaseQuery
           }
           else
           {
-            result.add(Restrictions.ilike(results["property"], "%${results['value']}%"))
+            //result.add(Restrictions.like(results["property"], results['value'], MatchMode.ANYWHERE))
+            result.add(Restrictions.ilike(results["property"], results['value'], MatchMode.ANYWHERE))
           }
         }
       }

@@ -47,7 +47,7 @@ class RasterEntrySearchService implements InitializingBean
           addOrder(ordering)
         }
 
-        setFetchMode("rasterEntry", FetchMode.JOIN)
+        //setFetchMode("rasterEntry", FetchMode.JOIN)
       }
     }
 
@@ -55,7 +55,17 @@ class RasterEntrySearchService implements InitializingBean
 
     criteria.add(rasterEntryQuery?.createClause())
 
-    return criteria.list()
+    def rasterEntries = criteria.list()
+
+    if ( rasterEntries )
+    {
+      RasterFile.withCriteria {
+        eq("type", "main")
+        inList("rasterDataSet", rasterEntries.rasterDataSet)
+      }
+    }
+
+    return rasterEntries
   }
 
 

@@ -192,7 +192,7 @@
                   <img src="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                 </a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
-                <g:set var="rasterFile" value="${rasterFiles.find { it.rasterDataSet == rasterEntry.rasterDataSet }}"/>
+                <g:set var="rasterFile" value="${rasterEntry.mainFile}"/>
 
                 <td>
                   <g:ifAllGranted role="ROLE_DOWNLOAD">
