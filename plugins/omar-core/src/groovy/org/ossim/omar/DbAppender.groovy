@@ -3,8 +3,47 @@ package org.ossim.omar
 import java.sql.DatabaseMetaData
 import java.sql.Connection
 
-//import org.codehaus.groovy.grails.commons.*
-//import grails.converters.JSON
+/**
+ *  Example log4j:
+ * 
+ *     appender new org.ossim.omar.DbAppender(  name: "wmsLoggingAppender",
+ *           threshold: org.apache.log4j.Level.INFO,
+ *           tableMapping: [width:":width", height: ":height", layers:":layers", styles:":styles",
+ *                          format: ":format", request:":request", bbox:":bbox", internal_time:":internalTime",
+ *                          render_time:":renderTime", total_time:":totalTime", start_date:":startDate",
+ *                          end_date:":endDate", user_name:":userName", ip:":ip", url:":url", mean_gsd:":meanGsd",
+ *                          geometry: "ST_GeomFromText(:geometry, 4326)"],
+ *           tableName: "wms_log"
+ *           )
+ *
+ *
+ * Now to log the filter:
+ *
+ *      info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService',
+ *                                additivity: true
+ *
+ * There is a default massaging of the data type that can handle dates but if you want to do your own massaging
+ * there is an attribute called:
+ *
+ *  modifyParametersClosure
+ *
+ *     appender new org.ossim.omar.DbAppender(  name: "wmsLoggingAppender",
+ *           threshold: org.apache.log4j.Level.INFO,
+ *           tableMapping: [width:":width", height: ":height", layers:":layers", styles:":styles",
+ *                          format: ":format", request:":request", bbox:":bbox", internal_time:":internalTime",
+ *                          render_time:":renderTime", total_time:":totalTime", start_date:":startDate",
+ *                          end_date:":endDate", user_name:":userName", ip:":ip", url:":url", mean_gsd:":meanGsd",
+ *                          geometry: "ST_GeomFromText(:geometry, 4326)"],
+ *           tableName: "wms_log"
+ *           modifyParametersClosure: {map->
+ *                        // add any map adjustements here
+ *                        // this is the routed message in a HashMap format that will be passed
+ *                        // to the sql insert command
+ *                        map // return result
+ *                     }
+ }
+ *           )
+ */
 public class DbAppender extends org.apache.log4j.AppenderSkeleton
 
 {
