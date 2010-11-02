@@ -83,42 +83,8 @@ log4j = {
   appenders {
     appender new org.ossim.omar.DbAppender(  name: "wmsLoggingAppender",
             threshold: org.apache.log4j.Level.INFO,
-            modifyParametersClosure: {map->
-              def newMap = [:]
-              map.each{k,v->
-                try{
-                  switch(k)
-                  {
-                    case "width":
-                    case "height":
-                      newMap."${k}" = v as Long
-                      break
-                    case "internalTime":
-                    case "renderTime":
-                    case "totalTime":
-                    case "meanGsd":
-                      newMap."${k}" = v as Double
-                      break
-                    case "startDate":
-                    case "endDate":
-                      def dateTime  = org.ossim.omar.ISO8601DateParser.parseDateTime(v)
-                      newMap."${k}" =  new java.sql.Timestamp(dateTime.millis)
-                      break
-                    default:
-                      newMap."${k}" = "${v}" as String
-                  }
-                }
-                catch(Exception e)
-                {
-                  println "PROBLEMS with ${k}"
-                  println "ERROR = ${e}"
-                  newMap."${k}" = v
-                }
-              }
-              newMap
-            },
             tableMapping: [width:":width", height: ":height", layers:":layers", styles:":styles",
-                           format: ":format", request:":request", internal_time:":internalTime",
+                           format: ":format", request:":request", bbox:":bbox", internal_time:":internalTime",
                            render_time:":renderTime", total_time:":totalTime", start_date:":startDate",
                            end_date:":endDate", user_name:":userName", ip:":ip", url:":url", mean_gsd:":meanGsd",
                            geometry: "ST_GeomFromText(:geometry, 4326)"],
