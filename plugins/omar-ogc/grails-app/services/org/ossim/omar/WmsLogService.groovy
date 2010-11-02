@@ -9,15 +9,24 @@ import org.joda.time.DateTimeZone
 
 class WmsLogService {
   static transactional = true
+  static metersPerDegree = null
   def fixLogParamsForRouting(def params)
   {
-    def paramsSave = new HashMap(params)
-    def startDate  = new DateTime(paramsSave.startDate.time).toDateTime(DateTimeZone.UTC)
-    def endDate    = new DateTime(paramsSave.endDate.time).toDateTime(DateTimeZone.UTC)
-    paramsSave.startDate = startDate.toString()
-    paramsSave.endDate   = endDate.toString()
+    def paramsSave = [:]//new HashMap(params)
 
-    def bboxSplit = paramsSave.bbox?.split(',')
+    params.each{k, v->
+      if(params."${k}" != null)
+      {
+        paramsSave."${k}" = v
+      }
+    }
+
+    def startDate  = new DateTime(paramsSave.startDate?.time).toDateTime(DateTimeZone.UTC)
+    def endDate    = new DateTime(paramsSave.endDate?.time).toDateTime(DateTimeZone.UTC)
+    paramsSave."startDate" = startDate.toString()
+    paramsSave."endDate"   = endDate.toString()
+
+    def bboxSplit = params.bbox?.split(',')
     if(bboxSplit?.size() == 4)
     {
       double minX = bboxSplit[0] as double;
@@ -25,19 +34,22 @@ class WmsLogService {
       double maxX = bboxSplit[2] as double;
       double maxY = bboxSplit[3] as double;
 
-      paramsSave.geometry = Geometry.createPolygon(minX, minY, maxX, maxY)
+      paramsSave."geometry" = Geometry.createPolygon(minX, minY, maxX, maxY)
 
        // we are assuming SRS 4326.
       // need to support others later
       try
       {
-        def dpt = (new ossimGpt(0.0, 0.0)).metersPerDegree()
-        def metersY = (maxY-minY)*dpt.y;
-        def metersX = (maxX-minX)*dpt.x;
+        if(!metersPerDegree)
+        {
+          metersPerDegree = (new ossimGpt(0.0, 0.0)).metersPerDegree().y
+        }
+        def metersY = (maxY-minY)*metersPerDegree;
+        def metersX = (maxX-minX)*metersPerDegree;
         if(paramsSave.width&&paramsSave.height)
         {
-           paramsSave.meanGsd = ((metersX/(paramsSave.width as Double))+
-                                 ((metersY/(paramsSave.height as Double))))*0.5
+           paramsSave."meanGsd" = ((metersX/(paramsSave.width as Double))+
+                                  ((metersY/(paramsSave.height as Double))))*0.5
         }
       }
       catch(Exception e)
@@ -45,17 +57,12 @@ class WmsLogService {
         log.error(e)
       }
     }
- 
-    paramsSave.each{k,v->
-      paramsSave."${k}" ='"' + v + '"'
 
-    }
     paramsSave
    }
   def logParams(def params)
   {
-    def paramsSave = new HashMap(params)
-
-   log.info(fixLogParamsForRouting(paramsSave).toMapString())
+     def paramsSave = fixLogParamsForRouting(params)
+     log.info(paramsSave as grails.converters.JSON)
   }
 }

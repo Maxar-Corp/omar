@@ -80,7 +80,7 @@ public class WMSCapabilities
             getMapURL: serviceAddress
     )
 
-    rasterEntries?.each {rasterEntry ->
+    layers?.each {rasterEntry ->
       if ( rasterEntry )
       {
         def entryId = rasterEntry.entryId
