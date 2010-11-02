@@ -37,10 +37,10 @@ class WMSRequest
   String time
   def toMap()
   {
-     return [bbox: bbox, width: width, height: height, format: format, layers: layers, srs: srs, service: service,
+     return [bbox: bbox, width: width as Integer, height: height as Integer, format: format, layers: layers, srs: srs, service: service,
             version: version, request: request, transparent: transparent, bgcolor: bgcolor, styles: styles,
             stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
-            sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, time: time, null_flip: null_flip,
+            sharpen_width: sharpen_width as Double, sharpen_sigma: sharpen_sigma as Double, time: time, null_flip: null_flip,
             exception: exception, quicklook: quicklook].sort { it.key }
   }
   /**

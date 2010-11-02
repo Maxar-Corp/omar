@@ -6,11 +6,7 @@ import java.awt.image.BufferedImage
 
 import java.awt.*;
 
-import javax.media.jai.JAI
 import org.apache.commons.collections.map.CaseInsensitiveMap
-import geoscript.geom.Geometry
-import org.geotools.geometry.jts.LiteShape
-import geoscript.geom.MultiPolygon
 
 class OgcController
 {
@@ -137,7 +133,6 @@ class OgcController
   def wms = {
     def starttime    = System.currentTimeMillis()
     def internaltime = starttime
-    def rendertime   = starttime
     def endtime      = starttime
     // Populate org.ossim.omar.WMSCapabilities Request object
     def wmsRequest = new WMSRequest()
@@ -148,12 +143,13 @@ class OgcController
     wmsLogParams.startDate = new Date()
 
     def tempMap = new CaseInsensitiveMap(params)
+    def logParameters = true
     try
     {
       switch ( wmsRequest?.request?.toLowerCase() )
       {
       case "getmap":
-
+        wmsLogParams.request = "getmap"
         switch ( wmsRequest?.format?.toLowerCase() )
         {
         case "jpeg":
@@ -190,31 +186,17 @@ class OgcController
         {
           ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
         }
-        wmsLogParams.domain = authenticateService.userDomain()
-        wmsLogParams.userName = "nobody"
-        def domain = null
-        wmsLogParams.ip = request.getHeader('X-Forwarded-For')
-        if(!wmsLogParams.ip)
-        {
-          wmsLogParams.ip = request.getRemoteAddr()
-        }
-        if(wmsLogParams.domain)
-        {
-          def authUser = AuthUser.get(wmsLogParams.domain.id)
-          wmsLogParams.userName = authUser?.username
-          wmsLogParams.domain = authUser?.email.split('@')[1]
-        }
-        
         break
       case "getcapabilities":
+        wmsLogParams.request = "getcapabilities"
         def serviceAddress = createLink(controller: "ogc", action: "wms", absolute: true) as String
         def capabilities = webMappingService?.getCapabilities(wmsRequest, serviceAddress)
-        intenaltime =  System.currentTimeMillis();
+        internaltime =  System.currentTimeMillis();
         render(contentType: "text/xml", text: capabilities)
-        rendertime  =  System.currentTimeMillis();
         break
       case "getkml":
         def wmsParams = [:]
+        wmsLogParams.request = "getkml"
 
         // Convert param names to lower case
         params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
@@ -252,23 +234,42 @@ class OgcController
           kml = ""
           filename = "empty.kml"
         }
+        internaltime =  System.currentTimeMillis();
         response.setHeader("Content-disposition", "attachment; filename=${filename}")
         render(contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8")
         break
       default:
+        logParameters = false
         log.error("ERROR: Unknown action: ${wmsRequest?.request}")
+        break
       }
-      
       endtime                    = System.currentTimeMillis()
-      def urlTemp = createLink([controller:'ogc', action:'wms',absolute:true, params:params])
-      wmsLogParams.with{
-        endDate      = new Date()
-        internalTime = (internaltime-starttime)/1000.0
-        renderTime   = (endtime-internaltime)/1000.0
-        totalTime    = (endtime-starttime)/1000.0
-        url           = urlTemp
+      wmsLogParams.domain = authenticateService.userDomain()
+      wmsLogParams.userName = "nobody"
+      def domain = null
+      wmsLogParams.ip = request.getHeader('X-Forwarded-For')
+      if(!wmsLogParams.ip)
+      {
+        wmsLogParams.ip = request.getRemoteAddr()
       }
-      wmsLogService.logParams(wmsLogParams)
+      if(wmsLogParams.domain)
+      {
+        def authUser = AuthUser.get(wmsLogParams.domain.id)
+        wmsLogParams.userName = authUser?.username
+        wmsLogParams.domain = authUser?.email.split('@')[1]
+      }
+      if(logParameters)
+      {
+        def urlTemp = createLink([controller:'ogc', action:'wms',absolute:true, params:params])
+        wmsLogParams.with{
+          endDate      = new Date()
+          internalTime = (internaltime-starttime)/1000.0
+          renderTime   = (endtime-internaltime)/1000.0
+          totalTime    = (endtime-starttime)/1000.0
+          url           = urlTemp
+        }
+        wmsLogService.logParams(wmsLogParams)
+      }
     }
     catch (java.lang.Exception e)
     {
