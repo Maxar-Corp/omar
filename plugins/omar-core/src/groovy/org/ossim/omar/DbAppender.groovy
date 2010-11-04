@@ -41,7 +41,7 @@ import java.sql.Connection
  *                        // to the sql insert command
  *                        map // return result
  *                     }
- }
+ *    
  *           )
  */
 public class DbAppender extends org.apache.log4j.AppenderSkeleton
