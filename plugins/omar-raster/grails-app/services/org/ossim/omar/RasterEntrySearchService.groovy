@@ -162,17 +162,24 @@ class RasterEntrySearchService implements InitializingBean
 
   def getWmsImageLayers(def layers)
   {
-    return RasterEntry.createCriteria().list() {
+    if(!layers)
+    {
+      return null
+    }
+     return RasterEntry.createCriteria().list() {
       or {
         layers.each() {name ->
-          try
+          if(name)
           {
-            eq('id', java.lang.Long.valueOf(name))
-          }
-          catch (java.lang.Exception e)
-          {
-            eq('title', name)
-            eq('indexId', name)
+            try
+            {
+              eq('id', java.lang.Long.valueOf(name))
+            }
+            catch (java.lang.Exception e)
+            {
+              eq('title', name)
+              eq('indexId', name)
+            }
           }
         }
       }
