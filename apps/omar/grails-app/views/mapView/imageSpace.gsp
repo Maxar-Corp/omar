@@ -115,7 +115,7 @@
               <li><g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()" /></li>
             </g:if>
             <li>Image Rotate:</li>
-            <li><g:textField name="center" name="rotate" onChange="rotateImage()" size="1"/></li>
+            <li><g:textField name="rotate" onChange="rotateImage()" size="1"/></li>
           </ol>
         </div>
       </div>
