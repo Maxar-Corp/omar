@@ -120,6 +120,7 @@ class WebMappingService
     RenderedImage image = null
     def enableOMS = true
     def quickLookFlagString = wmsRequest?.quicklook ?: "true"
+    def rotate = wmsRequest?.rotate?:"0.0"
     def sharpenMode = wmsRequest?.sharpen_mode ?: ""
     def sharpenWidth = wmsRequest?.sharpen_width ?: ""
     def sharpenSigma = wmsRequest?.sharpen_sigma ?: ""
@@ -325,6 +326,7 @@ class WebMappingService
         kwl.add("sharpen_width", "${sharpenWidth}")
         kwl.add("sharpen_sigma", "${sharpenSigma}")
         kwl.add("bands", "${bands}")
+        kwl.add("rotate", "${rotate}")
         kwl.add("null_flip", wmsRequest?.null_flip)
         wmsMap.setChainParameters(kwl)
         wmsMap.getMap(
@@ -415,6 +417,7 @@ class WebMappingService
   {
     def sharpenMode = params.sharpen_mode ?: ""
     def bands = params?.bands ?: ""
+    def rotate = params?.rotate ?: "0.0"
     int viewableBandCount = 1
     if ( sharpenMode.equals("light") )
     {
@@ -456,6 +459,7 @@ class WebMappingService
       kwl.add(name, value)
     }
     kwl.add("viewable_bands", "${viewableBandCount}")
+    kwl.add("rotate", "${rotate}")
     WmsMap.getUnprojectedMap(
             inputFile,
             entry,
