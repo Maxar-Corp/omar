@@ -114,19 +114,12 @@
               <li>Bands:</li>
               <li><g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()" /></li>
             </g:if>
+            <li>Image Rotate:</li>
+            <li><g:textField name="center" name="rotate" onChange="rotateImage()" size="1"/></li>
           </ol>
         </div>
       </div>
-
   </content>
-
-
-
-
-
-
-
-
 
 <content tag="center">
   <%--
@@ -173,6 +166,15 @@ var stretch_mode_region = $("stretch_mode_region").value;
 
 layer.mergeNewParams({stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region});
 }
+
+ function rotateImage()
+{
+var rotate = $("rotate").value;
+//alert(rotate);
+
+layer.mergeNewParams({rotate:rotate});
+}
+
 function changeSharpenOpts()
 {
   var sharpen_mode = $("sharpen_mode").value;
@@ -197,6 +199,7 @@ function get_my_url (bounds)
     var stretch_mode = $("stretch_mode").value;
     var stretch_mode_region = $("stretch_mode_region").value;
     var bands = $("bands").value;
+	var rotate = $("rotate").value;
 
     var path = "?z=" + z + "&x=" + x + "&y=" + y + "&format=" + this.format
         + "&tileWidth=" + this.tileSize.w + "&tileHeight=" + this.tileSize.h
@@ -204,7 +207,8 @@ function get_my_url (bounds)
         + "&sharpen_mode=" + sharpen_mode
         + "&stretch_mode=" + stretch_mode
         + "&stretch_mode_region=" + stretch_mode_region
-        + "&bands=" + bands;
+        + "&bands=" + bands
+        + "&rotate=" + rotate;
 
 //      var path = "?bbox=" + x + "," + y + "," + bounds.right + "," + bounds.top
 
