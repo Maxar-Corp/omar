@@ -5,14 +5,18 @@
 # Created by Jason Moskowitz on 2010-09-07.
 # Copyright 2010 RadiantBlue Technologies Inc., All rights reserved.
 #
+### BEGIN INIT INFO
 # chkconfig: 3 80 20
 # Provides: OMAR
 # Required-Start: $network $syslog
 # Required-Stop: $network $syslog
-# Default-Start:
-# Default-Stop:
+# Default-Start: 3
+# Default-Stop: 0 1 2 6
+# Should-Start: $network $syslog 
+# Should-Stop: $network $syslog
 # Description: OMAR start, stop and restart script
 # Short-Description: start, stop and restart OMAR
+### END INIT INFO
 
 #CONFIG_FILE="/etc/omar.conf"
 #
