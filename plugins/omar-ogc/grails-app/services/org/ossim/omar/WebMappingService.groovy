@@ -231,7 +231,7 @@ class WebMappingService
 
 
       def rasterEntries = new WMSQuery().caseInsensitiveBind(wmsRequest.toMap()).rasterEntriesAsList
-      rasterEntries.each { rasterEntry ->
+      rasterEntries.reverse().each { rasterEntry ->
         def geom = (ossimImageGeometry) null
         def geomPtr = (ossimImageGeometryPtr) null
         //def rasterEntry = RasterEntry.get(it)
