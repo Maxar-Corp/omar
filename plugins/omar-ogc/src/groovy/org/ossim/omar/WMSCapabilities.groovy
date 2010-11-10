@@ -76,7 +76,7 @@ public class WMSCapabilities
             minY: -90,
             maxX: 180,
             maxY: 90,
-            getCapabilitiesURL: "${serviceAddress}?layers=${layers?.join(',')}&",
+            getCapabilitiesURL: "${serviceAddress}?layers=${layers?.indexId.join(',')}&",
             getMapURL: serviceAddress
     )
 
