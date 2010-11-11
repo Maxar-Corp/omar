@@ -162,36 +162,11 @@
 
 </content>
 <content tag="south">
-  <g:form name="paginateForm">
-    <g:hiddenField id="max" name="max" value="${params.max}"/>
-    <g:hiddenField id="offset" name="offset" value="${params.offset}"/>
-  </g:form>
-
   <div class="paginateButtons">
     <g:paginate controller="videoDataSet" action="results" total="${totalCount ?: 0}"
         max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
-  <input type="text" id="pageoffset" size="2"/> <input type="button" id="pageoffsetbutton" value="Go to Page" onclick="javascript:updateOffset();"/>
-  </div>
+   </div>
 </content>
-
-<script type="text/javascript">
-  function updateOffset()
-  {
-    var max = document.getElementById("max").value;
-    var pages = ${totalCount ?: 0} / max;
-    var pagesCeil = Math.ceil(pages);
-
-    if(document.getElementById("pageoffset").value >= 1 && document.getElementById("pageoffset").value <= pagesCeil)
-    {
-      document.getElementById("offset").value = (document.getElementById("pageoffset").value - 1) * document.getElementById("max").value;
-      document.paginateForm.submit();
-    }
-    else
-    {
-      alert("Input must be between 1 and " + pagesCeil + ".");
-    }
-  }
-</script>
 
 </body>
 </html>
