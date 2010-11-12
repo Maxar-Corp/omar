@@ -223,7 +223,7 @@ function init(mapWidth, mapHeight)
 {
   var width = parseFloat("${rasterEntry.width}");
   var height = parseFloat("${rasterEntry.height}");
-  var url = "${createLink(controller: 'ogc', action: 'getTile')}";
+  var url = "${createLink(controller: 'icp', action: 'getTileOpenLayers')}";
   var resLevels = parseFloat("${rasterEntry.numberOfResLevels}")
   // full res is included in resLevels so we need to add 2 more to give us
   // an 8x zoom
