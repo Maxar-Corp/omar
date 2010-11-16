@@ -20,7 +20,8 @@ class KmlService implements ApplicationContextAware, InitializingBean
   def tagLibBean
   def flashDirRoot
   def flashUrlRoot
-
+  def coordinateConversionService
+ /*
   String createKml(List<RasterEntry> rasterEntries, Map wmsParams)
   {
     def kmlbuilder = new StreamingMarkupBuilder()
@@ -158,7 +159,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
     String kmlText = kmlwriter.buffer
     return kmlText
   }
-
+*/
   String createImagesKml(List<RasterEntry> rasterEntries, Map wmsParams, Map params)
   {
     def kmlbuilder = new StreamingMarkupBuilder()
@@ -176,7 +177,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
 //    }
 //    if ( !params?.containsKey("height") )
 //    {
-//      wmsParams.height = "1024"
+//      wmsParams.height = "512"
 //    }
     if ( !params?.containsKey("format") )
     {
@@ -195,7 +196,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
     wmsParams.remove("controller")
     def rasterIdx = 0
     def descriptionMap = [:]
-    rasterEntries?.each {rasterEntry ->
+    rasterEntries?.reverse().each {rasterEntry ->
       def mpp = rasterEntry.getMetersPerPixel()
       def fieldMap = [File: (rasterEntry.mainFile.name as File).name,
               Entry_Id: rasterEntry.entryId,
@@ -236,7 +237,11 @@ class KmlService implements ApplicationContextAware, InitializingBean
         Folder() {
           name("Omar WMS")
           rasterIdx = 0
-          rasterEntries?.each {rasterEntry ->
+          rasterEntries?.reverse().each {rasterEntry ->
+            def minLonDMS
+            def maxLonDMS
+            def minLatDMS
+            def maxLatDMS
             def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
             def bounds = rasterEntry?.groundGeom?.bounds
             def groundCenterLon = (bounds?.minLon + bounds?.maxLon) * 0.5;
@@ -245,10 +250,21 @@ class KmlService implements ApplicationContextAware, InitializingBean
 
             def renderedHtml = "${descriptionMap.get(rasterIdx)}"
             rasterIdx++
-
+            def mpp = rasterEntry.getMetersPerPixel()
+            // calculate a crude metric for putting an image that almost fits within the google viewport
+            //
+            def defaultRange = mpp*Math.sqrt((rasterEntry.width**2) + (rasterEntry.height**2));
+            if(defaultRange < 1)
+            {
+              defaultRange = 15000
+            }
             GroundOverlay() {
               name((rasterEntry.mainFile.name as File).name)
-              Snippet(maxLines: "0", "")
+              Snippet()
+//              minLonDMS = coordinateConversionservice.ddToDMS(bounds?.minLon, "longitude")
+//              maxLonDMS = coordinateConversionservice.ddToDMS(bounds?.maxLon, "longitude")
+//              minLatDMS = coordinateConversionservice.ddToDMS(bounds?.minLat, "latitude")
+ //             maxLatDMS = coordinateConversionservice.ddToDMS(bounds?.maxLat, "latitude")
               description { mkp.yieldUnescaped("<![CDATA[${renderedHtml}]]>") }
               LookAt() {
                 longitude(groundCenterLon)
@@ -256,7 +272,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
                 altitude(0.0)
                 heading(0.0)
                 tilt(0.0)
-                range(15000)
+                range(defaultRange)
                 altitudeMode("clampToGround")
               }
               open("1")

@@ -1,9 +1,15 @@
 package org.ossim.omar
 
 import java.awt.image.RenderedImage
-
+import java.awt.Graphics2D
+import java.awt.Color
+import java.awt.BasicStroke
+import java.awt.Point
+import java.awt.Composite
+import java.awt.Polygon
+import java.awt.RenderingHints
 import java.awt.image.*;
-import java.awt.*;
+import java.awt.geom.AffineTransform
 import joms.oms.WmsView
 import joms.oms.ossimDpt
 import joms.oms.ossimGpt
@@ -19,9 +25,9 @@ import joms.oms.ossimUnitConversionTool
 
 import org.ossim.oms.image.omsImageSource
 import javax.imageio.ImageIO
-import java.awt.geom.AffineTransform
 import org.geotools.geometry.jts.LiteShape
 import geoscript.geom.MultiPolygon
+import java.awt.Rectangle
 
 class WebMappingService
 {
@@ -229,7 +235,6 @@ class WebMappingService
         break
       }
 
-
       def rasterEntries = new WMSQuery().caseInsensitiveBind(wmsRequest.toMap()).rasterEntriesAsList
       rasterEntries.reverse().each { rasterEntry ->
         def geom = (ossimImageGeometry) null
@@ -342,9 +347,9 @@ class WebMappingService
       {
         new java.util.Random().nextBytes(data)
       }
-      wmsMap.cleanUp();
-      wmsMap.delete()
-      wmsMap = null;
+//      wmsMap.cleanUp();
+//      wmsMap.delete()
+//      wmsMap = null;
 
       DataBuffer dataBuffer = new DataBufferByte(data, data.size())
 

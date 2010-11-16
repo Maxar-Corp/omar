@@ -227,7 +227,7 @@ class OgcController
         {
             def file = (rasterEntries[0].mainFile.name as File).name
             filename = "${file}.kml"
-           kml = kmlService.createKml(rasterEntries, tempMap)
+           kml = kmlService.createImagesKml(rasterEntries, wmsRequest.toMap(), tempMap)
         }
         else
         {
