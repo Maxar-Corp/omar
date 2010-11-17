@@ -44,9 +44,20 @@ class VideoDataSetController implements InitializingBean
       videoDataSetList = VideoDataSet.createCriteria().list(params) {}
     }
 
+    if ( !session.videoDataSetListCurrentTab && ( "${session.videoDataSetListCurrentTab}"!="0" ) )
+    {
+      session["videoDataSetListCurrentTab"] = "0"
+    }
+
     //[videoDataSetList: videoDataSetList]
     withFormat {
-      html { [videoDataSetList: videoDataSetList] }
+      html { [videoDataSetList: videoDataSetList,
+      tagNameList: tagNameList,
+              tagHeaderList: tagHeaderList,
+              sessionAction:"updateSession",
+              sessionController:"session",
+              videoDataSetListCurrentTab:session.videoDataSetListCurrentTab
+      ] }
       xml { render videoDataSetList as XML }
       json { render videoDataSetList as JSON }
     }
@@ -331,7 +342,7 @@ class VideoDataSetController implements InitializingBean
 
   def results = {
 
-    //println "=== results start ==="
+ 	//println "=== results start ==="
 
     def starttime = System.currentTimeMillis()
 
@@ -339,6 +350,24 @@ class VideoDataSetController implements InitializingBean
     {
       params.max = 10
     }
+
+	if (params?.queryParams)
+	{
+	  def serialized = params?.queryParams - "{" - "}";
+	  def paramsArray = serialized?.split(',')
+      params.remove("queryParams")
+	  params.remove("totalCount")
+	  paramsArray?.each
+	  {
+	    def temp = it?.split('=')
+	    if (temp.size() == 2)
+		{ 
+		  if (temp[1] == "null") temp[1] = ""
+		    params.put(temp[0].trim(), temp[1].trim())
+		}
+		else if (temp.size() == 1) params.put(temp[0].trim(), "")
+      }
+	}
 
     def videoDataSets = null
     def totalCount = null
