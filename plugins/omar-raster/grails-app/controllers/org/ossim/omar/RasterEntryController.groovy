@@ -39,30 +39,41 @@ class RasterEntryController implements InitializingBean
       rasterEntryList = RasterEntry.createCriteria().list(params) {}
     }
 
-    [rasterEntryList: rasterEntryList]
+    if ( !session.rasterEntryListCurrentTab && ( "${session.rasterEntryListCurrentTab}"!="0" ) )
+    {
+      session["rasterEntryListCurrentTab"] = "0"
+    }
+
+    [rasterEntryList: rasterEntryList,
+            tagNameList: tagNameList,
+            tagHeaderList: tagHeaderList,
+            sessionAction:"updateSession",
+            sessionController:"session",
+            rasterEntryListCurrentTab:session.rasterEntryListCurrentTab
+    ]
   }
 
-    def list_mobile = {
-      if ( !params.max )
-      params.max = 10
+  def list_mobile = {
+    if ( !params.max )
+    params.max = 10
 
-      def rasterEntryList = RasterEntry.createCriteria().list(params) {}
+    def rasterEntryList = RasterEntry.createCriteria().list(params) {}
 
-      if ( params.rasterDataSetId )
-      {
-        def rasterDataSet = RasterDataSet.get(params.rasterDataSetId)
+    if ( params.rasterDataSetId )
+    {
+      def rasterDataSet = RasterDataSet.get(params.rasterDataSetId)
 
-        rasterEntryList = RasterEntry.createCriteria().list(params) {
-          eq("rasterDataSet", rasterDataSet)
-        }
+      rasterEntryList = RasterEntry.createCriteria().list(params) {
+        eq("rasterDataSet", rasterDataSet)
       }
-      else
-      {
-        rasterEntryList = RasterEntry.createCriteria().list(params) {}
-      }
-
-      [rasterEntryList: rasterEntryList]
     }
+    else
+    {
+      rasterEntryList = RasterEntry.createCriteria().list(params) {}
+    }
+
+    [rasterEntryList: rasterEntryList]
+  }
 
   def show = {
 
@@ -316,6 +327,25 @@ class RasterEntryController implements InitializingBean
     {
       params.max = 10
     }
+
+	if (params?.queryParams)
+	{
+	  def serialized = params?.queryParams - "{" - "}";
+	  def paramsArray = serialized?.split(',')
+      params.remove("queryParams")
+	  params.remove("totalCount")
+	  paramsArray?.each
+	  {
+	    def temp = it?.split('=')
+	    if (temp.size() == 2)
+		{ 
+		  if (temp[1] == "null") temp[1] = ""
+		    params.put(temp[0].trim(), temp[1].trim())
+		}
+		else if (temp.size() == 1) params.put(temp[0].trim(), "")
+      }
+	}
+
     if(!session.rasterEntryResultCurrentTab&&("${session.rasterEntryResultCurrentTab}"!="0"))
     {
       session["rasterEntryResultCurrentTab"] = "0"
