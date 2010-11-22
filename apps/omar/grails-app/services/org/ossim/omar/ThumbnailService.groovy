@@ -10,7 +10,7 @@ import org.ossim.omar.VideoFile
 
 class ThumbnailService
 {
-  def nullImage = new BufferedImage(128,128,BufferedImage.TYPE_INT_RGB);
+  def nullImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
   boolean transactional = false
   static int rasterFileOutputLock
   static int videoFrameOutputLock
@@ -22,30 +22,36 @@ class ThumbnailService
                    boolean overwrite = false)
   {
     def outputFile = new File(
-        cacheDirPath,
-        "${thumbnailPrefix}.jpg"
+            cacheDirPath,
+            "${thumbnailPrefix}.jpg"
     )
     httpStatusMessage.status = HttpStatus.OK
     String parent = outputFile.getParent();  // Get the destination directory
     File dir = new File(parent);          // Convert it to a file.
-    if(outputFile.exists()&&!overwrite)
+    if ( outputFile.exists() && !overwrite )
     {
       httpStatusMessage.status = HttpStatus.OK
       return outputFile
     }
-    else if (dir.isFile())
+    else if ( !checkCacheDir(dir) )
+    {
+      httpStatusMessage.status = HttpStatus.NOT_FOUND
+      httpStatusMessage.message = "Cannot create directory: ${dir}"
+      log.error(httpStatusMessage.message)
+    }
+    else if ( dir.isFile() )
     {
       httpStatusMessage.status = HttpStatus.NOT_FOUND
       httpStatusMessage.message = "${dir} is not a directory and can't produce raster thumbnail"
-      log.error(httpStatusMessage)
+      log.error(httpStatusMessage.message)
     }
-    else if (!dir.canWrite())
+    else if ( !dir.canWrite() )
     {
       httpStatusMessage.status = HttpStatus.NOT_FOUND
       httpStatusMessage.message = "${dir} is not writeable and can't create raster thumbnails"
-      log.error(httpStatusMessage)
+      log.error(httpStatusMessage.message)
     }
-    if(httpStatusMessage.status != HttpStatus.OK)
+    if ( httpStatusMessage.status != HttpStatus.OK )
     {
       return new File("")
     }
@@ -59,19 +65,19 @@ class ThumbnailService
     }
     if ( !outputFile.exists() || overwrite )
     {
-      synchronized(rasterFileOutputLock)
+      synchronized ( rasterFileOutputLock )
       {
         log.info("Outputting raster thumbnail to ${outputFile as String}")
         def stretchTypeToUse = histogramStretchType
         ThumbnailGenerator.writeImageSpaceThumbnail(
-            inputFilename,
-            entryId,
-            outputFile as String,
-            mimeType,
-            size, size,
-            "", // use default
-            stretchTypeToUse, true)
-       }
+                inputFilename,
+                entryId,
+                outputFile as String,
+                mimeType,
+                size, size,
+                "", // use default
+                stretchTypeToUse, true)
+      }
     }
 
     return outputFile
@@ -88,7 +94,7 @@ class ThumbnailService
       if ( video.open(inputFilename) )
       {
         video.nextFrame();
-        synchronized(videoFrameOutputLock)
+        synchronized ( videoFrameOutputLock )
         {
           log.info("Outputting video thumbnail to ${outputFile.absolutePath}")
           video.writeCurrentFrameToFile(outputFile.absolutePath, size);
@@ -114,11 +120,11 @@ class ThumbnailService
     def mimeType = params?.mimeType ?: "image/jpeg"
     boolean overwrite = params.overwrite ?: false
     int resLevels = rasterEntry.numberOfResLevels;
-    int maxSize = rasterEntry.width > rasterEntry.height?rasterEntry.width:rasterEntry.height
+    int maxSize = rasterEntry.width > rasterEntry.height ? rasterEntry.width : rasterEntry.height
 
     if ( !size )
-      size = grailsApplication.config.thumbnail.defaultSize
-    if(size > maxSize)
+    size = grailsApplication.config.thumbnail.defaultSize
+    if ( size > maxSize )
     {
       size = maxSize
     }
@@ -128,9 +134,9 @@ class ThumbnailService
     // So if we have only 2 rlevels for an image but need 4 r-levels
     // we will error out
     //
-    int smallestWidth = maxSize/(2**resLevels)
-    
-    if( size < smallestWidth)
+    int smallestWidth = maxSize / (2 ** resLevels)
+
+    if ( size < smallestWidth )
     {
       httpStatusMessage.status = HttpStatus.NOT_FOUND
       httpStatusMessage.message = "Not enough overviews to satisfy request for ${rasterFile.name}"
@@ -141,14 +147,14 @@ class ThumbnailService
     String thumbnailPrefix = "${rasterEntry.id}-${size}-${projectionType}"
 
     File outputFile = this.getThumbnail(httpStatusMessage,
-        cacheDirPath,
-        thumbnailPrefix,
-        size,
-        mimeType,
-        rasterFile.name,
-        rasterEntry.entryId,
-        projectionType,
-        overwrite
+            cacheDirPath,
+            thumbnailPrefix,
+            size,
+            mimeType,
+            rasterFile.name,
+            rasterEntry.entryId,
+            projectionType,
+            overwrite
     )
     return outputFile
   }
@@ -162,34 +168,61 @@ class ThumbnailService
     boolean overwrite = params.overwrite ?: false
     File dir = new File(cacheDirPath);          // Convert it to a file.
     File outputFile = new File("")
-    if (!dir.exists())
+
+    if ( !dir.exists() )
     {
       httpStatusMessage.status = HttpStatus.NOT_FOUND
       httpStatusMessage.message = "Cache directory ${dir} does not exist and can't create video thumbnail"
-      log.error(httpStatusMessage)
+      log.error(httpStatusMessage.message)
     }
-    else if (dir.isFile())
+    else if ( !checkCacheDir(dir) )
+    {
+      httpStatusMessage.status = HttpStatus.NOT_FOUND
+      httpStatusMessage.message = "Cannot create directory: ${dir}"
+      log.error(httpStatusMessage.message)
+    }
+    else if ( dir.isFile() )
     {
       httpStatusMessage.status = HttpStatus.NOT_FOUND
       httpStatusMessage.message = "${dir} is not a directory and can't produce video thumbnail"
-      log.error(httpStatusMessage)
+      log.error(httpStatusMessage.message)
     }
-    else if (!dir.canWrite())
+    else if ( !dir.canWrite() )
     {
       httpStatusMessage.status = HttpStatus.NOT_FOUND
       httpStatusMessage.message = "${dir} is not writeable and can't create video thumbnail"
-      log.error(httpStatusMessage)
+      log.error(httpStatusMessage.message)
     }
     else
     {
       outputFile = this.getFrame(cacheDirPath, thumbnailPrefix, size, videoFile.name, overwrite)
     }
-    if(!outputFile.exists())
+
+    if ( !outputFile.exists() )
     {
       httpStatusMessage.status = HttpStatus.NOT_FOUND
       httpStatusMessage.message = "Unable to write video thumbnail to directory ${cacheDirPath}"
-      log.error(httpStatusMessage)
+      log.error(httpStatusMessage.message)
     }
     return outputFile
+  }
+
+
+  private boolean checkCacheDir(File dir)
+  {
+    boolean status = dir.exists()
+
+    if ( !status )
+    {
+      try
+      {
+        status = dir.mkdirs()
+      }
+      catch (Exception e)
+      {
+      }
+    }
+
+    return status    
   }
 }
