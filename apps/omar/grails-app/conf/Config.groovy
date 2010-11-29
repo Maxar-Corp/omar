@@ -210,14 +210,16 @@ thumbnail {
   defaultSize = 512
 }
 
-security.level = 'UNCLASS'
+security {
+  level = 'UNCLASS'
 //security.level = 'SECRET'
 //security.level = 'TOPSECRET'
-
+  sessionTimeout = 60
+}
 
 image.download.prefix = "http://${grails.serverIP}"
 
-/** ********************************* CONDITIONALS FOR VIEWS                      **********************************************************************/
+/** ********************************* CONDITIONALS FOR VIEWS                       **********************************************************************/
 // flags for different views
 // we can conditionally turn off browsing on the home page
 //
@@ -293,5 +295,4 @@ kml {
 }
 
 
-sessionTimeout = 60
 defaultOverlayVisiblity = false
