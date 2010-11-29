@@ -20,7 +20,7 @@ eventWebXmlEnd = {String tmpfile ->
     // create session-config with session-timeout if not exists
     if ( root.'session-config'.isEmpty() )
     {
-      def sessionTimeout = config.sessionTimeout ?: 30
+      def sessionTimeout = config.security.sessionTimeout ?: 30
       root.appendNode { 'session-config' { 'session-timeout'(sessionTimeout) } }
     }
     break
