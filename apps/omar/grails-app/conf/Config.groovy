@@ -219,17 +219,25 @@ security {
 
 image.download.prefix = "http://${grails.serverIP}"
 
-/** ********************************* CONDITIONALS FOR VIEWS                       **********************************************************************/
+/** ********************************* CONDITIONALS FOR VIEWS ***********************************************/
 // flags for different views
-// we can conditionally turn off browsing on the home page
 //
-views.home.browseEnabled = true
+views {
+  home {
+    // we can conditionally turn off browsing on the home page
+    browseEnabled = true
+  }
+  mapView {
+    defaultOverlayVisiblity = false
+  }
+}
+/***********************************************************************************************************/
 
-/** *********************************************************************************************************/
-
-videoStreaming.flashDirRoot = "/Library/WebServer/Documents/videos"
-//videoStreaming.flashDirRoot = "/var/www/html/videos"
-videoStreaming.flashUrlRoot = "http://${grails.serverIP}/videos"
+videoStreaming {
+  flashDirRoot = "/Library/WebServer/Documents/videos"
+//flashDirRoot = "/var/www/html/videos"
+  flashUrlRoot = "http://${grails.serverIP}/videos"
+}
 
 rasterEntry {
   tagHeaderList = [
@@ -295,4 +303,3 @@ kml {
 }
 
 
-defaultOverlayVisiblity = false

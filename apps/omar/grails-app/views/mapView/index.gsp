@@ -336,7 +336,7 @@ function setupLayers()
    }
 
  var kmlLayer =  new OpenLayers.Layer.Vector("${kmlOverlay.name}", {
-    visibility: ${grailsApplication.config.defaultOverlayVisiblity},
+    visibility: ${grailsApplication.config.views.mapView.defaultOverlayVisiblity},
     projection: map.displayProjection,
     strategies: [new OpenLayers.Strategy.Fixed()],
     protocol: new OpenLayers.Protocol.HTTP({
