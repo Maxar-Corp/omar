@@ -18,6 +18,7 @@ public class DataManagerClient
 {
   public static final String ADD_RASTER = "addRaster";
   public static final String ADD_VIDEO = "addVideo";
+  public static final String ADD_DATAINFO = "add";
   public static final String REMOVE_RASTER = "removeRaster";
   public static final String REMOVE_VIDEO = "removeVideo";
 
@@ -28,24 +29,59 @@ public class DataManagerClient
     this.omarInstance = omarInstance;
   }
 
-  public void addRaster( String filename )
-  {
-    String address = omarInstance + "/dataManager/" + ADD_RASTER;
-    Map<String, String> params = new HashMap<String, String>();
-
-    params.put( "filename", filename );
-
-    try
+    public void addRaster( String filename )
     {
-      String response = doPost( address, params );
+      String address = omarInstance + "/dataManager/" + ADD_RASTER;
+      Map<String, String> params = new HashMap<String, String>();
 
-      System.out.println( response );
+      params.put( "filename", filename );
+
+      try
+      {
+        String response = doPost( address, params );
+
+        System.out.println( response );
+      }
+      catch ( Exception e )
+      {
+        e.printStackTrace();
+      }                            
     }
-    catch ( Exception e )
+    public void addDataInfo( String filename )
     {
-      e.printStackTrace();
+      String address = omarInstance + "/dataManager/" + ADD_DATAINFO;
+        File file = new File("infilename");
+
+        // Get the number of bytes in the file
+        long length = file.length();
+        Map<String, String> params = new HashMap<String, String>();
+        String fileContents = "";
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(filename));
+            String str;
+            //read file into a string
+            while ((str = in.readLine()) != null)
+            {
+                fileContents += str;
+            }
+            in.close();
+        }
+        catch (IOException e)
+        {
+        }
+      params.put( "datainfo", fileContents );
+
+      try
+      {
+        String response = doPost( address, params );
+
+        System.out.println( response );
+      }
+      catch ( Exception e )
+      {
+        e.printStackTrace();
+      }
     }
-  }
 
   public void addVideo( String filename )
   {
@@ -172,11 +208,15 @@ public class DataManagerClient
       {
         String filename = args[i];
 
-        if ( command.equalsIgnoreCase( DataManagerClient.ADD_RASTER ) )
-        {
-          client.addRaster( filename );
-        }
-        else if ( command.equalsIgnoreCase( DataManagerClient.ADD_VIDEO ) )
+          if ( command.equalsIgnoreCase( DataManagerClient.ADD_RASTER ) )
+           {
+             client.addRaster( filename );
+           }
+          if ( command.equalsIgnoreCase( DataManagerClient.ADD_DATAINFO ) )
+           {
+             client.addDataInfo( filename );
+           }
+         else if ( command.equalsIgnoreCase( DataManagerClient.ADD_VIDEO ) )
         {
           client.addVideo( filename );
         }
@@ -200,8 +240,8 @@ public class DataManagerClient
     {
       System.out.println( "Usage: DataMangerClient <omar instance>  <command> <filename>*" );
       System.out.println( "\t<omar instance>: URL to OMAR server (i.e. http://<server>[:port]/omar-2.0" );
-      System.out.println( "\t<command>: Action to perform (i.e. " + ADD_RASTER + "|" + ADD_VIDEO + "|"
-          + REMOVE_RASTER + "|" + REMOVE_VIDEO );
+      System.out.println( "\t<command>: Action to perform (i.e. " + ADD_RASTER + "|" + ADD_VIDEO + "|" + ADD_DATAINFO +"|"
+          + REMOVE_RASTER + "|" + REMOVE_VIDEO);
       System.out.println( "\t<filename>*: One or more filenames to process" );
 
     }
