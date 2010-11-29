@@ -2,6 +2,13 @@ package org.ossim.omar
 
 import com.vividsolutions.jts.geom.Geometry
 
+/**
+ * This domain holds the logging for all Wms requests.
+ *
+ * Units for the internalTime, renderTime and totalTime
+ * are all in seconds.
+ * 
+ */
 class WmsLog {
 
   Long   width
