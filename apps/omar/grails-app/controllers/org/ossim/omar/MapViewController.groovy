@@ -27,28 +27,14 @@ class MapViewController implements InitializingBean
       query.layers = params.layers
 
       rasterEntries = query.getRasterEntriesAsList()
-    }
-    /*
-    def rasterEntryIds = params.rasterEntryIds?.split(',')
-    def rasterEntries = RasterEntry.withCriteria {
-      or
+
+      if(!rasterEntries)
       {
-        rasterEntryIds.each{id->
-          try{
-            eq("id", Long.valueOf(id))
-          }
-          catch(Exception e)
-          {
-            eq("indexId", id)
-          }
-        }
+        render "Alert: No raster matched with layer param: " + params.layers
+        return
       }
-//      or{
-//        inList("id", rasterEntryIds)
-//        inList("imageId", rasterEntryIds)
-//      }
     }
-    */
+
     def kmlOverlays = []
 
     rasterEntries.each { rasterEntry ->
@@ -103,9 +89,7 @@ class MapViewController implements InitializingBean
     }
   }
 
-
   def multiLayer = {
-
     WMSQuery query = new WMSQuery();
     def rasterEntries = []
     if ( params.layers )
@@ -113,6 +97,12 @@ class MapViewController implements InitializingBean
       query.layers = params.layers
 
       rasterEntries = query.getRasterEntriesAsList()
+
+      if(!rasterEntries)
+      {
+        render "Alert: No raster matched with layer param: " + params.layers
+        return
+      }
     }
     def kmlOverlays = []
 
@@ -139,8 +129,21 @@ class MapViewController implements InitializingBean
   }
 
   def imageSpace = {
-    //log.info(params)
-    //println (params)
+    WMSQuery query = new WMSQuery();
+    def rasterEntries = []
+    if ( params.layers )
+    {
+      query.layers = params.layers
+
+      rasterEntries = query.getRasterEntriesAsList()
+
+      if(!rasterEntries)
+      {
+        render "Alert: No raster matched with layer param: " + params.layers
+        return
+      }
+    }
+
     def rasterEntry = RasterEntry.findByIndexId(params.layers) ?: RasterEntry.get(params.layers)
 
     def inputFile = rasterEntry.mainFile.name
@@ -166,8 +169,6 @@ class MapViewController implements InitializingBean
     }
 
     //println "${[width: width, height: height, inputFile: inputFile, entry: rasterEntry.entryId]}"
-
-
 
     def model = [:]
 
