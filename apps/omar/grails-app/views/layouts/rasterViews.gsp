@@ -11,10 +11,6 @@
 <head>
   <title><g:layoutTitle default="Grails"/></title>
 
-  <%--
-  <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
-  <link rel="stylesheet" href="${resource(dir: 'css', file: 'omar-2.0.css')}"/>
-  --%>
 
   <link rel="stylesheet" type="text/css" href="${omar.bundle(contentType: 'text/css', files: [
       resource(dir: 'css', file: 'main.css'),
@@ -22,12 +18,7 @@
   ])}"/>
 
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/resize/assets/skins/sam', file: 'resize.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/layout/assets/skins/sam', file: 'layout.css')}"/>
-  <%--
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
-  --%>
-
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
   <style>
     /*
@@ -69,7 +60,7 @@
 <div id="content">
   <div id="north">
     <div id="hd">
-      
+
     </div>
     <g:pageProperty name="page.north"/>
   </div>
@@ -83,21 +74,6 @@
     <g:pageProperty name="page.center"/>
   </div>
 </div>
-
-<%--
-<g:javascript library="application"/>
-<g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
-<g:javascript plugin='richui' src="yui/element/element-min.js"/>
-<g:javascript plugin='richui' src="yui/dragdrop/dragdrop-min.js"/>
-<g:javascript plugin='richui' src="yui/resize/resize-min.js"/>
---%>
-<%--
-<g:javascript plugin='richui' src="yui/animation/animation-min.js"/>
---%>
-<%--
-<g:javascript plugin='richui' src="yui/layout/layout-min.js"/>
---%>
-
 
 <script type="text/javascript" src="${omar.bundle(contentType: 'text/javascript', files: [
     resource(dir: 'js', file: 'application.js'),
@@ -114,9 +90,7 @@
     var Dom = YAHOO.util.Dom;
     var Event = YAHOO.util.Event;
     var Layout = YAHOO.widget.Layout;
-
-    //   YAHOO.util.Dom.setStyle(document.body, 'visibility', 'hidden');
-
+      
     Event.onDOMReady( function()
     {
       var outerLayout = new Layout( {
@@ -152,7 +126,7 @@
               resize: false,
               body: 'north'
             },
-           
+
             { position: 'left', header: '', width: 200, resize: false, proxy: false, body: 'west', collapse: true, gutter: '0px 0px 0px 0px', scroll: true, maxWidth: 200 },
             {
               position: 'center',
@@ -189,7 +163,7 @@
           var mapHeight = center.get( 'height' );
           changeMapSize( mapWidth, mapHeight );
         } );
-          YAHOO.util.Dom.setStyle(document.body, 'visibility', 'visible');
+        YAHOO.util.Dom.setStyle( document.body, 'visibility', 'visible' );
         innerLayout.render();
       } );
 

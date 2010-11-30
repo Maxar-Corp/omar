@@ -11,24 +11,13 @@
 <head>
   <title><g:layoutTitle default="Grails"/></title>
 
-  <%--
-  <link rel="stylesheet" type="text/css" href="${resource(dir: 'css', file: 'main.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(dir: 'css', file: 'omar-2.0.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  --%>
-
-  <link rel="stylesheet" type="text/css" href="${omar.bundle(contentType: "", files: [
+  <link rel="stylesheet" type="text/css" href="${omar.bundle(contentType: "text/css", files: [
       resource(dir: 'css', file: 'main.css'),
       resource(dir: 'css', file: 'omar-2.0.css'),
-      resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css'),
-      resource(plugin: 'richui', dir: 'js/yui/layout/assets/skins/sam', file: 'layout.css')
   ])}"/>
 
-  <%--
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/resize/assets/skins/sam', file: 'resize.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/layout/assets/skins/sam', file: 'layout.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
-  --%>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
   <style>
     /*
@@ -42,6 +31,7 @@
   body {
     margin: 0;
     padding: 0;
+    visibility: hidden;
   }
 
   /* Set the background color */
@@ -73,29 +63,15 @@
 
 </body>
 
-<%--
-<g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
-<g:javascript plugin='richui' src="yui/element/element-min.js"/>
-<g:javascript plugin='richui' src="yui/layout/layout-min.js"/>
---%>
-
 <script type="text/javascript" src="${omar.bundle(contentType: "text/javascript", files: [
     resource(plugin: "richui", dir: "js/yui/yahoo-dom-event", file: "yahoo-dom-event.js"),
     resource(plugin: "richui", dir: "js/yui/element", file: "element-min.js"),
     resource(plugin: "richui", dir: "js/yui/layout", file: "layout-min.js"),
-
 ])}"></script>
-
-<%--
-<g:javascript plugin='richui' src="yui/dragdrop/dragdrop-min.js"/>
-<g:javascript plugin='richui' src="yui/resize/resize-min.js"/>
-<g:javascript plugin='richui' src="yui/animation/animation-min.js"/>
---%>
 
 <g:javascript>
   (function()
   {
-    //var Dom = YAHOO.util.Dom;
     var Event = YAHOO.util.Event;
     var Layout = YAHOO.widget.Layout;
 
@@ -120,7 +96,7 @@
           }
         ]
       } );
-
+      YAHOO.util.Dom.setStyle( document.body, 'visibility', 'visible' );
       outerLayout.render();
     } );
 
