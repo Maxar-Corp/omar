@@ -59,7 +59,7 @@
         units: [
           { position: 'top', height: 67, body: 'header' },
           { position: 'center', body: 'body', scroll: true },
-          { position: 'bottom', height: 66, body: 'footer' }
+          { position: 'bottom', height: bottomHeight, body: 'footer' }
         ]
       } );
       YAHOO.util.Dom.setStyle( document.body, 'visibility', 'visible' );
