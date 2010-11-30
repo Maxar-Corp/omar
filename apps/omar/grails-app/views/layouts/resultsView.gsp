@@ -48,6 +48,16 @@
 ])}"></script>
 
 <g:javascript>
+  var bottomHeight;
+  if(${totalCount} == 0 )
+  {
+      bottomHeight = 46;
+  }
+  else
+  {
+      bottomHeight = 66;
+  }
+
   (function()
   {
     var Dom = YAHOO.util.Dom;
@@ -59,7 +69,7 @@
         units: [
           { position: 'top', height: 67, body: 'header' },
           { position: 'center', body: 'body', scroll: true },
-          { position: 'bottom', height: 66, body: 'footer' }
+          { position: 'bottom', height: bottomHeight, body: 'footer' }
         ]
       } );
       YAHOO.util.Dom.setStyle( document.body, 'visibility', 'visible' );
