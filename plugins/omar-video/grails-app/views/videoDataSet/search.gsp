@@ -34,7 +34,7 @@
             <div class="niceBoxBody">
               <ol>
                 <li>
-                  <g:checkBox name="searchMethod" id="radiusSearchButton" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()" />
+                  <g:checkBox name="searchMethod" id="radiusSearchButton" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
                   <label>Use Radius Search</label>
                 </li>
                 <li>
@@ -44,13 +44,13 @@
                   <label for="centerLat">Latitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLat" value="${queryParams?.centerLat}" />
+                  <g:textField name="centerLat" value="${queryParams?.centerLat}"/>
                 </li>
                 <li>
                   <label for="centerLon">Longitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLon" value="${queryParams?.centerLon}" />
+                  <g:textField name="centerLon" value="${queryParams?.centerLon}"/>
                 </li>
                 <li>
                   <br/>
@@ -59,7 +59,7 @@
                   <label for="aoiRadius">Radius in Meters:</label>
                 </li>
                 <li>
-                  <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters()" />
+                  <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters()"/>
                 </li>
                 <li>
                   <br/>
@@ -74,53 +74,53 @@
           </div>
           <div class="niceBox">
             <div class="niceBoxHd">Geospatial Criteria:</div>
-              <div class="niceBoxBody">
-                <input type="hidden" id="viewMinLon" name="viewMinLon" value="${fieldValue(bean: queryParams, field: 'viewMinLon')}" />
-                <input type="hidden" id="viewMinLat" name="viewMinLat" value="${fieldValue(bean: queryParams, field: 'viewMinLat')}" />
-                <input type="hidden" id="viewMaxLon" name="viewMaxLon" value="${fieldValue(bean: queryParams, field: 'viewMaxLon')}" />
-                <input type="hidden" id="viewMaxLat" name="viewMaxLat" value="${fieldValue(bean: queryParams, field: 'viewMaxLat')}" />
-                <ol>
-                  <li>
-                    <g:checkBox name="searchMethod" id="bboxSearchButton" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()" />
-                    <label>Use BBox Search</label>
-                  </li>
-                  <li>
-                    <br/>
-                  </li>
-                  <li>
-                    <label for="aoiMaxLat">North Latitude:</label>
-                  </li>
-                  <li>
-                    <input type="text" id="aoiMaxLat" name="aoiMaxLat" value="${fieldValue(bean: queryParams, field: 'aoiMaxLat')}" />
-                  </li>
-                  <li>
-                    <label for="aoiMinLon">West Longitude:</label>
-                  </li>
-                  <li>
-                    <input type="text" id="aoiMinLon" name="aoiMinLon" value="${fieldValue(bean: queryParams, field: 'aoiMinLon')}" />
-                  </li>
-                  <li>
-                    <label for="aoiMinLat">South Latitude:</label>
-                  </li>
-                  <li>
-                    <input type="text" id="aoiMinLat" name="aoiMinLat" value="${fieldValue(bean: queryParams, field: 'aoiMinLat')}" />
-                  </li>
-                  <li>
-                    <label for="aoiMaxLon">East Longitude:</label>
-                  </li>
-                  <li>
-                    <input type="text" id="aoiMaxLon" name="aoiMaxLon" value="${fieldValue(bean: queryParams, field: 'aoiMaxLon')}" />
-                  </li>
-                  <li>
-                    <br/>
-                  </li>
-                  <li>
-                    <span class="formButton">
-                      <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
-                    </span>
-                  </li>
-                </ol>
-              </div>
+            <div class="niceBoxBody">
+              <input type="hidden" id="viewMinLon" name="viewMinLon" value="${fieldValue(bean: queryParams, field: 'viewMinLon')}"/>
+              <input type="hidden" id="viewMinLat" name="viewMinLat" value="${fieldValue(bean: queryParams, field: 'viewMinLat')}"/>
+              <input type="hidden" id="viewMaxLon" name="viewMaxLon" value="${fieldValue(bean: queryParams, field: 'viewMaxLon')}"/>
+              <input type="hidden" id="viewMaxLat" name="viewMaxLat" value="${fieldValue(bean: queryParams, field: 'viewMaxLat')}"/>
+              <ol>
+                <li>
+                  <g:checkBox name="searchMethod" id="bboxSearchButton" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
+                  <label>Use BBox Search</label>
+                </li>
+                <li>
+                  <br/>
+                </li>
+                <li>
+                  <label for="aoiMaxLat">North Latitude:</label>
+                </li>
+                <li>
+                  <input type="text" id="aoiMaxLat" name="aoiMaxLat" value="${fieldValue(bean: queryParams, field: 'aoiMaxLat')}"/>
+                </li>
+                <li>
+                  <label for="aoiMinLon">West Longitude:</label>
+                </li>
+                <li>
+                  <input type="text" id="aoiMinLon" name="aoiMinLon" value="${fieldValue(bean: queryParams, field: 'aoiMinLon')}"/>
+                </li>
+                <li>
+                  <label for="aoiMinLat">South Latitude:</label>
+                </li>
+                <li>
+                  <input type="text" id="aoiMinLat" name="aoiMinLat" value="${fieldValue(bean: queryParams, field: 'aoiMinLat')}"/>
+                </li>
+                <li>
+                  <label for="aoiMaxLon">East Longitude:</label>
+                </li>
+                <li>
+                  <input type="text" id="aoiMaxLon" name="aoiMaxLon" value="${fieldValue(bean: queryParams, field: 'aoiMaxLon')}"/>
+                </li>
+                <li>
+                  <br/>
+                </li>
+                <li>
+                  <span class="formButton">
+                    <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
+                  </span>
+                </li>
+              </ol>
+            </div>
           </div>
         </div>
         <div id="tab2">
@@ -129,7 +129,7 @@
             <div class="niceBoxBody">
               <ol>
                 <li>
-                  <g:checkBox name="searchMethod2" id="radiusSearchButton2" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()" />
+                  <g:checkBox name="searchMethod2" id="radiusSearchButton2" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
                   <label>Use Radius Search</label>
                 </li>
                 <li>
@@ -139,13 +139,13 @@
                   <label for="centerLat">Latitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLatDms" value="" />
+                  <g:textField name="centerLatDms" value=""/>
                 </li>
                 <li>
                   <label for="centerLon">Longitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLonDms" value="" />
+                  <g:textField name="centerLonDms" value=""/>
                 </li>
                 <li>
                   <br/>
@@ -154,7 +154,7 @@
                   <label for="aoiRadius">Radius in Meters:</label>
                 </li>
                 <li>
-                  <g:textField name="aoiRadius2" />
+                  <g:textField name="aoiRadius2"/>
                 </li>
                 <li>
                   <br/>
@@ -172,7 +172,7 @@
             <div class="niceBoxBody">
               <ol>
                 <li>
-                  <g:checkBox name="searchMethod2" id="bboxSearchButton2" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()" />
+                  <g:checkBox name="searchMethod2" id="bboxSearchButton2" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
                   <label>Use BBox Search</label>
                 </li>
                 <li>
@@ -182,25 +182,25 @@
                   <label for="aoiMaxLat">North Latitude:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiMaxLatDms" name="aoiMaxLatDms" />
+                  <input type="text" id="aoiMaxLatDms" name="aoiMaxLatDms"/>
                 </li>
                 <li>
                   <label for="aoiMinLon">West Longitude:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiMinLonDms" name="aoiMinLonDms" />
+                  <input type="text" id="aoiMinLonDms" name="aoiMinLonDms"/>
                 </li>
                 <li>
                   <label for="aoiMinLat">South Latitude:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiMinLatDms" name="aoiMinLatDms" />
+                  <input type="text" id="aoiMinLatDms" name="aoiMinLatDms"/>
                 </li>
                 <li>
                   <label for="aoiMaxLon">East Longitude:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiMaxLonDms" name="aoiMaxLonDms" />
+                  <input type="text" id="aoiMaxLonDms" name="aoiMaxLonDms"/>
                 </li>
                 <li>
                   <br/>
@@ -220,7 +220,7 @@
             <div class="niceBoxBody">
               <ol>
                 <li>
-                  <g:checkBox name="searchMethod3" id="radiusSearchButton3" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()" />
+                  <g:checkBox name="searchMethod3" id="radiusSearchButton3" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
                   <label>Use Radius Search</label>
                 </li>
                 <li>
@@ -230,7 +230,7 @@
                   <label for="centerLat">MGRS:</label>
                 </li>
                 <li>
-                  <g:textField name="centerMgrs" value="" />
+                  <g:textField name="centerMgrs" value=""/>
                 </li>
                 <li>
                   <br/>
@@ -254,37 +254,37 @@
           </div>
           <div class="niceBox">
             <div class="niceBoxHd">Geospatial Criteria:</div>
-              <div class="niceBoxBody">
-                <ol>
-                  <li>
-                    <g:checkBox name="searchMethod3" id="bboxSearchButton3" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()" />
-                    <label>Use BBox Search</label>
-                  </li>
-                  <li>
-                    <br/>
-                  </li>
-                  <li>
-                    <label for="aoiNeMgrs">MGRS NE:</label>
-                  </li>
-                  <li>
-                    <input type="text" id="aoiNeMgrs" name="aoiNeMgrs" value="" />
-                  </li>
-                  <li>
-                    <label for="aoiSwMgrs">MGRS SW:</label>
-                  </li>
-                  <li>
-                    <input type="text" id="aoiSwMgrs" name="aoiSwMgrs" value="" />
-                  </li>
-                  <li>
-                    <br/>
-                  </li>
-                  <li>
-                    <span class="formButton">
-                      <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
-                    </span>
-                  </li>
-                </ol>
-              </div>
+            <div class="niceBoxBody">
+              <ol>
+                <li>
+                  <g:checkBox name="searchMethod3" id="bboxSearchButton3" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
+                  <label>Use BBox Search</label>
+                </li>
+                <li>
+                  <br/>
+                </li>
+                <li>
+                  <label for="aoiNeMgrs">MGRS NE:</label>
+                </li>
+                <li>
+                  <input type="text" id="aoiNeMgrs" name="aoiNeMgrs" value=""/>
+                </li>
+                <li>
+                  <label for="aoiSwMgrs">MGRS SW:</label>
+                </li>
+                <li>
+                  <input type="text" id="aoiSwMgrs" name="aoiSwMgrs" value=""/>
+                </li>
+                <li>
+                  <br/>
+                </li>
+                <li>
+                  <span class="formButton">
+                    <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
+                  </span>
+                </li>
+              </ol>
+            </div>
           </div>
         </div>
       </div>
@@ -298,15 +298,15 @@
             <label for="startDate">Start Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="startDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.startDate}" onChange="updateOmarFilters()" />
-            <g:hiddenField name="startDate_timezone" value="UTC" />
+            <richui:dateChooser name="startDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.startDate}" onChange="updateOmarFilters()"/>
+            <g:hiddenField name="startDate_timezone" value="UTC"/>
           </li>
           <li>
             <label for='endDate'>End Date:</label>
           </li>
           <li>
-            <richui:dateChooser name="endDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.endDate}" onChange="updateOmarFilters()" />
-            <g:hiddenField name="endDate_timezone" value="UTC" />
+            <richui:dateChooser name="endDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.endDate}" onChange="updateOmarFilters()"/>
+            <g:hiddenField name="endDate_timezone" value="UTC"/>
           </li>
         </ol>
       </div>
@@ -317,13 +317,13 @@
         <ol>
           <g:each in="${queryParams?.searchTagValues}" var="searchTagValue" status="i">
             <g:select
-                    noSelection="${['null':'Select One...']}"
-                    name="searchTagNames[${i}]"
-                    value="${queryParams?.searchTagNames[i]}"
-                    from="${VideoDataSetSearchTag.list()}"
-                    optionKey="name" optionValue="description" />
+                noSelection="${['null':'Select One...']}"
+                name="searchTagNames[${i}]"
+                value="${queryParams?.searchTagNames[i]}"
+                from="${VideoDataSetSearchTag.list()}"
+                optionKey="name" optionValue="description"/>
             <li>
-              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()" />
+              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
             </li>
           </g:each>
         </ol>
@@ -337,7 +337,7 @@
             <label for="max">Max Results:</label>
           </li>
           <li>
-            <input type="text" id="max" name="max" value="${params?.max}" />
+            <input type="text" id="max" name="max" value="${params?.max}"/>
           </li>
         </ol>
       </div>
@@ -370,7 +370,7 @@
   <div class="niceBox">
     <div class="niceBoxHd">Map Mensuration:</div>
     <div class="niceBoxBody">
-      Path Units: <g:select id="pathUnits" name="pathUnits" from="${['kilometer', 'meter','feet','mile','yard']}" />
+      Path Units: <g:select id="pathUnits" name="pathUnits" from="${['kilometer', 'meter','feet','mile','yard']}"/>
       <div id="pathMeasurementOutput"></div>
       <div id="areaMeasurementOutput"></div>
     </div>
@@ -379,9 +379,9 @@
 </content>
 
 <script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
-        resource(plugin: "openlayers", dir: "js", file: "OpenLayers.js"),
-        resource(plugin: "omar-core", dir: "js", file: "mapwidget.js"),
-        resource(plugin: "omar-core", dir: "js", file: "coordinateConversion.js")
+    resource(plugin: "openlayers", dir: "js", file: "OpenLayers.js"),
+    resource(plugin: "omar-core", dir: "js", file: "mapwidget.js"),
+    resource(plugin: "omar-core", dir: "js", file: "coordinateConversion.js")
 ])}'></script>
 
 
@@ -414,12 +414,12 @@ function init()
   {isBaseLayer: true, buffer: 0,transitionEffect: "resize"});
 
   mapWidget.setupBaseLayers(baseLayer);
-  </g:each>
-    };
+</g:each>
+  };
 
-    mapWidget.setupMapWidget();
-    setupBaseLayers();
-    mapWidget.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
+  mapWidget.setupMapWidget();
+  setupBaseLayers();
+  mapWidget.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
     mapWidget.changeMapSize();
     mapWidget.setupAoiLayer();
     mapWidget.setupToolBar();
