@@ -233,6 +233,12 @@
   </content>
 
   <g:javascript>
+    var bottomHeight = 66;
+    if(${totalCount} == 0)
+    {
+        bottomHeight = 46;
+    }
+
     function updateOffset()
     {
         var max = document.getElementById("max").value;

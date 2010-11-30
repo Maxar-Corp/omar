@@ -219,12 +219,22 @@
 
     <div class="paginateButtons">
       <g:paginate total="${rasterEntryList.totalCount}" params="${[rasterDataSet:params.rasterDataSetId]}"/>
+      <g:if test="${rasterEntryList.totalCount == 0}">
 
-      <input type="text" id="pageOffset" size="2"/> <input type="button" value="Go to Page" onclick="javascript:updateOffset();"/>
+      </g:if>
+      <g:else>
+        <input type="text" id="pageOffset" size="2"/> <input type="button" value="Go to Page" onclick="javascript:updateOffset();"/>
+      </g:else>
     </div>
   </content>
 
  <g:javascript>
+    var bottomHeight = 66;
+    if(${rasterEntryList.totalCount} == 0)
+    {
+        bottomHeight = 46;
+    }
+
     function updateOffset()
     {
         var max = document.getElementById("max").value;
