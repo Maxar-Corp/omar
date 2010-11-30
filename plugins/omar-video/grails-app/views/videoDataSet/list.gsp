@@ -143,12 +143,22 @@
 
     <div class="paginateButtons">
       <g:paginate total="${videoDataSetList.totalCount}" params="${[repositoryId:params.repositoryId]}"/>
+      <g:if test="${videoDataSetList.totalCount == 0}">
 
-      <input type="text" id="pageOffset" size="2"/> <input type="button" value="Go to Page" onclick="javascript:updateOffset();"/>
+      </g:if>
+      <g:else>
+        <input type="text" id="pageOffset" size="2"/> <input type="button" value="Go to Page" onclick="javascript:updateOffset();"/>
+      </g:else>
     </div>
   </content>
 
  <g:javascript>
+   var bottomHeight = 66;
+   if(${videoDataSetList.totalCount} == 0)
+   {
+       bottomHeight = 46; 
+   }
+
    function updateOffset()
    {
        var max = document.getElementById("max").value;
