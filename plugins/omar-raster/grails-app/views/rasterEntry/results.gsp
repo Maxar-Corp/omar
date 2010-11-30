@@ -223,8 +223,12 @@
 
     <div class="paginateButtons">
       <g:paginate event="testing('tabView');" controller="rasterEntry" action="results" total="${totalCount ?: 0}" max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
+      <g:if test="${totalCount == 0}">
      
-      <input type="text" id="pageOffset" size="2"/> <input type="button" value="Go to Page" onclick="javascript:updateOffset();"/>
+      </g:if>
+      <g:else>
+        <input type="text" id="pageOffset" size="2"/> <input type="button" value="Go to Page" onclick="javascript:updateOffset();"/>
+      </g:else>
     </div>
   </content>
 
