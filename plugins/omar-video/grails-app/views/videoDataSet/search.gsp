@@ -1,4 +1,4 @@
-<%@ page import="org.ossim.omar.BaseQuery; org.ossim.omar.VideoDataSetQuery; org.ossim.omar.VideoDataSetSearchTag" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; org.ossim.omar.BaseQuery; org.ossim.omar.VideoDataSetQuery; org.ossim.omar.VideoDataSetSearchTag" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <title>OMAR: Video Search</title>
@@ -384,17 +384,6 @@
     resource(plugin: "omar-core", dir: "js", file: "coordinateConversion.js")
 ])}'></script>
 
-
-
-
-
-
-
-
-
-
-
-
 <g:javascript>
 (function() {
     var tabView = new YAHOO.widget.TabView('demo');
@@ -407,19 +396,18 @@ function init()
     var setupBaseLayers = function()
     {
         var baseLayer = null;
+        var baseWMS = ${baseWMS as JSON};
 
-  <g:each var="foo" in="${baseWMS}">
-  baseLayer = new OpenLayers.Layer.WMS("${foo.title}", "${foo.url}",
-  {layers: "${foo.layers}", format: "${foo.format}"},
-  {isBaseLayer: true, buffer: 0,transitionEffect: "resize"});
+        for ( foo in baseWMS ) {
+          baseLayer = new OpenLayers.Layer.WMS(baseWMS[foo].name, baseWMS[foo].url,
+                  baseWMS[foo].params, baseWMS[foo].options);
 
-  mapWidget.setupBaseLayers(baseLayer);
-</g:each>
+          mapWidget.setupBaseLayers(baseLayer);
+        }
   };
-
   mapWidget.setupMapWidget();
   setupBaseLayers();
-  mapWidget.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
+  mapWidget.setupDataLayer("${dataWMS.name}", "${dataWMS.url}", "${dataWMS.params.layers}", "${dataWMS.options.styles}", "${dataWMS.params.format}");
     mapWidget.changeMapSize();
     mapWidget.setupAoiLayer();
     mapWidget.setupToolBar();

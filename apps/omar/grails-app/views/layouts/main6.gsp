@@ -70,11 +70,12 @@
   </div>
 </div>
 
+
 <script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
     resource(dir: "js", file: "application.js"),
-    resource(plugin: "richui", dir: "yahoo-dom-event", file: "yahoo-dom-event-min.js"),
+    resource(plugin: "richui", dir: "js/yui/yahoo-dom-event", file: "yahoo-dom-event.js"),
     resource(plugin: "richui", dir: "js/yui/element", file: "element-min.js"),
-    resource(plugin: "richui", dir: "js/yui/layout", file: "layout-min.js")
+    resource(plugin: "richui", dir: "js/yui/layout", file: "layout-min.js"),
 ])}'></script>
 
 

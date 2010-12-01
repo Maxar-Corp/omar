@@ -1,13 +1,12 @@
 import grails.util.Environment
+
 //import org.ossim.postgis.Geometry
 //import org.ossim.postgis.GeometryType
 
 import com.vividsolutions.jts.geom.Geometry
+
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
-import org.apache.log4j.spi.LoggingEvent
-
-import java.sql.Connection
 
 grails.gorm.default.mapping = {
   cache true
@@ -53,12 +52,7 @@ grails.converters.encoding = "UTF-8"
 
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
-
-//grails.serverIP="localhost"
 grails.serverIP = InetAddress.localHost.hostAddress
-//grails.serverIP = "scott-6a8076558:8080"
-
-//grails.serverIP = "172.16.90.130"
 
 // set per-environment serverURL stem for creating absolute links
 environments {
@@ -73,7 +67,6 @@ environments {
   production {
     databaseName = "omardb-${appVersion}-prod"
     grails.serverURL = "http://${grails.serverIP}/${appName}"
-
   }
 }
 
@@ -131,12 +124,13 @@ wms {
   mapFile = "${referenceDataDirectory}/bmng.map"
 
   base {
+    defaultOptions = [isBaseLayer: true, buffer: 0, transitionEffect: "resize"]
     layers = [
             [
                     url: (useTileCache) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${mapServExt}?map=${mapFile}",
-                    layers: (useTileCache) ? "omar" : "Reference",
-                    title: "Reference Data",
-                    format: "image/jpeg"
+                    params: [layers: (useTileCache) ? "omar" : "Reference", format: "image/jpeg"],
+                    name: "Reference Data",
+                    options: defaultOptions
             ]
     ]
   }
@@ -162,24 +156,21 @@ wms {
 
     raster = [
             url: "${grails.serverURL}/ogc/footprints",
-            layers: (supportIE6) ? "Imagery" : "ImageData",
-            footprintLayers: "Imagery",
-            title: "OMAR Imagery Coverage",
-            format: (supportIE6) ? "image/gif" : "image/png",
-            styles: "green"
+            params: [layers: (supportIE6) ? "Imagery" : "ImageData", format: (supportIE6) ? "image/gif" : "image/png"],
+            name: "OMAR Imagery Coverage",
+            options: [styles: "green", footprintLayers: "Imagery"]
     ]
 
     video = [
             url: "${grails.serverURL}/ogc/footprints",
-            layers: (supportIE6) ? "Videos" : "VideoData",
-            footprintLayers: "Videos",
-            title: "OMAR Video Coverage",
-            format: (supportIE6) ? "image/gif" : "image/png",
-            styles: "red"
+            params: [layers: (supportIE6) ? "Videos" : "VideoData", format: (supportIE6) ? "image/gif" : "image/png"],
+            name: "OMAR Video Coverage",
+            options: [styles: "red", footprintLayers: "Videos"]
+
     ]
   }
 
-// Note the colors are normalized floats
+  // Note the colors are normalized floats
   styles = [
           default: [
                   outlinecolor: [r: 0.0, g: 1.0, b: 0, a: 1.0],
@@ -212,14 +203,14 @@ thumbnail {
 
 security {
   level = 'UNCLASS'
-//security.level = 'SECRET'
-//security.level = 'TOPSECRET'
+//level = 'SECRET'
+//level = 'TOPSECRET'
   sessionTimeout = 60
 }
 
 image.download.prefix = "http://${grails.serverIP}"
 
-/** ********************************* CONDITIONALS FOR VIEWS ***********************************************/
+/** ********************************* CONDITIONALS FOR VIEWS                 ***********************************************/
 // flags for different views
 //
 views {
@@ -231,11 +222,11 @@ views {
     defaultOverlayVisiblity = false
   }
 }
-/***********************************************************************************************************/
+/** *********************************************************************************************************/
 
 videoStreaming {
   flashDirRoot = "/Library/WebServer/Documents/videos"
-//flashDirRoot = "/var/www/html/videos"
+  //flashDirRoot = "/var/www/html/videos"
   flashUrlRoot = "http://${grails.serverIP}/videos"
 }
 
@@ -276,13 +267,11 @@ rasterEntry {
   ]
 }
 
-
 videoDataSet {
   searchTagData = [
           [name: "otherTagsXml.filename=", description: "Feed"]
   ]
 }
-
 
 login {
   registration
@@ -291,7 +280,6 @@ login {
     autoEnableUserFlag = true
   }
 }
-
 
 kml {
   maxImages = 100

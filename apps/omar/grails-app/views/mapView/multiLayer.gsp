@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -85,7 +85,7 @@
     </span>
     <g:if test="${rasterEntries?.size() == 1}">
       <span class="menuButton">
-        <a href="${createLink(controller: "mapView", action: "imageSpace", params: [layers:(rasterEntries*.indexId).join(',')])}">
+        <a href="${createLink(controller: "mapView", action: "imageSpace", params: [layers: (rasterEntries*.indexId).join(',')])}">
           Image Space Viewer
         </a>
       </span>
@@ -129,17 +129,14 @@
   function setupBaseLayer()
   {
     var baseLayer = null;
+    var baseWMS = ${baseWMS as JSON};
 
-  <g:each var="foo" in="${baseWMS}">
-  baseLayer = new OpenLayers.Layer.WMS(
-  "${foo.title}",
-            "${foo.url}",
-    {layers: '${foo.layers}', format: "${foo.format}" },
-    {isBaseLayer:true, buffer:0,transitionEffect: "resize"}
-            );
-    map.addLayer( baseLayer );
-    map.setBaseLayer( baseLayer );
-</g:each>
+    for ( foo  in baseWMS ) {
+      baseLayer = new OpenLayers.Layer.WMS( baseWMS[foo].name, baseWMS[foo].url,
+              baseWMS[foo].params, baseWMS[foo].options );
+      map.addLayer( baseLayer );
+      map.setBaseLayer( baseLayer );
+    }
   }
 
 function init(mapWidth, mapHeight)

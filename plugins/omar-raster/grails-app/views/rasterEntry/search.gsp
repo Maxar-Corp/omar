@@ -1,4 +1,4 @@
-<%@ page import="org.ossim.omar.BaseQuery; org.ossim.omar.RasterEntryQuery; org.ossim.omar.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; org.ossim.omar.BaseQuery; org.ossim.omar.RasterEntryQuery; org.ossim.omar.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <title>OMAR: Raster Search</title>
@@ -378,7 +378,7 @@
   <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
 </content>
 
-<openlayers:loadJavascript />
+<openlayers:loadJavascript/>
 <script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
     resource(plugin: "omar-core", dir: "js", file: "mapwidget.js"),
     resource(plugin: "omar-core", dir: "js", file: "coordinateConversion.js")
@@ -396,19 +396,19 @@ function init()
     var setupBaseLayers = function()
     {
         var baseLayer = null;
+        var baseWMS = ${baseWMS as JSON}; 
 
-  <g:each var="foo" in="${baseWMS}">
-  baseLayer = new OpenLayers.Layer.WMS("${foo.title}", "${foo.url}",
-  {layers: "${foo.layers}", format: "${foo.format}"},
-  {isBaseLayer: true, buffer: 0,transitionEffect: "resize"});
+        for ( foo in baseWMS ) {
+          baseLayer = new OpenLayers.Layer.WMS(baseWMS[foo].name, baseWMS[foo].url,
+                  baseWMS[foo].params, baseWMS[foo].options);
 
-  mapWidget.setupBaseLayers(baseLayer);
-</g:each>
+          mapWidget.setupBaseLayers(baseLayer);
+        }
   };
 
   mapWidget.setupMapWidget();
   setupBaseLayers();
-  mapWidget.setupDataLayer("${dataWMS.title}", "${dataWMS.url}", "${dataWMS.layers}", "${dataWMS.styles}", "${dataWMS.format}");
+  mapWidget.setupDataLayer("${dataWMS.name}", "${dataWMS.url}", "${dataWMS.params.layers}", "${dataWMS.options.styles}", "${dataWMS.params.format}");
     mapWidget.changeMapSize();
     mapWidget.setupAoiLayer();
     mapWidget.setupToolBar();
