@@ -1,3 +1,5 @@
+import org.ossim.omar.MapPropertyEditor
+
 class OmarCoreGrailsPlugin
 {
   // the plugin version
@@ -43,7 +45,8 @@ This plugin contains OMAR code that can be shared or accessed from other OMAR pl
   }
 
   def doWithSpring = {
-    // TODO Implement runtime spring config (optional)
+    customEditorRegistrar(org.ossim.omar.CustomEditorRegistrar)
+    mapPropertyEditor(MapPropertyEditor)
   }
 
   def doWithDynamicMethods = { ctx ->

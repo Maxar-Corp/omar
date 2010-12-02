@@ -838,5 +838,30 @@ class WebMappingService
     searchService?.scrollGeometries(queryParams, params, closure)
   }
 
+  def getBaseLayers()
+  {
+    def baseWMS = grailsApplication.config.wms.base.layers
+
+
+    def wmsLayers = WmsLayers.list()
+
+    wmsLayers?.each { wmsLayer ->
+      def newLayer = [
+              name: wmsLayer.name,
+              url: wmsLayer.url,
+              params: wmsLayer.params ?: grailsApplication.config.wms.base.defaultParams,
+              options: wmsLayer.options ?: [:]
+      ]
+
+      if ( !baseWMS.find { it.name == newLayer.name } )
+      {
+        baseWMS << newLayer
+      }
+    }
+
+    return baseWMS
+
+  }
+
 }
 

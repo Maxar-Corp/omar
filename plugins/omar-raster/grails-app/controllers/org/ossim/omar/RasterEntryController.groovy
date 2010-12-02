@@ -9,7 +9,7 @@ class RasterEntryController implements InitializingBean
   def authenticateService
   def baseWMS
   def dataWMS
-
+  def webMappingService
   def rasterEntrySearchService
 
   def tagHeaderList
@@ -39,7 +39,7 @@ class RasterEntryController implements InitializingBean
       rasterEntryList = RasterEntry.createCriteria().list(params) {}
     }
 
-    if ( !session.rasterEntryListCurrentTab && ( "${session.rasterEntryListCurrentTab}"!="0" ) )
+    if ( !session.rasterEntryListCurrentTab && ("${session.rasterEntryListCurrentTab}" != "0") )
     {
       session["rasterEntryListCurrentTab"] = "0"
     }
@@ -47,9 +47,9 @@ class RasterEntryController implements InitializingBean
     [rasterEntryList: rasterEntryList,
             tagNameList: tagNameList,
             tagHeaderList: tagHeaderList,
-            sessionAction:"updateSession",
-            sessionController:"session",
-            rasterEntryListCurrentTab:session.rasterEntryListCurrentTab
+            sessionAction: "updateSession",
+            sessionController: "session",
+            rasterEntryListCurrentTab: session.rasterEntryListCurrentTab
     ]
   }
 
@@ -77,7 +77,7 @@ class RasterEntryController implements InitializingBean
 
   def show = {
 
-    def rasterEntry = RasterEntry.findByIndexId(params.id)?:RasterEntry.get(params.id);
+    def rasterEntry = RasterEntry.findByIndexId(params.id) ?: RasterEntry.get(params.id);
 
 
     if ( !rasterEntry )
@@ -90,7 +90,7 @@ class RasterEntryController implements InitializingBean
   }
 
   def delete = {
-    def rasterEntry = RasterEntry.findByIndexId(params.id) ?:RasterEntry.get(params.id);
+    def rasterEntry = RasterEntry.findByIndexId(params.id) ?: RasterEntry.get(params.id);
     if ( rasterEntry )
     {
       rasterEntry.delete()
@@ -105,7 +105,7 @@ class RasterEntryController implements InitializingBean
   }
 
   def edit = {
-    def rasterEntry = RasterEntry.findByIndexId(params.id) ?:RasterEntry.get(params.id);
+    def rasterEntry = RasterEntry.findByIndexId(params.id) ?: RasterEntry.get(params.id);
 
     if ( !rasterEntry )
     {
@@ -119,7 +119,7 @@ class RasterEntryController implements InitializingBean
   }
 
   def update = {
-    def rasterEntry = RasterEntry.findByIndexId(params.id) ?:RasterEntry.get(params.id);
+    def rasterEntry = RasterEntry.findByIndexId(params.id) ?: RasterEntry.get(params.id);
     if ( rasterEntry )
     {
       rasterEntry.properties = params
@@ -206,12 +206,12 @@ class RasterEntryController implements InitializingBean
       def endtime = System.currentTimeMillis()
 
       def logData = [
-          TYPE: "raster_search",
-          START: new Date(starttime),
-          END: new Date(endtime),
-          ELAPSE_TIME_MILLIS: endtime - starttime,
-          USER: user,
-          PARAMS: params
+              TYPE: "raster_search",
+              START: new Date(starttime),
+              END: new Date(endtime),
+              ELAPSE_TIME_MILLIS: endtime - starttime,
+              USER: user,
+              PARAMS: params
       ]
 
       log.info(logData)
@@ -277,12 +277,12 @@ class RasterEntryController implements InitializingBean
       def endtime = System.currentTimeMillis()
 
       def logData = [
-          TYPE: "raster_search",
-          START: new Date(starttime),
-          END: new Date(endtime),
-          ELAPSE_TIME_MILLIS: endtime - starttime,
-          USER: user,
-          PARAMS: params
+              TYPE: "raster_search",
+              START: new Date(starttime),
+              END: new Date(endtime),
+              ELAPSE_TIME_MILLIS: endtime - starttime,
+              USER: user,
+              PARAMS: params
       ]
 
       log.info(logData)
@@ -308,15 +308,16 @@ class RasterEntryController implements InitializingBean
     bindData(queryParams, params)
 
     queryParams.startDate = DateUtil.initializeDate("startDate", params)
-    queryParams.endDate   = DateUtil.initializeDate("endDate", params)
+    queryParams.endDate = DateUtil.initializeDate("endDate", params)
 
 //    println "params: ${params}"
 //    println "startDate: ${queryParams.startDate}"
 //    println "endDate: ${queryParams.endDate}"
-    
+
 
     return queryParams
   }
+
   def results = {
 
 //    println "=== results start ==="
@@ -328,25 +329,25 @@ class RasterEntryController implements InitializingBean
       params.max = 10
     }
 
-	if (params?.queryParams)
-	{
-	  def serialized = params?.queryParams - "{" - "}";
-	  def paramsArray = serialized?.split(',')
+    if ( params?.queryParams )
+    {
+      def serialized = params?.queryParams - "{" - "}";
+      def paramsArray = serialized?.split(',')
       params.remove("queryParams")
-	  params.remove("totalCount")
-	  paramsArray?.each
-	  {
-	    def temp = it?.split('=')
-	    if (temp.size() == 2)
-		{ 
-		  if (temp[1] == "null") temp[1] = ""
-		    params.put(temp[0].trim(), temp[1].trim())
-		}
-		else if (temp.size() == 1) params.put(temp[0].trim(), "")
+      params.remove("totalCount")
+      paramsArray?.each
+      {
+        def temp = it?.split('=')
+        if ( temp.size() == 2 )
+        {
+          if ( temp[1] == "null" ) temp[1] = ""
+          params.put(temp[0].trim(), temp[1].trim())
+        }
+        else if ( temp.size() == 1 ) params.put(temp[0].trim(), "")
       }
-	}
+    }
 
-    if(!session.rasterEntryResultCurrentTab&&("${session.rasterEntryResultCurrentTab}"!="0"))
+    if ( !session.rasterEntryResultCurrentTab && ("${session.rasterEntryResultCurrentTab}" != "0") )
     {
       session["rasterEntryResultCurrentTab"] = "0"
     }
@@ -364,7 +365,7 @@ class RasterEntryController implements InitializingBean
     else
     {
       rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-      totalCount    = rasterEntrySearchService.getCount(queryParams)
+      totalCount = rasterEntrySearchService.getCount(queryParams)
 
       if ( rasterEntries )
       {
@@ -378,12 +379,12 @@ class RasterEntryController implements InitializingBean
       def user = authenticateService.principal()?.username
 
       def logData = [
-          TYPE: "raster_search",
-          START: new Date(starttime),
-          END: new Date(endtime),
-          ELAPSE_TIME_MILLIS: endtime - starttime,
-          USER: user,
-          PARAMS: params
+              TYPE: "raster_search",
+              START: new Date(starttime),
+              END: new Date(endtime),
+              ELAPSE_TIME_MILLIS: endtime - starttime,
+              USER: user,
+              PARAMS: params
       ]
 
 //      println "\nparams: ${params?.sort { it.key }}"
@@ -395,17 +396,17 @@ class RasterEntryController implements InitializingBean
     }
 
 //    println "=== results end ==="
-  
+
     render(view: 'results', model: [
-        rasterEntries: rasterEntries,
-        totalCount: totalCount,
-        rasterFiles: rasterFiles,
-        tagNameList: tagNameList,
-        tagHeaderList: tagHeaderList,
-        queryParams: queryParams,
-        sessionAction:"updateSession",
-        sessionController:"session",
-        rasterEntryResultCurrentTab:session.rasterEntryResultCurrentTab
+            rasterEntries: rasterEntries,
+            totalCount: totalCount,
+            rasterFiles: rasterFiles,
+            tagNameList: tagNameList,
+            tagHeaderList: tagHeaderList,
+            queryParams: queryParams,
+            sessionAction: "updateSession",
+            sessionController: "session",
+            rasterEntryResultCurrentTab: session.rasterEntryResultCurrentTab
     ])
 
   }
@@ -414,77 +415,77 @@ class RasterEntryController implements InitializingBean
 
 //    println "=== results start ==="
 
-     def starttime = System.currentTimeMillis()
+    def starttime = System.currentTimeMillis()
 
-     if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
-     {
-       params.max = 10
-     }
-     if(!session.rasterEntryResultCurrentTab&&("${session.rasterEntryResultCurrentTab}"!="0"))
-     {
-       session["rasterEntryResultCurrentTab"] = "0"
-     }
-     def rasterEntries = null
-     def totalCount = null
-     def rasterFiles = null
+    if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
+    {
+      params.max = 10
+    }
+    if ( !session.rasterEntryResultCurrentTab && ("${session.rasterEntryResultCurrentTab}" != "0") )
+    {
+      session["rasterEntryResultCurrentTab"] = "0"
+    }
+    def rasterEntries = null
+    def totalCount = null
+    def rasterFiles = null
 
-     def queryParams = initRasterEntryQuery(params)
-     if ( chainModel )
-     {
-       rasterEntries = chainModel.rasterEntries
-       totalCount = chainModel.totalCount
-       rasterFiles = chainModel.rasterFiles
-     }
-     else
-     {
-       rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-       totalCount    = rasterEntrySearchService.getCount(queryParams)
+    def queryParams = initRasterEntryQuery(params)
+    if ( chainModel )
+    {
+      rasterEntries = chainModel.rasterEntries
+      totalCount = chainModel.totalCount
+      rasterFiles = chainModel.rasterFiles
+    }
+    else
+    {
+      rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      totalCount = rasterEntrySearchService.getCount(queryParams)
 
-       if ( rasterEntries )
-       {
-         rasterFiles = RasterFile.createCriteria().list {
-           eq("type", "main")
-           inList("rasterDataSet", rasterEntries?.rasterDataSet)
-         }
-       }
+      if ( rasterEntries )
+      {
+        rasterFiles = RasterFile.createCriteria().list {
+          eq("type", "main")
+          inList("rasterDataSet", rasterEntries?.rasterDataSet)
+        }
+      }
 
-       def endtime = System.currentTimeMillis()
-       def user = authenticateService.principal()?.username
+      def endtime = System.currentTimeMillis()
+      def user = authenticateService.principal()?.username
 
-       def logData = [
-           TYPE: "raster_search",
-           START: new Date(starttime),
-           END: new Date(endtime),
-           ELAPSE_TIME_MILLIS: endtime - starttime,
-           USER: user,
-           PARAMS: params
-       ]
+      def logData = [
+              TYPE: "raster_search",
+              START: new Date(starttime),
+              END: new Date(endtime),
+              ELAPSE_TIME_MILLIS: endtime - starttime,
+              USER: user,
+              PARAMS: params
+      ]
 
 //      println "\nparams: ${params?.sort { it.key }}"
 //      println "\nqueryParams: ${queryParams?.toMap()}"
 
-       log.info(logData)
+      log.info(logData)
 
 //      println logData
-     }
+    }
 
 //    println "=== results end ==="
 
 
-     render(view: 'results_mobile', model: [
-         rasterEntries: rasterEntries,
-         totalCount: totalCount,
-         rasterFiles: rasterFiles,
-         tagNameList: tagNameList,
-         tagHeaderList: tagHeaderList,
-         queryParams: queryParams,
-         sessionAction:"updateSession",
-         sessionController:"session",
-         rasterEntryResultCurrentTab:session.rasterEntryResultCurrentTab
-     ])
+    render(view: 'results_mobile', model: [
+            rasterEntries: rasterEntries,
+            totalCount: totalCount,
+            rasterFiles: rasterFiles,
+            tagNameList: tagNameList,
+            tagHeaderList: tagHeaderList,
+            queryParams: queryParams,
+            sessionAction: "updateSession",
+            sessionController: "session",
+            rasterEntryResultCurrentTab: session.rasterEntryResultCurrentTab
+    ])
 
-   }
-  
+  }
+
   def getKML = {
 
     def rasterEntry = RasterEntry.get(params.rasterEntryIds)
@@ -559,7 +560,8 @@ class RasterEntryController implements InitializingBean
 
   public void afterPropertiesSet()
   {
-    baseWMS = grailsApplication.config.wms.base.layers
+    baseWMS = webMappingService.baseLayers
+
     dataWMS = grailsApplication.config.wms.data.raster
     tagHeaderList = grailsApplication.config.rasterEntry.tagHeaderList
     tagNameList = grailsApplication.config.rasterEntry.tagNameList
