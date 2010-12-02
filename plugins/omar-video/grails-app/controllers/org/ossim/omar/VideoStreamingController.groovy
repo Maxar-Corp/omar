@@ -16,7 +16,15 @@ class VideoStreamingController implements InitializingBean
     def flvUrl
     def title
 
+    if(!VideoDataSet.findByIndexId(params.id))
+    {
+      render "Alert: No video matched with id param: " + params.id
+      return
+    }
+
     def videoDataSet = VideoDataSet.findByIndexId(params.id) ?: VideoDataSet.get(params.id)
+
+    println params.id
 
     if ( videoDataSet )
     {
