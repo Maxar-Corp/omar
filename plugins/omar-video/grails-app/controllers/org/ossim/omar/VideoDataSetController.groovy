@@ -9,9 +9,9 @@ import grails.converters.deep.XML
 class VideoDataSetController implements InitializingBean
 {
 
-  public static final List tagHeaderList = []
-  public static final List tagNameList = []
-
+  def tagHeaderList
+  def tagNameList
+  
   def thumbnailSize = 128
 
   def baseWMS
@@ -21,6 +21,7 @@ class VideoDataSetController implements InitializingBean
 
   def authenticateService
   def videoDataSetSearchService
+  def webMappingService
 
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
@@ -557,7 +558,7 @@ class VideoDataSetController implements InitializingBean
 
   public void afterPropertiesSet()
   {
-    baseWMS = grailsApplication.config.wms.base.layers
+    baseWMS = webMappingService.baseLayers
     dataWMS = grailsApplication.config.wms.data.video
   }
 
@@ -660,32 +661,4 @@ class VideoDataSetController implements InitializingBean
       }
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
 }
