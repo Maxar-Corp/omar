@@ -74,6 +74,7 @@
 
     YAHOO.example.container.wait.show();
    */
+
     //////////////
 
     Event.onDOMReady( function()
@@ -105,11 +106,6 @@
         mapWidget.changeMapSize( mapWidth, mapHeight );
       } );
 
-      // style.display = 'none';
-
-      ////////
-      //   YAHOO.example.container.wait.hide();
-      //////////////
       YAHOO.util.Dom.setStyle( document.body, 'visibility', 'visible' );
       layout.render();
     } );
