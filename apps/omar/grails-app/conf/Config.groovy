@@ -45,6 +45,7 @@ grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
         multipartForm: 'multipart/form-data',
         kml: 'application/vnd.google+earth.kml+xml'
 ]
+
 // The default codec used to encode data with ${}
 grails.views.default.codec = "none" // none, html, base64
 grails.views.gsp.encoding = "UTF-8"
@@ -291,3 +292,11 @@ kml {
 }
 
 
+grails.doc.authors     = "Garrett Potts"
+grails.doc.license     = "LGPL"
+grails.doc.copyright   = "RadiantBlue Technologies"
+grails.doc.footer      = ""
+grails.doc.title       = "OMAR"
+grails.doc.logo        = """<a href="http://www.ossim.org" ><img src="../img/OMAR.png" border="0"/></a>"""
+grails.doc.sponsorLogo = """<a href="http://www.radiantblue.com" ><img src="../img/RBT.png" border="0"/></a>"""
+grails.doc.images = new File("web-app/images")
