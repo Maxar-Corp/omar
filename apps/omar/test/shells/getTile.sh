@@ -20,7 +20,7 @@ func()
   then
     echo "Same files? passed"
   else
-  echo "Same files? failed"
+    echo "Same files? failed"
   fi
 
   FILE_TYPE=`file --separator - out1`
