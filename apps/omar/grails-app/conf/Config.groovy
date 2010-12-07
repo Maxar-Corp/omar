@@ -297,6 +297,7 @@ grails.doc.license     = "LGPL"
 grails.doc.copyright   = "RadiantBlue Technologies"
 grails.doc.footer      = ""
 grails.doc.title       = "OMAR"
+grails.doc.subtitle       = ""
 grails.doc.logo        = """<a href="http://www.ossim.org" ><img src="../img/OMAR.png" border="0"/></a>"""
 grails.doc.sponsorLogo = """<a href="http://www.radiantblue.com" ><img src="../img/RBT.png" border="0"/></a>"""
 grails.doc.images = new File("web-app/images")
