@@ -10,13 +10,15 @@ inside another plugin. The createImagesKml is located in the omar-ogc plugin and
 we would like to solve the question: _How do we override a method in a plugin outside the OMAR distribution_ ?
 
 
-* Change to directory omar/plugins
-* create a new plugin called omar-site by running the command
+Change to directory omar/plugins and create a new plugin called omar-site by running the command
 {code}
   grails create-plugin omar-site.
 {code}
 
-A directory should now be created called omar-site.  Change directory into the new omar-site plugin directory and edit the file in grails-app/conf/BuildConfig.groovy and add the dependencies inline to the plugin as seen here in this example.
+A directory should now be created called omar-site.  Change directory into the new omar-site plugin
+directory and edit the file in grails-app/conf/BuildConfig.groovy and add the dependencies inline
+to the plugin. In this example we took the default BuildConfig.groovy and added at the bottom of the file
+the inline dependencies.
 
 {code}
 grails.project.class.dir = "target/classes"
@@ -58,12 +60,12 @@ grails.plugin.location.'postgis' = '../../plugins/postgis'
 
 {code}
 
-Now add a new service that will be used to override the current implementation of the createImagesKml.  I do this so we can organize
-the code into it's own location.  First,  execute the command
+Now add a new service that will be used to override the current implementation of the createImagesKml.
+I do this so we can organize the code into it's own location.  First,  execute the command
 {code}
 grails create-service org.ossim.omar.KmlSite
 {code}
-Edit the File grails-app/service/org/ossim/omar/KmlSiteService.groovy and make it look like the code here:
+Next, edit the File grails-app/service/org/ossim/omar/KmlSiteService.groovy and make it look like the code here:
 {code}
  package org.ossim.omar
 
@@ -93,15 +95,16 @@ Edit the File grails-app/service/org/ossim/omar/KmlSiteService.groovy and make i
        kmlwriter << kmlbuilder.bind(kmlnode)
 
        kmlwriter.buffer
-
      }
  }
 {code}
 
-Which does nothing but create a empty kml document.  This can be used as an initial template to
+The code example creates and returns an empty KML document.  This can be used as an initial template to
 override a different site specific KML generation.
 
-Now edit the file OmarSiteGrailsPlugin.groovy and add 2 attributes to the class
+We will edit the file OmarSiteGrailsPlugin.groovy found in the root directory of the plugin.  So we can more easily read the
+examples here we will only show the parts of the file that are modified.  First, we will add the proper attributes
+to the class so we can retain for later use.
 
 {code}
 def oldCreateImagesKml = null
@@ -113,7 +116,7 @@ Now add the doWithDynamicMethod modifications to the same class so the new metho
 {code}
 def doWithDynamicMethods = { ctx ->
     kmlSiteService = ctx.kmlSiteService
-    oldCreateImagesKml  = KmlService.metaClass.getMetaMethod("createImagesKml", [List, Map, Map] as Class[])//, [KmlService] as Class[])
+    oldCreateImagesKml  = KmlService.metaClass.getMetaMethod("createImagesKml", [List, Map, Map] as Class[])
     KmlService.metaClass.createImagesKml = { List<org.ossim.omar.RasterEntry> rasterEntries,
                                              Map wmsParams,
                                              Map params ->
@@ -125,15 +128,17 @@ def doWithDynamicMethods = { ctx ->
 
 {note}
 We only need to add oldCreateImagesKml if we want to simulate a virtual method override
-and need to only modify something in the list and then pass it on.  Here we override the
-createImagesKml and do not call the old base class'
+and do not need to replace the original code but only massage the input to the original
+source code we are overriding.  This way we can still call the original file if we maintain the address
+before we replace it with the new call.  Here we override the createImagesKml and do not call the old base class'
 
 When overriding a method and saving the old method you must match the signature of the
 argument list exactly
 {note}
 
 
-For good measure we will package your plugin to verify everything is built
+For good measure we will package the plugin to verify everything is built by executing the following
+command in the root omar-site plugin directory
 
 {code}
 grails package-plugin
@@ -152,16 +157,17 @@ grails war
 {code}
 
 "Back To Top":#top
+[<hr/>]
 [<a id='ogcController'/>]
 h2. Override a Controller Action
 
 In this example we would like to override the wms Action found on OgcController
 inside another plugin. We will setup a template that you can use to massage the input url and
-redirect to another url.  In this example we show a template that can be used for maybe
-custom load balancing
+redirect to another url.  This template can be used with any algorithm adhering to the massage the input
+and redirect implementation.
 
-* Change to directory omar/plugins
-* create a new plugin called omar-site by running the command
+Change to directory omar/plugins and, if you have not already done so, create a new plugin called omar-site by running the command
+
 {code}
   grails create-plugin omar-site
 {code}
@@ -259,5 +265,24 @@ this inside our own plugin.
 
 This example will map any url containing ogc/wms path to our new OgcExtend controller's
 wmsFilter.
+
+For good measure we will package the plugin to verify everything is built by executing the following
+command in the root omar-site plugin directory
+
+{code}
+grails package-plugin
+{code}
+
+Now you can re-package Omar and add your new plugin to the application file found in apps/omar/grails-app/conf/BuildConfig.groovy
+
+{code}
+grails.plugin.location.'omar-site' = "../../plugins/omar-site"
+{code}
+
+Now package a new war file  and then deploy your war to the tomcat server
+
+{code}
+grails war
+{code}
 
 "Back To Top":#top
