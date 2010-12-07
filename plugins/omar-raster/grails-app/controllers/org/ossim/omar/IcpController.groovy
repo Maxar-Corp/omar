@@ -15,11 +15,12 @@ class IcpController {
     def x = Math.round(paramsIgnoreCase.x?.toDouble() * width) as Integer;
     def y = Math.round(paramsIgnoreCase.y?.toDouble() * height) as Integer;
     def z       = paramsIgnoreCase.z
+    def format  = paramsIgnoreCase.format?:"image/jpeg"
     paramsIgnoreCase.remove("tilewidth")
     paramsIgnoreCase.remove("tileheight")
     paramsIgnoreCase.remove("z")
-    paramsIgnoreCase.x = x
-    paramsIgnoreCase.y = y
+    paramsIgnoreCase.x      = x
+    paramsIgnoreCase.y      = y
     paramsIgnoreCase.width  = width
     paramsIgnoreCase.height = height
     def image = null
@@ -33,9 +34,6 @@ class IcpController {
           def w = width?:256
           def h = height?:256
           image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
-
-          response.contentType = "image/jpeg"
-          ImageIO.write(image, "jpeg", response.outputStream)
         }
         else
         {
@@ -65,9 +63,9 @@ class IcpController {
                   bands as Integer,
                   scale,
                   paramsIgnoreCase)
-          response.contentType = "image/jpeg"
-          ImageIO.write(image, "jpeg", response.outputStream)
         }
+        response.contentType = format
+        ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
       }
     }
     catch (Exception e) {
@@ -86,22 +84,60 @@ class IcpController {
   def getTile = {
     def paramsIgnoreCase = new CaseInsensitiveMap(params)
     def image   = null
-    def width   = paramsIgnoreCase.width?.toDouble() as Integer
-    def height  = paramsIgnoreCase.height?.toDouble() as Integer
-    def x       = paramsIgnoreCase.x?.toDouble() as Integer
-    def y       = paramsIgnoreCase.y?.toDouble() as Integer
+
+    def width = 0
+    def height = 0
+    def x = 0
+    def y = 0
+    def format  = paramsIgnoreCase.format?:"image/jpeg"
+    try
+    {
+      if(!params.id)
+      {
+        throw new Exception("No 'id' value given to chip a tile from, please use id=<value>")
+      }
+      // check if minimal params are available
+      if(paramsIgnoreCase.startLine&&paramsIgnoreCase.startSample&&
+         paramsIgnoreCase.endLine&&paramsIgnoreCase.endSample)
+      {
+        def line   = [paramsIgnoreCase.startLine   as Integer,
+                      paramsIgnoreCase.endLine as Integer]
+        def sample   = [paramsIgnoreCase.startSample   as Integer,
+                        paramsIgnoreCase.endSample as Integer]
+        if(line[1] < line[0])     line = [line[1],line[0]]
+        if(sample[1] < sample[0]) sample = [sample[1],sample[0]]
+        width   = (sample[1]-sample[0])+1
+        height  = (line[1]-line[0])+1
+        x       = sample[0]
+        y       = line[0]
+      }
+      else if(paramsIgnoreCase.width&&paramsIgnoreCase.height&&
+              paramsIgnoreCase.x&&paramsIgnoreCase.y)
+      {
+        width   = paramsIgnoreCase.width?.toDouble() as Integer
+        height  = paramsIgnoreCase.height?.toDouble() as Integer
+        x       = paramsIgnoreCase.x?.toDouble() as Integer
+        y       = paramsIgnoreCase.y?.toDouble() as Integer
+      }
+      else
+      {
+          throw new Exception("Improper argument list\nRequires x,y,width,height or startLine, endLine, startSample, endSample")
+      }
+    }
+    catch(Exception e)
+    {
+      log.error(e.message)
+      println e.message
+      response.contentType = "text/plain"
+      return null
+    }
     def scale   = paramsIgnoreCase.scale?paramsIgnoreCase.scale.toDouble():1.0
     try {
       Rectangle rect  = new Rectangle(x, y, width, height)
       def rasterEntry = RasterEntry.findByIndexId(paramsIgnoreCase.id)?:RasterEntry.findByTitle(paramsIgnoreCase.id)?:RasterEntry.findById(paramsIgnoreCase.id)
       if(rasterEntry==null)
       {
-        def w = width?:256
-        def h = height?:256
         image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
-
-        response.contentType = "image/jpeg"
-        ImageIO.write(image, "jpeg", response.outputStream)
       }
       else
       {
@@ -111,7 +147,6 @@ class IcpController {
         height = rasterEntry?.height
         def bands = rasterEntry?.numberOfBands
 
-        def outputType = "jpeg"
         int entry = rasterEntry.entryId?.toInteger()
 
         image = icpService.getPixels(
@@ -122,8 +157,8 @@ class IcpController {
                 scale,
                 paramsIgnoreCase)
 
-        response.contentType = "image/jpeg"
-        ImageIO.write(image, "jpeg", response.outputStream)
+        response.contentType = format
+        ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
       }
     }
     catch (Exception e) {
