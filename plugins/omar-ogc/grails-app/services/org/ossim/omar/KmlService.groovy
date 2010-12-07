@@ -20,6 +20,32 @@ class KmlService implements ApplicationContextAware, InitializingBean {
   def flashUrlRoot
   def coordinateConversionService
 
+  String createImageKmlDescription(RasterEntry rasterEntry)
+  {
+    def description = ""
+    def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView",
+                                         params: [layers: rasterEntry.indexId])
+
+    def mpp = rasterEntry.getMetersPerPixel()
+    def fieldMap = [File: (rasterEntry.mainFile.name as File).name,
+            'Entry id': rasterEntry.entryId,
+            Width: rasterEntry.width,
+            Height: rasterEntry.height,
+            Bands: rasterEntry.numberOfBands,
+            'Acquistion Date': rasterEntry?.acquisitionDate,
+            'Meters Per Pixel': mpp]
+
+
+    description = "<hr/><table>"
+    fieldMap.each {k, v ->
+      description+="<tr>"
+      description+="<td>${k}</td>"
+      description+="<td>${v}</td></tr>"
+    }
+    description += "</table>"
+
+    description
+  }
   String createImagesKml(List<org.ossim.omar.RasterEntry> rasterEntries, Map wmsParams, Map params) {
     def kmlbuilder = new StreamingMarkupBuilder()
 
@@ -52,49 +78,15 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     wmsParams.remove("controller")
     def rasterIdx = 0
     def descriptionMap = [:]
-
-    //http://omar.telascience.org/omar/images/omarLogo.png
-    def homeUrl = tagLibBean.createLink(absolute: true, controller: "Home")
     rasterEntries?.each {rasterEntry ->
-      def description = ""
-      def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView",
-                                           params: [layers: rasterEntry.indexId])
-
-      def mpp = rasterEntry.getMetersPerPixel()
-      def fieldMap = [File: (rasterEntry.mainFile.name as File).name,
-              'Entry id': rasterEntry.entryId,
-              Width: rasterEntry.width,
-              Height: rasterEntry.height,
-              Bands: rasterEntry.numberOfBands,
-              'Acquistion Date': rasterEntry?.acquisitionDate,
-              'Meters Per Pixel': mpp]
-
-
-      description = "<hr/><table>"
-      fieldMap.each {k, v ->
-        description+="<tr>"
-        description+="<td>${k}</td>"
-        description+="<td>${v}</td></tr>"
-      }
-      description += "</table>"
-      
-
-//      if (grailsApplication.config.kml.getRasterEntryDescription) {
-//        description = """${grailsApplication.config.kml.getRasterEntryDescription(rasterEntry, tagLibBean)}
-//        <p align='center'><a href='${imageUrl}'>Browse In OMAR</a></p>"""
-//        println description
-//      }
-//      else {
-//        description = "<p align='center'><a href='${imageUrl}'>Browse In OMAR</a></p>"
-//      }
-      descriptionMap.put(rasterIdx, description)
+      descriptionMap.put(rasterIdx, createImageKmlDescription(rasterEntry))
       rasterIdx++;
     }
     def kmlnode = {
       mkp.xmlDeclaration()
       kml("xmlns": "http://earth.google.com/kml/2.1") {
         Document() {
-          Folder() {
+//          Folder() {
             name("Omar WMS")
             rasterIdx = 0
             rasterEntries?.each {rasterEntry ->
@@ -163,7 +155,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                 }
               }
             }
-          }
+//          }
         }
       }
     }
