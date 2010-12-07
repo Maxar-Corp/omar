@@ -26,19 +26,26 @@ class StagerUtil
     {
       ImageStager imageStager = new ImageStager()
 
-      imageStager.filename = file.absolutePath
-      imageStager.setUseFastHistogramStagingFlag(true)
-      def generated = imageStager.stageAll()
-
-      imageStager.delete()
-
-      if ( generated )
+      if(imageStager.open(file.absolutePath))
       {
-        dataInfo.close()
-        dataInfo.open(file.absolutePath)
-      }
+        imageStager.setUseFastHistogramStagingFlag(true)
+        def generated = imageStager.stageAll()
 
-      xml = dataInfo.getInfo()?.trim()
+        imageStager.delete()
+
+        if ( generated )
+        {
+          dataInfo.close()
+          dataInfo.open(file.absolutePath)
+        }
+
+        xml = dataInfo.getInfo()?.trim()
+      }
+      else
+      {
+        imageStager.delete();
+        imageStager = null
+      }
 
 //      if ( xml )
 //      {
