@@ -6,8 +6,8 @@
 h2. Override a Service Method
 
 In this example we would like to override the method called createImagesKml
-inside another plugin. The createImagesKml is located in the omar-ogc plugin and
-we would like to solve the question: _How do we override a method in a plugin outside the OMAR distribution_ ?
+inside another plugin. The createImagesKml is located in the omar-ogc plugin and we would like to
+override the method in a plugin outside the OMAR[&trade;] distribution ?
 
 
 Change to directory omar/plugins and create a new plugin called omar-site by running the command
