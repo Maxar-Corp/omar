@@ -13,7 +13,7 @@ func()
     then
     echo "Created files? passed"
   else
-    echo "Created files? passed"
+    echo "Created files? failed"
   fi
   DIFF=`diff out1 out2`
   if [ "$DIFF" == "" ] 
