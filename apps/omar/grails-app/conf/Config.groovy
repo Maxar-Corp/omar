@@ -277,8 +277,10 @@ videoDataSet {
 login {
   registration
   {
-    enabled = true
-    autoEnableUserFlag = true
+    enabled = true	
+	//userVerificaiton = "none"
+	//userVerificaiton = "manual"
+	userVerificaiton = "email"
   }
 }
 
