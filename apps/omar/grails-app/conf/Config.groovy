@@ -278,9 +278,9 @@ login {
   registration
   {
     enabled = true	
-	//userVerificaiton = "none"
-	//userVerificaiton = "manual"
-	userVerificaiton = "email"
+	//userVerification = "none"
+	//userVerification = "manual"
+	userVerification = "email"
   }
 }
 
