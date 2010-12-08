@@ -9,13 +9,14 @@ import org.ossim.omar.AuthUser
 import org.ossim.omar.Role
 import org.ossim.omar.EmailerService
 import org.springframework.security.context.SecurityContextHolder
+import org.joda.time.*
 
 /**
  * Actions over org.ossim.omar.AuthUser object.
  */
 class RegisterController implements InitializingBean
 {
-  def autoEnableUserFlag
+  def userVerificaiton
   EmailerService emailerService
   AuthenticateService authenticateService
   def daoAuthenticationProvider
@@ -147,6 +148,28 @@ class RegisterController implements InitializingBean
   }
 
   /**
+   * Verify user action.
+   */
+  def verifyUser = {
+    
+    def verifyEncoding = AuthUser.findWhere(verificationEncoding:params.verificationEncoding, enabled:false)
+    if (verifyEncoding)
+    {
+      verifyEncoding.enabled = true
+	  flash.message = verifyEncoding.username + ' is now enabled and verified.'
+      //redirect(controller: 'logout')
+	
+      redirect(controller: 'login', action: 'auth')
+      return
+    }
+    else
+    {
+      render "Alert: Invalid user verification encoding. Please contact your system administrator for further assistance."
+      return
+    }
+  }
+
+  /**
    * Person save action.
    */
   def save = {
@@ -191,7 +214,30 @@ class RegisterController implements InitializingBean
 
     def pass = authenticateService.passwordEncoder(params.passwd)
     person.passwd = pass
-    person.enabled = autoEnableUserFlag
+
+	if ( userVerificaiton == "none" )
+	{
+	  person.enabled = true
+	}
+	else if ( userVerificaiton == "manual" )
+	{
+	  person.enabled = false
+	}
+	else if ( userVerificaiton == "email" )
+	{
+	  person.enabled = false
+	  
+	  def jodaDateTime = new org.joda.time.DateTime()
+	  def verificationEncoding = (person.username + jodaDateTime.toString()).encodeAsSHA256()
+	  
+	  person.verificationEncoding = verificationEncoding
+		
+	  def host = "localhost"
+	  def port = "8080"
+	  def link = "http://" + host + ":" + port + "/omar/register/verifyUser?verificationEncoding=" + verificationEncoding
+	  println link
+	}
+	
     person.emailShow = true
     person.description = ''
     if ( person.save() )
@@ -237,6 +283,6 @@ class RegisterController implements InitializingBean
   }
   public void afterPropertiesSet()
   {
-    autoEnableUserFlag = grailsApplication.config.login?.registration?.autoEnableUserFlag
+	userVerificaiton = grailsApplication.config.login?.registration?.userVerificaiton
   }
 }
