@@ -12,7 +12,7 @@ import joms.oms.DataInfo
 
 class StagerUtil
 {
-  static DataInfo sharedDataInfo = new DataInfo()
+  static DataInfo sharedDataInfo       = new DataInfo()
   static ImageStager sharedImageStager = new ImageStager()
 
   public static def getInfo(File file)
