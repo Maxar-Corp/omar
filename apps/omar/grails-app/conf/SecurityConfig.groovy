@@ -76,7 +76,18 @@ security {
 	 * true and config your mail settings.Note you also need to run the script
 	 * grails generate-registration.
 	 */
-	useMail = false
+	
+	if (grailsApplication.config.login.registration.userVerification == 'email')
+	{
+	  useMail = true
+	  println "useMail true"
+	}
+	else
+	{
+	  useMail = false
+	  println "useMail false"
+	}
+		
 	//mailHost = 'localhost'
 	//mailUsername = 'user@localhost'
 	//mailPassword = 'sungod'
