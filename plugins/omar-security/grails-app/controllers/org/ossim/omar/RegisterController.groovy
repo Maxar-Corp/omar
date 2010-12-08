@@ -16,7 +16,7 @@ import org.joda.time.*
  */
 class RegisterController implements InitializingBean
 {
-  def userVerificaiton
+  def userVerification
   EmailerService emailerService
   AuthenticateService authenticateService
   def daoAuthenticationProvider
@@ -215,15 +215,15 @@ class RegisterController implements InitializingBean
     def pass = authenticateService.passwordEncoder(params.passwd)
     person.passwd = pass
 
-	if ( userVerificaiton == "none" )
+	if ( userVerification == "none" )
 	{
 	  person.enabled = true
 	}
-	else if ( userVerificaiton == "manual" )
+	else if ( userVerification == "manual" )
 	{
 	  person.enabled = false
 	}
-	else if ( userVerificaiton == "email" )
+	else if ( userVerification == "email" )
 	{
 	  person.enabled = false
 	  
@@ -283,6 +283,6 @@ class RegisterController implements InitializingBean
   }
   public void afterPropertiesSet()
   {
-	userVerificaiton = grailsApplication.config.login?.registration?.userVerificaiton
+	userVerification = grailsApplication.config.login?.registration?.userVerification
   }
 }
