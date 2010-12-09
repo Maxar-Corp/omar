@@ -1,3 +1,5 @@
+import org.codehaus.groovy.grails.commons.ApplicationHolder
+
 security {
 
 	active = true
@@ -77,16 +79,7 @@ security {
 	 * grails generate-registration.
 	 */
 	
-	if (grailsApplication.config.login.registration.userVerification == 'email')
-	{
-	  useMail = true
-	  println "useMail true"
-	}
-	else
-	{
-	  useMail = false
-	  println "useMail false"
-	}
+	useMail = ApplicationHolder.application.config.login.registration.useMail
 		
 	//mailHost = 'localhost'
 	//mailUsername = 'user@localhost'

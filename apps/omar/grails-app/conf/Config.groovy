@@ -281,6 +281,11 @@ login {
 	//userVerification = "none"
 	//userVerification = "manual"
 	userVerification = "email"
+	
+	if (userVerification == "email")
+	{
+	  useMail = true
+	}
   }
 }
 
