@@ -20,7 +20,7 @@ class RegisterController implements InitializingBean
   EmailerService emailerService
   AuthenticateService authenticateService
   def daoAuthenticationProvider
-
+  def link
   def static allowedMethods = [save: 'POST', update: 'POST']
 
   /**
@@ -231,11 +231,7 @@ class RegisterController implements InitializingBean
 	  def verificationEncoding = (person.username + jodaDateTime.toString()).encodeAsSHA256()
 	  
 	  person.verificationEncoding = verificationEncoding
-		
-	  def host = "localhost"
-	  def port = "8080"
-	  def link = "http://" + host + ":" + port + "/omar/register/verifyUser?verificationEncoding=" + verificationEncoding
-	  println link
+	  link = "http://" + request.serverName + ":" + request.serverPort + "/omar/register/verifyUser?verificationEncoding=" + verificationEncoding
 	}
 	
     person.emailShow = true
@@ -245,18 +241,20 @@ class RegisterController implements InitializingBean
       role.addToPeople(person)
       if ( config.security.useMail )
       {
-        String emailContent = """You have signed up for an account at:
+        String emailContent = """You have signed up for an OMAR account at:
 
  ${request.scheme}://${request.serverName}:${request.serverPort}${request.contextPath}
 
  Here are the details of your account:
  -------------------------------------
- LoginName: ${person.username}
- Email: ${person.email}
+ Login ID: ${person.username}
  Full Name: ${person.userRealName}
- Password: ${params.passwd}
-"""
+ Email: ${person.email}
 
+ Please click the following link to complete the activation process:
+ ${link}
+ 
+"""
         def email = [
                 to: [person.email], // 'to' expects a List, NOT a single email address
                 subject: "[${request.contextPath}] Account Signed Up",
