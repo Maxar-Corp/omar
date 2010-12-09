@@ -78,14 +78,13 @@ security {
 	 * true and config your mail settings.Note you also need to run the script
 	 * grails generate-registration.
 	 */
-	
-	useMail = ApplicationHolder.application.config.login.registration.useMail
-		
-	//mailHost = 'localhost'
-	//mailUsername = 'user@localhost'
+
+	  useMail = ApplicationHolder.application.config.login.registration.useMail
+	  mailHost = 'localhost'
+	  mailUsername = 'omar@localhost'
 	//mailPassword = 'sungod'
-	//mailProtocol = 'smtp'
-	//mailFrom = 'user@localhost'
+	  mailProtocol = 'smtp'
+	  mailFrom = 'omar@localhost'
 
 	/** AJAX request header */
 	//ajaxHeader = 'X-Requested-With'
