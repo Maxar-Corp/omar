@@ -20,6 +20,3 @@ grails ${mode} run-sql-file ddl.sql
 grails ${mode} run-sql-file geoms.sql
 grails ${mode} run-script ./scripts/defaults.groovy
 #grails ${mode} run-sql-file ../../plugins/omar-scheduler/scripts/tables_postgres.sql
-
-psql84 -U postgres -d omardb-2.0-${mode} -f ddl.sql
-psql84 -U postgres -d omardb-2.0-${mode} -f geoms.sql
