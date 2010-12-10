@@ -1,6 +1,6 @@
 class GeoscriptGrailsPlugin {
     // the plugin version
-    def version = "0.2"
+    def version = "0.3"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.2.2 > *"
     // the other plugins this plugin depends on
@@ -13,7 +13,7 @@ class GeoscriptGrailsPlugin {
     // TODO Fill in these fields
     def author = "Scott Bortman"
     def authorEmail = "sbortman@radiantblue.com"
-    def title = "Adds Groovy Geoscript 0.9 support"
+    def title = "Adds Groovy Geoscript 0.95 support"
     def description = '''\\
 Brief description of the plugin.
 '''
