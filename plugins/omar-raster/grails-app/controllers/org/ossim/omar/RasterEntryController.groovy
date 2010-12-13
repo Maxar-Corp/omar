@@ -335,15 +335,22 @@ class RasterEntryController implements InitializingBean
       def paramsArray = serialized?.split(',')
       params.remove("queryParams")
       params.remove("totalCount")
-      paramsArray?.each
-      {
-        def temp = it?.split('=')
+
+      paramsArray?.each {param ->
+        def temp = param?.split('=');
+
         if ( temp.size() == 2 )
         {
-          if ( temp[1] == "null" ) temp[1] = ""
+          if ( temp[1] == "null" )
+          {
+            temp[1] = ""
+          }
           params.put(temp[0].trim(), temp[1].trim())
         }
-        else if ( temp.size() == 1 ) params.put(temp[0].trim(), "")
+        else if ( temp.size() == 1 )
+        {
+          params.put(temp[0].trim(), "")
+        }
       }
     }
 
@@ -351,6 +358,7 @@ class RasterEntryController implements InitializingBean
     {
       session["rasterEntryResultCurrentTab"] = "0"
     }
+
     def rasterEntries = null
     def totalCount = null
     def rasterFiles = null
