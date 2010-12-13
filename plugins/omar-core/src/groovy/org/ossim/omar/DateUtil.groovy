@@ -104,7 +104,8 @@ class DateUtil
               "MM'/'dd'/'yyyy HH:mm:ss",
               "yyyyMMdd'T'HH:mm:ss",
               "yyyyMMdd'T'HH:mm:ss.ssss",
-              "EEE MMM dd HH:mm:ss ZZZ yyyy"
+              "EEE MMM dd HH:mm:ss ZZZ yyyy",
+              "yyyy-MM-dd HH:mm:ss"
       ]
     }
 
