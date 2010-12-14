@@ -9,6 +9,9 @@ import org.hibernate.criterion.Criterion
 import org.hibernatespatial.criterion.SpatialFilter
 import java.text.SimpleDateFormat
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.geotools.filter.*
+import org.geotools.filter.spatial.*
+import geoscript.filter.*
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,10 +20,9 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
  * Time: 12:31:03 PM
  * To change this template use File | Settings | File Templates.
  */
-class BaseQuery
-{
+class BaseQuery {
   def grailsApplication
-       
+
   public static final String RADIUS_SEARCH = "RADIUS"
   public static final String BBOX_SEARCH = "BBOX"
   String searchMethod = BBOX_SEARCH
@@ -41,18 +43,18 @@ class BaseQuery
 
   Date startDate
   Date endDate
- 
+
   List<String> searchTagNames = ["", "", "", "", "", "", "", "", ""]
   List<String> searchTagValues = ["", "", "", "", "", "", "", "", ""]
 
-  Criterion createIntersection(String geomColumnName = "groundGeom")
-  {
+  String filter
+
+  Criterion createIntersection(String geomColumnName = "groundGeom") {
     def intersects = null
 
     Geometry groundGeom = getGroundGeom()
 
-    if ( groundGeom )
-    {
+    if (groundGeom) {
       //intersects = new IntersectsExpression(geomColumnName, groundGeom)
       intersects = new SpatialFilter(geomColumnName, groundGeom)
     }
@@ -60,81 +62,74 @@ class BaseQuery
     return intersects
   }
 
-  Geometry getGroundGeom()
-  {
+  Geometry getGroundGeom() {
     def srs = "4326"
     def wkt = null
     def bounds = null
 
-    switch ( searchMethod )
-    {
-    case BBOX_SEARCH:
-      def minLat, minLon, maxLat, maxLon
-      if ( aoiMaxLat && aoiMinLon && aoiMinLat && aoiMaxLon )
-      {
-        minLat = aoiMinLat
-        minLon = aoiMinLon
-        maxLat = aoiMaxLat
-        maxLon = aoiMaxLon
-      }
-      else
-      {
-        minLat = viewMinLat
-        minLon = viewMinLon
-        maxLat = viewMaxLat
-        maxLon = viewMaxLon
-      }
-      // only do a bounds if one exists
-      //
-      if ( minLat && maxLat && minLon && maxLon )
-      {
-        def coordinateConversionService = new CoordinateConversionService()
-        def maxLatDD = Double.valueOf(coordinateConversionService.convertToDecimalDegrees(maxLat))
-        def maxLonDD = Double.valueOf(coordinateConversionService.convertToDecimalDegrees(maxLon))
-        def minLatDD = Double.valueOf(coordinateConversionService.convertToDecimalDegrees(minLat))
-        def minLonDD = Double.valueOf(coordinateConversionService.convertToDecimalDegrees(minLon))
-        //wkt = Geometry.createPolygon(
-        //    minLon,
-        //    minLat,
-        //    maxLon,
-        //    maxLat
-        //)
+    switch (searchMethod) {
+      case BBOX_SEARCH:
+        def minLat, minLon, maxLat, maxLon
+        if (aoiMaxLat && aoiMinLon && aoiMinLat && aoiMaxLon) {
+          minLat = aoiMinLat
+          minLon = aoiMinLon
+          maxLat = aoiMaxLat
+          maxLon = aoiMaxLon
+        }
+        else {
+          minLat = viewMinLat
+          minLon = viewMinLon
+          maxLat = viewMaxLat
+          maxLon = viewMaxLon
+        }
+        // only do a bounds if one exists
+        //
+        if (minLat && maxLat && minLon && maxLon) {
+          def coordinateConversionService = new CoordinateConversionService()
+          def maxLatDD = Double.valueOf(coordinateConversionService.convertToDecimalDegrees(maxLat))
+          def maxLonDD = Double.valueOf(coordinateConversionService.convertToDecimalDegrees(maxLon))
+          def minLatDD = Double.valueOf(coordinateConversionService.convertToDecimalDegrees(minLat))
+          def minLonDD = Double.valueOf(coordinateConversionService.convertToDecimalDegrees(minLon))
+          //wkt = Geometry.createPolygon(
+          //    minLon,
+          //    minLat,
+          //    maxLon,
+          //    maxLat
+          //)
 
-        def geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326)
+          def geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326)
 
 
-        def coords = [
-                new Coordinate(minLonDD, minLatDD),
-                new Coordinate(minLonDD, maxLatDD),
-                new Coordinate(maxLonDD, maxLatDD),
-                new Coordinate(maxLonDD, minLatDD),
-                new Coordinate(minLonDD, minLatDD)
-        ] as Coordinate[]
+          def coords = [
+                  new Coordinate(minLonDD, minLatDD),
+                  new Coordinate(minLonDD, maxLatDD),
+                  new Coordinate(maxLonDD, maxLatDD),
+                  new Coordinate(maxLonDD, minLatDD),
+                  new Coordinate(minLonDD, minLatDD)
+          ] as Coordinate[]
 
-        def polygon = geometryFactory.createPolygon(geometryFactory.createLinearRing(coords), null)
+          def polygon = geometryFactory.createPolygon(geometryFactory.createLinearRing(coords), null)
 
 
-        wkt = polygon.toText()
-      }
+          wkt = polygon.toText()
+        }
 
-      break
+        break
 
-    case RADIUS_SEARCH:
-      def defaultRadius = aoiRadius?:"0"
-      if ( centerLon && centerLat)
-      {
-        def coordinateConversionService = new CoordinateConversionService()
+      case RADIUS_SEARCH:
+        def defaultRadius = aoiRadius ?: "0"
+        if (centerLon && centerLat) {
+          def coordinateConversionService = new CoordinateConversionService()
 
-        centerLat = coordinateConversionService.convertToDecimalDegrees(centerLat)
-        centerLon = coordinateConversionService.convertToDecimalDegrees(centerLon)
+          centerLat = coordinateConversionService.convertToDecimalDegrees(centerLat)
+          centerLon = coordinateConversionService.convertToDecimalDegrees(centerLon)
 
-        wkt = coordinateConversionService.computePointRadiusWKT(centerLon, centerLat, defaultRadius)
-      }
-      break
+          wkt = coordinateConversionService.computePointRadiusWKT(centerLon, centerLat, defaultRadius)
+        }
+        break
     }
 
-    if ( wkt )
-    {
+    if (wkt) {
       //println wkt
       //bounds = Geometry.fromString("SRID=${srs};${wkt}")
       bounds = new WKTReader().read(wkt)
@@ -145,31 +140,27 @@ class BaseQuery
     return bounds
   }
 
-  def caseInsensitiveBind(def params)
-  {
+  def caseInsensitiveBind(def params) {
     def keys = properties.keySet()
     def tempParams = new CaseInsensitiveMap(params)
 
-    keys.each{
+    keys.each {
       def value = tempParams.get(it)
-      if(value)
-      {
+      if (value) {
         setProperty("${it}", value)
       }
     }
     // now check the lists
     def idx = 0
     def value = tempParams.get("searchTagNames[${idx}]")
-    while(value)
-    {
+    while (value) {
       searchTagNames[idx] = value
       ++idx
       value = tempParams.get("searchTagNames[${idx}]")
     }
     idx = 0
     value = tempParams.get("searchTagValues[${idx}]")
-    while(value)
-    {
+    while (value) {
       searchTagValues[idx] = value
       ++idx
       value = tempParams.get("searchTagValues[${idx}]")
@@ -179,17 +170,16 @@ class BaseQuery
   }
 
 
-  def toMap()
-  {
+  def toMap() {
     SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
     String startDateText = (startDate) ? formatter.format(startDate) : "";
     String endDateText = (endDate) ? formatter.format(endDate) : "";
 
     def data = [
-        aoiMaxLat: aoiMaxLat, aoiMinLon: aoiMinLon, aoiMinLat: aoiMinLat, aoiMaxLon: aoiMaxLon,
-        startDate: startDateText, endDate: endDateText,
-        centerLat: centerLat, centerLon: centerLon, aoiRadius: aoiRadius, searchMethod: searchMethod,
-        viewMaxLat: viewMaxLat, viewMinLon: viewMinLon, viewMinLat: viewMinLat, viewMaxLon: viewMaxLon
+            aoiMaxLat: aoiMaxLat, aoiMinLon: aoiMinLon, aoiMinLat: aoiMinLat, aoiMaxLon: aoiMaxLon,
+            startDate: startDateText, endDate: endDateText,
+            centerLat: centerLat, centerLon: centerLon, aoiRadius: aoiRadius, searchMethod: searchMethod,
+            viewMaxLat: viewMaxLat, viewMinLon: viewMinLon, viewMinLat: viewMinLat, viewMaxLon: viewMaxLon
     ]
 
     (0..<searchTagValues.size()).each {
@@ -198,5 +188,6 @@ class BaseQuery
     }
 
     data.sort { it.key }
-  }  
-}
+  }
+
+ }
