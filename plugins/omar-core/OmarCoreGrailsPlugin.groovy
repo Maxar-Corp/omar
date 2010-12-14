@@ -51,6 +51,20 @@ This plugin contains OMAR code that can be shared or accessed from other OMAR pl
 
   def doWithDynamicMethods = { ctx ->
     // TODO Implement registering dynamic methods to classes (optional)
+    String.metaClass.toDateTime{->
+        org.ossim.omar.ISO8601DateParser.parseDateTime(delegate)
+    }
+    String.metaClass.toDate{->
+
+        def date = null
+        def dateTime =org.ossim.omar.ISO8601DateParser.parseDateTime(delegate.trim())
+        if(dateTime)
+        {
+           date = new Date(dateTime.millis)
+        }
+
+        date
+    }
   }
 
   def doWithApplicationContext = { applicationContext ->
