@@ -30,5 +30,6 @@ grails.project.dependency.resolution = {
 
 }
 
+grails.plugin.location.geoscript = "../../plugins/geoscript"
 grails.plugin.location.postgis = "../../plugins/postgis"
 grails.plugin.location."omar-oms" = "../../plugins/omar-oms"
