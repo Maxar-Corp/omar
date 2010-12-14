@@ -102,7 +102,6 @@ class RasterEntryQuery extends BaseQuery
     }
     if(filter)
     {
-      println filter
       def clause = org.ossim.omar.GeoQueryUtil.createClauseFromOgcFilter(RasterEntry.class, filter)
 
       result.add(clause)
