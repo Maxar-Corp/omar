@@ -11,6 +11,21 @@ import java.awt.image.DataBuffer;
 
 class Utility
 {
+  static def createTypeMap(def featureClass)
+  {
+    def fields = featureClass.declaredFields
+    def typeMap = [:]
+
+    for ( field in fields )
+    {
+      if ( field.name != "metaClass" )
+      {
+        typeMap[field.name] = field.type
+      }
+    }
+
+    return typeMap
+  }
   static void removeEmptyParams(def params)
   {
     def nullMap = params?.findAll {entry -> (entry.value == "" || entry.value == "null")}

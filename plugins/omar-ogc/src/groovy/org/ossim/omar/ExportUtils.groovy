@@ -131,7 +131,7 @@ class ExportUtils
     // add attributes in order
     //builder.length(15).add("acquisition_date", Date.class); // <- 15 chars width for name field
 
-    def typeMap = createTypeMap(featureClass)
+    def typeMap = org.ossim.omar.Utility.createTypeMap(featureClass)
 
     for ( i in 0..<attributes.size() )
     {
@@ -144,21 +144,5 @@ class ExportUtils
     def featureType = builder.buildFeatureType();
 
     return featureType;
-  }
-
-  static def createTypeMap(def featureClass)
-  {
-    def fields = featureClass.declaredFields
-    def typeMap = [:]
-
-    for ( field in fields )
-    {
-      if ( field.name != "metaClass" )
-      {
-        typeMap[field.name] = field.type
-      }
-    }
-
-    return typeMap
   }
 }
