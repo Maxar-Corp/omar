@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage
 import java.awt.*;
 
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import javax.imageio.IIOImage
 
 class OgcController
 {
@@ -184,7 +185,28 @@ class OgcController
         }
         else
         {
-          ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
+          def writers = ImageIO.getImageWritersByMIMEType(response.contentType)
+          if(writers.hasNext())
+          {
+            def writer = writers.next()
+            if(writer)
+            {
+              def writeParam = writer.getDefaultWriteParam()
+              if(writeParam.canWriteCompressed())
+              {
+ //               writeParam.compressionMode = javax.imageio.ImageWriteParam.MODE_EXPLICIT
+ //               writeParam.compressionQuality = 0.1;
+ //               writeParam.setProgressiveMode(javax.imageio.ImageWriteParam.MODE_COPY_FROM_METADATA)
+              }
+              writer.output = ImageIO.createImageOutputStream(response.outputStream)
+              def iioimage = new IIOImage(image, [], null)
+              writer.write(writer.getDefaultStreamMetadata(writeParam),iioimage, writeParam )
+            }
+          }
+          else
+          {
+            ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
+          }
         }
         break
       case "getcapabilities":
