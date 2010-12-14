@@ -123,11 +123,11 @@ class GeoQueryUtil {
           // need to throw exception if type not found
         }
         if (paramsFix.swap == true) {
-          result = org.hibernate.criterion.Restrictions.lt(paramsFix.leftValue,
+          result = org.hibernate.criterion.Restrictions.le(paramsFix.leftValue,
                   paramsFix.rightValue."to${type}"());
         }
         else {
-          result = org.hibernate.criterion.Restrictions.gt(paramsFix.leftValue,
+          result = org.hibernate.criterion.Restrictions.ge(paramsFix.leftValue,
                   paramsFix.rightValue."to${type}"());
         }
 
@@ -141,11 +141,11 @@ class GeoQueryUtil {
           // need to throw exception if type not found
         }
         if (paramsFix.swap == true) {
-          result = org.hibernate.criterion.Restrictions.ge(paramsFix.leftValue,
+          result = org.hibernate.criterion.Restrictions.gt(paramsFix.leftValue,
                   paramsFix.rightValue."to${type}"());
         }
         else {
-          result = org.hibernate.criterion.Restrictions.le(paramsFix.leftValue,
+          result = org.hibernate.criterion.Restrictions.lt(paramsFix.leftValue,
                   paramsFix.rightValue."to${type}"());
         }
       }
