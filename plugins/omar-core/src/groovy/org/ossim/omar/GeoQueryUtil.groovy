@@ -10,7 +10,7 @@ package org.ossim.omar
 class GeoQueryUtil {
   static def createClauseFromOgcFilter(def classVariable, String ogcFilter) {
     def result = null
-    def fieldTypeMap = ExportUtils.createTypeMap(classVariable)
+    def fieldTypeMap = org.ossim.omar.Utility.createTypeMap(classVariable)
     try {
       def gtFilter = new geoscript.filter.Filter(ogcFilter).filter
       result = createClauseFromGeotoolsFilter(fieldTypeMap, gtFilter)
