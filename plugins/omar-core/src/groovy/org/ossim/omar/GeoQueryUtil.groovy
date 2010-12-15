@@ -1,5 +1,7 @@
 package org.ossim.omar
 
+import org.hibernatespatial.criterion.SpatialRestrictions
+import org.hibernatespatial.SpatialRelation
 /**
  * Created by IntelliJ IDEA.
  * User: gpotts
@@ -11,7 +13,7 @@ class GeoQueryUtil {
   static def createClauseFromOgcFilter(def classVariable, String ogcFilter) {
     def result = null
     def fieldTypeMap = org.ossim.omar.Utility.createTypeMap(classVariable)
-    try {
+     try {
       def gtFilter = new geoscript.filter.Filter(ogcFilter).filter
       result = createClauseFromGeotoolsFilter(fieldTypeMap, gtFilter)
     }
@@ -57,12 +59,100 @@ class GeoQueryUtil {
         def bbox = filter as org.geotools.filter.spatial.BBOXImpl
         def srs = bbox.SRS ?: "4326"
 
-        def bounds = new com.vividsolutions.jts.io.WKTReader().read(bbox.expression2.toString())
-        bounds?.setSRID(Integer.parseInt(srs))
+        def geom = new com.vividsolutions.jts.io.WKTReader().read(bbox.expression2.toString())
+        geom?.setSRID(Integer.parseInt(srs))
 
-        result = new org.hibernatespatial.criterion.SpatialFilter(bbox.expression1.toString(), bounds)
+        result = new org.hibernatespatial.criterion.SpatialFilter(fixField(bbox.expression1.toString()), geom)
       }
-    }
+      else if(filter instanceof org.geotools.filter.spatial.EqualsImpl)
+      {
+        def equalsFilter = filter as org.geotools.filter.spatial.EqualsImpl
+        def paramsFix = fixBinaryExpression(fieldTypeMap, equalsFilter.expression1.toString(),
+                                            equalsFilter.expression2.toString());
+        def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+        result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+                                                                            geom,
+                                                                            geom,
+                                                                            SpatialRelation.EQUALS)
+      }
+      else if(filter instanceof org.geotools.filter.spatial.WithinImpl)
+      {
+        def withinFilter = filter as org.geotools.filter.spatial.WithinImpl
+        def paramsFix = fixBinaryExpression(fieldTypeMap, withinFilter.expression1.toString(),
+                                            withinFilter.expression2.toString());
+        def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+        result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+                                                                            geom,
+                                                                            geom,
+                                                                            SpatialRelation.WITHIN)
+      }
+      else if(filter instanceof org.geotools.filter.spatial.ContainsImpl)
+       {
+         def tempFilter = filter as org.geotools.filter.spatial.ContainsImpl
+         def paramsFix = fixBinaryExpression(fieldTypeMap, tempFilter.expression1.toString(),
+                                             tempFilter.expression2.toString());
+         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+                                                                             geom,
+                                                                             geom,
+                                                                             SpatialRelation.CONTAINS)
+       }
+      else if(filter instanceof org.geotools.filter.spatial.CrossesImpl)
+       {
+         def tempFilter = filter as org.geotools.filter.spatial.CrossesImpl
+         def paramsFix = fixBinaryExpression(fieldTypeMap, tempFilter.expression1.toString(),
+                                             tempFilter.expression2.toString());
+         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+                                                                             geom,
+                                                                             geom,
+                                                                             SpatialRelation.CROSSES)
+       }
+      else if(filter instanceof org.geotools.filter.spatial.DisjointImpl)
+       {
+         def tempFilter = filter as org.geotools.filter.spatial.DisjointImpl
+         def paramsFix = fixBinaryExpression(fieldTypeMap, tempFilter.expression1.toString(),
+                                             tempFilter.expression2.toString());
+         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+                                                                             null,
+                                                                             geom,
+                                                                             SpatialRelation.DISJOINT)
+       }
+      else if(filter instanceof org.geotools.filter.spatial.IntersectsImpl)
+          {
+            def tempFilter = filter as org.geotools.filter.spatial.IntersectsImpl
+            def paramsFix = fixBinaryExpression(fieldTypeMap, tempFilter.expression1.toString(),
+                                                tempFilter.expression2.toString());
+            def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+            result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+                                                                                geom,
+                                                                                geom,
+                                                                                SpatialRelation.INTERSECTS)
+          }
+      else if(filter instanceof org.geotools.filter.spatial.OverlapsImpl)
+          {
+            def tempFilter = filter as org.geotools.filter.spatial.OverlapsImpl
+            def paramsFix = fixBinaryExpression(fieldTypeMap, tempFilter.expression1.toString(),
+                                                tempFilter.expression2.toString());
+            def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+            result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+                                                                                geom,
+                                                                                geom,
+                                                                                SpatialRelation.OVERLAPS)
+          }
+      else if(filter instanceof org.geotools.filter.spatial.TouchesImpl)
+          {
+            def tempFilter = filter as org.geotools.filter.spatial.OverlapsImpl
+            def paramsFix = fixBinaryExpression(fieldTypeMap, tempFilter.expression1.toString(),
+                                                tempFilter.expression2.toString());
+            def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+            result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+                                                                                geom,
+                                                                                geom,
+                                                                                SpatialRelation.TOUCHES)
+          }
+        }
     else if (filter instanceof org.geotools.filter.CompareFilter) {
       if (filter instanceof org.geotools.filter.BetweenFilterImpl) {
         def compare = filter as org.geotools.filter.BetweenFilterImpl
@@ -71,7 +161,7 @@ class GeoQueryUtil {
         if (!type) {
           throw new Exception("invalid field name ${compare.expression} for between clause")
         }
-        result = org.hibernate.criterion.Restrictions.between(compare.expression.toString(),
+        result = org.hibernate.criterion.Restrictions.between(fixField(compare.expression.toString()),
                 compare.lowerBoundary()."to${type}"(),
                 compare.upperBoundary()."to${type}"())
       }
@@ -176,25 +266,30 @@ class GeoQueryUtil {
       }
 
 
-      result = org.hibernate.criterion.Restrictions.like(likeFilter.expression.toString(), likeFilter.literal)
+      result = org.hibernate.criterion.Restrictions.like(fixField(likeFilter.expression.toString()), likeFilter.literal)
     }
 
     return result
   }
-
+  static def fixField(def field)
+  {
+    field.replaceAll("_[a-zA-Z]", { value->value[1].toUpperCase()})
+  }
   static def fixBinaryExpression(def fieldMap, def leftValue, def rightValue) {
     def result = [:]
-
     result.swap = false;
-    if (fieldMap."${leftValue}") {
-      result.type = fieldMap."${leftValue}"?.simpleName
-      result.leftValue = leftValue;
+    def tempLeft  =  fixField(leftValue)
+    def tempRight =  fixField(rightValue)
+
+    if (fieldMap."${tempLeft}") {
+      result.type = fieldMap."${tempLeft}"?.simpleName
+      result.leftValue = tempLeft;
       result.rightValue = rightValue;
     }
-    else if (fieldMap."${rightValue}") {
+    else if (fieldMap."${tempRight}") {
       result.swap = true;
-      result.type = fieldMap."${rightValue}"?.simpleName
-      result.leftValue = rightValue;
+      result.type = fieldMap."${tempRight}"?.simpleName
+      result.leftValue  = tempRight;
       result.rightValue = leftValue;
     }
 
