@@ -52,8 +52,11 @@ class RasterEntrySearchService implements InitializingBean
     }
 
     def criteria = criteriaBuilder.buildCriteria(x)
-
-    criteria.add(rasterEntryQuery?.createClause())
+    def clause = rasterEntryQuery?.createClause()
+    if(clause)
+    {
+      criteria.add(clause)
+    }
 
     def rasterEntries = criteria.list()
 
