@@ -7,8 +7,8 @@ import org.joda.time.DateTime
 class VideoDataSet
 {
   String filename
-  long width
-  long height
+  Long width
+  Long height
 
   static hasMany = [fileObjects: VideoFile]
   Repository repository

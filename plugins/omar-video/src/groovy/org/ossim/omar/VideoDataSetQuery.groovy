@@ -18,25 +18,26 @@ class VideoDataSetQuery extends BaseQuery
     Criterion intersects = createIntersection()
     Criterion range = createDateRange()
 
-    def clause = null
+    def result = Restrictions.conjunction();
 
-    if ( intersects && range )
+    if ( intersects )
     {
-      clause = Restrictions.and(intersects, range)
+      result.add(intersects)
     }
-    else
+    if ( range )
     {
-      if ( intersects )
+      result.add(range)
+    }
+    if(filter)
+    {
+      def clause = org.ossim.omar.GeoQueryUtil.createClauseFromOgcFilter(VideoDataSet.class, filter)
+      if(clause)
       {
-        clause = intersects
-      }
-      else if ( range )
-      {
-        clause = range
+        result.add(clause)
       }
     }
 
-    return clause
+    result
   }
 
   Criterion createDateRange(String startDateColumnName = "startDate", String endDateColumnName = "endDate")
