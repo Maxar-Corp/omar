@@ -136,4 +136,77 @@ class Utility
     return results
   }
 
+  static def generateJSONForOgcFilterQuery(def domainClass, def includeList=null, def excludeList=null, def overrideMap=null)
+  {
+    //def domainClass = grailsApplication.getArtefact("Domain", domainClassName)
+    def result = "{PropertyNameList:{"
+    def fieldList = []
+    domainClass.properties.each { property ->
+      def domainType = null
+      def xmlType    = null
+      switch (  property.type )
+      {
+        case Double.class:
+          domainType = "Double"
+          xmlType    = "xsd:double"
+          break
+        case Integer.class:
+          domainType = "Double"
+          xmlType    = "xsd:int"
+          break
+        case Long.class:
+          domainType = "Double"
+          xmlType    = "xsd:long"
+          break
+        case Date.class:
+          domainType = "Date"
+          xmlType    = "xsd:dateTime"
+          break
+        case org.joda.time.DateTime.class:
+          domainType = "DateTime"
+          xmlType    = "xsd:dateTime"
+          break
+        case String.class:
+          domainType = "String"
+          xmlType    = "xsd:string"
+          break
+
+        case com.vividsolutions.jts.geom.Geometry.class:
+          domainType = "Geometry"
+          xmlType    = "gml:PolygonPropertyType"
+          break
+      }
+      if(xmlType)
+      {
+        def useProperty = true
+        if(includeList)
+        {
+          useProperty = property.name in includeList
+        }
+        else if(excludeList)
+        {
+          useProperty = !(property.name in excludeList)
+        }
+        if(useProperty)
+        {
+          def name        = property.name
+          def label       =  property.naturalName
+          def description =  ""
+          if(overrideMap)
+          {
+            if(overrideMap."${name}")
+            {
+              label = overrideMap."${name}".label?:label
+              description =   overrideMap."${name}".description?:description
+            }
+          }
+          name = name.replaceAll("[a-z][A-Z]", {v->"${v[0]}_${v[1].toLowerCase()}"})
+          fieldList += ["${name}:{label:'${label}',type:'${xmlType}',description:'${description}'"]
+        }
+      }
+    }
+    result += "${fieldList.join(',')}}"
+
+    result
+  }
 }
