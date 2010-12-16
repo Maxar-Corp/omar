@@ -73,32 +73,42 @@ class WMSQuery extends BaseQuery
       }
     }
     def  result = Restrictions.conjunction()
-
     def geomIntersect = createIntersection()
     if(geomIntersect)
     {
       result.add(geomIntersect)
     }
-
-    def disj = Restrictions.disjunction();
-    names.each() {name ->
-      try
-      {
-        def value = java.lang.Long.valueOf(name)
-        disj.add(Restrictions.eq('id', value))
+    if(names.size()>0)
+    {
+      def disj = Restrictions.disjunction();
+      names.each() {name ->
+        try
+        {
+          def value = java.lang.Long.valueOf(name)
+          disj.add(Restrictions.eq('id', value))
+        }
+        catch (java.lang.Exception e)
+        {
+          disj.add(Restrictions.eq('imageId', name))
+          disj.add(Restrictions.eq('indexId', name))
+        }
       }
-      catch (java.lang.Exception e)
-      {
-        disj.add(Restrictions.eq('imageId', name))
-        disj.add(Restrictions.eq('indexId', name))
-      }
+      result.add(disj)
     }
-    result.add(disj)
     def dateIntersect = createDateRangeRestrictionRaster()
     if(dateIntersect)
     {
       result.add(dateIntersect)
     }
+    if(filter)
+     {
+       def clause = org.ossim.omar.GeoQueryUtil.createClauseFromOgcFilter(RasterEntry.class, filter)
+       if(clause)
+       {
+         result.add(clause)
+       }
+     }
+    
     return result
   }
   def getRasterEntriesAsList()
