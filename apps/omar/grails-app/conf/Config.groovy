@@ -311,12 +311,15 @@ grails.doc.images = new File("web-app/images")
 
 ogcFilterQueryFields{
   raster{
-    include=["niirs", "width", "height", "title"]
+    include=null
     exclude=null
-    override=[title:[description:"ID of the image",
-                     label:"Image ID"
-                    ]
-             ]
+    override=null
+//    include=["niirs", "width", "height", "title"]
+//    exclude=null
+//    override=[title:[description:"ID of the image",
+//                     label:"Image ID"
+//                    ]
+//             ]
   }
   video{
     include=null
