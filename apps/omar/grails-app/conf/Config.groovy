@@ -308,3 +308,19 @@ grails.doc.subtitle       = ""
 grails.doc.logo        = """<a href="http://www.ossim.org" ><img src="../img/OMAR.png" border="0"/></a>"""
 grails.doc.sponsorLogo = """<a href="http://www.radiantblue.com" ><img src="../img/RBT.png" border="0"/></a>"""
 grails.doc.images = new File("web-app/images")
+
+ogcFilterQueryFields{
+  raster{
+    include=["niirs", "width", "height", "title"]
+    exclude=null
+    override=[title:[description:"ID of the image",
+                     label:"Image ID"
+                    ]
+             ]
+  }
+  video{
+    include=null
+    exclude=null
+    override=null
+  }
+}

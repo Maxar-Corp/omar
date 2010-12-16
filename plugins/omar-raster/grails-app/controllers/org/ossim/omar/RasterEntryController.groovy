@@ -220,13 +220,25 @@ class RasterEntryController implements InitializingBean
 
 //      println "=== search end ==="
 
-      chain(action: "results", model: [rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
+      def ogcFilterQueryFields =  Utility.generateJSONForOgcFilterQuery(grailsApplication.getArtefact("Domain",
+                                                                        org.ossim.omar.RasterEntry.name),
+                                                                        grailsApplication.config?.ogcFilterQueryFields.raster.include,
+                                                                        grailsApplication.config?.ogcFilterQueryFields.raster.exclude,
+                                                                        grailsApplication.config?.ogcFilterQueryFields.raster.override)
+      chain(action: "results", model: [ogcFilterQueryFields:ogcFilterQueryFields, rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
     }
     else
     {
 //      println "=== search end ==="
 
-      return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
+      def ogcFilterQueryFields =  Utility.generateJSONForOgcFilterQuery(grailsApplication.getArtefact("Domain",
+                                                                        org.ossim.omar.RasterEntry.name),
+                                                                        grailsApplication.config?.ogcFilterQueryFields.raster.include,
+                                                                        grailsApplication.config?.ogcFilterQueryFields.raster.exclude,
+                                                                        grailsApplication.config?.ogcFilterQueryFields.raster.override)
+      println  ogcFilterQueryFields
+      
+      return [ogcFilterQueryFields:ogcFilterQueryFields, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
   }
 
