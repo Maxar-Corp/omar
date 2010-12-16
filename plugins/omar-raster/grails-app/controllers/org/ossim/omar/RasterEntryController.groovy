@@ -236,7 +236,6 @@ class RasterEntryController implements InitializingBean
                                                                         grailsApplication.config?.ogcFilterQueryFields.raster.include,
                                                                         grailsApplication.config?.ogcFilterQueryFields.raster.exclude,
                                                                         grailsApplication.config?.ogcFilterQueryFields.raster.override)
-      println  ogcFilterQueryFields
       
       return [ogcFilterQueryFields:ogcFilterQueryFields, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
