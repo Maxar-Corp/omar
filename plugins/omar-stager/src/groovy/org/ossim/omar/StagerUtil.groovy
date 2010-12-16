@@ -38,14 +38,13 @@ class StagerUtil
           dataInfo.close()
           dataInfo.open(file.absolutePath)
         }
-
-        xml = dataInfo.getInfo()?.trim()
       }
       else
       {
         imageStager.delete();
         imageStager = null
       }
+      xml = dataInfo.getInfo()?.trim()
 
 //      if ( xml )
 //      {
