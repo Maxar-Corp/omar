@@ -81,7 +81,7 @@ class GeoQueryUtil {
       }
       else
       {
-        throw new Exception("Unsupported filter ${filter}")
+        throw new Exception("Unsupported Logic filter ${filter}")
       }
     }
     else if (filter instanceof org.geotools.filter.GeometryFilter) {
@@ -184,7 +184,7 @@ class GeoQueryUtil {
       }
       else
       {
-        throw new Exception("Unsupported filter ${filter}")
+        throw new Exception("Unsupported Geometry filter ${filter}")
       }
     }
     else if (filter instanceof org.geotools.filter.CompareFilter) {
@@ -291,9 +291,13 @@ class GeoQueryUtil {
                   paramsFix.rightValue."to${type}"());
         }
       }
+      else if(filter instanceof org.geotools.filter.IsNullImpl){
+        def nullFilter =  filter as org.geotools.filter.IsNullImpl
+        result = org.hibernate.criterion.Restrictions.isNull(fixField(nullFilter.expression.toString()))
+      }
       else
       {
-        throw new Exception("Unsupported filter ${filter}")
+        throw new Exception("Unsupported Compare filter ${filter} of class type ${filter.class}")
       }
     }
     else if (filter instanceof org.geotools.filter.LikeFilterImpl) {
@@ -306,6 +310,7 @@ class GeoQueryUtil {
       result = caseInsensitiveFlag? org.hibernate.criterion.Restrictions.ilike(fixField(likeFilter.expression.toString()), likeFilter.literal) :
                                     org.hibernate.criterion.Restrictions.like(fixField(likeFilter.expression.toString()), likeFilter.literal)
     }
+    
     else
     {
       throw new Exception("Unsupported filter ${filter}")
