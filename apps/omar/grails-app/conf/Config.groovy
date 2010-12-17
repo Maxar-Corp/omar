@@ -320,6 +320,7 @@ ogcFilterQueryFields{
 //                     label:"Image ID"
 //                    ]
 //             ]
+
   }
   video{
     include=null
