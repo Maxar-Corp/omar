@@ -12,13 +12,29 @@ import org.hibernate.criterion.Criterion
 
 class VideoDataSetQuery extends BaseQuery
 {
-
+  VideoDataSetQuery()
+  {
+    filterTypeMap = org.ossim.omar.Utility.createTypeMap(VideoDataSet.class)
+  }
   def createClause()
   {
-    Criterion intersects = createIntersection()
-    Criterion range = createDateRange()
+    def baseClause = super.createClause()
 
-    def result = Restrictions.conjunction();
+    def result = null
+    if(baseClause instanceof org.hibernate.criterion.Conjunction)
+    {
+      result = baseClause
+    }
+    else
+    {
+      result =  Restrictions.conjunction();
+      if(baseClause)
+      {
+        result.add(baseClause)
+      }
+    }
+    Criterion intersects = createIntersection()
+    Criterion range      = createDateRange()
 
     if ( intersects )
     {
@@ -27,14 +43,6 @@ class VideoDataSetQuery extends BaseQuery
     if ( range )
     {
       result.add(range)
-    }
-    if(filter)
-    {
-      def clause = org.ossim.omar.GeoQueryUtil.createClauseFromOgcFilter(VideoDataSet.class, filter)
-      if(clause)
-      {
-        result.add(clause)
-      }
     }
 
     result
