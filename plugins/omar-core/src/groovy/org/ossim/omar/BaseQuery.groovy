@@ -48,6 +48,11 @@ class BaseQuery {
   List<String> searchTagValues = ["", "", "", "", "", "", "", "", ""]
 
   String filter
+  /**
+   * Set via a call to org.ossim.omar.Utility.createTypeMap(RasterEntry.class)  where
+   * RasterEntry.class can be replaced with any class in the system.
+   */
+  def filterTypeMap
 
   Criterion createIntersection(String geomColumnName = "groundGeom") {
     def intersects = null
@@ -61,7 +66,6 @@ class BaseQuery {
 
     return intersects
   }
-
   Geometry getGroundGeom() {
     def srs = "4326"
     def wkt = null
@@ -190,5 +194,14 @@ class BaseQuery {
 
     data.sort { it.key }
   }
+  def createClause()
+  {
+    def clause = null
+    if(filter)
+     {
+       clause = org.ossim.omar.GeoQueryUtil.createClauseFromOgcFilter(filterTypeMap, filter)
+     }
 
+    clause
+  }
  }

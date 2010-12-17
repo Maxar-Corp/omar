@@ -15,6 +15,10 @@ class RasterEntryQuery extends BaseQuery
 {
   String niirs
 
+  RasterEntryQuery()
+  {
+    filterTypeMap = org.ossim.omar.Utility.createTypeMap(RasterEntry.class)
+  }
   Criterion createDateRange(String dateColumnName = "acquisitionDate")
   {
     def range = null
@@ -43,7 +47,22 @@ class RasterEntryQuery extends BaseQuery
 
   def createClause()
   {
-    def result = Restrictions.conjunction();
+    def baseClause = super.createClause()
+
+    def result = null
+    if(baseClause instanceof org.hibernate.criterion.Conjunction)
+    {
+      result = baseClause
+    }
+    else
+    {
+      result =  Restrictions.conjunction();
+      if(baseClause)
+      {
+        result.add(baseClause)
+      }
+    }
+
 
     if ( groundGeom )
     {
@@ -98,14 +117,6 @@ class RasterEntryQuery extends BaseQuery
             result.add(Restrictions.ilike(results["property"], results['value'], MatchMode.ANYWHERE))
           }
         }
-      }
-    }
-    if(filter)
-    {
-      def clause = org.ossim.omar.GeoQueryUtil.createClauseFromOgcFilter(RasterEntry.class, filter)
-      if(clause)
-      {
-        result.add(clause)
       }
     }
     return result;

@@ -16,6 +16,12 @@ class WMSQuery extends BaseQuery
   def layers
   def max
   def time
+  WMSQuery()
+  {
+    filterTypeMap = org.ossim.omar.Utility.createTypeMap(RasterEntry.class) +
+                    org.ossim.omar.Utility.createTypeMap(VideoDataSet.class) 
+
+  }
   def createDateRangeRestrictionRaster(def columnName="acquisitionDate")
   {
     def dateColumnName = columnName
@@ -72,7 +78,22 @@ class WMSQuery extends BaseQuery
         names.add(it)
       }
     }
-    def  result = Restrictions.conjunction()
+    def baseClause = super.createClause()
+
+    def result = null
+    if(baseClause instanceof org.hibernate.criterion.Conjunction)
+    {
+      result = baseClause
+    }
+    else
+    {
+      result =  Restrictions.conjunction();
+      if(baseClause)
+      {
+        result.add(baseClause)
+      }
+    }
+
     def geomIntersect = createIntersection()
     if(geomIntersect)
     {
@@ -100,15 +121,7 @@ class WMSQuery extends BaseQuery
     {
       result.add(dateIntersect)
     }
-    if(filter)
-     {
-       def clause = org.ossim.omar.GeoQueryUtil.createClauseFromOgcFilter(RasterEntry.class, filter)
-       if(clause)
-       {
-         result.add(clause)
-       }
-     }
-    
+
     return result
   }
   def getRasterEntriesAsList()
