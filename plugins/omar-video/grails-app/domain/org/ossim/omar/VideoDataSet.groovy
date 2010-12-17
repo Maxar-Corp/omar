@@ -146,7 +146,7 @@ class VideoDataSet
     }
     if(!videoDataSet.filename&&filename)
     {
-      videoDataSet.filename = (filename as File).getName()
+      videoDataSet.filename = (filename as File)
     }
     if ( !videoDataSet.indexId )
     {
@@ -198,6 +198,9 @@ class VideoDataSet
         {
           switch ( name.toLowerCase() )
           {
+            case "filename":
+              videoDataSet.filename = value as File
+            break
             default:
               videoDataSet.otherTagsMap[name] = value
           }

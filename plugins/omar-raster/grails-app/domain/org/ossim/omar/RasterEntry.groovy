@@ -112,7 +112,6 @@ class RasterEntry
       releaseId index: 'raster_entry_release_id_idx' 
 
       groundGeom type: org.hibernatespatial.GeometryUserType
-
     }
   }
 
@@ -295,7 +294,7 @@ class RasterEntry
     def filename = mainFile?.name
     if(!rasterEntry.filename&&filename)
     {
-      rasterEntry.filename = (filename as File).getName()
+      rasterEntry.filename = filename
     }
     if(!rasterEntry.indexId)
     {
@@ -384,7 +383,7 @@ class RasterEntry
             case "filename":
               if(value&&!rasterEntry.filename)
               {
-                rasterEntry.filename = (value as File).getName()
+                rasterEntry.filename = value as File
               }
               break;
           case "imageid":
