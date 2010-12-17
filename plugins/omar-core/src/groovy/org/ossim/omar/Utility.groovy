@@ -8,7 +8,7 @@ import javax.imageio.ImageTypeSpecifier
 import java.awt.image.SampleModel
 import java.awt.image.IndexColorModel
 import java.awt.image.DataBuffer;
-
+import grails.converters.JSON
 class Utility
 {
   static def createTypeMap(def featureClass)
@@ -64,7 +64,7 @@ class Utility
     }
     WritableRaster raster = WritableRaster.createWritableRaster(sampleModel, dataBuffer, null)
     return new BufferedImage(colorModel, raster, false, null);
-   
+
   }
   /**
    * This will extract all WMS paramters this includes GetMap, GetCapabilities, and
@@ -77,10 +77,10 @@ class Utility
     map.each { tempParams.put(it.key, it.value)}
 
     return tempParams.subMap(["version", "request", "layers", "styles",
-        "srs", "crs", "bbox", "width", "height", "format",
-        "transparent", "bgcolor", "exceptions", "time",
-        "elevation", "updatesequence", "query_layers",
-        "info_format", "i", "j"
+            "srs", "crs", "bbox", "width", "height", "format",
+            "transparent", "bgcolor", "exceptions", "time",
+            "elevation", "updatesequence", "query_layers",
+            "info_format", "i", "j"
     ])
   }
 
@@ -89,9 +89,9 @@ class Utility
     def tempParams = new CaseInsensitiveMap()
     map.each { tempParams.put(it.key, it.value)}
     def listOfParams = ["version", "request", "layers", "styles",
-        "srs", "bbox", "width", "height", "format",
-        "transparent", "bgcolor", "exceptions", "time",
-        "elevation"
+            "srs", "bbox", "width", "height", "format",
+            "transparent", "bgcolor", "exceptions", "time",
+            "elevation"
     ]
     if ( params )
     {
@@ -135,12 +135,10 @@ class Utility
 
     return results
   }
-
-  static def generateJSONForOgcFilterQuery(def domainClass, def includeList=null, def excludeList=null, def overrideMap=null)
+  static def generateMapForOgcFilterQuery(def domainClass, def includeList=null, def excludeList=null, def overrideMap=null)
   {
-    //def domainClass = grailsApplication.getArtefact("Domain", domainClassName)
-    def result = "{PropertyNameList:{"
-    def fieldList = []
+    def result = [:]
+    result.PropertyNames = [:]
     domainClass.properties.each { property ->
       def domainType = null
       def xmlType    = null
@@ -201,12 +199,17 @@ class Utility
             }
           }
           name = name.replaceAll("[a-z][A-Z]", {v->"${v[0]}_${v[1].toLowerCase()}"})
-          fieldList += ["${name}:{label:'${label}',type:'${xmlType}',description:'${description}'"]
-        }
+          result.PropertyNames."${name}" = [label:label,
+                                            type:xmlType,
+                                            description:description]
+         }
       }
     }
-    result += "${fieldList.join(',')}}"
-
     result
   }
+  static def generateJSONForOgcFilterQuery(def domainClass, def includeList=null, def excludeList=null, def overrideMap=null)
+  {
+    generateMapForOgcFilterQuery(domainClass, includeList, excludeList, overrideMap) as JSON
+  }
+
 }
