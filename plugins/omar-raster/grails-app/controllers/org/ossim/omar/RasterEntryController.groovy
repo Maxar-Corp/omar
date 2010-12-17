@@ -220,7 +220,7 @@ class RasterEntryController implements InitializingBean
 
 //      println "=== search end ==="
 
-      def ogcFilterQueryFields =  Utility.generateJSONForOgcFilterQuery(grailsApplication.getArtefact("Domain",
+      def ogcFilterQueryFields =  Utility.generateMapForOgcFilterQuery(grailsApplication.getArtefact("Domain",
                                                                         org.ossim.omar.RasterEntry.name),
                                                                         grailsApplication.config?.ogcFilterQueryFields.raster.include,
                                                                         grailsApplication.config?.ogcFilterQueryFields.raster.exclude,
@@ -231,7 +231,7 @@ class RasterEntryController implements InitializingBean
     {
 //      println "=== search end ==="
 
-      def ogcFilterQueryFields =  Utility.generateJSONForOgcFilterQuery(grailsApplication.getArtefact("Domain",
+      def ogcFilterQueryFields =  Utility.generateMapForOgcFilterQuery(grailsApplication.getArtefact("Domain",
                                                                         org.ossim.omar.RasterEntry.name),
                                                                         grailsApplication.config?.ogcFilterQueryFields.raster.include,
                                                                         grailsApplication.config?.ogcFilterQueryFields.raster.exclude,
