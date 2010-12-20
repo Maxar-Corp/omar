@@ -41,7 +41,7 @@ class WebMappingService
   public static final String BLANK = "blank"
   def mode = LIBCALL
 
-  static transactional = false
+  static transactional = true
 
   def transparent = new TransparentFilter()
 

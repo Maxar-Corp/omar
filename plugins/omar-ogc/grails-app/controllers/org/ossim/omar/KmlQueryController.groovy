@@ -19,123 +19,162 @@ class KmlQueryController implements InitializingBean
   def kmlPersistParams = ["googleversion", "visibility"]
   def getkml = {
     // let's just reuse the getImagesKml code
-    redirect(controller: "kmlQuery", action: "getImagesKml", params:params)
- /*
-    // Google sends the BBOX with the request
-    def wmsParams = [:]
+    //redirect(controller: "kmlQuery", action: "getImagesKml", params:params)
 
-    // Convert param names to lower case
-    params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
+    println "SHOULD NEVER SEE THIS!!!!!!!!!!!!!!!!!!!!!!!!!"
 
-    if ( wmsParams?.bbox )
+
+    try
     {
-      def bounds = params.bbox?.split(',')
-      if ( bounds.size() >= 4 )
-      {
-        params.aoiMinLon = bounds[0]
-        params.aoiMinLat = bounds[1]
-        params.aoiMaxLon = bounds[2]
-        params.aoiMaxLat = bounds[3]
-      }
+      forward(controller: "kmlQuery", action: "getImagesKml", params: params)
     }
+    catch (Exception e)
+    {}
 
-    if ( params.max == null || Integer.parseInt(params.max) > 100 )
-    {
-      params.max = 10
-    }
+    /*
+        // Google sends the BBOX with the request
+        def wmsParams = [:]
 
-    def queryParams = new RasterEntryQuery()
+        // Convert param names to lower case
+        params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
 
-    bindData(queryParams, params)
+        if ( wmsParams?.bbox )
+        {
+          def bounds = params.bbox?.split(',')
+          if ( bounds.size() >= 4 )
+          {
+            params.aoiMinLon = bounds[0]
+            params.aoiMinLat = bounds[1]
+            params.aoiMaxLon = bounds[2]
+            params.aoiMaxLat = bounds[3]
+          }
+        }
 
-    queryParams.startDate = DateUtil.initializeDate("startDate", params)
-    queryParams.endDate = DateUtil.initializeDate("endDate", params)
+        if ( params.max == null || Integer.parseInt(params.max) > 100 )
+        {
+          params.max = 10
+        }
 
-    if ( !params.containsKey("dateSort") || params?.dateSort == "true" )
-    {
-      params.order = 'desc'
-      params.sort = 'acquisitionDate'
-      if ( !queryParams.endDate )
-      {
-        queryParams.endDate = new Date()
-      }
-    }
-    //println params
-    log.info(queryParams.toMap())
+        def queryParams = new RasterEntryQuery()
 
-//    println "kml  queryParams: ${queryParams.toMap()}"
-//    println "kml  params: ${params}"
-    String kmlText = ""
-    def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-    if ( !rasterEntries.empty )
-    {
-      kmlText = kmlService.createKml(rasterEntries, wmsParams);
-    }
+        bindData(queryParams, params)
 
-    response.setHeader("Content-disposition", "attachment; filename=topImages.kml");
-    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
-*/
+        queryParams.startDate = DateUtil.initializeDate("startDate", params)
+        queryParams.endDate = DateUtil.initializeDate("endDate", params)
+
+        if ( !params.containsKey("dateSort") || params?.dateSort == "true" )
+        {
+          params.order = 'desc'
+          params.sort = 'acquisitionDate'
+          if ( !queryParams.endDate )
+          {
+            queryParams.endDate = new Date()
+          }
+        }
+        //println params
+        log.info(queryParams.toMap())
+
+    //    println "kml  queryParams: ${queryParams.toMap()}"
+    //    println "kml  params: ${params}"
+        String kmlText = ""
+        def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+        if ( !rasterEntries.empty )
+        {
+          kmlText = kmlService.createKml(rasterEntries, wmsParams);
+        }
+
+        response.setHeader("Content-disposition", "attachment; filename=topImages.kml");
+        render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
+    */
   }
 
   def getImagesKml = {
+    //println params.sort()
+
     def caseInsensitiveParams = new CaseInsensitiveMap(params)
     def wmsParams = [:]
     def kmlParams = [:]
     def maxImages = grailsApplication.config.kml.maxImages
 
-    caseInsensitiveParams -= caseInsensitiveParams.findAll{ key, value->
-      (!(key =~ "startDate" || key =~ "endDate") && (value == "null") || value=="")
-    }
-    
+//    caseInsensitiveParams -= caseInsensitiveParams.findAll { key, value ->
+//      (!(key =~ "startDate" || key =~ "endDate") && (value == "null") || value == "")
+//    }
+
     caseInsensitiveParams?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
     wmsParams = wmsParams.subMap(wmsPersistParams)
     wmsParams.remove("elevation")
     wmsParams.remove("time")
     kmlParams = caseInsensitiveParams.subMap(kmlPersistParams)
+
+//    caseInsensitiveParams.with {
+//       println "AOI: ${aoiMinLon} ${aoiMinLat} ${aoiMaxLon} ${aoiMaxLat}"
+//     }
+
+
+    def aoiSet = caseInsensitiveParams?.aoiMinLon &&
+            caseInsensitiveParams?.aoiMinLat &&
+            caseInsensitiveParams?.aoiMaxLon &&
+            caseInsensitiveParams?.aoiMaxLat
+
+
+
     def bounds = null
-    if ( wmsParams?.bbox )
+
+    if ( wmsParams?.bbox && !aoiSet )
     {
       bounds = wmsParams.bbox?.split(',')
-      if((bounds.size() == 4)&&(!caseInsensitiveParams.aoiMinLon||
-              !caseInsensitiveParams.aoiMinLat||
-              !caseInsensitiveParams.aoiMaxLon||
-              !caseInsensitiveParams.aoiMaxLat))
+
+      if ( bounds.size() == 4 )
       {
-        caseInsensitiveParams?.aoiMinLon = bounds[0]
-        caseInsensitiveParams?.aoiMinLat = bounds[1]
-        caseInsensitiveParams?.aoiMaxLon = bounds[2]
-        caseInsensitiveParams?.aoiMaxLat = bounds[3]
-      }
-      if(caseInsensitiveParams.bboxToRadius == "true")
-      {
-        caseInsensitiveParams.searchMethod = "RADIUS"
-        caseInsensitiveParams.centerLon = (caseInsensitiveParams.aoiMinLon.toDouble() +
-                                           caseInsensitiveParams.aoi.MaxLon.toDouble())*0.5
-        caseInsensitiveParams.centerLat = (caseInsensitiveParams.aoiMinLat.toDouble() +
-                                           caseInsensitiveParams.aoi.MaxLat.toDouble())*0.5
-        if(!caseInsensitiveParams.aoiRadius)
-        {
-          caseInsensitiveParams.aoiRadius = 0.0
+        caseInsensitiveParams.with {
+          aoiMinLon = bounds[0]
+          aoiMinLat = bounds[1]
+          aoiMaxLon = bounds[2]
+          aoiMaxLat = bounds[3]
+
+//          println "Setting AOI: ${aoiMinLon} ${aoiMinLat} ${aoiMaxLon} ${aoiMaxLat}"
         }
       }
+
     }
+    else
+    {
+//      caseInsensitiveParams.with {
+//        println "Passed in AOI: ${aoiMinLon} ${aoiMinLat} ${aoiMaxLon} ${aoiMaxLat}"
+//
+//      }
+    }
+
+    if ( caseInsensitiveParams.bboxToRadius == "true" )
+    {
+      caseInsensitiveParams.searchMethod = "RADIUS"
+      caseInsensitiveParams.centerLon = (caseInsensitiveParams.aoiMinLon.toDouble() +
+              caseInsensitiveParams.aoi.MaxLon.toDouble()) * 0.5
+      caseInsensitiveParams.centerLat = (caseInsensitiveParams.aoiMinLat.toDouble() +
+              caseInsensitiveParams.aoi.MaxLat.toDouble()) * 0.5
+      if ( !caseInsensitiveParams.aoiRadius )
+      {
+        caseInsensitiveParams.aoiRadius = 0.0
+      }
+    }
+
     try
     {
-      if ( caseInsensitiveParams?.max == null ||!(caseInsensitiveParams.max =~ /\d+/) || Integer.parseInt(params.max) > maxImages )
+      if ( caseInsensitiveParams?.max == null || !(caseInsensitiveParams.max =~ /\d+/) || Integer.parseInt(params.max) > maxImages )
       {
         caseInsensitiveParams?.max = maxImages
       }
     }
-    catch(Exception e)   // sanity check
+    catch (Exception e)   // sanity check
     {
       // this is only caused by a numeric parse we will default to maxImages
       caseInsensitiveParams?.max = maxImages
     }
     def queryParams = new org.ossim.omar.RasterEntryQuery()
 
-    bindData(queryParams, caseInsensitiveParams)
+    queryParams.caseInsensitiveBind(caseInsensitiveParams)
     queryParams.startDate = DateUtil.initializeDate("startDate", caseInsensitiveParams)
-    queryParams.endDate   = DateUtil.initializeDate("endDate", caseInsensitiveParams)
+    queryParams.endDate = DateUtil.initializeDate("endDate", caseInsensitiveParams)
 
     if ( !caseInsensitiveParams?.containsKey("dateSort") || caseInsensitiveParams?.dateSort == "true" )
     {
@@ -161,8 +200,8 @@ class KmlQueryController implements InitializingBean
     def wmsParams = [:]
     def maxVideos = grailsApplication.config.kml.maxVideos
     // Convert param names to lower case
-    caseInsensitiveParams -= caseInsensitiveParams.findAll{ key, value->
-      (!(key =~ "startDate" || key =~ "endDate") && (value == "null") || value=="")
+    caseInsensitiveParams -= caseInsensitiveParams.findAll { key, value ->
+      (!(key =~ "startDate" || key =~ "endDate") && (value == "null") || value == "")
     }
     caseInsensitiveParams?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
 
@@ -171,7 +210,7 @@ class KmlQueryController implements InitializingBean
     if ( caseInsensitiveParams?.bbox )
     {
       def bounds = wmsParams.bbox?.split(',')
-      if(bounds.size()==4)
+      if ( bounds.size() == 4 )
       {
         caseInsensitiveParams?.aoiMinLon = bounds[0]
         caseInsensitiveParams?.aoiMinLat = bounds[1]
@@ -181,12 +220,12 @@ class KmlQueryController implements InitializingBean
     }
     try
     {
-      if ( caseInsensitiveParams?.max == null ||!(caseInsensitiveParams.max =~ /\d+/) || Integer.parseInt(params.max) > maxImages )
+      if ( caseInsensitiveParams?.max == null || !(caseInsensitiveParams.max =~ /\d+/) || Integer.parseInt(params.max) > maxImages )
       {
         caseInsensitiveParams?.max = maxVideos
       }
     }
-    catch(Exception e)   // sanity check
+    catch (Exception e)   // sanity check
     {
       // this is only caused by a numeric parse we will default to maxImages
       caseInsensitiveParams?.max = maxVideos
@@ -311,7 +350,7 @@ class KmlQueryController implements InitializingBean
 
     response.setHeader("Content-disposition", "attachment; filename=ImageFootprints.kml");
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
-    
+
   }
   def videoFootprints={
     String kmlText = kmlService.createVideoFootprint()
