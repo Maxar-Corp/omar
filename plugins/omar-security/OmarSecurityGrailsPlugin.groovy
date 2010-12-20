@@ -32,10 +32,6 @@ class OmarSecurityGrailsPlugin
 
   def doWithSpring = {
     // TODO Implement runtime spring config (optional)
-    //  Uncomment the following if LDAP is to be used.
-
-
-
   }
 
   def doWithDynamicMethods = { ctx ->
