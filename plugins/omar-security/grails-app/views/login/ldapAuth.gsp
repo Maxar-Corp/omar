@@ -69,7 +69,7 @@
       <div class='login_message'>${flash.message}</div>
     </g:if>
     <div class='fheader'>Please Login..</div>
-    <form action='${request.contextPath}/login/openIdAuthenticate' method='POST' id='loginForm' class='cssform'>
+    <form action='${request.contextPath}/login/ldapAuthenticate' method='POST' id='loginForm' class='cssform'>
       <p>
         <label for='j_username'>OpenID Identity</label>
         <input type='text' class='text_' name='j_username'/>
