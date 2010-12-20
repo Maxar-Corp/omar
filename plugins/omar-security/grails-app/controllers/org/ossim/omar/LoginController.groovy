@@ -2,7 +2,6 @@ package org.ossim.omar
 
 import org.springframework.beans.factory.InitializingBean
 import org.codehaus.groovy.grails.plugins.springsecurity.RedirectUtils
-import org.grails.plugins.springsecurity.service.AuthenticateService
 
 import org.springframework.security.DisabledException
 import org.springframework.security.ui.AbstractProcessingFilter
@@ -13,9 +12,7 @@ import org.springframework.security.ui.webapp.AuthenticationProcessingFilter
 import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUserImpl
 import org.springframework.security.context.SecurityContextHolder as SCH
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken
-import org.springframework.security.ui.AbstractProcessingFilter
-import org.ossim.omar.LdapAuthenticationProcessingFilter
-import org.ossim.omar.AutoCreateLdapUserDetailsMapper
+import org.codehaus.groovy.grails.commons.ApplicationHolder
 
 /**
  * Login Controller (Example).
@@ -39,6 +36,7 @@ class LoginController implements InitializingBean
   def openIDAuthenticationProcessingFilter
 
   def index = {
+
     if ( isLoggedIn() )
     {
       redirect(uri: '/')
@@ -60,6 +58,9 @@ class LoginController implements InitializingBean
     def model = [:]
     model.registerFlag = registerFlag
     nocache(response)
+
+    println ApplicationHolder.application.mainContext.authenticationProcessingFilter.class.name
+
     if ( isLoggedIn() )
     {
       redirect(uri: '/')
@@ -68,10 +69,6 @@ class LoginController implements InitializingBean
     if ( authenticateService.securityConfig.security.useOpenId )
     {
       render(view: 'openIdAuth')
-    }
-    else if (authenticateService.securityConfig.security.useLdap )
-    {
-      render(view: 'ldap')
     }
     else
     {
@@ -99,10 +96,20 @@ class LoginController implements InitializingBean
   }
 
 
-  def ldapAuthenticate = {
-    def ldapAuth = session.removeAttribute(LdapAuthenticationProcessingFilter.LDAP_LAST_AUTH)
-    def authorities = session.removeAttribute(AutoCreateLdapUserDetailsMapper.LDAP_AUTOCREATE_CURRENT_AUTHORITIES)
-    def user = new AuthUser(username: ldapAuth.name, enabled: true, passwd: 'notused')
+  def autocreate = {
+
+    //println session
+
+    def ldapAuth = session[LdapAuthenticationProcessingFilter.LDAP_LAST_AUTH]
+    def authorities = session[AutoCreateLdapUserDetailsMapper.LDAP_AUTOCREATE_CURRENT_AUTHORITIES]
+
+    session.removeAttribute(LdapAuthenticationProcessingFilter.LDAP_LAST_AUTH)
+    session.removeAttribute(AutoCreateLdapUserDetailsMapper.LDAP_AUTOCREATE_CURRENT_AUTHORITIES)
+
+    println "ldapAuth: ${ldapAuth}"
+    println "authorities: ${authorities}"
+
+    def user = new AuthUser(username: ldapAuth?.name, enabled: true, passwd: 'notused')
 
     if ( !user.save(flush: true) )
     {
@@ -209,7 +216,7 @@ class LoginController implements InitializingBean
     return authenticateService.isAjax(request)
   }
 
-  /** cache controls     */
+  /** cache controls        */
   private void nocache(response)
   {
     response.setHeader('Cache-Control', 'no-cache') // HTTP 1.1
