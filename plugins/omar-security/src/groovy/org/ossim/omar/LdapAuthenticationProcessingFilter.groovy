@@ -23,7 +23,7 @@ class LdapAuthenticationProcessingFilter extends GrailsAuthenticationProcessingF
   @Override
   protected void sendRedirect(HttpServletRequest request, HttpServletResponse response, String url)
   {
-    println "sendRedirect"
+    //println "sendRedirect"
 
     Authentication authentication = findAuthentication(request)
     if ( authentication )
@@ -37,7 +37,7 @@ class LdapAuthenticationProcessingFilter extends GrailsAuthenticationProcessingF
 
   private Authentication findAuthentication(HttpServletRequest request)
   {
-    println "findAuthentication"
+    //println "findAuthentication"
 
     AuthenticationException exception = request.session[SPRING_SECURITY_LAST_EXCEPTION_KEY]
 

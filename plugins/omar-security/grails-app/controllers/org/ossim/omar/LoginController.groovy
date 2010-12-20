@@ -13,6 +13,8 @@ import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUserImpl
 import org.springframework.security.context.SecurityContextHolder as SCH
 import org.springframework.security.providers.UsernamePasswordAuthenticationToken
 import org.codehaus.groovy.grails.commons.ApplicationHolder
+import org.springframework.security.GrantedAuthorityImpl
+import org.springframework.security.GrantedAuthority
 
 /**
  * Login Controller (Example).
@@ -106,10 +108,25 @@ class LoginController implements InitializingBean
     session.removeAttribute(LdapAuthenticationProcessingFilter.LDAP_LAST_AUTH)
     session.removeAttribute(AutoCreateLdapUserDetailsMapper.LDAP_AUTOCREATE_CURRENT_AUTHORITIES)
 
-    println "ldapAuth: ${ldapAuth}"
-    println "authorities: ${authorities}"
+    //println "ldapAuth: ${ldapAuth}"
+    //println "authorities: ${authorities}"
 
-    def user = new AuthUser(username: ldapAuth?.name, enabled: true, passwd: 'notused')
+    // Still need default values,  can we get these from LDAP?!?!?
+    def user = new AuthUser(
+            username: ldapAuth?.name,
+            userRealName: "user",
+            passwd: 'notused',
+            enabled: true,
+            email: "user@user.com",
+            emailShow: false,
+            description: "Normal User"
+    )
+
+    // if no authorities specifed,  default to ROLE_USER
+    if ( !authorities )
+    {
+      authorities = [new GrantedAuthorityImpl("ROLE_USER")] as GrantedAuthority[]
+    }
 
     if ( !user.save(flush: true) )
     {
@@ -216,7 +233,7 @@ class LoginController implements InitializingBean
     return authenticateService.isAjax(request)
   }
 
-  /** cache controls        */
+  /** cache controls            */
   private void nocache(response)
   {
     response.setHeader('Cache-Control', 'no-cache') // HTTP 1.1
