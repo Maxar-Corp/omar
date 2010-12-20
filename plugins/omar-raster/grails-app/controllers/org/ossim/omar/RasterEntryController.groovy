@@ -539,8 +539,9 @@ class RasterEntryController implements InitializingBean
 
     params.dateSort = "false"
 
-    def serviceAddress = createLink(absolute: true, controller: "kmlQuery", action: "getkml", params: params)
+    def serviceAddress = createLink(absolute: true, controller: "kmlQuery", action: "getImagesKml", params: params)
 
+/*
     def kmlnode = {
       mkp.xmlDeclaration()
       kml("xmlns": "http://earth.google.com/kml/2.1") {
@@ -563,7 +564,25 @@ class RasterEntryController implements InitializingBean
               refreshInterval("2000")
               refreshMode("onRequest")
               refreshTime("200")
+              viewFormat("BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]")
+              httpQuery("googleClientVersion=[clientVersion]")
             }
+          }
+        }
+      }
+    }
+*/
+   def kmlnode = {
+      mkp.xmlDeclaration()
+      kml("xmlns", "http://earth.google.com/kml/2.1") {
+        NetworkLink() {
+          name("OMAR Query Results")
+          Link() {
+            href {
+              mkp.yieldUnescaped("<![CDATA[${serviceAddress}]]>")
+            }
+            httpQuery("googleClientVersion=[clientVersion];")
+            viewRefreshMode("onRequest")
           }
         }
       }
