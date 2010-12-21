@@ -16,30 +16,31 @@ class AuthUser implements Serializable
     }
   }
 
-  /** Username     */
+  /** Username      */
   String username
-  /** User Real Name    */
+  /** User Real Name     */
   String userRealName
-  /** MD5 Password     */
+  /** MD5 Password      */
   String passwd
-  /** enabled     */
+  /** enabled      */
   boolean enabled
 
   String email
   boolean emailShow
 
-  /** description     */
+  /** description      */
   String description = ''
 
-  /** plain password to create a MD5 password     */
+  /** plain password to create a MD5 password      */
   String pass = '[secret]'
 
-  String verificationEncoding = ''
+  String verificationEncoding
 
   static constraints = {
     username(blank: false, unique: true)
     userRealName(blank: false)
     passwd(blank: false)
     enabled()
+    verificationEncoding(nullable: true)
   }
 }
