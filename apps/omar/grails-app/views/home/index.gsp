@@ -1,12 +1,15 @@
-<html>
+s<html>
 <head>
   <title>Welcome to OMAR</title>
   <meta name="layout" content="main4"/>
 </head>
 <body>
 <div align="center">
-    <g:link class="home" uri="/"><img src="${resource(dir: 'images', file: 'omarLogo.png')}" alt="OMAR Logo" /></g:link>
-  </div>
+  <g:link class="home" uri="/"><img src="${resource(dir: 'images', file: 'omarLogo.png')}" alt="OMAR Logo"/></g:link>
+</div>
+<g:if test="${flash.message}">
+  <div class="message">${flash.message}</div>
+</g:if>
 
 <div>
   <h1 style="font-size:150%">Search:</h1>
@@ -82,6 +85,25 @@
   </table>
 </div>
 
+<g:ifNotGranted role="ROLE_ADMIN">
+  <div>
+    <h1 style="font-size:150%">User Preferences:</h1>
+    <table>
+      <tr>
+        <td width="120px">
+          <img src="${resource(dir: 'images', file: 'use.gif')}" alt="">
+        </td>
+        <td>
+          <ol>
+            <li><g:link controller="userPreferences" action="edit" id="${loggedInUserInfo(field: 'id')}">Edit</g:link></li>
+          </ol>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</g:ifNotGranted>
+
 <div>
   <h1 style="font-size:150%">Report:</h1>
   <table>
@@ -155,6 +177,7 @@
     </table>
   </div>
 </g:ifAllGranted>
+
 <g:javascript>
   function submitImageView()
   {

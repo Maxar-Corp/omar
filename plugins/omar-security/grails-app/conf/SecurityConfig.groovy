@@ -8,10 +8,11 @@ security {
 	useOpenId = false
 
 	// LDAP Configuration
-	
+
+  /*
 	providerNames = ['daoAuthenticationProvider',
 	                             'ldapAuthProvider']
-  useLdap = true
+  useLdap = false
 	ldapRetrieveDatabaseRoles = true
 	ldapRetrieveGroupRoles = false
 	ldapServer = 'ldap://sles11-ldap-server'
@@ -21,6 +22,7 @@ security {
 	ldapSearchFilter = '(uid={0})'
 	ldapGroupSearchBase = 'ou=groups,dc=otd,dc=radiantblue,dc=com'
 	ldapGroupSearchFilter = 'uniquemember={0}'
+  */
 
 	algorithm = 'MD5' 
 	//use Base64 text ( true or false )

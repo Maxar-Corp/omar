@@ -7,7 +7,8 @@ import org.ossim.omar.AuthUser
 /**
  * org.ossim.omar.AuthUser Controller.
  */
-class UserController {
+class UserController
+{
 
   AuthenticateService authenticateService
 
@@ -19,7 +20,8 @@ class UserController {
   }
 
   def list = {
-    if (!params.max) {
+    if ( !params.max )
+    {
       params.max = 10
     }
     [personList: AuthUser.list(params)]
@@ -36,20 +38,24 @@ class UserController {
   def delete = {
 
     def person = AuthUser.get(params.id)
-    if (person) {
+    if ( person )
+    {
       def authPrincipal = authenticateService.principal()
       //avoid self-delete if the logged-in user is an admin
-      if (!(authPrincipal instanceof String) && authPrincipal.username == person.username) {
+      if ( !(authPrincipal instanceof String) && authPrincipal.username == person.username )
+      {
         flash.message = "You can not delete yourself, please login as another admin and try again"
       }
-      else {
+      else
+      {
         //first, delete this person from People_Authorities table.
         Role.findAll().each { it.removeFromPeople(person) }
         person.delete()
         flash.message = "AuthUser ${params.id} deleted."
       }
     }
-    else {
+    else
+    {
       flash.message = "AuthUser not found with id ${params.id}"
     }
 
@@ -59,7 +65,8 @@ class UserController {
   def edit = {
 
     def person = AuthUser.get(params.id)
-    if (!person) {
+    if ( !person )
+    {
       flash.message = "AuthUser not found with id ${params.id}"
       redirect(action: list)
       return
@@ -74,7 +81,8 @@ class UserController {
   def update = {
 
     def person = AuthUser.get(params.id)
-    if (!person) {
+    if ( !person )
+    {
       flash.message = "AuthUser not found with id ${params.id}"
       redirect(action: edit, id: params.id)
       return
@@ -82,15 +90,18 @@ class UserController {
 
     def oldPassword = person.passwd
     person.properties = params
-    if (!params.passwd.equals(oldPassword)) {
+    if ( !params.passwd.equals(oldPassword) )
+    {
       person.passwd = authenticateService.passwordEncoder(params.passwd)
     }
-    if (person.save()) {
+    if ( person.save() )
+    {
       Role.findAll().each { it.removeFromPeople(person) }
       addRoles(person)
       redirect(action: show, id: person.id)
     }
-    else {
+    else
+    {
       render(view: 'edit', model: [person: person])
     }
   }
@@ -109,18 +120,23 @@ class UserController {
     def person = new AuthUser()
     person.properties = params
     person.passwd = authenticateService.passwordEncoder(params.passwd)
-    if (person.save()) {
+    if ( person.save() )
+    {
       addRoles(person)
       redirect(action: show, id: person.id)
     }
-    else {
+    else
+    {
       render(view: 'create', model: [authorityList: Role.list(params), person: person])
     }
   }
 
-  private void addRoles(person) {
-    for (String key in params.keySet()) {
-      if (key.contains('ROLE') && 'on' == params.get(key)) {
+  private void addRoles(person)
+  {
+    for ( String key in params.keySet() )
+    {
+      if ( key.contains('ROLE') && 'on' == params.get(key) )
+      {
         Role.findByAuthority(key).addToPeople(person)
       }
     }
