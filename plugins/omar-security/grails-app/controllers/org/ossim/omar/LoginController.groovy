@@ -61,7 +61,7 @@ class LoginController implements InitializingBean
     model.registerFlag = registerFlag
     nocache(response)
 
-    println ApplicationHolder.application.mainContext.authenticationProcessingFilter.class.name
+    //println ApplicationHolder.application.mainContext.authenticationProcessingFilter.class.name
 
     if ( isLoggedIn() )
     {

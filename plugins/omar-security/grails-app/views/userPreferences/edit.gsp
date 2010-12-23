@@ -8,11 +8,9 @@
 <content tag="content">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link class="list" action="list">User List</g:link></span>
-    <span class="menuButton"><g:link class="create" action="create">Create User</g:link></span>
   </div>
   <div class="body">
-    <h1>OMAR: Edit User ${person.id}</h1>
+    <h1>Edit ${loggedInUserInfo(field: 'username')}'s Preferences</h1>
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
@@ -26,14 +24,6 @@
       <div class="dialog">
         <table>
           <tbody>
-          <tr class="prop">
-            <td valign="top" class="name">
-              <label for="username">Login Name:</label>
-            </td>
-            <td valign="top" class="value ${hasErrors(bean: person, field: 'username', 'errors')}">
-              <input type="text" id="username" name="username" value="${person?.username?.encodeAsHTML()}"/>
-            </td>
-          </tr>
           <tr class="prop">
             <td valign="top" class="name">
               <label for="userRealName">Full Name:</label>
@@ -52,10 +42,10 @@
           </tr>
           <tr class="prop">
             <td valign="top" class="name">
-              <label for="enabled">Enabled:</label>
+              <label for="verifypasswd">Verify Password:</label>
             </td>
-            <td valign="top" class="value ${hasErrors(bean: person, field: 'enabled', 'errors')}">
-              <g:checkBox name="enabled" value="${person?.enabled}"/>
+            <td valign="top" class="value ${hasErrors(bean: person, field: 'passwd', 'errors')}">
+              <input type="password" id="verifypasswd" name="verifypasswd" value="${person?.passwd?.encodeAsHTML()}"/>
             </td>
           </tr>
           <tr class="prop">
@@ -82,42 +72,11 @@
               <g:checkBox name="emailShow" value="${person?.emailShow}"/>
             </td>
           </tr>
-          <tr class="prop">
-            <td valign="top" class="name">
-              <label for="authorities">Roles:</label>
-            </td>
-            <td valign="top" class="value ${hasErrors(bean: person, field: 'authorities', 'errors')}">
-              <ul>
-                <g:set var="list" value="[]"/>
-                <g:each var="b" in="${authorityList.authority}">
-                  <g:each var="a" in="${person?.authorities?}">
-                    <g:if test="${b==~ a.authority}">
-                      <% if ( !list.contains(b) )
-                      {
-                        list.add(b); %>
-                      <li>${a.authority?.substring(5)?.toLowerCase()?.encodeAsHTML()}
-                      <g:checkBox name="${a.authority}" value="${true}"/>
-                      </li>
-                      <% } %>
-                    </g:if>
-                  </g:each>
-                  <% if ( !list.contains(b) )
-                  {
-                    list.add(b); %>
-                  <li>${b.substring(5)?.toLowerCase()?.encodeAsHTML()}
-                  <g:checkBox name="${b}" value="${false}"/>
-                  </li>
-                  <% } %>
-                </g:each>
-              </ul>
-            </td>
-          </tr>
           </tbody>
         </table>
       </div>
       <div class="buttons">
         <span class="button"><g:actionSubmit class="save" value="Update"/></span>
-        <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
       </div>
     </g:form>
   </div>
