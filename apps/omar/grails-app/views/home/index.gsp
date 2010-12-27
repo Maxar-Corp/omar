@@ -95,7 +95,7 @@ s<html>
         </td>
         <td>
           <ol>
-            <li><g:link controller="userPreferences" action="edit" id="${loggedInUserInfo(field: 'id')}">Edit</g:link></li>
+            <li><g:link controller="userPreferences" action="edit" id="${user.id}">Edit</g:link></li>
           </ol>
         </td>
       </tr>
