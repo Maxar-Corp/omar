@@ -1,6 +1,5 @@
 package org.ossim.omar
 
-import org.hibernatespatial.criterion.SpatialRestrictions
 import org.hibernatespatial.SpatialRelation
 /**
  * Created by IntelliJ IDEA.
@@ -85,9 +84,10 @@ class GeoQueryUtil {
       }
     }
     else if (filter instanceof org.geotools.filter.GeometryFilter) {
+      def srs = "4326"
       if (filter instanceof org.geotools.filter.spatial.BBOXImpl) {
         def bbox = filter as org.geotools.filter.spatial.BBOXImpl
-        def srs = bbox.SRS ?: "4326"
+        srs = bbox.SRS ?: "4326"
 
         def geom = new com.vividsolutions.jts.io.WKTReader().read(bbox.expression2.toString())
         geom?.setSRID(Integer.parseInt(srs))
@@ -100,6 +100,7 @@ class GeoQueryUtil {
         def paramsFix = fixBinaryExpression(fieldTypeMap, equalsFilter.expression1.toString(),
                 equalsFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+        geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 geom,
@@ -111,6 +112,7 @@ class GeoQueryUtil {
         def paramsFix = fixBinaryExpression(fieldTypeMap, withinFilter.expression1.toString(),
                 withinFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+        geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 geom,
@@ -122,6 +124,7 @@ class GeoQueryUtil {
         def paramsFix = fixBinaryExpression(fieldTypeMap, tempFilter.expression1.toString(),
                 tempFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+        geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 geom,
@@ -133,6 +136,7 @@ class GeoQueryUtil {
         def paramsFix = fixBinaryExpression(fieldTypeMap, tempFilter.expression1.toString(),
                 tempFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+        geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 geom,
@@ -144,6 +148,7 @@ class GeoQueryUtil {
         def paramsFix = fixBinaryExpression(fieldTypeMap, tempFilter.expression1.toString(),
                 tempFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+        geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 null,
                 geom,
@@ -155,6 +160,7 @@ class GeoQueryUtil {
         def paramsFix = fixBinaryExpression(fieldTypeMap, tempFilter.expression1.toString(),
                 tempFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+        geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 geom,
@@ -166,6 +172,7 @@ class GeoQueryUtil {
         def paramsFix = fixBinaryExpression(fieldTypeMap, tempFilter.expression1.toString(),
                 tempFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+        geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 geom,
@@ -177,6 +184,7 @@ class GeoQueryUtil {
         def paramsFix = fixBinaryExpression(fieldTypeMap, tempFilter.expression1.toString(),
                 tempFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+        geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 geom,
@@ -302,13 +310,14 @@ class GeoQueryUtil {
     }
     else if (filter instanceof org.geotools.filter.LikeFilterImpl) {
       def likeFilter = filter as org.geotools.filter.LikeFilterImpl
-      def type = fieldTypeMap."${likeFilter.expression}"?.simpleName
+      def adjustedField =  fixField(likeFilter.expression.toString())
+      def type = fieldTypeMap."${adjustedField}"?.simpleName
       if (!type) {
         throw new Exception("invalid field name in expression ${likeFilter.expression} like ${likeFilter.literal}")
       }
 
-      result = caseInsensitiveFlag? org.hibernate.criterion.Restrictions.ilike(fixField(likeFilter.expression.toString()), likeFilter.literal) :
-                                    org.hibernate.criterion.Restrictions.like(fixField(likeFilter.expression.toString()), likeFilter.literal)
+      result = caseInsensitiveFlag? org.hibernate.criterion.Restrictions.ilike(adjustedField, likeFilter.literal) :
+                                    org.hibernate.criterion.Restrictions.like(adjustedField, likeFilter.literal)
     }
     
     else
@@ -321,7 +330,10 @@ class GeoQueryUtil {
   }
   static def fixField(def field)
   {
-    field.replaceAll("_[a-zA-Z]", { value->value[1].toUpperCase()})
+    def result = field.toLowerCase()
+    // convert to standard column naming convention firs
+    result = result.replaceAll("_[a-zA-Z]", { value->value[1].toUpperCase()})
+    result
   }
   static def fixBinaryExpression(def fieldMap, def leftValue, def rightValue) {
     def result = [:]
