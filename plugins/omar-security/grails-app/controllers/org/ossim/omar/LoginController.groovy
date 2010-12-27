@@ -114,10 +114,11 @@ class LoginController implements InitializingBean
     // Still need default values,  can we get these from LDAP?!?!?
     def user = new AuthUser(
             username: ldapAuth?.name,
-            userRealName: "user",
-            passwd: 'notused',
+           //userRealName: "user",
+            userRealName: ldapAuth?.name,
+            passwd: 'not-used',
             enabled: true,
-            email: "user@user.com",
+            email: "${ldapAuth?.name}@localhost",
             emailShow: false,
             description: "Normal User"
     )
