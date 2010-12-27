@@ -198,24 +198,24 @@ class GeoQueryUtil {
     else if (filter instanceof org.geotools.filter.CompareFilter) {
       if (filter instanceof org.geotools.filter.BetweenFilterImpl) {
         def compare = filter as org.geotools.filter.BetweenFilterImpl
-
-        def type = fieldTypeMap."${compare.expression}"?.simpleName
+        def paramFix = fixField(compare.expression.toString())
+        def type = fieldTypeMap."${paramFix}"?.simpleName
         if (!type) {
           throw new Exception("invalid field name ${compare.expression} for between clause")
         }
-        result = org.hibernate.criterion.Restrictions.between(fixField(compare.expression.toString()),
+        result = org.hibernate.criterion.Restrictions.between(paramFix,
                 compare.lowerBoundary().toString()."to${type}"(),
                 compare.upperBoundary().toString()."to${type}"())
       }
       else if(filter instanceof org.geotools.filter.IsBetweenImpl)
       {
         def compare = filter as org.geotools.filter.IsBetweenImpl
-
-        def type = fieldTypeMap."${compare.expression}"?.simpleName
+        def paramFix = fixField(compare.expression.toString())
+        def type = fieldTypeMap."${paramFix}"?.simpleName
         if (!type) {
           throw new Exception("invalid field name ${compare.expression} for between clause")
         }
-        result = org.hibernate.criterion.Restrictions.between(fixField(compare.expression.toString()),
+        result = org.hibernate.criterion.Restrictions.between(paramFix,
                 compare.getLowerBoundary().toString()."to${type}"(),
                 compare.getUpperBoundary().toString()."to${type}"())
       }
