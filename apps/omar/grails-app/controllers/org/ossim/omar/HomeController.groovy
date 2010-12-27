@@ -1,6 +1,7 @@
 package org.ossim.omar
 class HomeController
 {
+  def authenticateService
   def afterInterceptor = { model, modelAndView ->
     if ( request['isMobile'] )
     {
@@ -13,6 +14,7 @@ class HomeController
   
   def grailsApplication
   def index = {
+	def user = AuthUser.findByUsername(authenticateService.userDomain().username)	
     def editableControllers = []
 
 
@@ -29,6 +31,6 @@ class HomeController
       }
     }
 
-    [editableControllers: editableControllers]
+    [editableControllers: editableControllers, user:user]
   }
 }
