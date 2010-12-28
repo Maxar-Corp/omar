@@ -7,8 +7,6 @@ beans = {
   sql(groovy.sql.Sql, ref('dataSource')) { bean ->
     bean.scope = 'prototype'
   }
-  //  Uncomment the following if LDAP is to be used.
-  /*
   def conf = AuthorizeTools.securityConfig.security
 
   authenticationProcessingFilter(LdapAuthenticationProcessingFilter) {
@@ -28,6 +26,4 @@ beans = {
     usePassword = conf.ldapUsePassword
     retrieveDatabaseRoles = conf.ldapRetrieveDatabaseRoles
   }
-  */
-
 }
