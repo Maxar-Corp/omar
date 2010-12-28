@@ -3,7 +3,7 @@ import grails.util.Environment
 //import org.ossim.postgis.Geometry
 //import org.ossim.postgis.GeometryType
 
-import com.vividsolutions.jts.geom.Geometry
+//import com.vividsolutions.jts.geom.Geometry
 
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
@@ -275,17 +275,28 @@ videoDataSet {
 }
 
 login {
-  registration
-  {
-    enabled = true	
-	//userVerification = "none"
-	//userVerification = "manual"
-	userVerification = "email"
-	
-	if (userVerification == "email")
-	{
-	  useMail = true
-	}
+  registration {
+    /*
+     * registration has the following values:
+     *  true: Allows users to register a new account by following the register link on the OMAR login page.
+     * false: Prevents user registration and removes the register link from the OMAR login page. We recommend
+     *        setting enabled to false if you are using LDAP for user authentication.
+     */
+     enabled = true
+
+    /*
+     * userVerification has the following values:
+     *   none: Enables a new user account upon registration.
+     * manual: Requires an administrator to enable new user accounts.
+     *  email: Requires email verification before enabling the account, but also requires the modification
+     *         of SecurityConfig.groovy in the omar-security plugin to specify your mail host settings.
+     */
+    userVerification = "none"
+
+    if ( userVerification == "email" )
+    {
+      useMail = "true"
+    }
   }
 }
 
