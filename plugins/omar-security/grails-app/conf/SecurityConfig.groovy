@@ -7,22 +7,38 @@ security {
 	// change to true to use OpenID authentication
 	useOpenId = false
 
-	// LDAP Configuration
+   /*
+    * To use LDAP for user authentication uncomment the following block and
+    * set the variables according to your environment.
+    */
 
-  /*
-	providerNames = ['daoAuthenticationProvider',
-	                             'ldapAuthProvider']
-  useLdap = false
+    /*
+    providerNames = ['daoAuthenticationProvider','ldapAuthProvider']
+    useLdap = true
 	ldapRetrieveDatabaseRoles = true
 	ldapRetrieveGroupRoles = false
-	ldapServer = 'ldap://sles11-ldap-server'
-	ldapManagerDn = 'cn=Administrator,dc=otd,dc=radiantblue,dc=com'
-	ldapManagerPassword = 'omarldap'
-	ldapSearchBase = 'ou=people,dc=otd,dc=radiantblue,dc=com'
+	ldapServer = 'ldap://your-ldap-server-name'
+	ldapManagerDn = 'cn=Administrator,dc=sample,dc=domain,dc=com'
+	ldapManagerPassword = 'password'
+	ldapSearchBase = 'ou=people,dc=sample,dc=domain,dc=com'
 	ldapSearchFilter = '(uid={0})'
-	ldapGroupSearchBase = 'ou=groups,dc=otd,dc=radiantblue,dc=com'
+	ldapGroupSearchBase = 'ou=groups,dc=sample,dc=domain,dc=com'
 	ldapGroupSearchFilter = 'uniquemember={0}'
-  */
+    */
+
+  	/*
+  	 * To use email validation for user registration, uncomment the following block
+  	 * and set the variables according to your your environment.
+    /*
+
+    /*
+	useMail = ApplicationHolder.application.config.login.registration.useMail
+	mailHost = 'localhost'
+	mailUsername = 'omar@localhost'
+	mailPassword = 'password'
+	mailProtocol = 'smtp'
+	mailFrom = 'omar@localhost'
+    */
 
 	algorithm = 'MD5' 
 	//use Base64 text ( true or false )
@@ -72,19 +88,6 @@ security {
 		/**=IS_AUTHENTICATED_ANONYMOUSLY
 	"""
 	*/
-
-	/**
-	 * To use email notification for user registration, set the following userMail to
-	 * true and config your mail settings.Note you also need to run the script
-	 * grails generate-registration.
-	 */
-
-	  useMail = ApplicationHolder.application.config.login.registration.useMail
-	  mailHost = 'localhost'
-	  mailUsername = 'omar@localhost'
-	//mailPassword = 'sungod'
-	  mailProtocol = 'smtp'
-	  mailFrom = 'omar@localhost'
 
 	/** AJAX request header */
 	//ajaxHeader = 'X-Requested-With'
