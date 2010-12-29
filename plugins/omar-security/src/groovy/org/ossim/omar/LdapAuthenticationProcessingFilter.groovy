@@ -2,18 +2,11 @@ package org.ossim.omar
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
-
 import org.codehaus.groovy.grails.plugins.springsecurity.GrailsAuthenticationProcessingFilter
 import org.springframework.security.Authentication
 import org.springframework.security.AuthenticationException
 import org.springframework.security.userdetails.UsernameNotFoundException
-/**
- * Created by IntelliJ IDEA.
- * User: sbortman
- * Date: 12/20/10
- * Time: 2:00 PM
- * To change this template use File | Settings | File Templates.
- */
+
 class LdapAuthenticationProcessingFilter extends GrailsAuthenticationProcessingFilter
 {
 

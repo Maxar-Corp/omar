@@ -1,14 +1,6 @@
 package org.ossim.omar
 
-/**
- * Created by IntelliJ IDEA.
- * User: sbortman
- * Date: 12/20/10
- * Time: 2:02 PM
- * To change this template use File | Settings | File Templates.
- */
 import javax.servlet.http.HttpServletRequest
-
 import org.codehaus.groovy.grails.plugins.springsecurity.SecurityRequestHolder
 import org.codehaus.groovy.grails.plugins.springsecurity.ldap.GrailsLdapUserDetailsMapper
 import org.springframework.ldap.core.DirContextOperations
