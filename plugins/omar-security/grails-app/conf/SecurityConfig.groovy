@@ -7,7 +7,7 @@ security {
 	// change to true to use OpenID authentication
 	useOpenId = false
 
-   /*
+   /**
     * To use LDAP for user authentication uncomment the following block and
     * set the variables according to your environment.
     */
@@ -26,7 +26,7 @@ security {
 	ldapGroupSearchFilter = 'uniquemember={0}'
     */
 
-  	/*
+  	/**
   	 * To use email validation for user registration, uncomment the following block
   	 * and set the variables according to your your environment.
     /*
@@ -52,7 +52,7 @@ security {
 	enabled = 'enabled'
 	relationalAuthorities = 'authorities'
 
-	/*
+	/**
 	 * You can specify method to retrieve the roles. (you need to set relationalAuthorities = null)
 	 */
 	// getAuthoritiesMethod = null //'getMoreAuthorities'

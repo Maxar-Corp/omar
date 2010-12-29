@@ -2,7 +2,6 @@ import grails.util.Environment
 
 //import org.ossim.postgis.Geometry
 //import org.ossim.postgis.GeometryType
-
 //import com.vividsolutions.jts.geom.Geometry
 
 import org.joda.time.*
@@ -276,7 +275,7 @@ videoDataSet {
 
 login {
   registration {
-    /*
+    /**
      * registration has the following values:
      *  true: Allows users to register a new account by following the register link on the OMAR login page.
      * false: Prevents user registration and removes the register link from the OMAR login page. We recommend
@@ -284,7 +283,7 @@ login {
      */
      enabled = true
 
-    /*
+    /**
      * userVerification has the following values:
      *   none: Enables a new user account upon registration.
      * manual: Requires an administrator to enable new user accounts.
