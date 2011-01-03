@@ -210,7 +210,7 @@ security {
 
 image.download.prefix = "http://${grails.serverIP}"
 
-/** ********************************* CONDITIONALS FOR VIEWS                 ***********************************************/
+/** ********************************* CONDITIONALS FOR VIEWS                   ***********************************************/
 // flags for different views
 //
 views {
@@ -281,7 +281,7 @@ login {
      * false: Prevents user registration and removes the register link from the OMAR login page. We recommend
      *        setting enabled to false if you are using LDAP for user authentication.
      */
-     enabled = true
+    enabled = true
 
     /**
      * userVerification has the following values:
@@ -309,21 +309,21 @@ kml {
 }
 
 
-grails.doc.authors     = "Garrett Potts"
-grails.doc.license     = "LGPL"
-grails.doc.copyright   = "RadiantBlue Technologies"
-grails.doc.footer      = ""
-grails.doc.title       = "OMAR"
-grails.doc.subtitle       = ""
-grails.doc.logo        = """<a href="http://www.ossim.org" ><img src="../img/OMAR.png" border="0"/></a>"""
+grails.doc.authors = "Garrett Potts"
+grails.doc.license = "LGPL"
+grails.doc.copyright = "RadiantBlue Technologies"
+grails.doc.footer = ""
+grails.doc.title = "OMAR"
+grails.doc.subtitle = ""
+grails.doc.logo = """<a href="http://www.ossim.org" ><img src="../img/OMAR.png" border="0"/></a>"""
 grails.doc.sponsorLogo = """<a href="http://www.radiantblue.com" ><img src="../img/RBT.png" border="0"/></a>"""
 grails.doc.images = new File("web-app/images")
 
-ogcFilterQueryFields{
-  raster{
-    include=null
-    exclude=null
-    override=null
+ogcFilterQueryFields {
+  raster {
+    include = null
+    exclude = null
+    override = null
 //    include=["niirs", "width", "height", "title"]
 //    exclude=null
 //    override=[title:[description:"ID of the image",
@@ -332,9 +332,15 @@ ogcFilterQueryFields{
 //             ]
 
   }
-  video{
-    include=null
-    exclude=null
-    override=null
+  video {
+    include = null
+    exclude = null
+    override = null
   }
+}
+
+tomcat {
+  servers = [
+          localhost: [url: "http://localhost:8080/manager", username: "tomcat", password: "s3cret"]
+  ]
 }
