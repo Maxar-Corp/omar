@@ -69,8 +69,14 @@ if ( !admin )
 
 if ( !Requestmap.findByUrl("/home/**") )
 {
-  new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/home/**").save()
+  new Requestmap(configAttribute: "ROLE_USER", url: "/home/**").save()
 }
+
+if ( !Requestmap.findByUrl("/userPreferences/**") )
+{
+  new Requestmap(configAttribute: "ROLE_USER", url: "/userPreferences/**").save()
+}
+
 
 def adminControllers = [
         "user", "role"
