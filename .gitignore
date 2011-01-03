@@ -42,6 +42,7 @@ apps/cstars-footprints/web-app/images/skin/*.iml
 apps/cstars-footprints/web-app/js/*.iml
 apps/cstars-footprints/web-app/js/prototype/*.iml
 apps/omar/*.iml
+apps/omar/*.ipr
 apps/omar/.settings/*.iml
 apps/omar/grails-app/*.iml
 apps/omar/grails-app/conf/*.iml
