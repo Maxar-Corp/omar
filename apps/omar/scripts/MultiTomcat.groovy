@@ -1,22 +1,50 @@
+includeTargets << new File("${tomcatPluginDir}/scripts/Tomcat.groovy")
 includeTargets << grailsScript("Init")
 includeTargets << grailsScript("Bootstrap")
-includeTargets << new File("${tomcatPluginDir}/scripts/Tomcat.groovy")
+
+
+def printHelp()
+{
+  println """
+    Usage: grails [mode] <command>
+
+    Where mode is either dev (default), prod, or test and
+    command is one of the following:
+
+      deploy   - generates war and deploys to tomcats defined in Config.groovy.   MUST BE RUN in prod mode ONLY!
+      list     - lists all the apps deployed in each tomcat defined in Config.groovy.
+      undeploy - undeploys omar from eachof the tomcats defined in Config.groovy.
+
+   Caveats:
+
+    When re-deploying to a tomcat where omar already exists.   tomcat will have to be restarted due to JNI  class
+    loading issues.  Looking into a better solution for this.
+  """
+}
 
 target(main: "Deploy to remote Tomcat") {
-  depends(bootstrap)
-  def cmd = argsMap.params ? argsMap.params[0] : 'deploy'
+  depends(parseArguments, packageApp)
+  def cmd = argsMap.params ? argsMap.params[0] : 'help'
+
 
   switch ( cmd )
   {
   case 'deploy':
-    war()
-    grailsApp.config.tomcat.servers.each { name, settings ->
-      println "Deploying application $serverContextPath to ${name}:"
-      deploy(war: warName,
-              url: settings.url,
-              path: serverContextPath,
-              username: settings.username,
-              password: settings.password)
+    if ( grailsEnv == "production" )
+    {
+      war()
+      config.tomcat.servers.each { name, settings ->
+        println "Deploying application $serverContextPath to ${name}:"
+        deploy(war: warName,
+                url: settings.url,
+                path: serverContextPath,
+                username: settings.username,
+                password: settings.password)
+      }
+    }
+    else
+    {
+      println "This action can only be run in production mode."
     }
     break
   case 'list':
@@ -48,6 +76,12 @@ target(main: "Deploy to remote Tomcat") {
               username: settings.username,
               password: settings.password)
     }
+    break
+  case "help":
+    printHelp()
+    break
+  default:
+    printHelp()
     break
   }
 }
