@@ -10,6 +10,8 @@ import org.geotools.feature.FeatureCollections
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
 
+import org.geotools.graph.util.ZipUtil
+
 /**
  * Created by IntelliJ IDEA.
  * User: sbortman
@@ -25,12 +27,10 @@ class ExportUtils
     def srcDir = newFile.parentFile
     def prefix = FilenameUtils.getBaseName(newFile.name)
     def zipfile = new File(srcDir.parentFile, "${prefix}.zip")
-    def ant = new AntBuilder()
+    def filenames = srcDir.listFiles()?.absolutePath
+    def archFilenames = filenames.collect { "${prefix}${it - srcDir.absolutePath}" }
 
-    ant.zip(destfile: zipfile) {
-      zipfileset(dir: srcDir, prefix: prefix)
-    }
-
+    ZipUtil.zip(zipfile.absolutePath, filenames as String[], archFilenames as String[])
     FileUtils.deleteDirectory(newFile.parentFile)
 
     return zipfile
