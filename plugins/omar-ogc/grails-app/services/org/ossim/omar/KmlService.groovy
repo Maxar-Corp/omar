@@ -9,7 +9,8 @@ import org.springframework.beans.factory.InitializingBean
 
 import org.apache.commons.io.FilenameUtils
 
-class KmlService implements ApplicationContextAware, InitializingBean {
+class KmlService implements ApplicationContextAware, InitializingBean
+{
 
   boolean transactional = false
   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -24,7 +25,7 @@ class KmlService implements ApplicationContextAware, InitializingBean {
   {
     def description = ""
     def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView",
-                                         params: [layers: rasterEntry.indexId])
+            params: [layers: rasterEntry.indexId])
 
     def mpp = rasterEntry.getMetersPerPixel()
     def fieldMap = [File: (rasterEntry.mainFile.name as File).name,
@@ -38,21 +39,24 @@ class KmlService implements ApplicationContextAware, InitializingBean {
 
     description = "<hr/><table>"
     fieldMap.each {k, v ->
-      description+="<tr>"
-      description+="<td>${k}</td>"
-      description+="<td>${v}</td></tr>"
+      description += "<tr>"
+      description += "<td>${k}</td>"
+      description += "<td>${v}</td></tr>"
     }
     description += "</table>"
 
     description
   }
-  String createImagesKml(List<org.ossim.omar.RasterEntry> rasterEntries, Map wmsParams, Map params) {
+
+  String createImagesKml(List<org.ossim.omar.RasterEntry> rasterEntries, Map wmsParams, Map params)
+  {
     def kmlbuilder = new StreamingMarkupBuilder()
 
     kmlbuilder.encoding = "UTF-8"
 
     wmsParams?.request = "GetMap"
-    if (!params?.containsKey("version")) {
+    if ( !params?.containsKey("version") )
+    {
       wmsParams.version = "1.1.1"
     }
 //    if ( !params?.containsKey("width") )
@@ -63,14 +67,16 @@ class KmlService implements ApplicationContextAware, InitializingBean {
 //    {
 //      wmsParams.height = "512"
 //    }
-    if (!params?.containsKey("format")) {
+    if ( !params?.containsKey("format") )
+    {
       wmsParams.format = "image/png"
     }
-    if (!params?.containsKey("transparent")) {
+    if ( !params?.containsKey("transparent") )
+    {
       wmsParams.transparent = "TRUE"
     }
     wmsParams?.srs = "EPSG:4326"
-    def bbox = wmsParams?.bbox;
+    def bbox = wmsParams?.bbox?.split(',');
     wmsParams?.remove("bbox");
     wmsParams?.remove("width");
     wmsParams?.remove("height");
@@ -87,74 +93,78 @@ class KmlService implements ApplicationContextAware, InitializingBean {
       kml("xmlns": "http://earth.google.com/kml/2.1") {
         Document() {
 //          Folder() {
-            name("Omar WMS")
-            rasterIdx = 0
-            rasterEntries?.each {rasterEntry ->
-              def minLonDMS
-              def maxLonDMS
-              def minLatDMS
-              def maxLatDMS
-              def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
-              def bounds = rasterEntry?.groundGeom?.bounds
-              def groundCenterLon = (bounds?.minLon + bounds?.maxLon) * 0.5;
-              def groundCenterLat = (bounds?.minLat + bounds?.maxLat) * 0.5;
-              wmsParams?.layers = rasterEntry?.indexId
+          name("Omar WMS")
+          rasterIdx = 0
+          rasterEntries?.each {rasterEntry ->
+            def minLonDMS
+            def maxLonDMS
+            def minLatDMS
+            def maxLatDMS
+            def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
+            def bounds = rasterEntry?.groundGeom?.bounds
+            def groundCenterLon = (bounds?.minLon + bounds?.maxLon) * 0.5;
+            def groundCenterLat = (bounds?.minLat + bounds?.maxLat) * 0.5;
+            wmsParams?.layers = rasterEntry?.indexId
 
-              def renderedHtml = "${descriptionMap.get(rasterIdx)}"
-              rasterIdx++
-              def mpp = rasterEntry.getMetersPerPixel()
-              // calculate a crude metric for putting an image that almost fits within the google viewport
-              //
-              def defaultRange = mpp * Math.sqrt((rasterEntry.width ** 2) + (rasterEntry.height ** 2));
-              if (defaultRange < 1) {
-                defaultRange = 15000
+            def renderedHtml = "${descriptionMap.get(rasterIdx)}"
+            rasterIdx++
+            def mpp = rasterEntry.getMetersPerPixel()
+            // calculate a crude metric for putting an image that almost fits within the google viewport
+            //
+            def defaultRange = mpp * Math.sqrt((rasterEntry.width ** 2) + (rasterEntry.height ** 2));
+            if ( defaultRange < 1 )
+            {
+              defaultRange = 15000
+            }
+            GroundOverlay() {
+
+              name((rasterEntry.mainFile.name as File).name)
+              Snippet()
+              description { mkp.yieldUnescaped("<![CDATA[${renderedHtml}]]>") }
+              LookAt() {
+                longitude(groundCenterLon)
+                latitude(groundCenterLat)
+                altitude(0.0)
+                heading(0.0)
+                tilt(0.0)
+                range(defaultRange)
+                altitudeMode("clampToGround")
               }
-              GroundOverlay() {
+              open("1")
+              visibility("1")
+              Icon() {
+                def wmsURL = tagLibBean.createLink(absolute: true, controller: "ogc", action: "wms", params: wmsParams)
 
-                name((rasterEntry.mainFile.name as File).name)
-                Snippet()
-                description { mkp.yieldUnescaped("<![CDATA[${renderedHtml}]]>") }
-                LookAt() {
-                  longitude(groundCenterLon)
-                  latitude(groundCenterLat)
-                  altitude(0.0)
-                  heading(0.0)
-                  tilt(0.0)
-                  range(defaultRange)
-                  altitudeMode("clampToGround")
+                href { mkp.yieldUnescaped("<![CDATA[${wmsURL}]]>") }
+                viewRefreshMode("onStop")
+                viewRefreshTime("1")
+                viewBoundScale("0.85")
+                viewFormat("""BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&width=[horizPixels]&height=[vertPixels]""")
+              }
+              LatLonBox() {
+                if ( bbox )
+                {
+                  north(bbox[3])
+                  south(bbox[1])
+                  east(bbox[2])
+                  west(bbox[0])
                 }
-                open("1")
-                visibility("1")
-                Icon() {
-                  def wmsURL = tagLibBean.createLink(absolute: true, controller: "ogc", action: "wms", params: wmsParams)
-
-                  href { mkp.yieldUnescaped("<![CDATA[${wmsURL}]]>") }
-                  viewRefreshMode("onStop")
-                  viewRefreshTime("1")
-                  viewBoundScale("0.85")
-                  viewFormat("""BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&width=[horizPixels]&height=[vertPixels]""")
+                else
+                {
+                  north(bounds?.maxLat)
+                  south(bounds?.minLat)
+                  east(bounds?.maxLon)
+                  west(bounds?.minLon)
                 }
-                LatLonBox() {
-                  if (bbox) {
-                    north(bbox[3])
-                    south(bbox[1])
-                    east(bbox[2])
-                    west(bbox[0])
-                  }
-                  else {
-                    north(bounds?.maxLat)
-                    south(bounds?.minLat)
-                    east(bounds?.maxLon)
-                    west(bounds?.minLon)
-                  }
-                }
-                if (acquisition) {
-                  TimeStamp() {
-                    when(acquisition)
-                  }
+              }
+              if ( acquisition )
+              {
+                TimeStamp() {
+                  when(acquisition)
                 }
               }
             }
+          }
 //          }
         }
       }
@@ -167,7 +177,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     return kmlText
   }
 
-  String createVideosKml(List<org.ossim.omar.VideoDataSet> videoEntries, Map params) {
+  String createVideosKml(List<org.ossim.omar.VideoDataSet> videoEntries, Map params)
+  {
     Boolean embed = params.embed
     SimpleDateFormat isdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
     SimpleDateFormat osdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -237,14 +248,17 @@ class KmlService implements ApplicationContextAware, InitializingBean {
               //
               (0..geom.getNumGeometries() - 1).each() {geomIdx ->
                 def poly = geom.getGeometryN(geomIdx) as com.vividsolutions.jts.geom.Polygon
-                if (poly) {
+                if ( poly )
+                {
                   kmlPoly = ""
                   def ring = poly.getExteriorRing();
                   def coordinates = ring.getCoordinates();
-                  if (coordinates.size() > 0) {
+                  if ( coordinates.size() > 0 )
+                  {
                     (0..coordinates.size() - 1).each() {coordIdx ->
                       kmlPoly = "${kmlPoly} ${coordinates[coordIdx].x},${coordinates[coordIdx].y}"
-                      if (!point) {
+                      if ( !point )
+                      {
                         point = "${coordinates[coordIdx].x},${coordinates[coordIdx].y}"
                       }
                     }
@@ -265,7 +279,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
               def createFlvUrl = tagLibBean.createLink(absolute: true, controller: "videoStreaming", action: "show", id: videoDataSet.indexId)
               def descriptionText = ""
               def bounds = videoDataSet.groundGeom?.bounds
-              if (embed) {
+              if ( embed )
+              {
                 descriptionText = """
                   <table width="720">
                     <caption><a href='${createFlvUrl}'>CLICK TO PLAY</a><br/></caption>
@@ -282,7 +297,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                   </table>
                 """
               }
-              else {
+              else
+              {
                 descriptionText = """
                   <table>
                     <caption><a href='${createFlvUrl}'>CLICK TO PLAY</a><br/></caption>
@@ -319,7 +335,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
                   coordinates("${point}")
                 }
               } // END MultiGeometry()
-              if (videoDataSet?.startDate) {
+              if ( videoDataSet?.startDate )
+              {
                 TimeStamp() {
                   when(osdf.format(new Date(isdf.parse(videoDataSet?.startDate as String) as String)))
                 }
@@ -332,7 +349,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     return kmlbuilder.bind(kmlnode).toString()
   }
 
-  String createTopImagesKml(Map params) {
+  String createTopImagesKml(Map params)
+  {
     def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "kmlQuery", action: "getImagesKml", params: params)
     def kmlbuilder = new StreamingMarkupBuilder()
 
@@ -364,7 +382,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
   }
 
 
-  String createTopVideosKml(Map params) {
+  String createTopVideosKml(Map params)
+  {
     def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "kmlQuery", action: "getVideosKml", params: params)
     def kmlbuilder = new StreamingMarkupBuilder()
 
@@ -387,24 +406,28 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     return kmlbuilder.bind(kmlnode).toString()
   }
 
-  String buildUrl(String url, Map params) {
+  String buildUrl(String url, Map params)
+  {
     def String result;
     def list = []
     params.each {k, v ->
       list << "$k=$v"
     }
     list = list.join("&")
-    if (url.indexOf("?") == -1) {
+    if ( url.indexOf("?") == -1 )
+    {
       result = "${url}?"
     }
-    else {
+    else
+    {
       result = "${url}&"
     }
     return "${result}${list}"
   }
 
 
-  String createImageFootprint(Map params) {
+  String createImageFootprint(Map params)
+  {
     def dateFormat = new SimpleDateFormat("yyyyMMdd");
     def date = new Date()
     def url = buildUrl(grailsApplication.config.wms.data.raster.url,
@@ -446,7 +469,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     return kmlbuilder.bind(kmlnode).toString()
   }
 
-  String createVideoFootprint(Map params) {
+  String createVideoFootprint(Map params)
+  {
     def dateFormat = new SimpleDateFormat("yyyyMMdd");
     def date = new Date()
     def url = buildUrl(grailsApplication.config.wms.data.video.url,
@@ -489,7 +513,8 @@ class KmlService implements ApplicationContextAware, InitializingBean {
     return kmlbuilder.bind(kmlnode).toString()
   }
 
-  public void afterPropertiesSet() {
+  public void afterPropertiesSet()
+  {
     tagLibBean = applicationContext.getBean("org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib")
     flashDirRoot = grailsApplication.config.videoStreaming.flashDirRoot
     flashUrlRoot = grailsApplication.config.videoStreaming.flashUrlRoot
