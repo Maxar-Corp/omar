@@ -29,7 +29,7 @@ security {
   	/**
   	 * To use email validation for user registration, uncomment the following block
   	 * and set the variables according to your your environment.
-    /*
+     */
 
     /*
 	useMail = ApplicationHolder.application.config.login.registration.useMail
