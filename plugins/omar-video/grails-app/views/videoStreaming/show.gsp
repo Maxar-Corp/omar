@@ -9,8 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <meta content="main5" name="layout"/>
-  <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
+  <meta content="singleColumn" name="layout"/>
   <style type="text/css">
   #centerid {
     text-align: center;
@@ -18,33 +17,38 @@
   }
   </style>
   <title>OMAR Streaming Video</title>
-  <g:javascript src="swfobject.js"/>
 </head>
 <body>
-<div class="nav">
-  <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
-  <span class="menuButton"><a href='${createLink(dir: "videoStreaming", action: "getKML", id: params.id)}'>Generate KML</a></span>
-</div>
-<div class="body">
-  <h1>${title}</h1>
-  <g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
-  </g:if>
-  <div id="centerid">
-    <div id="player">FLASH PLUGIN REQUIRED</div>
+<content tag="top">
+  <div id="hd">
+    <img id="logo" src="${resource(contextPath: "/", dir: 'images', file: 'OMARLarge.png')}" alt="OMAR-2.0 Logo"/>
   </div>
-</div>
-<g:javascript>
-  var so = new SWFObject(
-      '${resource(dir: "js", file: "player.swf")}', 'player',
-      '${videoDataSet.width}', '${videoDataSet.height}', '9'
-      );
+</content>
 
-  so.addParam('allowfullscreen', 'true');
-  so.addParam('allowscriptprocess', 'true');
-  so.addVariable('file', '${flvUrl}');
-  so.addVariable('autostart', 'true');
-  so.write('player');
+<content tag="center">
+  <div class="nav">
+    <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
+    <span class="menuButton"><a href='${createLink(dir: "videoStreaming", action: "getKML", id: params.id)}'>Generate KML</a></span>
+  </div>
+  <div class="body">
+    <h1>${title}</h1>
+    <g:if test="${flash.message}">
+      <div class="message">${flash.message}</div>
+    </g:if>
+    <div id="centerid">
+      <div id="player">FLASH PLUGIN REQUIRED</div>
+    </div>
+  </div>
+</content>
+<g:javascript src="swfobject.js"/>
+<g:javascript>
+  var s1 = new SWFObject('${resource(dir: "js", file: "player.swf")}','OBJECT_ID',
+    '${videoDataSet.width}','${videoDataSet.height}','9','#ffffff');
+  s1.addParam('allowfullscreen','true');
+  s1.addParam('allowscriptaccess','always');
+  s1.addParam('wmode','opaque');
+  s1.addParam('flashvars','file=${flvUrl}&autostart=true');
+  s1.write('player');
 </g:javascript>
 </body>
 </html>
