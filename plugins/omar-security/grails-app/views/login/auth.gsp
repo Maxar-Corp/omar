@@ -1,7 +1,7 @@
 <html>
 <head>
   <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
-  <meta name='layout' content='main5'/>
+  <meta name='layout' content='singleColumn'/>
   <title>OMAR Login</title>
   <style type='text/css' media='screen'>
   #login {
@@ -63,42 +63,53 @@
   </style>
 </head>
 <body>
-<div align="center"><a href="${createLink(view: "login", action: "about")}">About OMAR</a></div>
-<div id='login'>
-  <div class='inner'>
-    <g:if test='${flash.message}'>
-      <div class='login_message'>${flash.message}</div>
-    </g:if>
-    <div class='fheader'>Please Login...</div>
-    <form action='${request.contextPath}/j_spring_security_check' method='POST' id='loginForm' class='cssform'>
-      <p>
-        <label for='j_username'>Login ID</label>
-        <input autocorrect='off' type='text' class='text_' name='j_username' id='j_username'/>
-      </p>
-      <p>
-        <label for='j_password'>Password</label>
-        <input type='password' class='text_' name='j_password' id='j_password'/>
-      </p>
-      <p>
-        <label for='remember_me'>Remember me</label>
-        <input type='checkbox' class='chk' id='remember_me' name='_spring_security_remember_me'/>
-      </p>
-      <p>
-        <input type='submit' value='Login'/>
-      </p>
-    </form>
+
+<content tag="top">
+  <div id="hd">
+    <img id="logo" src="${resource(contextPath: "/", dir: 'images', file: 'OMARLarge.png')}" alt="OMAR-2.0 Logo"/>
   </div>
-  <g:if  test='${registerFlag}'>
+</content>
+
+<content tag="center">
+  <div align="center"><a href="${createLink(view: "login", action: "about")}">About OMAR</a></div>
+  <div id='login'>
+    <div class='inner'>
+      <g:if test='${flash.message}'>
+        <div class='login_message'>${flash.message}</div>
+      </g:if>
+      <div class='fheader'>Please Login...</div>
+      <form action='${request.contextPath}/j_spring_security_check' method='POST' id='loginForm' class='cssform'>
+        <p>
+          <label for='j_username'>Login ID</label>
+          <input autocorrect='off' type='text' class='text_' name='j_username' id='j_username'/>
+        </p>
+        <p>
+          <label for='j_password'>Password</label>
+          <input type='password' class='text_' name='j_password' id='j_password'/>
+        </p>
+        <p>
+          <label for='remember_me'>Remember me</label>
+          <input type='checkbox' class='chk' id='remember_me' name='_spring_security_remember_me'/>
+        </p>
+        <p>
+          <input type='submit' value='Login'/>
+        </p>
+      </form>
+    </div>
     <a href="${createLink(controller: "register", action: "index")}">Click here to register</a>
-  </g:if>
-</div>
-<script type='text/javascript'>
-  <!--
+  </div>
+</content>
+<g:javascript>
   (function()
   {
-    document.forms['loginForm'].elements['j_username'].focus();
+    var Event = YAHOO.util.Event;
+
+    Event.onDOMReady( function()
+    {
+      document.forms['loginForm'].elements['j_username'].focus();
+    } );
+
   })();
-  // -->
-</script>
+</g:javascript>
 </body>
 </html>
