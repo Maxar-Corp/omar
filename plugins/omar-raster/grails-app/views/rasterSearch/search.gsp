@@ -30,7 +30,6 @@
 <content tag="center">
   <div id="map"></div>
 </content>
-
 <content tag="scripts">
   <openlayers:loadJavascript/>
   <g:javascript>

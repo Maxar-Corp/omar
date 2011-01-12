@@ -32,7 +32,8 @@
   body {
     margin: 0;
     padding: 0;
-    visibility: hidden;
+  // visibility: hidden;
+    visibility: visible;
   }
 
   /* Set the background color */
@@ -58,17 +59,12 @@
   <omar:securityClassificationBanner/>
 </div>
 <div id="content">
-  <div id="north">
-    <div id="hd">
+  <div id="top">
+    <g:pageProperty name="page.top"/>
+  </div>
 
-    </div>
-    <g:pageProperty name="page.north"/>
-  </div>
-  <div id="south">
-    <g:pageProperty name="page.south"/>
-  </div>
-  <div id="west">
-    <g:pageProperty name="page.west"/>
+  <div id="left">
+    <g:pageProperty name="page.left"/>
   </div>
   <div id="center">
     <g:pageProperty name="page.center"/>
@@ -122,12 +118,12 @@
           units: [
             {
               position: 'top',
-              height: 43,
+              height: 42,
               resize: false,
-              body: 'north'
+              body: 'top'
             },
 
-            { position: 'left', header: '', width: 200, resize: false, proxy: false, body: 'west', collapse: true, gutter: '0px 0px 0px 0px', scroll: true, maxWidth: 200 },
+            { position: 'left', header: '', width: 200, resize: false, proxy: false, body: 'left', collapse: true, gutter: '0px 0px 0px 0px', scroll: true, maxWidth: 200 },
             {
               position: 'center',
               body: 'center'

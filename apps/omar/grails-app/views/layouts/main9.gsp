@@ -5,7 +5,7 @@
   body {
     margin: 0;
     padding: 0;
-    visibility: hidden;
+  visibility: visible;
   }
   </style>
   <link rel="stylesheet" href="${omar.bundle(contentType: 'text/css', files: [

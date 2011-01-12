@@ -1,7 +1,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="rasterViews"/>
+  <meta name="layout" content="rasterViewsStatic"/>
   <title>OMAR: Ground Space Viewer</title>
 
   <openlayers:loadMapToolBar/>
@@ -13,14 +13,10 @@
 
   <style type="text/css">
 
-  td {
-    font-size: 10px;
-  }
-
   #map {
     width: 100%;
     height: 100%;
-    border: 1px solid black;
+/*    border: 1px solid black; */
   }
 
     /*
@@ -62,7 +58,7 @@
 
 <body>
 
-<content tag="north">
+<content tag="top">
 
   <div class="nav">
 
@@ -101,7 +97,7 @@
 
 </content>
 
-<content tag="west">
+<content tag="left">
 
   <div class="niceBox">
     <div class="niceBoxHd">Map Center:</div>
@@ -207,18 +203,24 @@ function getKML(layers)
    wmsParamForm.bbox.value = extent.toBBOX()
    wmsParamForm.submit()
 }
+
 function changeMapSize( mapWidth, mapHeight )
 {
-//    var mapTitle = document.getElementById("mapTitle");
-//    var mapDiv = document.getElementById("map");
-//
-//    mapDiv.style.width = mapTitle.offsetWidth + "px";
-//    mapDiv.style.height = Math.round(mapTitle.offsetWidth / 2) + "px";
+   if(mapWidth&&mapHeight)
+   {
+      var Dom = YAHOO.util.Dom;
 
-  var Dom = YAHOO.util.Dom;
+      Dom.get( "map" ).style.width  = mapWidth + "px";
+      Dom.get( "map" ).style.height = mapHeight + "px";
+   }
+   else
+   {
+     var mapCenter = document.getElementById("mapCenter");
+     var mapDiv   = document.getElementById("map");
+     mapDiv.style.width  = mapCenter.width + "px";
+     mapDiv.style.height = mapCenter.height + "px";
+   }
 
-  Dom.get( "map" ).style.width = mapWidth + "px";
-  Dom.get( "map" ).style.height = mapHeight + "px";
 
 //        alert( mapWidth + ' ' + mapHeight );
 
@@ -269,13 +271,13 @@ function init( mapWidth, mapHeight )
 
   if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
   {
-      dmsOutput.innerHTML = "<b>DMS:</b> ";
-      mgrsOutput.innerHTML = "<b>MGRS:</b> ";
+      if(dmsOutput) dmsOutput.innerHTML = "<b>DMS:</b> ";
+      if(mgrsOutput) mgrsOutput.innerHTML = "<b>MGRS:</b> ";
   }
   else
   {
-      dmsOutput.innerHTML = "<b>DMS:</b> " + convert.ddToDms(lonLat.lat, "latitude") + " " + convert.ddToDms(lonLat.lon, "longitude");
-      mgrsOutput.innerHTML = "<b>MGRS:</b> " + convert.ddToMgrs(lonLat.lat, lonLat.lon);
+      if(dmsOutput) dmsOutput.innerHTML = "<b>DMS:</b> " + convert.ddToDms(lonLat.lat, "latitude") + " " + convert.ddToDms(lonLat.lon, "longitude");
+      if(mgrsOutput) mgrsOutput.innerHTML = "<b>MGRS:</b> " + convert.ddToMgrs(lonLat.lat, lonLat.lon);
   }
 
   var latHem;
@@ -301,11 +303,11 @@ function init( mapWidth, mapHeight )
   var ddOutput = document.getElementById('ddMousePosition');
   if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
   {
-      ddOutput.innerHTML = "<b>DD:</b> ";
+      if(ddOutput) ddOutput.innerHTML = "<b>DD:</b> ";
   }
   else
   {
-      ddOutput.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
+      if(ddOutput) ddOutput.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
   }
 }
 function setupLayers()
@@ -507,7 +509,7 @@ function zoomIn()
       });
 
 
-      var container = $("panel2");
+      var container = $("toolBar");
 
       var panel = new OpenLayers.Control.Panel(
       { div: container,defaultControl: zoomBoxButton,'displayClass': 'olControlPanel'}

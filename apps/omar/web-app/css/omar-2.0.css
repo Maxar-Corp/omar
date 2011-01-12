@@ -63,9 +63,9 @@ div.niceBoxBody {
 div.niceBoxMetadataBody {
   font-size: 87%;
   padding: 3px;
-  height: 80px;
-  overflow-x: hidden;
-  overflow-y: scroll;
+//  height: 80px;
+//  overflow-x: hidden;
+//  overflow-y: scroll;
 }
 
 /* Navigation tabs */

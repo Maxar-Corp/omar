@@ -2,15 +2,14 @@
 <html>
 <head>
   <title>OMAR: Raster Search</title>
-  <meta name="layout" content="main9"/>
+  <meta name="layout" content="searchStatic"/>
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
 </head>
 
-<body class="yui-skin-sam" onLoad="init();" onresize="mapWidget.changeMapSize();">
-
-<content tag="top2">
+<body class="yui-skin-sam" onresize="mapWidget.changeMapSize();">
+<content tag="top">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
     <span class="menuButton"><g:link action="list" url="javascript:mapWidget.generateKML();">KML Query</g:link></span>
