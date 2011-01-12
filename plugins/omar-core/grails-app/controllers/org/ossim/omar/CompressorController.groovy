@@ -4,32 +4,32 @@ import java.util.zip.GZIPOutputStream
 
 class CompressorController
 {
+  def compressorService
+
   def compress = {
 
-    def files = params.files.split(',')
-    def buffer = new StringBuffer()
-    def acceptEncoding = request.getHeader('accept-encoding')
-    def outputStream = response.outputStream
-
-    if ( acceptEncoding?.contains('gzip') )
-    {
-      outputStream = new GZIPOutputStream(outputStream)
-      response.setHeader("content-encoding", "gzip");
+    def files = params.files.split(',')?.collect {
+      it.toString() - resource(file: '/')
     }
 
-    files.each {
-      def text = servletContext.getResource(it.toString() - resource(file: '/'))?.text
+    def acceptEncoding = request.getHeader('Accept-Encoding')
+    def outputStream = null
 
-      buffer.append(text)
+//    if ( acceptEncoding?.contains('gzip') )
+//    {
+//      outputStream = new GZIPOutputStream(response.outputStream)
+//      response.setHeader("Content-Encoding", "gzip");
+//      response.setHeader("Vary", "Accept-Encoding");
+//    }
+//    else
+//    {
+      outputStream = response.outputStream
+//    }
 
-      if ( !text.endsWith('\n') )
-      {
-        buffer.append("\n")
-      }
-    }
+    def buffer = compressorService.bundleFiles(servletContext, files)
 
     response.contentType = params.contentType
-    outputStream << buffer.toString()
+    outputStream << buffer
     outputStream.flush()
     outputStream.close()
   }
