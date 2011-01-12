@@ -2,7 +2,7 @@
 <html>
 <head>
   <title>OMAR: Video Search</title>
-  <meta name="layout" content="main9"/>
+  <meta name="layout" content="searchStatic"/>
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
@@ -10,7 +10,7 @@
 
 <body class="yui-skin-sam" onLoad="init();" onresize="mapWidget.changeMapSize();">
 
-<content tag="top2">
+<content tag="top">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
     <span class="menuButton"><g:link action="list" url="javascript:mapWidget.generateKML();">Static KML Bookmark</g:link></span>

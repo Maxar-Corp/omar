@@ -14,7 +14,7 @@
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
 
-  <meta name="layout" content="rasterViews"/>
+  <meta name="layout" content="rasterViewsStatic"/>
 
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -64,7 +64,7 @@
 
 <body>
 
-<content tag="north">
+<content tag="top">
   <div class="nav">
 
     <span class="menuButton">
@@ -84,7 +84,7 @@
   </div>
 </content>
 
-<content tag="west">
+<content tag="left">
   <div class="niceBox">
         <div class="niceBoxHd">Image Adjustments:</div>
         <div class="niceBoxBody">
@@ -131,7 +131,7 @@
   <div id="map"></div>
 </div>
 </content>
-<content tag="south">
+<content tag="bottom">
 
 </content>
 <openlayers:loadJavascript/>
@@ -142,19 +142,27 @@ var map;
 var layer;
   var format = "image/jpeg";
 
-function changeMapSize(mapWidth, mapHeight)
+function changeMapSize( mapWidth, mapHeight )
 {
-//    var mapTitle = document.getElementById("mapTitle");
-//    var mapDiv = document.getElementById("map");
-//
-//    mapDiv.style.width = mapTitle.offsetWidth + "px";
-//    mapDiv.style.height = Math.round(mapTitle.offsetWidth / 2) + "px";
+   if(mapWidth&&mapHeight)
+   {
+      var Dom = YAHOO.util.Dom;
 
-  var Dom = YAHOO.util.Dom;
+      Dom.get( "map" ).style.width = mapWidth + "px";
+      Dom.get( "map" ).style.height = mapHeight + "px";
+   }
+   else
+   {
+     var mapCenter = document.getElementById("mapCenter");
+     var mapDiv   = document.getElementById("map");
+     mapDiv.style.width  = mapCenter.width + "px";
+     mapDiv.style.height = mapCenter.height + "px";
+   }
 
-  Dom.get( "map" ).style.width = mapWidth + "px";
-  Dom.get( "map" ).style.height = mapHeight + "px";
 
+//        alert( mapWidth + ' ' + mapHeight );
+
+  //map.updateSize();
   map.updateSize();
 }
 
