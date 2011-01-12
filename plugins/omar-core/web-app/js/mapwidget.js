@@ -35,19 +35,18 @@ function MapWidget()
         var mouseClickMgrs = document.getElementById( "mouseClickMgrsOutput" );
 
         var geoExtentError = "Outside Geographic Extents.";
-
         if ( lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180" )
         {
-            mouseClickDd.innerHTML = "<b>DD:</b> " + geoExtentError;
-            mouseClickDms.innerHTML = "<b>DMS:</b> " + geoExtentError;
-            mouseClickMgrs.innerHTML = "<b>MGRS:</b> " + geoExtentError;
+            if(mouseClickDd)   mouseClickDd.innerHTML = "<b>DD:</b> " + geoExtentError;
+            if(mouseClickDms)  mouseClickDms.innerHTML = "<b>DMS:</b> " + geoExtentError;
+            if(mouseClickMgrs) mouseClickMgrs.innerHTML = "<b>MGRS:</b> " + geoExtentError;
         }
 
         else
         {
-            mouseClickDd.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
-            mouseClickDms.innerHTML = "<b>DMS:</b> " + convert.ddToDms( lonLat.lat, "lat" ) + " " + convert.ddToDms( lonLat.lon, "lon" );
-            mouseClickMgrs.innerHTML = "<b>MGRS:</b> " + convert.ddToMgrs( lonLat.lat, lonLat.lon );
+            if(mouseClickDd)   mouseClickDd.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
+            if(mouseClickDms)  mouseClickDms.innerHTML = "<b>DMS:</b> " + convert.ddToDms( lonLat.lat, "lat" ) + " " + convert.ddToDms( lonLat.lon, "lon" );
+            if(mouseClickMgrs) mouseClickMgrs.innerHTML = "<b>MGRS:</b> " + convert.ddToMgrs( lonLat.lat, lonLat.lon );
         }
     };
 
@@ -63,16 +62,16 @@ function MapWidget()
 
         if ( lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180" )
         {
-            mouseHoverDd.innerHTML = "<b>DD:</b> " + geoExtentError;
-            mouseHoverDms.innerHTML = "<b>DMS:</b> " + geoExtentError;
-            mouseHoverMgrs.innerHTML = "<b>MGRS:</b> " + geoExtentError;
+            if(mouseHoverDd)   mouseHoverDd.innerHTML = "<b>DD:</b> " + geoExtentError;
+            if(mouseHoverDms)  mouseHoverDms.innerHTML = "<b>DMS:</b> " + geoExtentError;
+            if(mouseHoverMgrs) mouseHoverMgrs.innerHTML = "<b>MGRS:</b> " + geoExtentError;
         }
 
         else
         {
-            mouseHoverDd.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
-            mouseHoverDms.innerHTML = "<b>DMS:</b> " + convert.ddToDms( lonLat.lat, "lat" ) + " " + convert.ddToDms( lonLat.lon, "lon" );
-            mouseHoverMgrs.innerHTML = "<b>MGRS:</b> " + convert.ddToMgrs( lonLat.lat, lonLat.lon );
+            if(mouseHoverDd)   mouseHoverDd.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
+            if(mouseHoverDms)  mouseHoverDms.innerHTML = "<b>DMS:</b> " + convert.ddToDms( lonLat.lat, "lat" ) + " " + convert.ddToDms( lonLat.lon, "lon" );
+            if(mouseHoverMgrs) mouseHoverMgrs.innerHTML = "<b>MGRS:</b> " + convert.ddToMgrs( lonLat.lat, lonLat.lon );
         }
     };
 
@@ -631,14 +630,14 @@ function MapWidget()
     {
         var pathMeasurement = document.getElementById( "pathMeasurementOutput" );
 
-        pathMeasurement.innerHTML = "";
+        if(pathMeasurement) pathMeasurement.innerHTML = "";
     };
 
     this.clearAreaMeasurement = function()
     {
         var areaMeasurement = document.getElementById( "areaMeasurementOutput" );
 
-        areaMeasurement.innerHTML = "";
+        if(areaMeasurement) areaMeasurement.innerHTML = "";
     };
 
     this.togglePointRadiusCheckBox = function()
