@@ -118,20 +118,29 @@ log4j = {
 /** *********************************************************************************************************/
 wms {
   referenceDataDirectory = referenceDataDirectory ?: "/data/omar"
-  mapServExt = (System.properties["os.name"].startsWith("Windows")) ? ".exe" : ""
+  mapServExt =  (System.properties['os.name'].startsWith('Windows')) ? ".exe" : ""
   serverAddress = grails.serverIP
-  useTileCache = true
+  useTileCache = false
   mapFile = "${referenceDataDirectory}/bmng.map"
 
   base {
     defaultOptions = [isBaseLayer: true, buffer: 0, transitionEffect: "resize"]
     layers = [
             [
-                    url: (useTileCache) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${mapServExt}?map=${mapFile}",
+                    url: (useTileCache) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
                     params: [layers: (useTileCache) ? "omar" : "Reference", format: "image/jpeg"],
                     name: "Reference Data",
                     options: defaultOptions
             ]
+/*
+,
+            [
+                    url: "http://labs.metacarta.com/wms-c/Basic.py?",
+                    params: [layers: "basic", format: "image/jpeg"],
+                    name: "World Map",
+                    options: [isBaseLayer: false, buffer: 0, transitionEffect: "resize"]
+            ]
+*/
     ]
   }
 
