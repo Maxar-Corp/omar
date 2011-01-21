@@ -6,9 +6,14 @@
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
+  <openlayers:loadJavascript/>
+  <script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
+          resource(plugin: "omar-core", dir: "js", file: "mapwidget.js"),
+          resource(plugin: "omar-core", dir: "js", file: "coordinateConversion.js")
+      ])}'></script>
 </head>
 
-<body class="yui-skin-sam" onLoad="init();" onresize="mapWidget.changeMapSize();">
+<body class="yui-skin-sam" onresize="bodyOnResize();">
 
 <content tag="top">
   <div class="nav">
@@ -345,26 +350,6 @@
   </g:form>
 </content>
 <content tag="center">
-  <table>
-    <tr>
-      <td>
-        <div id="toolBar" class="olControlPanel"></div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <h1 id="mapTitle"></h1>
-        <div id="map"></div>
-      </td>
-    </tr>
-  </table>
-  <table>
-    <tr>
-      <td width="200px"><div id="mouseHoverDdOutput">&nbsp;</div></td>
-      <td width="200px"><div id="mouseHoverDmsOutput">&nbsp;</div></td>
-      <td width="200px"><div id="mouseHoverMgrsOutput">&nbsp;</div></td>
-    </tr>
-  </table>
 </content>
 <content tag="right">
   <div class="niceBox">
@@ -385,11 +370,11 @@
 ])}'></script>
 
 <g:javascript>
+  var mapWidget = new MapWidget();
 (function() {
     var tabView = new YAHOO.widget.TabView('demo');
 })();
 
-var mapWidget = new MapWidget();
 
 function init()
 {
@@ -408,7 +393,7 @@ function init()
   mapWidget.setupMapWidget();
   setupBaseLayers();
   mapWidget.setupDataLayer("${dataWMS.name}", "${dataWMS.url}", "${dataWMS.params.layers}", "${dataWMS.options.styles}", "${dataWMS.params.format}");
-    mapWidget.changeMapSize();
+//    mapWidget.changeMapSize();
     mapWidget.setupAoiLayer();
     mapWidget.setupToolBar();
     mapWidget.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
