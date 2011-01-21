@@ -15,88 +15,120 @@
       resource(plugin: "richui", dir: "js/yui/calendar", file: "calendar-min.js"),
       resource(plugin: "richui", dir: "js/yui/element", file: "element-min.js"),
       resource(plugin: "richui", dir: "js/yui/tabview", file: "tabview-min.js")
-  ])}'></script>
+  ])}'>
+
+  </script>
 
   <style>
-  body {
-    margin: 0;
-    padding: 0; /* visibility: hidden;*/
-    background-color: #f2f2f2;
+  body{
+    height:100%;
+    width:100%;
+    text-align:left;
+    margin:0;
+    padding:0;
+    overflow-y:hidden;
   }
-<%--
-  .banner {
-
-    background-color: black;
-
+  #content
+  {
+    height:100%;
+    min-height:100%;
+    margin-bottom:-20px
   }
-
-  .top {
-    background-color: yellow;
+  #left
+  {
+    position:absolute;
+    top: 60px;
+    width:200px;
+    height:80%;
+    overflow-x:hidden;
+    overflow-y:auto;
   }
-
-  .bottom {
-     background-color: orange;
+  #right
+  {
+    position:absolute;
+    height:80%;
+    top: 60px;
+    right: 0px;
+    min-height:100%;
+    width:200px;
+    overflow-x:hidden;
+    overflow-y:auto;
   }
-
-  .left {
-    background-color: red;
+  #center
+  {
+    position:absolute;
+    top: 60px;
+    left:200px;
+    right:200px;
+    height:80%;
   }
-
-  .right {
-    background-color: blue;
+  #bottom
+  {
+    height:20px;
   }
-
-  .center {
-    background-color: green;
+  #top
+  {
+    height:20px;
   }
-  --%>
-
+  .h1
+  {
+   width:100%;
+    height:100%;
+  }
+  .nav{
+      font-size:14px;
+  }
   </style>
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
 </head>
-<body class="${pageProperty(name: 'body.class')}" onresize="mapWidget.changeMapSize();">
-<table width='100%' height='100%'>
-  <tr height="25px">
-    <td class='banner' colspan='3'>
-      <omar:securityClassificationBanner/>
-    </td>
-  </tr>
-  <tr>
-    <td class='top' colspan='3'>
-      <g:pageProperty name="page.top"/>
-    </td>
-  </tr>
-  <tr>
-    <td class='left' style="width:20%;height:65%">
-      <div style="height:100%;overflow-y:auto;overflow-x:hidden;">
-        <g:pageProperty name="page.left"/>
-      </div>
-    </td>
-    <td class='center' style="height:65%;width:65%">
-      <div style="width:100%;height:65%">
-        <g:pageProperty name="page.center"/>
-       </div>
-    </td>
-    <td class='right' style="width:15%;height:65%">
-      <div style="height:65%;overflow-y:auto;overflow-x:hidden;">
-        <g:pageProperty name="page.right"/>
-      </div>
-    </td>
-  </tr>
-  <tr height="50px">
-    <td class='bottom' colspan='3'>
-      <g:pageProperty name="page.bottom"/>
-    </td>
-  </tr>
-  <tr height="25px">
-    <td class='banner' colspan='3'>
-      <omar:securityClassificationBanner/>
-    </td>
-  </tr>
-  <g:layoutBody/>
-</table>
+<body class="${pageProperty(name: 'body.class')}" onresize="${pageProperty(name: 'body.onresize')}">
+<div id="content">
+
+<div id="header">
+  <omar:securityClassificationBanner/>
+</div>
+<div id="top">
+  <g:pageProperty name="page.top"/>
+</div>
+<div id="left">
+  <g:pageProperty name="page.left"/>
+</div>
+<div id="center">
+  <table>
+    <tr>
+      <td id="toolbarRow">
+        <div id="toolBar" class="olControlPanel"></div>
+      </td>
+    </tr>
+    <tr id="mapRow">
+      <td id="mapColumn">
+        <div id="map"></div>
+      </td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <td width="200px"><div id="mouseHoverDdOutput">&nbsp;</div></td>
+      <td width="200px"><div id="mouseHoverDmsOutput">&nbsp;</div></td>
+      <td width="200px"><div id="mouseHoverMgrsOutput">&nbsp;</div></td>
+    </tr>
+  </table>
+  <g:pageProperty name="page.center"/>
+</div>
+<div id="right">
+  <g:pageProperty name="page.right"/>
+</div>
+</div>
+<div id="footer">
+  <omar:securityClassificationBanner/>
+</div>
+
+
+<g:layoutBody />
+
 </body>
+
 <g:javascript>
   (function()
   {
@@ -106,8 +138,26 @@
     Event.onDOMReady( function()
     {
       init();
-      mapWidget.changeMapSize();
+      bodyOnResize();
     });
   })();
+  function bodyOnResize()
+  {
+    var Dom = YAHOO.util.Dom;
+    var contentDiv = Dom.get("content");
+    var leftDiv = Dom.get("left");
+    var rightDiv = Dom.get("right");
+    var mapDiv = Dom.get("map");
+    var centerDiv = Dom.get("center");
+    var mapRow = Dom.get("mapColumn");
+    var toolbarRow = Dom.get("toolbarRow");
+    var footer = Dom.get("footer");
+
+    var mouseHoverDd = Dom.get("mouseHoverDdOutput");
+    centerDiv.style.left  = leftDiv.offsetWidth + "px";
+    mapDiv.style.width  = (contentDiv.offsetWidth - (leftDiv.offsetWidth + rightDiv.offsetWidth)) +"px";
+    mapDiv.style.height = centerDiv.offsetHeight - toolbarRow.offsetHeight-footer.offsetHeight  + "px";
+    mapWidget.changeMapSize();
+  }
 </g:javascript>
 </html>
