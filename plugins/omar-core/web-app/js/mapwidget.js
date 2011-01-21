@@ -1,3 +1,5 @@
+
+
 function MapWidget()
 {
     var map = null;
@@ -5,7 +7,6 @@ function MapWidget()
     this.setupMapWidget = function()
     {
         map = new OpenLayers.Map( "map", {controls: []} );
-
         map.addControl( new OpenLayers.Control.LayerSwitcher( {'div':OpenLayers.Util.getElement( 'layerswitcher' ), roundedCorner: false} ) );
 
         map.addControl( new OpenLayers.Control.Scale() );
@@ -461,11 +462,11 @@ function MapWidget()
 
     this.changeMapSize = function()
     {
-        var mapTitle = $( "mapTitle" );
-        var mapDiv = $( "map" );
 
-        mapDiv.style.width = mapTitle.offsetWidth + "px";
-        mapDiv.style.height = Math.round( mapTitle.offsetWidth / 2 ) + "px";
+        //var mapTitle = $( "mapTitle" );
+        //var mapDiv = $( "map" );
+        //mapDiv.style.width = mapTitle.offsetWidth + "px";
+        //mapDiv.style.height = Math.round( mapTitle.offsetWidth / 2 ) + "px";
 
         map.updateSize();
     };
