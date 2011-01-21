@@ -3,12 +3,16 @@
 <head>
   <title>OMAR: Raster Search</title>
   <meta name="layout" content="searchStatic"/>
-
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
+  <openlayers:loadJavascript/>
+  <script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
+          resource(plugin: "omar-core", dir: "js", file: "mapwidget.js"),
+          resource(plugin: "omar-core", dir: "js", file: "coordinateConversion.js")
+      ])}'></script>
 </head>
 
-<body class="yui-skin-sam" onresize="mapWidget.changeMapSize();">
+<body class="yui-skin-sam" onresize="bodyOnResize();">
 <content tag="top">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
@@ -344,26 +348,6 @@
   </g:form>
 </content>
 <content tag="center">
-  <table>
-    <tr>
-      <td>
-        <div id="toolBar" class="olControlPanel"></div>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <h1 id="mapTitle"></h1>
-        <div id="map"></div>
-      </td>
-    </tr>
-  </table>
-  <table>
-    <tr>
-      <td width="200px"><div id="mouseHoverDdOutput">&nbsp;</div></td>
-      <td width="200px"><div id="mouseHoverDmsOutput">&nbsp;</div></td>
-      <td width="200px"><div id="mouseHoverMgrsOutput">&nbsp;</div></td>
-    </tr>
-  </table>
 </content>
 <content tag="right">
   <div class="niceBox">
@@ -376,30 +360,24 @@
   </div>
   <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
 </content>
-
-<openlayers:loadJavascript/>
-<script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
-    resource(plugin: "omar-core", dir: "js", file: "mapwidget.js"),
-    resource(plugin: "omar-core", dir: "js", file: "coordinateConversion.js")
-])}'></script>
-
 <g:javascript>
+  var mapWidget = new MapWidget();
 (function() {
     var tabView = new YAHOO.widget.TabView('demo');
 })();
 
-var mapWidget = new MapWidget();
+
 
 function init()
 {
     var setupBaseLayers = function()
     {
         var baseLayer = null;
-        var baseWMS = ${baseWMS as JSON}; 
+        var baseWMS=${baseWMS as JSON};
 
-        for ( foo in baseWMS ) {
-          baseLayer = new OpenLayers.Layer.WMS(baseWMS[foo].name, baseWMS[foo].url,
-                  baseWMS[foo].params, baseWMS[foo].options);
+        for ( layer in baseWMS ) {
+          baseLayer = new OpenLayers.Layer.WMS(baseWMS[layer].name, baseWMS[layer].url,
+                  baseWMS[layer].params, baseWMS[layer].options);
 
           mapWidget.setupBaseLayers(baseLayer);
         }
@@ -408,7 +386,7 @@ function init()
   mapWidget.setupMapWidget();
   setupBaseLayers();
   mapWidget.setupDataLayer("${dataWMS.name}", "${dataWMS.url}", "${dataWMS.params.layers}", "${dataWMS.options.styles}", "${dataWMS.params.format}");
-    mapWidget.changeMapSize();
+//    mapWidget.changeMapSize();
     mapWidget.setupAoiLayer();
     mapWidget.setupToolBar();
     mapWidget.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
@@ -439,7 +417,6 @@ function init()
 
     updateOmarFilters();
   }
-
   function updateOmarFilters()
   {
     var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
