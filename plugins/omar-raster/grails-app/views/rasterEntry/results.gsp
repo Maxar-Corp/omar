@@ -17,13 +17,21 @@
 
     function updateSession(event)
     {
-        var link = "${createLink(action: sessionAction, controller: sessionController)}";
-        var activeIndex = tabView.get('activeIndex').toString();
-                 
-        if(activeIndex != globalActiveIndex)
+        if(tabView)
         {
-            globalActiveIndex = activeIndex.toString();
-            new Ajax.Request(link+"?"+"rasterEntryResultCurrentTab="+activeIndex, {method: 'post'});
+           var link = "${createLink(action: sessionAction, controller: sessionController)}";
+           var activeIndex = tabView.get('activeIndex')
+           var activeIndexString = null;
+           if(activeIndex)
+           {
+             activeIndexString = activeIndex.toString();
+             if(activeIndexString != globalActiveIndex)
+             {
+                 globalActiveIndex = activeIndexString;
+                 new Ajax.Request(link+"?"+"rasterEntryResultCurrentTab="+globalActiveIndex, {method: 'post'});
+             }
+           }
+
         }
     };
   </g:javascript>
@@ -31,8 +39,8 @@
   <resource:tabView/>
 </head>
 
-<body>
-<content tag="header">
+<body onresize="bodyOnResize();">
+<content tag="top">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
     <span class="menuButton"><g:link action="search">New Search</g:link></span>
@@ -42,6 +50,24 @@
           noSelection="${['null':'Export As...']}"
           onchange="javascript:exportAs();"></g:select>
     </span>
+  </div>
+  <g:form name="paginateForm">
+    <g:hiddenField id="totalCount" name="totalCount" value="${totalCount ?: 0}"/>
+    <g:hiddenField id="max" name="max" value="${params.max}"/>
+    <g:hiddenField id="offset" name="offset" value="${params.offset}"/>
+    <g:hiddenField name="queryParams" value="${queryParams.toMap()}"/>
+    <g:hiddenField name="order" value="${params.order}"/>
+    <g:hiddenField name="sort" value="${params.sort}"/>
+  </g:form>
+
+  <div class="paginateButtons">
+    <g:paginate event="testing('tabView');" controller="rasterEntry" action="results" total="${totalCount ?: 0}" max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
+    <g:if test="${totalCount == 0}">
+
+    </g:if>
+    <g:else>
+      <input type="text" id="pageOffset" size="2"/> <input type="button" value="Go to Page" onclick="javascript:updateOffset();"/>
+    </g:else>
   </div>
 </content>
 
@@ -216,34 +242,13 @@
   </richui:tabView>
 </content>
 
-<content tag="footer">
-  <g:form name="paginateForm">
-    <g:hiddenField id="totalCount" name="totalCount" value="${totalCount ?: 0}"/>
-    <g:hiddenField id="max" name="max" value="${params.max}"/>
-    <g:hiddenField id="offset" name="offset" value="${params.offset}"/>
-    <g:hiddenField name="queryParams" value="${queryParams.toMap()}"/>
-    <g:hiddenField name="order" value="${params.order}"/>
-    <g:hiddenField name="sort" value="${params.sort}"/>
-  </g:form>
-
-  <div class="paginateButtons">
-    <g:paginate event="testing('tabView');" controller="rasterEntry" action="results" total="${totalCount ?: 0}" max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
-    <g:if test="${totalCount == 0}">
-
-    </g:if>
-    <g:else>
-      <input type="text" id="pageOffset" size="2"/> <input type="button" value="Go to Page" onclick="javascript:updateOffset();"/>
-    </g:else>
-  </div>
-</content>
-
 <g:javascript>
-    var bottomHeight = 66;
+/*    var bottomHeight = 66;
     if(${totalCount} == 0)
     {
         bottomHeight = 46;
     }
-
+  */
     function updateOffset()
     {
         var max = document.getElementById("max").value;

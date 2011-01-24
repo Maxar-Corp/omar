@@ -20,6 +20,7 @@ class RasterEntryController implements InitializingBean
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
 
+  /*
   def list = {
     if ( !params.max )
     params.max = 10
@@ -52,7 +53,78 @@ class RasterEntryController implements InitializingBean
             rasterEntryListCurrentTab: session.rasterEntryListCurrentTab
     ]
   }
+   */
+  def list = {
 
+    def starttime = System.currentTimeMillis()
+
+    if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
+    {
+      params.max = 10
+    }
+
+    if ( !session.rasterEntryResultCurrentTab && ("${session.rasterEntryResultCurrentTab}" != "0") )
+    {
+      session["rasterEntryResultCurrentTab"] = "0"
+    }
+
+    def rasterEntries = null
+    def totalCount = null
+    def rasterFiles = null
+
+    if ( params.rasterDataSetId )
+    {
+      def rasterDataSet = RasterDataSet.get(params.rasterDataSetId)
+
+      rasterEntries = RasterEntry.createCriteria().list(params) {
+        eq("rasterDataSet", rasterDataSet)
+      }
+    }
+    else
+    {
+      rasterEntries = RasterEntry.createCriteria().list(params) {}
+    }
+
+    def queryParams = initRasterEntryQuery(params)
+    rasterEntries   = rasterEntrySearchService.runQuery(queryParams, params)
+    totalCount      = rasterEntrySearchService.getCount(queryParams)
+
+    if ( rasterEntries )
+    {
+      rasterFiles = RasterFile.createCriteria().list {
+        eq("type", "main")
+        inList("rasterDataSet", rasterEntries?.rasterDataSet)
+      }
+    }
+
+    def endtime = System.currentTimeMillis()
+    def user = authenticateService.principal()?.username
+
+    def logData = [
+            TYPE: "raster_list",
+            START: new Date(starttime),
+            END: new Date(endtime),
+            ELAPSE_TIME_MILLIS: endtime - starttime,
+            USER: user,
+            PARAMS: params
+    ]
+
+
+    log.info(logData)
+
+    render(view: 'results', model: [
+            rasterEntries: rasterEntries,
+            totalCount: totalCount,
+            rasterFiles: rasterFiles,
+            tagNameList: tagNameList,
+            tagHeaderList: tagHeaderList,
+            queryParams: queryParams,
+            sessionAction: "updateSession",
+            sessionController: "session",
+            rasterEntryResultCurrentTab: session.rasterEntryResultCurrentTab
+    ])
+
+  }
   def list_mobile = {
     if ( !params.max )
     params.max = 10

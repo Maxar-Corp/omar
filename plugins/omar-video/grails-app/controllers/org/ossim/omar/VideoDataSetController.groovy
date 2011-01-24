@@ -25,7 +25,7 @@ class VideoDataSetController implements InitializingBean
 
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
-
+/*
   def list = {
     if ( !params.max )
     params.max = 10
@@ -49,10 +49,9 @@ class VideoDataSetController implements InitializingBean
     {
       session["videoDataSetListCurrentTab"] = "0"
     }
-
-    //[videoDataSetList: videoDataSetList]
     withFormat {
-      html { [videoDataSetList: videoDataSetList,
+
+      html { render view:"list", model:[videoDataSetList: videoDataSetList,
       tagNameList: tagNameList,
               tagHeaderList: tagHeaderList,
               sessionAction:"updateSession",
@@ -62,8 +61,87 @@ class VideoDataSetController implements InitializingBean
       xml { render videoDataSetList as XML }
       json { render videoDataSetList as JSON }
     }
-  }
 
+  }
+  */
+  def list = {
+ 	//println "=== results start ==="
+
+    def starttime = System.currentTimeMillis()
+
+    if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
+    {
+      params.max = 10
+    }
+
+    def videoDataSets = null
+    def totalCount = null
+    def videoFiles = null
+
+    def queryParams = initVideoDataSetQuery(params)
+
+    if ( chainModel )
+    {
+      videoDataSets = chainModel.videoDataSets
+      totalCount    = chainModel.totalCount
+      videoFiles    = chainModel.videoFiles
+    }
+    else
+    {
+      videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
+      totalCount = videoDataSetSearchService.getCount(queryParams)
+
+      if ( videoDataSets )
+      {
+        videoFiles = VideoFile.createCriteria().list {
+          eq("type", "main")
+          inList("videoDataSet", videoDataSets)
+        }
+      }
+
+      def endtime = System.currentTimeMillis()
+      def user = authenticateService.principal()?.username
+
+      def logData = [
+          TYPE: "video_search",
+          START: new Date(starttime),
+          END: new Date(endtime),
+          ELAPSE_TIME_MILLIS: endtime - starttime,
+          USER: user,
+          PARAMS: params
+      ]
+
+      //println "\nparams: ${params?.sort { it.key }}"
+      //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
+
+      log.info(logData)
+
+      //println logData
+    }
+
+    //println "=== results end ==="
+
+    if(!session.videoDataSetResultCurrentTab&&("${session.videoDataSetResultCurrentTab}"!="0"))
+    {
+      session["videoDataSetResultCurrentTab"] = "0"
+    }
+    withFormat {
+      html{render(view: 'results', model: [
+          videoDataSets: videoDataSets,
+          videoFiles: videoFiles,
+          totalCount: totalCount,
+          tagNameList: tagNameList,
+          tagHeaderList: tagHeaderList,
+          queryParams: queryParams,
+          sessionAction:"updateSession",
+          sessionController:"session",
+          videoDataSetResultCurrentTab:session["videoDataSetResultCurrentTab"]
+          ])
+      }
+      xml { render videoDataSets as XML }
+      json { render videoDataSets as JSON }
+    }
+  }
    def list_mobile = {
     if ( !params.max )
     params.max = 10
