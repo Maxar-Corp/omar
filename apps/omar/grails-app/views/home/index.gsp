@@ -37,8 +37,8 @@ s<html>
         </td>
         <td>
           <ol>
-            <li><g:link controller="rasterEntry" action="index">Imagery</g:link></li>
-            <li><g:link controller="videoDataSet" action="index">Video</g:link></li>
+            <li><g:link controller="rasterEntry" action="results">Imagery</g:link></li>
+            <li><g:link controller="videoDataSet" action="results">Video</g:link></li>
           </ol>
         </td>
       </tr>
