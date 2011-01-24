@@ -386,7 +386,7 @@ function init()
   mapWidget.setupMapWidget();
   setupBaseLayers();
   mapWidget.setupDataLayer("${dataWMS.name}", "${dataWMS.url}", "${dataWMS.params.layers}", "${dataWMS.options.styles}", "${dataWMS.params.format}");
-//    mapWidget.changeMapSize();
+    mapWidget.changeMapSize();
     mapWidget.setupAoiLayer();
     mapWidget.setupToolBar();
     mapWidget.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");

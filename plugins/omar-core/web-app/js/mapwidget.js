@@ -468,7 +468,7 @@ function MapWidget()
         //mapDiv.style.width = mapTitle.offsetWidth + "px";
         //mapDiv.style.height = Math.round( mapTitle.offsetWidth / 2 ) + "px";
 
-        map.updateSize();
+        if(map) map.updateSize();
     };
 
     this.setupMapView = function( viewMinLon, viewMinLat, viewMaxLon, viewMaxLat )
