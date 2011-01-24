@@ -76,7 +76,8 @@ class KmlService implements ApplicationContextAware, InitializingBean
       wmsParams.transparent = "TRUE"
     }
     wmsParams?.srs = "EPSG:4326"
-    def bbox = wmsParams?.bbox?.split(',');
+    def bbox = wmsParams?.bbox?.split(',')?.collect { it.toDouble() };
+
     wmsParams?.remove("bbox");
     wmsParams?.remove("width");
     wmsParams?.remove("height");
@@ -144,10 +145,10 @@ class KmlService implements ApplicationContextAware, InitializingBean
               LatLonBox() {
                 if ( bbox )
                 {
-                  north(bbox[3])
-                  south(bbox[1])
-                  east(bbox[2])
-                  west(bbox[0])
+                  north(Math.max(bbox[3], bbox[1]))
+                  south(Math.min(bbox[1], bbox[3]))
+                  east(Math.max(bbox[2], bbox[0]))
+                  west(Math.min(bbox[0], bbox[2]))
                 }
                 else
                 {
