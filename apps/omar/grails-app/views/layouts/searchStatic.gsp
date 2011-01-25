@@ -2,7 +2,7 @@
 <head>
   <link rel="stylesheet" href="${omar.bundle(contentType: 'text/css', files: [
       resource(dir: 'css', file: 'main.css'),
-      resource(dir: 'css', file: 'omar-2.0.css')
+          resource(dir: 'css', file: 'omar-2.0.css'),
   ])}"/>
 
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
@@ -20,7 +20,7 @@
   </script>
 
   <style>
-  body{
+  html, body{
     height:100%;
     width:100%;
     text-align:left;
@@ -29,11 +29,12 @@
     overflow-y:hidden;
     overflow-x:hidden;
   }
+
   #content
   {
     height:100%;
     min-height:100%;
-    margin-bottom:-20px ;
+    margin-bottom:0px ;
   }
   #middle
   {
@@ -75,9 +76,11 @@
     top:0;
     width:100%;
   }
-  #footer{
-    position:relative;
+  .footer{
+    position:absolute;
     width:100%;
+    height:20px;
+    bottom:0px;
   }
   .h1
   {
@@ -87,24 +90,26 @@
   .nav{
       font-size:14px;
   }
+
   </style>
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
 </head>
 <body class="${pageProperty(name: 'body.class')}" onresize="${pageProperty(name: 'body.onresize')}">
+
 <div id="content">
 
 <div id="header" class="header">
   <omar:securityClassificationBanner/>
 </div>
-<div id="top">
+<div id="top" class="top">
   <g:pageProperty name="page.top"/>
 </div>
-<div id="middle">
+<div id="middle" class="middle">
   <div id="left">
     <g:pageProperty name="page.left"/>
   </div>
-  <div id="center">
+  <div id="center" class="center">
     <table>
       <tr>
         <td id="toolbarRow">
@@ -126,15 +131,14 @@
     </table>
     <g:pageProperty name="page.center"/>
   </div>
-  <div id="right">
+  <div id="right" class="right">
     <g:pageProperty name="page.right"/>
   </div>
 </div>
-  <div id="footer">
+  <div id="footer" class="footer">
     <omar:securityClassificationBanner/>
   </div>
 </div>
-
 
 
 <g:layoutBody />
@@ -156,6 +160,7 @@
   })();
   bodyOnResize = function(changeMapSizeFlag)
   {
+
     var Dom = YAHOO.util.Dom;
     var contentDiv = Dom.get("content");
     var leftDiv = Dom.get("left");
