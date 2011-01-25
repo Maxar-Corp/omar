@@ -10,7 +10,7 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main6"/>
+  <meta name="layout" content="multiLayerLayout"/>
 
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
@@ -64,7 +64,7 @@
   </style>
 
 </head>
-<body>
+<body class="yui-skin-sam" onresize="bodyOnResize();">
 <content tag="north">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
@@ -100,7 +100,6 @@
     <div class="message">${flash.message}</div>
   </g:if>
   --%>
-  <div id="map"></div>
 </content>
 <content tag="south">
 </content>
@@ -119,9 +118,11 @@
 //      mapDiv.style.width = mapTitle.offsetWidth + "px";
 //      mapDiv.style.height = Math.round( mapTitle.offsetWidth / 2 ) + "px";
   var Dom = YAHOO.util.Dom;
-
-  Dom.get( "map" ).style.width = mapWidth + "px";
-  Dom.get( "map" ).style.height = mapHeight + "px";
+  if(mapWidth&&mapHeight)
+  {
+     Dom.get( "map" ).style.width  = mapWidth + "px";
+     Dom.get( "map" ).style.height = mapHeight + "px";
+  }
 
     map.updateSize( );
   }
@@ -141,7 +142,7 @@
 
 function init(mapWidth, mapHeight)
 {
-var left = ${left};
+    var left = ${left};
     var bottom = ${bottom};
     var right = ${right};
     var top = ${top};
@@ -206,7 +207,12 @@ var left = ${left};
 
    map.setCenter( bounds.getCenterLonLat( ), zoom );
 
-   this.touchhandler = new TouchHandler( map, 4 );
+  var isiPad = navigator.userAgent.match( /iPad/i ) != null;
+
+   if ( isiPad )
+   {
+      this.touchhandler = new TouchHandler( map, 4 );
+   }
   }
 
   function zoomIn()
@@ -235,7 +241,7 @@ var left = ${left};
      trigger: zoomOut
    } );
 
-   var container = $( "panel2" );
+   var container = $( "toolBar" );
 
    var panel = new OpenLayers.Control.Panel(
    { div: container,defaultControl: zoomBoxButton,'displayClass': 'olControlPanel'}

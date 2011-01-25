@@ -27,6 +27,7 @@
     margin:0;
     padding:0;
     overflow-y:hidden;
+    overflow-x:hidden;
   }
   #content
   {
@@ -161,7 +162,6 @@
     var rightDiv = Dom.get("right");
     var mapDiv = Dom.get("map");
     var topDiv = Dom.get("top");
-    var centerDiv = Dom.get("center");
     var toolbarRow = Dom.get("toolbarRow");
     var mouseRow = Dom.get("mouseRow");
     var footer = Dom.get("footer");
@@ -171,18 +171,10 @@
 
     //middleDiv.style.top = (topDiv.offsetHeight+header.offsetHeight) + "px";
     // IE6 seems to do better to use the root content div and then adjust everyone from  that
-//    alert(Dom.getViewportHeight() + ", " + contentDiv.offsetHeight) ;
-//    alert("heights of top stuff " + (toolbarRow.offsetHeight+header.offsetHeight+footer.offsetHeight+topDiv.offsetHeight));
-//    var centerHeight = centerDiv.offsetHeight -(toolbarRow.offsetHeight + mouseRow.offsetHeight);//contentDiv.offsetHeight - (header.offsetHeight+footer.offsetHeight+topDiv.offsetHeight+toolbarRow.offsetHeight);
-  //  centerDiv.style.height = centerHeight;
 
     middleDiv.style.height = Dom.getViewportHeight() - (header.offsetHeight + footer.offsetHeight + topDiv.offsetHeight) + "px";
- /*
-    centerDiv.style.left  = leftDiv.offsetWidth + "px";
-    centerDiv.style.left  = leftDiv.offsetWidth + "px";
-*/
-    mapDiv.style.width  = (contentDiv.offsetWidth - (leftDiv.offsetWidth + rightDiv.offsetWidth)) +"px";
-    mapDiv.style.height = (middle.offsetHeight    - (toolbarRow.offsetHeight+mouseRow.offsetHeight))+ "px";
+    mapDiv.style.width     = (Dom.getViewportWidth() - (leftDiv.offsetWidth + rightDiv.offsetWidth)) +"px";
+    mapDiv.style.height    = (middle.offsetHeight    - (toolbarRow.offsetHeight+mouseRow.offsetHeight))+ "px";
 
     if(changeMapSizeFlag)
     {

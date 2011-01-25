@@ -38,30 +38,34 @@
   #left
   {
     position:absolute;
-    top: 60px;
+    top: 0;
     width:200px;
-    height:80%;
+    height:100%;
     overflow-x:hidden;
     overflow-y:auto;
   }
+  #centerMap
+  {
+    position:absolute;
+    top: 0px;
+    left:200px;
+    height:100%;
+  }
   #middle
   {
-    position:absolute;
-    top: 60px;
-    left:200px;
-    right:200px;
+    position:relative;
+    top:0px;
     height:80%;
-  }
-  #header
-  {
-    height:20px;
-  }
-  #footer
-  {
-    position:absolute;
-    height:20px;
     width:100%;
-    bottom:0;
+  }
+  #header{
+    position:relative;
+    top:0;
+    width:100%;
+  }
+  #footer{
+    position:relative;
+    width:100%;
   }
   .h1
   {
@@ -84,23 +88,26 @@
   <div id="top">
     <g:pageProperty name="page.top"/>
   </div>
-  <div id="left">
-    <g:pageProperty name="page.left"/>
-  </div>
+
   <div id="middle">
-    <table>
-      <tr>
-        <td id="toolbarRow">
-          <div id="toolBar" class="olControlPanel"></div>
-        </td>
-      </tr>
-      <tr id="mapRow">
-        <td id="mapColumn">
-          <div id="map"></div>
-        </td>
-      </tr>
-    </table>
-    <g:pageProperty name="page.middle"/>
+    <div id="left">
+      <g:pageProperty name="page.left"/>
+    </div>
+    <div id="centerMap">
+      <table>
+        <tr>
+          <td id="toolbarRow">
+            <div id="toolBar" class="olControlPanel"></div>
+          </td>
+        </tr>
+        <tr id="mapRow">
+          <td id="mapColumn">
+            <div id="map"></div>
+          </td>
+        </tr>
+      </table>
+      <g:pageProperty name="page.middle"/>
+    </div>
   </div>
 </div>
 
@@ -121,40 +128,33 @@
     Event.onDOMReady( function()
     {
       var mapDiv = Dom.get("map");
-      bodyOnResize();
+      bodyOnResize(false);
       init();
-      bodyOnResize();
+      bodyOnResize(true);
     });
   })();
-  function bodyOnResize()
+  bodyOnResize = function(changeMapSizeFlag)
   {
     var Dom = YAHOO.util.Dom;
-    var contentDiv = Dom.get("content");
+    var width  = Dom.getViewportWidth();
+    var height = Dom.getViewportHeight();
     var leftDiv = Dom.get("left");
     var mapDiv = Dom.get("map");
-    var centerDiv = Dom.get("middle");
-    var headerDiv = Dom.get("header");
     var topDiv = Dom.get("top");
     var toolbarRow = Dom.get("toolbarRow");
     var footer = Dom.get("footer");
-    var maxHeight = headerDiv.offsetHeight+
-                    topDiv.offsetHeight+
-                    toolbarRow.offsetHeight+
-                    footer.offsetHeight+20;
-    if(maxHeight < 0.0) maxHeight = 0.0;
-    //alert(toolbarRow.offsetHeight);
-//    alert (headerDiv.offsetHeight +","+topDiv.offsetHeight+","+toolbarRow.offsetHeight+","+footer.offsetHeight);
-    var width  = Dom.getViewportWidth();
-    var height = Dom.getViewportHeight();
-    // IE6 seems to do better to use the root content div and then adjust everyone from  that
-    var centerHeight      = height - maxHeight;//height - maxHeight;
-    if(centerHeight < 0) centerHeight = 0;
-    centerDiv.style.left  = leftDiv.offsetWidth + "px";
-    mapDiv.style.width    = (width - (leftDiv.offsetWidth )) +"px";
-    mapDiv.style.height   = (height-maxHeight) + "px";
-    if(map) changeMapSize(mapDiv.style.width, mapDiv.style.height);
-    //alert("END");
+    var header = Dom.get("header");
+    var middleDiv = Dom.get("middle");
+
+    middleDiv.style.height = height - (header.offsetHeight + footer.offsetHeight + topDiv.offsetHeight) + "px";
+    mapDiv.style.width     = (width - leftDiv.offsetWidth ) +"px";
+    mapDiv.style.height    = (middle.offsetHeight    - (toolbarRow.offsetHeight))+ "px";
+
+    if(changeMapSizeFlag)
+    {
+      if(map) changeMapSize(mapDiv.style.width, mapDiv.style.height);
+    }
    // mapWidget.changeMapSize()
-  }
+  }.defaults(true);
 </g:javascript>
 </html>
