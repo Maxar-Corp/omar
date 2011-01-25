@@ -56,7 +56,7 @@
   </style>
 </head>
 
-<body>
+<body class="yui-skin-sam" onresize="bodyOnResize();">
 
 <content tag="top">
 
@@ -161,12 +161,10 @@
         <div id="mgrsMousePosition">&nbsp;</div>
       </div>
     </div>
-
   </g:form>
 </content>
 
-<content tag="center">
-  <div id="map"></div>
+<content tag="middle">
 </content>
 
 
@@ -213,13 +211,13 @@ function changeMapSize( mapWidth, mapHeight )
       Dom.get( "map" ).style.width  = mapWidth + "px";
       Dom.get( "map" ).style.height = mapHeight + "px";
    }
-   else
-   {
-     var mapCenter = document.getElementById("mapCenter");
-     var mapDiv   = document.getElementById("map");
-     mapDiv.style.width  = mapCenter.width + "px";
-     mapDiv.style.height = mapCenter.height + "px";
-   }
+//   else
+//   {
+//     var mapCenter = document.getElementById("mapCenter");
+ //    var mapDiv   = document.getElementById("map");
+ //    mapDiv.style.width  = mapCenter.width + "px";
+ //    mapDiv.style.height = mapCenter.height + "px";
+ //  }
 
 
 //        alert( mapWidth + ' ' + mapHeight );
@@ -228,7 +226,8 @@ function changeMapSize( mapWidth, mapHeight )
   map.updateSize();
 }
 
-function init( mapWidth, mapHeight )
+//function init( mapWidth, mapHeight )
+function init()
 {
   var left   = parseFloat("${left}");
   var bottom = parseFloat("${bottom}");
@@ -244,8 +243,7 @@ function init( mapWidth, mapHeight )
                                     maxExtent:bounds,
                                     maxResolution:largestScale,
                                     minResolution:smallestScale });
-  changeMapSize( mapWidth, mapHeight );
-
+  changeMapSize( null, null);
   setupToolbar();
   setupLayers();
   map.events.register('mousemove',map,handleMouseMove);
@@ -261,8 +259,13 @@ function init( mapWidth, mapHeight )
 
   map.setCenter(bounds.getCenterLonLat(), zoom);
 
-  this.touchhandler = new TouchHandler( map, 4 );
-}
+  var isiPad = navigator.userAgent.match( /iPad/i ) != null;
+
+   if ( isiPad )
+   {
+      this.touchhandler = new TouchHandler( map, 4 );
+   }
+ }
   function handleMouseMove(evt)
   {
   var lonLat = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x , evt.xy.y) );

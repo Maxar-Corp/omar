@@ -15,66 +15,102 @@
       resource(plugin: "richui", dir: "js/yui/calendar", file: "calendar-min.js"),
       resource(plugin: "richui", dir: "js/yui/element", file: "element-min.js"),
       resource(plugin: "richui", dir: "js/yui/tabview", file: "tabview-min.js")
-  ])}'></script>
+  ])}'>
+
+  </script>
 
   <style>
-  body {
-    margin: 0;
-    padding: 0; /* visibility: hidden;*/
-    background-color: #f2f2f2;
+  body{
+    height:100%;
+    width:100%;
+    text-align:left;
+    margin:0;
+    padding:0;
+    overflow-y:hidden;
+    overflow-x:hidden;
   }
-<%--
-  .banner {
-    background-color: black;
+  #content
+  {
+    height:100%;
+    min-height:100%;
+    margin-bottom:-20px
   }
-
-  .top {
-    background-color: yellow;
+  #left
+  {
+    position:absolute;
+    top: 60px;
+    width:200px;
+    height:80%;
+    overflow-x:hidden;
+    overflow-y:auto;
   }
-
-  .left {
-    background-color: red;
+  #middle
+  {
+    position:absolute;
+    top: 60px;
+    left:200px;
+    right:200px;
+    height:80%;
   }
-
-  .center {
-    background-color: green;
+  #header
+  {
+    height:20px;
   }
-  --%>
+  #footer
+  {
+    position:absolute;
+    height:20px;
+    width:100%;
+    bottom:0;
+  }
+  .h1
+  {
+   width:100%;
+    height:100%;
+  }
+  .nav{
+      font-size:14px;
+  }
   </style>
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
 </head>
-<body class="yui-skin-sam" onresize="changeMapSize();">
-<table width='100%' height='100%'>
-  <tr height="25px">
-    <td class='banner' colspan='3'>
-      <omar:securityClassificationBanner/>
-    </td>
-  </tr>
-  <tr>
-    <td class='top' colspan='3'>
-      <g:pageProperty name="page.top"/>
-    </td>
-  </tr>
-  <tr>
-    <td class='left' style="height:100%;width:20%">
-      <div style="height:100%;width:100%;overflow-y:auto;overflow-x:hidden;">
-        <g:pageProperty name="page.left"/>
-      </div>
-    </td>
-    <td class='center' style="height:100%;width:80%;">
-      <div id='mapCenter' style="width:100%;height:100%">
-        <g:pageProperty name="page.center"/>
-      </div>
-    </td>
-  </tr>
-  <tr height="25px">
-    <td class='banner' colspan='3'>
-      <omar:securityClassificationBanner/>
-    </td>
-  </tr>
-  <g:layoutBody/>
-</table>
+<body class="${pageProperty(name: 'body.class')}" onresize="${pageProperty(name: 'body.onresize')}">
+
+<div id="content">
+  <div id="header">
+    <omar:securityClassificationBanner/>
+  </div>
+  <div id="top">
+    <g:pageProperty name="page.top"/>
+  </div>
+  <div id="left">
+    <g:pageProperty name="page.left"/>
+  </div>
+  <div id="middle">
+    <table>
+      <tr>
+        <td id="toolbarRow">
+          <div id="toolBar" class="olControlPanel"></div>
+        </td>
+      </tr>
+      <tr id="mapRow">
+        <td id="mapColumn">
+          <div id="map"></div>
+        </td>
+      </tr>
+    </table>
+    <g:pageProperty name="page.middle"/>
+  </div>
+</div>
+
+<div id="footer">
+  <omar:securityClassificationBanner/>
+</div>
+
+
+<g:layoutBody />
+
 </body>
 <g:javascript>
   (function()
@@ -84,9 +120,41 @@
     var Event = YAHOO.util.Event;
     Event.onDOMReady( function()
     {
+      var mapDiv = Dom.get("map");
+      bodyOnResize();
       init();
-      changeMapSize();
+      bodyOnResize();
     });
   })();
+  function bodyOnResize()
+  {
+    var Dom = YAHOO.util.Dom;
+    var contentDiv = Dom.get("content");
+    var leftDiv = Dom.get("left");
+    var mapDiv = Dom.get("map");
+    var centerDiv = Dom.get("middle");
+    var headerDiv = Dom.get("header");
+    var topDiv = Dom.get("top");
+    var toolbarRow = Dom.get("toolbarRow");
+    var footer = Dom.get("footer");
+    var maxHeight = headerDiv.offsetHeight+
+                    topDiv.offsetHeight+
+                    toolbarRow.offsetHeight+
+                    footer.offsetHeight+20;
+    if(maxHeight < 0.0) maxHeight = 0.0;
+    //alert(toolbarRow.offsetHeight);
+//    alert (headerDiv.offsetHeight +","+topDiv.offsetHeight+","+toolbarRow.offsetHeight+","+footer.offsetHeight);
+    var width  = Dom.getViewportWidth();
+    var height = Dom.getViewportHeight();
+    // IE6 seems to do better to use the root content div and then adjust everyone from  that
+    var centerHeight      = height - maxHeight;//height - maxHeight;
+    if(centerHeight < 0) centerHeight = 0;
+    centerDiv.style.left  = leftDiv.offsetWidth + "px";
+    mapDiv.style.width    = (width - (leftDiv.offsetWidth )) +"px";
+    mapDiv.style.height   = (height-maxHeight) + "px";
+    if(map) changeMapSize(mapDiv.style.width, mapDiv.style.height);
+    //alert("END");
+   // mapWidget.changeMapSize()
+  }
 </g:javascript>
 </html>

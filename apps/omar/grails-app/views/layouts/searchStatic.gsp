@@ -137,12 +137,12 @@
     var Event = YAHOO.util.Event;
     Event.onDOMReady( function()
     {
-      bodyOnResize();
+      bodyOnResize(false);
       init();
-      bodyOnResize();
+      bodyOnResize(true);
     });
   })();
-  function bodyOnResize()
+  bodyOnResize = function(changeMapSizeFlag)
   {
     var Dom = YAHOO.util.Dom;
     var contentDiv = Dom.get("content");
@@ -152,13 +152,15 @@
     var centerDiv = Dom.get("center");
     var toolbarRow = Dom.get("toolbarRow");
     var footer = Dom.get("footer");
-
     // IE6 seems to do better to use the root content div and then adjust everyone from  that
     var centerHeight = contentDiv.offsetHeight*.8;
     centerDiv.style.left  = leftDiv.offsetWidth + "px";
     mapDiv.style.width  = (contentDiv.offsetWidth - (leftDiv.offsetWidth + rightDiv.offsetWidth)) +"px";
     mapDiv.style.height = centerHeight - toolbarRow.offsetHeight-footer.offsetHeight  + "px";
-    mapWidget.changeMapSize()
-  }
+    if(changeMapSizeFlag)
+    {
+      mapWidget.changeMapSize();
+    }
+  }.defaults(true);
 </g:javascript>
 </html>

@@ -62,7 +62,7 @@
 
 </head>
 
-<body>
+<body class="yui-skin-sam" onresize="bodyOnResize();">
 
 <content tag="top">
   <div class="nav">
@@ -78,9 +78,6 @@
         Ground Space Viewer
       </a>
     </span>
-
-
-    
   </div>
 </content>
 
@@ -128,7 +125,6 @@
     <div class="message">${flash.message}</div>
   </g:if>
   --%>
-  <div id="map"></div>
 </div>
 </content>
 <content tag="bottom">
@@ -140,24 +136,27 @@
 <g:javascript>
 var map;
 var layer;
-  var format = "image/jpeg";
+var format = "image/jpeg";
 
 function changeMapSize( mapWidth, mapHeight )
 {
    if(mapWidth&&mapHeight)
    {
       var Dom = YAHOO.util.Dom;
-
-      Dom.get( "map" ).style.width = mapWidth + "px";
-      Dom.get( "map" ).style.height = mapHeight + "px";
+      var mapDiv = Dom.get( "map" );
+      if(mapDiv)
+      {
+        mapDiv.style.width  = mapWidth + "px";
+        mapDiv.style.height = mapHeight + "px";
+      }
    }
-   else
-   {
-     var mapCenter = document.getElementById("mapCenter");
-     var mapDiv   = document.getElementById("map");
-     mapDiv.style.width  = mapCenter.width + "px";
-     mapDiv.style.height = mapCenter.height + "px";
-   }
+ //  else
+//   {
+//     var mapCenter = document.getElementById("mapCenter");
+//     var mapDiv   = document.getElementById("map");
+//     mapDiv.style.width  = mapCenter.width + "px";
+//     mapDiv.style.height = mapCenter.height + "px";
+//   }
 
 
 //        alert( mapWidth + ' ' + mapHeight );
@@ -235,7 +234,7 @@ function init(mapWidth, mapHeight)
   var resLevels = parseFloat("${rasterEntry.numberOfResLevels}")
   // full res is included in resLevels so we need to add 2 more to give us
   // an 8x zoom
-map = new OpenLayers.Map("map", {controls:[], numZoomLevels:(resLevels+2)});
+  map = new OpenLayers.Map("map", {controls:[], numZoomLevels:(resLevels+2)});
   var options = {
   controls: [],
   maxExtent: new OpenLayers.Bounds(0, 0,width, height),
@@ -251,17 +250,22 @@ map = new OpenLayers.Map("map", {controls:[], numZoomLevels:(resLevels+2)});
 
   layer = new OpenLayers.Layer.TMS( "Image Space Viewer",
                                     url, options);
-map.addLayer(layer);
-map.addControl(new OpenLayers.Control.MousePosition());
-map.addControl(new OpenLayers.Control.MouseDefaults());
-map.addControl(new OpenLayers.Control.KeyboardDefaults());
+  map.addLayer(layer);
+  map.addControl(new OpenLayers.Control.MousePosition());
+  map.addControl(new OpenLayers.Control.MouseDefaults());
+  map.addControl(new OpenLayers.Control.KeyboardDefaults());
 
 
   map.setBaseLayer(layer);
   changeMapSize(mapWidth, mapHeight);
   map.zoomToMaxExtent();
   setupToolbar();
-  this.touchhandler = new TouchHandler( map, 4 );
+  var isiPad = navigator.userAgent.match( /iPad/i ) != null;
+
+   if ( isiPad )
+   {
+      this.touchhandler = new TouchHandler( map, 4 );
+   }
 }
 
   function zoomIn()
@@ -301,7 +305,7 @@ map.addControl(new OpenLayers.Control.KeyboardDefaults());
         trigger: zoomOut
       });
 
-      var container = $("panel2");
+      var container = $("toolBar");
 
       var panel = new OpenLayers.Control.Panel(
       { div: container,defaultControl: zoomBoxButton,'displayClass': 'olControlPanel'}
