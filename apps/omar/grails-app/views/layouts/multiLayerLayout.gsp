@@ -130,9 +130,10 @@
     var Event = YAHOO.util.Event;
     Event.onDOMReady( function()
     {
+      var Dom = YAHOO.util.Dom;
       var mapDiv = Dom.get("map");
       bodyOnResize();
-      init();
+      init(mapDiv.style.width, mapDiv.style.height);
       bodyOnResize();
     });
   })();
