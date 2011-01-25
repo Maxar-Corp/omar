@@ -124,7 +124,7 @@
      Dom.get( "map" ).style.height = mapHeight + "px";
   }
 
-    map.updateSize( );
+    if(map) map.updateSize( );
   }
 
   function setupBaseLayer()
@@ -165,7 +165,7 @@ function init(mapWidth, mapHeight)
     new OpenLayers.Layer.WMS(
     "Raster ${rasterEntry.id}",
               "${createLink(controller: 'ogc', action: 'wms')}",
-      { layers: "${rasterEntry.id}", format: format, stretch_mode:"linear_auto_min_max", transparent:transparent  },
+      { layers: "${rasterEntry.indexId}", format: format, stretch_mode:"linear_auto_min_max", transparent:transparent  },
       {isBaseLayer: false, buffer:0, singleTile:true, ratio:1.0, transitionEffect: "resize"}
               )
     <g:if test="${kmlOverlays}">
@@ -174,7 +174,7 @@ function init(mapWidth, mapHeight)
    projection: map.displayProjection,
    strategies: [new OpenLayers.Strategy.Fixed( )],
    protocol: new OpenLayers.Protocol.HTTP( {
-     url: "${createLink(controller: 'rasterEntry', action: 'getKML', params: [rasterEntryIds: rasterEntry.id])}",
+     url: "${createLink(controller: 'rasterEntry', action: 'getKML', params: [rasterEntryIds: rasterEntry.indexId])}",
           format: new OpenLayers.Format.KML( {
             extractStyles: true,
             extractAttributes: true
