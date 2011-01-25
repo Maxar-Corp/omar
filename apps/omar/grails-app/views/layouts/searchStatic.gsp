@@ -32,22 +32,29 @@
   {
     height:100%;
     min-height:100%;
-    margin-bottom:-20px
+    margin-bottom:0px
+  }
+  #middle
+  {
+    position:relative;
+    top:0px;
+    height:80%;
+    width:100%;
   }
   #left
   {
     position:absolute;
-    top: 60px;
+    top: 0;
     width:200px;
-    height:80%;
+    height:100%;
     overflow-x:hidden;
     overflow-y:auto;
   }
   #right
   {
     position:absolute;
-    height:80%;
-    top: 60px;
+    height:100%;
+    top: 0;
     right: 0px;
     min-height:100%;
     width:200px;
@@ -57,18 +64,19 @@
   #center
   {
     position:absolute;
-    top: 60px;
+    top: 0;
     left:200px;
     right:200px;
-    height:80%;
+    height:100%;
   }
-  #bottom
-  {
-    height:20px;
+  #header{
+    position:relative;
+    top:0;
+    width:100%;
   }
-  #top
-  {
-    height:20px;
+  #footer{
+    position:relative;
+    width:100%;
   }
   .h1
   {
@@ -85,44 +93,47 @@
 <body class="${pageProperty(name: 'body.class')}" onresize="${pageProperty(name: 'body.onresize')}">
 <div id="content">
 
-<div id="header">
+<div id="header" class="header">
   <omar:securityClassificationBanner/>
 </div>
 <div id="top">
   <g:pageProperty name="page.top"/>
 </div>
-<div id="left">
-  <g:pageProperty name="page.left"/>
+<div id="middle">
+  <div id="left">
+    <g:pageProperty name="page.left"/>
+  </div>
+  <div id="center">
+    <table>
+      <tr>
+        <td id="toolbarRow">
+          <div id="toolBar" class="olControlPanel"></div>
+        </td>
+      </tr>
+      <tr id="mapRow">
+        <td id="mapColumn">
+          <div id="map"></div>
+        </td>
+      </tr>
+    </table>
+    <table>
+      <tr id="mouseRow">
+        <td width="200px"><div id="mouseHoverDdOutput">&nbsp;</div></td>
+        <td width="200px"><div id="mouseHoverDmsOutput">&nbsp;</div></td>
+        <td width="200px"><div id="mouseHoverMgrsOutput">&nbsp;</div></td>
+      </tr>
+    </table>
+    <g:pageProperty name="page.center"/>
+  </div>
+  <div id="right">
+    <g:pageProperty name="page.right"/>
+  </div>
 </div>
-<div id="center">
-  <table>
-    <tr>
-      <td id="toolbarRow">
-        <div id="toolBar" class="olControlPanel"></div>
-      </td>
-    </tr>
-    <tr id="mapRow">
-      <td id="mapColumn">
-        <div id="map"></div>
-      </td>
-    </tr>
-  </table>
-  <table>
-    <tr>
-      <td width="200px"><div id="mouseHoverDdOutput">&nbsp;</div></td>
-      <td width="200px"><div id="mouseHoverDmsOutput">&nbsp;</div></td>
-      <td width="200px"><div id="mouseHoverMgrsOutput">&nbsp;</div></td>
-    </tr>
-  </table>
-  <g:pageProperty name="page.center"/>
+  <div id="footer">
+    <omar:securityClassificationBanner/>
+  </div>
 </div>
-<div id="right">
-  <g:pageProperty name="page.right"/>
-</div>
-</div>
-<div id="footer">
-  <omar:securityClassificationBanner/>
-</div>
+
 
 
 <g:layoutBody />
@@ -149,14 +160,30 @@
     var leftDiv = Dom.get("left");
     var rightDiv = Dom.get("right");
     var mapDiv = Dom.get("map");
+    var topDiv = Dom.get("top");
     var centerDiv = Dom.get("center");
     var toolbarRow = Dom.get("toolbarRow");
+    var mouseRow = Dom.get("mouseRow");
     var footer = Dom.get("footer");
+    var header = Dom.get("header");
+    var middleDiv = Dom.get("middle");
+
+
+    //middleDiv.style.top = (topDiv.offsetHeight+header.offsetHeight) + "px";
     // IE6 seems to do better to use the root content div and then adjust everyone from  that
-    var centerHeight = contentDiv.offsetHeight*.8;
+//    alert(Dom.getViewportHeight() + ", " + contentDiv.offsetHeight) ;
+//    alert("heights of top stuff " + (toolbarRow.offsetHeight+header.offsetHeight+footer.offsetHeight+topDiv.offsetHeight));
+//    var centerHeight = centerDiv.offsetHeight -(toolbarRow.offsetHeight + mouseRow.offsetHeight);//contentDiv.offsetHeight - (header.offsetHeight+footer.offsetHeight+topDiv.offsetHeight+toolbarRow.offsetHeight);
+  //  centerDiv.style.height = centerHeight;
+
+    middleDiv.style.height = Dom.getViewportHeight() - (header.offsetHeight + footer.offsetHeight + topDiv.offsetHeight) + "px";
+ /*
     centerDiv.style.left  = leftDiv.offsetWidth + "px";
+    centerDiv.style.left  = leftDiv.offsetWidth + "px";
+*/
     mapDiv.style.width  = (contentDiv.offsetWidth - (leftDiv.offsetWidth + rightDiv.offsetWidth)) +"px";
-    mapDiv.style.height = centerHeight - toolbarRow.offsetHeight-footer.offsetHeight  + "px";
+    mapDiv.style.height = (middle.offsetHeight    - (toolbarRow.offsetHeight+mouseRow.offsetHeight))+ "px";
+
     if(changeMapSizeFlag)
     {
       mapWidget.changeMapSize();
