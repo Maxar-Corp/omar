@@ -109,7 +109,7 @@ class OgcController
                 wmsRequest,
                 g2d)
       }
-      
+
       if ( (wmsRequest.format == "image/gif") && wmsRequest.transparentFlag )
       {
         image = ImageGenerator.convertRGBAToIndexed(image)
@@ -132,9 +132,9 @@ class OgcController
   }
 
   def wms = {
-    def starttime    = System.currentTimeMillis()
+    def starttime = System.currentTimeMillis()
     def internaltime = starttime
-    def endtime      = starttime
+    def endtime = starttime
     // Populate org.ossim.omar.WMSCapabilities Request object
     def wmsRequest = new WMSRequest()
 
@@ -177,30 +177,32 @@ class OgcController
           break
         }
 
+
         def image = webMappingService.getMap(wmsRequest)
+
         internaltime = System.currentTimeMillis()
-        if(!image)
+        if ( !image )
         {
           log.error("No image found for layers ${wmsRequest.layers}")
         }
         else
         {
           def writers = ImageIO.getImageWritersByMIMEType(response.contentType)
-          if(writers.hasNext())
+          if ( writers.hasNext() )
           {
             def writer = writers.next()
-            if(writer)
+            if ( writer )
             {
               def writeParam = writer.getDefaultWriteParam()
-              if(writeParam.canWriteCompressed())
+              if ( writeParam.canWriteCompressed() )
               {
- //               writeParam.compressionMode = javax.imageio.ImageWriteParam.MODE_EXPLICIT
- //               writeParam.compressionQuality = 0.1;
- //               writeParam.setProgressiveMode(javax.imageio.ImageWriteParam.MODE_COPY_FROM_METADATA)
+                //               writeParam.compressionMode = javax.imageio.ImageWriteParam.MODE_EXPLICIT
+                //               writeParam.compressionQuality = 0.1;
+                //               writeParam.setProgressiveMode(javax.imageio.ImageWriteParam.MODE_COPY_FROM_METADATA)
               }
               writer.output = ImageIO.createImageOutputStream(response.outputStream)
               def iioimage = new IIOImage(image, [], null)
-              writer.write(writer.getDefaultStreamMetadata(writeParam),iioimage, writeParam )
+              writer.write(writer.getDefaultStreamMetadata(writeParam), iioimage, writeParam)
             }
           }
           else
@@ -208,12 +210,13 @@ class OgcController
             ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
           }
         }
+
         break
       case "getcapabilities":
         wmsLogParams.request = "getcapabilities"
         def serviceAddress = createLink(controller: "ogc", action: "wms", absolute: true) as String
         def capabilities = webMappingService?.getCapabilities(wmsRequest, serviceAddress)
-        internaltime =  System.currentTimeMillis();
+        internaltime = System.currentTimeMillis();
         render(contentType: "text/xml", text: capabilities)
         break
       case "getkml":
@@ -228,67 +231,56 @@ class OgcController
         //  def serviceAddress = createLink(controller: "ogc", action: "wms", absolute: true)
         //  def kml = webMappingService.getKML(wmsRequest, serviceAddress)
         def filename = "image.kml"
-        def rasterEntries = RasterEntry.createCriteria().list() {
-          rasterIdList.each() {name ->
-            try
-            {
-              eq('id', java.lang.Long.valueOf(name))
-            }
-            catch (java.lang.Exception e)
-            {
-              or
-              {
-                eq('indexId', name)
-                eq('title', name)
-              }
-            }
-          }
-          }
+        def rasterEntries = findRasterEntries(rasterIdList)
+
         def kml = null;
-        if(rasterEntries?.size>0)
+        if ( rasterEntries?.size > 0 )
         {
-            def file = (rasterEntries[0].mainFile.name as File).name
-            filename = "${file}.kml"
-           kml = kmlService.createImagesKml(rasterEntries, wmsRequest.toMap(), tempMap)
+          def file = (rasterEntries[0].mainFile.name as File).name
+          filename = "${file}.kml"
+          kml = kmlService.createImagesKml(rasterEntries, wmsRequest.toMap(), tempMap)
         }
         else
         {
           kml = ""
           filename = "empty.kml"
         }
-        internaltime =  System.currentTimeMillis();
+        internaltime = System.currentTimeMillis();
         response.setHeader("Content-disposition", "attachment; filename=${filename}")
         render(contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8")
+        break
+      case "getkmz":
+        render contentType: "text/plain", text: new Date() as String
         break
       default:
         logParameters = false
         log.error("ERROR: Unknown action: ${wmsRequest?.request}")
         break
       }
-      endtime                    = System.currentTimeMillis()
+      endtime = System.currentTimeMillis()
       wmsLogParams.domain = authenticateService.userDomain()
       wmsLogParams.userName = "nobody"
       def domain = null
       wmsLogParams.ip = request.getHeader('X-Forwarded-For')
-      if(!wmsLogParams.ip)
+      if ( !wmsLogParams.ip )
       {
         wmsLogParams.ip = request.getRemoteAddr()
       }
-      if(wmsLogParams.domain)
+      if ( wmsLogParams.domain )
       {
         def authUser = AuthUser.get(wmsLogParams.domain.id)
         wmsLogParams.userName = authUser?.username
         wmsLogParams.domain = authUser?.email.split('@')[1]
       }
-      if(logParameters)
+      if ( logParameters )
       {
-        def urlTemp = createLink([controller:'ogc', action:'wms',absolute:true, params:params])
-        wmsLogParams.with{
-          endDate      = new Date()
-          internalTime = (internaltime-starttime)/1000.0
-          renderTime   = (endtime-internaltime)/1000.0
-          totalTime    = (endtime-starttime)/1000.0
-          url           = urlTemp
+        def urlTemp = createLink([controller: 'ogc', action: 'wms', absolute: true, params: params])
+        wmsLogParams.with {
+          endDate = new Date()
+          internalTime = (internaltime - starttime) / 1000.0
+          renderTime = (endtime - internaltime) / 1000.0
+          totalTime = (endtime - starttime) / 1000.0
+          url = urlTemp
         }
         wmsLogService.logParams(wmsLogParams)
       }
@@ -300,9 +292,31 @@ class OgcController
     }
     return null
   }
-  
+
+  def findRasterEntries(def rasterIdList)
+  {
+    def rasterEntries = RasterEntry.createCriteria().list() {
+      rasterIdList.each() {name ->
+        if ( name ==~ /\d+/ )
+        {
+          eq('id', Long.valueOf(name))
+        }
+        else
+        {
+          or
+          {
+            eq('indexId', name)
+            eq('title', name)
+          }
+        }
+      }
+    }
+
+    return rasterEntries
+  }
+
   def getTile = {
     log.warn("OgcController getTile is deprecated and image space operations should go through ../icp/getTile\ninstead of /ogc/getTile")
-    redirect(controller:"icp", action:"getTile", params:params)
+    redirect(controller: "icp", action: "getTile", params: params)
   }
 }
