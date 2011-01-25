@@ -151,14 +151,14 @@ class RegisterController implements InitializingBean
    * Verify user action.
    */
   def verifyUser = {
-    
-    def verifyEncoding = AuthUser.findWhere(verificationEncoding:params.verificationEncoding, enabled:false)
-    if (verifyEncoding)
+
+    def verifyEncoding = AuthUser.findWhere(verificationEncoding: params.verificationEncoding, enabled: false)
+    if ( verifyEncoding )
     {
       verifyEncoding.enabled = true
-	  flash.message = verifyEncoding.username + ' is now enabled and verified.'
+      flash.message = verifyEncoding.username + ' is now enabled and verified.'
       //redirect(controller: 'logout')
-	
+
       redirect(controller: 'login', action: 'auth')
       return
     }
@@ -212,28 +212,38 @@ class RegisterController implements InitializingBean
       return
     }
 
+
+    if ( !params.passwd )
+    {
+      person.passwd = ''
+      flash.message = 'The passwords cannot be blank.'
+      render(view: 'index', model: [person: person])
+      return
+    }
+
+
     def pass = authenticateService.passwordEncoder(params.passwd)
     person.passwd = pass
 
-	if ( userVerification == "none" )
-	{
-	  person.enabled = true
-	}
-	else if ( userVerification == "manual" )
-	{
-	  person.enabled = false
-	}
-	else if ( userVerification == "email" )
-	{
-	  person.enabled = false
-	  
-	  def jodaDateTime = new org.joda.time.DateTime()
-	  def verificationEncoding = (person.username + jodaDateTime.toString()).encodeAsSHA256()
-	  
-	  person.verificationEncoding = verificationEncoding
-	  link = "http://" + request.serverName + ":" + request.serverPort + "/omar/register/verifyUser?verificationEncoding=" + verificationEncoding
-	}
-	
+    if ( userVerification == "none" )
+    {
+      person.enabled = true
+    }
+    else if ( userVerification == "manual" )
+    {
+      person.enabled = false
+    }
+    else if ( userVerification == "email" )
+    {
+      person.enabled = false
+
+      def jodaDateTime = new org.joda.time.DateTime()
+      def verificationEncoding = (person.username + jodaDateTime.toString()).encodeAsSHA256()
+
+      person.verificationEncoding = verificationEncoding
+      link = "http://" + request.serverName + ":" + request.serverPort + "/omar/register/verifyUser?verificationEncoding=" + verificationEncoding
+    }
+
     person.emailShow = true
     person.description = ''
     if ( person.save() )
@@ -271,7 +281,7 @@ class RegisterController implements InitializingBean
 
       session.invalidate()
 
-       redirect(uri: '/')
+      redirect(uri: '/')
     }
     else
     {
@@ -279,8 +289,9 @@ class RegisterController implements InitializingBean
       render(view: 'index', model: [person: person])
     }
   }
+
   public void afterPropertiesSet()
   {
-	userVerification = grailsApplication.config.login?.registration?.userVerification
+    userVerification = grailsApplication.config.login?.registration?.userVerification
   }
 }
