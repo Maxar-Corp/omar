@@ -33,7 +33,7 @@
   {
     height:100%;
     min-height:100%;
-    margin-bottom:0px
+    margin-bottom:-20px ;
   }
   #middle
   {
