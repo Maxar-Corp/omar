@@ -26,72 +26,62 @@
   ])}'></script>
 
   <style>
-  body {
-    margin: 0;
-    padding: 0; /* visibility: hidden;*/
-    /*
-    background-color: #f2f2f2;
-    */
+  body{
+    height:100%;
+    width:100%;
+    margin:0;
+    padding:0;
+    overflow-y:hidden;
+    overflow-x:hidden;
+  }
+  #content
+  {
+    height:100%;
+    min-height:100%;
+    margin-bottom:-20px
+  }
+  #header{
+    postiion:relative;
+    width:100%;
   }
 
-<%--
-  .banner {
-    background-color: black;
+  #top{
+    position:relative;
+    text-align:left;
+    width:100%;
   }
-
-  .top {
-    background-color: yellow;
+   center{
+     position:relative;
+     width:100%;
+     height:100%;
+   }
+  footer{
+    postiion:relative;
+    width:100%;
   }
-
-  .bottom {
-    background-color: orange;
-  }
-
-  .left {
-    background-color: red;
-    width: 200px;
-  }
-
-  .right {
-    background-color: blue;
-    width: 200px;
-  }
-
-  .center {
-    background-color: green;
-  }
---%>
   </style>
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
 </head>
-<body class="${pageProperty(name: 'body.class')}">
-<table width='100%' height='100%'>
-  <tr height="25px" width="1024">
-    <td class='banner' colspan='3'>
-      <omar:securityClassificationBanner/>
-    </td>
-  </tr>
-  <tr height="50px">
-    <td class='top' colspan='3'>
-      <g:pageProperty name="page.top"/>
-    </td>
-  </tr>
-  <tr>
-    <td class='center' style="min-height:200px;">
-      <g:pageProperty name="page.center"/>
-    </td>
-  </tr>
-  <tr height="50px">
-    <td class='bottom' colspan='3'>
-      <g:pageProperty name="page.bottom"/>
-    </td>
-  </tr>
-  <tr height="25px">
-    <td class='banner' colspan='3'>
-      <omar:securityClassificationBanner/>
-    </td>
-  </tr>
+
+<body class="${pageProperty(name: 'body.class')} onresize="bodyOnResize();">
+<div id="content">
+
+  <div id="header">
+    <omar:securityClassificationBanner/>
+  </div>
+  <div id="top">
+    <g:pageProperty name="page.top"/>
+  </div>
+  <div id="center">
+    <g:pageProperty name="page.center"/>
+  </div>
+</div>
+
+<div id="footer">
+  <omar:securityClassificationBanner/>
+</div>
+
   <g:layoutBody/>
 </table>
 </body>
