@@ -7,6 +7,7 @@
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
+
   <omar:bundle contentType="javascript" files="${[
           [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
           [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
@@ -363,11 +364,13 @@
   <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
 </content>
 
+<%--
 <omar:bundle contentType="javascript" files="${[
     [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js'],
     [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
     [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
 ]}"/>
+--%>
 
 <g:javascript>
   var mapWidget = new MapWidget();
