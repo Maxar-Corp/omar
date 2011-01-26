@@ -61,6 +61,7 @@ class RasterEntry
 
   DateTime accessDate
   DateTime ingestDate
+  DateTime receiveDate
 
   BigInteger releaseId
   // Just for testing...
@@ -109,7 +110,8 @@ class RasterEntry
       acquisitionDate index: 'raster_entry_acquisition_date_idx'
       accessDate index: 'raster_entry_access_date_idx'
       ingestDate index: 'raster_entry_ingest_date_idx'
-      releaseId index: 'raster_entry_release_id_idx' 
+      receiveDate index: 'raster_entry_receive_date_idx'
+      releaseId index: 'raster_entry_release_id_idx'
 
       groundGeom type: org.hibernatespatial.GeometryUserType
     }
@@ -157,6 +159,7 @@ class RasterEntry
     beNumber(nullable: true)
     accessDate(nullable: true)
     ingestDate(nullable: true)
+    receiveDate(nullable: true)
     releaseId(nullable: true)
     styleId(nullable: true)
     keepForever(nullable: true)
