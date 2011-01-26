@@ -46,7 +46,7 @@ grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
 ]
 
 // The default codec used to encode data with ${}
-grails.views.default.codec = "none" // none, html, base64
+grails.views.default.codec = "none" // noxne, html, base64
 grails.views.gsp.encoding = "UTF-8"
 grails.converters.encoding = "UTF-8"
 
@@ -211,10 +211,14 @@ thumbnail {
 }
 
 security {
-  level = 'UNCLASS'
+//  level = 'UNCLASS'
 //level = 'SECRET'
 //level = 'TOPSECRET'
+  UNCLASS=[description:"Unclassified",color:"green"]
+  SECRET=[description:"Secret // NOFORN",color:"red"]
+  TOPSECRET=[description:"Top Secret",color:"yellow"]
   sessionTimeout = 60
+  level="UNCLASS"
 }
 
 image.download.prefix = "http://${grails.serverIP}"
