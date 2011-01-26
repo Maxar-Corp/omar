@@ -53,14 +53,23 @@
   .yui-skin-sam .yui-layout .yui-layout-unit div.yui-layout-bd {
     background-color: #FFFFFF;
   }
-
+  header{
+    position:absolute;
+    height:20px;
+    width:100%;
+  }
+  footer{
+    position:absolute;
+    bottom:0px;
+    height:20px;
+    width:100%;
+  }
   </style>
 
   <g:layoutHead/>
   <g:javascript library="application"/>
 </head>
 <body class="yui-skin-sam" onresize="bodyOnResize();">
-
 <div id="header">
   <omar:securityClassificationBanner/>
 </div>
@@ -70,11 +79,10 @@
 <div id="center">
   <g:pageProperty name="page.center"/>
 </div>
-<g:layoutBody/>
-
 <div id="footer">
   <omar:securityClassificationBanner/>
 </div>
+<g:layoutBody/>
 
 </body>
 
@@ -94,11 +102,13 @@
   {
     var Dom = YAHOO.util.Dom;
     var centerDiv = Dom.get("center");
+    var contentDiv = Dom.get("content");
     var topDiv = Dom.get("top");
     var headerDiv = Dom.get("header");
     var footerDiv = Dom.get("footer");
     var height = Dom.getViewportHeight();
-    centerDiv.style.height = (height - (topDiv.offsetHeight + headerDiv.offsetHeight + footerDiv.offsetHeight)) + "px";
+    var centerHeight =  (height- (topDiv.offsetHeight + headerDiv.offsetHeight + footerDiv.offsetHeight)) ;
+    centerDiv.style.height = centerHeight + "px";//(height - (topDiv.offsetHeight + headerDiv.offsetHeight + footerDiv.offsetHeight)) + "px";
   }
 </g:javascript>
 

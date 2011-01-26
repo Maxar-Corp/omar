@@ -41,8 +41,10 @@
     margin-bottom:-20px
   }
   #header{
-    postiion:relative;
+    position:relative;
     width:100%;
+    height:20px;
+    top:0px;
   }
 
   #top{
@@ -56,8 +58,10 @@
      height:100%;
    }
   footer{
-    postiion:relative;
+    position:absolute;
     width:100%;
+    bottom:0px;
+    height:20px;
   }
   </style>
   <title><g:layoutTitle default="Grails"/></title>
