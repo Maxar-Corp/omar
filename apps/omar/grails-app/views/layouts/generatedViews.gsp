@@ -12,10 +12,10 @@
   <meta content="yes" name="apple-mobile-web-app-capable"/>
   <meta content="minimum-scale=1.0, width=device-width, user-scalable=no" name="viewport"/>
 
-  <link rel="stylesheet" type="text/css" href="${omar.bundle(contentType: 'text/css', files: [
-      resource(dir: 'css', file: 'main.css'),
-      resource(dir: 'css', file: 'omar-2.0.css')
-  ])}"/>
+  <omar:bundle contentType="css" files="${[
+      [dir: 'css', file: 'main.css'],
+      [dir: 'css', file: 'omar-2.0.css']
+  ]}"/>
 
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
@@ -37,13 +37,12 @@
   <omar:securityClassificationBanner/>
 </div>
 
-<script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
-    resource(dir: "js", file: "application.js"),
-    resource(plugin: "richui", dir: "js/yui/yahoo-dom-event", file: "yahoo-dom-event.js"),
-    resource(plugin: "richui", dir: "js/yui/element", file: "element-min.js"),
-    resource(plugin: "richui", dir: "js/yui/layout", file: "layout-min.js")
-])}'></script>
-
+<omar:bundle contentType="javascript" files="${[
+    [dir: 'js', file: 'application.js'],
+    [plugin: 'richui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+    [plugin: 'richui', dir: 'js/yui/element', file: 'element-min.js'],
+    [plugin: 'richui', dir: 'js/yui/layout', file: 'layout-min.js']
+]}"/>
 
 <g:javascript>
   (function()
