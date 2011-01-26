@@ -56,7 +56,6 @@
     bottom:0;
     height:20px;
     width:100%;
-
   }
   </style>
   <title><g:layoutTitle default="Grails"/></title>
@@ -105,9 +104,9 @@
     var centerDiv  = Dom.get("center");
     var footer     = Dom.get("footer");
     // IE6 seems to do better to use the root content div and then adjust everyone from  that
-    var headerHeight     = header.offsetHeight + top.offsetHeight;
-    var footerHeight     = footer.offsetHeight;
-    var centerHeight     = viewportHeight - headerHeight - footerHeight;
+    var top     = top.offsetTop+top.offsetHeight;
+    var bottom  = footer.offsetTop;
+    var centerHeight     = Math.abs(bottom-top);
     centerDiv.style.height = centerHeight + "px";
     centerDiv.style.width  = "100%";
   }

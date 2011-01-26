@@ -128,16 +128,15 @@
     Event.onDOMReady( function()
     {
       var mapDiv = Dom.get("map");
-      bodyOnResize(false);
+      bodyOnResize();
       init();
-      bodyOnResize(true);
+      bodyOnResize();
     });
   })();
   bodyOnResize = function(changeMapSizeFlag)
   {
     var Dom = YAHOO.util.Dom;
     var width  = Dom.getViewportWidth();
-    var height = Dom.getViewportHeight();
     var leftDiv = Dom.get("left");
     var mapDiv = Dom.get("map");
     var topDiv = Dom.get("top");
@@ -146,9 +145,12 @@
     var header = Dom.get("header");
     var middleDiv = Dom.get("middle");
 
-    middleDiv.style.height = height - (header.offsetHeight + footer.offsetHeight + topDiv.offsetHeight) + "px";
-    mapDiv.style.width     = (width - leftDiv.offsetWidth ) +"px";
-    mapDiv.style.height    = (middle.offsetHeight    - (toolbarRow.offsetHeight))+ "px";
+    var top = topDiv.offsetTop+topDiv.offsetHeight;
+    var bottom = footer.offsetTop;
+    var middleHeight = Math.abs(bottom-top);
+    middleDiv.style.height =  middleHeight + "px";
+    mapDiv.style.width     = (width - (leftDiv.offsetLeft+leftDiv.offsetWidth )) +"px";
+    mapDiv.style.height    = (middleHeight - (Math.abs(toolbarRow.offsetTop + toolbarRow.offsetHeight))) +"px";
 
     if(changeMapSizeFlag)
     {

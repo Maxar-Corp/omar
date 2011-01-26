@@ -65,7 +65,7 @@
 
 </head>
 <body class="yui-skin-sam" onresize="bodyOnResize();">
-<content tag="north">
+<content tag="top">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
     <span class="menuButton">
@@ -100,8 +100,6 @@
     <div class="message">${flash.message}</div>
   </g:if>
   --%>
-</content>
-<content tag="south">
 </content>
 
 <openlayers:loadJavascript/>
