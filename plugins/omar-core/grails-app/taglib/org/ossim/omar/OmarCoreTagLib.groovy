@@ -53,10 +53,37 @@ class OmarCoreTagLib
     }
   }
 
-  def bundle = { attrs, body ->
-    def files = attrs.files
+  def bundle = { attrs ->
 
-    out << createLink(controller: 'compressor', action: 'compress',
-            params: [files: files.join(','), contentType: attrs.contentType])
+    //println attrs
+
+    def files = attrs['files']
+    def contentType = attrs.contentType
+    def disableBundle = grailsApplication.config.disableBundle ?: true
+
+    if ( disableBundle )
+    {
+      switch ( contentType )
+      {
+      case "css":
+        files?.each { file ->
+          //println "file: ${file}"
+          out << """<link rel="stylesheet" href="${resource(file)}"/>\n""".toString()
+        }
+        break
+      case "javascript":
+        files?.each { file ->
+          out << """<script type="text/javascript" src="${resource(file)}"></script>\n""".toString()
+        }
+        break
+      default:
+        println "Unknown contentType"
+      }
+    }
+    else
+    {
+      out << createLink(controller: 'compressor', action: 'compress',
+              params: [files: files.join(','), contentType: contentType])
+    }
   }
 }
