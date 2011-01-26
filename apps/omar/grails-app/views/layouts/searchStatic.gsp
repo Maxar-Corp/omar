@@ -34,14 +34,16 @@
   {
     height:100%;
     min-height:100%;
-    margin-bottom:0px ;
+    margin-bottom:-20px ;
   }
   #middle
   {
     position:relative;
     top:0px;
-    height:80%;
+    height:100%;
     width:100%;
+    margin-top:0px;
+    margin-bottom:0px;
   }
   #left
   {
@@ -63,6 +65,7 @@
     overflow-x:hidden;
     overflow-y:auto;
   }
+
   #center
   {
     position:absolute;
@@ -76,31 +79,25 @@
     top:0;
     width:100%;
   }
-  .footer{
+  #footer{
     position:absolute;
-    width:100%;
     height:20px;
+    width:100%;
     bottom:0px;
+    border-top:0px;
   }
-  .h1
-  {
-   width:100%;
-    height:100%;
+  #mouseRow{
+    font-size:12px;
   }
-  .nav{
-      font-size:14px;
-  }
-
   </style>
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
 </head>
 <body class="${pageProperty(name: 'body.class')}" onresize="${pageProperty(name: 'body.onresize')}">
-
-<div id="content">
+<div id="content" class="content">
 
 <div id="header" class="header">
-  <omar:securityClassificationBanner/>
+  <omar:securityClassificationBanner fontSize="20px"/>
 </div>
 <div id="top" class="top">
   <g:pageProperty name="page.top"/>
@@ -123,10 +120,10 @@
       </tr>
     </table>
     <table>
-      <tr id="mouseRow">
-        <td width="200px"><div id="mouseHoverDdOutput">&nbsp;</div></td>
-        <td width="200px"><div id="mouseHoverDmsOutput">&nbsp;</div></td>
-        <td width="200px"><div id="mouseHoverMgrsOutput">&nbsp;</div></td>
+      <tr id="mouseRow" class="mouseRow">
+        <td width="33%"><div id="mouseHoverDdOutput">&nbsp;</div></td>
+        <td width="33%"><div id="mouseHoverDmsOutput">&nbsp;</div></td>
+        <td width="33%"><div id="mouseHoverMgrsOutput">&nbsp;</div></td>
       </tr>
     </table>
     <g:pageProperty name="page.center"/>
@@ -135,9 +132,9 @@
     <g:pageProperty name="page.right"/>
   </div>
 </div>
-  <div id="footer" class="footer">
-    <omar:securityClassificationBanner/>
-  </div>
+<div id="footer">
+  <g:pageProperty name="page.footer"/>
+  <omar:securityClassificationBanner fontSize="20px"/>
 </div>
 
 
@@ -153,9 +150,9 @@
     var Event = YAHOO.util.Event;
     Event.onDOMReady( function()
     {
-      bodyOnResize(false);
+      bodyOnResize();
       init();
-      bodyOnResize(true);
+      bodyOnResize();
     });
   })();
   bodyOnResize = function(changeMapSizeFlag)
@@ -173,14 +170,17 @@
     var header = Dom.get("header");
     var middleDiv = Dom.get("middle");
 
-
     //middleDiv.style.top = (topDiv.offsetHeight+header.offsetHeight) + "px";
     // IE6 seems to do better to use the root content div and then adjust everyone from  that
+    var middleHeight = Math.abs(footer.offsetTop - (topDiv.offsetTop+topDiv.offsetHeight));
+    middleDiv.style.height = middleHeight+ "px";
 
-    middleDiv.style.height = Dom.getViewportHeight() - (header.offsetHeight + footer.offsetHeight + topDiv.offsetHeight) + "px";
-    mapDiv.style.width     = (Dom.getViewportWidth() - (leftDiv.offsetWidth + rightDiv.offsetWidth)) +"px";
-    mapDiv.style.height    = (middle.offsetHeight    - (toolbarRow.offsetHeight+mouseRow.offsetHeight))+ "px";
 
+    var mapWidth     = Math.abs(rightDiv.offsetLeft-(leftDiv.offsetLeft+leftDiv.offsetWidth));
+    var mapHeight    = middleHeight - (toolbarRow.offsetHeight + mouseRow.offsetHeight);
+
+    mapDiv.style.width     = mapWidth +"px";
+    mapDiv.style.height    = mapHeight + "px";
     if(changeMapSizeFlag)
     {
       mapWidget.changeMapSize();
