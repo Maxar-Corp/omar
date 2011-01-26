@@ -357,3 +357,8 @@ tomcat {
           localhost: [url: "http://localhost:8080/manager", username: "tomcat", password: "s3cret"]
   ]
 }
+
+bundle {
+  combine = true
+  compress = true
+}
