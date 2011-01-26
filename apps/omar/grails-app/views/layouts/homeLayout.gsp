@@ -11,16 +11,24 @@
 <head>
   <title><g:layoutTitle default="Grails"/></title>
 
-  <link rel="stylesheet" type="text/css" href="${omar.bundle(contentType: "text/css", files: [
+ <%--
+  <link rel="stylesheet" href="${omar.bundle(contentType: 'text/css', files: [
       resource(dir: 'css', file: 'main.css'),
-      resource(dir: 'css', file: 'omar-2.0.css'),
+      resource(dir: 'css', file: 'omar-2.0.css')
   ])}"/>
+  --%>
+  <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
+  <link rel="stylesheet" href="${resource(dir: 'css', file: 'omar-2.0.css')}"/>
+  <g:javascript plugin="richui" src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
+  <g:javascript plugin="richui" src="yui/element/element-min.js"/>
+
+  <%--
   <script type="text/javascript" src="${omar.bundle(contentType: "text/javascript", files: [
       resource(plugin: "richui", dir: "js/yui/yahoo-dom-event", file: "yahoo-dom-event.js"),
       resource(plugin: "richui", dir: "js/yui/element", file: "element-min.js"),
       resource(plugin: "richui", dir: "js/yui/layout", file: "layout-min.js"),
   ])}"></script>
-
+   --%>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
@@ -33,16 +41,35 @@
     CSS treatments.
     */
 
-  body {
-    margin: 0;
-    padding: 0;
-    text-align:left;
-    overflow-y:hidden;
-    overflow-x:hidden;
-  }
-  #center{
-    overflow-y:auto;
+  body{
     height:100%;
+    width:100%;
+    text-align:left;
+    margin:0;
+    padding:0;
+    overflow-y:hidden;
+  }
+  #header
+  {
+    width:100%;
+  }
+  #top
+  {
+    width:100%;
+  }
+  #center
+  {
+    height:100%;
+    width:100%;
+    overflow-x:auto;
+    overflow-y:auto;
+  }
+  #footer
+  {
+    position:absolute;
+    bottom:0;
+    height:20px;
+    width:100%;
   }
   /* Set the background color */
   .yui-skin-sam .yui-layout {
@@ -53,24 +80,14 @@
   .yui-skin-sam .yui-layout .yui-layout-unit div.yui-layout-bd {
     background-color: #FFFFFF;
   }
-  header{
-    position:absolute;
-    height:20px;
-    width:100%;
-  }
-  footer{
-    position:absolute;
-    bottom:0px;
-    height:20px;
-    width:100%;
-  }
   </style>
 
   <g:layoutHead/>
   <g:javascript library="application"/>
 </head>
 <body class="yui-skin-sam" onresize="bodyOnResize();">
-<div id="header">
+
+<div id="header" class="header">
   <omar:securityClassificationBanner/>
 </div>
 <div id="top">
@@ -79,7 +96,7 @@
 <div id="center">
   <g:pageProperty name="page.center"/>
 </div>
-<div id="footer">
+<div id="footer" class="footer">
   <omar:securityClassificationBanner/>
 </div>
 <g:layoutBody/>
@@ -100,6 +117,7 @@
 
   function bodyOnResize()
   {
+    /*
     var Dom = YAHOO.util.Dom;
     var centerDiv = Dom.get("center");
     var contentDiv = Dom.get("content");
@@ -107,8 +125,21 @@
     var headerDiv = Dom.get("header");
     var footerDiv = Dom.get("footer");
     var height = Dom.getViewportHeight();
-    var centerHeight =  (height- (topDiv.offsetHeight + headerDiv.offsetHeight + footerDiv.offsetHeight)) ;
+    var centerHeight =  (contentDiv.offsetHeight- (topDiv.offsetHeight + headerDiv.offsetHeight + footerDiv.offsetHeight)) ;
     centerDiv.style.height = centerHeight + "px";//(height - (topDiv.offsetHeight + headerDiv.offsetHeight + footerDiv.offsetHeight)) + "px";
+*/
+    var Dom = YAHOO.util.Dom;
+    var header     = Dom.get("header");
+    var top        = Dom.get("top");
+    var centerDiv  = Dom.get("center");
+    var footer     = Dom.get("footer");
+    // IE6 seems to do better to use the root content div and then adjust everyone from  that
+    var top     = top.offsetTop+top.offsetHeight;
+    var bottom  = footer.offsetTop;
+    var centerHeight     = Math.abs(bottom-top);
+    centerDiv.style.height = centerHeight + "px";
+    centerDiv.style.width  = "100%";
+
   }
 </g:javascript>
 
