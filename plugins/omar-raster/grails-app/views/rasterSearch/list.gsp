@@ -50,14 +50,14 @@
 <g:javascript plugin='richui' src='yui/datatable/datatable-min.js'/>
 --%>
 
-<script type="text/javascript" src="${omar.bundle(contentType: 'text/javascript', files: [
-    resource(plugin: 'richui', dir: 'js/yui/connection', file: 'connection-min.js'),
-    resource(plugin: 'richui', dir: 'js/yui/json', file: 'json-min.js'),
-    resource(plugin: 'richui', dir: 'js/yui/paginator', file: 'paginator-min.js'),
-    resource(plugin: 'richui', dir: 'js/yui/datasource', file: 'datasource-min.js'),
-    resource(plugin: 'richui', dir: 'js/yui/datatable', file: 'datatable-min.js'),
-    resource(plugin: 'richui', dir: 'js/yui/button', file: 'button-min.js')    
-])}"></script>
+<omar:bundle contentType="javascript" files="${[
+    [plugin: 'richui', dir: 'js/yui/connection', file: 'connection-min.js'],
+    [plugin: 'richui', dir: 'js/yui/json', file: 'json-min.js'],
+    [plugin: 'richui', dir: 'js/yui/paginator', file: 'paginator-min.js'],
+    [plugin: 'richui', dir: 'js/yui/datasource', file: 'datasource-min.js'],
+    [plugin: 'richui', dir: 'js/yui/datatable', file: 'datatable-min.js'],
+    [plugin: 'richui', dir: 'js/yui/button', file: 'button-min.js']
+]}"/>
 
 <g:javascript>
     YAHOO.widget.DataTable.Formatter.thumbnail = function( elLiner, oRecord, oColumn, oData )

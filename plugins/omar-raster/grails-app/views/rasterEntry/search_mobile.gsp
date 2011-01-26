@@ -30,59 +30,64 @@
 
 </body>
 
-<script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
-        resource(plugin: "openlayers", dir: "js", file: "OpenLayers.js"),
-        resource(plugin: 'omar-core', dir: 'js', file: 'jquery.js'),
-        resource(plugin: 'omar-core', dir: 'js', file: 'MultitouchHandler.js'),
-        resource(plugin: 'omar-core', dir: 'js', file: 'MultitouchNavigation.js')
-])}'></script>
+<omar:bundle contentType="text/javascript" files="${[
+        [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js'],
+        [plugin: 'omar-core', dir: 'js', file: 'jquery.js'],
+        [plugin: 'omar-core', dir: 'js', file: 'MultitouchHandler.js'],
+        [plugin: 'omar-core', dir: 'js', file: 'MultitouchNavigation.js']
+]}"/>
 
 <script type="text/javascript">
   var map = null;
 
-  function init() {
-    map = new OpenLayers.Map('map', {controls: []});
+  function init()
+  {
+    map = new OpenLayers.Map( 'map', {controls: []} );
 
-    <g:each var="base" in="${baseWMS}">
-      var baseLayer = new OpenLayers.Layer.WMS("${base.title}", "${base.url}",
-      {layers: "${base.layers}", format: "${base.format}"},
-      {isBaseLayer: true, buffer: 0, transitionEffect: "resize"});
-      map.addLayer(baseLayer);
-      map.setBaseLayer(baseLayer);
-    </g:each>
+  <g:each var="base" in="${baseWMS}">
+    var baseLayer = new OpenLayers.Layer.WMS( "${base.title}", "${base.url}",
+    {layers: "${base.layers}", format: "${base.format}"},
+    {isBaseLayer: true, buffer: 0, transitionEffect: "resize"} );
+    map.addLayer( baseLayer );
+    map.setBaseLayer( baseLayer );
+  </g:each>
 
-    var dataLayer = new OpenLayers.Layer.WMS("${dataWMS.title}", "${dataWMS.url}",
+    var dataLayer = new OpenLayers.Layer.WMS( "${dataWMS.title}", "${dataWMS.url}",
     {layers: "${dataWMS.layers}", styles: "${dataWMS.styles}", format: "${dataWMS.format}", transparent: true},
-    {isBaseLayer: false, buffer: 0, visibility: true, transitionEffect: "resize"});
-    map.addLayer(dataLayer);
+    {isBaseLayer: false, buffer: 0, visibility: true, transitionEffect: "resize"} );
+    map.addLayer( dataLayer );
 
     map.zoomToMaxExtent();
     map.zoomIn(); // hack for demo purposes...
 
     var touchControl = new OpenLayers.Control.MultitouchNavigation();
-	map.addControl(touchControl);
+    map.addControl( touchControl );
   }
 
-  function zoomIn() {
+  function zoomIn()
+  {
     map.zoomIn();
   }
 
-  function zoomOut() {
+  function zoomOut()
+  {
     map.zoomOut();
   }
 
-  function zoomMaxExtent() {
+  function zoomMaxExtent()
+  {
     map.zoomToMaxExtent();
   }
 
-  function search() {
+  function search()
+  {
     document.searchForm.action = "search_mobile";
 
     var bounds = map.getExtent();
-    document.getElementById('viewMinLon').value = bounds.left;
-    document.getElementById('viewMaxLat').value = bounds.top;
-    document.getElementById('viewMaxLon').value = bounds.right;
-    document.getElementById('viewMinLat').value = bounds.bottom;
+    document.getElementById( 'viewMinLon' ).value = bounds.left;
+    document.getElementById( 'viewMaxLat' ).value = bounds.top;
+    document.getElementById( 'viewMaxLon' ).value = bounds.right;
+    document.getElementById( 'viewMinLat' ).value = bounds.bottom;
 
     document.searchForm.submit();
   }
