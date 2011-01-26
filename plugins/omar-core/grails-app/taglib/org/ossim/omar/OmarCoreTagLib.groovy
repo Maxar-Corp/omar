@@ -59,9 +59,9 @@ class OmarCoreTagLib
 
     def files = attrs['files']
     def contentType = attrs.contentType
-    def disableBundle = grailsApplication.config.disableBundle ?: true
+    def combine = grailsApplication.config.bundle.combine
 
-    if ( disableBundle )
+    if ( !combine )
     {
       switch ( contentType )
       {
@@ -82,8 +82,22 @@ class OmarCoreTagLib
     }
     else
     {
-      out << createLink(controller: 'compressor', action: 'compress',
-              params: [files: files.join(','), contentType: contentType])
+      def compress = grailsApplication.config.bundle.compress
+
+      files = files.collect { resource(it) }
+
+      def link = createLink(controller: 'compressor', action: 'compress',
+              params: [files: files.join(','), contentType: contentType, compress: compress])
+
+      switch ( contentType )
+      {
+      case "css":
+        out << """<link rel="stylesheet" href="${link}"/>\n""".toString()
+        break
+      case "javascript":
+        out << """<script type="text/javascript" src="${link}"></script>\n""".toString()
+        break
+      }
     }
   }
 }

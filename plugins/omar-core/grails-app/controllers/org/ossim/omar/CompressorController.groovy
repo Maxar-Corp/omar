@@ -15,20 +15,20 @@ class CompressorController
     def acceptEncoding = request.getHeader('Accept-Encoding')
     def outputStream = null
 
-//    if ( acceptEncoding?.contains('gzip') )
-//    {
-//      outputStream = new GZIPOutputStream(response.outputStream)
-//      response.setHeader("Content-Encoding", "gzip");
-//      response.setHeader("Vary", "Accept-Encoding");
-//    }
-//    else
-//    {
+    if ( acceptEncoding?.contains('gzip') && params.compress )
+    {
+      outputStream = new GZIPOutputStream(response.outputStream)
+      response.setHeader("Content-Encoding", "gzip");
+      response.setHeader("Vary", "Accept-Encoding");
+    }
+    else
+    {
       outputStream = response.outputStream
-//    }
+    }
 
     def buffer = compressorService.bundleFiles(servletContext, files)
 
-    response.contentType = params.contentType
+    response.contentType = "text/${params.contentType}"
     outputStream << buffer
     outputStream.flush()
     outputStream.close()
