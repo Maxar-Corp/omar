@@ -7,10 +7,10 @@
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
-  <script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
-          resource(plugin: "omar-core", dir: "js", file: "mapwidget.js"),
-          resource(plugin: "omar-core", dir: "js", file: "coordinateConversion.js")
-      ])}'></script>
+  <omar:bundle contentType="javascript" files="${[
+          [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
+          [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
+      ]}"/>
 </head>
 
 <body class="yui-skin-sam" onresize="bodyOnResize();">
@@ -363,11 +363,11 @@
   <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
 </content>
 
-<script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
-    resource(plugin: "openlayers", dir: "js", file: "OpenLayers.js"),
-    resource(plugin: "omar-core", dir: "js", file: "mapwidget.js"),
-    resource(plugin: "omar-core", dir: "js", file: "coordinateConversion.js")
-])}'></script>
+<omar:bundle contentType="javascript" files="${[
+    [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js'],
+    [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
+    [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
+]}"/>
 
 <g:javascript>
   var mapWidget = new MapWidget();
