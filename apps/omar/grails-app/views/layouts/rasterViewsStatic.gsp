@@ -12,6 +12,7 @@
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
+  <g:javascript src="application.js"/>
   <g:javascript plugin="richui" src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
   <g:javascript plugin="richui" src="datechooser/datechooser.js"/>
   <g:javascript plugin="richui" src="yui/calendar/calendar-min.js"/>
