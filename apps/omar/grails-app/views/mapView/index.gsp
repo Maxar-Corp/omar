@@ -10,6 +10,12 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
+  <openlayers:loadJavascript/>
+  <omar:bundle contentType="javascript" files="${[
+       [plugin: 'omar-core', dir:'js', file: 'coordinateConversion.js'],
+       [plugin: 'omar-core', dir:'js', file: 'touch.js']
+   ]}"/>
+
 
   <style type="text/css">
 
@@ -166,14 +172,6 @@
 <content tag="middle">
 </content>
 
-
-<openlayers:loadJavascript/>
-
-
-<script type="text/javascript" src="${omar.bundle(contentType: 'text/javascript', files: [
-    resource(plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js'),
-    resource(plugin: 'omar-core', dir: 'js', file: 'touch.js')
-])}"></script>
 
 
 <g:javascript>
