@@ -6,10 +6,10 @@
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
-  <script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
-          resource(plugin: "omar-core", dir: "js", file: "mapwidget.js"),
-          resource(plugin: "omar-core", dir: "js", file: "coordinateConversion.js")
-      ])}'></script>
+  <omar:bundle contentType="javascript" files="${[
+          [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
+          [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
+      ]}"/>
 </head>
 
 <body class="yui-skin-sam" onresize="bodyOnResize();">
