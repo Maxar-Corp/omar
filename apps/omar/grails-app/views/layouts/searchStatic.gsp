@@ -150,7 +150,7 @@
     var Event = YAHOO.util.Event;
     Event.onDOMReady( function()
     {
-      bodyOnResize();
+      bodyOnResize(false);
       init();
       bodyOnResize();
     });
@@ -174,13 +174,13 @@
     // IE6 seems to do better to use the root content div and then adjust everyone from  that
     var middleHeight = Math.abs(footer.offsetTop - (topDiv.offsetTop+topDiv.offsetHeight));
     middleDiv.style.height = middleHeight+ "px";
-
-
     var mapWidth     = Math.abs(rightDiv.offsetLeft-(leftDiv.offsetLeft+leftDiv.offsetWidth));
     var mapHeight    = middleHeight - (toolbarRow.offsetHeight + mouseRow.offsetHeight);
 
     mapDiv.style.width     = mapWidth +"px";
     mapDiv.style.height    = mapHeight + "px";
+
+
     if(changeMapSizeFlag)
     {
       mapWidget.changeMapSize();
