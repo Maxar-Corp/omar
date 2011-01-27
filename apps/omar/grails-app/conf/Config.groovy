@@ -66,7 +66,7 @@ environments {
   }
   production {
     databaseName = "omardb-${appVersion}-prod"
-    grails.serverURL = "http://${grails.serverIP}/${appName}"
+    grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
   }
 }
 
@@ -76,6 +76,7 @@ log4j = {
   // appender:
   //
   appenders {
+
     appender new org.ossim.omar.DbAppender(name: "wmsLoggingAppender",
             threshold: org.apache.log4j.Level.INFO,
             tableMapping: [width: ":width", height: ":height", layers: ":layers", styles: ":styles",
@@ -85,6 +86,7 @@ log4j = {
                     geometry: "ST_GeomFromText(:geometry, 4326)"],
             tableName: "wms_log"
     )
+
     appender new org.apache.log4j.DailyRollingFileAppender(name: "omarDataManagerAppender",
             datePattern: "'.'yyyy-MM-dd",
             file: "/tmp/logs/omarDataManagerAppender.log",
@@ -117,7 +119,7 @@ log4j = {
 
 /** *********************************************************************************************************/
 wms {
-  referenceDataDirectory = referenceDataDirectory ?: "/data/omar"
+  referenceDataDirectory = "/data/omar"
   mapServExt =  (System.properties['os.name'].startsWith('Windows')) ? ".exe" : ""
   serverAddress = grails.serverIP
   useTileCache = false
@@ -359,6 +361,6 @@ tomcat {
 }
 
 bundle {
-  combine = true
-  compress = true
+  combine  = false
+  compress = false
 }
