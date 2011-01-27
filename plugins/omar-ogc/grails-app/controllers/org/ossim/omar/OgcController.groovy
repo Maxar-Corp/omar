@@ -119,6 +119,7 @@ class OgcController
 
       response.contentType = wmsRequest.format
       ImageIO.write(image, formatName, response.outputStream)
+      response.outputStream.close()
     }
     catch (java.lang.Exception e)
     {
@@ -203,11 +204,13 @@ class OgcController
               writer.output = ImageIO.createImageOutputStream(response.outputStream)
               def iioimage = new IIOImage(image, [], null)
               writer.write(writer.getDefaultStreamMetadata(writeParam), iioimage, writeParam)
+              writer.output.close()
             }
           }
           else
           {
             ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
+            response.outputStream.close()
           }
         }
 
@@ -303,8 +306,7 @@ class OgcController
         }
         else
         {
-          or
-          {
+          or {
             eq('indexId', name)
             eq('title', name)
           }
