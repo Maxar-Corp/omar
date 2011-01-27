@@ -5,22 +5,23 @@
   body {
     margin: 0;
     padding: 0;
-  visibility: visible;
+    visibility: visible;
   }
   </style>
-  <link rel="stylesheet" href="${omar.bundle(contentType: 'text/css', files: [
-      resource(dir: 'css', file: 'main.css'),
-      resource(dir: 'css', file: 'omar-2.0.css')
-  ])}"/>
+  <omar:bundle contentType="css" files="${[
+      [dir: 'css', file: 'main.css'],
+      [dir: 'css', file: 'omar-2.0.css']
+  ]}"/>
 
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
-  <script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
-      resource(plugin: "richui", dir: "js/yui/yahoo-dom-event", file: "yahoo-dom-event.js"),
-      resource(plugin: "richui", dir: "js/datechooser", file: "datechooser.js"),
-      resource(plugin: "richui", dir: "js/yui/calendar", file: "calendar-min.js")
-  ])}'></script>
+  <omar:bundle contentType="javascript" files="${[
+      [dir:'js', file: 'application.js'],
+      [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+      [plugin:'richui' , dir:'js/yui/layout', file: 'layout-min.js'],
+      [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js']
+  ]}"/>
 
   <g:layoutHead/>
 </head>
