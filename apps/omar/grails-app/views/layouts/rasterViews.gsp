@@ -28,7 +28,7 @@
       [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
       [plugin:'richui' , dir:'js/yui/element', file: 'dragdrop-min.js'],
       [plugin:'richui' , dir:'js/yui/element', file: 'resize-min.js'],
-      [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js']
+      [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
       [plugin:'richui' , dir:'js/yui/tabview/', file: 'layout-min.js']
   ]}"/>
 
