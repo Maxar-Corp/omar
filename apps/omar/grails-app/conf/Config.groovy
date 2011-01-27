@@ -284,7 +284,7 @@ rasterEntry {
 
 videoDataSet {
   searchTagData = [
-          [name: "otherTagsXml.filename=", description: "Feed"]
+          [name: "filename", description: "Feed"]
   ]
 }
 
