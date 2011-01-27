@@ -126,7 +126,7 @@
     Event.onDOMReady( function()
     {
       var mapDiv = Dom.get("map");
-      bodyOnResize();
+      bodyOnResize(false);
       init();
       bodyOnResize();
     });
@@ -149,9 +149,9 @@
     middleDiv.style.height =  middleHeight + "px";
     mapDiv.style.width     = (width - (leftDiv.offsetLeft+leftDiv.offsetWidth )) +"px";
     mapDiv.style.height    = (middleHeight - (Math.abs(toolbarRow.offsetTop + toolbarRow.offsetHeight))) +"px";
-
     if(changeMapSizeFlag)
     {
+
       if(map) changeMapSize(mapDiv.style.width, mapDiv.style.height);
     }
    // mapWidget.changeMapSize()
