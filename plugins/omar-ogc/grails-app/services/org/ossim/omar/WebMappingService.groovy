@@ -242,7 +242,7 @@ class WebMappingService
         //def rasterEntry = RasterEntry.get(it)
         if ( rasterEntry != null )
         {
-          rasterEntry.adjustAccessTimeIfNeeded(24) // adjust every 24 hours
+          //rasterEntry.adjustAccessTimeIfNeeded(24) // adjust every 24 hours
           def file = new File(rasterEntry?.mainFile.name)
 
           if ( !file.exists() )
