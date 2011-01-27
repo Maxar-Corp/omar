@@ -45,6 +45,26 @@ class VideoDataSetQuery extends BaseQuery
       result.add(range)
     }
 
+    searchTagNames?.size()?.times {i ->
+      String name = searchTagNames[i]
+      String value = searchTagValues[i]
+
+      if ( name && value )
+      {
+        def results = Utility.parseSearchTag(name, value)
+
+        if ( results["property"] == "otherTagsXml" )
+        {
+          String tag = results["tag"].trim()
+          String content = results["content"].trim()
+          result.add(Restrictions.ilike("otherTagsXml", "%<${tag}>%${content}%</${tag}>%"))
+        }
+        else
+        {
+          result.add(Restrictions.ilike(results["property"], results['value'], MatchMode.ANYWHERE))
+        }
+      }
+    }
     result
   }
 
