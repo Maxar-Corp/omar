@@ -16,17 +16,6 @@
       [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
       [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js']
   ]}"/>
-<%--
-<script type='text/javascript' src='${omar.bundle(contentType: "text/javascript", files: [
-    resource(dir: "js", file: "application.js"),
-    resource(plugin: "richui", dir: "js/yui/yahoo-dom-event", file: "yahoo-dom-event.js"),
-    resource(plugin: "richui", dir: "js/datechooser", file: "datechooser.js"),
-    resource(plugin: "richui", dir: "js/yui/calendar", file: "calendar-min.js"),
-    resource(plugin: "richui", dir: "js/yui/element", file: "element-min.js"),
-    resource(plugin: "richui", dir: "js/yui/tabview", file: "tabview-min.js")
-])}'>
-  </script>
---%>
 
   <style>
   body{
