@@ -26,11 +26,14 @@ class RasterEntrySearchService implements InitializingBean
 
   List<RasterEntryQuery> runQuery(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
+    def max = null;
+    if(params?.max!=null)  max = (params.max as Integer);
+    if(max<1) return null;
     def criteriaBuilder = RasterEntry.createCriteria();
     def x = {
-      if ( params?.max )
+      if ( max )
       {
-        setMaxResults(params.max as Integer)
+        setMaxResults(max)
       }
       if ( params?.offset )
       {
@@ -75,12 +78,15 @@ class RasterEntrySearchService implements InitializingBean
 
   List<Polygon> getGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
-    def criteriaBuilder = RasterEntry.createCriteria();
+    def max = null;
+    if(params?.max!=null)  max = (params.max as Integer);
+    if(max<1) return null;
+     def criteriaBuilder = RasterEntry.createCriteria();
     def x =
     {
       projections { property("groundGeom") }
       firstResult(params.offset as Integer)
-      maxResults(params.max as Integer)
+      maxResults(max)
       cacheMode(CacheMode.GET)
     }
     def criteria = criteriaBuilder.buildCriteria(x)
@@ -113,14 +119,17 @@ class RasterEntrySearchService implements InitializingBean
 
   void scrollGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params, Closure closure)
   {
-    def criteriaBuilder = RasterEntry.createCriteria();
+    def max = null;
+    if(params?.max)  max = (params.max as Integer);
+    if(max<1) return;
+     def criteriaBuilder = RasterEntry.createCriteria();
 
     def x = {
       projections { property("groundGeom") }
 
-      if ( params?.max )
+      if ( max )
       {
-        maxResults(params.max as Integer)
+        maxResults(max)
       }
 
       if ( params?.offset )
