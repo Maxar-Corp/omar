@@ -56,7 +56,6 @@
    center{
      position:relative;
      width:100%;
-     height:100%;
    }
   footer{
     position:absolute;
@@ -98,7 +97,19 @@
     var Event = YAHOO.util.Event;
     Event.onDOMReady( function()
     {
+       bodyOnResize();
     } );
   })();
+  bodyOnResize = function()
+  {
+    var Dom = YAHOO.util.Dom;
+    var top = Dom.get("top");
+    var header = Dom.get("header");
+    var footer = Dom.get("footer");
+    var center = Dom.get("center");
+
+    center.style.height = Math.abs(footer.offsetTop - (top.offsetTop+top.offsetHeight));
+
+  }
 </g:javascript>
 </html>

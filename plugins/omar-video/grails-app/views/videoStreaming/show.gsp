@@ -19,17 +19,20 @@
   <title>OMAR Streaming Video</title>
 </head>
 <body>
+
 <content tag="top">
+  <div class="nav">
+    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
+    <span class="menuButton"><a href='${createLink(dir: "videoStreaming", action: "getKML", id: params.id)}'>Generate KML</a></span>
+  </div>
+  <%--
   <div id="hd">
     <img id="logo" src="${resource(contextPath: "/", dir: 'images', file: 'OMARLarge.png')}" alt="OMAR-2.0 Logo"/>
   </div>
+  --%>
 </content>
 
 <content tag="center">
-  <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
-    <span class="menuButton"><a href='${createLink(dir: "videoStreaming", action: "getKML", id: params.id)}'>Generate KML</a></span>
-  </div>
   <div class="body">
     <h1>${title}</h1>
     <g:if test="${flash.message}">
