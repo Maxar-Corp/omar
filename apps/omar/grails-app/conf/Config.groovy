@@ -16,9 +16,10 @@ grails.gorm.default.mapping = {
 }
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
+grails.config.locations = []
 if ( System.env.OMAR_CONFIG )
 {
-  grails.config.locations = ["file:${System.env.OMAR_CONFIG}"]
+  grails.config.locations << "file:${System.env.OMAR_CONFIG}"
 }
 
 // grails.config.locations = [ "classpath:${appName}-config.properties",
@@ -52,7 +53,8 @@ grails.converters.encoding = "UTF-8"
 
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
-grails.serverIP = InetAddress.localHost.hostAddress
+//grails.serverIP = InetAddress.localHost.hostAddress
+grails.serverIP = "10.0.10.23"
 
 // set per-environment serverURL stem for creating absolute links
 environments {
