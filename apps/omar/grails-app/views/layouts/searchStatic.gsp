@@ -76,18 +76,23 @@
   }
   #header{
     position:relative;
+    font-size:20px;
     top:0;
     width:100%;
   }
   #footer{
     position:absolute;
-    height:20px;
+    font-size:20px;
     width:100%;
     bottom:0px;
     border-top:0px;
   }
   #mouseRow{
     font-size:12px;
+  }
+  #map{
+    width:100%;
+    height:100%;
   }
   </style>
   <title><g:layoutTitle default="Grails"/></title>
@@ -157,7 +162,6 @@
   })();
   bodyOnResize = function(changeMapSizeFlag)
   {
-
     var Dom = YAHOO.util.Dom;
     var contentDiv = Dom.get("content");
     var leftDiv = Dom.get("left");

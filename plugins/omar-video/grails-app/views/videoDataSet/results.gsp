@@ -30,6 +30,28 @@
          }
        }
     };
+    var bottomHeight = 66;
+    if(${totalCount} == 0)
+    {
+        bottomHeight = 46;
+    }
+
+    function updateOffset()
+    {
+        var max = document.getElementById("max").value;
+        var pages = Math.ceil(${totalCount ?: 0} / max);
+
+        if(document.getElementById("pageOffset").value >= 1 && document.getElementById("pageOffset").value <= pages)
+        {
+            document.getElementById("offset").value = (document.getElementById("pageOffset").value - 1) * document.getElementById("max").value;
+	        document.paginateForm.action = "results";
+            document.paginateForm.submit();
+        }
+        else
+        {
+            alert("Input must be between 1 and " + pages + ".");
+        }
+    }
   </g:javascript>
 
   <resource:tabView/>
@@ -157,30 +179,6 @@
       </richui:tabContents>
     </richui:tabView>
   </content>
-  <g:javascript>
-    var bottomHeight = 66;
-    if(${totalCount} == 0)
-    {
-        bottomHeight = 46;
-    }
-
-    function updateOffset()
-    {
-        var max = document.getElementById("max").value;
-        var pages = Math.ceil(${totalCount ?: 0} / max);
-
-        if(document.getElementById("pageOffset").value >= 1 && document.getElementById("pageOffset").value <= pages)
-        {
-            document.getElementById("offset").value = (document.getElementById("pageOffset").value - 1) * document.getElementById("max").value;
-	        document.paginateForm.action = "results";
-            document.paginateForm.submit();
-        }
-        else
-        {
-            alert("Input must be between 1 and " + pages + ".");
-        }
-    }
-  </g:javascript>
 
 </body>
 </html>
