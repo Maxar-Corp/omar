@@ -27,11 +27,14 @@
     overflow-y:hidden;
     overflow-x:hidden;
   }
+  #map{
+    width:100%;
+  }
   #content
   {
     height:100%;
     min-height:100%;
-    margin-bottom:-20px
+    margin-bottom:-20px;
   }
   #left
   {
@@ -53,17 +56,23 @@
   {
     position:relative;
     top:0px;
-    height:80%;
+    height:100%;
     width:100%;
+    margin-top:0px;
+    margin-bottom:0px;
   }
   #header{
     position:relative;
+    font-size:12px;
     top:0;
     width:100%;
   }
   #footer{
-    position:relative;
+    position:absolute;
+    font-size:12px;
     width:100%;
+    bottom:0px;
+    border-top:0px;
   }
   .h1
   {
@@ -116,7 +125,6 @@
 
 <g:layoutBody />
 
-</body>
 <g:javascript>
   (function()
   {
@@ -128,33 +136,29 @@
       var mapDiv = Dom.get("map");
       bodyOnResize(false);
       init();
-      bodyOnResize();
+      bodyOnResize(true);
     });
   })();
   bodyOnResize = function(changeMapSizeFlag)
   {
-    var Dom = YAHOO.util.Dom;
-    var width  = Dom.getViewportWidth();
-    var leftDiv = Dom.get("left");
-    var mapDiv = Dom.get("map");
-    var topDiv = Dom.get("top");
+    var Dom        = YAHOO.util.Dom;
+    var width      = Dom.getViewportWidth();
+    var leftDiv    = Dom.get("left");
+    var mapDiv     = Dom.get("map");
+    var topDiv     = Dom.get("top");
     var toolbarRow = Dom.get("toolbarRow");
-    var footer = Dom.get("footer");
-    var header = Dom.get("header");
-    var middleDiv = Dom.get("middle");
-
-    var top = topDiv.offsetTop+topDiv.offsetHeight;
-    var bottom = footer.offsetTop;
+    var footer     = Dom.get("footer");
+    var header     = Dom.get("header");
+    var middleDiv  = Dom.get("middle");
+    var top          = topDiv.offsetTop+topDiv.offsetHeight;
+    var bottom       = footer.offsetTop;
     var middleHeight = Math.abs(bottom-top);
     middleDiv.style.height =  middleHeight + "px";
     mapDiv.style.width     = (width - (leftDiv.offsetLeft+leftDiv.offsetWidth )) +"px";
-    mapDiv.style.height    = (middleHeight - (Math.abs(toolbarRow.offsetTop + toolbarRow.offsetHeight))) +"px";
-    if(changeMapSizeFlag)
-    {
+    mapDiv.style.height    = (middleHeight - toolbarRow.offsetHeight) +"px";
 
-      if(map) changeMapSize(mapDiv.style.width, mapDiv.style.height);
-    }
-   // mapWidget.changeMapSize()
-  }.defaults(true);
+    if(map&&changeMapSizeFlag) map.updateSize();
+  }.defaults(true)
 </g:javascript>
+</body>
 </html>
