@@ -57,12 +57,15 @@ class RasterEntryController implements InitializingBean
   def list = {
 
     def starttime = System.currentTimeMillis()
-
+    def max = null;
     if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
     {
-      params.max = 10
+      max = 10
     }
-
+    else
+    {
+      max = params.max as Integer
+    }
     if ( !session.rasterEntryResultCurrentTab && ("${session.rasterEntryResultCurrentTab}" != "0") )
     {
       session["rasterEntryResultCurrentTab"] = "0"
@@ -87,7 +90,8 @@ class RasterEntryController implements InitializingBean
 
     def queryParams = initRasterEntryQuery(params)
     rasterEntries   = rasterEntrySearchService.runQuery(queryParams, params)
-    totalCount      = rasterEntrySearchService.getCount(queryParams)
+
+    totalCount      = max>0?rasterEntrySearchService.getCount(queryParams):0
 
     if ( rasterEntries )
     {
@@ -235,9 +239,14 @@ class RasterEntryController implements InitializingBean
 
 //    println "=== search start ==="
 
-    if ( !params.max )
+    def max = null;
+    if ( (params.max==null) || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
     {
-      params.max = 10;
+      max = 10
+    }
+    else
+    {
+      max = params.max as Integer
     }
 
 //    println "\nparams: ${params?.sort { it.key }}"
@@ -262,7 +271,7 @@ class RasterEntryController implements InitializingBean
       def starttime = System.currentTimeMillis()
 
       def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-      def totalCount = rasterEntrySearchService.getCount(queryParams)
+      def totalCount = max>0?rasterEntrySearchService.getCount(queryParams):0
 
 
       def rasterFiles = []
