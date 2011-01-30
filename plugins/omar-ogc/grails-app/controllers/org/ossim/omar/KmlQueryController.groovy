@@ -21,7 +21,7 @@ class KmlQueryController implements InitializingBean
     // let's just reuse the getImagesKml code
     //redirect(controller: "kmlQuery", action: "getImagesKml", params:params)
 
-    println "SHOULD NEVER SEE THIS!!!!!!!!!!!!!!!!!!!!!!!!!"
+    println "KmlQueryController.getkml: SHOULD NEVER SEE THIS!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 
     try
