@@ -15,10 +15,7 @@
   </style>
   <g:javascript>
     var mapWidget = new MapWidget();
-  (function() {
-      var tabView = new YAHOO.widget.TabView('demo');
-  })();
-
+  var tabView = new YAHOO.widget.TabView('demo');
 
 
   function init()

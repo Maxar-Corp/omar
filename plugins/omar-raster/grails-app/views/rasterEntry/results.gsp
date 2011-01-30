@@ -11,30 +11,10 @@
   <meta name="layout" content="resultsView"/>
   <title>Raster Search Results</title>
 
-  <resource:tabView/>
+<%--  <resource:tabView/> --%>
   <g:javascript plugin="omar-core" src="prototype/prototype.js"/>
   <g:javascript>
-    var globalActiveIndex=${rasterEntryResultCurrentTab}
 
-    function updateSession(event)
-    {
-        if(tabView)
-        {
-           var link = "${createLink(action: sessionAction, controller: sessionController)}";
-           var activeIndex = tabView.get('activeIndex')
-           var activeIndexString = null;
-           if(activeIndex)
-           {
-             activeIndexString = activeIndex.toString();
-             if(activeIndexString != globalActiveIndex)
-             {
-                 globalActiveIndex = activeIndexString;
-                 new Ajax.Request(link+"?"+"rasterEntryResultCurrentTab="+globalActiveIndex, {method: 'post'});
-             }
-           }
-
-        }
-    };
     function updateOffset()
     {
         var max = document.getElementById("max").value;
@@ -73,7 +53,7 @@
 
 </head>
 
-<body onresize="bodyOnResize();">
+<body class="yui-skin-sam" onresize="bodyOnResize();">
 <content tag="top">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
@@ -111,36 +91,15 @@
     <div class="message">${flash.message}</div>
   </g:if>
 
-  <richui:tabView id="tabView">
-    <omar:observe element="tabView" event="mouseover" function="updateSession"/>
-    <richui:tabLabels>
-      <g:if test="${rasterEntryResultCurrentTab == '0'}">
-        <richui:tabLabel selected="true" title="Image"/>
-      </g:if>
-      <g:else>
-        <richui:tabLabel title="Image"/>
-      </g:else>
-      <g:if test="${rasterEntryResultCurrentTab == '1'}">
-        <richui:tabLabel selected="true" title="Metadata"/>
-      </g:if>
-      <g:else>
-        <richui:tabLabel title="Metadata"/>
-      </g:else>
-      <g:if test="${rasterEntryResultCurrentTab == '2'}">
-        <richui:tabLabel selected="true" title="File"/>
-      </g:if>
-      <g:else>
-        <richui:tabLabel title="File"/>
-      </g:else>
-      <g:if test="${rasterEntryResultCurrentTab == '3'}">
-        <richui:tabLabel selected="true" title="Links"/>
-      </g:if>
-      <g:else>
-        <richui:tabLabel title="Links"/>
-      </g:else>
-    </richui:tabLabels>
-    <richui:tabContents>
-      <richui:tabContent>
+  <div id="demo" class="yui-navset">
+    <ul class="yui-nav">
+      <li><a href="#tab1"><em>Image</em></a></li>
+      <li><a href="#tab2"><em>Metadata</em></a></li>
+      <li><a href="#tab3"><em>File</em></a></li>
+      <li><a href="#tab3"><em>Links</em></a></li>
+    </ul>
+    <div class="yui-content">
+      <div id="tab1">
         <div class="list">
           <table>
             <thead>
@@ -183,8 +142,8 @@
             </tbody>
           </table>
         </div>
-      </richui:tabContent>
-      <richui:tabContent>
+      </div>
+      <div id="tab2">
         <div class="list">
           <table>
             <thead>
@@ -213,8 +172,8 @@
             </tbody>
           </table>
         </div>
-      </richui:tabContent>
-      <richui:tabContent>
+      </div>
+      <div id="tab3">
         <div class="list">
           <table>
             <thead>
@@ -244,8 +203,8 @@
             </tbody>
           </table>
         </div>
-      </richui:tabContent>
-      <richui:tabContent>
+      </div>
+      <div id="tab4">
         <div class="list">
           <table>
             <thead>
@@ -271,11 +230,47 @@
             </tbody>
           </table>
         </div>
-      </richui:tabContent>
-    </richui:tabContents>
-  </richui:tabView>
+      </div>
+    </div>
+  </div>
+
 </content>
 
+<g:javascript>
+  var globalActiveIndex=${rasterEntryResultCurrentTab};
+  var tabView = new YAHOO.widget.TabView('demo');
+  var tab0 = tabView.getTab(0);
+  var tab1 = tabView.getTab(1);
+  var tab2 = tabView.getTab(2);
+  var tab3 = tabView.getTab(3);
 
+   function updateCurrentTab(tabIndex)
+    {
+      var link = "${createLink(action: sessionAction, controller: sessionController)}";
+      if(tabIndex != globalActiveIndex)
+      {
+        globalActiveIndex = tabIndex;
+        new Ajax.Request(link+"?"+"rasterEntryResultCurrentTab="+globalActiveIndex, {method: 'post'});
+      }
+    }
+  function handleClickTab0(e) {
+  updateCurrentTab(0);
+  }
+  function handleClickTab1(e) {
+  updateCurrentTab(1);
+  }
+  function handleClickTab2(e) {
+  updateCurrentTab(2);
+  }
+  function handleClickTab3(e) {
+  updateCurrentTab(3);
+  }
+
+  tab0.addListener('click', handleClickTab0);
+  tab1.addListener('click', handleClickTab1);
+  tab2.addListener('click', handleClickTab2);
+  tab3.addListener('click', handleClickTab3);
+  tabView.selectTab(globalActiveIndex);
+</g:javascript>
 </body>
 </html>
