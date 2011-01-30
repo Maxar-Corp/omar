@@ -31,7 +31,6 @@
     }
   </g:javascript>
 
-  <resource:tabView/>
 </head>
 
 <body class="yui-skin-sam" onresize="bodyOnResize();">
