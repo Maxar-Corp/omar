@@ -260,12 +260,32 @@ class OgcController
         log.error("ERROR: Unknown action: ${wmsRequest?.request}")
         break
       }
+/*
+      println "*"*80
+      request.getHeaderNames().each{name->
+        println "${name} = ${request.getHeader(name)}"
+      }
+*/
       endtime = System.currentTimeMillis()
       wmsLogParams.domain = authenticateService.userDomain()
       wmsLogParams.userName = "nobody"
       def domain = null
-      wmsLogParams.ip = request.getHeader('X-Forwarded-For')
-      if ( !wmsLogParams.ip )
+      def clientIp = request.getHeader('Client-ip')
+      def XForwarded = request.getHeader('X-Forwarded-For')
+      wmsLogParams.ip = XForwarded
+      if(clientIp)
+      {
+        if(wmsLogParams.ip)
+        {
+          wmsLogParams.ip += ", ${clientIp}"
+        }
+        else
+        {
+          wmsLogParams.ip = clientIp
+        }
+      }
+
+      if ( !wmsLogParams.ip)
       {
         wmsLogParams.ip = request.getRemoteAddr()
       }
