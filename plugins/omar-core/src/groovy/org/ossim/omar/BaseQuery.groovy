@@ -154,20 +154,11 @@ class BaseQuery {
         setProperty("${it}", value)
       }
     }
-    // now check the lists
-    def idx = 0
-    def value = tempParams.get("searchTagNames[${idx}]")
-    while (value) {
-      searchTagNames[idx] = value
-      ++idx
-      value = tempParams.get("searchTagNames[${idx}]")
+    searchTagNames?.size()?.times {i ->
+      searchTagNames[i] = tempParams.get("searchTagNames[${i}]")
     }
-    idx = 0
-    value = tempParams.get("searchTagValues[${idx}]")
-    while (value) {
-      searchTagValues[idx] = value
-      ++idx
-      value = tempParams.get("searchTagValues[${idx}]")
+    searchTagValues?.size()?.times {i ->
+      searchTagValues[i] = tempParams.get("searchTagValues[${i}]");
     }
 
     return this
