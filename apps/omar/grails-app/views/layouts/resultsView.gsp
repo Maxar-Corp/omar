@@ -72,6 +72,7 @@
 <div id="center">
   <g:pageProperty name="page.body"/>
 </div>
+<g:layoutBody/>
 <div id="footer">
   <g:pageProperty name="page.footer"/>
   <omar:securityClassificationBanner/>
@@ -104,7 +105,6 @@
   }
 </g:javascript>
 
-<g:layoutBody/>
 
 </body>
 </html>
