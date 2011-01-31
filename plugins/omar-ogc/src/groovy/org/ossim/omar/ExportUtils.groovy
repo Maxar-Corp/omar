@@ -137,7 +137,13 @@ class ExportUtils
     {
       def atttributeClass = typeMap[attributes[i]]
 
-      builder.add(labels[i], atttributeClass);
+      if ( atttributeClass )
+      {
+        builder.add(labels[i], atttributeClass);
+      }
+      else {
+        println attributes[i]
+      }
     }
 
     // build the type

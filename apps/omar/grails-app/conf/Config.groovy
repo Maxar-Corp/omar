@@ -53,8 +53,7 @@ grails.converters.encoding = "UTF-8"
 
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
-//grails.serverIP = InetAddress.localHost.hostAddress
-grails.serverIP = "10.0.10.23"
+grails.serverIP = InetAddress.localHost.hostAddress
 
 // set per-environment serverURL stem for creating absolute links
 environments {
@@ -122,7 +121,7 @@ log4j = {
 /** *********************************************************************************************************/
 wms {
   referenceDataDirectory = "/data/omar"
-  mapServExt =  (System.properties['os.name'].startsWith('Windows')) ? ".exe" : ""
+  mapServExt = (System.properties['os.name'].startsWith('Windows')) ? ".exe" : ""
   serverAddress = grails.serverIP
   useTileCache = false
   mapFile = "${referenceDataDirectory}/bmng.map"
@@ -218,16 +217,16 @@ security {
 //  level = 'UNCLASS'
 //level = 'SECRET'
 //level = 'TOPSECRET'
-  UNCLASS=[description:"Unclassified",color:"green"]
-  SECRET=[description:"Secret // NOFORN",color:"red"]
-  TOPSECRET=[description:"Top Secret",color:"yellow"]
+  UNCLASS = [description: "Unclassified", color: "green"]
+  SECRET = [description: "Secret // NOFORN", color: "red"]
+  TOPSECRET = [description: "Top Secret", color: "yellow"]
   sessionTimeout = 60
-  level="UNCLASS"
+  level = "UNCLASS"
 }
 
 image.download.prefix = "http://${grails.serverIP}"
 
-/** ********************************* CONDITIONALS FOR VIEWS                   ***********************************************/
+/** ********************************* CONDITIONALS FOR VIEWS                     ***********************************************/
 // flags for different views
 //
 views {
@@ -363,6 +362,100 @@ tomcat {
 }
 
 bundle {
-  combine  = false
+  combine = false
   compress = false
+}
+
+export {
+  prefix = "omar-export-"
+  workDir = "/tmp"
+  rasterEntry {
+    fields = [
+            'acquisitionDate',
+            'azimuthAngle',
+            'beNumber',
+            'cloudCover',
+            'countryCode',
+            'description',
+            'entryId',
+            'fileType',
+            'filename',
+            'grazingAngle',
+            'groundGeom',
+            'gsdUnit',
+            'gsdX',
+            'gsdY',
+            'height',
+            'id',
+            'imageCategory',
+            'imageId',
+            'imageRepresentation',
+            'indexId',
+            'isorce',
+            'missionId',
+            'niirs',
+            'numberOfBands',
+            'numberOfResLevels',
+            'organization',
+            'productId',
+            'releaseId',
+            'securityClassification',
+            'securityCode',
+            'sensorId',
+            'sunAzimuth',
+            'sunElevation',
+            'targetId',
+            'title',
+            'validModel',
+            'wacCode',
+            'width'
+    ]
+
+    labels = [
+            'Acquisition Date',
+            'Azimuth Angle',
+            'Be Number',
+            'Cloud Cover',
+            'Country Code',
+            'Description',
+            'Entry Id',
+            'File Type',
+            'Filename',
+            'Grazing Angle',
+            'Ground Geom',
+            'Gsd Unit',
+            'Gsd X',
+            'Gsd Y',
+            'Height',
+            'Id',
+            'Image Category',
+            'Image Id',
+            'Image Representation',
+            'Index Id',
+            'Isorce',
+            'Mission Id',
+            'Niirs',
+            'Number Of Bands',
+            'Number Of Res Levels',
+            'Organization',
+            'Product Id',
+            'Release Id',
+            'Security Classification',
+            'Security Code',
+            'Sensor Id',
+            'Sun Azimuth',
+            'Sun Elevation',
+            'Target Id',
+            'Title',
+            'Valid Model',
+            'Wac Code',
+            'Width'
+    ]
+
+
+    formatters = [
+            groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join(',') }
+    ]
+
+  }
 }
