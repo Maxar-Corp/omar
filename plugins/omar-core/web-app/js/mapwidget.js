@@ -773,7 +773,7 @@ function MapWidget()
         return new Array( l - this.length + 1 ).join( c || '0' ) + this;
     };
 
-    this.updateOmarFilters = function( startDay, startMonth, startYear, startHour, startMinute, endDay, endMonth, endYear, endHour, endMinute, numberOfNames, numberOfValues )
+    this.updateOmarFilters = function( startDay, startMonth, startYear, startHour, startMinute, endDay, endMonth, endYear, endHour, endMinute, numberOfNames, numberOfValues, additionalParams)
     {
         var wmsParams = new Array();
 
@@ -826,7 +826,16 @@ function MapWidget()
             tempName = "searchTagValues[" + idx + "]";
             wmsParams["searchTagValues[" + idx + "]"] = $( tempName ).value;
         }
-
+		
+		if(additionalParams)
+		{
+			
+		for (attr in additionalParams) 
+		{ 
+			wmsParams[attr] = additionalParams[attr]; 
+		}
+		}
+		
         dataLayer.mergeNewParams( wmsParams );
     };
 }
