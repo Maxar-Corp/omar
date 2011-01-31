@@ -16,7 +16,7 @@
   <g:javascript>
     var mapWidget = new MapWidget();
   var tabView = new YAHOO.widget.TabView('demo');
-  var tabView2 = new YAHOO.widget.TabView('demo2');
+ // var tabView2 = new YAHOO.widget.TabView('demo2');
 
   function init()
   {
@@ -405,7 +405,7 @@
 
 
 
-	<div id="demo2" class="yui-navset">
+	<div id="criteriaTab" class="yui-navset">
 	    <ul class="yui-nav">
 	        <li class="selected"><a href="#tab1"><em>Metadata</em></a></li>
 	        <li><a href="#tab2"><em>CQL</em></a></li>
@@ -455,27 +455,6 @@
 	    </div>
 	</div>
 
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     <div class="niceBox">
       <div class="niceBoxHd">Options:</div>
       <div class="niceBoxBody">
@@ -504,6 +483,41 @@
   </div>
   <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
 </content>
+<g:javascript>
+/**
+* Most of the code you see here is for preserving the Tab location in the session.
+*/
+  var criteriaTabView = new YAHOO.widget.TabView('criteriaTab');
+  var rasterSearchCriteriaIndex=${session.rasterSearchCriteriaTab?:0};
+  var tab0 = criteriaTabView.getTab(0);
+  var tab1 = criteriaTabView.getTab(1);
+
+   function updateCurrentTab(tabIndex)
+    {
+      var link = "${createLink(action: 'updateSession', controller: 'session')}";
+      if(tabIndex != rasterSearchCriteriaIndex)
+      {
+        rasterSearchCriteriaIndex = tabIndex;
+
+        new OpenLayers.Ajax.Request(link+"?"+"rasterSearchCriteriaTab="+rasterSearchCriteriaIndex, {method: 'post',
+              onCreate: function(transport) {
+               }
+
+        });
+      }
+    }
+  function handleClickCriteriaTab0(e) {
+  updateCurrentTab(0);
+  }
+  function handleClickCriteriaTab1(e) {
+  updateCurrentTab(1);
+  }
+
+  tab0.addListener('click', handleClickCriteriaTab0);
+  tab1.addListener('click', handleClickCriteriaTab1);
+  criteriaTabView.selectTab(rasterSearchCriteriaIndex);
+
+</g:javascript>
 
 </body>
 </html>
