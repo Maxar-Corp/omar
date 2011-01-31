@@ -238,7 +238,6 @@ class RasterEntryController implements InitializingBean
   def search = {
 
 //    println "=== search start ==="
-
     def max = null;
     if ( (params.max==null) || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
     {
@@ -309,22 +308,24 @@ class RasterEntryController implements InitializingBean
       //println logData
 
 
-      def ogcFilterQueryFields =  Utility.generateMapForOgcFilterQuery(grailsApplication.getArtefact("Domain",
-                                                                        org.ossim.omar.RasterEntry.name),
-                                                                        searchNameList,
-                                                                        null,
-                                                                        null)
-      chain(action: "results", model: [ogcFilterQueryFields:ogcFilterQueryFields, rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
+//      def ogcFilterQueryFields =  Utility.generateMapForOgcFilterQuery(grailsApplication.getArtefact("Domain",
+//                                                                        org.ossim.omar.RasterEntry.name),
+//                                                                        searchNameList,
+//                                                                        null,
+//                                                                        null)
+//      chain(action: "results", model: [ogcFilterQueryFields:ogcFilterQueryFields, rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
+      chain(action: "results", model: [session:session, rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
     }
     else
     {
-      def ogcFilterQueryFields =  Utility.generateMapForOgcFilterQuery(grailsApplication.getArtefact("Domain",
-                                                                        org.ossim.omar.RasterEntry.name),
-                                                                        searchNameList,
-                                                                        null,
-                                                                        null)
+//      def ogcFilterQueryFields =  Utility.generateMapForOgcFilterQuery(grailsApplication.getArtefact("Domain",
+//                                                                        org.ossim.omar.RasterEntry.name),
+//                                                                        searchNameList,
+ //                                                                       null,
+ //                                                                      null)
       
-      return [ogcFilterQueryFields:ogcFilterQueryFields, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
+//      return [ogcFilterQueryFields:ogcFilterQueryFields, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
+      return [session:session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
   }
 
