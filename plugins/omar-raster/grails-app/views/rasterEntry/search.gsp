@@ -16,7 +16,7 @@
   <g:javascript>
     var mapWidget = new MapWidget();
   var tabView = new YAHOO.widget.TabView('demo');
-
+  var tabView2 = new YAHOO.widget.TabView('demo2');
 
   function init()
   {
@@ -72,10 +72,18 @@
       var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
       var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
 
+	var ogcFilterInput = document.getElementById('ogcFilter');
+	var additionalParams = new Array();
+	
+	if(ogcFilterInput)
+	{
+		additionalParams['filter']=ogcFilterInput.value;
+	}
+	
       mapWidget.updateOmarFilters(
           $("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value,
           $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value,
-          numberOfNames, numberOfValues
+          numberOfNames, numberOfValues, additionalParams
           );
     }
 
@@ -394,24 +402,80 @@
         </ol>
       </div>
     </div>
-    <div class="niceBox">
-      <div class="niceBoxHd">Metadata Criteria:</div>
-      <div class="niceBoxMetadataBody">
-        <ol>
-          <g:each in="${queryParams?.searchTagValues}" var="searchTagValue" status="i">
-            <g:select
-                noSelection="${['null':'Select One...']}"
-                name="searchTagNames[${i}]"
-                value="${queryParams?.searchTagNames[i]}"
-                from="${RasterEntrySearchTag.list()}"
-                optionKey="name" optionValue="description"/>
-            <li>
-              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
-            </li>
-          </g:each>
-        </ol>
-      </div>
-    </div>
+
+
+
+	<div id="demo2" class="yui-navset">
+	    <ul class="yui-nav">
+	        <li class="selected"><a href="#tab1"><em>Metadata</em></a></li>
+	        <li><a href="#tab2"><em>CQL</em></a></li>
+	    </ul>            
+	    <div class="yui-content">
+	        <div id="tab1"><p>
+	
+	
+	
+			<div class="niceBox">
+		      <div class="niceBoxHd">Metadata Criteria:</div>
+		      <div class="niceBoxMetadataBody">
+		        <ol>
+		          <g:each in="${queryParams?.searchTagValues}" var="searchTagValue" status="i">
+		            <g:select
+		                noSelection="${['null':'Select One...']}"
+		                name="searchTagNames[${i}]"
+		                value="${queryParams?.searchTagNames[i]}"
+		                from="${RasterEntrySearchTag.list()}"
+		                optionKey="name" optionValue="description"/>
+		            <li>
+		              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
+		            </li>
+		          </g:each>
+		        </ol>
+		      </div>
+		    </div>
+	</p></div>
+	        <div id="tab2"><p>
+	
+			<div class="niceBox">
+		      <div class="niceBoxHd">Common Query Language:</div>
+		      <div class="niceBoxMetadataBody">
+		        <ol>
+		         
+		            <li>
+		             <g:textArea id="ogcFilter" name="filter" value="${queryParams.filter}" style='width: 100%; height: 200px;' onChange="updateOmarFilters()"/>
+		            </li>
+		          
+		        </ol>
+		      </div>
+		    </div>
+	
+	
+	
+	</p></div>
+	    </div>
+	</div>
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <div class="niceBox">
       <div class="niceBoxHd">Options:</div>
       <div class="niceBoxBody">
