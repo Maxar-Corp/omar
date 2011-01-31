@@ -138,35 +138,47 @@ class Utility
   static def generateMapForOgcFilterQuery(def domainClass, def includeList=null, def excludeList=null, def overrideMap=null)
   {
     def result = [:]
-    result.PropertyNames = [:]
+    def typeList = []
+    def labelList = []
+    def columnNameList = []
+    def nameList = []
+    def defaultContraintList = []
+    result = [:]
     domainClass.properties.each { property ->
       def domainType = null
       def xmlType    = null
+      def defaultConstraint = ""
       switch (  property.type )
       {
         case Double.class:
           domainType = "Double"
           xmlType    = "xsd:double"
+          defaultConstraint = "="
           break
         case Integer.class:
           domainType = "Double"
           xmlType    = "xsd:int"
+          defaultConstraint = "="
           break
         case Long.class:
           domainType = "Double"
           xmlType    = "xsd:long"
+          defaultConstraint = "="
           break
         case Date.class:
           domainType = "Date"
           xmlType    = "xsd:dateTime"
+          defaultConstraint = "<"
           break
         case org.joda.time.DateTime.class:
           domainType = "DateTime"
           xmlType    = "xsd:dateTime"
+          defaultConstraint = "<"
           break
         case String.class:
           domainType = "String"
           xmlType    = "xsd:string"
+          defaultConstraint = "like"
           break
 
         case com.vividsolutions.jts.geom.Geometry.class:
@@ -176,6 +188,7 @@ class Utility
       }
       if(xmlType)
       {
+
         def useProperty = true
         if(includeList)
         {
@@ -198,13 +211,23 @@ class Utility
               description =   overrideMap."${name}".description?:description
             }
           }
+          typeList <<  xmlType
+          nameList << name
           name = name.replaceAll("[a-z][A-Z]", {v->"${v[0]}_${v[1].toLowerCase()}"})
-          result.PropertyNames."${name}" = [label:label,
-                                            type:xmlType,
-                                            description:description]
+          columnNameList << name
+          labelList << label
+          defaultContraintList << defaultConstraint
+//          result.PropertyNames."${name}" = [label:label,
+//                                            type:xmlType,
+//                                            description:description]
          }
       }
     }
+    result.nameList       = nameList
+    result.labelList      = labelList
+    result.typeList       = typeList
+    result.columnNameList = columnNameList
+    result.defaultContraintList = defaultContraintList
     result
   }
   static def generateJSONForOgcFilterQuery(def domainClass, def includeList=null, def excludeList=null, def overrideMap=null)
