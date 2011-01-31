@@ -1,13 +1,25 @@
 #!/bin/sh
 
-
+# function takes a arguments in the folowing order
+# (URL, ID, FORMAT, FORMAT_TYPE)
+#
+# 
 func()
 {
-  ID=$1
-  FORMAT=$2
-  FORMAT_TYPE=$3
-  wget --quiet -O out1 "http://localhost:8080/omar/ogc/getTile?id=$ID&startSample=0&startLine=0&endSample=255&endLine=255&FORMAT=$FORMAT" 
-  wget --quiet -O out2 "http://localhost:8080/omar/icp/getTile?id=$ID&x=0&y=0&width=256&height=256&FORMAT=$FORMAT"
+  URL=$1
+  ID=$2
+  FORMAT=$3
+  FORMAT_TYPE=$4
+  wget --quiet -O out1 "$URL/omar/ogc/getTile?id=$ID&startSample=0&startLine=0&endSample=255&endLine=255&FORMAT=$FORMAT" 
+  if [[ "$?" != "0" ]] ; then
+      echo "Unable to get location location for $URL/omar/ogc/getTile?id=$ID&startSample=0&startLine=0&endSample=255&endLine=255&FORMAT=$FORMAT" ;
+      exit 1;
+  fi
+  wget --quiet -O out2 "$URL/omar/icp/getTile?id=$ID&x=0&y=0&width=256&height=256&FORMAT=$FORMAT"
+  if [[ "$?" != "0" ]] ; then
+      echo "Unable to get location location for $URL/omar/icp/getTile?id=$ID&x=0&y=0&width=256&height=256&FORMAT=$FORMAT" ;
+      exit 1;
+  fi
 
   if [ -f out1 -a -f out2 ] 
     then
@@ -35,10 +47,12 @@ func()
   rm -f out1 out2
 }
 
+URL="http://localhost:8080"
 
 echo "testing jpeg"
-func 1 image/jpeg JPEG
+func $URL 1 image/jpeg JPEG
 echo "testing png"
-func 1 image/png PNG
+func $URL 1 image/png PNG
 echo "testing gif"
-func 1 image/gif GIF
+func $URL 1 image/gif GIF
+
