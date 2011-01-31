@@ -5,6 +5,7 @@ class RasterEntryExportController
 {
   def exportService
   def rasterEntrySearchService
+  def grailsApplication
 
   def index = {
   }
@@ -20,12 +21,16 @@ class RasterEntryExportController
 
     def objects = rasterEntrySearchService.runQuery(queryParams, params)
 
-    def fields = ["id", "acquisitionDate", "groundGeom"] as String[]
-    def labels = ["id", "acquisition_date", "ground_geom"] as String[]
+//    def fields = ["id", "acquisitionDate", "groundGeom"] as String[]
+//    def labels = ["id", "acquisition_date", "ground_geom"] as String[]
 
-    def formatters = [
-            groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join(',') }
-    ]
+//    def domainClass = grailsApplication.getArtefact("Domain", "org.ossim.omar.RasterEntry")
+//    def fields = domainClass.properties*.name
+//    def labels = domainClass.properties*.naturalName
+
+    def fields = grailsApplication.config.export.rasterEntry.fields
+    def labels = grailsApplication.config.export.rasterEntry.labels
+    def formatters = grailsApplication.config.export.rasterEntry.formatters
 
     def (file, mimeType) = exportService.export(
             format,

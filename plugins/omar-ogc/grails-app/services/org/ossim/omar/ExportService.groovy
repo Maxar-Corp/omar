@@ -8,15 +8,20 @@ class ExportService
 
   static transactional = true
 
+  def grailsApplication
+
   def export(def format, def objects, def fields, def labels, def formatters, def parameters)
   {
     def file
     def mimeType
 
+    def prefix = grailsApplication.config.export.prefix ?: "omar-export-"
+    def workDir = grailsApplication.config.export.workDir ?: "/tmp"
+
     switch ( format )
     {
     case "csv":
-      def csvFile = File.createTempFile("omar-export-", ".csv", "/tmp" as File)
+      def csvFile = File.createTempFile(prefix, ".csv", workDir as File)
       def csvWriter = new CSVWriter(csvFile.newWriter())
 
       csvWriter.writeNext(labels as String[])
