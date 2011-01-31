@@ -255,6 +255,15 @@ class RasterEntryController implements InitializingBean
 
 //    println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
+    def searchLabelList = []
+    def searchNameList  = []
+    def searchTags = RasterEntrySearchTag.list();
+    searchTags?.each{searchTag->
+      searchLabelList << searchTag.description
+      searchNameList  << searchTag.name
+    }
+//    println labelList
+//    println nameList
     if ( request.method == 'POST' )
     {
       if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
@@ -299,24 +308,21 @@ class RasterEntryController implements InitializingBean
 
       //println logData
 
-//      println "=== search end ==="
 
       def ogcFilterQueryFields =  Utility.generateMapForOgcFilterQuery(grailsApplication.getArtefact("Domain",
                                                                         org.ossim.omar.RasterEntry.name),
-                                                                        grailsApplication.config?.ogcFilterQueryFields.raster.include,
-                                                                        grailsApplication.config?.ogcFilterQueryFields.raster.exclude,
-                                                                        grailsApplication.config?.ogcFilterQueryFields.raster.override)
+                                                                        searchNameList,
+                                                                        null,
+                                                                        null)
       chain(action: "results", model: [ogcFilterQueryFields:ogcFilterQueryFields, rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
     }
     else
     {
-//      println "=== search end ==="
-
       def ogcFilterQueryFields =  Utility.generateMapForOgcFilterQuery(grailsApplication.getArtefact("Domain",
                                                                         org.ossim.omar.RasterEntry.name),
-                                                                        grailsApplication.config?.ogcFilterQueryFields.raster.include,
-                                                                        grailsApplication.config?.ogcFilterQueryFields.raster.exclude,
-                                                                        grailsApplication.config?.ogcFilterQueryFields.raster.override)
+                                                                        searchNameList,
+                                                                        null,
+                                                                        null)
       
       return [ogcFilterQueryFields:ogcFilterQueryFields, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
