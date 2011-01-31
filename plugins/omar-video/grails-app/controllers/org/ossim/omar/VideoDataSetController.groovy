@@ -318,7 +318,7 @@ class VideoDataSetController implements InitializingBean
       //println "=== search end ==="
 
       chain(action: "results",
-              model: [videoDataSets: videoDataSets, totalCount: totalCount, videoFiles: videoFiles],
+              model: [session:session, videoDataSets: videoDataSets, totalCount: totalCount, videoFiles: videoFiles],
               params: params
       )
     }
@@ -326,7 +326,7 @@ class VideoDataSetController implements InitializingBean
     {
       //println "=== search end ==="
 
-      return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
+      return [session:session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
   }
 
