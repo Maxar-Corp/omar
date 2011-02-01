@@ -95,19 +95,20 @@ log4j = {
     appender new org.apache.log4j.DailyRollingFileAppender(name: "omarAppender",
             datePattern: "'.'yyyy-MM-dd",
             file: "/tmp/logs/omar.log",
-            layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n'))
+            layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5}  %m%n'))
   }
 
-  info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: true
+  info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: false
   info 'omarDataManagerAppender': '*DataManagerService', additivity: false
-  info omarAppender: 'grails.app', 'omar.BaseQuery', additivity: false
+  info omarAppender: 'grails.app', additivity: false
+  info omarAppender: 'omar', additivity: false
 
   error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
-          'org.codehaus.groovy.grails.web.pages', //  GSP
+        'org.codehaus.groovy.grails.web.pages', //  GSP
           'org.codehaus.groovy.grails.web.sitemesh', //  layouts
           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
           'org.codehaus.groovy.grails.web.mapping', // URL mapping
-          'org.codehaus.groovy.grails.commons', // core / classloading
+         'org.codehaus.groovy.grails.commons', // core / classloading
           'org.codehaus.groovy.grails.plugins', // plugins
           'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
           'org.springframework',
@@ -334,26 +335,6 @@ grails.doc.subtitle = ""
 grails.doc.logo = """<a href="http://www.ossim.org" ><img src="../img/OMAR.png" border="0"/></a>"""
 grails.doc.sponsorLogo = """<a href="http://www.radiantblue.com" ><img src="../img/RBT.png" border="0"/></a>"""
 grails.doc.images = new File("web-app/images")
-
-ogcFilterQueryFields {
-  raster {
-    include = null
-    exclude = null
-    override = null
-//    include=["niirs", "width", "height", "title"]
-//    exclude=null
-//    override=[title:[description:"ID of the image",
-//                     label:"Image ID"
-//                    ]
-//             ]
-
-  }
-  video {
-    include = null
-    exclude = null
-    override = null
-  }
-}
 
 tomcat {
   servers = [
