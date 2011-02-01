@@ -9,17 +9,7 @@
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
 
-  <omar:bundle contentType="javascript" files="${[
-      [dir:'js', file: 'application.js'],
-      [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-      [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
-      [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
-      [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
-      [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js']
-  ]}"/>
-</script>
 
-  </script>
 
   <style>
   body{
@@ -73,6 +63,14 @@
   <g:layoutHead/>
 </head>
 <body class="${pageProperty(name: 'body.class')}" onresize="${pageProperty(name: 'body.onresize')}">
+<omar:bundle contentType="javascript" files="${[
+    [dir:'js', file: 'application.js'],
+    [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+    [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
+    [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
+    [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
+    [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js']
+]}"/>
 
 <div id="content">
   <div id="header">
@@ -108,10 +106,7 @@
 
 <g:layoutBody />
 
-</body>
 <g:javascript>
-  (function()
-  {
     //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
     var Dom = YAHOO.util.Dom;
     var Event = YAHOO.util.Event;
@@ -122,7 +117,6 @@
       init();
       bodyOnResize();
     });
-  })();
   bodyOnResize = function(changeMapSizeFlag)
   {
     var Dom = YAHOO.util.Dom;
@@ -146,5 +140,6 @@
     }
    // mapWidget.changeMapSize()
   }.defaults(true);
-</g:javascript>
+</g:javascript></body>
+
 </html>
