@@ -15,7 +15,7 @@ import geoscript.filter.*
 import org.apache.commons.logging.Log
 import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
 import org.codehaus.groovy.grails.commons.ApplicationHolder;
-
+import org.apache.log4j.Logger
 
 /**
  * Created by IntelliJ IDEA.
@@ -25,7 +25,7 @@ import org.codehaus.groovy.grails.commons.ApplicationHolder;
  * To change this template use File | Settings | File Templates.
  */
 class BaseQuery {
-  static private final transient def log = org.apache.log4j.Logger.getLogger(BaseQuery.class)
+  private static log = Logger.getLogger(BaseQuery.class)
   def grailsApplication
 
   public static final String RADIUS_SEARCH = "RADIUS"
@@ -60,6 +60,7 @@ class BaseQuery {
   def filterTypeMap
   BaseQuery()
   {
+//    log =   org.apache.log4j.LogManager.getLogger("grails.app.omar.BaseQuery")
   }
   Criterion createIntersection(String geomColumnName = "groundGeom") {
     def intersects = null
