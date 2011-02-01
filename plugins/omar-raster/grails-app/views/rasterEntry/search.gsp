@@ -5,13 +5,13 @@
   <meta name="layout" content="searchStatic"/>
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
-  <openlayers:loadJavascript/>
   <style>
 
   </style>
 </head>
 
 <body class="yui-skin-sam" onresize="bodyOnResize();">
+<openlayers:loadJavascript/>
 <omar:bundle contentType="javascript" files="${[
         [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
         [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
