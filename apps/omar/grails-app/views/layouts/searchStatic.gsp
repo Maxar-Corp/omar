@@ -145,11 +145,9 @@
 
 <g:layoutBody />
 
-</body>
-
 <g:javascript>
-  (function()
-  {
+//  (function()
+//  {
     //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
     var Dom = YAHOO.util.Dom;
     var Event = YAHOO.util.Event;
@@ -159,7 +157,7 @@
       init();
       bodyOnResize();
     });
-  })();
+//  })();
   bodyOnResize = function(changeMapSizeFlag)
   {
     var Dom = YAHOO.util.Dom;
@@ -191,4 +189,7 @@
     }
   }.defaults(true);
 </g:javascript>
+
+</body>
+
 </html>
