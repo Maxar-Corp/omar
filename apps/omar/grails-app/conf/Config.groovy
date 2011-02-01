@@ -226,7 +226,7 @@ security {
 
 image.download.prefix = "http://${grails.serverIP}"
 
-/** ********************************* CONDITIONALS FOR VIEWS                     ***********************************************/
+/** ********************************* CONDITIONALS FOR VIEWS                       ***********************************************/
 // flags for different views
 //
 views {
@@ -453,6 +453,32 @@ export {
     ]
 
 
+    formatters = [
+            groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join(',') }
+    ]
+  }
+
+  videoDataSet {
+    fields = [
+            'endDate',
+            'filename',
+            'groundGeom',
+            'height',
+            'id',
+            'indexId',
+            'startDate',
+            'width'
+    ]
+    labels = [
+            'End Date',
+            'Filename',
+            'Ground Geom',
+            'Height',
+            'Id',
+            'Index Id',
+            'Start Date',
+            'Width'
+    ]
     formatters = [
             groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join(',') }
     ]

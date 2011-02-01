@@ -29,6 +29,24 @@
             alert("Input must be between 1 and " + pages + ".");
         }
     }
+
+  function exportAs()
+  {
+    var formatSelect = document.getElementById("format")
+    var format = formatSelect.value;
+
+    if ( format != "null" )
+    {
+      var exportURL = "${createLink(controller: 'videoDataSetExport', action: 'export', params: params)}";
+
+      exportURL += "&format=" + format;
+
+      //alert(exportURL);
+
+      formatSelect.selectedIndex = 0;
+      window.location = exportURL;
+    }
+}
   </g:javascript>
 
 </head>
@@ -39,6 +57,11 @@
       <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
       <span class="menuButton"><g:link action="search">New Search</g:link></span>
       <span class="menuButton"><a href="${createLink(action: "search", params: params)}">Edit Search</a></span>
+      <span>
+        <g:select name='format' from="['csv', 'shp', 'kmz']"
+            noSelection="${['null':'Export As...']}"
+            onchange="javascript:exportAs();"></g:select>
+      </span>
     </div>
     <g:form name="paginateForm">
       <g:hiddenField id="totalCount" name="totalCount" value="${totalCount ?: 0}"/>
