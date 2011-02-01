@@ -11,47 +11,47 @@
   <meta name="layout" content="resultsView"/>
   <title>Video Search Results</title>
 
-  <g:javascript plugin="omar-core" src="prototype/prototype.js"/>
-  <g:javascript>
-    function updateOffset()
-    {
-        var max = document.getElementById("max").value;
-        var pages = Math.ceil(${totalCount ?: 0} / max);
-
-        if(document.getElementById("pageOffset").value >= 1 && document.getElementById("pageOffset").value <= pages)
-        {
-            document.getElementById("offset").value = (document.getElementById("pageOffset").value - 1) * document.getElementById("max").value;
-	        document.paginateForm.action = "results";
-            document.paginateForm.submit();
-        }
-        else
-        {
-            alert("Input must be between 1 and " + pages + ".");
-        }
-    }
-
-  function exportAs()
-  {
-    var formatSelect = document.getElementById("format")
-    var format = formatSelect.value;
-
-    if ( format != "null" )
-    {
-      var exportURL = "${createLink(controller: 'videoDataSetExport', action: 'export', params: params)}";
-
-      exportURL += "&format=" + format;
-
-      //alert(exportURL);
-
-      formatSelect.selectedIndex = 0;
-      window.location = exportURL;
-    }
-}
-  </g:javascript>
 
 </head>
 
 <body class="yui-skin-sam" onresize="bodyOnResize();">
+<g:javascript plugin="omar-core" src="prototype/prototype.js"/>
+<g:javascript>
+  function updateOffset()
+  {
+      var max = document.getElementById("max").value;
+      var pages = Math.ceil(${totalCount ?: 0} / max);
+
+      if(document.getElementById("pageOffset").value >= 1 && document.getElementById("pageOffset").value <= pages)
+      {
+          document.getElementById("offset").value = (document.getElementById("pageOffset").value - 1) * document.getElementById("max").value;
+          document.paginateForm.action = "results";
+          document.paginateForm.submit();
+      }
+      else
+      {
+          alert("Input must be between 1 and " + pages + ".");
+      }
+  }
+
+function exportAs()
+{
+  var formatSelect = document.getElementById("format")
+  var format = formatSelect.value;
+
+  if ( format != "null" )
+  {
+    var exportURL = "${createLink(controller: 'videoDataSetExport', action: 'export', params: params)}";
+
+    exportURL += "&format=" + format;
+
+    //alert(exportURL);
+
+    formatSelect.selectedIndex = 0;
+    window.location = exportURL;
+  }
+}
+</g:javascript>
   <content tag="top">
     <div class="nav">
       <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
