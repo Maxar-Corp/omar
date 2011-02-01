@@ -6,101 +6,101 @@
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
-  <omar:bundle contentType="javascript" files="${[
-          [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
-          [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
-      ]}"/>
   <style>
 
   </style>
-  <g:javascript>
-    var mapWidget = new MapWidget();
-  var tabView = new YAHOO.widget.TabView('demo');
- // var tabView2 = new YAHOO.widget.TabView('demo2');
-
-  function init()
-  {
-      var setupBaseLayers = function()
-      {
-          var baseLayer = null;
-          var baseWMS=${baseWMS as JSON};
-
-          for ( layer in baseWMS ) {
-            baseLayer = new OpenLayers.Layer.WMS(baseWMS[layer].name, baseWMS[layer].url,
-                    baseWMS[layer].params, baseWMS[layer].options);
-
-            mapWidget.setupBaseLayers(baseLayer);
-          }
-    };
-
-    mapWidget.setupMapWidget();
-    setupBaseLayers();
-    mapWidget.setupDataLayer("${dataWMS.name}", "${dataWMS.url}", "${dataWMS.params.layers}", "${dataWMS.options.styles}", "${dataWMS.params.format}");
-      mapWidget.changeMapSize();
-      mapWidget.setupAoiLayer();
-      mapWidget.setupToolBar();
-      mapWidget.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
-
-  // SCOTTIE - Will have to revisit this...
-  //    mapWidget.setupQueryFields("${queryParams.searchMethod}");
-
-      var minLon = ${queryParams?.aoiMinLon ?: 'null'};
-      var minLat = ${queryParams?.aoiMinLat ?: 'null'};
-      var maxLon = ${queryParams?.aoiMaxLon ?: 'null'};
-      var maxLat = ${queryParams?.aoiMaxLat ?: 'null'};
-      if ( minLon && minLat && maxLon && maxLat)
-      {
-        mapWidget.initAOI(minLon, minLat, maxLon, maxLat);
-      }
-      if("${queryParams.searchMethod}" == "BBOX")
-      {
-         mapWidget.toggleBboxCheckBox()
-      }
-      else if("${queryParams.searchMethod}" == "RADIUS")
-      {
-         mapWidget.togglePointRadiusCheckBox()
-      }
-      else
-      {
-         mapWidget.toggleBboxCheckBox()
-      }
-
-      updateOmarFilters();
-    }
-    function updateOmarFilters()
-    {
-      var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
-      var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
-
-	var ogcFilterInput = document.getElementById('ogcFilter');
-	var additionalParams = new Array();
-	
-	if(ogcFilterInput)
-	{
-		additionalParams['filter']=ogcFilterInput.value;
-	}
-	
-      mapWidget.updateOmarFilters(
-          $("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value,
-          $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value,
-          numberOfNames, numberOfValues, additionalParams
-          );
-    }
-
-  var oElement = document.getElementById("startDate_hour");
-  var oElement1 = document.getElementById("startDate_minute");
-  var oElement2 = document.getElementById("endDate_hour");
-  var oElement3 = document.getElementById("endDate_minute");
-
-  YAHOO.util.Event.addListener(oElement, "change", updateOmarFilters);
-  YAHOO.util.Event.addListener(oElement1, "change", updateOmarFilters);
-  YAHOO.util.Event.addListener(oElement2, "change", updateOmarFilters);
-  YAHOO.util.Event.addListener(oElement3, "change", updateOmarFilters);
-
-  </g:javascript>
 </head>
 
 <body class="yui-skin-sam" onresize="bodyOnResize();">
+<omar:bundle contentType="javascript" files="${[
+        [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
+        [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
+    ]}"/>
+<g:javascript>
+  var mapWidget = new MapWidget();
+var tabView = new YAHOO.widget.TabView('demo');
+ // var tabView2 = new YAHOO.widget.TabView('demo2');
+
+function init()
+{
+    var setupBaseLayers = function()
+    {
+        var baseLayer = null;
+        var baseWMS=${baseWMS as JSON};
+
+        for ( layer in baseWMS ) {
+          baseLayer = new OpenLayers.Layer.WMS(baseWMS[layer].name, baseWMS[layer].url,
+                  baseWMS[layer].params, baseWMS[layer].options);
+
+          mapWidget.setupBaseLayers(baseLayer);
+        }
+  };
+
+  mapWidget.setupMapWidget();
+  setupBaseLayers();
+  mapWidget.setupDataLayer("${dataWMS.name}", "${dataWMS.url}", "${dataWMS.params.layers}", "${dataWMS.options.styles}", "${dataWMS.params.format}");
+    mapWidget.changeMapSize();
+    mapWidget.setupAoiLayer();
+    mapWidget.setupToolBar();
+    mapWidget.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
+
+// SCOTTIE - Will have to revisit this...
+//    mapWidget.setupQueryFields("${queryParams.searchMethod}");
+
+    var minLon = ${queryParams?.aoiMinLon ?: 'null'};
+    var minLat = ${queryParams?.aoiMinLat ?: 'null'};
+    var maxLon = ${queryParams?.aoiMaxLon ?: 'null'};
+    var maxLat = ${queryParams?.aoiMaxLat ?: 'null'};
+    if ( minLon && minLat && maxLon && maxLat)
+    {
+      mapWidget.initAOI(minLon, minLat, maxLon, maxLat);
+    }
+    if("${queryParams.searchMethod}" == "BBOX")
+    {
+       mapWidget.toggleBboxCheckBox()
+    }
+    else if("${queryParams.searchMethod}" == "RADIUS")
+    {
+       mapWidget.togglePointRadiusCheckBox()
+    }
+    else
+    {
+       mapWidget.toggleBboxCheckBox()
+    }
+
+    updateOmarFilters();
+  }
+  function updateOmarFilters()
+  {
+    var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
+    var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
+
+  var ogcFilterInput = document.getElementById('ogcFilter');
+  var additionalParams = new Array();
+
+  if(ogcFilterInput)
+  {
+      additionalParams['filter']=ogcFilterInput.value;
+  }
+
+    mapWidget.updateOmarFilters(
+        $("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value,
+        $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value,
+        numberOfNames, numberOfValues, additionalParams
+        );
+  }
+
+var oElement = document.getElementById("startDate_hour");
+var oElement1 = document.getElementById("startDate_minute");
+var oElement2 = document.getElementById("endDate_hour");
+var oElement3 = document.getElementById("endDate_minute");
+
+YAHOO.util.Event.addListener(oElement, "change", updateOmarFilters);
+YAHOO.util.Event.addListener(oElement1, "change", updateOmarFilters);
+YAHOO.util.Event.addListener(oElement2, "change", updateOmarFilters);
+YAHOO.util.Event.addListener(oElement3, "change", updateOmarFilters);
+
+</g:javascript>
 <content tag="top">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
