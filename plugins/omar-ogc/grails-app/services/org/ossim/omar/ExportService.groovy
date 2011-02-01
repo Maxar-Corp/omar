@@ -53,7 +53,7 @@ class ExportService
       def featureClass = parameters.featureClass
       def featureType = ExportUtils.createFeatureType(featureClass, fields, labels)
       def collection = ExportUtils.createFeatures(featureType, objects, fields, labels)
-      def tempDir = ExportUtils.createTempDir("omar-export-", "", "/tmp" as File)
+      def tempDir = ExportUtils.createTempDir(prefix, "", workDir as File)
       def newFile = new File(tempDir, FilenameUtils.getBaseName(tempDir.name) + ".shp")
       def newDataStore = ExportUtils.createShapefile(newFile, featureType)
 
