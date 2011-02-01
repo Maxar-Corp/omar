@@ -18,6 +18,7 @@ class WMSQuery extends BaseQuery
   def time
   WMSQuery()
   {
+    super()
     filterTypeMap = org.ossim.omar.Utility.createTypeMap(RasterEntry.class) +
                     org.ossim.omar.Utility.createTypeMap(VideoDataSet.class) 
 
