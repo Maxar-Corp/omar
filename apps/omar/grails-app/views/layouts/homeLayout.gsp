@@ -19,11 +19,6 @@
   <g:javascript plugin="richui" src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
   <g:javascript plugin="richui" src="yui/element/element-min.js"/>
 
-  <omar:bundle contentType="javascript" files="${[
-      [dir:'js', file: 'application.js'],
-      [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-      [plugin:'richui' , dir:'js/yui/element',         file: 'element-min.js']
-  ]}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
@@ -81,6 +76,11 @@
   <g:javascript library="application"/>
 </head>
 <body class="yui-skin-sam" onresize="bodyOnResize();">
+<omar:bundle contentType="javascript" files="${[
+    [dir:'js', file: 'application.js'],
+    [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+    [plugin:'richui' , dir:'js/yui/element',         file: 'element-min.js']
+]}"/>
 
 <div id="header" class="header">
   <omar:securityClassificationBanner/>
@@ -96,19 +96,13 @@
 </div>
 <g:layoutBody/>
 
-</body>
-
-
 <g:javascript>
-  (function()
-  {
     var Event = YAHOO.util.Event;
     var Layout = YAHOO.widget.Layout;
     Event.onDOMReady( function()
     {
       bodyOnResize();
     } );
-  })();
 
   function bodyOnResize()
   {
@@ -137,5 +131,8 @@
 
   }
 </g:javascript>
+</body>
+
+
 
 </html>
