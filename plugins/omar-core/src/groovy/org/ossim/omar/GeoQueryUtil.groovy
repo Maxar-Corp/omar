@@ -18,14 +18,14 @@ class GeoQueryUtil {
 
   static def createClauseFromOgcFilter(Map fieldTypeMap, String ogcFilter) {
     def result = null
-    try {
+//    try {
       def gtFilter = new geoscript.filter.Filter(ogcFilter).filter
       result = createClauseFromGeotoolsFilter(fieldTypeMap, gtFilter)
-    }
-    catch (Exception e) {
-      println e
-      result = null
-    }
+//    }
+//    catch (Exception e) {
+//      println e
+//      result = null
+//    }
 
     result
   }
@@ -38,14 +38,14 @@ class GeoQueryUtil {
   static def createClauseFromOgcFilter(def classVariable, String ogcFilter) {
     def result = null
     def fieldTypeMap = org.ossim.omar.Utility.createTypeMap(classVariable)
-    try {
+//    try {
       def gtFilter = new geoscript.filter.Filter(ogcFilter).filter
       result = createClauseFromGeotoolsFilter(fieldTypeMap, gtFilter)
-    }
-    catch (Exception e) {
-      println e
-      result = null
-    }
+//    }
+//    catch (Exception e) {
+//      println e
+//      result = null
+//    }
 
     result
   }
