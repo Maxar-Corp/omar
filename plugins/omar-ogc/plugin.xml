@@ -14,6 +14,7 @@ Adds OGC functionality to OMAR
     <resource>org.ossim.omar.KmlQueryController</resource>
     <resource>org.ossim.omar.OgcController</resource>
     <resource>org.ossim.omar.RasterEntryExportController</resource>
+    <resource>org.ossim.omar.VideoDataSetExportController</resource>
     <resource>org.ossim.omar.WmsLog</resource>
     <resource>org.ossim.omar.ExportService</resource>
     <resource>org.ossim.omar.KmlService</resource>
