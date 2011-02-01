@@ -12,7 +12,9 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
 import org.geotools.filter.*
 import org.geotools.filter.spatial.*
 import geoscript.filter.*
-import org.apache.commons.logging.Log;
+import org.apache.commons.logging.Log
+import org.codehaus.groovy.grails.plugins.support.aware.GrailsApplicationAware
+import org.codehaus.groovy.grails.commons.ApplicationHolder;
 
 
 /**
@@ -23,7 +25,7 @@ import org.apache.commons.logging.Log;
  * To change this template use File | Settings | File Templates.
  */
 class BaseQuery {
-  static private final transient def log =  org.apache.log4j.Logger.getLogger(BaseQuery.class)
+  static private final transient def log = org.apache.log4j.Logger.getLogger(BaseQuery.class)
   def grailsApplication
 
   public static final String RADIUS_SEARCH = "RADIUS"
@@ -56,7 +58,9 @@ class BaseQuery {
    * RasterEntry.class can be replaced with any class in the system.
    */
   def filterTypeMap
-
+  BaseQuery()
+  {
+  }
   Criterion createIntersection(String geomColumnName = "groundGeom") {
     def intersects = null
 

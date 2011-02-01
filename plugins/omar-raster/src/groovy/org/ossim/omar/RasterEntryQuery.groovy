@@ -17,6 +17,7 @@ class RasterEntryQuery extends BaseQuery
 
   RasterEntryQuery()
   {
+    super()
     filterTypeMap = org.ossim.omar.Utility.createTypeMap(RasterEntry.class)
   }
   Criterion createDateRange(String dateColumnName = "acquisitionDate")

@@ -14,6 +14,7 @@ class VideoDataSetQuery extends BaseQuery
 {
   VideoDataSetQuery()
   {
+    super()
     filterTypeMap = org.ossim.omar.Utility.createTypeMap(VideoDataSet.class)
   }
   def createClause()
