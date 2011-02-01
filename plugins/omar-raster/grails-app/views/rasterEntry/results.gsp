@@ -60,7 +60,7 @@
     <span class="menuButton"><g:link action="search">New Search</g:link></span>
     <span class="menuButton"><a href="${createLink(action: "search", params: params)}">Edit Search</a></span>
     <span>
-      <g:select name='format' from="['csv', 'shp', 'kmz']"
+      <g:select name='format' from="['csv', 'shp']"
           noSelection="${['null':'Export As...']}"
           onchange="javascript:exportAs();"></g:select>
     </span>
