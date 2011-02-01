@@ -12,6 +12,8 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
 import org.geotools.filter.*
 import org.geotools.filter.spatial.*
 import geoscript.filter.*
+import org.apache.commons.logging.Log;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,6 +23,7 @@ import geoscript.filter.*
  * To change this template use File | Settings | File Templates.
  */
 class BaseQuery {
+  static private final transient def log =  org.apache.log4j.Logger.getLogger(BaseQuery.class)
   def grailsApplication
 
   public static final String RADIUS_SEARCH = "RADIUS"
@@ -189,9 +192,17 @@ class BaseQuery {
   {
     def clause = null
     if(filter)
-     {
-       clause = org.ossim.omar.GeoQueryUtil.createClauseFromOgcFilter(filterTypeMap, filter)
-     }
+    {
+      try{
+        clause = org.ossim.omar.GeoQueryUtil.createClauseFromOgcFilter(filterTypeMap, filter)
+      }
+      catch(Exception e)
+      {
+        log.error(e)
+        clause = null
+
+      }
+    }
 
     clause
   }
