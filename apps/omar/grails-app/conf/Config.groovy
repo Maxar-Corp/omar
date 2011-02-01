@@ -100,7 +100,7 @@ log4j = {
 
   info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: true
   info 'omarDataManagerAppender': '*DataManagerService', additivity: false
-  info omarAppender: 'grails.app', additivity: false
+  info omarAppender: 'grails.app', 'omar.BaseQuery', additivity: false
 
   error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
           'org.codehaus.groovy.grails.web.pages', //  GSP
