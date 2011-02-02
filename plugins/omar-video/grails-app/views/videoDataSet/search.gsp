@@ -3,27 +3,19 @@
 <head>
   <title>OMAR: Video Search</title>
   <meta name="layout" content="searchStatic"/>
-
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
-  <omar:bundle contentType="javascript" files="${[
-    [dir:'js', file: 'application.js'],
-    [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
-    [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js'],
-    [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
-    [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
-    [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
-    [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
-  ]}"/>
-
 </head>
 
-<body class="yui-skin-sam" onresize="bodyOnResize();">
-<g:javascript>
-  var mapWidget = new MapWidget();
-</g:javascript>
+<body class="yui-skin-sam" onload="init();">
+<omar:bundle contentType="javascript" files="${[
+  [dir:'js', file: 'application.js'],
+  [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
+  [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js'],
+  [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
+  [plugin:'richui' , dir:'js/yui/tabview', file: 'tabview-min.js'],
+]}"/>
 
 <content tag="top">
   <div class="nav">
@@ -334,7 +326,7 @@
 	        <li><a href="#tab2"><em>CQL</em></a></li>
 	    </ul>            
 	    <div class="yui-content">
-	        <div id="tab1"><p>
+	        <div id="criteriaTab1"><p>
 	
 	
 	
@@ -358,7 +350,7 @@
 		      </div>
 		    </div>
 	</p></div>
-	        <div id="tab2"><p>
+	        <div id="criteriaTab2"><p>
 	
 			<div class="niceBox">
 		      <div class="niceBoxHd">Common Query Language:</div>
@@ -410,6 +402,122 @@
   <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
 </content>
 
+<g:javascript>
+  var mapWidget = null;
+  var oElement  = null;
+  var oElement1 = null;
+  var oElement2 = null;
+  var oElement3 = null;
+  var tabView   = null;
+  var criteriaTabView = null;
+  var rasterSearchCriteriaIndex=${session.rasterSearchCriteriaTab?:0};
+
+  function init()
+  {
+    tabView = new YAHOO.widget.TabView('demo');
+    criteriaTabView = new YAHOO.widget.TabView('criteriaTab');
+
+    var tab0 = criteriaTabView.getTab(0);
+    var tab1 = criteriaTabView.getTab(1);
+    tab0.addListener('click', handleClickCriteriaTab0);
+    tab1.addListener('click', handleClickCriteriaTab1);
+    criteriaTabView.selectTab(rasterSearchCriteriaIndex);
+
+    mapWidget = new MapWidget();
+    mapWidget.setupMapWidget();
+    setupBaseLayers();
+    mapWidget.setupDataLayer("${dataWMS.name}", "${dataWMS.url}", "${dataWMS.params.layers}", "${dataWMS.options.styles}", "${dataWMS.params.format}");
+    mapWidget.changeMapSize();
+    mapWidget.setupAoiLayer();
+    mapWidget.setupToolBar();
+    mapWidget.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
+    var minLon = ${queryParams?.aoiMinLon ?: 'null'};
+    var minLat = ${queryParams?.aoiMinLat ?: 'null'};
+    var maxLon = ${queryParams?.aoiMaxLon ?: 'null'};
+    var maxLat = ${queryParams?.aoiMaxLat ?: 'null'};
+    if ( minLon && minLat && maxLon && maxLat)
+    {
+      mapWidget.initAOI(minLon, minLat, maxLon, maxLat);
+    }
+    if("${queryParams.searchMethod}" == "BBOX")
+    {
+       mapWidget.toggleBboxCheckBox()
+    }
+    else if("${queryParams.searchMethod}" == "RADIUS")
+    {
+       mapWidget.togglePointRadiusCheckBox()
+    }
+    else
+    {
+       mapWidget.toggleBboxCheckBox()
+    }
+    updateOmarFilters();
+    oElement = document.getElementById("startDate_hour");
+    oElement1 = document.getElementById("startDate_minute");
+    oElement2 = document.getElementById("endDate_hour");
+    oElement3 = document.getElementById("endDate_minute");
+
+    YAHOO.util.Event.addListener(oElement, "change", updateOmarFilters);
+    YAHOO.util.Event.addListener(oElement1, "change", updateOmarFilters);
+    YAHOO.util.Event.addListener(oElement2, "change", updateOmarFilters);
+    YAHOO.util.Event.addListener(oElement3, "change", updateOmarFilters);
+  }
+  function handleClickCriteriaTab0(e) {
+  updateCurrentTab(0);
+  }
+  function handleClickCriteriaTab1(e) {
+  updateCurrentTab(1);
+  }
+  function updateCurrentTab(tabIndex)
+  {
+    var link = "${createLink(action: 'updateSession', controller: 'session')}";
+    if(tabIndex != rasterSearchCriteriaIndex)
+    {
+      rasterSearchCriteriaIndex = tabIndex;
+
+      new OpenLayers.Ajax.Request(link+"?"+"rasterSearchCriteriaTab="+rasterSearchCriteriaIndex, {method: 'post',
+            onCreate: function(transport) {
+             }
+
+      });
+    }
+  }
+  function updateOmarFilters()
+  {
+    if(!mapWidget) return;
+    var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
+    var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
+
+    var ogcFilterInput = document.getElementById('ogcFilter');
+    var additionalParams = new Array();
+
+    if(ogcFilterInput)
+    {
+        additionalParams['filter']=ogcFilterInput.value;
+    }
+
+    mapWidget.updateOmarFilters(
+        $("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value,
+        $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value,
+        numberOfNames, numberOfValues, additionalParams
+        );
+  }
+  function setupBaseLayers()
+  {
+    if(!mapWidget) return;
+        var baseLayer = null;
+        var baseWMS=${baseWMS as JSON};
+
+    for ( layer in baseWMS ) {
+      baseLayer = new OpenLayers.Layer.WMS(baseWMS[layer].name, baseWMS[layer].url,
+              baseWMS[layer].params, baseWMS[layer].options);
+
+      mapWidget.setupBaseLayers(baseLayer);
+    }
+  }
+ </g:javascript>
+
+
 <%--
 <omar:bundle contentType="javascript" files="${[
     [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js'],
@@ -417,6 +525,7 @@
     [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
 ]}"/>
 --%>
+<%--
 <g:javascript>
   var tabView = new YAHOO.widget.TabView('demo');
 
@@ -531,7 +640,7 @@ YAHOO.util.Event.addListener(oElement2, "change", updateOmarFilters);
 YAHOO.util.Event.addListener(oElement3, "change", updateOmarFilters);
 
 </g:javascript>
-
+--%>
 
 </body>
 </html>
