@@ -6,11 +6,11 @@
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
+  <openlayers:loadJavascript/>
 
 </head>
 
 <body class="yui-skin-sam" onresize="bodyOnResize();">
-<openlayers:loadJavascript/>
 <omar:bundle contentType="javascript" files="${[
         [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
         [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
@@ -18,8 +18,6 @@
 <g:javascript>
   var mapWidget = new MapWidget();
   var tabView = new YAHOO.widget.TabView('demo');
-
-
 
 function init()
 {
