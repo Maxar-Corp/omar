@@ -97,26 +97,8 @@
 <g:layoutBody/>
 
 <g:javascript>
-    var Event = YAHOO.util.Event;
-    var Layout = YAHOO.widget.Layout;
-    Event.onDOMReady( function()
-    {
-      bodyOnResize();
-    } );
-
-  function bodyOnResize()
+  var bodyOnResize = function()
   {
-    /*
-    var Dom = YAHOO.util.Dom;
-    var centerDiv = Dom.get("center");
-    var contentDiv = Dom.get("content");
-    var topDiv = Dom.get("top");
-    var headerDiv = Dom.get("header");
-    var footerDiv = Dom.get("footer");
-    var height = Dom.getViewportHeight();
-    var centerHeight =  (contentDiv.offsetHeight- (topDiv.offsetHeight + headerDiv.offsetHeight + footerDiv.offsetHeight)) ;
-    centerDiv.style.height = centerHeight + "px";//(height - (topDiv.offsetHeight + headerDiv.offsetHeight + footerDiv.offsetHeight)) + "px";
-*/
     var Dom = YAHOO.util.Dom;
     var header     = Dom.get("header");
     var top        = Dom.get("top");
@@ -128,7 +110,6 @@
     var centerHeight     = Math.abs(bottom-top);
     centerDiv.style.height = centerHeight + "px";
     centerDiv.style.width  = "100%";
-
   }
 </g:javascript>
 </body>
