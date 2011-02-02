@@ -62,28 +62,18 @@
   }
 
   </style>
+  <openlayers:loadJavascript/>
+  <g:javascript plugin="omar-core" src="touch.js"/>
 
 </head>
 <body class="yui-skin-sam" onload="init();">
-<openlayers:loadJavascript/>
-<g:javascript plugin="omar-core" src="touch.js"/>
 
 <g:javascript>
   var map;
 
-  function changeMapSize(mapWidth, mapHeight)
+  function changeMapSize()
   {
-//      var mapTitle = document.getElementById( "mapTitle" );
-//      var mapDiv = document.getElementById( "map" );
-//
-//      mapDiv.style.width = mapTitle.offsetWidth + "px";
-//      mapDiv.style.height = Math.round( mapTitle.offsetWidth / 2 ) + "px";
-  var Dom = YAHOO.util.Dom;
-  if(mapWidth&&mapHeight)
-  {
-     Dom.get( "map" ).style.width  = mapWidth + "px";
-     Dom.get( "map" ).style.height = mapHeight + "px";
-  }
+    var Dom = YAHOO.util.Dom;
 
     if(map) map.updateSize( );
   }
@@ -101,8 +91,8 @@
     }
   }
 
-function init(mapWidth, mapHeight)
-{
+  function init()
+  {
     var left = ${left};
     var bottom = ${bottom};
     var right = ${right};
@@ -161,14 +151,14 @@ function init(mapWidth, mapHeight)
    var bounds = new OpenLayers.Bounds( left, bottom, right, top );
 
    map.maxExtent = bounds;
-   changeMapSize( mapWidth, mapHeight );
+   changeMapSize();
    setupToolbar( );
 
    var zoom = map.getZoomForExtent( bounds, true );
 
    map.setCenter( bounds.getCenterLonLat( ), zoom );
 
-  var isiPad = navigator.userAgent.match( /iPad/i ) != null;
+   var isiPad = navigator.userAgent.match( /iPad/i ) != null;
 
    if ( isiPad )
    {
