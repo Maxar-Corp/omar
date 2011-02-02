@@ -60,7 +60,7 @@
   <g:layoutHead/>
 </head>
 
-<body class="${pageProperty(name: 'body.class')} onresize="bodyOnResize();">
+<body class="${pageProperty(name: 'body.class')} onresize="bodyOnResize();" onload="${pageProperty(name: 'body.onload')}bodyOnResize();">
 <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
     [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
@@ -90,13 +90,7 @@
 </table>
 <g:javascript>
     //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
-    var Dom = YAHOO.util.Dom;
-    var Event = YAHOO.util.Event;
-    Event.onDOMReady( function()
-    {
-       bodyOnResize();
-    } );
-  bodyOnResize = function()
+  function bodyOnResize()
   {
     var Dom = YAHOO.util.Dom;
     var top = Dom.get("top");

@@ -63,237 +63,10 @@
   <openlayers:loadJavascript/>
   <g:javascript plugin="omar-core" src="touch.js"/>
 
-  <g:javascript>
-  var map;
-  var layer;
-  var format = "image/jpeg";
-
-  function changeMapSize( mapWidth, mapHeight )
-  {
-     if(mapWidth&&mapHeight)
-     {
-        var Dom = YAHOO.util.Dom;
-        var mapDiv = Dom.get( "map" );
-        if(mapDiv)
-        {
-          mapDiv.style.width  = mapWidth + "px";
-          mapDiv.style.height = mapHeight + "px";
-        }
-     }
-   //  else
-  //   {
-  //     var mapCenter = document.getElementById("mapCenter");
-  //     var mapDiv   = document.getElementById("map");
-  //     mapDiv.style.width  = mapCenter.width + "px";
-  //     mapDiv.style.height = mapCenter.height + "px";
-  //   }
-
-
-  //        alert( mapWidth + ' ' + mapHeight );
-
-    //map.updateSize();
-    map.updateSize();
-  }
-
-   function changeHistoOpts()
-  {
-  var stretch_mode = $("stretch_mode").value;
-  var stretch_mode_region = $("stretch_mode_region").value;
-
-
-  layer.mergeNewParams({stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region});
-  }
-
-   function rotateImage()
-  {
-  var rotate = $("rotate").value;
-  //alert(rotate);
-
-  layer.mergeNewParams({rotate:rotate});
-  }
-
-  function changeSharpenOpts()
-  {
-    var sharpen_mode = $("sharpen_mode").value;
-
-    layer.mergeNewParams({sharpen_mode:sharpen_mode});
-  }
-
-  function changeBandsOpts()
-  {
-      var bands = $("bands").value;
-
-      layer.mergeNewParams({bands:bands});
-  }
-
-  function get_my_url (bounds)
-  {
-      var res = this.map.getResolution();
-      var x = /*Math.round*/ ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
-      var y = /*Math.round*/ ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
-      var z = this.map.getZoom();
-      var sharpen_mode = $("sharpen_mode").value;
-      var stretch_mode = $("stretch_mode").value;
-      var stretch_mode_region = $("stretch_mode_region").value;
-      var bands = $("bands").value;
-      var rotate = $("rotate").value;
-
-      var path = "?z=" + z + "&x=" + x + "&y=" + y + "&format=" + this.format
-          + "&tileWidth=" + this.tileSize.w + "&tileHeight=" + this.tileSize.h
-          + "&id=" + ${rasterEntry?.id}
-          + "&sharpen_mode=" + sharpen_mode
-          + "&stretch_mode=" + stretch_mode
-          + "&stretch_mode_region=" + stretch_mode_region
-          + "&bands=" + bands
-          + "&rotate=" + rotate;
-
-  //      var path = "?bbox=" + x + "," + y + "," + bounds.right + "," + bounds.top
-
-      var url = this.url;
-      if (url instanceof Array) {
-          url = this.selectUrl(path, url);
-      }
-      return url + path;
-  }
-
-  function init(mapWidth, mapHeight)
-  {
-    var width = parseFloat("${rasterEntry.width}");
-    var height = parseFloat("${rasterEntry.height}");
-    var url = "${createLink(controller: 'icp', action: 'getTileOpenLayers')}";
-    var resLevels = parseFloat("${rasterEntry.numberOfResLevels}")
-    // full res is included in resLevels so we need to add 2 more to give us
-    // an 8x zoom
-    map = new OpenLayers.Map("map", {controls:[], numZoomLevels:(resLevels+2)});
-    var options = {
-    controls: [],
-    maxExtent: new OpenLayers.Bounds(0, 0,width, height),
-      getURL: get_my_url,
-      isBaseLayer: true,
-      maxResolution: width / map.getTileSize().w,
-      ratio: 1.0,
-      transitionEffect: "resize",
-      units:'pixel',
-      singleTile:true,
-      format: format
-    };
-
-    layer = new OpenLayers.Layer.TMS( "Image Space Viewer",
-                                      url, options);
-    map.addLayer(layer);
-    map.addControl(new OpenLayers.Control.MousePosition());
-    map.addControl(new OpenLayers.Control.MouseDefaults());
-    map.addControl(new OpenLayers.Control.KeyboardDefaults());
-
-
-    map.setBaseLayer(layer);
-    changeMapSize(mapWidth, mapHeight);
-    map.zoomToMaxExtent();
-    setupToolbar();
-    var isiPad = navigator.userAgent.match( /iPad/i ) != null;
-
-     if ( isiPad )
-     {
-        this.touchhandler = new TouchHandler( map, 4 );
-     }
-  }
-
-    function zoomIn()
-    {
-      map.zoomIn();
-    }
-    function zoomInFullRes()
-    {
-        // we are image space so set to a 1:1 scale
-        var zoom = map.getZoomForResolution(1.0, true)
-        map.zoomTo(zoom)
-    }
-
-    function zoomOut()
-    {
-      map.zoomOut();
-
-    }
-      function setupToolbar()
-      {
-
-        var zoomBoxButton = new OpenLayers.Control.ZoomBox(
-        {title:"Zoom into an area by clicking and dragging"});
-
-        var zoomInButton = new OpenLayers.Control.Button({title:'Zoom in',
-          displayClass: "olControlZoomIn",
-          trigger: zoomIn
-        });
-
-       var zoomInFullResButton = new OpenLayers.Control.Button({title:'Zoom in full res',
-          displayClass: "olControlZoomToLayer",
-          trigger: zoomInFullRes
-        });
-
-        var zoomOutButton = new OpenLayers.Control.Button({title:'Zoom out',
-          displayClass: "olControlZoomOut",
-          trigger: zoomOut
-        });
-
-        var container = $("toolBar");
-
-        var panel = new OpenLayers.Control.Panel(
-        { div: container,defaultControl: zoomBoxButton,'displayClass': 'olControlPanel'}
-                );
-
-
-        var navButton = new OpenLayers.Control.NavigationHistory({
-          nextOptions: {title: "Next View" },
-          previousOptions: {title: "Previous View"}
-        });
-
-        var measureDistanceButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
-          title: "Measure Distance",
-          displayClass: "olControlMeasureDistance",
-          eventListeners:
-          {
-            measure: function(evt)
-            {
-              alert("Distance: " + evt.measure.toFixed(2) + evt.units);
-            }
-          }
-        });
-
-        var measureAreaButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, {
-          title: "Measure Area",
-          displayClass: "olControlMeasureArea",
-          eventListeners:
-          {
-            measure: function(evt)
-            {
-              alert("Area: " + evt.measure.toFixed(2) + evt.units);
-            }
-          }
-        });
-
-
-        map.addControl(navButton);
-
-        panel.addControls([
-          new OpenLayers.Control.MouseDefaults({title:'Drag to recenter map'}),
-          zoomBoxButton,
-          zoomInButton,
-          zoomOutButton,
-          navButton.next, navButton.previous,
-          new OpenLayers.Control.ZoomToMaxExtent({title:"Zoom to the max extent"}),
-          zoomInFullResButton
-  //          measureDistanceButton,
-  //          measureAreaButton
-        ]);
-
-        map.addControl(panel);
-      }
-
-  </g:javascript>
 
 </head>
 
-<body class="yui-skin-sam" onresize="bodyOnResize();">
+<body class="yui-skin-sam" onload="init();" >
 
 <content tag="top">
   <div class="nav">
@@ -361,5 +134,232 @@
 <content tag="bottom">
 
 </content>
+<g:javascript>
+var map;
+var layer;
+var format = "image/jpeg";
+
+function changeMapSize( mapWidth, mapHeight )
+{
+   if(mapWidth&&mapHeight)
+   {
+      var Dom = YAHOO.util.Dom;
+      var mapDiv = Dom.get( "map" );
+      if(mapDiv)
+      {
+        mapDiv.style.width  = mapWidth + "px";
+        mapDiv.style.height = mapHeight + "px";
+      }
+   }
+ //  else
+//   {
+//     var mapCenter = document.getElementById("mapCenter");
+//     var mapDiv   = document.getElementById("map");
+//     mapDiv.style.width  = mapCenter.width + "px";
+//     mapDiv.style.height = mapCenter.height + "px";
+//   }
+
+
+//        alert( mapWidth + ' ' + mapHeight );
+
+  //map.updateSize();
+  map.updateSize();
+}
+
+ function changeHistoOpts()
+{
+var stretch_mode = $("stretch_mode").value;
+var stretch_mode_region = $("stretch_mode_region").value;
+
+
+layer.mergeNewParams({stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region});
+}
+
+ function rotateImage()
+{
+var rotate = $("rotate").value;
+//alert(rotate);
+
+layer.mergeNewParams({rotate:rotate});
+}
+
+function changeSharpenOpts()
+{
+  var sharpen_mode = $("sharpen_mode").value;
+
+  layer.mergeNewParams({sharpen_mode:sharpen_mode});
+}
+
+function changeBandsOpts()
+{
+    var bands = $("bands").value;
+
+    layer.mergeNewParams({bands:bands});
+}
+
+function get_my_url (bounds)
+{
+    var res = this.map.getResolution();
+    var x = /*Math.round*/ ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
+    var y = /*Math.round*/ ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+    var z = this.map.getZoom();
+    var sharpen_mode = $("sharpen_mode").value;
+    var stretch_mode = $("stretch_mode").value;
+    var stretch_mode_region = $("stretch_mode_region").value;
+    var bands = $("bands").value;
+    var rotate = $("rotate").value;
+
+    var path = "?z=" + z + "&x=" + x + "&y=" + y + "&format=" + this.format
+        + "&tileWidth=" + this.tileSize.w + "&tileHeight=" + this.tileSize.h
+        + "&id=" + ${rasterEntry?.id}
+        + "&sharpen_mode=" + sharpen_mode
+        + "&stretch_mode=" + stretch_mode
+        + "&stretch_mode_region=" + stretch_mode_region
+        + "&bands=" + bands
+        + "&rotate=" + rotate;
+
+//      var path = "?bbox=" + x + "," + y + "," + bounds.right + "," + bounds.top
+
+    var url = this.url;
+    if (url instanceof Array) {
+        url = this.selectUrl(path, url);
+    }
+    return url + path;
+}
+
+function init(mapWidth, mapHeight)
+{
+  var width = parseFloat("${rasterEntry.width}");
+  var height = parseFloat("${rasterEntry.height}");
+  var url = "${createLink(controller: 'icp', action: 'getTileOpenLayers')}";
+  var resLevels = parseFloat("${rasterEntry.numberOfResLevels}")
+  // full res is included in resLevels so we need to add 2 more to give us
+  // an 8x zoom
+  map = new OpenLayers.Map("map", {controls:[], numZoomLevels:(resLevels+2)});
+  var options = {
+  controls: [],
+  maxExtent: new OpenLayers.Bounds(0, 0,width, height),
+    getURL: get_my_url,
+    isBaseLayer: true,
+    maxResolution: width / map.getTileSize().w,
+    ratio: 1.0,
+    transitionEffect: "resize",
+    units:'pixel',
+    singleTile:true,
+    format: format
+  };
+
+  layer = new OpenLayers.Layer.TMS( "Image Space Viewer",
+                                    url, options);
+  map.addLayer(layer);
+  map.addControl(new OpenLayers.Control.MousePosition());
+  map.addControl(new OpenLayers.Control.MouseDefaults());
+  map.addControl(new OpenLayers.Control.KeyboardDefaults());
+
+
+  map.setBaseLayer(layer);
+  changeMapSize(mapWidth, mapHeight);
+  map.zoomToMaxExtent();
+  setupToolbar();
+  var isiPad = navigator.userAgent.match( /iPad/i ) != null;
+
+   if ( isiPad )
+   {
+      this.touchhandler = new TouchHandler( map, 4 );
+   }
+}
+
+  function zoomIn()
+  {
+    map.zoomIn();
+  }
+  function zoomInFullRes()
+  {
+      // we are image space so set to a 1:1 scale
+      var zoom = map.getZoomForResolution(1.0, true)
+      map.zoomTo(zoom)
+  }
+
+  function zoomOut()
+  {
+    map.zoomOut();
+
+  }
+    function setupToolbar()
+    {
+
+      var zoomBoxButton = new OpenLayers.Control.ZoomBox(
+      {title:"Zoom into an area by clicking and dragging"});
+
+      var zoomInButton = new OpenLayers.Control.Button({title:'Zoom in',
+        displayClass: "olControlZoomIn",
+        trigger: zoomIn
+      });
+
+     var zoomInFullResButton = new OpenLayers.Control.Button({title:'Zoom in full res',
+        displayClass: "olControlZoomToLayer",
+        trigger: zoomInFullRes
+      });
+
+      var zoomOutButton = new OpenLayers.Control.Button({title:'Zoom out',
+        displayClass: "olControlZoomOut",
+        trigger: zoomOut
+      });
+
+      var container = $("toolBar");
+
+      var panel = new OpenLayers.Control.Panel(
+      { div: container,defaultControl: zoomBoxButton,'displayClass': 'olControlPanel'}
+              );
+
+
+      var navButton = new OpenLayers.Control.NavigationHistory({
+        nextOptions: {title: "Next View" },
+        previousOptions: {title: "Previous View"}
+      });
+
+      var measureDistanceButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
+        title: "Measure Distance",
+        displayClass: "olControlMeasureDistance",
+        eventListeners:
+        {
+          measure: function(evt)
+          {
+            alert("Distance: " + evt.measure.toFixed(2) + evt.units);
+          }
+        }
+      });
+
+      var measureAreaButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, {
+        title: "Measure Area",
+        displayClass: "olControlMeasureArea",
+        eventListeners:
+        {
+          measure: function(evt)
+          {
+            alert("Area: " + evt.measure.toFixed(2) + evt.units);
+          }
+        }
+      });
+
+
+      map.addControl(navButton);
+
+      panel.addControls([
+        new OpenLayers.Control.MouseDefaults({title:'Drag to recenter map'}),
+        zoomBoxButton,
+        zoomInButton,
+        zoomOutButton,
+        navButton.next, navButton.previous,
+        new OpenLayers.Control.ZoomToMaxExtent({title:"Zoom to the max extent"}),
+        zoomInFullResButton
+//          measureDistanceButton,
+//          measureAreaButton
+      ]);
+
+      map.addControl(panel);
+    }
+
+</g:javascript>
 </body>
 </html>

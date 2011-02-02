@@ -64,7 +64,7 @@
   </style>
 
 </head>
-<body class="yui-skin-sam" onresize="bodyOnResize();">
+<body class="yui-skin-sam" onload="init();">
 <openlayers:loadJavascript/>
 <g:javascript plugin="omar-core" src="touch.js"/>
 
