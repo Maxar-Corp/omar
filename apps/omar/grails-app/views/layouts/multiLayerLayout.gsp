@@ -62,7 +62,7 @@
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
 </head>
-<body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}" onload="bodyOnResize(false);${pageProperty(name: 'body.onload')}bodyOnResize();">
+<body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}" onload="bodyOnResize(false);${pageProperty(name: 'body.onload')}bodyOnResize(true);">
 <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
     [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
