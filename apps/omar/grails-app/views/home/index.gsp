@@ -3,7 +3,7 @@ s<html>
   <title>Welcome to OMAR</title>
   <meta name="layout" content="homeLayout"/>
 </head>
-<body>
+<body class="yui-skin-sam">
 <content tag="top">
   <div align="center">
     <g:link class="home" uri="/"><img src="${resource(dir: 'images', file: 'omarLogo.png')}" alt="OMAR Logo"/></g:link>

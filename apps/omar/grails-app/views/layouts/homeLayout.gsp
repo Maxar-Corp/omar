@@ -75,7 +75,7 @@
   <g:layoutHead/>
   <g:javascript library="application"/>
 </head>
-<body class="yui-skin-sam" onresize="bodyOnResize();">
+<body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}" onload="${pageProperty(name: 'body.onload')}bodyOnResize();">
 <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
     [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],

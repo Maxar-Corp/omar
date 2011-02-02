@@ -62,7 +62,7 @@
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
 </head>
-<body class="${pageProperty(name: 'body.class')}" onresize="${pageProperty(name: 'body.onresize')}">
+<body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}" onload="bodyOnResize(false);${pageProperty(name: 'body.onload')}bodyOnResize();">
 <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
     [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
@@ -108,15 +108,6 @@
 
 <g:javascript>
     //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
-    var Dom = YAHOO.util.Dom;
-    var Event = YAHOO.util.Event;
-    Event.onDOMReady( function()
-    {
-      var mapDiv = Dom.get("map");
-      bodyOnResize();
-      init();
-      bodyOnResize();
-    });
   bodyOnResize = function(changeMapSizeFlag)
   {
     var Dom = YAHOO.util.Dom;
