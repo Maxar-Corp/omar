@@ -9,7 +9,10 @@
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
   <omar:bundle contentType="javascript" files="${[
-      [dir:'js', file: 'application.js'],
+    [dir:'js', file: 'application.js'],
+      [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+      [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
+      [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
   ]}"/>
 
 
@@ -92,38 +95,6 @@
   </style>
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
-  <g:javascript>
-    bodyOnResize = function(changeMapSizeFlag)
-    {
-      var Dom = YAHOO.util.Dom;
-      var contentDiv = Dom.get("content");
-      var leftDiv = Dom.get("left");
-      var rightDiv = Dom.get("right");
-      var mapDiv = Dom.get("map");
-      var topDiv = Dom.get("top");
-      var toolbarRow = Dom.get("toolbarRow");
-      var mouseRow = Dom.get("mouseRow");
-      var footer = Dom.get("footer");
-      var header = Dom.get("header");
-      var middleDiv = Dom.get("middle");
-
-      //middleDiv.style.top = (topDiv.offsetHeight+header.offsetHeight) + "px";
-      // IE6 seems to do better to use the root content div and then adjust everyone from  that
-      var middleHeight = Math.abs(footer.offsetTop - (topDiv.offsetTop+topDiv.offsetHeight));
-      middleDiv.style.height = middleHeight+ "px";
-      var mapWidth     = Math.abs(rightDiv.offsetLeft-(leftDiv.offsetLeft+leftDiv.offsetWidth));
-      var mapHeight    = middleHeight - (toolbarRow.offsetHeight + mouseRow.offsetHeight);
-
-      mapDiv.style.width     = mapWidth +"px";
-      mapDiv.style.height    = mapHeight + "px";
-
-
-      if(changeMapSizeFlag&&mapWidget)
-      {
-        mapWidget.changeMapSize();
-      }
-    }.defaults(true);
-  </g:javascript>
 </head>
 <body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}" onload="bodyOnResize(false);${pageProperty(name: 'body.onload')}bodyOnResize();">
 
@@ -174,6 +145,38 @@
 <g:layoutBody />
 
 
+<g:javascript>
+bodyOnResize = function(changeMapSizeFlag)
+{
+  var Dom = YAHOO.util.Dom;
+  var contentDiv = Dom.get("content");
+  var leftDiv = Dom.get("left");
+  var rightDiv = Dom.get("right");
+  var mapDiv = Dom.get("map");
+  var topDiv = Dom.get("top");
+  var toolbarRow = Dom.get("toolbarRow");
+  var mouseRow = Dom.get("mouseRow");
+  var footer = Dom.get("footer");
+  var header = Dom.get("header");
+  var middleDiv = Dom.get("middle");
+
+  //middleDiv.style.top = (topDiv.offsetHeight+header.offsetHeight) + "px";
+  // IE6 seems to do better to use the root content div and then adjust everyone from  that
+  var middleHeight = Math.abs(footer.offsetTop - (topDiv.offsetTop+topDiv.offsetHeight));
+  middleDiv.style.height = middleHeight+ "px";
+  var mapWidth     = Math.abs(rightDiv.offsetLeft-(leftDiv.offsetLeft+leftDiv.offsetWidth));
+  var mapHeight    = middleHeight - (toolbarRow.offsetHeight + mouseRow.offsetHeight);
+
+  mapDiv.style.width     = mapWidth +"px";
+  mapDiv.style.height    = mapHeight + "px";
+
+
+  if(changeMapSizeFlag&&mapWidget)
+  {
+    mapWidget.changeMapSize();
+  }
+}.defaults(true);
+</g:javascript>
 </body>
 
 </html>
