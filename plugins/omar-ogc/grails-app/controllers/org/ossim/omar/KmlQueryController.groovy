@@ -94,7 +94,8 @@ class KmlQueryController implements InitializingBean
     def caseInsensitiveParams = new CaseInsensitiveMap(params)
     def wmsParams = [:]
     def kmlParams = [:]
-    def maxImages = grailsApplication.config.kml.maxImages
+    def maxImages = grailsApplication.config.kml.maxImages?:10
+    def defaultImages = grailsApplication.config.kml.defaultImages?:10
 
 //    caseInsensitiveParams -= caseInsensitiveParams.findAll { key, value ->
 //      (!(key =~ "startDate" || key =~ "endDate") && (value == "null") || value == "")
@@ -160,7 +161,12 @@ class KmlQueryController implements InitializingBean
 
     try
     {
-      if ( caseInsensitiveParams?.max == null || !(caseInsensitiveParams.max =~ /\d+/) || Integer.parseInt(params.max) > maxImages )
+
+      if((caseInsensitiveParams?.max == null)||!(caseInsensitiveParams.max =~ /\d+/))
+      {
+        caseInsensitiveParams?.max = defaultImages;
+      }
+      else if (Integer.parseInt(params.max) > maxImages )
       {
         caseInsensitiveParams?.max = maxImages
       }
@@ -168,7 +174,7 @@ class KmlQueryController implements InitializingBean
     catch (Exception e)   // sanity check
     {
       // this is only caused by a numeric parse we will default to maxImages
-      caseInsensitiveParams?.max = maxImages
+      caseInsensitiveParams?.max = 10
     }
     def queryParams = new org.ossim.omar.RasterEntryQuery()
 
@@ -199,6 +205,7 @@ class KmlQueryController implements InitializingBean
     def caseInsensitiveParams = new CaseInsensitiveMap(params)
     def wmsParams = [:]
     def maxVideos = grailsApplication.config.kml.maxVideos
+    def defaultVideos = grailsApplication.config.kml.defaultVideos
     // Convert param names to lower case
     caseInsensitiveParams -= caseInsensitiveParams.findAll { key, value ->
       (!(key =~ "startDate" || key =~ "endDate") && (value == "null") || value == "")
@@ -220,7 +227,11 @@ class KmlQueryController implements InitializingBean
     }
     try
     {
-      if ( caseInsensitiveParams?.max == null || !(caseInsensitiveParams.max =~ /\d+/) || Integer.parseInt(params.max) > maxImages )
+      if ( (caseInsensitiveParams?.max == null) || !(caseInsensitiveParams.max =~ /\d+/))
+      {
+        caseInsensitiveParams?.max = defaultVideos;
+      }
+      else if (Integer.parseInt(params.max) > maxVideos )
       {
         caseInsensitiveParams?.max = maxVideos
       }
