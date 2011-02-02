@@ -20,7 +20,7 @@
 <content tag="top">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link action="list" url="javascript:mapWidget.generateKML();">Static KML Bookmark</g:link></span>
+    <span class="menuButton"><g:link action="list" url="javascript:mapWidget.generateKML();">KML Query</g:link></span>
     <span class="menuButton"><g:link action="list" url="javascript:updateOmarFilters();">Update Footprints</g:link></span>
     <span class="menuButton"><g:link action="list" url="javascript:mapWidget.search();">Search Videos</g:link></span>
   </div>
