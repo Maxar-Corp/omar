@@ -62,7 +62,7 @@
   }
   </style>
 </head>
-<body>
+<body onload="init();">
 
 <content tag="top">
   <div id="hd">
@@ -100,16 +100,10 @@
   </div>
 </content>
 <g:javascript>
-  (function()
+  function init()
   {
-    var Event = YAHOO.util.Event;
-
-    Event.onDOMReady( function()
-    {
-      document.forms['loginForm'].elements['j_username'].focus();
-    } );
-
-  })();
+    document.forms['loginForm'].elements['j_username'].focus();
+  }
 </g:javascript>
 </body>
 </html>

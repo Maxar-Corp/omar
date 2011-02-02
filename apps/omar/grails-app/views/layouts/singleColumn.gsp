@@ -85,12 +85,11 @@
 <div id="footer">
   <omar:securityClassificationBanner/>
 </div>
-
-  <g:layoutBody/>
 </table>
+<g:layoutBody/>
 <g:javascript>
     //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
-  function bodyOnResize()
+  var bodyOnResize = function()
   {
     var Dom = YAHOO.util.Dom;
     var top = Dom.get("top");
