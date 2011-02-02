@@ -5,23 +5,23 @@
   <meta name="layout" content="searchStatic"/>
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
-  <style>
-
-  </style>
   <openlayers:loadJavascript/>
+  <omar:bundle contentType="javascript" files="${[
+    [dir:'js', file: 'application.js'],
+    [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
+    [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js'],
+    [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+    [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
+    [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
+    [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
+    [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
+  ]}"/>
 </head>
-
 <body class="yui-skin-sam" onresize="bodyOnResize();">
-<omar:bundle contentType="javascript" files="${[
-        [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
-        [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
-    ]}"/>
 <g:javascript>
-  var tabView = new YAHOO.widget.TabView('demo');
   var mapWidget = new MapWidget();
-  var criteriaTabView = new YAHOO.widget.TabView('criteriaTab');
-
 </g:javascript>
+
 <content tag="top">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
@@ -405,11 +405,10 @@
   <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
 </content>
 <g:javascript>
-function init()
-{
-/**
-* Most of the code you see here is for preserving the Tab location in the session.
-*/
+  var tabView = new YAHOO.widget.TabView('demo');
+  var criteriaTabView = new YAHOO.widget.TabView('criteriaTab');
+
+  /********************* BEGIN SAVE TAB SETTINGS ****************/
   var rasterSearchCriteriaIndex=${session.rasterSearchCriteriaTab?:0};
   var tab0 = criteriaTabView.getTab(0);
   var tab1 = criteriaTabView.getTab(1);
@@ -438,6 +437,10 @@ function init()
   tab0.addListener('click', handleClickCriteriaTab0);
   tab1.addListener('click', handleClickCriteriaTab1);
   criteriaTabView.selectTab(rasterSearchCriteriaIndex);
+
+  /********************* END SAVE TAB SETTINGS ****************/
+function init()
+{
     var setupBaseLayers = function()
     {
         var baseLayer = null;
