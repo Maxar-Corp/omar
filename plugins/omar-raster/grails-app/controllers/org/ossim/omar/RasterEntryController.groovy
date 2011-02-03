@@ -61,6 +61,7 @@ class RasterEntryController implements InitializingBean
     if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
     {
       max = 10
+      params.max = 10
     }
     else
     {
@@ -242,7 +243,8 @@ class RasterEntryController implements InitializingBean
     if ( (params.max==null) || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
     {
       max = 10
-    }
+      params.max = 10
+   }
     else
     {
       max = params.max as Integer
@@ -425,6 +427,7 @@ class RasterEntryController implements InitializingBean
 
     if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
     {
+      params.max = 10
       params.max = 10
     }
 
