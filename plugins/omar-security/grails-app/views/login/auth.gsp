@@ -96,7 +96,9 @@
         </p>
       </form>
     </div>
-    <a href="${createLink(controller: "register", action: "index")}">Click here to register</a>
+    <g:if test="${grailsApplication.config.registration.enabled}">
+      <a href="${createLink(controller: "register", action: "index")}">Click here to register</a>
+    </g:if>
   </div>
 </content>
 <g:javascript>
