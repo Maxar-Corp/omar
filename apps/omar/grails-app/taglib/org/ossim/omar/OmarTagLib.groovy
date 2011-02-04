@@ -6,7 +6,8 @@ class OmarTagLib
   def securityClassificationBanner = {attrs->
     def level = grailsApplication.config.security.level
     def levelMap = grailsApplication.config.security."${level}"
-    def fontSize    = attrs.fontSize?:"1.5em"
+//    def fontSize    = attrs.fontSize?:"1.5em"
+    def fontSize    = attrs.fontSize?:"20px"
     def fontWeight  = attrs.fontWeight?:"bold"
     def id          = attrs.id
     def style       = attrs.style
