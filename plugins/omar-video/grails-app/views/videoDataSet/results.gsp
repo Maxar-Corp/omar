@@ -11,10 +11,15 @@
   <meta name="layout" content="resultsView"/>
   <title>Video Search Results</title>
 
+ <style>
+ .yui-skin-sam .yui-navset .yui-content {
+     background: none repeat scroll 0 0 #FFFFFF;
+ }
 
+ </style>
 </head>
 
-<body class="yui-skin-sam" onresize="bodyOnResize();">
+<body class="yui-skin-sam">
 <g:javascript plugin="omar-core" src="prototype/prototype.js"/>
 <g:javascript>
   function updateOffset()
@@ -91,12 +96,27 @@ function exportAs()
 
     <div id="demo" class="yui-navset">
       <ul class="yui-nav">
-        <li><a href="#tab1"><em>Video</em></a></li>
-        <li><a href="#tab2"><em>File</em></a></li>
+        <g:if test="${videoDataSetResultCurrentTab == '0'}">
+          <li class="selected"><a href="#tab1"><em>Video</em></a></li>
+        </g:if>
+        <g:else>
+          <li><a href="#tab1"><em>Video</em></a></li>
+        </g:else>
+        <g:if test="${videoDataSetResultCurrentTab == '1'}">
+          <li class="selected"><a href="#tab2"><em>File</em></a></li>
+        </g:if>
+        <g:else>
+          <li><a href="#tab2"><em>File</em></a></li>
+        </g:else>
       </ul>
 
       <div class="yui-content">
-         <div id="tab1">
+       <g:if test="${videoDataSetResultCurrentTab == '0'}">
+         <div id="tab1" style="visibility:visible">
+       </g:if>
+        <g:else>
+          <div id="tab1" style="visibility:hidden">
+        </g:else>
            <div class="list">
              <table>
                <thead>
@@ -116,7 +136,7 @@ function exportAs()
                <tbody>
                <g:each in="${videoDataSets}" status="i" var="videoDataSet">
                  <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                   <td><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
+                   <td height="64"><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
                    <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.indexId, size: 128])}" alt="Show Frame"/></a></td>
                    <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
                    <td>${videoDataSet.width?.encodeAsHTML()}</td>
@@ -134,7 +154,12 @@ function exportAs()
              </table>
              </div>
            </div>
-           <div id="tab2">
+        <g:if test="${videoDataSetResultCurrentTab == '1'}">
+          <div id="tab2" style="visibility:visible">
+        </g:if>
+         <g:else>
+           <div id="tab2" style="visibility:hidden">
+         </g:else>
              <div class="list">
                <table>
                  <thead>
@@ -147,7 +172,7 @@ function exportAs()
                  <tbody>
                  <g:each in="${videoDataSets}" status="i" var="videoDataSet">
                    <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                     <td><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
+                     <td height="64"><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
                      <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.indexId, size: 128])}" alt="Show Frame"/></a></td>
                      <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
                      <td>
@@ -170,6 +195,9 @@ function exportAs()
   </content>
 <g:javascript>
   var globalActiveIndex=${videoDataSetResultCurrentTab};
+  var Dom = YAHOO.util.Dom;
+  var tab1Div = Dom.get("tab1");
+  var tab2Div = Dom.get("tab2");
   var tabView = new YAHOO.widget.TabView('demo');
   var tab0 = tabView.getTab(0);
   var tab1 = tabView.getTab(1);
@@ -192,7 +220,8 @@ function exportAs()
 
   tab0.addListener('click', handleClickTab0);
   tab1.addListener('click', handleClickTab1);
-  tabView.selectTab(globalActiveIndex);
+  tab1Div.style.visibility = "visible"
+  tab2Div.style.visibility = "visible"
 </g:javascript>
 
 </body>

@@ -10,12 +10,18 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="resultsView"/>
   <title>Raster Search Results</title>
+  <style>
+  .yui-skin-sam .yui-navset .yui-content {
+      background: none repeat scroll 0 0 #FFFFFF;
+  }
+
+  </style>
 
 <%--  <resource:tabView/> --%>
 
 </head>
 
-<body class="yui-skin-sam" onresize="bodyOnResize();">
+<body class="yui-skin-sam">
 <g:javascript plugin="omar-core" src="prototype/prototype.js"/>
 <g:javascript>
 
@@ -93,13 +99,41 @@ function exportAs()
 
   <div id="demo" class="yui-navset">
     <ul class="yui-nav">
-      <li><a href="#tab1"><em>Image</em></a></li>
-      <li><a href="#tab2"><em>Metadata</em></a></li>
-      <li><a href="#tab3"><em>File</em></a></li>
-      <li><a href="#tab3"><em>Links</em></a></li>
+      <g:if test="${rasterEntryResultCurrentTab=='0'}">
+        <li class="selected"><a href="#tab1"><em>Image</em></a></li>
+      </g:if>
+      <g:else>
+        <li><a href="#tab1"><em>Image</em></a></li>
+      </g:else>
+
+      <g:if test="${rasterEntryResultCurrentTab=='1'}">
+        <li class="selected"><a href="#tab2"><em>Metadata</em></a></li>
+      </g:if>
+      <g:else>
+        <li><a href="#tab1"><em>Metadata</em></a></li>
+      </g:else>
+
+      <g:if test="${rasterEntryResultCurrentTab=='2'}">
+        <li class="selected"><a href="#tab3"><em>File</em></a></li>
+      </g:if>
+      <g:else>
+        <li><a href="#tab1"><em>File</em></a></li>
+      </g:else>
+
+      <g:if test="${rasterEntryResultCurrentTab=='3'}">
+        <li class="selected"><a href="#tab4"><em>Links</em></a></li>
+      </g:if>
+      <g:else>
+        <li><a href="#tab1"><em>Links</em></a></li>
+      </g:else>
     </ul>
     <div class="yui-content">
-      <div id="tab1">
+      <g:if test="${rasterEntryResultCurrentTab=='0'}">
+        <div id="tab1" style="visibility:visible">
+      </g:if>
+      <g:else>
+        <div id="tab1" style="visibility:hidden">
+      </g:else>
         <div class="list">
           <table>
             <thead>
@@ -122,7 +156,7 @@ function exportAs()
             <tbody style="overflow:auto">
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                <td height="128"><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: "thumbnail", action: "show", id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/></a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <td>${rasterEntry.entryId?.encodeAsHTML()}</td>
@@ -143,7 +177,12 @@ function exportAs()
           </table>
         </div>
       </div>
-      <div id="tab2">
+      <g:if test="${rasterEntryResultCurrentTab=='1'}">
+        <div id="tab2" style="visibility:visible">
+      </g:if>
+      <g:else>
+        <div id="tab2" style="visibility:hidden">
+      </g:else>
         <div class="list">
           <table>
             <thead>
@@ -159,7 +198,7 @@ function exportAs()
             <tbody style="overflow:auto">
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                <td height="128"><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: "thumbnail", action: "show", id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/></a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="0" date="${rasterEntry?.acquisitionDate}"/></td>
@@ -173,7 +212,12 @@ function exportAs()
           </table>
         </div>
       </div>
-      <div id="tab3">
+      <g:if test="${rasterEntryResultCurrentTab=='2'}">
+        <div id="tab3" style="visibility:visible">
+      </g:if>
+      <g:else>
+        <div id="tab3" style="visibility:hidden">
+      </g:else>
         <div class="list">
           <table>
             <thead>
@@ -186,7 +230,7 @@ function exportAs()
             <tbody style="overflow:auto">
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                <td height="128"><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: "thumbnail", action: "show", id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/></a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <td>
@@ -204,7 +248,12 @@ function exportAs()
           </table>
         </div>
       </div>
-      <div id="tab4">
+      <g:if test="${rasterEntryResultCurrentTab=='3'}">
+        <div id="tab4" style="visibility:visible">
+      </g:if>
+      <g:else>
+        <div id="tab4" style="visibility:hidden">
+      </g:else>
         <div class="list">
           <table>
             <thead>
@@ -219,7 +268,7 @@ function exportAs()
             <tbody style="overflow:auto">
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                <td height="128"><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: "thumbnail", action: "show", params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/></a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: rasterEntry.indexId])}">WMS GetCapabilities</a></td>
@@ -238,13 +287,18 @@ function exportAs()
 
 <g:javascript>
   var globalActiveIndex=${rasterEntryResultCurrentTab};
+  var Dom = YAHOO.util.Dom;
+  var tab1Div = Dom.get("tab1");
+  var tab2Div = Dom.get("tab2");
+  var tab3Div = Dom.get("tab3");
+  var tab4Div = Dom.get("tab4");
   var tabView = new YAHOO.widget.TabView('demo');
   var tab0 = tabView.getTab(0);
   var tab1 = tabView.getTab(1);
   var tab2 = tabView.getTab(2);
   var tab3 = tabView.getTab(3);
 
-   function updateCurrentTab(tabIndex)
+  function updateCurrentTab(tabIndex)
     {
       var link = "${createLink(action: sessionAction, controller: sessionController)}";
       if(tabIndex != globalActiveIndex)
@@ -270,7 +324,10 @@ function exportAs()
   tab1.addListener('click', handleClickTab1);
   tab2.addListener('click', handleClickTab2);
   tab3.addListener('click', handleClickTab3);
-  tabView.selectTab(globalActiveIndex);
+  tab1Div.style.visibility = "visible"
+  tab2Div.style.visibility = "visible"
+  tab3Div.style.visibility = "visible"
+  tab4Div.style.visibility = "visible"
 </g:javascript>
 </body>
 </html>
