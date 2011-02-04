@@ -822,7 +822,7 @@ class WebMappingService
     def closure = { geom ->
       LiteShape shp = new LiteShape(geom, affine, false)
 
-      if ( style.fillcolor && (g instanceof Polygon || g instanceof MultiPolygon) )
+      if ( style.fillcolor && (geom instanceof Polygon || geom instanceof MultiPolygon) )
       {
         g2d.color = new Color(style.fillcolor.r, style.fillcolor.g, style.fillcolor.b, style.fillcolor.a)
         g2d.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, new Float(0.5).floatValue())
