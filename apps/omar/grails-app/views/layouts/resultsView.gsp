@@ -82,7 +82,7 @@
    //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
     var Dom = YAHOO.util.Dom;
     var Event = YAHOO.util.Event;
-  function bodyOnResize()
+  var onBodyResize = function()
   {
     var Dom = YAHOO.util.Dom;
     var header     = Dom.get("header");
