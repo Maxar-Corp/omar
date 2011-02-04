@@ -188,6 +188,7 @@ class OgcController
         }
         else
         {
+          /*
           def writers = ImageIO.getImageWritersByMIMEType(response.contentType)
           if ( writers.hasNext() )
           {
@@ -209,9 +210,10 @@ class OgcController
           }
           else
           {
+          */
             ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
             response.outputStream.close()
-          }
+          //}
         }
 
         break
