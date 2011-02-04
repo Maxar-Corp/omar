@@ -136,7 +136,7 @@ function exportAs()
                <tbody>
                <g:each in="${videoDataSets}" status="i" var="videoDataSet">
                  <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                   <td height="64"><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
+                   <td height="72"><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
                    <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.indexId, size: 128])}" alt="Show Frame"/></a></td>
                    <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
                    <td>${videoDataSet.width?.encodeAsHTML()}</td>
@@ -172,7 +172,7 @@ function exportAs()
                  <tbody>
                  <g:each in="${videoDataSets}" status="i" var="videoDataSet">
                    <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                     <td height="64"><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
+                     <td height="72"><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
                      <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.indexId, size: 128])}" alt="Show Frame"/></a></td>
                      <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
                      <td>
