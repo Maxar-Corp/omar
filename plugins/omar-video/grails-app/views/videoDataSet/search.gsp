@@ -410,7 +410,7 @@
   var oElement3 = null;
   var tabView   = null;
   var criteriaTabView = null;
-  var rasterSearchCriteriaIndex=${session.rasterSearchCriteriaTab?:0};
+  var videoDataSetSearchCriteriaIndex=${session.videoDataSetSearchCriteriaTab?:0};
 
   function init()
   {
@@ -421,7 +421,7 @@
     var tab1 = criteriaTabView.getTab(1);
     tab0.addListener('click', handleClickCriteriaTab0);
     tab1.addListener('click', handleClickCriteriaTab1);
-    criteriaTabView.selectTab(rasterSearchCriteriaIndex);
+    criteriaTabView.selectTab(videoDataSetSearchCriteriaIndex);
 
     mapWidget = new MapWidget();
     mapWidget.setupMapWidget();
@@ -471,11 +471,11 @@
   function updateCurrentTab(tabIndex)
   {
     var link = "${createLink(action: 'updateSession', controller: 'session')}";
-    if(tabIndex != rasterSearchCriteriaIndex)
+    if(tabIndex != videoDataSetSearchCriteriaIndex)
     {
-      rasterSearchCriteriaIndex = tabIndex;
+      videoDataSetSearchCriteriaIndex = tabIndex;
 
-      new OpenLayers.Ajax.Request(link+"?"+"rasterSearchCriteriaTab="+rasterSearchCriteriaIndex, {method: 'post',
+      new OpenLayers.Ajax.Request(link+"?"+"videoDataSetSearchCriteriaTab="+videoDataSetSearchCriteriaIndex, {method: 'post',
             onCreate: function(transport) {
              }
 
@@ -517,130 +517,6 @@
   }
  </g:javascript>
 
-
-<%--
-<omar:bundle contentType="javascript" files="${[
-    [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js'],
-    [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
-    [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
-]}"/>
---%>
-<%--
-<g:javascript>
-  var tabView = new YAHOO.widget.TabView('demo');
-
-/******* SAVE TAB SETTINGS ***********************/
-var criteriaTabView = new YAHOO.widget.TabView('criteriaTab');
-  var videoSearchCriteriaIndex=${session.videoSearchCriteriaTab?:0};
-  var tab0 = criteriaTabView.getTab(0);
-  var tab1 = criteriaTabView.getTab(1);
-   function updateCurrentTab(tabIndex)
-    {
-      var link = "${createLink(action: 'updateSession', controller: 'session')}";
-      if(tabIndex != videoSearchCriteriaIndex)
-      {
-        videoSearchCriteriaIndex = tabIndex;
-
-        new OpenLayers.Ajax.Request(link+"?"+"videoSearchCriteriaTab="+videoSearchCriteriaIndex, {method: 'post',
-              onCreate: function(transport) {
-               }
-
-        });
-      }
-    }
-  function handleClickCriteriaTab0(e) {
-  updateCurrentTab(0);
-  }
-  function handleClickCriteriaTab1(e) {
-  updateCurrentTab(1);
-  }
-
-  tab0.addListener('click', handleClickCriteriaTab0);
-  tab1.addListener('click', handleClickCriteriaTab1);
-  criteriaTabView.selectTab(videoSearchCriteriaIndex);
-/*******END SAVE TAB SETTINGS ***********************/
-
-function init()
-{
-    var setupBaseLayers = function()
-    {
-        var baseLayer = null;
-        var baseWMS = ${baseWMS as JSON};
-
-        for ( foo in baseWMS ) {
-          baseLayer = new OpenLayers.Layer.WMS(baseWMS[foo].name, baseWMS[foo].url,
-                  baseWMS[foo].params, baseWMS[foo].options);
-
-          mapWidget.setupBaseLayers(baseLayer);
-        }
-  };
-  mapWidget.setupMapWidget();
-  setupBaseLayers();
-  mapWidget.setupDataLayer("${dataWMS.name}", "${dataWMS.url}", "${dataWMS.params.layers}", "${dataWMS.options.styles}", "${dataWMS.params.format}");
-//    mapWidget.changeMapSize();
-    mapWidget.setupAoiLayer();
-    mapWidget.setupToolBar();
-    mapWidget.setupMapView("${queryParams?.viewMinLon ?: -180}", "${queryParams?.viewMinLat ?: -90}", "${queryParams?.viewMaxLon ?: 180}", "${queryParams?.viewMaxLat ?: 90}");
-
-// SCOTTIE - Will have to revisit this...
-//    mapWidget.setupQueryFields("${queryParams.searchMethod}");
-
-    var minLon = ${queryParams?.aoiMinLon ?: 'null'};
-    var minLat = ${queryParams?.aoiMinLat ?: 'null'};
-    var maxLon = ${queryParams?.aoiMaxLon ?: 'null'};
-    var maxLat = ${queryParams?.aoiMaxLat ?: 'null'};
-    if ( minLon && minLat && maxLon && maxLat)
-    {
-      mapWidget.initAOI(minLon, minLat, maxLon, maxLat);
-    }
-    if("${queryParams.searchMethod}" == "BBOX")
-    {
-       mapWidget.toggleBboxCheckBox()
-    }
-    else if("${queryParams.searchMethod}" == "RADIUS")
-    {
-       mapWidget.togglePointRadiusCheckBox()
-    }
-    else
-    {
-       mapWidget.toggleBboxCheckBox()
-    }
-
-    updateOmarFilters();
-  }
-
-  function updateOmarFilters()
-  {
-    var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
-    var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
-
-  var ogcFilterInput = document.getElementById('ogcFilter');
-  var additionalParams = new Array();
-
-  if(ogcFilterInput)
-  {
-      additionalParams['filter']=ogcFilterInput.value;
-  }
-
-    mapWidget.updateOmarFilters(
-        $("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value,
-        $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value,
-        numberOfNames, numberOfValues, additionalParams
-        );
-  }
-
-var oElement = document.getElementById("startDate_hour");
-var oElement1 = document.getElementById("startDate_minute");
-var oElement2 = document.getElementById("endDate_hour");
-var oElement3 = document.getElementById("endDate_minute");
-
-YAHOO.util.Event.addListener(oElement, "change", updateOmarFilters);
-YAHOO.util.Event.addListener(oElement1, "change", updateOmarFilters);
-YAHOO.util.Event.addListener(oElement2, "change", updateOmarFilters);
-YAHOO.util.Event.addListener(oElement3, "change", updateOmarFilters);
-
-</g:javascript>
---%>
 
 </body>
 </html>
