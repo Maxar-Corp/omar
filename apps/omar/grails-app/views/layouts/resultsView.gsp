@@ -54,7 +54,7 @@
   <g:layoutHead/>
 </head>
 
-<body class="yui-skin-sam" onresize="${pageProperty(name: 'body.onresize')}">
+<body class="yui-skin-sam" onresize="onBodyResize();${pageProperty(name: 'body.onresize')}" onload="onBodyResize();${pageProperty(name: 'body.onload')}">
 <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
     [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
@@ -72,20 +72,16 @@
 <div id="center">
   <g:pageProperty name="page.body"/>
 </div>
-<g:layoutBody/>
 <div id="footer">
   <g:pageProperty name="page.footer"/>
   <omar:securityClassificationBanner/>
 </div>
+<g:layoutBody/>
 
 <g:javascript>
    //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
     var Dom = YAHOO.util.Dom;
     var Event = YAHOO.util.Event;
-    Event.onDOMReady( function()
-    {
-      bodyOnResize();
-    });
   function bodyOnResize()
   {
     var Dom = YAHOO.util.Dom;
