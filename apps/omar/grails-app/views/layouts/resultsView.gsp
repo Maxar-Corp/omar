@@ -27,16 +27,25 @@
     padding:0;
     overflow-y:hidden;
   }
+  #content
+  {
+    height:100%;
+    min-height:100%;
+    margin-bottom:-20px ;
+  }
   #header
   {
+    position:relative;
     width:100%;
   }
   #top
   {
+    position:relative;
     width:100%;
   }
   #center
   {
+    position:absolute;
     height:100%;
     width:100%;
     overflow-x:auto;
@@ -63,14 +72,16 @@
     [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
     [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js']
 ]}"/>
-<div id="header">
-  <omar:securityClassificationBanner/>
-</div>
-<div id="top">
-  <g:pageProperty name="page.top"/>
-</div>
-<div id="center">
-  <g:pageProperty name="page.body"/>
+<div id="content">
+  <div id="header">
+    <omar:securityClassificationBanner/>
+  </div>
+  <div id="top">
+    <g:pageProperty name="page.top"/>
+  </div>
+  <div id="center">
+    <g:pageProperty name="page.body"/>
+  </div>
 </div>
 <div id="footer">
   <g:pageProperty name="page.footer"/>

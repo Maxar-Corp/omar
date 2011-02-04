@@ -149,7 +149,7 @@
           <li>Quick Look:</li>
           <li>
             <g:select id="quicklook" name="quicklook"
-                from="${[[name: 'On', value: 'true'], [name: 'Off', value: 'false']]}"
+                from="${[[name: 'Off', value: 'false'],[name: 'On', value: 'true']]}"
                 optionValue="name" optionKey="value"
                 onChange="changeQuickLookOpts()"/>
           </li>
