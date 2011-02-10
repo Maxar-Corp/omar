@@ -265,17 +265,6 @@ function init()
   var dmsOutput = document.getElementById('dmsMousePosition');
   var mgrsOutput = document.getElementById('mgrsMousePosition');
 
-  if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
-  {
-      if(dmsOutput) dmsOutput.innerHTML = "<b>DMS:</b> ";
-      if(mgrsOutput) mgrsOutput.innerHTML = "<b>MGRS:</b> ";
-  }
-  else
-  {
-      if(dmsOutput) dmsOutput.innerHTML = "<b>DMS:</b> " + convert.ddToDms(lonLat.lat, "latitude") + " " + convert.ddToDms(lonLat.lon, "longitude");
-      if(mgrsOutput) mgrsOutput.innerHTML = "<b>MGRS:</b> " + convert.ddToMgrs(lonLat.lat, lonLat.lon);
-  }
-
   var latHem;
   if(lonLat.lat < 0)
   {
@@ -295,6 +284,18 @@ function init()
   {
       lonHem = " E";
   }
+  if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
+  {
+      if(dmsOutput) dmsOutput.innerHTML = "<b>DMS:</b> ";
+      if(mgrsOutput) mgrsOutput.innerHTML = "<b>MGRS:</b> ";
+  }
+  else
+  {
+      if(dmsOutput) dmsOutput.innerHTML = "<b>DMS:</b> " + convert.ddToDms(lonLat.lat, "latitude") + " " + latHem + " " +
+                                          convert.ddToDms(lonLat.lon, "longitude") + " " + lonHem;
+      if(mgrsOutput) mgrsOutput.innerHTML = "<b>MGRS:</b> " + convert.ddToMgrs(lonLat.lat, lonLat.lon);
+  }
+
 
   var ddOutput = document.getElementById('ddMousePosition');
   if(lonLat.lat > "90" || lonLat.lat < "-90" || lonLat.lon > "180" || lonLat.lon < "-180")
@@ -303,7 +304,10 @@ function init()
   }
   else
   {
-      if(ddOutput) ddOutput.innerHTML = "<b>DD:</b> " + lonLat.lat + " " + lonLat.lon;
+      var precision = 1000000.0;
+      var roundLat = Math.round(lonLat.lat*precision)/precision;
+      var roundLon = Math.round(lonLat.lon*precision)/precision;
+      if(ddOutput) ddOutput.innerHTML = "<b>DD:</b> " + roundLat + " " + roundLon;
   }
 }
 function setupLayers()

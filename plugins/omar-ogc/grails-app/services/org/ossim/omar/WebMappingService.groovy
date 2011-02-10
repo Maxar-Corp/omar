@@ -578,40 +578,34 @@ class WebMappingService
     return [fullResScale: fullResScale, smallestScale: smallestScale, largestScale: largestScale]
   }
 
-  def computeBounds(def rasterEntries)
-  {
-    def left = null
-    def right = null
-    def top = null
-    def bottom = null
+    def computeBounds(def rasterEntries)
+    {
+        def unionBounds = null
+        rasterEntries.each { rasterEntry ->
+          def groundGeom = rasterEntry?.groundGeom
+          if(unionBounds)
+          {
+            unionBounds = unionBounds.union(groundGeom)
+          }
+          else
+          {
+            unionBounds = groundGeom
+          }
+        }
+        def coords = unionBounds?.envelope?.coordinates
+        def minx = 9999999999
+        def maxx = -9999999999
+        def miny = 9999999999
+        def maxy = -9999999999
+        coords.each{coord->
+            if(coord.x < minx) minx = coord.x
+            if(coord.x > maxx) maxx = coord.x
+            if(coord.y < miny) miny = coord.y
+            if(coord.y > maxy) maxy = coord.y
+        }
 
-    rasterEntries.each { rasterEntry ->
-      def bounds = rasterEntry?.groundGeom?.bounds
-
-
-      if ( left == null || bounds?.minLon < left )
-      {
-        left = bounds?.minLon
-      }
-
-      if ( bottom == null || bounds?.minLat < bottom )
-      {
-        bottom = bounds?.minLat
-      }
-
-      if ( right == null || bounds?.maxLon > right )
-      {
-        right = bounds?.maxLon
-      }
-
-      if ( top == null || bounds?.maxLat > top )
-      {
-        top = bounds?.maxLat
-      }
+      return [left: minx, right: maxx, top: maxy, bottom: miny]
     }
-
-    return [left: left, right: right, top: top, bottom: bottom]
-  }
 
   def createModelFromTiePointSet(def rasterEntry)
   {

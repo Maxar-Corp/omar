@@ -456,9 +456,9 @@ class RasterEntryController implements InitializingBean
       }
     }
 
-    if ( !session.rasterEntryResultCurrentTab && ("${session.rasterEntryResultCurrentTab}" != "0") )
+    if ( !session.rasterEntryResultCurrentTab)
     {
-      session["rasterEntryResultCurrentTab"] = "0"
+      session["rasterEntryResultCurrentTab"] = "1"
     }
 
     def rasterEntries = null
