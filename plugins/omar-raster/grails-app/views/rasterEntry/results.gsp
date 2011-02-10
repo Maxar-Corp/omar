@@ -156,7 +156,7 @@ function exportAs()
             <tbody style="overflow:auto">
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td height="128"><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: "thumbnail", action: "show", id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/></a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <td>${rasterEntry.entryId?.encodeAsHTML()}</td>
@@ -198,7 +198,7 @@ function exportAs()
             <tbody style="overflow:auto">
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td height="128"><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: "thumbnail", action: "show", id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/></a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="0" date="${rasterEntry?.acquisitionDate}"/></td>
@@ -230,7 +230,7 @@ function exportAs()
             <tbody style="overflow:auto">
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td height="128"><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: "thumbnail", action: "show", id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/></a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <td>
@@ -268,7 +268,7 @@ function exportAs()
             <tbody style="overflow:auto">
             <g:each in="${rasterEntries}" status="i" var="rasterEntry">
               <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                <td height="128"><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                <td><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                   <img src="${createLink(controller: "thumbnail", action: "show", params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/></a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: rasterEntry.indexId])}">WMS GetCapabilities</a></td>

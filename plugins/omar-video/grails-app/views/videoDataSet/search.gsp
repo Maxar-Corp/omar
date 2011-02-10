@@ -332,7 +332,7 @@
 	
 			<div class="niceBox">
 		      <div class="niceBoxHd">Metadata Criteria:</div>
-		      <div class="niceBoxMetadataBody">
+		      <div class="niceBoxBody">
 		        <ol>
 		          <g:each in="${queryParams?.searchTagValues}" var="searchTagValue" status="i">
 				            <g:select
@@ -354,7 +354,7 @@
 	
 			<div class="niceBox">
 		      <div class="niceBoxHd">Common Query Language:</div>
-		      <div class="niceBoxMetadataBody">
+		      <div class="niceBoxBody">
 		        <ol>
 		         
 		            <li>

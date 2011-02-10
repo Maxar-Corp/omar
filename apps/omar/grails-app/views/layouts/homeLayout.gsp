@@ -47,6 +47,9 @@
   {
     width:100%;
   }
+  #content{
+      bottom-margin:-20px;
+  }
   #center
   {
     height:100%;
@@ -81,15 +84,16 @@
     [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
     [plugin:'richui' , dir:'js/yui/element',         file: 'element-min.js']
 ]}"/>
-
-<div id="header" class="header">
-  <omar:securityClassificationBanner/>
-</div>
-<div id="top">
-  <g:pageProperty name="page.top"/>
-</div>
-<div id="center">
-  <g:pageProperty name="page.center"/>
+<div id="content">
+    <div id="header" class="header">
+      <omar:securityClassificationBanner/>
+    </div>
+    <div id="top">
+      <g:pageProperty name="page.top"/>
+    </div>
+    <div id="center">
+      <g:pageProperty name="page.center"/>
+    </div>
 </div>
 <div id="footer" class="footer">
   <omar:securityClassificationBanner/>
