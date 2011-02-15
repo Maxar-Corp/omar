@@ -29,6 +29,9 @@ class VideoDataSetSearchService implements InitializingBean
   /*@WebParam (name = "params", header = true)*/
   Map<String, String> params)
   {
+      def max = null;
+      if(params?.max!=null)  max = (params.max as Integer);
+      if(max<1) return null;
     def x = {
       if ( videoDataSetQuery?.groundGeom )
       {
@@ -40,9 +43,9 @@ class VideoDataSetSearchService implements InitializingBean
         addToCriteria(videoDataSetQuery.createDateRange("startDate", "endDate"))
       }
 
-      if ( params?.max )
+      if ( max )
       {
-        maxResults(params.max as Integer)
+        setMaxResults(max)
       }
 
       if ( params?.offset )
