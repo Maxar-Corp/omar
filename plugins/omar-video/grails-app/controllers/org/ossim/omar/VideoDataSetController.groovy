@@ -98,7 +98,10 @@ class VideoDataSetController implements InitializingBean
           inList("videoDataSet", videoDataSets)
         }
       }
-
+      else
+      {
+          totalCount = 0
+      }
       def endtime = System.currentTimeMillis()
       def user = authenticateService.principal()?.username
 
@@ -425,10 +428,10 @@ class VideoDataSetController implements InitializingBean
 
     def starttime = System.currentTimeMillis()
 
-    if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
-    {
-      params.max = 10
-    }
+      if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
+      {
+        params.max = 10
+      }
 
 	if (params?.queryParams)
 	{
@@ -453,15 +456,18 @@ class VideoDataSetController implements InitializingBean
     def videoFiles = null
 
     def queryParams = initVideoDataSetQuery(params)
-
-    if ( chainModel )
-    {
-      videoDataSets = chainModel.videoDataSets
-      totalCount = chainModel.totalCount
-      videoFiles = chainModel.videoFiles
-    }
-    else
-    {
+// chain model is messing with the max count.  When maxCount is 0 the totalCount
+// is still the entire database.  I have commented the chainModel out
+// for now.
+//    if ( chainModel )
+//    {
+//        println "DOING CHAIN MODEL!!!!"
+//      videoDataSets = chainModel.videoDataSets
+//      totalCount = chainModel.totalCount
+//      videoFiles = chainModel.videoFiles
+//    }
+//    else
+//    {
       videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
       totalCount = videoDataSetSearchService.getCount(queryParams)
 
@@ -472,7 +478,10 @@ class VideoDataSetController implements InitializingBean
           inList("videoDataSet", videoDataSets)
         }
       }
-
+      else
+      {
+          totalCount = 0
+      }
       def endtime = System.currentTimeMillis()
       def user = authenticateService.principal()?.username
 
@@ -491,10 +500,9 @@ class VideoDataSetController implements InitializingBean
       log.info(logData)
 
       //println logData
-    }
+ //   }
 
     //println "=== results end ==="
-
     if(!session.videoDataSetResultCurrentTab&&("${session.videoDataSetResultCurrentTab}"!="0"))
     {
       session["videoDataSetResultCurrentTab"] = "0"
