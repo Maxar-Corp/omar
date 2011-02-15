@@ -421,13 +421,10 @@ class RasterEntryController implements InitializingBean
 
   def results = {
 
-//    println "=== results start ==="
-
-    def starttime = System.currentTimeMillis()
+      def starttime = System.currentTimeMillis()
 
     if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
     {
-      params.max = 10
       params.max = 10
     }
 
@@ -484,7 +481,10 @@ class RasterEntryController implements InitializingBean
           inList("rasterDataSet", rasterEntries?.rasterDataSet)
         }
       }
-
+      else
+      {
+          totalCount = 0
+      }
       def endtime = System.currentTimeMillis()
       def user = authenticateService.principal()?.username
 
