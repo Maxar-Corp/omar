@@ -2,7 +2,7 @@ package org.ossim.omar
 
 import org.springframework.beans.factory.InitializingBean
 import groovy.xml.StreamingMarkupBuilder
-
+import org.ossim.omar.WMSRequest
 class RasterEntryController implements InitializingBean
 {
   def grailsApplication
@@ -629,6 +629,15 @@ class RasterEntryController implements InitializingBean
     params.remove("_action_kmlnetworklink")
 
     params.dateSort = "false"
+    WMSRequest request = new WMSRequest()
+
+    def map = request.customParametersToMap()
+    map.each{k,v->
+        if(!params."${k}")
+        {
+          params."${k}" = v
+        }
+    }
 
     def serviceAddress = createLink(absolute: true, controller: "kmlQuery", action: "getImagesKml", params: params)
 
