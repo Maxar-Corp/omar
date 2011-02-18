@@ -210,6 +210,10 @@ class RasterEntry
     }
   }
 
+  def getFileFromObjects(def type)
+  {
+    return fileObjects?.find { it.type == type }
+  }
   def getMetersPerPixel()
   {
     // need to check unit type but for mow assume meters
