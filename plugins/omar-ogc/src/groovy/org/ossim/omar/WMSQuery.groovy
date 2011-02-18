@@ -2,6 +2,7 @@ package org.ossim.omar
 
 import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
+import org.hibernate.criterion.Order
 
 /**
  * Created by IntelliJ IDEA.
@@ -127,23 +128,16 @@ class WMSQuery extends BaseQuery
   }
   def getRasterEntriesAsList()
   {
-    def names = []
+    def names = layers?layers.split(","):[]
     def layersCopy = layers
-    if(layers)
-    {
-      layers.split(',').each
-      {
-        names.add(it)
-      }
-    }
-    Integer max = 10
+    def tempMax = 10
     try
     {
-      max = Integer.valueOf(max);
+      tempMax = Integer.valueOf(max);
     }
     catch(Exception e)
     {
-      max = 10;
+      tempMax = 10;
     }
     def result = []
     if(names.size() > 0)
@@ -152,14 +146,14 @@ class WMSQuery extends BaseQuery
       names.each{name->
         layers = name
         def tempRasterEntry = RasterEntry.createCriteria().list{
-                                      maxResults(max)
+                                      maxResults(tempMax)
                                       addToCriteria(createRasterClause())
                                       }
         if(tempRasterEntry)
         {
           tempRasterEntry.each{
             result.add(it)
-            if(result.size() >= max)
+            if(result.size() >= tempMax)
             {
               return result
             }
@@ -169,6 +163,26 @@ class WMSQuery extends BaseQuery
     }
     else
     {
+        def ordering = null
+        if(order&&sort)
+        {
+            ordering = (order == "asc") ? Order.asc(sort) : Order.desc(sort)
+        }
+        def tempRasterEntry = RasterEntry.createCriteria().list{
+                                      maxResults(tempMax)
+                                      addToCriteria(createRasterClause())
+                                      if(ordering) addOrder(ordering)
+                                      }
+        if(tempRasterEntry)
+        {
+          tempRasterEntry.each{
+            result.add(it)
+            if(result.size() >= tempMax)
+            {
+              return result
+            }
+          }
+        }
       // we will add support for a general query that is similar to the last 10 or last N images.
     }
     layers = layersCopy
