@@ -9,6 +9,7 @@ import org.hibernate.criterion.Criterion
 import org.hibernatespatial.criterion.SpatialFilter
 import java.text.SimpleDateFormat
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.hibernate.criterion.Restrictions
 import org.geotools.filter.*
 import org.geotools.filter.spatial.*
 import geoscript.filter.*
@@ -58,6 +59,10 @@ class BaseQuery {
    * RasterEntry.class can be replaced with any class in the system.
    */
   def filterTypeMap
+
+  def order
+  def sort
+
   BaseQuery()
   {
 //    log =   org.apache.log4j.LogManager.getLogger("grails.app.omar.BaseQuery")
@@ -205,10 +210,8 @@ class BaseQuery {
       {
         log.error(e)
         clause = null
-
       }
     }
-
     clause
   }
  }
