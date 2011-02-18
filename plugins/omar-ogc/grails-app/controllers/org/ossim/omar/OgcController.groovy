@@ -14,6 +14,7 @@ class OgcController
   def rasterEntrySearchService
   def videoDataSetSearchService
   def webMappingService
+  def webCoverageService
   def wmsLogService
   def grailsApplication
   def authenticateService
@@ -131,7 +132,59 @@ class OgcController
       g2d.dispose()
     }
   }
+  def wcs = {
+      // for now until we can develop a plugin for the WCS
+      // we will hardcode the output format test list here
+      //
+      def outputFormats = ["geotiff", "geotiff8"]
+      def starttime = System.currentTimeMillis()
+      def internaltime = starttime
+      def endtime = starttime
+      def wcsRequest = new WCSRequest()
 
+      Utility.simpleCaseInsensitiveBind(wcsRequest, params);
+      try
+      {
+        switch ( wcsRequest?.request?.toLowerCase() )
+        {
+            case "getcoverage":
+                def format = wcsRequest.format?.toLowerCase()
+                if( format in outputFormats )
+                {
+                    def result = webCoverageService.getCoverage(wcsRequest)
+                    if(result)
+                    {
+                        def imageFile = result.file
+                        response.setHeader("Content-disposition", "attachment; filename=${result.outputName}")
+                        response.contentType = result.contentType
+                        try {
+                            println "writing file ${imageFile}"
+                            Utility.writeFileToOutputStream(imageFile, response.outputStream, 4096);
+                        }
+                        catch(Exception e)
+                        {
+                            log.error(e)
+                        }
+                        response.outputStream.flush()
+                        response.outputStream.close()
+
+                        imageFile.delete()
+                    }
+                }
+                else
+                {
+                    // need exception output for OGC standard
+                }
+                break
+        }
+      }
+      catch(Exception e)
+      {
+        log.error(e)
+      }
+
+    null
+  }
   def wms = {
     def starttime = System.currentTimeMillis()
     def internaltime = starttime
