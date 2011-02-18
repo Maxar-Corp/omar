@@ -11,6 +11,25 @@ import java.awt.image.DataBuffer;
 import grails.converters.JSON
 class Utility
 {
+    static void writeStreamToOutputStream(def inputStream, def output, def blockSize=4096)
+    {
+        byte[] buffer = new byte[blockSize]; // To hold file contents
+        int bytes_read; // How many bytes in buffer
+
+        while ((bytes_read = inputStream.read(buffer)) != -1)
+        {
+          // Read until EOF
+          output.write(buffer, 0, bytes_read); // write
+        }
+
+    }
+    static void writeFileToOutputStream(def inputFile, def output, def blockSize=4096)
+    {
+        def from = new FileInputStream(inputFile); // Create input stream
+        writeStreamToOutputStream(from, output, blockSize)
+        from.close()
+        from = null
+    }
   static def createTypeMap(def featureClass)
   {
     def fields = featureClass.declaredFields
