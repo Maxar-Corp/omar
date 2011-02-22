@@ -4,6 +4,7 @@ import grails.util.Environment
 //import org.ossim.postgis.GeometryType
 //import com.vividsolutions.jts.geom.Geometry
 
+import org.ossim.omar.DbAppender
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
 
@@ -78,7 +79,7 @@ log4j = {
   //
   appenders {
 
-    appender new org.ossim.omar.DbAppender(name: "wmsLoggingAppender",
+    appender new DbAppender(name: "wmsLoggingAppender",
             threshold: org.apache.log4j.Level.INFO,
             tableMapping: [width: ":width", height: ":height", layers: ":layers", styles: ":styles",
                     format: ":format", request: ":request", bbox: ":bbox", internal_time: ":internalTime",
