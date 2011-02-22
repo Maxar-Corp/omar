@@ -1,5 +1,7 @@
 <html>
 <head>
+  <meta content="yes" name="apple-mobile-web-app-capable"/>
+  <meta content="minimum-scale=1.0, width=device-width, user-scalable=no" name="viewport"/>
   <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
   <meta name='layout' content='singleColumn'/>
   <title>OMAR Login</title>
@@ -81,7 +83,7 @@
       <form action='${request.contextPath}/j_spring_security_check' method='POST' id='loginForm' class='cssform'>
         <p>
           <label for='j_username'>Login ID</label>
-          <input autocorrect='off' type='text' class='text_' name='j_username' id='j_username'/>
+          <input type='text' class='text_' name='j_username' id='j_username' autocorrect = "on"/>
         </p>
         <p>
           <label for='j_password'>Password</label>
