@@ -22,7 +22,7 @@
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
     <span class="menuButton"><g:link action="list" url="javascript:mapWidget.generateKML();">KML Query</g:link></span>
     <span class="menuButton"><g:link action="list" url="javascript:updateOmarFilters();">Update Footprints</g:link></span>
-    <span class="menuButton"><g:link action="list" url="javascript:mapWidget.search();">Search Videos</g:link></span>
+    <span class="menuButton"><span class="yui-button yui-link-button"><span class="first-child"><g:link action="list" url="javascript:mapWidget.search();">Search Videos</g:link></span></span></span>
   </div>
 </content>
 
@@ -89,7 +89,7 @@
               <ol>
                 <li>
                   <g:checkBox name="searchMethod" id="bboxSearchButton" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
-                  <label>Use BBox Search</label>
+                  <label>Use Bound Box Search</label>
                 </li>
                 <li>
                   <br/>
@@ -386,6 +386,17 @@
         </ol>
       </div>
     </div>
+
+
+
+
+		<div align="center">
+		<span class="yui-button yui-link-button"><span class="first-child"><g:link action="list" url="javascript:mapWidget.search();">Search Videos</g:link></span></span>
+	</div>
+
+
+
+
   </g:form>
 </content>
 <content tag="center">
