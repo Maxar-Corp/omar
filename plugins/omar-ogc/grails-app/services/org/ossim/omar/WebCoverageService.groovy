@@ -34,6 +34,8 @@ class WebCoverageService {
         def interpolation = wcsRequest.interpolation?wcsRequest.interpolation:"nearest neighbor"
         def sharpenMode = wcsRequest?.sharpen_mode?: ""
         def crs = wcsRequest?.response_crs?wcsRequest?.response_crs:wcsRequest?.crs
+        def nullFlip = wcsRequest?.null_flip ?: null
+        def requestFormat = wcsRequest?.format?.toLowerCase()
         def sharpenWidth = wcsRequest?.sharpen_width ?: null
         def sharpenSigma = wcsRequest?.sharpen_sigma ?: null
         def stretchMode = wcsRequest?.stretch_mode ? wcsRequest?.stretch_mode.toLowerCase(): null
@@ -41,6 +43,7 @@ class WebCoverageService {
         def bands = wcsRequest?.bands ?: ""
         def bounds = wcsRequest.bounds
         def wmsView = new WmsView()
+        def defaultOutputName = "coverage"
         if(!wmsView.setProjection(crs))
         {
             log.error("Unsupported projection ${crs}")
@@ -73,10 +76,17 @@ class WebCoverageService {
             rasterEntries = rasterEntries?.reverse()
         }
         def kwlString = null
+        def imageRect = wmsView.getViewImageRect()
+        def midPoint  = imageRect.midPoint()
+        def x         = (int)(midPoint.x+0.5)
+        def y         = (int)(midPoint.y+0.5)
+        x            -= (bounds.width*0.5);
+        y            -= (bounds.height*0.5);
+        def w         = bounds.width
+        def h         = bounds.height
         rasterEntries.each{rasterEntry->
             def histogramFile = new File(rasterEntry.getFileFromObjects("histogram")?.name)
             def overviewFile  = new File(rasterEntry.getFileFromObjects("overview")?.name)
-
             objectPrefixIdx = 0
             kwlString       = "type: ossimImageChain\n"
             def chain           = new joms.oms.Chain();
@@ -87,6 +97,10 @@ class WebCoverageService {
             kwlString          += "object${objectPrefixIdx}.filename:${rasterEntry.rasterDataSet.getFileFromObjects("main").name}\n"
             kwlString          += "object${objectPrefixIdx}.width:${rasterEntry.width}\n"
             kwlString          += "object${objectPrefixIdx}.height:${rasterEntry.height}\n"
+            if(overviewFile.exists())
+            {
+                kwlString          += "object${objectPrefixIdx}.overview_file:${overviewFile}\n"
+            }
 
             ++objectPrefixIdx
 
@@ -94,8 +108,39 @@ class WebCoverageService {
             //
             if(bands)
             {
-                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-                kwlString += "object${objectPrefixIdx}.bands:${bands}\n"
+                def bandArray = bands.split(",")
+                def validBands = true
+                def maxBands = rasterEntry.numberOfBands as Integer
+                if(bandArray.size() < 1)
+                {
+                    validBands = false
+                }
+                else
+                {
+                    bandArray.each{
+                        try
+                        {
+                            if(Integer.parseInt(it) >= maxBands)
+                            {
+                                validBands = false;
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                           validBands = false
+                        }
+                    }
+                }
+                if(validBands)
+                {
+                    kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+                    kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
+                    ++objectPrefixIdx
+                }
+            }
+            if(nullFlip)
+            {
+                kwlString += "object${objectPrefixIdx}.type:ossimNullPixelFlip\n"
                 ++objectPrefixIdx
             }
             // CONSTRUCT HISTOGRAM STRETCHING IF NEEDED
@@ -107,9 +152,9 @@ class WebCoverageService {
                     kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
                     kwlString += "object${objectPrefixIdx}.histogram_filename:${histogramFile}\n"
                     kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
+                    ++objectPrefixIdx
                 }
                //  kwlString          += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
-                ++objectPrefixIdx
             }
             // CONSTRUCT SHARPENING IF NEEDED
             //
@@ -144,7 +189,6 @@ class WebCoverageService {
             //
             kwlString          += "object${objectPrefixIdx}.type:ossimImageRenderer\n"
             kwlString          += "object${objectPrefixIdx}.max_levels_to_compute:0\n"
-//            kwlString          += "object${objectPrefixIdx}.max_levels_to_compute:${rasterEntry.numberOfResLevels}\n"
             kwlString          += "object${objectPrefixIdx}.resampler.magnify_type:  ${interpolation}\n"
             kwlString          += "object${objectPrefixIdx}.resampler.minify_type:  ${interpolation}\n"
 
@@ -154,30 +198,27 @@ class WebCoverageService {
             kwlString          += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
             kwlString          += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
             ++objectPrefixIdx
+
+
             chain.loadChainKwlString(kwlString)
             Util.setAllViewGeometries(chain.getChain(), wmsView.getImageGeometry().get(), false);
+            //chain.print()
             if(chain.getChain()!=null)
             {
                 srcChains.add(chain)
             }
         }
 
-        def imageRect = wmsView.getViewImageRect()
-        def midPoint  = imageRect.midPoint()
-        def x         = (int)(midPoint.x+0.5)
-        def y         = (int)(midPoint.y+0.5)
-        x            -= (bounds.width*0.5);
-        y            -= (bounds.height*0.5);
-        def w         = bounds.width
-        def h         = bounds.height
 
         // now establish mosaic and cut to match the output dimensions
         kwlString = "type:ossimImageChain\n"
         kwlString += "object0.type:ossimImageMosaic\n"
+
         kwlString += "object1.type:ossimRectangleCutFilter\n"
-        kwlString += "object1.rect:${x},${y},${w},${h}\n"
+        kwlString += "object1.rect:(${x},${y},${w},${h},lh)\n"
         kwlString += "object1.cut_type:null_outside\n"
         kwlString += "object1.id:10001\n"
+
         def connectionId = 10001
         objectPrefixIdx = 2
         if(stretchModeRegion == "viewport")
@@ -193,28 +234,32 @@ class WebCoverageService {
             ++objectPrefixIdx
             connectionId = 10003
         }
-        if(wcsRequest?.format?.toLowerCase() == "geotiff8")
+        if(requestFormat.contains("geotiff8")||
+           requestFormat.contains("jpeg"))
         {
             kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
-            //kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId}\n"
         }
         def mosaic = new joms.oms.Chain();
         mosaic.loadChainKwlString(kwlString)
-        def chain = mosaic.getChain()
         srcChains.each{srcChain->
-            chain.connectMyInputTo(srcChain.getChain())
+            mosaic.connectMyInputTo(srcChain)
         }
+        def writerType = "ossimTiffWriter"
+        def contentType = "image/tiff"
+        def outputFileName = "${defaultOutputName}.tif"
         File tempFile = File.createTempFile("wcs", ".tif");
         // now establish a writer
         kwlString = "type:ossimTiffWriter\n"
+        //kwlString = "type:gdal_PNG\n"
+        //kwlString = "type:gdal_GTiff\n"
+        //kwlString = "type:ossimJpegWriter\n"
         kwlString += "filename:${tempFile}\n"
         kwlString += "image_type:tiff_tiled\n"
+        //kwlString += "image_type:tiff_tiled_band_separate\n"
         def writer = new joms.oms.Chain();
         writer.loadChainKwlString(kwlString)
-        writer.getChain().connectMyInputTo(mosaic.getChain())
-
+        writer.connectMyInputTo(mosaic)
         writer.executeChain()
-
         writer.deleteChain()
         mosaic.deleteChain()
         writer = null
@@ -223,6 +268,6 @@ class WebCoverageService {
             srcChain.deleteChain()
         }
         srcChains = null
-        [file:tempFile, outputName: "coverage.tif", contentType: "image/tiff"]
+        [file:tempFile, outputName: "${outputFileName}", contentType: "${contentType}"]
     }
 }
