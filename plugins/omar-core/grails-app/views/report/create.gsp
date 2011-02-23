@@ -46,6 +46,14 @@
           </tr>
           <tr class="prop">
             <td valign="top" class="name">
+              <label for="phone"><g:message code="report.phone.label" default="Phone"/></label>
+            </td>
+            <td valign="top" class="value ${hasErrors(bean: reportInstance, field: 'phone', 'errors')}">
+              <g:textField name="phone" value="${reportInstance?.phone}"/>
+            </td>
+          </tr>
+          <tr class="prop">
+            <td valign="top" class="name">
               <label for="createdDate"><g:message code="report.createdDate.label" default="Created Date"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: reportInstance, field: 'createdDate', 'errors')}">

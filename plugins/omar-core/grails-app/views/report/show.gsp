@@ -36,6 +36,10 @@
           <td valign="top" class="value">${fieldValue(bean: reportInstance, field: "email")}</td>
         </tr>
         <tr class="prop">
+          <td valign="top" class="name"><g:message code="report.phone.label" default="Phone"/></td>
+          <td valign="top" class="value">${fieldValue(bean: reportInstance, field: "phone")}</td>
+        </tr>
+        <tr class="prop">
           <td valign="top" class="name"><g:message code="report.createdDate.label" default="Created Date"/></td>
           <td valign="top" class="value"><g:formatDate date="${reportInstance?.createdDate}" /></td>
         </tr>

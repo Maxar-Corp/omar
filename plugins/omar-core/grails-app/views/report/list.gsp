@@ -24,6 +24,7 @@
           <g:sortableColumn property="id" title="${message(code: 'report.id.label', default: 'Id')}"/>
           <g:sortableColumn property="name" title="${message(code: 'report.name.label', default: 'Name')}"/>
           <g:sortableColumn property="email" title="${message(code: 'report.email.label', default: 'Email')}"/>
+          <g:sortableColumn property="phone" title="${message(code: 'report.phone.label', default: 'Phone')}"/>
           <g:sortableColumn property="createdDate" title="${message(code: 'report.createdDate.label', default: 'Created Date')}"/>
           <g:sortableColumn property="report" title="${message(code: 'report.report.label', default: 'Report')}"/>
         </tr>
@@ -34,6 +35,7 @@
             <td><g:link action="show" id="${reportInstance.id}">${fieldValue(bean: reportInstance, field: "id")}</g:link></td>
             <td>${fieldValue(bean: reportInstance, field: "name")}</td>
             <td>${fieldValue(bean: reportInstance, field: "email")}</td>
+            <td>${fieldValue(bean: reportInstance, field: "phone")}</td>
             <td><g:formatDate date="${reportInstance.createdDate}"/></td>
             <td>${fieldValue(bean: reportInstance, field: "report")}</td>
           </tr>
