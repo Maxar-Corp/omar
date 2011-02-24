@@ -52,17 +52,7 @@ class WebCoverageService implements InitializingBean{
         }
         if(!bounds)
         {
-            log.error("No BBOX found.  We currently require a BBOX")
-            return null
-        }
-        if(!wcsRequest.width)
-        {
-            log.error("No width found.")
-            return null
-        }
-        if(!wcsRequest.height)
-        {
-            log.error("No height found.")
+            log.error("Invalid Bounds found.  We currently require a BBOX along with either WIDTH HEIGHT or RESX RESY")
             return null
         }
         if(!wmsView.setViewDimensionsAndImageSize(bounds.minx, bounds.miny, bounds.maxx, bounds.maxy, bounds.width, bounds.height))
