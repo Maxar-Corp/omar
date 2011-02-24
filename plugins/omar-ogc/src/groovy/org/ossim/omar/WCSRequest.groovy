@@ -12,6 +12,8 @@ class WCSRequest
     String bbox
     String width
     String height
+    String resx
+    String resy
     String format
     String coverage
     String crs
@@ -34,7 +36,8 @@ class WCSRequest
     String max
     def toMap()
     {
-       return [bbox: bbox, width: width as Integer, height: height as Integer, format: format,
+       return [bbox: bbox, width: width as Integer, height: height as Integer,
+               format: format, resx:resx as Double, resy: resy as Double,
                coverage: coverage, crs: crs, response_crs:response_crs, service: service,
                version: version, request: request, stretch_mode: stretch_mode, interpolation:interpolation,
                stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
@@ -54,12 +57,25 @@ class WCSRequest
         {
            def splitBbox = bbox.split(",")
             try{
-                result = [minx:splitBbox[0] as Double,
-                          miny:splitBbox[1] as Double,
-                          maxx:splitBbox[2] as Double,
-                          maxy:splitBbox[3] as Double,
-                          width:width as Integer,
-                          height:height as Integer]
+                def minx = splitBbox[0] as Double
+                def miny = splitBbox[1] as Double
+                def maxx = splitBbox[2] as Double
+                def maxy = splitBbox[3] as Double
+                def w = width
+                def h = height
+                if(!(w&&h)&&resx&&resy)
+                {
+                    def rx = resx as Double
+                    def ry = resy as Double
+                    w = (maxx-minx)/rx
+                    h = (maxy-miny)/ry
+                }
+                result = [minx:minx,
+                          miny:miny,
+                          maxx:maxx,
+                          maxy:maxy,
+                          width:w as Integer,
+                          height:h as Integer]
             }
             catch(Exception e)
             {
