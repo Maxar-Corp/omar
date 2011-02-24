@@ -5,11 +5,12 @@ import joms.oms.WmsView
 import joms.oms.Util
 import joms.oms.ossimDpt
 import joms.oms.ossimDrect
-
-class WebCoverageService {
+import org.springframework.beans.factory.InitializingBean
+class WebCoverageService implements InitializingBean{
 
     static transactional = true
-
+    def grailsApplication
+    def temporaryDirectory
     def getCoverage(def wcsRequest) {
 
         def coverageList = wcsRequest?.coverage?.split(",")
@@ -111,6 +112,8 @@ class WebCoverageService {
                 def bandArray = bands.split(",")
                 def validBands = true
                 def maxBands = rasterEntry.numberOfBands as Integer
+                // validate that the ban list is within the desired ranges
+                // the http request is 0 based.
                 if(bandArray.size() < 1)
                 {
                     validBands = false
@@ -133,9 +136,16 @@ class WebCoverageService {
                 }
                 if(validBands)
                 {
+                    // the keywordlist in ossim takes a list of integers surrounded
+                    // by parenthesis
+                    //
                     kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
                     kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
                     ++objectPrefixIdx
+                }
+                else
+                {
+                    log.error("Invalid band selection (${bands}) for image ${rasterEntry.id}")
                 }
             }
             if(nullFlip)
@@ -147,12 +157,19 @@ class WebCoverageService {
             //
             if(stretchMode&&stretchModeRegion)
             {
-                if(stretchModeRegion == "global")
+                if(stretchModeRegion == "global"  )
                 {
-                    kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
-                    kwlString += "object${objectPrefixIdx}.histogram_filename:${histogramFile}\n"
-                    kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
-                    ++objectPrefixIdx
+                    if(histogramFile.exists())
+                    {
+                        kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
+                        kwlString += "object${objectPrefixIdx}.histogram_filename:${histogramFile}\n"
+                        kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
+                        ++objectPrefixIdx
+                    }
+                    else
+                    {
+                        log.error("Histogram file does not exist and will ignore the stretch: ${histogramFile}")
+                    }
                 }
                //  kwlString          += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
             }
@@ -169,6 +186,8 @@ class WebCoverageService {
                     case "heavy":
                         sharpenSigma = 1.0
                         sharpenWidth = 5.0
+                        break
+                    default:
                         break
                 }
 
@@ -234,32 +253,63 @@ class WebCoverageService {
             ++objectPrefixIdx
             connectionId = 10003
         }
-        if(requestFormat.contains("geotiff8")||
+        if(requestFormat.contains("uint8")||
            requestFormat.contains("jpeg"))
         {
             kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
         }
+
         def mosaic = new joms.oms.Chain();
         mosaic.loadChainKwlString(kwlString)
         srcChains.each{srcChain->
             mosaic.connectMyInputTo(srcChain)
         }
-        def writerType = "ossimTiffWriter"
-        def contentType = "image/tiff"
-        def outputFileName = "${defaultOutputName}.tif"
-        File tempFile = File.createTempFile("wcs", ".tif");
+        def ext = null
+        def contentType = null
+        kwlString = ""
+        switch(requestFormat)
+        {
+            case ~/.*jpeg.*/:
+                kwlString  += "type:ossimJpegWriter\n"
+                contentType = "image/jpeg"
+                ext = ".jpg"
+                break
+            case ~/.*tiff.*/:
+                kwlString    += "type:ossimTiffWriter\n"
+                kwlString    += "image_type:tiff_tiled\n"
+                contentType  = "image/tiff"
+                ext          = ".tif"
+                break
+            case ~/.*jp2.*/:
+                kwlString   += "type:ossimKakaduJp2Writer\n"
+                contentType  = "image/jp2"
+                ext = ".jp2"
+                break
+            case ~/.*png.*/:
+                kwlString   += "type:ossimPngWriter\n"
+                contentType  = "image/png"
+                ext = ".png"
+                break
+            default:
+                log.error("Unsupported FORMAT=${requestFormat}")
+                break
+        }
+        def outputFileName = "${defaultOutputName}${ext}"
+        File tempFile = File.createTempFile("wcs", ext, temporaryDirectory?new File(temporaryDirectory):null);
         // now establish a writer
-        kwlString = "type:ossimTiffWriter\n"
-        //kwlString = "type:gdal_PNG\n"
-        //kwlString = "type:gdal_GTiff\n"
-        //kwlString = "type:ossimJpegWriter\n"
+        //
         kwlString += "filename:${tempFile}\n"
-        kwlString += "image_type:tiff_tiled\n"
-        //kwlString += "image_type:tiff_tiled_band_separate\n"
         def writer = new joms.oms.Chain();
         writer.loadChainKwlString(kwlString)
-        writer.connectMyInputTo(mosaic)
-        writer.executeChain()
+        if(writer.getChain() != null)
+        {
+            writer.connectMyInputTo(mosaic)
+            writer.executeChain()
+        }
+        else
+        {
+            log.error("Unable to create a writer with the format ${requestFormat}")
+        }
         writer.deleteChain()
         mosaic.deleteChain()
         writer = null
@@ -269,5 +319,9 @@ class WebCoverageService {
         }
         srcChains = null
         [file:tempFile, outputName: "${outputFileName}", contentType: "${contentType}"]
+    }
+    public void afterPropertiesSet()
+    {
+      temporaryDirectory = grailsApplication.config.export.workDir
     }
 }
