@@ -136,7 +136,7 @@ class OgcController
       // for now until we can develop a plugin for the WCS
       // we will hardcode the output format test list here
       //
-      def outputFormats = ["geotiff", "geotiff8"]
+      def outputFormats = ["png", "png_uint8", "geotiff", "geotiff_uint8", "geojp2_uint8", "geojp2"]
       def starttime = System.currentTimeMillis()
       def internaltime = starttime
       def endtime = starttime
@@ -158,7 +158,6 @@ class OgcController
                         response.setHeader("Content-disposition", "attachment; filename=${result.outputName}")
                         response.contentType = result.contentType
                         try {
-                            println "writing file ${imageFile}"
                             Utility.writeFileToOutputStream(imageFile, response.outputStream, 4096);
                         }
                         catch(Exception e)
