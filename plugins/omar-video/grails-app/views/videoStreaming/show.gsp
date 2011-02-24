@@ -17,6 +17,7 @@
   }
   </style>
   <title>OMAR Streaming Video</title>
+    <g:javascript src="swfobject.js"/>
 </head>
 <body>
 
@@ -43,15 +44,27 @@
     </div>
   </div>
 </content>
-<g:javascript src="swfobject.js"/>
 <g:javascript>
-  var s1 = new SWFObject('${resource(dir: "js", file: "player.swf")}','OBJECT_ID',
-    '${videoDataSet.width}','${videoDataSet.height}','9','#ffffff');
-  s1.addParam('allowfullscreen','true');
-  s1.addParam('allowscriptaccess','always');
-  s1.addParam('wmode','opaque');
-  s1.addParam('flashvars','file=${flvUrl}&autostart=true');
-  s1.write('player');
+
+var flashvars = {
+	file: "${flvUrl}",
+	autostart:"true"
+	//shuffle: ‘false’,
+	// repeat: ‘list’
+};
+
+var videoparams = {
+	allowfullscreen:"true"
+	//allowscriptaccess:”always”
+};
+
+var videoattributes = {
+	id:"player1",
+	name:"player1"
+};
+
+swfobject.embedSWF("${createLinkTo(dir: 'js', file: 'player.swf')}", "player", "720", "520", "9", true,flashvars,videoparams,videoattributes);
+
 </g:javascript>
 </body>
 </html>
