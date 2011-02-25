@@ -128,7 +128,7 @@ public class WMSCapabilities
 
       WMT_MS_Capabilities(version: version) {
         Service() {
-          Name()
+          Name("WMS")
           Title()
           Abstract()
           KeywordList() {
