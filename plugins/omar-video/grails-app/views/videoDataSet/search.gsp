@@ -339,7 +339,7 @@
 				                noSelection="${['null':'Select One...']}"
 				                name="searchTagNames[${i}]"
 				                value="${queryParams?.searchTagNames[i]}"
-				                from="${VideoDataSetSearchTag.list()}"
+				                from="${VideoDataSetSearchTag.list(sort:'description')}"
 				                optionKey="name" optionValue="description"/>
 				            <li>
 				              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
