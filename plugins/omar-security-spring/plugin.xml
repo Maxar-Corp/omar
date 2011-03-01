@@ -1,0 +1,27 @@
+<plugin name='omar-security-spring' version='0.1' grailsVersion='1.3.7 &gt; *'>
+  <author>Scott Bortman</author>
+  <authorEmail>sbortman@radiantblue.com</authorEmail>
+  <title>OMAR spring security</title>
+  <description>\
+Adds support for Spring Security to OMAR	
+</description>
+  <documentation>http://grails.org/plugin/omar-security-spring</documentation>
+  <resources>
+    <resource>BuildConfig</resource>
+    <resource>Config</resource>
+    <resource>DataSource</resource>
+    <resource>UrlMappings</resource>
+    <resource>org.ossim.omar.AbstractS2UiController</resource>
+    <resource>org.ossim.omar.LoginController</resource>
+    <resource>org.ossim.omar.LogoutController</resource>
+    <resource>org.ossim.omar.RegisterController</resource>
+    <resource>org.ossim.omar.RegistrationCode</resource>
+    <resource>org.ossim.omar.Requestmap</resource>
+    <resource>org.ossim.omar.SecRole</resource>
+    <resource>org.ossim.omar.SecUser</resource>
+    <resource>org.ossim.omar.SecUserSecRole</resource>
+    <resource>org.ossim.omar.CustomUserDetailsService</resource>
+  </resources>
+  <dependencies />
+  <behavior />
+</plugin>

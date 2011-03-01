@@ -426,6 +426,8 @@ plugins/omar-scheduler/web-app/WEB-INF/tld/*.iml
 plugins/omar-scheduler/web-app/css/*.iml
 plugins/omar-scheduler/web-app/images/*.iml
 plugins/omar-scheduler/web-app/js/*.iml
+plugins/omar-security-spring/grails-omar-security-spring-0.1.zip
+plugins/omar-security-spring/target
 plugins/omar-security/*.iml
 plugins/omar-security/.settings/*.iml
 plugins/omar-security/grails-app/*.iml
