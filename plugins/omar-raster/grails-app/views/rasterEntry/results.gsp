@@ -234,13 +234,13 @@ function exportAs()
                   <img src="${createLink(controller: "thumbnail", action: "show", id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/></a></td>
                 <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                 <td>
-                  <g:ifAllGranted role="ROLE_DOWNLOAD">
+                  <sec:ifAllGranted roles="ROLE_DOWNLOAD">
                     <a href=${grailsApplication.config.image.download.prefix}${rasterEntry.mainFile?.name?.encodeAsHTML()}>
-                  </g:ifAllGranted>
+                  </sec:ifAllGranted>
                   ${rasterEntry.mainFile?.name?.encodeAsHTML()}
-                  <g:ifAllGranted role="ROLE_DOWNLOAD">
+                  <sec:ifAllGranted roles="ROLE_DOWNLOAD">
                     </a>
-                  </g:ifAllGranted>
+                  </sec:ifAllGranted>
                 </td>
               </tr>
             </g:each>

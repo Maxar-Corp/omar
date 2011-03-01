@@ -8,9 +8,9 @@
 <content tag="content">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <g:ifAllGranted role="ROLE_ADMIN">
+    <sec:ifAllGranted roles="ROLE_ADMIN">
       <span class="menuButton"><g:link class="create" action="create">Create Video File</g:link></span>
-    </g:ifAllGranted>
+    </sec:ifAllGranted>
   </div>
   <div class="body">
     <h1>OMAR: Video File List</h1>

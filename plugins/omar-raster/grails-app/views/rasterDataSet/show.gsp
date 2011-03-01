@@ -9,9 +9,9 @@
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
     <span class="menuButton"><g:link class="list" action="list">Raster Set List</g:link></span>
-    <g:ifAllGranted role="ROLE_ADMIN">
+    <sec:ifAllGranted roles="ROLE_ADMIN">
       <span class="menuButton"><g:link class="create" action="create">Create Raster Set</g:link></span>
-    </g:ifAllGranted>
+    </sec:ifAllGranted>
   </div>
   <div class="body">
     <h1>OMAR: Show Raster Set ${rasterDataSet.id}</h1>
@@ -51,10 +51,10 @@
     <div class="buttons">
       <g:form>
         <input type="hidden" name="id" value="${rasterDataSet?.id}"/>
-        <g:ifAllGranted role="ROLE_ADMIN">
+        <sec:ifAllGranted roles="ROLE_ADMIN">
           <span class="button"><g:actionSubmit class="edit" value="Edit"/></span>
           <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
-        </g:ifAllGranted>
+        </sec:ifAllGranted>
       </g:form>
     </div>
   </div>

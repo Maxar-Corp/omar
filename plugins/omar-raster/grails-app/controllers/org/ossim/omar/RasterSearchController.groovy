@@ -10,7 +10,10 @@ class RasterSearchController implements InitializingBean
   def baseWMS
   def dataWMS
 
+/*
   def authenticateService
+*/
+  def springSecurityService
   def rasterEntrySearchService
 
   def tagHeaderList
@@ -48,7 +51,11 @@ class RasterSearchController implements InitializingBean
         params.max = 10
       }
 
+/*
       def user = authenticateService.principal().username
+*/
+      def user = springSecurityService.principal.username
+
       def starttime = System.currentTimeMillis()
       def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
       def endtime = System.currentTimeMillis()
@@ -100,7 +107,10 @@ class RasterSearchController implements InitializingBean
       rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
 
       def endtime = System.currentTimeMillis()
+/*
       def user = authenticateService.principal()?.username
+*/
+      def user = springSecurityService.principal.username
 
       def logData = [
               TYPE: "raster_search",

@@ -9,9 +9,9 @@
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
     <span class="menuButton"><g:link class="list" action="list">Raster Entry List</g:link></span>
-    <g:ifAllGranted role="ROLE_ADMIN">
+    <sec:ifAllGranted roles="ROLE_ADMIN">
       <span class="menuButton"><g:link class="create" action="create">Create Raster Entry</g:link></span>
-    </g:ifAllGranted>
+    </sec:ifAllGranted>
   </div>
   <div class="body">
     <h1>OMAR: Show Raster Entry ${fieldValue(bean: rasterEntry, field: 'id')}</h1>
@@ -147,10 +147,10 @@
     <div class="buttons">
       <g:form>
         <input type="hidden" name="id" value="${rasterEntry?.id}"/>
-        <g:ifAllGranted role="ROLE_ADMIN">
+        <sec:ifAllGranted roles="ROLE_ADMIN">
           <span class="button"><g:actionSubmit class="edit" value="Edit"/></span>
           <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
-        </g:ifAllGranted>
+        </sec:ifAllGranted>
         <span class="menuButton">
           <a href="${createLink(controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 512])}" >Show Thumbnail</a>
         </span>

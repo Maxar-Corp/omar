@@ -17,16 +17,18 @@ grails.gorm.default.mapping = {
 }
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
-grails.config.locations = []
+
+
+ grails.config.locations = [
+//  "classpath:${appName}-config.properties",
+//  "classpath:${appName}-config.groovy",
+//  "file:${userHome}/.grails/${appName}-config.properties",
+     "file:${userHome}/.grails/${appName}-config.groovy"
+]
 if ( System.env.OMAR_CONFIG )
 {
   grails.config.locations << "file:${System.env.OMAR_CONFIG}"
 }
-
-// grails.config.locations = [ "classpath:${appName}-config.properties",
-//                             "classpath:${appName}-config.groovy",
-//                             "file:${userHome}/.grails/${appName}-config.properties",
-//                             "file:${userHome}/.grails/${appName}-config.groovy"]
 
 // if(System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
@@ -467,3 +469,76 @@ export {
 
   }
 }
+
+// Added by the Spring Security Core plugin:
+grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.ossim.omar.SecUser'
+grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.ossim.omar.SecUserSecRole'
+grails.plugins.springsecurity.authority.className = 'org.ossim.omar.SecRole'
+grails.plugins.springsecurity.requestMap.className = 'org.ossim.omar.Requestmap'
+grails.plugins.springsecurity.securityConfigType = 'Requestmap'
+
+// LDAP Configuration
+grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
+grails.plugins.springsecurity.ldap.context.managerDn = 'cn=Administrator,dc=otd,dc=radiantblue,dc=com' //
+grails.plugins.springsecurity.ldap.context.managerPassword = 'omarldap'                                //
+grails.plugins.springsecurity.ldap.search.base = 'ou=people,dc=otd,dc=radiantblue,dc=com'
+grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = true
+grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
+grails.plugins.springsecurity.ldap.search.searchSubtree = true
+grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=group,dc=otd,dc=radiantblue,dc=com'
+//grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=group,memberUid=demo,dc=otd,dc=radiantblue,dc=com'
+
+// LDAP user:
+//  username: demo
+//  password: d3m0m@p5
+
+grails {
+  plugins {
+    springsecurity {
+      ui {
+        register {
+          emailBody = '''\
+Hi $user.username,<br/>
+<br/>
+You (or someone pretending to be you) created an account with this email address.<br/>
+<br/>
+If you made the request, please click <a href="$url">here</a> to finish the registration.
+'''
+          emailFrom = 'do.not.reply@localhost'
+          emailSubject = 'New Account'
+          defaultRoleNames = ['ROLE_USER']
+          postRegisterUrl = null // use defaultTargetUrl if not set
+        }
+
+        forgotPassword {
+          emailBody = '''\
+Hi $user.username,<br/>
+<br/>
+You (or someone pretending to be you) requested that your password be reset.<br/>
+<br/>
+If you didn't make this request then ignore the email; no changes have been made.<br/>
+<br/>
+If you did make the request, then click <a href="$url">here</a> to reset your password.
+'''
+          emailFrom = 'do.not.reply@localhost'
+          emailSubject = 'Password Reset'
+          postResetUrl = null // use defaultTargetUrl if not set
+        }
+      }
+    }
+  }
+}
+
+
+//grails {
+//   mail {
+//     host = "smtp.gmail.com"
+//     port = 465
+//     username = "youracount@gmail.com"
+//     password = "yourpassword"
+//     props = ["mail.smtp.auth":"true",
+//              "mail.smtp.socketFactory.port":"465",
+//              "mail.smtp.socketFactory.class":"javax.net.ssl.SSLSocketFactory",
+//              "mail.smtp.socketFactory.fallback":"false"]
+//   }
+//}

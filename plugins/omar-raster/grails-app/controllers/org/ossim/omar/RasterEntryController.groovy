@@ -6,7 +6,10 @@ import org.ossim.omar.WMSRequest
 class RasterEntryController implements InitializingBean
 {
   def grailsApplication
+/*
   def authenticateService
+*/
+  def springSecurityService
   def baseWMS
   def dataWMS
   def webMappingService
@@ -103,7 +106,13 @@ class RasterEntryController implements InitializingBean
     }
 
     def endtime = System.currentTimeMillis()
+
+/*
     def user = authenticateService.principal()?.username
+*/
+
+    def user = springSecurityService.principal.username
+
 
     def logData = [
             TYPE: "raster_list",
@@ -277,7 +286,11 @@ class RasterEntryController implements InitializingBean
 
       //println "queryParams: ${queryParams}"
 
+/*
       def user = authenticateService.principal().username
+*/
+      def user = springSecurityService.principal.username
+
       def starttime = System.currentTimeMillis()
 
       def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
@@ -325,7 +338,7 @@ class RasterEntryController implements InitializingBean
 //                                                                        searchNameList,
  //                                                                       null,
  //                                                                      null)
-      
+
 //      return [ogcFilterQueryFields:ogcFilterQueryFields, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
       return [session:session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
@@ -357,8 +370,11 @@ class RasterEntryController implements InitializingBean
       params.sort = 'acquisitionDate'
 
       //println "queryParams: ${queryParams}"
-
+/*
       def user = authenticateService.principal().username
+*/
+      def user = springSecurityService.principal.username
+
       def starttime = System.currentTimeMillis()
 
       def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
@@ -486,7 +502,11 @@ class RasterEntryController implements InitializingBean
           totalCount = 0
       }
       def endtime = System.currentTimeMillis()
+
+/*
       def user = authenticateService.principal()?.username
+*/
+      def user = springSecurityService.principal.username
 
       def logData = [
               TYPE: "raster_search",
@@ -560,7 +580,10 @@ class RasterEntryController implements InitializingBean
       }
 
       def endtime = System.currentTimeMillis()
+/*
       def user = authenticateService.principal()?.username
+*/
+      def user = springSecurityService.principal.username
 
       def logData = [
               TYPE: "raster_search",

@@ -11,15 +11,17 @@ class VideoDataSetController implements InitializingBean
 
   def tagHeaderList
   def tagNameList
-  
+
   def thumbnailSize = 128
 
   def baseWMS
   def dataWMS
 
   def index = { redirect(action: list, params: params) }
-
+/*
   def authenticateService
+*/
+  def springSecurityService
   def videoDataSetSearchService
   def webMappingService
 
@@ -65,7 +67,7 @@ class VideoDataSetController implements InitializingBean
   }
   */
   def list = {
- 	//println "=== results start ==="
+    //println "=== results start ==="
 
     def starttime = System.currentTimeMillis()
 
@@ -103,7 +105,10 @@ class VideoDataSetController implements InitializingBean
           totalCount = 0
       }
       def endtime = System.currentTimeMillis()
+/*
       def user = authenticateService.principal()?.username
+*/
+      def user = springSecurityService.principal.username
 
       def logData = [
           TYPE: "video_search",
@@ -287,7 +292,11 @@ class VideoDataSetController implements InitializingBean
 
       //println "queryParams: ${queryParams}"
 
+/*
       def user = authenticateService.principal().username
+*/
+      def user = springSecurityService.principal.username
+
       def starttime = System.currentTimeMillis()
 
       def videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
@@ -360,7 +369,10 @@ class VideoDataSetController implements InitializingBean
 
       //println "queryParams: ${queryParams}"
 
+/*
       def user = authenticateService.principal().username
+*/
+      def user = springSecurityService.principal.username
       def starttime = System.currentTimeMillis()
 
       def videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
@@ -424,7 +436,7 @@ class VideoDataSetController implements InitializingBean
 
   def results = {
 
- 	//println "=== results start ==="
+    //println "=== results start ==="
 
     def starttime = System.currentTimeMillis()
 
@@ -433,23 +445,23 @@ class VideoDataSetController implements InitializingBean
         params.max = 10
       }
 
-	if (params?.queryParams)
-	{
-	  def serialized = params?.queryParams - "{" - "}";
-	  def paramsArray = serialized?.split(',')
+    if (params?.queryParams)
+    {
+      def serialized = params?.queryParams - "{" - "}";
+      def paramsArray = serialized?.split(',')
       params.remove("queryParams")
-	  params.remove("totalCount")
-	  paramsArray?.each
-	  {
-	    def temp = it?.split('=')
-	    if (temp.size() == 2)
-		{ 
-		  if (temp[1] == "null") temp[1] = ""
-		    params.put(temp[0].trim(), temp[1].trim())
-		}
-		else if (temp.size() == 1) params.put(temp[0].trim(), "")
+      params.remove("totalCount")
+      paramsArray?.each
+      {
+        def temp = it?.split('=')
+        if (temp.size() == 2)
+        {
+          if (temp[1] == "null") temp[1] = ""
+            params.put(temp[0].trim(), temp[1].trim())
+        }
+        else if (temp.size() == 1) params.put(temp[0].trim(), "")
       }
-	}
+    }
 
     def videoDataSets = null
     def totalCount = null
@@ -483,7 +495,11 @@ class VideoDataSetController implements InitializingBean
           totalCount = 0
       }
       def endtime = System.currentTimeMillis()
+
+/*
       def user = authenticateService.principal()?.username
+*/
+      def user = springSecurityService.principal.username
 
       def logData = [
           TYPE: "video_search",
@@ -558,7 +574,10 @@ class VideoDataSetController implements InitializingBean
       }
 
       def endtime = System.currentTimeMillis()
+/*
       def user = authenticateService.principal()?.username
+*/
+      def user = springSecurityService.principal.username
 
       def logData = [
           TYPE: "video_search",

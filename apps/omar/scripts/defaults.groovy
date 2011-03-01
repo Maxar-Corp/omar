@@ -1,5 +1,12 @@
+/*
 import org.ossim.omar.Role
 import org.ossim.omar.AuthUser
+*/
+
+import org.ossim.omar.SecRole
+import org.ossim.omar.SecUser
+import org.ossim.omar.SecUserSecRole
+
 import org.ossim.omar.Requestmap
 import org.ossim.omar.RasterEntrySearchTag
 import org.ossim.omar.VideoDataSetSearchTag
@@ -8,31 +15,14 @@ import org.ossim.omar.Repository
 import grails.util.GrailsUtil
 
 
+def springSecurityService = ctx.springSecurityService
+
+/*
 def authenticateService = ctx.authenticateService
 
-def userRole = Role.findByAuthority("ROLE_USER")
-
-if ( !userRole )
-{
-  userRole = new Role(authority: "ROLE_USER", description: "user")
-  userRole.save()
-}
-
-def adminRole = Role.findByAuthority("ROLE_ADMIN")
-
-if ( !adminRole )
-{
-  adminRole = new Role(authority: "ROLE_ADMIN", description: "admin")
-  adminRole.save()
-}
-
-def downloadRole = Role.findByAuthority("ROLE_DOWNLOAD")
-
-if ( !downloadRole )
-{
-  downloadRole = new Role(authority: "ROLE_DOWNLOAD", description: "download")
-  downloadRole.save()
-}
+def userRole = Role.findByAuthority("ROLE_USER") ?: new Role(authority: "ROLE_USER").save()
+def adminRole = Role.findByAuthority("ROLE_ADMIN") ?: new Role(authority: "ROLE_ADMIN").save()
+def downloadRole = Role.findByAuthority("ROLE_DOWNLOAD") ?: new Role(authority: "ROLE_DOWNLOAD").save()
 
 def user = AuthUser.findByUsername("user")
 
@@ -66,6 +56,30 @@ if ( !admin )
 
   admin.addToAuthorities(userRole).addToAuthorities(adminRole).save(flush: true)
 }
+*/
+
+def userRole = SecRole.findByAuthority("ROLE_USER") ?: new SecRole(authority: "ROLE_USER", description: "Standard User").save()
+def adminRole = SecRole.findByAuthority("ROLE_ADMIN") ?: new SecRole(authority: "ROLE_ADMIN", description: "Administrator").save()
+def downloadRole = SecRole.findByAuthority("ROLE_DOWNLOAD") ?: new SecRole(authority: "ROLE_DOWNLOAD", description: "Download privileges").save()
+
+def userData = [
+    [username: "user", password: springSecurityService.encodePassword("user"), enabled: true, accountExpired: false, accountLocked: false, passwordExpired: false, userRealName: "Some User", email: "user@ossim.og"],
+    [username: "admin", password: springSecurityService.encodePassword("admin"), enabled: true, accountExpired: false, accountLocked: false, passwordExpired: false, userRealName: "The Admin", email: "admin@ossim.org"],
+]
+
+userData.each {
+    def user = new SecUser(it).save()
+
+    if ( user ) {
+        SecUserSecRole.create(user, userRole)
+    }
+    else {
+        println "User for ${it.username} is null!"
+    }
+}
+
+SecUserSecRole.create(SecUser.findByUsername("admin"), adminRole)
+
 
 if ( !Requestmap.findByUrl("/home/**") )
 {
@@ -91,7 +105,7 @@ adminControllers.each {adminController ->
   }
 }
 
-def domainControllers = (((grailsApplication.domainClasses)*.logicalPropertyName).sort()) - ["authUser", "dataSet", "role", "requestmap", "report", "search_mobile","results_mobile",'list_mobile','show_mobile']
+def domainControllers = (((grailsApplication.domainClasses)*.logicalPropertyName).sort()) - ["authUser", "dataSet", "role", "requestmap", "report", "search_mobile", "results_mobile", 'list_mobile', 'show_mobile']
 
 domainControllers.each {domainController ->
   domainController = domainController.toLowerCase()
@@ -122,6 +136,10 @@ searchableControllers.each {controller ->
 new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/rasterSearch/**").save()
 new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/session/**").save()
 
+
+
+
+
 def searchTagData = grailsApplication.config.rasterEntry.searchTagData
 
 searchTagData.each {
@@ -149,7 +167,7 @@ searchTagData.each {
 
 if ( GrailsUtil.isDevelopmentEnv() )
 {
-  def baseDirs = ["/","/data/uav", "/Volumes/Iomega_HDD/data"]
+  def baseDirs = ["/", "/data/uav", "/Volumes/Iomega_HDD/data"]
 
   baseDirs.each {baseDir ->
     def repository = Repository.findByBaseDir(baseDir)

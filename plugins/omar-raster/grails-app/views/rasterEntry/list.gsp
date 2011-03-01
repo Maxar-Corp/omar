@@ -166,13 +166,13 @@
                   <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                   <g:set var="rasterFile" value="${rasterEntry.mainFile}"/>
                   <td>
-                    <g:ifAllGranted role="ROLE_DOWNLOAD">
+                    <sec:ifAllGranted roles="ROLE_DOWNLOAD">
                       <a href=${grailsApplication.config.image.download.prefix}${rasterFile?.name?.encodeAsHTML()}>
-                    </g:ifAllGranted>
+                    </sec:ifAllGranted>
                     ${rasterFile?.name?.encodeAsHTML()}
-                    <g:ifAllGranted role="ROLE_DOWNLOAD">
+                    <sec:ifAllGranted roles="ROLE_DOWNLOAD">
                       </a>
-                    </g:ifAllGranted>
+                    </sec:ifAllGranted>
                   </td>
                 </tr>
               </g:each>

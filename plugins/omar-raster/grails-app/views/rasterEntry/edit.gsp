@@ -10,9 +10,9 @@
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
     <span class="menuButton"><g:link class="list" action="list">Raster Entry List</g:link></span>
-    <g:ifAllGranted role="ROLE_ADMIN">
+    <sec:ifAllGranted roles="ROLE_ADMIN">
       <span class="menuButton"><g:link class="create" action="create">Create Raster Entry</g:link></span>
-    </g:ifAllGranted>
+    </sec:ifAllGranted>
   </div>
   <div class="body">
     <h1>OMAR: Edit Raster Entry ${fieldValue(bean: rasterEntry, field: 'id')}</h1>

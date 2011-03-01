@@ -11,9 +11,9 @@
 <content tag="north">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <g:ifAllGranted role="ROLE_ADMIN">
+    <sec:ifAllGranted roles="ROLE_ADMIN">
       <span class="menuButton"><g:link class="create" action="create">Create Video Set</g:link></span>
-    </g:ifAllGranted>
+    </sec:ifAllGranted>
     <span class="menuButton"><g:link action="search">Search Video</g:link></span>
     <span class="menuButton"><a href="javascript:toggleThumbnails()">Toggle Thumbnails</a></span>
     <span class="menuButton"><a href="javascript:toggleDetails()">Toggle Details</a></span>

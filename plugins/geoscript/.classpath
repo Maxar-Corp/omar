@@ -1,14 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry kind="src" path="src/java"/>
-    <classpathentry kind="src" path="src/groovy"/>
-    <classpathentry kind="src" path="grails-app/conf"/>
-    <classpathentry kind="src" path="grails-app/controllers"/>
-    <classpathentry kind="src" path="grails-app/domain"/>
-    <classpathentry kind="src" path="grails-app/services"/>
-    <classpathentry kind="src" path="grails-app/taglib"/>
-    <classpathentry kind="src" path="test/integration"/>
-    <classpathentry kind="src" path="test/unit"/>
-    <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-    <classpathentry kind="con" path="com.springsource.sts.grails.core.CLASSPATH_CONTAINER"/>
-    <classpathentry kind="output" path="web-app/WEB-INF/classes"/>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="src/groovy"/>
+	<classpathentry kind="src" path="grails-app/conf"/>
+	<classpathentry kind="src" path="grails-app/controllers"/>
+	<classpathentry kind="src" path="grails-app/domain"/>
+	<classpathentry kind="src" path="grails-app/services"/>
+	<classpathentry kind="src" path="grails-app/taglib"/>
+	<classpathentry kind="src" path="test/integration"/>
+	<classpathentry kind="src" path="test/unit"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="com.springsource.sts.grails.core.CLASSPATH_CONTAINER"/>
+	<classpathentry kind="con" path="GROOVY_SUPPORT"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/postgis"/>
+	<classpathentry kind="lib" path="/postgis/lib/hibernate-spatial-1.0.jar"/>
+	<classpathentry kind="lib" path="/postgis/lib/hibernate-spatial-postgis-1.0.jar"/>
+	<classpathentry kind="lib" path="/postgis/lib/jts-1.8.jar"/>
+	<classpathentry kind="lib" path="/postgis/lib/jtsio-1.8.jar"/>
+	<classpathentry kind="lib" path="/postgis/lib/postgis_1.3.6.jar"/>
+	<classpathentry kind="lib" path="/postgis/lib/postgis_jts_1.3.6.jar"/>
+	<classpathentry kind="lib" path="/postgis/lib/postgresql-8.2-505.jdbc3.jar"/>
+	<classpathentry kind="output" path="web-app/WEB-INF/classes"/>
 </classpath>
