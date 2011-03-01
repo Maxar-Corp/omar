@@ -17,7 +17,10 @@ class OgcController
   def webCoverageService
   def wmsLogService
   def grailsApplication
-  def authenticateService
+/*
+def authenticateService
+*/
+  def springSecurityService
   def kmlService
 
   def footprints = {
@@ -321,7 +324,11 @@ class OgcController
       }
 */
       endtime = System.currentTimeMillis()
+/*
       wmsLogParams.domain = authenticateService.userDomain()
+*/
+     wmsLogParams.domain = SecUser.findByUsername(springSecurityService.principal.username)
+
       wmsLogParams.userName = "nobody"
       def domain = null
       def clientIp = request.getHeader('Client-ip')
@@ -345,7 +352,11 @@ class OgcController
       }
       if ( wmsLogParams.domain )
       {
+/*
         def authUser = AuthUser.get(wmsLogParams.domain.id)
+*/
+        def authUser = SecUser.findByUsername(springSecurityService.principal.username)
+
         wmsLogParams.userName = authUser?.username
         wmsLogParams.domain = authUser?.email.split('@')[1]
       }

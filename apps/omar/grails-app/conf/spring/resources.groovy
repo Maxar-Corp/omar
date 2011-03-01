@@ -1,13 +1,15 @@
+/*
 import org.ossim.omar.LdapAuthenticationProcessingFilter
 import org.codehaus.groovy.grails.plugins.springsecurity.AuthorizeTools
 import org.ossim.omar.AutoCreateLdapUserDetailsMapper
-
+*/
 // Place your Spring DSL code here
 beans = {
   sql(groovy.sql.Sql, ref('dataSource')) { bean ->
     bean.scope = 'prototype'
   }
-  def conf = AuthorizeTools.securityConfig.security
+
+/*  def conf = AuthorizeTools.securityConfig.security
 
   authenticationProcessingFilter(LdapAuthenticationProcessingFilter) {
     authenticationManager = ref('authenticationManager')
@@ -26,4 +28,5 @@ beans = {
     usePassword = conf.ldapUsePassword
     retrieveDatabaseRoles = conf.ldapRetrieveDatabaseRoles
   }
+*/
 }

@@ -62,7 +62,7 @@
         <span class="arrow"></span>
       </g:link>
     </li>
-    <g:ifAllGranted role="ROLE_ADMIN">
+    <sec:ifAllGranted roles="ROLE_ADMIN">
       <li class="menu">
         <g:link controller="report" action="list">
           <img alt="list" src="${resource(dir: 'images', file: 'report.png')}"/>
@@ -70,10 +70,10 @@
           <span class="arrow"></span>
         </g:link>
       </li>
-    </g:ifAllGranted>
+    </sec:ifAllGranted>
   </ul>
 
-  <g:ifAllGranted role="ROLE_ADMIN">
+  <sec:ifAllGranted roles="ROLE_ADMIN">
     <ul class="pageitem">
       <li class="textbox"><span class="header">User Management:</span></li>
       <li class="menu">
@@ -111,7 +111,7 @@
         </li>
       </g:each>
     </ul>
-  </g:ifAllGranted>
+  </sec:ifAllGranted>
 </div>
 
 <div id="footer">

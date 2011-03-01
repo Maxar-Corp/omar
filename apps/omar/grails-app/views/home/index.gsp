@@ -89,7 +89,7 @@ s<html>
     </table>
   </div>
 
-  <g:ifNotGranted role="ROLE_ADMIN">
+    <sec:ifNotGranted roles="ROLE_ADMIN">
     <div>
       <h1 style="font-size:150%">User Preferences:</h1>
       <table>
@@ -99,15 +99,13 @@ s<html>
           </td>
           <td>
             <ol>
-              <li><g:link controller="userPreferences" action="edit" id="${user.id}">Edit</g:link></li>
+              <li><g:link controller="userPreferences" action="edit" id="${user?.id}">Edit</g:link></li>
             </ol>
           </td>
         </tr>
       </table>
     </div>
-
-  </g:ifNotGranted>
-
+  </sec:ifNotGranted>
   <div>
     <h1 style="font-size:150%">Report:</h1>
     <table>
@@ -120,11 +118,11 @@ s<html>
             <li>
               <g:link plugin="omar-core" controller="report" action="create">User Feedback</g:link>
             </li>
-            <g:ifAllGranted role="ROLE_ADMIN">
+            <sec:ifAllGranted roles="ROLE_ADMIN">
               <li>
                 <g:link plugin="omar-core" controller="report" action="list">View Feedback</g:link>
               </li>
-            </g:ifAllGranted>
+            </sec:ifAllGranted>
           </ol>
         </td>
       </tr>
@@ -144,7 +142,7 @@ s<html>
     </table>
   </div>
 
-  <g:ifAllGranted role="ROLE_ADMIN">
+  <sec:ifAllGranted roles="ROLE_ADMIN">
     <div>
       <h1 style="font-size:150%">User Management:</h1>
       <table>
@@ -179,8 +177,8 @@ s<html>
           </td>
         </tr>
       </table>
-    </div>
-  </g:ifAllGranted>
+    </div
+  </sec:ifAllGranted>
 </content>
 
 <g:javascript>

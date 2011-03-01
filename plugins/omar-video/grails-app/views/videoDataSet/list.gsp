@@ -117,13 +117,13 @@
                 <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.indexId, size: 128])}" alt="Show Frame"/></a></td>
                 <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
                 <td>
-                  <g:ifAllGranted role="ROLE_DOWNLOAD">
+                  <sec:ifAllGranted roles="ROLE_DOWNLOAD">
                     <a href=${grailsApplication.config.image.download.prefix}${videoDataSet.mainFile?.name?.encodeAsHTML()}>
-                  </g:ifAllGranted>
+                  </sec:ifAllGranted>
                   ${videoDataSet.mainFile?.name?.encodeAsHTML()}
-                  <g:ifAllGranted role="ROLE_DOWNLOAD">
+                  <sec:ifAllGranted roles="ROLE_DOWNLOAD">
                     </a>
-                  </g:ifAllGranted>
+                  </sec:ifAllGranted>
                 </td>
               </tr>
             </g:each>

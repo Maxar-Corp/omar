@@ -3,6 +3,12 @@
 	<name>omar-raster</name>
 	<comment></comment>
 	<projects>
+		<project>geoscript</project>
+		<project>omar-core</project>
+		<project>omar-oms</project>
+		<project>omar-stager</project>
+		<project>openlayers</project>
+		<project>postgis</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -12,7 +18,7 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-	    <nature>com.springsource.sts.grails.core.nature</nature>
+		<nature>com.springsource.sts.grails.core.nature</nature>
 		<nature>org.eclipse.jdt.groovy.core.groovyNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>

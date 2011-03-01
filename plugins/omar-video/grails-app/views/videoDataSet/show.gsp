@@ -9,9 +9,9 @@
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
     <span class="menuButton"><g:link class="list" action="list">Video Data Set List</g:link></span>
-    <g:ifAllGranted role="ROLE_ADMIN">
+    <sec:ifAllGranted roles="ROLE_ADMIN">
       <span class="menuButton"><g:link class="create" action="create">Create Video Data Set</g:link></span>
-    </g:ifAllGranted>
+    </sec:ifAllGranted>
   </div>
   <div class="body">
     <h1>OMAR: Show Video Data Set ${fieldValue(bean: videoDataSet, field: 'id')}</h1>
@@ -65,10 +65,10 @@
     <div class="buttons">
       <g:form>
         <input type="hidden" name="id" value="${videoDataSet?.id}"/>
-        <g:ifAllGranted role="ROLE_ADMIN">
+        <sec:ifAllGranted roles="ROLE_ADMIN">
           <span class="button"><g:actionSubmit class="edit" value="Edit"/></span>
           <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
-        </g:ifAllGranted>
+        </sec:ifAllGranted>
         <span class="menuButton">
           <a href="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.id, params: [size: 512])}">Show Frame</a>
         </span>

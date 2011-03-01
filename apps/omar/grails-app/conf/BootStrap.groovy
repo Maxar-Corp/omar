@@ -4,9 +4,7 @@ import grails.util.GrailsUtil
 
 class BootStrap
 {
-
-  def authenticateService
-  def grailsApplication
+ def grailsApplication
 
 
   def init = {servletContext ->

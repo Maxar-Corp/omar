@@ -10,14 +10,17 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-		<buildCommand>
-			<name>org.codehaus.groovy.eclipse.groovyBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>com.springsource.sts.grails.core.nature</nature>
+		<nature>org.eclipse.jdt.groovy.core.groovyNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>org.codehaus.groovy.eclipse.groovyNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>tomcat-1.3.7-src-groovy</name>
+			<type>2</type>
+			<locationURI>GRAILS_ROOT/1.3.7/projects/postgis/plugins/tomcat-1.3.7/src/groovy</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
