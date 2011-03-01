@@ -18,6 +18,7 @@ import joms.oms.ossimKeywordlist
 import joms.oms.ossimGptVector
 import joms.oms.ossimDptVector
 import joms.oms.Util
+import joms.oms.ossimImageSource
 
 import joms.oms.ossimImageGeometryPtr
 import joms.oms.ossimImageGeometry
@@ -28,13 +29,18 @@ import javax.imageio.ImageIO
 import org.geotools.geometry.jts.LiteShape
 import geoscript.geom.MultiPolygon
 import java.awt.Rectangle
+import joms.oms.Chain
+import org.ossim.oms.image.omsImageSource
+import org.ossim.oms.image.omsRenderedImage
+
 
 class WebMappingService
 {
   def grailsApplication
   def rasterEntrySearchService
   def videoDataSetSearchService
-
+  def rasterChainService
+  
 
   public static final String SYSCALL = "syscall"
   public static final String LIBCALL = "libcall"
@@ -123,10 +129,179 @@ class WebMappingService
 
   RenderedImage getMap(WMSRequest wmsRequest)
   {
+	def wmsQuery  = new WMSQuery()
+	def params    = wmsRequest.toMap();
+    def stretchMode       = wmsRequest?.stretch_mode ? wmsRequest?.stretch_mode.toLowerCase(): null
+    def stretchModeRegion = wmsRequest?.stretch_mode_region ?:null
+	wmsQuery.caseInsensitiveBind(wmsRequest.toMap())
+	def max    = params.max?params.max as Integer:10
+	if(max > 10) max = 10
+	wmsQuery.max = max
+	def bounds = wmsRequest?.bbox?.split(',')
+	def maxBands = 1
+	// for now we will sort by the date field if no layers are given
+	//
+	if(!wmsQuery.layers)
+	{
+	    wmsQuery.sort  = wmsQuery.sort?:"acquisitionDate"
+	    wmsQuery.order = wmsQuery.order?:"desc"
+	}
+	def result = null
+    def wmsView = new WmsView()
+	def srs = wmsRequest?.srs
+    if(!wmsView.setProjection(srs))
+    {
+        log.error("Unsupported projection ${srs}")
+        return null
+    }
+	if(!bounds.size() == 4)
+	{
+        log.error("Bounds does not contain 4 values")
+		return null
+	}
+    if(!wmsView.setViewDimensionsAndImageSize(bounds[0] as Double,
+              bounds[1] as Double,
+              bounds[2] as Double,
+              bounds[3] as Double,
+              params.width,
+              params.height))
+    {
+        log.error("Unable to set the dimensions for the view bounds")
+        return null
+    }
+	if(!params.width||!params.height||!params.bbox)
+	{
+		log.error("Need to set all dimensions width, height, bbox")
+		return null
+	}
+	def rasterEntries = wmsQuery.getRasterEntriesAsList();
+    params.viewGeom = wmsView.getImageGeometry();
+    if(rasterEntries)
+    {
+        rasterEntries = rasterEntries?.reverse()
+        def srcChains    = []
+        rasterEntries.each{rasterEntry->
+			if(rasterEntry.numberOfBands > maxBands) maxBands = rasterEntry.numberOfBands
+			
+			def chain = rasterChainService.createRasterEntryChain(rasterEntry, params)
+			//chain.print()
+            if(chain.getChain()!=null)
+            {
+                srcChains.add(chain)
+            }
+        }
+		def kwlString = ""
+        kwlString = "type:ossimImageChain\n"
+        def objectPrefixIdx = 0
+		
+		if(srcChains.size() > 1)
+		{
+	        // now establish mosaic and cut to match the output dimensions
+	        kwlString += "object${objectPrefixIdx}.type:ossimImageMosaic\n"
+			++objectPrefixIdx
+		}
+		def imageRect = wmsView.getViewImageRect()
+		def midPoint  = imageRect.midPoint()
+		def x         = (int)(midPoint.x+0.5)
+		def y         = (int)(midPoint.y+0.5)
+		x            -= (params.width*0.5);
+		y            -= (params.height*0.5);
+		def w         = params.width
+		def h         = params.height
+
+        kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
+        kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
+        kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
+        kwlString += "object${objectPrefixIdx}.id:10001\n"
+	    ++objectPrefixIdx
+        def connectionId = 10001
+        if(stretchModeRegion == "viewport")
+        {
+            kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
+            kwlString += "object${objectPrefixIdx}.id:10002\n"
+            ++objectPrefixIdx
+            kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
+            kwlString += "object${objectPrefixIdx}.id:10003\n"
+            kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
+            kwlString += "object${objectPrefixIdx}.input_connection1:10001\n"
+            kwlString += "object${objectPrefixIdx}.input_connection2:10002\n"
+            ++objectPrefixIdx
+            connectionId = 10003
+        }
+		// for now scale all WMS requests to 8-bit
+		// and make it either 1 band or 3 band output
+		//
+        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
+		++objectPrefixIdx
+		if(maxBands == 2)
+		{
+				kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+				kwlString += "object${objectPrefixIdx}.bands:(0)\n"
+				++objectPrefixIdx
+		}
+		else if(maxBands > 3)
+		{
+				kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+				kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
+				++objectPrefixIdx
+		}
+        def mosaic = new joms.oms.Chain();
+        mosaic.loadChainKwlString(kwlString)
+        srcChains.each{srcChain->
+            mosaic.connectMyInputTo(srcChain)
+        }
+		def imageSource = new omsImageSource(mosaic.getChainAsImageSource())
+		//def dataBuffer = imageSource.getDataBuffer(rect)
+		def renderedImage = new omsRenderedImage(imageSource)
+		def raster = renderedImage.getData();
+		mosaic.deleteChain()
+        srcChains.each{srcChain->
+			srcChain.deleteChain();
+		}
+		mosaic = null
+		srcChains = null
+		
+		ColorModel colorModel = renderedImage.colorModel
+		
+		boolean isRasterPremultiplied = true
+		Hashtable<?, ?> properties = null
+	
+		
+		
+        def transparentFlag = wmsRequest?.transparent?.equalsIgnoreCase("true")
+		if(raster.numBands  == 1)
+		{
+          result = Utility.convertToColorIndexModel(raster.dataBuffer,
+                  									raster.width,
+													raster.height,
+													transparentFlag)
+		}
+		else
+		{
+		    result = new BufferedImage(
+					  colorModel,
+					  raster,
+					  isRasterPremultiplied,
+					  properties
+		 			 )
+			if ( transparentFlag )
+			{
+				result = TransparentFilter.fixTransparency(new TransparentFilter(), result)
+			}
+			if ( wmsRequest?.format?.equalsIgnoreCase("image/gif") )
+			{
+			    result = ImageGenerator.convertRGBAToIndexed(result)
+			}
+		}
+    }
+	
+	return result
+  }
+  RenderedImage getMapOld(WMSRequest wmsRequest)
+  {
     RenderedImage image = null
     def enableOMS = true
     def quickLookFlagString = wmsRequest?.quicklook ?: "false"
-    def rotate = wmsRequest?.rotate?:"0.0"
     def sharpenMode = wmsRequest?.sharpen_mode ?: ""
     def sharpenWidth = wmsRequest?.sharpen_width ?: ""
     def sharpenSigma = wmsRequest?.sharpen_sigma ?: ""

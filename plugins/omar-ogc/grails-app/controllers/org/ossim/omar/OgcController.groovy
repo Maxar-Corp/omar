@@ -196,7 +196,8 @@ def authenticateService
 
 
     Utility.simpleCaseInsensitiveBind(wmsRequest, params);
-    def wmsLogParams = wmsRequest.toMap()
+	def wmsLogParams = wmsRequest.toMap()
+	
     wmsLogParams.startDate = new Date()
 
     def tempMap = new CaseInsensitiveMap(params)

@@ -43,11 +43,11 @@ class WMSRequest
             version: version, request: request, transparent: transparent, bgcolor: bgcolor, styles: styles,
             stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
             sharpen_width: sharpen_width as Double, sharpen_sigma: sharpen_sigma as Double, rotate: rotate as Double,
-            time: time, null_flip: null_flip, exception: exception, filter:filter, quicklook: quicklook].sort { it.key }
+            time: time, null_flip: null_flip, bands:bands, exception: exception, filter:filter, quicklook: quicklook].sort { it.key }
   }
   def customParametersToMap()
   {
-     [stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode:sharpen_mode,
+     [bands:bands,stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode:sharpen_mode,
              sharpen_width: sharpen_width as Double, sharpen_sigma: sharpen_sigma as Double, rotate: rotate as Double,
              time: time, null_flip: null_flip, exception: exception, filter:filter, quicklook: quicklook].sort(){it.key}
 }
