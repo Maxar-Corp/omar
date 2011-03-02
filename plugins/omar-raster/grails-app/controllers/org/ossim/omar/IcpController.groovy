@@ -28,8 +28,8 @@ class IcpController {
       Rectangle rect  = new Rectangle(x, y, width, height)
       if(paramsIgnoreCase.id)
       {
-        def rasterEntry = RasterEntry.findByIndexId(paramsIgnoreCase.id)?:RasterEntry.findByTitle(paramsIgnoreCase.id)?:RasterEntry.findById(paramsIgnoreCase.id)
-        if(rasterEntry==null)
+        def rasterEntry = RasterEntry.findByIndexId(paramsIgnoreCase.id)?:RasterEntry.findByTitle(paramsIgnoreCase.id)?:RasterEntry.findById(paramsIgnoreCase.id)	
+		if(rasterEntry==null)
         {
           def w = width?:256
           def h = height?:256
@@ -55,14 +55,16 @@ class IcpController {
           def outputType = "jpeg"
           def resLevel = numRLevels - z.toInteger() - 1
           int entry = rasterEntry.entryId?.toInteger()
-
-          image = icpService.getPixels(
-                  rect,
-                  inputFile,
-                  entry,
-                  bands as Integer,
-                  scale,
-                  paramsIgnoreCase)
+		  paramsIgnoreCase.scale = "${scale}"
+		  if(!paramsIgnoreCase.pivot)
+		  {
+			  paramsIgnoreCase.pivot = "${rasterEntry.width*0.5},${rasterEntry.height*0.5}"
+		  }
+  
+        image = icpService.getPixels(
+                rect,
+				rasterEntry,
+                 paramsIgnoreCase)
         }
         response.contentType = format
         ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
@@ -70,12 +72,6 @@ class IcpController {
     }
     catch (Exception e) {
       log.error(e.message)
-//      image = new BufferedImage(tileWidth, tileHeight, BufferedImage.TYPE_INT_RGB)
-
-//      response.contentType = "image/jpeg"
-//      ImageIO.write(image, "jpeg", response.outputStream)
-
-
     }
     return null
   }
@@ -149,12 +145,14 @@ class IcpController {
 
         int entry = rasterEntry.entryId?.toInteger()
 
+		paramsIgnoreCase.scale = "${scale}"
+		if(!paramsIgnoreCase.pivot)
+		{
+			paramsIgnoreCase.pivot = "${rasterEntry.width*0.5},${rasterEntry.height*0.5}"
+		}
         image = icpService.getPixels(
                 rect,
-                inputFile,
-                entry,
-                bands as Integer,
-                scale,
+				rasterEntry,
                 paramsIgnoreCase)
 
         response.contentType = format
@@ -163,12 +161,6 @@ class IcpController {
     }
     catch (Exception e) {
       log.error(e.message)
-//      image = new BufferedImage(tileWidth, tileHeight, BufferedImage.TYPE_INT_RGB)
-
-//      response.contentType = "image/jpeg"
-//      ImageIO.write(image, "jpeg", response.outputStream)
-
-
     }
     return null;
   }

@@ -12,15 +12,74 @@ import java.awt.image.ColorModel
 import org.ossim.oms.image.omsImageSource
 
 class IcpService {
-
+	def rasterChainService
+	
   static transactional = true
-  BufferedImage getPixels(Rectangle rect,
+   def getPixels(Rectangle rect,
+                          def rasterEntry,
+                          def params)
+    {
+		def result = null
+		def maxBands = 0
+		def rasterChain             = rasterChainService.createRasterEntryChain(rasterEntry, params)
+		def stretchMode       = params.stretch_mode?params.stretch_mode.toLowerCase():null
+		def stretchModeRegion = params.stretch_mode_region?params.stretch_mode_region.toLowerCase():null
+		//rasterChain.print()
+		if(rasterChain)
+		{
+			maxBands = rasterChain.getChainAsImageSource().getNumberOfOutputBands()
+			def objectPrefixIdx = 0
+			def kwlString = "type:ossimImageChain\n"
+			kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
+			kwlString += "object${objectPrefixIdx}.rect:(${rect.x},${rect.y},${rect.width},${rect.height},lh)\n"
+			kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
+			kwlString += "object${objectPrefixIdx}.id:10001\n"
+			if(stretchModeRegion == "viewport")
+			{
+				kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
+				kwlString += "object${objectPrefixIdx}.id:10002\n"
+				++objectPrefixIdx
+				kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
+				kwlString += "object${objectPrefixIdx}.id:10003\n"
+				kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
+				kwlString += "object${objectPrefixIdx}.input_connection1:10001\n"
+				kwlString += "object${objectPrefixIdx}.input_connection2:10002\n"
+				++objectPrefixIdx
+				connectionId = 10003
+			}
+	        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
+			++objectPrefixIdx
+			if(maxBands == 2)
+			{
+					kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+					kwlString += "object${objectPrefixIdx}.bands:(0)\n"
+					++objectPrefixIdx
+			}
+			else if(maxBands > 3)
+			{
+					kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+					kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
+					++objectPrefixIdx
+			}
+			def chipChain = new joms.oms.Chain();
+			chipChain.loadChainKwlString(kwlString)
+			chipChain.connectMyInputTo(rasterChain)
+			result = rasterChainService.grabOptimizedImageFromChain(chipChain, params)
+			chipChain.deleteChain();
+			rasterChain.deleteChain();
+			chipChain = null
+			rasterChain = null
+		}
+		result
+	}
+	BufferedImage getPixelsOld(Rectangle rect,
                           String inputFile,
                           int entry,
                           def inputBandCount,
                           BigDecimal scale,
                           def params)
     {
+		
       def sharpenMode = params.sharpen_mode ?: ""
       def bands = params?.bands ?: ""
       def rotate = params?.rotate ?: "0.0"
@@ -51,13 +110,6 @@ class IcpService {
           viewableBandCount = 1;
         }
       }
-//    println params
-//    println rect
-//    println "${inputFile} ${entry}"
-//    println stretchMode
-//    println viewportStretchMode
-//    println scale
-//    println "${startSample} ${endSample} ${startLine} ${endLine}"
 
       byte[] data = new byte[rect.width * rect.height * 3]
       def kwl = new ossimKeywordlist();

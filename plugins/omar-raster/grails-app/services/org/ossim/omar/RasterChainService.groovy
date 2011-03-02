@@ -70,7 +70,9 @@ class RasterChainService {
         def stretchMode = params?.stretch_mode ? params?.stretch_mode.toLowerCase(): null
         def stretchModeRegion = params?.stretch_mode_region ?:null
         def bands = params?.bands ?: ""
-		
+		def rotate = params?.rotate?:null
+		def scale  = params?.scale?:null
+		def pivot  = params?.pivot?:null
 		def histogramFile = new File(rasterEntry.getFileFromObjects("histogram")?.name)
 		def overviewFile  = new File(rasterEntry.getFileFromObjects("overview")?.name)
 		def objectPrefixIdx = 0
@@ -201,6 +203,38 @@ class RasterChainService {
 		    kwl.delete()
 			kwl = null
 			++objectPrefixIdx
+			//CONSTRUCT VIEW CACHE
+			//
+			kwlString          += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+			kwlString          += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
+			++objectPrefixIdx
+		}
+		else if(rotate||scale)
+		{
+			//CONSTRUCT IMAGE CACHE
+			//
+			kwlString          += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+			
+			++objectPrefixIdx
+			//CONSTRUCT RENDERER
+			//
+			kwlString          += "object${objectPrefixIdx}.type:ossimImageRenderer\n"
+			kwlString          += "object${objectPrefixIdx}.max_levels_to_compute:0\n"
+			kwlString          += "object${objectPrefixIdx}.resampler.magnify_type:  ${interpolation}\n"
+			kwlString          += "object${objectPrefixIdx}.resampler.minify_type:  ${interpolation}\n"
+		    kwlString          += "object${objectPrefixIdx}.image_view_trans.type: ossimImageViewAffineTransform\n"
+			if(rotate)
+			{
+				kwlString          += "object${objectPrefixIdx}.image_view_trans.rotate: ${rotate}\n"
+			}
+			if(scale)
+			{
+				kwlString          += "object${objectPrefixIdx}.image_view_trans.scale: (${scale},${scale})\n"
+			}
+			if(pivot)
+			{
+				kwlString          += "object${objectPrefixIdx}.image_view_trans.pivot: (${pivot})\n"
+			}
 			//CONSTRUCT VIEW CACHE
 			//
 			kwlString          += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
