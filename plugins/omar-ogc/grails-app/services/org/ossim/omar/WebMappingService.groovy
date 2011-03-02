@@ -258,52 +258,6 @@ class WebMappingService
 		srcChains = null
 		wmsView.delete()
 		wmsView = null
-/*		
-		
-		def imageSource = new omsImageSource(mosaic.getChainAsImageSource())
-		//def dataBuffer = imageSource.getDataBuffer(rect)
-		def renderedImage = new omsRenderedImage(imageSource)
-		def raster = renderedImage.getData();
-		mosaic.deleteChain()
-        srcChains.each{srcChain->
-			srcChain.deleteChain();
-		}
-		mosaic = null
-		srcChains = null
-		
-		ColorModel colorModel = renderedImage.colorModel
-		
-		boolean isRasterPremultiplied = true
-		Hashtable<?, ?> properties = null
-	
-		
-		
-        def transparentFlag = wmsRequest?.transparent?.equalsIgnoreCase("true")
-		if(raster.numBands  == 1)
-		{
-          result = Utility.convertToColorIndexModel(raster.dataBuffer,
-                  									raster.width,
-													raster.height,
-													transparentFlag)
-		}
-		else
-		{
-		    result = new BufferedImage(
-					  colorModel,
-					  raster,
-					  isRasterPremultiplied,
-					  properties
-		 			 )
-			if ( transparentFlag )
-			{
-				result = TransparentFilter.fixTransparency(new TransparentFilter(), result)
-			}
-			if ( wmsRequest?.format?.equalsIgnoreCase("image/gif") )
-			{
-			    result = ImageGenerator.convertRGBAToIndexed(result)
-			}
-		}
-		*/
     }
 	
 	return result
