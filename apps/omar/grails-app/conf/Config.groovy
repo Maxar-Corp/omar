@@ -23,7 +23,7 @@ grails.gorm.default.mapping = {
 //  "classpath:${appName}-config.properties",
 //  "classpath:${appName}-config.groovy",
 //  "file:${userHome}/.grails/${appName}-config.properties",
-     "file:${userHome}/.grails/${appName}-config.groovy"
+//     "file:${userHome}/.grails/${appName}-config.groovy"
 ]
 if ( System.env.OMAR_CONFIG )
 {
