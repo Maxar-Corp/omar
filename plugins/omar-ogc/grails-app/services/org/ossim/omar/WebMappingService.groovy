@@ -30,8 +30,6 @@ import org.geotools.geometry.jts.LiteShape
 import geoscript.geom.MultiPolygon
 import java.awt.Rectangle
 import joms.oms.Chain
-import org.ossim.oms.image.omsImageSource
-import org.ossim.oms.image.omsRenderedImage
 
 
 class WebMappingService
@@ -181,9 +179,9 @@ class WebMappingService
         rasterEntries = rasterEntries?.reverse()
         def srcChains    = []
         rasterEntries.each{rasterEntry->
-			if(rasterEntry.numberOfBands > maxBands) maxBands = rasterEntry.numberOfBands
-			
 			def chain = rasterChainService.createRasterEntryChain(rasterEntry, params)
+			def outputBands = chain.getChainAsImageSource()?.getNumberOfOutputBands()
+			if(outputBands > maxBands) maxBands = outputBands
 			//chain.print()
             if(chain.getChain()!=null)
             {
@@ -250,6 +248,18 @@ class WebMappingService
         srcChains.each{srcChain->
             mosaic.connectMyInputTo(srcChain)
         }
+		result = rasterChainService.grabOptimizedImageFromChain(mosaic, params)
+		mosaic.deleteChain()
+		srcChains.each{
+			it.deleteChain()
+		}
+		mosaic = null
+		srcChains.clear()
+		srcChains = null
+		wmsView.delete()
+		wmsView = null
+/*		
+		
 		def imageSource = new omsImageSource(mosaic.getChainAsImageSource())
 		//def dataBuffer = imageSource.getDataBuffer(rect)
 		def renderedImage = new omsRenderedImage(imageSource)
@@ -293,6 +303,7 @@ class WebMappingService
 			    result = ImageGenerator.convertRGBAToIndexed(result)
 			}
 		}
+		*/
     }
 	
 	return result

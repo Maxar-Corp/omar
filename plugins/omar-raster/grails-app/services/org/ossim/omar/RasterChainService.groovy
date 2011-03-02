@@ -7,6 +7,9 @@ import joms.oms.ossimDptVector
 import joms.oms.Util
 import joms.oms.ossimDpt
 import joms.oms.ossimGpt
+import org.ossim.oms.image.omsImageSource
+import org.ossim.oms.image.omsRenderedImage
+import java.awt.image.*;
 
 class RasterChainService {
 
@@ -334,4 +337,47 @@ class RasterChainService {
 	  return Util.createBilinearModel(dptArray, gptArray)
 	}
   
+	def grabOptimizedImageFromChain(def inputChain, def params)
+	{
+		def imageSource = new omsImageSource(inputChain.getChainAsImageSource())
+		def renderedImage = new omsRenderedImage(imageSource)
+		def raster = renderedImage.getData();
+		
+		ColorModel colorModel = renderedImage.colorModel
+		
+		boolean isRasterPremultiplied = true
+		Hashtable<?, ?> properties = null
+	
+		
+		def result = null
+        def transparentFlag = params?.transparent?.equalsIgnoreCase("true")
+		if(raster.numBands  == 1)
+		{
+          result = Utility.convertToColorIndexModel(raster.dataBuffer,
+                  									raster.width,
+													raster.height,
+													transparentFlag)
+		}
+		else
+		{
+		    result = new BufferedImage(
+					  colorModel,
+					  raster,
+					  isRasterPremultiplied,
+					  properties
+		 			 )
+			if(raster.numBands  == 3)
+			{
+				if ( transparentFlag )
+				{
+					result = TransparentFilter.fixTransparency(new TransparentFilter(), result)
+				}
+				if ( params?.format?.equalsIgnoreCase("image/gif") )
+				{
+				    result = ImageGenerator.convertRGBAToIndexed(result)
+				}
+			}
+		}
+		result
+	}
 }
