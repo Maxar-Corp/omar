@@ -19,6 +19,8 @@ class IcpService {
                           def rasterEntry,
                           def params)
     {
+//		def newParams = params.clone()
+//		newParams.image_cut = "${rect.x},${rect.y},${rect.width},${rect.height}"
 		def result = null
 		def maxBands = 0
 		def rasterChain             = rasterChainService.createRasterEntryChain(rasterEntry, params)
@@ -34,6 +36,7 @@ class IcpService {
 			kwlString += "object${objectPrefixIdx}.rect:(${rect.x},${rect.y},${rect.width},${rect.height},lh)\n"
 			kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
 			kwlString += "object${objectPrefixIdx}.id:10001\n"
+			++objectPrefixIdx
 			if(stretchModeRegion == "viewport")
 			{
 				kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
@@ -45,10 +48,7 @@ class IcpService {
 				kwlString += "object${objectPrefixIdx}.input_connection1:10001\n"
 				kwlString += "object${objectPrefixIdx}.input_connection2:10002\n"
 				++objectPrefixIdx
-				connectionId = 10003
 			}
-	        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
-			++objectPrefixIdx
 			if(maxBands == 2)
 			{
 					kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
@@ -61,8 +61,14 @@ class IcpService {
 					kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
 					++objectPrefixIdx
 			}
+	        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
+			++objectPrefixIdx
+			//println kwlString
+			//println "*"*40
 			def chipChain = new joms.oms.Chain();
 			chipChain.loadChainKwlString(kwlString)
+			
+			//chipChain.print()
 			chipChain.connectMyInputTo(rasterChain)
 			result = rasterChainService.grabOptimizedImageFromChain(chipChain, params)
 			chipChain.deleteChain();
