@@ -173,90 +173,104 @@ class WebMappingService
 		return null
 	}
 	def rasterEntries = wmsQuery.getRasterEntriesAsList();
-    params.viewGeom = wmsView.getImageGeometry();
+    //params.viewGeom = wmsView.getImageGeometry();
+	params.wmsView  = wmsView
+	params.keepWithinScales = true
     if(rasterEntries)
     {
         rasterEntries = rasterEntries?.reverse()
         def srcChains    = []
         rasterEntries.each{rasterEntry->
 			def chain = rasterChainService.createRasterEntryChain(rasterEntry, params)
-			def outputBands = chain.getChainAsImageSource()?.getNumberOfOutputBands()
-			if(outputBands > maxBands) maxBands = outputBands
 			//chain.print()
-            if(chain.getChain()!=null)
+            if(chain&&(chain.getChain()!=null))
             {
-                srcChains.add(chain)
+ 			   def outputBands = chain?.getChainAsImageSource()?.getNumberOfOutputBands()
+			   if(outputBands > maxBands) maxBands = outputBands
+               srcChains.add(chain)
             }
         }
 		def kwlString = ""
-        kwlString = "type:ossimImageChain\n"
-        def objectPrefixIdx = 0
-		
-		if(srcChains.size() > 1)
+ 		if(srcChains)
 		{
-	        // now establish mosaic and cut to match the output dimensions
-	        kwlString += "object${objectPrefixIdx}.type:ossimImageMosaic\n"
+			kwlString = "type:ossimImageChain\n"
+	        def objectPrefixIdx = 0
+			if(srcChains.size() > 1)
+			{
+		        // now establish mosaic and cut to match the output dimensions
+		        kwlString += "object${objectPrefixIdx}.type:ossimImageMosaic\n"
+				++objectPrefixIdx
+			}
+			def imageRect = wmsView.getViewImageRect()
+			def midPoint  = imageRect.midPoint()
+			def x         = (int)(midPoint.x+0.5)
+			def y         = (int)(midPoint.y+0.5)
+			x            -= (params.width*0.5);
+			y            -= (params.height*0.5);
+			def w         = params.width
+			def h         = params.height
+	
+	        kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
+	        kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
+	        kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
+	        kwlString += "object${objectPrefixIdx}.id:10001\n"
+		    ++objectPrefixIdx
+	        def connectionId = 10001
+	        if(stretchModeRegion == "viewport")
+	        {
+	            kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
+	            kwlString += "object${objectPrefixIdx}.id:10002\n"
+	            ++objectPrefixIdx
+	            kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
+	            kwlString += "object${objectPrefixIdx}.id:10003\n"
+	            kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
+	            kwlString += "object${objectPrefixIdx}.input_connection1:10001\n"
+	            kwlString += "object${objectPrefixIdx}.input_connection2:10002\n"
+	            ++objectPrefixIdx
+	            connectionId = 10003
+	        }
+			// for now scale all WMS requests to 8-bit
+			// and make it either 1 band or 3 band output
+			//
+	        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
 			++objectPrefixIdx
+			if(maxBands == 2)
+			{
+					kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+					kwlString += "object${objectPrefixIdx}.bands:(0)\n"
+					++objectPrefixIdx
+			}
+			else if(maxBands > 3)
+			{
+					kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+					kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
+					++objectPrefixIdx
+			}
 		}
-		def imageRect = wmsView.getViewImageRect()
-		def midPoint  = imageRect.midPoint()
-		def x         = (int)(midPoint.x+0.5)
-		def y         = (int)(midPoint.y+0.5)
-		x            -= (params.width*0.5);
-		y            -= (params.height*0.5);
-		def w         = params.width
-		def h         = params.height
-
-        kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
-        kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
-        kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
-        kwlString += "object${objectPrefixIdx}.id:10001\n"
-	    ++objectPrefixIdx
-        def connectionId = 10001
-        if(stretchModeRegion == "viewport")
-        {
-            kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
-            kwlString += "object${objectPrefixIdx}.id:10002\n"
-            ++objectPrefixIdx
-            kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
-            kwlString += "object${objectPrefixIdx}.id:10003\n"
-            kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
-            kwlString += "object${objectPrefixIdx}.input_connection1:10001\n"
-            kwlString += "object${objectPrefixIdx}.input_connection2:10002\n"
-            ++objectPrefixIdx
-            connectionId = 10003
-        }
-		// for now scale all WMS requests to 8-bit
-		// and make it either 1 band or 3 band output
-		//
-        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
-		++objectPrefixIdx
-		if(maxBands == 2)
+		else
 		{
-				kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-				kwlString += "object${objectPrefixIdx}.bands:(0)\n"
-				++objectPrefixIdx
+		     kwlString = "type:ossimMemoryImageSource\n"
+			 if(params.width&&params.height)
+			 {
+				 kwlString += "rect:(0,0,${params.width},${params.height},lh)\n"
+				 kwlString += "scalar_type:ossim_uint8\n"
+				 kwlString += "number_bands:1\n"
+			 }	
 		}
-		else if(maxBands > 3)
-		{
-				kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-				kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
-				++objectPrefixIdx
-		}
-        def mosaic = new joms.oms.Chain();
-        mosaic.loadChainKwlString(kwlString)
+ 	    def mosaic = new joms.oms.Chain();
+	    mosaic.loadChainKwlString(kwlString)
         srcChains.each{srcChain->
             mosaic.connectMyInputTo(srcChain)
         }
 		result = rasterChainService.grabOptimizedImageFromChain(mosaic, params)
-		mosaic.deleteChain()
+		mosaic?.deleteChain()
 		srcChains.each{
 			it.deleteChain()
 		}
 		mosaic = null
-		srcChains.clear()
+		srcChains?.clear()
 		srcChains = null
-		wmsView.delete()
+		wmsView?.delete()
 		wmsView = null
     }
 	

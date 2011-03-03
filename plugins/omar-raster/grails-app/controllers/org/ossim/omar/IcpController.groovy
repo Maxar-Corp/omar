@@ -60,7 +60,6 @@ class IcpController {
 		  {
 			  paramsIgnoreCase.pivot = "${rasterEntry.width*0.5},${rasterEntry.height*0.5}"
 		  }
-  
         image = icpService.getPixels(
                 rect,
 				rasterEntry,
@@ -148,6 +147,7 @@ class IcpController {
 		paramsIgnoreCase.scale = "${scale}"
 		if(!paramsIgnoreCase.pivot)
 		{
+			
 			paramsIgnoreCase.pivot = "${rasterEntry.width*0.5},${rasterEntry.height*0.5}"
 		}
         image = icpService.getPixels(

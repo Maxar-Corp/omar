@@ -73,13 +73,36 @@ class RasterChainService {
 		def rotate = params?.rotate?:null
 		def scale  = params?.scale?:null
 		def pivot  = params?.pivot?:null
-		def histogramFile = new File(rasterEntry.getFileFromObjects("histogram")?.name)
-		def overviewFile  = new File(rasterEntry.getFileFromObjects("overview")?.name)
+		def histogramFile = new File(rasterEntry?.getFileFromObjects("histogram")?.name)
+		def overviewFile  = new File(rasterEntry?.getFileFromObjects("overview")?.name)
 		def objectPrefixIdx = 0
 		def kwlString       = "type: ossimImageChain\n"
 		def chain           = new joms.oms.Chain()
 	    def quickLookFlag = false
-	
+	    def enableCache = true
+		def viewGeom = params.wmsView?params.wmsView.getImageGeometry():params.viewGeom
+		def keepWithinScales = params.keepWithinScales?:false
+		// we will use this for a crude check to see if we are within decimation levels
+		//
+		def geomPtr = createModelFromTiePointSet(rasterEntry);
+		double scaleCheck = 1.0
+		if((geomPtr != null)&&params.wmsView&&keepWithinScales)
+		{
+              scaleCheck = params.wmsView.getScaleChangeFromInputToView(geomPtr.get())
+		}
+		if ( (scaleCheck < 0.9)&&rasterEntry)
+		{
+			// do we have enough zoom levels?
+			// check to see if the decimation puts us smaller than the bounding rect of the smallest
+			// res level scale
+			//
+			long maxSize = (rasterEntry.width > rasterEntry.height) ? rasterEntry.width : rasterEntry.height
+			if ( (maxSize * scaleCheck) < (maxSize / (2 ** rasterEntry.numberOfResLevels)) )
+			{
+				return null // outside our resampling bounds so return null
+			}
+		}
+		
 	    switch ( quickLookFlagString?.toLowerCase() )
 	    {
 	      case "true":
@@ -87,16 +110,19 @@ class RasterChainService {
 	        quickLookFlag = true
 	        break
 	    }
+		if(rasterEntry)
+		{
 		// CONSTRUCT HANDLER
 		//
-		kwlString          += "object${objectPrefixIdx}.type:${rasterEntry.className?rasterEntry.className:'ossimImageHandler'}\n"
-		kwlString          += "object${objectPrefixIdx}.entry:${rasterEntry.entryId}\n"
-		kwlString          += "object${objectPrefixIdx}.filename:${rasterEntry.rasterDataSet.getFileFromObjects("main").name}\n"
-		kwlString          += "object${objectPrefixIdx}.width:${rasterEntry.width}\n"
-		kwlString          += "object${objectPrefixIdx}.height:${rasterEntry.height}\n"
-		if(overviewFile.exists())
-		{
-			kwlString          += "object${objectPrefixIdx}.overview_file:${overviewFile}\n"
+			kwlString          += "object${objectPrefixIdx}.type:${rasterEntry.className?rasterEntry.className:'ossimImageHandler'}\n"
+			kwlString          += "object${objectPrefixIdx}.entry:${rasterEntry.entryId}\n"
+			kwlString          += "object${objectPrefixIdx}.filename:${rasterEntry.rasterDataSet.getFileFromObjects("main").name}\n"
+			kwlString          += "object${objectPrefixIdx}.width:${rasterEntry.width}\n"
+			kwlString          += "object${objectPrefixIdx}.height:${rasterEntry.height}\n"
+			if(overviewFile.exists())
+			{
+				kwlString          += "object${objectPrefixIdx}.overview_file:${overviewFile}\n"
+			}
 		}
 		++objectPrefixIdx
 
@@ -104,18 +130,38 @@ class RasterChainService {
 		//
 		if(bands)
 		{
-			if( validBandSelection( rasterEntry.numberOfBands, bands ) )
+			if(rasterEntry)
 			{
-				// the keywordlist in ossim takes a list of integers surrounded
-				// by parenthesis
-				//
-				kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-				kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
-				++objectPrefixIdx
+				if( validBandSelection( rasterEntry.numberOfBands, bands ) )
+				{
+					// the keywordlist in ossim takes a list of integers surrounded
+					// by parenthesis
+					//
+					kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+					kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
+					++objectPrefixIdx
+				}
+				else
+				{
+					log.error("Invalid band selection (${bands}) for image ${rasterEntry.id}")
+				}
 			}
 			else
 			{
-				log.error("Invalid band selection (${bands}) for image ${rasterEntry.id}")
+				def validBands = true
+				if(params.maxBands)
+				{
+					validBands = validBandSelection(maxBands, bands)
+				}
+				if(validBands)
+				{
+					// the keywordlist in ossim takes a list of integers surrounded
+					// by parenthesis
+					//
+					kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+					kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
+					++objectPrefixIdx
+				}
 			}
 		}
 		if(nullFlip)
@@ -127,7 +173,7 @@ class RasterChainService {
 		//
 		if(stretchMode&&stretchModeRegion)
 		{
-			if(stretchModeRegion == "global"  )
+			if(stretchModeRegion == "global")
 			{
 				if(histogramFile.exists())
 				{
@@ -175,6 +221,7 @@ class RasterChainService {
 			//
 			kwlString          += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
 			kwlString          += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
+			kwlString          += "object${objectPrefixIdx}.enable_cache:${enableCache}\n"
 			
 			++objectPrefixIdx
 			//CONSTRUCT RENDERER
@@ -185,13 +232,12 @@ class RasterChainService {
 			kwlString          += "object${objectPrefixIdx}.resampler.minify_type:  ${interpolation}\n"
 	        def kwl = new ossimKeywordlist()
 	        kwl.add("object${objectPrefixIdx}.image_view_trans.type", "ossimImageViewProjectionTransform")
-			if(params.viewGeom?.get())
+			if(viewGeom.get())
 			{
-				params.viewGeom.get().saveState(kwl, "object${objectPrefixIdx}.image_view_trans.view_geometry.")
+				viewGeom.get().saveState(kwl, "object${objectPrefixIdx}.image_view_trans.view_geometry.")
 			}
-	        if ( quickLookFlag )
+	        if ( quickLookFlag && rasterEntry)
 	        {
-	            def geomPtr = createModelFromTiePointSet(rasterEntry);
 	            if ( geomPtr != null )
 	            {
 	              geomPtr.get().saveState(kwl, "object${objectPrefixIdx}.image_view_trans.image_geometry.")
@@ -207,13 +253,15 @@ class RasterChainService {
 			//
 			kwlString          += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
 			kwlString          += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
+		    kwlString          += "object${objectPrefixIdx}.enable_cache:${enableCache}\n"
 			++objectPrefixIdx
 		}
-		else if(rotate||scale)
+		else if(rotate||scale||pivot)
 		{
 			//CONSTRUCT IMAGE CACHE
 			//
 			kwlString          += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+			kwlString          += "object${objectPrefixIdx}.enable_cache:${enableCache}\n"
 			
 			++objectPrefixIdx
 			//CONSTRUCT RENDERER
@@ -238,16 +286,18 @@ class RasterChainService {
 			//CONSTRUCT VIEW CACHE
 			//
 			kwlString          += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+		    kwlString          += "object${objectPrefixIdx}.enable_cache:${enableCache}\n"
 			kwlString          += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
 			++objectPrefixIdx
 		}
 		else
 		{
-			//CONSTRUCT VIEW CACHE or an image cache depending on if parameters were supplied
+			//CONSTRUCT image cache depending on if parameters were supplied
 			//
 			if(params)
 			{
 				kwlString          += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+				kwlString          += "object${objectPrefixIdx}.enable_cache:${enableCache}\n"
 				kwlString          += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
 			}
 			else
@@ -382,7 +432,6 @@ class RasterChainService {
 		boolean isRasterPremultiplied = true
 		Hashtable<?, ?> properties = null
 	
-		
 		def result = null
         def transparentFlag = params?.transparent?.equalsIgnoreCase("true")
 		if(raster.numBands  == 1)
