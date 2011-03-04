@@ -328,9 +328,11 @@ def authenticateService
 /*
       wmsLogParams.domain = authenticateService.userDomain()
 */
-     wmsLogParams.domain = SecUser.findByUsername(springSecurityService.principal.username)
-
-      wmsLogParams.userName = "nobody"
+	  def principal = springSecurityService?.principal
+	  def hasUserInformation = !(springSecurityService?.principal instanceof String)
+	  def secUser = hasUserInformation?SecUser.findByUsername(principal.username):null
+      wmsLogParams.userName = secUser?secUser.username:principal
+	  wmsLogParams.domain = ""
       def domain = null
       def clientIp = request.getHeader('Client-ip')
       def XForwarded = request.getHeader('X-Forwarded-For')
@@ -351,16 +353,17 @@ def authenticateService
       {
         wmsLogParams.ip = request.getRemoteAddr()
       }
-      if ( wmsLogParams.domain )
-      {
+//      if ( wmsLogParams.domain )
+//      {
 /*
         def authUser = AuthUser.get(wmsLogParams.domain.id)
 */
-        def authUser = SecUser.findByUsername(springSecurityService.principal.username)
-
-        wmsLogParams.userName = authUser?.username
-        wmsLogParams.domain = authUser?.email.split('@')[1]
-      }
+	//	  println "GETTING AUTH USER"
+      //  def authUser = SecUser.findByUsername(springSecurityService.principal.username)
+	//	  println "AUTH USER: ${authUser}"
+    //    wmsLogParams.userName = authUser?.username
+    //    wmsLogParams.domain = authUser?.email.split('@')[1]
+//      }
       if ( logParameters )
       {
         def urlTemp = createLink([controller: 'ogc', action: 'wms', absolute: true, params: params])
