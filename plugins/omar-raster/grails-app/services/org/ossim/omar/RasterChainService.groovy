@@ -330,22 +330,26 @@ class RasterChainService {
         {
             case ~/.*jpeg.*/:
                 kwlString  += "type:ossimJpegWriter\n"
+				kwlString  += "create_external_geometry:false\n"
                 contentType = "image/jpeg"
                 ext = ".jpg"
                 break
             case ~/.*tiff.*/:
-                kwlString    += "type:ossimTiffWriter\n"
-                kwlString    += "image_type:tiff_tiled\n"
-                contentType  =  "image/tiff"
-                ext          =  ".tif"
+                kwlString  += "type:ossimTiffWriter\n"
+                kwlString  += "image_type:tiff_tiled\n"
+ 				kwlString  += "create_external_geometry:false\n"
+                contentType =  "image/tiff"
+                ext         =  ".tif"
                 break
             case ~/.*jp2.*/:
                 kwlString   += "type:ossimKakaduJp2Writer\n"
+ 				kwlString  += "create_external_geometry:false\n"
                 contentType  = "image/jp2"
                 ext = ".jp2"
                 break
             case ~/.*png.*/:
-                kwlString   += "type:ossimPngWriter\n"
+                kwlString  += "type:ossimPngWriter\n"
+ 				kwlString  += "create_external_geometry:false\n"
                 contentType  = "image/png"
                 ext = ".png"
                 break
