@@ -181,13 +181,13 @@ class WebMappingService
         rasterEntries = rasterEntries?.reverse()
         def srcChains    = []
         rasterEntries.each{rasterEntry->
-			def chain = rasterChainService.createRasterEntryChain(rasterEntry, params)
+			def chainMap = rasterChainService.createRasterEntryChain(rasterEntry, params)
 			//chain.print()
-            if(chain&&(chain.getChain()!=null))
+            if(chainMap.chain&&(chainMap.chain.getChain()!=null))
             {
- 			   def outputBands = chain?.getChainAsImageSource()?.getNumberOfOutputBands()
+ 			   def outputBands = chainMap.chain?.getChainAsImageSource()?.getNumberOfOutputBands()
 			   if(outputBands > maxBands) maxBands = outputBands
-               srcChains.add(chain)
+               srcChains.add(chainMap.chain)
             }
         }
 		def kwlString = ""
