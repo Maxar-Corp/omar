@@ -1,87 +1,83 @@
 function CoordinateConversion()
 {
-    // decimal degrees to degrees minutes seconds
-    this.ddToDms = function(decimalDegrees, hemisphere, secondsPrecision)
-    {
-        var degreesAbs = Math.abs(decimalDegrees);
-        var degrees = Math.floor(degreesAbs);
-
-        var minutesAbs = Math.abs((degreesAbs - degrees) * 60);
-        var minutes = Math.floor(minutesAbs);
-
-        var seconds = Math.abs((minutesAbs - minutes) * 60);
-        if(!secondsPrecision)
-        {
-            seconds = seconds.toFixed(3);
-        }
-        else
-        {
-            seconds = seconds.toFixed(secondsPrecision);
-        }
-
-        var dms;
-
+	this.ddToDms = function(dd, position)
+	{
+		var degreesAbs = Math.abs(dd);
+		var degrees = Math.floor(degreesAbs);
+		
+		var minutesAbs = Math.abs((degreesAbs - degrees) * 60);
+		var minutes = Math.floor(minutesAbs);
+		
+		var seconds = Math.abs((minutesAbs - minutes) * 60);
+        seconds = seconds.toFixed(2);
+		
+		var dms;
         if(minutes < 10 && seconds < 10)
-        {
-            dms = degrees + " 0" + minutes + " 0" + seconds;
-        }
-        else if (minutes < 10)
-        {
-            dms = degrees + " 0" + minutes + " " + seconds;
-        }
-        else if (seconds < 10)
-        {
-            dms = degrees + " " + minutes + " 0" + seconds;
-        }
-        else
-        {
-            dms = degrees + " " + minutes + " " + seconds;
-        }
+		{
+			dms = degrees + "°0" + minutes + "'0" + seconds + '"';
+		}
+		else if (minutes < 10)
+		{
+			dms = degrees + "°0" + minutes + "'" + seconds + '"';
+		}
+		else if (seconds < 10)
+		{
+			dms = degrees + "°" + minutes + "'0" + seconds + '"';
+		}
+		else
+		{
+			dms = degrees + "°" + minutes + "'" + seconds + '"';
+		}
+		
+		if(position == "lat" && dd > 0)
+		{
+			dms = dms + " N";
+		}
+		else if(position == "lat" && dd < 0)
+		{
+			dms = dms + " S";
+		}
+		else if(position == "lon" && dd > 0)
+		{
+			dms = dms + " E";
+		}
+		else if(position == "lon" && dd < 0)
+		{
+			dms = dms + " W";
+		}
+		
+		return dms;
+	};
+	
+	this.dmsToDd = function(degrees, minutes, seconds, position)
+	{
+		var dd = Math.abs(degrees) + Math.abs(minutes / 60) + Math.abs(seconds / 3600);
+		
+		if (position == "S" || position == "s" || position == "W" || position == "w")
+		{
+			dd = -dd;
+		}
+		
+		return dd;
+	};
+	
+	// degrees to radians
+	this.degToRad = function(degrees)
+	{
+		return (degrees * (Math.PI / 180));
+	};
 
-        if(hemisphere == "lat" && decimalDegrees > 0)
-        {
-            dms = dms + " N";
-        }
-        else if(hemisphere == "lat" && decimalDegrees < 0)
-        {
-            dms = dms + " S";
-        }
-        else if(hemisphere == "lon" && decimalDegrees > 0)
-        {
-            dms = dms + " E";
-        }
-        else if(hemisphere == "lon" && decimalDegrees < 0)
-        {
-            dms = dms + " W";
-        }
+	// radians to degrees
+	this.radToDeg = function(radians)
+	{
+		return (radians * (180 / Math.PI));
+	};
 
-        return dms;
-    };
 
-    // degrees minutes seconds to decimal degrees
-    this.dmsToDd = function(degrees, minutes, seconds)
-    {
-        var dd = Math.abs(degrees) + Math.abs(minutes / 60) + Math.abs(seconds / 3600);
 
-        if (degrees < 0)
-        {
-            dd = -dd;
-        }
 
-        return dd;
-    };
 
-    // degrees to radians
-    this.degToRad = function(degrees)
-    {
-        return (degrees * (Math.PI / 180));
-    };
 
-    // radians to degrees
-    this.radToDeg = function(radians)
-    {
-        return (radians * (180 / Math.PI));
-    };
 
     // Decimal Degrees to Military Grid Reference System
     this.ddToMgrs = function(lat, lon)
@@ -259,11 +255,27 @@ function CoordinateConversion()
         return(GR);
     };
 
-    this.mgrsToUtm = function(mgrsString)
-    {
-        var mgrsRegExp = /^(\d{1,2})([C-X])([A-Z])([A-Z])(\d{0,5})(\d{0,5})?/
 
-        if (mgrsString.match(mgrsRegExp))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	this.mgrsToUtm = function(mgrs)
+    {
+
+      var mgrsRegExp = /^(\d{1,2})\s?([C-X])\s?([A-Z])\s?([A-Z])\s?(\d{0,5})\s?(\d{0,5})\s?/
+
+        if (mgrs.match(mgrsRegExp))
         {
             var zone = RegExp.$1;
             var zdl = RegExp.$2;
@@ -309,7 +321,7 @@ function CoordinateConversion()
 
             var mgrsRegExp = /^(\d{1,2})([a-zA-Z])([a-zA-Z])([a-zA-Z])(\d{10})?/
 
-            if($("centerMgrs").value.match(mgrsRegExp))
+            if($("mgrsMapCtr").value.match(mgrsRegExp))
             {
                 var lonZone = parseInt(RegExp.$1, 10);
                 var latZone = RegExp.$2;
