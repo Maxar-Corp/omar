@@ -103,15 +103,23 @@
     <div id="centerMap">
       <table>
         <tr>
-          <td id="toolbarRow">
+          <td id="toolbarRow" colspan=3>
             <div id="toolBar" class="olControlPanel"></div>
           </td>
         </tr>
         <tr id="mapRow">
-          <td id="mapColumn">
+          <td id="mapColumn" colspan=3>
             <div id="map"></div>
           </td>
         </tr>
+
+		    <tr>
+	          <td width=33.3%><div id="ddMouseMapCtr" style="font-size:11px">&nbsp;</div></td>
+	<td width=33.3%><div id="dmsMouseMapCtr" style="font-size:11px">&nbsp;</div></td>
+	<td width=33.3%><div id="mgrsMouseMapCtr" style="font-size:11px">&nbsp;</div></td>
+	        </tr>
+
+
       </table>
       <g:pageProperty name="page.middle"/>
     </div>
@@ -143,7 +151,7 @@
     var middleHeight = Math.abs(bottom-top);
     middleDiv.style.height =  middleHeight + "px";
     mapDiv.style.width     = (width - (leftDiv.offsetLeft+leftDiv.offsetWidth )) +"px";
-    mapDiv.style.height    = (middleHeight - toolbarRow.offsetHeight) +"px";
+    mapDiv.style.height    = (middleHeight - toolbarRow.offsetHeight) - 14 +"px";
 
     if(map&&changeMapSizeFlag) map.updateSize();
   }.defaults(true)
