@@ -353,6 +353,9 @@ bundle {
 export {
   prefix = "omar-export-"
   workDir = "/tmp"
+  superoverlay{
+	  baseDir="/data/omar/superoverlay"
+  }
   rasterEntry {
     fields = [
             'acquisitionDate',
