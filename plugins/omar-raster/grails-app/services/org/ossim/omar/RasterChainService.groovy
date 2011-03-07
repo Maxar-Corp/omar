@@ -53,11 +53,11 @@ class RasterChainService {
 		validBands
 	}
 	/**
-	 * @param rasterEntry
-	 * @param params
-	 * @return A new chain
+	 * @param  rasterEntry
+	 * @param  params
+	 * @return a map that allocates a chain if specified and the keywordlist string representing the parameters
 	 */
-	def createRasterEntryChain(def rasterEntry, def params)
+	def createRasterEntryChain(def rasterEntry, def params, def allocateChain=true)
 	{
         def quickLookFlagString = params?.quicklook ?: "false"
         def interpolation = params.interpolation?params.interpolation:"bilinear"
@@ -77,7 +77,6 @@ class RasterChainService {
 		def overviewFile  = new File(rasterEntry?.getFileFromObjects("overview")?.name)
 		def objectPrefixIdx = 0
 		def kwlString       = "type: ossimImageChain\n"
-		def chain           = new joms.oms.Chain()
 	    def quickLookFlag = false
 	    def enableCache = true
 		def viewGeom = params.wmsView?params.wmsView.getImageGeometry():params.viewGeom
@@ -232,9 +231,9 @@ class RasterChainService {
 			kwlString          += "object${objectPrefixIdx}.resampler.minify_type:  ${interpolation}\n"
 	        def kwl = new ossimKeywordlist()
 	        kwl.add("object${objectPrefixIdx}.image_view_trans.type", "ossimImageViewProjectionTransform")
-			if(viewGeom.get())
+			if(viewGeom?.get())
 			{
-				viewGeom.get().saveState(kwl, "object${objectPrefixIdx}.image_view_trans.view_geometry.")
+				viewGeom?.get().saveState(kwl, "object${objectPrefixIdx}.image_view_trans.view_geometry.")
 			}
 	        if ( quickLookFlag && rasterEntry)
 	        {
@@ -299,25 +298,30 @@ class RasterChainService {
 				kwlString          += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
 				kwlString          += "object${objectPrefixIdx}.enable_cache:${enableCache}\n"
 				kwlString          += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
+				++objectPrefixIdx
 			}
 			else
 			{
 				// because this is straight to an image let's just use the default
 				// tile size
 				kwlString          += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+				++objectPrefixIdx
 			}
 		}
-		//println kwlString
-		//println "*"*40
-		chain.loadChainKwlString(kwlString)
-		chain
+		def chain = null
+		if(allocateChain)
+		{
+			chain = new joms.oms.Chain()
+			chain.loadChainKwlString(kwlString)
+		}
+		[chain:chain, kwl:kwlString, prefixIdx:objectPrefixIdx]
 	}
 	
 	/**
 	 * @param params 
 	 * @return A Map that contains the content-type and the chain object
 	 */
-	def createWriterChain(def params)
+	def createWriterChain(def params, def prefix = "")
 	{
 		def requestFormat      = params?.format?.toLowerCase()
 		def temporaryDirectory = params?.temporaryDirectory
