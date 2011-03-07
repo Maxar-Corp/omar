@@ -10,7 +10,7 @@ import org.hibernatespatial.SpatialRelation
 
 class PostgisGrailsPlugin
 {
-  def version = 0.14
+  def version = 0.15
   def dependsOn = [:]
 
   def author = "Scott Bortman"
