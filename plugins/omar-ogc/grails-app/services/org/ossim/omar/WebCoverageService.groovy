@@ -75,12 +75,12 @@ class WebCoverageService implements InitializingBean{
         def h         = bounds.height
 		wcsParams.viewGeom = wmsView.getImageGeometry()
         rasterEntries.each{rasterEntry->
-			def chain = rasterChainService.createRasterEntryChain(rasterEntry, wcsParams)
+			def chainMap = rasterChainService.createRasterEntryChain(rasterEntry, wcsParams)
            // Util.setAllViewGeometries(chain.getChain(), wmsView.getImageGeometry().get(), false);
             //chain.print()
-            if(chain&&(chain.getChain()!=null))
+            if(chainMap.chain&&(chainMap.chain.getChain()!=null))
             {
-                srcChains.add(chain)
+                srcChains.add(chainMap.chain)
             }
         }
 		wcsParams.viewGeom = null
