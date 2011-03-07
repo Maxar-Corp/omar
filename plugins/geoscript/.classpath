@@ -13,12 +13,5 @@
 	<classpathentry kind="con" path="com.springsource.sts.grails.core.CLASSPATH_CONTAINER"/>
 	<classpathentry kind="con" path="GROOVY_SUPPORT"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/postgis"/>
-	<classpathentry kind="lib" path="/postgis/lib/hibernate-spatial-1.0.jar"/>
-	<classpathentry kind="lib" path="/postgis/lib/hibernate-spatial-postgis-1.0.jar"/>
-	<classpathentry kind="lib" path="/postgis/lib/jts-1.8.jar"/>
-	<classpathentry kind="lib" path="/postgis/lib/jtsio-1.8.jar"/>
-	<classpathentry kind="lib" path="/postgis/lib/postgis_1.3.6.jar"/>
-	<classpathentry kind="lib" path="/postgis/lib/postgis_jts_1.3.6.jar"/>
-	<classpathentry kind="lib" path="/postgis/lib/postgresql-8.2-505.jdbc3.jar"/>
 	<classpathentry kind="output" path="web-app/WEB-INF/classes"/>
 </classpath>

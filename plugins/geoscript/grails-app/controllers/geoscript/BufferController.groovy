@@ -1,6 +1,6 @@
 package geoscript
 
-import geoscript.geom.Geometry
+//import geoscript.geom.Geometry
 
 class BufferController {
 
