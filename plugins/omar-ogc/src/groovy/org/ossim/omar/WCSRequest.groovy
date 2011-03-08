@@ -31,7 +31,7 @@ class WCSRequest
     String exception
     String bands
     String time
-    String interpolation = "nearest neighbor"
+    String interpolation
     String filter
     String max
     def toMap()
