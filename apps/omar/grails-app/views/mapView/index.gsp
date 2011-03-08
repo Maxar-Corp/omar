@@ -59,6 +59,10 @@
   #exportMenu, #viewMenu{
   	z-index: 99999;
   }
+  #slider-brightness-bg, #slider-contrast-bg{
+    width:120px;
+    background:url(${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
+  }
   </style>
 </head>
 
@@ -138,6 +142,8 @@
 	<input type="hidden" name="request" value=""/>
 	<input type="hidden" name="layers" value=""/>
 	<input type="hidden" name="bbox" value=""/>
+	<input type="hidden" id="contrast" name="contrast" value=""/>
+	<input type="hidden" id="brightness" name="brightness" value=""/>
 
 	<div class="niceBox">
 		<div class="niceBoxHd">Image Adjustments:</div>
@@ -147,6 +153,22 @@
 				<li>
 					<g:select id="interpolation" name="interpolation" from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}" onChange="chgInterpolation()"/>
 				</li>
+				<hr/>
+				<label>Brightness: <input type="text"  readonly="true" id="brightnessTextField" size="3" maxlength="5" value=""></label>
+
+				<li>
+					<div id="slider-brightness-bg" class="yui-h-slider" tabindex="-1" hidefocus="false"> 
+		    			<div id="slider-brightness-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'thumb-n.gif')}"></div> 
+					</div> 
+				</li>
+				<label>Contrast: <input type="text"  readonly="true"  id="contrastTextField" size="3" maxlength="5" value=""></label>
+				<li>
+					<div id="slider-contrast-bg" class="yui-h-slider" tabindex="-1" hidefocus="false"> 
+		    			<div id="slider-contrast-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'thumb-n.gif')}"></div> 
+					</div> 
+				</li>
+				<button id="brightnessContrastReset" type="button" onclick="javascript:resetBrightnessContrast()">Reset</button>
+				<hr/>
 				<li>Sharpen:</li>
 				<li>
 					<g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="chgSharpenMode()"/>
@@ -225,8 +247,58 @@ var top = parseFloat("${top}");
 var largestScale = parseFloat("${largestScale}");
 var smallestScale = parseFloat("${smallestScale}");
 
-function init()
+var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
+var contrastSlider= YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
+
+function resetBrightnessContrast()
 {
+	brightnessSlider.setRealValue(0);  
+	contrastSlider.setRealValue(1.0);  
+}
+
+function init()
+{  
+	brightnessSlider.animate = false;
+	 
+    brightnessSlider.getRealValue = function() { 
+	    return ((this.getValue()-50)/50.0); 
+    } 
+    contrastSlider.getRealValue = function() { 
+        var value = ((this.getValue()-50)/50.0)*2;
+        return value;
+    } 
+   brightnessSlider.setRealValue = function(value) { 
+	    this.setValue((value+1)*50);  
+    } 
+    contrastSlider.setRealValue = function(value) {
+    	this.setValue( (value/2 + 1)*50 ); 
+    } 
+	 
+    brightnessSlider.subscribe("slideEnd", function() { 
+		for(var layer in rasterLayers)
+		{
+			rasterLayers[layer].mergeNewParams({brightness:this.getRealValue()});
+		}
+    }); 	
+    contrastSlider.subscribe("slideEnd", function() { 
+		for(var layer in rasterLayers)
+		{
+			rasterLayers[layer].mergeNewParams({contrast:this.getRealValue()});
+		}
+    }); 
+     contrastSlider.subscribe("change", function(offsetFromStart) 
+    {
+    	$("contrast").value = this.getRealValue();
+    	$("contrastTextField").value = this.getRealValue();
+    });
+    brightnessSlider.subscribe("change", function(offsetFromStart) 
+    {
+    	$("brightness").value = this.getRealValue();
+    	$("brightnessTextField").value = this.getRealValue();
+    });
+    	
+	brightnessSlider.setRealValue(0);  
+	contrastSlider.setRealValue(1);  
 	var bounds = new OpenLayers.Bounds(left, bottom, right, top);
 	map = new OpenLayers.Map("map", {controls: [], maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale});
 	
@@ -740,6 +812,8 @@ function getProjectedImage(params)
 	 var stretch_mode        = $("stretch_mode");
 	 var sharpen_mode        = $("sharpen_mode");
 	 var interpolation       = $("interpolation");
+	 var brightness          = $("brightness");
+	 var contrast            = $("contrast");
 	 var wcsParams = {"request":"GetCoverage",
 	               	  "format":params.format,
 	               	  "bbox":extent.toBBOX(),
@@ -770,6 +844,16 @@ function getProjectedImage(params)
 	 {
 	 	wcsParams["quicklook"] = quicklook.value;
 	 }
+	 alert(brightness);
+	 if(brightness)
+	 {
+	 	wcsParams["brightness"] = brightness.value;
+	 }
+	 if(contrast)
+	 {
+	 	wcsParams["contrast"] = contrast.value;
+	 }
+	 
 	 var size = map.getSize()
 	 
 	 if(size)

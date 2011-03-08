@@ -7,6 +7,7 @@
 
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'slider.css')}"/>
 
 
   <style>
@@ -88,7 +89,8 @@
     [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
     [plugin:'richui' , dir:'js/yui/container/', file: 'container_core.js'],
     [plugin:'richui' , dir:'js/yui/menu/', file: 'menu-min.js'],
-    [plugin:'richui' , dir:'js/yui/menu/', file: 'menu.js'],
+    [plugin:'richui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js'],
+    [plugin:'richui' , dir:'js/yui/slider', file: 'slider-min.js'],
     
 ]}"/>
 

@@ -34,6 +34,8 @@ class WCSRequest
     String interpolation
     String filter
     String max
+	String brightness
+	String contrast
     def toMap()
     {
        return [bbox: bbox, bands:bands, width: width as Integer, height: height as Integer,
@@ -43,7 +45,7 @@ class WCSRequest
                stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
                sharpen_width: sharpen_width as Double, sharpen_sigma: sharpen_sigma as Double,
                time: time, null_flip: null_flip, exception: exception, filter:filter,
-               quicklook: quicklook, max:max].sort { it.key }
+               quicklook: quicklook, max:max, brightness:brightness, contrast:contrast].sort { it.key }
     }
 
     String[] getDates()
