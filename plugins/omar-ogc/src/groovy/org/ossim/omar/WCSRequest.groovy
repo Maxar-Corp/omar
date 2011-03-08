@@ -36,7 +36,7 @@ class WCSRequest
     String max
     def toMap()
     {
-       return [bbox: bbox, width: width as Integer, height: height as Integer,
+       return [bbox: bbox, bands:bands, width: width as Integer, height: height as Integer,
                format: format, resx:resx as Double, resy: resy as Double,
                coverage: coverage, crs: crs, response_crs:response_crs, service: service,
                version: version, request: request, stretch_mode: stretch_mode, interpolation:interpolation,
