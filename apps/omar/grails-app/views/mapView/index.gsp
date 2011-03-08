@@ -151,7 +151,6 @@
 				<li>
 					<g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="chgSharpenMode()"/>
 				</li>
-				<li>&nbsp;<p></li>
 				<li>Stretch:</li>
 				<li>
 					<g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="chgStretchMode()"/>
@@ -160,7 +159,6 @@
           		<li>
             		<g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="chgStretchMode() "/>
           		</li>
-				<li>&nbsp;<p></li>
           		
 				<g:if test="${rasterEntries?.numberOfBands.get(0) == 2}">
             		<li>Bands:</li>
@@ -781,6 +779,8 @@ function getProjectedImage(params)
 	 }
     var form = $("wcsForm");
     var url = link + "?" + toUrlParamString(wcsParams);
+    
+
     if(form)
     {
         form.action = url;
