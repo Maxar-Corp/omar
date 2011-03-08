@@ -52,7 +52,13 @@
     padding-top: 0.5em;
     list-style: none;
   }
-
+   #homeMenu{
+   background: url( ../images/skin/house.png )  left no-repeat;
+  	z-index: 99999;
+  }
+  #exportMenu, #viewMenu{
+  	z-index: 99999;
+  }
   </style>
 </head>
 
@@ -61,49 +67,47 @@
      [plugin: 'omar-core', dir:'js', file: 'coordinateConversion.js']
  ]}"/>
 
-
-
-
-
-
-
-
-
 <content tag="top">
+    <form id="wcsForm" method="POST">
+    </form>
+	<div id="rasterMenu" class="yuimenubar yuimenubarnav">
+        <div class="bd">
+            <ul class="first-of-type">
+				<li class="yuimenubaritem first-of-type">
+					 <a id="homeMenu" class="yuimenubaritemlabel" href="${createLink(controller: 'home', action: 'index')}">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
+				</li>
+                <li class="yuimenubaritem"><a class="yuimenubaritemlabel" uri="#exportMenu">Export</a>
 
-	<div class="nav">
-		<span class="menuButton">
-			<g:link class="home" uri="/">
-				OMAR™ Home
-			</g:link>
-		</span>
+    	            <div id="exportMenu" class="yuimenu">
+        	            <div class="bd">                    
+                            <ul>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.indexId).join(',')])}">OGC WMS Capabilities</a></li>
+								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getKML('${(rasterEntries*.indexId).join(',')}')">KML</a></li>
+            				</ul>
+            				<ul>
+				                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})">Geotiff</a></li>
+				                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})">Geotiff 8-Bit</a></li>
+				                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})">Geo Jpeg 2000</a></li>
+				                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})">Geo Jpeg 2000 8-Bit</a></li>
+				            </ul>
+				        </div>
+				    </div>                    
 
-		<span class="menuButton">
-			<a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.indexId).join(',')])}">
-				WMS GetCapabilities
-			</a>
-		</span>
-		
-		<span class="menuButton">
-			<a href="javascript:getKML('${(rasterEntries*.indexId).join(',')}')">
-				Generate KML
-			</a>
-		</span>
+				</li>
+				<li class="yuimenubaritem"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
 
-		<span class="menuButton">
-			<a href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: (rasterEntries*.indexId).join(',')])}">
-				Multi Layer Viewer
-			</a>
-		</span>
-
-		<g:if test="${rasterEntries?.size() == 1}">
-			<span class="menuButton">
-				<a href="${createLink(controller: "mapView", action: "imageSpace", params: [layers: (rasterEntries*.indexId).join(',')])}">
-					Image Space Viewer
-				</a>
-			</span>
-		</g:if>
-	</div>
+			    <div id="viewMenu" class="yuimenu">
+			        <div class="bd">                    
+			            <ul>
+			                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "mapView", action: "imageSpace", params: [layers: (rasterEntries*.indexId).join(',')])}">Image Space Viewer</a></li>
+							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: (rasterEntries*.indexId).join(',')])}">Multi Layer Viewer</a></li>
+                         </ul>                    
+                    </div>
+                </div>                                        
+            </li>
+        </ul>            
+    </div>
+</div>
 
 </content>
 
@@ -139,6 +143,10 @@
 		<div class="niceBoxHd">Image Adjustments:</div>
 		<div class="niceBoxBody">
 			<ol>
+				<li>Interpolation:</li>
+				<li>
+					<g:select id="interpolation" name="interpolation" from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}" onChange="chgInterpolation()"/>
+				</li>
 				<li>Sharpen:</li>
 				<li>
 					<g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="chgSharpenMode()"/>
@@ -171,7 +179,7 @@
           		<li>Orthorectification:</li>
           		<li>
             <g:select id="quicklook" name="quicklook"
-                from="${[[name: 'Simple', value: 'false'],[name: 'Rigorous', value: 'true']]}"
+                from="${[[name: 'Rigorous', value: 'false'],[name: 'Simple', value: 'true']]}"
                 optionValue="name" optionKey="value"
                 onChange="chgQuickLookMode()"/>
           </li>
@@ -203,14 +211,6 @@
 <content tag="middle">
 </content>
 
-
-
-
-
-
-
-
-
 <g:javascript>
 var coordConvert = new CoordinateConversion();
 var map;
@@ -230,7 +230,6 @@ var smallestScale = parseFloat("${smallestScale}");
 function init()
 {
 	var bounds = new OpenLayers.Bounds(left, bottom, right, top);
-	
 	map = new OpenLayers.Map("map", {controls: [], maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale});
 	
 	setupToolbar();
@@ -247,6 +246,12 @@ function init()
 	
   	var zoom = map.getZoomForExtent(bounds, true);
 	map.setCenter(bounds.getCenterLonLat(), zoom);
+    var oMenu = new YAHOO.widget.MenuBar("rasterMenu", { 
+                                                autosubmenudisplay: true, 
+                                                hidedelay: 750, 
+                                                lazyload: true,
+                                                zIndex:9999}); 
+	oMenu.render();
 }
 
 function setMapCtrTxt()
@@ -309,39 +314,19 @@ function setMapCtr(unit, value)
 		        map.setCenter( center, zoom );
 
             
-        }
-		
-		
-		
-		
-		
+        }		
 	}
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function chgInterpolation()
+{
+	var interpolation = $("interpolation").value;
+	
+	for(var layer in rasterLayers)
+	{
+		rasterLayers[layer].mergeNewParams({interpolation:interpolation});
+	}
+}
 
 function chgSharpenMode()
 {
@@ -709,6 +694,25 @@ function onPopupClose(evt)
 	select.unselectAll();
 }
 
+
+function toUrlParamString(params)
+{
+
+	 var urlParams = "";
+	 for (var key in params) 
+	 { 
+	    if(urlParams == "")
+	    {
+	   		urlParams = key + "=" + params[key];
+	    }
+	    else
+	    {
+	    	urlParams = urlParams + "&" + key + "=" + params[key]
+	    }
+	 }
+	 return urlParams
+}
+
 function onFeatureSelect(event)
 {
 	var feature = event.feature;
@@ -725,6 +729,64 @@ function onFeatureSelect(event)
 	null, true, onPopupClose);
 	feature.popup = popup;
 	map.addPopup(popup);
+}
+
+
+function getProjectedImage(params)
+{
+	 var link = "${createLink(action: "wcs", controller: "ogc")}";
+	 var extent = map.getExtent();
+	 var bands = $("bands");
+	 var quicklook = $("quicklook");
+	 var stretch_mode_region = $("stretch_mode_region");
+	 var stretch_mode        = $("stretch_mode");
+	 var sharpen_mode        = $("sharpen_mode");
+	 var interpolation       = $("interpolation");
+	 var wcsParams = {"request":"GetCoverage",
+	               	  "format":params.format,
+	               	  "bbox":extent.toBBOX(),
+	               	  "coverage":params.coverage,
+	               	  "crs":"EPSG:4326"}
+	               	  
+	 if(sharpen_mode&&sharpen_mode.value)
+	 {
+	 	wcsParams["sharpen_mode"] = sharpen_mode.value;
+	 }
+	 if(stretch_mode&&stretch_mode.value)
+	 {
+	 	wcsParams["stretch_mode"] = stretch_mode.value;
+	 }
+	 if(interpolation&&interpolation.value)
+	 {
+	 	wcsParams["interpolation"] = interpolation.value
+	 }
+	 if(stretch_mode_region&&stretch_mode_region.value)
+	 {
+	 	wcsParams["stretch_mode_region"] =stretch_mode_region.value;
+	 }
+	 if(bands&&bands.value)
+	 {
+	 	wcsParams["bands"] = bands.value;
+	 }
+	 if(quicklook&&quicklook.value)
+	 {
+	 	wcsParams["quicklook"] = quicklook.value;
+	 }
+	 var size = map.getSize()
+	 
+	 if(size)
+	 {
+	    wcsParams["width"] = size.w
+	    wcsParams["height"] = size.h
+	 }
+    var form = $("wcsForm");
+    var url = link + "?" + toUrlParamString(wcsParams);
+    if(form)
+    {
+        form.action = url;
+        form.submit();
+    }          
+//	 postParams(link, toUrlParamString(wcsParams));
 }
 
 function onFeatureUnselect(event)
