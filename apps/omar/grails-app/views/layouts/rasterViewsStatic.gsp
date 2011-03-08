@@ -85,7 +85,11 @@
     [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
     [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
     [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
-    [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js']
+    [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
+    [plugin:'richui' , dir:'js/yui/container/', file: 'container_core.js'],
+    [plugin:'richui' , dir:'js/yui/menu/', file: 'menu-min.js'],
+    [plugin:'richui' , dir:'js/yui/menu/', file: 'menu.js'],
+    
 ]}"/>
 
 <div id="content">
