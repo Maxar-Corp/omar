@@ -81,6 +81,8 @@ class RasterChainService {
 	    def enableCache = true
 		def viewGeom = params.wmsView?params.wmsView.getImageGeometry():params.viewGeom
 		def keepWithinScales = params.keepWithinScales?:false
+		def brightness = params.brightness;
+		def contrast   = params.contrast;
 		// we will use this for a crude check to see if we are within decimation levels
 		//
 		def geomPtr = createModelFromTiePointSet(rasterEntry);
@@ -163,6 +165,7 @@ class RasterChainService {
 				}
 			}
 		}
+		
 		if(nullFlip)
 		{
 			kwlString += "object${objectPrefixIdx}.type:ossimNullPixelFlip\n"
@@ -186,6 +189,14 @@ class RasterChainService {
 					log.error("Histogram file does not exist and will ignore the stretch: ${histogramFile}")
 				}
 			}
+		}
+		if(brightness||contrast)
+		{
+			kwlString += "object${objectPrefixIdx}.type:ossimBrightnessContrastSource\n"
+			kwlString += "object${objectPrefixIdx}.brightness: ${brightness?:0.0}\n"
+			kwlString += "object${objectPrefixIdx}.contrast: ${contrast?:0.0}\n"
+			
+			++objectPrefixIdx
 		}
 		// CONSTRUCT SHARPENING IF NEEDED
 		//
