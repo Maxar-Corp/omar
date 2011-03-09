@@ -139,7 +139,7 @@ def authenticateService
       // for now until we can develop a plugin for the WCS
       // we will hardcode the output format test list here
       //
-      def outputFormats = ["png", "png_uint8", "geotiff", "geotiff_uint8", "geojp2_uint8", "geojp2"]
+      def outputFormats = ["jpeg","image/jpeg", "png", "image/png", "png_uint8", "image/tiff", "geotiff", "geotiff_uint8", "geojp2_uint8", "geojp2"]
       def starttime = System.currentTimeMillis()
       def internaltime = starttime
       def endtime = starttime
@@ -158,7 +158,8 @@ def authenticateService
                     if(result)
                     {
                         def imageFile = result.file
-                        response.setHeader("Content-disposition", "attachment; filename=${result.outputName}")
+						def attachment = result.outputName?"filename=${result.outputName}":""
+                        response.setHeader("Content-disposition", "attachment; ${attachment}")
                         response.contentType = result.contentType
                         try {
                             Utility.writeFileToOutputStream(imageFile, response.outputStream, 4096);
