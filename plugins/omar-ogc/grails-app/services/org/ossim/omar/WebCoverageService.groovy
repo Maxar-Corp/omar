@@ -145,7 +145,7 @@ class WebCoverageService implements InitializingBean{
         }
         srcChains = null
 		
-        [file:writer.file, outputName: "${defaultOutputName}", contentType: "${contentType}"]
+        [file:writer.file, outputName: "${defaultOutputName}${writer.ext}", contentType: "${contentType}"]
     }
     public void afterPropertiesSet()
     {

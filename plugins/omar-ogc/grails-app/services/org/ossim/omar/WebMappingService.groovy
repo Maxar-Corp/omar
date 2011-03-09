@@ -187,8 +187,9 @@ class WebMappingService
             {
  			   def outputBands = chainMap.chain?.getChainAsImageSource()?.getNumberOfOutputBands()
 			   if(outputBands > maxBands) maxBands = outputBands
-               srcChains.add(chainMap.chain)
+               srcChains.add(chainMap)
             }
+			chainMap = null
         }
 		def kwlString = ""
  		if(srcChains)
@@ -209,7 +210,8 @@ class WebMappingService
 			y            -= (params.height*0.5);
 			def w         = params.width
 			def h         = params.height
-	
+			imageRect = null
+			midPoint  = null
 	        kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
 	        kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
 	        kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
@@ -260,13 +262,15 @@ class WebMappingService
  	    def mosaic = new joms.oms.Chain();
 	    mosaic.loadChainKwlString(kwlString)
         srcChains.each{srcChain->
-            mosaic.connectMyInputTo(srcChain)
+            mosaic.connectMyInputTo(srcChain.chain)
         }
 		result = rasterChainService.grabOptimizedImageFromChain(mosaic, params)
 		mosaic?.deleteChain()
 		srcChains.each{
-			it.deleteChain()
+			it.chain.deleteChain()
+			it.kwl = ""
 		}
+		params.clear();
 		mosaic = null
 		srcChains?.clear()
 		srcChains = null

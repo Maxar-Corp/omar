@@ -175,7 +175,7 @@ class RasterChainService {
 		//
 		if(stretchMode&&stretchModeRegion)
 		{
-			if(stretchModeRegion == "global")
+			if((stretchModeRegion == "global")&&(stretchMode!="none"))
 			{
 				if(histogramFile.exists())
 				{
@@ -386,7 +386,7 @@ class RasterChainService {
 	        writer.loadChainKwlString(kwlString)
 		}
 		
-		return [chain:writer, contentType:contentType, file:tempFile]
+		return [chain:writer, contentType:contentType, file:tempFile, ext:ext]
 	}
 	
 	def createModelFromTiePointSet(def rasterEntry)
