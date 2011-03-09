@@ -81,8 +81,8 @@ class RasterChainService {
 	    def enableCache = true
 		def viewGeom = params.wmsView?params.wmsView.getImageGeometry():params.viewGeom
 		def keepWithinScales = params.keepWithinScales?:false
-		def brightness = params.brightness;
-		def contrast   = params.contrast;
+		def brightness = params.brightness?:0
+		def contrast   = params.contrast?:1
 		// we will use this for a crude check to see if we are within decimation levels
 		//
 		def geomPtr = createModelFromTiePointSet(rasterEntry);
@@ -190,7 +190,8 @@ class RasterChainService {
 				}
 			}
 		}
-		if(brightness||contrast)
+		// if we are not the identity then add
+		if((brightness!=0)||(contrast!=1))
 		{
 			kwlString += "object${objectPrefixIdx}.type:ossimBrightnessContrastSource\n"
 			kwlString += "object${objectPrefixIdx}.brightness: ${brightness?:0.0}\n"
