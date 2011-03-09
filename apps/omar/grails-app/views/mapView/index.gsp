@@ -264,14 +264,14 @@ function init()
 	    return ((this.getValue()-50)/50.0); 
     } 
     contrastSlider.getRealValue = function() { 
-        var value = ((this.getValue()-50)/50.0)*2;
+        var value = (this.getValue()/100.0)*2.0;
         return value;
     } 
-   brightnessSlider.setRealValue = function(value) { 
+    brightnessSlider.setRealValue = function(value) { 
 	    this.setValue((value+1)*50);  
     } 
     contrastSlider.setRealValue = function(value) {
-    	this.setValue( (value/2 + 1)*50 ); 
+    	this.setValue(value*50); 
     } 
 	 
     brightnessSlider.subscribe("slideEnd", function() { 
