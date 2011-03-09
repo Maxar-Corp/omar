@@ -844,7 +844,6 @@ function getProjectedImage(params)
 	 {
 	 	wcsParams["quicklook"] = quicklook.value;
 	 }
-	 alert(brightness);
 	 if(brightness)
 	 {
 	 	wcsParams["brightness"] = brightness.value;
