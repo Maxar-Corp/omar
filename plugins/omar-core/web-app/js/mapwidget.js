@@ -2,20 +2,55 @@
 
 function MapWidget()
 {
-    var map = null;
+	var aoiLayer      = null;
+	var openlayersMap = null;
+    var convert = new CoordinateConversion();
+    var zoomInButton  = null;
+    var zoomFullResScale = null;
+    this.allocateMap = function(divId, params)
+    {
+        openlayersMap = new OpenLayers.Map( divId, params);
+    }
+    this.setFullResScale = function(value)
+    {
+    	zoomFullResScale = value;
+    }
+    this.setupMapWidgetWithOptions = function(divId, params)
+    {
+    	this.allocateMap(divId, params );
+        openlayersMap.addControl( new OpenLayers.Control.LayerSwitcher( {'div':OpenLayers.Util.getElement( 'layerswitcher' ), roundedCorner: false} ) );
 
+        openlayersMap.addControl( new OpenLayers.Control.Scale() );
+        openlayersMap.addControl( new OpenLayers.Control.ScaleLine() );
+
+        openlayersMap.events.register( "click", map, this.handleMouseClick );
+        openlayersMap.events.register( "mousemove", map, this.handleMouseHover );
+        openlayersMap.events.register( "moveend", map, this.setPointRadiusText );
+        openlayersMap.events.register( "zoomend", map, this.setBoundLatLonText );
+
+        var isiPad = navigator.userAgent.match( /iPad/i ) != null;
+
+        if ( isiPad )
+        {
+            this.touchhandler = new TouchHandler( map, 4 );
+        }
+    }
+    this.getMap = function()
+    {
+    	return openlayersMap;
+    }
     this.setupMapWidget = function()
     {
-        map = new OpenLayers.Map( "map", {controls: []} );
-        map.addControl( new OpenLayers.Control.LayerSwitcher( {'div':OpenLayers.Util.getElement( 'layerswitcher' ), roundedCorner: false} ) );
+    	this.allocateMap("map", {controls: []} );
+        openlayersMap.addControl( new OpenLayers.Control.LayerSwitcher( {'div':OpenLayers.Util.getElement( 'layerswitcher' ), roundedCorner: false} ) );
 
-        map.addControl( new OpenLayers.Control.Scale() );
-        map.addControl( new OpenLayers.Control.ScaleLine() );
+        openlayersMap.addControl( new OpenLayers.Control.Scale() );
+        openlayersMap.addControl( new OpenLayers.Control.ScaleLine() );
 
-        map.events.register( "click", map, this.handleMouseClick );
-        map.events.register( "mousemove", map, this.handleMouseHover );
-        map.events.register( "moveend", map, this.setPointRadiusText );
-        map.events.register( "zoomend", map, this.setBoundLatLonText );
+        openlayersMap.events.register( "click", map, this.handleMouseClick );
+        openlayersMap.events.register( "mousemove", map, this.handleMouseHover );
+        openlayersMap.events.register( "moveend", map, this.setPointRadiusText );
+        openlayersMap.events.register( "zoomend", map, this.setBoundLatLonText );
 
         var isiPad = navigator.userAgent.match( /iPad/i ) != null;
 
@@ -25,11 +60,10 @@ function MapWidget()
         }
     };
 
-    var convert = new CoordinateConversion();
-
+    
     this.handleMouseClick = function( evt )
     {
-        var lonLat = map.getLonLatFromViewPortPx( new OpenLayers.Pixel( evt.xy.x, evt.xy.y ) );
+        var lonLat = openlayersMap.getLonLatFromViewPortPx( new OpenLayers.Pixel( evt.xy.x, evt.xy.y ) );
 
         var mouseClickDd = document.getElementById( "mouseClickDdOutput" );
         var mouseClickDms = document.getElementById( "mouseClickDmsOutput" );
@@ -53,7 +87,7 @@ function MapWidget()
 
     this.handleMouseHover = function( evt )
     {
-        var lonLat = map.getLonLatFromViewPortPx( new OpenLayers.Pixel( evt.xy.x, evt.xy.y ) );
+        var lonLat = openlayersMap.getLonLatFromViewPortPx( new OpenLayers.Pixel( evt.xy.x, evt.xy.y ) );
 
         var mouseHoverDd = document.getElementById( "mouseHoverDdOutput" );
         var mouseHoverDms = document.getElementById( "mouseHoverDmsOutput" );
@@ -78,15 +112,18 @@ function MapWidget()
 
     this.setPointRadiusText = function()
     {
-        var center = map.getCenter();
+    	if(openlayersMap)
+    	{
+            var center = openlayersMap.getCenter();
 
-        $( "centerLat" ).value = center.lat;
-        $( "centerLon" ).value = center.lon;
+            if($( "centerLat" )) $( "centerLat" ).value = center.lat;
+            if($( "centerLon" )) $( "centerLon" ).value = center.lon;
 
-        $( "centerLatDms" ).value = convert.ddToDms( center.lat, "lat" );
-        $( "centerLonDms" ).value = convert.ddToDms( center.lon, "lon" );
+            if($( "centerLatDms" )) $( "centerLatDms" ).value = convert.ddToDms( center.lat, "lat" );
+            if($( "centerLonDms" )) $( "centerLonDms" ).value = convert.ddToDms( center.lon, "lon" );
 
-        $( "centerMgrs" ).value = convert.ddToMgrs( center.lat, center.lon );
+            if($( "centerMgrs" )) $( "centerMgrs" ).value = convert.ddToMgrs( center.lat, center.lon );
+    	}
     };
 
     this.setCenterDd = function()
@@ -94,13 +131,19 @@ function MapWidget()
         var latRegExpDd = /^(\-?\d{1,2})(\.\d+)?$/
         var lonRegExpDd = /^(\-?\d{1,3})(\.\d+)?$/
 
-        if ( $( "centerLat" ).value.match( latRegExpDd ) && $( "centerLon" ).value.match( lonRegExpDd ) )
+        if($( "centerLat" ) && $( "centerLon" ))
         {
-            this.setMapCenter( $( "centerLat" ).value, $( "centerLon" ).value );
-        }
+            if ( $( "centerLat" ).value.match( latRegExpDd ) && $( "centerLon" ).value.match( lonRegExpDd ) )
+            {
+                this.setMapCenter( $( "centerLat" ).value, $( "centerLon" ).value );
+            }
+       	}
 
-        $( "aoiRadius2" ).value = $( "aoiRadius" ).value;
-        $( "aoiRadius3" ).value = $( "aoiRadius" ).value;
+        if($("aoiRadius"))
+        {
+            if($( "aoiRadius2" )) $( "aoiRadius2" ).value = $( "aoiRadius" ).value;
+            if($( "aoiRadius3" )) $( "aoiRadius3" ).value = $( "aoiRadius" ).value;
+        }
     };
 
     this.setCenterDms = function()
@@ -108,39 +151,42 @@ function MapWidget()
         var latRegExpDms = /^(\d{1,2})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([NnSs])?/
         var lonRegExpDms = /^(\d{1,3})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([EeWw])?/
 
-        if ( $( "centerLatDms" ).value.match( latRegExpDms ) && $( "centerLonDms" ).value.match( lonRegExpDms ) )
+        if($( "centerLatDms" ))
         {
-            if ( $( "centerLatDms" ).value.match( latRegExpDms ) )
+            if ( $( "centerLatDms" ).value.match( latRegExpDms ) && $( "centerLonDms" ).value.match( lonRegExpDms ) )
             {
-                var latDeg = parseInt( RegExp.$1, 10 );
-                var latMin = parseInt( RegExp.$2, 10 );
-                var latSec = parseInt( RegExp.$3, 10 ) + RegExp.$4;
-                var latHem = RegExp.$5;
-
-                if ( latHem == "S" || latHem == "s" )
+                if ( $( "centerLatDms" ).value.match( latRegExpDms ) )
                 {
-                    latDeg = -latDeg;
+                    var latDeg = parseInt( RegExp.$1, 10 );
+                    var latMin = parseInt( RegExp.$2, 10 );
+                    var latSec = parseInt( RegExp.$3, 10 ) + RegExp.$4;
+                    var latHem = RegExp.$5;
+
+                    if ( latHem == "S" || latHem == "s" )
+                    {
+                        latDeg = -latDeg;
+                    }
                 }
+
+                if ( $( "centerLonDms" ).value.match( lonRegExpDms ) )
+                {
+                    var lonDeg = parseInt( RegExp.$1, 10 );
+                    var lonMin = parseInt( RegExp.$2, 10 );
+                    var lonSec = parseInt( RegExp.$3, 10 ) + RegExp.$4;
+                    var lonHem = RegExp.$5;
+
+                    if ( lonHem == "W" || lonHem == "w" )
+                    {
+                        lonDeg = -lonDeg;
+                    }
+                }
+
+                this.setMapCenter( convert.dmsToDd( latDeg, latMin, latSec ), convert.dmsToDd( lonDeg, lonMin, lonSec ) );
             }
 
-            if ( $( "centerLonDms" ).value.match( lonRegExpDms ) )
-            {
-                var lonDeg = parseInt( RegExp.$1, 10 );
-                var lonMin = parseInt( RegExp.$2, 10 );
-                var lonSec = parseInt( RegExp.$3, 10 ) + RegExp.$4;
-                var lonHem = RegExp.$5;
-
-                if ( lonHem == "W" || lonHem == "w" )
-                {
-                    lonDeg = -lonDeg;
-                }
-            }
-
-            this.setMapCenter( convert.dmsToDd( latDeg, latMin, latSec ), convert.dmsToDd( lonDeg, lonMin, lonSec ) );
+            $( "aoiRadius" ).value = $( "aoiRadius2" ).value;
+            $( "aoiRadius3" ).value = $( "aoiRadius2" ).value;
         }
-
-        $( "aoiRadius" ).value = $( "aoiRadius2" ).value;
-        $( "aoiRadius3" ).value = $( "aoiRadius2" ).value;
     };
 
     this.setCenterMgrs = function()
@@ -161,7 +207,6 @@ function MapWidget()
         $( "aoiRadius2" ).value = $( "aoiRadius3" ).value;
     };
 
-    var aoiLayer = null;
 
     this.setupAoiLayer = function()
     {
@@ -171,8 +216,8 @@ function MapWidget()
         var boundBox = new OpenLayers.Control.DrawFeature( aoiLayer, OpenLayers.Handler.RegularPolygon,
         {handlerOptions: {sides: 4, irregular: true}} );
 
-        map.addLayer( aoiLayer );
-        map.addControl( boundBox );
+        openlayersMap.addLayer( aoiLayer );
+        openlayersMap.addControl( boundBox );
 
         var aoiMinLon = "${queryParams?.aoiMinLon ?: ''}";
         var aoiMinLat = "${queryParams?.aoiMinLat ?: ''}";
@@ -194,18 +239,18 @@ function MapWidget()
         var bounds = geom.getBounds();
         var feature = new OpenLayers.Feature.Vector( geom );
 
-        $( "aoiMinLon" ).value = bounds.left;
-        $( "aoiMaxLat" ).value = bounds.top;
-        $( "aoiMaxLon" ).value = bounds.right;
-        $( "aoiMinLat" ).value = bounds.bottom;
+        if($( "aoiMinLon" )) $( "aoiMinLon" ).value = bounds.left;
+        if($( "aoiMaxLat" )) $( "aoiMaxLat" ).value = bounds.top;
+        if($( "aoiMaxLon" )) $( "aoiMaxLon" ).value = bounds.right;
+        if($( "aoiMinLat" )) $( "aoiMinLat" ).value = bounds.bottom;
 
-        $( "aoiMinLonDms" ).value = convert.ddToDms( bounds.left, "lon" );
-        $( "aoiMaxLatDms" ).value = convert.ddToDms( bounds.top, "lat" );
-        $( "aoiMaxLonDms" ).value = convert.ddToDms( bounds.right, "lon" );
-        $( "aoiMinLatDms" ).value = convert.ddToDms( bounds.bottom, "lat" );
+        if($( "aoiMinLonDms" )) $("aoiMinLonDms").value = convert.ddToDms( bounds.left, "lon" );
+        if($( "aoiMaxLatDms" )) $("aoiMinLonDms").value = convert.ddToDms( bounds.top, "lat" );
+        if($( "aoiMaxLonDms" )) $("aoiMaxLonDms").value = convert.ddToDms( bounds.right, "lon" );
+        if($( "aoiMinLatDms" )) $("aoiMinLatDms").value = convert.ddToDms( bounds.bottom, "lat" );
 
-        $( "aoiNeMgrs" ).value = convert.ddToMgrs( bounds.top, bounds.right );
-        $( "aoiSwMgrs" ).value = convert.ddToMgrs( bounds.bottom, bounds.left );
+        if($("aoiNeMgrs")) $("aoiNeMgrs").value = convert.ddToMgrs( bounds.top, bounds.right );
+        if($("aoiSwMgrs")) $("aoiSwMgrs").value = convert.ddToMgrs( bounds.bottom, bounds.left );
 
         aoiLayer.destroyFeatures();
         aoiLayer.addFeatures( feature, {silent: true} );
@@ -216,43 +261,65 @@ function MapWidget()
         var bounds = new OpenLayers.Bounds( minLon, minLat, maxLon, maxLat );
         var feature = new OpenLayers.Feature.Vector( bounds.toGeometry() );
 
-        $( "aoiMinLon" ).value = bounds.left;
-        $( "aoiMaxLat" ).value = bounds.top;
-        $( "aoiMaxLon" ).value = bounds.right;
-        $( "aoiMinLat" ).value = bounds.bottom;
+        if($( "aoiMinLon" )) $( "aoiMinLon" ).value = bounds.left;
+        if($( "aoiMaxLat" )) $( "aoiMaxLat" ).value = bounds.top;
+        if($( "aoiMaxLon" )) $( "aoiMaxLon" ).value = bounds.right;
+        if($( "aoiMinLat" )) $( "aoiMinLat" ).value = bounds.bottom;
 
-        $( "aoiMinLonDms" ).value = convert.ddToDms( bounds.left, "lon" );
-        $( "aoiMaxLatDms" ).value = convert.ddToDms( bounds.top, "lat" );
-        $( "aoiMaxLonDms" ).value = convert.ddToDms( bounds.right, "lon" );
-        $( "aoiMinLatDms" ).value = convert.ddToDms( bounds.bottom, "lat" );
+        if($( "aoiMinLonDms" )) $( "aoiMinLonDms" ).value = convert.ddToDms( bounds.left, "lon" );
+        if($( "aoiMaxLatDms" )) $( "aoiMaxLatDms" ).value = convert.ddToDms( bounds.top, "lat" );
+        if($( "aoiMaxLonDms" )) $( "aoiMaxLonDms" ).value = convert.ddToDms( bounds.right, "lon" );
+        if($( "aoiMinLatDms" )) $( "aoiMinLatDms" ).value = convert.ddToDms( bounds.bottom, "lat" );
 
-        $( "aoiNeMgrs" ).value = convert.ddToMgrs( bounds.top, bounds.right );
-        $( "aoiSwMgrs" ).value = convert.ddToMgrs( bounds.bottom, bounds.left );
+        if($( "aoiNeMgrs" )) $( "aoiNeMgrs" ).value = convert.ddToMgrs( bounds.top, bounds.right );
+        if($( "aoiSwMgrs" )) $( "aoiSwMgrs" ).value = convert.ddToMgrs( bounds.bottom, bounds.left );
 
         aoiLayer.destroyFeatures();
         aoiLayer.addFeatures( feature, {silent: true} );
-
-
     };
 
     this.clearAOI = function( e )
     {
         aoiLayer.destroyFeatures();
+        if($( "aoiMinLon" )) $( "aoiMinLon" ).value = "";
+        if($( "aoiMaxLat" )) $( "aoiMaxLat" ).value = "";
+        if($( "aoiMaxLon" )) $( "aoiMaxLon" ).value = "";
+        if($( "aoiMinLat" )) $( "aoiMinLat" ).value = "";
 
-        $( "aoiMinLon" ).value = "";
-        $( "aoiMaxLat" ).value = "";
-        $( "aoiMaxLon" ).value = "";
-        $( "aoiMinLat" ).value = "";
+        if($( "aoiMinLonDms" )) $( "aoiMinLonDms" ).value = "";
+        if($( "aoiMaxLatDms" )) $( "aoiMaxLatDms" ).value = "";
+        if($( "aoiMaxLonDms" )) $( "aoiMaxLonDms" ).value = "";
+        if($( "aoiMinLatDms" )) $( "aoiMinLatDms" ).value = "";
 
-        $( "aoiMinLonDms" ).value = "";
-        $( "aoiMaxLatDms" ).value = "";
-        $( "aoiMaxLonDms" ).value = "";
-        $( "aoiMinLatDms" ).value = "";
-
-        $( "aoiNeMgrs" ).value = "";
-        $( "aoiSwMgrs" ).value = "";
+        if($( "aoiNeMgrs" )) $( "aoiNeMgrs" ).value = "";
+        if($( "aoiSwMgrs" )) $( "aoiSwMgrs" ).value = "";
     };
-
+    this.getSizeInPixelsFromExtents = function(extents)
+    {
+    	if(!extents) return null;
+    	cornerPt1 = openlayersMap.getViewPortPxFromLonLat(new OpenLayers.LonLat(extents.left, extents.top));
+    	cornerPt2 = openlayersMap.getViewPortPxFromLonLat(new OpenLayers.LonLat(extents.right, extents.bottom));
+    	
+    	return new OpenLayers.Size(Math.round(Math.abs(cornerPt2.x-cornerPt1.x)+1),
+    			                   Math.round(Math.abs(cornerPt2.y-cornerPt1.y)+1));
+    }
+    this.getSelectedOrViewportExtents = function ()
+    {
+    	extent = null;
+    	if(aoiLayer)
+    	{
+    		extent = aoiLayer.getDataExtent();
+    	}
+    	if(!extent || !extent.left)
+    	{
+    		extent = null;
+        	if(openlayersMap)
+        	{  
+            	extent = openlayersMap.getExtent();
+        	}
+    	}
+    	return extent;
+    }
     this.search = function()
     {
         if ( $( "units" ).value == "DD" || $( "units" ).value == "" )
@@ -415,8 +482,8 @@ function MapWidget()
 
     this.setupBaseLayers = function( baseLayer )
     {
-        map.addLayer( baseLayer );
-        map.setBaseLayer( baseLayer );
+        openlayersMap.addLayer( baseLayer );
+        openlayersMap.setBaseLayer( baseLayer );
     };
 
     this.dataLayer = null;
@@ -427,7 +494,7 @@ function MapWidget()
         {layers: dataWmsLayers, styles: dataWmsStyles, format: dataWmsFormat, transparent: true},
         {isBaseLayer: false, buffer: 0, visibility: true, transitionEffect: "resize"} );
 
-        map.addLayer( dataLayer );
+        openlayersMap.addLayer( dataLayer );
     };
 
     this.updateFootprints = function()
@@ -437,15 +504,15 @@ function MapWidget()
 
     this.setMapCenter = function( lat, lon )
     {
-        var zoom = map.getZoom();
+        var zoom = openlayersMap.getZoom();
         var center = new OpenLayers.LonLat( lon, lat );
 
-        map.setCenter( center, zoom );
+        openlayersMap.setCenter( center, zoom );
     };
 
     this.setCurrentViewport = function()
     {
-        var bounds = map.getExtent();
+        var bounds = openlayersMap.getExtent();
 
         $( "viewMinLon" ).value = bounds.left;
         $( "viewMaxLat" ).value = bounds.top;
@@ -468,15 +535,15 @@ function MapWidget()
         //mapDiv.style.width = mapTitle.offsetWidth + "px";
         //mapDiv.style.height = Math.round( mapTitle.offsetWidth / 2 ) + "px";
 
-        if(map) map.updateSize();
+        if(openlayersMap) openlayersMap.updateSize();
     };
 
     this.setupMapView = function( viewMinLon, viewMinLat, viewMaxLon, viewMaxLat )
     {
         var bounds = new OpenLayers.Bounds( viewMinLon, viewMinLat, viewMaxLon, viewMaxLat );
-        var zoom = map.getZoomForExtent( bounds, true );
+        var zoom = openlayersMap.getZoomForExtent( bounds, true );
 
-        map.setCenter( bounds.getCenterLonLat(), zoom );
+        openlayersMap.setCenter( bounds.getCenterLonLat(), zoom );
     };
 
     var pathUnit;
@@ -495,10 +562,237 @@ function MapWidget()
     var message = "Alert: Not certified for targeting.\n";
     this.setupToolBar = function()
     {
+     	var panButton = new OpenLayers.Control.MouseDefaults({title: "Click pan button to activate. Once activated click the map and drag the mouse to pan."});
+    	
+    	var zoomBoxButton = new OpenLayers.Control.ZoomBox({title: "Click the zoom box button to activate. Once activated click and drag over an area of interest on the map to zoom into."});
+    	
+    	var zoomInButton = new OpenLayers.Control.Button({title: "Click to zoom in.",
+    													 displayClass: "olControlZoomIn",
+    													 trigger: this.zoomIn});
+    	
+     	var zoomOutButton = new OpenLayers.Control.Button({title: "Click to zoom out.",
+        displayClass: "olControlZoomOut",
+        trigger: this.zoomOut});
+    	
+    	var zoomInFullResButton = new OpenLayers.Control.Button({title: "Click to zoom into full resolution.",
+        displayClass: "olControlZoomToLayer",
+        trigger: this.zoomInFullRes});
+    	
+    	var zoomMaxExtentButton = new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent."});
+   	
+   	    var navButton = new OpenLayers.Control.NavigationHistory({nextOptions:{title:"Click to go to next view."}, 
+    	previousOptions:{title:"Click to go to previous view."}});
+   	    var boundBoxButton;
+   	    var clearAoiButton;
+   	    if(aoiLayer)
+   	    {
+   	        boundBoxButton = new OpenLayers.Control.DrawFeature( aoiLayer, OpenLayers.Handler.RegularPolygon,
+   	                {handlerOptions: {sides: 4, irregular: true}, title: "Click and drag to specify an area of interest."} );
+
+   	        clearAoiButton = new OpenLayers.Control.Button(
+   	                {title: "Click to clear area of interest", displayClass: "olControlClearAreaOfInterest", trigger: this.clearAOI} );
+   	    }
+                
+    	var pathMeasurement= document.getElementById("pathMeasurement");
+    	var pathMeasurementButton ;
+    	
+    	 
+     	if($("measurementUnits")&&pathMeasurement)
+    	{
+    		pathMeasurementButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
+        		title:"Click path measurement button to activate. Once activated click points on the map to create a path that you wish to measure. When you are done creating your path double click to end. Measurement results will appear in the left column.",
+        		displayClass: "olControlMeasureDistance", persist: true,
+        		eventListeners:
+        		{
+        			measure: function(evt)
+        			{
+        				if($("measurementUnits").value == "kilometers")
+        				{
+        					if(evt.units == "km")
+        					{
+        						pathMeasurement.innerHTML = "Path: " + evt.measure + " km [<a href='javascript:clearPathMeasurement()'>X</a>]";
+        					}
+        					else if(evt.units == "m")
+        					{
+        						pathMeasurement.innerHTML = "Path: " + (evt.measure * 0.001) + " km [<a href='javascript:clearPathMeasurement()'>X</a>]"; 
+        					}
+        				}
+        				else if($("measurementUnits").value == "meters")
+        				{
+        					if(evt.units == "km" )
+        					{
+        						pathMeasurement.innerHTML = "Path: " + (evt.measure * 1000) + " m [<a href='javascript:clearPathMeasurement()'>X</a>]";
+        	                }
+        					else if(evt.units == "m")
+        					{
+        						pathMeasurement.innerHTML = "Path: " + evt.measure + " m [<a href='javascript:clearPathMeasurement()'>X</a>]";
+        					}
+        				}
+        				else if($("measurementUnits").value == "feet")
+        				{
+        					if(evt.units == "km")
+        					{
+        						pathMeasurement.innerHTML = "Path: " + (evt.measure * 3280.839895) + " ft [<a href='javascript:clearPathMeasurement()'>X</a>]";
+        					}
+        					else if(evt.units == "m")
+        					{
+        						pathMeasurement.innerHTML = "Path: " + (evt.measure * 3.280839895) + " ft [<a href='javascript:clearPathMeasurement()'>X</a>]";
+        					}
+        				}
+        				else if($("measurementUnits").value == "miles")
+        				{
+        					if(evt.units == "km")
+        					{
+        						pathMeasurement.innerHTML = "Path: " + (evt.measure * 0.62137119224) + " mi [<a href='javascript:clearPathMeasurement()'>X</a>]";
+        					}
+        					else if(evt.units == "m")
+        					{
+        						pathMeasurement.innerHTML = "Path: " + (evt.measure * 0.00062137119224) + " mi [<a href='javascript:clearPathMeasurement()'>X</a>]";
+        					}
+        				}
+        				else if($("measurementUnits").value == "yards")
+        				{
+        					if(evt.units == "km")
+        					{
+        						pathMeasurement.innerHTML = "Path: " + (evt.measure * 1093.6132983) + " yd [<a href='javascript:clearPathMeasurement()'>X</a>]";
+        					}
+        					else if(evt.units == "m")
+        					{
+        						pathMeasurement.innerHTML = "Path: " + (evt.measure * 1.0936132983) + " yd [<a href='javascript:clearPathMeasurement()'>X</a>]";
+        					}
+        				}
+        			}
+        		}
+        	});
+    	}
+
+   	var polygonMeasurement = document.getElementById("polygonMeasurement");
+    	var polygonMeasurementButton;
+    	
+    	if(polygonMeasurement&&$("measurementUnits"))
+    	{
+        	polygonMeasurementButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, {
+        		title:"Click polygon measurement button to activate. Once activated click points on the map to create a polygon that you wish to measure. When you are done creating your polygon double click to end. Measurement results will appear in the left column.",
+        		displayClass: "olControlMeasureArea", persist: true,
+        		eventListeners:
+        		{
+        			measure: function(evt)
+        			{
+        				if($("measurementUnits").value == "kilometers")
+        				{
+        					if(evt.units == "km")
+        					{
+        						polygonMeasurement.innerHTML = "Polygon: " + evt.measure + " kmÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
+        					}
+        					else if(evt.units == "m")
+        					{
+        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 0.001) + " kmÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]"; 
+        					}
+        				}
+        				else if($("measurementUnits").value == "meters")
+        				{
+        					if(evt.units == "km" )
+        					{
+        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 1000) + " mÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
+        	                }
+        					else if(evt.units == "m")
+        					{
+        						polygonMeasurement.innerHTML = "Polygon: " + evt.measure + " mÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
+        					}
+        				}
+        				else if($("measurementUnits").value == "feet")
+        				{
+        					if(evt.units == "km")
+        					{
+        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 3280.839895) + " ftÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
+        					}
+        					else if(evt.units == "m")
+        					{
+        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 3.280839895) + " ftÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
+        					}
+        				}
+        				else if($("measurementUnits").value == "miles")
+        				{
+        					if(evt.units == "km")
+        					{
+        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 0.62137119224) + " miÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
+        					}
+        					else if(evt.units == "m")
+        					{
+        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 0.00062137119224) + " miÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
+        					}
+        				}
+        				else if($("measurementUnits").value == "yards")
+        				{
+        					if(evt.units == "km")
+        					{
+        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 1093.6132983) + " ydÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
+        					}
+        					else if(evt.units == "m")
+        					{
+        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 1.0936132983) + " ydÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
+        					}
+        				}
+        			}
+        		}
+        	});
+    	}
+    	
+   	var container = $("toolBar");
+    	var panel = new OpenLayers.Control.Panel(
+    	{
+    		div: container,
+    		defaultControl: zoomBoxButton,
+    		displayClass: "olControlPanel"
+    	});
+    	
+    	openlayersMap.addControl(navButton);
+    	
+   	panel.addControls([
+    	panButton,
+    	zoomInButton,
+    	zoomOutButton,
+    	zoomMaxExtentButton,
+    	zoomBoxButton,
+    	zoomInFullResButton
+ //   	boundBoxButton,
+ //   	clearAoiButton
+ //   	navButton.next,
+ //   	navButton.previous
+    	]);
+   	if(boundBoxButton&&clearAoiButton)
+   	{
+   		panel.addControls([
+   		                  	boundBoxButton,
+   		                	clearAoiButton
+   		                	]);
+   	}
+   	if(pathMeasurementButton&&polygonMeasurementButton)
+    {
+        	panel.addControls([
+    		pathMeasurementButton,
+        	polygonMeasurementButton
+        	]);
+    }
+
+   	
+    	openlayersMap.addControl(panel);
+    };
+    
+    this.zoomInFullRes = function()
+    {
+    	var zoom = openlayersMap.getZoomForResolution(zoomFullResScale, true);
+    	openlayersMap.zoomTo(zoom);
+
+    	if(zoomInButton) zoomInButton.displayClass = "olControlZoomOut";
+    }
+
+    this.setupToolBarOld = function()
+    {
         var panButton = new OpenLayers.Control.MouseDefaults(
         { title: "Click and drag to pan map." } );
 
-        var zoomInButton = new OpenLayers.Control.Button(
+        zoomInButton = new OpenLayers.Control.Button(
         { title: "Click to zoom in.", displayClass: "olControlZoomIn", trigger: this.zoomIn } );
 
         var zoomOutButton = new OpenLayers.Control.Button(
@@ -614,17 +908,17 @@ function MapWidget()
             measureAreaButton
         ] );
 
-        map.addControl( toolBar );
+        openlayersMap.addControl( toolBar );
     };
 
     this.zoomIn = function()
     {
-        map.zoomIn();
+        openlayersMap.zoomIn();
     };
 
     this.zoomOut = function()
     {
-        map.zoomOut();
+        openlayersMap.zoomOut();
     };
 
     this.clearPathMeasurement = function()
