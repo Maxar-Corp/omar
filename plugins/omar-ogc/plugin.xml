@@ -1,4 +1,4 @@
-<plugin name='omar-ogc' version='0.1' grailsVersion='1.3.7 &gt; *'>
+<plugin name='omar-ogc' version='0.1' grailsVersion='1.3.5 &gt; *'>
   <author>Scott Bortman</author>
   <authorEmail>sbortman@radiantblue.com</authorEmail>
   <title>OMAR OGC</title>
@@ -11,12 +11,14 @@ Adds OGC functionality to OMAR
     <resource>Config</resource>
     <resource>DataSource</resource>
     <resource>UrlMappings</resource>
+    <resource>org.ossim.omar.FootprintController</resource>
     <resource>org.ossim.omar.KmlQueryController</resource>
     <resource>org.ossim.omar.OgcController</resource>
     <resource>org.ossim.omar.RasterEntryExportController</resource>
     <resource>org.ossim.omar.VideoDataSetExportController</resource>
     <resource>org.ossim.omar.WmsLog</resource>
     <resource>org.ossim.omar.ExportService</resource>
+    <resource>org.ossim.omar.FootprintService</resource>
     <resource>org.ossim.omar.KmlService</resource>
     <resource>org.ossim.omar.WebCoverageService</resource>
     <resource>org.ossim.omar.WebMappingService</resource>
