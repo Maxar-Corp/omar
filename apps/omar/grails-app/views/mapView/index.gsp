@@ -68,7 +68,8 @@
 
 <body class="yui-skin-sam" onload="init();">
 <omar:bundle contentType="javascript" files="${[
-     [plugin: 'omar-core', dir:'js', file: 'coordinateConversion.js']
+     [plugin: 'omar-core', dir:'js', file: 'coordinateConversion.js'],
+     [plugin: 'omar-core', dir:'js', file: 'mapwidget.js']
  ]}"/>
 
 <content tag="top">
@@ -234,13 +235,14 @@
 
 <g:javascript>
 var coordConvert = new CoordinateConversion();
-var map;
+var mapWidget;
 var zoomInButton;
 var kmlLayers;
 var rasterLayers;
 var select;
+var wcsUrlParams = new OmarWcsUrlParams();
 
-var fullResScale = parseFloat("${fullResScale}");
+//var fullResScale = parseFloat("${fullResScale}");
 var left = parseFloat("${left}");
 var bottom = parseFloat("${bottom}");
 var right = parseFloat("${right}");
@@ -258,7 +260,29 @@ function resetBrightnessContrast()
 }
 
 function init()
-{  
+{
+// we need to pass a json string or object and save to the session
+// and reload here
+    wcsUrlParams.setProperties({
+        brightness:"0",
+        contrast:"1",
+        sharpen_mode:"none",
+        stretch_mode:"linear_auto_min_max",
+        stretch_mode_region: "global",
+        interpolation: "bilinear",
+        srs: "EPSG:4326",
+        crs: "EPSG:4326",
+        bands:"",
+        quicklook: false
+    });
+    if(${rasterEntries?.numberOfBands.get(0) >= 3})
+    {
+        wcsUrlParams.setProperties({bands:"0,1,2"});
+    }
+    else
+    {
+        wcsUrlParams.setProperties({bands:"0"});
+    }
 	brightnessSlider.animate = false;
 	 
     brightnessSlider.getRealValue = function() { 
@@ -278,12 +302,14 @@ function init()
     brightnessSlider.subscribe("slideEnd", function() { 
 		for(var layer in rasterLayers)
 		{
+		    wcsUrlParams.setProperties({brightness:this.getRealValue()});
 			rasterLayers[layer].mergeNewParams({brightness:this.getRealValue()});
 		}
     }); 	
     contrastSlider.subscribe("slideEnd", function() { 
 		for(var layer in rasterLayers)
 		{
+		    wcsUrlParams.setProperties({contrast:this.getRealValue()});
 			rasterLayers[layer].mergeNewParams({contrast:this.getRealValue()});
 		}
     }); 
@@ -294,6 +320,7 @@ function init()
     });
     brightnessSlider.subscribe("change", function(offsetFromStart) 
     {
+		wcsUrlParams.setProperties({brightness:this.getRealValue()});
     	$("brightness").value = this.getRealValue();
     	$("brightnessTextField").value = this.getRealValue();
     });
@@ -301,22 +328,28 @@ function init()
 	brightnessSlider.setRealValue(0);  
 	contrastSlider.setRealValue(1);  
 	var bounds = new OpenLayers.Bounds(left, bottom, right, top);
-	map = new OpenLayers.Map("map", {controls: [], maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale});
 	
-	setupToolbar();
+	mapWidget = new MapWidget();
+	mapWidget.setupMapWidgetWithOptions("map", {controls: [], maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale});
+	mapWidget.setFullResScale(parseFloat("${fullResScale}"));
+    mapWidget.changeMapSize();
+	
+	
 	setupLayers();
+    mapWidget.setupAoiLayer();
+	mapWidget.setupToolBar();
   	
-	map.addControl(new OpenLayers.Control.LayerSwitcher());
+	mapWidget.getMap().addControl(new OpenLayers.Control.LayerSwitcher());
 	var overview = new OpenLayers.Control.OverviewMap({maximized: true});
-    map.addControl(overview);
-	map.addControl(new OpenLayers.Control.Scale());
-	map.addControl(new OpenLayers.Control.ScaleLine());
+    mapWidget.getMap().addControl(overview);
+	mapWidget.getMap().addControl(new OpenLayers.Control.Scale());
+	mapWidget.getMap().addControl(new OpenLayers.Control.ScaleLine());
 	
-	map.events.register('mousemove',map,setMouseMapCtrTxt);
-	map.events.register("moveend", map, this.setMapCtrTxt);
+	mapWidget.getMap().events.register('mousemove',map,setMouseMapCtrTxt);
+	mapWidget.getMap().events.register("moveend", map, this.setMapCtrTxt);
 	
-  	var zoom = map.getZoomForExtent(bounds, true);
-	map.setCenter(bounds.getCenterLonLat(), zoom);
+  	var zoom = mapWidget.getMap().getZoomForExtent(bounds, true);
+	mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
     var oMenu = new YAHOO.widget.MenuBar("rasterMenu", { 
                                                 autosubmenudisplay: true, 
                                                 hidedelay: 750, 
@@ -327,7 +360,7 @@ function init()
 
 function setMapCtrTxt()
 {
-    var center = map.getCenter();
+    var center = mapWidget.getMap().getCenter();
     $("ddMapCtr").value = center.lat + ", " + center.lon;
 	$("dmsMapCtr").value = coordConvert.ddToDms(center.lat, "lat") + ", " + coordConvert.ddToDms(center.lon, "lon");
 	$("mgrsMapCtr").value = coordConvert.ddToMgrs(center.lat, center.lon);
@@ -341,7 +374,7 @@ function setMapCtr(unit, value)
 		if($("ddMapCtr").value.match(ddRegExp))
 		{
 			var ddMapCtr = new OpenLayers.LonLat(RegExp.$2, RegExp.$1);
-			map.setCenter(ddMapCtr, map.getZoom());
+			mapWidget.getMap().setCenter(ddMapCtr, mapWidget.getMap().getZoom());
 		}
 		else
 		{
@@ -355,7 +388,7 @@ function setMapCtr(unit, value)
 		{
 			var dmsMapCtr = new OpenLayers.LonLat(coordConvert.dmsToDd(RegExp.$5, RegExp.$6, RegExp.$7, RegExp.$8), 
 													coordConvert.dmsToDd(RegExp.$1, RegExp.$2, RegExp.$3, RegExp.$4));
-			map.setCenter(dmsMapCtr, map.getZoom());
+			mapWidget.getMap().setCenter(dmsMapCtr, mapWidget.getMap().getZoom());
 		}
 		else
 		{
@@ -379,10 +412,10 @@ function setMapCtr(unit, value)
             var centerLat = parseInt( RegExp.$1, 10 ) + RegExp.$2;
             var centerLon = parseInt( RegExp.$3, 10 ) + RegExp.$4;
 
-			  var zoom = map.getZoom();
+			  var zoom = mapWidget.getMap().getZoom();
 		        var center = new OpenLayers.LonLat( centerLon, centerLat );
 
-		        map.setCenter( center, zoom );
+		        mapWidget.getMap().setCenter( center, zoom );
 
             
         }		
@@ -392,20 +425,24 @@ function setMapCtr(unit, value)
 function chgInterpolation()
 {
 	var interpolation = $("interpolation").value;
-	
+	obj = {interpolation:interpolation};
+    wcsUrlParams.setProperties(obj);
+
 	for(var layer in rasterLayers)
 	{
-		rasterLayers[layer].mergeNewParams({interpolation:interpolation});
+		rasterLayers[layer].mergeNewParams(obj);
 	}
 }
 
 function chgSharpenMode()
 {
 	var sharpen_mode = $("sharpen_mode").value;
-	
+	obj = {sharpen_mode:sharpen_mode};
+    wcsUrlParams.setProperties(obj);
+
 	for(var layer in rasterLayers)
 	{
-		rasterLayers[layer].mergeNewParams({sharpen_mode:sharpen_mode});
+		rasterLayers[layer].mergeNewParams(obj);
 	}
 }
 
@@ -413,34 +450,39 @@ function chgStretchMode()
 {
 	var stretch_mode = $("stretch_mode").value;
 	var stretch_mode_region = $("stretch_mode_region").value;
-	
+	obj = {stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region};
+    wcsUrlParams.setProperties(obj);
 	for(var layer in rasterLayers)
 	{
-		rasterLayers[layer].mergeNewParams({stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region});
+		rasterLayers[layer].mergeNewParams(obj);
 	}
 }
 
 function chgQuickLookMode()
 {
+	obj = {quicklook:$("quicklook").value};
+    wcsUrlParams.setProperties(obj);
 	for(var layer in rasterLayers)
   	{
-		rasterLayers[layer].mergeNewParams({quicklook:$("quicklook").value});
+		rasterLayers[layer].mergeNewParams(obj);
 	}
 }
 
 function changeBandsOpts()
 {
 	var bands = $("bands").value;
+	obj = {bands:bands};
+    wcsUrlParams.setProperties(obj);
 
 	for(var layer in rasterLayers)
 	{
-		rasterLayers[layer].mergeNewParams({bands:bands});
+		rasterLayers[layer].mergeNewParams(obj);
 	}
 }
 
 function setMouseMapCtrTxt(evt)
 {
-	var center = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x , evt.xy.y));
+	var center = mapWidget.getMap().getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x , evt.xy.y));
 	var fixed = 6;
 	
 	var ddMouseCtr = document.getElementById("ddMouseMapCtr");
@@ -619,7 +661,7 @@ function setupToolbar()
 		displayClass: "olControlPanel"
 	});
 	
-	map.addControl(navButton);
+	mapWidget.getMap().addControl(navButton);
 	
 	panel.addControls([
 	panButton,
@@ -634,7 +676,7 @@ function setupToolbar()
 	polygonMeasurementButton
 	]);
 	
-	map.addControl(panel);
+	mapWidget.getMap().addControl(panel);
 }
 
 function clearPathMeasurement()
@@ -649,10 +691,10 @@ function clearPolygonMeasurement()
 
 function zoomIn()
 {
-	map.zoomIn();
+	mapWidget.getMap().zoomIn();
 
-	var fullRes = map.getZoomForResolution(parseFloat(fullResScale), true);
-	if(map.getZoom() >= fullRes)
+	var fullRes = mapWidget.getMap().getZoomForResolution(parseFloat(fullResScale), true);
+	if(mapWidget.getMap().getZoom() >= fullRes)
 	{
 		zoomInButton.displayClass = "olControlZoomOut";
 	}
@@ -660,10 +702,10 @@ function zoomIn()
 
 function zoomOut()
 {
-	map.zoomOut();
+	mapWidget.getMap().zoomOut();
 	
-	var fullRes = map.getZoomForResolution(parseFloat(fullResScale), true);
-	if(map.getZoom() < fullRes)
+	var fullRes = mapWidget.getMap().getZoomForResolution(parseFloat(fullResScale), true);
+	if(mapWidget.getMap().getZoom() < fullRes)
 	{
 		zoomInButton.displayClass = "olControlZoomIn";
 	}
@@ -671,8 +713,8 @@ function zoomOut()
 
 function zoomInFullRes()
 {
-	var zoom = map.getZoomForResolution(parseFloat("${fullResScale}"), true);
-    map.zoomTo(zoom);
+	var zoom = mapWidget.getMap().getZoomForResolution(parseFloat("${fullResScale}"), true);
+    mapWidget.getMap().zoomTo(zoom);
 
 	zoomInButton.displayClass = "olControlZoomOut";
 }
@@ -687,7 +729,7 @@ function changeMapSize(mapWidth, mapHeight)
 		Dom.get("map").style.height = mapHeight + "px";
 	}
 	
-	map.updateSize();
+	mapWidget.changeMapSize()
 }
 
 function getKML(layers)
@@ -696,7 +738,7 @@ function getKML(layers)
 	
 	wmsParamForm.request.value = "GetKML";
 	wmsParamForm.layers.value = layers;
-	var extent = map.getExtent();
+	var extent = mapWidget.getMap().getExtent();
 	wmsParamForm.bbox.value = extent.toBBOX();
 	
 	wmsParamForm.sharpen_mode.value = $("sharpen_mode").value;
@@ -728,7 +770,7 @@ function setupLayers()
     {layers: "${(rasterEntries*.indexId).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent},
 	{isBaseLayer: true, buffer: 0, singleTile: true, ratio: 1.0, quicklook: true, transitionEffect: "resize", displayOutsideMaxExtent:false})];
 	
-	map.addLayers(rasterLayers);
+	mapWidget.getMap().addLayers(rasterLayers);
 	
 	<g:each in="${kmlOverlays}" var="kmlOverlay" status="i">
 	if(!kmlLayers)
@@ -738,7 +780,7 @@ function setupLayers()
 	
 	kmlLayer = new OpenLayers.Layer.Vector("${kmlOverlay.name}", {
 		visibility: ${grailsApplication.config.views.mapView.defaultOverlayVisiblity},
-		projection: map.displayProjection,
+		projection: mapWidget.getMap().displayProjection,
 		strategies: [new OpenLayers.Strategy.Fixed()],
 		protocol: new OpenLayers.Protocol.HTTP({
 			url: "${kmlOverlay.url}",
@@ -753,9 +795,9 @@ function setupLayers()
 				"featureunselected": onFeatureUnselect
 			});
 			
-		map.addLayers(kmlLayers);
+		mapWidget.getMap().addLayers(kmlLayers);
 		select = new OpenLayers.Control.SelectFeature(kmlLayers);
-  		map.addControl(select);
+  		mapWidget.getMap().addControl(select);
   		select.activate();
 	</g:each>
 }
@@ -799,78 +841,33 @@ function onFeatureSelect(event)
 	content,
 	null, true, onPopupClose);
 	feature.popup = popup;
-	map.addPopup(popup);
+	mapWidget.getMap().addPopup(popup);
 }
 
 
 function getProjectedImage(params)
 {
-	 var link = "${createLink(action: "wcs", controller: "ogc")}";
-	 var extent = map.getExtent();
-	 var bands = $("bands");
-	 var quicklook = $("quicklook");
-	 var stretch_mode_region = $("stretch_mode_region");
-	 var stretch_mode        = $("stretch_mode");
-	 var sharpen_mode        = $("sharpen_mode");
-	 var interpolation       = $("interpolation");
-	 var brightness          = $("brightness");
-	 var contrast            = $("contrast");
+
+	 var link   = "${createLink(action: "wcs", controller: "ogc")}";
+	 var extent = mapWidget.getSelectedOrViewportExtents();
+	 var size   = mapWidget.getSizeInPixelsFromExtents(extent);
 	 var wcsParams = {"request":"GetCoverage",
 	               	  "format":params.format,
 	               	  "bbox":extent.toBBOX(),
 	               	  "coverage":params.coverage,
-	               	  "crs":"EPSG:4326"}
-	               	  
-	 if(sharpen_mode&&sharpen_mode.value)
-	 {
-	 	wcsParams["sharpen_mode"] = sharpen_mode.value;
-	 }
-	 if(stretch_mode&&stretch_mode.value)
-	 {
-	 	wcsParams["stretch_mode"] = stretch_mode.value;
-	 }
-	 if(interpolation&&interpolation.value)
-	 {
-	 	wcsParams["interpolation"] = interpolation.value
-	 }
-	 if(stretch_mode_region&&stretch_mode_region.value)
-	 {
-	 	wcsParams["stretch_mode_region"] =stretch_mode_region.value;
-	 }
-	 if(bands&&bands.value)
-	 {
-	 	wcsParams["bands"] = bands.value;
-	 }
-	 if(quicklook&&quicklook.value)
-	 {
-	 	wcsParams["quicklook"] = quicklook.value;
-	 }
-	 if(brightness)
-	 {
-	 	wcsParams["brightness"] = brightness.value;
-	 }
-	 if(contrast)
-	 {
-	 	wcsParams["contrast"] = contrast.value;
-	 }
-	 
-	 var size = map.getSize()
-	 
-	 if(size)
-	 {
-	    wcsParams["width"] = size.w
-	    wcsParams["height"] = size.h
-	 }
-    var form = $("wcsForm");
-    var url = link + "?" + toUrlParamString(wcsParams);
-    
+	               	  "crs":"EPSG:4326",
+	               	  "width":size.w,
+	               	  "height":size.h}
+    wcsUrlParams.setProperties(wcsParams);
 
+    var form = $("wcsForm");
+    var url = link + "?" + wcsUrlParams.toUrlParams();
+    
     if(form)
     {
         form.action = url;
         form.submit();
     }          
-//	 postParams(link, toUrlParamString(wcsParams));
 }
 
 function onFeatureUnselect(event)
@@ -878,7 +875,7 @@ function onFeatureUnselect(event)
 	var feature = event.feature;
 	if(feature.popup)
 	{
-		map.removePopup(feature.popup);
+		mapWidget.getMap().removePopup(feature.popup);
 		feature.popup.destroy();
 		delete feature.popup;
 	}
