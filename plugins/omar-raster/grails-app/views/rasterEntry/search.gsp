@@ -18,17 +18,38 @@
 ]}"/>
 
 <content tag="top">
-  <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link action="list" url="javascript:generateKml();">KML Query</g:link></span>
-    <span class="menuButton"><g:link action="list" url="javascript:updateOmarFilters();">Update Footprints</g:link></span>
-    <span class="menuButton"><span class="yui-button yui-link-button"><span class="first-child"><g:link action="list" url="javascript:search();">Search Rasters</g:link></span></span></span>
-  </div>
+    <g:form name="searchForm">
+    </g:form>
+    <div id="searchMenu" class="yuimenubar yuimenubarnav">
+        <div class="bd">
+            <ul class="first-of-type">
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
+                </li>
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
+                    <div id="exportMenu" class="yuimenu">
+                        <div class="bd">
+                            <ul>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:generateKml()" title="Export KML">KML Query</a></li>
+                            </ul>
+                          </div>
+                    </div>
+                </li>
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
+                    <div id="viewMenu" class="yuimenu">
+                        <div class="bd">
+                            <ul>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:updateOmarFilters();" title="Refresh the footprints">Refresh Footprints</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:search();" title="Execute the search for the specified criteria">Search</a></li>
+                            </ul>
+                          </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
 </content>
 
 <content tag="left">
-  <g:form name="searchForm">
-  </g:form>
     <div id="demo" class="yui-navset">
       <ul class="yui-nav">
         <li class="selected"><a href="#demoTab1"><em>DD</em></a></li>
@@ -73,10 +94,8 @@
                   <br/>
                 </li>
                 <li>
-                  <span class="formButton">
-                    <input type="button" onclick="mapWidget.setCenterDd()" value="Set Center">
-                  </span>
-                </li>
+                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.setCenterDd()">Set Center</g:link></span></span>
+                 </li>
               </ol>
             </div>
           </div>
@@ -123,9 +142,7 @@
                   <br/>
                 </li>
                 <li>
-                  <span class="formButton">
-                    <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
-                  </span>
+                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
                 </li>
               </ol>
             </div>
@@ -168,9 +185,7 @@
                   <br/>
                 </li>
                 <li>
-                  <span class="formButton">
-                    <input type="button" onclick="mapWidget.setCenterDms()" value="Set Center">
-                  </span>
+                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.setCenterDms()">Set Center</g:link></span></span>
                 </li>
               </ol>
             </div>
@@ -214,9 +229,7 @@
                   <br/>
                 </li>
                 <li>
-                  <span class="formButton">
-                    <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
-                  </span>
+                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
                 </li>
               </ol>
             </div>
@@ -253,9 +266,7 @@
                   <br/>
                 </li>
                 <li>
-                  <span class="formButton">
-                    <input type="button" onclick="mapWidget.setCenterMgrs()" value="Set Center">
-                  </span>
+                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.setCenterMgrs()">Set Center</g:link></span></span>
                 </li>
               </ol>
             </div>
@@ -287,9 +298,12 @@
                   <br/>
                 </li>
                 <li>
+                    <%--
                   <span class="formButton">
-                    <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
+                      <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
                   </span>
+                  --%>
+                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
                 </li>
               </ol>
             </div>
@@ -319,7 +333,6 @@
         </ol>
       </div>
     </div>
-
 
 
 	<div id="criteriaTab" class="yui-navset">
@@ -387,7 +400,7 @@
       </div>
     </div>
 	<div align="center">
-	<span class="yui-button yui-link-button"><span class="first-child"><g:link action="list" url="javascript:mapWidget.search();">Search Rasters</g:link></span></span>
+        <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:search();">Search </g:link></span></span>
 </div>
 
 
@@ -437,7 +450,6 @@
                              sec:""
                              });
     document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
-    alert(document.searchForm.action);
     document.searchForm.submit();
   }
   function generateKml()
@@ -461,7 +473,6 @@
                              sec:""
                              });
     document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
-    alert(document.searchForm.action);
     document.searchForm.submit();
   }
   function init()
@@ -514,6 +525,12 @@
     YAHOO.util.Event.addListener(oElement1, "change", updateOmarFilters);
     YAHOO.util.Event.addListener(oElement2, "change", updateOmarFilters);
     YAHOO.util.Event.addListener(oElement3, "change", updateOmarFilters);
+    var oMenu = new YAHOO.widget.MenuBar("searchMenu", {
+                                                autosubmenudisplay: true,
+                                                hidedelay: 750,
+                                                lazyload: true,
+                                                zIndex:9999});
+	oMenu.render();
   }
   function handleClickCriteriaTab0(e) {
   updateCurrentTab(0);

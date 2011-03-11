@@ -10,9 +10,14 @@
 
   <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
-      [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-      [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
-      [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
+    [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+    [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
+    [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
+    [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
+    [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
+    [plugin:'richui' , dir:'js/yui/container/', file: 'container_core.js'],
+    [plugin:'richui' , dir:'js/yui/menu/', file: 'menu-min.js'],
+    [plugin:'richui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js'],
   ]}"/>
 
 
@@ -115,8 +120,9 @@
       <tr>
         <td id="toolbarRow">
           <div id="toolBar" class="olControlPanel"></div>
+            <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:search();">Search </g:link></span></span>
         </td>
-      </tr>
+       </tr>
       <tr id="mapRow">
         <td id="mapColumn">
           <div id="map"></div>
