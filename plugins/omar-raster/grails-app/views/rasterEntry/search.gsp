@@ -20,14 +20,15 @@
 <content tag="top">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link action="list" url="javascript:mapWidget.generateKML();">KML Query</g:link></span>
+    <span class="menuButton"><g:link action="list" url="javascript:generateKml();">KML Query</g:link></span>
     <span class="menuButton"><g:link action="list" url="javascript:updateOmarFilters();">Update Footprints</g:link></span>
-    <span class="menuButton"><span class="yui-button yui-link-button"><span class="first-child"><g:link action="list" url="javascript:mapWidget.search();">Search Rasters</g:link></span></span></span>
+    <span class="menuButton"><span class="yui-button yui-link-button"><span class="first-child"><g:link action="list" url="javascript:search();">Search Rasters</g:link></span></span></span>
   </div>
 </content>
 
 <content tag="left">
   <g:form name="searchForm">
+  </g:form>
     <div id="demo" class="yui-navset">
       <ul class="yui-nav">
         <li class="selected"><a href="#demoTab1"><em>DD</em></a></li>
@@ -338,12 +339,13 @@
 		          <g:each in="${queryParams?.searchTagValues}" var="searchTagValue" status="i">
 		            <g:select
 		                noSelection="${['null':'Select One...']}"
-		                name="searchTagNames[${i}]"
+                        id="searchTagNames[${i}]"
+                        name="searchTagNames[${i}]"
 		                value="${queryParams?.searchTagNames[i]}"
 		                from="${RasterEntrySearchTag.list(sort:'description')}"
 		                optionKey="name" optionValue="description"/>
 		            <li>
-		              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
+		              <g:textField id="searchTagValues[${i}]" name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
 		            </li>
 		          </g:each>
 		        </ol>
@@ -358,7 +360,7 @@
 		        <ol>
 		         
 		            <li>
-		             <g:textArea id="ogcFilter" name="filter" value="${queryParams.filter}" style='width: 100%; height: 200px;' onChange="updateOmarFilters()"/>
+		             <g:textArea id="filter" name="filter" value="${queryParams.filter}" style='width: 100%; height: 200px;' onChange="updateOmarFilters()"/>
 		            </li>
 		          
 		        </ol>
@@ -384,14 +386,12 @@
         </ol>
       </div>
     </div>
-
-
 	<div align="center">
 	<span class="yui-button yui-link-button"><span class="first-child"><g:link action="list" url="javascript:mapWidget.search();">Search Rasters</g:link></span></span>
 </div>
 
 
-  </g:form>
+<%--  </g:form>  --%>
 </content>
 <content tag="center">
 </content>
@@ -415,9 +415,58 @@
   var tabView   = null;
   var criteriaTabView = null;
   var rasterSearchCriteriaIndex=${session.rasterSearchCriteriaTab?:0};
+  var omarSearchParams = new OmarSearchParams();
+  function search()
+  {
+    var url = "${createLink(action: 'search', controller: 'rasterEntry')}";
+    mapWidget.setupSearch();
+    omarSearchParams.setProperties(document);
 
+    omarSearchParams.setTimeFromDate({day:$("startDate_day").value,
+                             month:$("startDate_month").value,
+                             year:$("startDate_year").value,
+                             hour:$("startDate_hour").value,
+                             minute:$("startDate_minute").value,
+                             sec:""
+                             },
+                              {day:$("endDate_day").value,
+                             month:$("endDate_month").value,
+                             year:$("endDate_year").value,
+                             hour:$("endDate_hour").value,
+                             minute:$("endDate_minute").value,
+                             sec:""
+                             });
+    document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
+    alert(document.searchForm.action);
+    document.searchForm.submit();
+  }
+  function generateKml()
+  {
+    var url = "${createLink(action: 'kmlnetworklink', controller: 'rasterEntry')}";
+    mapWidget.setupSearch();
+    omarSearchParams.setProperties(document);
+
+    omarSearchParams.setTimeFromDate({day:$("startDate_day").value,
+                             month:$("startDate_month").value,
+                             year:$("startDate_year").value,
+                             hour:$("startDate_hour").value,
+                             minute:$("startDate_minute").value,
+                             sec:""
+                             },
+                              {day:$("endDate_day").value,
+                             month:$("endDate_month").value,
+                             year:$("endDate_year").value,
+                             hour:$("endDate_hour").value,
+                             minute:$("endDate_minute").value,
+                             sec:""
+                             });
+    document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
+    alert(document.searchForm.action);
+    document.searchForm.submit();
+  }
   function init()
   {
+
     tabView = new YAHOO.widget.TabView('demo');
     criteriaTabView = new YAHOO.widget.TabView('criteriaTab');
 
@@ -492,7 +541,7 @@
     var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
     var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
 
-    var ogcFilterInput = document.getElementById('ogcFilter');
+    var ogcFilterInput = document.getElementById('filter');
     var additionalParams = new Array();
 
     if(ogcFilterInput)
