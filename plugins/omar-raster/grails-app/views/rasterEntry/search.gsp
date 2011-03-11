@@ -6,6 +6,16 @@
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
+    <style>
+    #homeMenu{
+    background: url( ../images/skin/house.png )  left no-repeat;
+       z-index: 99999;
+       }
+    #exportMenu, #viewMenu, .datechooser{
+        z-index: 100;
+    }
+
+    </style>
 </head>
 
 <body class="yui-skin-sam" onload="init();">
@@ -334,8 +344,8 @@
       </div>
     </div>
 
-
 	<div id="criteriaTab" class="yui-navset">
+        <p/>
 	    <ul class="yui-nav">
 	        <li class="selected"><a href="#criteriaTab1"><em>Metadata</em></a></li>
 	        <li><a href="#criteriaTab2"><em>CQL</em></a></li>
