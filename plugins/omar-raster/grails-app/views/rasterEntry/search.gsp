@@ -449,6 +449,14 @@
                              minute:$("endDate_minute").value,
                              sec:""
                              });
+    if($( "bboxSearchButton" ).checked)
+    {
+        omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
+    }
+    else
+    {
+        omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}"
+    }
     document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
     document.searchForm.submit();
   }
