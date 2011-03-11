@@ -320,7 +320,7 @@ function MapWidget()
     	}
     	return extent;
     }
-    this.search = function()
+    this.setupSearch = function()
     {
         if ( $( "units" ).value == "DD" || $( "units" ).value == "" )
         {
@@ -472,9 +472,19 @@ function MapWidget()
                 }
             }
         }
-
-        document.searchForm.action = "search";
         this.setCurrentViewport();
+    }
+    this.search = function(actionOverride)
+    {
+        this.setupSearch();
+        if(actionOverride)
+        {
+            document.searchForm.action = actionOverride;
+        }
+        else
+        {
+            document.searchForm.action = "search";
+        }
         document.searchForm.submit();
     };
 
