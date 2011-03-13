@@ -5,7 +5,7 @@ import org.hibernate.CacheMode as CM
 import org.hibernate.CacheMode
 import org.hibernate.FetchMode as FM
 import org.hibernate.FetchMode
-
+ import org.hibernate.criterion.*
 //import javax.jws.WebParam
 
 //import org.ossim.postgis.Geometry
@@ -22,8 +22,51 @@ class VideoDataSetSearchService implements InitializingBean
 
   def grailsApplication
   def propertyNames
+    List<VideoDataSet> runQuery(
+    /*@WebParam (name = "videoDataSetQuery", header = true)*/
+    VideoDataSetQuery videoDataSetQuery,
+    /*@WebParam (name = "params", header = true)*/
+    Map<String, String> params)
+    {
+        def max = null;
+        if(params?.max!=null)  max = (params.max as Integer);
+        if(max<1) return null;
+        def criteriaBuilder = VideoDataSet.createCriteria();
+        def x = {
+          if ( max )
+          {
+            setMaxResults(max)
+          }
+          if ( params?.offset )
+          {
+            setFirstResult(params.offset as Integer)
+          }
+          if ( params?.sort && params?.order )
+          {
+            if ( params?.sort == "id" || params?.sort in propertyNames )
+            {
+              def sortColumn = params?.sort
+              def order = params?.order
+              def ordering = (order == "asc") ? Order.asc(sortColumn) : Order.desc(sortColumn)
 
-  List<VideoDataSet> runQuery(
+              addOrder(ordering)
+            }
+
+            //setFetchMode("rasterEntry", FetchMode.JOIN)
+          }
+        }
+
+        def criteria = criteriaBuilder.buildCriteria(x)
+        def clause = videoDataSetQuery?.createClause()
+        if(clause)
+        {
+          criteria.add(clause)
+        }
+
+        criteria.list()
+    }
+
+  List<VideoDataSet> runQueryOld(
   /*@WebParam (name = "videoDataSetQuery", header = true)*/
   VideoDataSetQuery videoDataSetQuery,
   /*@WebParam (name = "params", header = true)*/
