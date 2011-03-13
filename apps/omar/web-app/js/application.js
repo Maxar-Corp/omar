@@ -254,34 +254,55 @@ function OmarWcsUrlParams(){
 
 function OmarSearchParams(){
 
-    this.setTimeFromDate = function(startDate, endDate)
+    this.initTime = function()
     {
-        hasStartDate = ((startDate)&&
-                           (startDate.day && startDate.month && startDate.year&& startDate.hour&&startDate.minute));
-        hasEndDate = ((endDate)&&
-                           (endDate.day && endDate.month && endDate.year&& endDate.hour &&endDate.minute));
+        hasStartDate = ((this.startDate)&&
+                           (this.startDate_day && this.startDate_month && this.startDate_year&&
+                            this.startDate.hour&&this.startDate.minute));
+        hasEndDate = ((this.endDate)&&
+                           (this.endDate_day && this.endDate_month && this.endDate_year&&
+                            this.endDate_hour &&this.endDate_minute));
 
         endDateNoQuote = "";
         startDateNoQuote = "";
 
         if(hasStartDate)
         {
-            startDateNoQuote = startDate.year + startDate.month.leftPad( 2 ) +
-                               startDate.day.leftPad( 2 ) + 'T' + startDate.hour.leftPad( 2 ) +
-                               ':' + startDate.minute.leftPad( 2 ) + ':' + '00Z';
+            startDateNoQuote = this.startDate_year + this.startDate_month.leftPad( 2 ) +
+                               this.startDate_day.leftPad( 2 ) + 'T' + this.startDate_hour.leftPad( 2 ) +
+                               ':' + this.startDate_minute.leftPad( 2 ) + ':' + '00Z';
+        }
+        else
+        {
+            this.startDate = "";
+            this.startDate_timezone = "";
+            this.startDate_hour = "";
+            this.startDate_minute = "";
+            this.startDate_day = "";
+            this.startDate_month = "";
+            this.startDate_year = "";
         }
         if(hasEndDate)
         {
-            endDateNoQuote = endDate.year + endDate.month.leftPad( 2 ) +
-                             endDate.day.leftPad( 2 ) + 'T' + endDate.hour.leftPad( 2 ) +
-                             ':' + endDate.minute.leftPad( 2 ) + ':' + '00Z';
+            endDateNoQuote = this.endDate_year + this.endDate_month.leftPad( 2 ) +
+                             this.endDate_day.leftPad( 2 ) + 'T' + this.endDate_hour.leftPad( 2 ) +
+                             ':' + this.endDate_minute.leftPad( 2 ) + ':' + '00Z';
         }
-
+        else
+        {
+            this.endDate_timezone = "";
+            this.endDate_hour = "";
+            this.endDate_minute = "";
+            this.endDate_day   = "";
+            this.endDate_month = "";
+            this.endDate_year  = "";
+            this.endDate = "";
+        }
         this.time = ""
         if ( startDateNoQuote )
         {
            this.time = startDateNoQuote;
-            if ( hasEndDate )
+            if ( endDateNoQuote )
             {
                 this.time += "/" + endDateNoQuote;
             }
@@ -315,20 +336,20 @@ function OmarSearchParams(){
     this.aoiMinLat = "";
     this.aoiMaxLon = "";
     this.aoiMaxLat = "";
-//    this.startDate = "";
-//    this.startDate_timezone = "";
-//    this.startDate_hour = "";
-//    this.startDate_minute = "";
-//    this.startDate_day = "";
-//    this.startDate_month = "";
-//    this.startDate_year = "";
-//    this.endDate_timezone = "";
-//    this.endDate_hour = "";
-//    this.endDate_minute = "";
-//    this.endDate_day   = "";
-//    this.endDate_month = "";
-//    this.endDate_year  = "";
-//    this.endDate = "";
+    this.startDate = "";
+    this.startDate_timezone = "";
+    this.startDate_hour = "";
+    this.startDate_minute = "";
+    this.startDate_day = "";
+    this.startDate_month = "";
+    this.startDate_year = "";
+    this.endDate_timezone = "";
+    this.endDate_hour = "";
+    this.endDate_minute = "";
+    this.endDate_day   = "";
+    this.endDate_month = "";
+    this.endDate_year  = "";
+    this.endDate = "";
     this.filter        = "";
     this.max           = "";
     this.time          = "";
