@@ -308,12 +308,7 @@
                   <br/>
                 </li>
                 <li>
-                    <%--
-                  <span class="formButton">
-                      <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
-                  </span>
-                  --%>
-                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
+                     <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
                 </li>
               </ol>
             </div>
@@ -444,7 +439,8 @@
     var url = "${createLink(action: 'search', controller: 'rasterEntry')}";
     mapWidget.setupSearch();
     omarSearchParams.setProperties(document);
-
+    omarSearchParams.initTime();
+/*
     omarSearchParams.setTimeFromDate({day:$("startDate_day").value,
                              month:$("startDate_month").value,
                              year:$("startDate_year").value,
@@ -459,6 +455,7 @@
                              minute:$("endDate_minute").value,
                              sec:""
                              });
+*/
     if($( "bboxSearchButton" ).checked)
     {
         omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
@@ -468,6 +465,7 @@
         omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}"
     }
     document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
+    alert(document.searchForm.action);
     document.searchForm.submit();
   }
   function generateKml()

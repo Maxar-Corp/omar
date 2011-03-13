@@ -6,6 +6,16 @@
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
+    <style>
+    #homeMenu{
+    background: url( ../images/skin/house.png )  left no-repeat;
+       z-index: 99999;
+       }
+    #exportMenu, #viewMenu, .datechooser{
+        z-index: 100;
+    }
+
+    </style>
 </head>
 
 <body class="yui-skin-sam" onload="init();">
@@ -16,7 +26,38 @@
   [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
   [plugin:'richui' , dir:'js/yui/tabview', file: 'tabview-min.js'],
 ]}"/>
-
+<content tag="top">
+    <g:form name="searchForm">
+    </g:form>
+    <div id="searchMenu" class="yuimenubar yuimenubarnav">
+        <div class="bd">
+            <ul class="first-of-type">
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
+                </li>
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
+                    <div id="exportMenu" class="yuimenu">
+                        <div class="bd">
+                            <ul>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:generateKml()" title="Export KML">KML Query</a></li>
+                            </ul>
+                          </div>
+                    </div>
+                </li>
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
+                    <div id="viewMenu" class="yuimenu">
+                        <div class="bd">
+                            <ul>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:updateOmarFilters();" title="Refresh the footprints">Refresh Footprints</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:search();" title="Execute the search for the specified criteria">Search</a></li>
+                            </ul>
+                          </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</content>
+<%--
 <content tag="top">
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
@@ -25,9 +66,9 @@
     <span class="menuButton"><span class="yui-button yui-link-button"><span class="first-child"><g:link action="list" url="javascript:mapWidget.search();">Search Videos</g:link></span></span></span>
   </div>
 </content>
+--%>
 
 <content tag="left">
-  <g:form name="searchForm">
     <div id="demo" class="yui-navset">
       <ul class="yui-nav">
         <li class="selected"><a href="#tab1"><em>DD</em></a></li>
@@ -72,9 +113,7 @@
                   <br/>
                 </li>
                 <li>
-                  <span class="formButton">
-                    <input type="button" onclick="mapWidget.setCenterDd()" value="Set Center">
-                  </span>
+                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.setCenterDd()">Set Center</g:link></span></span>
                 </li>
               </ol>
             </div>
@@ -122,9 +161,7 @@
                   <br/>
                 </li>
                 <li>
-                  <span class="formButton">
-                    <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
-                  </span>
+                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
                 </li>
               </ol>
             </div>
@@ -167,9 +204,7 @@
                   <br/>
                 </li>
                 <li>
-                  <span class="formButton">
-                    <input type="button" onclick="mapWidget.setCenterDms()" value="Set Center">
-                  </span>
+                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.setCenterDms()">Set Center</g:link></span></span>
                 </li>
               </ol>
             </div>
@@ -213,9 +248,7 @@
                   <br/>
                 </li>
                 <li>
-                  <span class="formButton">
-                    <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
-                  </span>
+                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
                 </li>
               </ol>
             </div>
@@ -252,9 +285,7 @@
                   <br/>
                 </li>
                 <li>
-                  <span class="formButton">
-                    <input type="button" onclick="mapWidget.setCenterMgrs()" value="Set Center">
-                  </span>
+                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.setCenterMgrs()">Set Center</g:link></span></span>
                 </li>
               </ol>
             </div>
@@ -286,9 +317,7 @@
                   <br/>
                 </li>
                 <li>
-                  <span class="formButton">
-                    <input type="button" onclick="mapWidget.clearAOI()" value="Clear AOI">
-                  </span>
+                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
                 </li>
               </ol>
             </div>
@@ -342,7 +371,7 @@
 				                from="${VideoDataSetSearchTag.list(sort:'description')}"
 				                optionKey="name" optionValue="description"/>
 				            <li>
-				              <g:textField name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
+				              <g:textField id="searchTagValues[${i}]" name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
 				            </li>
 				          </g:each>
 				
@@ -358,7 +387,7 @@
 		        <ol>
 		         
 		            <li>
-		             <g:textArea id="ogcFilter" name="filter" value="${queryParams.filter}" style='width: 100%; height: 200px;' onChange="updateOmarFilters()"/>
+		             <g:textArea id="filter" name="filter" value="${queryParams.filter}" style='width: 100%; height: 200px;' onChange="updateOmarFilters()"/>
 		            </li>
 		          
 		        </ol>
@@ -386,18 +415,9 @@
         </ol>
       </div>
     </div>
-
-
-
-
-		<div align="center">
-		<span class="yui-button yui-link-button"><span class="first-child"><g:link action="list" url="javascript:mapWidget.search();">Search Videos</g:link></span></span>
+	<div align="center">
+        <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:search();">Search </g:link></span></span>
 	</div>
-
-
-
-
-  </g:form>
 </content>
 <content tag="center">
 </content>
@@ -422,7 +442,65 @@
   var tabView   = null;
   var criteriaTabView = null;
   var videoDataSetSearchCriteriaIndex=${session.videoDataSetSearchCriteriaTab?:0};
+  var omarSearchParams = new OmarSearchParams();
 
+  function search()
+  {
+    var url = "${createLink(action: 'search', controller: 'videoDataSet')}";
+    mapWidget.setupSearch();
+    omarSearchParams.setProperties(document);
+    omarSearchParams.initTime();
+/*
+    omarSearchParams.setTimeFromDate({day:$("startDate_day").value,
+                             month:$("startDate_month").value,
+                             year:$("startDate_year").value,
+                             hour:$("startDate_hour").value,
+                             minute:$("startDate_minute").value,
+                             sec:""
+                             },
+                              {day:$("endDate_day").value,
+                             month:$("endDate_month").value,
+                             year:$("endDate_year").value,
+                             hour:$("endDate_hour").value,
+                             minute:$("endDate_minute").value,
+                             sec:""
+                             });
+*/
+    if($( "bboxSearchButton" ).checked)
+    {
+        omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
+    }
+    else
+    {
+        omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}"
+    }
+    document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
+    alert(document.searchForm.action );
+    document.searchForm.submit();
+  }
+  function generateKml()
+  {
+    var url = "${createLink(action: 'kmlnetworklink', controller: 'videoDataSet')}";
+    mapWidget.setupSearch();
+    omarSearchParams.setProperties(document);
+
+    omarSearchParams.setTimeFromDate({day:$("startDate_day").value,
+                             month:$("startDate_month").value,
+                             year:$("startDate_year").value,
+                             hour:$("startDate_hour").value,
+                             minute:$("startDate_minute").value,
+                             sec:""
+                             },
+                              {day:$("endDate_day").value,
+                             month:$("endDate_month").value,
+                             year:$("endDate_year").value,
+                             hour:$("endDate_hour").value,
+                             minute:$("endDate_minute").value,
+                             sec:""
+                             });
+    document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
+    document.searchForm.submit();
+  }
   function init()
   {
     tabView = new YAHOO.widget.TabView('demo');
@@ -472,6 +550,12 @@
     YAHOO.util.Event.addListener(oElement1, "change", updateOmarFilters);
     YAHOO.util.Event.addListener(oElement2, "change", updateOmarFilters);
     YAHOO.util.Event.addListener(oElement3, "change", updateOmarFilters);
+    var oMenu = new YAHOO.widget.MenuBar("searchMenu", {
+                                                autosubmenudisplay: true,
+                                                hidedelay: 750,
+                                                lazyload: true,
+                                                zIndex:9999});
+	oMenu.render();
   }
   function handleClickCriteriaTab0(e) {
   updateCurrentTab(0);
@@ -499,7 +583,7 @@
     var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
     var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
 
-    var ogcFilterInput = document.getElementById('ogcFilter');
+    var ogcFilterInput = document.getElementById('filter');
     var additionalParams = new Array();
 
     if(ogcFilterInput)
