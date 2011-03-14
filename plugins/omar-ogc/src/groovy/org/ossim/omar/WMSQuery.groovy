@@ -16,7 +16,6 @@ class WMSQuery extends BaseQuery
   def bbox
   def layers
   def max
-  def time
   WMSQuery()
   {
     super()
@@ -29,7 +28,7 @@ class WMSQuery extends BaseQuery
     def dateColumnName = columnName
     def disj = Restrictions.disjunction();
 
-    def intervals = ISO8601DateParser.parseWMSIntervals(time)
+    def intervals = ISO8601DateParser.parseOgcTimeIntervals(time)
     intervals.each{interval->
       def startDate = new Date(interval.getStart().getMillis());
       def endDate   = new Date(interval.getEnd().getMillis());
