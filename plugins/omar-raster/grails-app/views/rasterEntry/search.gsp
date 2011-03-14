@@ -456,6 +456,7 @@
   {
     var url = "${createLink(action: 'kmlnetworklink', controller: 'rasterEntry')}";
     mapWidget.setupSearch();
+    omarSearchParams.initTime();
     omarSearchParams.setProperties(document);
     document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
     //alert(document.searchForm.action );

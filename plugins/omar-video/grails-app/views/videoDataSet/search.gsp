@@ -467,7 +467,7 @@
     var url = "${createLink(action: 'kmlnetworklink', controller: 'videoDataSet')}";
     mapWidget.setupSearch();
     omarSearchParams.setProperties(document);
-
+    omarSearchParams.initTime();
     omarSearchParams.setTimeFromDate({day:$("startDate_day").value,
                              month:$("startDate_month").value,
                              year:$("startDate_year").value,
