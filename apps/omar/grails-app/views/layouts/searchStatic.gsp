@@ -117,11 +117,13 @@
   </div>
   <div id="center" class="center">
     <table>
-      <tr>
-        <td id="toolbarRow">
-          <div id="toolBar" class="olControlPanel"></div>
-            <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:search();">Search </g:link></span></span>
-        </td>
+      <tr id="toolbarRow">
+          <td>
+              <div id="toolBar" class="olControlPanel"></div>
+              <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:search();">Search </g:link></span></span>
+              <g:checkBox id="spatialSearchFlag" value="true" checked="true" onclick="javascript:this.value = this.checked"/>
+              <label>Include spatial</label>
+          </td>
        </tr>
       <tr id="mapRow">
         <td id="mapColumn">
