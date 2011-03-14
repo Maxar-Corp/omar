@@ -62,19 +62,22 @@ class BaseQuery {
 
   def order
   def sort
-
+  def time
+  Boolean spatialSearchFlag = true
   BaseQuery()
   {
 //    log =   org.apache.log4j.LogManager.getLogger("grails.app.omar.BaseQuery")
   }
   Criterion createIntersection(String geomColumnName = "groundGeom") {
     def intersects = null
+    if(spatialSearchFlag)
+    {
+        Geometry groundGeom = getGroundGeom()
 
-    Geometry groundGeom = getGroundGeom()
-
-    if (groundGeom) {
-      //intersects = new IntersectsExpression(geomColumnName, groundGeom)
-      intersects = new SpatialFilter(geomColumnName, groundGeom)
+        if (groundGeom) {
+          //intersects = new IntersectsExpression(geomColumnName, groundGeom)
+          intersects = new SpatialFilter(geomColumnName, groundGeom)
+        }
     }
 
     return intersects
@@ -188,7 +191,7 @@ class BaseQuery {
             startDate: startDateText, endDate: endDateText,
             centerLat: centerLat, centerLon: centerLon, aoiRadius: aoiRadius, searchMethod: searchMethod,
             viewMaxLat: viewMaxLat, viewMinLon: viewMinLon, viewMinLat: viewMinLat, viewMaxLon: viewMaxLon,
-            filter:filter
+            filter:filter, time:time, spatialSearchFlag:spatialSearchFlag
     ]
 
     (0..<searchTagValues.size()).each {
