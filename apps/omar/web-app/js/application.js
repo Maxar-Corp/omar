@@ -39,6 +39,7 @@ Function.prototype.method = function (name, func) {
 Function.method('inherits', function (parent) {
     var d = {}, p = (this.prototype = new parent());
     this.method('uber', function uber(name) {
+        alert(name);
         if (!(name in d)) {
             d[name] = 0;
         }        
@@ -71,7 +72,7 @@ Function.method('swiss', function (parent) {
     return this;
 });
 
-function OmarUrlParams(){
+function OmarParams(){
 	this.toUrlParams = function(includeNullPropertiesFlag){
 		result = ""
 		if(!includeNullPropertiesFlag) includeNullPropertiesFlag = false
@@ -86,6 +87,7 @@ function OmarUrlParams(){
 				}
 				if(((value==="")&&includeNullPropertiesFlag) || !(value===""))
 				{
+
                    if(value instanceof Array)
                    {
                       if(value.length > 0)
@@ -217,7 +219,7 @@ function OmarUrlParams(){
 		return this;
 	}
 }
-function OmarImageAdjustmentUrlParams(){
+function OmarImageAdjustmentParams(){
 	this.sharpen_mode = "";
 	this.interpolation = "";
 	this.brightness = "";
@@ -227,13 +229,13 @@ function OmarImageAdjustmentUrlParams(){
 	this.quicklook = "";
 	this.bands = "";
 }
-function OmarOgcUrlParams(){
+function OmarOgcParams(){
 	this.request = "";
 	this.service = "";
 	this.version = "";
 }
 
-function OmarWmsUrlParams(){
+function OmarWmsParams(){
 	this.width  = "";
 	this.height = "";
 	this.format = "";
@@ -242,7 +244,7 @@ function OmarWmsUrlParams(){
 	this.bbox   = "";
 }
 
-function OmarWcsUrlParams(){
+function OmarWcsParams(){
 	this.width  = "";
 	this.height = "";
 	this.format = "";
@@ -254,18 +256,49 @@ function OmarWcsUrlParams(){
 
 function OmarSearchParams(){
 
-    this.initTime = function()
+    this.clearStartEndDateStructure = function()
+    {
+        this.startDate = "";
+        this.startDate_timezone = "";
+        this.startDate_hour = "";
+        this.startDate_minute = "";
+        this.startDate_day = "";
+        this.startDate_month = "";
+        this.startDate_year = "";
+        this.endDate_timezone = "";
+        this.endDate_hour = "";
+        this.endDate_minute = "";
+        this.endDate_day   = "";
+        this.endDate_month = "";
+        this.endDate_year  = "";
+        this.endDate = "";
+    }
+    this.clearSpatialParams = function()
+    {
+        this.searchMethod = "";
+        this.centerLat = "";
+        this.centerLon = "";
+        this.aoiRadius = "";
+        this.viewMinLon = "";
+        this.viewMinLat = "";
+        this.viewMaxLon = "";
+        this.viewMaxLat = "";
+        this.aoiMinLon = "";
+        this.aoiMinLat = "";
+        this.aoiMaxLon = "";
+        this.aoiMaxLat = "";
+    }
+    this.initTime = function(clearDateStructureFlag)
     {
         hasStartDate = ((this.startDate)&&
                            (this.startDate_day && this.startDate_month && this.startDate_year&&
-                            this.startDate.hour&&this.startDate.minute));
+                            this.startDate_hour&&this.startDate_minute));
         hasEndDate = ((this.endDate)&&
                            (this.endDate_day && this.endDate_month && this.endDate_year&&
                             this.endDate_hour &&this.endDate_minute));
 
         endDateNoQuote = "";
         startDateNoQuote = "";
-
         if(hasStartDate)
         {
             startDateNoQuote = this.startDate_year + this.startDate_month.leftPad( 2 ) +
@@ -322,6 +355,10 @@ function OmarSearchParams(){
                 this.time = "";
             }
         }
+        if(clearDateStructureFlag)
+        {
+            this.clearStartEndDateStructure()
+        }
         return this;
     }
     this.searchMethod = "";
@@ -353,12 +390,13 @@ function OmarSearchParams(){
     this.filter        = "";
     this.max           = "";
     this.time          = "";
+    this.spatialSearchFlag = "";
     this.searchTagNames = [];
     this.searchTagValues = [];
 }
 
-OmarImageAdjustmentUrlParams.inherits(OmarUrlParams);
-OmarSearchParams.inherits(OmarUrlParams);
-OmarOgcUrlParams.inherits(OmarImageAdjustmentUrlParams);
-OmarWmsUrlParams.inherits(OmarOgcUrlParams);
-OmarWcsUrlParams.inherits(OmarOgcUrlParams);
+OmarImageAdjustmentParams.inherits(OmarParams);
+OmarSearchParams.inherits(OmarParams);
+OmarOgcParams.inherits(OmarImageAdjustmentParams);
+OmarWmsParams.inherits(OmarOgcParams);
+OmarWcsParams.inherits(OmarOgcParams);
