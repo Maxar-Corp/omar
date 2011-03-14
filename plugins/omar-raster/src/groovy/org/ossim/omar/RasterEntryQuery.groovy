@@ -45,6 +45,46 @@ class RasterEntryQuery extends BaseQuery
 
     return range
   }
+    def createDateRangeTime(def columnName="acquisitionDate")
+    {
+        def dateColumnName = columnName
+        def disj = null
+
+        if(time)
+        {
+            disj = Restrictions.disjunction();
+
+            def intervals = ISO8601DateParser.parseOgcTimeIntervals(time)
+            if(intervals)
+            {
+                intervals.each{interval->
+                  def startDate = new Date(interval.getStart().getMillis());
+                  def endDate   = new Date(interval.getEnd().getMillis());
+                  if(interval.toDurationMillis() == 0)
+                  {
+                    def range = null
+
+                    if ( startDate && endDate )
+                    {
+                      disj.add(Restrictions.eq(dateColumnName, startDate))
+                    }
+                  }
+                  else
+                  {
+                    disj.add(Restrictions.and(Restrictions.ge(dateColumnName, startDate),
+                                              Restrictions.le(dateColumnName, endDate)
+                                             )
+                            )
+                  }
+                }
+            }
+            else
+            {
+                disj = null
+            }
+        }
+        disj
+    }
 
   def createClause()
   {
@@ -76,11 +116,19 @@ class RasterEntryQuery extends BaseQuery
 
     if ( startDate || endDate )
     {
-      def criterion = createDateRange("acquisitionDate")
-      if ( criterion )
-      {
-        result.add(criterion)
-      }
+        def criterion = createDateRange("acquisitionDate")
+        if ( criterion )
+        {
+          result.add(criterion)
+        }
+    }
+    else if(time)
+    {
+        def criterion = createDateRangeTime("acquisitionDate")
+        if ( criterion )
+        {
+          result.add(criterion)
+        }
     }
 
     // we will support 2 ways to populate certain fields.  We will support array
