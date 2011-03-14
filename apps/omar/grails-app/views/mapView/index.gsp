@@ -241,7 +241,7 @@ var zoomInButton;
 var kmlLayers;
 var rasterLayers;
 var select;
-var wcsUrlParams = new OmarWcsUrlParams();
+var wcsParams = new OmarWcsParams();
 
 //var fullResScale = parseFloat("${fullResScale}");
 var left = parseFloat("${left}");
@@ -264,7 +264,7 @@ function init()
 {
 // we need to pass a json string or object and save to the session
 // and reload here
-    wcsUrlParams.setProperties({
+    wcsParams.setProperties({
         brightness:"0",
         contrast:"1",
         sharpen_mode:"none",
@@ -278,11 +278,11 @@ function init()
     });
     if(${rasterEntries?.numberOfBands.get(0) >= 3})
     {
-        wcsUrlParams.setProperties({bands:"0,1,2"});
+        wcsParams.setProperties({bands:"0,1,2"});
     }
     else
     {
-        wcsUrlParams.setProperties({bands:"0"});
+        wcsParams.setProperties({bands:"0"});
     }
 	brightnessSlider.animate = false;
 	 
@@ -303,14 +303,14 @@ function init()
     brightnessSlider.subscribe("slideEnd", function() { 
 		for(var layer in rasterLayers)
 		{
-		    wcsUrlParams.setProperties({brightness:this.getRealValue()});
+		    wcsParams.setProperties({brightness:this.getRealValue()});
 			rasterLayers[layer].mergeNewParams({brightness:this.getRealValue()});
 		}
     }); 	
     contrastSlider.subscribe("slideEnd", function() { 
 		for(var layer in rasterLayers)
 		{
-		    wcsUrlParams.setProperties({contrast:this.getRealValue()});
+		    wcsParams.setProperties({contrast:this.getRealValue()});
 			rasterLayers[layer].mergeNewParams({contrast:this.getRealValue()});
 		}
     }); 
@@ -321,7 +321,7 @@ function init()
     });
     brightnessSlider.subscribe("change", function(offsetFromStart) 
     {
-		wcsUrlParams.setProperties({brightness:this.getRealValue()});
+		wcsParams.setProperties({brightness:this.getRealValue()});
     	$("brightness").value = this.getRealValue();
     	$("brightnessTextField").value = this.getRealValue();
     });
@@ -427,7 +427,7 @@ function chgInterpolation()
 {
 	var interpolation = $("interpolation").value;
 	obj = {interpolation:interpolation};
-    wcsUrlParams.setProperties(obj);
+    wcsParams.setProperties(obj);
 
 	for(var layer in rasterLayers)
 	{
@@ -439,7 +439,7 @@ function chgSharpenMode()
 {
 	var sharpen_mode = $("sharpen_mode").value;
 	obj = {sharpen_mode:sharpen_mode};
-    wcsUrlParams.setProperties(obj);
+    wcsParams.setProperties(obj);
 
 	for(var layer in rasterLayers)
 	{
@@ -452,7 +452,7 @@ function chgStretchMode()
 	var stretch_mode = $("stretch_mode").value;
 	var stretch_mode_region = $("stretch_mode_region").value;
 	obj = {stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region};
-    wcsUrlParams.setProperties(obj);
+    wcsParams.setProperties(obj);
 	for(var layer in rasterLayers)
 	{
 		rasterLayers[layer].mergeNewParams(obj);
@@ -462,7 +462,7 @@ function chgStretchMode()
 function chgQuickLookMode()
 {
 	obj = {quicklook:$("quicklook").value};
-    wcsUrlParams.setProperties(obj);
+    wcsParams.setProperties(obj);
 	for(var layer in rasterLayers)
   	{
 		rasterLayers[layer].mergeNewParams(obj);
@@ -473,7 +473,7 @@ function changeBandsOpts()
 {
 	var bands = $("bands").value;
 	obj = {bands:bands};
-    wcsUrlParams.setProperties(obj);
+    wcsParams.setProperties(obj);
 
 	for(var layer in rasterLayers)
 	{
@@ -859,10 +859,10 @@ function getProjectedImage(params)
 	               	  "crs":"EPSG:4326",
 	               	  "width":size.w,
 	               	  "height":size.h}
-    wcsUrlParams.setProperties(wcsParams);
+    wcsParams.setProperties(wcsParams);
 
     var form = $("wcsForm");
-    var url = link + "?" + wcsUrlParams.toUrlParams();
+    var url = link + "?" + wcsParams.toUrlParams();
     
     if(form)
     {
