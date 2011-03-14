@@ -316,7 +316,7 @@ class ISO8601DateParser
 
 
    /**
-    * Sets up a WMS interval parser and uses the parsePeriod and parseDateTime
+    * Sets up a OGC time interval parser and uses the parsePeriod and parseDateTime
     * parsers to construct the intervals.  We currently do not support periodicity
     * but we do support intervals and interval lists.  For example:
     * P1Y/1999,2000/P10Y
@@ -330,9 +330,9 @@ class ISO8601DateParser
     * @return a list of intervals.  If the intervals were invalid or none
     *         specified an empty list would be returned. 
     */
-  static def parseWMSIntervals(String wmsIntervals)
+  static def parseOgcTimeIntervals(String ogcIntervals)
   {
-    def intervals = wmsIntervals?.split(',');
+    def intervals = ogcIntervals?.split(',');
     def intervalResult = [];
     intervals?.each{intervalValue->
       def d1 = null;
@@ -378,4 +378,10 @@ class ISO8601DateParser
     }
     return intervalResult;
   }
+
+  static def parseWMSIntervals(String wmsIntervals)
+  {
+      parseOgcTimeIntervals(wmsIntervals)
+  }
+
 }
