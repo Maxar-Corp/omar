@@ -463,7 +463,7 @@
   }
   function init()
   {
-    spatialSearchFlag = document.getElementById("spatialSearchFlag");
+    var spatialSearchFlag = document.getElementById("spatialSearchFlag");
     if(spatialSearchFlag)
     {
        spatialSearchFlag.checked = ${queryParams?.spatialSearchFlag};

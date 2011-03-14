@@ -443,7 +443,6 @@
   var criteriaTabView = null;
   var videoDataSetSearchCriteriaIndex=${session.videoDataSetSearchCriteriaTab?:0};
   var omarSearchParams = new OmarSearchParams();
-
   function search()
   {
     var url = "${createLink(action: 'search', controller: 'videoDataSet')}";
@@ -488,7 +487,7 @@
   }
   function init()
   {
-    spatialSearchFlag = document.getElementById("spatialSearchFlag");
+    var spatialSearchFlag = document.getElementById("spatialSearchFlag");
     if(spatialSearchFlag)
     {
        spatialSearchFlag.checked = ${queryParams?.spatialSearchFlag};
