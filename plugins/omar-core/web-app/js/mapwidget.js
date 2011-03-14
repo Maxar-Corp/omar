@@ -1077,15 +1077,24 @@ function MapWidget()
         return new Array( l - this.length + 1 ).join( c || '0' ) + this;
     };
 
+    this.updateOmarFiltersGivenHash = function(params)
+    {
+        var wmsParams = new Array();
+        for(x in params)
+        {
+            wmsParams[x] = params[x]
+        }
+        dataLayer.mergeNewParams( wmsParams );
+    }
     this.updateOmarFilters = function( startDay, startMonth, startYear, startHour, startMinute, endDay, endMonth, endYear, endHour, endMinute, numberOfNames, numberOfValues, additionalParams)
     {
         var wmsParams = new Array();
 
         var hasStartDate = startDay != "" && startMonth != "" && startYear != "" && startHour != "" && startMinute != "";
-        var startDateNoQuote = startYear + startMonth.leftPad( 2 ) + startDay.leftPad( 2 ) + 'T' + startHour.leftPad( 2 ) + ':' + startMinute.leftPad( 2 ) + ':' + '00Z';
+        var startDateNoQuote = startYear + startMonth.leftPad( 2 ) + startDay.leftPad( 2 ) + 'T' + startHour.leftPad( 2 ) + startMinute.leftPad( 2 ) +'00Z';
 
         var hasEndDate = endDay != "" && endMonth != "" && endYear != "";
-        var endDateNoQuote = endYear + endMonth.leftPad( 2 ) + endDay.leftPad( 2 ) + 'T' + endHour.leftPad( 2 ) + ':' + endMinute.leftPad( 2 ) + ':' + '00Z';
+        var endDateNoQuote = endYear + endMonth.leftPad( 2 ) + endDay.leftPad( 2 ) + 'T' + endHour.leftPad( 2 ) + endMinute.leftPad( 2 ) + '00Z';
 
         var wmsTime = "";
 
@@ -1098,7 +1107,7 @@ function MapWidget()
             }
             else
             {
-                wmsTime += "/"
+                wmsTime += "/";
             }
         }
         else
@@ -1112,7 +1121,6 @@ function MapWidget()
                 wmsTime = "";
             }
         }
-
         var idx = 0;
 
         wmsParams["time"] = wmsTime;
@@ -1134,12 +1142,11 @@ function MapWidget()
 		if(additionalParams)
 		{
 			
-		for (attr in additionalParams) 
-		{ 
-			wmsParams[attr] = additionalParams[attr]; 
+            for (attr in additionalParams)
+            {
+                wmsParams[attr] = additionalParams[attr];
+            }
 		}
-		}
-		
         dataLayer.mergeNewParams( wmsParams );
     };
 }
