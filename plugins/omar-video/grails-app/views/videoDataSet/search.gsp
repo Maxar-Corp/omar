@@ -450,22 +450,7 @@
     mapWidget.setupSearch();
     omarSearchParams.setProperties(document);
     omarSearchParams.initTime();
-/*
-    omarSearchParams.setTimeFromDate({day:$("startDate_day").value,
-                             month:$("startDate_month").value,
-                             year:$("startDate_year").value,
-                             hour:$("startDate_hour").value,
-                             minute:$("startDate_minute").value,
-                             sec:""
-                             },
-                              {day:$("endDate_day").value,
-                             month:$("endDate_month").value,
-                             year:$("endDate_year").value,
-                             hour:$("endDate_hour").value,
-                             minute:$("endDate_minute").value,
-                             sec:""
-                             });
-*/
+    omarSearchParams.time = "";
     if($( "bboxSearchButton" ).checked)
     {
         omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
@@ -475,7 +460,7 @@
         omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}"
     }
     document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
-    alert(document.searchForm.action );
+    //alert(document.searchForm.action );
     document.searchForm.submit();
   }
   function generateKml()
@@ -503,6 +488,12 @@
   }
   function init()
   {
+    spatialSearchFlag = document.getElementById("spatialSearchFlag");
+    if(spatialSearchFlag)
+    {
+       spatialSearchFlag.checked = ${queryParams?.spatialSearchFlag};
+       spatialSearchFlag.value   = "${queryParams?.spatialSearchFlag}";
+    }
     tabView = new YAHOO.widget.TabView('demo');
     criteriaTabView = new YAHOO.widget.TabView('criteriaTab');
 
