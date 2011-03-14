@@ -27,6 +27,15 @@
     border: 1px solid black;
   }
 
+   #homeMenu{
+   background: url( ../images/skin/house.png )  left no-repeat;
+  	z-index: 99999;
+  }
+  #exportMenu, #viewMenu{
+  	z-index: 99999;
+  }
+
+
   div.olControlMousePosition {
     font-family: Verdana;
     font-size: 1.0em;
@@ -69,20 +78,46 @@
 <body class="yui-skin-sam" onload="init();" >
 
 <content tag="top">
-  <div class="nav">
 
-    <span class="menuButton">
-      <g:link class="home" uri="/">
-        OMAR™ Home
-      </g:link>
-    </span>
 
-    <span class="menuButton">
-      <a href="${createLink(controller: "mapView", action: "index", params: [layers: rasterEntry?.indexId])}">
-        Ground Space Viewer
-      </a>
-    </span>
-  </div>
+
+<div id="rasterMenu" class="yuimenubar yuimenubarnav">
+	<div class="bd">
+		<ul class="first-of-type">
+			
+			<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
+			</li>
+	
+	
+	
+	
+			<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
+				<div id="viewMenu" class="yuimenu">
+					<div class="bd">
+						<ul>
+							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "mapView", action: "index", params: [layers: rasterEntry?.indexId])}" title="Single Layer Viewer">Single Layer Viewer</a></li>
+						
+							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}" title="Multi Layer Viewer">Multi Layer Viewer</a></li>
+						
+						</ul>
+					</div>
+				</div>
+			</li>
+	
+	
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
 </content>
 
 <content tag="left">
@@ -267,6 +302,13 @@ function init(mapWidth, mapHeight)
    {
       this.touchhandler = new TouchHandler( map, 4 );
    }
+
+	var oMenu = new YAHOO.widget.MenuBar("rasterMenu", { 
+                                              autosubmenudisplay: true, 
+                                              hidedelay: 750, 
+                                              lazyload: true,
+                                              zIndex:9999}); 
+	oMenu.render();
 }
 
   function zoomIn()
