@@ -440,22 +440,7 @@
     mapWidget.setupSearch();
     omarSearchParams.setProperties(document);
     omarSearchParams.initTime();
-/*
-    omarSearchParams.setTimeFromDate({day:$("startDate_day").value,
-                             month:$("startDate_month").value,
-                             year:$("startDate_year").value,
-                             hour:$("startDate_hour").value,
-                             minute:$("startDate_minute").value,
-                             sec:""
-                             },
-                              {day:$("endDate_day").value,
-                             month:$("endDate_month").value,
-                             year:$("endDate_year").value,
-                             hour:$("endDate_hour").value,
-                             minute:$("endDate_minute").value,
-                             sec:""
-                             });
-*/
+    omarSearchParams.time = "";
     if($( "bboxSearchButton" ).checked)
     {
         omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
@@ -465,7 +450,6 @@
         omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}"
     }
     document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
-    alert(document.searchForm.action);
     document.searchForm.submit();
   }
   function generateKml()
@@ -473,27 +457,18 @@
     var url = "${createLink(action: 'kmlnetworklink', controller: 'rasterEntry')}";
     mapWidget.setupSearch();
     omarSearchParams.setProperties(document);
-
-    omarSearchParams.setTimeFromDate({day:$("startDate_day").value,
-                             month:$("startDate_month").value,
-                             year:$("startDate_year").value,
-                             hour:$("startDate_hour").value,
-                             minute:$("startDate_minute").value,
-                             sec:""
-                             },
-                              {day:$("endDate_day").value,
-                             month:$("endDate_month").value,
-                             year:$("endDate_year").value,
-                             hour:$("endDate_hour").value,
-                             minute:$("endDate_minute").value,
-                             sec:""
-                             });
     document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
+    //alert(document.searchForm.action );
     document.searchForm.submit();
   }
   function init()
   {
-
+    spatialSearchFlag = document.getElementById("spatialSearchFlag");
+    if(spatialSearchFlag)
+    {
+       spatialSearchFlag.checked = ${queryParams?.spatialSearchFlag};
+       spatialSearchFlag.value   = "${queryParams?.spatialSearchFlag}";
+    }
     tabView = new YAHOO.widget.TabView('demo');
     criteriaTabView = new YAHOO.widget.TabView('criteriaTab');
 
@@ -571,6 +546,7 @@
   function updateOmarFilters()
   {
     if(!mapWidget) return;
+
     var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
     var numberOfValues = parseInt(${queryParams?.searchTagValues.size()});
 
@@ -581,7 +557,6 @@
     {
         additionalParams['filter']=ogcFilterInput.value;
     }
-
     mapWidget.updateOmarFilters(
         $("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value,
         $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value,
