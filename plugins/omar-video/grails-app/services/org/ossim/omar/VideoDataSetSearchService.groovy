@@ -220,39 +220,17 @@ class VideoDataSetSearchService implements InitializingBean
 
   int getCount(VideoDataSetQuery videoDataSetQuery)
   {
-    def totalCount = VideoDataSet.createCriteria().get {
-      projections { rowCount() }
-      if ( videoDataSetQuery?.groundGeom )
+
+      def criteriaBuilder = VideoDataSet.createCriteria();
+      def x =
       {
-        addToCriteria(videoDataSetQuery.createIntersection("groundGeom"))
+        projections { rowCount()}
       }
-      if ( videoDataSetQuery?.startDate || videoDataSetQuery?.endDate )
-      {
-        addToCriteria(videoDataSetQuery.createDateRange("startDate", "endDate"))
-      }
-      videoDataSetQuery.searchTagNames?.size()?.times {i ->
-        String name = videoDataSetQuery.searchTagNames[i]
-        String value = videoDataSetQuery.searchTagValues[i]
+      def criteria = criteriaBuilder.buildCriteria(x)
+      criteria.add(videoDataSetQuery?.createClause())
+      def totalCount = criteria.list().get(0) as int
+      return totalCount
 
-        if ( name && value )
-        {
-          def results = Utility.parseSearchTag(name, value)
-
-          if ( results["property"] == "otherTagsXml" )
-          {
-            String tag = results["tag"].trim()
-            String content = results["content"].trim()
-            ilike("otherTagsXml", "%<${tag}>%${content}%</${tag}>%")
-          }
-          else
-          {
-            ilike(results["property"], "%${results['value']}%")
-          }
-        }
-      }
-    }
-
-    return totalCount
   }
 
   void afterPropertiesSet()
