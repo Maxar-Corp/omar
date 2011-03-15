@@ -61,15 +61,20 @@ class RasterEntryController implements InitializingBean
 
     def starttime = System.currentTimeMillis()
     def max = null;
-    if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
-    {
-      max = 10
-      params.max = 10
-    }
-    else
-    {
-      max = params.max as Integer
-    }
+      if ( !params.max || !(params.max =~ /\d+$/) )
+      {
+        max = 10
+        params.max = 10
+      }
+      else
+      {
+          max = params.max as Integer
+          if(max > 100)
+          {
+            max = 100
+            params.max = 100;
+          }
+      }
     if ( !session.rasterEntryResultCurrentTab && ("${session.rasterEntryResultCurrentTab}" != "0") )
     {
       session["rasterEntryResultCurrentTab"] = "0"
@@ -249,16 +254,20 @@ class RasterEntryController implements InitializingBean
 
 //    println "=== search start ==="
     def max = null;
-    if ( (params.max==null) || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
-    {
-      max = 10
-      params.max = 10
-   }
-    else
-    {
-      max = params.max as Integer
-    }
-
+      if ( !params.max || !(params.max =~ /\d+$/) )
+      {
+        max = 10
+        params.max = 10
+      }
+      else
+      {
+          max = params.max as Integer
+          if(max > 100)
+          {
+            max = 100
+            params.max = 100;
+          }
+      }
 //    println "\nparams: ${params?.sort { it.key }}"
 
     def queryParams = initRasterEntryQuery(params)
@@ -340,7 +349,7 @@ class RasterEntryController implements InitializingBean
  //                                                                      null)
 
 //      return [ogcFilterQueryFields:ogcFilterQueryFields, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
-      return [session:session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
+      return [action: "results", session:session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
   }
 
@@ -348,10 +357,14 @@ class RasterEntryController implements InitializingBean
 
 //    println "=== search start ==="
 
-    if ( !params.max )
-    {
-      params.max = 10;
-    }
+      if ( !params.max || !(params.max =~ /\d+$/) )
+      {
+        params.max = 10
+      }
+      else if((params.max as Integer) > 100)
+      {
+          params.max = 100;
+      }
 
 //    println "\nparams: ${params?.sort { it.key }}"
 
@@ -361,11 +374,6 @@ class RasterEntryController implements InitializingBean
 
     if ( request.method == 'POST' )
     {
-      if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
-      {
-        params.max = 10
-      }
-
       params.order = 'desc'
       params.sort = 'acquisitionDate'
 
@@ -439,10 +447,18 @@ class RasterEntryController implements InitializingBean
 
       def starttime = System.currentTimeMillis()
 
-    if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
-    {
-      params.max = 10
-    }
+      if ( !params.max || !(params.max =~ /\d+$/) )
+      {
+        params.max = 10
+      }
+      else
+      {
+          def max = params.max as Integer
+          if(max > 100)
+          {
+            params.max = 100;
+          }
+      }
 
     if ( params?.queryParams )
     {
@@ -546,11 +562,18 @@ class RasterEntryController implements InitializingBean
 //    println "=== results start ==="
 
     def starttime = System.currentTimeMillis()
-
-    if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
-    {
-      params.max = 10
-    }
+      if ( !params.max || !(params.max =~ /\d+$/) )
+      {
+        params.max = 10
+      }
+      else
+      {
+          def max = params.max as Integer
+          if(max > 100)
+          {
+            params.max = 100;
+          }
+      }
     if ( !session.rasterEntryResultCurrentTab && ("${session.rasterEntryResultCurrentTab}" != "0") )
     {
       session["rasterEntryResultCurrentTab"] = "0"
