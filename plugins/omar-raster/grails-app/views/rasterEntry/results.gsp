@@ -21,7 +21,7 @@
 
 </head>
 
-<body class="yui-skin-sam">
+<body class="yui-skin-sam" onload="init();">
 <g:javascript plugin="omar-core" src="prototype/prototype.js"/>
 <g:javascript>
 
@@ -33,7 +33,11 @@
       if(document.getElementById("pageOffset").value >= 1 && document.getElementById("pageOffset").value <= pages)
       {
           document.getElementById("offset").value = (document.getElementById("pageOffset").value - 1) * document.getElementById("max").value;
-          document.paginateForm.action = "results";
+          omarSearchResults.setProperties(document);
+
+          var url = "${createLink(action:results)}?" + omarSearchResults.toUrlParams();
+          //document.paginateForm.action = "results";
+          document.paginateForm.action = url;
           document.paginateForm.submit();
       }
       else
@@ -42,12 +46,12 @@
       }
   }
 
-function exportAs()
+function exportAs(format)
 {
-  var formatSelect = document.getElementById("format")
-  var format = formatSelect.value;
+//  var formatSelect = document.getElementById("format")
+//  var format = formatSelect.value;
 
-  if ( format != "null" )
+  if ( format )
   {
     var exportURL = "${createLink(controller: 'rasterEntryExport', action: 'export', params: params)}";
 
@@ -61,6 +65,8 @@ function exportAs()
 }
 </g:javascript>
 <content tag="top">
+
+    <%--
   <div class="nav">
     <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
     <span class="menuButton"><g:link action="search">New Search</g:link></span>
@@ -71,24 +77,57 @@ function exportAs()
           onchange="javascript:exportAs();"></g:select>
     </span>
   </div>
-  <g:form name="paginateForm">
+  --%>
+    <div id="resultsMenu" class="yuimenubar yuimenubarnav">
+        <div class="bd">
+            <ul class="first-of-type">
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
+                </li>
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="Search" href="#searchMenu" title="Search">Search</a>
+                    <div id="searchMenu" class="yuimenu">
+                         <div class="bd">
+                             <ul>
+                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: 'search')}" title="New Search">New</a></li>
+                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "search", params: params)}" title="Edit Search">Edit</a></li>
+                             </ul>
+                           </div>
+                     </div>
+                </li>
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
+                    <div id="exportMenu" class="yuimenu">
+                        <div class="bd">
+                            <ul>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:exportAs('csv')" title="Export Csv">Csv File</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:exportAs('shp')" title="Export Shape">Shape File</a></li>
+                            </ul>
+                          </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <g:hiddenField id="totalCount" name="totalCount" value="${totalCount ?: 0}"/>
-    <g:hiddenField id="max" name="max" value="${params.max}"/>
     <g:hiddenField id="offset" name="offset" value="${params.offset}"/>
     <g:hiddenField name="queryParams" value="${queryParams.toMap()}"/>
     <g:hiddenField name="order" value="${params.order}"/>
     <g:hiddenField name="sort" value="${params.sort}"/>
+
+  <g:form name="paginateForm">
   </g:form>
 
   <div class="paginateButtons">
-    <g:paginate event="testing('tabView');" controller="rasterEntry" action="results" total="${totalCount ?: 0}" max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
+    <g:paginate event="testing('tabView');" controller="rasterEntry" action="results" total="${totalCount ?: 0}" max="${params.max}" offset="${params.offset}" params="${params}"/>
     <g:if test="${totalCount == 0}">
-
     </g:if>
     <g:else>
-      <input type="text" id="pageOffset" size="2"/> <input type="button" value="Go to Page" onclick="javascript:updateOffset();"/>
+      <input type="text" id="pageOffset" size="3" onchange="updateOffset();"/> <button type="button"  onclick="javascript:updateOffset();">Go to Page</button>
     </g:else>
+    <label for="max">Max:</label>
+    <input type="text" id="max" name="max" value="${params.max}" onChange="updateMaxCount()"/>
+    <button type="button"  onclick="javascript:updateMaxCount();">Set</button>
   </div>
+
 </content>
 
 <content tag="body">
@@ -297,7 +336,28 @@ function exportAs()
   var tab1 = tabView.getTab(1);
   var tab2 = tabView.getTab(2);
   var tab3 = tabView.getTab(3);
+  var omarSearchResults= new OmarSearchResults();
 
+  function updateMaxCount()
+  {
+    var maxElement    = document.getElementById("max");
+    var offsetElement = document.getElementById("offset");
+    if(offsetElement)
+    {
+       offsetElement.value = 0;
+    }
+    if(!maxElement ||(parseInt(maxElement.value) < 1))
+    {
+         var tempMax =
+        alert("Max value can't be zero");
+        if(maxElement) maxElement.value = omarSearchResults["max"];
+        return;
+    }
+    omarSearchResults.setProperties(document);
+    updatePageOffset();
+
+    updateOffset();
+  }
   function updateCurrentTab(tabIndex)
     {
       var link = "${createLink(action: sessionAction, controller: sessionController)}";
@@ -307,6 +367,7 @@ function exportAs()
         new Ajax.Request(link+"?"+"rasterEntryResultCurrentTab="+globalActiveIndex, {method: 'post'});
       }
     }
+
   function handleClickTab0(e) {
   updateCurrentTab(0);
   }
@@ -320,14 +381,47 @@ function exportAs()
   updateCurrentTab(3);
   }
 
-  tab0.addListener('click', handleClickTab0);
-  tab1.addListener('click', handleClickTab1);
-  tab2.addListener('click', handleClickTab2);
-  tab3.addListener('click', handleClickTab3);
-  tab1Div.style.visibility = "visible"
-  tab2Div.style.visibility = "visible"
-  tab3Div.style.visibility = "visible"
-  tab4Div.style.visibility = "visible"
+  function updatePageOffset(){
+      var offset = omarSearchResults["offset"];
+      var max    = omarSearchResults["max"];
+      totalCount    = omarSearchResults["totalCount"];
+      if(!offset) offset = "0"
+      if(max &&totalCount)
+      {
+        offset      = parseInt(offset);
+        max         = parseInt(max);
+        totalCount  = parseInt(totalCount);
+        var pageOffset = document.getElementById("pageOffset");
+        if(pageOffset&&max)
+        {
+           pageOffset.value = (offset/max) + 1;
+        }
+      }
+  }
+  function init()
+  {
+      tab0.addListener('click', handleClickTab0);
+      tab1.addListener('click', handleClickTab1);
+      tab2.addListener('click', handleClickTab2);
+      tab3.addListener('click', handleClickTab3);
+      tab1Div.style.visibility = "visible"
+      tab2Div.style.visibility = "visible"
+      tab3Div.style.visibility = "visible"
+      tab4Div.style.visibility = "visible"
+
+      var oMenu = new YAHOO.widget.MenuBar("resultsMenu", {
+                                                    autosubmenudisplay: true,
+                                                    hidedelay: 750,
+                                                    lazyload: true,
+                                                    zIndex:9999});
+      oMenu.render();
+
+      omarSearchResults.setProperties(${params.encodeAsJSON()});
+      omarSearchResults.setProperties(document);
+
+    updatePageOffset();
+      //alert(omarSearchResults.toUrlParams());
+  }
 </g:javascript>
 </body>
 </html>
