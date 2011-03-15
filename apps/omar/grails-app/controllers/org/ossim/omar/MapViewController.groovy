@@ -114,11 +114,11 @@ class MapViewController implements InitializingBean
     }
 
     def model = [:]
-
     model.rasterEntries = rasterEntries
     model.kmlOverlays = kmlOverlays
     model.baseWMS = baseWMS
     model.format = format ?: "image/png"
+    model.putAll(webMappingService.computeScales(rasterEntries))
     model.putAll(webMappingService.computeBounds(rasterEntries))
 
     return model
