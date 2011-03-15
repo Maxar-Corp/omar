@@ -180,7 +180,7 @@
 var map;
 var layer;
 var format = "image/jpeg";
-
+var omarImageSpaceOpenLayersParams = new  OmarImageSpaceOpenLayersParams();
 function changeMapSize( mapWidth, mapHeight )
 {
    if(mapWidth&&mapHeight)
@@ -228,10 +228,7 @@ layer.mergeNewParams({rotate:rotate});
 function chgInterpolation()
 {
 	var interpolation = $("interpolation").value;
-	
 	layer.mergeNewParams({interpolation:interpolation});
-
-alert(interpolation);
 }
 
 function changeSharpenOpts()
@@ -254,12 +251,16 @@ function get_my_url (bounds)
     var x = /*Math.round*/ ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
     var y = /*Math.round*/ ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
     var z = this.map.getZoom();
-    var sharpen_mode = $("sharpen_mode").value;
-    var stretch_mode = $("stretch_mode").value;
-    var stretch_mode_region = $("stretch_mode_region").value;
-    var bands = $("bands").value;
-    var rotate = $("rotate").value;
-
+    omarImageSpaceOpenLayersParams.setProperties(document);
+    omarImageSpaceOpenLayersParams.setProperties({'res':res,
+                                                  'x':x,
+                                                  'y':y,
+                                                  'z':z,
+                                                  'id': "${rasterEntry?.id}",
+                                                  'tileWidth':this.tileSize.w,
+                                                  'tileHeight':this.tileSize.h});
+    var path = "?"+omarImageSpaceOpenLayersParams.toUrlParams();
+    /*
     var path = "?z=" + z + "&x=" + x + "&y=" + y + "&format=" + this.format
         + "&tileWidth=" + this.tileSize.w + "&tileHeight=" + this.tileSize.h
         + "&id=" + ${rasterEntry?.id}
@@ -267,7 +268,9 @@ function get_my_url (bounds)
         + "&stretch_mode=" + stretch_mode
         + "&stretch_mode_region=" + stretch_mode_region
         + "&bands=" + bands
+        + "&interpolation" + interpolation
         + "&rotate=" + rotate;
+*/
 
 //      var path = "?bbox=" + x + "," + y + "," + bounds.right + "," + bounds.top
 
@@ -325,6 +328,8 @@ function init(mapWidth, mapHeight)
                                               lazyload: true,
                                               zIndex:9999}); 
 	oMenu.render();
+
+	omarImageSpaceOpenLayersParams.setProperties(document);
 }
 
   function zoomIn()
