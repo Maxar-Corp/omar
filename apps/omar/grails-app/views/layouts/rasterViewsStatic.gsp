@@ -159,7 +159,10 @@
     mapDiv.style.width     = (width - (leftDiv.offsetLeft+leftDiv.offsetWidth )) +"px";
     mapDiv.style.height    = (middleHeight - toolbarRow.offsetHeight) - 14 +"px";
 
-    if(changeMapSizeFlag) mapWidget.changeMapSize();
+    if(changeMapSizeFlag)
+    {
+        changeMapSize();
+    }
   }.defaults(true)
 </g:javascript>
 </body>
