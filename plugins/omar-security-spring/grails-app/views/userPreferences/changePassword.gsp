@@ -28,10 +28,9 @@
 
     <div class="dialog">
 
-      <g:form action='resetPassword' name='resetPasswordForm'
-          autocomplete='off'>
+      <g:form action='changePassword' name='changePasswordForm' autocomplete='off'>
 
-        <g:hiddenField name='t' value='${token}'/>
+        <g:hiddenField name='username' value="${command.username}"/>
 
         <div class="sign-in">
           <br/>
@@ -43,13 +42,13 @@
 
             <tr class="prop">
               <td valign="top" class="name"><label for="password"><g:message
-                  code="resetPasswordCommand.password.label" default="Password"/>
+                  code="changePasswordCommand.password.label" default="Password"/>
               </label>
               </td>
               <td valign="top"
                   class="value ${hasErrors(bean: command, field: 'password', 'errors')}">
                 <g:passwordField name='password'
-                    labelCode='resetPasswordCommand.password.label'
+                    labelCode='changePasswordCommand.password.label'
                     bean="${command}" size='40' labelCodeDefault='Password'
                     value="${command.password}"/>
               </td>
@@ -57,13 +56,13 @@
 
             <tr class="prop">
               <td valign="top" class="name"><label for="password2"><g:message
-                  code="resetPasswordCommand.password2.label"
+                  code="changePasswordCommand.password2.label"
                   default="Password (again)"/></label>
               </td>
               <td valign="top"
                   class="value ${hasErrors(bean: command, field: 'password2', 'errors')}">
                 <g:passwordField name='password2'
-                    labelCode='resetPasswordCommand.password2.label'
+                    labelCode='changePasswordCommand.password2.label'
                     bean="${command}" size='40' labelCodeDefault='Password (again)'
                     value="${command.password2}"/>
               </td>
@@ -71,15 +70,15 @@
 
           </table>
 
-          <div class="buttons">
-            <span class="button"><g:submitButton name='reset'
-                class='save' form='resetPasswordForm'
-                value="${message(code:'spring.security.ui.resetPassword.submit')}"/>
-            </span>
-          </div>
         </div>
+
+        <div class="buttons">
+          <span class="button"><g:actionSubmit class="save" action="changePassword" value="${message(code: 'default.button.update.label', default: 'Update')}"/></span>
+        </div>
+
       </g:form>
     </div>
   </div>
 </content>
 </body>
+</html>

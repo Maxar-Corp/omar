@@ -46,8 +46,11 @@ class RegisterController extends AbstractS2UiController
 
     String salt = saltSource instanceof NullSaltSource ? null : command.username
     String password = springSecurityService.encodePassword(command.password, salt)
+
     def user = lookupUserClass().newInstance(email: command.email, username: command.username,
-            password: password, accountLocked: true, enabled: true, userRealName: command.userRealName)
+            password: password, accountLocked: true, enabled: true, userRealName: command.userRealName,
+            organization: command.organization, phoneNumber: command.phoneNumber)
+
     if ( !user.validate() || !user.save() )
     {
       // TODO
@@ -242,9 +245,12 @@ class RegisterController extends AbstractS2UiController
 
 class RegisterCommand
 {
-  String userRealName
   String username
+  String userRealName
+  String organization
+  String phoneNumber
   String email
+
   String password
   String password2
 
@@ -260,6 +266,10 @@ class RegisterCommand
         }
       }
     }
+
+    organization nullable: true
+    phoneNumber nullable: true
+
     userRealName blank: false
     email blank: false, email: true
     password blank: false, minSize: 8, maxSize: 64, validator: RegisterController.passwordValidator
