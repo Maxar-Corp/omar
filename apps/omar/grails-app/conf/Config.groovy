@@ -90,7 +90,6 @@ log4j = {
                     geometry: "ST_GeomFromText(:geometry, 4326)"],
             tableName: "wms_log"
     )
-
     appender new org.apache.log4j.DailyRollingFileAppender(name: "omarDataManagerAppender",
             datePattern: "'.'yyyy-MM-dd",
             file: "/tmp/logs/omarDataManagerAppender.log",
@@ -479,6 +478,7 @@ grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.ossim.oma
 grails.plugins.springsecurity.authority.className = 'org.ossim.omar.SecRole'
 grails.plugins.springsecurity.requestMap.className = 'org.ossim.omar.Requestmap'
 grails.plugins.springsecurity.securityConfigType = 'Requestmap'
+grails.plugins.springsecurity.password.algorithm = 'SHA-256'
 
 // LDAP Configuration
 grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
