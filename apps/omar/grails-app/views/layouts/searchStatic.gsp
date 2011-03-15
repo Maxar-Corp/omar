@@ -120,7 +120,7 @@
       <tr id="toolbarRow">
           <td>
               <div id="toolBar" class="olControlPanel"></div>
-              <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:search();">Search </g:link></span></span>
+              <button type="button"  onclick="javascript:search();">Search</button>
               <g:checkBox id="spatialSearchFlag" value="true" checked="true" onclick="javascript:this.value = this.checked"/>
               <label>Include spatial</label>
           </td>

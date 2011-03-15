@@ -57,16 +57,6 @@
         </div>
     </div>
 </content>
-<%--
-<content tag="top">
-  <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link action="list" url="javascript:mapWidget.generateKML();">KML Query</g:link></span>
-    <span class="menuButton"><g:link action="list" url="javascript:updateOmarFilters();">Update Footprints</g:link></span>
-    <span class="menuButton"><span class="yui-button yui-link-button"><span class="first-child"><g:link action="list" url="javascript:mapWidget.search();">Search Videos</g:link></span></span></span>
-  </div>
-</content>
---%>
 
 <content tag="left">
     <div id="demo" class="yui-navset">
@@ -113,7 +103,7 @@
                   <br/>
                 </li>
                 <li>
-                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.setCenterDd()">Set Center</g:link></span></span>
+                    <button type="button"  onclick="javascript:mapWidget.setCenterDd()">Set Center</button>
                 </li>
               </ol>
             </div>
@@ -161,7 +151,7 @@
                   <br/>
                 </li>
                 <li>
-                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
+                    <button type="button"  onclick="javascript:mapWidget.clearAOI()">Clear</button>
                 </li>
               </ol>
             </div>
@@ -204,7 +194,7 @@
                   <br/>
                 </li>
                 <li>
-                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.setCenterDms()">Set Center</g:link></span></span>
+                    <button type="button"  onclick="javascript:mapWidget.setCenterDms()">Set Center</button>
                 </li>
               </ol>
             </div>
@@ -248,7 +238,7 @@
                   <br/>
                 </li>
                 <li>
-                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
+                    <button type="button"  onclick="javascript:mapWidget.clearAOI()">Clear AOI</button>
                 </li>
               </ol>
             </div>
@@ -285,7 +275,7 @@
                   <br/>
                 </li>
                 <li>
-                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.setCenterMgrs()">Set Center</g:link></span></span>
+                    <button type="button"  onclick="javascript:mapWidget.setCenterMgrs()">Set Center</button>
                 </li>
               </ol>
             </div>
@@ -317,7 +307,7 @@
                   <br/>
                 </li>
                 <li>
-                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
+                    <button type="button"  onclick="javascript:mapWidget.clearAOI()">Clear</button>
                 </li>
               </ol>
             </div>
@@ -416,7 +406,7 @@
       </div>
     </div>
 	<div align="center">
-        <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:search();">Search </g:link></span></span>
+        <button type="button"  onclick="javascript:search();">Search</button>
 	</div>
 </content>
 <content tag="center">
