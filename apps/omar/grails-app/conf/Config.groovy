@@ -478,6 +478,9 @@ grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.ossim.oma
 grails.plugins.springsecurity.authority.className = 'org.ossim.omar.SecRole'
 grails.plugins.springsecurity.requestMap.className = 'org.ossim.omar.Requestmap'
 grails.plugins.springsecurity.securityConfigType = 'Requestmap'
+// Values can be
+// MD2, MD5, SHA-1, SHA-256, SHA-384, SHA-512
+//
 grails.plugins.springsecurity.password.algorithm = 'SHA-256'
 
 // LDAP Configuration
