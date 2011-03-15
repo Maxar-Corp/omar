@@ -146,7 +146,7 @@
       new OpenLayers.Layer.WMS(
       "Raster ${rasterEntry.id}",
                 "${createLink(controller: 'ogc', action: 'wms')}",
-        { layers: "${rasterEntry.indexId}", displayOutsideMaxExtent:true, format: format, stretch_mode:"linear_auto_min_max", transparent:transparent  },
+        { layers: "${rasterEntry.indexId}", displayOutsideMaxExtent:true, format: format, stretch_mode_region: "global", stretch_mode:"linear_auto_min_max", transparent:transparent  },
         {isBaseLayer: false,buffer:0, singleTile:true, ratio:1.0, transitionEffect: "resize"}
                 )
       <g:if test="${kmlOverlays}">
