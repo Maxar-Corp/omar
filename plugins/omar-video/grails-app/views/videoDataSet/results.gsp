@@ -19,63 +19,48 @@
  </style>
 </head>
 
-<body class="yui-skin-sam">
+<body class="yui-skin-sam" onload="init();">
 <g:javascript plugin="omar-core" src="prototype/prototype.js"/>
 <g:javascript>
-  function updateOffset()
-  {
-      var max = document.getElementById("max").value;
-      var pages = Math.ceil(${totalCount ?: 0} / max);
-
-      if(document.getElementById("pageOffset").value >= 1 && document.getElementById("pageOffset").value <= pages)
-      {
-          document.getElementById("offset").value = (document.getElementById("pageOffset").value - 1) * document.getElementById("max").value;
-          document.paginateForm.action = "results";
-          document.paginateForm.submit();
-      }
-      else
-      {
-          alert("Input must be between 1 and " + pages + ".");
-      }
-  }
-
-function exportAs()
-{
-  var formatSelect = document.getElementById("format")
-  var format = formatSelect.value;
-
-  if ( format != "null" )
-  {
-    var exportURL = "${createLink(controller: 'videoDataSetExport', action: 'export', params: params)}";
-
-    exportURL += "&format=" + format;
-
-    //alert(exportURL);
-
-    formatSelect.selectedIndex = 0;
-    window.location = exportURL;
-  }
-}
 </g:javascript>
   <content tag="top">
-    <div class="nav">
-      <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-      <span class="menuButton"><g:link action="search">New Search</g:link></span>
-      <span class="menuButton"><a href="${createLink(action: "search", params: params)}">Edit Search</a></span>
-      <span>
-        <g:select name='format' from="['csv', 'shp']"
-            noSelection="${['null':'Export As...']}"
-            onchange="javascript:exportAs();"></g:select>
-      </span>
+    <g:form name="paginateForm" method="post">
+    </g:form>
+    <g:form name="exportForm" method="post">
+    </g:form>
+    <div id="resultsMenu" class="yuimenubar yuimenubarnav">
+        <div class="bd">
+            <ul class="first-of-type">
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
+                </li>
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="Search" href="#searchMenu" title="Search">Search</a>
+                    <div id="searchMenu" class="yuimenu">
+                         <div class="bd">
+                             <ul>
+                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: 'search')}" title="New Search">New</a></li>
+                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "search", params: params)}" title="Edit Search">Edit</a></li>
+                             </ul>
+                           </div>
+                     </div>
+                </li>
+                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
+                    <div id="exportMenu" class="yuimenu">
+                        <div class="bd">
+                            <ul>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:exportAs('csv')" title="Export Csv">Csv File</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:exportAs('shp')" title="Export Shape">Shape File</a></li>
+                            </ul>
+                          </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </div>
-    <g:form name="paginateForm">
       <g:hiddenField id="totalCount" name="totalCount" value="${totalCount ?: 0}"/>
-      <g:hiddenField id="max" name="max" value="${params.max}"/>
       <g:hiddenField id="offset" name="offset" value="${params.offset}"/>
       <g:hiddenField name="queryParams" value="${queryParams.toMap()}"/>
       <g:hiddenField name="order" value="${params.order}"/>
       <g:hiddenField name="sort" value="${params.sort}"/>
-    </g:form>
 
     <div class="paginateButtons">
       <g:paginate controller="videoDataSet" action="results" total="${totalCount ?: 0}" max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
@@ -83,7 +68,10 @@ function exportAs()
 
       </g:if>
       <g:else>
-        <input type="text" id="pageOffset" size="2"/> <input type="button" value="Go to Page" onclick="javascript:updateOffset();"/>
+          <input type="text" id="pageOffset" size="3" onchange="updateOffset();"/> <button type="button"  onclick="javascript:updateOffset();">Go to Page</button>
+          <label for="max">Max:</label>
+          <input type="text" id="max" name="max"  value="${params.max}" onChange="updateMaxCount()"/>
+          <button type="button"  onclick="javascript:updateMaxCount();">Set</button>
       </g:else>
     </div>
   </content>
@@ -202,26 +190,62 @@ function exportAs()
   var tab0 = tabView.getTab(0);
   var tab1 = tabView.getTab(1);
 
-   function updateCurrentTab(tabIndex)
+    function exportAs(format)
     {
-      var link = "${createLink(action: sessionAction, controller: sessionController)}";
-      if(tabIndex != globalActiveIndex)
+      form = document.getElementById("exportForm");
+      if ( format&&form )
       {
-        globalActiveIndex = tabIndex;
-        new Ajax.Request(link+"?"+"videoDataSetResultCurrentTab="+globalActiveIndex, {method: 'post'});
+        var exportURL = "${createLink(controller: 'videoDataSetExport', action: 'export', params: params)}";
+
+        exportURL += "&format=" + format;
+
+        //alert(exportURL);
+
+        form.action = exportURL;
+        form.submit();
       }
     }
-  function handleClickTab0(e) {
-    updateCurrentTab(0);
-  }
-  function handleClickTab1(e) {
-    updateCurrentTab(1);
+   function updateCurrentTab(variable, tabIndex)
+  {
+      var link = "${createLink(action: sessionAction, controller: sessionController)}";
+      new Ajax.Request(link+"?"+variable+"="+tabIndex, {method: 'post'});
   }
 
-  tab0.addListener('click', handleClickTab0);
-  tab1.addListener('click', handleClickTab1);
-  tab1Div.style.visibility = "visible"
-  tab2Div.style.visibility = "visible"
+  function handleClickTab0(e) {
+    if(globalActiveIndex != 0)
+    {
+        globalActiveIndex = 0;
+        updateCurrentTab("videoDataSetResultCurrentTab", 0);
+    }
+  }
+  function handleClickTab1(e) {
+    if(globalActiveIndex != 1)
+    {
+        globalActiveIndex = 1;
+        updateCurrentTab("videoDataSetResultCurrentTab", 1);
+    }
+  }
+
+  function init()
+  {
+      tab0.addListener('click', handleClickTab0);
+      tab1.addListener('click', handleClickTab1);
+      tab1Div.style.visibility = "visible"
+      tab2Div.style.visibility = "visible"
+
+      var oMenu = new YAHOO.widget.MenuBar("resultsMenu", {
+                                                    autosubmenudisplay: true,
+                                                    hidedelay: 750,
+                                                    lazyload: true,
+                                                    zIndex:9999});
+      oMenu.render();
+
+      omarSearchResults.setProperties(${params.encodeAsJSON()});
+      omarSearchResults.setProperties(document);
+
+      updatePageOffset();
+
+  }
 </g:javascript>
 
 </body>
