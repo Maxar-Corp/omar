@@ -852,14 +852,14 @@ function getProjectedImage(params)
 	 var link   = "${createLink(action: "wcs", controller: "ogc")}";
 	 var extent = mapWidget.getSelectedOrViewportExtents();
 	 var size   = mapWidget.getSizeInPixelsFromExtents(extent);
-	 var wcsTempParams = {"request":"GetCoverage",
+	 var wcsProperties = {"request":"GetCoverage",
 	               	  "format":params.format,
 	               	  "bbox":extent.toBBOX(),
 	               	  "coverage":params.coverage,
 	               	  "crs":"EPSG:4326",
 	               	  "width":size.w,
 	               	  "height":size.h}
-    wcsParams.setProperties(wcsTempParams);
+    wcsParams.setProperties(wcsProperties);
 
     var form = $("wcsForm");
     var url = link + "?" + wcsParams.toUrlParams();
