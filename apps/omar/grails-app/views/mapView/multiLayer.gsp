@@ -75,15 +75,26 @@
 
 </head>
 <body class="yui-skin-sam" onload="init();">
+<omar:bundle contentType="javascript" files="${[
+     [plugin: 'omar-core', dir:'js', file: 'coordinateConversion.js'],
+     [plugin: 'omar-core', dir:'js', file: 'mapwidget.js']
+ ]}"/>
 
 <g:javascript>
-  var map;
+  var mapWidget = new MapWidget();
+    var left = parseFloat("${left}");
+    var bottom = parseFloat("${bottom}");
+    var right = parseFloat("${right}");
+    var top = parseFloat("${top}");
+    var largestScale = parseFloat("${largestScale}");
+    var smallestScale = parseFloat("${smallestScale}");
+    var wcsParams = new OmarWcsParams();
 
   function changeMapSize()
   {
     var Dom = YAHOO.util.Dom;
 
-    if(map) map.updateSize( );
+    if(mapWidget) mapWidget.changeMapSize( );
   }
 
   function setupBaseLayer()
@@ -91,89 +102,85 @@
     var baseLayer = null;
     var baseWMS = ${baseWMS as JSON};
 
-    for ( foo  in baseWMS ) {
+    for ( foo  in baseWMS )
+    {
       baseLayer = new OpenLayers.Layer.WMS( baseWMS[foo].name, baseWMS[foo].url,
               baseWMS[foo].params, baseWMS[foo].options );
-      map.addLayer( baseLayer );
-      map.setBaseLayer( baseLayer );
+      baseLayer.addOptions({displayOutsideMaxExtent:true});
+      mapWidget.getMap().addLayer( baseLayer );
+      mapWidget.getMap().setBaseLayer( baseLayer );
     }
   }
 
   function init()
   {
-    var left = ${left};
-    var bottom = ${bottom};
-    var right = ${right};
-    var top = ${top};
-
-    map = new OpenLayers.Map( "map", { controls: [], numZoomLevels: 32 } );
+    wcsParams.setProperties({
+        brightness:"0",
+        contrast:"1",
+        sharpen_mode:"none",
+        stretch_mode:"linear_auto_min_max",
+        stretch_mode_region: "global",
+        interpolation: "bilinear",
+        srs: "EPSG:4326",
+        crs: "EPSG:4326",
+        bands:"",
+        quicklook: false
+    });
 
     var format = "${format}";
     var transparent = true;
 
+	var bounds = new OpenLayers.Bounds(left, bottom, right, top);
+
+	mapWidget = new MapWidget();
+	mapWidget.setupMapWidgetWithOptions("map", {controls: [],  displayOutsideMaxExtent:true, maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale});
+	mapWidget.setFullResScale(parseFloat("${fullResScale}"));
+    mapWidget.changeMapSize();
+    //map = new OpenLayers.Map( "map", {controls: [], maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale} );
     setupBaseLayer( );
-
     var layers = [
+    <g:each var="rasterEntry" in="${rasterEntries}" status="i">
 
+      <g:if test="${i > 0}">,</g:if>
 
+      new OpenLayers.Layer.WMS(
+      "Raster ${rasterEntry.id}",
+                "${createLink(controller: 'ogc', action: 'wms')}",
+        { layers: "${rasterEntry.indexId}", displayOutsideMaxExtent:true, format: format, stretch_mode:"linear_auto_min_max", transparent:transparent  },
+        {isBaseLayer: false,buffer:0, singleTile:true, ratio:1.0, transitionEffect: "resize"}
+                )
+      <g:if test="${kmlOverlays}">
 
-  <g:each var="rasterEntry" in="${rasterEntries}" status="i">
-
-    <g:if test="${i > 0}">,</g:if>
-
-    new OpenLayers.Layer.WMS(
-    "Raster ${rasterEntry.id}",
-              "${createLink(controller: 'ogc', action: 'wms')}",
-      { layers: "${rasterEntry.indexId}", format: format, stretch_mode:"linear_auto_min_max", transparent:transparent  },
-      {isBaseLayer: false, buffer:0, singleTile:true, ratio:1.0, transitionEffect: "resize"}
-              )
-    <g:if test="${kmlOverlays}">
-
-      , new OpenLayers.Layer.Vector( "KML", {
-   projection: map.displayProjection,
-   strategies: [new OpenLayers.Strategy.Fixed( )],
-   protocol: new OpenLayers.Protocol.HTTP( {
-     url: "${createLink(controller: 'rasterEntry', action: 'getKML', params: [rasterEntryIds: rasterEntry.indexId])}",
-          format: new OpenLayers.Format.KML( {
-            extractStyles: true,
-            extractAttributes: true
+        , new OpenLayers.Layer.Vector( "KML", {
+     projection: mapWidget.getMap().displayProjection,
+     strategies: [new OpenLayers.Strategy.Fixed( )],
+     protocol: new OpenLayers.Protocol.HTTP( {
+       url: "${createLink(controller: 'rasterEntry', action: 'getKML', params: [rasterEntryIds: rasterEntry.indexId])}",
+            format: new OpenLayers.Format.KML( {
+              extractStyles: true,
+              extractAttributes: true
+            } )
           } )
         } )
-      } )
-    </g:if>
-  </g:each>
+      </g:if>
+    </g:each>
   ];
+    mapWidget.getMap().addLayers( layers );
+    mapWidget.setupAoiLayer();
+	mapWidget.setupToolBar();
+
+	mapWidget.getMap().addControl(new OpenLayers.Control.LayerSwitcher());
+	var overview = new OpenLayers.Control.OverviewMap({maximized: true});
+    mapWidget.getMap().addControl(overview);
+	mapWidget.getMap().addControl(new OpenLayers.Control.Scale());
+	mapWidget.getMap().addControl(new OpenLayers.Control.ScaleLine());
+
+  	var zoom = mapWidget.getMap().getZoomForExtent(bounds, true);
+	mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
 
 
-   map.addLayers( layers );
-   map.addControl( new OpenLayers.Control.LayerSwitcher( ) )
-   //map.addControl(new OpenLayers.Control.PanZoom())
-   //map.addControl(new OpenLayers.Control.NavToolbar())
-   map.addControl( new OpenLayers.Control.MousePosition( ) );
-   map.addControl( new OpenLayers.Control.Scale( ) );
-   map.addControl( new OpenLayers.Control.Permalink( "permalink" ) );
-   map.addControl( new OpenLayers.Control.ScaleLine( ) );
-   map.addControl( new OpenLayers.Control.Attribution( ) );
 
-
-   var bounds = new OpenLayers.Bounds( left, bottom, right, top );
-
-   map.maxExtent = bounds;
-   changeMapSize();
-   setupToolbar( );
-
-   var zoom = map.getZoomForExtent( bounds, true );
-
-   map.setCenter( bounds.getCenterLonLat( ), zoom );
-
-   var isiPad = navigator.userAgent.match( /iPad/i ) != null;
-
-   if ( isiPad )
-   {
-      this.touchhandler = new TouchHandler( map, 4 );
-   }
-
-	var oMenu = new YAHOO.widget.MenuBar("rasterMenu", { 
+	var oMenu = new YAHOO.widget.MenuBar("rasterMenu", {
                                                autosubmenudisplay: true, 
                                                hidedelay: 750, 
                                                lazyload: true,
@@ -181,89 +188,35 @@
 	oMenu.render();
   }
 
-  function zoomIn()
-  {
-   map.zoomIn( );
-  }
+function getProjectedImage(params)
+{
+	 var link   = "${createLink(action: "wcs", controller: "ogc")}";
+	 var extent = mapWidget.getSelectedOrViewportExtents();
+	 var size   = mapWidget.getSizeInPixelsFromExtents(extent);
+	 var wcsProperties = {"request":"GetCoverage",
+	               	  "format":params.format,
+	               	  "bbox":extent.toBBOX(),
+	               	  "coverage":params.coverage,
+	               	  "crs":"EPSG:4326",
+	               	  "width":size.w,
+	               	  "height":size.h}
+    wcsParams.setProperties(wcsProperties);
 
-  function zoomOut()
-  {
-   map.zoomOut( );
+    var form = $("wcsForm");
+    var url = link + "?" + wcsParams.toUrlParams();
 
-  }
-  function setupToolbar()
-  {
+    if(form)
+    {
+        form.action = url;
+        form.submit();
+    }
+}
 
-   var zoomBoxButton = new OpenLayers.Control.ZoomBox(
-   {title:"Zoom into an area by clicking and dragging"} );
-
-   var zoomInButton = new OpenLayers.Control.Button( {title:'Zoom in',
-     displayClass: "olControlZoomIn",
-     trigger: zoomIn
-   } );
-
-   var zoomOutButton = new OpenLayers.Control.Button( {title:'Zoom out',
-     displayClass: "olControlZoomOut",
-     trigger: zoomOut
-   } );
-
-   var container = $( "toolBar" );
-
-   var panel = new OpenLayers.Control.Panel(
-   { div: container,defaultControl: zoomBoxButton,'displayClass': 'olControlPanel'}
-           );
-
-
-   var navButton = new OpenLayers.Control.NavigationHistory( {
-     nextOptions: {title: "Next View" },
-     previousOptions: {title: "Previous View"}
-   } );
-
-
-   map.addControl( navButton );
-
-     var message = "Alert: Not certified for targeting.\n";
-
-              var measureDistanceButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
-        title: "Measure Distance",
-        displayClass: "olControlMeasureDistance",
-        eventListeners:
-        {
-          measure: function(evt)
-          {
-            alert(message + "Path: " + evt.measure.toFixed(3) + " " + evt.units);
-          }
-        }
-      });
-
-      var measureAreaButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, {
-        title: "Measure Area",
-        displayClass: "olControlMeasureArea",
-        eventListeners:
-        {
-          measure: function(evt)
-          {
-            alert(message + "Area: " + evt.measure.toFixed(3) + " " + evt.units);
-          }
-        }
-      });
-
-   panel.addControls( [
-     new OpenLayers.Control.MouseDefaults( {title:'Drag to recenter map'} ),
-     zoomBoxButton,
-     zoomInButton,
-     zoomOutButton,
-     navButton.next, navButton.previous,
-     new OpenLayers.Control.ZoomToMaxExtent( {title:"Zoom to the max extent"} ),
-     measureDistanceButton,
-     measureAreaButton
-   ] );
-
-   map.addControl( panel );
-  }
 
 </g:javascript>
 <content tag="top">
+    <form id="wcsForm" method="POST">
+    </form>
 <div id="rasterMenu" class="yuimenubar yuimenubarnav">
 	<div class="bd">
 		<ul class="first-of-type">
@@ -281,6 +234,13 @@
 							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: (rasterEntries*.id).join(',')])}" title="Export KML">KML</a></li>
 									
 						</ul>
+                        <ul>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'image/jpeg', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Jpeg">Jpeg</a></li>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geotiff">Geotiff</a></li>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geotiff 8-Bit">Geotiff 8-Bit</a></li>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo Jpeg 2000">Geo Jpeg 2000</a></li>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo Jpeg 2000 8-Bit">Geo Jpeg 2000 8-Bit</a></li>
+                        </ul>
 					</div>
 				</div>
 			</li>
