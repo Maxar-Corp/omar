@@ -35,12 +35,14 @@
   }
   #header
   {
-    position:relative;
+    position:absolute;
+    top:0;
     width:100%;
   }
-  #top
+  #header
   {
     position:relative;
+    top:0;
     width:100%;
   }
   #center
@@ -53,7 +55,7 @@
   }
   #footer
   {
-    position:absolute;
+    position:relative;
     bottom:0;
     height:20px;
     width:100%;
@@ -70,7 +72,10 @@
     [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
     [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
     [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
-    [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js']
+    [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
+    [plugin:'richui' , dir:'js/yui/container/', file: 'container_core.js'],
+    [plugin:'richui' , dir:'js/yui/menu/', file: 'menu-min.js'],
+    [plugin:'richui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js'],
 ]}"/>
 <div id="content">
   <div id="header">
@@ -103,6 +108,7 @@
     // IE6 seems to do better to use the root content div and then adjust everyone from  that
     var top     = top.offsetTop+top.offsetHeight;
     var bottom  = footer.offsetTop;
+
     var centerHeight     = Math.abs(bottom-top);
     centerDiv.style.height = centerHeight + "px";
     centerDiv.style.width  = "100%";
