@@ -93,7 +93,7 @@ if ( !Requestmap.findByUrl("/userPreferences/**") )
 
 
 def adminControllers = [
-        "user", "role"
+        "user", "role", 'secUser', 'secRole'
 ]
 
 adminControllers.each {adminController ->
@@ -105,7 +105,7 @@ adminControllers.each {adminController ->
   }
 }
 
-def domainControllers = (((grailsApplication.domainClasses)*.logicalPropertyName).sort()) - ["authUser", "dataSet", "role", "requestmap", "report", "search_mobile", "results_mobile", 'list_mobile', 'show_mobile']
+def domainControllers = (((grailsApplication.domainClasses)*.logicalPropertyName).sort()) - ["authUser", "dataSet", "role", "requestmap", "report", "search_mobile", "results_mobile", 'list_mobile', 'show_mobile', 'secUser', 'secRole']
 
 domainControllers.each {domainController ->
   domainController = domainController.toLowerCase()
