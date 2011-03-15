@@ -496,190 +496,6 @@ function setMouseMapCtrTxt(evt)
 	mgrsMouseMapCtr.innerHTML = "MGRS: " + coordConvert.ddToMgrs(center.lat, center.lon);
 }
 
-function setupToolbar()
-{
-	var panButton = new OpenLayers.Control.MouseDefaults({title: "Click pan button to activate. Once activated click the map and drag the mouse to pan."});
-	
-	var zoomBoxButton = new OpenLayers.Control.ZoomBox({title: "Click the zoom box button to activate. Once activated click and drag over an area of interest on the map to zoom into."});
-	
-	zoomInButton = new OpenLayers.Control.Button({title: "Click to zoom in.",
-	displayClass: "olControlZoomIn",
-	trigger: zoomIn});
-	
-	var zoomOutButton = new OpenLayers.Control.Button({title: "Click to zoom out.",
-    displayClass: "olControlZoomOut",
-    trigger: zoomOut});
-	
-	var zoomInFullResButton = new OpenLayers.Control.Button({title: "Click to zoom into full resolution.",
-    displayClass: "olControlZoomToLayer",
-    trigger: zoomInFullRes});
-	
-	var zoomMaxExtentButton = new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent."});
-	
-	var navButton = new OpenLayers.Control.NavigationHistory({nextOptions:{title:"Click to go to next view."}, 
-	previousOptions:{title:"Click to go to previous view."}});
-
-	var pathMeasurement = document.getElementById("pathMeasurement");
-	var pathMeasurementButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
-		title:"Click path measurement button to activate. Once activated click points on the map to create a path that you wish to measure. When you are done creating your path double click to end. Measurement results will appear in the left column.",
-		displayClass: "olControlMeasureDistance", persist: true,
-		eventListeners:
-		{
-			measure: function(evt)
-			{
-				if($("measurementUnits").value == "kilometers")
-				{
-					if(evt.units == "km")
-					{
-						pathMeasurement.innerHTML = "Path: " + evt.measure + " km [<a href='javascript:clearPathMeasurement()'>X</a>]";
-					}
-					else if(evt.units == "m")
-					{
-						pathMeasurement.innerHTML = "Path: " + (evt.measure * 0.001) + " km [<a href='javascript:clearPathMeasurement()'>X</a>]"; 
-					}
-				}
-				else if($("measurementUnits").value == "meters")
-				{
-					if(evt.units == "km" )
-					{
-						pathMeasurement.innerHTML = "Path: " + (evt.measure * 1000) + " m [<a href='javascript:clearPathMeasurement()'>X</a>]";
-	                }
-					else if(evt.units == "m")
-					{
-						pathMeasurement.innerHTML = "Path: " + evt.measure + " m [<a href='javascript:clearPathMeasurement()'>X</a>]";
-					}
-				}
-				else if($("measurementUnits").value == "feet")
-				{
-					if(evt.units == "km")
-					{
-						pathMeasurement.innerHTML = "Path: " + (evt.measure * 3280.839895) + " ft [<a href='javascript:clearPathMeasurement()'>X</a>]";
-					}
-					else if(evt.units == "m")
-					{
-						pathMeasurement.innerHTML = "Path: " + (evt.measure * 3.280839895) + " ft [<a href='javascript:clearPathMeasurement()'>X</a>]";
-					}
-				}
-				else if($("measurementUnits").value == "miles")
-				{
-					if(evt.units == "km")
-					{
-						pathMeasurement.innerHTML = "Path: " + (evt.measure * 0.62137119224) + " mi [<a href='javascript:clearPathMeasurement()'>X</a>]";
-					}
-					else if(evt.units == "m")
-					{
-						pathMeasurement.innerHTML = "Path: " + (evt.measure * 0.00062137119224) + " mi [<a href='javascript:clearPathMeasurement()'>X</a>]";
-					}
-				}
-				else if($("measurementUnits").value == "yards")
-				{
-					if(evt.units == "km")
-					{
-						pathMeasurement.innerHTML = "Path: " + (evt.measure * 1093.6132983) + " yd [<a href='javascript:clearPathMeasurement()'>X</a>]";
-					}
-					else if(evt.units == "m")
-					{
-						pathMeasurement.innerHTML = "Path: " + (evt.measure * 1.0936132983) + " yd [<a href='javascript:clearPathMeasurement()'>X</a>]";
-					}
-				}
-			}
-		}
-	});
-
-	var polygonMeasurement = document.getElementById("polygonMeasurement");
-	var polygonMeasurementButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, {
-		title:"Click polygon measurement button to activate. Once activated click points on the map to create a polygon that you wish to measure. When you are done creating your polygon double click to end. Measurement results will appear in the left column.",
-		displayClass: "olControlMeasureArea", persist: true,
-		eventListeners:
-		{
-			measure: function(evt)
-			{
-				if($("measurementUnits").value == "kilometers")
-				{
-					if(evt.units == "km")
-					{
-						polygonMeasurement.innerHTML = "Polygon: " + evt.measure + " km² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-					}
-					else if(evt.units == "m")
-					{
-						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 0.001) + " km² [<a href='javascript:clearPolygonMeasurement()'>X</a>]"; 
-					}
-				}
-				else if($("measurementUnits").value == "meters")
-				{
-					if(evt.units == "km" )
-					{
-						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 1000) + " m² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-	                }
-					else if(evt.units == "m")
-					{
-						polygonMeasurement.innerHTML = "Polygon: " + evt.measure + " m² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-					}
-				}
-				else if($("measurementUnits").value == "feet")
-				{
-					if(evt.units == "km")
-					{
-						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 3280.839895) + " ft² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-					}
-					else if(evt.units == "m")
-					{
-						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 3.280839895) + " ft² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-					}
-				}
-				else if($("measurementUnits").value == "miles")
-				{
-					if(evt.units == "km")
-					{
-						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 0.62137119224) + " mi² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-					}
-					else if(evt.units == "m")
-					{
-						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 0.00062137119224) + " mi² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-					}
-				}
-				else if($("measurementUnits").value == "yards")
-				{
-					if(evt.units == "km")
-					{
-						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 1093.6132983) + " yd² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-					}
-					else if(evt.units == "m")
-					{
-						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 1.0936132983) + " yd² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-					}
-				}
-			}
-		}
-	});
-	
-	var container = $("toolBar");
-	
-	var panel = new OpenLayers.Control.Panel(
-	{
-		div: container,
-		defaultControl: zoomBoxButton,
-		displayClass: "olControlPanel"
-	});
-	
-	mapWidget.getMap().addControl(navButton);
-	
-	panel.addControls([
-	panButton,
-	zoomBoxButton,
-	zoomInButton,
-	zoomOutButton,
-	zoomInFullResButton,
-	zoomMaxExtentButton,
-	navButton.next,
-	navButton.previous,
-	pathMeasurementButton,
-	polygonMeasurementButton
-	]);
-	
-	mapWidget.getMap().addControl(panel);
-}
-
 function clearPathMeasurement()
 {
 	pathMeasurement.innerHTML = "";
@@ -767,9 +583,13 @@ function setupLayers()
 	var stretch_mode_region = $("stretch_mode_region").value;
 	
 	rasterLayers = [
-	new OpenLayers.Layer.WMS("Raster", "${createLink(controller: "ogc", action: "wms")}",
-    {layers: "${(rasterEntries*.indexId).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent},
-	{isBaseLayer: true, buffer: 0, singleTile: true, ratio: 1.0, quicklook: true, transitionEffect: "resize", displayOutsideMaxExtent:false})];
+	   new OpenLayers.Layer.WMS("Raster", "${createLink(controller: "ogc", action: "wms")}",
+               {layers: "${(rasterEntries*.indexId).join(',')}",
+                format: format, sharpen_mode:sharpen_mode,
+                stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent},
+	           {isBaseLayer: true, buffer: 0,
+	            singleTile: true, ratio: 1.0,
+	            quicklook: true, transitionEffect: "resize", displayOutsideMaxExtent:false})];
 	
 	mapWidget.getMap().addLayers(rasterLayers);
 	
@@ -848,7 +668,6 @@ function onFeatureSelect(event)
 
 function getProjectedImage(params)
 {
-
 	 var link   = "${createLink(action: "wcs", controller: "ogc")}";
 	 var extent = mapWidget.getSelectedOrViewportExtents();
 	 var size   = mapWidget.getSizeInPixelsFromExtents(extent);
