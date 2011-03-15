@@ -228,6 +228,7 @@ function OmarImageAdjustmentParams(){
 	this.stretch_mode_region = "";
 	this.quicklook = "";
 	this.bands = "";
+    this.rotate = "";
 }
 function OmarOgcParams(){
 	this.request = "";
@@ -252,6 +253,15 @@ function OmarWcsParams(){
 	this.crs    = "";
     this.bbox   = "";
     this.coverage   = "";
+}
+function OmarImageSpaceOpenLayersParams(){
+    this.res = "";
+    this.x = "";
+    this.y = "";
+    this.z = "";
+    this.tileWidth = "";
+    this.tileHeight = "";
+    this.id = "";
 }
 
 function OmarSearchParams(){
@@ -395,8 +405,16 @@ function OmarSearchParams(){
     this.searchTagValues = [];
 }
 
+function OmarSearchResults(){
+    this.totalCount = "";
+    this.offset     = "";
+    this.order      = "";
+    this.sort       = "";
+}
 OmarImageAdjustmentParams.inherits(OmarParams);
 OmarSearchParams.inherits(OmarParams);
+OmarSearchResults.inherits(OmarSearchParams);
 OmarOgcParams.inherits(OmarImageAdjustmentParams);
+OmarImageSpaceOpenLayersParams.inherits(OmarImageAdjustmentParams);
 OmarWmsParams.inherits(OmarOgcParams);
 OmarWcsParams.inherits(OmarOgcParams);
