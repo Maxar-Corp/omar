@@ -104,7 +104,7 @@
                   <br/>
                 </li>
                 <li>
-                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.setCenterDd()">Set Center</g:link></span></span>
+                    <button type="button"  onclick="javascript:mapWidget.setCenterDd();">Set Center</button>
                  </li>
               </ol>
             </div>
@@ -152,7 +152,7 @@
                   <br/>
                 </li>
                 <li>
-                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
+                    <button type="button"  onclick="javascript:mapWidget.clearAOI();">Clear</button>
                 </li>
               </ol>
             </div>
@@ -195,7 +195,7 @@
                   <br/>
                 </li>
                 <li>
-                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.setCenterDms()">Set Center</g:link></span></span>
+                    <button type="button"  onclick="javascript:mapWidget.setCenterDms();">Set Center</button>
                 </li>
               </ol>
             </div>
@@ -206,7 +206,7 @@
               <ol>
                 <li>
                   <g:checkBox name="searchMethod2" id="bboxSearchButton2" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
-                  <label>Use BBox Search</label>
+                  <label>Use Bound Box Search</label>
                 </li>
                 <li>
                   <br/>
@@ -239,7 +239,7 @@
                   <br/>
                 </li>
                 <li>
-                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
+                    <button type="button"  onclick="javascript:mapWidget.clearAOI();">Clear</button>
                 </li>
               </ol>
             </div>
@@ -276,7 +276,7 @@
                   <br/>
                 </li>
                 <li>
-                    <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.setCenterMgrs()">Set Center</g:link></span></span>
+                    <button type="button"  onclick="javascript:mapWidget.setCenterMgrs();">Set Center</button>
                 </li>
               </ol>
             </div>
@@ -287,7 +287,7 @@
               <ol>
                 <li>
                   <g:checkBox name="searchMethod3" id="bboxSearchButton3" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
-                  <label>Use BBox Search</label>
+                  <label>Use Bound Box Search</label>
                 </li>
                 <li>
                   <br/>
@@ -308,7 +308,7 @@
                   <br/>
                 </li>
                 <li>
-                     <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:mapWidget.clearAOI();">Clear AOI</g:link></span></span>
+                    <button type="button"  onclick="javascript:mapWidget.clearAOI();">Clear</button>
                 </li>
               </ol>
             </div>
@@ -405,11 +405,8 @@
       </div>
     </div>
 	<div align="center">
-        <span class="yui-button yui-link-button"><span class="first-child"><g:link url="javascript:search();">Search </g:link></span></span>
-</div>
-
-
-<%--  </g:form>  --%>
+        <button type="button"  onclick="javascript:search();">Search</button>
+    </div>
 </content>
 <content tag="center">
 </content>
