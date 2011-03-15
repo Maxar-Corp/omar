@@ -269,10 +269,14 @@ class VideoDataSetController implements InitializingBean
 
     //println "=== search start ==="
 
-    if ( !params.max )
-    {
-      params.max = 10;
-    }
+      if ( !params.max || !(params.max =~ /\d+$/) )
+      {
+        params.max = 10
+      }
+      else if((params.max as Integer) > 100)
+      {
+          params.max = 100;
+      }
 
     //println "\nparams: ${params?.sort { it.key }}"
 
@@ -282,11 +286,6 @@ class VideoDataSetController implements InitializingBean
 
     if ( request.method == 'POST' )
     {
-      if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
-      {
-        params.max = 10
-      }
-
       params.order = 'desc'
       params.sort = 'startDate'
 
@@ -346,10 +345,14 @@ class VideoDataSetController implements InitializingBean
 
     //println "=== search start ==="
 
-    if ( !params.max )
-    {
-      params.max = 10;
-    }
+      if ( !params.max || !(params.max =~ /\d+$/) )
+      {
+        params.max = 10
+      }
+      else if((params.max as Integer) > 100)
+      {
+          params.max = 100;
+      }
 
     //println "\nparams: ${params?.sort { it.key }}"
 
@@ -359,10 +362,6 @@ class VideoDataSetController implements InitializingBean
 
     if ( request.method == 'POST' )
     {
-      if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
-      {
-        params.max = 10
-      }
 
       params.order = 'desc'
       params.sort = 'startDate'
@@ -440,9 +439,13 @@ class VideoDataSetController implements InitializingBean
 
     def starttime = System.currentTimeMillis()
 
-      if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
+      if ( !params.max || !(params.max =~ /\d+$/) )
       {
         params.max = 10
+      }
+      else if((params.max as Integer) > 100)
+      {
+          params.max = 100;
       }
 
     if (params?.queryParams)
@@ -543,10 +546,14 @@ class VideoDataSetController implements InitializingBean
 
     def starttime = System.currentTimeMillis()
 
-    if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
-    {
-      params.max = 10
-    }
+      if ( !params.max || !(params.max =~ /\d+$/) )
+      {
+        params.max = 10
+      }
+      else if((params.max as Integer) > 100)
+      {
+          params.max = 100;
+      }
 
     def videoDataSets = null
     def totalCount = null
