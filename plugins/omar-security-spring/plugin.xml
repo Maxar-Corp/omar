@@ -16,6 +16,8 @@ Adds support for Spring Security to OMAR
     <resource>org.ossim.omar.LogoutController</resource>
     <resource>org.ossim.omar.RegisterController</resource>
     <resource>org.ossim.omar.RequestmapController</resource>
+    <resource>org.ossim.omar.SecRoleController</resource>
+    <resource>org.ossim.omar.SecUserController</resource>
     <resource>org.ossim.omar.RegistrationCode</resource>
     <resource>org.ossim.omar.Requestmap</resource>
     <resource>org.ossim.omar.SecRole</resource>
