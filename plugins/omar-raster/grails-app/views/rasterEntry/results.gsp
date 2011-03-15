@@ -23,61 +23,11 @@
 
 <body class="yui-skin-sam" onload="init();">
 <g:javascript plugin="omar-core" src="prototype/prototype.js"/>
-<g:javascript>
-
-  function updateOffset()
-  {
-      var max = document.getElementById("max").value;
-      var pages = Math.ceil(${totalCount ?: 0} / max);
-
-      if(document.getElementById("pageOffset").value >= 1 && document.getElementById("pageOffset").value <= pages)
-      {
-          document.getElementById("offset").value = (document.getElementById("pageOffset").value - 1) * document.getElementById("max").value;
-          omarSearchResults.setProperties(document);
-
-          var url = "${createLink(action:results)}?" + omarSearchResults.toUrlParams();
-          //document.paginateForm.action = "results";
-          document.paginateForm.action = url;
-          document.paginateForm.submit();
-      }
-      else
-      {
-          alert("Input must be between 1 and " + pages + ".");
-      }
-  }
-
-function exportAs(format)
-{
-//  var formatSelect = document.getElementById("format")
-//  var format = formatSelect.value;
-
-  if ( format )
-  {
-    var exportURL = "${createLink(controller: 'rasterEntryExport', action: 'export', params: params)}";
-
-    exportURL += "&format=" + format;
-
-    //alert(exportURL);
-
-    formatSelect.selectedIndex = 0;
-    window.location = exportURL;
-  }
-}
-</g:javascript>
 <content tag="top">
-
-    <%--
-  <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link action="search">New Search</g:link></span>
-    <span class="menuButton"><a href="${createLink(action: "search", params: params)}">Edit Search</a></span>
-    <span>
-      <g:select name='format' from="['csv', 'shp']"
-          noSelection="${['null':'Export As...']}"
-          onchange="javascript:exportAs();"></g:select>
-    </span>
-  </div>
-  --%>
+    <g:form name="paginateForm" method="post">
+    </g:form>
+    <g:form name="exportForm" method="post">
+    </g:form>
     <div id="resultsMenu" class="yuimenubar yuimenubarnav">
         <div class="bd">
             <ul class="first-of-type">
@@ -113,8 +63,6 @@ function exportAs(format)
     <g:hiddenField name="order" value="${params.order}"/>
     <g:hiddenField name="sort" value="${params.sort}"/>
 
-  <g:form name="paginateForm">
-  </g:form>
 
   <div class="paginateButtons">
     <g:paginate event="testing('tabView');" controller="rasterEntry" action="results" total="${totalCount ?: 0}" max="${params.max}" offset="${params.offset}" params="${params}"/>
@@ -122,10 +70,10 @@ function exportAs(format)
     </g:if>
     <g:else>
       <input type="text" id="pageOffset" size="3" onchange="updateOffset();"/> <button type="button"  onclick="javascript:updateOffset();">Go to Page</button>
+        <label for="max">Max:</label>
+        <input type="text" id="max" name="max" value="${params.max}" onChange="updateMaxCount()"/>
+        <button type="button"  onclick="javascript:updateMaxCount();">Set</button>
     </g:else>
-    <label for="max">Max:</label>
-    <input type="text" id="max" name="max" value="${params.max}" onChange="updateMaxCount()"/>
-    <button type="button"  onclick="javascript:updateMaxCount();">Set</button>
   </div>
 
 </content>
@@ -336,68 +284,52 @@ function exportAs(format)
   var tab1 = tabView.getTab(1);
   var tab2 = tabView.getTab(2);
   var tab3 = tabView.getTab(3);
-  var omarSearchResults= new OmarSearchResults();
 
-  function updateMaxCount()
-  {
-    var maxElement    = document.getElementById("max");
-    var offsetElement = document.getElementById("offset");
-    if(offsetElement)
+    function exportAs(format)
     {
-       offsetElement.value = 0;
-    }
-    if(!maxElement ||(parseInt(maxElement.value) < 1))
-    {
-         var tempMax =
-        alert("Max value can't be zero");
-        if(maxElement) maxElement.value = omarSearchResults["max"];
-        return;
-    }
-    omarSearchResults.setProperties(document);
-    updatePageOffset();
-
-    updateOffset();
-  }
-  function updateCurrentTab(tabIndex)
-    {
-      var link = "${createLink(action: sessionAction, controller: sessionController)}";
-      if(tabIndex != globalActiveIndex)
+      form = document.getElementById("exportForm");
+      if ( format&&form )
       {
-        globalActiveIndex = tabIndex;
-        new Ajax.Request(link+"?"+"rasterEntryResultCurrentTab="+globalActiveIndex, {method: 'post'});
+        var exportURL = "${createLink(controller: 'rasterEntryExport', action: 'export', params: params)}";
+
+        exportURL += "&format=" + format;
+
+        //alert(exportURL);
+
+        form.action = exportURL;
+        form.submit();
       }
     }
-
+  function updateCurrentTab(variable, tabIndex)
+  {
+      var link = "${createLink(action: sessionAction, controller: sessionController)}";
+      new Ajax.Request(link+"?"+variable+"="+tabIndex, {method: 'post'});
+  }
   function handleClickTab0(e) {
-  updateCurrentTab(0);
+    if(globalActiveIndex != 0)
+    {
+        updateCurrentTab("rasterEntryResultCurrentTab", 0);
+    }
   }
   function handleClickTab1(e) {
-  updateCurrentTab(1);
+    if(globalActiveIndex != 1)
+    {
+        updateCurrentTab("rasterEntryResultCurrentTab", 1);
+    }
   }
   function handleClickTab2(e) {
-  updateCurrentTab(2);
+    if(globalActiveIndex != 2)
+    {
+        updateCurrentTab("rasterEntryResultCurrentTab", 2);
+    }
   }
   function handleClickTab3(e) {
-  updateCurrentTab(3);
+    if(globalActiveIndex != 3)
+    {
+        updateCurrentTab("rasterEntryResultCurrentTab", 3);
+    }
   }
 
-  function updatePageOffset(){
-      var offset = omarSearchResults["offset"];
-      var max    = omarSearchResults["max"];
-      totalCount    = omarSearchResults["totalCount"];
-      if(!offset) offset = "0"
-      if(max &&totalCount)
-      {
-        offset      = parseInt(offset);
-        max         = parseInt(max);
-        totalCount  = parseInt(totalCount);
-        var pageOffset = document.getElementById("pageOffset");
-        if(pageOffset&&max)
-        {
-           pageOffset.value = (offset/max) + 1;
-        }
-      }
-  }
   function init()
   {
       tab0.addListener('click', handleClickTab0);

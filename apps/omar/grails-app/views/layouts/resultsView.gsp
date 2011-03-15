@@ -98,18 +98,78 @@
    //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
     var Dom = YAHOO.util.Dom;
     var Event = YAHOO.util.Event;
+  var omarSearchResults= new OmarSearchResults();
+
+  function updateOffset()
+  {
+      maxValue = document.getElementById("max").value;
+      pages = Math.ceil(${totalCount ?: 0} / maxValue);
+
+      if(document.getElementById("pageOffset").value >= 1 && document.getElementById("pageOffset").value <= pages)
+      {
+          document.getElementById("offset").value = (document.getElementById("pageOffset").value - 1) * maxValue;
+          omarSearchResults.setProperties(document);
+
+          var url = "${createLink(action:'results')}?" + omarSearchResults.toUrlParams();
+          //alert(url);
+          document.paginateForm.action = url;
+          document.paginateForm.submit();
+      }
+      else
+      {
+          alert("Input must be between 1 and " + pages + ".");
+      }
+  }
+
+  function updateMaxCount()
+  {
+    maxElement    = document.getElementById("max");
+    offsetElement = document.getElementById("offset");
+    if(offsetElement)
+    {
+       offsetElement.value = 0;
+    }
+    if(!maxElement ||(parseInt(maxElement.value) < 1))
+    {
+        alert("Max value can't be zero");
+        if(maxElement) maxElement.value = omarSearchResults["max"];
+        return;
+    }
+    omarSearchResults.setProperties(document);
+    updatePageOffset();
+
+    updateOffset();
+  }
+
+  function updatePageOffset(){
+      offsetValue = omarSearchResults["offset"];
+      maxValue    = omarSearchResults["max"];
+      totalCountValue    = omarSearchResults["totalCount"];
+      if(!offsetValue) offsetValue = "0"
+      if(maxValue &&totalCountValue)
+      {
+        offsetValue      = parseInt(offsetValue);
+        maxValue    = parseInt(maxValue);
+        totalCountValue  = parseInt(totalCountValue);
+        var pageOffset = document.getElementById("pageOffset");
+        if(pageOffset&&maxValue)
+        {
+           pageOffset.value = (offsetValue/maxValue) + 1;
+        }
+      }
+  }
   var onBodyResize = function()
   {
     var Dom = YAHOO.util.Dom;
-    var header     = Dom.get("header");
-    var top        = Dom.get("top");
+    var headerDiv     = Dom.get("header");
+    var topDiv        = Dom.get("top");
     var centerDiv  = Dom.get("center");
-    var footer     = Dom.get("footer");
+    var footerDiv     = Dom.get("footer");
+    var bottomValue  = footerDiv.offsetTop;
     // IE6 seems to do better to use the root content div and then adjust everyone from  that
-    var top     = top.offsetTop+top.offsetHeight;
-    var bottom  = footer.offsetTop;
+    var topValue    = topDiv.offsetTop+topDiv.offsetHeight;
 
-    var centerHeight     = Math.abs(bottom-top);
+    centerHeight     = Math.abs(bottomValue-topValue);
     centerDiv.style.height = centerHeight + "px";
     centerDiv.style.width  = "100%";
   }
