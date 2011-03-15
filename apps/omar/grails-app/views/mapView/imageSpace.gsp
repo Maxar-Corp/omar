@@ -125,6 +125,13 @@
         <div class="niceBoxHd">Image Adjustments:</div>
         <div class="niceBoxBody">
           <ol>
+			<li>Interpolation:</li>
+			<li>
+				<g:select id="interpolation" name="interpolation" from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}" onChange="chgInterpolation()"/>
+			</li>
+			<hr/>
+
+
             <li>Sharpen:</li>
             <li>
               <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
@@ -216,6 +223,15 @@ var rotate = $("rotate").value;
 //alert(rotate);
 
 layer.mergeNewParams({rotate:rotate});
+}
+
+function chgInterpolation()
+{
+	var interpolation = $("interpolation").value;
+	
+	layer.mergeNewParams({interpolation:interpolation});
+
+alert(interpolation);
 }
 
 function changeSharpenOpts()
