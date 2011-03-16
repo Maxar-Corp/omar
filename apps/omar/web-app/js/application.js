@@ -242,7 +242,8 @@ function OmarWmsParams(){
 	this.format = "";
 	this.filter = "";
 	this.srs    = "";
-	this.bbox   = "";
+    this.bbox   = "";
+    this.layers   = "";
 }
 
 function OmarWcsParams(){
