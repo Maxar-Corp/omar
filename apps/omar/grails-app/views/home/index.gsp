@@ -118,11 +118,9 @@ s<html>
             <li>
               <g:link plugin="omar-core" controller="report" action="create">User Feedback</g:link>
             </li>
-            <sec:ifAllGranted roles="ROLE_ADMIN">
               <li>
                 <g:link plugin="omar-core" controller="report" action="list">View Feedback</g:link>
               </li>
-            </sec:ifAllGranted>
           </ol>
         </td>
       </tr>
