@@ -75,7 +75,9 @@
 <content tag="top">
     <form id="wcsForm" method="POST">
     </form>
- 
+    <g:form name="wmsParams" method="POST" >
+    </g:form>
+
 	<div id="rasterMenu" class="yuimenubar yuimenubarnav">
 		<div class="bd">
 			<ul class="first-of-type">
@@ -141,7 +143,7 @@
 		</div>
 	</div>
 	
-	<g:form name="wmsParams" method="POST" url="[action:'wms', controller:'ogc']">
+
 	<input type="hidden" name="request" value=""/>
 	<input type="hidden" name="layers" value=""/>
 	<input type="hidden" name="bbox" value=""/>
@@ -228,7 +230,6 @@
   </div>
 
    
-  </g:form>
 </content>
 
 <content tag="middle">
@@ -550,9 +551,31 @@ function changeMapSize(mapWidth, mapHeight)
 }
 
 function getKML(layers)
-{	
-	var wmsParamForm = document.getElementById('wmsParams')
-	
+{
+	var wmsParamForm = document.getElementById('wmsParams');
+	var wmsUrlParams  = new OmarWmsParams();
+
+	 var link   = "${createLink(action: "wms", controller: "ogc")}";
+	 var extent = mapWidget.getSelectedOrViewportExtents();
+	 var size   = mapWidget.getSizeInPixelsFromExtents(extent);
+	 var wmsProperties = {"request":"GetKML",
+	               	  "bbox":extent.toBBOX(),
+	               	  "layers":layers,
+	               	  "srs":"EPSG:4326",
+	               	  "width":size.w,
+	               	  "height":size.h}
+    wmsUrlParams.setProperties(wmsProperties);
+    wmsUrlParams.setProperties(document);
+
+    var url = link + "?" + wmsUrlParams.toUrlParams();
+
+    if(wmsParamForm)
+    {
+        wmsParamForm.action = url;
+        wmsParamForm.submit();
+    }
+
+/*
 	wmsParamForm.request.value = "GetKML";
 	wmsParamForm.layers.value = layers;
 	var extent = mapWidget.getMap().getExtent();
@@ -569,6 +592,7 @@ function getKML(layers)
 	wmsParamForm.quicklook.value = $("quicklook").value;
 
 	wmsParamForm.submit();
+	*/
 }
 
 function setupLayers()
