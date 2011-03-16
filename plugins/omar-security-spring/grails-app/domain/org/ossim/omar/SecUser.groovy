@@ -34,4 +34,13 @@ class SecUser
   {
     SecUserSecRole.findAllByAuthUser(this).collect { it.role } as Set
   }
+  def getAuthoritiesAsStringList()
+  {
+      def result = []
+      def authorities = getAuthorities()
+      authorities.each{
+          result << it.authority
+      }
+      result
+  }
 }
