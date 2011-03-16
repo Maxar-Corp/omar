@@ -1079,7 +1079,7 @@ function MapWidget()
 
     this.updateOmarFiltersGivenHash = function(params)
     {
-        var wmsParams = new Array();
+        var wmsParams = {};
         for(x in params)
         {
             wmsParams[x] = params[x]
@@ -1088,7 +1088,7 @@ function MapWidget()
     }
     this.updateOmarFilters = function( startDay, startMonth, startYear, startHour, startMinute, endDay, endMonth, endYear, endHour, endMinute, numberOfNames, numberOfValues, additionalParams)
     {
-        var wmsParams = new Array();
+        var wmsParamsTemp = {};
 
         var hasStartDate = startDay != "" && startMonth != "" && startYear != "" && startHour != "" && startMinute != "";
         var startDateNoQuote = startYear + startMonth.leftPad( 2 ) + startDay.leftPad( 2 ) + 'T' + startHour.leftPad( 2 ) + startMinute.leftPad( 2 ) +'00Z';
@@ -1098,6 +1098,8 @@ function MapWidget()
 
         var wmsTime = "";
 
+        //alert("HAS END? " + hasEndDate + "==>" + endDay +"," + endMonth +","+ endYear + "," + endHour + "," + endMinute);
+        //alert(endDateNoQuote);
         if ( hasStartDate )
         {
             wmsTime = startDateNoQuote;
@@ -1123,30 +1125,46 @@ function MapWidget()
         }
         var idx = 0;
 
-        wmsParams["time"] = wmsTime;
+        wmsParamsTemp = {"time":wmsTime};
 
         var tempName = "";
 
-        for ( idx = 0; idx < numberOfNames; ++idx )
+        if(numberOfNames)
         {
-            tempName = "searchTagNames[" + idx + "]";
-            wmsParams["searchTagNames[" + idx + "]"] = $( tempName ).value;
+
+            for ( idx = 0; idx < numberOfNames; ++idx )
+            {
+                tempName = "searchTagNames[" + idx + "]";
+                tempValue =  $( tempName ).value;
+                if(tempValue&&!(tempValue==="null"))
+                {
+                    wmsParamsTemp["searchTagNames[" + idx + "]"] = $( tempName ).value;
+                }
+            }
         }
 
-        for ( idx = 0; idx < numberOfValues; ++idx )
+        if(numberOfNames)
         {
-            tempName = "searchTagValues[" + idx + "]";
-            wmsParams["searchTagValues[" + idx + "]"] = $( tempName ).value;
+            for ( idx = 0; idx < numberOfValues; ++idx )
+            {
+                tempName = "searchTagValues[" + idx + "]";
+                tempValue =  $( tempName ).value;
+                if(tempValue&&!(tempValue==="null"))
+                {
+                    wmsParamsTemp["searchTagValues[" + idx + "]"] = $( tempName ).value;
+                }
+            }
         }
-		
+
 		if(additionalParams)
 		{
 			
             for (attr in additionalParams)
             {
-                wmsParams[attr] = additionalParams[attr];
+                wmsParamsTemp[attr] = additionalParams[attr];
             }
 		}
-        dataLayer.mergeNewParams( wmsParams );
+        //alert(JSON.stringify(wmsParamsTemp));
+        dataLayer.mergeNewParams( wmsParamsTemp );
     };
 }
