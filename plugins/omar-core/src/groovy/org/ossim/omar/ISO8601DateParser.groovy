@@ -109,58 +109,60 @@ class ISO8601DateParser
     {
       return false
     }
+      def resultStartDate = null
+      def resultEndDate = null
 
-    Date startDate = null
-    Date endDate = null
+    def startDate = null
+    def endDate = null
 
-    OmarDuration startDuration = null
-    OmarDuration endDuration = null
+    def startPeriod = null
+    def endPeriod = null
 
     if ( startEndSplit )
     {
-      String start = startEndSplit[0].trim()
+        String start = startEndSplit[0].trim()
 
-      startDuration = convertStringToDuration(start)
+        startPeriod = convertStringToDuration(start)
 
-      if ( !startDuration )
-      {
-        startDate = convertStringToSimpleDate(start)
-      }
-
-      if ( startEndSplit.size() > 1 )
-      {
-        String end = startEndSplit[1].trim()
-
-        endDuration = convertStringToDuration(end)
-
-        if ( !endDuration )
+        if ( !startPeriod &&start)
         {
-          endDate = convertStringToSimpleDate(end)
+          resultStartDate = parseDateTime(start);
         }
-      }
+
+        if ( startEndSplit.size() > 1 )
+        {
+          String end = startEndSplit[1].trim()
+
+          endPeriod = convertStringToDuration(end)
+
+          if ( !endPeriod )
+          {
+              resultEndDate = parseDateTime(end);
+              endDate = parseDateTime(end)
+          }
+        }
     }
 
-    if ( startDate )
+    if ( resultStartDate )
     {
-      if ( endDuration )
+      if ( endPeriod )
       {
-        def calendar = new GregorianCalendar()
-        calendar.setTime(startDate);
-        endDuration.addTo(calendar);
-        endDate = calendar.getTime();
+          def interval = new org.joda.time.Interval(resultStartDate, endPeriod);
+          resultStartDate = interval.getStart();
+          resultEndDate   = interval.getEnd();
       }
     }
-    else if ( endDate )
+    else if ( resultEndDate )
     {
-      if ( startDuration )
+      if ( startPeriod )
       {
-        def calendar = new GregorianCalendar()
-        startDuration.durationSign = -1
-        calendar.setTime(endDate);
-        startDuration.addTo(calendar);
-        startDate = calendar.getTime();
+          def interval = new org.joda.time.Interval(startPeriod, resultEndDate);
+          resultStartDate = interval.getStart();
+          resultEndDate   = interval.getEnd();
       }
     }
+      if(resultStartDate) startDate = new Date(resultStartDate.getMillis())
+      if(resultEndDate)   endDate   = new Date(resultEndDate.getMillis())
 
     return [startDate, endDate]
   }
