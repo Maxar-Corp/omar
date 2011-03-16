@@ -10,9 +10,9 @@
 <content tag="content">
   <div class="nav">
     <span class="menuButton"><a class="home" href="${createLink(uri: '/')}">OMAR™ Home</a></span>
-    <sec:ifAllGranted roles="ROLE_ADMIN">
+<%--    <sec:ifAllGranted roles="ROLE_ADMIN">   --%>
       <span class="menuButton"><g:link class="list" action="list">Report List</g:link></span>
-    </sec:ifAllGranted>
+<%--    </sec:ifAllGranted>   --%>
     <span class="menuButton"><g:link class="create" action="create">Create Report</g:link></span>
   </div>
   <div class="body">
@@ -71,7 +71,35 @@
               <g:textArea name="report" cols="40" rows="5" value="${reportInstance?.report}"/>
             </td>
           </tr>
-          </tbody>
+          <sec:ifAllGranted roles="ROLE_ADMIN">
+              <tr class="prop">
+                <td valign="top" class="name">
+                  <label for="status"><g:message code="report.status.label" default="Status"/></label>
+                </td>
+                <td valign="top" class="value ${hasErrors(bean: reportInstance, field: 'status', 'errors')}">
+                  <g:textField name="status" value="${reportInstance?.status}"/>
+                </td>
+              </tr>
+              <tr class="prop">
+                 <td valign="top" class="name">
+                   <label for="comment"><g:message code="report.comments.label" default="Comment"/></label>
+                 </td>
+                 <td valign="top" class="value ${hasErrors(bean: reportInstance, field: 'comment', 'errors')}">
+                   <g:textArea name="comment" cols="40" rows="5" value="${reportInstance?.comment}"/>
+                 </td>
+               </tr>
+          </sec:ifAllGranted>
+          <sec:ifNotGranted roles="ROLE_ADMIN">
+              <tr class="prop">
+                  <td valign="top" class="name"><g:message code="report.id.label" default="Status"/></td>
+                  <td valign="top" class="value">${fieldValue(bean: reportInstance, field: "status")}</td>
+              </tr>
+              <tr class="prop">
+                  <td valign="top" class="name"><g:message code="report.id.label" default="Comment"/></td>
+                  <td valign="top" class="value">${fieldValue(bean: reportInstance, field: "comment")}</td>
+              </tr>
+          </sec:ifNotGranted>
+    </tbody>
         </table>
       </div>
       <div class="buttons">

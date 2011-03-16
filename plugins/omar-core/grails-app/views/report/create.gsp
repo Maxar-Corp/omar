@@ -10,9 +10,9 @@
 <content tag="content">
   <div class="nav">
     <span class="menuButton"><a class="home" href="${createLink(uri: '/')}">OMAR™ Home</a></span>
-    <sec:ifAllGranted roles="ROLE_ADMIN">
+<%--    <sec:ifAllGranted roles="ROLE_ADMIN"> --%>
       <span class="menuButton"><g:link class="list" action="list">Report List</g:link></span>
-    </sec:ifAllGranted>
+<%--    </sec:ifAllGranted> --%>
   </div>
   <div class="body">
     <h1>OMAR: Create Report</h1>
@@ -61,14 +61,30 @@
             </td>
           </tr>
           <tr class="prop">
+             <td valign="top" class="name">
+               <label for="report"><g:message code="report.report.label" default="Report"/></label>
+             </td>
+             <td valign="top" class="value ${hasErrors(bean: reportInstance, field: 'report', 'errors')}">
+               <g:textArea name="report" cols="40" rows="5" value="${reportInstance?.report}"/>
+             </td>
+           </tr>
+          <tr class="prop">
             <td valign="top" class="name">
-              <label for="report"><g:message code="report.report.label" default="Report"/></label>
+              <label for="status"><g:message code="report.status.label" default="Status"/></label>
             </td>
-            <td valign="top" class="value ${hasErrors(bean: reportInstance, field: 'report', 'errors')}">
-              <g:textArea name="report" cols="40" rows="5" value="${reportInstance?.report}"/>
+            <td valign="top" class="value ${hasErrors(bean: reportInstance, field: 'status', 'errors')}">
+              <g:textField name="status" value="${reportInstance?.status}"/>
             </td>
           </tr>
-          </tbody>
+          <tr class="prop">
+             <td valign="top" class="name">
+               <label for="comment"><g:message code="report.comments.label" default="Comment"/></label>
+             </td>
+             <td valign="top" class="value ${hasErrors(bean: reportInstance, field: 'comment', 'errors')}">
+               <g:textArea name="comment" cols="40" rows="5" value="${reportInstance?.comment}"/>
+             </td>
+           </tr>
+           </tbody>
         </table>
       </div>
       <div class="buttons">

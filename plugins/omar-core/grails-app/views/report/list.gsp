@@ -27,6 +27,8 @@
           <g:sortableColumn property="phone" title="${message(code: 'report.phone.label', default: 'Phone')}"/>
           <g:sortableColumn property="createdDate" title="${message(code: 'report.createdDate.label', default: 'Created Date')}"/>
           <g:sortableColumn property="report" title="${message(code: 'report.report.label', default: 'Report')}"/>
+          <g:sortableColumn property="status" title="${message(code: 'report.status.label', default: 'Status')}"/>
+          <g:sortableColumn property="comment" title="${message(code: 'report.comment.label', default: 'Comment')}"/>
         </tr>
         </thead>
         <tbody>
@@ -36,8 +38,10 @@
             <td>${fieldValue(bean: reportInstance, field: "name")}</td>
             <td>${fieldValue(bean: reportInstance, field: "email")}</td>
             <td>${fieldValue(bean: reportInstance, field: "phone")}</td>
-            <td><g:formatDate date="${reportInstance.createdDate}"/></td>
-            <td>${fieldValue(bean: reportInstance, field: "report")}</td>
+              <td><g:formatDate date="${reportInstance.createdDate}"/></td>
+              <td>${fieldValue(bean: reportInstance, field: "report")}</td>
+              <td>${fieldValue(bean: reportInstance, field: "status")}</td>
+              <td>${fieldValue(bean: reportInstance, field: "comment")}</td>
           </tr>
         </g:each>
         </tbody>
