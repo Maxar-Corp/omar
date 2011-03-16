@@ -219,7 +219,7 @@ var layer;
 var format = "image/jpeg";
 
 var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
-var contrastSlider= YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
+var contrastSlider = YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
 
 
 var omarImageSpaceOpenLayersParams = new  OmarImageSpaceOpenLayersParams();
@@ -324,6 +324,12 @@ function get_my_url (bounds)
     return url + path;
 }
 
+function resetBrightnessContrast()
+{
+	brightnessSlider.setRealValue(0);
+	contrastSlider.setRealValue(1.0);
+}
+
 function init(mapWidth, mapHeight)
 {
   var width = parseFloat("${rasterEntry.width}");
@@ -391,35 +397,30 @@ function init(mapWidth, mapHeight)
     	this.setValue(value*50); 
     } 
 	 
-    brightnessSlider.subscribe("slideEnd", function() { 
-		for(var layer in rasterLayers)
+    brightnessSlider.subscribe("slideEnd", function() {
+		if(layer)
 		{
-		    wcsParams.setProperties({brightness:this.getRealValue()});
-			rasterLayers[layer].mergeNewParams({brightness:this.getRealValue()});
+			layer.mergeNewParams({brightness:this.getRealValue()});
 		}
-    }); 	
-    contrastSlider.subscribe("slideEnd", function() { 
-		for(var layer in rasterLayers)
+    });
+    contrastSlider.subscribe("slideEnd", function() {
+		if(layer)
 		{
-		    wcsParams.setProperties({contrast:this.getRealValue()});
-			rasterLayers[layer].mergeNewParams({contrast:this.getRealValue()});
+			layer.mergeNewParams({contrast:this.getRealValue()});
 		}
-    }); 
-     contrastSlider.subscribe("change", function(offsetFromStart) 
-    {
+    });
+     contrastSlider.subscribe("change", function(offsetFromStart){
     	$("contrast").value = this.getRealValue();
     	$("contrastTextField").value = this.getRealValue();
     });
-    brightnessSlider.subscribe("change", function(offsetFromStart) 
+    brightnessSlider.subscribe("change", function(offsetFromStart)
     {
-		wcsParams.setProperties({brightness:this.getRealValue()});
     	$("brightness").value = this.getRealValue();
     	$("brightnessTextField").value = this.getRealValue();
     });
-    	
-	brightnessSlider.setRealValue(0);  
+
+	brightnessSlider.setRealValue(0);
 	contrastSlider.setRealValue(1);
-	
 }
 
   function zoomIn()
