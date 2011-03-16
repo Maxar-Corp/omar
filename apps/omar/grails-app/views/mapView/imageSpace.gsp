@@ -35,6 +35,10 @@
   	z-index: 99999;
   }
 
+  #slider-brightness-bg, #slider-contrast-bg{
+    width:120px;
+    background:url(${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
+  }
 
   div.olControlMousePosition {
     font-family: Verdana;
@@ -76,6 +80,15 @@
 </head>
 
 <body class="yui-skin-sam" onload="init();" >
+
+
+<g:form name="wmsParams" method="POST" url="[action:'wms', controller:'ogc']">
+<input type="hidden" name="request" value=""/>
+<input type="hidden" name="layers" value=""/>
+<input type="hidden" name="bbox" value=""/>
+<input type="hidden" id="contrast" name="contrast" value=""/>
+<input type="hidden" id="brightness" name="brightness" value=""/>
+</g:form>
 
 <content tag="top">
 
@@ -130,7 +143,24 @@
 				<g:select id="interpolation" name="interpolation" from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}" onChange="chgInterpolation()"/>
 			</li>
 			<hr/>
+			
+				<label>Brightness: <input type="text"  readonly="true" id="brightnessTextField" size="3" maxlength="5" value=""></label>
 
+				<li>
+					<div id="slider-brightness-bg" class="yui-h-slider" tabindex="-1" hidefocus="false"> 
+		    			<div id="slider-brightness-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'thumb-n.gif')}"></div> 
+					</div> 
+				</li>
+				<label>Contrast: <input type="text"  readonly="true"  id="contrastTextField" size="3" maxlength="5" value=""></label>
+				<li>
+					<div id="slider-contrast-bg" class="yui-h-slider" tabindex="-1" hidefocus="false"> 
+		    			<div id="slider-contrast-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'thumb-n.gif')}"></div> 
+					</div> 
+				</li>
+				<button id="brightnessContrastReset" type="button" onclick="javascript:resetBrightnessContrast()">Reset</button>
+			
+			
+				<hr/>
 
             <li>Sharpen:</li>
             <li>
@@ -176,10 +206,22 @@
 <content tag="bottom">
 
 </content>
+
+
+
+
+
+
+
 <g:javascript>
 var map;
 var layer;
 var format = "image/jpeg";
+
+var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
+var contrastSlider= YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
+
+
 var omarImageSpaceOpenLayersParams = new  OmarImageSpaceOpenLayersParams();
 function changeMapSize( mapWidth, mapHeight )
 {
@@ -247,6 +289,7 @@ function changeBandsOpts()
 
 function get_my_url (bounds)
 {
+	
     var res = this.map.getResolution();
     var x = /*Math.round*/ ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
     var y = /*Math.round*/ ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
@@ -330,6 +373,53 @@ function init(mapWidth, mapHeight)
 	oMenu.render();
 
 	omarImageSpaceOpenLayersParams.setProperties(document);
+	
+
+	brightnessSlider.animate = false;
+	 
+    brightnessSlider.getRealValue = function() { 
+	    return ((this.getValue()-50)/50.0); 
+    } 
+    contrastSlider.getRealValue = function() { 
+        var value = (this.getValue()/100.0)*2.0;
+        return value;
+    } 
+    brightnessSlider.setRealValue = function(value) { 
+	    this.setValue((value+1)*50);  
+    } 
+    contrastSlider.setRealValue = function(value) {
+    	this.setValue(value*50); 
+    } 
+	 
+    brightnessSlider.subscribe("slideEnd", function() { 
+		for(var layer in rasterLayers)
+		{
+		    wcsParams.setProperties({brightness:this.getRealValue()});
+			rasterLayers[layer].mergeNewParams({brightness:this.getRealValue()});
+		}
+    }); 	
+    contrastSlider.subscribe("slideEnd", function() { 
+		for(var layer in rasterLayers)
+		{
+		    wcsParams.setProperties({contrast:this.getRealValue()});
+			rasterLayers[layer].mergeNewParams({contrast:this.getRealValue()});
+		}
+    }); 
+     contrastSlider.subscribe("change", function(offsetFromStart) 
+    {
+    	$("contrast").value = this.getRealValue();
+    	$("contrastTextField").value = this.getRealValue();
+    });
+    brightnessSlider.subscribe("change", function(offsetFromStart) 
+    {
+		wcsParams.setProperties({brightness:this.getRealValue()});
+    	$("brightness").value = this.getRealValue();
+    	$("brightnessTextField").value = this.getRealValue();
+    });
+    	
+	brightnessSlider.setRealValue(0);  
+	contrastSlider.setRealValue(1);
+	
 }
 
   function zoomIn()
