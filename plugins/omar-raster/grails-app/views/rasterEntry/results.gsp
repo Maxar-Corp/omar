@@ -14,6 +14,13 @@
   .yui-skin-sam .yui-navset .yui-content {
       background: none repeat scroll 0 0 #FFFFFF;
   }
+  #homeMenu{
+  background: url( ../images/skin/house.png )  left no-repeat;
+     z-index: 99999;
+     }
+  #exportMenu, #viewMenu, .datechooser{
+      z-index: 100;
+  }
 
   </style>
 
