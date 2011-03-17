@@ -94,10 +94,10 @@
                   <br/>
                 </li>
                 <li>
-                  <label for="aoiRadius">Radius in Meters:</label>
+                  <label for="aoiRadius1">Radius in Meters:</label>
                 </li>
                 <li>
-                  <g:textField name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters()"/>
+                  <g:textField id="aoiRadius1" name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters();syncAoiRadius('aoiRadius1')"/>
                 </li>
                 <li>
                   <br/>
@@ -188,7 +188,7 @@
                   <label for="aoiRadius">Radius in Meters:</label>
                 </li>
                 <li>
-                  <g:textField name="aoiRadius2"/>
+                    <g:textField id="aoiRadius2" name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters();syncAoiRadius('aoiRadius2')"/>
                 </li>
                 <li>
                   <br/>
@@ -269,7 +269,7 @@
                   <label for="aoiRadius">Radius in Meters:</label>
                 </li>
                 <li>
-                  <g:textField name="aoiRadius3"/>
+                    <g:textField id="aoiRadius3" name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters();syncAoiRadius('aoiRadius3')"/>
                 </li>
                 <li>
                   <br/>
@@ -433,6 +433,14 @@
   var criteriaTabView = null;
   var videoDataSetSearchCriteriaIndex=${session.videoDataSetSearchCriteriaTab?:0};
   var omarSearchParams = new OmarSearchParams();
+  function syncAoiRadius(synchTo)
+  {
+    value = $(synchTo).value;
+    $("aoiRadius1").value = value;
+    $("aoiRadius2").value = value;
+    $("aoiRadius3").value = value;
+
+  }
   function search()
   {
     var url = "${createLink(action: 'search', controller: 'videoDataSet')}";
