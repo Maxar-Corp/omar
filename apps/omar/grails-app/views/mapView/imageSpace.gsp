@@ -442,6 +442,7 @@ function init(mapWidth, mapHeight)
     function setupToolbar()
     {
 
+var panButton = new OpenLayers.Control.MouseDefaults({title:'Drag to recenter map'});
       var zoomBoxButton = new OpenLayers.Control.ZoomBox(
       {title:"Zoom into an area by clicking and dragging"});
 
@@ -463,7 +464,7 @@ function init(mapWidth, mapHeight)
       var container = $("toolBar");
 
       var panel = new OpenLayers.Control.Panel(
-      { div: container,defaultControl: zoomBoxButton,'displayClass': 'olControlPanel'}
+      { div: container,defaultControl: panButton,'displayClass': 'olControlPanel'}
               );
 
 
@@ -500,8 +501,9 @@ function init(mapWidth, mapHeight)
       map.addControl(navButton);
 
       panel.addControls([
-        new OpenLayers.Control.MouseDefaults({title:'Drag to recenter map'}),
-        zoomBoxButton,
+        
+        panButton,
+		zoomBoxButton,
         zoomInButton,
         zoomOutButton,
         navButton.next, navButton.previous,
