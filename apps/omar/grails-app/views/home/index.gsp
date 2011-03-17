@@ -89,7 +89,7 @@ s<html>
     </table>
   </div>
 
-    <sec:ifNotGranted roles="ROLE_ADMIN">
+  <sec:ifNotGranted roles="ROLE_ADMIN">
     <div>
       <h1 style="font-size:150%">User Preferences:</h1>
       <table>
@@ -99,7 +99,8 @@ s<html>
           </td>
           <td>
             <ol>
-              <li><g:link controller="userPreferences" action="edit" id="${user?.id}">Edit</g:link></li>
+              <li><g:link controller="userPreferences" action="editProfile" id="${user?.id}">Edit Profile</g:link></li>
+              <li><g:link controller="userPreferences" action="changePassword" id="${user?.id}">Change Password</g:link></li>
             </ol>
           </td>
         </tr>
@@ -150,8 +151,8 @@ s<html>
           </td>
           <td>
             <ol>
-              <li><g:link controller="user" action="index">User</g:link></li>
-              <li><g:link controller="role" action="index">Roles</g:link></li>
+              <li><g:link controller="secUser" action="index">User</g:link></li>
+              <li><g:link controller="secRole" action="index">Roles</g:link></li>
               <li><g:link controller="requestmap" action="index">Permissions</g:link></li>
             </ol>
           </td>
@@ -166,14 +167,14 @@ s<html>
           <td width="120px">
             <img src="${resource(dir: 'images', file: 'extend.gif')}" alt="">
           </td>
-          <td>
-            <ol>
-              <g:each var="c" in="${editableControllers}">
-                <li><g:link controller="${c.path}">${c.name}</g:link></li>
-              </g:each>
-            </ol>
-          </td>
-        </tr>
+    <td>
+      <ol>
+        <g:each var="c" in="${editableControllers}">
+          <li><g:link controller="${c.path}">${c.name}</g:link></li>
+        </g:each>
+      </ol>
+    </td>
+    </tr>
       </table>
     </div
   </sec:ifAllGranted>
