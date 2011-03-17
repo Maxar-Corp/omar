@@ -698,62 +698,65 @@ function MapWidget()
         		{
         			measure: function(evt)
         			{
-        				if($("measurementUnits").value == "kilometers")
-        				{
-        					if(evt.units == "km")
-        					{
-        						polygonMeasurement.innerHTML = "Polygon: " + evt.measure + " kmÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-        					}
-        					else if(evt.units == "m")
-        					{
-        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 0.001) + " kmÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]"; 
-        					}
-        				}
-        				else if($("measurementUnits").value == "meters")
-        				{
-        					if(evt.units == "km" )
-        					{
-        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 1000) + " mÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-        	                }
-        					else if(evt.units == "m")
-        					{
-        						polygonMeasurement.innerHTML = "Polygon: " + evt.measure + " mÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-        					}
-        				}
-        				else if($("measurementUnits").value == "feet")
-        				{
-        					if(evt.units == "km")
-        					{
-        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 3280.839895) + " ftÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-        					}
-        					else if(evt.units == "m")
-        					{
-        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 3.280839895) + " ftÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-        					}
-        				}
-        				else if($("measurementUnits").value == "miles")
-        				{
-        					if(evt.units == "km")
-        					{
-        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 0.62137119224) + " miÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-        					}
-        					else if(evt.units == "m")
-        					{
-        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 0.00062137119224) + " miÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-        					}
-        				}
-        				else if($("measurementUnits").value == "yards")
-        				{
-        					if(evt.units == "km")
-        					{
-        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 1093.6132983) + " ydÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-        					}
-        					else if(evt.units == "m")
-        					{
-        						polygonMeasurement.innerHTML = "Polygon: " + (evt.measure * 1.0936132983) + " ydÂ² [<a href='javascript:clearPolygonMeasurement()'>X</a>]";
-        					}
-        				}
-        			}
+					if(evt.units == "km")
+						{
+							pathUnit[0] = evt.measure + " km";
+							pathUnit[1] = evt.measure * 1000 + " m^2";
+							pathUnit[2] = evt.measure * 3280.839895 + " ft^2";
+							pathUnit[3] = evt.measure * 0.62137119224 + " mi^2";
+							pathUnit[4] = evt.measure * 1093.6132983 + " yd^2";
+							
+							if($("measurementUnits").value == "kilometers")
+	        				{
+								pathMeasurement.innerHTML = pathUnit[0];
+							}
+							else if($("measurementUnits").value == "meters")
+	        				{
+								pathMeasurement.innerHTML = pathUnit[1];
+							}
+							else if($("measurementUnits").value == "feet")
+	        				{
+								pathMeasurement.innerHTML = pathUnit[2];
+							}
+							else if($("measurementUnits").value == "miles")
+	        				{
+								pathMeasurement.innerHTML = pathUnit[3];
+							}
+							else if($("measurementUnits").value == "yards")
+	        				{
+								pathMeasurement.innerHTML = pathUnit[4];
+							}
+						}
+						else if(evt.units == "m")
+						{
+							pathUnit[0] = evt.measure * 0.001 + " km^2";
+							pathUnit[1] = evt.measure + " m^2";
+							pathUnit[2] = evt.measure * 3.280839895 + " ft^2";
+							pathUnit[3] = evt.measure * 0.00062137119224 + " mi^2";
+							pathUnit[4] = evt.measure * 1.0936132983 + " yd^2";
+							
+							if($("measurementUnits").value == "kilometers")
+	        				{
+								pathMeasurement.innerHTML = pathUnit[0];
+							}
+							else if($("measurementUnits").value == "meters")
+	        				{
+								pathMeasurement.innerHTML = pathUnit[1];
+							}
+							else if($("measurementUnits").value == "feet")
+	        				{
+								pathMeasurement.innerHTML = pathUnit[2];
+							}
+							else if($("measurementUnits").value == "miles")
+	        				{
+								pathMeasurement.innerHTML = pathUnit[3];
+							}
+							else if($("measurementUnits").value == "yards")
+	        				{
+								pathMeasurement.innerHTML = pathUnit[4];
+							}
+						}
+					}
         		}
         	});
     	}
