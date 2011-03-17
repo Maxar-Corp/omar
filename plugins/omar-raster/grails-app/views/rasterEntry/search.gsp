@@ -60,14 +60,14 @@
 </content>
 
 <content tag="left">
-    <div id="demo" class="yui-navset">
+    <div id="spatialTab" class="yui-navset">
       <ul class="yui-nav">
-        <li class="selected"><a href="#demoTab1"><em>DD</em></a></li>
-        <li><a href="#demoTab2"><em>DMS</em></a></li>
-        <li><a href="#demoTab3"><em>MGRS</em></a></li>
+        <li class="selected"><a href="#spatialTab1"><em>DD</em></a></li>
+        <li><a href="#spatialTab2"><em>DMS</em></a></li>
+        <li><a href="#spatialTab3"><em>MGRS</em></a></li>
       </ul>
       <div class="yui-content">
-        <div id="demoTab1">
+        <div id="spatialTab1">
           <div class="niceBox">
             <div class="niceBoxHd">Map Center:</div>
             <div class="niceBoxBody">
@@ -158,7 +158,7 @@
             </div>
           </div>
         </div>
-        <div id="demoTab2">
+        <div id="spatialTab2">
           <div class="niceBox">
             <div class="niceBoxHd">Map Center:</div>
             <div class="niceBoxBody">
@@ -245,7 +245,7 @@
             </div>
           </div>
         </div>
-        <div id="demoTab3">
+        <div id="spatialTab3">
           <div class="niceBox">
             <div class="niceBoxHd">Map Center:</div>
             <div class="niceBoxBody">
@@ -429,6 +429,7 @@
   var oElement3 = null;
   var tabView   = null;
   var criteriaTabView = null;
+  var rasterSearchSpatialIndex=${session.rasterSearchSpatialTab?:0};
   var rasterSearchCriteriaIndex=${session.rasterSearchCriteriaTab?:0};
   var omarSearchParams = new OmarSearchParams();
   function syncAoiRadius(synchTo)
@@ -477,12 +478,20 @@
     }
     tabView = new YAHOO.widget.TabView('demo');
     criteriaTabView = new YAHOO.widget.TabView('criteriaTab');
+    spatialTabView = new YAHOO.widget.TabView('spatialTab');
 
     var tab0 = criteriaTabView.getTab(0);
     var tab1 = criteriaTabView.getTab(1);
     tab0.addListener('click', handleClickCriteriaTab0);
     tab1.addListener('click', handleClickCriteriaTab1);
     criteriaTabView.selectTab(rasterSearchCriteriaIndex);
+    var spatialTab0 = spatialTabView.getTab(0);
+    var spatialTab1 = spatialTabView.getTab(1);
+    var spatialTab2 = spatialTabView.getTab(2);
+    spatialTab0.addListener('click', handleClickSpatialTab0);
+    spatialTab1.addListener('click', handleClickSpatialTab1);
+    spatialTab2.addListener('click', handleClickSpatialTab2);
+    spatialTabView.selectTab(rasterSearchSpatialIndex);
 
     mapWidget = new MapWidget();
     mapWidget.setupMapWidget();
@@ -529,6 +538,15 @@
                                                 zIndex:9999});
 	oMenu.render();
   }
+  function handleClickSpatialTab0(e) {
+  updateCurrentSpatialTab(0);
+  }
+  function handleClickSpatialTab1(e) {
+  updateCurrentSpatialTab(1);
+  }
+  function handleClickSpatialTab2(e) {
+  updateCurrentSpatialTab(2);
+  }
   function handleClickCriteriaTab0(e) {
   updateCurrentTab(0);
   }
@@ -543,6 +561,20 @@
       rasterSearchCriteriaIndex = tabIndex;
 
       new OpenLayers.Ajax.Request(link+"?"+"rasterSearchCriteriaTab="+rasterSearchCriteriaIndex, {method: 'post',
+            onCreate: function(transport) {
+             }
+
+      });
+    }
+  }
+  function updateCurrentSpatialTab(tabIndex)
+  {
+    var link = "${createLink(action: 'updateSession', controller: 'session')}";
+    if(tabIndex != rasterSearchSpatialIndex)
+    {
+      rasterSearchSpatialIndex = tabIndex;
+
+      new OpenLayers.Ajax.Request(link+"?"+"rasterSearchSpatialTab="+rasterSearchSpatialIndex, {method: 'post',
             onCreate: function(transport) {
              }
 
