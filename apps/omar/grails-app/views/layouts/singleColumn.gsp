@@ -40,11 +40,6 @@
     top:0px;
   }
 
-  #top{
-    position:relative;
-    text-align:left;
-    width:100%;
-  }
    center{
      position:relative;
      width:100%;
@@ -60,7 +55,7 @@
   <g:layoutHead/>
 </head>
 
-<body class="${pageProperty(name: 'body.class')} onresize="bodyOnResize();" onload="${pageProperty(name: 'body.onload')}bodyOnResize();">
+<body class="${pageProperty(name: 'body.class')} onresize="bodyOnResize();" onload="${pageProperty(name: 'body.onload')};bodyOnResize();">
 <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
     [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
