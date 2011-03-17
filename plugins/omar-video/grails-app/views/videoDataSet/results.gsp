@@ -19,7 +19,7 @@
  background: url( ../images/skin/house.png )  left no-repeat;
     z-index: 99999;
     }
- #exportMenu, #viewMenu, .datechooser{
+ #exportMenu, #searchMenu{
      z-index: 100;
  }
 
