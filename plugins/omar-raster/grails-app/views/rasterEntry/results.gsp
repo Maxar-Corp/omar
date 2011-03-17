@@ -84,6 +84,10 @@
     <div class="message">${flash.message}</div>
   </g:if>
 
+  <g:if test="${!rasterEntries}">
+    <div class="message">No results found.</div>
+  </g:if>
+
   <div id="demo" class="yui-navset">
     <ul class="yui-nav">
       <g:if test="${rasterEntryResultCurrentTab=='0'}">
