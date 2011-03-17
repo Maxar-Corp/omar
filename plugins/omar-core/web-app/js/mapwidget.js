@@ -752,7 +752,7 @@ function MapWidget()
     	var panel = new OpenLayers.Control.Panel(
     	{
     		div: container,
-    		defaultControl: zoomBoxButton,
+    		defaultControl: panButton,
     		displayClass: "olControlPanel"
     	});
     	
