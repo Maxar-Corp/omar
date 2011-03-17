@@ -222,7 +222,7 @@
 			<li>Measurement Units:</li>
 			<li>Not certified for targeting.</li>
 			<li><g:select name="measurementUnits" from="${['kilometers', 'meters', 'feet', 'miles', 'yards']}"
-				title="Select a unit of measuremen and use the path and polygon measurment tools in the map toolbar." /></li>
+				title="Select a unit of measuremen and use the path and polygon measurment tools in the map toolbar." onChange="foo(this.value)"/></li>
 			<div id="pathMeasurement"></div>
 			<div id="polygonMeasurement"></div>
 		</ul>
@@ -495,6 +495,31 @@ function setMouseMapCtrTxt(evt)
 
 	var mgrsMouseCtr = document.getElementById("mgrsMouseMapCtr");
 	mgrsMouseMapCtr.innerHTML = "MGRS: " + coordConvert.ddToMgrs(center.lat, center.lon);
+}
+
+function foo(unit)
+{
+	if(unit == 'kilometers')
+	{
+		pathMeasurement.innerHTML = mapWidget.getPathUnit()[0];
+	}
+	else if(unit == 'meters')
+	{
+		pathMeasurement.innerHTML = mapWidget.getPathUnit()[1];	
+	}
+	else if(unit == 'feet')
+	{
+		pathMeasurement.innerHTML = mapWidget.getPathUnit()[2];
+	}
+	else if(unit == 'miles')
+	{
+		pathMeasurement.innerHTML = mapWidget.getPathUnit()[3];
+	}
+	else if(unit == 'yards')
+	{
+		pathMeasurement.innerHTML = mapWidget.getPathUnit()[4];
+	}
+
 }
 
 function clearPathMeasurement()
