@@ -45,6 +45,10 @@
       <div class="message">${flash.message}</div>
     </g:if>
 
+  <g:if test="${!rasterEntryList}">
+    <div class="message">No results found.</div>
+  </g:if>
+
     <richui:tabView id="tabView">
       <omar:observe element="tabView" event="mouseover" function="updateSession"/>
       <richui:tabLabels>
