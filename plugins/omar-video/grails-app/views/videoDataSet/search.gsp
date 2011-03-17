@@ -205,7 +205,7 @@
               <ol>
                 <li>
                   <g:checkBox name="searchMethod2" id="bboxSearchButton2" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
-                  <label>Use BBox Search</label>
+                  <label>Use Bound Box Search</label>
                 </li>
                 <li>
                   <br/>
@@ -286,7 +286,7 @@
               <ol>
                 <li>
                   <g:checkBox name="searchMethod3" id="bboxSearchButton3" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
-                  <label>Use BBox Search</label>
+                  <label>Use Bound Box Search</label>
                 </li>
                 <li>
                   <br/>
