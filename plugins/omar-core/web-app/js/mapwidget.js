@@ -700,7 +700,7 @@ function MapWidget()
         			{
 					if(evt.units == "km")
 						{
-							pathUnit[0] = evt.measure + " km";
+							pathUnit[0] = evt.measure + " km^2";
 							pathUnit[1] = evt.measure * 1000 + " m^2";
 							pathUnit[2] = evt.measure * 3280.839895 + " ft^2";
 							pathUnit[3] = evt.measure * 0.62137119224 + " mi^2";
