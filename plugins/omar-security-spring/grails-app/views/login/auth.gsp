@@ -65,9 +65,9 @@
 <body onload="init();">
 
 <content tag="top">
-  <div id="hd">
-    <img id="logo" src="${resource(contextPath: "/", dir: 'images', file: 'OMARLarge.png')}" alt="OMAR-2.0 Logo"/>
-  </div>
+    <div align="center">
+      <g:link class="home" uri="/"><img src="${resource(plugin: 'omar', dir: 'images', file: 'omarLogo.png')}" alt="OMAR Logo"/></g:link>
+    </div>
 </content>
 
 <content tag="center">
