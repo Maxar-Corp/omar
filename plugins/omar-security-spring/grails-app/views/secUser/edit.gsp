@@ -1,4 +1,7 @@
 <%@ page import="org.ossim.omar.SecUser" %>
+<%@ page import="org.ossim.omar.SecRole" %>
+<%@ page import="org.ossim.omar.SecUserSecRole" %>
+
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -120,7 +123,28 @@
               <g:checkBox name="passwordExpired" value="${secUserInstance?.passwordExpired}"/>
             </td>
           </tr>
+          </tbody>
+        </table>
 
+        <hr/>
+
+        <h1>Roles:</h1>
+
+        <g:set var="userRoles" value="${secUserInstance.authorities}"/>
+        <g:set var="allRoles" value="${SecRole.list().sort { it.authority } }"/>
+
+        <table>
+          <tbody>
+          <g:each var="role" in="${allRoles}">
+            <tr class="prop">
+              <td valign="top" class="name">
+                <label for="${role.authority}">${role.authority}</label>
+              </td>
+              <td valign="top">
+                <g:checkBox name="${role.authority}" value="${role.authority in userRoles.authority}"/>
+              </td>
+            </tr>
+          </g:each>
           </tbody>
         </table>
       </div>

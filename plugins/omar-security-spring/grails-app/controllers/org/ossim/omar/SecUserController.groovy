@@ -74,7 +74,16 @@ class SecUserController
           return
         }
       }
+
       secUserInstance.properties = params
+
+      //println params.sort()
+
+      def roleNames = params.keySet().grep { it.startsWith("ROLE_")}
+
+      SecUserSecRole.removeAll(secUserInstance)
+      roleNames?.each { SecUserSecRole.create(secUserInstance, SecRole.findByAuthority(it))}
+
       if ( !secUserInstance.hasErrors() && secUserInstance.save(flush: true) )
       {
         flash.message = "${message(code: 'default.updated.message', args: [message(code: 'secUser.label', default: 'SecUser'), secUserInstance.id])}"
