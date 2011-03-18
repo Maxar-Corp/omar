@@ -9,7 +9,10 @@ function MapWidget()
 	var openlayersMap = null;
     var convert = new CoordinateConversion();
     var zoomInButton  = null;
+	var zoomOutButton = null;
+    var zoomInFullResButton = null;
     var zoomFullResScale = null;
+
     this.allocateMap = function(divId, params)
     {
         openlayersMap = new OpenLayers.Map( divId, params);
@@ -23,8 +26,8 @@ function MapWidget()
     	this.allocateMap(divId, params );
         openlayersMap.addControl( new OpenLayers.Control.LayerSwitcher( {'div':OpenLayers.Util.getElement( 'layerswitcher' ), roundedCorner: false} ) );
 
-        openlayersMap.addControl( new OpenLayers.Control.Scale() );
-        openlayersMap.addControl( new OpenLayers.Control.ScaleLine() );
+        //openlayersMap.addControl( new OpenLayers.Control.Scale() );
+        //openlayersMap.addControl( new OpenLayers.Control.ScaleLine() );
 
         openlayersMap.events.register( "click", map, this.handleMouseClick );
         openlayersMap.events.register( "mousemove", map, this.handleMouseHover );
@@ -579,19 +582,19 @@ function MapWidget()
     	
     	var zoomBoxButton = new OpenLayers.Control.ZoomBox({title: "Click the zoom box button to activate. Once activated click and drag over an area of interest on the map to zoom into."});
     	
-    	var zoomInButton = new OpenLayers.Control.Button({title: "Click to zoom in.",
+    	zoomInButton = new OpenLayers.Control.Button({title: "Click to zoom in.",
     													 displayClass: "olControlZoomIn",
     													 trigger: this.zoomIn});
     	
-     	var zoomOutButton = new OpenLayers.Control.Button({title: "Click to zoom out.",
+     	zoomOutButton = new OpenLayers.Control.Button({title: "Click to zoom out.",
         displayClass: "olControlZoomOut",
         trigger: this.zoomOut});
     	
-    	var zoomInFullResButton = new OpenLayers.Control.Button({title: "Click to zoom into full resolution.",
+    	zoomInFullResButton = new OpenLayers.Control.Button({title: "Click to zoom into full resolution.",
         displayClass: "olControlZoomToLayer",
         trigger: this.zoomInFullRes});
     	
-    	var zoomMaxExtentButton = new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent."});
+    	var zoomMaxExtentButton = new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent.", trigger: this.zoomMaxExtent});
    	
    	    var navButton = new OpenLayers.Control.NavigationHistory({nextOptions:{title:"Click to go to next view."}, 
     	previousOptions:{title:"Click to go to previous view."}});
@@ -807,141 +810,38 @@ function MapWidget()
     	var zoom = openlayersMap.getZoomForResolution(zoomFullResScale, true);
     	openlayersMap.zoomTo(zoom);
 
-    	if(zoomInButton) zoomInButton.displayClass = "olControlZoomOut";
+    	if(zoomInButton) zoomInButton.displayClass = "olControlFoo";
     }
 
-    this.setupToolBarOld = function()
-    {
-        var panButton = new OpenLayers.Control.MouseDefaults(
-        { title: "Click and drag to pan map." } );
-
-        zoomInButton = new OpenLayers.Control.Button(
-        { title: "Click to zoom in.", displayClass: "olControlZoomIn", trigger: this.zoomIn } );
-
-        var zoomOutButton = new OpenLayers.Control.Button(
-        {title: "Click to zoom out.", displayClass: "olControlZoomOut", trigger: this.zoomOut} );
-
-        var zoomMaxExtentButton = new OpenLayers.Control.ZoomToMaxExtent(
-        {title: "Click to zoom to the max extent."} );
-
-        var zoomBoxButton = new OpenLayers.Control.ZoomBox(
-        {title: "Click and drag to zoom into an area."} );
-
-        var boundBoxButton = new OpenLayers.Control.DrawFeature( aoiLayer, OpenLayers.Handler.RegularPolygon,
-        {handlerOptions: {sides: 4, irregular: true}, title: "Click and drag to specify an area of interest."} );
-
-        var clearAoiButton = new OpenLayers.Control.Button(
-        {title: "Click to clear area of interest", displayClass: "olControlClearAreaOfInterest", trigger: this.clearAOI} );
-
-        var measureDistanceButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Path,
-        { title: "Measure Distance", displayClass: "olControlMeasureDistance", persist: true,
-            eventListeners: { measure: function( evt )
-            {
-
-
-                if ( $( "pathUnits" ).value == "kilometer" )
-                {
-                    if ( evt.units == "km" )
-                    {
-                        alert( message + "Path: " + (evt.measure.toFixed( 3 )) + " km" );
-                    }
-                    else if ( evt.units == "m" )
-                    {
-                        alert( message + "Path: " + (evt.measure.toFixed( 3 ) * 0.001) + " km" );
-                    }
-                }
-
-                else if ( $( "pathUnits" ).value == "feet" )
-                {
-                    if ( evt.units == "km" )
-                    {
-                        alert( message + "Path: " + (evt.measure.toFixed( 3 ) * 3280.839895) + " ft" );
-                    }
-
-                    else if ( evt.units == "m" )
-                    {
-                        alert( message + "Path: " + (evt.measure.toFixed( 3 ) * 3.280839895) + " ft" );
-                    }
-                }
-
-                else if ( $( "pathUnits" ).value == "meter" )
-                {
-                    if ( evt.units == "km" )
-                    {
-                        alert( message + "Path: " + (evt.measure.toFixed( 3 ) * 1000) + " m" );
-                    }
-
-                    else if ( evt.units == "m" )
-                    {
-                        alert( message + "Path: " + (evt.measure.toFixed( 3 )) + " m" );
-                    }
-                }
-
-                else if ( $( "pathUnits" ).value == "mile" )
-                {
-                    if ( evt.units == "km" )
-                    {
-                        alert( message + "Path: " + (evt.measure.toFixed( 3 ) * 0.62137119224) + " mi" );
-                    }
-
-                    else if ( evt.units == "m" )
-                    {
-                        alert( message + "Path: " + (evt.measure.toFixed( 3 ) * 0.00062137119224) + " mi" );
-                    }
-                }
-
-                else if ( $( "pathUnits" ).value == "yard" )
-                {
-                    if ( evt.units == "km" )
-                    {
-                        alert( message + "Path: " + (evt.measure.toFixed( 3 ) * 1093.6132983) + " yd" );
-                    }
-
-                    else if ( evt.units == "m" )
-                    {
-                        alert( message + "Path: " + (evt.measure.toFixed( 3 ) * 1.0936132983) + " yd" );
-                    }
-                }
-            }}} );
-
-        var measureAreaButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Polygon,
-        {title: "Measure Area", displayClass: "olControlMeasureArea", persist: true,
-            eventListeners: {measure: function( evt )
-            {
-                alert( message + "Area: " + evt.measure.toFixed( 3 ) + " " + evt.units + "^2" );
-            }}} );
-
-        var container = $( "toolBar" );
-
-        var toolBar = new OpenLayers.Control.Panel(
-        {div: container,defaultControl: zoomBoxButton, displayClass: "olControlPanel"} );
-
-        toolBar.addControls( [
-            panButton,
-
-            zoomInButton,
-            zoomOutButton,
-            zoomMaxExtentButton,
-            zoomBoxButton,
-
-            boundBoxButton,
-            clearAoiButton,
-
-            measureDistanceButton,
-            measureAreaButton
-        ] );
-
-        openlayersMap.addControl( toolBar );
-    };
+	this.zoomMaxExtent = function()
+	{
+		openlayersMap.zoomToMaxExtent();
+		if(zoomInButton) zoomInButton.displayClass = "olControlZoomIn";
+	
+	}
 
     this.zoomIn = function()
     {
-        openlayersMap.zoomIn();
+		openlayersMap.zoomIn();
+		
+		var fullRes = openlayersMap.getZoomForResolution(parseFloat(zoomFullResScale, true));
+	
+		if(openlayersMap.getZoom() >= fullRes)
+		{
+			zoomInButton.displayClass = "olControlFoo";
+		}
     };
 
-    this.zoomOut = function()
+ 	this.zoomOut = function()
     {
         openlayersMap.zoomOut();
+
+		var fullRes = openlayersMap.getZoomForResolution(parseFloat(zoomFullResScale, true));
+	
+		if(openlayersMap.getZoom() < fullRes)
+		{
+			zoomInButton.displayClass = "olControlZoomIn";
+		}
     };
 
     this.clearPathMeasurement = function()

@@ -532,35 +532,6 @@ function clearPolygonMeasurement()
 	polygonMeasurement.innerHTML = "";
 }
 
-function zoomIn()
-{
-	mapWidget.getMap().zoomIn();
-
-	var fullRes = mapWidget.getMap().getZoomForResolution(parseFloat(fullResScale), true);
-	if(mapWidget.getMap().getZoom() >= fullRes)
-	{
-		zoomInButton.displayClass = "olControlZoomOut";
-	}
-}
-
-function zoomOut()
-{
-	mapWidget.getMap().zoomOut();
-	
-	var fullRes = mapWidget.getMap().getZoomForResolution(parseFloat(fullResScale), true);
-	if(mapWidget.getMap().getZoom() < fullRes)
-	{
-		zoomInButton.displayClass = "olControlZoomIn";
-	}
-}
-
-function zoomInFullRes()
-{
-	var zoom = mapWidget.getMap().getZoomForResolution(parseFloat("${fullResScale}"), true);
-    mapWidget.getMap().zoomTo(zoom);
-
-	zoomInButton.displayClass = "olControlZoomOut";
-}
 
 function changeMapSize(mapWidth, mapHeight)
 {
