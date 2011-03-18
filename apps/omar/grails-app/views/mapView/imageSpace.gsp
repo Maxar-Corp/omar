@@ -215,13 +215,12 @@
 
 <g:javascript>
 var map;
+var hyp;
 var layer;
 var format = "image/jpeg";
-
 var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
 var contrastSlider = YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
-
-
+var imageSpaceBounds;
 var omarImageSpaceOpenLayersParams = new  OmarImageSpaceOpenLayersParams();
 function changeMapSize( mapWidth, mapHeight )
 {
@@ -289,11 +288,18 @@ function changeBandsOpts()
 
 function get_my_url (bounds)
 {
-	
+  var width  = parseFloat("${rasterEntry.width}");
+  var height = parseFloat("${rasterEntry.height}");
     var res = this.map.getResolution();
-    var x = /*Math.round*/ ((bounds.left - this.maxExtent.left) / (res * this.tileSize.w));
-    var y = /*Math.round*/ ((this.maxExtent.top - bounds.top) / (res * this.tileSize.h));
+    var scalex = 1.0/(res * this.tileSize.w);
+    var scaley = 1.0/(res * this.tileSize.h);
+//    var x =  (((bounds.left - this.maxExtent.left)+xres)*scalex);
+    var x =  (bounds.left - (-width*0.5))*scalex;
+//    var y =  (((this.maxExtent.top - bounds.top)+yres)*scaley);
+    var y =  ((height*0.5) - bounds.top)*scaley;
     var z = this.map.getZoom();
+
+   // alert(x + ", " + y);
     omarImageSpaceOpenLayersParams.setProperties(document);
     omarImageSpaceOpenLayersParams.setProperties({'res':res,
                                                   'x':x,
@@ -303,19 +309,6 @@ function get_my_url (bounds)
                                                   'tileWidth':this.tileSize.w,
                                                   'tileHeight':this.tileSize.h});
     var path = "?"+omarImageSpaceOpenLayersParams.toUrlParams();
-    /*
-    var path = "?z=" + z + "&x=" + x + "&y=" + y + "&format=" + this.format
-        + "&tileWidth=" + this.tileSize.w + "&tileHeight=" + this.tileSize.h
-        + "&id=" + ${rasterEntry?.id}
-        + "&sharpen_mode=" + sharpen_mode
-        + "&stretch_mode=" + stretch_mode
-        + "&stretch_mode_region=" + stretch_mode_region
-        + "&bands=" + bands
-        + "&interpolation" + interpolation
-        + "&rotate=" + rotate;
-*/
-
-//      var path = "?bbox=" + x + "," + y + "," + bounds.right + "," + bounds.top
 
     var url = this.url;
     if (url instanceof Array) {
@@ -330,21 +323,33 @@ function resetBrightnessContrast()
 	contrastSlider.setRealValue(1.0);
 }
 
+
+
 function init(mapWidth, mapHeight)
 {
-  var width = parseFloat("${rasterEntry.width}");
+  var width  = parseFloat("${rasterEntry.width}");
   var height = parseFloat("${rasterEntry.height}");
+  var r = width;
+  if(r < height) r = height;
+//  hyp    = Math.sqrt(2)*(r*0.5);//Math.sqrt(r*r + r*r);
+  hyp    = Math.sqrt(width*width + height*height)*0.5;
+
+  var left       =  -hyp;
+  var bottom     =  -hyp;
+  var top        =  hyp;
+  var right      =  hyp;
   var url = "${createLink(controller: 'icp', action: 'getTileOpenLayers')}";
-  var resLevels = parseFloat("${rasterEntry.numberOfResLevels}")
+  var resLevels = parseFloat("${rasterEntry.numberOfResLevels}");
+  var bounds = new OpenLayers.Bounds(Math.round(left), Math.round(bottom), Math.round(right), Math.round(top));
   // full res is included in resLevels so we need to add 2 more to give us
   // an 8x zoom
-  map = new OpenLayers.Map("map", {controls:[], numZoomLevels:(resLevels+2)});
+  map = new OpenLayers.Map("map", {controls:[], maxExtent:bounds, numZoomLevels:(resLevels+2)});
   var options = {
   controls: [],
-  maxExtent: new OpenLayers.Bounds(0, 0,width, height),
+  maxExtent: bounds,
     getURL: get_my_url,
     isBaseLayer: true,
-    maxResolution: width / map.getTileSize().w,
+    maxResolution: (width) / map.getTileSize().w,
     ratio: 1.0,
     transitionEffect: "resize",
     units:'pixel',
@@ -374,8 +379,7 @@ function init(mapWidth, mapHeight)
 	var oMenu = new YAHOO.widget.MenuBar("rasterMenu", { 
                                               autosubmenudisplay: true, 
                                               hidedelay: 750, 
-                                              lazyload: true,
-                                              zIndex:9999}); 
+                                              lazyload: true});
 	oMenu.render();
 
 	omarImageSpaceOpenLayersParams.setProperties(document);
