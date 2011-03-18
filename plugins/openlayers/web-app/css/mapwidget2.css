@@ -2,6 +2,18 @@ div.olControlScale {
     background-color: #ffffff;
     font-size: 1.0em;
     font-weight: bold;
+ right: 3px;
+    bottom: 3px;
+
+}
+
+div.olControlScaleLine {
+	left: 3px;
+    bottom: 3px;
+}
+
+div.olControlOverviewMap {
+    bottom: 33px;
 }
 
 .olControlNoSelect {
@@ -122,6 +134,24 @@ div.olControlScale {
     background-size: 100%;
     */
     background-position: 0 -370px;
+}
+
+.olControlPanel .olControlFooItemActive {
+  width: 24px;
+  height: 24px;
+  background-color: gray;
+  background-image: url('../images/themes/gis/mActionZoomIn.gif');
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+.olControlPanel .olControlFooItemInactive {
+  width: 24px;
+  height: 24px;
+  background-color: gray;
+  background-image: url('../images/themes/gis/mActionZoomIn.gif');
+  background-repeat: no-repeat;
+  background-size: 100%;
 }
 
 .olControlPanel .olControlZoomInItemInactive {
