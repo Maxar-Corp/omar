@@ -288,7 +288,7 @@ function init()
         interpolation: "${params.interpolation?:'bilinear'}",
         srs: "${params.srs?:'EPSG:4326'}",
         crs: "${params.crs?:'EPSG:4326'}",
-        bands:"${params.crs?:'EPSG:4326'}",
+        bands:$("bands").value,
         quicklook: "${params.quicklook?:'false'}"
     });
     if(${rasterEntries?.numberOfBands.get(0) >= 3})
@@ -642,7 +642,8 @@ function setupLayers()
                 format: format, sharpen_mode:sharpen_mode,
                 stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent,
          brightness:brightnessSlider.getRealValue(),
-         contrast:contrastSlider.getRealValue()
+         contrast:contrastSlider.getRealValue(),
+         bands:$("bands").value
                 },
 	           {isBaseLayer: true, buffer: 0,
 	            singleTile: true, ratio: 1.0,
