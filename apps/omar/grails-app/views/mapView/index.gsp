@@ -73,10 +73,8 @@
  ]}"/>
 
 <content tag="top">
-    <form id="wcsForm" method="POST">
-    </form>
-    <g:form name="wmsParams" method="POST" >
-    </g:form>
+    <g:form name="wcsForm" method="POST"/>
+    <g:form name="wmsFormId" method="POST" />
 
 	<div id="rasterMenu" class="yuimenubar yuimenubarnav">
 		<div class="bd">
@@ -107,7 +105,7 @@
 					<div id="viewMenu" class="yuimenu">
 						<div class="bd">
 							<ul>
-								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'imageSpace', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Image Space Viewer">Image Space Viewer</a></li>
+								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToImageSpace();" title="Image Space Viewer">Image Space Viewer</a></li>
 								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'multiLayer', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Multi Layer Viewer">Multi Layer Viewer</a></li>
 							</ul>
 						</div>
@@ -147,8 +145,8 @@
 	<input type="hidden" name="request" value=""/>
 	<input type="hidden" name="layers" value=""/>
 	<input type="hidden" name="bbox" value=""/>
-	<input type="hidden" id="contrast" name="contrast" value=""/>
-	<input type="hidden" id="brightness" name="brightness" value=""/>
+	<input type="hidden" id="contrast" name="contrast" value="${params.contrast?:''}"/>
+	<input type="hidden" id="brightness" name="brightness" value="${params.brightness?:''}"/>
 
 	<div class="niceBox">
 		<div class="niceBoxHd">Image Adjustments:</div>
@@ -174,39 +172,38 @@
 				</li>
 				<button id="brightnessContrastReset" type="button" onclick="javascript:resetBrightnessContrast()">Reset</button>
 				<hr/>
-				<li>Sharpen:</li>
-				<li>
-					<g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="chgSharpenMode()"/>
-				</li>
-				<li>Stretch:</li>
-				<li>
-					<g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="chgStretchMode()"/>
-				</li>
-          		<li>Region:</li>
-          		<li>
-            		<g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="chgStretchMode() "/>
-          		</li>
-          		
-				<g:if test="${rasterEntries?.numberOfBands.get(0) == 2}">
-            		<li>Bands:</li>
-            		<li>
-              			<g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()"/>
-            		</li>
-          		</g:if>
+                <li>Sharpen:</li>
+                <li>
+                  <g:select id="sharpen_mode" name="sharpen_mode" value="${params.sharpen_mode?:'none'}" from="${['none', 'light', 'heavy']}" onChange="mergeNewParams()"/>
+                </li>
+                <li>Stretch:</li>
+                <li>
+                  <g:select id="stretch_mode" name="stretch_mode" value="${params.stretch_mode?:'linear_auto_min_max'}" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="mergeNewParams()" />
+                </li>
+                <li>Region:</li>
+                <li>
+                  <g:select id="stretch_mode_region" name="stretch_mode_region" value="${params.stretch_mode_region?:'global'}" from="${['global', 'viewport']}" onChange="mergeNewParams()" />
+                </li>
 
-          		<g:if test="${rasterEntries?.numberOfBands.get(0) >= 3}">
-            		<li>Bands:</li>
-            		<li>
-              			<g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()"/>
-            		</li>
-          		</g:if>
+                <g:if test="${rasterEntries[0]?.numberOfBands == 1}">
+                  <li>Band:</li>
+                  <li><g:select id="bands" name="bands" value="${params.bands?:'0'}" from="${['0']}" onChange="mergeNewParams()" /> </li>
+                </g:if>
+                <g:if test="${rasterEntries[0]?.numberOfBands == 2}">
+                  <li>Bands:</li>
+                  <li><g:select id="bands" name="bands" value="${params.bands?:'0,1'}" from="${['0,1','1,0','0','1']}" onChange="mergeNewParams()" /></li>
+                </g:if>
+                <g:if test="${rasterEntries[0]?.numberOfBands >= 3}">
+                  <li>Bands:</li>
+                  <li><g:select id="bands" name="bands" value="${params.bands?:'0,1,2'}" from="${['0,1,2','2,1,0','0','1','2']}" onChange="mergeNewParams()" /></li>
+                </g:if>
 
           		<li>Orthorectification:</li>
           		<li>
             <g:select id="quicklook" name="quicklook"
                 from="${[[name: 'Rigorous', value: 'false'],[name: 'Simple', value: 'true']]}"
                 optionValue="name" optionKey="value"
-                onChange="chgQuickLookMode()"/>
+                onChange="mergeNewParams()"/>
           </li>
         </ol>
       </div>
@@ -255,10 +252,27 @@ var smallestScale = parseFloat("${smallestScale}");
 var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
 var contrastSlider= YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
 
+
+function changeToImageSpace()
+{
+   var url = "${createLink(controller: 'mapView', action: 'imageSpace')}";
+   var wmsFormElement = $("wmsFormId");
+   if(wmsFormElement)
+   {
+     wmsParams = new OmarWmsParams();
+     wmsParams.setProperties(wcsParams);
+     wmsParams.layers = "${(rasterEntries*.indexId).join(',')}";
+    wmsFormElement.action = url + "?"+wmsParams.toUrlParams();
+    wmsFormElement.method = "POST";
+    wmsFormElement.submit();
+   }
+
+}
+
 function resetBrightnessContrast()
 {
 	brightnessSlider.setRealValue(0);  
-	contrastSlider.setRealValue(1.0);  
+	contrastSlider.setRealValue(1.0);
 }
 
 function init()
@@ -266,16 +280,16 @@ function init()
 // we need to pass a json string or object and save to the session
 // and reload here
     wcsParams.setProperties({
-        brightness:"0",
-        contrast:"1",
-        sharpen_mode:"none",
-        stretch_mode:"linear_auto_min_max",
-        stretch_mode_region: "global",
-        interpolation: "bilinear",
-        srs: "EPSG:4326",
-        crs: "EPSG:4326",
-        bands:"",
-        quicklook: false
+        brightness:"${params.brightness?:0}",
+        contrast:"${params.contrast?:1.0}",
+        sharpen_mode:"${params.sharpen_mode?:'none'}",
+        stretch_mode:"${params.stretch_mode?:'linear_auto_min_max'}",
+        stretch_mode_region: "${params.stretch_mode_region?:'global'}",
+        interpolation: "${params.interpolation?:'bilinear'}",
+        srs: "${params.srs?:'EPSG:4326'}",
+        crs: "${params.crs?:'EPSG:4326'}",
+        bands:"${params.crs?:'EPSG:4326'}",
+        quicklook: "${params.quicklook?:'false'}"
     });
     if(${rasterEntries?.numberOfBands.get(0) >= 3})
     {
@@ -327,8 +341,8 @@ function init()
     	$("brightnessTextField").value = this.getRealValue();
     });
     	
-	brightnessSlider.setRealValue(0);  
-	contrastSlider.setRealValue(1);  
+	brightnessSlider.setRealValue(${params.brightness?:0});
+	contrastSlider.setRealValue(${params.contrast?:1});
 	var bounds = new OpenLayers.Bounds(left, bottom, right, top);
 	
 	mapWidget = new MapWidget();
@@ -421,6 +435,26 @@ function setMapCtr(unit, value)
 
             
         }		
+	}
+}
+
+function mergeNewParams()
+{
+    obj = {
+         interpolation:$("interpolation").value,
+         sharpen_mode:$("sharpen_mode").value,
+         stretch_mode:$("stretch_mode").value,
+         stretch_mode_region: $("stretch_mode_region").value,
+         quicklook:$("quicklook").value,
+         quicklook:$("quicklook").value,
+         bands:$("bands").value,
+         brightness:brightnessSlider.getRealValue(),
+         contrast:contrastSlider.getRealValue()
+    };
+    wcsParams.setProperties(obj);
+	for(var layer in rasterLayers)
+	{
+		rasterLayers[layer].mergeNewParams(obj);
 	}
 }
 
@@ -548,7 +582,7 @@ function changeMapSize(mapWidth, mapHeight)
 
 function getKML(layers)
 {
-	var wmsParamForm = document.getElementById('wmsParams');
+	var wmsParamForm = document.getElementById('wmsParamsForm');
 	var wmsUrlParams  = new OmarWmsParams();
 
 	 var link   = "${createLink(action: "wms", controller: "ogc")}";
@@ -606,7 +640,10 @@ function setupLayers()
 	   new OpenLayers.Layer.WMS("Raster", "${createLink(controller: "ogc", action: "wms")}",
                {layers: "${(rasterEntries*.indexId).join(',')}",
                 format: format, sharpen_mode:sharpen_mode,
-                stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent},
+                stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent,
+         brightness:brightnessSlider.getRealValue(),
+         contrast:contrastSlider.getRealValue()
+                },
 	           {isBaseLayer: true, buffer: 0,
 	            singleTile: true, ratio: 1.0,
 	            quicklook: true, transitionEffect: "resize", displayOutsideMaxExtent:false})];

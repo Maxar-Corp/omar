@@ -82,13 +82,13 @@
 <body class="yui-skin-sam" onload="init();" >
 
 
-<g:form name="wmsParams" method="POST" url="[action:'wms', controller:'ogc']">
+<g:form name="wmsFormId" method="POST">
+</g:form>
 <input type="hidden" name="request" value=""/>
 <input type="hidden" name="layers" value=""/>
 <input type="hidden" name="bbox" value=""/>
-<input type="hidden" id="contrast" name="contrast" value=""/>
-<input type="hidden" id="brightness" name="brightness" value=""/>
-</g:form>
+<input type="hidden" id="contrast" name="contrast" value="${params.contrast?:0}"/>
+<input type="hidden" id="brightness" name="brightness" value="${params.brightness?:0}"/>
 
 <content tag="top">
 
@@ -108,7 +108,7 @@
 				<div id="viewMenu" class="yuimenu">
 					<div class="bd">
 						<ul>
-							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "mapView", action: "index", params: [layers: rasterEntry?.indexId])}" title="Single Layer Viewer">Single Layer Viewer</a></li>
+							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();" title="Single Layer Viewer">Single Layer Viewer</a></li>
 						
 							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}" title="Multi Layer Viewer">Multi Layer Viewer</a></li>
 						
@@ -120,15 +120,6 @@
 	
 	</div>
 </div>
-
-
-
-
-
-
-
-
-
 
 
 </content>
@@ -164,11 +155,11 @@
 
             <li>Sharpen:</li>
             <li>
-              <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
+              <g:select id="sharpen_mode" name="sharpen_mode" value="${params.sharpen_mode?:'none'}" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
             </li>
             <li>Stretch:</li>
             <li>
-              <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()" />
+              <g:select id="stretch_mode" name="stretch_mode" value="${params.stretch_mode?:'linear_auto_min_max'}" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()" />
             </li>
             <li>Region:</li>
             <li>
@@ -177,18 +168,18 @@
 
             <g:if test="${rasterEntry?.numberOfBands == 1}">
               <li>Band:</li>
-              <li><g:select id="bands" name="bands" from="${['0']}" onChange="changeBandsOpts()" /> </li>
+              <li><g:select id="bands" name="bands" value="${params.bands?:'0'}" from="${['0']}" onChange="changeBandsOpts()" /> </li>
             </g:if>
             <g:if test="${rasterEntry?.numberOfBands == 2}">
               <li>Bands:</li>
-              <li><g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()" /></li>
+              <li><g:select id="bands" name="bands" value="${params.bands?:'0,1'}" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()" /></li>
             </g:if>
             <g:if test="${rasterEntry?.numberOfBands >= 3}">
               <li>Bands:</li>
-              <li><g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()" /></li>
+              <li><g:select id="bands" name="bands" value="${params.bands?:'0,1,2'}" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()" /></li>
             </g:if>
             <li>Image Rotate:</li>
-            <li><g:textField name="rotate" onChange="rotateImage()" size="1"/></li>
+            <li><g:textField name="rotate" value="${params.rotate?:0}" onChange="rotateImage()" size="1"/></li>
           </ol>
         </div>
       </div>
@@ -222,6 +213,8 @@ var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg"
 var contrastSlider = YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
 var imageSpaceBounds;
 var omarImageSpaceOpenLayersParams = new  OmarImageSpaceOpenLayersParams();
+
+
 function changeMapSize( mapWidth, mapHeight )
 {
    if(mapWidth&&mapHeight)
@@ -249,7 +242,23 @@ function changeMapSize( mapWidth, mapHeight )
   map.updateSize();
 }
 
- function changeHistoOpts()
+
+function changeToSingleLayer()
+{
+   var url = "${createLink(controller: 'mapView', action: 'index')}";
+   var wmsFormElement = $("wmsFormId");
+   if(wmsFormElement)
+   {
+      var imageAdjustmentParams = new OmarWmsParams();
+      imageAdjustmentParams.setProperties(document);
+      imageAdjustmentParams.layers = "${rasterEntry.indexId}";
+      wmsFormElement.action = url + "?"+imageAdjustmentParams.toUrlParams();
+      wmsFormElement.method = "POST";
+      wmsFormElement.submit();
+   }
+}
+
+function changeHistoOpts()
 {
 var stretch_mode = $("stretch_mode").value;
 var stretch_mode_region = $("stretch_mode_region").value;
@@ -423,8 +432,8 @@ function init(mapWidth, mapHeight)
     	$("brightnessTextField").value = this.getRealValue();
     });
 
-	brightnessSlider.setRealValue(0);
-	contrastSlider.setRealValue(1);
+	brightnessSlider.setRealValue(${params.brightness?:0});
+	contrastSlider.setRealValue(${params.contrast?:1});
 }
 
   function zoomIn()
