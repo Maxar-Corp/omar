@@ -107,6 +107,10 @@
 			<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
 				<div id="viewMenu" class="yuimenu">
 					<div class="bd">
+                        <ul>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "imageSpace", params: [layers: rasterEntry?.indexId])}" title="Reset Image space">Reset</a></li>
+
+                        </ul>
 						<ul>
 							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();" title="Single Layer Viewer">Single Layer Viewer</a></li>
 						
