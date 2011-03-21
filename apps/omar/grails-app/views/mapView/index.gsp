@@ -104,10 +104,13 @@
 				<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
 					<div id="viewMenu" class="yuimenu">
 						<div class="bd">
-							<ul>
-								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToImageSpace();" title="Image Space Viewer">Image Space Viewer</a></li>
-								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'multiLayer', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Multi Layer Viewer">Multi Layer Viewer</a></li>
-							</ul>
+                            <ul>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "index", params: [layers: (rasterEntries*.indexId).join(',')])}" title="Reset the view">Reset</a></li>
+                            </ul>
+                            <ul>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToImageSpace();" title="Image Space Viewer">Image Space Viewer</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'multiLayer', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Multi Layer Viewer">Multi Layer Viewer</a></li>
+                            </ul>
 						</div>
 					</div>
 				</li>
