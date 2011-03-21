@@ -646,7 +646,8 @@ function setupLayers()
                 stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent,
          brightness:brightnessSlider.getRealValue(),
          contrast:contrastSlider.getRealValue(),
-         bands:$("bands").value
+         bands:$("bands").value,
+         interpolation:$("interpolation").value
                 },
 	           {isBaseLayer: true, buffer: 0,
 	            singleTile: true, ratio: 1.0,
