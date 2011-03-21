@@ -107,16 +107,16 @@
 			<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
 				<div id="viewMenu" class="yuimenu">
 					<div class="bd">
-                        <ul>
-                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "imageSpace", params: [layers: rasterEntry?.indexId])}" title="Reset Image space">Reset</a></li>
-
-                        </ul>
 						<ul>
 							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();" title="Single Layer Viewer">Single Layer Viewer</a></li>
 						
 							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}" title="Multi Layer Viewer">Multi Layer Viewer</a></li>
 						
 						</ul>
+                        <ul>
+                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "imageSpace", params: [layers: rasterEntry?.indexId])}" title="Reset Image space">Reset</a></li>
+
+                        </ul>
 					</div>
 				</div>
 			</li>
@@ -135,7 +135,7 @@
           <ol>
 			<li>Interpolation:</li>
 			<li>
-				<g:select id="interpolation" name="interpolation" from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}" onChange="chgInterpolation()"/>
+				<g:select id="interpolation" name="interpolation" value="${params.interpolation?:bilinear}" from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}" onChange="chgInterpolation()"/>
 			</li>
 			<hr/>
 			

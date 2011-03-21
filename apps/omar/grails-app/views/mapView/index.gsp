@@ -105,11 +105,11 @@
 					<div id="viewMenu" class="yuimenu">
 						<div class="bd">
                             <ul>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "index", params: [layers: (rasterEntries*.indexId).join(',')])}" title="Reset the view">Reset</a></li>
-                            </ul>
-                            <ul>
                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToImageSpace();" title="Image Space Viewer">Image Space Viewer</a></li>
                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'multiLayer', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Multi Layer Viewer">Multi Layer Viewer</a></li>
+                            </ul>
+                            <ul>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "index", params: [layers: (rasterEntries*.indexId).join(',')])}" title="Reset the view">Reset</a></li>
                             </ul>
 						</div>
 					</div>
@@ -157,7 +157,7 @@
 			<ol>
 				<li>Interpolation:</li>
 				<li>
-					<g:select id="interpolation" name="interpolation" from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}" onChange="chgInterpolation()"/>
+					<g:select id="interpolation" name="interpolation" value="${params.interpolation?:bilinear}" from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}" onChange="chgInterpolation()"/>
 				</li>
 				<hr/>
 				<label>Brightness: <input type="text"  readonly="true" id="brightnessTextField" size="3" maxlength="5" value=""></label>
