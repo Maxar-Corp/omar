@@ -173,7 +173,10 @@
 		    			<div id="slider-contrast-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'thumb-n.gif')}"></div> 
 					</div> 
 				</li>
-				<button id="brightnessContrastReset" type="button" onclick="javascript:resetBrightnessContrast()">Reset</button>
+                <div align="center">
+                    <button id="brightnessContrastReset" type="button" onclick="javascript:resetBrightnessContrast()">Reset</button>
+
+                </div>
 				<hr/>
                 <li>Sharpen:</li>
                 <li>
