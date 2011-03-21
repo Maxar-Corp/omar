@@ -485,7 +485,7 @@ grails.plugins.springsecurity.securityConfigType = 'Requestmap'
 // Values can be
 // MD2, MD5, SHA-1, SHA-256, SHA-384, SHA-512
 //
-grails.plugins.springsecurity.password.algorithm = 'SHA-256'
+grails.plugins.springsecurity.password.algorithm = 'MD5'
 
 // LDAP Configuration
 grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
