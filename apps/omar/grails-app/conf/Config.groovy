@@ -4,7 +4,6 @@ import grails.util.Environment
 //import org.ossim.postgis.GeometryType
 //import com.vividsolutions.jts.geom.Geometry
 
-import org.ossim.omar.DbAppender
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
 
