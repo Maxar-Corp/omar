@@ -81,6 +81,9 @@ log4j = {
   //
   appenders {
 
+      // uncomment for DB appending.  Do this after the first build of OMAR.
+      // Then uncomment the wmsLoggingAppender redirection below.
+/*
     appender new DbAppender(name: "wmsLoggingAppender",
             threshold: org.apache.log4j.Level.INFO,
             tableMapping: [width: ":width", height: ":height", layers: ":layers", styles: ":styles",
@@ -90,6 +93,7 @@ log4j = {
                     geometry: "ST_GeomFromText(:geometry, 4326)"],
             tableName: "wms_log"
     )
+*/
     appender new org.apache.log4j.DailyRollingFileAppender(name: "omarDataManagerAppender",
             datePattern: "'.'yyyy-MM-dd",
             file: "/tmp/logs/omarDataManagerAppender.log",
@@ -100,7 +104,7 @@ log4j = {
             layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5}  %m%n'))
   }
 
-  info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: false
+//  info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: false
   info 'omarDataManagerAppender': '*DataManagerService', additivity: false
   info omarAppender: 'grails.app', additivity: false
   info omarAppender: 'omar', additivity: false
