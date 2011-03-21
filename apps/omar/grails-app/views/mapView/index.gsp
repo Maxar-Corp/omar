@@ -235,7 +235,6 @@
 <g:javascript>
 var coordConvert = new CoordinateConversion();
 var mapWidget;
-var zoomInButton;
 var kmlLayers;
 var rasterLayers;
 var select;
@@ -251,8 +250,6 @@ var smallestScale = parseFloat("${smallestScale}");
 
 var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
 var contrastSlider= YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
-
-
 function changeToImageSpace()
 {
    var url = "${createLink(controller: 'mapView', action: 'imageSpace')}";
@@ -727,7 +724,23 @@ function onFeatureSelect(event)
 function getProjectedImage(params)
 {
 	 var link   = "${createLink(action: "wcs", controller: "ogc")}";
-	 var extent = mapWidget.getSelectedOrViewportExtents();
+	 var extent = mapWidget.getSelectedExtents();
+
+	 if(extent&&extent.left)
+	 {
+	    viewportExtents = mapWidget.getViewportExtents();
+
+	    if(!viewportExtents.containsBounds(extent))
+	    {
+	        alert("Selected extents exceeds the viewport extents.  The AOI will be cleared, please re-select the region to save.");
+	        mapWidget.clearAOI();
+	        return;
+	    }
+	 }
+	 else
+	 {
+	    extent = mapWidget.getViewportExtents();
+	 }
 	 var size   = mapWidget.getSizeInPixelsFromExtents(extent);
 	 var wcsProperties = {"request":"GetCoverage",
 	               	  "format":params.format,

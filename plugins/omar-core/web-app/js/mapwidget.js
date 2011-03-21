@@ -13,6 +13,10 @@ function MapWidget()
     var zoomInFullResButton = null;
     var zoomFullResScale = null;
 
+    this.getZoomInButton = function()
+    {
+        return zoomInButton;
+    }
     this.allocateMap = function(divId, params)
     {
         openlayersMap = new OpenLayers.Map( divId, params);
@@ -309,20 +313,30 @@ function MapWidget()
     	return new OpenLayers.Size(Math.round(Math.abs(cornerPt2.x-cornerPt1.x)+1),
     			                   Math.round(Math.abs(cornerPt2.y-cornerPt1.y)+1));
     }
+    this.getSelectedExtents = function()
+    {
+        extent = null;
+        if(aoiLayer)
+        {
+            extent = aoiLayer.getDataExtent();
+        }
+        return extent;
+    }
+    this.getViewportExtents = function()
+    {
+        extent = null;
+        if(openlayersMap)
+        {
+            extent = openlayersMap.getExtent();
+        }
+        return extent;
+    }
     this.getSelectedOrViewportExtents = function ()
     {
-    	extent = null;
-    	if(aoiLayer)
-    	{
-    		extent = aoiLayer.getDataExtent();
-    	}
+    	extent = getSelectedExtents();
     	if(!extent || !extent.left)
     	{
-    		extent = null;
-        	if(openlayersMap)
-        	{  
-            	extent = openlayersMap.getExtent();
-        	}
+    		extent = getViewportExtents();
     	}
     	return extent;
     }
