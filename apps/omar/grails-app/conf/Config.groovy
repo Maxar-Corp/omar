@@ -82,6 +82,7 @@ log4j = {
 
       // uncomment for DB appending.  Do this after the first build of OMAR.
       // Then uncomment the wmsLoggingAppender redirection below.
+      // add in the import org.ossim.omar.DbAppender at the top
 /*
     appender new DbAppender(name: "wmsLoggingAppender",
             threshold: org.apache.log4j.Level.INFO,
