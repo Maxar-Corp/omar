@@ -491,6 +491,12 @@
   }
   function init()
   {
+    var oMenu = new YAHOO.widget.MenuBar("searchMenu", {
+                                                autosubmenudisplay: true,
+                                                hidedelay: 750,
+                                                lazyload: true,
+                                                zIndex:9999});
+	oMenu.render();
     var spatialSearchFlag = document.getElementById("spatialSearchFlag");
     if(spatialSearchFlag)
     {
@@ -553,12 +559,6 @@
     YAHOO.util.Event.addListener(oElement1, "change", updateOmarFilters);
     YAHOO.util.Event.addListener(oElement2, "change", updateOmarFilters);
     YAHOO.util.Event.addListener(oElement3, "change", updateOmarFilters);
-    var oMenu = new YAHOO.widget.MenuBar("searchMenu", {
-                                                autosubmenudisplay: true,
-                                                hidedelay: 750,
-                                                lazyload: true,
-                                                zIndex:9999});
-	oMenu.render();
   }
 
   function handleClickSpatialTab0(e) {

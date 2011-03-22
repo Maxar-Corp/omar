@@ -343,6 +343,13 @@
 
   function init()
   {
+      var oMenu = new YAHOO.widget.MenuBar("resultsMenu", {
+                                                    autosubmenudisplay: true,
+                                                    hidedelay: 750,
+                                                    lazyload: true,
+                                                    zIndex:9999});
+      oMenu.render();
+
       tab0.addListener('click', handleClickTab0);
       tab1.addListener('click', handleClickTab1);
       tab2.addListener('click', handleClickTab2);
@@ -352,12 +359,6 @@
       tab3Div.style.visibility = "visible"
       tab4Div.style.visibility = "visible"
 
-      var oMenu = new YAHOO.widget.MenuBar("resultsMenu", {
-                                                    autosubmenudisplay: true,
-                                                    hidedelay: 750,
-                                                    lazyload: true,
-                                                    zIndex:9999});
-      oMenu.render();
 
       omarSearchResults.setProperties(${params.encodeAsJSON()});
       omarSearchResults.setProperties(document);

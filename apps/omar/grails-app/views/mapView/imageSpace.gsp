@@ -378,6 +378,12 @@ function init(mapWidth, mapHeight)
     format: format
   };
 
+	var oMenu = new YAHOO.widget.MenuBar("rasterMenu", {
+                                              autosubmenudisplay: true,
+                                              hidedelay: 750,
+                                              lazyload: true});
+	oMenu.render();
+
   layer = new OpenLayers.Layer.TMS( "Image Space Viewer",
                                     url, options);
 
@@ -389,7 +395,7 @@ function init(mapWidth, mapHeight)
   map.addControl(new OpenLayers.Control.KeyboardDefaults());
 
 
-  map.setBaseLayer(layer);
+  map.setBaseLayer(layxer);
   changeMapSize(mapWidth, mapHeight);
   map.zoomToMaxExtent();
   setupToolbar();
@@ -400,11 +406,6 @@ function init(mapWidth, mapHeight)
       this.touchhandler = new TouchHandler( map, 4 );
    }
 
-	var oMenu = new YAHOO.widget.MenuBar("rasterMenu", { 
-                                              autosubmenudisplay: true, 
-                                              hidedelay: 750, 
-                                              lazyload: true});
-	oMenu.render();
 
 	omarImageSpaceOpenLayersParams.setProperties(document);
 	
