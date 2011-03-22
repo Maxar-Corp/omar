@@ -73,8 +73,10 @@ class RasterChainService {
 		def rotate = params?.rotate?:null
 		def scale  = params?.scale?:null
 		def pivot  = params?.pivot?:null
-		def histogramFile = new File(rasterEntry?.getFileFromObjects("histogram")?.name)
-		def overviewFile  = new File(rasterEntry?.getFileFromObjects("overview")?.name)
+        def tempHistogramFile = rasterEntry?.getFileFromObjects("histogram")?.name
+        def tempOverviewFile = rasterEntry?.getFileFromObjects("overview")?.name
+		def histogramFile = new File(tempHistogramFile?:"")
+		def overviewFile  = new File(tempOverviewFile?:"")
 		def objectPrefixIdx = 0
 		def kwlString       = "type: ossimImageChain\n"
 	    def quickLookFlag = false
