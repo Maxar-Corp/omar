@@ -466,21 +466,22 @@ function init(mapWidth, mapHeight)
     function setupToolbar()
     {
 
-var panButton = new OpenLayers.Control.MouseDefaults({title:'Drag to recenter map'});
-      var zoomBoxButton = new OpenLayers.Control.ZoomBox(
-      {title:"Zoom into an area by clicking and dragging"});
+var panButton = new OpenLayers.Control.MouseDefaults({title:'Click pan button to activate. Once activated click the map and drag the mouse to pan.'});
+     
+ var zoomBoxButton = new OpenLayers.Control.ZoomBox(
+      {title:"Click the zoom box button to activate. Once activated click and drag over an area of interest on the map to zoom into."});
 
-      var zoomInButton = new OpenLayers.Control.Button({title:'Zoom in',
+      var zoomInButton = new OpenLayers.Control.Button({title: "Click to zoom in.",
         displayClass: "olControlZoomIn",
         trigger: zoomIn
       });
 
-     var zoomInFullResButton = new OpenLayers.Control.Button({title:'Zoom in full res',
+     var zoomInFullResButton = new OpenLayers.Control.Button({title: "Click to zoom into full resolution.",
         displayClass: "olControlZoomToLayer",
         trigger: zoomInFullRes
       });
 
-      var zoomOutButton = new OpenLayers.Control.Button({title:'Zoom out',
+      var zoomOutButton = new OpenLayers.Control.Button({title: "Click to zoom out.",
         displayClass: "olControlZoomOut",
         trigger: zoomOut
       });
@@ -497,29 +498,7 @@ var panButton = new OpenLayers.Control.MouseDefaults({title:'Drag to recenter ma
         previousOptions: {title: "Previous View"}
       });
 
-      var measureDistanceButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
-        title: "Measure Distance",
-        displayClass: "olControlMeasureDistance",
-        eventListeners:
-        {
-          measure: function(evt)
-          {
-            alert("Distance: " + evt.measure.toFixed(2) + evt.units);
-          }
-        }
-      });
-
-      var measureAreaButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, {
-        title: "Measure Area",
-        displayClass: "olControlMeasureArea",
-        eventListeners:
-        {
-          measure: function(evt)
-          {
-            alert("Area: " + evt.measure.toFixed(2) + evt.units);
-          }
-        }
-      });
+   
 
 
       map.addControl(navButton);
@@ -531,10 +510,8 @@ var panButton = new OpenLayers.Control.MouseDefaults({title:'Drag to recenter ma
         zoomInButton,
         zoomOutButton,
         navButton.next, navButton.previous,
-        new OpenLayers.Control.ZoomToMaxExtent({title:"Zoom to the max extent"}),
+        new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent."}),
         zoomInFullResButton
-//          measureDistanceButton,
-//          measureAreaButton
       ]);
 
       map.addControl(panel);
