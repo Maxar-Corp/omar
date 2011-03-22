@@ -147,7 +147,7 @@
 			</ol>      
 			<ol>
 				<li>MGRS:</li>
-				<li><g:textField name="mgrsMapCtr" value="" onChange="setMapCtr('mgrs', this.value)" size="28" 
+				<li><g:textField name="centerMgrs" value="" onChange="setMapCtr('mgrs', this.value)" size="28" 
 					title="Enter mgrs coordinate and click off the text field to re-center the map. Example: 17RNJ8123050729 or 17 RNJ 81230 50729" /></li>
 			</ol>
 		</div>
@@ -394,7 +394,7 @@ function setMapCtrTxt()
     var center = mapWidget.getMap().getCenter();
     $("ddMapCtr").value = center.lat + ", " + center.lon;
 	$("dmsMapCtr").value = coordConvert.ddToDms(center.lat, "lat") + ", " + coordConvert.ddToDms(center.lon, "lon");
-	$("mgrsMapCtr").value = coordConvert.ddToMgrs(center.lat, center.lon);
+	$("centerMgrs").value = coordConvert.ddToMgrs(center.lat, center.lon);
 }
 
 function setMapCtr(unit, value)
@@ -431,7 +431,7 @@ function setMapCtr(unit, value)
 		
 		
 		
-		var foo = coordConvert.mgrsToUtm($("mgrsMapCtr").value);
+		var foo = coordConvert.mgrsToUtm($("centerMgrs").value);
 		
 		
 		
