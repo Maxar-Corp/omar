@@ -509,7 +509,7 @@ var panButton = new OpenLayers.Control.MouseDefaults({title:'Click pan button to
 		zoomBoxButton,
         zoomInButton,
         zoomOutButton,
-        navButton.next, navButton.previous,
+        //navButton.next, navButton.previous,
         new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent."}),
         zoomInFullResButton
       ]);
