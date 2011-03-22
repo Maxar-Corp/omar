@@ -616,7 +616,7 @@ function getKML(layers)
     if(wmsParamForm)
     {
         wmsParamForm.action = url;
-        alert(wmsParamForm.action);
+//        alert(wmsParamForm.action);
         wmsParamForm.submit();
     }
 
