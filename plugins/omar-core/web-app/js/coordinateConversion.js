@@ -321,7 +321,7 @@ function CoordinateConversion()
 
             var mgrsRegExp = /^(\d{1,2})([a-zA-Z])([a-zA-Z])([a-zA-Z])(\d{10})?/
 
-            if($("mgrsMapCtr").value.match(mgrsRegExp))
+            if(($("centerMgrs").value.match(mgrsRegExp)))
             {
                 var lonZone = parseInt(RegExp.$1, 10);
                 var latZone = RegExp.$2;
@@ -329,6 +329,9 @@ function CoordinateConversion()
                 var northing = RegExp.$4;
                 var remainder = parseInt(RegExp.$5, 10);
             }
+
+         
+
 
             if (latZone == "C" || latZone == "D" || latZone == "E" || latZone == "F" || latZone == "G" || latZone == "H"
                     || latZone == "J" || latZone == "K" || latZone == "L" || latZone == "M")
