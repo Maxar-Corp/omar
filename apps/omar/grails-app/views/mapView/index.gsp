@@ -372,7 +372,7 @@ function init()
   	
 	mapWidget.getMap().addControl(new OpenLayers.Control.LayerSwitcher());
 	var overview = new OpenLayers.Control.OverviewMap({maximized: true});
-    mapWidget.getMap().addControl(overview);
+    //mapWidget.getMap().addControl(overview);
 	mapWidget.getMap().addControl(new OpenLayers.Control.Scale());
 	mapWidget.getMap().addControl(new OpenLayers.Control.ScaleLine());
 	
