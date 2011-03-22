@@ -333,10 +333,10 @@ function MapWidget()
     }
     this.getSelectedOrViewportExtents = function ()
     {
-    	extent = getSelectedExtents();
+    	extent = this.getSelectedExtents();
     	if(!extent || !extent.left)
     	{
-    		extent = getViewportExtents();
+    		extent = this.getViewportExtents();
     	}
     	return extent;
     }
