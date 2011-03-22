@@ -125,6 +125,7 @@
 	</div>
 </div>
 
+    <label>${(rasterEntry?.filename)}</label>
 
 </content>
 
