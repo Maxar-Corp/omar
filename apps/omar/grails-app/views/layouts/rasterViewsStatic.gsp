@@ -120,9 +120,9 @@
         </tr>
 
 		    <tr>
-	          <td width=33.3%><div id="ddMouseMapCtr" style="font-size:11px">&nbsp;</div></td>
-	<td width=33.3%><div id="dmsMouseMapCtr" style="font-size:11px">&nbsp;</div></td>
-	<td width=33.3%><div id="mgrsMouseMapCtr" style="font-size:11px">&nbsp;</div></td>
+	          <td width=33.3%><div id="ddMouseMapCtr" style="font-size:14px">&nbsp;</div></td>
+	<td width=33.3%><div id="dmsMouseMapCtr" style="font-size:14px">&nbsp;</div></td>
+	<td width=33.3%><div id="mgrsMouseMapCtr" style="font-size:14px">&nbsp;</div></td>
 	        </tr>
 
 
@@ -152,12 +152,14 @@
     var footer     = Dom.get("footer");
     var header     = Dom.get("header");
     var middleDiv  = Dom.get("middle");
+    var ddMouseMapCtrDiv  = Dom.get("ddMouseMapCtr");
     var top          = topDiv.offsetTop+topDiv.offsetHeight;
     var bottom       = footer.offsetTop;
     var middleHeight = Math.abs(bottom-top);
+    var coordinateHeight = ddMouseMapCtrDiv.offsetHeight;
     middleDiv.style.height =  middleHeight + "px";
     mapDiv.style.width     = (width - (leftDiv.offsetLeft+leftDiv.offsetWidth )) +"px";
-    mapDiv.style.height    = (middleHeight - toolbarRow.offsetHeight) - 14 +"px";
+    mapDiv.style.height    = (middleHeight - toolbarRow.offsetHeight - coordinateHeight) - 14 +"px";
 
     if(changeMapSizeFlag)
     {
