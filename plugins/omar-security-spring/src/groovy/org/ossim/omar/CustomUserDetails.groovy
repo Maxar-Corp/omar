@@ -13,18 +13,33 @@ import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUser
 class CustomUserDetails extends GrailsUser
 {
 
-  final String displayName
+  final String userRealName
+  final String organization
+  final String phoneNumber
+  final String email
 
-  CustomUserDetails(String username, String password, boolean enabled,
-                    boolean accountNonExpired, boolean credentialsNonExpired,
+
+  CustomUserDetails(String username,
+                    String password,
+                    boolean enabled,
+                    boolean accountNonExpired,
+                    boolean credentialsNonExpired,
                     boolean accountNonLocked,
                     Collection<GrantedAuthority> authorities,
-                    long id, String displayName)
+                    long id,
+                    String userRealName,
+                    String organization,
+                    String phoneNumber,
+                    String email
+  )
   {
 
     super(username, password, enabled, accountNonExpired,
             credentialsNonExpired, accountNonLocked, authorities, id)
 
-    this.displayName = displayName
+    this.userRealName = userRealName
+    this.userRealName = organization
+    this.userRealName = phoneNumber
+    this.userRealName = email
   }
 }

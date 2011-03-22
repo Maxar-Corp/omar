@@ -12,7 +12,7 @@ class CustomUserDetailsService implements GrailsUserDetailsService
 
   static transactional = true
   private static final List NO_ROLES = [new GrantedAuthorityImpl(SpringSecurityUtils.NO_ROLE)]
-  private static final List USER_ROLE =[new GrantedAuthorityImpl("ROLE_USER")] as GrantedAuthority[]
+  private static final List USER_ROLE = [new GrantedAuthorityImpl("ROLE_USER")] as GrantedAuthority[]
 
   UserDetails loadUserByUsername(String username, boolean loadRoles)
   {
@@ -29,10 +29,19 @@ class CustomUserDetailsService implements GrailsUserDetailsService
 
       def authorities = user.authorities.collect {new GrantedAuthorityImpl(it.authority)}
 
-      return new CustomUserDetails(user.username, user.password, user.enabled,
-              !user.accountExpired, !user.passwordExpired,
-              !user.accountLocked, authorities ?: USER_ROLE, user.id,
-              "${user.userRealName} ${user.email}")
+      return new CustomUserDetails(
+              user.username,
+              user.password,
+              user.enabled,
+              !user.accountExpired,
+              !user.passwordExpired,
+              !user.accountLocked,
+              authorities ?: USER_ROLE, user.id,
+              user.userRealName,
+              user.organization,
+              user.phoneNumber,
+              user.email
+      )
     }
   }
 }

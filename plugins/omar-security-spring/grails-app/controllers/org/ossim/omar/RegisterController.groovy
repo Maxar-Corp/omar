@@ -31,6 +31,7 @@ class RegisterController extends AbstractS2UiController
 
   def mailService
   def saltSource
+  def ldapUtilService
 
   def index = {
     [command: new RegisterCommand()]
@@ -51,10 +52,10 @@ class RegisterController extends AbstractS2UiController
             password: password, accountLocked: true, enabled: true, userRealName: command.userRealName,
             organization: command.organization, phoneNumber: command.phoneNumber)
 
-    if ( !user.validate() || !user.save() )
+    if ( !user.validate() || !saveUser(user) )
     {
       // TODO
-      println "Can't save User: ${user.username}:"
+      println "Can't validate User: ${user.username}:"
       user.errors.allErrors.each { println it }
     }
 
@@ -269,6 +270,24 @@ class RegisterController extends AbstractS2UiController
     if ( command.password != command.password2 )
     {
       return 'command.password2.error.mismatch'
+    }
+  }
+
+  private def saveUser(def user)
+  {
+    def flag = grailsApplication.config.login.registration.createLdapUser
+
+    println flag
+
+    if ( flag )
+    {
+      println "Creating LDAP User"
+      return ldapUtilService.addUser(user)
+    }
+    else
+    {
+      println "Creating local User"
+      return user.save()
     }
   }
 }
