@@ -114,6 +114,12 @@
 
   function init()
   {
+	var oMenu = new YAHOO.widget.MenuBar("rasterMenu", {
+                                               autosubmenudisplay: true,
+                                               hidedelay: 750,
+                                               lazyload: true,
+                                               zIndex:9999});
+	oMenu.render();
     wcsParams.setProperties({
         brightness:"0",
         contrast:"1",
@@ -177,15 +183,6 @@
 
   	var zoom = mapWidget.getMap().getZoomForExtent(bounds, true);
 	mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
-
-
-
-	var oMenu = new YAHOO.widget.MenuBar("rasterMenu", {
-                                               autosubmenudisplay: true, 
-                                               hidedelay: 750, 
-                                               lazyload: true,
-                                               zIndex:9999}); 
-	oMenu.render();
   }
 
 function getProjectedImage(params)

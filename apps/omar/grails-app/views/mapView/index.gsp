@@ -292,6 +292,12 @@ function resetBrightnessContrast()
 
 function init()
 {
+    var oMenu = new YAHOO.widget.MenuBar("rasterMenu", {
+                                                autosubmenudisplay: true,
+                                                hidedelay: 750,
+                                                lazyload: true,
+                                                zIndex:9999});
+	oMenu.render();
 // we need to pass a json string or object and save to the session
 // and reload here
     wcsParams.setProperties({
@@ -381,12 +387,6 @@ function init()
 	
   	var zoom = mapWidget.getMap().getZoomForExtent(bounds, true);
 	mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
-    var oMenu = new YAHOO.widget.MenuBar("rasterMenu", { 
-                                                autosubmenudisplay: true, 
-                                                hidedelay: 750, 
-                                                lazyload: true,
-                                                zIndex:9999}); 
-	oMenu.render();
 }
 
 function setMapCtrTxt()
