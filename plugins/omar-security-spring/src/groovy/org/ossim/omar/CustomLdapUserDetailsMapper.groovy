@@ -45,7 +45,9 @@ class CustomLdapUserDetailsMapper implements UserDetailsContextMapper
                 accountLocked: false,
                 passwordExpired: false,
                 userRealName: ctx.getStringAttribute("cn"),
-                email: ctx.getStringAttribute("mail")
+                email: ctx.getStringAttribute("mail"),
+                organization: ctx.getStringAttribute("description"),
+                phoneNumber: ctx.getStringAttribute("telephoneNumber")
         )
 
         if ( !user.save(flush: true) )
@@ -57,14 +59,21 @@ class CustomLdapUserDetailsMapper implements UserDetailsContextMapper
       }
 
       // Now simply create and return an instance of CustomUserDetails
-      return new CustomUserDetails(user.username, user.password,
+      return new CustomUserDetails(
+              user.username,
+              user.password,
               user.enabled,
               !user.accountExpired,
               !user.passwordExpired,
               !user.accountLocked,
               //authority ?: NO_ROLES,
               authority ?: [new GrantedAuthorityImpl("ROLE_USER")],
-              user.id, "LDAP USER")
+              user.id,
+              user.userRealName,
+              user.organization,
+              user.phoneNumber,
+              user.email
+      )
     }
   }
 

@@ -18,7 +18,7 @@ grails.gorm.default.mapping = {
 // config files can either be Java properties files or ConfigSlurper scripts
 
 
- grails.config.locations = [
+grails.config.locations = [
 //  "classpath:${appName}-config.properties",
 //  "classpath:${appName}-config.groovy",
 //  "file:${userHome}/.grails/${appName}-config.properties",
@@ -80,9 +80,9 @@ log4j = {
   //
   appenders {
 
-      // uncomment for DB appending.  Do this after the first build of OMAR.
-      // Then uncomment the wmsLoggingAppender redirection below.
-      // add in the import org.ossim.omar.DbAppender at the top
+    // uncomment for DB appending.  Do this after the first build of OMAR.
+    // Then uncomment the wmsLoggingAppender redirection below.
+    // add in the import org.ossim.omar.DbAppender at the top
 /*
     appender new DbAppender(name: "wmsLoggingAppender",
             threshold: org.apache.log4j.Level.INFO,
@@ -110,11 +110,11 @@ log4j = {
   info omarAppender: 'omar', additivity: false
 
   error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
-        'org.codehaus.groovy.grails.web.pages', //  GSP
+          'org.codehaus.groovy.grails.web.pages', //  GSP
           'org.codehaus.groovy.grails.web.sitemesh', //  layouts
           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
           'org.codehaus.groovy.grails.web.mapping', // URL mapping
-         'org.codehaus.groovy.grails.commons', // core / classloading
+          'org.codehaus.groovy.grails.commons', // core / classloading
           'org.codehaus.groovy.grails.plugins', // plugins
           'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
           'org.springframework',
@@ -233,7 +233,7 @@ security {
 
 image.download.prefix = "http://${grails.serverIP}"
 
-/** ********************************* CONDITIONALS FOR VIEWS                       ***********************************************/
+/** ********************************* CONDITIONALS FOR VIEWS                         ***********************************************/
 // flags for different views
 //
 views {
@@ -319,6 +319,8 @@ login {
     {
       useMail = "true"
     }
+
+    createLdapUser = true
   }
 }
 
@@ -356,8 +358,8 @@ bundle {
 export {
   prefix = "omar-export-"
   workDir = "/tmp"
-  superoverlay{
-	  baseDir="/data/omar/superoverlay"
+  superoverlay {
+    baseDir = "/data/omar/superoverlay"
   }
   rasterEntry {
     fields = [
@@ -490,6 +492,8 @@ grails.plugins.springsecurity.password.algorithm = 'MD5'
 // LDAP Configuration
 grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
 grails.plugins.springsecurity.ldap.context.managerDn = 'cn=Administrator,dc=otd,dc=radiantblue,dc=com' //
+grails.plugins.springsecurity.ldap.context.userDn = 'dc=otd,dc=radiantblue,dc=com' //
+
 grails.plugins.springsecurity.ldap.context.managerPassword = 'omarldap'                                //
 grails.plugins.springsecurity.ldap.search.base = 'ou=people,dc=otd,dc=radiantblue,dc=com'
 grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = true
@@ -538,7 +542,6 @@ If you did make the request, then click <a href="$url">here</a> to reset your pa
     }
   }
 }
-
 
 //grails {
 //   mail {
