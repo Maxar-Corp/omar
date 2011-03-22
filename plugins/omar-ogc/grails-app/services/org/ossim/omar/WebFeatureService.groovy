@@ -6,6 +6,10 @@ import org.geotools.xml.Encoder
 import org.geotools.wfs.v1_0.WFSConfiguration
 import org.geotools.wfs.v1_0.WFS
 import org.geotools.data.postgis.PostgisNGDataStoreFactory
+import org.geotools.data.Query
+import org.opengis.filter.sort.SortOrder
+import org.geotools.factory.CommonFactoryFinder
+
 
 import geoscript.workspace.Database
 import geoscript.filter.Filter
@@ -153,24 +157,56 @@ class WebFeatureService
     return xml?.toString()
   }
 
-  def getFeature(def typeName, def filter)
+  def getFeature(def typeName, def filter, def pagination)
   {
     def out = new ByteArrayOutputStream()
     def workspace = createWorkspace()
     try
     {
+
       def layer = workspace[typeName]
-      def features = layer.fs.getFeatures(new Filter(filter).filter)
+      def query = new Query(typeName, new Filter(filter).filter)
+
+
+      query.startIndex = pagination.offset
+      query.maxFeatures = (pagination.max <= 100) ? pagination.max : 100
+
+      if ( pagination.sort )
+      {
+        def filterFactory = CommonFactoryFinder.getFilterFactory(null)
+        def order = null
+        switch ( pagination.order.toString().toLowerCase() )
+        {
+        case "asc":
+          order = SortOrder.ASCENDING
+          break
+        case "desc":
+          order = SortOrder.DESCENDING
+          break
+        default:
+          order = SortOrder.ASCENDING
+        }
+        query.sortBy = [filterFactory.sort(pagination.sort, order)]
+      }
+
+
+
+
+      def features = layer.fs.getFeatures(query)
       def fc = WfsFactory.eINSTANCE.createFeatureCollectionType()
 
       fc.feature.add(features)
 
       def e = new Encoder(new WFSConfiguration())
-      def uri = (layer.fs.name.namespaceURI == null) ? new URI("http://geotools") : new URI(layer.fs.name.namespaceURI)
-      String prefix = "gt"
+      def uri = (layer.fs.name.namespaceURI == null) ? new URI("http://omar.ossim.org") : new URI(layer.fs.name.namespaceURI)
+      String prefix = "omar"
       e.namespaces.declarePrefix(prefix, uri.toString())
       e.indenting = true
       e.encode(fc, WFS.FeatureCollection, out)
+    }
+    catch (Exception e)
+    {
+      e.printStackTrace()
     }
     finally
     {

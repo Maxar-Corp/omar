@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<module relativePaths="true" type="JAVA_MODULE" version="4">
+<module relativePaths="true" type="GRAILS_MODULE" version="4">
   <component name="FacetManager">
+    <facet type="Grails" name="Grails">
+      <configuration />
+    </facet>
     <facet type="web" name="GrailsWeb">
       <configuration>
         <webroots>
           <root url="file://$MODULE_DIR$/web-app" relative="/" />
         </webroots>
         <sourceRoots />
-        <context-artifact name="omar-ogc:GrailsWeb exploded" />
+        <building>
+          <setting name="EXPLODED_URL" value="file://" />
+          <setting name="EXPLODED_ENABLED" value="false" />
+          <setting name="JAR_URL" value="file://" />
+          <setting name="JAR_ENABLED" value="false" />
+          <setting name="EXCLUDE_EXPLODED_DIRECTORY" value="true" />
+        </building>
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
@@ -30,12 +39,10 @@
       <sourceFolder url="file://$MODULE_DIR$/src/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test/integration" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/test/unit" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/grails-app/utils" isTestSource="false" />
-      <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Grails 1.3.5" level="project" />
+    <orderEntry type="library" name="Grails 1.3.7" level="project" />
     <orderEntry type="module-library">
       <library name="Grails User Library">
         <CLASSES>
@@ -46,13 +53,5 @@
         <jarDirectory url="file://$MODULE_DIR$/lib" recursive="false" />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="omar-ogc-grailsPlugins" />
-    <orderEntry type="module" module-name="omar-ogc-grailsPlugin-omar-video" />
-    <orderEntry type="module" module-name="omar-ogc-grailsPlugin-omar-core" />
-    <orderEntry type="module" module-name="omar-ogc-grailsPlugin-postgis" />
-    <orderEntry type="module" module-name="omar-ogc-grailsPlugin-omar-oms" />
-    <orderEntry type="module" module-name="omar-ogc-grailsPlugin-geoscript" />
-    <orderEntry type="module" module-name="omar-ogc-grailsPlugin-omar-raster" />
   </component>
 </module>
-
