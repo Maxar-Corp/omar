@@ -222,7 +222,6 @@ var layer;
 var format = "image/jpeg";
 var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
 var contrastSlider = YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
-var imageSpaceBounds;
 var omarImageSpaceOpenLayersParams = new  OmarImageSpaceOpenLayersParams();
 
 
@@ -343,7 +342,10 @@ function resetBrightnessContrast()
 	contrastSlider.setRealValue(1.0);
 }
 
-
+function formatOutput(value)
+{
+    return value.lon + ", " + value.lat;
+}
 
 function init(mapWidth, mapHeight)
 {
@@ -351,9 +353,7 @@ function init(mapWidth, mapHeight)
   var height = parseFloat("${rasterEntry.height}");
   var r = width;
   if(r < height) r = height;
-//  hyp    = Math.sqrt(2)*(r*0.5);//Math.sqrt(r*r + r*r);
   hyp    = Math.sqrt(width*width + height*height)*0.5;
-
   var left       =  -hyp;
   var bottom     =  -hyp;
   var top        =  hyp;
@@ -379,8 +379,11 @@ function init(mapWidth, mapHeight)
 
   layer = new OpenLayers.Layer.TMS( "Image Space Viewer",
                                     url, options);
+
+//  var mousePositionControl = new OpenLayers.Control.MousePosition();
+//  mousePositionControl.formatOutput =  formatOutput;
   map.addLayer(layer);
-  map.addControl(new OpenLayers.Control.MousePosition());
+//  map.addControl(mousePositionControl);
   map.addControl(new OpenLayers.Control.MouseDefaults());
   map.addControl(new OpenLayers.Control.KeyboardDefaults());
 
