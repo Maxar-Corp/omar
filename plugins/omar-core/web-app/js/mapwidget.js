@@ -157,47 +157,32 @@ function MapWidget()
     };
 
     this.setCenterDms = function()
-    {
-        var latRegExpDms = /^(\d{1,2})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([NnSs])?/
-        var lonRegExpDms = /^(\d{1,3})\s?(\d{2})\s?(\d{2})(.\d+)?\s?([EeWw])?/
+	   {
+	       var latRegExpDms = /^(\d{1,2})\°?\s?(\d{2})\'?\s?(\d{2}\.?\d+)\"?\s?([NnSs])?/
+	       var lonRegExpDms = /^(\d{1,3})\°?\s?(\d{2})\'?\s?(\d{2}\.?\d+)\"?\s?([EeWw])?/
 
-        if($( "centerLatDms" ))
-        {
-            if ( $( "centerLatDms" ).value.match( latRegExpDms ) && $( "centerLonDms" ).value.match( lonRegExpDms ) )
-            {
-                if ( $( "centerLatDms" ).value.match( latRegExpDms ) )
-                {
-                    var latDeg = parseInt( RegExp.$1, 10 );
-                    var latMin = parseInt( RegExp.$2, 10 );
-                    var latSec = parseInt( RegExp.$3, 10 ) + RegExp.$4;
-                    var latHem = RegExp.$5;
+	       if($( "centerLatDms" ))
+	       {
+				var newLat, newLon;
 
-                    if ( latHem == "S" || latHem == "s" )
-                    {
-                        latDeg = -latDeg;
-                    }
-                }
+	           if ( $( "centerLatDms" ).value.match( latRegExpDms ) && $( "centerLonDms" ).value.match( lonRegExpDms ) )
+	           {
+					if ( $( "centerLatDms" ).value.match( latRegExpDms ) )
+					{
+						newLat = convert.dmsToDd(RegExp.$1, RegExp.$2, RegExp.$3, RegExp.$4);
+					}
+					if ( $( "centerLonDms" ).value.match( lonRegExpDms ) )
+		            {
+						newLon = convert.dmsToDd(RegExp.$1, RegExp.$2, RegExp.$3, RegExp.$4);
+					}
 
-                if ( $( "centerLonDms" ).value.match( lonRegExpDms ) )
-                {
-                    var lonDeg = parseInt( RegExp.$1, 10 );
-                    var lonMin = parseInt( RegExp.$2, 10 );
-                    var lonSec = parseInt( RegExp.$3, 10 ) + RegExp.$4;
-                    var lonHem = RegExp.$5;
+					this.setMapCenter( newLat, newLon );
+				}
 
-                    if ( lonHem == "W" || lonHem == "w" )
-                    {
-                        lonDeg = -lonDeg;
-                    }
-                }
-
-                this.setMapCenter( convert.dmsToDd( latDeg, latMin, latSec ), convert.dmsToDd( lonDeg, lonMin, lonSec ) );
-            }
-
-            $( "aoiRadius" ).value = $( "aoiRadius2" ).value;
-            $( "aoiRadius3" ).value = $( "aoiRadius2" ).value;
-        }
-    };
+	           $( "aoiRadius" ).value = $( "aoiRadius2" ).value;
+	           $( "aoiRadius3" ).value = $( "aoiRadius2" ).value;
+	       }
+	   };
 
     this.setCenterMgrs = function()
     {
