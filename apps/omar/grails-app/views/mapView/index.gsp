@@ -18,6 +18,12 @@
     width: 100%;
     height: 100%;
   }
+  .message {
+    border: 0px solid #b2d1ff;
+    color: #006dba;
+    margin: 0px 0 0px 0;
+    padding: 0px 0px 0px 35px
+  }
 
     /*
       div.olControlMousePosition {
@@ -118,7 +124,10 @@
 			</ul>
 		</div>
 	</div>
-
+    <label>${(rasterEntries?.filename).join(",")}</label>
+    <g:if test='${flash.message}'>
+      <label class='message'>${flash.message}</label>
+    </g:if>
 </content>
 
 <content tag="left">
@@ -588,7 +597,7 @@ function changeMapSize(mapWidth, mapHeight)
 
 function getKML(layers)
 {
-	var wmsParamForm = document.getElementById('wmsParamsForm');
+	var wmsParamForm = document.getElementById('wmsFormId');
 	var wmsUrlParams  = new OmarWmsParams();
 
 	 var link   = "${createLink(action: "wms", controller: "ogc")}";
@@ -604,7 +613,6 @@ function getKML(layers)
     wmsUrlParams.setProperties(document);
 
     var url = link + "?" + wmsUrlParams.toUrlParams();
-
     if(wmsParamForm)
     {
         wmsParamForm.action = url;
