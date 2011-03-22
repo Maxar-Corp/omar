@@ -107,7 +107,11 @@ class SecUserController
     {
       try
       {
-        secUserInstance.delete(flush: true)
+        SecUser.withTransaction {
+          SecUserSecRole.removeAll(secUserInstance)
+          secUserInstance.delete(flush: true)
+        }
+
         flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'secUser.label', default: 'SecUser'), params.id])}"
         redirect(action: "list")
       }
