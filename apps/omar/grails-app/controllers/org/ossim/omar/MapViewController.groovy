@@ -38,6 +38,11 @@ class MapViewController implements InitializingBean
     def kmlOverlays = []
 
     rasterEntries.each { rasterEntry ->
+      if((rasterEntry.validModel != null)&&
+         (rasterEntry.validModel<1))
+      {
+          flash.message = "Valid rigorous model is not supported defaulting to a simple model."
+      }
       def overlays = RasterEntryFile.findAllByTypeAndRasterEntry("kml", rasterEntry)
       overlays?.each {overlay ->
 
