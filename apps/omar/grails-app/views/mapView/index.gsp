@@ -609,13 +609,14 @@ function getKML(layers)
 	               	  "srs":"EPSG:4326",
 	               	  "width":size.w,
 	               	  "height":size.h}
-    wmsUrlParams.setProperties(wmsProperties);
     wmsUrlParams.setProperties(document);
+    wmsUrlParams.setProperties(wmsProperties);
 
     var url = link + "?" + wmsUrlParams.toUrlParams();
     if(wmsParamForm)
     {
         wmsParamForm.action = url;
+        alert(wmsParamForm.action);
         wmsParamForm.submit();
     }
 
