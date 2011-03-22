@@ -16,7 +16,7 @@ grails.project.dependency.resolution = {
 
     // uncomment the below to enable remote dependency resolution
     // from public Maven repositories
-    //mavenLocal()
+    mavenLocal()
     //mavenCentral()
     //mavenRepo "http://snapshots.repository.codehaus.org"
     //mavenRepo "http://repository.codehaus.org"
@@ -32,9 +32,9 @@ grails.project.dependency.resolution = {
 }
 
 
-grails.plugin.location.postgis = "../../plugins/postgis"
-grails.plugin.location.openlayers = "../../plugins/openlayers"
-grails.plugin.location.geoscript = "../../plugins/geoscript"
+grails.plugin.location."postgis" = "../../plugins/postgis"
+grails.plugin.location."openlayers" = "../../plugins/openlayers"
+grails.plugin.location."geoscript" = "../../plugins/geoscript"
 grails.plugin.location.'omar-core' = "../../plugins/omar-core"
 grails.plugin.location.'omar-oms' = "../../plugins/omar-oms"
 grails.plugin.location.'omar-ogc' = "../../plugins/omar-ogc"
@@ -43,5 +43,7 @@ grails.plugin.location.'omar-raster' = "../../plugins/omar-raster"
 grails.plugin.location.'omar-video' = "../../plugins/omar-video"
 grails.plugin.location.'omar-security-spring' = "../../plugins/omar-security-spring"
 
+grails.plugin.location.'omar-scheduler' = "../../plugins/omar-scheduler"
+grails.plugin.location.'omar-superoverlay' = "../../plugins/omar-superoverlay"
 //grails.plugin.location.'omar-mobile'="../../plugins/omar-mobile"
 
