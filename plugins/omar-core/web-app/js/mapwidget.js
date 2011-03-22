@@ -634,7 +634,7 @@ function MapWidget()
      	if($("measurementUnits")&&pathMeasurement)
     	{
     		pathMeasurementButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
-        		title:"Click path measurement button to activate. Once activated click points on the map to create a path that you wish to measure. When you are done creating your path double click to end. Measurement results will appear in the left column.",
+        		title:"Click path measurement button to activate. Once activated click points on the map to create a path that you wish to measure. When you are done creating your path double click to end.",
         		displayClass: "olControlMeasureDistance", persist: true,
         		eventListeners:
         		{
@@ -709,7 +709,7 @@ function MapWidget()
     	if(polygonMeasurement&&$("measurementUnits"))
     	{
         	polygonMeasurementButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, {
-        		title:"Click polygon measurement button to activate. Once activated click points on the map to create a polygon that you wish to measure. When you are done creating your polygon double click to end. Measurement results will appear in the left column.",
+        		title:"Click polygon measurement button to activate. Once activated click points on the map to create a polygon that you wish to measure. When you are done creating your polygon double click to end.",
         		displayClass: "olControlMeasureArea", persist: true,
         		eventListeners:
         		{
@@ -831,7 +831,6 @@ function MapWidget()
 	{
 		openlayersMap.zoomToMaxExtent();
 		if(zoomInButton) zoomInButton.displayClass = "olControlZoomIn";
-	
 	}
 
     this.zoomIn = function()
