@@ -58,23 +58,53 @@ class RegisterController extends AbstractS2UiController
       user.errors.allErrors.each { println it }
     }
 
-    def registrationCode = new RegistrationCode(username: user.username).save()
-    String url = generateLink('verifyRegistration', [t: registrationCode.token])
-
     def conf = SpringSecurityUtils.securityConfig
-    def body = conf.ui.register.emailBody
-    if ( body.contains('$') )
+    switch ( grailsApplication.config.login.registration.userVerification )
     {
-      body = evaluate(body, [user: user, url: url])
-    }
-    mailService.sendMail {
-      to command.email
-      from conf.ui.register.emailFrom
-      subject conf.ui.register.emailSubject
-      html body.toString()
-    }
+    case "email":
+      def registrationCode = new RegistrationCode(username: user.username).save()
+      String url = generateLink('verifyRegistration', [t: registrationCode.token])
 
-    render view: 'index', model: [emailSent: true]
+      def body = conf.ui.register.emailBody
+      if ( body.contains('$') )
+      {
+        body = evaluate(body, [user: user, url: url])
+      }
+      mailService.sendMail {
+        to command.email
+        from conf.ui.register.emailFrom
+        subject conf.ui.register.emailSubject
+        html body.toString()
+      }
+
+      render view: 'index', model: [emailSent: true]
+      break
+    case "none":
+      SecUser.withTransaction {
+        user.accountLocked = false
+        user.save()
+        def UserRole = lookupUserRoleClass()
+        def Role = lookupRoleClass()
+        for ( roleName in conf.ui.register.defaultRoleNames )
+        {
+          UserRole.create user, Role.findByAuthority(roleName)
+        }
+      }
+      flash.message = "You may now login with your credentials"
+      redirect controller: "login", action: "auth"
+      break
+    default:
+      SecUser.withTransaction {
+        def UserRole = lookupUserRoleClass()
+        def Role = lookupRoleClass()
+        for ( roleName in conf.ui.register.defaultRoleNames )
+        {
+          UserRole.create user, Role.findByAuthority(roleName)
+        }
+      }
+      flash.message = "Your account must be approved by an administrator before you can login"
+      redirect controller: "login", action: "auth"
+    }
   }
 
   def verifyRegistration = {
