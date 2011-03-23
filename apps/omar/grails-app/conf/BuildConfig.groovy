@@ -43,7 +43,7 @@ grails.plugin.location.'omar-raster' = "../../plugins/omar-raster"
 grails.plugin.location.'omar-video' = "../../plugins/omar-video"
 grails.plugin.location.'omar-security-spring' = "../../plugins/omar-security-spring"
 
-grails.plugin.location.'omar-scheduler' = "../../plugins/omar-scheduler"
-grails.plugin.location.'omar-superoverlay' = "../../plugins/omar-superoverlay"
+//grails.plugin.location.'omar-scheduler' = "../../plugins/omar-scheduler"
+//grails.plugin.location.'omar-superoverlay' = "../../plugins/omar-superoverlay"
 //grails.plugin.location.'omar-mobile'="../../plugins/omar-mobile"
 
