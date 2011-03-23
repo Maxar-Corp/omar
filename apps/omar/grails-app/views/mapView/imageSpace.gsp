@@ -395,7 +395,7 @@ function init(mapWidth, mapHeight)
   map.addControl(new OpenLayers.Control.KeyboardDefaults());
 
 
-  map.setBaseLayer(layxer);
+  map.setBaseLayer(layer);
   changeMapSize(mapWidth, mapHeight);
   map.zoomToMaxExtent();
   setupToolbar();
