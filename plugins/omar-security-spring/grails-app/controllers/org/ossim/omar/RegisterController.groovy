@@ -46,7 +46,8 @@ class RegisterController extends AbstractS2UiController
     }
 
     String salt = saltSource instanceof NullSaltSource ? null : command.username
-    String password = springSecurityService.encodePassword(command.password, salt)
+
+    String password = (grailsApplication.config.login.registration.createLdapUser) ? command.password : springSecurityService.encodePassword(command.password, salt)
 
     def user = lookupUserClass().newInstance(email: command.email, username: command.username,
             password: password, accountLocked: true, enabled: true, userRealName: command.userRealName,
@@ -277,16 +278,16 @@ class RegisterController extends AbstractS2UiController
   {
     def flag = grailsApplication.config.login.registration.createLdapUser
 
-    println flag
+    //println flag
 
     if ( flag )
     {
-      println "Creating LDAP User"
+      //println "Creating LDAP User"
       return ldapUtilService.addUser(user)
     }
     else
     {
-      println "Creating local User"
+      //println "Creating local User"
       return user.save()
     }
   }

@@ -25,7 +25,7 @@ class CustomLdapUserDetailsMapper implements UserDetailsContextMapper
   {
 
     //println "ctx=${ctx} username=${username} authority=${authority}"
-    println ctx.dump()
+    //println ctx.dump()
 
     SecUser.withTransaction { status ->
 

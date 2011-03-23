@@ -25,12 +25,13 @@ class LdapUtilService
       out << "cn: ${userDetails.username}\n"
       out << "givenName: ${userDetails.userRealName}\n"
       out << "description: ${userDetails.organization}\n"
-      out << "telephoneNumber: ${userDetails.phoneNumber}"
+      out << "telephoneNumber: ${userDetails.phoneNumber}\n"
       out << "objectClass: top\n"
       out << "objectClass: inetOrgPerson\n"
       out << "sn: User\n"
       out << "uid: ${userDetails.username}\n"
-      out << "userPassword: {${securityConfig.password.algorithm}}${userDetails.password}\n"
+      //out << "userPassword: {${securityConfig.password.algorithm}}${userDetails.password}\n"
+      out << "userPassword: ${userDetails.password}\n"
       out << "mail: ${userDetails.email}"
     }
 
