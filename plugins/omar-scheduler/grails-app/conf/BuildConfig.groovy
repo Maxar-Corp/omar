@@ -1,3 +1,6 @@
+import org.apache.ivy.plugins.latest.LatestTimeStrategy
+import org.apache.ivy.plugins.resolver.FileSystemResolver
+
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -13,6 +16,16 @@ grails.project.dependency.resolution = {
     grailsPlugins()
     grailsHome()
     grailsCentral()
+
+    def localPlugins = new FileSystemResolver(name: 'my-local-repo')
+    localPlugins.with {
+      addArtifactPattern("${System.env['OMAR_HOME']}/plugins/grails-[artifact]-[revision].[ext]")
+      settings = ivySettings
+      latestStrategy = new LatestTimeStrategy()
+      changingPattern = ".*SNAPSHOT"
+      setCheckmodified(true)
+    }
+    resolver( localPlugins )
 
     // uncomment the below to enable remote dependency resolution
     // from public Maven repositories
