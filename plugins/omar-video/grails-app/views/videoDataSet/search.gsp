@@ -662,7 +662,14 @@ function measureUnitChanged(unit)
       baseLayer = new OpenLayers.Layer.WMS(baseWMS[layer].name, baseWMS[layer].url,
               baseWMS[layer].params, baseWMS[layer].options);
 
-      mapWidget.setupBaseLayers(baseLayer);
+      if(baseWMS[layer].options.isBaseLayer)
+      {
+        mapWidget.setupBaseLayers(baseLayer);
+      }
+      else
+      {
+        mapWidget.getMap().addLayer(baseLayer);
+      }
     }
   }
  </g:javascript>
