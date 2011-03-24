@@ -1051,6 +1051,10 @@ function MapWidget()
                 {
                     wmsParamsTemp["searchTagNames[" + idx + "]"] = $( tempName ).value;
                 }
+                else
+                {
+                    wmsParamsTemp["searchTagNames[" + idx + "]"] = "";
+                }
             }
         }
 
@@ -1063,6 +1067,10 @@ function MapWidget()
                 if(tempValue&&!(tempValue==="null"))
                 {
                     wmsParamsTemp["searchTagValues[" + idx + "]"] = $( tempName ).value;
+                }
+                else
+                {
+                    wmsParamsTemp["searchTagValues[" + idx + "]"] = "";
                 }
             }
         }
