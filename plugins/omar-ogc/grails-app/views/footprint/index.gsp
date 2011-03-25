@@ -1,14 +1,14 @@
 <html>
 <head>
-<openlayers:loadTheme />
-<openlayers:loadJavascript />
-<style type="text/css">
-#map {
-	width: 100%;
-	height: 100%;
-}
-</style>
-<g:javascript>
+  <openlayers:loadTheme/>
+  <openlayers:loadJavascript/>
+  <style type="text/css">
+  #map {
+    width: 100%;
+    height: 100%;
+  }
+  </style>
+  <g:javascript>
 var map, layer;
 function init()
 {
@@ -16,14 +16,15 @@ function init()
     map.addControl(new OpenLayers.Control.LayerSwitcher());
     
     var baseURL = "${createLink(controller: "footprint", action: 'footprints')}";
-    var imageType = "image/png"
+    var imageType = "image/gif"
     
         
     layers  = [
         new OpenLayers.Layer.WMS( "Reference",
-            "http://${InetAddress.localHost.hostAddress}/tilecache/tilecache.py",
-            {layers: 'omar', format: "image/jpeg"},
-            {isBaseLayer: true, buffer: 0, transitionEffect: "resize"}
+            //"http://${InetAddress.localHost.hostAddress}/tilecache/tilecache.py",
+            "${createLink(controller: 'wms', action: 'getMap')}",
+            {layers: 'omar', format: "image/gif", bgColor: "#99B3CC", styles: "{fillOpacity: 1.0, fillColor: '#BDDE83', strokeColor: '#000000', strokeWidth: 1}"},
+            {isBaseLayer: true, buffer: 0, transitionEffect: "resize" /*,singleTile: true, ration: 1.0*/}
             ),
 
         new OpenLayers.Layer.WMS( "DTED Footprints",
@@ -60,10 +61,10 @@ function init()
     ];        
     map.addLayers(layers);
     map.zoomToMaxExtent();
-}        
-</g:javascript>
+}
+  </g:javascript>
 </head>
 <body onload="init()">
-	<div id="map"></div>
+<div id="map"></div>
 </body>
 </html>

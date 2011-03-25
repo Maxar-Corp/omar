@@ -24,6 +24,7 @@ import org.geotools.factory.CommonFactoryFinder
 import org.apache.commons.collections.map.CaseInsensitiveMap
 
 import grails.converters.JSON
+import geoscript.workspace.Directory
 
 
 class FootprintService
@@ -153,6 +154,11 @@ class FootprintService
             imageType: wmsGetMap['format'] - "image/"
     )
 
+    if ( wmsGetMap['bgColor'] )
+    {
+      mapContext.backgroundColor = wmsGetMap['bgColor']
+    }
+
     return mapContext
   }
 
@@ -201,5 +207,43 @@ class FootprintService
     ])
 
     return wmsGetMap
+  }
+
+
+  def referenceMap(def params, def response)
+  {
+    synchronized ( this )
+    {
+
+      def wmsGetMap = parseGetMap(params)
+      def mapContext = createMapContext(wmsGetMap)
+
+      def workspace = new Directory(grailsApplication.config.wms.referenceDataDirectory)
+
+      try
+      {
+        def style = createStyle(wmsGetMap['styles'])
+
+        ["world_adm0", "statesp020"].each { layerName ->
+          def layer = workspace[layerName]
+
+          layer.style = style
+          mapContext.addLayer(layer)
+        }
+
+        def ostream = response.outputStream
+
+        response.contentType = wmsGetMap['format']
+        //renderToImageToStream(mapContext, ostream)
+        mapContext.render(ostream)
+        ostream.flush()
+        ostream.close()
+      }
+      finally
+      {
+        mapContext.close()
+        workspace.close()
+      }
+    }
   }
 }
