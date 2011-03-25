@@ -240,7 +240,7 @@ function MapWidget()
         if($( "aoiMinLat" )) $( "aoiMinLat" ).value = bounds.bottom;
 
         if($( "aoiMinLonDms" )) $("aoiMinLonDms").value = convert.ddToDms( bounds.left, "lon" );
-        if($( "aoiMaxLatDms" )) $("aoiMinLonDms").value = convert.ddToDms( bounds.top, "lat" );
+        if($( "aoiMaxLatDms" )) $("aoiMaxLatDms").value = convert.ddToDms( bounds.top, "lat" );
         if($( "aoiMaxLonDms" )) $("aoiMaxLonDms").value = convert.ddToDms( bounds.right, "lon" );
         if($( "aoiMinLatDms" )) $("aoiMinLatDms").value = convert.ddToDms( bounds.bottom, "lat" );
 
