@@ -154,9 +154,9 @@ class FootprintService
             imageType: wmsGetMap['format'] - "image/"
     )
 
-    if ( wmsGetMap['bgColor'] )
+    if ( wmsGetMap['bgcolor'] )
     {
-      mapContext.backgroundColor = wmsGetMap['bgColor']
+      mapContext.backgroundColor = wmsGetMap['bgcolor']
     }
 
     return mapContext
