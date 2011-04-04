@@ -277,7 +277,20 @@ class WebMappingService
 		wmsView?.delete()
 		wmsView = null
     }
-	
+    else // setup an empty chain
+    {
+        kwlString = "type:ossimMemoryImageSource\n"
+        if(params.width&&params.height)
+        {
+            kwlString += "rect:(0,0,${params.width},${params.height},lh)\n"
+            kwlString += "scalar_type:ossim_uint8\n"
+            kwlString += "number_bands:1\n"
+        }
+        def chain = new joms.oms.Chain();
+        chain.loadChainKwlString(kwlString)
+        result = rasterChainService.grabOptimizedImageFromChain(chain, params)
+    }
+
 	return result
   }
   RenderedImage getMapOld(WMSRequest wmsRequest)
