@@ -15,15 +15,15 @@ class WfsController
     ])
 
     def xml = null
-    switch ( wfsParams.request )
+    switch ( wfsParams.request?.toLowerCase() )
     {
     case "getcapabilities":
       xml = webFeatureService.capabilities
       break
-    case "describeFeatureType":
+    case "describefeaturetype":
       xml = webFeatureService.describeFeatureType(wfsParams.typeName)
       break
-    case "getFeature":
+    case "getfeature":
       def pagination = [
               max: wfsParams.max?.toInteger() ?: 10,
               offset: wfsParams.offset?.toInteger() ?: 0,
