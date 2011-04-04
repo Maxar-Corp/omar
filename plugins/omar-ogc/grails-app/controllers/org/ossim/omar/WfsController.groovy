@@ -31,9 +31,9 @@ class WfsController
               order: wfsParams.order
       ]
 
-      println '*' * 40
-      println pagination
-      println '*' * 40
+      //println '*' * 40
+      //println pagination
+      //println '*' * 40
 
       xml = webFeatureService.getFeature(wfsParams.typeName, wfsParams.filter, pagination)
       break
