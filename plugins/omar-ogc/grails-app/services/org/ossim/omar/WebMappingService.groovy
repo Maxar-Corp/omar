@@ -132,11 +132,15 @@ class WebMappingService
     def stretchMode       = wmsRequest?.stretch_mode ? wmsRequest?.stretch_mode.toLowerCase(): null
     def stretchModeRegion = wmsRequest?.stretch_mode_region ?:null
 	wmsQuery.caseInsensitiveBind(wmsRequest.toMap())
-	def max    = params.max?params.max as Integer:10
+	def max = params.max?params.max as Integer:10
 	if(max > 10) max = 10
 	wmsQuery.max = max
 	def bounds = wmsRequest?.bbox?.split(',')
 	def maxBands = 1
+    if(wmsQuery.layers?.toLowerCase() == "raster_entry")
+    {
+      wmsQuery.layers = null
+    }
 	// for now we will sort by the date field if no layers are given
 	//
 	if(!wmsQuery.layers)
@@ -152,7 +156,7 @@ class WebMappingService
         log.error("Unsupported projection ${srs}")
         return null
     }
-	if(!bounds.size() == 4)
+	if(!bounds||!bounds.size() == 4)
 	{
         log.error("Bounds does not contain 4 values")
 		return null
@@ -176,6 +180,7 @@ class WebMappingService
     //params.viewGeom = wmsView.getImageGeometry();
 	params.wmsView  = wmsView
 	params.keepWithinScales = true
+    def kwlString = ""
     if(rasterEntries)
     {
         rasterEntries = rasterEntries?.reverse()
@@ -191,7 +196,6 @@ class WebMappingService
             }
 			chainMap = null
         }
-		def kwlString = ""
  		if(srcChains)
 		{
 			kwlString = "type:ossimImageChain\n"
@@ -270,7 +274,7 @@ class WebMappingService
 			it.chain.deleteChain()
 			it.kwl = ""
 		}
-		params.clear();
+		params.clear()
 		mosaic = null
 		srcChains?.clear()
 		srcChains = null
