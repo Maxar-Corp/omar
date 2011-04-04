@@ -6,6 +6,7 @@ import grails.util.Environment
 
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
+import org.ossim.omar.DbAppender
 
 grails.gorm.default.mapping = {
   cache true
@@ -83,7 +84,6 @@ log4j = {
     // uncomment for DB appending.  Do this after the first build of OMAR.
     // Then uncomment the wmsLoggingAppender redirection below.
     // add in the import org.ossim.omar.DbAppender at the top
-/*
     appender new DbAppender(name: "wmsLoggingAppender",
             threshold: org.apache.log4j.Level.INFO,
             tableMapping: [width: ":width", height: ":height", layers: ":layers", styles: ":styles",
@@ -93,7 +93,6 @@ log4j = {
                     geometry: "ST_GeomFromText(:geometry, 4326)"],
             tableName: "wms_log"
     )
-*/
     appender new org.apache.log4j.DailyRollingFileAppender(name: "omarDataManagerAppender",
             datePattern: "'.'yyyy-MM-dd",
             file: "/tmp/logs/omarDataManagerAppender.log",
@@ -104,7 +103,7 @@ log4j = {
             layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5}  %m%n'))
   }
 
-//  info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: false
+  info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: false
   info 'omarDataManagerAppender': '*DataManagerService', additivity: false
   info omarAppender: 'grails.app', additivity: false
   info omarAppender: 'omar', additivity: false
@@ -137,7 +136,8 @@ wms {
     defaultOptions = [isBaseLayer: true, buffer: 0, transitionEffect: "resize"]
     layers = [
             [
-                    url: (useTileCache) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
+                 //   url: (useTileCache) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
+                    url: "${grails.serverURL}/ogc/mapserv?map=${mapFile}",
                     params: [layers: (useTileCache) ? "omar" : "Reference", format: "image/jpeg"],
                     name: "Reference Data",
                     options: defaultOptions
@@ -490,16 +490,16 @@ grails.plugins.springsecurity.securityConfigType = 'Requestmap'
 grails.plugins.springsecurity.password.algorithm = 'MD5'
 
 // LDAP Configuration
-grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
-grails.plugins.springsecurity.ldap.context.managerDn = 'cn=Administrator,dc=otd,dc=radiantblue,dc=com' //
-grails.plugins.springsecurity.ldap.context.userDn = 'dc=otd,dc=radiantblue,dc=com' //
+//grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
+//grails.plugins.springsecurity.ldap.context.managerDn = 'cn=Administrator,dc=otd,dc=radiantblue,dc=com' //
+//grails.plugins.springsecurity.ldap.context.userDn = 'dc=otd,dc=radiantblue,dc=com' //
 
-grails.plugins.springsecurity.ldap.context.managerPassword = 'omarldap'                                //
-grails.plugins.springsecurity.ldap.search.base = 'ou=people,dc=otd,dc=radiantblue,dc=com'
-grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = true
-grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
-grails.plugins.springsecurity.ldap.search.searchSubtree = true
-grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=group,dc=otd,dc=radiantblue,dc=com'
+//grails.plugins.springsecurity.ldap.context.managerPassword = 'omarldap'                                //
+//grails.plugins.springsecurity.ldap.search.base = 'ou=people,dc=otd,dc=radiantblue,dc=com'
+//grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = true
+//grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
+//grails.plugins.springsecurity.ldap.search.searchSubtree = true
+//grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=group,dc=otd,dc=radiantblue,dc=com'
 //grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=group,memberUid=demo,dc=otd,dc=radiantblue,dc=com'
 
 // LDAP user:
