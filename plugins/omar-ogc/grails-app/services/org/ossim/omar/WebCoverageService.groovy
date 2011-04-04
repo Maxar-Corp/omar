@@ -19,7 +19,12 @@ class WebCoverageService implements InitializingBean{
         def wmsQuery  = new WMSQuery()
         def params    = wcsRequest.toMap();
         params.layers = params.coverage;
-
+        if(params.layers&&params.layers.toLowerCase() == "raster_entry")
+        {
+            params.layers = ""
+        }
+        // for now I will hard code a max mosaic size
+        //
         def max    = params.max?params.max as Integer:10
         if(max > 10) max = 10
         Utility.simpleCaseInsensitiveBind(wmsQuery, params)
