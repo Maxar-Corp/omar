@@ -105,6 +105,12 @@ log4j = {
 
   info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: false
   info 'omarDataManagerAppender': '*DataManagerService', additivity: false
+
+
+
+
+
+
   info omarAppender: 'grails.app', additivity: false
   info omarAppender: 'omar', additivity: false
 
@@ -488,6 +494,7 @@ grails.plugins.springsecurity.securityConfigType = 'Requestmap'
 // MD2, MD5, SHA-1, SHA-256, SHA-384, SHA-512
 //
 grails.plugins.springsecurity.password.algorithm = 'MD5'
+grails.plugins.springsecurity.password.encodeHashAsBase64 = false
 
 // LDAP Configuration
 //grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
