@@ -48,7 +48,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
     description
   }
 
-  String createImagesKml(List<org.ossim.omar.RasterEntry> rasterEntries, Map wmsParams, Map params)
+  String createImagesKml(List rasterEntries, Map wmsParams, Map params)
   {
     def kmlbuilder = new StreamingMarkupBuilder()
 
