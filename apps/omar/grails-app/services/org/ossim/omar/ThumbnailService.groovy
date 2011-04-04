@@ -120,7 +120,7 @@ class ThumbnailService {
         // So if we have only 2 rlevels for an image but need 4 r-levels
         // we will error out
         //
-        int smallestWidth = maxSize / (2 ** resLevels)
+        int smallestWidth = maxSize / (2 ** (resLevels+2))
 
         if (size < smallestWidth) {
             httpStatusMessage.status = HttpStatus.NOT_FOUND
