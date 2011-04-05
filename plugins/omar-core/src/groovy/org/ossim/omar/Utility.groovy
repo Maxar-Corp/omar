@@ -9,8 +9,63 @@ import java.awt.image.SampleModel
 import java.awt.image.IndexColorModel
 import java.awt.image.DataBuffer;
 import grails.converters.JSON
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 class Utility
 {
+//here is the code for the method
+//here is the code for the method
+    static def zipDir(String dir2zip, String outputFile, String prefix=null)
+    {
+        def zos =  new ZipOutputStream(new FileOutputStream(outputFile))
+        Utility.zipDir(dir2zip, zos, prefix);
+        zos.close();
+    }
+    static def zipDir(String dir2zip, ZipOutputStream zos, String prefix = null)
+    {
+        def result = true
+        try
+       {
+            //create a new File object based on the directory we
+           def zipDirTemp = new File(dir2zip, prefix?:null);
+            //get a listing of the directory content
+           String[] dirList = zipDirTemp.list();
+            byte[] readBuffer = new byte[2048];
+            int bytesIn = 0;
+            //loop through dirList, and zip the files
+            for(int i=0; i<dirList.length; i++)
+            {
+                File f = new File(zipDirTemp, dirList[i]);
+                if(f.isDirectory())
+                {
+                        //if the File object is a directory, call this
+                        //function again to add its content recursively
+                    String filePath = f.getPath();
+                    zipDir(filePath, zos);
+                        //loop again
+                    continue;
+                }
+                //if we reached here, the File object f was not a directory
+                //create a FileInputStream on top of f
+                FileInputStream fis = new FileInputStream(f);
+                //create a new zip entry
+                ZipEntry anEntry = new ZipEntry(f.getPath());
+                //place the zip entry in the ZipOutputStream object
+                zos.putNextEntry(anEntry);
+                //now write the content of the file to the ZipOutputStream
+                while((bytesIn = fis.read(readBuffer)) != -1)
+                {
+                    zos.write(readBuffer, 0, bytesIn);
+                }
+               //close the Stream
+               fis.close();
+        }
+       }
+        catch(Exception e)
+        {
+            result =  false;
+        }
+    }
     static void writeStreamToOutputStream(def inputStream, def output, def blockSize=4096)
     {
         byte[] buffer = new byte[blockSize]; // To hold file contents

@@ -124,30 +124,54 @@ class WebMappingService
       g.drawPolyline(pointListx, pointListy, pointListx.size())
     }
   }
-
-  RenderedImage getMap(WMSRequest wmsRequest)
+  WMSQuery setupQuery(WMSRequest wmsRequest)
   {
-	def wmsQuery  = new WMSQuery()
-	def params    = wmsRequest.toMap();
-    def stretchMode       = wmsRequest?.stretch_mode ? wmsRequest?.stretch_mode.toLowerCase(): null
-    def stretchModeRegion = wmsRequest?.stretch_mode_region ?:null
-	wmsQuery.caseInsensitiveBind(wmsRequest.toMap())
-	def max = params.max?params.max as Integer:10
-	if(max > 10) max = 10
-	wmsQuery.max = max
-	def bounds = wmsRequest?.bbox?.split(',')
-	def maxBands = 1
-    if(wmsQuery.layers?.toLowerCase() == "raster_entry")
-    {
-      wmsQuery.layers = null
-    }
+      def wmsQuery  = new WMSQuery()
+      def params    = wmsRequest.toMap();
+      wmsQuery.caseInsensitiveBind(wmsRequest.toMap())
+      def max = params.max?params.max as Integer:10
+      if(max > 10) max = 10
+      wmsQuery.max = max
+      if(wmsQuery.layers?.toLowerCase() == "raster_entry")
+      {
+        wmsQuery.layers = null
+      }
+      // for now we will sort by the date field if no layers are given
+      //
+      if(!wmsQuery.layers)
+      {
+          wmsQuery.sort  = wmsQuery.sort?:"acquisitionDate"
+          wmsQuery.order = wmsQuery.order?:"desc"
+      }
+
+      wmsQuery
+  }
+  RenderedImage getMap(WMSRequest wmsRequest, def layers=null)
+  {
+//	def wmsQuery  = new WMSQuery()
+//	wmsQuery.caseInsensitiveBind(wmsRequest.toMap())
+//	def max = params.max?params.max as Integer:10
+//	if(max > 10) max = 10
+//	wmsQuery.max = max
+//	def bounds = wmsRequest?.bbox?.split(',')
+//	def maxBands = 1
+//    if(wmsQuery.layers?.toLowerCase() == "raster_entry")
+//    {
+//      wmsQuery.layers = null
+//    }
 	// for now we will sort by the date field if no layers are given
 	//
-	if(!wmsQuery.layers)
-	{
-	    wmsQuery.sort  = wmsQuery.sort?:"acquisitionDate"
-	    wmsQuery.order = wmsQuery.order?:"desc"
-	}
+//	if(!wmsQuery.layers)
+//	{
+//	    wmsQuery.sort  = wmsQuery.sort?:"acquisitionDate"
+//	    wmsQuery.order = wmsQuery.order?:"desc"
+//	}
+    def params    = wmsRequest.toMap();
+    def bounds = wmsRequest?.bbox?.split(',')
+    def maxBands = 1
+    def wmsQuery = layers?null:setupQuery(wmsRequest);
+    def stretchMode       = wmsRequest?.stretch_mode ? wmsRequest?.stretch_mode.toLowerCase(): null
+    def stretchModeRegion = wmsRequest?.stretch_mode_region ?:null
 	def result = null
     def wmsView = new WmsView()
 	def srs = wmsRequest?.srs
@@ -176,7 +200,7 @@ class WebMappingService
 		log.error("Need to set all dimensions width, height, bbox")
 		return null
 	}
-	def rasterEntries = wmsQuery.getRasterEntriesAsList();
+	def rasterEntries = layers?:wmsQuery.getRasterEntriesAsList();
     //params.viewGeom = wmsView.getImageGeometry();
 	params.wmsView  = wmsView
 	params.keepWithinScales = true
