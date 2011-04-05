@@ -69,6 +69,34 @@ class WMSRequest
     return (time) ? time.split(",") : []
   }
 
+  def getBounds()
+  {
+      def result = null
+      if(bbox)
+      {
+         def splitBbox = bbox.split(",")
+          try{
+              def minx = splitBbox[0] as Double
+              def miny = splitBbox[1] as Double
+              def maxx = splitBbox[2] as Double
+              def maxy = splitBbox[3] as Double
+              def w = width
+              def h = height
+              result = [minx:minx,
+                        miny:miny,
+                        maxx:maxx,
+                        maxy:maxy,
+                        width:w as Integer,
+                        height:h as Integer]
+          }
+          catch(Exception e)
+          {
+            result = null
+          }
+      }
+      result
+  }
+
   def getDateRange()
   {
     def result = []

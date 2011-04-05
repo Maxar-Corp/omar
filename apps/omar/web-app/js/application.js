@@ -244,6 +244,7 @@ function OmarWmsParams(){
 	this.srs    = "";
     this.bbox   = "";
     this.layers   = "";
+    this.transparent   = "";
 }
 
 function OmarWcsParams(){
@@ -254,6 +255,7 @@ function OmarWcsParams(){
 	this.crs    = "";
     this.bbox   = "";
     this.coverage   = "";
+    this.transparent   = "";
 }
 function OmarImageSpaceOpenLayersParams(){
     this.res = "";

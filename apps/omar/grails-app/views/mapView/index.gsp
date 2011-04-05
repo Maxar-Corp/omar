@@ -97,12 +97,19 @@
 								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getKML('${(rasterEntries*.indexId).join(',')}')" title="Export KML">KML</a></li>
 							</ul>
 							<ul>
-								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'image/jpeg', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Jpeg">Jpeg</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'image/jpeg', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Jpeg">Jpeg</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'image/png', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Png">Png</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'png_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Png">Png 8-Bit</a></li>
 								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geotiff">Geotiff</a></li>
 								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geotiff 8-Bit">Geotiff 8-Bit</a></li>
 								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo Jpeg 2000">Geo Jpeg 2000</a></li>
 								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo Jpeg 2000 8-Bit">Geo Jpeg 2000 8-Bit</a></li>
 							</ul>
+                            <ul>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/png', 'transparent':'false','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with PNG chip">KMZ Png</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/png', 'transparent':'true','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with PNG chip and transparent">KMZ Png Transparent</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/jpeg', 'transparent':'false','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with JPEG chip">KMZ Jpeg</a></li>
+                            </ul>
 						</div>
 					</div>
 				</li>
@@ -778,6 +785,33 @@ function getProjectedImage(params)
         form.action = url;
         form.submit();
     }          
+}
+
+function getLocalKmz(params)
+{
+	var wmsParamForm = document.getElementById('wmsFormId');
+	var wmsUrlParams  = new OmarWmsParams();
+
+	 var link   = "${createLink(action: "wms", controller: "ogc")}";
+	 var extent = mapWidget.getSelectedOrViewportExtents();
+	 var size   = mapWidget.getSizeInPixelsFromExtents(extent);
+	 var wmsProperties = {"request":"GetKMZ",
+	               	  "bbox":extent.toBBOX(),
+	               	  "srs":"EPSG:4326",
+	               	  "width":size.w,
+	               	  "height":size.h}
+	wmsUrlParams.request = ""
+    wmsUrlParams.setProperties(document);
+    wmsUrlParams.setProperties(params);
+    wmsUrlParams.setProperties(wmsProperties);
+
+    var url = link + "?" + wmsUrlParams.toUrlParams();
+    if(wmsParamForm)
+    {
+        wmsParamForm.action = url;
+        //alert(url);
+        wmsParamForm.submit();
+    }
 }
 
 function onFeatureUnselect(event)

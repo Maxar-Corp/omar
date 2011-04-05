@@ -3,13 +3,17 @@ package org.ossim.omar
 import javax.imageio.ImageIO
 import java.awt.Rectangle
 import java.awt.image.BufferedImage
+import groovy.xml.StreamingMarkupBuilder
 
 import java.awt.*;
 
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import javax.imageio.IIOImage
+import org.springframework.beans.factory.InitializingBean
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
-class OgcController
+class OgcController implements InitializingBean
 {
   def rasterEntrySearchService
   def videoDataSetSearchService
@@ -17,6 +21,7 @@ class OgcController
   def webCoverageService
   def wmsLogService
   def grailsApplication
+  def scratchDir
 /*
 def authenticateService
 */
@@ -312,7 +317,7 @@ def authenticateService
         render(contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8")
         break
       case "getkmz":
-        render contentType: "text/plain", text: new Date() as String
+          this.kmz()
         break
       default:
         logParameters = false
@@ -385,7 +390,90 @@ def authenticateService
     }
     return null
   }
+  def kmz = {
+      def wmsRequest = new WMSRequest()
+      def kmlbuilder = new StreamingMarkupBuilder()
+      kmlbuilder.encoding = "UTF-8"
 
+
+      Utility.simpleCaseInsensitiveBind(wmsRequest, params);
+      // will only support png or jpegs
+      def format =  wmsRequest.format?:"image/png"
+      def ext =  ".png"
+
+      switch(format.toLowerCase())
+      {
+          case ~/.*jpeg.*/:
+              format = "image/jpeg"
+              ext = ".jpg"
+              break
+          case ~/.*png.*/:
+              format  = "image/png"
+              ext = ".png"
+              break
+          default:
+              format  = "image/png"
+              ext = ".png"
+          break
+      }
+      wmsRequest.format = format
+      wmsRequest.request = "GetMap"
+      wmsRequest.srs     = "EPSG:4326"
+      def wmsQuery = webMappingService.setupQuery(wmsRequest);
+      def rasterEntryList = wmsQuery.getRasterEntriesAsList();
+
+      def image = webMappingService.getMap(wmsRequest, rasterEntryList)
+      def tempDescription = rasterEntryList?kmlService.createImageKmlDescription(rasterEntryList[0]):"No images found for the kmz query"
+      if(image)
+      {
+          def bounds = wmsRequest.bounds
+          def kmlnode = {
+            mkp.xmlDeclaration()
+            kml("xmlns": "http://earth.google.com/kml/2.1") {
+              Document() {
+                  GroundOverlay() {
+                    name("OMAR KMZ")
+                    Snippet()
+                    description { mkp.yieldUnescaped("<![CDATA[${tempDescription}]]>") }
+                    open("1")
+                    visibility("1")
+                    Icon() {
+                      href { mkp.yieldUnescaped("images/image.${ext}") }
+                    }
+                    LatLonBox() {
+                        north(bounds.maxy)
+                        south(bounds.miny)
+                        east(bounds.maxx)
+                        west(bounds.minx)
+                    }
+                  }
+              }
+            }
+          }
+
+          response.contentType = "application/vnd.google-earth.kmz"
+          response.setHeader("Content-disposition", "attachment; output.kmz")
+          def zos =  new ZipOutputStream(response.outputStream)
+          //create a new zip entry
+          def anEntry = null
+
+          anEntry = new ZipEntry("doc.kml");
+          //place the zip entry in the ZipOutputStream object
+          zos.putNextEntry(anEntry);
+
+          zos << kmlbuilder.bind(kmlnode).toString()
+          anEntry = new ZipEntry("images/image.${ext}");
+          //place the zip entry in the ZipOutputStream object
+          zos.putNextEntry(anEntry);
+          if(image)
+          {
+            ImageIO.write(image, format.split("/")[-1], zos);
+          }
+          zos.close();
+          response.outputStream.close()
+      }
+      null
+  }
   def findRasterEntries(def rasterIdList)
   {
     def rasterEntries = RasterEntry.createCriteria().list() {
@@ -410,5 +498,10 @@ def authenticateService
   def getTile = {
     log.warn("OgcController getTile is deprecated and image space operations should go through ../icp/getTile\ninstead of /ogc/getTile")
     redirect(controller: "icp", action: "getTile", params: params)
+  }
+
+  public void afterPropertiesSet()
+  {
+     scratchDir = grailsApplication.config.export.workDir?:"/tmp";
   }
 }
