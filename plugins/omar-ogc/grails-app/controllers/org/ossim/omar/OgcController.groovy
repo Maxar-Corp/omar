@@ -424,15 +424,17 @@ def authenticateService
 
       def image = webMappingService.getMap(wmsRequest, rasterEntryList)
       def tempDescription = rasterEntryList?kmlService.createImageKmlDescription(rasterEntryList[0]):"No images found for the kmz query"
-      if(image)
+      if(image&&(rasterEntryList.size()>0) )
       {
+          def nameString = rasterEntryList[0].title
+          nameString = nameString?:rasterEntryList[0].indexId
           def bounds = wmsRequest.bounds
           def kmlnode = {
             mkp.xmlDeclaration()
             kml("xmlns": "http://earth.google.com/kml/2.1") {
               Document() {
                   GroundOverlay() {
-                    name("OMAR KMZ")
+                    name("${nameString}")
                     Snippet()
                     description { mkp.yieldUnescaped("<![CDATA[${tempDescription}]]>") }
                     open("1")
@@ -471,6 +473,10 @@ def authenticateService
           }
           zos.close();
           response.outputStream.close()
+      }
+      else
+      {
+          render(contentType: "text/plain", text: "Unable to chip image for KMZ given parameters ${params}")
       }
       null
   }
