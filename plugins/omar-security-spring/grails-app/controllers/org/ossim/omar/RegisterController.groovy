@@ -47,7 +47,10 @@ class RegisterController extends AbstractS2UiController
 
     String salt = saltSource instanceof NullSaltSource ? null : command.username
 
-    String password = (grailsApplication.config.login.registration.createLdapUser) ? command.password : springSecurityService.encodePassword(command.password, salt)
+    //String password = (grailsApplication.config.login.registration.createLdapUser) ? command.password : springSecurityService.encodePassword(command.password, salt)
+
+    String password = springSecurityService.encodePassword(command.password, salt)
+
 
     def user = lookupUserClass().newInstance(email: command.email, username: command.username,
             password: password, accountLocked: true, enabled: true, userRealName: command.userRealName,
@@ -82,14 +85,17 @@ class RegisterController extends AbstractS2UiController
       render view: 'index', model: [emailSent: true]
       break
     case "none":
-      SecUser.withTransaction {
-        user.accountLocked = false
-        user.save()
-        def UserRole = lookupUserRoleClass()
-        def Role = lookupRoleClass()
-        for ( roleName in conf.ui.register.defaultRoleNames )
-        {
-          UserRole.create user, Role.findByAuthority(roleName)
+      if ( !grailsApplication.config.login.registration.createLdapUser )
+      {
+        SecUser.withTransaction {
+          user.accountLocked = false
+          user.save()
+          def UserRole = lookupUserRoleClass()
+          def Role = lookupRoleClass()
+          for ( roleName in conf.ui.register.defaultRoleNames )
+          {
+            UserRole.create user, Role.findByAuthority(roleName)
+          }
         }
       }
       flash.message = "You may now login with your credentials"
@@ -225,8 +231,17 @@ class RegisterController extends AbstractS2UiController
     String salt = saltSource instanceof NullSaltSource ? null : registrationCode.username
     RegistrationCode.withTransaction { status ->
       def user = lookupUserClass().findByUsername(registrationCode.username)
-      user.password = springSecurityService.encodePassword(command.password, salt)
-      user.save()
+      def newPassword = springSecurityService.encodePassword(command.password, salt)
+
+      if ( user?.password == "Authenticated by LDAP" )
+      {
+        ldapUtilService.changePassword([username: user.username, password: newPassword])
+      }
+      else
+      {
+        user.password = newPassword
+        user.save()
+      }
       registrationCode.delete()
     }
 
@@ -283,7 +298,7 @@ class RegisterController extends AbstractS2UiController
     if ( flag )
     {
       //println "Creating LDAP User"
-      return ldapUtilService.addUser(user)
+      return ldapUtilService.addUser(user) == 0
     }
     else
     {

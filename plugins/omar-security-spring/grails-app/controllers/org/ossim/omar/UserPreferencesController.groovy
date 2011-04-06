@@ -4,6 +4,7 @@ import org.codehaus.groovy.grails.plugins.springsecurity.NullSaltSource
 
 class UserPreferencesController
 {
+  def ldapUtilService
   def springSecurityService
   def saltSource
 
@@ -39,6 +40,10 @@ class UserPreferencesController
       secUserInstance.properties = params
       if ( !secUserInstance.hasErrors() && secUserInstance.save(flush: true) )
       {
+        if ( secUserInstance?.password == "Authenticated by LDAP" )
+        {
+          ldapUtilService.modifyUser(secUserInstance)
+        }
         flash.message = "${message(code: 'default.updated.message', args: [message(code: 'secUser.label', default: 'SecUser'), secUserInstance.id])}"
         redirect(controller: "home", action: "index")
       }
@@ -75,7 +80,7 @@ class UserPreferencesController
         flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'secUser.label', default: 'SecUser'), command.username])}"
         redirect(controller: "home", action: "index")
       }
-      else if (user.id != springSecurityService.principal.id)
+      else if ( user.id != springSecurityService.principal.id )
       {
         flash.message = "You don't have permissions to edit that user!"
         redirect(controller: "home", action: "index")
@@ -96,10 +101,19 @@ class UserPreferencesController
     }
 
     def user = SecUser.findByUsername(command.username)
+
     String salt = saltSource instanceof NullSaltSource ? null : user.username
-    SecUser.withTransaction { status ->
-      user.password = springSecurityService.encodePassword(command.password, salt)
-      user.save()
+    String newPassword = springSecurityService.encodePassword(command.password, salt)
+    if ( user?.password == "Authenticated by LDAP" )
+    {
+      ldapUtilService.changePassword([username: user.username, password: newPassword])
+    }
+    else
+    {
+      SecUser.withTransaction { status ->
+        user.password = newPassword
+        user.save()
+      }
     }
 
     springSecurityService.reauthenticate user.username
