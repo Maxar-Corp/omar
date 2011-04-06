@@ -4,6 +4,23 @@ class SuperOverlayService {
 
     static transactional = true
 
+    def isAnEdgeTile(def level, def row, def col)
+    {
+        def result = true
+
+        if(row&&col)
+        {
+          def maxValue = (2**level) - 1
+          if((row != maxValue)&&
+             (col != maxValue))
+          {
+            // must be interior tile
+            result = false
+          }
+        }
+
+        result
+    }
     def canSplit(def tileBounds, def tileSize, def metersPerDegree, def fullResMetersPerPixel)
     {
         def deltax = (tileBounds.maxx-tileBounds.minx)
@@ -11,7 +28,6 @@ class SuperOverlayService {
         def maxDelta = deltax>deltay?deltay:deltax
         def maxTileSize = tileSize.width>tileSize.height?tileSize.width:tileSize.height
         def metersPerPixel = (maxDelta*metersPerDegree)/maxTileSize
-        println "${metersPerPixel} ? ${fullResMetersPerPixel}"
 
         // keep splitting if we can zoom further
         metersPerPixel > fullResMetersPerPixel
