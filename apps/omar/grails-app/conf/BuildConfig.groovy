@@ -13,9 +13,9 @@ grails.project.dependency.resolution = {
   }
   log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
   repositories {
-    grailsPlugins()
+//    grailsPlugins()
     grailsHome()
-    grailsCentral()
+//    grailsCentral()
 
     def localPlugins = new FileSystemResolver(name: 'my-local-repo')
     localPlugins.with {
@@ -56,8 +56,7 @@ grails.plugin.location.'omar-stager' = "../../plugins/omar-stager"
 grails.plugin.location.'omar-raster' = "../../plugins/omar-raster"
 grails.plugin.location.'omar-video' = "../../plugins/omar-video"
 grails.plugin.location.'omar-security-spring' = "../../plugins/omar-security-spring"
-
 //grails.plugin.location.'omar-scheduler' = "../../plugins/omar-scheduler"
-//grails.plugin.location.'omar-superoverlay' = "../../plugins/omar-superoverlay"
+grails.plugin.location.'omar-superoverlay' = "../../plugins/omar-superoverlay"
 //grails.plugin.location.'omar-mobile'="../../plugins/omar-mobile"
 
