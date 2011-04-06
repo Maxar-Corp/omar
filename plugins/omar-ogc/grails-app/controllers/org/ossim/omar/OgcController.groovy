@@ -454,7 +454,7 @@ def authenticateService
           }
 
           response.contentType = "application/vnd.google-earth.kmz"
-          response.setHeader("Content-disposition", "attachment; output.kmz")
+          response.setHeader("Content-disposition", "attachment; filename=output.kmz")
           def zos =  new ZipOutputStream(response.outputStream)
           //create a new zip entry
           def anEntry = null
