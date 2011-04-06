@@ -37,6 +37,9 @@ grails.mime.file.extensions = true // enables the parsing of file extensions fro
 grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
         xml: ['text/xml', 'application/xml'],
         text: 'text-plain',
+        jpeg: 'image/jpeg',
+        jpg: 'image/jpeg',
+        png: 'image/png',
         js: 'text/javascript',
         rss: 'application/rss+xml',
         atom: 'application/atom+xml',
@@ -46,7 +49,8 @@ grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
         json: ['application/json', 'text/json'],
         form: 'application/x-www-form-urlencoded',
         multipartForm: 'multipart/form-data',
-        kml: 'application/vnd.google+earth.kml+xml'
+        kml: 'application/vnd.google+earth.kml+xml',
+        kmz: 'application/vnd.google-earth.kmz'
 ]
 
 // The default codec used to encode data with ${}
@@ -549,7 +553,6 @@ If you did make the request, then click <a href="$url">here</a> to reset your pa
     }
   }
 }
-
 //grails {
 //   mail {
 //     host = "smtp.gmail.com"
