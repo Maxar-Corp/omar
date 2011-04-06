@@ -3,8 +3,10 @@ import org.ossim.omar.RasterEntry
 import joms.oms.Chain
 
 class SuperoverlayJob {
-	def timeout = 5000 // Execute job once in 5 seconds
-	def startDelay = 30000 // Delay for about 60 seconds before starting
+
+
+//	def timeout = 5000 // Execute job once in 5 seconds
+//	def startDelay = 30000 // Delay for about 60 seconds before starting
 	def sessionFactory
 	def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
 	def rasterChainService
