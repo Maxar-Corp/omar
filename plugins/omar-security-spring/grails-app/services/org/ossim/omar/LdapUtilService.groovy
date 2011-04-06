@@ -30,13 +30,15 @@ class LdapUtilService
       out << "objectClass: inetOrgPerson\n"
       out << "sn: User\n"
       out << "uid: ${userDetails.username}\n"
-      //out << "userPassword: {${securityConfig.password.algorithm}}${userDetails.password}\n"
-      out << "userPassword: ${userDetails.password}\n"
+      out << "userPassword: {${securityConfig.password.algorithm}}${userDetails.password}\n"
       out << "mail: ${userDetails.email}"
     }
 
-    runCommand(cmd)
+    def exitValue = runCommand(cmd)
+
     tempFile.delete()
+
+    return exitValue
   }
 
   private def runCommand(GString cmd)
@@ -78,7 +80,70 @@ class LdapUtilService
       out << "changetype: delete\n"
     }
 
-    runCommand(cmd)
+    def exitValue = runCommand(cmd)
+
     tempFile.delete()
+
+    return exitValue
+  }
+
+  def modifyUser(def userDetails)
+  {
+    def securityConfig = SpringSecurityUtils.securityConfig
+
+    def ldapServer = securityConfig.ldap.context.server
+    def ldapPassword = securityConfig.ldap.context.managerPassword
+    def managerDN = securityConfig.ldap.context.managerDn
+    def tempFile = File.createTempFile("user", ".ldif", new File("/tmp"))
+    def cmd = "ldapmodify -a -x -w ${ldapPassword} -H ${ldapServer} -D ${managerDN} -f ${tempFile.absolutePath}"
+    def userDn = securityConfig.ldap.context.userDn
+
+    tempFile.withWriter { out ->
+      out << "dn: uid=${userDetails.username},ou=people,${userDn}\n"
+      out << "changetype: modify\n"
+      out << "replace: givenName\n"
+      out << "givenName: ${userDetails.userRealName}\n"
+      out << "-\n"
+      out << "replace: description\n"
+      out << "description: ${userDetails.organization}\n"
+      out << "-\n"
+      out << "replace: telephoneNumber\n"
+      out << "telephoneNumber: ${userDetails.phoneNumber}\n"
+      out << "-\n"
+      out << "replace: mail\n"
+      out << "mail: ${userDetails.email}"
+    }
+
+    def exitValue = runCommand(cmd)
+
+    tempFile.delete()
+
+    return exitValue
+  }
+
+
+  def changePassword(def userDetails)
+  {
+    def securityConfig = SpringSecurityUtils.securityConfig
+
+    def ldapServer = securityConfig.ldap.context.server
+    def ldapPassword = securityConfig.ldap.context.managerPassword
+    def managerDN = securityConfig.ldap.context.managerDn
+    def tempFile = File.createTempFile("user", ".ldif", new File("/tmp"))
+    def cmd = "ldapmodify -a -x -w ${ldapPassword} -H ${ldapServer} -D ${managerDN} -f ${tempFile.absolutePath}"
+    def userDn = securityConfig.ldap.context.userDn
+
+    tempFile.withWriter { out ->
+      out << "dn: uid=${userDetails.username},ou=people,${userDn}\n"
+      out << "changetype: modify\n"
+      out << "replace: userPassword\n"
+      out << "userPassword: {${securityConfig.password.algorithm}}${userDetails.password}"
+    }
+
+    def exitValue = runCommand(cmd)
+
+    tempFile.delete()
+
+    return exitValue
   }
 }

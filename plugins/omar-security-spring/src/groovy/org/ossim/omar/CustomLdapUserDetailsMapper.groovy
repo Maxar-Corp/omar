@@ -56,6 +56,10 @@ class CustomLdapUserDetailsMapper implements UserDetailsContextMapper
           println "Can't save User: ${username}:"
           user.errors.allErrors.each { println it }
         }
+
+        SecUser.withTransaction {
+          SecUserSecRole.create user, SecRole.findByAuthority("ROLE_USER")
+        }
       }
 
       // Now simply create and return an instance of CustomUserDetails
