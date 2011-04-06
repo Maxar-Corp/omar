@@ -8,6 +8,7 @@ import joms.oms.ossimUnitType
 import joms.oms.ossimGpt
 import joms.oms.ossimDpt
 import joms.oms.Chain
+import org.ossim.omar.WMSRequest
 import org.springframework.beans.factory.InitializingBean
 import groovy.xml.StreamingMarkupBuilder
 
@@ -15,6 +16,7 @@ class SuperOverlayController implements InitializingBean{
 	def rasterChainService
 	def baseDir
 	def serverUrl
+    def kmlService
     def superOverlayService
     def metersPerDegree
     def tileSize = [width:256, height:256]
@@ -84,8 +86,8 @@ class SuperOverlayController implements InitializingBean{
 		result;
 	}
 	*/
-    def createKmlLink = {
-        //println params
+    def createKml = {
+       // println params
         def rasterEntry = null
         try
         {
@@ -100,6 +102,8 @@ class SuperOverlayController implements InitializingBean{
         {
             rasterEntry = null
         }
+
+      //  println rasterEntry
 /*
         withFormat{
             kml { render (contentType: "text/plain", text:"KML ${params.id}") }
@@ -109,22 +113,39 @@ class SuperOverlayController implements InitializingBean{
 */
         if(rasterEntry)
         {
+            def rasterEntryName      = rasterEntry.title?:rasterEntry.filename
+            def newParams = new HashMap(params)
             def kmlbuilder = new StreamingMarkupBuilder()
             kmlbuilder.encoding = "UTF-8"
             def bounds = rasterEntry.groundGeom.bounds
             def fullResBound = [minx:bounds.minLon, miny:bounds.minLat, maxx:bounds.maxLon, maxy:bounds.maxLat]
             def tileBounds = superOverlayService.tileBound(params, fullResBound)
+            def wmsRequest = new WMSRequest()
+            Utility.simpleCaseInsensitiveBind(wmsRequest, params)
             if(params.level&&params.row&&params.col)
             {
-                def wmsMap = [request:'GetMap',
+                def edgeTileFlag = superOverlayService.isAnEdgeTile(params.level as Integer, params.row as Integer, params.col as Integer)
+                def format = "image/jpeg"
+                def transparent = false
+                def ext = "jpg"
+                if(edgeTileFlag)
+                {
+                    format = "image/png"
+                    transparent = true
+                    ext = "png"
+                }
+                Utility.simpleCaseInsensitiveBind(wmsRequest, [request:'GetMap',
                         layers:params.id,
                         srs:'EPSG:4326',
-                        format:'image/jpeg',
+                        format:format,
                         service:'wms',
                         version:'1.1.1',
                         width:tileSize.width,
                         height:tileSize.height,
-                        bbox:"${tileBounds.minx},${tileBounds.miny},${tileBounds.maxx},${tileBounds.maxy}"]
+                        transparent:transparent,
+                        bbox:"${tileBounds.minx},${tileBounds.miny},${tileBounds.maxx},${tileBounds.maxy}"])
+                def wmsMap = wmsRequest.toMap()
+                Utility.removeEmptyParams(wmsMap)
 
                 def subtiles = []
                 if(superOverlayService.canSplit(tileBounds, tileSize, metersPerDegree, rasterEntry.metersPerPixel))
@@ -174,8 +195,11 @@ class SuperOverlayController implements InitializingBean{
                           }
                       }
                       subtiles.each{tile->
+                          newParams.level = tile.level
+                          newParams.row   = tile.row
+                          newParams.col   = tile.col
                         NetworkLink{
-                            name("${tile.level}/${tile.row}/${tile.col}.jpg")
+                            name("${tile.level}/${tile.row}/${tile.col}.${ext}")
                             Region{
                                 Lod{
                                     minLodPixels("${tileSize.width}")
@@ -189,7 +213,7 @@ class SuperOverlayController implements InitializingBean{
                                 }
                             }
                             Link{
-                                href { mkp.yieldUnescaped("<![CDATA[${createLink(absolute: true, controller: "superOverlay", action: "createKmlLink", params: [id:params.id, row:tile.row, col:tile.col, level:tile.level])}]]>") }
+                                href { mkp.yieldUnescaped("<![CDATA[${createLink(absolute: true, action:params.action, params: newParams)}]]>") }
                                 viewRefreshMode("onRegion")
                             }
                         }
@@ -198,17 +222,23 @@ class SuperOverlayController implements InitializingBean{
                   }
                 }
                 def kmlString = kmlbuilder.bind(kmlnode).toString()
+
                 render(contentType: "application/vnd.google-earth.kml+xml", text:kmlString,
                         encoding: "UTF-8")
             }
             else
             {
+                def rasterEntryDescription = kmlService.createImageKmlDescription(rasterEntry)
+                newParams.level = 0
+                newParams.row   = 0
+                newParams.col   = 0
                 def kmlnode = {
                   mkp.xmlDeclaration()
                   kml("xmlns": "http://earth.google.com/kml/2.1") {
                     Document() {
-                      name("doc")
-                      description()
+                      name("${rasterEntryName}")
+                      Snippet()
+                      description{mkp.yieldUnescaped("<![CDATA[${rasterEntryDescription}]]>")}
                       Style(){
                           ListStyle(id:"hideChildren"){
                              listItemType("checkHideChildren")
@@ -237,7 +267,7 @@ class SuperOverlayController implements InitializingBean{
                             }
                         }
                           Link(){
-                              href { mkp.yieldUnescaped("<![CDATA[${createLink(absolute: true, controller: "superOverlay", action: "createKmlLink", params: [id:params.id, row:0, col:0, level:0])}]]>") }
+                              href { mkp.yieldUnescaped("<![CDATA[${createLink(absolute: true, action:params.action, params: newParams)}]]>") }
                               viewRefreshMode("onRegion")
                           }
                       }
