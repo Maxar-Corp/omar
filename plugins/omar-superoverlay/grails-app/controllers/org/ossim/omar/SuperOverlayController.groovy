@@ -8,12 +8,10 @@ import joms.oms.ossimUnitType
 import joms.oms.ossimGpt
 import joms.oms.ossimDpt
 import joms.oms.Chain
-import org.ossim.omar.WMSRequest
 import org.springframework.beans.factory.InitializingBean
 import groovy.xml.StreamingMarkupBuilder
 
 class SuperOverlayController implements InitializingBean{
-	def rasterChainService
 	def baseDir
 	def serverUrl
     def kmlService
@@ -87,7 +85,7 @@ class SuperOverlayController implements InitializingBean{
 	}
 	*/
     def createKml = {
-       // println params
+       //println params
         def rasterEntry = null
         try
         {
@@ -113,169 +111,17 @@ class SuperOverlayController implements InitializingBean{
 */
         if(rasterEntry)
         {
-            def rasterEntryName      = rasterEntry.title?:rasterEntry.filename
-            def newParams = new HashMap(params)
-            def kmlbuilder = new StreamingMarkupBuilder()
-            kmlbuilder.encoding = "UTF-8"
             def bounds = rasterEntry.groundGeom.bounds
             def fullResBound = [minx:bounds.minLon, miny:bounds.minLat, maxx:bounds.maxLon, maxy:bounds.maxLat]
-            def tileBounds = superOverlayService.tileBound(params, fullResBound)
-            def wmsRequest = new WMSRequest()
-            Utility.simpleCaseInsensitiveBind(wmsRequest, params)
             if(params.level&&params.row&&params.col)
             {
-                def edgeTileFlag = superOverlayService.isAnEdgeTile(params.level as Integer, params.row as Integer, params.col as Integer)
-                def format = "image/jpeg"
-                def transparent = false
-                def ext = "jpg"
-                if(edgeTileFlag)
-                {
-                    format = "image/png"
-                    transparent = true
-                    ext = "png"
-                }
-                Utility.simpleCaseInsensitiveBind(wmsRequest, [request:'GetMap',
-                        layers:params.id,
-                        srs:'EPSG:4326',
-                        format:format,
-                        service:'wms',
-                        version:'1.1.1',
-                        width:tileSize.width,
-                        height:tileSize.height,
-                        transparent:transparent,
-                        bbox:"${tileBounds.minx},${tileBounds.miny},${tileBounds.maxx},${tileBounds.maxy}"])
-                def wmsMap = wmsRequest.toMap()
-                Utility.removeEmptyParams(wmsMap)
-
-                def subtiles = []
-                if(superOverlayService.canSplit(tileBounds, tileSize, metersPerDegree, rasterEntry.metersPerPixel))
-                {
-                    subtiles = superOverlayService.generateSubTiles(params, fullResBound)
-                }
-                def kmlnode = {
-                  mkp.xmlDeclaration()
-                  kml("xmlns": "http://earth.google.com/kml/2.1") {
-                    Document() {
-                      name("${params.level}/${params.row}/${params.col}.kml")
-                      description()
-                      Style(){
-                          ListStyle(id:"hideChildren"){
-                             listItemType("checkHideChildren")
-                          }
-                      }
-                      Region(){
-                          Lod(){
-                              minLodPixels("${tileSize.width}")
-                              if(subtiles.size() > 0)
-                              {
-                                  maxLodPixels("${tileSize.width*8}")
-                              }
-                              else
-                              {
-                                  maxLodPixels(-1)
-                              }
-                          }
-                          LatLonAltBox(){
-                              north(tileBounds.maxy)
-                              south(tileBounds.miny)
-                              east(tileBounds.maxx)
-                              west(tileBounds.minx)
-                          }
-                      }
-                      GroundOverlay(){
-                          drawOrder(params.level)
-                          Icon(){
-                              href{mkp.yieldUnescaped("<![CDATA[${createLink(absolute: true, controller: 'ogc', action: 'wms',params:wmsMap)}]]>")}
-                          }
-                          LatLonBox(){
-                              north(tileBounds.maxy)
-                              south(tileBounds.miny)
-                              east(tileBounds.maxx)
-                              west(tileBounds.minx)
-                          }
-                      }
-                      subtiles.each{tile->
-                          newParams.level = tile.level
-                          newParams.row   = tile.row
-                          newParams.col   = tile.col
-                        NetworkLink{
-                            name("${tile.level}/${tile.row}/${tile.col}.${ext}")
-                            Region{
-                                Lod{
-                                    minLodPixels("${tileSize.width}")
-                                    maxLodPixels("-1")
-                                }
-                                LatLonAltBox{
-                                    north("${tile.maxy}")
-                                    south("${tile.miny}")
-                                    east("${tile.maxx}")
-                                    west("${tile.minx}")
-                                }
-                            }
-                            Link{
-                                href { mkp.yieldUnescaped("<![CDATA[${createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                                viewRefreshMode("onRegion")
-                            }
-                        }
-                      }
-                    }
-                  }
-                }
-                def kmlString = kmlbuilder.bind(kmlnode).toString()
-
+                def kmlString =  superOverlayService.createTileKml(rasterEntry, fullResBound, tileSize, metersPerDegree, params)
                 render(contentType: "application/vnd.google-earth.kml+xml", text:kmlString,
                         encoding: "UTF-8")
             }
             else
             {
-                def rasterEntryDescription = kmlService.createImageKmlDescription(rasterEntry)
-                newParams.level = 0
-                newParams.row   = 0
-                newParams.col   = 0
-                def kmlnode = {
-                  mkp.xmlDeclaration()
-                  kml("xmlns": "http://earth.google.com/kml/2.1") {
-                    Document() {
-                      name("${rasterEntryName}")
-                      Snippet()
-                      description{mkp.yieldUnescaped("<![CDATA[${rasterEntryDescription}]]>")}
-                      Style(){
-                          ListStyle(id:"hideChildren"){
-                             listItemType("checkHideChildren")
-                          }
-                      }
-                      Region(){
-                          LatLonAltBox(){
-                                north(tileBounds.maxy)
-                                south(tileBounds.miny)
-                                east(tileBounds.maxx)
-                                west(tileBounds.minx)
-                          }
-                      }
-                      NetworkLink(){
-                        open("1")
-                        Region(){
-                            Lod(){
-                                minLodPixels("256")
-                                maxLodPixels("-1")
-                            }
-                            LatLonAltBox(){
-                                  north(tileBounds.maxy)
-                                  south(tileBounds.miny)
-                                  east(tileBounds.maxx)
-                                  west(tileBounds.minx)
-                            }
-                        }
-                          Link(){
-                              href { mkp.yieldUnescaped("<![CDATA[${createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                              viewRefreshMode("onRegion")
-                          }
-                      }
-                    }
-                  }
-                }
-
-                def kmlString = kmlbuilder.bind(kmlnode).toString()
+                def kmlString =  superOverlayService.createRootKml(rasterEntry, fullResBound, tileSize, params)
                 response.setHeader("Content-disposition", "attachment; filename=doc.kml")
                 render(contentType: "application/vnd.google-earth.kml+xml", text:kmlString,
                         encoding: "UTF-8")
