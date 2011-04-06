@@ -28,13 +28,16 @@ class KmlService implements ApplicationContextAware, InitializingBean
             params: [layers: rasterEntry.indexId])
 
     def mpp = rasterEntry.getMetersPerPixel()
-    def fieldMap = [File: (rasterEntry.mainFile.name as File).name,
-            'Entry id': rasterEntry.entryId,
-            Width: rasterEntry.width,
-            Height: rasterEntry.height,
-            Bands: rasterEntry.numberOfBands,
-            'Acquistion Date': rasterEntry?.acquisitionDate,
-            'Meters Per Pixel': mpp]
+    def fieldMap = [File: "<a href=${imageUrl}>${(rasterEntry.mainFile.name as File).name}</a>",
+            'Entry id': rasterEntry.entryId?:"",
+            'Image Id': rasterEntry.imageId?:"",
+            'Title': rasterEntry.title?:"",
+            'Niirs': rasterEntry.niirs?:"",
+            'Width': rasterEntry.width?:"",
+            'Height': rasterEntry.height?:"",
+            'Bands': rasterEntry.numberOfBands?:"",
+            'Acquistion Date': rasterEntry?.acquisitionDate?:"",
+            'Meters Per Pixel': mpp?:""]
 
 
     description = "<hr/><table>"
