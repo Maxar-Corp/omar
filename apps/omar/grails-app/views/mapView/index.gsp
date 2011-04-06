@@ -106,6 +106,7 @@
 								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo JPEG 2000 8-Bit">Geo JPEG 2000 8-Bit</a></li>
 							</ul>
                             <ul>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getKmlSuperOverlay()" title="Export Image as Super Overlay">KML Super Overlay</a></li>
                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/png', 'transparent':'false','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with PNG chip">KMZ PNG</a></li>
                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/png', 'transparent':'true','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with PNG chip and transparent">KMZ PNG Transparent</a></li>
                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/jpeg', 'transparent':'false','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with JPEG chip">KMZ JPEG</a></li>
@@ -746,6 +747,22 @@ function onFeatureSelect(event)
 	mapWidget.getMap().addPopup(popup);
 }
 
+
+function getKmlSuperOverlay()
+{
+	var wmsParamForm = document.getElementById('wmsFormId');
+	var imageAdjustementParams  = new OmarImageAdjustmentParams();
+
+	var link   = "${createLink(action: "createKml", controller: "superOverlay")}";
+    imageAdjustementParams.setProperties(document);
+
+    var url = link + "?" + "id=${(rasterEntries*.indexId).join(',')}" + "&"+imageAdjustementParams.toUrlParams();
+    if(wmsParamForm)
+    {
+        wmsParamForm.action = url;
+        wmsParamForm.submit();
+    }
+}
 
 function getProjectedImage(params)
 {
