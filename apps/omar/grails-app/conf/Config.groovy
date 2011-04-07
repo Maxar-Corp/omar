@@ -146,8 +146,7 @@ wms {
     defaultOptions = [isBaseLayer: true, buffer: 0, transitionEffect: "resize"]
     layers = [
             [
-                 //   url: (useTileCache) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
-                    url: "${grails.serverURL}/ogc/mapserv?map=${mapFile}",
+                    url: (useTileCache) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
                     params: [layers: (useTileCache) ? "omar" : "Reference", format: "image/jpeg"],
                     name: "Reference Data",
                     options: defaultOptions
