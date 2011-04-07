@@ -5,8 +5,6 @@ import org.ossim.omar.SuperOverlayQueueItem
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import joms.oms.WmsView
 import joms.oms.ossimUnitType
-import joms.oms.ossimGpt
-import joms.oms.ossimDpt
 import joms.oms.Chain
 import org.springframework.beans.factory.InitializingBean
 import groovy.xml.StreamingMarkupBuilder
@@ -16,8 +14,6 @@ class SuperOverlayController implements InitializingBean{
 	def serverUrl
     def kmlService
     def superOverlayService
-    def metersPerDegree
-    def tileSize = [width:256, height:256]
     def index = { render ""}
 /*
 	def create =
@@ -111,19 +107,24 @@ class SuperOverlayController implements InitializingBean{
 */
         if(rasterEntry)
         {
-            def bounds = rasterEntry.groundGeom.bounds
-            def fullResBound = [minx:bounds.minLon, miny:bounds.minLat, maxx:bounds.maxLon, maxy:bounds.maxLat]
             if(params.level&&params.row&&params.col)
             {
-                def kmlString =  superOverlayService.createTileKml(rasterEntry, fullResBound, tileSize, metersPerDegree, params)
+                def kmlString =  superOverlayService.createTileKml(rasterEntry, params)
+                //response.setDateHeader("Expires", System.currentTimeMillis()+(24*24*60*60*1000));
+               // response.addHeader("Cache-Control", "max-age=120")
+             //   response.setHeader("max-age", "120");
                 render(contentType: "application/vnd.google-earth.kml+xml", text:kmlString,
                         encoding: "UTF-8")
             }
             else
             {
-                def kmlString =  superOverlayService.createRootKml(rasterEntry, fullResBound, tileSize, params)
+                def kmlString =  superOverlayService.createRootKml(rasterEntry, params)
                 response.setHeader("Content-disposition", "attachment; filename=doc.kml")
-                render(contentType: "application/vnd.google-earth.kml+xml", text:kmlString,
+               // response.setDateHeader("Expires", System.currentTimeMillis()+(24*24*60*60*1000));
+               // response.setHeader("max-age", "120");
+               // response.addHeader("Cache-Control", "max-age=120")
+                render(contentType: "application/vnd.google-earth.kml+xml",
+                        text:kmlString,
                         encoding: "UTF-8")
             }
         }
@@ -132,13 +133,6 @@ class SuperOverlayController implements InitializingBean{
     public void afterPropertiesSet()
     {
 		baseDir = grailsApplication.config.export?.superoverlay?.baseDir
-        def gpt = new ossimGpt()
-        def dpt = gpt.metersPerDegree()
-        metersPerDegree = dpt.y
-        dpt.delete()
-        gpt.delete()
-        dpt = null
-        gpt = null
 		//serverUrl = grailsApplication.config.export?.superoverlay?.serverUrl
     }
 }
