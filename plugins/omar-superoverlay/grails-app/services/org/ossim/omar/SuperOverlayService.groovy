@@ -1,15 +1,63 @@
 package org.ossim.omar
 import groovy.xml.StreamingMarkupBuilder
 import org.ossim.omar.WMSRequest
+import com.vividsolutions.jts.geom.Coordinate
+import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.geom.GeometryFactory
+import com.vividsolutions.jts.geom.PrecisionModel
+import joms.oms.ossimGpt
+import joms.oms.ossimDpt
+import org.springframework.beans.factory.InitializingBean
 
-class SuperOverlayService {
+class SuperOverlayService implements InitializingBean{
 
+    def metersPerDegree
+    def grailsApplication
     def kmlService
+    def tileSize = [width:256, height:256]
+    def lodValues = [min:128, max:2000]
     def appTagLib = new org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib()
     static transactional = true
 
-    def createRootKml(def rasterEntry, def fullResBound, def tileSize, def params)
+    def geometryFactory = new GeometryFactory(new PrecisionModel(PrecisionModel.FLOATING), 4326)
+
+
+    def createFullResBounds(def rasterEntry)
     {
+        def bounds = rasterEntry.groundGeom.bounds
+        def fullResBound = [minx:bounds.minLon, miny:bounds.minLat, maxx:bounds.maxLon, maxy:bounds.maxLat]
+
+        def fullResMpp = rasterEntry.metersPerPixel;
+        def deltax = fullResBound.maxx-fullResBound.minx
+        def deltay = fullResBound.maxy-fullResBound.miny
+        def degreesPerMeter = 1.0/metersPerDegree
+        def degreesPerPixel = degreesPerMeter*fullResMpp
+
+        def pixelsWide = deltax/degreesPerPixel
+        def pixelsHigh = deltay/degreesPerPixel
+        def adjustedPixelsWide = Math.ceil(pixelsWide/tileSize.width)*tileSize.width;
+        def adjustedPixelsHigh = Math.ceil(pixelsHigh/tileSize.height)*tileSize.height;
+
+        fullResBound.maxx = fullResBound.minx+ (degreesPerPixel*adjustedPixelsWide)
+        fullResBound.maxy = fullResBound.miny+ (degreesPerPixel*adjustedPixelsHigh)
+
+        fullResBound
+    }
+    def createPolygonFromTileBounds(def bounds)
+    {
+        def coords = [
+                new Coordinate(bounds.minx, bounds.miny),
+                new Coordinate(bounds.minx, bounds.maxy),
+                new Coordinate(bounds.maxx, bounds.maxy),
+                new Coordinate(bounds.maxx, bounds.miny),
+                new Coordinate(bounds.minx, bounds.miny)
+        ] as Coordinate[]
+
+        geometryFactory.createPolygon(geometryFactory.createLinearRing(coords), null)
+    }
+    def createRootKml(def rasterEntry, def params)
+    {
+        def fullResBound = createFullResBounds(rasterEntry)
         def rasterEntryName      = rasterEntry.title?:rasterEntry.filename
         def kmlbuilder = new StreamingMarkupBuilder()
         kmlbuilder.encoding = "UTF-8"
@@ -43,7 +91,7 @@ class SuperOverlayService {
                 open("1")
                 Region(){
                     Lod(){
-                        minLodPixels("${tileSize.width}")
+                        minLodPixels(lodValues.min)
                         maxLodPixels("-1")
                     }
                     LatLonAltBox(){
@@ -58,7 +106,7 @@ class SuperOverlayService {
                       newParams.remove("controller")
 
                       href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                      viewRefreshMode("onRegion")
+                      viewRefreshMode("never")
                   }
               }
             }
@@ -67,8 +115,9 @@ class SuperOverlayService {
 
         kmlbuilder.bind(kmlnode).toString()
     }
-    def createTileKml(def rasterEntry, def fullResBound, def tileSize, def metersPerDegree, def params)
+    def createTileKml(def rasterEntry, def params)
     {
+        def fullResBound = createFullResBounds(rasterEntry)
         def kmlbuilder = new StreamingMarkupBuilder()
         kmlbuilder.encoding = "UTF-8"
         def tileBounds = tileBound(params, fullResBound)
@@ -79,7 +128,7 @@ class SuperOverlayService {
         newParams.remove("action")
         newParams.remove("controller")
 
-        def edgeTileFlag = isAnEdgeTile(params.level as Integer, params.row as Integer, params.col as Integer)
+        def edgeTileFlag = isAnEdgeTile(rasterEntry, fullResBound, params.level as Integer, params.row as Integer, params.col as Integer)
         def format = "image/jpeg"
         def transparent = false
         def ext = "jpg"
@@ -102,8 +151,11 @@ class SuperOverlayService {
         def wmsMap = wmsRequest.toMap()
         Utility.removeEmptyParams(wmsMap)
 
+        //def minLod = Math.sqrt(tileSize.width*tileSize.height)
+        //def maxLod = minLod
+
         def subtiles = []
-        if(canSplit(tileBounds, tileSize, metersPerDegree, rasterEntry.metersPerPixel))
+        if(canSplit(tileBounds, rasterEntry.metersPerPixel))
         {
             subtiles = generateSubTiles(params, fullResBound)
         }
@@ -121,10 +173,10 @@ class SuperOverlayService {
               }
               Region(){
                   Lod(){
-                      minLodPixels("${tileSize.width}")
+                      minLodPixels(lodValues.min)
                       if(subtiles.size() > 0)
                       {
-                          maxLodPixels("${tileSize.width*8}")
+                          maxLodPixels(lodValues.max)
                       }
                       else
                       {
@@ -142,6 +194,7 @@ class SuperOverlayService {
                   drawOrder(params.level)
                   Icon(){
                       href{mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, controller: 'ogc', action: 'wms',params:wmsMap)}]]>")}
+                      viewRefreshMode("never")
                   }
                   LatLonBox(){
                       north(tileBounds.maxy)
@@ -158,7 +211,7 @@ class SuperOverlayService {
                     name("${tile.level}/${tile.row}/${tile.col}.${ext}")
                     Region{
                         Lod{
-                            minLodPixels("${tileSize.width}")
+                            minLodPixels(lodValues.min)
                             maxLodPixels("-1")
                         }
                         LatLonAltBox{
@@ -170,7 +223,7 @@ class SuperOverlayService {
                     }
                     Link{
                         href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                        viewRefreshMode("onRegion")
+                        viewRefreshMode("never")
                     }
                 }
               }
@@ -180,39 +233,37 @@ class SuperOverlayService {
 
         kmlbuilder.bind(kmlnode).toString()
     }
-    def isAnEdgeTile(def level, def row, def col)
+    def isAnEdgeTile(def rasterEntry, def fullResBbox, def level, def row, def col)//def level, def row, def col)
     {
-        def result = true
+         // we will consider edge tiles as all tiles overlapping the bounds of the raster entry
+        //
+        def rasterGeom   = rasterEntry.groundGeom
+        def tileGeometry = createPolygonFromTileBounds(tileBound(level, row, col, fullResBbox))
 
-        if(row&&col)
-        {
-          def maxValue = (2**level) - 1
-          if((row != maxValue)&&
-             (col != maxValue))
-          {
-            // must be interior tile
-            result = false
-          }
-        }
-
+        def result = !rasterGeom.contains(tileGeometry)
         result
     }
-    def canSplit(def tileBounds, def tileSize, def metersPerDegree, def fullResMetersPerPixel)
+    def canSplit(def tileBounds, def fullResMetersPerPixel)
     {
         def deltax = (tileBounds.maxx-tileBounds.minx)
         def deltay = (tileBounds.maxy-tileBounds.miny)
-        def maxDelta = deltax>deltay?deltay:deltax
-        def maxTileSize = tileSize.width>tileSize.height?tileSize.width:tileSize.height
-        def metersPerPixel = (maxDelta*metersPerDegree)/maxTileSize
+        //def maxDelta = deltax>deltay?deltay:deltax
+       // def maxTileSize = tileSize.width>tileSize.height?tileSize.width:tileSize.height
+        //def metersPerPixel = (maxDelta*metersPerDegree)/maxTileSize
+        def metersPerPixel = (((deltax*metersPerDegree)/tileSize.width) + ((deltay*metersPerDegree)/tileSize.height))*0.5
 
         // keep splitting if we can zoom further
         metersPerPixel > fullResMetersPerPixel
     }
     def tileBound(def params, def fullResBbox)
     {
-        def level = params.level?params.level as Integer:0
-        def row   = params.row?params.row as Integer:0
-        def col   = params.col?params.col as Integer:0
+        tileBound(params.level?params.level as Integer:0,
+                  params.row?params.row as Integer:0,
+                  params.col?params.col as Integer:0,
+                  fullResBbox)
+    }
+    def tileBound(def level, def row, def col, def fullResBbox)
+    {
         def minx  = fullResBbox.minx
         def maxx  = fullResBbox.maxx
         def miny  = fullResBbox.miny
@@ -248,5 +299,20 @@ class SuperOverlayService {
          [minx:llx+deltax, miny:(lly+deltay), maxx:(llx+2.0*deltax), maxy:(lly+2.0*deltay), level:level, col:(ncol+1), row:(nrow+1)],
          [minx:llx, miny:lly+deltay, maxx:(llx+deltax), maxy:(lly+2.0*deltay), level:level, col:ncol, row:(nrow+1)]
         ]
+    }
+    void afterPropertiesSet()
+    {
+        def gpt = new ossimGpt()
+        def dpt = gpt.metersPerDegree()
+        metersPerDegree = dpt.y
+        dpt.delete()
+        gpt.delete()
+        dpt = null
+        gpt = null
+        tileSize = grailsApplication.config.superOverlay?.tileSize
+        lodValues = grailsApplication.config.superOverlay?.lodPixel
+        tileSize = tileSize?:[width:256, height:256]
+        def area = Math.sqrt(tileSize.width*tileSize.height)
+        lodValues = lodValues?:[min:area*0.5, max:area*8.0]
     }
 }
