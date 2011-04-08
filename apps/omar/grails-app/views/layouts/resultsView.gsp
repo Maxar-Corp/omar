@@ -108,7 +108,7 @@
       if(!YAHOO.lang.isNumber(pageOffsetValue))
       {
         validDataFlag = false;
-        alert("pageOffset must be a number");
+        alert("Page offset must be a number");
       }
       if(!YAHOO.lang.isNumber(maxValue))
       {
