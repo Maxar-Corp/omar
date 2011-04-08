@@ -329,7 +329,7 @@ login {
       useMail = "true"
     }
 
-    createLdapUser = true
+    createLdapUser = false
   }
 }
 
