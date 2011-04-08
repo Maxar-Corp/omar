@@ -23,7 +23,7 @@ grails.config.locations = [
 //  "classpath:${appName}-config.properties",
 //  "classpath:${appName}-config.groovy",
 //  "file:${userHome}/.grails/${appName}-config.properties",
-//     "file:${userHome}/.grails/${appName}-config.groovy"
+     "file:${userHome}/.grails/${appName}-config.groovy"
 ]
 if ( System.env.OMAR_CONFIG )
 {
@@ -150,16 +150,13 @@ wms {
                     params: [layers: (useTileCache) ? "omar" : "Reference", format: "image/jpeg"],
                     name: "Reference Data",
                     options: defaultOptions
+//            ],
+//            [
+//                    url: "${grails.serverURL}/footprint/footprints",
+//                    params: [layers: "raster_entry", styles: "{fillOpacity:0,strokeColor:'#FF0000'}", format: imageType, filter: "file_type = 'nitf'"],
+//                    name: "NITF Footprints",
+//                    options: [isBaseLayer: false, buffer: 0, transitionEffect: "resize"]
             ]
-/*
-,
-            [
-                    url: "http://labs.metacarta.com/wms-c/Basic.py?",
-                    params: [layers: "basic", format: "image/jpeg"],
-                    name: "World Map",
-                    options: [isBaseLayer: false, buffer: 0, transitionEffect: "resize"]
-            ]
-*/
     ]
   }
 
@@ -242,7 +239,7 @@ security {
 
 image.download.prefix = "http://${grails.serverIP}"
 
-/** ********************************* CONDITIONALS FOR VIEWS                         ***********************************************/
+/** ********************************* CONDITIONALS FOR VIEWS                          ***********************************************/
 // flags for different views
 //
 views {
