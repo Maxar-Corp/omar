@@ -81,6 +81,11 @@ class SuperOverlayController implements InitializingBean{
 	}
 	*/
     def createKml = {
+        // this requires the grails-cache-headers plugin to use a convenient
+        // specificiation of cache params on responses will comment out for more testing later
+        //
+        // cache shared:true, validFor:3600
+
        //println params
         def rasterEntry = null
         try
