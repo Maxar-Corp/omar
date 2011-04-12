@@ -20,7 +20,6 @@
 
 <body class="yui-skin-sam" onload="init();">
 <omar:bundle contentType="javascript" files="${[
-  [dir:'js', file: 'application.js'],
   [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
   [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js'],
   [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
