@@ -95,6 +95,7 @@
 							<ul>
 								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.indexId).join(',')])}" title="Show OGC WMS Capabilities">OGC WMS Capabilities</a></li>
 								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getKML('${(rasterEntries*.indexId).join(',')}')" title="Export KML">KML</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getKmlSuperOverlay()" title="Export Image as Super Overlay">KML Super Overlay</a></li>
 							</ul>
 							<ul>
                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'image/jpeg', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export JPEG">JPEG</a></li>
@@ -106,7 +107,6 @@
 								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo JPEG 2000 8-Bit">Geo JPEG 2000 8-Bit</a></li>
 							</ul>
                             <ul>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getKmlSuperOverlay()" title="Export Image as Super Overlay">KML Super Overlay</a></li>
                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/png', 'transparent':'false','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with PNG chip">KMZ PNG</a></li>
                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/png', 'transparent':'true','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with PNG chip and transparent">KMZ PNG Transparent</a></li>
                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/jpeg', 'transparent':'false','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with JPEG chip">KMZ JPEG</a></li>
