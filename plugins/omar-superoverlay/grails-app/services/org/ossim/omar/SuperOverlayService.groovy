@@ -58,7 +58,6 @@ class SuperOverlayService implements InitializingBean{
     def createRootKml(def rasterEntry, def params)
     {
         def fullResBound = createFullResBounds(rasterEntry)
-        def rasterEntryName      = rasterEntry.title?:rasterEntry.filename
         def kmlbuilder = new StreamingMarkupBuilder()
         kmlbuilder.encoding = "UTF-8"
         def newParams = new HashMap(params)
@@ -71,7 +70,7 @@ class SuperOverlayService implements InitializingBean{
           mkp.xmlDeclaration()
           kml("xmlns": "http://earth.google.com/kml/2.1") {
             Document() {
-              name("${rasterEntryName}")
+              name("${kmlService.createName(rasterEntry)}")
               Snippet()
               description{mkp.yieldUnescaped("<![CDATA[${rasterEntryDescription}]]>")}
               Style(){
@@ -106,7 +105,7 @@ class SuperOverlayService implements InitializingBean{
                       newParams.remove("controller")
 
                       href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                      viewRefreshMode("never")
+                      viewRefreshMode("onExpire")
                   }
               }
             }
@@ -159,7 +158,7 @@ class SuperOverlayService implements InitializingBean{
         {
             subtiles = generateSubTiles(params, fullResBound)
         }
-        def defaultName = "${params.level}/${params.row}/${params.col}.kml"
+        def defaultName = "${params.level}/${params.col}/${params.row}.kml"
         def kmlnode = {
           mkp.xmlDeclaration()
           kml("xmlns": "http://earth.google.com/kml/2.1") {
@@ -194,7 +193,7 @@ class SuperOverlayService implements InitializingBean{
                   drawOrder(params.level)
                   Icon(){
                       href{mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, controller: 'ogc', action: 'wms',params:wmsMap)}]]>")}
-                      viewRefreshMode("never")
+                      viewRefreshMode("onExpire")
                   }
                   LatLonBox(){
                       north(tileBounds.maxy)
@@ -208,7 +207,7 @@ class SuperOverlayService implements InitializingBean{
                   newParams.row   = tile.row
                   newParams.col   = tile.col
                 NetworkLink{
-                    name("${tile.level}/${tile.row}/${tile.col}.${ext}")
+                    name("${tile.level}/${tile.col}/${tile.row}.${ext}")
                     Region{
                         Lod{
                             minLodPixels(lodValues.min)
@@ -223,7 +222,7 @@ class SuperOverlayService implements InitializingBean{
                     }
                     Link{
                         href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                        viewRefreshMode("never")
+                        viewRefreshMode("onExpire")
                     }
                 }
               }
