@@ -445,8 +445,29 @@
     $("aoiRadius3").value = value;
 
   }
+  /*
+  function validateSearchParameters()
+  {
+    var testValue = YAHOO.lang.trim($("max").value);
+    if((testValue!="")&&!YAHOO.lang.isNumber(parseInt(testValue)))
+    {
+        $("max").focus();
+        alert("max input field is not a valid number");
+        return false;
+    }
+    else if(testValue!= "")
+    {
+        // guarantee an integer value and not a float number
+        $(max).value = parseInt(testValue);
+    }
+
+    return true;
+  }
+  */
   function search()
   {
+   // if(!validateSearchParameters()) return
+
     var url = "${createLink(action: 'search', controller: 'rasterEntry')}";
     mapWidget.setupSearch();
     omarSearchParams.setProperties(document);
