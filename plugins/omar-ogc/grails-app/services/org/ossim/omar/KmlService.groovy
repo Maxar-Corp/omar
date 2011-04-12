@@ -20,7 +20,10 @@ class KmlService implements ApplicationContextAware, InitializingBean
   def flashDirRoot
   def flashUrlRoot
   def coordinateConversionService
-
+  String createName(RasterEntry rasterEntry)
+  {
+      rasterEntry.title?:rasterEntry.filename
+  }
   String createImageKmlDescription(RasterEntry rasterEntry)
   {
     def description = ""
@@ -122,7 +125,7 @@ class KmlService implements ApplicationContextAware, InitializingBean
             }
             GroundOverlay() {
 
-              name((rasterEntry.mainFile.name as File).name)
+              name(createName(rasterEntry))
               Snippet()
               description { mkp.yieldUnescaped("<![CDATA[${renderedHtml}]]>") }
               LookAt() {
