@@ -222,6 +222,7 @@ class WebMappingService
         }
  		if(srcChains)
 		{
+            def connectionId = 10000
 			kwlString = "type:ossimImageChain\n"
 	        def objectPrefixIdx = 0
 			if(srcChains.size() > 1)
@@ -243,21 +244,21 @@ class WebMappingService
 	        kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
 	        kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
 	        kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
-	        kwlString += "object${objectPrefixIdx}.id:10001\n"
+	        kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
 		    ++objectPrefixIdx
-	        def connectionId = 10001
-	        if(stretchModeRegion == "viewport")
+	        if((stretchModeRegion == "viewport")&&
+               (stretchMode!="none"))
 	        {
 	            kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
-	            kwlString += "object${objectPrefixIdx}.id:10002\n"
+	            kwlString += "object${objectPrefixIdx}.id:${connectionId+1}\n"
 	            ++objectPrefixIdx
 	            kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
-	            kwlString += "object${objectPrefixIdx}.id:10003\n"
+	            kwlString += "object${objectPrefixIdx}.id:${connectionId+2}\n"
 	            kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
-	            kwlString += "object${objectPrefixIdx}.input_connection1:10001\n"
-	            kwlString += "object${objectPrefixIdx}.input_connection2:10002\n"
+	            kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId}\n"
+	            kwlString += "object${objectPrefixIdx}.input_connection2:${connectionId+1}\n"
 	            ++objectPrefixIdx
-	            connectionId = 10003
+                connectionId += 2
 	        }
 			// for now scale all WMS requests to 8-bit
 			// and make it either 1 band or 3 band output
@@ -266,16 +267,20 @@ class WebMappingService
 			++objectPrefixIdx
 			if(maxBands == 2)
 			{
-					kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-					kwlString += "object${objectPrefixIdx}.bands:(0)\n"
-					++objectPrefixIdx
+                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+                kwlString += "object${objectPrefixIdx}.bands:(0)\n"
+                kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+                ++connectionId
+                ++objectPrefixIdx
 			}
 			else if(maxBands > 3)
 			{
-					kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-					kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
-					++objectPrefixIdx
-			}
+                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+                kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
+                kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+                ++connectionId
+                ++objectPrefixIdx
+ 			}
 		}
 		else
 		{
