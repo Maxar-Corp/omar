@@ -25,6 +25,47 @@ class ReportController {
         }
 
     }
+    def delete = {
+        if(springSecurityService.loggedIn)
+        {
+            if(params.id)
+            {
+                def userDetails = springSecurityService.principal
+                def person = SecUser.get(userDetails.id)
+                def report = Report.get(params.id);
+                if(report)
+                {
+                    if(person)
+                    {
+                        def roles = person.getAuthoritiesAsStringList()
+                        if(("ROLE_ADMIN" in roles))
+                        {
+                            report.delete()
+                            flash.message = "Report with id ${params.id} deleted"
+                            redirect(action:"create", params:[:])
+                        }
+                        else
+                        {
+                            render("${person.username} does not have authority to delete report id ${param.id}")
+                        }
+                    }
+                    else
+                    {
+                        render("Unable to get user details to delete the report ${report}")
+                    }
+                }
+                else
+                {
+                    render("Report with id = ${params.id} not found in the database and will not be deleted")
+                }
+            }
+        }
+        else
+        {
+            flash.message = "You must be logged in to delete a Report"
+            redirect(controller:"login", action: "auth")
+        }
+    }
     def edit = {
         if(springSecurityService.loggedIn)
         {
