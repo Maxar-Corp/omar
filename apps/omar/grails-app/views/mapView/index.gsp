@@ -119,8 +119,8 @@
 					<div id="viewMenu" class="yuimenu">
 						<div class="bd">
                             <ul>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToImageSpace();" title="Image Space Viewer">Image Space Viewer</a></li>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'multiLayer', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Multi Layer Viewer">Multi Layer Viewer</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToImageSpace();" title="Image Space Viewer">Image Space</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'multiLayer', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a></li>
                             </ul>
                             <ul>
                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "index", params: [layers: (rasterEntries*.indexId).join(',')])}" title="Reset the view">Reset</a></li>

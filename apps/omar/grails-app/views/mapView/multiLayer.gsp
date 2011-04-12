@@ -246,9 +246,9 @@ function getProjectedImage(params)
 				<div id="viewMenu" class="yuimenu">
 					<div class="bd">
 						<ul>
-							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'index', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Single Layer Viewer">Single Layer Viewer</a></li>
+							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'index', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Ground Space Viewer">Ground Space</a></li>
 						<g:if test="${rasterEntries?.size() == 1}">
-							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'imageSpace', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Image Space Viewer">Image Space Viewer</a></li>
+							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'imageSpace', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Image Space Viewer">Image Space</a></li>
 							</g:if>
 						
 						</ul>

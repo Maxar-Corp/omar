@@ -108,9 +108,9 @@
 				<div id="viewMenu" class="yuimenu">
 					<div class="bd">
 						<ul>
-							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();" title="Single Layer Viewer">Single Layer Viewer</a></li>
+							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();" title="Ground Space Viewer">Ground Space</a></li>
 						
-							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}" title="Multi Layer Viewer">Multi Layer Viewer</a></li>
+							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}" title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a></li>
 						
 						</ul>
                         <ul>
@@ -191,7 +191,10 @@
               <li><g:select id="bands" name="bands" value="${params.bands?:'0,1,2'}" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()" /></li>
             </g:if>
             <li>Image Rotate:</li>
-            <li><g:textField name="rotate" value="${params.rotate?:0}" onChange="rotateImage()" size="1"/></li>
+            <li>
+                <g:textField name="rotate" value="${params.rotate?:0}" onChange="rotateImage()" size="1"/>
+                <button id="rotateApply" type="button" onclick="javascript:rotateImage()">Apply</button>
+            </li>
           </ol>
         </div>
       </div>
