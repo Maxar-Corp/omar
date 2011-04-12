@@ -68,7 +68,8 @@
                <g:textArea name="report" cols="40" rows="5" value="${reportInstance?.report}"/>
              </td>
            </tr>
-          <tr class="prop">
+ <sec:ifAllGranted roles="ROLE_ADMIN">
+     <tr class="prop">
             <td valign="top" class="name">
               <label for="status"><g:message code="report.status.label" default="Status"/></label>
             </td>
@@ -84,6 +85,7 @@
                <g:textArea name="comment" cols="40" rows="5" value="${reportInstance?.comment}"/>
              </td>
            </tr>
+</sec:ifAllGranted>
            </tbody>
         </table>
       </div>
