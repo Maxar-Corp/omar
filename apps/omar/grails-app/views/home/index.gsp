@@ -1,6 +1,6 @@
 s<html>
 <head>
-  <title>Welcome to OMAR</title>
+  <title>Welcome to OMAR <g:meta name="app.version"/></title>
   <meta name="layout" content="homeLayout"/>
 </head>
 <body class="yui-skin-sam">
