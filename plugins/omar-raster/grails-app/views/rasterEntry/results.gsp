@@ -9,7 +9,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="resultsView"/>
-  <title>Raster Search Results</title>
+  <title>OMAR <g:meta name="app.version"/>: Raster Search Results</title>
   <style>
   .yui-skin-sam .yui-navset .yui-content {
       background: none repeat scroll 0 0 #FFFFFF;
