@@ -287,6 +287,7 @@
       var oMenu = new YAHOO.widget.MenuBar("resultsMenu", {
                                                     autosubmenudisplay: true,
                                                     hidedelay: 750,
+                                                    showdelay: 0,
                                                     lazyload: true,
                                                     zIndex:9999});
       oMenu.render();

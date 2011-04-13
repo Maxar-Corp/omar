@@ -350,6 +350,7 @@
                                                     autosubmenudisplay: true,
                                                     hidedelay: 750,
                                                     lazyload: true,
+                                                    showdelay: 0,
                                                     zIndex:9999});
       oMenu.render();
 
