@@ -313,6 +313,7 @@ function init()
     var oMenu = new YAHOO.widget.MenuBar("rasterMenu", {
                                                 autosubmenudisplay: true,
                                                 hidedelay: 750,
+                                                showdelay: 0,
                                                 lazyload: true,
                                                 zIndex:9999});
 	oMenu.render();
