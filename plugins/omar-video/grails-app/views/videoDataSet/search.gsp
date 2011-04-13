@@ -1,7 +1,7 @@
 <%@ page import="grails.converters.JSON; org.ossim.omar.BaseQuery; org.ossim.omar.VideoDataSetQuery; org.ossim.omar.VideoDataSetSearchTag" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>OMAR: Video Search</title>
+  <title>OMAR <g:meta name="app.version"/>: Video Search</title>
   <meta name="layout" content="searchStatic"/>
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
@@ -61,9 +61,9 @@
 <content tag="left">
     <div id="spatialTab" class="yui-navset">
       <ul class="yui-nav">
-        <li class="selected"><a href="#spatialTab1"><em>DD</em></a></li>
-        <li><a href="#spatialTab2"><em>DMS</em></a></li>
-        <li><a href="#spatialTab3"><em>MGRS</em></a></li>
+        <li class="selected"><a href="#spatialTab1" id="ddTab"><em>DD</em></a></li>
+        <li><a href="#spatialTab2" id="dmsTab"><em>DMS</em></a></li>
+        <li><a href="#spatialTab3" id="mgrsTab"><em>MGRS</em></a></li>
       </ul>
       <div class="yui-content">
         <div id="spatialTab1">
@@ -82,13 +82,13 @@
                   <label for="centerLat">Latitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLat" value="${queryParams?.centerLat}"/>
+                  <g:textField name="centerLat" value="${queryParams?.centerLat}" onChange="mapWidget.setCenterDd()"/>
                 </li>
                 <li>
                   <label for="centerLon">Longitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLon" value="${queryParams?.centerLon}"/>
+                  <g:textField name="centerLon" value="${queryParams?.centerLon}" onChange="mapWidget.setCenterDd()"/>
                 </li>
                 <li>
                   <br/>
@@ -173,13 +173,13 @@
                   <label for="centerLat">Latitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLatDms" value=""/>
+                  <g:textField name="centerLatDms" value="" onChange="mapWidget.setCenterDms()"/>
                 </li>
                 <li>
                   <label for="centerLon">Longitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLonDms" value=""/>
+                  <g:textField name="centerLonDms" value="" onChange="mapWidget.setCenterDms()"/>
                 </li>
                 <li>
                   <br/>
@@ -260,7 +260,7 @@
                   <label for="centerLat">MGRS:</label>
                 </li>
                 <li>
-                  <g:textField name="centerMgrs" value=""/>
+                  <g:textField name="centerMgrs" value="" onChange="mapWidget.setCenterMgrs()"/>
                 </li>
                 <li>
                   <br/>
@@ -400,7 +400,7 @@
             <label for="max">Max Results:</label>
           </li>
           <li>
-            <input type="text" id="max" name="max" value="${params?.max}"/>
+            <input type="text" id="max" name="max" value="${params?.max}" onChange="validateMaxResults()"/>
           </li>
         </ol>
       </div>
@@ -429,6 +429,20 @@
 </content>
 
 <g:javascript>
+  function validateMaxResults()
+  {
+	var maxResultsRegExp = /^([1-9][0-9]?[0-9]?)$/
+
+	if (!$("max").value.match(maxResultsRegExp))
+	{
+		alert("Invalid input for max results.\nAcceptable Inputs: 1 - 100");
+		$("max").value = "10";
+	}
+}
+  ddTab.title = "Decimal Degrees";
+  dmsTab.title = "Degrees Minutes Seconds";
+  mgrsTab.title = "Military Grid Reference System";
+
   var mapWidget = null;
   var oElement  = null;
   var oElement1 = null;
