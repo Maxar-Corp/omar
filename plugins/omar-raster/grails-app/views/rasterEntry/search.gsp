@@ -1,7 +1,7 @@
 <%@ page import="grails.converters.JSON; org.ossim.omar.BaseQuery; org.ossim.omar.RasterEntryQuery; org.ossim.omar.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>OMAR: Raster Search</title>
+  <title>OMAR <g:meta name="app.version"/>: Raster Search</title>
   <meta name="layout" content="searchStatic"/>
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
@@ -61,9 +61,9 @@
 <content tag="left">
     <div id="spatialTab" class="yui-navset">
       <ul class="yui-nav">
-        <li class="selected"><a href="#spatialTab1"><em>DD</em></a></li>
-        <li><a href="#spatialTab2"><em>DMS</em></a></li>
-        <li><a href="#spatialTab3"><em>MGRS</em></a></li>
+        <li class="selected"><a href="#spatialTab1" id="ddTab"><em>DD</em></a></li>
+        <li><a href="#spatialTab2" id="dmsTab"><em>DMS</em></a></li>
+        <li><a href="#spatialTab3" id="mgrsTab"><em>MGRS</em></a></li>
       </ul>
       <div class="yui-content">
         <div id="spatialTab1">
@@ -82,13 +82,13 @@
                   <label for="centerLat">Latitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLat" value="${queryParams?.centerLat}"/>
+                  <g:textField name="centerLat" value="${queryParams?.centerLat}" onChange="mapWidget.setCenterDd()"/>
                 </li>
                 <li>
                   <label for="centerLon">Longitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLon" value="${queryParams?.centerLon}"/>
+                  <g:textField name="centerLon" value="${queryParams?.centerLon}" onChange="mapWidget.setCenterDd()"/>
                 </li>
                 <li>
                   <br/>
@@ -173,13 +173,13 @@
                   <label for="centerLat">Latitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLatDms" value=""/>
+                  <g:textField name="centerLatDms" value="" onChange="mapWidget.setCenterDms()"/>
                 </li>
                 <li>
                   <label for="centerLon">Longitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLonDms" value=""/>
+                  <g:textField name="centerLonDms" value="" onChange="mapWidget.setCenterDms()"/>
                 </li>
                 <li>
                   <br/>
@@ -260,7 +260,7 @@
                   <label for="centerLat">MGRS:</label>
                 </li>
                 <li>
-                  <g:textField name="centerMgrs" value=""/>
+                  <g:textField name="centerMgrs" value="" onChange="mapWidget.setCenterMgrs()"/>
                 </li>
                 <li>
                   <br/>
@@ -426,6 +426,9 @@
   <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
 </content>
 <g:javascript>
+  ddTab.title = "DD";
+  dmsTab.title = "DMS";
+  mgrsTab.title = "MGRS";
   var mapWidget = null;
   var oElement  = null;
   var oElement1 = null;
@@ -497,6 +500,7 @@
   {
     var oMenu = new YAHOO.widget.MenuBar("searchMenu", {
                                                 autosubmenudisplay: true,
+												showdelay: 0,
                                                 hidedelay: 750,
                                                 lazyload: true,
                                                 zIndex:9999});
