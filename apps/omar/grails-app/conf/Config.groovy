@@ -7,7 +7,6 @@ import grails.util.Environment
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
 import org.ossim.omar.DbAppender
-
 grails.gorm.default.mapping = {
   cache true
   id generator: 'identity'
@@ -23,8 +22,12 @@ grails.config.locations = [
 //  "classpath:${appName}-config.properties",
 //  "classpath:${appName}-config.groovy",
 //  "file:${userHome}/.grails/${appName}-config.properties",
-     "file:${userHome}/.grails/${appName}-config.groovy"
+//     "file:${userHome}/.grails/${appName}-config.groovy"
 ]
+if(new File("${userHome}/.grails/${appName}-config.groovy").exists())
+{
+    grails.config.locations << "file:${userHome}/.grails/${appName}-config.groovy"
+}
 if ( System.env.OMAR_CONFIG )
 {
   grails.config.locations << "file:${System.env.OMAR_CONFIG}"
