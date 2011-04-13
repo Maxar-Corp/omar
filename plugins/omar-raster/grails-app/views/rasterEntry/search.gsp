@@ -398,7 +398,7 @@
             <label for="max">Max Results:</label>
           </li>
           <li>
-            <input type="text" id="max" name="max" value="${params?.max}"/>
+            <input type="text" id="max" name="max" value="${params?.max}" onChange="validateMaxResults()"/>
           </li>
         </ol>
       </div>
@@ -426,9 +426,20 @@
   <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
 </content>
 <g:javascript>
-  ddTab.title = "DD";
-  dmsTab.title = "DMS";
-  mgrsTab.title = "MGRS";
+
+  function validateMaxResults()
+  {
+	var maxResultsRegExp = /^([1-9][0-9]?[0-9]?)$/
+
+	if (!$("max").value.match(maxResultsRegExp))
+	{
+		alert("Invalid input for max results.\nAcceptable Inputs: 1 - 100");
+		$("max").value = "10";
+	}
+}
+  ddTab.title = "Decimal Degrees";
+  dmsTab.title = "Degrees Minutes Seconds";
+  mgrsTab.title = "Military Grid Reference System";
   var mapWidget = null;
   var oElement  = null;
   var oElement1 = null;
