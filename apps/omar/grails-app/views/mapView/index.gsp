@@ -145,19 +145,22 @@
 		<div class="niceBoxBody">
 			<ol>
 				<li>DD:</li>
-				<li><g:textField name="ddMapCtr" value="" onChange="setMapCtr('dd', this.value)" size="28"
+				<li><g:textField name="ddMapCtr" id="ddMapCtr" value="" onChange="setMapCtr('dd', this.value)" size="28"
 					title="Enter decimal degree coordinates and click off the text field to re-center the map. Example: 25.77, -80.18" /></li>
 			</ol>
 			<ol>
 				<li>DMS:</li>
-				<li><g:textField name="dmsMapCtr" value="" onChange="setMapCtr('dms', this.value)" size="28"
+				<li><g:textField name="dmsMapCtr" id="dmsMapCtr" value="" onChange="setMapCtr('dms', this.value)" size="28"
 					title="Enter degree minute seconds coordinates and click off the text field to re-center the map. Example: 25°46'20.66'' N, 80°11'23.64'' W" /></li>
 			</ol>      
 			<ol>
 				<li>MGRS:</li>
-				<li><g:textField name="centerMgrs" value="" onChange="setMapCtr('mgrs', this.value)" size="28" 
+				<li><g:textField name="centerMgrs" id="centerMgrs" value="" onChange="setMapCtr('mgrs', this.value)" size="28"
 					title="Enter mgrs coordinate and click off the text field to re-center the map. Example: 17RNJ8123050729 or 17 RNJ 81230 50729" /></li>
 			</ol>
+            <div align="center">
+                <button id="resetCenterButton" type="button" onclick="javascript:resetMapCenter()">Reset Center</button>
+            </div>
 		</div>
 	</div>
 	
@@ -296,6 +299,13 @@ function resetBrightnessContrast()
 {
 	brightnessSlider.setRealValue(0);  
 	contrastSlider.setRealValue(1.0);
+}
+function resetMapCenter()
+{
+	bounds = new OpenLayers.Bounds(left, bottom, right, top);
+	zoom = mapWidget.getMap().getZoom();
+	mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
+
 }
 
 function init()
@@ -455,10 +465,12 @@ function setMapCtr(unit, value)
 		        var center = new OpenLayers.LonLat( centerLon, centerLat );
 
 		        mapWidget.getMap().setCenter( center, zoom );
-
-            
-        }		
+        }
 	}
+
+	// call this because the center is clamped so we need to reset the center on the
+	// display just in case a user typed a number outside the bounds of the image
+	setMapCtrTxt();
 }
 
 function mergeNewParams()
