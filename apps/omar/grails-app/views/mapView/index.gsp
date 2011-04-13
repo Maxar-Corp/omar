@@ -2,7 +2,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="rasterViewsStatic"/>
-  <title>OMAR: Ground Space Viewer</title>
+  <title>OMAR <g:meta name="app.version"/>: Ground Space Viewer</title>
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
