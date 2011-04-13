@@ -2,7 +2,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="generatedViews"/>
-  <title>OMAR: About</title>
+  <title>OMAR <g:meta name="app.version"/>: About</title>
 </head>
 <body>
 <content tag="content">
