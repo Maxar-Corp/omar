@@ -72,8 +72,8 @@
             <div class="niceBoxBody">
               <ol>
                 <li>
-                  <g:checkBox name="searchMethod" id="radiusSearchButton" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
-                  <label>Use Radius Search</label>
+                  <g:checkBox title="If this is checked we will use the center radius to define the Area of Interest" name="searchMethod" id="radiusSearchButton" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
+                  <label title="If this is checked we will use the center radius to define the Area of Interest">Use Radius Search</label>
                 </li>
                 <li>
                   <br/>
@@ -82,13 +82,13 @@
                   <label for="centerLat">Latitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLat" value="${queryParams?.centerLat}" onChange="mapWidget.setCenterDd()"/>
+                  <g:textField title="Specify in decimal degrees the center latitude" name="centerLat" value="${queryParams?.centerLat}" onChange="mapWidget.setCenterDd()"/>
                 </li>
                 <li>
                   <label for="centerLon">Longitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLon" value="${queryParams?.centerLon}" onChange="mapWidget.setCenterDd()"/>
+                  <g:textField title="Specify in decimal degrees the center longitude" name="centerLon" value="${queryParams?.centerLon}" onChange="mapWidget.setCenterDd()"/>
                 </li>
                 <li>
                   <br/>
@@ -97,7 +97,7 @@
                   <label for="aoiRadius">Radius in Meters:</label>
                 </li>
                 <li>
-                    <g:textField id="aoiRadius1" name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters();syncAoiRadius('aoiRadius1')"/>
+                    <g:textField title="Specify the radial search in meters" id="aoiRadius" name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters();syncAoiRadius('aoiRadius')"/>
                 </li>
                 <li>
                   <br/>
@@ -117,8 +117,8 @@
               <input type="hidden" id="viewMaxLat" name="viewMaxLat" value="${fieldValue(bean: queryParams, field: 'viewMaxLat')}"/>
               <ol>
                 <li>
-                  <g:checkBox name="searchMethod" id="bboxSearchButton" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
-                  <label>Use Bound Box Search</label>
+                  <g:checkBox title="If this is checked we will use the center radius to define the Area of Interest" name="searchMethod" id="bboxSearchButton" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
+                  <label title="If this is checked we will use the center radius to define the Area of Interest">Use Bound Box Search</label>
                 </li>
                 <li>
                   <br/>
@@ -127,31 +127,31 @@
                   <label for="aoiMaxLat">North Latitude:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiMaxLat" name="aoiMaxLat" value="${fieldValue(bean: queryParams, field: 'aoiMaxLat')}"/>
+                  <input title="Specify the northern latitude in decimal degrees" type="text" id="aoiMaxLat" name="aoiMaxLat" value="${fieldValue(bean: queryParams, field: 'aoiMaxLat')}"/>
                 </li>
                 <li>
                   <label for="aoiMinLon">West Longitude:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiMinLon" name="aoiMinLon" value="${fieldValue(bean: queryParams, field: 'aoiMinLon')}"/>
+                  <input title="Specify the western longitude in decimal degrees" type="text" id="aoiMinLon" name="aoiMinLon" value="${fieldValue(bean: queryParams, field: 'aoiMinLon')}"/>
                 </li>
                 <li>
                   <label for="aoiMinLat">South Latitude:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiMinLat" name="aoiMinLat" value="${fieldValue(bean: queryParams, field: 'aoiMinLat')}"/>
+                  <input title="Specify the southern latitude in decimal degrees" type="text" id="aoiMinLat" name="aoiMinLat" value="${fieldValue(bean: queryParams, field: 'aoiMinLat')}"/>
                 </li>
                 <li>
                   <label for="aoiMaxLon">East Longitude:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiMaxLon" name="aoiMaxLon" value="${fieldValue(bean: queryParams, field: 'aoiMaxLon')}"/>
+                  <input title="Specify the estern longitude in decimal degrees" type="text" id="aoiMaxLon" name="aoiMaxLon" value="${fieldValue(bean: queryParams, field: 'aoiMaxLon')}"/>
                 </li>
                 <li>
                   <br/>
                 </li>
                 <li>
-                    <button type="button"  onclick="javascript:mapWidget.clearAOI();">Clear</button>
+                    <button title="Clear the Bounding Box search options" type="button"  onclick="javascript:mapWidget.clearAOI();">Clear</button>
                 </li>
               </ol>
             </div>
@@ -163,8 +163,8 @@
             <div class="niceBoxBody">
               <ol>
                 <li>
-                  <g:checkBox name="searchMethod2" id="radiusSearchButton2" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
-                  <label>Use Radius Search</label>
+                  <g:checkBox title="If this is checked we will use the center radius to define the Area of Interest" name="searchMethod2" id="radiusSearchButton2" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
+                  <label title="If this is checked we will use the center radius to define the Area of Interest">Use Radius Search</label>
                 </li>
                 <li>
                   <br/>
@@ -173,28 +173,28 @@
                   <label for="centerLat">Latitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLatDms" value="" onChange="mapWidget.setCenterDms()"/>
+                  <g:textField title="enter a dms of the form ddmmss.ssssN|S or dd mm ss.sss N|S" name="centerLatDms" value="" onChange="mapWidget.setCenterDms()"/>
                 </li>
                 <li>
                   <label for="centerLon">Longitude:</label>
                 </li>
                 <li>
-                  <g:textField name="centerLonDms" value="" onChange="mapWidget.setCenterDms()"/>
+                  <g:textField title="enter a dms of the form dddmmss.ssssE|W or ddd mm ss.sss E|W" name="centerLonDms" value="" onChange="mapWidget.setCenterDms()"/>
                 </li>
                 <li>
                   <br/>
                 </li>
                 <li>
-                  <label for="aoiRadius">Radius in Meters:</label>
+                  <label for="aoiRadius2">Radius in Meters:</label>
                 </li>
                 <li>
-                    <g:textField id="aoiRadius2" name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters();syncAoiRadius('aoiRadius2')"/>
+                    <g:textField title="Specify the radial search in meters" id="aoiRadius2" name="aoiRadius2" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters();syncAoiRadius('aoiRadius2')"/>
                 </li>
                 <li>
                   <br/>
                 </li>
                 <li>
-                    <button type="button"  onclick="javascript:mapWidget.setCenterDms();">Set Center</button>
+                    <button title="Sets the center of the map to the specified coordinate" type="button"  onclick="javascript:mapWidget.setCenterDms();">Set Center</button>
                 </li>
               </ol>
             </div>
@@ -204,8 +204,8 @@
             <div class="niceBoxBody">
               <ol>
                 <li>
-                  <g:checkBox name="searchMethod2" id="bboxSearchButton2" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
-                  <label>Use Bound Box Search</label>
+                  <g:checkBox title="If this is checked we will use the Bounding Box search" name="searchMethod2" id="bboxSearchButton2" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
+                  <label title="If this is checked we will use the Bounding Box search">Use Bound Box Search</label>
                 </li>
                 <li>
                   <br/>
@@ -214,31 +214,31 @@
                   <label for="aoiMaxLat">North Latitude:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiMaxLatDms" name="aoiMaxLatDms"/>
+                  <input title="Enter a dms of the form ddmmss.ssssN|S or dd mm ss.sss N|S" type="text" id="aoiMaxLatDms" name="aoiMaxLatDms"/>
                 </li>
                 <li>
                   <label for="aoiMinLon">West Longitude:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiMinLonDms" name="aoiMinLonDms"/>
+                  <input title="Enter a dms of the form dddmmss.ssssE|W or ddd mm ss.sss E|W" title="" type="text" id="aoiMinLonDms" name="aoiMinLonDms"/>
                 </li>
                 <li>
                   <label for="aoiMinLat">South Latitude:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiMinLatDms" name="aoiMinLatDms"/>
+                  <input title="Enter a dms of the form ddmmss.ssssN|S or dd mm ss.sss N|S" type="text" id="aoiMinLatDms" name="aoiMinLatDms"/>
                 </li>
                 <li>
                   <label for="aoiMaxLon">East Longitude:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiMaxLonDms" name="aoiMaxLonDms"/>
+                  <input title="Enter a dms of the form dddmmss.ssssE|W or ddd mm ss.sss E|W" type="text" id="aoiMaxLonDms" name="aoiMaxLonDms"/>
                 </li>
                 <li>
                   <br/>
                 </li>
                 <li>
-                    <button type="button"  onclick="javascript:mapWidget.clearAOI();">Clear</button>
+                    <button  title="Clear the Bounding Box search options" type="button"  onclick="javascript:mapWidget.clearAOI();">Clear</button>
                 </li>
               </ol>
             </div>
@@ -250,8 +250,8 @@
             <div class="niceBoxBody">
               <ol>
                 <li>
-                  <g:checkBox name="searchMethod3" id="radiusSearchButton3" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
-                  <label>Use Radius Search</label>
+                  <g:checkBox  title="If this is checked we will use the Bounding Box search" name="searchMethod3" id="radiusSearchButton3" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
+                  <label title="If this is checked we will use the Bounding Box search">Use Radius Search</label>
                 </li>
                 <li>
                   <br/>
@@ -260,22 +260,22 @@
                   <label for="centerLat">MGRS:</label>
                 </li>
                 <li>
-                  <g:textField name="centerMgrs" value="" onChange="mapWidget.setCenterMgrs()"/>
+                  <g:textField title="MGRS formatted input of the form [grid zone designator][100,000-meter square identifier][easting][northing]" name="centerMgrs" value="" onChange="mapWidget.setCenterMgrs()"/>
                 </li>
                 <li>
                   <br/>
                 </li>
                 <li>
-                  <label for="aoiRadius">Radius in Meters:</label>
+                  <label for="aoiRadius3">Radius in Meters:</label>
                 </li>
                 <li>
-                    <g:textField id="aoiRadius3" name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters();syncAoiRadius('aoiRadius3')"/>
+                    <g:textField title="Specify the radial search in meters" id="aoiRadius3" name="aoiRadius3" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters();syncAoiRadius('aoiRadius3')"/>
                 </li>
                 <li>
                   <br/>
                 </li>
                 <li>
-                    <button type="button"  onclick="javascript:mapWidget.setCenterMgrs();">Set Center</button>
+                    <button title="Sets the center of the map to the specified input field" type="button"  onclick="javascript:mapWidget.setCenterMgrs();">Set Center</button>
                 </li>
               </ol>
             </div>
@@ -285,8 +285,8 @@
             <div class="niceBoxBody">
               <ol>
                 <li>
-                  <g:checkBox name="searchMethod3" id="bboxSearchButton3" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
-                  <label>Use Bound Box Search</label>
+                  <g:checkBox  title="If this is checked we will use the Bounding Box search" name="searchMethod3" id="bboxSearchButton3" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
+                  <label title="If this is checked we will use the Bounding Box search">Use Bound Box Search</label>
                 </li>
                 <li>
                   <br/>
@@ -295,19 +295,19 @@
                   <label for="aoiNeMgrs">MGRS NE:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiNeMgrs" name="aoiNeMgrs" value=""/>
+                  <input title="MGRS formatted input of the form [grid zone designator][100,000-meter square identifier][easting][northing]" type="text" id="aoiNeMgrs" name="aoiNeMgrs" value=""/>
                 </li>
                 <li>
                   <label for="aoiSwMgrs">MGRS SW:</label>
                 </li>
                 <li>
-                  <input type="text" id="aoiSwMgrs" name="aoiSwMgrs" value=""/>
+                  <input title="MGRS formatted input of the form [grid zone designator][100,000-meter square identifier][easting][northing]" type="text" id="aoiSwMgrs" name="aoiSwMgrs" value=""/>
                 </li>
                 <li>
                   <br/>
                 </li>
                 <li>
-                    <button type="button"  onclick="javascript:mapWidget.clearAOI();">Clear</button>
+                    <button title="Clear the Bounding Box search options" type="button"  onclick="javascript:mapWidget.clearAOI();">Clear</button>
                 </li>
               </ol>
             </div>
@@ -453,7 +453,7 @@
   function syncAoiRadius(synchTo)
   {
     value = $(synchTo).value;
-    $("aoiRadius1").value = value;
+    $("aoiRadius").value = value;
     $("aoiRadius2").value = value;
     $("aoiRadius3").value = value;
 
