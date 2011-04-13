@@ -2,7 +2,7 @@
 <head>
   <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
   <meta name='layout' content='singleColumn'/>
-  <title>OMAR Login</title>
+  <title>OMAR<g:meta name="app.version"/>: Login</title>
   <style type='text/css' media='screen'>
   #login {
     margin: 15px 0px;
