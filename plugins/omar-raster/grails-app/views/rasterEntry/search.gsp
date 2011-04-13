@@ -133,7 +133,7 @@
                   <label for="aoiMinLon">West Longitude:</label>
                 </li>
                 <li>
-                  <input title="Specify the western longitude in decimal degrees" type="text" id="aoiMinLon" name="aoiMinLon" value="${fieldValue(bean: queryParams, field: 'aoiMinLon')}"/>
+                  <input title="Specify the weastern longitude in decimal degrees" type="text" id="aoiMinLon" name="aoiMinLon" value="${fieldValue(bean: queryParams, field: 'aoiMinLon')}"/>
                 </li>
                 <li>
                   <label for="aoiMinLat">South Latitude:</label>
