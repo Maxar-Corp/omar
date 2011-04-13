@@ -102,7 +102,7 @@ class RasterChainService {
 			long maxSize = (rasterEntry.width > rasterEntry.height) ? rasterEntry.width : rasterEntry.height
 			if ( (maxSize * scaleCheck) < (maxSize / (2 ** rasterEntry.numberOfResLevels)) )
 			{
-				return null // outside our resampling bounds so return null
+                return [chain:null, kwl:"", prefixIdx:0]
 			}
 		}
 		

@@ -212,7 +212,7 @@ class WebMappingService
         rasterEntries.each{rasterEntry->
 			def chainMap = rasterChainService.createRasterEntryChain(rasterEntry, params)
 			//chain.print()
-            if(chainMap.chain&&(chainMap.chain.getChain()!=null))
+            if(chainMap&&chainMap.chain&&(chainMap.chain.getChain()!=null))
             {
  			   def outputBands = chainMap.chain?.getChainAsImageSource()?.getNumberOfOutputBands()
 			   if(outputBands > maxBands) maxBands = outputBands
