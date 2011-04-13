@@ -9,7 +9,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="resultsView"/>
-  <title>Video Search Results</title>
+  <title>OMAR <g:meta name="app.version"/>: Video Search Results</title>
 
  <style>
  .yui-skin-sam .yui-navset .yui-content {
