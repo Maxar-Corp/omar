@@ -241,6 +241,30 @@ class WebMappingService
 			def h         = params.height
 			imageRect = null
 			midPoint  = null
+
+			// for now scale all WMS requests to 8-bit
+            kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
+            kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+            ++connectionId
+            ++objectPrefixIdx
+			// and make it either 1 band or 3 band output
+			//
+			if(maxBands == 2)
+			{
+                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+                kwlString += "object${objectPrefixIdx}.bands:(0)\n"
+                kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+                ++connectionId
+                ++objectPrefixIdx
+			}
+			else if(maxBands > 3)
+			{
+                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+                kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
+                kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+                ++connectionId
+                ++objectPrefixIdx
+ 			}
 	        kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
 	        kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
 	        kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
@@ -260,27 +284,6 @@ class WebMappingService
 	            ++objectPrefixIdx
                 connectionId += 2
 	        }
-			// for now scale all WMS requests to 8-bit
-			// and make it either 1 band or 3 band output
-			//
-	        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
-			++objectPrefixIdx
-			if(maxBands == 2)
-			{
-                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-                kwlString += "object${objectPrefixIdx}.bands:(0)\n"
-                kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
-                ++connectionId
-                ++objectPrefixIdx
-			}
-			else if(maxBands > 3)
-			{
-                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-                kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
-                kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
-                ++connectionId
-                ++objectPrefixIdx
- 			}
 		}
 		else
 		{
