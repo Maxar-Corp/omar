@@ -105,7 +105,7 @@ class SuperOverlayService implements InitializingBean{
                       newParams.remove("controller")
 
                       href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                      viewRefreshMode("onExpire")
+                      viewRefreshMode("onRegion")
                   }
               }
             }
@@ -193,7 +193,7 @@ class SuperOverlayService implements InitializingBean{
                   drawOrder(params.level)
                   Icon(){
                       href{mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, controller: 'ogc', action: 'wms',params:wmsMap)}]]>")}
-                      viewRefreshMode("onExpire")
+                      viewRefreshMode("onRegion")
                   }
                   LatLonBox(){
                       north(tileBounds.maxy)
@@ -222,7 +222,7 @@ class SuperOverlayService implements InitializingBean{
                     }
                     Link{
                         href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                        viewRefreshMode("onExpire")
+                        viewRefreshMode("onRegion")
                     }
                 }
               }
