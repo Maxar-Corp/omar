@@ -620,7 +620,7 @@ function MapWidget()
     	{
     		pathMeasurementButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, {
         		title:"Click path measurement button to activate. Once activated click points on the map to create a path that you wish to measure. When you are done creating your path double click to end.",
-        		displayClass: "olControlMeasureDistance", persist: true,
+        		displayClass: "olControlMeasureDistance", geodesic:true, persist: true,
         		eventListeners:
         		{
         			measure: function(evt)
@@ -695,7 +695,7 @@ function MapWidget()
     	{
         	polygonMeasurementButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, {
         		title:"Click polygon measurement button to activate. Once activated click points on the map to create a polygon that you wish to measure. When you are done creating your polygon double click to end.",
-        		displayClass: "olControlMeasureArea", displaySystem: "metric", persist: true,
+        		displayClass: "olControlMeasureArea", geodesic:true, displaySystem: "metric", persist: true,
         		eventListeners:
         		{
         			measure: function(evt)
@@ -762,75 +762,6 @@ function MapWidget()
         		}
         	});
 
-/*
-            polygonMeasurementButton.getArea = function(geom, units)
-            {
-                var sourceProj = new Proj4js.Proj("EPSG:4326");
-                var destProj   = new Proj4js.Proj("EPSG:900913");
-                lonLat1 = new Proj4js.Point(0,0);
-                lonLat2 = new Proj4js.Point(0,0);
-                area = 0;
-                i=0;
-                j=0;
-                vertices = geom.getVertices();
-                size = vertices.length
-
-                for (i=0;i<size;i++)
-                {
-                    j = (i + 1) % size;
-                    lonLat1.x = vertices[i].x;
-                    lonLat1.y = vertices[i].y;
-                    lonLat2.x = vertices[j].x;
-                    lonLat2.y = vertices[j].y;
-                    newMapXY1 = Proj4js.transform(sourceProj, destProj, lonLat1);
-                    newMapXY2 = Proj4js.transform(sourceProj, destProj, lonLat2);
-
-                    area += (lonLat1.x+lonLat2.x)*(lonLat1.y-lonLat2.y);
-                   // area += vertices[i].x * vertices[j].y;
-                   // area -= vertices[i].y * vertices[j].x;
-                }
-
-                area /= 2.0;
-
-                if(units == "km")
-                {
-                    area /= 1000.0;
-                }
-                return Math.abs(area);
-            }
-            pathMeasurementButton.getLength = function(geom, units)
-            {
-                var sourceProj = new Proj4js.Proj("EPSG:4326");
-                var destProj   = new Proj4js.Proj("EPSG:900913");
-                lonLat1 = new Proj4js.Point(0,0);
-                lonLat2 = new Proj4js.Point(0,0);
-                area = 0;
-                i=0;
-                j=0;
-                vertices = geom.getVertices();
-                size = vertices.length
-                length = 0;
-                lonLat1.x = vertices[0].x;
-                lonLat1.y = vertices[0].y;
-                newMapXY1 = Proj4js.transform(sourceProj, destProj, lonLat1);
-                for (i=1;i<size;i++)
-                {
-                    lonLat2.x = vertices[i].x;
-                    lonLat2.y = vertices[i].y;
-                    newMapXY2 = Proj4js.transform(sourceProj, destProj, lonLat2);
-                    deltax = (newMapXY2.x - newMapXY1.x);
-                    deltay = (newMapXY2.y - newMapXY1.y);
-                    length += Math.sqrt(deltax*deltax + deltay*deltay);
-                    newMapXY1 = newMapXY2;
-                }
-
-                if(units == "km")
-                {
-                    length /= 1000.0;
-                }
-                return length;
-            }
-            */
     	}
     	
    	var container = $("toolBar");
