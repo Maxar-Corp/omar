@@ -16,7 +16,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
 
-  <title>OMAR: Ground Space Multi-Viewer</title>
+  <title>OMAR <g:meta name="app.version"/>: Ground Space Multi-Viewer</title>
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
