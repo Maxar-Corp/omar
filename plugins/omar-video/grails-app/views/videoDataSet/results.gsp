@@ -141,8 +141,8 @@
                <tbody>
                <g:each in="${videoDataSets}" status="i" var="videoDataSet">
                  <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                   <td><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
-                   <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.indexId, size: 128])}" alt="Show Frame"/></a></td>
+                   <td height="${videoDataSet.height/(Math.max(videoDataSet.width, videoDataSet.height)/128.0)}"><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
+                   <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.id, size: 128])}" alt="Show Frame"/></a></td>
                    <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
                    <td>${videoDataSet.width?.encodeAsHTML()}</td>
                    <td>${videoDataSet.height?.encodeAsHTML()}</td>
@@ -177,8 +177,8 @@
                  <tbody>
                  <g:each in="${videoDataSets}" status="i" var="videoDataSet">
                    <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                     <td><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
-                     <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.indexId, size: 128])}" alt="Show Frame"/></a></td>
+                       <td height="${videoDataSet.height/(Math.max(videoDataSet.width, videoDataSet.height)/128.0)}"><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
+                     <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.id, size: 128])}" alt="Show Frame"/></a></td>
                      <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
                      <td>
                        <sec:ifAllGranted roles="ROLE_DOWNLOAD">
@@ -213,8 +213,8 @@
                <tbody>
                <g:each in="${videoDataSets}" status="i" var="videoDataSet">
                   <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                    <td><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
-                    <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.indexId, size: 128])}" alt="Show Frame"/></a></td>
+                      <td height="${videoDataSet.height/(Math.max(videoDataSet.width, videoDataSet.height)/128.0)}"><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
+                    <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.id, size: 128])}" alt="Show Frame"/></a></td>
                     <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
                     <td>
                         <a href='${createLink(controller: 'videoStreaming', action: "getKML", id: videoDataSet.id)}'>Generate KML</a>
