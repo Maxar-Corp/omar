@@ -44,7 +44,8 @@ class UserPreferencesController
         {
           ldapUtilService.modifyUser(secUserInstance)
         }
-        flash.message = "${message(code: 'default.updated.message', args: [message(code: 'secUser.label', default: 'SecUser'), secUserInstance.id])}"
+        //flash.message = "${message(code: 'default.updated.message', args: [message(code: 'secUser.label', default: 'SecUser'), secUserInstance.id])}"
+        flash.message = "Updated profile for user: ${secUserInstance.username}."
         redirect(controller: "home", action: "index")
       }
       else
@@ -118,7 +119,8 @@ class UserPreferencesController
 
     springSecurityService.reauthenticate user.username
 
-    flash.message = message(code: 'spring.security.ui.resetPassword.success')
+    //flash.message = message(code: 'spring.security.ui.resetPassword.success')
+    flash.message = "Successfully changed password for user: ${user.username}"
 
     redirect(controller: "home", action: "index")
   }
