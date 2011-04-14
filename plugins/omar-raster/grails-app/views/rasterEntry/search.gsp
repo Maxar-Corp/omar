@@ -38,7 +38,7 @@
                     <div id="exportMenu" class="yuimenu">
                         <div class="bd">
                             <ul>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:generateKml()" title="Export KML">KML Query</a></li>
+                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:generateKml()" title="Export KML.  If no selection box is present the view bounds will float in google earth and if you hit refresh it will use the current google viewport to query the latest imagery.  If you specify a selection then it will be fixed to that location">KML Query</a></li>
                             </ul>
                           </div>
                     </div>
@@ -341,8 +341,8 @@
 	<div id="criteriaTab" class="yui-navset">
         <p/>
 	    <ul class="yui-nav">
-	        <li class="selected"><a href="#criteriaTab1"><em>Metadata</em></a></li>
-	        <li><a href="#criteriaTab2"><em>CQL</em></a></li>
+	        <li class="selected" id="metadataCriteriaTab"><a href="#criteriaTab1"><em>Metadata</em></a></li>
+	        <li id="cqlCriteriaTab"><a href="#criteriaTab2"><em>CQL</em></a></li>
 	    </ul>            
 	    <div class="yui-content">
 	        <div id="criteriaTab1"><p>
@@ -436,10 +436,7 @@
 		alert("Invalid input for max results.\nAcceptable Inputs: 1 - 100");
 		$("max").value = "10";
 	}
-}
-  ddTab.title = "Decimal Degrees";
-  dmsTab.title = "Degrees Minutes Seconds";
-  mgrsTab.title = "Military Grid Reference System";
+  }
   var mapWidget = null;
   var oElement  = null;
   var oElement1 = null;
@@ -458,25 +455,6 @@
     $("aoiRadius3").value = value;
 
   }
-  /*
-  function validateSearchParameters()
-  {
-    var testValue = YAHOO.lang.trim($("max").value);
-    if((testValue!="")&&!YAHOO.lang.isNumber(parseInt(testValue)))
-    {
-        $("max").focus();
-        alert("max input field is not a valid number");
-        return false;
-    }
-    else if(testValue!= "")
-    {
-        // guarantee an integer value and not a float number
-        $(max).value = parseInt(testValue);
-    }
-
-    return true;
-  }
-  */
   function search()
   {
    // if(!validateSearchParameters()) return
@@ -577,6 +555,12 @@
     YAHOO.util.Event.addListener(oElement1, "change", updateOmarFilters);
     YAHOO.util.Event.addListener(oElement2, "change", updateOmarFilters);
     YAHOO.util.Event.addListener(oElement3, "change", updateOmarFilters);
+
+    ddTab.title               = "Please enter the search parameters in Decimal Degrees (DD) format";
+    dmsTab.title              = "Please enter the search parameters in Degrees Minutes Seconds (DMS) format.  DMS is formatted as ddmmss.ssssN|S or dd mm ss.sss N|S for latitude and longitude can have up to 3 digits for the degree indicator and can be formatted as dddmmss.ssssN|S or ddd mm ss.sss N|S";
+    mgrsTab.title             = "Please enter the search parameters in Military Grid Reference System (MGRS) format.  MGRS formatted input is of the form [grid zone designator][100,000-meter square identifier][easting][northing].";
+    metadataCriteriaTab.title = "Please select from the list of meta data you would like to search";
+    cqlCriteriaTab.title      = "Please enter the Common Query Language (CQL) statements";
   }
   function handleClickSpatialTab0(e) {
   updateCurrentSpatialTab(0);
