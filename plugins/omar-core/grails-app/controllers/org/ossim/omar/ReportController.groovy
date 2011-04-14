@@ -1,189 +1,204 @@
 package org.ossim.omar
-import org.hibernate.criterion.*
 
-class ReportController {
-  def scaffold = Report
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+
+class ReportController
+{
+
+  static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
   def springSecurityService
+
   def index = {
-    redirect(action: "create", params: params)
+    redirect(action: "list", params: params)
   }
-    def create = {
-        if(springSecurityService.loggedIn)
+
+  def list = {
+    params.max = Math.min(params.max ? params.int('max') : 10, 100)
+
+    def reportInstanceList
+    def reportInstanceTotal
+
+    if ( SpringSecurityUtils.ifAllGranted("ROLE_ADMIN") )
+    {
+      reportInstanceList = Report.list(params)
+      reportInstanceTotal = Report.count()
+    }
+    else
+    {
+      reportInstanceList = Report.createCriteria().list(params) {
+        eq("name", springSecurityService.principal.username)
+      }
+
+      reportInstanceTotal = reportInstanceList.totalCount
+    }
+
+    [reportInstanceList: reportInstanceList, reportInstanceTotal: reportInstanceTotal]
+  }
+
+  def create = {
+    def user = SecUser.findByUsername(springSecurityService.principal.username)
+
+    def reportInstance = new Report(
+            name: user.username,
+            email: user.email,
+            phone: user.phoneNumber
+    )
+    reportInstance.properties = params
+    return [reportInstance: reportInstance]
+  }
+
+  def save = {
+    def reportInstance = new Report(params)
+    def user = SecUser.findByUsername(springSecurityService.principal.username)
+
+    if ( user.username == reportInstance.name || SpringSecurityUtils.ifAllGranted("ROLE_ADMIN") )
+    {
+      if ( reportInstance.save(flush: true) )
+      {
+        flash.message = "Thank you for comments. Someone should respond to you as soon as possible."
+        //flash.message = "${message(code: 'default.created.message', args: [message(code: 'report.label', default: 'Report'), reportInstance.id])}"
+        //redirect(action: "show", id: reportInstance.id)
+        redirect(controller: "home")
+      }
+      else
+      {
+        render(view: "create", model: [reportInstance: reportInstance])
+      }
+    }
+    else
+    {
+      flash.message = "Not authorized to save that record"
+      redirect(controller: "home")
+    }
+  }
+
+  def show = {
+    def reportInstance = Report.get(params.id)
+    def user = SecUser.findByUsername(springSecurityService.principal.username)
+
+    if ( user.username == reportInstance.name || SpringSecurityUtils.ifAllGranted("ROLE_ADMIN") )
+    {
+
+      if ( !reportInstance )
+      {
+        flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'report.label', default: 'Report'), params.id])}"
+        redirect(action: "list")
+      }
+      else
+      {
+        return [reportInstance: reportInstance]
+      }
+    }
+    else
+    {
+      flash.message = "Not authorized to see that record"
+      redirect(controller: "home")
+    }
+  }
+
+  def edit = {
+    def reportInstance = Report.get(params.id)
+    if ( !reportInstance )
+    {
+      flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'report.label', default: 'Report'), params.id])}"
+      redirect(action: "list")
+    }
+    else
+    {
+      def user = SecUser.findByUsername(springSecurityService.principal.username)
+
+      if ( user.username == reportInstance.name || SpringSecurityUtils.ifAllGranted("ROLE_ADMIN") )
+      {
+        return [reportInstance: reportInstance]
+      }
+      else
+      {
+        flash.message = "Not authorized to modify that record"
+        redirect(controller: "home")
+      }
+    }
+  }
+
+  def update = {
+    def reportInstance = Report.get(params.id)
+    if ( reportInstance )
+    {
+      def user = SecUser.findByUsername(springSecurityService.principal.username)
+
+      if ( user.username == reportInstance.name || SpringSecurityUtils.ifAllGranted("ROLE_ADMIN") )
+      {
+
+        if ( params.version )
         {
-            def userDetails = springSecurityService.principal
-            def person = SecUser.get(userDetails.id)
-            if(person)
-            {
-                render( view:"create", model:[userInfo:person] )
-            }
+          def version = params.version.toLong()
+          if ( reportInstance.version > version )
+          {
+
+            reportInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'report.label', default: 'Report')] as Object[], "Another user has updated this Report while you were editing")
+            render(view: "edit", model: [reportInstance: reportInstance])
+            return
+          }
+        }
+
+        reportInstance.properties = params
+
+        if ( reportInstance.status == "null" )
+        {
+          reportInstance.status = null
+        }
+
+        if ( !reportInstance.hasErrors() && reportInstance.save(flush: true) )
+        {
+          flash.message = "${message(code: 'default.updated.message', args: [message(code: 'report.label', default: 'Report'), reportInstance.id])}"
+          redirect(action: "show", id: reportInstance.id)
         }
         else
         {
-            flash.message = "You must be logged in to produce a Report"
-            redirect(controller:"login", action: "auth")
+          render(view: "edit", model: [reportInstance: reportInstance])
         }
-
+      }
+      else
+      {
+        flash.message = "Not authorized to update that record"
+        redirect(controller: "home")
+      }
     }
-    def delete = {
-        if(springSecurityService.loggedIn)
-        {
-            if(params.id)
-            {
-                def userDetails = springSecurityService.principal
-                def person = SecUser.get(userDetails.id)
-                def report = Report.get(params.id);
-                if(report)
-                {
-                    if(person)
-                    {
-                        def roles = person.getAuthoritiesAsStringList()
-                        if(("ROLE_ADMIN" in roles))
-                        {
-                            report.delete()
-                            flash.message = "Report with id ${params.id} deleted"
-                            redirect(action:"create", params:[:])
-                        }
-                        else
-                        {
-                            render("${person.username} does not have authority to delete report id ${param.id}")
-                        }
-                    }
-                    else
-                    {
-                        render("Unable to get user details to delete the report ${report}")
-                    }
-                }
-                else
-                {
-                    render("Report with id = ${params.id} not found in the database and will not be deleted")
-                }
-            }
-        }
-        else
-        {
-            flash.message = "You must be logged in to delete a Report"
-            redirect(controller:"login", action: "auth")
-        }
+    else
+    {
+      flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'report.label', default: 'Report'), params.id])}"
+      redirect(action: "list")
     }
-    def edit = {
-        if(springSecurityService.loggedIn)
+  }
+
+  def delete = {
+    if ( SpringSecurityUtils.ifAllGranted("ROLE_ADMIN") )
+    {
+      def reportInstance = Report.get(params.id)
+      if ( reportInstance )
+      {
+        try
         {
-            if(params.id)
-            {
-                def userDetails = springSecurityService.principal
-                def person = SecUser.get(userDetails.id)
-                def report = Report.get(params.id);
-                if(report)
-                {
-                    if(person)
-                    {
-                        def roles = person.getAuthoritiesAsStringList()
-                        if((report.name == person.username)||
-                           ("ROLE_ADMIN" in roles))
-                        {
-                            render( view:"edit", model:[userInfo:person,reportInstance:report] )
-                        }
-                        else
-                        {
-                            flash.message = "You have no authority to edit this report"
-                            redirect(controller:"report", action: "list")
-                        }
-                    }
-                }
-            }
+          reportInstance.delete(flush: true)
+          flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'report.label', default: 'Report'), params.id])}"
+          redirect(action: "list")
         }
-        else
+        catch (org.springframework.dao.DataIntegrityViolationException e)
         {
-            flash.message = "You must be logged in to produce a Report"
-            redirect(controller:"login", action: "auth")
+          flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'report.label', default: 'Report'), params.id])}"
+          redirect(action: "show", id: params.id)
         }
+      }
+      else
+      {
+        flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'report.label', default: 'Report'), params.id])}"
+        redirect(action: "list")
+      }
     }
-    def list = {
-         if(springSecurityService.loggedIn)
-        {
-            def userDetails = springSecurityService.principal
-            def person = SecUser.get(userDetails.id)
-            if(person)
-            {
-                def roles = person.getAuthoritiesAsStringList()
-                def x =
-                {
-                    if(!("ROLE_ADMIN" in roles))
-                    {
-                        eq("name",person.username)
-                    }
-                  projections { rowCount()}
-                }
-                def criteriaBuilder = Report.createCriteria()
-                def criteria = criteriaBuilder.buildCriteria(x)
-
-                def totalCount = criteria.list().get(0) as int
-                 def order = params?.order?:"desc";
-                 def  reportInstanceList = Report.createCriteria().list{
-                     if(!("ROLE_ADMIN" in roles))
-                     {
-                         eq("name",person.username)
-                     }
-                     if ( params?.offset )
-                     {
-                       setFirstResult(params.offset as Integer)
-                     }
-                     if(params?.max)
-                     {
-                         setMaxResults(params.max as Integer)
-                     }
-                     if(params?.sort)
-                     {
-                         def ordering = (order == "asc") ? Order.asc(params.sort) : Order.desc(params.sort)
-                         addOrder(ordering)
-                     }
-
-                 }
-                render( view:"list", model:[userInfo:person,
-                                            reportInstanceList:reportInstanceList,
-                                            reportInstanceTotal:totalCount] )
-            }
-        }
-        else
-        {
-            flash.message = "You must be logged in to produce a Report"
-            redirect(controller:"login", action: "auth")
-        }
-
+    else
+    {
+      flash.message = "Only admins can delete reports"
+      redirect(controller: "home")
     }
-    def show = {
-        if(springSecurityService.loggedIn)
-        {
-            if(params.id)
-            {
-                def userDetails = springSecurityService.principal
-                def person = SecUser.get(userDetails.id)
-                def report = Report.get(params.id);
-                if(report)
-                {
-                    if(person)
-                    {
-                        def roles = person.getAuthoritiesAsStringList()
-                        if((report.name == person.username)||
-                           ("ROLE_ADMIN" in roles))
-                        {
-                            render( view:"show", model:[userInfo:person,reportInstance:report] )
-                        }
-                        else
-                        {
-                            flash.message = "You have no authority to show the details of this report"
-                            redirect(controller:"report", action: "list")
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            flash.message = "You must be logged in to show a Report"
-            redirect(controller:"login", action: "auth")
-        }
-
-    }
+  }
 }
