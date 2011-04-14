@@ -105,7 +105,7 @@ class SuperOverlayService implements InitializingBean{
                       newParams.remove("controller")
 
                       href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                      viewRefreshMode("onRegion")
+                      viewRefreshMode("onExpire")
                   }
               }
             }
@@ -193,7 +193,7 @@ class SuperOverlayService implements InitializingBean{
                   drawOrder(params.level)
                   Icon(){
                       href{mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, controller: 'ogc', action: 'wms',params:wmsMap)}]]>")}
-                      viewRefreshMode("onRegion")
+                      viewRefreshMode("onExpire")
                   }
                   LatLonBox(){
                       north(tileBounds.maxy)
@@ -222,7 +222,7 @@ class SuperOverlayService implements InitializingBean{
                     }
                     Link{
                         href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                        viewRefreshMode("onRegion")
+                        viewRefreshMode("onExpire")
                     }
                 }
               }
@@ -311,7 +311,7 @@ class SuperOverlayService implements InitializingBean{
         tileSize = grailsApplication.config.superOverlay?.tileSize
         lodValues = grailsApplication.config.superOverlay?.lodPixel
         tileSize = tileSize?:[width:256, height:256]
-        def area = Math.sqrt(tileSize.width*tileSize.height)
-        lodValues = lodValues?:[min:area*0.5, max:area*8.0]
+        def square = Math.sqrt(tileSize.width*tileSize.height)
+        lodValues = lodValues?:[min:square*0.5, max:square*8.0]
     }
 }
