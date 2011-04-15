@@ -107,7 +107,7 @@ s<html>
             <li>
               <g:form name="beRss" method="GET" url="[plugin: 'omar-rss', controller:'rssFeed', action:'georss']">
                 <a href="javascript:submitBeRss();">By BE Number</a>
-                <g:textField name="br" size="10"/>
+                <g:textField name="be" size="10"/>
               </g:form>
             </li>
           </ol>

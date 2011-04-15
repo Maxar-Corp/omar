@@ -22,7 +22,7 @@ class RssFeedController
       maxResults(10)
       if ( be )
       {
-        eq("targetId", be)
+        eq("beNumber", be)
       }
       if ( cc )
       {
