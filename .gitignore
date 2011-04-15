@@ -396,6 +396,8 @@ plugins/omar-raster/web-app/WEB-INF/tld/*.iml
 plugins/omar-raster/web-app/css/*.iml
 plugins/omar-raster/web-app/images/*.iml
 plugins/omar-raster/web-app/js/*.iml
+plugins/omar-rss/projectFilesBackup
+plugins/omar-rss/target
 plugins/omar-scheduler/*.iml
 plugins/omar-scheduler/.settings/*.iml
 plugins/omar-scheduler/grails-app/*.iml
