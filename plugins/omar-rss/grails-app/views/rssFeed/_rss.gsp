@@ -10,7 +10,7 @@
   <g:each var="property" in="${properties}">
     <tr>
       <td colspan="2">
-        <b>${property.value}</b>: &nbsp;${rasterEntry[property.key].encodeAsHTML()}
+        <b>${property.value}</b>: &nbsp;${rasterEntry[property.key]?.encodeAsHTML()}
       </td>
     </tr>
   </g:each>
