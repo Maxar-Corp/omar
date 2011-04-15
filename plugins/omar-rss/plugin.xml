@@ -1,8 +1,9 @@
 <plugin name='omar-rss' version='0.1' grailsVersion='1.3.7 &gt; *'>
-  <author>Your name</author>
-  <title>Plugin summary/headline</title>
+  <author>Scott Bortman</author>
+  <authorEmail>sbortman@radiantblue.com</authorEmail>
+  <title>OMAR RSS Feed</title>
   <description>\
-Brief description of the plugin.
+Generates RSS feed based on Country Code or BE Number
 </description>
   <documentation>http://grails.org/plugin/omar-rss</documentation>
   <resources>
