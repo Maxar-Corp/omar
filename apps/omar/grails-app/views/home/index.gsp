@@ -89,6 +89,34 @@ s<html>
     </table>
   </div>
 
+  <div>
+    <h1 style="font-size:150%">GeoRSS Links:</h1>
+    <table>
+      <tr>
+        <td width="120px">
+          <img src="${resource(plugin: 'omar-rss', dir: 'images', file: 'georss-1.png')}" width="96 " height="96" alt="">
+        </td>
+        <td>
+          <ol>
+            <li>
+              <g:form name="ccRss" method="GET" url="[plugin: 'omar-rss', controller:'rssFeed', action:'georss']">
+                <a href="javascript:submitCcRss();">By Country Code</a>
+                <g:textField name="cc" size="2"/>
+              </g:form>
+            </li>
+            <li>
+              <g:form name="beRss" method="GET" url="[plugin: 'omar-rss', controller:'rssFeed', action:'georss']">
+                <a href="javascript:submitBeRss();">By BE Number</a>
+                <g:textField name="br" size="10"/>
+              </g:form>
+            </li>
+          </ol>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+
   <sec:ifNotGranted roles="ROLE_ADMIN">
     <div>
       <h1 style="font-size:150%">User Preferences:</h1>
@@ -119,9 +147,9 @@ s<html>
             <li>
               <g:link plugin="omar-core" controller="report" action="create">User Feedback</g:link>
             </li>
-              <li>
-                <g:link plugin="omar-core" controller="report" action="list">View Feedback</g:link>
-              </li>
+            <li>
+              <g:link plugin="omar-core" controller="report" action="list">View Feedback</g:link>
+            </li>
           </ol>
         </td>
       </tr>
@@ -200,6 +228,17 @@ s<html>
   {
     document.videoFootprints.submit();
   }
+
+  function submitCcRss()
+  {
+    document.ccRss.submit();
+  }
+
+  function submitBeRss()
+  {
+    document.beRss.submit();
+  }
+
 </g:javascript>
 </body>
 </html>
