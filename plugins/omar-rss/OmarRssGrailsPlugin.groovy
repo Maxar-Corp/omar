@@ -11,11 +11,11 @@ class OmarRssGrailsPlugin {
     ]
 
     // TODO Fill in these fields
-    def author = "Your name"
-    def authorEmail = ""
-    def title = "Plugin summary/headline"
+    def author = "Scott Bortman"
+    def authorEmail = "sbortman@radiantblue.com"
+    def title = "OMAR RSS Feed"
     def description = '''\\
-Brief description of the plugin.
+Generates RSS feed based on Country Code or BE Number
 '''
 
     // URL to the plugin's documentation
