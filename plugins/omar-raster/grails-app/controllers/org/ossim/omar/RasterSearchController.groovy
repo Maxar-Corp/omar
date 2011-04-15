@@ -1,27 +1,430 @@
 package org.ossim.omar
 
 import org.springframework.beans.factory.InitializingBean
-import grails.converters.XML
-import grails.converters.JSON
+import groovy.xml.StreamingMarkupBuilder
+import org.ossim.omar.WMSRequest
 
 class RasterSearchController implements InitializingBean
 {
   def grailsApplication
-  def baseWMS
-  def dataWMS
-
 /*
   def authenticateService
 */
   def springSecurityService
+  def baseWMS
+  def dataWMS
+  def webMappingService
   def rasterEntrySearchService
 
   def tagHeaderList
   def tagNameList
 
-  static defaultAction = 'search'
+  def index = { redirect(action: list, params: params) }
 
-  def thumbnailSize = 128
+  // the delete, save and update actions only accept POST requests
+  def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
+
+  /*
+  def list = {
+    if ( !params.max )
+    params.max = 10
+
+    def rasterEntryList = RasterEntry.createCriteria().list(params) {}
+
+    if ( params.rasterDataSetId )
+    {
+      def rasterDataSet = RasterDataSet.get(params.rasterDataSetId)
+
+      rasterEntryList = RasterEntry.createCriteria().list(params) {
+        eq("rasterDataSet", rasterDataSet)
+      }
+    }
+    else
+    {
+      rasterEntryList = RasterEntry.createCriteria().list(params) {}
+    }
+
+    if ( !session.rasterEntryListCurrentTab && ("${session.rasterEntryListCurrentTab}" != "0") )
+    {
+      session["rasterEntryListCurrentTab"] = "0"
+    }
+
+    [rasterEntryList: rasterEntryList,
+            tagNameList: tagNameList,
+            tagHeaderList: tagHeaderList,
+            sessionAction: "updateSession",
+            sessionController: "session",
+            rasterEntryListCurrentTab: session.rasterEntryListCurrentTab
+    ]
+  }
+   */
+  def list = {
+
+    def starttime = System.currentTimeMillis()
+    def max = null;
+    if ( !params.max || !(params.max =~ /\d+$/) )
+    {
+      max = 10
+      params.max = 10
+    }
+    else
+    {
+      max = params.max as Integer
+      if ( max > 100 )
+      {
+        max = 100
+        params.max = 100;
+      }
+    }
+    if ( !session.rasterEntryResultCurrentTab && ("${session.rasterEntryResultCurrentTab}" != "0") )
+    {
+      session["rasterEntryResultCurrentTab"] = "0"
+    }
+
+    def rasterEntries = null
+    def totalCount = null
+    def rasterFiles = null
+
+    if ( params.rasterDataSetId )
+    {
+      def rasterDataSet = RasterDataSet.get(params.rasterDataSetId)
+
+      rasterEntries = RasterEntry.createCriteria().list(params) {
+        eq("rasterDataSet", rasterDataSet)
+      }
+    }
+    else
+    {
+      rasterEntries = RasterEntry.createCriteria().list(params) {}
+    }
+
+    def queryParams = initRasterEntryQuery(params)
+    rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+
+    totalCount = max > 0 ? rasterEntrySearchService.getCount(queryParams) : 0
+
+    if ( rasterEntries )
+    {
+      rasterFiles = RasterFile.createCriteria().list {
+        eq("type", "main")
+        inList("rasterDataSet", rasterEntries?.rasterDataSet)
+      }
+    }
+
+    def endtime = System.currentTimeMillis()
+
+/*
+    def user = authenticateService.principal()?.username
+*/
+
+    def user = springSecurityService.principal.username
+
+
+    def logData = [
+            TYPE: "raster_list",
+            START: new Date(starttime),
+            END: new Date(endtime),
+            ELAPSE_TIME_MILLIS: endtime - starttime,
+            USER: user,
+            PARAMS: params
+    ]
+
+
+    log.info(logData)
+
+    render(view: 'results', model: [
+            rasterEntries: rasterEntries,
+            totalCount: totalCount,
+            rasterFiles: rasterFiles,
+            tagNameList: tagNameList,
+            tagHeaderList: tagHeaderList,
+            queryParams: queryParams,
+            sessionAction: "updateSession",
+            sessionController: "session",
+            rasterEntryResultCurrentTab: session.rasterEntryResultCurrentTab
+    ])
+
+  }
+  def list_mobile = {
+    if ( !params.max )
+    params.max = 10
+
+    def rasterEntryList = RasterEntry.createCriteria().list(params) {}
+
+    if ( params.rasterDataSetId )
+    {
+      def rasterDataSet = RasterDataSet.get(params.rasterDataSetId)
+
+      rasterEntryList = RasterEntry.createCriteria().list(params) {
+        eq("rasterDataSet", rasterDataSet)
+      }
+    }
+    else
+    {
+      rasterEntryList = RasterEntry.createCriteria().list(params) {}
+    }
+
+    [rasterEntryList: rasterEntryList]
+  }
+
+  def show = {
+
+    def rasterEntry = RasterEntry.findByIndexId(params.id) ?: RasterEntry.get(params.id);
+
+
+    if ( !rasterEntry )
+    {
+      flash.message = "RasterEntry not found with id ${params.id}"
+      redirect(action: list)
+    }
+    else
+    { return [rasterEntry: rasterEntry] }
+  }
+
+  def delete = {
+    def rasterEntry = RasterEntry.findByIndexId(params.id) ?: RasterEntry.get(params.id);
+    if ( rasterEntry )
+    {
+      rasterEntry.delete()
+      flash.message = "RasterEntry ${params.id} deleted"
+      redirect(action: list)
+    }
+    else
+    {
+      flash.message = "RasterEntry not found with id ${params.id}"
+      redirect(action: list)
+    }
+  }
+
+  def edit = {
+    def rasterEntry = RasterEntry.findByIndexId(params.id) ?: RasterEntry.get(params.id);
+
+    if ( !rasterEntry )
+    {
+      flash.message = "RasterEntry not found with id ${params.id}"
+      redirect(action: list)
+    }
+    else
+    {
+      return [rasterEntry: rasterEntry]
+    }
+  }
+
+  def update = {
+    def rasterEntry = RasterEntry.findByIndexId(params.id) ?: RasterEntry.get(params.id);
+    if ( rasterEntry )
+    {
+      rasterEntry.properties = params
+      if ( !rasterEntry.hasErrors() && rasterEntry.save() )
+      {
+        flash.message = "RasterEntry ${params.id} updated"
+        redirect(action: show, id: rasterEntry.id)
+      }
+      else
+      {
+        render(view: 'edit', model: [rasterEntry: rasterEntry])
+      }
+    }
+    else
+    {
+      flash.message = "RasterEntry not found with id ${params.id}"
+      redirect(action: edit, id: params.id)
+    }
+  }
+
+  def create = {
+    def rasterEntry = new RasterEntry()
+    rasterEntry.properties = params
+    return ['rasterEntry': rasterEntry]
+  }
+
+  def save = {
+    def rasterEntry = new RasterEntry(params)
+    if ( !rasterEntry.hasErrors() && rasterEntry.save() )
+    {
+      flash.message = "RasterEntry ${rasterEntry.id} created"
+      redirect(action: show, id: rasterEntry.id)
+    }
+    else
+    {
+      render(view: 'create', model: [rasterEntry: rasterEntry])
+    }
+  }
+
+  def search = {
+
+//    println "=== search start ==="
+    def max = null;
+    if ( !params.max || !(params.max =~ /\d+$/) )
+    {
+      max = 10
+      params.max = 10
+    }
+    else
+    {
+      max = params.max as Integer
+      if ( max > 100 )
+      {
+        max = 100
+        params.max = 100;
+      }
+    }
+//    println "\nparams: ${params?.sort { it.key }}"
+
+    def queryParams = initRasterEntryQuery(params)
+
+//    println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
+
+    def searchLabelList = []
+    def searchNameList = []
+    def searchTags = RasterEntrySearchTag.list();
+    searchTags?.each {searchTag ->
+      searchLabelList << searchTag.description
+      searchNameList << searchTag.name
+    }
+//    println labelList
+//    println nameList
+    if ( request.method == 'POST' )
+    {
+      if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
+      {
+        params.max = 10
+      }
+
+      params.order = 'desc'
+      params.sort = 'acquisitionDate'
+
+      //println "queryParams: ${queryParams}"
+
+/*
+      def user = authenticateService.principal().username
+*/
+      def user = springSecurityService.principal.username
+
+      def starttime = System.currentTimeMillis()
+
+      def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      def totalCount = max > 0 ? rasterEntrySearchService.getCount(queryParams) : 0
+
+
+      def rasterFiles = []
+
+      if ( rasterEntries )
+      {
+        rasterFiles = RasterFile.createCriteria().list {
+          eq("type", "main")
+          inList("rasterDataSet", rasterEntries.rasterDataSet)
+        }
+      }
+
+      def endtime = System.currentTimeMillis()
+
+      def logData = [
+              TYPE: "raster_search",
+              START: new Date(starttime),
+              END: new Date(endtime),
+              ELAPSE_TIME_MILLIS: endtime - starttime,
+              USER: user,
+              PARAMS: params
+      ]
+
+      log.info(logData)
+
+      //println logData
+
+//      def ogcFilterQueryFields =  Utility.generateMapForOgcFilterQuery(grailsApplication.getArtefact("Domain",
+//                                                                        org.ossim.omar.RasterEntry.name),
+//                                                                        searchNameList,
+//                                                                        null,
+//                                                                        null)
+//      chain(action: "results", model: [ogcFilterQueryFields:ogcFilterQueryFields, rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
+      chain(action: "results", model: [session: session, rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
+    }
+    else
+    {
+//      def ogcFilterQueryFields =  Utility.generateMapForOgcFilterQuery(grailsApplication.getArtefact("Domain",
+//                                                                        org.ossim.omar.RasterEntry.name),
+//                                                                        searchNameList,
+      //                                                                       null,
+      //                                                                      null)
+
+//      return [ogcFilterQueryFields:ogcFilterQueryFields, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
+      return [action: "results", session: session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
+    }
+  }
+
+  def search_mobile = {
+
+//    println "=== search start ==="
+
+    if ( !params.max || !(params.max =~ /\d+$/) )
+    {
+      params.max = 10
+    }
+    else if ( (params.max as Integer) > 100 )
+    {
+      params.max = 100;
+    }
+
+//    println "\nparams: ${params?.sort { it.key }}"
+
+    def queryParams = initRasterEntryQuery(params)
+
+//    println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
+
+    if ( request.method == 'POST' )
+    {
+      params.order = 'desc'
+      params.sort = 'acquisitionDate'
+
+      //println "queryParams: ${queryParams}"
+/*
+      def user = authenticateService.principal().username
+*/
+      def user = springSecurityService.principal.username
+
+      def starttime = System.currentTimeMillis()
+
+      def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      def totalCount = rasterEntrySearchService.getCount(queryParams)
+
+
+      def rasterFiles = []
+
+      if ( rasterEntries )
+      {
+        rasterFiles = RasterFile.createCriteria().list {
+          eq("type", "main")
+          inList("rasterDataSet", rasterEntries.rasterDataSet)
+        }
+      }
+
+      def endtime = System.currentTimeMillis()
+
+      def logData = [
+              TYPE: "raster_search",
+              START: new Date(starttime),
+              END: new Date(endtime),
+              ELAPSE_TIME_MILLIS: endtime - starttime,
+              USER: user,
+              PARAMS: params
+      ]
+
+      log.info(logData)
+
+      //println logData
+
+//      println "=== search end ==="
+
+      chain(action: "results_mobile", model: [rasterEntries: rasterEntries, totalCount: totalCount, rasterFiles: rasterFiles], params: params)
+    }
+    else
+    {
+//      println "=== search end ==="
+
+      return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
+    }
+  }
 
   private def initRasterEntryQuery(Map params)
   {
@@ -40,25 +443,86 @@ class RasterSearchController implements InitializingBean
     return queryParams
   }
 
+  def results = {
 
-  def search = {
-    def queryParams = initRasterEntryQuery(params)
+    def starttime = System.currentTimeMillis()
 
-    if ( request.method == 'POST' )
+    if ( !params.max || !(params.max =~ /\d+$/) )
     {
-      if ( !params.max )
+      params.max = 10
+    }
+    else
+    {
+      def max = params.max as Integer
+      if ( max > 100 )
       {
-        params.max = 10
+        params.max = 100;
       }
+    }
+
+    if ( params?.queryParams )
+    {
+      def serialized = params?.queryParams - "{" - "}";
+      def paramsArray = serialized?.split(',')
+      params.remove("queryParams")
+      params.remove("totalCount")
+
+      paramsArray?.each {param ->
+        def temp = param?.split('=');
+
+        if ( temp.size() == 2 )
+        {
+          if ( temp[1] == "null" )
+          {
+            temp[1] = ""
+          }
+          params.put(temp[0].trim(), temp[1].trim())
+        }
+        else if ( temp.size() == 1 )
+        {
+          params.put(temp[0].trim(), "")
+        }
+      }
+    }
+
+    if ( !session.rasterEntryResultCurrentTab )
+    {
+      session["rasterEntryResultCurrentTab"] = "1"
+    }
+
+    def rasterEntries = null
+    def totalCount = null
+    def rasterFiles = null
+
+    def queryParams = initRasterEntryQuery(params)
+    if ( chainModel )
+    {
+      rasterEntries = chainModel.rasterEntries
+      totalCount = chainModel.totalCount
+      rasterFiles = chainModel.rasterFiles
+    }
+    else
+    {
+      rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      totalCount = rasterEntrySearchService.getCount(queryParams)
+
+      if ( rasterEntries )
+      {
+        rasterFiles = RasterFile.createCriteria().list {
+          eq("type", "main")
+          inList("rasterDataSet", rasterEntries?.rasterDataSet)
+        }
+      }
+      else
+      {
+        totalCount = 0
+      }
+      def endtime = System.currentTimeMillis()
 
 /*
-      def user = authenticateService.principal().username
+      def user = authenticateService.principal()?.username
 */
       def user = springSecurityService.principal.username
-
-      def starttime = System.currentTimeMillis()
-      def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-      def endtime = System.currentTimeMillis()
 
       def logData = [
               TYPE: "raster_search",
@@ -69,42 +533,74 @@ class RasterSearchController implements InitializingBean
               PARAMS: params
       ]
 
+//      println "\nparams: ${params?.sort { it.key }}"
+//      println "\nqueryParams: ${queryParams?.toMap()}"
+
       log.info(logData)
-      //println logData
 
-      chain(action: "results", model: [rasterEntries: rasterEntries /*, tags: tags*/], params: params)
+//      println logData
     }
-    else
-    {
-      // println queryParams?.toMap()
 
-      return [queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
-    }
+//    println "=== results end ==="
+
+    render(view: 'results', model: [
+            rasterEntries: rasterEntries,
+            totalCount: totalCount,
+            rasterFiles: rasterFiles,
+            tagNameList: tagNameList,
+            tagHeaderList: tagHeaderList,
+            queryParams: queryParams,
+            sessionAction: "updateSession",
+            sessionController: "session",
+            rasterEntryResultCurrentTab: session.rasterEntryResultCurrentTab
+    ])
+
   }
 
-  def results = {
-//    println params
+  def results_mobile = {
+
+//    println "=== results start ==="
 
     def starttime = System.currentTimeMillis()
-
-    if ( !params.max )
+    if ( !params.max || !(params.max =~ /\d+$/) )
     {
       params.max = 10
     }
-
+    else
+    {
+      def max = params.max as Integer
+      if ( max > 100 )
+      {
+        params.max = 100;
+      }
+    }
+    if ( !session.rasterEntryResultCurrentTab && ("${session.rasterEntryResultCurrentTab}" != "0") )
+    {
+      session["rasterEntryResultCurrentTab"] = "0"
+    }
     def rasterEntries = null
-    def tags = null
-    def queryParams = initRasterEntryQuery(params)
+    def totalCount = null
+    def rasterFiles = null
 
+    def queryParams = initRasterEntryQuery(params)
     if ( chainModel )
     {
       rasterEntries = chainModel.rasterEntries
-      tags = chainModel.tags
+      totalCount = chainModel.totalCount
+      rasterFiles = chainModel.rasterFiles
     }
     else
     {
-
       rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
+      totalCount = rasterEntrySearchService.getCount(queryParams)
+
+      if ( rasterEntries )
+      {
+        rasterFiles = RasterFile.createCriteria().list {
+          eq("type", "main")
+          inList("rasterDataSet", rasterEntries?.rasterDataSet)
+        }
+      }
 
       def endtime = System.currentTimeMillis()
 /*
@@ -121,179 +617,137 @@ class RasterSearchController implements InitializingBean
               PARAMS: params
       ]
 
+//      println "\nparams: ${params?.sort { it.key }}"
+//      println "\nqueryParams: ${queryParams?.toMap()}"
+
       log.info(logData)
 
-      println logData
+//      println logData
     }
 
-    render(view: 'results', model: [
+//    println "=== results end ==="
+
+
+    render(view: 'results_mobile', model: [
             rasterEntries: rasterEntries,
-            //tags: tags,
+            totalCount: totalCount,
+            rasterFiles: rasterFiles,
             tagNameList: tagNameList,
             tagHeaderList: tagHeaderList,
-            queryParams: queryParams
+            queryParams: queryParams,
+            sessionAction: "updateSession",
+            sessionController: "session",
+            rasterEntryResultCurrentTab: session.rasterEntryResultCurrentTab
     ])
 
   }
 
+  def getKML = {
 
+    def rasterEntry = RasterEntry.get(params.rasterEntryIds)
+
+    if ( !rasterEntry )
+    {
+      flash.message = "RasterEntry not found with id ${params.rasterEntryIds}"
+      redirect(action: list)
+    }
+    else
+    {
+      def kmlFile = RasterEntryFile.findByTypeAndRasterEntry("kml", rasterEntry)
+
+      if ( kmlFile )
+      {
+        def kml = new File(kmlFile?.name)?.text
+        response.setHeader("Content-disposition", "attachment; filename=foo.kml")
+        render(contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8")
+      }
+    }
+  }
+
+  def kmlnetworklink = {
+    def kmlbuilder = new StreamingMarkupBuilder()
+
+    kmlbuilder.encoding = "UTF-8"
+
+    // Google Earth hates the following parameters?
+
+//    8.times { params.remove("searchTagNames[${it}]") }
+    params.remove("_action_kmlnetworklink")
+
+    params.dateSort = "false"
+    WMSRequest request = new WMSRequest()
+
+    def map = request.customParametersToMap()
+    map.each {k, v ->
+      if ( !params."${k}" )
+      {
+        params."${k}" = v
+      }
+    }
+
+    def serviceAddress = createLink(absolute: true, controller: "kmlQuery", action: "getImagesKml", params: params)
+
+/*
+    def kmlnode = {
+      mkp.xmlDeclaration()
+      kml("xmlns": "http://earth.google.com/kml/2.1") {
+        Folder() {
+          name("Images")
+          visibility("1")
+          open("1")
+          description("")
+          NetworkLink() {
+            name("Image query")
+            visibility("1")
+            open("1")
+            description("")
+            refreshVisibility("0")
+            flyToView("0")
+            Link() {
+              href() {
+                mkp.yieldUnescaped("<![CDATA[${serviceAddress}]]>")
+              }
+              refreshInterval("2000")
+              refreshMode("onRequest")
+              refreshTime("200")
+              viewFormat("BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]")
+              httpQuery("googleClientVersion=[clientVersion]")
+            }
+          }
+        }
+      }
+    }
+*/
+    def kmlnode = {
+      mkp.xmlDeclaration()
+      kml("xmlns", "http://earth.google.com/kml/2.1") {
+        NetworkLink() {
+          name("OMAR Query Results")
+          Link() {
+            href {
+              mkp.yieldUnescaped("<![CDATA[${serviceAddress}]]>")
+            }
+            httpQuery("googleClientVersion=[clientVersion];")
+            viewRefreshMode("onRequest")
+          }
+        }
+      }
+    }
+
+    def kmlwriter = new StringWriter()
+
+    kmlwriter << kmlbuilder.bind(kmlnode)
+    response.setHeader("Content-disposition", "attachment; filename=singleRequestTopImages.kml")
+    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlwriter.buffer, encoding: "UTF-8")
+
+  }
 
   public void afterPropertiesSet()
   {
-    baseWMS = grailsApplication.config.wms.base.layers
+    baseWMS = webMappingService.baseLayers
+
     dataWMS = grailsApplication.config.wms.data.raster
     tagHeaderList = grailsApplication.config.rasterEntry.tagHeaderList
     tagNameList = grailsApplication.config.rasterEntry.tagNameList
   }
-
-
-  def list = {
-
-    params.max = Math.min(params.max ? params.int('max') : 10, 100)
-    params.offset = params.offset ?: 0
-    params.sort = params.sort ?: "id"
-    params.order = params.order ?: "asc"
-
-    def queryParams = initRasterEntryQuery(params)
-
-//    println "list->queryParams: ${queryParams.toMap()}"
-
-    def initialRequest = g.createLink(action: "query.json", params: queryParams.toMap())
-
-
-    initialRequest = initialRequest.substring(initialRequest.indexOf('?') + 1)
-
-    def myColumnDefs = [
-            [key: 'thumbnail', label: 'Thumbnail', sortable: false, resizeable: true, width: thumbnailSize, formatter: "thumbnail", group: "thumbnail"],
-            [key: 'id', label: 'Id', sortable: true, resizeable: true, group: ""],
-            [key: 'entryId', label: 'Entry Id', sortable: true, resizeable: true, group: "file"],
-            [key: 'width', label: 'Width', sortable: true, resizeable: true, group: "image"],
-            [key: 'height', label: 'Height', sortable: true, resizeable: true, group: "image"],
-            [key: 'numberOfBands', label: 'Num Bands', sortable: true, resizeable: true, group: "image"],
-            [key: 'numberOfResLevels', label: 'Num Res Levels', sortable: true, resizeable: true, group: "image"],
-            [key: 'bitDepth', label: 'Bit Depth', sortable: true, resizeable: true, group: "image"],
-            [key: 'metersPerPixel', label: 'Meters Per Pixel', sortable: false, resizeable: true, group: "image"],
-            [key: 'minLon', label: 'Min Lon', sortable: false, resizeable: true, group: "metadata"],
-            [key: 'minLat', label: 'Min Lat', sortable: false, resizeable: true, group: "metadata"],
-            [key: 'maxLon', label: 'Max Lon', sortable: false, resizeable: true, group: "metadata"],
-            [key: 'maxLat', label: 'Max Lat', sortable: false, resizeable: true, group: "metadata"],
-            [key: 'acquisitionDate', label: 'Acquisition Date', sortable: true, resizeable: true, group: "metadata"],
-            [key: 'filename', label: 'Filename', sortable: true, resizeable: true, group: "file"],
-            [key: 'wmsCapabilities', label: 'WMS Capabilities', sortable: true, resizeable: true, formatter: "link", group: "links"],
-            [key: 'wmsGetMap', label: 'WMS GetMap', sortable: true, resizeable: true, formatter: "link", group: "links"],
-            [key: 'generateKML', label: 'Generate KML', sortable: true, resizeable: true, formatter: "link", group: "links"]
-    ]
-
-    def fields = [
-            [key: "thumbnail"],
-            [key: "id", parser: "number"],
-            [key: "entryId"],
-            [key: "width", parser: "number"],
-            [key: "height", parser: "number"],
-            [key: "numberOfBands", parser: "number"],
-            [key: "numberOfResLevels", parser: "number"],
-            [key: "bitDepth", parser: "number"],
-            [key: "metersPerPixel", parser: "number"],
-            [key: "minLon", parser: "number"],
-            [key: "minLat", parser: "number"],
-            [key: "maxLon", parser: "number"],
-            [key: "maxLat", parser: "number"],
-            [key: "acquisitionDate"],
-            [key: "filename"],
-            [key: 'wmsCapabilities'],
-            [key: 'wmsGetMap'],
-            [key: 'generateKML']
-    ]
-
-    for ( i in 0..<tagNameList.size() )
-    {
-      myColumnDefs << [key: tagNameList[i], label: tagHeaderList[i],
-              sortable: true, resizeable: true, group: "metadata"]
-
-      fields << [key: tagNameList[i]]
-    }
-
-    return [
-            initialRequest: initialRequest,
-            myColumnDefs: myColumnDefs as JSON,
-            fields: fields as JSON
-    ]
-  }
-
-
-  def query = {
-
-    params.max = Math.min(params.max ? params.int('max') : 10, 100)
-    params.offset = params.offset ?: 0
-    params.sort = params.sort ?: "id"
-    params.order = params.order ?: "asc"
-
-    def queryParams = initRasterEntryQuery(params)
-
-//    println "query->queryParams: ${queryParams.toMap()}"
-
-    def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-    def rasterEntryTotal = rasterEntrySearchService.getCount(queryParams)
-
-//    println "total: ${rasterEntryTotal}"
-
-    def results = rasterEntries.collect {
-      def bounds = it.groundGeom?.bounds
-      def thumbnailURL = g.createLink(controller: "thumbnail", action: "show", id: it.id, params: [size: thumbnailSize])
-      def thumbnailTarget = g.createLink(controller: "mapView", action: "index", params: [layers: it.indexId])
-      def wmsCapabilities = g.createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: it.indexId])
-      def bbox = "${bounds.minLon},${bounds.minLat},${bounds.maxLon},${bounds.maxLat}"
-      def wmsGetMap = g.createLink(controller: "ogc", action: "wms", params: [request: "GetMap", layers: it.indexId, bbox: bbox, srs: "epsg:4326", width: 1024, height: 512, format: "image/jpeg"])
-      def generateKML = g.createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: it.indexId, format: "image/png", transparent: true])
-
-      def records = [
-              thumbnail: [url: thumbnailURL, href: thumbnailTarget],
-              id: it.id,
-              entryId: it.entryId,
-              width: it.width,
-              height: it.height,
-              numberOfBands: it.numberOfBands,
-              numberOfResLevels: it.numberOfResLevels,
-              bitDepth: it.bitDepth,
-              metersPerPixel: it.metersPerPixel,
-              minLon: bounds.minLon,
-              minLat: bounds.minLat,
-              maxLon: bounds.maxLon,
-              maxLat: bounds.maxLat,
-              acquisitionDate: it.acquisitionDate,
-              filename: it.mainFile.name,
-              wmsCapabilities: [href: wmsCapabilities, label: "WMS Capabilities"],
-              wmsGetMap: [href: wmsGetMap, label: "WMS GetMap"],
-              generateKML: [href: generateKML, label: "Generate KML"]
-      ]
-
-
-      for ( i in 0..<tagNameList.size() )
-      {
-        records[tagNameList[i]] = it[tagNameList[i]] as String
-      }
-
-      return records
-    }
-
-    withFormat {
-      json {
-        def data = [
-                totalRecords: rasterEntryTotal,
-                results: results
-        ]
-
-        render contentType: "application/json", text: data as JSON
-      }
-      xml {
-        def data = [
-                totalRecords: rasterEntryTotal,
-                results: results
-        ]
-
-        render contentType: "application/xml", text: data as XML
-      }
-    }
-  }
-
 }
