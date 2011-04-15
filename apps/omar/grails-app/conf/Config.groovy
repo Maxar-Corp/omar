@@ -7,6 +7,7 @@ import grails.util.Environment
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
 import org.ossim.omar.DbAppender
+
 grails.gorm.default.mapping = {
   cache true
   id generator: 'identity'
@@ -24,9 +25,9 @@ grails.config.locations = [
 //  "file:${userHome}/.grails/${appName}-config.properties",
 //     "file:${userHome}/.grails/${appName}-config.groovy"
 ]
-if(new File("${userHome}/.grails/${appName}-config.groovy").exists())
+if ( new File("${userHome}/.grails/${appName}-config.groovy").exists() )
 {
-    grails.config.locations << "file:${userHome}/.grails/${appName}-config.groovy"
+  grails.config.locations << "file:${userHome}/.grails/${appName}-config.groovy"
 }
 if ( System.env.OMAR_CONFIG )
 {
@@ -77,7 +78,9 @@ environments {
   }
   production {
     databaseName = "omardb-${appVersion}-prod"
-    grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
+    //grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
+    grails.serverURL = "http://${grails.serverIP}/${appName}"
+
   }
 }
 
@@ -242,7 +245,7 @@ security {
 
 image.download.prefix = "http://${grails.serverIP}"
 
-/** ********************************* CONDITIONALS FOR VIEWS                          ***********************************************/
+/** ********************************* CONDITIONALS FOR VIEWS                           ***********************************************/
 // flags for different views
 //
 views {
@@ -497,7 +500,7 @@ grails.plugins.springsecurity.securityConfigType = 'Requestmap'
 // MD2, MD5, SHA-1, SHA-256, SHA-384, SHA-512
 //
 grails.plugins.springsecurity.password.algorithm = 'MD5'
-grails.plugins.springsecurity.password.encodeHashAsBase64 = false
+grails.plugins.springsecurity.password.encodeHashAsBase64 = true
 
 // LDAP Configuration
 //grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
@@ -564,3 +567,19 @@ If you did make the request, then click <a href="$url">here</a> to reset your pa
 //              "mail.smtp.socketFactory.fallback":"false"]
 //   }
 //}
+
+rss {
+  rasterEntry {
+    properties = [
+            imageId: 'Image ID',
+            missionId: 'Mission ID',
+            securityClassification: 'Security Class',
+            niirs: 'NIIRS',
+            countryCode: 'Country Code',
+            beNumber: 'BE Number',
+            acquisitionDate: 'Acquistion Date',
+            width: 'Width',
+            height: 'Height',
+    ]
+  }
+}
