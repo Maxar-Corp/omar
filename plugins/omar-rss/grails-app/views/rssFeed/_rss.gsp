@@ -14,33 +14,33 @@
       </td>
     </tr>
   </g:each>
-  <g:set var="bounds" value="${rasterEntry.groundGeom.bounds}"/>
+  <g:set var="bounds" value="${rasterEntry?.groundGeom?.bounds}"/>
   <tr>
     <td colspan="2">
-      <b>Minimum Latitude</b>: &nbsp;${bounds.minLat}&nbsp;${minLatDMS}
+      <b>Minimum Latitude</b>: &nbsp;${bounds?.minLat}&nbsp;${minLatDMS}
     </td>
   </tr>
   <tr>
     <td colspan="2">
-      <b>Minimum Longitude</b>: &nbsp;${bounds.minLon}&nbsp;${minLonDMS}
+      <b>Minimum Longitude</b>: &nbsp;${bounds?.minLon}&nbsp;${minLonDMS}
     </td>
   </tr>
   <tr>
     <td colspan="2">
-      <b>Maximum Latitude</b>: &nbsp;${bounds.maxLat}&nbsp;${maxLatDMS}
+      <b>Maximum Latitude</b>: &nbsp;${bounds?.maxLat}&nbsp;${maxLatDMS}
     </td>
   </tr>
   <tr>
     <td colspan="2">
-      <b>Maximum Longitude</b>: &nbsp;${bounds.maxLon}&nbsp;${maxLonDMS}
+      <b>Maximum Longitude</b>: &nbsp;${bounds?.maxLon}&nbsp;${maxLonDMS}
     </td>
   </tr>
   <tr>
     <td colspan="2">
-      <b>OMAR Link</b>: <a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">...</a>
+      <b>OMAR Link</b>: <a href="${createLink(controller: "mapView", params: [layers: rasterEntry?.indexId])}">...</a>
     </td>
     <td colspan="2">
-      <b>KML Link</b>: <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: rasterEntry.indexId, format: "image/png", transparent: "true"])}">...</a>
+      <b>KML Link</b>: <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: rasterEntry?.indexId, format: "image/png", transparent: "true"])}">...</a>
     </td>
   </tr>
 </table>
