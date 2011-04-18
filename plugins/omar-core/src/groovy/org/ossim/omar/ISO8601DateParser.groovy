@@ -122,7 +122,7 @@ class ISO8601DateParser
     {
         String start = startEndSplit[0].trim()
 
-        startPeriod = convertStringToDuration(start)
+        startPeriod = parsePeriod(start)
 
         if ( !startPeriod &&start)
         {
@@ -133,7 +133,7 @@ class ISO8601DateParser
         {
           String end = startEndSplit[1].trim()
 
-          endPeriod = convertStringToDuration(end)
+          endPeriod = parsePeriod(end)
 
           if ( !endPeriod )
           {
