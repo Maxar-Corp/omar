@@ -50,7 +50,15 @@ class DataManagerService implements ApplicationContextAware
     }
     else
     {
-      def xml = StagerUtil.getInfo(filename)
+        def dataInfo = new DataInfo()
+        def canOpen = dataInfo.open(params.filename)
+        def xml = null
+        if ( canOpen )
+        {
+          xml = dataInfo.getInfo()?.trim()
+        }
+        dataInfo.close()
+      //def xml = StagerUtil.getInfo(filename)
 
       if ( xml )
       {
