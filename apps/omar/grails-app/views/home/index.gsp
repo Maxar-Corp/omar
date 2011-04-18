@@ -60,7 +60,7 @@ s<html>
         <td>
           <ol>
             <li>
-              <g:form name="imageView" url="[controller:'kmlQuery', action:'topImages']">
+              <g:form name="imageView" url="[controller:'kmlQuery', action:'topImages', params:[stretch_mode:'linear_auto_min_max', stretch_mode_region:'global' ]]">
                 <g:textField name="maximages" size="2" value="${grailsApplication.config.kml.defaultImages}"/>
                 <a href="javascript:submitImageView();">Most Recent Images for View</a>
               </g:form>
