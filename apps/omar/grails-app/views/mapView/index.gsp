@@ -159,7 +159,8 @@
 					title="Enter mgrs coordinate and click off the text field to re-center the map. Example: 17RNJ8123050729 or 17 RNJ 81230 50729" /></li>
 			</ol>
             <div align="center">
-                <button id="resetCenterButton" type="button" onclick="javascript:resetMapCenter()">Reset Center</button>
+                <button id="applyCenterButton" type="button" onclick="">Apply</button>
+                <button id="resetCenterButton" type="button" onclick="javascript:resetMapCenter()" title="Resets the view to the center of the image but keeps the current zoom level">Reset</button>
             </div>
 		</div>
 	</div>

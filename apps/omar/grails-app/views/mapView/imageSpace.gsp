@@ -193,7 +193,7 @@
             <li>Image Rotate:</li>
             <li>
                 <g:textField name="rotate" value="${params.rotate?:0}" onChange="rotateImage()" size="1"/>
-                <button id="rotateApply" type="button" onclick="javascript:rotateImage()">Apply</button>
+                <button id="rotateApply" type="button" onclick="">Apply</button>
             </li>
           </ol>
         </div>
