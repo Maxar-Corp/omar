@@ -66,6 +66,7 @@ class SuperOverlayService implements InitializingBean{
         newParams.level = 0
         newParams.row   = 0
         newParams.col   = 0
+
         def kmlnode = {
           mkp.xmlDeclaration()
           kml("xmlns": "http://earth.google.com/kml/2.1") {
@@ -105,7 +106,7 @@ class SuperOverlayService implements InitializingBean{
                       newParams.remove("controller")
 
                       href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                      viewRefreshMode("onExpire")
+                      viewRefreshMode("onRegion")
                   }
               }
             }
@@ -193,7 +194,7 @@ class SuperOverlayService implements InitializingBean{
                   drawOrder(params.level)
                   Icon(){
                       href{mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, controller: 'ogc', action: 'wms',params:wmsMap)}]]>")}
-                      viewRefreshMode("onExpire")
+                      viewRefreshMode("onRegion")
                   }
                   LatLonBox(){
                       north(tileBounds.maxy)
@@ -222,7 +223,7 @@ class SuperOverlayService implements InitializingBean{
                     }
                     Link{
                         href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                        viewRefreshMode("onExpire")
+                        viewRefreshMode("onRegion")
                     }
                 }
               }
@@ -249,7 +250,8 @@ class SuperOverlayService implements InitializingBean{
         //def maxDelta = deltax>deltay?deltay:deltax
        // def maxTileSize = tileSize.width>tileSize.height?tileSize.width:tileSize.height
         //def metersPerPixel = (maxDelta*metersPerDegree)/maxTileSize
-        def metersPerPixel = (((deltax*metersPerDegree)/tileSize.width) + ((deltay*metersPerDegree)/tileSize.height))*0.5
+        def metersPerPixel = (((deltax*metersPerDegree)/tileSize.width) +
+                              ((deltay*metersPerDegree)/tileSize.height))*0.5
 
         // keep splitting if we can zoom further
         metersPerPixel > fullResMetersPerPixel
@@ -277,7 +279,7 @@ class SuperOverlayService implements InitializingBean{
     }
     def generateSubTiles(def params, def fullResBbox)
     {
-        def level = params.level as Integer
+        def level = (params.level as Integer) + 1
         def row   = params.row   as Integer
         def col   = params.col   as Integer
         def nrow = row*2
@@ -286,7 +288,6 @@ class SuperOverlayService implements InitializingBean{
         def maxx  = fullResBbox.maxx
         def miny  = fullResBbox.miny
         def maxy  = fullResBbox.maxy
-        ++level
         def deltax = (maxx-minx)/(2**level)
         def deltay = (maxy-miny)/(2**level)
 
