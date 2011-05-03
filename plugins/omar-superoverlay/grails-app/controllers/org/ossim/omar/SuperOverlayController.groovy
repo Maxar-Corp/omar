@@ -112,6 +112,10 @@ class SuperOverlayController implements InitializingBean{
 */
         if(rasterEntry)
         {
+            response.setHeader("Pragma", "no-cache");
+            response.setDateHeader("Expires", 1L);
+            response.setHeader("Cache-Control", "no-cache");
+            response.addHeader("Cache-Control", "no-store");
             if(params.level&&params.row&&params.col)
             {
                 def kmlString =  superOverlayService.createTileKml(rasterEntry, params)
