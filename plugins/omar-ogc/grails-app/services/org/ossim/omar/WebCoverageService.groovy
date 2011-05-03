@@ -88,45 +88,57 @@ class WebCoverageService implements InitializingBean{
                 srcChains.add(chainMap.chain)
             }
         }
-		wcsParams.viewGeom = null
-
-        def connectionId = 10000
-        objectPrefixIdx = 0
-        // now establish mosaic and cut to match the output dimensions
-        kwlString = "type:ossimImageChain\n"
-        kwlString += "object${objectPrefixIdx}.type:ossimImageMosaic\n"
-        ++objectPrefixIdx
-        if(requestFormat.contains("uint8")||
-           requestFormat.contains("jpeg")||
-                ((stretchModeRegion == "viewport")&&
-                 (stretchMode!="none"))
-           )
+        if(srcChains)
         {
-            kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
+            wcsParams.viewGeom = null
+
+            def connectionId = 10000
+            objectPrefixIdx = 0
+            // now establish mosaic and cut to match the output dimensions
+            kwlString = "type:ossimImageChain\n"
+            kwlString += "object${objectPrefixIdx}.type:ossimImageMosaic\n"
+            ++objectPrefixIdx
+            if(requestFormat.contains("uint8")||
+               requestFormat.contains("jpeg")||
+                    ((stretchModeRegion == "viewport")&&
+                     (stretchMode!="none"))
+               )
+            {
+                kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
+                kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+                ++connectionId
+                ++objectPrefixIdx
+            }
+            kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
+            kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
+            kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
             kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
-            ++connectionId
             ++objectPrefixIdx
+            if((stretchModeRegion == "viewport")&&
+                    (stretchMode!="none"))
+            {
+                kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
+                kwlString += "object${objectPrefixIdx}.id:${connectionId+1}\n"
+                ++objectPrefixIdx
+                kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
+                kwlString += "object${objectPrefixIdx}.id:${connectionId+2}\n"
+                kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
+                kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId}\n"
+                kwlString += "object${objectPrefixIdx}.input_connection2:${connectionId+1}\n"
+                ++objectPrefixIdx
+                connectionId+=2
+            }
         }
-        kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
-        kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
-        kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
-        kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
-        ++objectPrefixIdx
-        if((stretchModeRegion == "viewport")&&
-                (stretchMode!="none"))
+        else
         {
-            kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
-            kwlString += "object${objectPrefixIdx}.id:${connectionId+1}\n"
-            ++objectPrefixIdx
-            kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
-            kwlString += "object${objectPrefixIdx}.id:${connectionId+2}\n"
-            kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
-            kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId}\n"
-            kwlString += "object${objectPrefixIdx}.input_connection2:${connectionId+1}\n"
-            ++objectPrefixIdx
-            connectionId+=2
+            kwlString = "type:ossimMemoryImageSource\n"
+            if(params.width&&params.height)
+            {
+                kwlString += "rect:(0,0,${params.width},${params.height},lh)\n"
+                kwlString += "scalar_type:ossim_uint8\n"
+                kwlString += "number_bands:1\n"
+            }
         }
-
         def mosaic = new joms.oms.Chain();
         mosaic.loadChainKwlString(kwlString)
         srcChains.each{srcChain->
