@@ -23,7 +23,7 @@ target(main: "Add a Geometry column to a table") {
 
   //def config = new ConfigSlurper(grailsEnv).parse(new File("${basedir}/grails-app/conf/DataSource.groovy").toURL())
   def config = loadConfig()
-  
+
   /*
   println "${config.dataSource.driverClassName}"
   println "${config.dataSource.username}"
@@ -75,7 +75,8 @@ target(main: "Add a Geometry column to a table") {
       validargs: typeMap.keySet().sort().join(",")
   )
 
-  def typeName = typeName[Ant.antProject.properties."type.id"]
+  def typeIndex = Ant.antProject.properties."type.id" as Integer
+  def typeName = typeNames[typeIndex - 1]
 
   Ant.input(
       addProperty: "dimension.num",
