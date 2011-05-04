@@ -440,7 +440,7 @@ def authenticateService
                     open("1")
                     visibility("1")
                     Icon() {
-                      href { mkp.yieldUnescaped("images/image.${ext}") }
+                      href { mkp.yieldUnescaped("images/image${ext}") }
                     }
                     LatLonBox() {
                         north(bounds.maxy)
@@ -464,7 +464,7 @@ def authenticateService
           zos.putNextEntry(anEntry);
 
           zos << kmlbuilder.bind(kmlnode).toString()
-          anEntry = new ZipEntry("images/image.${ext}");
+          anEntry = new ZipEntry("images/image${ext}");
           //place the zip entry in the ZipOutputStream object
           zos.putNextEntry(anEntry);
           if(image)

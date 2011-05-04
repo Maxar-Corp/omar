@@ -8,12 +8,14 @@ import com.vividsolutions.jts.geom.PrecisionModel
 import joms.oms.ossimGpt
 import joms.oms.ossimDpt
 import org.springframework.beans.factory.InitializingBean
+import java.awt.image.BufferedImage
 
 class SuperOverlayService implements InitializingBean{
 
     def metersPerDegree
     def grailsApplication
     def kmlService
+    def webMappingService
     def tileSize = [width:256, height:256]
     def lodValues = [min:128, max:2000]
     def appTagLib = new org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib()
@@ -106,7 +108,7 @@ class SuperOverlayService implements InitializingBean{
                       newParams.remove("controller")
 
                       href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                      viewRefreshMode("onRegion")
+                      viewRefreshMode("onExpire")
                   }
               }
             }
@@ -132,6 +134,7 @@ class SuperOverlayService implements InitializingBean{
         def format = "image/jpeg"
         def transparent = false
         def ext = "jpg"
+        def level = params.level as Integer
         if(edgeTileFlag)
         {
             format = "image/png"
@@ -191,10 +194,11 @@ class SuperOverlayService implements InitializingBean{
                   }
               }
               GroundOverlay(){
-                  drawOrder(params.level)
+                 // drawOrder(params.level)
+                  drawOrder(rasterEntry.getMetersPerPixel())
                   Icon(){
                       href{mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, controller: 'ogc', action: 'wms',params:wmsMap)}]]>")}
-                      viewRefreshMode("onRegion")
+                      viewRefreshMode("onExpire")
                   }
                   LatLonBox(){
                       north(tileBounds.maxy)
@@ -223,7 +227,7 @@ class SuperOverlayService implements InitializingBean{
                     }
                     Link{
                         href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
-                        viewRefreshMode("onRegion")
+                        viewRefreshMode("onExpire")
                     }
                 }
               }
@@ -232,6 +236,138 @@ class SuperOverlayService implements InitializingBean{
         }
 
         kmlbuilder.bind(kmlnode).toString()
+    }
+
+    def createTileKmzInfo(def rasterEntry, def params)
+    {
+        def fullResBound = createFullResBounds(rasterEntry)
+        def kmlbuilder = new StreamingMarkupBuilder()
+        kmlbuilder.encoding = "UTF-8"
+        def tileBounds = tileBound(params, fullResBound)
+        def wmsRequest = new WMSRequest()
+        //Utility.simpleCaseInsensitiveBind(wmsRequest, params)
+
+        def newParams = new HashMap(params)
+        newParams.remove("action")
+        newParams.remove("controller")
+
+        def edgeTileFlag = isAnEdgeTile(rasterEntry, fullResBound, params.level as Integer, params.row as Integer, params.col as Integer)
+        def format = "image/jpeg"
+        def transparent = false
+        def ext = "jpg"
+        if(edgeTileFlag)
+        {
+            format = "image/png"
+            transparent = true
+            ext = "png"
+        }
+        Utility.simpleCaseInsensitiveBind(wmsRequest, [request:'GetMap',
+                layers:params.id,
+                srs:'EPSG:4326',
+                format:format,
+                request:"GetMap",
+                version:"1.1.1",
+                service:'wms',
+                version:'1.1.1',
+                width:tileSize.width,
+                height:tileSize.height,
+                transparent:transparent,
+                bbox:"${tileBounds.minx},${tileBounds.miny},${tileBounds.maxx},${tileBounds.maxy}"])
+        def wmsMap = wmsRequest.toMap()
+        Utility.removeEmptyParams(wmsMap)
+
+        //def minLod = Math.sqrt(tileSize.width*tileSize.height)
+        //def maxLod = minLod
+
+        def subtiles = []
+        if(canSplit(tileBounds, rasterEntry.metersPerPixel))
+        {
+            subtiles = generateSubTiles(params, fullResBound)
+        }
+        def defaultName = "${params.level}/${params.col}/${params.row}.kml"
+        def kmlnode = {
+          mkp.xmlDeclaration()
+          kml("xmlns": "http://earth.google.com/kml/2.1") {
+            Document() {
+              name(defaultName)
+              description()
+              Style(){
+                  ListStyle(id:"hideChildren"){
+                     listItemType("checkHideChildren")
+                  }
+              }
+              Region(){
+                  Lod(){
+                      minLodPixels(lodValues.min)
+                      if(subtiles.size() > 0)
+                      {
+                          maxLodPixels(lodValues.max)
+                      }
+                      else
+                      {
+                          maxLodPixels(-1)
+                      }
+                  }
+                  LatLonAltBox(){
+                      north(tileBounds.maxy)
+                      south(tileBounds.miny)
+                      east(tileBounds.maxx)
+                      west(tileBounds.minx)
+                  }
+              }
+              GroundOverlay(){
+                  drawOrder(params.level)
+                  Icon(){
+                      href { mkp.yieldUnescaped("images/image.${ext}") }
+//                      href{mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, controller: 'ogc', action: 'wms',params:wmsMap)}]]>")}
+                      viewRefreshMode("onExpire")
+                  }
+                  LatLonBox(){
+                      north(tileBounds.maxy)
+                      south(tileBounds.miny)
+                      east(tileBounds.maxx)
+                      west(tileBounds.minx)
+                  }
+              }
+              subtiles.each{tile->
+                  newParams.level = tile.level
+                  newParams.row   = tile.row
+                  newParams.col   = tile.col
+                NetworkLink{
+                    name("${tile.level}/${tile.col}/${tile.row}.${ext}")
+                    Region{
+                        Lod{
+                            minLodPixels(lodValues.min)
+                            maxLodPixels("-1")
+                        }
+                        LatLonAltBox{
+                            north("${tile.maxy}")
+                            south("${tile.miny}")
+                            east("${tile.maxx}")
+                            west("${tile.minx}")
+                        }
+                    }
+                    Link{
+                        href { mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, action:params.action, params: newParams)}]]>") }
+                        viewRefreshMode("onExpire")
+                    }
+                }
+              }
+            }
+          }
+        }
+        kmlbuilder.bind(kmlnode).toString()
+        def image = null
+        if(!rasterEntry)
+        {
+            image = new BufferedImage(tileSize.width, tileSize.height, BufferedImage.TYPE_INT_RGB)
+        }
+        else
+        {
+            image = webMappingService.getMap(wmsRequest, [rasterEntry])
+        }
+
+        [kml:kmlbuilder.bind(kmlnode).toString(), image:image, format:"${ext}", imagePath:"images/image.${ext}"]
     }
     def isAnEdgeTile(def rasterEntry, def fullResBbox, def level, def row, def col)//def level, def row, def col)
     {
@@ -243,7 +379,7 @@ class SuperOverlayService implements InitializingBean{
         def result = !rasterGeom.contains(tileGeometry)
         result
     }
-    def canSplit(def tileBounds, def fullResMetersPerPixel)
+    def getMetersPerPixel(def tileBounds, def fullResMetersPerPixel)
     {
         def deltax = (tileBounds.maxx-tileBounds.minx)
         def deltay = (tileBounds.maxy-tileBounds.miny)
@@ -252,6 +388,12 @@ class SuperOverlayService implements InitializingBean{
         //def metersPerPixel = (maxDelta*metersPerDegree)/maxTileSize
         def metersPerPixel = (((deltax*metersPerDegree)/tileSize.width) +
                               ((deltay*metersPerDegree)/tileSize.height))*0.5
+
+        metersPerPixel
+    }
+    def canSplit(def tileBounds, def fullResMetersPerPixel)
+    {
+        def metersPerPixel = getMetersPerPixel(tileBounds, fullResMetersPerPixel)
 
         // keep splitting if we can zoom further
         metersPerPixel > fullResMetersPerPixel
