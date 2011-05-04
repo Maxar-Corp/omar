@@ -244,7 +244,7 @@ class SuperOverlayService implements InitializingBean{
         kmlbuilder.encoding = "UTF-8"
         def tileBounds = tileBound(params, fullResBound)
         def wmsRequest = new WMSRequest()
-        //Utility.simpleCaseInsensitiveBind(wmsRequest, params)
+        Utility.simpleCaseInsensitiveBind(wmsRequest, params)
 
         def newParams = new HashMap(params)
         newParams.remove("action")

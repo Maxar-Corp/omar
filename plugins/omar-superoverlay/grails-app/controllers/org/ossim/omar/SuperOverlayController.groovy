@@ -138,34 +138,38 @@ class SuperOverlayController implements InitializingBean{
                 if(!isRoot)
                 {
                     kmlInfoMap =  superOverlayService.createTileKmzInfo(rasterEntry, params)
+                    response.contentType = "application/vnd.google-earth.kmz"
+                    response.setHeader("Content-disposition", "attachment; filename=output.kmz")
+                    def zos =  new ZipOutputStream(response.outputStream)
+                    //create a new zip entry
+                    def anEntry = null
+
+                    anEntry = new ZipEntry("doc.kml");
+                    //place the zip entry in the ZipOutputStream object
+                    zos.putNextEntry(anEntry);
+
+                    zos << kmlInfoMap.kml
+                    if(kmlInfoMap.imagePath)
+                    {
+                        anEntry = new ZipEntry("${kmlInfoMap.imagePath}");
+                        //place the zip entry in the ZipOutputStream object
+                        zos.putNextEntry(anEntry);
+                        if(kmlInfoMap.image)
+                        {
+                            ImageIO.write(kmlInfoMap.image, kmlInfoMap.format, zos);
+                        }
+                    }
+                    zos.close();
+                    response.outputStream.close()
                 }
                 else
                 {
-                    kmlInfoMap = [kml:superOverlayService.createRootKml(rasterEntry, params)]
+                    def kmlString = superOverlayService.createRootKml(rasterEntry, params)
+                    response.setHeader("Content-disposition", "attachment; filename=doc.kml")
+                    render(contentType: "application/vnd.google-earth.kml+xml",
+                           text:kmlString,
+                           encoding: "UTF-8")
                  }
-                response.contentType = "application/vnd.google-earth.kmz"
-                response.setHeader("Content-disposition", "attachment; filename=output.kmz")
-                def zos =  new ZipOutputStream(response.outputStream)
-                //create a new zip entry
-                def anEntry = null
-
-                anEntry = new ZipEntry("doc.kml");
-                //place the zip entry in the ZipOutputStream object
-                zos.putNextEntry(anEntry);
-
-                zos << kmlInfoMap.kml
-                if(kmlInfoMap.imagePath)
-                {
-                    anEntry = new ZipEntry("${kmlInfoMap.imagePath}");
-                    //place the zip entry in the ZipOutputStream object
-                    zos.putNextEntry(anEntry);
-                    if(kmlInfoMap.image)
-                    {
-                        ImageIO.write(kmlInfoMap.image, kmlInfoMap.format, zos);
-                    }
-                }
-                zos.close();
-                response.outputStream.close()
             }
         }
         null
