@@ -103,8 +103,10 @@ class SuperOverlayController implements InitializingBean{
 
         if(rasterEntry)
         {
-            def isRoot = (params.level==null || params.row==null || params.col==null)||
-                         (params.level==0&&params.row==0&&params.col==0)
+            // we will return the root document if any level of detail param is null
+            //
+            def isRoot = ( (params.level==null) || (params.row==null) || (params.col==null))
+
            // response.setHeader("Pragma", "no-cache");
            // response.setDateHeader("Expires", 1L);
            // response.setHeader("Cache-Control", "no-cache");
