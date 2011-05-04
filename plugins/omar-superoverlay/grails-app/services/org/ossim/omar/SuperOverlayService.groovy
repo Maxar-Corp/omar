@@ -194,8 +194,7 @@ class SuperOverlayService implements InitializingBean{
                   }
               }
               GroundOverlay(){
-                 // drawOrder(params.level)
-                  drawOrder(rasterEntry.getMetersPerPixel())
+                  drawOrder(params.level)
                   Icon(){
                       href{mkp.yieldUnescaped("<![CDATA[${appTagLib.createLink(absolute: true, controller: 'ogc', action: 'wms',params:wmsMap)}]]>")}
                       viewRefreshMode("onExpire")
