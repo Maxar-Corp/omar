@@ -267,7 +267,6 @@ class SuperOverlayService implements InitializingBean{
                 request:"GetMap",
                 version:"1.1.1",
                 service:'wms',
-                version:'1.1.1',
                 width:tileSize.width,
                 height:tileSize.height,
                 transparent:transparent,
