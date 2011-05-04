@@ -85,8 +85,11 @@ class SuperOverlayController implements InitializingBean{
 	*/
     def createKml = {
         def rasterEntry = null
-        // we will output by default kmz unless there is a param passed for the flag
-        def outputAsKmlFlag = params.outputKml?:false
+        // Currently I am having troubles with KMZ and bands=.  For some reason
+        // it doesn't work when adding a band selection.  The kmz is good but the
+        // image is invalid for some reason.
+        //
+        def outputAsKmlFlag = params.outputKml?:true
         try
         {
             if(params.id)
@@ -111,7 +114,6 @@ class SuperOverlayController implements InitializingBean{
            // response.setDateHeader("Expires", 1L);
            // response.setHeader("Cache-Control", "no-cache");
            // response.addHeader("Cache-Control", "no-store");
-            def kmlInfoMap = null
 
             if(outputAsKmlFlag)
             {
@@ -137,9 +139,10 @@ class SuperOverlayController implements InitializingBean{
             {
                 if(!isRoot)
                 {
-                    kmlInfoMap =  superOverlayService.createTileKmzInfo(rasterEntry, params)
+                    def kmlInfoMap =  superOverlayService.createTileKmzInfo(rasterEntry, params)
                     response.contentType = "application/vnd.google-earth.kmz"
                     response.setHeader("Content-disposition", "attachment; filename=output.kmz")
+
                     def zos =  new ZipOutputStream(response.outputStream)
                     //create a new zip entry
                     def anEntry = null
@@ -160,7 +163,7 @@ class SuperOverlayController implements InitializingBean{
                         }
                     }
                     zos.close();
-                    response.outputStream.close()
+                    response.outputStream.close();
                 }
                 else
                 {
