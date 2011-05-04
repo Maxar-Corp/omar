@@ -8,6 +8,9 @@ import joms.oms.ossimUnitType
 import joms.oms.Chain
 import org.springframework.beans.factory.InitializingBean
 import groovy.xml.StreamingMarkupBuilder
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+import javax.imageio.ImageIO
 
 class SuperOverlayController implements InitializingBean{
 	def baseDir
@@ -81,13 +84,9 @@ class SuperOverlayController implements InitializingBean{
 	}
 	*/
     def createKml = {
-        // this requires the grails-cache-headers plugin to use a convenient
-        // specificiation of cache params on responses will comment out for more testing later
-        //
-        // cache shared:true, validFor:3600
-
-       //println params
         def rasterEntry = null
+        // we will output by default kmz unless there is a param passed for the flag
+        def outputAsKmlFlag = params.outputKml?:false
         try
         {
             if(params.id)
@@ -102,39 +101,69 @@ class SuperOverlayController implements InitializingBean{
             rasterEntry = null
         }
 
-      //  println rasterEntry
-/*
-        withFormat{
-            kml { render (contentType: "text/plain", text:"KML ${params.id}") }
-            jpg { render (contentType: "text/plain", text:"JPEG ${params.id}") }
-            png { render (contentType: "text/plain", text:"PNG ${params.id}") }
-        }
-*/
         if(rasterEntry)
         {
-            response.setHeader("Pragma", "no-cache");
-            response.setDateHeader("Expires", 1L);
-            response.setHeader("Cache-Control", "no-cache");
-            response.addHeader("Cache-Control", "no-store");
-            if(params.level&&params.row&&params.col)
+            def isRoot = (params.level==null || params.row==null || params.col==null)||
+                         (params.level==0&&params.row==0&&params.col==0)
+           // response.setHeader("Pragma", "no-cache");
+           // response.setDateHeader("Expires", 1L);
+           // response.setHeader("Cache-Control", "no-cache");
+           // response.addHeader("Cache-Control", "no-store");
+            def kmlInfoMap = null
+
+            if(outputAsKmlFlag)
             {
-                def kmlString =  superOverlayService.createTileKml(rasterEntry, params)
-                //response.setDateHeader("Expires", System.currentTimeMillis()+(24*24*60*60*1000));
-               // response.addHeader("Cache-Control", "max-age=120")
-             //   response.setHeader("max-age", "120");
-                render(contentType: "application/vnd.google-earth.kml+xml", text:kmlString,
-                        encoding: "UTF-8")
+                if(!isRoot)
+                {
+                    def kmlString =  superOverlayService.createTileKml(rasterEntry, params)
+                    //response.setDateHeader("Expires", System.currentTimeMillis()+(24*24*60*60*1000));
+                   // response.addHeader("Cache-Control", "max-age=120")
+                   //   response.setHeader("max-age", "120");
+                    render(contentType: "application/vnd.google-earth.kml+xml", text:kmlString,
+                            encoding: "UTF-8")
+                }
+                else
+                {
+                    def kmlString = superOverlayService.createRootKml(rasterEntry, params)
+                    response.setHeader("Content-disposition", "attachment; filename=doc.kml")
+                    render(contentType: "application/vnd.google-earth.kml+xml",
+                            text:kmlString,
+                            encoding: "UTF-8")
+                }
             }
             else
             {
-                def kmlString =  superOverlayService.createRootKml(rasterEntry, params)
-                response.setHeader("Content-disposition", "attachment; filename=doc.kml")
-               // response.setDateHeader("Expires", System.currentTimeMillis()+(24*24*60*60*1000));
-               // response.setHeader("max-age", "120");
-               // response.addHeader("Cache-Control", "max-age=120")
-                render(contentType: "application/vnd.google-earth.kml+xml",
-                        text:kmlString,
-                        encoding: "UTF-8")
+                if(!isRoot)
+                {
+                    kmlInfoMap =  superOverlayService.createTileKmzInfo(rasterEntry, params)
+                }
+                else
+                {
+                    kmlInfoMap = [kml:superOverlayService.createRootKml(rasterEntry, params)]
+                 }
+                response.contentType = "application/vnd.google-earth.kmz"
+                response.setHeader("Content-disposition", "attachment; filename=output.kmz")
+                def zos =  new ZipOutputStream(response.outputStream)
+                //create a new zip entry
+                def anEntry = null
+
+                anEntry = new ZipEntry("doc.kml");
+                //place the zip entry in the ZipOutputStream object
+                zos.putNextEntry(anEntry);
+
+                zos << kmlInfoMap.kml
+                if(kmlInfoMap.imagePath)
+                {
+                    anEntry = new ZipEntry("${kmlInfoMap.imagePath}");
+                    //place the zip entry in the ZipOutputStream object
+                    zos.putNextEntry(anEntry);
+                    if(kmlInfoMap.image)
+                    {
+                        ImageIO.write(kmlInfoMap.image, kmlInfoMap.format, zos);
+                    }
+                }
+                zos.close();
+                response.outputStream.close()
             }
         }
         null
