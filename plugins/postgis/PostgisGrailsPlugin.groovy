@@ -49,7 +49,7 @@ class PostgisGrailsPlugin
 //              maxLon: coords[2].x,
 //              maxLat: coords[2].y
 //      ]
-      def coords = delegate?.envelope?.coordinates
+      def coords = delegate?.coordinates
       def bounds = [
               minLon: Double.MAX_VALUE,
               maxLon: -Double.MAX_VALUE,
