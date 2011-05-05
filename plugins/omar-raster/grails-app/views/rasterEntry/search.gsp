@@ -12,7 +12,7 @@
        z-index: 99999;
        }
     #exportMenu, #viewMenu, .datechooser{
-        z-index: 100;
+        z-index: 99999;
     }
 
     </style>
