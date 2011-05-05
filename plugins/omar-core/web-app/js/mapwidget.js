@@ -703,7 +703,7 @@ function MapWidget()
 					if(evt.units == "km")
 						{
 							pathUnit[0] = evt.measure + " km^2";
-							pathUnit[1] = evt.measure * 100000 + " m^2";
+							pathUnit[1] = evt.measure * 1000000 + " m^2";
 							pathUnit[2] = evt.measure * 10763910.416623611025 + " ft^2";
 							pathUnit[3] = evt.measure * .38610215854575903621 + " mi^2";
 							pathUnit[4] = evt.measure * 1195990.04621860478289 + " yd^2";
@@ -731,7 +731,7 @@ function MapWidget()
 						}
 						else if(evt.units == "m")
 						{
-							pathUnit[0] = evt.measure * 0.00001 + " km^2";
+							pathUnit[0] = evt.measure * 0.000001 + " km^2";
 							pathUnit[1] = evt.measure + " m^2";
 							pathUnit[2] = evt.measure * 10.763910416623611025 + " ft^2";
 							pathUnit[3] = evt.measure * .00000038610215854575 + " mi^2";
