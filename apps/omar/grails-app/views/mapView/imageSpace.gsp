@@ -350,6 +350,7 @@ function formatOutput(value)
 {
     return value.lon + ", " + value.lat;
 }
+var resLevels = parseFloat("${rasterEntry.numberOfResLevels}");
 
 function init(mapWidth, mapHeight)
 {
@@ -363,7 +364,6 @@ function init(mapWidth, mapHeight)
   var top        =  hyp;
   var right      =  hyp;
   var url = "${createLink(controller: 'icp', action: 'getTileOpenLayers')}";
-  var resLevels = parseFloat("${rasterEntry.numberOfResLevels}");
   var bounds = new OpenLayers.Bounds(Math.round(left), Math.round(bottom), Math.round(right), Math.round(top));
   // full res is included in resLevels so we need to add 2 more to give us
   // an 8x zoom
@@ -455,21 +455,30 @@ function init(mapWidth, mapHeight)
 	brightnessSlider.setRealValue(${params.brightness?:0});
 	contrastSlider.setRealValue(${params.contrast?:1});
 }
-
+  var zoomInButton;
   function zoomIn()
   {
-    map.zoomIn();
+	map.zoomIn();
+	if(map.getZoom() >= map.getZoomForResolution(1.0, true))
+	{
+		zoomInButton.displayClass = "olControlFoo";
+	}
   }
   function zoomInFullRes()
   {
       // we are image space so set to a 1:1 scale
       var zoom = map.getZoomForResolution(1.0, true)
       map.zoomTo(zoom)
+	  zoomInButton.displayClass = "olControlFoo";
   }
 
   function zoomOut()
   {
     map.zoomOut();
+	if(map.getZoom() < map.getZoomForResolution(1.0, true))
+	{
+		zoomInButton.displayClass = "olControlZoomIn";
+	}
 
   }
     function setupToolbar()
@@ -480,7 +489,7 @@ var panButton = new OpenLayers.Control.MouseDefaults({title:'Click pan button to
  var zoomBoxButton = new OpenLayers.Control.ZoomBox(
       {title:"Click the zoom box button to activate. Once activated click and drag over an area of interest on the map to zoom into."});
 
-      var zoomInButton = new OpenLayers.Control.Button({title: "Click to zoom in.",
+      zoomInButton = new OpenLayers.Control.Button({title: "Click to zoom in.",
         displayClass: "olControlZoomIn",
         trigger: zoomIn
       });
