@@ -481,22 +481,8 @@
   {
     var url = "${createLink(action: 'kmlnetworklink', controller: 'videoDataSet')}";
     mapWidget.setupSearch();
-    omarSearchParams.setProperties(document);
     omarSearchParams.initTime();
-    omarSearchParams.setTimeFromDate({day:$("startDate_day").value,
-                             month:$("startDate_month").value,
-                             year:$("startDate_year").value,
-                             hour:$("startDate_hour").value,
-                             minute:$("startDate_minute").value,
-                             sec:""
-                             },
-                              {day:$("endDate_day").value,
-                             month:$("endDate_month").value,
-                             year:$("endDate_year").value,
-                             hour:$("endDate_hour").value,
-                             minute:$("endDate_minute").value,
-                             sec:""
-                             });
+    omarSearchParams.setProperties(document);
     document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
     document.searchForm.submit();
   }
