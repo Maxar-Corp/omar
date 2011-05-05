@@ -372,6 +372,7 @@ export {
   workDir = "/tmp"
   superoverlay {
     baseDir = "/data/omar/superoverlay"
+    outputKmz = true
   }
   rasterEntry {
     fields = [
