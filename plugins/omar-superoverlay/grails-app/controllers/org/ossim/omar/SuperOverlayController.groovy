@@ -17,79 +17,10 @@ class SuperOverlayController implements InitializingBean{
 	def serverUrl
     def kmlService
     def superOverlayService
+    def outputKmz = false
     def index = { render ""}
-/*
-	def create =
-	{
-		def result = null
-        def paramsIgnoreCase    = new CaseInsensitiveMap(params)
-		def rasterEntry = null
-		try
-		{
-			rasterEntry = RasterEntry.findByIndexId(paramsIgnoreCase.layers)?:RasterEntry.findByTitle(paramsIgnoreCase.layers)?:RasterEntry.findById(paramsIgnoreCase.layers)
-		}
-		catch(Exception e)
-		{
-			log.error(e)
-			rasterEntry = null
-		}
-		if(rasterEntry&&baseDir)
-		{
-			def outDir    = new File(baseDir) 
-			if(!outDir.exists())
-			{
-				outDir.mkdirs()
-			}
-			paramsIgnoreCase.crs    = "EPSG:4326"
-			paramsIgnoreCase.srs    = "EPSG:4326"
-			def wmsView = new WmsView();
-			wmsView.setProjection("EPSG:4326");
-			def geometry = wmsView.getImageGeometry()
-			if(geometry.valid() && geometry.get().projection)
-			{
-				geometry.get().projection.changeGsd(rasterEntry.metersPerPixel, ossimUnitType.OSSIM_METERS)
-			}
-			paramsIgnoreCase.wmsView = wmsView
-			def chainMap = rasterChainService.createRasterEntryChain(rasterEntry, paramsIgnoreCase, false)
-			def kwlString = chainMap.kwl
-			def objectPrefixIdx = chainMap.prefixIdx
-			kwlString  += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
-			++objectPrefixIdx
-			
-			def chain = "";
-			if(rasterEntry)
-			{
-				 SuperOverlayQueueItem.addItem([
-					indexId:rasterEntry.indexId,
-					dateCreated: new Date(),
-					startTime: null,
-					endTime: null,
-					action:"create",
-					priority: 0,
-					status: "ready",
-					baseDir: "${outDir}",
-					kwl: kwlString
-					], false)
-			}
-			result = "Added job for raster ${rasterEntry.indexId}"
-		}
-		else
-		{
-			if(!baseDir)
-			{
-				result = "No base superoverlay output directory specified in OMAR configuration"
-			}
-		}
-		result;
-	}
-	*/
     def createKml = {
         def rasterEntry = null
-        // Currently I am having troubles with KMZ and bands=.  For some reason
-        // it doesn't work when adding a band selection.  The kmz is good but the
-        // image is invalid for some reason.
-        //
-        def outputAsKmlFlag = params.outputKml?:true
         try
         {
             if(params.id)
@@ -115,7 +46,7 @@ class SuperOverlayController implements InitializingBean{
            // response.setHeader("Cache-Control", "no-cache");
            // response.addHeader("Cache-Control", "no-store");
 
-            if(outputAsKmlFlag)
+            if(!outputKmz)
             {
                 if(!isRoot)
                 {
@@ -180,6 +111,11 @@ class SuperOverlayController implements InitializingBean{
     public void afterPropertiesSet()
     {
 		baseDir = grailsApplication.config.export?.superoverlay?.baseDir
+        outputKmz = grailsApplication.config.export?.superoverlay?.outputKmz
+        if(outputKmz == null)
+        {
+            outputKmz = false // make it default to false
+        }
 		//serverUrl = grailsApplication.config.export?.superoverlay?.serverUrl
     }
 }
