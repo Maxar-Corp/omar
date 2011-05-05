@@ -167,7 +167,34 @@ class BaseQuery {
     keys.each {
       def value = tempParams.get(it)
       if (value) {
-        setProperty("${it}", value)
+        if(("${it}" == "startDate") ||
+           ("${it}" == "endDate"))
+        {
+            setProperty("${it}", DateUtil.initializeDate("${it}", tempParams))
+        }
+        else if("${it}" == "time")
+        {
+            setProperty("${it}", value)
+            def intervals = ISO8601DateParser.parseOgcTimeStartEndPairs(value)
+            if(intervals)
+            {
+                if(intervals.size() == 1)
+                {
+                    if(intervals[0].start)
+                    {
+                        startDate = new Date(intervals[0].start.getMillis())
+                    }
+                    if(intervals[0].end)
+                    {
+                        endDate   = new Date(intervals[0].end.getMillis())
+                    }
+                }
+            }
+        }
+        else
+        {
+            setProperty("${it}", value)
+        }
       }
     }
     searchTagNames?.size()?.times {i ->
