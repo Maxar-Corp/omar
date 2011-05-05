@@ -40,14 +40,32 @@ class PostgisGrailsPlugin
   def doWithDynamicMethods = { ctx ->
     // TODO Implement registering dynamic methods to classes (optional)
     Geometry.metaClass.getBounds {->
-      def coords = delegate?.envelope?.coordinates
 
+//      def coords = delegate?.envelope?.coordinates
+
+//      def bounds = [
+//              minLon: coords[0].x,
+//              minLat: coords[0].y,
+//              maxLon: coords[2].x,
+//              maxLat: coords[2].y
+//      ]
+      def coords = delegate?.envelope?.coordinates
       def bounds = [
-              minLon: coords[0].x,
-              minLat: coords[0].y,
-              maxLon: coords[2].x,
-              maxLat: coords[2].y
+              minLon: Double.MAX_VALUE,
+              maxLon: -Double.MAX_VALUE,
+              minLat: Double.MAX_VALUE,
+              maxLat: -Double.MAX_VALUE
       ]
+
+      bounds.with {
+        coords.each {coord ->
+          if ( coord.x < minLon ) minLon = coord.x
+          if ( coord.x > maxLon ) maxLon = coord.x
+          if ( coord.y < minLat ) minLat = coord.y
+          if ( coord.y > maxLat ) maxLat = coord.y
+        }
+      }
+
       return bounds
     }
 
@@ -59,29 +77,29 @@ class PostgisGrailsPlugin
       return spatialRestriction(SpatialRelation.INTERSECTS, propertyName, value)
     }
 
-    /*
+/*
 
-    Polygon.metaClass.'static'.createPolygon { minLon, minLat, maxLon, maxLat ->
-      def geometryFactory = new GeometryFactory(new PrecisionModel(), 4326)
+Polygon.metaClass.'static'.createPolygon { minLon, minLat, maxLon, maxLat ->
+ def geometryFactory = new GeometryFactory(new PrecisionModel(), 4326)
 
-      minLon = Double.parseDouble(minLon)
-      minLat = Double.parseDouble(minLat)
-      maxLon = Double.parseDouble(maxLon)
-      maxLat = Double.parseDouble(maxLat)
+ minLon = Double.parseDouble(minLon)
+ minLat = Double.parseDouble(minLat)
+ maxLon = Double.parseDouble(maxLon)
+ maxLat = Double.parseDouble(maxLat)
 
-      def coords = [
-        new Coordinate(minLon, minLat),
-        new Coordinate(minLon, maxLat),
-        new Coordinate(maxLon, maxLat),
-        new Coordinate(maxLon, minLat),
-        new Coordinate(minLon, minLat)
-      ]
+ def coords = [
+   new Coordinate(minLon, minLat),
+   new Coordinate(minLon, maxLat),
+   new Coordinate(maxLon, maxLat),
+   new Coordinate(maxLon, minLat),
+   new Coordinate(minLon, minLat)
+ ]
 
-      def polygon = geometryFactory.createPolygon( geometryFactory.createLinearRing(coords), null)
+ def polygon = geometryFactory.createPolygon( geometryFactory.createLinearRing(coords), null)
 
-      return polygon.toText()
-    }
-     */
+ return polygon.toText()
+}
+*/
   }
 
   def onChange = { event ->
