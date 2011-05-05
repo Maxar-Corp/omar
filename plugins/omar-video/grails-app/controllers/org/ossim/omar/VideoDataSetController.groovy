@@ -625,16 +625,33 @@ class VideoDataSetController implements InitializingBean
 
   def kmlnetworklink = {
     def kmlbuilder = new StreamingMarkupBuilder()
-
     kmlbuilder.encoding = "UTF-8"
-
 
     params.remove("_action_kmlnetworklink")
 
     params.dateSort = "false"
-
     def serviceAddress = createLink(absolute: true, controller: "kmlQuery", action: "getVideosKml", params: params)
-
+      def kmlnode = {
+        mkp.xmlDeclaration()
+        kml("xmlns": "http://earth.google.com/kml/2.1") {
+            NetworkLink() {
+              name("Video Query")
+              visibility("1")
+              open("1")
+              description("")
+              refreshVisibility("0")
+              flyToView("0")
+              Link() {
+                href() {
+                  mkp.yieldUnescaped("<![CDATA[${serviceAddress}]]>")
+                }
+                refreshMode("onRequest")
+                httpQuery("googleClientVersion=[clientVersion];")
+              }
+            }
+        }
+      }
+/*
     def kmlnode = {
       mkp.xmlDeclaration()
       kml("xmlns": "http://earth.google.com/kml/2.1") {
@@ -657,11 +674,14 @@ class VideoDataSetController implements InitializingBean
               refreshInterval("2000")
               refreshMode("onRequest")
               refreshTime("200")
+              viewFormat("BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]")
             }
           }
+
         }
       }
     }
+    */
     kmlbuilder.bind(kmlnode)
     response.setHeader("Content-disposition", "attachment; filename=singleRequestTopVideos.kml")
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlbuilder.bind(kmlnode).toString(), encoding: "UTF-8")
