@@ -332,58 +332,69 @@ class ISO8601DateParser
     * @return a list of intervals.  If the intervals were invalid or none
     *         specified an empty list would be returned. 
     */
+  static def parseOgcTimeStartEndPairs(String ogcIntervals)
+  {
+      def intervals = ogcIntervals?.split(',');
+      def intervalPairResult = [];
+      intervals?.each{intervalValue->
+        def d1 = null;
+        def d2 = null;
+        def range =intervalValue.split("/");
+        if(range)
+        {
+          String dateString = range[0].trim();
+          d1 = parsePeriod(dateString);
+          if(!d1)
+          {
+            d1 = parseDateTime(dateString);
+          }
+          if(range.size() > 1)
+          {
+            dateString =  range[1].trim();
+            d2 = parsePeriod(dateString);
+            if(!d2)
+            {
+              d2 = parseDateTime(dateString);
+            }
+          }
+          else
+          {
+            d2 = d1;
+          }
+          if(d1||d2)
+          {
+            intervalPairResult << [start:d1,end:d2]
+          }
+
+          d1 = null;
+          d2 = null;
+        }
+      }
+      intervalPairResult
+  }
   static def parseOgcTimeIntervals(String ogcIntervals)
   {
-    def intervals = ogcIntervals?.split(',');
-    def intervalResult = [];
-    intervals?.each{intervalValue->
-      def d1 = null;
-      def d2 = null;
-      def range =intervalValue.split("/");
-      if(range)
-      {
-        String dateString = range[0].trim();
-        d1 = parsePeriod(dateString);
-        if(!d1)
-        {
-          d1 = parseDateTime(dateString);
-        }
-        if(range.size() > 1)
-        {
-          dateString =  range[1].trim();
-          d2 = parsePeriod(dateString);
-          if(!d2)
+      def intervalPairs  = parseOgcTimeStartEndPairs(ogcIntervals)
+      def intervalResult = []
+      intervalPairs.each{pair->
+          if(pair.start && pair.end)
           {
-            d2 = parseDateTime(dateString);
+            try
+            {
+              def interval = new org.joda.time.Interval(pair.start, pair.end);
+              intervalResult.add(interval);
+            }
+            catch(Exception e)
+            {
+            }
           }
-
-        }
-        else
-        {
-          d2 = d1;
-        }
-
-        if(d1 && d2)
-        {
-          try
-          {
-            def interval = new org.joda.time.Interval(d1, d2);
-            intervalResult.add(interval);
-          }
-          catch(Exception e)
-          {
-          }
-        }
-        d1 = null;
-        d2 = null;
       }
-    }
-    return intervalResult;
+
+      return intervalResult;
   }
 
   static def parseWMSIntervals(String wmsIntervals)
   {
       parseOgcTimeIntervals(wmsIntervals)
   }
-
 }

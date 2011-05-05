@@ -254,9 +254,10 @@ class KmlQueryController implements InitializingBean
     }
     def queryParams = new org.ossim.omar.VideoDataSetQuery()
 
-    bindData(queryParams, caseInsensitiveParams, ['startDate', 'endDate'])
-    queryParams.startDate = DateUtil.initializeDate("startDate", caseInsensitiveParams)
-    queryParams.endDate = DateUtil.initializeDate("endDate", caseInsensitiveParams)
+    queryParams.caseInsensitiveBind(caseInsensitiveParams)
+    //bindData(queryParams, caseInsensitiveParams, ['startDate', 'endDate'])
+    //queryParams.startDate = DateUtil.initializeDate("startDate", caseInsensitiveParams)
+    //queryParams.endDate = DateUtil.initializeDate("endDate", caseInsensitiveParams)
 
     if ( !caseInsensitiveParams?.containsKey("dateSort") ||
             caseInsensitiveParams?.dateSort == "true" )
