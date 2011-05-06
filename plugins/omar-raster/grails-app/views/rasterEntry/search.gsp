@@ -447,6 +447,7 @@
   var rasterSearchSpatialIndex=${session.rasterSearchSpatialTab?:0};
   var rasterSearchCriteriaIndex=${session.rasterSearchCriteriaTab?:0};
   var omarSearchParams = new OmarSearchParams();
+  omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
   function syncAoiRadius(synchTo)
   {
     value = $(synchTo).value;
@@ -464,11 +465,8 @@
     omarSearchParams.setProperties(document);
     omarSearchParams.initTime();
     omarSearchParams.time = "";
-    if($( "bboxSearchButton" ).checked)
-    {
-        omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
-    }
-    else
+    omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
+    if(!$( "bboxSearchButton" ).checked)
     {
         omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}"
     }
@@ -481,6 +479,11 @@
     mapWidget.setupSearch();
     omarSearchParams.initTime();
     omarSearchParams.setProperties(document);
+    omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
+    if(!$( "bboxSearchButton" ).checked)
+    {
+        omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}"
+    }
     document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
     //alert(document.searchForm.action );
     document.searchForm.submit();
