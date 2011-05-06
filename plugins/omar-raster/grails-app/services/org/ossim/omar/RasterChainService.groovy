@@ -73,7 +73,7 @@ class RasterChainService {
 		def rotate = params?.rotate?:null
 		def scale  = params?.scale?:null
 		def pivot  = params?.pivot?:null
-        def tempHistogramFile = rasterEntry?.getFileFromObjects("histogram")?.name
+        def tempHistogramFile = rasterEntry?.getHistogramFile()//getFileFromObjects("histogram")?.name
         def tempOverviewFile = rasterEntry?.getFileFromObjects("overview")?.name
 		def histogramFile = new File(tempHistogramFile?:"")
 		def overviewFile  = new File(tempOverviewFile?:"")
@@ -89,6 +89,7 @@ class RasterChainService {
 		//
 		def geomPtr = createModelFromTiePointSet(rasterEntry);
 		double scaleCheck = 1.0
+
 		if((geomPtr != null)&&params.wmsView&&keepWithinScales)
 		{
               scaleCheck = params.wmsView.getScaleChangeFromInputToView(geomPtr.get())

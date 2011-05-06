@@ -222,7 +222,7 @@ class RasterEntry
 
   def getMainFile()
   {
-    def mainFile = null //rasterDataSet?.fileObjects?.find { it.type == 'main' }
+    def mainFile = rasterDataSet?.fileObjects?.find { it.type == 'main' }
 
     if ( !mainFile )
     {
@@ -238,7 +238,44 @@ class RasterEntry
 
     return mainFile
   }
+  def getHistogramFile()
+  {
+      def result = getFileFromObjects("histogram")?.name
+      if(!result)
+      {
+          def mainFile = rasterDataSet?.fileObjects?.find { it.type == 'main' }
+          result = mainFile?.name
+          if(result)
+          {
+              def nEntries = rasterDataSet?.rasterEntries?.size()?:1
+              def ext =result.substring(result.lastIndexOf("."))
+              if(ext)
+              {
+                  if(nEntries>1)
+                  {
+                      result=result.replace(ext,"_e${entryId}.his")
+                  }
+                  else
+                  {
+                      result=result.replace(ext,".his")
+                  }
+              }
+              else
+              {
+                  if(nEntries>1)
+                  {
+                      result=result+"_e${entryId}.his"
+                  }
+                  else
+                  {
+                      result=result+".his"
+                  }
+              }
+          }
+      }
 
+      result
+  }
   static RasterEntry initRasterEntry(def rasterEntryNode, RasterEntry rasterEntry = null)
   {
     rasterEntry = rasterEntry ?: new RasterEntry()
