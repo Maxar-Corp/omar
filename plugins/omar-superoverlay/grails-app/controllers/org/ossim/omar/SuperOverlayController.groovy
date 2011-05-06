@@ -11,6 +11,7 @@ import groovy.xml.StreamingMarkupBuilder
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.imageio.ImageIO
+import org.apache.commons.collections.map.CaseInsensitiveMap
 
 class SuperOverlayController implements InitializingBean{
 	def baseDir
@@ -37,15 +38,25 @@ class SuperOverlayController implements InitializingBean{
 
         if(rasterEntry)
         {
+            def tempOutputKmz = outputKmz
+
+            // There is currently a bug when a comma separated band list is given for kmz output
+            // we will force to false if such a param is given.
+            // For some reason if bands= is given and has more than one
+            // band indicator it causes X to appear on the google earth window.
+            // STill can't locate the reasoning so for now if KMZ is enabled and
+            // we see a band= with more than 1 band indicator we will force to false and
+            // output as a KML and add a href to the WMS chip service instead of embedding the chip
+            // within the KMZ.
+            //
+            def caseInsensitiveParams = new CaseInsensitiveMap(params)
+            if(tempOutputKmz&&caseInsensitiveParams.bands)
+            {
+                tempOutputKmz = caseInsensitiveParams.bands.split(",").length < 2
+            }
             // we will return the root document if any level of detail param is null
             //
-            def isRoot = ( (params.level==null) || (params.row==null) || (params.col==null))
-
-           // response.setHeader("Pragma", "no-cache");
-           // response.setDateHeader("Expires", 1L);
-           // response.setHeader("Cache-Control", "no-cache");
-           // response.addHeader("Cache-Control", "no-store");
-
+            def isRoot = ( (params.level==null) && (params.row==null) && (params.col==null))
             if(!outputKmz)
             {
                 if(!isRoot)
