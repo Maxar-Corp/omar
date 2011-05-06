@@ -235,47 +235,48 @@ class WebFeatureService
         mkp.declareNamespace(xsd: "http://www.w3.org/2001/XMLSchema")
 
         xsd.schema {
-          xsd.complexType(name: "${typeName}Type")
-          xsd.complexContent {
-            xsd.extension(base: "gml:AbstractFeatureType") {
-              xsd.sequence {
-                layer.schema.featureType.attributeDescriptors.each {
-                  def dataType = null
+          xsd.complexType(name: "${typeName}Type") {
+            xsd.complexContent {
+              xsd.extension(base: "gml:AbstractFeatureType") {
+                xsd.sequence {
+                  layer.schema.featureType.attributeDescriptors.each {
+                    def dataType = null
 
-                  switch ( it.type.binding )
-                  {
-                  case String:
-                    dataType = "xsd:string"
-                    break
-                  case Long:
-                    dataType = "xsd:long"
-                    break
-                  case java.sql.Timestamp:
-                    dataType = "xsd:dateTime"
-                    break
-                  case Double:
-                    dataType = "xsd:double"
-                    break
-                  case Integer:
-                    dataType = "xsd:integer"
-                    break
-                  case Boolean:
-                    dataType = "xsd:boolean"
-                    break
-                  case BigDecimal:
-                    dataType = "xsd:decimal"
-                    break
-                  case com.vividsolutions.jts.geom.Polygon:
-                    dataType = "gml:PolygonPropertyType"
-                    break
-                  case com.vividsolutions.jts.geom.MultiPolygon:
-                    dataType = "gml:MultiPolygonPropertyType"
-                    break
-                  default:
-                    dataType = it.type.binding
+                    switch ( it.type.binding )
+                    {
+                    case String:
+                      dataType = "xsd:string"
+                      break
+                    case Long:
+                      dataType = "xsd:long"
+                      break
+                    case java.sql.Timestamp:
+                      dataType = "xsd:dateTime"
+                      break
+                    case Double:
+                      dataType = "xsd:double"
+                      break
+                    case Integer:
+                      dataType = "xsd:integer"
+                      break
+                    case Boolean:
+                      dataType = "xsd:boolean"
+                      break
+                    case BigDecimal:
+                      dataType = "xsd:decimal"
+                      break
+                    case com.vividsolutions.jts.geom.Polygon:
+                      dataType = "gml:PolygonPropertyType"
+                      break
+                    case com.vividsolutions.jts.geom.MultiPolygon:
+                      dataType = "gml:MultiPolygonPropertyType"
+                      break
+                    default:
+                      dataType = it.type.binding
+                    }
+
+                    xsd.element(maxOccurs: it.maxOccurs, minOccurs: it.minOccurs, name: it.localName, nillable: it.nillable, type: dataType)
                   }
-
-                  xsd.element(maxOccurs: it.maxOccurs, minOccurs: it.minOccurs, name: it.localName, nillable: it.nillable, type: dataType)
                 }
               }
             }
