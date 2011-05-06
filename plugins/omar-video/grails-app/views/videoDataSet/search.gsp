@@ -465,11 +465,8 @@
     omarSearchParams.setProperties(document);
     omarSearchParams.initTime();
     omarSearchParams.time = "";
-    if($( "bboxSearchButton" ).checked)
-    {
-        omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
-    }
-    else
+    omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
+    if(!$( "bboxSearchButton" ).checked)
     {
         omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}"
     }
@@ -483,6 +480,11 @@
     mapWidget.setupSearch();
     omarSearchParams.initTime();
     omarSearchParams.setProperties(document);
+    omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
+    if(!$( "bboxSearchButton" ).checked)
+    {
+        omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}"
+    }
     document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
     document.searchForm.submit();
   }
