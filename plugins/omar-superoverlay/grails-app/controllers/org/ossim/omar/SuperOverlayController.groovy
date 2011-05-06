@@ -57,7 +57,7 @@ class SuperOverlayController implements InitializingBean{
             // we will return the root document if any level of detail param is null
             //
             def isRoot = ( (params.level==null) && (params.row==null) && (params.col==null))
-            if(!outputKmz)
+            if(!tempOutputKmz)
             {
                 if(!isRoot)
                 {
