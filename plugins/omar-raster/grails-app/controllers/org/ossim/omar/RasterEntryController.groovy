@@ -722,7 +722,7 @@ class RasterEntryController implements InitializingBean
       mkp.xmlDeclaration()
       kml("xmlns", "http://earth.google.com/kml/2.1") {
         NetworkLink() {
-          name("OMAR Query Results")
+          name("OMAR Image Query Results")
           Link() {
             href {
               mkp.yieldUnescaped("<![CDATA[${serviceAddress}]]>")
