@@ -222,7 +222,7 @@ class RasterEntry
 
   def getMainFile()
   {
-    def mainFile = rasterDataSet?.fileObjects?.find { it.type == 'main' }
+    def mainFile = null//rasterDataSet?.fileObjects?.find { it.type == 'main' }
 
     if ( !mainFile )
     {
@@ -243,7 +243,6 @@ class RasterEntry
       def result = getFileFromObjects("histogram")?.name
       if(!result)
       {
-          def mainFile = rasterDataSet?.fileObjects?.find { it.type == 'main' }
           result = mainFile?.name
           if(result)
           {
@@ -272,6 +271,7 @@ class RasterEntry
                   }
               }
           }
+          println result
       }
 
       result
