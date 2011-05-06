@@ -635,17 +635,13 @@ class VideoDataSetController implements InitializingBean
         mkp.xmlDeclaration()
         kml("xmlns": "http://earth.google.com/kml/2.1") {
             NetworkLink() {
-              name("Video Query")
-              visibility("1")
-              open("1")
-              description("")
-              refreshVisibility("0")
-              flyToView("0")
-              Link() {
+              name("OMAR Video Query Results")
+                open("1")
+               Link() {
                 href() {
                   mkp.yieldUnescaped("<![CDATA[${serviceAddress}]]>")
                 }
-                refreshMode("onRequest")
+                viewRefreshMode("onRequest")
                 httpQuery("googleClientVersion=[clientVersion];")
               }
             }
