@@ -245,11 +245,11 @@ class KmlQueryController implements InitializingBean
     {
       if ( (caseInsensitiveParams?.googleClientVersion[0] as int) > 4 )
       {
-        caseInsensitiveParams.embed = true
+          params.embed = true
       }
       else
       {
-        params.embed = false
+          params.embed = false
       }
     }
     def queryParams = new org.ossim.omar.VideoDataSetQuery()
