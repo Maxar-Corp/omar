@@ -203,20 +203,18 @@ class KmlQueryController implements InitializingBean
 
   def getVideosKml = {
     def caseInsensitiveParams = new CaseInsensitiveMap(params)
-    def wmsParams = [:]
     def maxVideos = grailsApplication.config.kml.maxVideos
     def defaultVideos = grailsApplication.config.kml.defaultVideos
     // Convert param names to lower case
-    caseInsensitiveParams -= caseInsensitiveParams.findAll { key, value ->
-      (!(key =~ "startDate" || key =~ "endDate") && (value == "null") || value == "")
-    }
-    caseInsensitiveParams?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
 
     //Utility.removeEmptyParams(params)
-
-    if ( caseInsensitiveParams?.bbox )
+      def aoiSet = caseInsensitiveParams?.aoiMinLon &&
+              caseInsensitiveParams?.aoiMinLat &&
+              caseInsensitiveParams?.aoiMaxLon &&
+              caseInsensitiveParams?.aoiMaxLat
+    if ( caseInsensitiveParams?.bbox &&!aoiSet)
     {
-      def bounds = wmsParams.bbox?.split(',')
+      def bounds = caseInsensitiveParams.bbox?.split(',')
       if ( bounds.size() == 4 )
       {
         caseInsensitiveParams?.aoiMinLon = bounds[0]
