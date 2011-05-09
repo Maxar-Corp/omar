@@ -11,75 +11,80 @@
 
 
   <style>
-  body{
-    height:100%;
-    width:100%;
-    text-align:left;
-    margin:0;
-    padding:0;
-    overflow-y:hidden;
-    overflow-x:hidden;
+  body {
+    height: 100%;
+    width: 100%;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
+    overflow-x: hidden;
   }
-  #map{
-    width:100%;
+
+  #map {
+    width: 100%;
   }
-  #content
-  {
-    height:100%;
-    min-height:100%;
-    margin-bottom:-20px;
+
+  #content {
+    height: 100%;
+    min-height: 100%;
+    margin-bottom: -20px;
   }
-  #left
-  {
-    position:absolute;
+
+  #left {
+    position: absolute;
     top: 0;
-    width:200px;
-    height:100%;
-    overflow-x:hidden;
-    overflow-y:auto;
+    width: 200px;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
-  #centerMap
-  {
-    position:absolute;
+
+  #centerMap {
+    position: absolute;
     top: 0px;
-    left:200px;
-    height:100%;
+    left: 200px;
+    height: 100%;
   }
-  #middle
-  {
-    position:relative;
-    top:0px;
-    height:100%;
-    width:100%;
-    margin-top:0px;
-    margin-bottom:0px;
+
+  #middle {
+    position: relative;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+    margin-top: 0px;
+    margin-bottom: 0px;
   }
-  #header{
-    position:relative;
-    font-size:12px;
-    top:0;
-    width:100%;
+
+  #header {
+    position: relative;
+    font-size: 12px;
+    top: 0;
+    width: 100%;
   }
-  #footer{
-    position:absolute;
-    font-size:12px;
-    width:100%;
-    bottom:0px;
-    border-top:0px;
+
+  #footer {
+    position: absolute;
+    font-size: 12px;
+    width: 100%;
+    bottom: 0px;
+    border-top: 0px;
   }
-  .h1
-  {
-   width:100%;
-    height:100%;
+
+  .h1 {
+    width: 100%;
+    height: 100%;
   }
-  .nav{
-      font-size:14px;
+
+  .nav {
+    font-size: 14px;
   }
   </style>
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
 </head>
-<body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}" onload="bodyOnResize(false);${pageProperty(name: 'body.onload')}bodyOnResize();">
+<body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}" onload="bodyOnResize( false );
+${pageProperty(name: 'body.onload')}bodyOnResize();">
 <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
     [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
@@ -87,7 +92,7 @@
     [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
     [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
     [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
-    [plugin:'richui' , dir:'js/yui/container/', file: 'container_core.js'],
+    [plugin:'richui' , dir:'js/yui/container/', file: 'container_core-min.js'],
     [plugin:'richui' , dir:'js/yui/menu/', file: 'menu-min.js'],
     [plugin:'richui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js'],
     [plugin:'richui' , dir:'js/yui/slider', file: 'slider-min.js'],
@@ -119,12 +124,11 @@
           </td>
         </tr>
 
-		    <tr>
-	          <td width=33.3%><div id="ddMouseMapCtr" style="font-size:14px">&nbsp;</div></td>
-	<td width=33.3%><div id="dmsMouseMapCtr" style="font-size:14px">&nbsp;</div></td>
-	<td width=33.3%><div id="mgrsMouseMapCtr" style="font-size:14px">&nbsp;</div></td>
-	        </tr>
-
+        <tr>
+          <td width=33.3%><div id="ddMouseMapCtr" style="font-size:14px">&nbsp;</div></td>
+          <td width=33.3%><div id="dmsMouseMapCtr" style="font-size:14px">&nbsp;</div></td>
+          <td width=33.3%><div id="mgrsMouseMapCtr" style="font-size:14px">&nbsp;</div></td>
+        </tr>
 
       </table>
       <g:pageProperty name="page.middle"/>
@@ -137,35 +141,35 @@
 </div>
 
 <g:javascript>
-    //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
-  bodyOnResize = function(changeMapSizeFlag)
+  //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
+  bodyOnResize = function( changeMapSizeFlag )
   {
-    var Dom        = YAHOO.util.Dom;
-    var width      = Dom.getViewportWidth();
-    var leftDiv    = Dom.get("left");
-    var mapDiv     = Dom.get("map");
-    var topDiv     = Dom.get("top");
-    var toolbarRow = Dom.get("toolbarRow");
-    var footer     = Dom.get("footer");
-    var header     = Dom.get("header");
-    var middleDiv  = Dom.get("middle");
-    var ddMouseMapCtrDiv  = Dom.get("ddMouseMapCtr");
-    var top          = topDiv.offsetTop+topDiv.offsetHeight;
-    var bottom       = footer.offsetTop;
-    var middleHeight = Math.abs(bottom-top);
+    var Dom = YAHOO.util.Dom;
+    var width = Dom.getViewportWidth();
+    var leftDiv = Dom.get( "left" );
+    var mapDiv = Dom.get( "map" );
+    var topDiv = Dom.get( "top" );
+    var toolbarRow = Dom.get( "toolbarRow" );
+    var footer = Dom.get( "footer" );
+    var header = Dom.get( "header" );
+    var middleDiv = Dom.get( "middle" );
+    var ddMouseMapCtrDiv = Dom.get( "ddMouseMapCtr" );
+    var top = topDiv.offsetTop + topDiv.offsetHeight;
+    var bottom = footer.offsetTop;
+    var middleHeight = Math.abs( bottom - top );
     var coordinateHeight = ddMouseMapCtrDiv.offsetHeight;
-    middleDiv.style.height =  middleHeight + "px";
-    mapDiv.style.width     = (width - (leftDiv.offsetLeft+leftDiv.offsetWidth )) +"px";
-    mapDiv.style.height    = (middleHeight - toolbarRow.offsetHeight - coordinateHeight) - 14 +"px";
+    middleDiv.style.height = middleHeight + "px";
+    mapDiv.style.width = (width - (leftDiv.offsetLeft + leftDiv.offsetWidth )) + "px";
+    mapDiv.style.height = (middleHeight - toolbarRow.offsetHeight - coordinateHeight) - 14 + "px";
 
-    if(changeMapSizeFlag)
+    if ( changeMapSizeFlag )
     {
-        changeMapSize();
+      changeMapSize();
     }
-  }.defaults(true)
+  }.defaults( true )
 </g:javascript>
 
-<g:layoutBody />
+<g:layoutBody/>
 
 </body>
 </html>
