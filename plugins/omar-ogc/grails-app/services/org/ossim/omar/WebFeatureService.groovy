@@ -46,7 +46,7 @@ class WebFeatureService
 
     try
     {
-      xml = new StreamingMarkupBuilder().bind {
+      xml = new StreamingMarkupBuilder(encoding: "UTF-8").bind {
 
         mkp.xmlDeclaration()
         mkp.declareNamespace('': "http://www.opengis.net/wfs")
@@ -167,7 +167,6 @@ class WebFeatureService
       def layer = workspace[typeName]
       def query = new Query(typeName, new Filter(filter).filter)
 
-
       query.startIndex = pagination.offset
       query.maxFeatures = (pagination.max <= 100) ? pagination.max : 100
 
@@ -175,6 +174,7 @@ class WebFeatureService
       {
         def filterFactory = CommonFactoryFinder.getFilterFactory(null)
         def order = null
+
         switch ( pagination.order.toString().toLowerCase() )
         {
         case "asc":
@@ -186,11 +186,9 @@ class WebFeatureService
         default:
           order = SortOrder.ASCENDING
         }
+
         query.sortBy = [filterFactory.sort(pagination.sort, order)]
       }
-
-
-
 
       def features = layer.fs.getFeatures(query)
       def fc = WfsFactory.eINSTANCE.createFeatureCollectionType()
@@ -200,6 +198,7 @@ class WebFeatureService
       def e = new Encoder(new WFSConfiguration())
       def uri = (layer.fs.name.namespaceURI == null) ? new URI("http://omar.ossim.org") : new URI(layer.fs.name.namespaceURI)
       String prefix = "omar"
+
       e.namespaces.declarePrefix(prefix, uri.toString())
       e.indenting = true
       e.encode(fc, WFS.FeatureCollection, out)
@@ -225,16 +224,23 @@ class WebFeatureService
     {
       def layer = workspace[typeName]
 
-      xml = new StreamingMarkupBuilder().bind {
+      xml = new StreamingMarkupBuilder(encoding: "UTF-8").bind {
 
         mkp.xmlDeclaration()
-        mkp.declareNamespace('': "http://www.opengis.net/wfs")
-        mkp.declareNamespace('ogc': 'http://www.opengis.net/ogc')
-        mkp.declareNamespace('xsi': "http://www.w3.org/2001/XMLSchema-instance")
-
         mkp.declareNamespace(xsd: "http://www.w3.org/2001/XMLSchema")
+        mkp.declareNamespace(cite: "http://www.opengeospatial.net/cite")
+        mkp.declareNamespace(gml: "http://www.opengis.net/gml")
+        mkp.declareNamespace('it.geosolutions': "http://www.geo-solutions.it")
+        mkp.declareNamespace(nurc: "http://www.nurc.nato.int")
+        mkp.declareNamespace(omar: "http://omar.ossim.org")
+        mkp.declareNamespace('omar-test': "http://omar-test.ossim.org")
+        mkp.declareNamespace(sde: "http://geoserver.sf.net")
+        mkp.declareNamespace(sf: "http://www.openplans.org/spearfish")
+        mkp.declareNamespace(tiger: "http://www.census.gov")
+        mkp.declareNamespace(topp: "http://www.openplans.org/topp")
 
-        xsd.schema {
+        xsd.schema(elementFormDefault: "qualified", targetNamespace: "http://omar.ossim.org") {
+          xsd.import(namespace: "http://www.opengis.net/gml", schemaLocation: "http://schemas.opengis.net/gml/2.1.2/feature.xsd")
           xsd.complexType(name: "${typeName}Type") {
             xsd.complexContent {
               xsd.extension(base: "gml:AbstractFeatureType") {
@@ -257,7 +263,7 @@ class WebFeatureService
                       dataType = "xsd:double"
                       break
                     case Integer:
-                      dataType = "xsd:integer"
+                      dataType = "xsd:int"
                       break
                     case Boolean:
                       dataType = "xsd:boolean"
