@@ -18,6 +18,7 @@
     width: 100%;
     height: 100%;
   }
+
   .message {
     border: 0px solid #b2d1ff;
     color: #006dba;
@@ -58,16 +59,19 @@
     padding-top: 0.5em;
     list-style: none;
   }
-   #homeMenu{
-   background: url( ../images/skin/house.png )  left no-repeat;
-  	z-index: 99999;
+
+  #homeMenu {
+    background: url(../images/skin/house.png) left no-repeat;
+    z-index: 99999;
   }
-  #exportMenu, #viewMenu{
-  	z-index: 99999;
+
+  #exportMenu, #viewMenu {
+    z-index: 99999;
   }
-  #slider-brightness-bg, #slider-contrast-bg{
-    width:120px;
-    background:url(${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
+
+  #slider-brightness-bg, #slider-contrast-bg {
+    width: 120px;
+    background: url(${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
   }
   </style>
 </head>
@@ -79,184 +83,183 @@
  ]}"/>
 
 <content tag="top">
-    <g:form name="wcsForm" method="POST"/>
-    <g:form name="wmsFormId" method="POST" />
+  <g:form name="wcsForm" method="POST"/>
+  <g:form name="wmsFormId" method="POST"/>
 
-	<div id="rasterMenu" class="yuimenubar yuimenubarnav">
-		<div class="bd">
-			<ul class="first-of-type">
-				
-				<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
-				</li>
-				
-				<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
-					<div id="exportMenu" class="yuimenu">
-						<div class="bd">
-							<ul>
-								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.indexId).join(',')])}" title="Show OGC WMS Capabilities">OGC WMS Capabilities</a></li>
-								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getKML('${(rasterEntries*.indexId).join(',')}')" title="Export KML">KML</a></li>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getKmlSuperOverlay()" title="Export Image as Super Overlay">KML Super Overlay</a></li>
-							</ul>
-							<ul>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'image/jpeg', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export JPEG">JPEG</a></li>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'image/png', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export PNG">PNG</a></li>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'png_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export PNG">PNG 8-Bit</a></li>
-								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export GeoTIFF">GeoTIFF</a></li>
-								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export GeoTIFF 8-Bit">GeoTIFF 8-Bit</a></li>
-								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo JPEG 2000">Geo JPEG 2000</a></li>
-								<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo JPEG 2000 8-Bit">Geo JPEG 2000 8-Bit</a></li>
-							</ul>
-                            <ul>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/png', 'transparent':'false','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with PNG chip">KMZ PNG</a></li>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/png', 'transparent':'true','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with PNG chip and transparent">KMZ PNG Transparent</a></li>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/jpeg', 'transparent':'false','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with JPEG chip">KMZ JPEG</a></li>
-                            </ul>
-						</div>
-					</div>
-				</li>
-				
-				<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
-					<div id="viewMenu" class="yuimenu">
-						<div class="bd">
-                            <ul>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToImageSpace();" title="Image Space Viewer">Image Space</a></li>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'multiLayer', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a></li>
-                            </ul>
-                            <ul>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "index", params: [layers: (rasterEntries*.indexId).join(',')])}" title="Reset the view">Reset</a></li>
-                            </ul>
-						</div>
-					</div>
-				</li>
-				
-			</ul>
-		</div>
-	</div>
-    <label>${(rasterEntries?.filename).join(",")}</label>
-    <g:if test='${flash.message}'>
-      <label class='message'>${flash.message}</label>
-    </g:if>
+  <div id="rasterMenu" class="yuimenubar yuimenubarnav">
+    <div class="bd">
+      <ul class="first-of-type">
+
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
+        </li>
+
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
+          <div id="exportMenu" class="yuimenu">
+            <div class="bd">
+              <ul>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.indexId).join(',')])}" title="Show OGC WMS Capabilities">OGC WMS Capabilities</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getKML('${(rasterEntries*.indexId).join(',')}')" title="Export KML">KML</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getKmlSuperOverlay()" title="Export Image as Super Overlay">KML Super Overlay</a></li>
+              </ul>
+              <ul>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'image/jpeg', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export JPEG">JPEG</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'image/png', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export PNG">PNG</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'png_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export PNG">PNG 8-Bit</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export GeoTIFF">GeoTIFF</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export GeoTIFF 8-Bit">GeoTIFF 8-Bit</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo JPEG 2000">Geo JPEG 2000</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo JPEG 2000 8-Bit">Geo JPEG 2000 8-Bit</a></li>
+              </ul>
+              <ul>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/png', 'transparent':'false','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with PNG chip">KMZ PNG</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/png', 'transparent':'true','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with PNG chip and transparent">KMZ PNG Transparent</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getLocalKmz({'format':'image/jpeg', 'transparent':'false','layers':'${(rasterEntries*.indexId).join(',')}'})" title="Export to a local KMZ with JPEG chip">KMZ JPEG</a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
+          <div id="viewMenu" class="yuimenu">
+            <div class="bd">
+              <ul>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToImageSpace();" title="Image Space Viewer">Image Space</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'multiLayer', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a></li>
+              </ul>
+              <ul>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "index", params: [layers: (rasterEntries*.indexId).join(',')])}" title="Reset the view">Reset</a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+  <label>${(rasterEntries?.filename).join(",")}</label>
+  <g:if test='${flash.message}'>
+    <label class='message'>${flash.message}</label>
+  </g:if>
 </content>
 
 <content tag="left">
-	
-	<div class="niceBox">
-		<div class="niceBoxHd">Map Center:</div>
-		<div class="niceBoxBody">
-			<ol>
-				<li>DD:</li>
-				<li><g:textField name="ddMapCtr" id="ddMapCtr" value="" onChange="setMapCtr('dd', this.value)" size="28"
-					title="Enter decimal degree coordinates and click off the text field to re-center the map. Example: 25.77, -80.18" /></li>
-			</ol>
-			<ol>
-				<li>DMS:</li>
-				<li><g:textField name="dmsMapCtr" id="dmsMapCtr" value="" onChange="setMapCtr('dms', this.value)" size="28"
-					title="Enter degree minute seconds coordinates and click off the text field to re-center the map. Example: 25°46'20.66'' N, 80°11'23.64'' W" /></li>
-			</ol>      
-			<ol>
-				<li>MGRS:</li>
-				<li><g:textField name="centerMgrs" id="centerMgrs" value="" onChange="setMapCtr('mgrs', this.value)" size="28"
-					title="Enter mgrs coordinate and click off the text field to re-center the map. Example: 17RNJ8123050729 or 17 RNJ 81230 50729" /></li>
-			</ol>
-            <div align="center">
-                <button id="applyCenterButton" type="button" onclick="">Apply</button>
-                <button id="resetCenterButton" type="button" onclick="javascript:resetMapCenter()" title="Resets the view to the center of the image but keeps the current zoom level">Reset</button>
-            </div>
-		</div>
-	</div>
-	
 
-	<input type="hidden" name="request" value=""/>
-	<input type="hidden" name="layers" value=""/>
-	<input type="hidden" name="bbox" value=""/>
-	<input type="hidden" id="contrast" name="contrast" value="${params.contrast?:''}"/>
-	<input type="hidden" id="brightness" name="brightness" value="${params.brightness?:''}"/>
-
-	<div class="niceBox">
-		<div class="niceBoxHd">Image Adjustments:</div>
-		<div class="niceBoxBody">
-			<ol>
-				<li>Interpolation:</li>
-				<li>
-					<g:select id="interpolation" name="interpolation" value="${params.interpolation?:bilinear}" from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}" onChange="chgInterpolation()"/>
-				</li>
-				<hr/>
-				<label>Brightness: <input type="text"  readonly="true" id="brightnessTextField" size="3" maxlength="5" value=""></label>
-
-				<li>
-					<div id="slider-brightness-bg" class="yui-h-slider" tabindex="-1" hidefocus="false"> 
-		    			<div id="slider-brightness-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'thumb-n.gif')}"></div> 
-					</div> 
-				</li>
-				<label>Contrast: <input type="text"  readonly="true"  id="contrastTextField" size="3" maxlength="5" value=""></label>
-				<li>
-					<div id="slider-contrast-bg" class="yui-h-slider" tabindex="-1" hidefocus="false"> 
-		    			<div id="slider-contrast-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'thumb-n.gif')}"></div> 
-					</div> 
-				</li>
-                <div align="center">
-                    <button id="brightnessContrastReset" type="button" onclick="javascript:resetBrightnessContrast()">Reset</button>
-
-                </div>
-				<hr/>
-                <li>Sharpen:</li>
-                <li>
-                  <g:select id="sharpen_mode" name="sharpen_mode" value="${params.sharpen_mode?:'none'}" from="${['none', 'light', 'heavy']}" onChange="mergeNewParams()"/>
-                </li>
-                <li>Dynamic Range Adjustment:</li>
-                <li>
-					<g:select id="stretch_mode" name="stretch_mode" value="${params.stretch_mode?:'linear_auto_min_max'}" 
-					        from="${[[name: 'Automatic', value: 'linear_auto_min_max'],[name: '1st Std', value: 'linear_1std_from_mean'],[name: '2nd Std', value: 'linear_2std_from_mean'],[name: '3rd Std', value: 'linear_3std_from_mean'],[name: 'No Adjustment', value: 'none']]}"
-					        optionValue="name" optionKey="value"
-					        onChange="mergeNewParams()"/>
-					</li>
-				<li>Region:</li>
-                <li>
-                  <g:select id="stretch_mode_region" name="stretch_mode_region" value="${params.stretch_mode_region?:'global'}" from="${['global', 'viewport']}" onChange="mergeNewParams()" />
-                </li>
-
-                <g:if test="${rasterEntries[0]?.numberOfBands == 1}">
-                  <li>Band:</li>
-                  <li><g:select id="bands" name="bands" value="${params.bands?:'0'}" from="${['0']}" onChange="mergeNewParams()" /> </li>
-                </g:if>
-                <g:if test="${rasterEntries[0]?.numberOfBands == 2}">
-                  <li>Bands:</li>
-                  <li><g:select id="bands" name="bands" value="${params.bands?:'0,1'}" from="${['0,1','1,0','0','1']}" onChange="mergeNewParams()" /></li>
-                </g:if>
-                <g:if test="${rasterEntries[0]?.numberOfBands >= 3}">
-                  <li>Bands:</li>
-                  <li><g:select id="bands" name="bands" value="${params.bands?:'0,1,2'}" from="${['0,1,2','2,1,0','0','1','2']}" onChange="mergeNewParams()" /></li>
-                </g:if>
-
-          		<li>Orthorectification:</li>
-          		<li>
-            <g:select id="quicklook" name="quicklook"
-                from="${[[name: 'Rigorous', value: 'false'],[name: 'Simple', value: 'true']]}"
-                optionValue="name" optionKey="value"
-                onChange="mergeNewParams()"/>
-          </li>
-        </ol>
+  <div class="niceBox">
+    <div class="niceBoxHd">Map Center:</div>
+    <div class="niceBoxBody">
+      <ol>
+        <li>DD:</li>
+        <li><g:textField name="ddMapCtr" id="ddMapCtr" value="" onChange="setMapCtr('dd', this.value)" size="28"
+            title="Enter decimal degree coordinates and click off the text field to re-center the map. Example: 25.77, -80.18"/></li>
+      </ol>
+      <ol>
+        <li>DMS:</li>
+        <li><g:textField name="dmsMapCtr" id="dmsMapCtr" value="" onChange="setMapCtr('dms', this.value)" size="28"
+            title="Enter degree minute seconds coordinates and click off the text field to re-center the map. Example: 25°46'20.66'' N, 80°11'23.64'' W"/></li>
+      </ol>
+      <ol>
+        <li>MGRS:</li>
+        <li><g:textField name="centerMgrs" id="centerMgrs" value="" onChange="setMapCtr('mgrs', this.value)" size="28"
+            title="Enter mgrs coordinate and click off the text field to re-center the map. Example: 17RNJ8123050729 or 17 RNJ 81230 50729"/></li>
+      </ol>
+      <div align="center">
+        <button id="applyCenterButton" type="button" onclick="">Apply</button>
+        <button id="resetCenterButton" type="button" onclick="javascript:resetMapCenter()" title="Resets the view to the center of the image but keeps the current zoom level">Reset</button>
       </div>
     </div>
+  </div>
+
+
+  <input type="hidden" name="request" value=""/>
+  <input type="hidden" name="layers" value=""/>
+  <input type="hidden" name="bbox" value=""/>
+  <input type="hidden" id="contrast" name="contrast" value="${params.contrast ?: ''}"/>
+  <input type="hidden" id="brightness" name="brightness" value="${params.brightness ?: ''}"/>
+
+  <div class="niceBox">
+    <div class="niceBoxHd">Image Adjustments:</div>
+    <div class="niceBoxBody">
+      <ol>
+        <li>Interpolation:</li>
+        <li>
+          <g:select id="interpolation" name="interpolation" value="${params.interpolation?:bilinear}" from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}" onChange="chgInterpolation()"/>
+        </li>
+        <hr/>
+        <label>Brightness: <input type="text" readonly="true" id="brightnessTextField" size="3" maxlength="5" value=""></label>
+
+        <li>
+          <div id="slider-brightness-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
+            <div id="slider-brightness-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
+          </div>
+        </li>
+        <label>Contrast: <input type="text" readonly="true" id="contrastTextField" size="3" maxlength="5" value=""></label>
+        <li>
+          <div id="slider-contrast-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
+            <div id="slider-contrast-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
+          </div>
+        </li>
+        <div align="center">
+          <button id="brightnessContrastReset" type="button" onclick="javascript:resetBrightnessContrast()">Reset</button>
+
+        </div>
+        <hr/>
+        <li>Sharpen:</li>
+        <li>
+          <g:select id="sharpen_mode" name="sharpen_mode" value="${params.sharpen_mode?:'none'}" from="${['none', 'light', 'heavy']}" onChange="mergeNewParams()"/>
+        </li>
+        <li>Dynamic Range Adjustment:</li>
+        <li>
+          <g:select id="stretch_mode" name="stretch_mode" value="${params.stretch_mode?:'linear_auto_min_max'}"
+              from="${[[name: 'Automatic', value: 'linear_auto_min_max'],[name: '1st Std', value: 'linear_1std_from_mean'],[name: '2nd Std', value: 'linear_2std_from_mean'],[name: '3rd Std', value: 'linear_3std_from_mean'],[name: 'No Adjustment', value: 'none']]}"
+              optionValue="name" optionKey="value"
+              onChange="mergeNewParams()"/>
+        </li>
+        <li>Region:</li>
+        <li>
+          <g:select id="stretch_mode_region" name="stretch_mode_region" value="${params.stretch_mode_region?:'global'}" from="${['global', 'viewport']}" onChange="mergeNewParams()"/>
+        </li>
+
+        <g:if test="${rasterEntries[0]?.numberOfBands == 1}">
+          <li>Band:</li>
+          <li><g:select id="bands" name="bands" value="${params.bands?:'0'}" from="${['0']}" onChange="mergeNewParams()"/></li>
+        </g:if>
+        <g:if test="${rasterEntries[0]?.numberOfBands == 2}">
+          <li>Bands:</li>
+          <li><g:select id="bands" name="bands" value="${params.bands?:'0,1'}" from="${['0,1','1,0','0','1']}" onChange="mergeNewParams()"/></li>
+        </g:if>
+        <g:if test="${rasterEntries[0]?.numberOfBands >= 3}">
+          <li>Bands:</li>
+          <li><g:select id="bands" name="bands" value="${params.bands?:'0,1,2'}" from="${['0,1,2','2,1,0','0','1','2']}" onChange="mergeNewParams()"/></li>
+        </g:if>
+
+        <li>Orthorectification:</li>
+        <li>
+          <g:select id="quicklook" name="quicklook"
+              from="${[[name: 'Rigorous', value: 'false'],[name: 'Simple', value: 'true']]}"
+              optionValue="name" optionKey="value"
+              onChange="mergeNewParams()"/>
+        </li>
+      </ol>
+    </div>
+  </div>
 
 
 
 
   <div class="niceBox">
-	<div class="niceBoxHd">Map Measurement Tool:</div>
-	<div class="niceBoxBody">
-		<ul>
-			<li>Measurement Units:</li>
-			<li>Not certified for targeting.</li>
-			<li><g:select name="measurementUnits" from="${['kilometers', 'meters', 'feet', 'miles', 'yards']}"
-				title="Select a unit of measuremen and use the path and polygon measurment tools in the map toolbar." onChange="measureUnitChanged(this.value)"/></li>
-			<div id="pathMeasurement"></div>
-			<div id="polygonMeasurement"></div>
-		</ul>
-	</div>
+    <div class="niceBoxHd">Map Measurement Tool:</div>
+    <div class="niceBoxBody">
+      <ul>
+        <li>Measurement Units:</li>
+        <li>Not certified for targeting.</li>
+        <li><g:select name="measurementUnits" from="${['kilometers', 'meters', 'feet', 'miles', 'yards']}"
+            title="Select a unit of measuremen and use the path and polygon measurment tools in the map toolbar." onChange="measureUnitChanged(this.value)"/></li>
+        <div id="pathMeasurement"></div>
+        <div id="polygonMeasurement"></div>
+      </ul>
+    </div>
   </div>
 
-   
 </content>
 
 <content tag="middle">
@@ -271,10 +274,10 @@ var select;
 var wcsParams = new OmarWcsParams();
 
 //var fullResScale = parseFloat("${fullResScale}");
-var left = parseFloat("${left}");
-var bottom = parseFloat("${bottom}");
-var right = parseFloat("${right}");
-var top = parseFloat("${top}");
+var minLon = parseFloat("${left}");
+var minLat = parseFloat("${bottom}");
+var maxLon = parseFloat("${right}");
+var maxLat = parseFloat("${top}");
 var largestScale = parseFloat("${largestScale}");
 var smallestScale = parseFloat("${smallestScale}");
 
@@ -303,7 +306,7 @@ function resetBrightnessContrast()
 }
 function resetMapCenter()
 {
-	bounds = new OpenLayers.Bounds(left, bottom, right, top);
+	bounds = new OpenLayers.Bounds(minLon, minLat, maxLon, maxLat);
 	zoom = mapWidget.getMap().getZoom();
 	mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
 
@@ -321,16 +324,16 @@ function init()
 // we need to pass a json string or object and save to the session
 // and reload here
     wcsParams.setProperties({
-        brightness:"${params.brightness?:0}",
-        contrast:"${params.contrast?:1.0}",
-        sharpen_mode:"${params.sharpen_mode?:'none'}",
-        stretch_mode:"${params.stretch_mode?:'linear_auto_min_max'}",
-        stretch_mode_region: "${params.stretch_mode_region?:'global'}",
-        interpolation: "${params.interpolation?:'bilinear'}",
-        srs: "${params.srs?:'EPSG:4326'}",
-        crs: "${params.crs?:'EPSG:4326'}",
+        brightness:"${params.brightness ?: 0}",
+        contrast:"${params.contrast ?: 1.0}",
+        sharpen_mode:"${params.sharpen_mode ?: 'none'}",
+        stretch_mode:"${params.stretch_mode ?: 'linear_auto_min_max'}",
+        stretch_mode_region: "${params.stretch_mode_region ?: 'global'}",
+        interpolation: "${params.interpolation ?: 'bilinear'}",
+        srs: "${params.srs ?: 'EPSG:4326'}",
+        crs: "${params.crs ?: 'EPSG:4326'}",
         bands:$("bands").value,
-        quicklook: "${params.quicklook?:'false'}"
+        quicklook: "${params.quicklook ?: 'false'}"
     });
     if(${rasterEntries?.numberOfBands.get(0) >= 3})
     {
@@ -382,9 +385,9 @@ function init()
     	$("brightnessTextField").value = this.getRealValue();
     });
     	
-	brightnessSlider.setRealValue(${params.brightness?:0});
-	contrastSlider.setRealValue(${params.contrast?:1});
-	var bounds = new OpenLayers.Bounds(left, bottom, right, top);
+	brightnessSlider.setRealValue(${params.brightness ?: 0});
+	contrastSlider.setRealValue(${params.contrast ?: 1});
+	var bounds = new OpenLayers.Bounds(minLon, minLat, maxLon, maxLat);
 	
 	mapWidget = new MapWidget();
 	mapWidget.setupMapWidgetWithOptions("map", {controls: [], maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale});
@@ -406,7 +409,8 @@ function init()
 	mapWidget.getMap().events.register("moveend", map, this.setMapCtrTxt);
 	
   	var zoom = mapWidget.getMap().getZoomForExtent(bounds, true);
-	mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
+
+    mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
 }
 
 function setMapCtrTxt()
@@ -556,16 +560,20 @@ function changeBandsOpts()
 function setMouseMapCtrTxt(evt)
 {
 	var center = mapWidget.getMap().getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x , evt.xy.y));
-	var fixed = 6;
-	
-	var ddMouseCtr = document.getElementById("ddMouseMapCtr");
-	ddMouseMapCtr.innerHTML = "DD: " + center.lat.toFixed(fixed) + ", " + center.lon.toFixed(fixed);
 
-	var dmsMouseCtr = document.getElementById("dmsMouseMapCtr");
-	dmsMouseMapCtr.innerHTML = "DMS: " + coordConvert.ddToDms(center.lat, "lat") + ", " + coordConvert.ddToDms(center.lon, "lon");
+	if ( center )
+	{
+    var fixed = 6;
 
-	var mgrsMouseCtr = document.getElementById("mgrsMouseMapCtr");
-	mgrsMouseMapCtr.innerHTML = "MGRS: " + coordConvert.ddToMgrs(center.lat, center.lon);
+    var ddMouseCtr = document.getElementById("ddMouseMapCtr");
+    ddMouseMapCtr.innerHTML = "DD: " + center.lat.toFixed(fixed) + ", " + center.lon.toFixed(fixed);
+
+    var dmsMouseCtr = document.getElementById("dmsMouseMapCtr");
+    dmsMouseMapCtr.innerHTML = "DMS: " + coordConvert.ddToDms(center.lat, "lat") + ", " + coordConvert.ddToDms(center.lon, "lon");
+
+    var mgrsMouseCtr = document.getElementById("mgrsMouseMapCtr");
+    mgrsMouseMapCtr.innerHTML = "MGRS: " + coordConvert.ddToMgrs(center.lat, center.lon);
+	}
 }
 
 function measureUnitChanged(unit)
@@ -688,14 +696,14 @@ function setupLayers()
 	            quicklook: true, transitionEffect: "resize", displayOutsideMaxExtent:false})];
 	
 	mapWidget.getMap().addLayers(rasterLayers);
-	
-	<g:each in="${kmlOverlays}" var="kmlOverlay" status="i">
-	if(!kmlLayers)
-	{
-		kmlLayers = new Array();
-   	}
-	
-	kmlLayer = new OpenLayers.Layer.Vector("${kmlOverlay.name}", {
+
+  <g:each in="${kmlOverlays}" var="kmlOverlay" status="i">
+    if(!kmlLayers)
+    {
+      kmlLayers = new Array();
+       }
+
+    kmlLayer = new OpenLayers.Layer.Vector("${kmlOverlay.name}", {
 		visibility: ${grailsApplication.config.views.mapView.defaultOverlayVisiblity},
 		projection: mapWidget.getMap().displayProjection,
 		strategies: [new OpenLayers.Strategy.Fixed()],
@@ -716,38 +724,38 @@ function setupLayers()
 		select = new OpenLayers.Control.SelectFeature(kmlLayers);
   		mapWidget.getMap().addControl(select);
   		select.activate();
-	</g:each>
-}
+  </g:each>
+  }
 
-function onPopupClose(evt)
-{
-	select.unselectAll();
-}
+ function onPopupClose(evt)
+ {
+   select.unselectAll();
+ }
 
 
-function toUrlParamString(params)
-{
+ function toUrlParamString(params)
+ {
 
-	 var urlParams = "";
-	 for (var key in params) 
-	 { 
-	    if(urlParams == "")
-	    {
-	   		urlParams = key + "=" + params[key];
-	    }
-	    else
-	    {
-	    	urlParams = urlParams + "&" + key + "=" + params[key]
-	    }
-	 }
-	 return urlParams
-}
+    var urlParams = "";
+    for (var key in params)
+    {
+       if(urlParams == "")
+       {
+          urlParams = key + "=" + params[key];
+       }
+       else
+       {
+         urlParams = urlParams + "&" + key + "=" + params[key]
+       }
+    }
+    return urlParams
+ }
 
-function onFeatureSelect(event)
-{
-	var feature = event.feature;
-	
-	var content = "<h2>"+feature.attributes.name + "</h2>" + feature.attributes.description;
+ function onFeatureSelect(event)
+ {
+   var feature = event.feature;
+
+   var content = "<h2>"+feature.attributes.name + "</h2>" + feature.attributes.description;
 	if (content.search("<script") != -1)
 	{
 		content = "Content contained Javascript! Escaped content below.<br />" + content.replace(/</g, "&lt;");

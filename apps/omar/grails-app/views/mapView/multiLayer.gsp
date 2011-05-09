@@ -28,12 +28,13 @@
     border: 1px solid black;
   }
 
-   #homeMenu{
-   background: url( ../images/skin/house.png )  left no-repeat;
-  	z-index: 99999;
+  #homeMenu {
+    background: url(../images/skin/house.png) left no-repeat;
+    z-index: 99999;
   }
-  #exportMenu, #viewMenu{
-  	z-index: 99999;
+
+  #exportMenu, #viewMenu {
+    z-index: 99999;
   }
 
   div.olControlMousePosition {
@@ -75,6 +76,64 @@
 
 </head>
 <body class="yui-skin-sam" onload="init();">
+<content tag="top">
+  <form id="wcsForm" method="POST">
+  </form>
+  <div id="rasterMenu" class="yuimenubar yuimenubarnav">
+    <div class="bd">
+      <ul class="first-of-type">
+
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
+        </li>
+
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
+          <div id="exportMenu" class="yuimenu">
+            <div class="bd">
+              <ul>
+
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.id).join(',')])}" title="Show OGC WMS Capabilities">OGC WMS Capabilities</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: (rasterEntries*.id).join(',')])}" title="Export KML">KML</a></li>
+
+              </ul>
+              <ul>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'image/jpeg', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Jpeg">Jpeg</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geotiff">Geotiff</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geotiff 8-Bit">Geotiff 8-Bit</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo Jpeg 2000">Geo Jpeg 2000</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo Jpeg 2000 8-Bit">Geo Jpeg 2000 8-Bit</a></li>
+              </ul>
+            </div>
+          </div>
+        </li>
+
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
+          <div id="viewMenu" class="yuimenu">
+            <div class="bd">
+              <ul>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'index', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Ground Space Viewer">Ground Space</a></li>
+                <g:if test="${rasterEntries?.size() == 1}">
+                  <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'imageSpace', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Image Space Viewer">Image Space</a></li>
+                </g:if>
+
+              </ul>
+            </div>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+
+</content>
+<content tag="center">
+  <%--
+  <h1 id="mapTitle">${rasterEntries*.mainFile.name}</h1>
+  <g:if test="${flash.message}">
+    <div class="message">${flash.message}</div>
+  </g:if>
+  --%>
+</content>
+
 <omar:bundle contentType="javascript" files="${[
      [plugin: 'omar-core', dir:'js', file: 'coordinateConversion.js'],
      [plugin: 'omar-core', dir:'js', file: 'mapwidget.js']
@@ -82,10 +141,10 @@
 
 <g:javascript>
   var mapWidget = new MapWidget();
-    var left = parseFloat("${left}");
-    var bottom = parseFloat("${bottom}");
-    var right = parseFloat("${right}");
-    var top = parseFloat("${top}");
+    var minLon = parseFloat("${left}");
+    var minLat = parseFloat("${bottom}");
+    var maxLon = parseFloat("${right}");
+    var maxLat = parseFloat("${top}");
     var largestScale = parseFloat("${largestScale}");
     var smallestScale = parseFloat("${smallestScale}");
     var wcsParams = new OmarWcsParams();
@@ -137,7 +196,7 @@
     var format = "${format}";
     var transparent = true;
 
-	var bounds = new OpenLayers.Bounds(left, bottom, right, top);
+	var bounds = new OpenLayers.Bounds(minLon, minLat, maxLon, maxLat);
 
 	mapWidget = new MapWidget();
 	mapWidget.setupMapWidgetWithOptions("map", {controls: [],  displayOutsideMaxExtent:true, maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale});
@@ -146,31 +205,31 @@
     //map = new OpenLayers.Map( "map", {controls: [], maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale} );
     setupBaseLayer( );
     var layers = [
-    <g:each var="rasterEntry" in="${rasterEntries}" status="i">
+  <g:each var="rasterEntry" in="${rasterEntries}" status="i">
 
-      <g:if test="${i > 0}">,</g:if>
+    <g:if test="${i > 0}">,</g:if>
 
-      new OpenLayers.Layer.WMS(
-      "Raster ${rasterEntry.id}",
+    new OpenLayers.Layer.WMS(
+    "Raster ${rasterEntry.id}",
                 "${createLink(controller: 'ogc', action: 'wms')}",
         { layers: "${rasterEntry.indexId}", displayOutsideMaxExtent:true, format: format, stretch_mode_region: "global", stretch_mode:"linear_auto_min_max", transparent:transparent  },
         {isBaseLayer: false,buffer:0, singleTile:true, ratio:1.0, transitionEffect: "resize"}
                 )
-      <g:if test="${kmlOverlays}">
+    <g:if test="${kmlOverlays}">
 
-        , new OpenLayers.Layer.Vector( "KML", {
-     projection: mapWidget.getMap().displayProjection,
-     strategies: [new OpenLayers.Strategy.Fixed( )],
-     protocol: new OpenLayers.Protocol.HTTP( {
-       url: "${createLink(controller: 'rasterEntry', action: 'getKML', params: [rasterEntryIds: rasterEntry.indexId])}",
+      , new OpenLayers.Layer.Vector( "KML", {
+   projection: mapWidget.getMap().displayProjection,
+   strategies: [new OpenLayers.Strategy.Fixed( )],
+   protocol: new OpenLayers.Protocol.HTTP( {
+     url: "${createLink(controller: 'rasterEntry', action: 'getKML', params: [rasterEntryIds: rasterEntry.indexId])}",
             format: new OpenLayers.Format.KML( {
               extractStyles: true,
               extractAttributes: true
             } )
           } )
         } )
-      </g:if>
-    </g:each>
+    </g:if>
+  </g:each>
   ];
     mapWidget.getMap().addLayers( layers );
     mapWidget.setupAoiLayer();
@@ -210,69 +269,7 @@ function getProjectedImage(params)
     }
 }
 
-
 </g:javascript>
-<content tag="top">
-    <form id="wcsForm" method="POST">
-    </form>
-<div id="rasterMenu" class="yuimenubar yuimenubarnav">
-	<div class="bd">
-		<ul class="first-of-type">
-			
-			<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
-			</li>
-			
-			<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
-				<div id="exportMenu" class="yuimenu">
-					<div class="bd">
-						<ul>
-						
-					
-							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.id).join(',')])}" title="Show OGC WMS Capabilities">OGC WMS Capabilities</a></li>
-							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: (rasterEntries*.id).join(',')])}" title="Export KML">KML</a></li>
-									
-						</ul>
-                        <ul>
-                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'image/jpeg', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Jpeg">Jpeg</a></li>
-                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geotiff">Geotiff</a></li>
-                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geotiff_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geotiff 8-Bit">Geotiff 8-Bit</a></li>
-                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo Jpeg 2000">Geo Jpeg 2000</a></li>
-                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:getProjectedImage({'format':'geojp2_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})" title="Export Geo Jpeg 2000 8-Bit">Geo Jpeg 2000 8-Bit</a></li>
-                        </ul>
-					</div>
-				</div>
-			</li>
-			
-			<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
-				<div id="viewMenu" class="yuimenu">
-					<div class="bd">
-						<ul>
-							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'index', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Ground Space Viewer">Ground Space</a></li>
-						<g:if test="${rasterEntries?.size() == 1}">
-							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'imageSpace', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Image Space Viewer">Image Space</a></li>
-							</g:if>
-						
-						</ul>
-					</div>
-				</div>
-			</li>
-		
-		</ul>
-	</div>
-</div>
-
-
- 
-</content>
-<content tag="center">
-  <%--
-  <h1 id="mapTitle">${rasterEntries*.mainFile.name}</h1>
-  <g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
-  </g:if>
-  --%>
-</content>
-
 
 </body>
 </html>

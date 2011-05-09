@@ -136,9 +136,6 @@
   <omar:securityClassificationBanner/>
 </div>
 
-
-<g:layoutBody />
-
 <g:javascript>
     //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
   bodyOnResize = function(changeMapSizeFlag)
@@ -167,5 +164,8 @@
     }
   }.defaults(true)
 </g:javascript>
+
+<g:layoutBody />
+
 </body>
 </html>
