@@ -2,13 +2,10 @@
 <head>
   <omar:bundle contentType="css" files="${[
       [dir: 'css', file: 'main.css'],
-      [dir: 'css', file: 'omar-2.0.css']
+      [dir: 'css', file: 'omar-2.0.css'],
+      [plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css'],
+      [plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css']
   ]}"/>
-
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'slider.css')}"/>
-
 
   <style>
   body {
