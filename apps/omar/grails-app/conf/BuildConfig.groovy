@@ -59,5 +59,6 @@ grails.plugin.location.'omar-security-spring' = "../../plugins/omar-security-spr
 grails.plugin.location.'omar-rss' = "../../plugins/omar-rss"
 //grails.plugin.location.'omar-scheduler' = "../../plugins/omar-scheduler"
 grails.plugin.location.'omar-superoverlay' = "../../plugins/omar-superoverlay"
+grails.plugin.location.'omar-rss' = "../../plugins/omar-rss"
 //grails.plugin.location.'omar-mobile'="../../plugins/omar-mobile"
 
