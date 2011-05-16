@@ -12,12 +12,13 @@ class WebCoverageService implements InitializingBean{
     def grailsApplication
     def temporaryDirectory
 	def rasterChainService
-    def getCoverage(def wcsRequest) {
+    def getCoverage(def rasterEntries, def wcsCommand) {
 
-        def coverageList = wcsRequest?.coverage?.split(",")
+        def coverageList = wcsCommand?.coverage?.split(",")
         def srcChains    = []
-        def wmsQuery  = new WMSQuery()
-        def params    = wcsRequest.toMap();
+        //def wmsQuery  = new WMSQuery()
+        /*
+        def params    = wcsCommand.toMap();
         params.layers = params.coverage;
         if(params.layers&&params.layers.toLowerCase() == "raster_entry")
         {
@@ -37,17 +38,18 @@ class WebCoverageService implements InitializingBean{
             wmsQuery.sort  = wmsQuery.sort?:"acquisitionDate"
             wmsQuery.order = wmsQuery.order?:"desc"
         }
-        def crs = wcsRequest?.response_crs?wcsRequest?.response_crs:wcsRequest?.crs
-        def requestFormat = wcsRequest?.format?.toLowerCase()
-        def sharpenWidth = wcsRequest?.sharpen_width ?: null
-        def sharpenSigma = wcsRequest?.sharpen_sigma ?: null
-        def stretchMode = wcsRequest?.stretch_mode ? wcsRequest?.stretch_mode.toLowerCase(): null
-        def stretchModeRegion = wcsRequest?.stretch_mode_region ?:null
-        def bands = wcsRequest?.bands ?: ""
-        def bounds = wcsRequest.bounds
+        */
+        def crs = wcsCommand?.response_crs?wcsCommand?.response_crs:wcsCommand?.crs
+        def requestFormat = wcsCommand?.format?.toLowerCase()
+        def sharpenWidth = wcsCommand?.sharpen_width ?: null
+        def sharpenSigma = wcsCommand?.sharpen_sigma ?: null
+        def stretchMode = wcsCommand?.stretch_mode ? wcsCommand?.stretch_mode.toLowerCase(): null
+        def stretchModeRegion = wcsCommand?.stretch_mode_region ?:null
+        def bands = wcsCommand?.bands ?: ""
+        def bounds = wcsCommand.bounds
         def wmsView = new WmsView()
         def defaultOutputName = "coverage"
-		def wcsParams = wcsRequest.toMap()
+		def wcsParams = wcsCommand.toMap()
         if(!wmsView.setProjection(crs))
         {
             log.error("Unsupported projection ${crs}")
@@ -63,12 +65,12 @@ class WebCoverageService implements InitializingBean{
             log.error("Unable to set the dimensions for the view bounds")
             return null
         }
-        def rasterEntries = wmsQuery.getRasterEntriesAsList();
+       // def rasterEntries = wmsQuery.getRasterEntriesAsList();
         def objectPrefixIdx = 0
-        if(rasterEntries)
-        {
-            rasterEntries = rasterEntries?.reverse()
-        }
+//        if(rasterEntries)
+//        {
+//            rasterEntries = rasterEntries?.reverse()
+//        }
         def kwlString = null
         def imageRect = wmsView.getViewImageRect()
         def midPoint  = imageRect.midPoint()
@@ -132,9 +134,9 @@ class WebCoverageService implements InitializingBean{
         else
         {
             kwlString = "type:ossimMemoryImageSource\n"
-            if(params.width&&params.height)
+            if(wcsParams.width&&wcsParams.height)
             {
-                kwlString += "rect:(0,0,${params.width},${params.height},lh)\n"
+                kwlString += "rect:(0,0,${wcsParams.width},${wcsParams.height},lh)\n"
                 kwlString += "scalar_type:ossim_uint8\n"
                 kwlString += "number_bands:1\n"
             }

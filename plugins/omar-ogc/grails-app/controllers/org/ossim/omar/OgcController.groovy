@@ -140,30 +140,59 @@ def authenticateService
       g2d.dispose()
     }
   }
-  def wcs = {
+  def wcs = {WcsCommand cmd ->
       // for now until we can develop a plugin for the WCS
       // we will hardcode the output format test list here
       //
-      def outputFormats = ["jpeg","image/jpeg", "png", "image/png", "png_uint8", "image/tiff", "geotiff", "geotiff_uint8", "geojp2_uint8", "geojp2"]
       def starttime = System.currentTimeMillis()
       def internaltime = starttime
-      def endtime = starttime
-      def wcsRequest = new WCSRequest()
-
-      Utility.simpleCaseInsensitiveBind(wcsRequest, params);
-      try
+      def endtime      = starttime
+      Utility.simpleCaseInsensitiveBind(cmd, params)
+      if(!cmd.validate())
       {
-        switch ( wcsRequest?.request?.toLowerCase() )
-        {
-            case "getcoverage":
-                def format = wcsRequest.format?.toLowerCase()
-                if( format in outputFormats )
-                {
-                    def result = webCoverageService.getCoverage(wcsRequest)
+          HttpStatusMessage statusMessage = new HttpStatusMessage(cmd.createErrorString(),
+                                                                  HttpStatus.BAD_REQUEST)
+          statusMessage.initializeResponse(response)
+          render(cmd.exception + " --- " + statusMessage.message)
+      }
+      else
+      {
+          try
+          {
+            switch ( cmd?.request?.toLowerCase() )
+            {
+                case "getcoverage":
+                    def wmsQuery  = new WMSQuery()
+                    def wcsParams    = cmd.toMap();
+                    wcsParams.layers = params.coverage;
+                    if(wcsParams.layers&&wcsParams.layers.toLowerCase() == "raster_entry")
+                    {
+                        wcsParams.layers = ""
+                    }
+                    // for now I will hard code a max mosaic size
+                    //
+                    def max    = params.max?params.max as Integer:10
+                    if(max > 10) max = 10
+                    Utility.simpleCaseInsensitiveBind(wmsQuery, wcsParams)
+                    wmsQuery.max = max
+
+                    // for now we will sort by the date field if no layers are given
+                    //
+                    if(!wmsQuery.layers)
+                    {
+                        wmsQuery.sort  = wmsQuery.sort?:"acquisitionDate"
+                        wmsQuery.order = wmsQuery.order?:"desc"
+                    }
+                    def rasterEntries = wmsQuery.getRasterEntriesAsList();
+                    if(rasterEntries)
+                    {
+                        rasterEntries = rasterEntries?.reverse()
+                    }
+                    def result = webCoverageService.getCoverage(rasterEntries, cmd)
                     if(result)
                     {
                         def imageFile = result.file
-						def attachment = result.outputName?"filename=${result.outputName}":""
+                        def attachment = result.outputName?"filename=${result.outputName}":""
                         response.setHeader("Content-disposition", "attachment; ${attachment}")
                         response.contentType = result.contentType
                         try {
@@ -178,17 +207,14 @@ def authenticateService
 
                         imageFile.delete()
                     }
-                }
-                else
-                {
-                    // need exception output for OGC standard
-                }
-                break
-        }
-      }
-      catch(Exception e)
-      {
-        log.error(e)
+                    break
+            }
+          }
+          catch(Exception e)
+          {
+            log.error(e)
+          }
+
       }
 
     null
