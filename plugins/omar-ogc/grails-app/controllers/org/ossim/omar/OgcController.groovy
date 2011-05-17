@@ -153,7 +153,8 @@ def authenticateService
           HttpStatusMessage statusMessage = new HttpStatusMessage(cmd.createErrorString(),
                                                                   HttpStatus.BAD_REQUEST)
           statusMessage.initializeResponse(response)
-          render(cmd.exception + " --- " + statusMessage.message)
+          log.error(statusMessage.message)
+          render(statusMessage.message)
       }
       else
       {
@@ -164,6 +165,10 @@ def authenticateService
                 case "getcoverage":
                     def wmsQuery  = new WMSQuery()
                     def wcsParams    = cmd.toMap();
+
+                    // we will use layers for the WMSQuery object is already setup to use
+                    // layers param and there is not much difference for query params
+                    // given WCS or WMS
                     wcsParams.layers = params.coverage;
                     if(wcsParams.layers&&wcsParams.layers.toLowerCase() == "raster_entry")
                     {
@@ -214,10 +219,8 @@ def authenticateService
           {
             log.error(e)
           }
-
       }
-
-    null
+      null
   }
   def wms = {
     def starttime = System.currentTimeMillis()
