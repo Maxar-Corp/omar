@@ -55,7 +55,7 @@ class WcsCommand {
                     def box = val.split(",");
                     if(box.length != 4)
                     {
-                        message = " BBOX must be formatted with 4 parameters separated by commas and matching the form minx,miny,maxx,maxy in \n"
+                        message = "BBOX must be formatted with 4 parameters separated by commas and matching the form minx,miny,maxx,maxy in \n"
                         message += "the units of the crs code"
                     }
                 }
@@ -73,7 +73,7 @@ class WcsCommand {
             {
               if((!val) && ((!obj.resx)&&(!obj.resy)))
               {
-                  message = "WIDTH not specified.  You are required to sepcify WIDTH, HEIGHT pair or RESX, RESY pair"
+                  message = "WIDTH parameter not found.  You are required to specify WIDTH, HEIGHT pair or RESX, RESY pair."
               }
             }
             message
@@ -84,26 +84,18 @@ class WcsCommand {
             {
               if((!val) && ((!obj.resx)&&(!obj.resy)))
               {
-                  message = "HEIGHT not specified.  You are required to sepcify WIDTH, HEIGHT pair or RESX, RESY pair"
+                  message = "HEIGHT parameter not found.  You are required to specify WIDTH, HEIGHT pair or RESX, RESY pair."
               }
             }
             message
         })
-//        depth(validator:{val, obj->
-//            def message = true
-//            if(obj.request?.toLowerCase() == "getcoverage")
-//            {
-//
-//            }
-//            message
-//        })
         resx(validator:{val, obj->
             def message = true
             if(obj.request?.toLowerCase() == "getcoverage")
             {
               if((!val) && ((!obj.width)&&(!obj.height)))
               {
-                  message = "RESX not specified.  You are required to sepcify WIDTH, HEIGHT pair or RESX, RESY pair"
+                  message = "RESX parameter not found.  You are required to specify WIDTH, HEIGHT pair or RESX, RESY pair."
               }
             }
             message
@@ -114,19 +106,11 @@ class WcsCommand {
             {
               if((!val) && ((!obj.width)&&(!obj.height)))
               {
-                  message = "RESY not specified.  You are required to sepcify WIDTH, HEIGHT pair or RESX, RESY pair"
+                  message = "RESY parameter not found.  You are required to specify WIDTH, HEIGHT pair or RESX, RESY pair."
               }
             }
             message
         })
-//        resz(validator:{val, obj->
-//            def message = true
-//            if(obj.request?.toLowerCase() == "getcoverage")
-//            {
-//
-//            }
-//            message
-//        })
         format(validator:{val,obj->
             def message = true
             if(obj.request?.toLowerCase() == "getcoverage")
@@ -137,7 +121,7 @@ class WcsCommand {
                 }
                 else if(!(val.toLowerCase() in  OUTPUT_FORMATS))
                 {
-                    message = "FORMAT ${val} not supported.  Values can only be ${OUTPUT_FORMATS.join(', ')}"
+                    message = "FORMAT parameter ${val} not supported.  Values can only be ${OUTPUT_FORMATS.join(', ')}"
                 }
             }
 
@@ -166,7 +150,7 @@ class WcsCommand {
                 {
                     if(val.toLowerCase().trim() != "epsg:4326")
                     {
-                        message = "Invalid CRS parameter.  We only support value of EPSG:4326"
+                        message = "CRS parameter ${val} not supported.  We only support value of EPSG:4326"
                     }
                 }
             }
@@ -176,9 +160,9 @@ class WcsCommand {
             def message = true
             if(obj.request?.toLowerCase() == "getcoverage")
             {
-                if(val)
+                if(val && (val != obj.crs))
                 {
-                    message = "RESPONSE_CRS is specified but is currently not supported.  We only support the parameter CRS."
+                    message = "RESPONSE_CRS is specified and is not equal to the CRS parameter.  We currently do not support changing the response crs."
                 }
             }
             message
@@ -198,7 +182,7 @@ class WcsCommand {
             }
             else if(!(val.toLowerCase() in ["getcoverage", "getcapabilities", "describecoverage"]))
             {
-                message = "Invalid value ${val}, values can be getcoverage, getcapabilities, or describecoverage"
+                message = "REQUEST parameter ${val} is invalid, values can only be getcoverage, getcapabilities, or describecoverage"
             }
             message
         })
@@ -280,9 +264,6 @@ class WcsCommand {
     {
         def errorString = ""
         errors?.each{err->
-//            errorString +=  (err.fieldError?.arguments[0].toUpperCase() +
-//                             ": " + err.getFieldError("${err.fieldError.arguments[0]}")?.code +
-//                             "\n")
             errorString +=  (err.getFieldError("${err.fieldError.arguments[0]}")?.code + "\n")
         }
 
