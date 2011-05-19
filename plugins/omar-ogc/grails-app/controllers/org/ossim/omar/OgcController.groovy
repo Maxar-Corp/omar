@@ -22,6 +22,7 @@ class OgcController implements InitializingBean
   def wmsLogService
   def grailsApplication
   def scratchDir
+  def ogcExceptionService
 /*
 def authenticateService
 */
@@ -150,11 +151,8 @@ def authenticateService
       Utility.simpleCaseInsensitiveBind(cmd, params)
       if(!cmd.validate())
       {
-          HttpStatusMessage statusMessage = new HttpStatusMessage(cmd.createErrorString(),
-                                                                  HttpStatus.BAD_REQUEST)
-          statusMessage.initializeResponse(response)
-          log.error(statusMessage.message)
-          render(statusMessage.message)
+          log.error(cmd.createErrorString())
+          ogcExceptionService.writeResponse(response, ogcExceptionService.formatWcsException(cmd))
       }
       else
       {
