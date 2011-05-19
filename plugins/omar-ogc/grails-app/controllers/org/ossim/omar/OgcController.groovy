@@ -211,6 +211,9 @@ def authenticateService
                         imageFile.delete()
                     }
                     break
+                default:
+
+                    break
             }
           }
           catch(Exception e)

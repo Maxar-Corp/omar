@@ -179,11 +179,16 @@ class WcsCommand {
 
             if(!val)
             {
-                message = "REQUEST parameter not found.  Values can be getcoverage, getcapabilities, or describecoverage"
+                message = "REQUEST parameter not found.  Values can be getcoverage"
             }
-            else if(!(val.toLowerCase() in ["getcoverage", "getcapabilities", "describecoverage"]))
+ //           else if(!(val.toLowerCase() in ["getcoverage", "getcapabilities", "describecoverage"]))
+            else if(val.toLowerCase() in ["getcapabilities", "describecoverage"])
             {
-                message = "REQUEST parameter ${val} is invalid, values can only be getcoverage, getcapabilities, or describecoverage"
+                message = "REQUEST parameter ${val} is currently not supported, value can only be getcoverage"
+            }
+            else if(val.toLowerCase() != "getcoverage")
+            {
+                message = "REQUEST parameter ${val} is invalid, value can only be getcoverage"
             }
             message
         })
