@@ -1,5 +1,6 @@
 package org.ossim.omar
 
+
 /**
  * Created by IntelliJ IDEA.
  * User: gpotts
@@ -216,7 +217,7 @@ class WcsCommand {
                 def maxy = splitBbox[3] as Double
                 def w = width
                 def h = height
-                if(!(w&&h)&&resx&&resy)
+                if((!(w&&h))&&(resx&&resy))
                 {
                     def rx = resx as Double
                     def ry = resy as Double
@@ -260,11 +261,25 @@ class WcsCommand {
 
       return result
     }
+    def createErrorPairs()
+    {
+        def result = [[:]]
+        errors?.each{err->
+            def field = "${err.fieldError.arguments[0]}"
+            def code =  err.getFieldError(field)?.code
+            result << [field:field, code:code]
+        }
+        result
+    }
     def createErrorString()
     {
         def errorString = ""
-        errors?.each{err->
-            errorString +=  (err.getFieldError("${err.fieldError.arguments[0]}")?.code + "\n")
+        def errorPairs = createErrorPairs()
+        errorPairs.each{pair->
+            if(pair.code)
+            {
+                errorString +=  (pair.code + "\n")
+            }
         }
 
         errorString
