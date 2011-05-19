@@ -15,7 +15,48 @@ class OgcExceptionServiceTests extends GrailsUnitTestCase {
         super.tearDown()
     }
 
-    void testFormatWcsException() {
+    void testImageWcsException() {
+        def cmd = new WcsCommand()
+        cmd.bbox = "-180,-90,180,90"
+        cmd.width="256"
+        cmd.height="256"
+        cmd.format="image/jpeg"
+        cmd.coverage="raster_entry"
+        cmd.crs="EPSG:4326"
+        cmd.request="GetCoverage"
+
+        cmd.exception = "application/vnd.ogc.se_inimage"
+        cmd.request = null
+        cmd.validate();
+        assertEquals false, cmd.validate()
+        assertEquals true, ogcExceptionService.formatWcsException(cmd).message instanceof BufferedImage
+
+        cmd.exception = "inimage"
+        cmd.request = null
+        cmd.validate();
+        assertEquals false, cmd.validate()
+        assertEquals true, ogcExceptionService.formatWcsException(cmd).message instanceof BufferedImage
+    }
+
+    void testXmlWcsException() {
+        def cmd = new WcsCommand()
+        cmd.bbox = "-180,-90,180,90"
+        cmd.width="256"
+        cmd.height="256"
+        cmd.format="image/jpeg"
+        cmd.coverage="raster_entry"
+        cmd.crs="EPSG:4326"
+        cmd.request="GetCoverage"
+
+        cmd.exception = "text/xml"
+        cmd.request = null
+        cmd.validate();
+        assertEquals false, cmd.validate()
+        assertEquals true, ogcExceptionService.formatWcsException(cmd).message.contains("REQUEST")
+        assertEquals true, (ogcExceptionService.formatWcsException(cmd).mimeType == "text/xml")
+    }
+
+    void testTextWcsException() {
         def cmd = new WcsCommand()
         cmd.bbox = "-180,-90,180,90"
         cmd.width="256"
@@ -30,11 +71,7 @@ class OgcExceptionServiceTests extends GrailsUnitTestCase {
         cmd.validate();
         assertEquals false, cmd.validate()
         assertEquals true, ogcExceptionService.formatWcsException(cmd).message.contains("REQUEST")
-
-        cmd.exception = "inimage"
-        cmd.request = null
-        cmd.validate();
-        assertEquals false, cmd.validate()
-        assertEquals true, ogcExceptionService.formatWcsException(cmd).message instanceof BufferedImage
+        assertEquals true, (ogcExceptionService.formatWcsException(cmd).mimeType == "text/plain")
     }
+
 }

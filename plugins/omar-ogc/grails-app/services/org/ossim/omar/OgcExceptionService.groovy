@@ -110,7 +110,9 @@ class OgcExceptionService {
         result
     }
     /**
-     * @param params contains a map of status, message, and mimeType
+     * @param params contains a map of status, message, and mimeType.
+     *               The message can be text based or a BufferedImage for inimage
+     *               exceptions
      * @param response controller's response interface
      * @return
      */
