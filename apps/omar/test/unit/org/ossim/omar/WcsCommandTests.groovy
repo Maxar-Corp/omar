@@ -1,6 +1,7 @@
 package org.ossim.omar
 
 import grails.test.*
+import java.awt.image.BufferedImage
 
 class WcsCommandTests extends GrailsUnitTestCase {
     protected void setUp() {
@@ -12,7 +13,34 @@ class WcsCommandTests extends GrailsUnitTestCase {
         super.tearDown()
     }
 
-    void testWcsCommand() {
+    void testWcsGetBounds() {
+        def cmd = new WcsCommand()
+        cmd.bbox = "-180,-90,180,90"
+        cmd.width="256"
+        cmd.height="256"
+        cmd.format="image/jpeg"
+        cmd.coverage="raster_entry"
+        cmd.crs="EPSG:4326"
+        cmd.request="GetCoverage"
+
+        def bounds = cmd.getBounds()
+        assertNotNull(bounds)
+        assertEquals true, (-180 == bounds.minx)
+        assertEquals true, (-90 == bounds.miny)
+        assertEquals true, (180==bounds.maxx)
+        assertEquals true, (90 == bounds.maxy)
+        assertEquals true, (256 == bounds.width)
+        assertEquals true, (256==bounds.height)
+
+        cmd.width=null
+        cmd.height=null
+        cmd.resx=1
+        cmd.resy=1
+        bounds = cmd.getBounds()
+        assertEquals true, (360==bounds.width)
+        assertEquals true, (180==bounds.height)
+    }
+    void testWcsValidation() {
         def cmd = new WcsCommand()
         cmd.bbox = "-180,-90,180,90"
         cmd.width="256"
@@ -108,4 +136,40 @@ class WcsCommandTests extends GrailsUnitTestCase {
         assertEquals true, cmd.createErrorString().contains("REQUEST parameter nogood is invalid")
         cmd.request="GetCoverage"
     }
+    /*
+    void testWcsExceptionHandling(){
+        def cmd = new WcsCommand()
+        cmd.bbox = "-180,-90,180,90"
+        cmd.width="256"
+        cmd.height="256"
+        cmd.format="image/jpeg"
+        cmd.coverage="raster_entry"
+        cmd.crs="EPSG:4326"
+        cmd.request="GetCoverage"
+
+        cmd.exception = "text/plain"
+        cmd.request = null
+        cmd.validate();
+        assertEquals false, cmd.validate()
+        def exceptionResult = cmd.getExceptionResult()
+        assertEquals true,exceptionResult.mimeType.contains("plain")
+        assertEquals true,exceptionResult.message.contains("REQUEST")
+
+        cmd.exception = "text/xml"
+        exceptionResult = cmd.getExceptionResult()
+        assertEquals true,exceptionResult.mimeType.contains("xml")
+        assertEquals true,exceptionResult.message.contains("REQUEST")
+        assertEquals true,exceptionResult.message.contains("ServiceExceptionReport")
+
+        cmd.exception = "application/vnd.ogc.se_xml"
+        exceptionResult = cmd.getExceptionResult()
+        assertEquals true,exceptionResult.mimeType.contains("xml")
+        assertEquals true,exceptionResult.message.contains("REQUEST")
+
+        cmd.exception = "application/vnd.ogc.se_inimage"
+        exceptionResult = cmd.getExceptionResult()
+        assertEquals true,(exceptionResult.mimeType == "application/vnd.ogc.se_inimage")
+        assertEquals true, exceptionResult.message instanceof BufferedImage
+    }
+    */
 }
