@@ -5,6 +5,11 @@ import java.awt.Graphics2D
 import java.awt.Color
 import javax.imageio.ImageIO
 import groovy.xml.StreamingMarkupBuilder
+import java.text.AttributedString
+import java.text.AttributedCharacterIterator
+import java.awt.font.FontRenderContext
+import java.awt.font.LineBreakMeasurer
+import java.awt.font.TextLayout
 
 class OgcExceptionService {
 
@@ -17,16 +22,15 @@ class OgcExceptionService {
      *                  image type, width, and height
      * @return
      */
-    def createErrorImage(def message, def ogcParams)
+    def createErrorImage (def message, def ogcParams)
     {
-        def imageWidth    = ogcParams.width?ogcParams.width as Integer:512
-        def imageHeight   = ogcParams.height?ogcParams.height as Integer:256
-        def image         = null
-        def transparent   = false
-        def format = ogcParams.format?ogcParams.format.toLowerCase():"image/gif"
+        def imageWidth = ogcParams.width ? ogcParams.width as Integer : 512
+        def imageHeight = ogcParams.height ? ogcParams.height as Integer : 256
+        def image = null
+        def transparent = false
+        def format = ogcParams.format ? ogcParams.format.toLowerCase() : "image/gif"
 
-        switch(format)
-        {
+        switch (format) {
             case "image/png":
             case "image/gif":
                 transparent = true
@@ -35,21 +39,49 @@ class OgcExceptionService {
                 transparent = false
                 break
         }
-        if(!transparent)
-        {
-           image=new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB)
+        if (!transparent) {
+            image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB)
         }
-        else
-        {
-           image=new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB)
+        else {
+            image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB)
         }
 
-        Graphics2D g2d    = image.createGraphics()
+        Graphics2D g2d = image.createGraphics()
         g2d.setColor(Color.WHITE)
         g2d.setBackground(Color.WHITE)
-        g2d.fillRect(0,0,imageWidth,imageHeight)
+        g2d.fillRect(0, 0, imageWidth, imageHeight)
         g2d.setColor(Color.BLACK)
-        g2d.drawString(message, 0, imageHeight/2)
+        //g2d.drawString(message, 0, imageHeight/2)
+
+
+        // Now let's implement a text wrapper if the error string is longer than the width of
+        // the image it will wrap in the output
+        //
+        def x = 0
+        def y = 0
+        AttributedString attrStr = new AttributedString(message);
+        // Get iterator for string:
+        AttributedCharacterIterator characterIterator = attrStr.getIterator();
+        // Get font context from graphics:
+        FontRenderContext fontRenderContext = g2d.getFontRenderContext();
+        // Create measurer:
+        LineBreakMeasurer measurer = new LineBreakMeasurer(characterIterator,
+                fontRenderContext);
+        def done = false
+        while (!done &&(measurer.getPosition() < characterIterator.getEndIndex())) {
+            TextLayout textLayout = measurer.nextLayout(imageWidth);
+            y += textLayout.getAscent(); //Have tried changing y to x
+            if(y < imageHeight)
+            {
+                textLayout.draw(g2d, (int) x, (int) y);
+
+                y += textLayout.getDescent() + textLayout.getLeading();
+            }
+            else  // we have exceeded the height of the image
+            {
+                done = true
+            }
+        }
 
         image
     }
@@ -142,7 +174,7 @@ class OgcExceptionService {
                             mimeType = "image/gif"
                     }
                     result.mimeType = mimeType
-                    result.message    = createErrorImage(cmd.createErrorString(), params)
+                    result.message    = createErrorImage("WCS server error: " + cmd.createErrorString(), params)
                     break;
             }
             result
