@@ -20,7 +20,7 @@ class OgcExceptionService {
      * @param message is the actual text string message to write to an image
      * @param ogcParams additional ogc params that can be used to determine the output
      *                  image type, width, and height
-     * @return
+     * @return BufferedImage
      */
     def createErrorImage (def message, def ogcParams)
     {
@@ -85,6 +85,13 @@ class OgcExceptionService {
 
         image
     }
+    /**
+     *
+     * @param ogcParams is a Map of aprams and will look at the exception param to
+     *                  determine the output format to use
+     *
+     * @return currently returns a text string and can have value "image","xml", or "text"
+     */
     def determineOutputType(def ogcParams)
     {
         def exception = ogcParams.exception?:"text/plain"
@@ -111,10 +118,10 @@ class OgcExceptionService {
     }
     /**
      * @param params contains a map of status, message, and mimeType.
-     *               The message can be text based or a BufferedImage for inimage
-     *               exceptions
+     *               The message can be text based (i.e xml, plain text) or
+     *               a BufferedImage for inimage exceptions
      * @param response controller's response interface
-     * @return
+     * @return null
      */
     def writeResponse(def response, def params)
     {
@@ -132,6 +139,7 @@ class OgcExceptionService {
             response.outputStream.close()
             //render(params.message)
         }
+        null
     }
     def formatWcsException(WcsCommand cmd)
     {
