@@ -47,14 +47,8 @@ class OgcExceptionService {
         def transparent = ogcParams?.transparent?:false
         def format = ogcParams.format ? ogcParams.format.toLowerCase() : "image/gif"
 
-        if(imageWidth > 2048)
-        {
-            imageWidth = 2048
-        }
-        if(imageHeight > 2048)
-        {
-            imageHeight = 2048
-        }
+        if(imageWidth > 2048) imageWidth = 2048
+        if(imageHeight > 2048) imageHeight = 2048
         // check forced transparency
         if(transparent&&format?.contains("jpeg"))
         {

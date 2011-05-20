@@ -164,7 +164,7 @@ def authenticateService
                     def wmsQuery  = new WMSQuery()
                     def wcsParams    = cmd.toMap();
 
-                    // we will use layers for the WMSQuery object is already setup to use
+                    // we will use layers for for the WMSQuery object is already setup to use
                     // layers param and there is not much difference for query params
                     // given WCS or WMS
                     wcsParams.layers = params.coverage;
@@ -194,7 +194,7 @@ def authenticateService
                     if(!rasterEntries)
                     {
                         def ogcParams = cmd.toMap();
-                        def message = "WCS server Error: No coverage found for request"
+                        def message = "WCS server Error: No coverage found for ${coverage}"
                         // no data to process
                         log.error(message)
 
@@ -225,7 +225,6 @@ def authenticateService
                     }
                     break
                 default:
-
                     break
             }
           }
