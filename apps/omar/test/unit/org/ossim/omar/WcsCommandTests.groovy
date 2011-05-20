@@ -85,6 +85,16 @@ class WcsCommandTests extends GrailsUnitTestCase {
         cmd.resy   = "0.001"
         assertEquals false, cmd.validate()
         assertEquals true, cmd.createErrorString().contains("RESX parameter not found")
+        cmd.resx   = "0.001"
+        cmd.resy   = "asdf"
+        assertEquals false, cmd.validate()
+        assertEquals true, cmd.createErrorString().contains("RESY parameter invalid")
+        cmd.resy   = "0.001"
+        cmd.resx   = "asdf"
+        assertEquals false, cmd.validate()
+        assertEquals true, cmd.createErrorString().contains("RESX parameter invalid")
+
+
         cmd.width  = "256"
         cmd.height = "256"
         cmd.resx   = null
@@ -135,6 +145,22 @@ class WcsCommandTests extends GrailsUnitTestCase {
         assertEquals false, cmd.validate()
         assertEquals true, cmd.createErrorString().contains("REQUEST parameter nogood is invalid")
         cmd.request="GetCoverage"
+
+        cmd.width = "asdf"
+        assertEquals false, cmd.validate()
+        assertEquals true, cmd.createErrorString().contains("WIDTH parameter invalid")
+        cmd.width = "256"
+
+        cmd.height = "asdf"
+        assertEquals false, cmd.validate()
+        assertEquals true, cmd.createErrorString().contains("HEIGHT parameter invalid")
+        cmd.height = "256"
+
+
+        cmd.bbox = "-180,-90,180,FF"
+        assertEquals false, cmd.validate()
+        assertEquals true, cmd.createErrorString().contains("BBOX parameter invalid")
+        cmd.bbox = "-180,-90,180,90"
     }
     /*
     void testWcsExceptionHandling(){

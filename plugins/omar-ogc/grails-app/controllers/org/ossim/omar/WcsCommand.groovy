@@ -56,8 +56,21 @@ class WcsCommand {
                     def box = val.split(",");
                     if(box.length != 4)
                     {
-                        message = "BBOX must be formatted with 4 parameters separated by commas and matching the form minx,miny,maxx,maxy in \n"
+                        message = "BBOX parameter invalid.  Must be formatted with 4 parameters separated by commas and matching the form minx,miny,maxx,maxy in \n"
                         message += "the units of the crs code"
+                    }
+                    else
+                    {
+                        try{
+                            Double.parseDouble(box[0])
+                            Double.parseDouble(box[1])
+                            Double.parseDouble(box[2])
+                            Double.parseDouble(box[3])
+                        }
+                        catch(Exception e)
+                        {
+                           message = "BBOX parameter invalid. 1 or more of the paramters is an invalid decimal number."
+                        }
                     }
                 }
             }
@@ -76,6 +89,16 @@ class WcsCommand {
               {
                   message = "WIDTH parameter not found.  You are required to specify WIDTH, HEIGHT pair or RESX, RESY pair."
               }
+                if(val)
+                {
+                    try{
+                        Integer.parseInt(val)
+                    }
+                    catch(Exception e)
+                    {
+                        message = "WIDTH parameter invalid.  The tested value is not a number or exceeds the range of an integer."
+                    }
+                }
             }
             message
         })
@@ -87,6 +110,16 @@ class WcsCommand {
               {
                   message = "HEIGHT parameter not found.  You are required to specify WIDTH, HEIGHT pair or RESX, RESY pair."
               }
+              if(val)
+              {
+                  try{
+                      Integer.parseInt(val)
+                  }
+                  catch(Exception e)
+                  {
+                      message = "HEIGHT parameter invalid.  The tested value is not a number or exceeds the range of an integer."
+                  }
+              }
             }
             message
         })
@@ -94,7 +127,17 @@ class WcsCommand {
             def message = true
             if(obj.request?.toLowerCase() == "getcoverage")
             {
-              if((!val) && ((!obj.width)&&(!obj.height)))
+              if(val)
+              {
+                  try{
+                      Double.parseDouble(val)
+                  }
+                  catch(Exception e)
+                  {
+                      message = "RESX parameter invalid. The value specified is not a valid decimal number."
+                  }
+              }
+              else if((!obj.width)&&(!obj.height))
               {
                   message = "RESX parameter not found.  You are required to specify WIDTH, HEIGHT pair or RESX, RESY pair."
               }
@@ -105,10 +148,20 @@ class WcsCommand {
             def message = true
             if(obj.request?.toLowerCase() == "getcoverage")
             {
-              if((!val) && ((!obj.width)&&(!obj.height)))
-              {
-                  message = "RESY parameter not found.  You are required to specify WIDTH, HEIGHT pair or RESX, RESY pair."
-              }
+                if(val)
+                 {
+                     try{
+                         Double.parseDouble(val)
+                     }
+                     catch(Exception e)
+                     {
+                         message = "RESY parameter invalid. The value specified is not a valid decimal number."
+                     }
+                 }
+                 else if((!obj.width)&&(!obj.height))
+                 {
+                     message = "RESY parameter not found.  You are required to specify WIDTH, HEIGHT pair or RESX, RESY pair."
+                 }
             }
             message
         })
