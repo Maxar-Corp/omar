@@ -191,24 +191,37 @@ def authenticateService
                     {
                         rasterEntries = rasterEntries?.reverse()
                     }
-                    def result = webCoverageService.getCoverage(rasterEntries, cmd)
-                    if(result)
+                    if(!rasterEntries)
                     {
-                        def imageFile = result.file
-                        def attachment = result.outputName?"filename=${result.outputName}":""
-                        response.setHeader("Content-disposition", "attachment; ${attachment}")
-                        response.contentType = result.contentType
-                        try {
-                            Utility.writeFileToOutputStream(imageFile, response.outputStream, 4096);
-                        }
-                        catch(Exception e)
-                        {
-                            log.error(e)
-                        }
-                        response.outputStream.flush()
-                        response.outputStream.close()
+                        def ogcParams = cmd.toMap();
+                        def message = "WCS server Error: No coverage found for request"
+                        // no data to process
+                        log.error(message)
 
-                        imageFile.delete()
+                        def ogcFormattedException = ogcExceptionService.formatOgcException(ogcParams, message)
+                        ogcExceptionService.writeResponse(response, ogcFormattedException)
+                    }
+                    else
+                    {
+                        def result = webCoverageService.getCoverage(rasterEntries, cmd)
+                        if(result)
+                        {
+                            def imageFile = result.file
+                            def attachment = result.outputName?"filename=${result.outputName}":""
+                            response.setHeader("Content-disposition", "attachment; ${attachment}")
+                            response.contentType = result.contentType
+                            try {
+                                Utility.writeFileToOutputStream(imageFile, response.outputStream, 4096);
+                            }
+                            catch(Exception e)
+                            {
+                                log.error(e)
+                            }
+                            response.outputStream.flush()
+                            response.outputStream.close()
+
+                            imageFile.delete()
+                        }
                     }
                     break
                 default:
