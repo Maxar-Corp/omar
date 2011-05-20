@@ -25,7 +25,8 @@ class OgcExceptionService {
             // skip 0x
             result = new Color(Integer.decode("0x" + color[2] + color[3]),
                                Integer.decode("0x" + color[4] + color[5]),
-                               Integer.decode("0x" + color[6] + color[7]))
+                               Integer.decode("0x" + color[6] + color[7]),
+                               Integer.decode("0x" + color[0] + color[1]))
           }
         }
 
@@ -46,6 +47,14 @@ class OgcExceptionService {
         def transparent = ogcParams?.transparent?:false
         def format = ogcParams.format ? ogcParams.format.toLowerCase() : "image/gif"
 
+        if(imageWidth > 2048)
+        {
+            imageWidth = 2048
+        }
+        if(imageHeight > 2048)
+        {
+            imageHeight = 2048
+        }
         // check forced transparency
         if(transparent&&format?.contains("jpeg"))
         {
@@ -73,7 +82,7 @@ class OgcExceptionService {
         }
 
         Graphics2D g2d = image.createGraphics()
-        def background = getBackgroundColor(ogcParams.bgcolor, transparent?0:255)
+        def background = getBackgroundColor(ogcParams."bgcolor", transparent?0:255)
         g2d.setColor(background)
         g2d.setBackground(background)
         g2d.fillRect(0, 0, imageWidth, imageHeight)
@@ -109,6 +118,10 @@ class OgcExceptionService {
                     done = true
                 }
             }
+        }
+        if ( (format == "image/gif") && transparent )
+        {
+          image = ImageGenerator.convertRGBAToIndexed(image)
         }
 
         image
@@ -162,74 +175,77 @@ class OgcExceptionService {
         {
             response.contentType = params.mimeType
             ImageIO.write(params.message, response.contentType?.split("/")[-1], response.outputStream)
-            response.outputStream.close()
         }
         else
         {
             response.contentType = params.mimeType
             response.outputStream.write(params.message.bytes)
-            response.outputStream.close()
-            //render(params.message)
         }
+        response.outputStream.close()
         null
     }
-    def formatWcsException(WcsCommand cmd)
+    def formatOgcException(def params, def message)
     {
         def result = [status:null,
                       message:null,
                       mimeType:null]
-        def params = cmd.toMap()
+        result.status = org.ossim.omar.HttpStatus.BAD_REQUEST
+
+        def outputType = determineOutputType(params)
+        switch(outputType)
+        {
+            case "text":
+                result."mimeType" = "text/plain"
+                result.message    =  message
+                break;
+            case "xml":
+                def xmlbuilder = new StreamingMarkupBuilder()
+                xmlbuilder.encoding = "UTF-8"
+                def xmlNode = {
+                  mkp.xmlDeclaration()
+                    ServiceExceptionReport{
+                    ServiceException(message)
+                    }
+                }
+
+                result."mimeType" = "text/xml"
+                result.message    =  xmlbuilder.bind(xmlNode).toString()
+                break;
+            case "blank":
+            case "image":
+                def mimeType = "image/gif"
+                switch(params.format)
+                {
+                    case "image/jpeg":
+                    case "image/png":
+                        mimeType = params.format
+                        break
+                    default:
+                        mimeType = "image/gif"
+                }
+                result.mimeType = mimeType
+                if(outputType == "blank")
+                {
+                    result.message    = createErrorImage("", params)
+                }
+                else
+                {
+                    result.message    = createErrorImage(message, params)
+
+                }
+                break;
+        }
+        result
+    }
+
+    def formatWcsException(def cmd)
+    {
+        def result = [status:null,
+                      message:null,
+                      mimeType:null]
         if(cmd.hasErrors())
         {
-            result.status = org.ossim.omar.HttpStatus.BAD_REQUEST
-
-            def outputType = determineOutputType(params)
-            switch(outputType)
-            {
-                case "text":
-                    result."mimeType" = "text/plain"
-                    result.message    = "WCS server error: "
-                    result.message   +=  cmd.createErrorString()
-                    break;
-                case "xml":
-                    def xmlbuilder = new StreamingMarkupBuilder()
-                    xmlbuilder.encoding = "UTF-8"
-                    def xmlNode = {
-                      mkp.xmlDeclaration()
-                        ServiceExceptionReport{
-                        ServiceException(cmd.createErrorString())
-                        }
-                    }
-
-                    result."mimeType" = "text/xml"
-                    result.message    =  xmlbuilder.bind(xmlNode).toString()
-                    break;
-                case "blank":
-                case "image":
-                    def mimeType = "image/gif"
-                    switch(params.format)
-                    {
-                        case "image/jpeg":
-                        case "image/png":
-                            mimeType = params.format
-                            break
-                        default:
-                            mimeType = "image/gif"
-                    }
-                    result.mimeType = mimeType
-                    if(outputType == "blank")
-                    {
-                        result.message    = createErrorImage("", params)
-                    }
-                    else
-                    {
-                        result.message    = createErrorImage("WCS server error: " + cmd.createErrorString(), params)
-
-                    }
-                    break;
-            }
-            result
-
+            result = formatOgcException(cmd.toMap(), "WCS server Error: " + cmd.createErrorString())
         }
 
         result
