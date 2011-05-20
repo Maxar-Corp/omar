@@ -15,6 +15,22 @@ class OgcExceptionService {
 
     static transactional = false
 
+    def getBackgroundColor(def color, def alpha)
+    {
+        def result = new Color(255, 255, 255, alpha)
+        if ( color )
+        {
+          if ( color.size() == 8 )
+          {
+            // skip 0x
+            result = new Color(Integer.decode("0x" + color[2] + color[3]),
+                               Integer.decode("0x" + color[4] + color[5]),
+                               Integer.decode("0x" + color[6] + color[7]))
+          }
+        }
+
+        return result
+    }
     /**
      *
      * @param message is the actual text string message to write to an image
@@ -27,59 +43,71 @@ class OgcExceptionService {
         def imageWidth = ogcParams.width ? ogcParams.width as Integer : 512
         def imageHeight = ogcParams.height ? ogcParams.height as Integer : 256
         def image = null
-        def transparent = false
+        def transparent = ogcParams?.transparent?:false
         def format = ogcParams.format ? ogcParams.format.toLowerCase() : "image/gif"
 
-        switch (format) {
-            case "image/png":
-            case "image/gif":
-                transparent = true
-                break
-            default:
-                transparent = false
-                break
+        // check forced transparency
+        if(transparent&&format?.contains("jpeg"))
+        {
+            format = "image/gif"
         }
-        if (!transparent) {
+        else  //determine if we are transparent
+        {
+            switch (format) {
+                case "image/png":
+                case "image/gif":
+                    transparent = true
+                    break
+                default:
+                    transparent = false
+                    break
+            }
+        }
+        if (!transparent)
+        {
             image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_RGB)
         }
-        else {
+        else
+        {
             image = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB)
         }
 
         Graphics2D g2d = image.createGraphics()
-        g2d.setColor(Color.WHITE)
-        g2d.setBackground(Color.WHITE)
+        def background = getBackgroundColor(ogcParams.bgcolor, transparent?0:255)
+        g2d.setColor(background)
+        g2d.setBackground(background)
         g2d.fillRect(0, 0, imageWidth, imageHeight)
+
         g2d.setColor(Color.BLACK)
-        //g2d.drawString(message, 0, imageHeight/2)
-
-
         // Now let's implement a text wrapper if the error string is longer than the width of
         // the image it will wrap in the output
         //
-        def x = 0
-        def y = 0
-        AttributedString attrStr = new AttributedString(message);
-        // Get iterator for string:
-        AttributedCharacterIterator characterIterator = attrStr.getIterator();
-        // Get font context from graphics:
-        FontRenderContext fontRenderContext = g2d.getFontRenderContext();
-        // Create measurer:
-        LineBreakMeasurer measurer = new LineBreakMeasurer(characterIterator,
-                fontRenderContext);
-        def done = false
-        while (!done &&(measurer.getPosition() < characterIterator.getEndIndex())) {
-            TextLayout textLayout = measurer.nextLayout(imageWidth);
-            y += textLayout.getAscent(); //Have tried changing y to x
-            if(y < imageHeight)
-            {
-                textLayout.draw(g2d, (int) x, (int) y);
+        if(message)
+        {
+            def x = 0
+            def y = 0
+            AttributedString attrStr = new AttributedString(message);
+            // Get iterator for string:
+            AttributedCharacterIterator characterIterator = attrStr.getIterator();
+            // Get font context from graphics:
+            FontRenderContext fontRenderContext = g2d.getFontRenderContext();
+            // Create measurer:
+            LineBreakMeasurer measurer = new LineBreakMeasurer(characterIterator,
+                    fontRenderContext);
+            def done = false
+            while (!done &&(measurer.getPosition() < characterIterator.getEndIndex())) {
+                TextLayout textLayout = measurer.nextLayout(imageWidth);
+                y += textLayout.getAscent(); //Have tried changing y to x
+                if(y < imageHeight)
+                {
+                    textLayout.draw(g2d, (int) x, (int) y);
 
-                y += textLayout.getDescent() + textLayout.getLeading();
-            }
-            else  // we have exceeded the height of the image
-            {
-                done = true
+                    y += textLayout.getDescent() + textLayout.getLeading();
+                }
+                else  // we have exceeded the height of the image
+                {
+                    done = true
+                }
             }
         }
 
@@ -101,6 +129,10 @@ class OgcExceptionService {
             case "application/vnd.ogc.se_inimage":
             case "inimage":
                 result = "image"
+                break
+            case "application/vnd.ogc.se_blank":
+            case "blank":
+                result = "blank"
                 break
             case "application/vnd.ogc.se_xml":
             case "text/xml":
@@ -156,8 +188,8 @@ class OgcExceptionService {
             {
                 case "text":
                     result."mimeType" = "text/plain"
-                    result.message = "WCS server error: "
-                    result.message  +=  cmd.createErrorString()
+                    result.message    = "WCS server error: "
+                    result.message   +=  cmd.createErrorString()
                     break;
                 case "xml":
                     def xmlbuilder = new StreamingMarkupBuilder()
@@ -172,6 +204,7 @@ class OgcExceptionService {
                     result."mimeType" = "text/xml"
                     result.message    =  xmlbuilder.bind(xmlNode).toString()
                     break;
+                case "blank":
                 case "image":
                     def mimeType = "image/gif"
                     switch(params.format)
@@ -184,7 +217,15 @@ class OgcExceptionService {
                             mimeType = "image/gif"
                     }
                     result.mimeType = mimeType
-                    result.message    = createErrorImage("WCS server error: " + cmd.createErrorString(), params)
+                    if(outputType == "blank")
+                    {
+                        result.message    = createErrorImage("", params)
+                    }
+                    else
+                    {
+                        result.message    = createErrorImage("WCS server error: " + cmd.createErrorString(), params)
+
+                    }
                     break;
             }
             result
