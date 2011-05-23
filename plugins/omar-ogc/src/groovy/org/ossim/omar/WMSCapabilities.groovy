@@ -138,7 +138,7 @@ public class WMSCapabilities
           }
           OnlineResource(
                   "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                  "xlink:href": ""
+                  "xlink:href": "${map.getMapURL}"
           )
           ContactInformation() {
             ContactPersonPrimary() {
@@ -211,13 +211,13 @@ public class WMSCapabilities
                   Get() {
                     OnlineResource(
                             "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": ""
+                            "xlink:href": "${map.getMapURL}"
                     )
                   }
                   Post {
                     OnlineResource(
                             "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": ""
+                            "xlink:href": "${map.getMapURL}"
                     )
                   }
                 }
@@ -232,13 +232,13 @@ public class WMSCapabilities
                   Get() {
                     OnlineResource(
                             "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": ""
+                            "xlink:href": "${map.getMapURL}"
                     )
                   }
                   Post {
                     OnlineResource(
                             "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": ""
+                            "xlink:href": "${map.getMapURL}"
                     )
                   }
                 }
@@ -253,13 +253,13 @@ public class WMSCapabilities
                   Get() {
                     OnlineResource(
                             "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": ""
+                            "xlink:href": "${map.getMapURL}"
                     )
                   }
                   Post {
                     OnlineResource(
                             "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": ""
+                            "xlink:href": "${map.getMapURL}"
                     )
                   }
                 }
@@ -274,13 +274,13 @@ public class WMSCapabilities
                   Get() {
                     OnlineResource(
                             "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": ""
+                            "xlink:href": "${map.getMapURL}"
                     )
                   }
                   Post {
                     OnlineResource(
                             "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": ""
+                            "xlink:href": "${map.getMapURL}"
                     )
                   }
                 }
