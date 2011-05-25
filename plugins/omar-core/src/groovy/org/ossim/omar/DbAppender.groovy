@@ -47,12 +47,13 @@ import java.sql.Connection
 public class DbAppender extends org.apache.log4j.AppenderSkeleton
 
 {
-  private String sqlStatement = ""
-  private def dateFieldList
-  protected def tableMapping = [:]
-  protected String tableName = ""
-  def sql = null
-  def modifyParametersClosure = null
+    private String sqlStatement = ""
+    private def dateFieldList
+    private def castFieldList = [[:]]
+    protected def tableMapping = [:]
+    protected String tableName = ""
+    def sql = null
+    def modifyParametersClosure = null
   void append(org.apache.log4j.spi.LoggingEvent event)
   {
     if(!sql)
@@ -61,17 +62,17 @@ public class DbAppender extends org.apache.log4j.AppenderSkeleton
       initializeMappings()
     }
     def params = (grails.converters.JSON.parse(event.message) as Map)
+      castFieldList?.each{  castField->
+            params."${castField.field}" = castField.cast(params."${castField.field}")
+      }
+   //   dateFieldList?.each{field->
+
+    //     def dateTime  = org.ossim.omar.ISO8601DateParser.parseDateTime(params."${field}")
+    //     params."${field}" =  new java.sql.Timestamp(dateTime.millis)
+    //   }
     if(modifyParametersClosure)
     {
-      params = modifyParametersClosure(params)
-    }
-    else
-    {
-       dateFieldList?.each{field->
-         
-         def dateTime  = org.ossim.omar.ISO8601DateParser.parseDateTime(params."${field}")
-         params."${field}" =  new java.sql.Timestamp(dateTime.millis)
-       }
+      //params = modifyParametersClosure(params)
     }
     try
     {
@@ -89,7 +90,6 @@ public class DbAppender extends org.apache.log4j.AppenderSkeleton
   {
     this.closed=false
     initializeSqlStatement()
-
   }
 
   void initializeSqlStatement()
@@ -123,8 +123,16 @@ public class DbAppender extends org.apache.log4j.AppenderSkeleton
             def columnName =  rsColumns.getString("COLUMN_NAME").toLowerCase()
             columnName = columnName.replaceAll("_[a-zA-Z]", {value->value[1].toUpperCase()})
             dateFieldList += [columnName]
+            castFieldList << [field:columnName, cast:{value->
+                                      def dateTime = org.ossim.omar.ISO8601DateParser.parseDateTime(params."${field}")
+                                      new java.sql.Timestamp(dateTime.millis)
+                                      }]
             break
+            default:
+               // println rsColumns.getString("COLUMN_NAME").toLowerCase()+ ", " +
+               //         rsColumns.getString("TYPE_NAME").toLowerCase()
 
+                break
         }
       }
       conn?.close()
