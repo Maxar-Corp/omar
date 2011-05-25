@@ -49,7 +49,7 @@ class WebMappingService
 
   def transparent = new TransparentFilter()
 
-  void drawCoverage(Graphics2D g, WMSRequest wmsRequest, def geometries, def styleName)
+  void drawCoverage(Graphics2D g, def wmsRequest, def geometries, def styleName)
   {
     def minx = -180.0
     def maxx = 180.0
@@ -124,7 +124,7 @@ class WebMappingService
       g.drawPolyline(pointListx, pointListy, pointListx.size())
     }
   }
-  WMSQuery setupQuery(WMSRequest wmsRequest)
+  WMSQuery setupQuery(def wmsRequest)
   {
       def wmsQuery  = new WMSQuery()
       def params    = wmsRequest.toMap();
@@ -146,60 +146,34 @@ class WebMappingService
 
       wmsQuery
   }
-  RenderedImage getMap(WMSRequest wmsRequest, def layers=null)
+  def getMap(def wmsRequest, def layers=null)
   {
-//	def wmsQuery  = new WMSQuery()
-//	wmsQuery.caseInsensitiveBind(wmsRequest.toMap())
-//	def max = params.max?params.max as Integer:10
-//	if(max > 10) max = 10
-//	wmsQuery.max = max
-//	def bounds = wmsRequest?.bbox?.split(',')
-//	def maxBands = 1
-//    if(wmsQuery.layers?.toLowerCase() == "raster_entry")
-//    {
-//      wmsQuery.layers = null
-//    }
-	// for now we will sort by the date field if no layers are given
-	//
-//	if(!wmsQuery.layers)
-//	{
-//	    wmsQuery.sort  = wmsQuery.sort?:"acquisitionDate"
-//	    wmsQuery.order = wmsQuery.order?:"desc"
-//	}
+    def result = [image:null,errorMessage:null]
     def params    = wmsRequest.toMap();
-    def bounds = wmsRequest?.bbox?.split(',')
+    def bounds = wmsRequest.bounds//wmsRequest?.bbox?.split(',')
     def maxBands = 1
     def wmsQuery = layers?null:setupQuery(wmsRequest);
     def stretchMode       = wmsRequest?.stretch_mode ? wmsRequest?.stretch_mode.toLowerCase(): null
     def stretchModeRegion = wmsRequest?.stretch_mode_region ?:null
-	def result = null
     def wmsView = new WmsView()
 	def srs = wmsRequest?.srs
     if(!wmsView.setProjection(srs))
     {
-        log.error("Unsupported projection ${srs}")
-        return null
+        result.errorMessage = "Unsupported projection ${srs}"
+        log.error(result)
+        return result
     }
-	if(!bounds||!bounds.size() == 4)
-	{
-        log.error("Bounds does not contain 4 values")
-		return null
-	}
-    if(!wmsView.setViewDimensionsAndImageSize(bounds[0] as Double,
-              bounds[1] as Double,
-              bounds[2] as Double,
-              bounds[3] as Double,
-              params.width,
-              params.height))
+    if(!wmsView.setViewDimensionsAndImageSize(bounds.minx,
+              bounds.miny,
+              bounds.maxx,
+              bounds.maxy,
+              bounds.width,
+              bounds.height))
     {
-        log.error("Unable to set the dimensions for the view bounds")
-        return null
+        result.errorMessage = "Unable to set the dimensions for the view bounds"
+        log.error(result)
+        return result
     }
-	if(!params.width||!params.height||!params.bbox)
-	{
-		log.error("Need to set all dimensions width, height, bbox")
-		return null
-	}
 	def rasterEntries = layers?:wmsQuery.getRasterEntriesAsList();
     //params.viewGeom = wmsView.getImageGeometry();
 	params.wmsView  = wmsView
@@ -235,10 +209,10 @@ class WebMappingService
 			def midPoint  = imageRect.midPoint()
 			def x         = (int)(midPoint.x+0.5)
 			def y         = (int)(midPoint.y+0.5)
-			x            -= (params.width*0.5);
-			y            -= (params.height*0.5);
-			def w         = params.width
-			def h         = params.height
+			x            -= (bounds.width*0.5);
+			y            -= (bounds.height*0.5);
+			def w         = bounds.width
+			def h         = bounds.height
 			imageRect = null
 			midPoint  = null
 
@@ -290,17 +264,17 @@ class WebMappingService
 		     kwlString = "type:ossimMemoryImageSource\n"
 			 if(params.width&&params.height)
 			 {
-				 kwlString += "rect:(0,0,${params.width},${params.height},lh)\n"
+				 kwlString += "rect:(0,0,${bounds.width},${bonds.height},lh)\n"
 				 kwlString += "scalar_type:ossim_uint8\n"
 				 kwlString += "number_bands:1\n"
-			 }	
+			 }
 		}
  	    def mosaic = new joms.oms.Chain();
 	    mosaic.loadChainKwlString(kwlString)
         srcChains.each{srcChain->
             mosaic.connectMyInputTo(srcChain.chain)
         }
-		result = rasterChainService.grabOptimizedImageFromChain(mosaic, params)
+		result.image = rasterChainService.grabOptimizedImageFromChain(mosaic, params)
 		mosaic?.deleteChain()
 		srcChains.each{
 			it.chain.deleteChain()
@@ -315,21 +289,23 @@ class WebMappingService
     }
     else // setup an empty chain
     {
-        kwlString = "type:ossimMemoryImageSource\n"
-        if(params.width&&params.height)
-        {
-            kwlString += "rect:(0,0,${params.width},${params.height},lh)\n"
-            kwlString += "scalar_type:ossim_uint8\n"
-            kwlString += "number_bands:1\n"
-        }
-        def chain = new joms.oms.Chain();
-        chain.loadChainKwlString(kwlString)
-        result = rasterChainService.grabOptimizedImageFromChain(chain, params)
+        result.image = null
+        result.errorMessage="No image found for the specified request"
+//        kwlString = "type:ossimMemoryImageSource\n"
+//        if(params.width&&params.height)
+ //       {
+ //           kwlString += "rect:(0,0,${params.width},${params.height},lh)\n"
+ //           kwlString += "scalar_type:ossim_uint8\n"
+ //           kwlString += "number_bands:1\n"
+  //      }
+  //      def chain = new joms.oms.Chain();
+  //      chain.loadChainKwlString(kwlString)
+  //      result.image = rasterChainService.grabOptimizedImageFromChain(chain, params)
     }
 
 	return result
   }
-  RenderedImage getMapOld(WMSRequest wmsRequest)
+  RenderedImage getMapOld(def wmsRequest)
   {
     RenderedImage image = null
     def enableOMS = true
@@ -724,7 +700,7 @@ class WebMappingService
     return image
   }
 
-  String getCapabilities(WMSRequest wmsRequest, String serviceAddress)
+  String getCapabilities(def wmsRequest, String serviceAddress)
   {
     def layers = wmsRequest?.layers?.split(',')
     def rasterEntries = rasterEntrySearchService.getWmsImageLayers(layers)
@@ -733,7 +709,7 @@ class WebMappingService
     return wmsCapabilites.getCapabilities()
   }
 
-  String getKML(WMSRequest wmsRequest, String serviceAddress)
+  String getKML(def wmsRequest, String serviceAddress)
   {
     def layers = wmsRequest?.layers?.split(',')
     def rasterEntries = rasterEntrySearchService.getWmsImageLayers(layers)
@@ -929,7 +905,7 @@ class WebMappingService
 
   }
 
-  def drawLayer(def style, String layer, Map params, Date startDate, Date endDate, WMSRequest wmsRequest, Graphics2D g2d)
+  def drawLayer(def style, String layer, Map params, Date startDate, Date endDate, def wmsRequest, Graphics2D g2d)
   {
     def queryParams = null
     def searchService = null

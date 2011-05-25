@@ -25,8 +25,7 @@ class OgcExceptionService {
             // skip 0x
             result = new Color(Integer.decode("0x" + color[2] + color[3]),
                                Integer.decode("0x" + color[4] + color[5]),
-                               Integer.decode("0x" + color[6] + color[7]),
-                               Integer.decode("0x" + color[0] + color[1]))
+                               Integer.decode("0x" + color[6] + color[7]))
           }
         }
 
@@ -240,6 +239,18 @@ class OgcExceptionService {
         if(cmd.hasErrors())
         {
             result = formatOgcException(cmd.toMap(), "WCS server Error: " + cmd.createErrorString())
+        }
+
+        result
+    }
+    def formatWmsException(def cmd)
+    {
+        def result = [status:null,
+                      message:null,
+                      mimeType:null]
+        if(cmd.hasErrors())
+        {
+            result = formatOgcException(cmd.toMap(), "WMS server Error: " + cmd.createErrorString())
         }
 
         result
