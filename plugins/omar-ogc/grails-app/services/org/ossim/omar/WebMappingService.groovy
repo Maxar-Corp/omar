@@ -290,7 +290,7 @@ class WebMappingService
     else // setup an empty chain
     {
         result.image = null
-        result.errorMessage="No image found for the specified request"
+        result.errorMessage="No images found for the specified request"
 //        kwlString = "type:ossimMemoryImageSource\n"
 //        if(params.width&&params.height)
  //       {
