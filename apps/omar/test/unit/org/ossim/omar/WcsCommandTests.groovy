@@ -162,40 +162,4 @@ class WcsCommandTests extends GrailsUnitTestCase {
         assertEquals true, cmd.createErrorString().contains("BBOX parameter invalid")
         cmd.bbox = "-180,-90,180,90"
     }
-    /*
-    void testWcsExceptionHandling(){
-        def cmd = new WcsCommand()
-        cmd.bbox = "-180,-90,180,90"
-        cmd.width="256"
-        cmd.height="256"
-        cmd.format="image/jpeg"
-        cmd.coverage="raster_entry"
-        cmd.crs="EPSG:4326"
-        cmd.request="GetCoverage"
-
-        cmd.exception = "text/plain"
-        cmd.request = null
-        cmd.validate();
-        assertEquals false, cmd.validate()
-        def exceptionResult = cmd.getExceptionResult()
-        assertEquals true,exceptionResult.mimeType.contains("plain")
-        assertEquals true,exceptionResult.message.contains("REQUEST")
-
-        cmd.exception = "text/xml"
-        exceptionResult = cmd.getExceptionResult()
-        assertEquals true,exceptionResult.mimeType.contains("xml")
-        assertEquals true,exceptionResult.message.contains("REQUEST")
-        assertEquals true,exceptionResult.message.contains("ServiceExceptionReport")
-
-        cmd.exception = "application/vnd.ogc.se_xml"
-        exceptionResult = cmd.getExceptionResult()
-        assertEquals true,exceptionResult.mimeType.contains("xml")
-        assertEquals true,exceptionResult.message.contains("REQUEST")
-
-        cmd.exception = "application/vnd.ogc.se_inimage"
-        exceptionResult = cmd.getExceptionResult()
-        assertEquals true,(exceptionResult.mimeType == "application/vnd.ogc.se_inimage")
-        assertEquals true, exceptionResult.message instanceof BufferedImage
-    }
-    */
 }
