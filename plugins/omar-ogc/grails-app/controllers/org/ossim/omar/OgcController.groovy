@@ -249,9 +249,6 @@ def authenticateService
           def starttime = System.currentTimeMillis()
           def internaltime = starttime
           def endtime = starttime
-          // Populate org.ossim.omar.WMSCapabilities Request object
-          //def wmsRequest = new WMSRequest()
-
 
           def wmsLogParams = cmd.toMap()
 	
@@ -265,6 +262,7 @@ def authenticateService
             {
             case "getmap":
               wmsLogParams.request = "getmap"
+
               switch ( cmd?.format?.toLowerCase() )
               {
               case "jpeg":
@@ -291,13 +289,12 @@ def authenticateService
                 break
               }
 
-
               def mapResult = webMappingService.getMap(cmd)
 
               internaltime = System.currentTimeMillis()
               if ( mapResult.errorMessage )
               {
-                  def message = "WCS server Error: ${mapResult.errorMessage}"
+                  def message = "WMS server Error: ${mapResult.errorMessage}"
                   // no data to process
                   log.error(message)
 
@@ -415,26 +412,15 @@ def authenticateService
             {
               wmsLogParams.ip = request.getRemoteAddr()
             }
-//      if ( wmsLogParams.domain )
-//      {
-/*
-        def authUser = AuthUser.get(wmsLogParams.domain.id)
-*/
-          //	  println "GETTING AUTH USER"
-            //  def authUser = SecUser.findByUsername(springSecurityService.principal.username)
-          //	  println "AUTH USER: ${authUser}"
-          //    wmsLogParams.userName = authUser?.username
-          //    wmsLogParams.domain = authUser?.email.split('@')[1]
-//      }
             if ( logParameters )
             {
               def urlTemp = createLink([controller: 'ogc', action: 'wms', absolute: true, params: params])
               wmsLogParams.with {
                 endDate = new Date()
                 internalTime = (internaltime - starttime) / 1000.0
-                renderTime = (endtime - internaltime) / 1000.0
-                totalTime = (endtime - starttime) / 1000.0
-                url = urlTemp
+                renderTime   = (endtime - internaltime) / 1000.0
+                totalTime    = (endtime - starttime) / 1000.0
+                url          = urlTemp
               }
               wmsLogService.logParams(wmsLogParams)
             }
@@ -442,7 +428,6 @@ def authenticateService
           catch (java.lang.Exception e)
           {
             log.error("OGC::WMS exception: ${e.message}")
-//       println "OGC::WMS Error: ${e.message}"
           }
       }
     return null
