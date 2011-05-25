@@ -142,6 +142,7 @@ def authenticateService
     }
   }
   def wcs = {WcsCommand cmd ->
+      cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
       // for now until we can develop a plugin for the WCS
       // we will hardcode the output format test list here
       //
@@ -235,212 +236,227 @@ def authenticateService
       }
       null
   }
-  def wms = {
-    def starttime = System.currentTimeMillis()
-    def internaltime = starttime
-    def endtime = starttime
-    // Populate org.ossim.omar.WMSCapabilities Request object
-    def wmsRequest = new WMSRequest()
-
-
-    Utility.simpleCaseInsensitiveBind(wmsRequest, params);
-	def wmsLogParams = wmsRequest.toMap()
-	
-    wmsLogParams.startDate = new Date()
-
-    def tempMap = new CaseInsensitiveMap(params)
-    def logParameters = true
-    try
-    {
-      switch ( wmsRequest?.request?.toLowerCase() )
+  def wms = {WmsCommand cmd->
+      cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
+      Utility.simpleCaseInsensitiveBind(cmd, params);
+      if(!cmd.validate())
       {
-      case "getmap":
-        wmsLogParams.request = "getmap"
-        switch ( wmsRequest?.format?.toLowerCase() )
-        {
-        case "jpeg":
-        case "jpg":
-        case "image/jpeg":
-        case "image/jpg":
-          if ( wmsRequest?.transparent?.equalsIgnoreCase("true") )
-          {
-            wmsRequest.format = "image/png"
-            response.contentType = "image/png"
-          }
-          else
-          {
-            response.contentType = "image/jpeg"
-          }
-          break
-        case "png":
-        case "image/png":
-          response.contentType = "image/png"
-          break
-        case "gif":
-        case "image/gif":
-          response.contentType = "image/gif"
-          break
-        }
-
-
-        def image = webMappingService.getMap(wmsRequest)
-
-        internaltime = System.currentTimeMillis()
-        if ( !image )
-        {
-          log.error("No image found for layers ${wmsRequest.layers}")
-        }
-        else
-        {
-          /*
-          def writers = ImageIO.getImageWritersByMIMEType(response.contentType)
-          if ( writers.hasNext() )
-          {
-            def writer = writers.next()
-            if ( writer )
-            {
-              def writeParam = writer.getDefaultWriteParam()
-              if ( writeParam.canWriteCompressed() )
-              {
-                //               writeParam.compressionMode = javax.imageio.ImageWriteParam.MODE_EXPLICIT
-                //               writeParam.compressionQuality = 0.1;
-                //               writeParam.setProgressiveMode(javax.imageio.ImageWriteParam.MODE_COPY_FROM_METADATA)
-              }
-              writer.output = ImageIO.createImageOutputStream(response.outputStream)
-              def iioimage = new IIOImage(image, [], null)
-              writer.write(writer.getDefaultStreamMetadata(writeParam), iioimage, writeParam)
-              writer.output.close()
-            }
-          }
-          else
-          {
-          */
-            ImageIO.write(image, response.contentType?.split("/")[-1], response.outputStream)
-            response.outputStream.close()
-          //}
-        }
-
-        break
-      case "getcapabilities":
-        wmsLogParams.request = "getcapabilities"
-        def serviceAddress = createLink(controller: "ogc", action: "wms", absolute: true) as String
-        def capabilities = webMappingService?.getCapabilities(wmsRequest, serviceAddress)
-        internaltime = System.currentTimeMillis();
-        render(contentType: "text/xml", text: capabilities)
-        break
-      case "getkml":
-        def wmsParams = [:]
-        wmsLogParams.request = "getkml"
-
-        // Convert param names to lower case
-        params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
-
-        def rasterIdList = params.layers.split(",")
-
-        //  def serviceAddress = createLink(controller: "ogc", action: "wms", absolute: true)
-        //  def kml = webMappingService.getKML(wmsRequest, serviceAddress)
-        def filename = "image.kml"
-        def rasterEntries = findRasterEntries(rasterIdList)
-
-        def kml = null;
-        if ( rasterEntries?.size > 0 )
-        {
-          def file = (rasterEntries[0].mainFile.name as File).name
-          filename = "${file}.kml"
-          kml = kmlService.createImagesKml(rasterEntries, wmsRequest.toMap(), tempMap)
-        }
-        else
-        {
-          kml = ""
-          filename = "empty.kml"
-        }
-        internaltime = System.currentTimeMillis();
-        response.setHeader("Content-disposition", "attachment; filename=${filename}")
-        render(contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8")
-        break
-      case "getkmz":
-          this.kmz()
-        break
-      default:
-        logParameters = false
-        log.error("ERROR: Unknown action: ${wmsRequest?.request}")
-        break
+          log.error(cmd.createErrorString())
+          ogcExceptionService.writeResponse(response, ogcExceptionService.formatWmsException(cmd))
       }
+      else
+      {
+          def starttime = System.currentTimeMillis()
+          def internaltime = starttime
+          def endtime = starttime
+          // Populate org.ossim.omar.WMSCapabilities Request object
+          //def wmsRequest = new WMSRequest()
+
+
+          def wmsLogParams = cmd.toMap()
+	
+          wmsLogParams.startDate = new Date()
+
+          def tempMap = new CaseInsensitiveMap(params)
+          def logParameters = true
+          try
+          {
+            switch ( cmd?.request?.toLowerCase() )
+            {
+            case "getmap":
+              wmsLogParams.request = "getmap"
+              switch ( cmd?.format?.toLowerCase() )
+              {
+              case "jpeg":
+              case "jpg":
+              case "image/jpeg":
+              case "image/jpg":
+                if ( cmd?.transparent?.equalsIgnoreCase("true") )
+                {
+                  cmd.format = "image/png"
+                  response.contentType = "image/png"
+                }
+                else
+                {
+                  response.contentType = "image/jpeg"
+                }
+                break
+              case "png":
+              case "image/png":
+                response.contentType = "image/png"
+                break
+              case "gif":
+              case "image/gif":
+                response.contentType = "image/gif"
+                break
+              }
+
+
+              def mapResult = webMappingService.getMap(cmd)
+
+              internaltime = System.currentTimeMillis()
+              if ( mapResult.errorMessage )
+              {
+                  def message = "WCS server Error: ${mapResult.errorMessage}"
+                  // no data to process
+                  log.error(message)
+
+                  def ogcFormattedException = ogcExceptionService.formatOgcException(ogcParams, message)
+                  ogcExceptionService.writeResponse(response, ogcFormattedException)
+              }
+              else
+              {
+                /*
+                def writers = ImageIO.getImageWritersByMIMEType(response.contentType)
+                if ( writers.hasNext() )
+                {
+                  def writer = writers.next()
+                  if ( writer )
+                  {
+                    def writeParam = writer.getDefaultWriteParam()
+                    if ( writeParam.canWriteCompressed() )
+                    {
+                      //               writeParam.compressionMode = javax.imageio.ImageWriteParam.MODE_EXPLICIT
+                      //               writeParam.compressionQuality = 0.1;
+                      //               writeParam.setProgressiveMode(javax.imageio.ImageWriteParam.MODE_COPY_FROM_METADATA)
+                    }
+                    writer.output = ImageIO.createImageOutputStream(response.outputStream)
+                    def iioimage = new IIOImage(image, [], null)
+                    writer.write(writer.getDefaultStreamMetadata(writeParam), iioimage, writeParam)
+                    writer.output.close()
+                  }
+                }
+                else
+                {
+                */
+                  ImageIO.write(mapResult.image, response.contentType?.split("/")[-1], response.outputStream)
+                  response.outputStream.close()
+                //}
+              }
+
+              break
+            case "getcapabilities":
+              wmsLogParams.request = "getcapabilities"
+              def serviceAddress = createLink(controller: "ogc", action: "wms", absolute: true) as String
+              def capabilities = webMappingService?.getCapabilities(cmd, serviceAddress)
+              internaltime = System.currentTimeMillis();
+              render(contentType: "text/xml", text: capabilities)
+              break
+            case "getkml":
+              def wmsParams = [:]
+              wmsLogParams.request = "getkml"
+
+              // Convert param names to lower case
+              params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
+
+              def rasterIdList = params.layers.split(",")
+
+              //  def serviceAddress = createLink(controller: "ogc", action: "wms", absolute: true)
+              //  def kml = webMappingService.getKML(wmsRequest, serviceAddress)
+              def filename = "image.kml"
+              def rasterEntries = findRasterEntries(rasterIdList)
+
+              def kml = null;
+              if ( rasterEntries?.size > 0 )
+              {
+                def file = (rasterEntries[0].mainFile.name as File).name
+                filename = "${file}.kml"
+                kml = kmlService.createImagesKml(rasterEntries, cmd.toMap(), tempMap)
+              }
+              else
+              {
+                kml = ""
+                filename = "empty.kml"
+              }
+              internaltime = System.currentTimeMillis();
+              response.setHeader("Content-disposition", "attachment; filename=${filename}")
+              render(contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8")
+              break
+            case "getkmz":
+                this.kmz(cmd)
+              break
+            default:
+              logParameters = false
+              log.error("ERROR: Unknown action: ${cmd?.request}")
+              break
+            }
 /*
       println "*"*80
       request.getHeaderNames().each{name->
         println "${name} = ${request.getHeader(name)}"
       }
 */
-      endtime = System.currentTimeMillis()
+            endtime = System.currentTimeMillis()
 /*
       wmsLogParams.domain = authenticateService.userDomain()
 */
-	  def principal = springSecurityService?.principal
-	  def hasUserInformation = !(springSecurityService?.principal instanceof String)
-	  def secUser = hasUserInformation?SecUser.findByUsername(principal.username):null
-      wmsLogParams.userName = secUser?secUser.username:principal
-	  wmsLogParams.domain = ""
-      def domain = null
-      def clientIp = request.getHeader('Client-ip')
-      def XForwarded = request.getHeader('X-Forwarded-For')
-      wmsLogParams.ip = XForwarded
-      if(clientIp)
-      {
-        if(wmsLogParams.ip)
-        {
-          wmsLogParams.ip += ", ${clientIp}"
-        }
-        else
-        {
-          wmsLogParams.ip = clientIp
-        }
-      }
+            def principal = springSecurityService?.principal
+            def hasUserInformation = !(springSecurityService?.principal instanceof String)
+            def secUser = hasUserInformation?SecUser.findByUsername(principal.username):null
+            wmsLogParams.userName = secUser?secUser.username:principal
+            wmsLogParams.domain = ""
+            def domain = null
+            def clientIp = request.getHeader('Client-ip')
+            def XForwarded = request.getHeader('X-Forwarded-For')
+            wmsLogParams.ip = XForwarded
+            if(clientIp)
+            {
+              if(wmsLogParams.ip)
+              {
+                wmsLogParams.ip += ", ${clientIp}"
+              }
+              else
+              {
+                wmsLogParams.ip = clientIp
+              }
+            }
 
-      if ( !wmsLogParams.ip)
-      {
-        wmsLogParams.ip = request.getRemoteAddr()
-      }
+            if ( !wmsLogParams.ip)
+            {
+              wmsLogParams.ip = request.getRemoteAddr()
+            }
 //      if ( wmsLogParams.domain )
 //      {
 /*
         def authUser = AuthUser.get(wmsLogParams.domain.id)
 */
-	//	  println "GETTING AUTH USER"
-      //  def authUser = SecUser.findByUsername(springSecurityService.principal.username)
-	//	  println "AUTH USER: ${authUser}"
-    //    wmsLogParams.userName = authUser?.username
-    //    wmsLogParams.domain = authUser?.email.split('@')[1]
+          //	  println "GETTING AUTH USER"
+            //  def authUser = SecUser.findByUsername(springSecurityService.principal.username)
+          //	  println "AUTH USER: ${authUser}"
+          //    wmsLogParams.userName = authUser?.username
+          //    wmsLogParams.domain = authUser?.email.split('@')[1]
 //      }
-      if ( logParameters )
-      {
-        def urlTemp = createLink([controller: 'ogc', action: 'wms', absolute: true, params: params])
-        wmsLogParams.with {
-          endDate = new Date()
-          internalTime = (internaltime - starttime) / 1000.0
-          renderTime = (endtime - internaltime) / 1000.0
-          totalTime = (endtime - starttime) / 1000.0
-          url = urlTemp
-        }
-        wmsLogService.logParams(wmsLogParams)
-      }
-    }
-    catch (java.lang.Exception e)
-    {
-      log.error("OGC::WMS exception: ${e.message}")
+            if ( logParameters )
+            {
+              def urlTemp = createLink([controller: 'ogc', action: 'wms', absolute: true, params: params])
+              wmsLogParams.with {
+                endDate = new Date()
+                internalTime = (internaltime - starttime) / 1000.0
+                renderTime = (endtime - internaltime) / 1000.0
+                totalTime = (endtime - starttime) / 1000.0
+                url = urlTemp
+              }
+              wmsLogService.logParams(wmsLogParams)
+            }
+          }
+          catch (java.lang.Exception e)
+          {
+            log.error("OGC::WMS exception: ${e.message}")
 //       println "OGC::WMS Error: ${e.message}"
-    }
+          }
+      }
     return null
   }
-  def kmz = {
-      def wmsRequest = new WMSRequest()
+  def kmz = {WmsCommand cmd->
+      cmd.clearErrors();
+
       def kmlbuilder = new StreamingMarkupBuilder()
       kmlbuilder.encoding = "UTF-8"
 
 
-      Utility.simpleCaseInsensitiveBind(wmsRequest, params);
+      Utility.simpleCaseInsensitiveBind(cmd, params);
       // will only support png or jpegs
-      def format =  wmsRequest.format?:"image/png"
+      def format =  cmd.format?:"image/png"
       def ext =  ".png"
 
       switch(format.toLowerCase())
@@ -458,19 +474,19 @@ def authenticateService
               ext = ".png"
           break
       }
-      wmsRequest.format = format
-      wmsRequest.request = "GetMap"
-      wmsRequest.srs     = "EPSG:4326"
-      def wmsQuery = webMappingService.setupQuery(wmsRequest);
+      cmd.format = format
+      cmd.request = "GetMap"
+      cmd.srs     = "EPSG:4326"
+      def wmsQuery = webMappingService.setupQuery(cmd);
       def rasterEntryList = wmsQuery.getRasterEntriesAsList();
 
-      def image = webMappingService.getMap(wmsRequest, rasterEntryList)
+      def image = webMappingService.getMap(cmd, rasterEntryList).image
       def tempDescription = rasterEntryList?kmlService.createImageKmlDescription(rasterEntryList[0]):"No images found for the kmz query"
       if(image&&(rasterEntryList.size()>0) )
       {
           def nameString = rasterEntryList[0].title
           nameString = nameString?:rasterEntryList[0].indexId
-          def bounds = wmsRequest.bounds
+          def bounds = cmd.bounds
           def kmlnode = {
             mkp.xmlDeclaration()
             kml("xmlns": "http://earth.google.com/kml/2.1") {
