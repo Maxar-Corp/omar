@@ -1,6 +1,6 @@
 package org.ossim.omar
 import groovy.xml.StreamingMarkupBuilder
-import org.ossim.omar.WMSRequest
+import org.ossim.omar.WmsCommand
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.GeometryFactory
@@ -123,7 +123,7 @@ class SuperOverlayService implements InitializingBean{
         def kmlbuilder = new StreamingMarkupBuilder()
         kmlbuilder.encoding = "UTF-8"
         def tileBounds = tileBound(params, fullResBound)
-        def wmsRequest = new WMSRequest()
+        def wmsRequest = new WmsCommand()
         Utility.simpleCaseInsensitiveBind(wmsRequest, params)
 
         def newParams = new HashMap(params)
@@ -243,7 +243,7 @@ class SuperOverlayService implements InitializingBean{
         def kmlbuilder = new StreamingMarkupBuilder()
         kmlbuilder.encoding = "UTF-8"
         def tileBounds = tileBound(params, fullResBound)
-        def wmsRequest = new WMSRequest()
+        def wmsRequest = new WmsCommand()
         Utility.simpleCaseInsensitiveBind(wmsRequest, params)
 
         def newParams = new HashMap(params)
@@ -355,17 +355,17 @@ class SuperOverlayService implements InitializingBean{
           }
         }
         kmlbuilder.bind(kmlnode).toString()
-        def image = null
+        def mapResult = [image:null,errorMessage:null]
         if(!rasterEntry)
         {
-            image = new BufferedImage(tileSize.width, tileSize.height, BufferedImage.TYPE_INT_RGB)
+            mapResult.image = new BufferedImage(tileSize.width, tileSize.height, BufferedImage.TYPE_INT_RGB)
         }
         else
         {
-            image = webMappingService.getMap(wmsRequest, [rasterEntry])
+            mapResult = webMappingService.getMap(wmsRequest, [rasterEntry])
         }
 
-        [kml:kmlbuilder.bind(kmlnode).toString(), image:image, format:"${ext}", imagePath:"images/image.${ext}"]
+        [kml:kmlbuilder.bind(kmlnode).toString(), image:mapResult.image, format:"${ext}", imagePath:"images/image.${ext}"]
     }
     def isAnEdgeTile(def rasterEntry, def fullResBbox, def level, def row, def col)//def level, def row, def col)
     {
