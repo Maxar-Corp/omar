@@ -149,7 +149,7 @@ class OgcExceptionService {
                 result = "text"
                 break
             default:
-                result = "text"
+                result = "xml"
                 break
         }
         result
