@@ -265,7 +265,7 @@ class WmsCommand {
                    }
                    catch(Exception e)
                    {
-                       message = "ROTATE parameter invalid.  Values does not appear to be a valid floating number."
+                       message = "ROTATE parameter invalid.  Value does not appear to be a valid floating number."
                    }
                 }
             }
