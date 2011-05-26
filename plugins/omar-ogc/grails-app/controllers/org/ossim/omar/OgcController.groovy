@@ -194,12 +194,11 @@ def authenticateService
                     }
                     if(!rasterEntries)
                     {
-                        def ogcParams = cmd.toMap();
                         def message = "WCS server Error: No coverage found for ${coverage}"
                         // no data to process
                         log.error(message)
 
-                        def ogcFormattedException = ogcExceptionService.formatOgcException(ogcParams, message)
+                        def ogcFormattedException = ogcExceptionService.formatOgcException(cmd.toMap(), message)
                         ogcExceptionService.writeResponse(response, ogcFormattedException)
                     }
                     else
@@ -298,7 +297,7 @@ def authenticateService
                   // no data to process
                   log.error(message)
 
-                  def ogcFormattedException = ogcExceptionService.formatOgcException(ogcParams, message)
+                  def ogcFormattedException = ogcExceptionService.formatOgcException(cmd.toMap(), message)
                   ogcExceptionService.writeResponse(response, ogcFormattedException)
               }
               else
