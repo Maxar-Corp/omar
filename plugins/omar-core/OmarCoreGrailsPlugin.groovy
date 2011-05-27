@@ -7,7 +7,9 @@ class OmarCoreGrailsPlugin
   // the version or versions of Grails the plugin is designed for
   def grailsVersion = "1.2.2 > *"
   // the other plugins this plugin depends on
-  def dependsOn = [:]
+  def dependsOn = [
+          'jodaTime': "1.2 > *"
+  ]
   // resources that are excluded from plugin packaging
   def pluginExcludes = [
           "grails-app/views/error.gsp"
@@ -51,19 +53,19 @@ This plugin contains OMAR code that can be shared or accessed from other OMAR pl
 
   def doWithDynamicMethods = { ctx ->
     // TODO Implement registering dynamic methods to classes (optional)
-    String.metaClass.toDateTime{->
-        org.ossim.omar.ISO8601DateParser.parseDateTime(delegate)
+    String.metaClass.toDateTime {->
+      org.ossim.omar.ISO8601DateParser.parseDateTime(delegate)
     }
-    String.metaClass.toDate{->
+    String.metaClass.toDate {->
 
-        def date = null
-        def dateTime =org.ossim.omar.ISO8601DateParser.parseDateTime(delegate.trim())
-        if(dateTime)
-        {
-           date = new Date(dateTime.millis)
-        }
+      def date = null
+      def dateTime = org.ossim.omar.ISO8601DateParser.parseDateTime(delegate.trim())
+      if ( dateTime )
+      {
+        date = new Date(dateTime.millis)
+      }
 
-        date
+      date
     }
   }
 
