@@ -36,6 +36,15 @@ grails.project.dependency.resolution = {
     //mavenRepo "http://download.java.net/maven/2/"
     //mavenRepo "http://repository.jboss.com/maven2/"
   }
+
+  plugins {
+    compile ':spring-security-core:1.1.3'
+    compile ':spring-security-ldap:1.0.5'
+    compile ':mail:1.0-SNAPSHOT'
+
+
+  }
+
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
