@@ -41,6 +41,9 @@ grails.project.dependency.resolution = {
 
     // runtime 'mysql:mysql-connector-java:5.1.5'
   }
+  plugins {
+    compile ":csv:0.3"
+  }
 }
 
 grails.plugin.location.'geoscript' = '../../plugins/geoscript'
