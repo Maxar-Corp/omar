@@ -1,14 +1,19 @@
-class OmarRasterGrailsPlugin {
+class OmarRasterGrailsPlugin
+{
   // the plugin version
   def version = "0.3"
   // the version or versions of Grails the plugin is designed for
   def grailsVersion = "1.2.2 > *"
   // the other plugins this plugin depends on
-  def dependsOn = [:]
+  def dependsOn = [
+          richui: "0.8 > *"
+  ]
   // resources that are excluded from plugin packaging
   def pluginExcludes = [
           "grails-app/views/error.gsp"
   ]
+
+  def loadAfter = ['omarCore']
 
   // TODO Fill in these fields
   def author = "Scott Bortman"
