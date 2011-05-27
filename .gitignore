@@ -521,6 +521,7 @@ plugins/omar-stager/web-app/WEB-INF/tld/*.iml
 plugins/omar-stager/web-app/css/*.iml
 plugins/omar-stager/web-app/images/*.iml
 plugins/omar-stager/web-app/js/*.iml
+plugins/omar-superoverlay/target
 plugins/omar-video/*.iml
 plugins/omar-video/.settings/*.iml
 plugins/omar-video/grails-app/*.iml
