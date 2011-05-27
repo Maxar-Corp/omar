@@ -42,6 +42,10 @@ grails.project.dependency.resolution = {
     // runtime 'mysql:mysql-connector-java:5.1.5'
   }
 
+  plugins {
+    compile "org.grails.plugins:background-thread:1.6"
+  }
+
 }
 
 grails.plugin.location.postgis = "../../plugins/postgis"
