@@ -42,6 +42,10 @@ grails.project.dependency.resolution = {
     // runtime 'mysql:mysql-connector-java:5.1.5'
   }
 
+  plugins {
+    compile ":joda-time:1.2"
+  }
+
 }
 
 grails.plugin.location.geoscript = "../../plugins/geoscript"
