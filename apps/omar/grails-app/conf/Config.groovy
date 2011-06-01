@@ -145,7 +145,7 @@ wms {
   referenceDataDirectory = "/data/omar"
   mapServExt = (System.properties['os.name'].startsWith('Windows')) ? ".exe" : ""
   serverAddress = grails.serverIP
-  useTileCache = false
+  useTileCache = true
   mapFile = "${referenceDataDirectory}/bmng.map"
 
   base {
@@ -504,17 +504,17 @@ grails.plugins.springsecurity.password.algorithm = 'MD5'
 grails.plugins.springsecurity.password.encodeHashAsBase64 = true
 
 // LDAP Configuration
-//grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
-//grails.plugins.springsecurity.ldap.context.managerDn = 'cn=Administrator,dc=otd,dc=radiantblue,dc=com' //
-//grails.plugins.springsecurity.ldap.context.userDn = 'dc=otd,dc=radiantblue,dc=com' //
+grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
+grails.plugins.springsecurity.ldap.context.managerDn = 'cn=Administrator,dc=otd,dc=radiantblue,dc=com' //
+grails.plugins.springsecurity.ldap.context.userDn = 'dc=otd,dc=radiantblue,dc=com' //
 
-//grails.plugins.springsecurity.ldap.context.managerPassword = 'omarldap'                                //
-//grails.plugins.springsecurity.ldap.search.base = 'ou=people,dc=otd,dc=radiantblue,dc=com'
-//grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = true
-//grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
-//grails.plugins.springsecurity.ldap.search.searchSubtree = true
-//grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=group,dc=otd,dc=radiantblue,dc=com'
-//grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=group,memberUid=demo,dc=otd,dc=radiantblue,dc=com'
+grails.plugins.springsecurity.ldap.context.managerPassword = 'omarldap'                                //
+grails.plugins.springsecurity.ldap.search.base = 'ou=people,dc=otd,dc=radiantblue,dc=com'
+grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = false
+grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
+grails.plugins.springsecurity.ldap.search.searchSubtree = true
+grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=group,dc=otd,dc=radiantblue,dc=com'
+grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=group,memberUid=demo,dc=otd,dc=radiantblue,dc=com'
 
 // LDAP user:
 //  username: demo
