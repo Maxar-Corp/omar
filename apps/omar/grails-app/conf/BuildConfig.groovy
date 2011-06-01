@@ -13,9 +13,9 @@ grails.project.dependency.resolution = {
   }
   log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
   repositories {
-//    grailsPlugins()
+    grailsPlugins()
     grailsHome()
-//    grailsCentral()
+    grailsCentral()
 
     def localPlugins = new FileSystemResolver(name: 'my-local-repo')
     localPlugins.with {
@@ -31,7 +31,7 @@ grails.project.dependency.resolution = {
     // uncomment the below to enable remote dependency resolution
     // from public Maven repositories
     mavenLocal()
-    //mavenCentral()
+    mavenCentral()
     //mavenRepo "http://snapshots.repository.codehaus.org"
     //mavenRepo "http://repository.codehaus.org"
     //mavenRepo "http://download.java.net/maven/2/"
