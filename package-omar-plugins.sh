@@ -12,8 +12,11 @@ cd ~/.ivy2/cache
 tar xvfz $OMAR_HOME/plugins/ivyCache.tgz
 
 # Setup maven cache
+cd $OMAR_HOME/plugins
+tar xvfz m2Repository.tgz
 cd ~ 
 mkdir -p .m2/repository
+cd .m2/repository
 cp -R $OMAR_HOME/plugins/m2Repository/* . 
 
 # Package OMAR plugins
