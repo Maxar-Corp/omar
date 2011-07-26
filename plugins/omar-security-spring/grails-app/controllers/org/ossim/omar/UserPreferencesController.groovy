@@ -1,6 +1,7 @@
 package org.ossim.omar
 
 import org.codehaus.groovy.grails.plugins.springsecurity.NullSaltSource
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 class UserPreferencesController
 {
@@ -76,12 +77,14 @@ class UserPreferencesController
         user = SecUser.get(params.id)
       }
 
+      boolean isNotAdmin = SpringSecurityUtils.ifNotGranted("ROLE_ADMIN")
+
       if ( !user )
       {
         flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'secUser.label', default: 'SecUser'), command.username])}"
         redirect(controller: "home", action: "index")
       }
-      else if ( user.id != springSecurityService.principal.id )
+      else if ( user.id != springSecurityService.principal.id && isNotAdmin)
       {
         flash.message = "You don't have permissions to edit that user!"
         redirect(controller: "home", action: "index")
