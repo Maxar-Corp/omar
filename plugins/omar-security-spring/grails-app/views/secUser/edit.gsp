@@ -47,7 +47,10 @@
               <label for="password"><g:message code="secUser.password.label" default="Password"/></label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: secUserInstance, field: 'password', 'errors')}">
+              <%--
               <g:passwordField name="password" value="${secUserInstance?.password}"/>
+              --%>
+              <g:link controller="userPreferences" action="changePassword" id="${secUserInstance.id}">Click to change</g:link>
             </td>
           </tr>
 
