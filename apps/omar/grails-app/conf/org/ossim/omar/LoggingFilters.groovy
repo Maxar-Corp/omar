@@ -6,10 +6,10 @@ class LoggingFilters
   def filters = {
     all(controller: '*', action: '*') {
       before = {
-        log.info "Parameters: ${params.inspect()}"
+        log.debug "Parameters: ${params.inspect()}"
       }
       after = {model ->
-        log.info "Model: ${model.inspect()}"
+        log.debug "Model: ${model.inspect()}"
       }
       afterView = {
 
