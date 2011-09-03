@@ -25,8 +25,7 @@ grails.project.dependency.resolution = {
       changingPattern = ".*SNAPSHOT"
       setCheckmodified(true)
     }
-    resolver( localPlugins )
-
+    resolver(localPlugins)
 
     // uncomment the below to enable remote dependency resolution
     // from public Maven repositories
@@ -43,6 +42,10 @@ grails.project.dependency.resolution = {
     // runtime 'mysql:mysql-connector-java:5.1.5'
   }
 
+  plugins {
+    compile ":joda-time:1.2"
+    compile ":omar-core:0.1"
+  }
 }
 
 
