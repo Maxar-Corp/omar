@@ -20,35 +20,44 @@ class KmlService implements ApplicationContextAware, InitializingBean
   def flashDirRoot
   def flashUrlRoot
   def coordinateConversionService
+
   String createName(RasterEntry rasterEntry)
   {
-      rasterEntry.title?:rasterEntry.filename
+    rasterEntry.title ?: rasterEntry.filename
   }
+
   String createImageKmlDescription(RasterEntry rasterEntry)
   {
     def description = ""
     def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView",
             params: [layers: rasterEntry.indexId])
+    def thumbnailUrl = tagLibBean.createLink(absolute: true, controller: "thumbnail",
+            action: "show", id: rasterEntry.id, params: [size: 128, projectionType: 'imagespace'])
+    def logoUrl = "${grailsApplication.config.grails.serverURL}/images/omarLogo.png"
 
     def mpp = rasterEntry.getMetersPerPixel()
-    def fieldMap = [File: "<a href='${imageUrl}'>${(rasterEntry.mainFile.name as File).name}</a>",
-            'Entry id': rasterEntry.entryId?:"",
-            'Image Id': rasterEntry.imageId?:"",
-            'Title': rasterEntry.title?:"",
-            'Niirs': rasterEntry.niirs?:"",
-            'Width': rasterEntry.width?:"",
-            'Height': rasterEntry.height?:"",
-            'Bands': rasterEntry.numberOfBands?:"",
-            'Acquistion Date': rasterEntry?.acquisitionDate?:"",
-            'Meters Per Pixel': mpp?:""]
+    def fieldMap = [
+            Thumbnail: "<img src='${thumbnailUrl}'/>",
+            File: "<a href='${imageUrl}'>${(rasterEntry.mainFile.name as File).name}</a>",
+            'Entry Id': rasterEntry.entryId ?: "",
+            'Image Id': rasterEntry.imageId ?: "",
+            'Title': rasterEntry.title ?: "",
+            'NIIRS': rasterEntry.niirs ?: "",
+            'Width': rasterEntry.width ?: "",
+            'Height': rasterEntry.height ?: "",
+            'Bands': rasterEntry.numberOfBands ?: "",
+            'Acquistion Date': rasterEntry?.acquisitionDate ?: "",
+            'Meters Per Pixel': mpp ?: ""
+    ]
 
 
-    description = "<hr/><table>"
+    description = "<table border='1'>"
     fieldMap.each {k, v ->
       description += "<tr>"
-      description += "<td>${k}</td>"
+      description += "<th align='right'>${k}:</th>"
       description += "<td>${v}</td></tr>"
     }
+    description += "<tfoot><tr><td colspan='2'><a href='${grailsApplication.config.grails.serverURL}'><img src='${logoUrl}'/></a></td></tr></tfoot>"
     description += "</table>"
 
     description
@@ -66,13 +75,13 @@ class KmlService implements ApplicationContextAware, InitializingBean
       wmsParams.version = "1.1.1"
     }
 //    if ( !params?.containsKey("width") )
-//    {
-//      wmsParams.width = "1024"
-//    }
-//    if ( !params?.containsKey("height") )
-//    {
-//      wmsParams.height = "512"
-//    }
+    //    {
+    //      wmsParams.width = "1024"
+    //    }
+    //    if ( !params?.containsKey("height") )
+    //    {
+    //      wmsParams.height = "512"
+    //    }
     if ( !params?.containsKey("format") )
     {
       wmsParams.format = "image/png"
@@ -286,35 +295,52 @@ class KmlService implements ApplicationContextAware, InitializingBean
               def createFlvUrl = tagLibBean.createLink(absolute: true, controller: "videoStreaming", action: "show", id: videoDataSet.indexId)
               def descriptionText = ""
               def bounds = videoDataSet.groundGeom?.bounds
+              def logoUrl = "${grailsApplication.config.grails.serverURL}/images/omarLogo.png"
+              def thumbnailUrl = tagLibBean.createLink(absolute: true, controller: "thumbnail", action: "frame", id: videoDataSet.id, params: [size: 128])
+
               if ( embed )
               {
                 descriptionText = """
-                  <table width="720">
-                    <caption><a href='${createFlvUrl}'>CLICK TO PLAY</a><br/></caption>
-                    <tr><th align="right">START TIME:</th><td>${videoDataSet.startDate}</td></tr>
-                    <tr><th align="right">END TIME:</th><td align="left">${videoDataSet.endDate}</td></tr>
-                    <tr><th align="right">MIN LAT:</th><td align="left">${bounds?.minLat}</td></tr>
-                    <tr><th align="right">MIN LON:</th><td align="left">${bounds?.minLon}</td></tr>
-                    <tr><th align="right">MAX LAT:</th><td align="left">${bounds?.maxLat}</td></tr>
-                    <tr><th align="right">MAX LON:</th><td align="left">${bounds?.maxLon}</td></tr>
+                  <table border="1" width="720">
+                    <tr><th align="right">Thumbnail:</th>
+			<td> <a href='${createFlvUrl}'><img src='${thumbnailUrl}'/></a></td>
+		    </tr>
+                    <tr><th align="right">Start Time:</th><td>${videoDataSet.startDate}</td></tr>
+                    <tr><th align="right">End Time:</th><td align="left">${videoDataSet.endDate}</td></tr>
+                    <tr><th align="right">Min Lat:</th><td align="left">${bounds?.minLat}</td></tr>
+                    <tr><th align="right">Min Lin:</th><td align="left">${bounds?.minLon}</td></tr>
+                    <tr><th align="right">Max Lat:</th><td align="left">${bounds?.maxLat}</td></tr>
+                    <tr><th align="right">Max Lon:</th><td align="left">${bounds?.maxLon}</td></tr>
                     <tr><td>
                       <embed type="application/x-shockwave-flash" src="${flashPlayerUrl}"
                         width="720" height="480" flashvars="file=${flvUrl}&autostart=true"</embed>
-                    <td><tr>
+                    </td></tr>
+                    <tfoot>
+                      <tr><td colspan="2">
+                         <a href='${grailsApplication.config.grails.serverURL}'><img src='${logoUrl}'/></a>
+                      </td></tr>
+                    </tfoot>
                   </table>
                 """
               }
               else
               {
                 descriptionText = """
-                  <table>
-                    <caption><a href='${createFlvUrl}'>CLICK TO PLAY</a><br/></caption>
-                    <tr><th align="right">START TIME:</th><td align="left">${videoDataSet.startDate}</td></tr>
-                    <tr><th align="right">END TIME:</th><td align="left">${videoDataSet.endDate}</td></tr>
-                    <tr><th align="right">MIN LAT:</th><td align="left">${bounds?.minLat}</td></tr>
-                    <tr><th align="right">MIN LON: </th><td align="left">${bounds?.minLon}</td></tr>
-                    <tr><th align="right">MAX LAT:</th><td align="left">${bounds?.maxLat}</td></tr>
-                    <tr><th align="right">MAX LON:</th><td align="left">${bounds?.maxLon}</td></tr>
+                  <table border="1">
+                    <tr> <th align="right">Thumbnail:</th>
+			<td><a href='${createFlvUrl}'><img src='${thumbnailUrl}'/></a></td>
+                    </tr>
+                    <tr><th align="right">Start Time:</th><td align="left">${videoDataSet.startDate}</td></tr>
+                    <tr><th align="right">End Time:</th><td align="left">${videoDataSet.endDate}</td></tr>
+                    <tr><th align="right">Min Lat:</th><td align="left">${bounds?.minLat}</td></tr>
+                    <tr><th align="right">Min Lon: </th><td align="left">${bounds?.minLon}</td></tr>
+                    <tr><th align="right">Max Lat:</th><td align="left">${bounds?.maxLat}</td></tr>
+                    <tr><th align="right">Max Lon:</th><td align="left">${bounds?.maxLon}</td></tr>
+                    <tfoot>
+                      <tr><td colspan="2">
+                         <a href='${grailsApplication.config.grails.serverURL}'><img src='${logoUrl}'/></a>
+                      </td></tr>
+                    </tfoot>
                   </table>
                 """
               }
