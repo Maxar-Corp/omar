@@ -227,7 +227,7 @@
 
 
 
-   <button type="button" onclick="foo()">Refresh Layer</button> 
+   <button type="button" onclick="refreshVectorLayer()">Refresh Layer</button>
             </li>
           </ol>
         </div>
@@ -445,8 +445,9 @@ function init(mapWidth, mapHeight)
   // full res is included in resLevels so we need to add 2 more to give us
   // an 8x zoom
   map = new OpenLayers.Map("map", { controls:[], maxExtent:bounds, numZoomLevels:(resLevels+2) });
- map.events.register("moveend", map, theMapHasMoved); ////////////////////
-  map.events.register('zoomend', map, theMapHasZoomed); ////////////////////
+//  map.events.register("moveend", map, theMapHasMoved); ////////////////////
+  //map.events.register('zoomend', null, theMapHasZoomed); ////////////////////
+  map.events.register("moveend", null, theMapHasMoved); ////////////////////
 
 
   var options = {
@@ -518,13 +519,6 @@ function init(mapWidth, mapHeight)
     });
 
 
-
-
-
-
-
-
-
 	brightnessSlider.animate = false;
 	 
     brightnessSlider.getRealValue = function() { 
@@ -585,23 +579,7 @@ function init(mapWidth, mapHeight)
 
 	// set the initialization flag so the moveend and zoomend code can execute
 	initFlag = 0; ////////////////////
-
-	// setup an the initial image vector layer ////////////////////
-	imageVectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", ////////////////////
-	{ ////////////////////
-		styleMap: new OpenLayers.StyleMap ////////////////////
-		({ ////////////////////
-			"default": ////////////////////
-			{ ////////////////////
-				externalGraphic : <%=' "${urlPath}" '%>, ////////////////////
-				graphicWidth : <%=' "${imageWidth}" '%>, ////////////////////
-      			graphicHeight : <%=' "${imageHeight}" '%>, ////////////////////
-				rotation : <%=' "${angle}" '%> ////////////////////
-			} ////////////////////
-		}) ////////////////////
-    }); ////////////////////
-	map.addLayer(imageVectorLayer); ////////////////////
-
+    resetImageVectorLayer()
     // default the rotation to North is Up
     sliderRotate(0); ////////////////////
 
@@ -649,31 +627,28 @@ function setupCompassMap() ////////////////////
 
 function updateImage() ////////////////////
 { ////////////////////
-
     // calculate the change in actual map movement ////////////////////
     var deltaMovementX = map.getCenter().lon - oldMapCenterX; ////////////////////
 	var deltaMovementY = map.getCenter().lat - oldMapCenterY; ////////////////////
 	var deltaMovementMagnitude = Math.sqrt(Math.pow(deltaMovementX,2) + Math.pow(deltaMovementY,2)); ////////////////////
-
+    var beta = 0
     // calculate the angle of the actual map movement ////////////////////
 	if (deltaMovementY >= 0 && deltaMovementX > 0) ////////////////////
 	{ ////////////////////
-		var beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI; ////////////////////
+         beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI; ////////////////////
 	} ////////////////////
 	else if (deltaMovementY >= 0 && deltaMovementX < 0) ////////////////////
 	{ ////////////////////
-		 var beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI + 180; ////////////////////
+        beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI + 180; ////////////////////
 	} ////////////////////
 	else if (deltaMovementY < 0 && deltaMovementX < 0) ////////////////////
 	{ ////////////////////
-		var beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI + 180; ////////////////////
+		beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI + 180; ////////////////////
 	} ////////////////////
 	else if (deltaMovementY < 0 && deltaMovementX > 0) ////////////////////
 	{ ////////////////////
-		var beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI + 360; ////////////////////
+		beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI + 360; ////////////////////
 	} ////////////////////
-	else { beta = 0; } ////////////////////
-
 	// relate the actual map movement to relative image movement ////////////////////
 	var theta = beta - rotationAngle; ////////////////////
 	var relativeXDelta = Math.cos(theta * Math.PI/180) * deltaMovementMagnitude; ////////////////////
@@ -753,8 +728,6 @@ function getImageURL(imageBounds) ////////////////////
 
 function theMapHasMoved() ////////////////////
 {
-
-
  ////////////////////
     if (initFlag == 0) ////////////////////
     { ////////////////////
@@ -781,7 +754,6 @@ function theMapHasZoomed() ////////////////////
     if (initFlag == 0) ////////////////////
     { ////////////////////
         // remove the image vector layer and erase all previous images ////////////////////
-        imageVectorLayer.destroy(); ////////////////////
 
         // reset the image vector layer an make a new one ////////////////////
         resetImageVectorLayer(); ////////////////////
@@ -809,8 +781,11 @@ function theMapHasZoomed() ////////////////////
 function resetImageVectorLayer() ////////////////////
 { ////////////////////
     // remove the image vector layer and all previous images ////////////////////
-    imageVectorLayer.destroy(); ////////////////////
 
+    if(imageVectorLayer)
+    {
+        imageVectorLayer.destroy(); ////////////////////
+    }
     // define a vector layer to add markers to ////////////////////
 	imageVectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", ////////////////////
 	{ ////////////////////
@@ -824,11 +799,12 @@ function resetImageVectorLayer() ////////////////////
 				rotation : <%=' "${angle}" '%> ////////////////////
 			} ////////////////////
 		}) ////////////////////
-    }); ////////////////////
+    });
+     ////////////////////
 	map.addLayer(imageVectorLayer); ////////////////////
 } ////////////////////
 
-function foo()
+function refreshVectorLayer()
 {
 imageVectorLayer.redraw(true);
 //alert("refreshed");
@@ -863,7 +839,6 @@ function sliderRotate(sliderValue) ////////////////////
 
 function rotateTextField() ////////////////////
 { ////////////////////
-	alert("Foo");
     ${"slider"}.value = ${"rotateAngle"}.value; ////////////////////
 	
     sliderRotate(${"slider"}.value); ////////////////////
