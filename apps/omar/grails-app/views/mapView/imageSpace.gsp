@@ -858,6 +858,9 @@ function sliderRotate(sliderValue) ////////////////////
 	imageVectorLayer.addFeatures([image]); ////////////////////
 } ////////////////////
 
+
+
+
 function rotateTextField() ////////////////////
 { ////////////////////
 	alert("Foo");
