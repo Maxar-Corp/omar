@@ -10,7 +10,7 @@ import joms.oms.ossimGpt;
 class CoordinateConversionService
 {
 
-  boolean transactional = true
+  static transactional = true
 
   String convertToDecimalDegrees(String input)
   {
