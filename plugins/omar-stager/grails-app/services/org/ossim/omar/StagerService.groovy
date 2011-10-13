@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationContext
 class StagerService implements ApplicationContextAware
 {
 
-  boolean transactional = true
+  static transactional = true
 
   def backgroundService
   def sessionFactory

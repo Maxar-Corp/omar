@@ -11,7 +11,7 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
  */
 class DataManagerService implements ApplicationContextAware
 {
-  boolean transactional = true
+  static transactional = true
   def processSuccessLog
   def processFailureLog
   def filterFileLog
