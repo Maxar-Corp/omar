@@ -156,19 +156,28 @@
     if(mapWidget) mapWidget.changeMapSize( );
   }
 
-  function setupBaseLayer()
+  function setupBaseLayers()
   {
-    var baseLayer = null;
-    var baseWMS = ${baseWMS as JSON};
+    if(!mapWidget) return;
+        var baseLayer = null;
+        var baseWMS=${baseWMS as JSON};
 
-    for ( foo  in baseWMS )
-    {
-      baseLayer = new OpenLayers.Layer.WMS( baseWMS[foo].name, baseWMS[foo].url,
-              baseWMS[foo].params, baseWMS[foo].options );
-      baseLayer.addOptions({displayOutsideMaxExtent:true});
-      mapWidget.getMap().addLayer( baseLayer );
-      mapWidget.getMap().setBaseLayer( baseLayer );
+
+    for ( layer in baseWMS ) {
+      baseLayer = new OpenLayers.Layer.WMS(baseWMS[layer].name, baseWMS[layer].url,
+              baseWMS[layer].params, baseWMS[layer].options);
+
+      if(baseWMS[layer].options.isBaseLayer)
+      {
+        mapWidget.setupBaseLayers(baseLayer);
+      }
+      else
+      {
+        mapWidget.getMap().addLayer(baseLayer);
+      }
     }
+
+
   }
 
   function init()
@@ -198,12 +207,12 @@
 
 	var bounds = new OpenLayers.Bounds(minLon, minLat, maxLon, maxLat);
 
-	mapWidget = new MapWidget();
-	mapWidget.setupMapWidgetWithOptions("map", {controls: [],  displayOutsideMaxExtent:true, maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale});
+	//mapWidget = new MapWidget();
+	mapWidget.setupMapWidgetWithOptions("map", {controls: []/*,  displayOutsideMaxExtent:true, maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale*/});
 	mapWidget.setFullResScale(parseFloat("${fullResScale}"));
     mapWidget.changeMapSize();
     //map = new OpenLayers.Map( "map", {controls: [], maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale} );
-    setupBaseLayer( );
+    setupBaseLayers( );
     var layers = [
   <g:each var="rasterEntry" in="${rasterEntries}" status="i">
 
