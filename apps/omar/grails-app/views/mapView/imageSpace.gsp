@@ -40,6 +40,12 @@
     background:url(${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
   }
 
+ #slider-rotate-bg{
+    
+    background:url(${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
+  }
+
+
   div.olControlMousePosition {
     font-family: Verdana;
     font-size: 1.0em;
@@ -192,13 +198,50 @@
             </g:if>
             <li>Image Rotate:</li>
             <li>
-                <g:textField name="rotate" value="${params.rotate?:0}" onChange="rotateImage()" size="1"/>
-                <button id="rotateApply" type="button" onclick="">Apply</button>
+                <!-- This is hidden to prevent rotating the image unintentionally -->
+                <g:textField name="rotate" value="${params.rotate?:0}" style="display:none" size="1"/> <!-------------------->
+                <!-- A new text field to hold the rotation value -->
+                <g:textField name="rotateAngle" value="0" onChange="rotateSlider.setRealValue(this.value)" size="1"/> <!-------------------->
+                <button id="rotateApply" type="button" onclick="rotateSlider.setRealValue($(rotateAngle).value)">Apply</button>
+
+                <br> <!-------------------->
+
+					<li>
+					
+					
+				
+					
+						<div id="slider-rotate-bg" class="yui-h-slider" tabindex="-1" hidefocus="false"> 
+			    			<div id="slider-rotate-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'thumb-n.gif')}"></div> 
+						</div> 
+					</li>
+
+               
+                <br> <!-------------------->
+
+                <!-- Buttons for preset rotation values -->
+                <button type="button" onclick="rotateSlider.setRealValue(${rasterEntry.azimuthAngle})">North is Up</button> <!-------------------->
+
+
+                <button type="button" onclick="rotateSlider.setRealValue('0')">Sensor is Up</button> <!-------------------->
+
+
+
+   <button type="button" onclick="foo()">Refresh Layer</button> 
             </li>
           </ol>
         </div>
       </div>
-  </content>
+
+    <!-- A new box to hold the north arrow -->
+    <div class="niceBox"> <!-------------------->
+        <div class="niceBoxHd">North Arrow:</div> <!-------------------->
+        <div class="niceBoxBody"> <!-------------------->
+            <div id="compassMap" style="width:190; height:190"></div> <!-------------------->
+        </div> <!-------------------->
+    </div> <!-------------------->
+
+</content>
 
 <content tag="center">
   <%--
@@ -224,10 +267,33 @@ var map;
 var hyp;
 var layer;
 var format = "image/jpeg";
+
+var rotateSlider = YAHOO.widget.Slider.getHorizSlider("slider-rotate-bg",  "slider-rotate-thumb", 0, 360, 1);
+
+
 var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
 var contrastSlider = YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
 var omarImageSpaceOpenLayersParams = new  OmarImageSpaceOpenLayersParams();
 
+var azimuthAngle; /////////////////////
+var compassImage; /////////////////////
+var compassMap; ////////////////////
+var compassVectorLayer; ////////////////////
+var currentMapCenterX; ////////////////////
+var currentMapCenterY; ////////////////////
+var image; ////////////////////
+var imageURL; ////////////////////
+var initFlag = 1; ////////////////////
+var imageHypotenuse; ////////////////////
+var imageVectorLayer; ////////////////////
+var newImageCenterX; ////////////////////
+var newImageCenterY; ////////////////////
+var oldImageCenterX; ////////////////////
+var oldImageCenterY; ////////////////////
+var oldMapCenterX; ////////////////////
+var oldMapCenterY; ////////////////////
+var oldZoomLevel; ////////////////////
+var rotationAngle = 0; ////////////////////
 
 function changeMapSize( mapWidth, mapHeight )
 {
@@ -252,7 +318,6 @@ function changeMapSize( mapWidth, mapHeight )
 
 //        alert( mapWidth + ' ' + mapHeight );
 
-  //map.updateSize();
   map.updateSize();
 }
 
@@ -277,15 +342,16 @@ function changeHistoOpts()
 var stretch_mode = $("stretch_mode").value;
 var stretch_mode_region = $("stretch_mode_region").value;
 
-
 layer.mergeNewParams({stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region});
+
+// update the image after the setting has changed ////////////////////
+updateImage(); ////////////////////
 }
 
  function rotateImage()
 {
 var rotate = $("rotate").value;
 //alert(rotate);
-
 layer.mergeNewParams({rotate:rotate});
 }
 
@@ -293,20 +359,27 @@ function chgInterpolation()
 {
 	var interpolation = $("interpolation").value;
 	layer.mergeNewParams({interpolation:interpolation});
+
+    // update the image after the setting has changed ////////////////////
+	updateImage(); ////////////////////
 }
 
 function changeSharpenOpts()
 {
   var sharpen_mode = $("sharpen_mode").value;
-
   layer.mergeNewParams({sharpen_mode:sharpen_mode});
+
+  // update the image after the setting has changed ////////////////////
+  updateImage(); ////////////////////
 }
 
 function changeBandsOpts()
 {
     var bands = $("bands").value;
-
     layer.mergeNewParams({bands:bands});
+
+    // update the image after the setting has changed ////////////////////
+    updateImage(); ////////////////////
 }
 
 function get_my_url (bounds)
@@ -328,7 +401,8 @@ function get_my_url (bounds)
                                                   'x':x,
                                                   'y':y,
                                                   'z':z,
-                                                  'id': "${rasterEntry?.id}",
+                                                  // define an id of 0 to set the background image base layer to black ////////////////////
+                                                  'id': 0, ////////////////////
                                                   'tileWidth':this.tileSize.w,
                                                   'tileHeight':this.tileSize.h});
     var path = "?"+omarImageSpaceOpenLayersParams.toUrlParams();
@@ -344,6 +418,9 @@ function resetBrightnessContrast()
 {
 	brightnessSlider.setRealValue(0);
 	contrastSlider.setRealValue(1.0);
+
+    // update the image after the setting has changed ////////////////////
+	updateImage(); ////////////////////
 }
 
 function formatOutput(value)
@@ -367,7 +444,11 @@ function init(mapWidth, mapHeight)
   var bounds = new OpenLayers.Bounds(Math.round(left), Math.round(bottom), Math.round(right), Math.round(top));
   // full res is included in resLevels so we need to add 2 more to give us
   // an 8x zoom
-  map = new OpenLayers.Map("map", {controls:[], maxExtent:bounds, numZoomLevels:(resLevels+2)});
+  map = new OpenLayers.Map("map", { controls:[], maxExtent:bounds, numZoomLevels:(resLevels+2) });
+ map.events.register("moveend", map, theMapHasMoved); ////////////////////
+  map.events.register('zoomend', map, theMapHasZoomed); ////////////////////
+
+
   var options = {
   controls: [],
   maxExtent: bounds,
@@ -394,6 +475,7 @@ function init(mapWidth, mapHeight)
 //  var mousePositionControl = new OpenLayers.Control.MousePosition();
 //  mousePositionControl.formatOutput =  formatOutput;
   map.addLayer(layer);
+
 //  map.addControl(mousePositionControl);
   map.addControl(new OpenLayers.Control.MouseDefaults());
   map.addControl(new OpenLayers.Control.KeyboardDefaults());
@@ -413,6 +495,35 @@ function init(mapWidth, mapHeight)
 
 	omarImageSpaceOpenLayersParams.setProperties(document);
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	rotateSlider.animate = false;
+	
+	rotateSlider.getRealValue = function() { 
+	    return this.getValue(); 
+    }
+	
+	rotateSlider.setRealValue = function(value) { 
+	    this.setValue(value%360);  
+    }
+	
+	rotateSlider.subscribe("slideEnd", function() {
+			sliderRotate(this.getRealValue());
+    });
+
+
+
+
+
+
+
+
 
 	brightnessSlider.animate = false;
 	 
@@ -434,12 +545,18 @@ function init(mapWidth, mapHeight)
 		if(layer)
 		{
 			layer.mergeNewParams({brightness:this.getRealValue()});
+
+			// update the image after the setting has changed ////////////////////
+			updateImage(); ////////////////////
 		}
     });
     contrastSlider.subscribe("slideEnd", function() {
 		if(layer)
 		{
 			layer.mergeNewParams({contrast:this.getRealValue()});
+
+			// update the image after the setting has changed ////////////////////
+			updateImage(); ////////////////////
 		}
     });
      contrastSlider.subscribe("change", function(offsetFromStart){
@@ -454,7 +571,301 @@ function init(mapWidth, mapHeight)
 
 	brightnessSlider.setRealValue(${params.brightness?:0});
 	contrastSlider.setRealValue(${params.contrast?:1});
+
+	// setup the north arrow compass ////////////////////
+	setupCompassMap(); ////////////////////
+
+	// initialize old and new coordinate center variables ////////////////////
+	oldMapCenterX = map.getCenter().lon; ////////////////////
+	oldMapCenterY = map.getCenter().lat; ////////////////////
+	oldImageCenterX = map.getCenter().lon; ////////////////////
+	oldImageCenterY = map.getCenter().lat; ////////////////////
+	newImageCenterX = map.getCenter().lon; ////////////////////
+	newImageCenterY = map.getCenter().lat; ////////////////////
+
+	// set the initialization flag so the moveend and zoomend code can execute
+	initFlag = 0; ////////////////////
+
+	// setup an the initial image vector layer ////////////////////
+	imageVectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", ////////////////////
+	{ ////////////////////
+		styleMap: new OpenLayers.StyleMap ////////////////////
+		({ ////////////////////
+			"default": ////////////////////
+			{ ////////////////////
+				externalGraphic : <%=' "${urlPath}" '%>, ////////////////////
+				graphicWidth : <%=' "${imageWidth}" '%>, ////////////////////
+      			graphicHeight : <%=' "${imageHeight}" '%>, ////////////////////
+				rotation : <%=' "${angle}" '%> ////////////////////
+			} ////////////////////
+		}) ////////////////////
+    }); ////////////////////
+	map.addLayer(imageVectorLayer); ////////////////////
+
+    // default the rotation to North is Up
+    sliderRotate(0); ////////////////////
+
+    // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
+	oldZoomLevel = map.getZoom();
 }
+
+
+
+function setupCompassMap() ////////////////////
+{ ////////////////////
+    // define the map for the compass and disable zoom and pan ////////////////////
+    compassMap = new OpenLayers.Map('compassMap', {controls: new OpenLayers.Control.Navigation({autoActivate: false})}); ////////////////////
+
+	// add some base layer so the image can be added on top ////////////////////
+	var baseLayer = new OpenLayers.Layer("Empty", {isBaseLayer: true}); ////////////////////
+	compassMap.addLayer(baseLayer); ////////////////////
+	compassMap.setCenter(new OpenLayers.LonLat(0,0), 0); ////////////////////
+
+    // define the image to be used for the compass ////////////////////
+	var compassImageURL = "${resource(plugin: 'omar', dir:'images', file:'north_arrow.png')}"; ////////////////////
+
+	// define a vector layer to add markers to ////////////////////
+	compassVectorLayer = new OpenLayers.Layer.Vector("Compass Layer", ////////////////////
+	{ ////////////////////
+		styleMap: new OpenLayers.StyleMap ////////////////////
+		({ ////////////////////
+			"default": ////////////////////
+			{ ////////////////////
+				externalGraphic : compassImageURL, ////////////////////
+				graphicWidth : 45, ////////////////////
+                graphicHeight : 190, ////////////////////
+			    rotation : <%=' "${angle}" '%> ////////////////////
+			} ////////////////////
+		}) ////////////////////
+    }); ////////////////////
+    compassMap.addLayer(compassVectorLayer); ////////////////////
+
+    azimuthAngle = parseInt(${rasterEntry.azimuthAngle}); ////////////////////
+
+	// define the marker for the image to sit on ////////////////////
+	compassImage = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0), {angle: (azimuthAngle)}); ////////////////////
+	compassVectorLayer.addFeatures([compassImage]); ////////////////////
+} ////////////////////
+
+function updateImage() ////////////////////
+{ ////////////////////
+
+    // calculate the change in actual map movement ////////////////////
+    var deltaMovementX = map.getCenter().lon - oldMapCenterX; ////////////////////
+	var deltaMovementY = map.getCenter().lat - oldMapCenterY; ////////////////////
+	var deltaMovementMagnitude = Math.sqrt(Math.pow(deltaMovementX,2) + Math.pow(deltaMovementY,2)); ////////////////////
+
+    // calculate the angle of the actual map movement ////////////////////
+	if (deltaMovementY >= 0 && deltaMovementX > 0) ////////////////////
+	{ ////////////////////
+		var beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI; ////////////////////
+	} ////////////////////
+	else if (deltaMovementY >= 0 && deltaMovementX < 0) ////////////////////
+	{ ////////////////////
+		 var beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI + 180; ////////////////////
+	} ////////////////////
+	else if (deltaMovementY < 0 && deltaMovementX < 0) ////////////////////
+	{ ////////////////////
+		var beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI + 180; ////////////////////
+	} ////////////////////
+	else if (deltaMovementY < 0 && deltaMovementX > 0) ////////////////////
+	{ ////////////////////
+		var beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI + 360; ////////////////////
+	} ////////////////////
+	else { beta = 0; } ////////////////////
+
+	// relate the actual map movement to relative image movement ////////////////////
+	var theta = beta - rotationAngle; ////////////////////
+	var relativeXDelta = Math.cos(theta * Math.PI/180) * deltaMovementMagnitude; ////////////////////
+	var relativeYDelta = Math.sin(theta * Math.PI/180) * deltaMovementMagnitude; ////////////////////
+
+	// calculate the new map center ////////////////////
+	newImageCenterX = oldImageCenterX + relativeXDelta; ////////////////////
+	newImageCenterY = oldImageCenterY + relativeYDelta; ////////////////////
+
+    // calculate the map bounds for the TMS call ////////////////////
+    var mapWidthHalf = (map.calculateBounds().right - map.calculateBounds().left) / 2; ////////////////////
+    var mapHeightHalf = (map.calculateBounds().top - map.calculateBounds().bottom) / 2; ////////////////////
+    var mapHypotenuse = Math.sqrt(Math.pow(mapWidthHalf,2) + Math.pow(mapHeightHalf,2)); ////////////////////
+    var imageBounds = new OpenLayers.Bounds( ////////////////////
+        newImageCenterX - mapHypotenuse, ////////////////////
+        newImageCenterY - mapHypotenuse, ////////////////////
+        newImageCenterX + mapHypotenuse, ////////////////////
+        newImageCenterY + mapHypotenuse ////////////////////
+    ); ////////////////////
+
+    // get the URL for the image ////////////////////
+    imageURL = getImageURL(imageBounds); ////////////////////
+
+    // calculate the image size so there are no gaps while rotating ////////////////////
+    imageHypotenuse = Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2))); ////////////////////
+
+    // get the current map center which is where the image will go ////////////////////
+	currentMapCenterX = map.getCenter().lon; ////////////////////
+	currentMapCenterY = map.getCenter().lat; ////////////////////
+
+    // define the marker for the image to sit on ////////////////////
+    image = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(currentMapCenterX, currentMapCenterY), {urlPath: imageURL, imageWidth: imageHypotenuse, imageHeight: imageHypotenuse, angle: -rotationAngle}); ////////////////////
+	imageVectorLayer.addFeatures([image]); ////////////////////
+
+    // set the map center coordinate variables to be used the next time the map is moved ////////////////////
+	oldMapCenterX = map.getCenter().lon; ////////////////////
+	oldMapCenterY = map.getCenter().lat; ////////////////////
+
+    // set the image center coordinate variables to be used the next time the map is moved ////////////////////
+	oldImageCenterX = newImageCenterX; ////////////////////
+	oldImageCenterY = newImageCenterY; ////////////////////
+} ////////////////////
+
+function getImageURL(imageBounds) ////////////////////
+{ ////////////////////
+
+    var res = map.getResolution(); ////////////////////
+    var tileHypotenuse = Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2))); ////////////////////
+
+    var width  = parseFloat("${rasterEntry.width}"); ////////////////////
+    var scalex = 1.0/(res * tileHypotenuse); ////////////////////
+    var x =  (imageBounds.left - (-width*0.5))*scalex; ////////////////////
+
+    var height = parseFloat("${rasterEntry.height}"); ////////////////////
+    var scaley = 1.0/(res * tileHypotenuse); ////////////////////
+    var y =  ((height*0.5) - imageBounds.top)*scaley; ////////////////////
+
+    var z = map.getZoom(); ////////////////////
+
+    omarImageSpaceOpenLayersParams.setProperties(document); ////////////////////
+    omarImageSpaceOpenLayersParams.setProperties( ////////////////////
+    { ////////////////////
+        'res' : res, ////////////////////
+        'x' : x, ////////////////////
+        'y' : y, ////////////////////
+        'z' : z, ////////////////////
+        'id' : "${rasterEntry?.id}", ////////////////////
+        'tileWidth' : tileHypotenuse, ////////////////////
+        'tileHeight' : tileHypotenuse ////////////////////
+    }); ////////////////////
+
+    var path = "?"+omarImageSpaceOpenLayersParams.toUrlParams(); ////////////////////
+    var url = "${createLink(controller: 'icp', action: 'getTileOpenLayers')}"; ////////////////////
+
+    return url + path; ////////////////////
+} ////////////////////
+
+function theMapHasMoved() ////////////////////
+{
+
+
+ ////////////////////
+    if (initFlag == 0) ////////////////////
+    { ////////////////////
+        updateImage(); ////////////////////
+
+    } ////////////////////
+
+
+
+} ////////////////////
+
+
+
+
+
+/////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+function theMapHasZoomed() ////////////////////
+{ ////////////////////
+    if (initFlag == 0) ////////////////////
+    { ////////////////////
+        // remove the image vector layer and erase all previous images ////////////////////
+        imageVectorLayer.destroy(); ////////////////////
+
+        // reset the image vector layer an make a new one ////////////////////
+        resetImageVectorLayer(); ////////////////////
+
+        // check to see if the user zoomed in ////////////////////
+        if ((map.getZoom() - oldZoomLevel) > 0) ////////////////////
+        { ////////////////////
+            // scale the image size up by a factor of 2 ////////////////////
+            imageHypotenuse = imageHypotenuse * 2; ////////////////////
+        } ////////////////////
+        // check to see if the user zoomed out ////////////////////
+        else if((map.getZoom() - oldZoomLevel) < 0) ////////////////////
+        { ////////////////////
+            imageHypotenuse = imageHypotenuse * 0.5; ////////////////////
+        } ////////////////////
+        // define the new image marker and add it to the map ////////////////////
+        image = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(currentMapCenterX, currentMapCenterY), {urlPath: imageURL, imageWidth: imageHypotenuse, imageHeight: imageHypotenuse, angle: -rotationAngle}); ////////////////////
+	    imageVectorLayer.addFeatures([image]); ////////////////////
+
+        // reset the zoom variable to be used next time ////////////////////
+        oldZoomLevel = map.getZoom();
+	} ////////////////////
+} ////////////////////
+
+function resetImageVectorLayer() ////////////////////
+{ ////////////////////
+    // remove the image vector layer and all previous images ////////////////////
+    imageVectorLayer.destroy(); ////////////////////
+
+    // define a vector layer to add markers to ////////////////////
+	imageVectorLayer = new OpenLayers.Layer.Vector("Simple Geometry", ////////////////////
+	{ ////////////////////
+		styleMap: new OpenLayers.StyleMap ////////////////////
+		({ ////////////////////
+			"default": ////////////////////
+			{ ////////////////////
+				externalGraphic : <%=' "${urlPath}" '%>, ////////////////////
+				graphicWidth : <%=' "${imageWidth}" '%>, ////////////////////
+      			graphicHeight : <%=' "${imageHeight}" '%>, ////////////////////
+				rotation : <%=' "${angle}" '%> ////////////////////
+			} ////////////////////
+		}) ////////////////////
+    }); ////////////////////
+	map.addLayer(imageVectorLayer); ////////////////////
+} ////////////////////
+
+function foo()
+{
+imageVectorLayer.redraw(true);
+//alert("refreshed");
+}
+
+
+function sliderRotate(sliderValue) ////////////////////
+{ ////////////////////
+    // remove all previous images ////////////////////
+    resetImageVectorLayer(); ////////////////////
+
+    // calculate the rotation angle taking into account North is Up ////////////////////
+    rotationAngle = parseInt(sliderValue) + parseInt(${rasterEntry.azimuthAngle}); ////////////////////
+
+    // ensure the value of the rotation is normalized such that North is Up is 0 ////////////////////
+    ${"rotateAngle"}.value = rotationAngle - parseInt(${rasterEntry.azimuthAngle}); ////////////////////
+
+    // remove the image from the map so it can be rotated ////////////////////
+	compassVectorLayer.removeFeatures([compassImage]); ////////////////////
+	imageVectorLayer.removeFeatures([image]); ////////////////////
+
+	// redefine the marker with the new rotation angle ////////////////////
+	compassImage = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0, 0), {angle: (${rasterEntry.azimuthAngle} - parseInt(sliderValue))}); ////////////////////
+	compassVectorLayer.addFeatures([compassImage]); ////////////////////
+
+	image = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(currentMapCenterX, currentMapCenterY), {urlPath: imageURL, imageWidth: imageHypotenuse, imageHeight: imageHypotenuse, angle: -rotationAngle}); ////////////////////
+	imageVectorLayer.addFeatures([image]); ////////////////////
+} ////////////////////
+
+function rotateTextField() ////////////////////
+{ ////////////////////
+	alert("Foo");
+    ${"slider"}.value = ${"rotateAngle"}.value; ////////////////////
+	
+    sliderRotate(${"slider"}.value); ////////////////////
+} ////////////////////
+
   var zoomInButton;
   function zoomIn()
   {
