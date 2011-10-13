@@ -12,7 +12,7 @@ import org.apache.commons.io.FilenameUtils
 class KmlService implements ApplicationContextAware, InitializingBean
 {
 
-  boolean transactional = false
+  static transactional = false
   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
   ApplicationContext applicationContext
   def grailsApplication
