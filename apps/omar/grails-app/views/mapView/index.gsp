@@ -123,7 +123,7 @@
           <div id="viewMenu" class="yuimenu">
             <div class="bd">
               <ul>
-                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToImageSpace();" title="Image Space Viewer">Image Space</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToImageSpace();" title="Image Space Viewer (Rotate)">Image Space (Rotate)</a></li>
                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: 'mapView', action: 'multiLayer', params: [layers: (rasterEntries*.indexId).join(',')])}" title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a></li>
               </ul>
               <ul>
@@ -132,6 +132,8 @@
             </div>
           </div>
         </li>
+
+		 <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="javascript:changeToImageSpace();">Image Space (Rotate)</a></li>
 
       </ul>
     </div>
