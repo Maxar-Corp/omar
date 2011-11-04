@@ -4,7 +4,7 @@ import joms.oms.DataInfo
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationContext
 import org.apache.commons.collections.map.CaseInsensitiveMap
- 
+
 /**
  * This is a service class that manages adding and removing data within the OMAR tables.
  * Currently we implement the add and remove for raster and video.
@@ -50,31 +50,32 @@ class DataManagerService implements ApplicationContextAware
     }
     else
     {
-        def dataInfo = new DataInfo()
-        def canOpen = dataInfo.open(params.filename)
-        def xml = null
-        if ( canOpen )
-        {
-          xml = dataInfo.getInfo()?.trim()
-        }
-        dataInfo.close()
+      def dataInfo = new DataInfo()
+      def canOpen = dataInfo.open(params.filename)
+      def xml = null
+      if ( canOpen )
+      {
+        xml = dataInfo.getInfo()?.trim()
+      }
+      dataInfo.close()
       //def xml = StagerUtil.getInfo(filename)
 
       if ( xml )
       {
-        def background =false;
-        try{
-          background = params.background?Boolean.valueOf(params.background):false
-        }
-        catch(Exception e)
+        def background = false;
+        try
         {
-          
+          background = params.background ? Boolean.valueOf(params.background) : false
         }
-        if(background)
+        catch (Exception e)
+        {
+
+        }
+        if ( background )
         {
           log.info("submitting ${filename} for background processing")
-          DataManagerQueueItem.addItem([file:"${filename}", dataManagerAction:"addRaster"],
-                                       true);
+          DataManagerQueueItem.addItem([file: "${filename}", dataManagerAction: "addRaster"],
+                  true);
         }
         else
         {
@@ -94,7 +95,8 @@ class DataManagerService implements ApplicationContextAware
 
             rasterDataSets.each {rasterDataSet ->
               def savedRaster = true
-              try{
+              try
+              {
                 if ( rasterDataSet.save() )
                 {
                   //stagerHandler.processSuccessful(filename, xml)
@@ -109,7 +111,7 @@ class DataManagerService implements ApplicationContextAware
                   log.error(httpStatusMessage.message)
                 }
               }
-              catch(Exception e)
+              catch (Exception e)
               {
                 httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
                 httpStatusMessage.message = "Unable to save image ${filename}, image probably already exists\n${e.message}"
@@ -128,37 +130,38 @@ class DataManagerService implements ApplicationContextAware
       }
     }
   }
+
   def updateRaster(def httpStatusMessage, def params)
   {
-    if(params.id)
+    if ( params.id )
     {
       def rasterEntry = RasterEntry.get(params.id)
 
-       if(rasterEntry)
-       {
-         def omsInfoParser = applicationContext.getBean("rasterInfoParser")
-         def dataInfo = new DataInfo()
-         def canOpen = dataInfo.open(rasterEntry.mainFile?.name)
+      if ( rasterEntry )
+      {
+        def omsInfoParser = applicationContext.getBean("rasterInfoParser")
+        def dataInfo = new DataInfo()
+        def canOpen = dataInfo.open(rasterEntry.mainFile?.name)
 
-         if ( canOpen )
-         {
-           def xml = dataInfo.getImageInfo(rasterEntry.entryId as int)?.trim()
-           dataInfo.close()
-           if ( xml )
-           {
-             def oms = new XmlSlurper().parseText(xml)
-             RasterEntry.initRasterEntry(oms?.dataSets?.RasterDataSet?.rasterEntries?.RasterEntry, rasterEntry)
-             rasterEntry.save()
-           }
-         }
-       }
+        if ( canOpen )
+        {
+          def xml = dataInfo.getImageInfo(rasterEntry.entryId as int)?.trim()
+          dataInfo.close()
+          if ( xml )
+          {
+            def oms = new XmlSlurper().parseText(xml)
+            RasterEntry.initRasterEntry(oms?.dataSets?.RasterDataSet?.rasterEntries?.RasterEntry, rasterEntry)
+            rasterEntry.save()
+          }
+        }
+      }
       else
-       {
-         httpStatusMessage.message = "Query could not find record id  ${params.id} to update"
-         httpStatusMessage.status = HttpStatus.NOT_FOUND
-       }
+      {
+        httpStatusMessage.message = "Query could not find record id  ${params.id} to update"
+        httpStatusMessage.status = HttpStatus.NOT_FOUND
+      }
     }
-    else if(params.filename)
+    else if ( params.filename )
     {
       def result = RasterDataSet.createCriteria().list {
         fileObjects {
@@ -168,11 +171,11 @@ class DataManagerService implements ApplicationContextAware
           }
         }
       }
-      if(result.size()>0)
+      if ( result.size() > 0 )
       {
         result.each {dataset ->
           dataset.fileObjects.each {fileObject ->
-            dataset.rasterEntries.each{rasterEntry->
+            dataset.rasterEntries.each {rasterEntry ->
               def dataInfo = new DataInfo()
               def canOpen = dataInfo.open(fileObject.name)
 
@@ -199,6 +202,7 @@ class DataManagerService implements ApplicationContextAware
       }
     }
   }
+
   def addVideo(def httpStatusMessage, def params)
   {
     httpStatusMessage.status = HttpStatus.OK
@@ -320,60 +324,63 @@ class DataManagerService implements ApplicationContextAware
       log.error(httpStatusMessage.message)
     }
   }
+
   def add(httpStatusMessage, params)
   {
-    def tempMap = new CaseInsensitiveMap(params)    
+    def tempMap = new CaseInsensitiveMap(params)
     if ( tempMap.datainfo )
-     {
-       def oms = null
-       try{
-         oms = new XmlSlurper().parseText(tempMap.datainfo)
-       }
-       catch(java.lang.Exception e)
-       {
-         log.error("Error parsing datainfo xml string ${tempMap.datainfo}")
-         httpStatusMessage.status  = HttpStatus.EXPECTATION_FAILED
-         httpStatusMessage.message = "Error parsing the xml string passed in"
-       }
-       try
-       {
-         if(oms)
-         {
-           def omsInfoParsers = applicationContext.getBeansOfType(OmsInfoParser.class)
-           def repository = findRepositoryForFile(new File("/"))
-           omsInfoParsers?.each { name, value ->
-             def dataSets = value.processDataSets(oms, repository)
+    {
+      def oms = null
+      try
+      {
+        oms = new XmlSlurper().parseText(tempMap.datainfo)
+      }
+      catch (java.lang.Exception e)
+      {
+        log.error("Error parsing datainfo xml string ${tempMap.datainfo}")
+        httpStatusMessage.status = HttpStatus.EXPECTATION_FAILED
+        httpStatusMessage.message = "Error parsing the xml string passed in"
+      }
+      try
+      {
+        if ( oms )
+        {
+          def omsInfoParsers = applicationContext.getBeansOfType(OmsInfoParser.class)
+          def repository = findRepositoryForFile(new File("/"))
+          omsInfoParsers?.each { name, value ->
+            def dataSets = value.processDataSets(oms, repository)
 
-             dataSets?.each {dataSet ->
-               def fileObject = dataSet.fileObjects.find { it.type == "main" }
-               if ( dataSet.save() )
-               {
-                 log.info("Saved ${fileObject.name}")
-               }
-               else
-               {
-                 log.error("Error saving ${fileObject.name}, could already exist")
-                 httpStatusMessage.status  = HttpStatus.EXPECTATION_FAILED
-                 httpStatusMessage.message = "Error Saving ${fileObject.name}, could already exist"
-               }
-             }
-           }
-         }
-         else
-         {
-           log.error("Error parsing datainfo xml string ${tempMap.datainfo}")
-           httpStatusMessage.status  = HttpStatus.EXPECTATION_FAILED
-           httpStatusMessage.message = "Error parsing the xml string passed in"
-         }
-       }
-       catch (java.lang.Exception e)
-       {
-         log.error(e.message)
-         httpStatusMessage.status  = HttpStatus.EXPECTATION_FAILED
-         httpStatusMessage.message = "Error adding ${fileObject}"
-       }
-     }
+            dataSets?.each {dataSet ->
+              def fileObject = dataSet.fileObjects.find { it.type == "main" }
+              if ( dataSet.save() )
+              {
+                log.info("Saved ${fileObject.name}")
+              }
+              else
+              {
+                log.error("Error saving ${fileObject.name}, could already exist")
+                httpStatusMessage.status = HttpStatus.EXPECTATION_FAILED
+                httpStatusMessage.message = "Error Saving ${fileObject.name}, could already exist"
+              }
+            }
+          }
+        }
+        else
+        {
+          log.error("Error parsing datainfo xml string ${tempMap.datainfo}")
+          httpStatusMessage.status = HttpStatus.EXPECTATION_FAILED
+          httpStatusMessage.message = "Error parsing the xml string passed in"
+        }
+      }
+      catch (java.lang.Exception e)
+      {
+        log.error(e.message)
+        httpStatusMessage.status = HttpStatus.EXPECTATION_FAILED
+        httpStatusMessage.message = "Error adding ${fileObject}"
+      }
+    }
   }
+
   synchronized def findRepositoryForFile(def file)
   {
     def repositories = (Repository.list()?.sort { it.baseDir.size() })?.reverse()
