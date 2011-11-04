@@ -1,12 +1,12 @@
 class OmarStagerGrailsPlugin
 {
   // the plugin version
-  def version = "0.2"
+  def version = "0.3"
   // the version or versions of Grails the plugin is designed for
   def grailsVersion = "1.2.2 > *"
   // the other plugins this plugin depends on
   def dependsOn = [
-          'backgroundThread': "1.6 > *"
+          ://'backgroundThread': "1.6 > *"
   ]
   // resources that are excluded from plugin packaging
   def pluginExcludes = [

@@ -17,42 +17,42 @@ class DataManagerController
   def index = {
   }
 
-	def action = {
-	    def method = request.method.toUpperCase()
-	    def httpStatusMessage = new HttpStatusMessage()
-	
-	    httpStatusMessage.status = HttpStatus.OK
-	    httpStatusMessage.message = ""
+  def action = {
+    def method = request.method.toUpperCase()
+    def httpStatusMessage = new HttpStatusMessage()
 
-	    switch ( method )
-	    {
-	      case "GET":
-			def pattern = /(add|update|delete)(Raster|Video)/
-			def matcher = params.opType =~ pattern
-			def op = null
-			def type = null
-			
-			if ( matcher )
-			{
-				op = matcher[0][1] 
-				type = matcher[0][2] 
-			}
-			
-			return [opType: params.opType, op: op, type: type]
-	        break
-	      case "POST":
-	      case "DELETE":
-	        def status = dataManagerService."${params.opType}"(httpStatusMessage, params)
+    httpStatusMessage.status = HttpStatus.OK
+    httpStatusMessage.message = ""
 
-	        response.status = httpStatusMessage.status
-	        render(httpStatusMessage.message)
-	        break
-	      default:
-	        httpStatusMessage.status = HttpStatus.METHOD_NOT_ALLOWED
-	        httpStatusMessage.message = "Unsupported method ${method} for action ${params.opType} with filename ${filename}"
-	        httpStatusMessage.header.Allow = "GET, POST, DELETE"
-	        httpStatusMessage.initializeResponse(response)
-	        render(httpStatusMessage.message)
-	    }
-	}
+    switch ( method )
+    {
+    case "GET":
+      def pattern = /(add|update|delete)(Raster|Video)/
+      def matcher = params.opType =~ pattern
+      def op = null
+      def type = null
+
+      if ( matcher )
+      {
+        op = matcher[0][1]
+        type = matcher[0][2]
+      }
+
+      return [opType: params.opType, op: op, type: type]
+      break
+    case "POST":
+    case "DELETE":
+      def status = dataManagerService."${params.opType}"(httpStatusMessage, params)
+
+      response.status = httpStatusMessage.status
+      render(httpStatusMessage.message)
+      break
+    default:
+      httpStatusMessage.status = HttpStatus.METHOD_NOT_ALLOWED
+      httpStatusMessage.message = "Unsupported method ${method} for action ${params.opType} with filename ${filename}"
+      httpStatusMessage.header.Allow = "GET, POST, DELETE"
+      httpStatusMessage.initializeResponse(response)
+      render(httpStatusMessage.message)
+    }
+  }
 }
