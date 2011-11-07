@@ -131,6 +131,10 @@ class DataManagerService implements ApplicationContextAware
     }
   }
 
+  //
+  // HACK:  Need to move this!!!
+  //
+  /*
   def updateRaster(def httpStatusMessage, def params)
   {
     if ( params.id )
@@ -202,6 +206,7 @@ class DataManagerService implements ApplicationContextAware
       }
     }
   }
+  */
 
   def addVideo(def httpStatusMessage, def params)
   {
