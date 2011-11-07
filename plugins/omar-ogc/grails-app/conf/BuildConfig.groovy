@@ -43,6 +43,7 @@ grails.project.dependency.resolution = {
   }
   plugins {
     compile ":csv:0.3"
+    compile ":joda-time:1.2"
   }
 }
 
