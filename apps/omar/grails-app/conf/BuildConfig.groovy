@@ -43,9 +43,7 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    compile ":richui:0.8"
-    compile ":joda-time:1.2"
-    compile ":omar-core:0.1"
+    compile ":p6spy:0.5"
   }
 }
 
