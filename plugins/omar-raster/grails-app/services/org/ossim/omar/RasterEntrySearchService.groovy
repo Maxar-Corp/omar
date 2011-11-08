@@ -27,8 +27,8 @@ class RasterEntrySearchService implements InitializingBean
   List<RasterEntryQuery> runQuery(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
     def max = null;
-    if(params?.max!=null)  max = (params.max as Integer);
-    if(max<1) return null;
+    if ( params?.max != null ) max = (params.max as Integer);
+    if ( max < 1 ) return null;
     def criteriaBuilder = RasterEntry.createCriteria();
     def x = {
       if ( max )
@@ -56,7 +56,7 @@ class RasterEntrySearchService implements InitializingBean
 
     def criteria = criteriaBuilder.buildCriteria(x)
     def clause = rasterEntryQuery?.createClause()
-    if(clause)
+    if ( clause )
     {
       criteria.add(clause)
     }
@@ -79,9 +79,9 @@ class RasterEntrySearchService implements InitializingBean
   List<Polygon> getGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
     def max = null;
-    if(params?.max!=null)  max = (params.max as Integer);
-    if(max<1) return null;
-     def criteriaBuilder = RasterEntry.createCriteria();
+    if ( params?.max != null ) max = (params.max as Integer);
+    if ( max < 1 ) return null;
+    def criteriaBuilder = RasterEntry.createCriteria();
     def x =
     {
       projections { property("groundGeom") }
@@ -120,9 +120,9 @@ class RasterEntrySearchService implements InitializingBean
   void scrollGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params, Closure closure)
   {
     def max = null;
-    if(params?.max)  max = (params.max as Integer);
-    if(max<1) return;
-     def criteriaBuilder = RasterEntry.createCriteria();
+    if ( params?.max ) max = (params.max as Integer);
+    if ( max < 1 ) return;
+    def criteriaBuilder = RasterEntry.createCriteria();
 
     def x = {
       projections { property("groundGeom") }
@@ -174,14 +174,14 @@ class RasterEntrySearchService implements InitializingBean
 
   def getWmsImageLayers(def layers)
   {
-    if(!layers)
+    if ( !layers )
     {
       return null
     }
-     return RasterEntry.createCriteria().list() {
+    return RasterEntry.createCriteria().list() {
       or {
         layers.each() {name ->
-          if(name)
+          if ( name )
           {
             try
             {
