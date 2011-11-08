@@ -4,6 +4,7 @@
   <meta name="layout" content="generatedViews"/>
   <title>OMAR: Show Video Data Set ${fieldValue(bean: videoDataSet, field: 'id')}</title>
 </head>
+
 <body>
 <content tag="content">
   <div class="nav">
@@ -13,6 +14,7 @@
       <span class="menuButton"><g:link class="create" action="create">Create Video Data Set</g:link></span>
     </sec:ifAllGranted>
   </div>
+
   <div class="body">
     <h1>OMAR: Show Video Data Set ${fieldValue(bean: videoDataSet, field: 'id')}</h1>
     <g:if test="${flash.message}">
@@ -51,23 +53,27 @@
           <td valign="top" class="name">File Objects:</td>
           <td valign="top" style="text-align:left;" class="value">
             <g:if test="${videoDataSet.fileObjects}">
-              <g:link controller="videoFile" action="list" params="${[videoDataSetId: videoDataSet.id]}">Show Video Files</g:link>
+              <g:link controller="videoFile" action="list"
+                      params="${[videoDataSetId: videoDataSet.id]}">Show Video Files</g:link>
             </g:if>
           </td>
         </tr>
         <tr class="prop">
           <td valign="top" class="name">Repository:</td>
-          <td valign="top" class="value"><g:link controller="repository" action="show" id="${videoDataSet?.repository?.id}">${videoDataSet?.repository?.encodeAsHTML()}</g:link></td>
+          <td valign="top" class="value"><g:link controller="repository" action="show"
+                                                 id="${videoDataSet?.repository?.id}">${videoDataSet?.repository?.encodeAsHTML()}</g:link></td>
         </tr>
         </tbody>
       </table>
     </div>
+
     <div class="buttons">
       <g:form>
         <input type="hidden" name="id" value="${videoDataSet?.id}"/>
         <sec:ifAllGranted roles="ROLE_ADMIN">
           <span class="button"><g:actionSubmit class="edit" value="Edit"/></span>
-          <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');" value="Delete"/></span>
+          <span class="button"><g:actionSubmit class="delete" onclick="return confirm('Are you sure?');"
+                                               value="Delete"/></span>
         </sec:ifAllGranted>
         <span class="menuButton">
           <a href="${createLink(controller: 'thumbnail', action: 'frame', id: videoDataSet.id, params: [size: 512])}">Show Frame</a>
