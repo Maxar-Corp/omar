@@ -44,7 +44,6 @@ grails.project.dependency.resolution = {
 
   plugins {
     compile ":richui:0.8"
-    compile ":joda-time:1.2"
   }
 
 }
