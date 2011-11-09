@@ -1,14 +1,14 @@
 package org.ossim.omar
 
 import javax.imageio.ImageIO
-import java.awt.Rectangle
+
 import java.awt.image.BufferedImage
 import groovy.xml.StreamingMarkupBuilder
 
 import java.awt.*;
 
 import org.apache.commons.collections.map.CaseInsensitiveMap
-import javax.imageio.IIOImage
+
 import org.springframework.beans.factory.InitializingBean
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
@@ -30,6 +30,7 @@ def authenticateService
   def kmlService
 
   def footprints = {
+//    def start = System.currentTimeMillis()
     Utility.removeEmptyParams(params)
     if ( params.max == null )
     {
@@ -91,15 +92,16 @@ def authenticateService
       String[] layers = wmsRequest.layers?.split(",")
       String[] styles = wmsRequest.styles?.split(",")
 
-      layers.eachWithIndex { layer, styleIdx ->
-        //println "${layer} ${styleIdx}"
+      for (def index in 0..<layers.size())
+      {
+        //println "${layers[index]}"
 
         def styleName = null
         def style = null
 
         try
         {
-          styleName = styles[styleIdx]
+          styleName = styles[index]
           style = grailsApplication.config.wms.styles[styleName]
         }
         catch (Exception e)
@@ -112,7 +114,7 @@ def authenticateService
 
         webMappingService.drawLayer(
                 style,
-                layer,
+                layers[index],
                 params,
                 startDate,
                 endDate,
@@ -140,6 +142,8 @@ def authenticateService
     {
       g2d.dispose()
     }
+//    def stop = System.currentTimeMillis()
+//    println "${wmsRequest.bbox}: ${stop - start}ms"
   }
   def wcs = {WcsCommand cmd ->
       cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind

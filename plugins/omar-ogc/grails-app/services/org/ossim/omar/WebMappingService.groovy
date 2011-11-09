@@ -38,14 +38,14 @@ class WebMappingService
   def rasterEntrySearchService
   def videoDataSetSearchService
   def rasterChainService
-  
+
 
   public static final String SYSCALL = "syscall"
   public static final String LIBCALL = "libcall"
   public static final String BLANK = "blank"
   def mode = LIBCALL
 
-  static transactional = true
+  static transactional = false
 
   def transparent = new TransparentFilter()
 
@@ -99,7 +99,8 @@ class WebMappingService
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
             RenderingHints.VALUE_ANTIALIAS_ON);
 
-    geometries.each {geom ->
+    for ( def geom in geometries )
+    {
       //def pointListx = new int[geom.numPoints()]
       //def pointListy = new int[geom.numPoints()]
 
@@ -109,7 +110,8 @@ class WebMappingService
 
       //def numPoints = geom.numPoints()
       def numPoints = coordinates.size()
-      (0..<numPoints).each {
+      for ( def it in (0..<numPoints) )
+      {
         //def point = geom.getPoint(it);
         def point = coordinates[it];
         projPoint.setLatd(point.y);
@@ -124,187 +126,193 @@ class WebMappingService
       g.drawPolyline(pointListx, pointListy, pointListx.size())
     }
   }
+
   WMSQuery setupQuery(def wmsRequest)
   {
-      def wmsQuery  = new WMSQuery()
-      def params    = wmsRequest.toMap();
-      wmsQuery.caseInsensitiveBind(wmsRequest.toMap())
-      def max = params.max?params.max as Integer:10
-      if(max > 10) max = 10
-      wmsQuery.max = max
-      if(wmsQuery.layers?.toLowerCase() == "raster_entry")
-      {
-        wmsQuery.layers = null
-      }
-      // for now we will sort by the date field if no layers are given
-      //
-      if(!wmsQuery.layers)
-      {
-          wmsQuery.sort  = wmsQuery.sort?:"acquisitionDate"
-          wmsQuery.order = wmsQuery.order?:"desc"
-      }
+    def wmsQuery = new WMSQuery()
+    def params = wmsRequest.toMap();
+    wmsQuery.caseInsensitiveBind(wmsRequest.toMap())
+    def max = params.max ? params.max as Integer : 10
+    if ( max > 10 ) max = 10
+    wmsQuery.max = max
+    if ( wmsQuery.layers?.toLowerCase() == "raster_entry" )
+    {
+      wmsQuery.layers = null
+    }
+    // for now we will sort by the date field if no layers are given
+    //
+    if ( !wmsQuery.layers )
+    {
+      wmsQuery.sort = wmsQuery.sort ?: "acquisitionDate"
+      wmsQuery.order = wmsQuery.order ?: "desc"
+    }
 
-      wmsQuery
+    wmsQuery
   }
-  def getMap(def wmsRequest, def layers=null)
+
+  def getMap(def wmsRequest, def layers = null)
   {
-    def result = [image:null,errorMessage:null]
-    def params    = wmsRequest.toMap();
+    def result = [image: null, errorMessage: null]
+    def params = wmsRequest.toMap();
     def bounds = wmsRequest.bounds//wmsRequest?.bbox?.split(',')
     def maxBands = 1
-    def wmsQuery = layers?null:setupQuery(wmsRequest);
-    def stretchMode       = wmsRequest?.stretch_mode ? wmsRequest?.stretch_mode.toLowerCase(): null
-    def stretchModeRegion = wmsRequest?.stretch_mode_region ?:null
+    def wmsQuery = layers ? null : setupQuery(wmsRequest);
+    def stretchMode = wmsRequest?.stretch_mode ? wmsRequest?.stretch_mode.toLowerCase() : null
+    def stretchModeRegion = wmsRequest?.stretch_mode_region ?: null
     def wmsView = new WmsView()
-	def srs = wmsRequest?.srs
-    if(!wmsView.setProjection(srs))
+    def srs = wmsRequest?.srs
+    if ( !wmsView.setProjection(srs) )
     {
-        result.errorMessage = "Unsupported projection ${srs}"
-        log.error(result)
-        return result
+      result.errorMessage = "Unsupported projection ${srs}"
+      log.error(result)
+      return result
     }
-    if(!wmsView.setViewDimensionsAndImageSize(bounds.minx,
-              bounds.miny,
-              bounds.maxx,
-              bounds.maxy,
-              bounds.width,
-              bounds.height))
+    if ( !wmsView.setViewDimensionsAndImageSize(bounds.minx,
+            bounds.miny,
+            bounds.maxx,
+            bounds.maxy,
+            bounds.width,
+            bounds.height) )
     {
-        result.errorMessage = "Unable to set the dimensions for the view bounds"
-        log.error(result)
-        return result
+      result.errorMessage = "Unable to set the dimensions for the view bounds"
+      log.error(result)
+      return result
     }
-	def rasterEntries = layers?:wmsQuery.getRasterEntriesAsList();
+    def rasterEntries = layers ?: wmsQuery.getRasterEntriesAsList();
     //params.viewGeom = wmsView.getImageGeometry();
-	params.wmsView  = wmsView
-	params.keepWithinScales = true
+    params.wmsView = wmsView
+    params.keepWithinScales = true
     def kwlString = ""
-    if(rasterEntries)
+    if ( rasterEntries )
     {
-        rasterEntries = rasterEntries?.reverse()
-        def srcChains    = []
-        rasterEntries.each{rasterEntry->
-			def chainMap = rasterChainService.createRasterEntryChain(rasterEntry, params)
-			//chain.print()
-            if(chainMap&&chainMap.chain&&(chainMap.chain.getChain()!=null))
-            {
- 			   def outputBands = chainMap.chain?.getChainAsImageSource()?.getNumberOfOutputBands()
-			   if(outputBands > maxBands) maxBands = outputBands
-               srcChains.add(chainMap)
-            }
-			chainMap = null
+      rasterEntries = rasterEntries?.reverse()
+      def srcChains = []
+      for ( def rasterEntry in rasterEntries )
+      {
+        def chainMap = rasterChainService.createRasterEntryChain(rasterEntry, params)
+        //chain.print()
+        if ( chainMap && chainMap.chain && (chainMap.chain.getChain() != null) )
+        {
+          def outputBands = chainMap.chain?.getChainAsImageSource()?.getNumberOfOutputBands()
+          if ( outputBands > maxBands ) maxBands = outputBands
+          srcChains.add(chainMap)
         }
- 		if(srcChains)
-		{
-            def connectionId = 10000
-			kwlString = "type:ossimImageChain\n"
-	        def objectPrefixIdx = 0
-			if(srcChains.size() > 1)
-			{
-		        // now establish mosaic and cut to match the output dimensions
-		        kwlString += "object${objectPrefixIdx}.type:ossimImageMosaic\n"
-				++objectPrefixIdx
-			}
-			def imageRect = wmsView.getViewImageRect()
-			def midPoint  = imageRect.midPoint()
-			def x         = (int)(midPoint.x+0.5)
-			def y         = (int)(midPoint.y+0.5)
-			x            -= (bounds.width*0.5);
-			y            -= (bounds.height*0.5);
-			def w         = bounds.width
-			def h         = bounds.height
-			imageRect = null
-			midPoint  = null
+        chainMap = null
+      }
+      if ( srcChains )
+      {
+        def connectionId = 10000
+        kwlString = "type:ossimImageChain\n"
+        def objectPrefixIdx = 0
+        if ( srcChains.size() > 1 )
+        {
+          // now establish mosaic and cut to match the output dimensions
+          kwlString += "object${objectPrefixIdx}.type:ossimImageMosaic\n"
+          ++objectPrefixIdx
+        }
+        def imageRect = wmsView.getViewImageRect()
+        def midPoint = imageRect.midPoint()
+        def x = (int) (midPoint.x + 0.5)
+        def y = (int) (midPoint.y + 0.5)
+        x -= (bounds.width * 0.5);
+        y -= (bounds.height * 0.5);
+        def w = bounds.width
+        def h = bounds.height
+        imageRect = null
+        midPoint = null
 
-			// for now scale all WMS requests to 8-bit
-            kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
-            kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
-            ++connectionId
-            ++objectPrefixIdx
-			// and make it either 1 band or 3 band output
-			//
-			if(maxBands == 2)
-			{
-                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-                kwlString += "object${objectPrefixIdx}.bands:(0)\n"
-                kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
-                ++connectionId
-                ++objectPrefixIdx
-			}
-			else if(maxBands > 3)
-			{
-                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-                kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
-                kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
-                ++connectionId
-                ++objectPrefixIdx
- 			}
-	        kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
-	        kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
-	        kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
-	        kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
-		    ++objectPrefixIdx
-	        if((stretchModeRegion == "viewport")&&
-               (stretchMode!="none"))
-	        {
-	            kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
-	            kwlString += "object${objectPrefixIdx}.id:${connectionId+1}\n"
-	            ++objectPrefixIdx
-	            kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
-	            kwlString += "object${objectPrefixIdx}.id:${connectionId+2}\n"
-	            kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
-	            kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId}\n"
-	            kwlString += "object${objectPrefixIdx}.input_connection2:${connectionId+1}\n"
-	            ++objectPrefixIdx
-                connectionId += 2
-	        }
-		}
-		else
-		{
-		     kwlString = "type:ossimMemoryImageSource\n"
-			 if(params.width&&params.height)
-			 {
-				 kwlString += "rect:(0,0,${bounds.width},${bonds.height},lh)\n"
-				 kwlString += "scalar_type:ossim_uint8\n"
-				 kwlString += "number_bands:1\n"
-			 }
-		}
- 	    def mosaic = new joms.oms.Chain();
-	    mosaic.loadChainKwlString(kwlString)
-        srcChains.each{srcChain->
-            mosaic.connectMyInputTo(srcChain.chain)
+        // for now scale all WMS requests to 8-bit
+        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
+        kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+        ++connectionId
+        ++objectPrefixIdx
+        // and make it either 1 band or 3 band output
+        //
+        if ( maxBands == 2 )
+        {
+          kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+          kwlString += "object${objectPrefixIdx}.bands:(0)\n"
+          kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+          ++connectionId
+          ++objectPrefixIdx
         }
-		result.image = rasterChainService.grabOptimizedImageFromChain(mosaic, params)
-		mosaic?.deleteChain()
-		srcChains.each{
-			it.chain.deleteChain()
-			it.kwl = ""
-		}
-		params.clear()
-		mosaic = null
-		srcChains?.clear()
-		srcChains = null
-		wmsView?.delete()
-		wmsView = null
+        else if ( maxBands > 3 )
+        {
+          kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+          kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
+          kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+          ++connectionId
+          ++objectPrefixIdx
+        }
+        kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
+        kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
+        kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
+        kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+        ++objectPrefixIdx
+        if ( (stretchModeRegion == "viewport") &&
+                (stretchMode != "none") )
+        {
+          kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
+          kwlString += "object${objectPrefixIdx}.id:${connectionId + 1}\n"
+          ++objectPrefixIdx
+          kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
+          kwlString += "object${objectPrefixIdx}.id:${connectionId + 2}\n"
+          kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
+          kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId}\n"
+          kwlString += "object${objectPrefixIdx}.input_connection2:${connectionId + 1}\n"
+          ++objectPrefixIdx
+          connectionId += 2
+        }
+      }
+      else
+      {
+        kwlString = "type:ossimMemoryImageSource\n"
+        if ( params.width && params.height )
+        {
+          kwlString += "rect:(0,0,${bounds.width},${bonds.height},lh)\n"
+          kwlString += "scalar_type:ossim_uint8\n"
+          kwlString += "number_bands:1\n"
+        }
+      }
+      def mosaic = new joms.oms.Chain();
+      mosaic.loadChainKwlString(kwlString)
+      for ( def srcChain in srcChains )
+      {
+        mosaic.connectMyInputTo(srcChain.chain)
+      }
+      result.image = rasterChainService.grabOptimizedImageFromChain(mosaic, params)
+      mosaic?.deleteChain()
+      for ( def it in srcChains )
+      {
+        it.chain.deleteChain()
+        it.kwl = ""
+      }
+      params.clear()
+      mosaic = null
+      srcChains?.clear()
+      srcChains = null
+      wmsView?.delete()
+      wmsView = null
     }
     else // setup an empty chain
     {
-        result.image = null
-        result.errorMessage="No images found for the specified request"
+      result.image = null
+      result.errorMessage = "No images found for the specified request"
 //        kwlString = "type:ossimMemoryImageSource\n"
-//        if(params.width&&params.height)
- //       {
- //           kwlString += "rect:(0,0,${params.width},${params.height},lh)\n"
- //           kwlString += "scalar_type:ossim_uint8\n"
- //           kwlString += "number_bands:1\n"
-  //      }
-  //      def chain = new joms.oms.Chain();
-  //      chain.loadChainKwlString(kwlString)
-  //      result.image = rasterChainService.grabOptimizedImageFromChain(chain, params)
+      //        if(params.width&&params.height)
+      //       {
+      //           kwlString += "rect:(0,0,${params.width},${params.height},lh)\n"
+      //           kwlString += "scalar_type:ossim_uint8\n"
+      //           kwlString += "number_bands:1\n"
+      //      }
+      //      def chain = new joms.oms.Chain();
+      //      chain.loadChainKwlString(kwlString)
+      //      result.image = rasterChainService.grabOptimizedImageFromChain(chain, params)
     }
 
-	return result
+    return result
   }
+
   RenderedImage getMapOld(def wmsRequest)
   {
     RenderedImage image = null
@@ -326,7 +334,8 @@ class WebMappingService
     case SYSCALL:
       def inputFilenames = []
 
-      wmsRequest?.layers.split(',').each {
+      for ( def it in wmsRequest?.layers.split(',') )
+      {
         def rasterEntry = RasterEntry.get(it)
         inputFilenames << "${rasterEntry?.mainFile.name}|${rasterEntry.entryId}"
       }
@@ -419,7 +428,8 @@ class WebMappingService
       }
 
       def rasterEntries = new WMSQuery().caseInsensitiveBind(wmsRequest.toMap()).rasterEntriesAsList
-      rasterEntries.reverse().each { rasterEntry ->
+      for ( def rasterEntry in rasterEntries.reverse() )
+      {
         def geom = (ossimImageGeometry) null
         def geomPtr = (ossimImageGeometryPtr) null
         //def rasterEntry = RasterEntry.get(it)
@@ -531,8 +541,8 @@ class WebMappingService
         new java.util.Random().nextBytes(data)
       }
 //      wmsMap.cleanUp();
-//      wmsMap.delete()
-//      wmsMap = null;
+      //      wmsMap.delete()
+      //      wmsMap = null;
 
       DataBuffer dataBuffer = new DataBufferByte(data, data.size())
 
@@ -634,17 +644,18 @@ class WebMappingService
       }
     }
 //    println params
-//    println rect
-//    println "${inputFile} ${entry}"
-//    println stretchMode
-//    println viewportStretchMode
-//    println scale
-//    println "${startSample} ${endSample} ${startLine} ${endLine}"
+    //    println rect
+    //    println "${inputFile} ${entry}"
+    //    println stretchMode
+    //    println viewportStretchMode
+    //    println scale
+    //    println "${startSample} ${endSample} ${startLine} ${endLine}"
 
     byte[] data = new byte[rect.width * rect.height * 3]
     def kwl = new ossimKeywordlist();
-    params.each {name, value ->
-      kwl.add(name, value)
+    for ( def param in params )
+    {
+      kwl.add(param.key, param.value)
     }
     kwl.add("viewable_bands", "${viewableBandCount}")
     kwl.add("rotate", "${rotate}")
@@ -722,12 +733,13 @@ class WebMappingService
   {
     def unitConversion = new ossimUnitConversionTool(1.0)
     def fullResScale = 0.0 // default to 1 unit per pixel
-//    def minResLevels  = 0 // default to 1 unit per pixel
+    //    def minResLevels  = 0 // default to 1 unit per pixel
     def smallestScale = 0.0
     def largestScale = 0.0
     def testScale = 0.0
 
-    rasterEntries.each {rasterEntry ->
+    for ( def rasterEntry in rasterEntries )
+    {
       if ( rasterEntry.gsdY )
       {
         unitConversion.setValue(rasterEntry.gsdY);
@@ -761,34 +773,36 @@ class WebMappingService
     return [fullResScale: fullResScale, smallestScale: smallestScale, largestScale: largestScale]
   }
 
-    def computeBounds(def rasterEntries)
+  def computeBounds(def rasterEntries)
+  {
+    def unionBounds = null
+    for ( def rasterEntry in rasterEntries )
     {
-        def unionBounds = null
-        rasterEntries.each { rasterEntry ->
-          def groundGeom = rasterEntry?.groundGeom
-          if(unionBounds)
-          {
-            unionBounds = unionBounds.union(groundGeom)
-          }
-          else
-          {
-            unionBounds = groundGeom
-          }
-        }
-        def coords = unionBounds?.envelope?.coordinates
-        def minx = 9999999999
-        def maxx = -9999999999
-        def miny = 9999999999
-        def maxy = -9999999999
-        coords.each{coord->
-            if(coord.x < minx) minx = coord.x
-            if(coord.x > maxx) maxx = coord.x
-            if(coord.y < miny) miny = coord.y
-            if(coord.y > maxy) maxy = coord.y
-        }
-
-      return [left: minx, right: maxx, top: maxy, bottom: miny]
+      def groundGeom = rasterEntry?.groundGeom
+      if ( unionBounds )
+      {
+        unionBounds = unionBounds.union(groundGeom)
+      }
+      else
+      {
+        unionBounds = groundGeom
+      }
     }
+    def coords = unionBounds?.envelope?.coordinates
+    def minx = 9999999999
+    def maxx = -9999999999
+    def miny = 9999999999
+    def maxy = -9999999999
+    for ( def coord in coords )
+    {
+      if ( coord.x < minx ) minx = coord.x
+      if ( coord.x > maxx ) maxx = coord.x
+      if ( coord.y < miny ) miny = coord.y
+      if ( coord.y > maxy ) maxy = coord.y
+    }
+
+    return [left: minx, right: maxx, top: maxy, bottom: miny]
+  }
 
   def createModelFromTiePointSet(def rasterEntry)
   {
@@ -801,7 +815,8 @@ class WebMappingService
       def groundCoordinates = tiepoints.Ground.toString().trim()
       def splitImageCoordinates = imageCoordinates.split(" ");
       def splitGroundCoordinates = groundCoordinates.split(" ");
-      splitImageCoordinates.each {
+      for ( def it in splitImageCoordinates )
+      {
         def point = it.split(",")
         if ( point.size() >= 2 )
         {
@@ -809,7 +824,8 @@ class WebMappingService
                   Double.parseDouble(point.getAt(1))))
         }
       }
-      splitGroundCoordinates.each {
+      for ( def it in splitGroundCoordinates )
+      {
         def point = it.split(",")
         if ( point.size() >= 2 )
         {
@@ -825,7 +841,8 @@ class WebMappingService
       {
         def w = width as double
         def h = height as double
-        (0..<4).each {
+        for ( def it in (0..<4) )
+        {
           def point = coordinates[it];
           gptArray.add(new ossimGpt(coordinates[it].y, coordinates[it].x));
         }
@@ -880,7 +897,7 @@ class WebMappingService
         geoms = [geoms]
       }
 
-      geoms.each {g ->
+      for ( def g in geoms) {
         LiteShape shp = new LiteShape(g.g, atx, false)
         if ( g instanceof Polygon || g instanceof MultiPolygon )
         {
@@ -1022,7 +1039,8 @@ class WebMappingService
 
     def wmsLayers = WmsLayers.list()
 
-    wmsLayers?.each { wmsLayer ->
+    for ( def wmsLayer in wmsLayers )
+    {
       def newLayer = [
               name: wmsLayer.name,
               url: wmsLayer.url,
