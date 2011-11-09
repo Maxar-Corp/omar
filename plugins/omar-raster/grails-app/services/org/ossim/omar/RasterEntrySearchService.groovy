@@ -13,6 +13,7 @@ import org.hibernate.criterion.*
 import com.vividsolutions.jts.geom.Polygon
 import org.hibernate.ScrollableResults
 import org.springframework.beans.factory.InitializingBean
+import java.awt.Polygon
 
 class RasterEntrySearchService implements InitializingBean
 {
@@ -31,6 +32,7 @@ class RasterEntrySearchService implements InitializingBean
     if ( max < 1 ) return null;
     def criteriaBuilder = RasterEntry.createCriteria();
     def x = {
+      createAlias("rasterDataSet", "rds")
       if ( max )
       {
         setMaxResults(max)
@@ -51,6 +53,7 @@ class RasterEntrySearchService implements InitializingBean
         }
 
         //setFetchMode("rasterEntry", FetchMode.JOIN)
+        join "rasterEntry"
       }
     }
 
