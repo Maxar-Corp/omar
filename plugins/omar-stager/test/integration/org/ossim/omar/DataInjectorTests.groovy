@@ -6,7 +6,8 @@ import joms.oms.ossimGpt
 import org.ossim.omar.RasterDataSet
 import org.ossim.omar.Repository
 import org.ossim.omar.VideoDataSet
-import org.ossim.postgis.Geometry
+
+import geoscript.geom.Bounds
 
 class DataInjectorTests extends GroovyTestCase
 {
@@ -346,7 +347,7 @@ class DataInjectorTests extends GroovyTestCase
 
       def mapping = [file: "",
           file_noext: "/data/test_${cellId}",
-          geom: Geometry.createPolygon(minLon, minLat, maxLon, maxLat),
+          geom: new Bounds(minLon, minLat, maxLon, maxLat).polygon.wkt,
           srs: "4326",
           title: "Test for Cell ${cellId}",
           tgtid: "Cell_${cellId}",
@@ -408,7 +409,7 @@ class DataInjectorTests extends GroovyTestCase
 
       def mapping = [file: "",
           file_noext: "/data/test_${cellId}",
-          geom: Geometry.createPolygon(minLon, minLat, maxLon, maxLat),
+          geom: new Bounds(minLon, minLat, maxLon, maxLat).polygon.wkt,
           srs: "4326",
           iso_start_date: isoDate.format(startDate),
           iso_end_date: isoDate.format(endDate),
