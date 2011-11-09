@@ -635,14 +635,7 @@ plugins/postgis/lib/*.iml
 plugins/postgis/scripts/*.iml
 plugins/postgis/src/*.iml
 plugins/postgis/src/groovy/*.iml
-plugins/postgis/src/groovy/org/*.iml
-plugins/postgis/src/groovy/org/ossim/*.iml
-plugins/postgis/src/groovy/org/ossim/postgis/*.iml
 plugins/postgis/src/java/*.iml
-plugins/postgis/src/java/com/*.iml
-plugins/postgis/src/java/com/vividsolutions/*.iml
-plugins/postgis/src/java/com/vividsolutions/jts/*.iml
-plugins/postgis/src/java/com/vividsolutions/jts/geom/*.iml
 plugins/postgis/test/*.iml
 plugins/postgis/test/integration/*.iml
 plugins/postgis/test/unit/*.iml
