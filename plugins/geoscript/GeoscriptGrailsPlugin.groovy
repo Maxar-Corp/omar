@@ -1,13 +1,15 @@
+import geoscript.render.Map as MapContext
+import geoscript.geom.Bounds
+import org.geotools.map.MapLayer
+
 class GeoscriptGrailsPlugin
 {
   // the plugin version
-  def version = "0.4"
+  def version = "0.5"
   // the version or versions of Grails the plugin is designed for
   def grailsVersion = "1.2.2 > *"
   // the other plugins this plugin depends on
-  def dependsOn = [
-          postgis: "0.15 > *"
-  ]
+  def dependsOn = [:]
   // resources that are excluded from plugin packaging
   def pluginExcludes = [
           "grails-app/views/error.gsp"
@@ -34,6 +36,71 @@ Brief description of the plugin.
 
   def doWithDynamicMethods = { ctx ->
     // TODO Implement registering dynamic methods to classes (optional)
+
+    MapContext.metaClass.setUpRendering = {->
+
+      // Add Layers
+      layers.each {layer ->
+        switch ( layer )
+        {
+        case geoscript.layer.Layer:
+          MapLayer mapLayer = new MapLayer(layer.fs, layer.style.style)
+          context.addLayer(mapLayer)
+          break
+        case org.geotools.map.MapLayer:
+          context.addLayer(layer)
+          break
+        }
+      }
+      // Set Bounds and Projections
+      def b = getBounds()
+      // If bounds is not set build it from all layers
+      if ( b == null || b.empty )
+      {
+        layers.each {lyr ->
+          if ( b == null || b.empty )
+          {
+            b = lyr.bounds
+          }
+          else
+          {
+            b.expand(lyr.bounds)
+          }
+        }
+      }
+      // Make sure that the Bounds has non 0 width and height
+      // This covers points and horizontal/vertical lines
+      b = b.ensureWidthAndHeight()
+      // Fix the aspect ratio (or not)
+      if ( fixAspectRatio )
+      {
+        b = fixAspectRatio(width, height, b)
+      }
+      // If the Bounds doesn't have a Projection, assume it is the same
+      // Projection as the Map.  If the Map doesn't have a Projection
+      // get if from the first Layer that has a Projection
+      if ( b.proj == null )
+      {
+        def p = getProj()
+        if ( p == null || p.crs == null )
+        {
+          layers.each {layer ->
+            if ( layer.proj != null )
+            {
+              p = layer.proj
+              setProj(p)
+              return
+            }
+          }
+        }
+        b = new Bounds(b.l, b.b, b.r, b.t, p)
+      }
+      setBounds(b)
+    }
+
+    MapContext.metaClass.addLayer = { org.geotools.map.MapLayer mapLayer ->
+      layers.add(mapLayer)
+    }
   }
 
   def doWithApplicationContext = { applicationContext ->
