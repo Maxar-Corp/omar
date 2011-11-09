@@ -6,10 +6,10 @@ import geoscript.filter.Filter
 import geoscript.geom.Bounds
 import geoscript.layer.Layer
 import geoscript.layer.Shapefile
-import geoscript.map.Map as MapContext
+import geoscript.render.Map as MapContext
 import geoscript.proj.Projection
-import geoscript.style.PolygonSymbolizer
-import geoscript.style.Style
+import geoscript.style.Fill
+import geoscript.style.Stroke
 import geoscript.workspace.PostGIS
 import geoscript.workspace.Workspace
 import geoscript.workspace.Database
@@ -18,6 +18,7 @@ import org.geotools.data.Query
 import org.geotools.jdbc.JDBCFeatureSource
 import org.geotools.data.postgis.PostgisNGDataStoreFactory
 import org.geotools.data.store.ContentEntry
+import org.geotools.map.MapLayer
 
 import org.geotools.factory.CommonFactoryFinder
 
@@ -25,56 +26,25 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
 
 import grails.converters.JSON
 import geoscript.workspace.Directory
+import java.awt.image.BufferedImage
+import java.awt.Color
 
 
 class FootprintService
 {
 
-  static transactional = true
+  static transactional = false
 
   def dataSource
   def grailsApplication
 
-  def render(def params, def ostream)
-  {
-    def wmsGetMap = parseGetMap(params)
-    def mapContext = null
-    def layer = null
-    def filter = null
-
-    try
-    {
-      mapContext = createMapContext(wmsGetMap)
-      filter = createFilter(wmsGetMap['filter'], mapContext.bounds)
-      layer = createQueryLayer(wmsGetMap['layers'], filter)
-//    layer = new Shapefile("/data/omar/world_adm0.shp")
-      layer.style = createStyle(wmsGetMap['styles'])
-      mapContext.addLayer(layer)
-      renderToImageToStream(mapContext, ostream)
-    }
-    finally
-    {
-      mapContext?.close()
-      layer?.workspace?.close()
-
-    }
-  }
-
   def createFilter(def filterText, def bounds)
   {
-    def x = Filter.intersects("ground_geom", bounds.geometry)
-    def y = new Filter(filterText)
-    def filterFactory = CommonFactoryFinder.getFilterFactory(null)
-    def filter = filterFactory.and(x.filter, y.filter)
+    def filter = Filter.intersects("ground_geom", bounds.geometry)
+
+    filter = filter.and(new Filter(filterText))
 
     return new Filter(filter)
-  }
-
-  def createQueryLayer(def typeName, def filterText, def flag = true)
-  {
-    def workspace = createWorkspace(flag)
-
-    return new QueryLayer(workspace, typeName, filterText)
   }
 
 
@@ -141,33 +111,13 @@ class FootprintService
     return workspace
   }
 
-  def createMapContext(def wmsGetMap)
-  {
-    def coords = wmsGetMap['bbox'].split(',').collect { it.toString().toDouble() }
-    def proj = new Projection(wmsGetMap['srs'])
-    def bounds = new Bounds(coords[0], coords[1], coords[2], coords[3], proj)
-
-    def mapContext = new QueryMapContext(
-            width: wmsGetMap['width']?.toInteger(),
-            height: wmsGetMap['height']?.toInteger(),
-            bounds: bounds,
-            imageType: wmsGetMap['format'] - "image/"
-    )
-
-    if ( wmsGetMap['bgcolor'] )
-    {
-      mapContext.backgroundColor = wmsGetMap['bgcolor']
-    }
-
-    return mapContext
-  }
-
   def createStyle(def styleJSON)
   {
     def jsonObject = JSON.parse(styleJSON)
     def styleMap = jsonObject.entrySet().inject([:]) { result, i -> result[i.key] = i.value; return result}
+    def style = new Fill(styleMap['fill']) + new Stroke(styleMap['stroke'])
 
-    return new Style(new PolygonSymbolizer(styleMap))
+    return style
   }
 
   def renderToImageToStream(def mapContext, def ostream)
@@ -246,4 +196,51 @@ class FootprintService
       }
     }
   }
+
+
+  def render(def params, def ostream)
+  {
+    def wmsGetMap = parseGetMap(params)
+    def writer = wmsGetMap['format']?.split('/')[-1] ?: 'png'
+    def flag = "geoscript"
+
+    switch ( flag )
+    {
+    case "geoscript":
+      def coords = wmsGetMap['bbox']?.split(',').collect { it as double }
+      def bbox = new Bounds(coords[0], coords[1], coords[2], coords[3])
+      def srs = new Projection(wmsGetMap['srs'])
+      def mapParams = [
+              width: wmsGetMap['width'] as int,
+              height: wmsGetMap['height'] as int,
+              type: writer,
+              proj: srs,
+              bounds: bbox
+      ]
+
+      def mapContext = new MapContext(mapParams)
+      def workspace = createWorkspace()
+      def layer = workspace[wmsGetMap['layers']]
+      def style = createStyle(wmsGetMap['styles'])
+      def filter = createFilter(wmsGetMap['filter'], bbox)
+      def query = new Query(wmsGetMap['layers'], filter.filter)
+      def mapLayer = new MapLayer(layer.fs, style.style)
+
+      mapLayer.query = query
+      mapContext.addLayer(mapLayer)
+      mapContext.render(ostream)
+      mapContext.close()
+      workspace.close()
+      break
+    default:
+      def image = new BufferedImage(wmsGetMap['width'] as int, wmsGetMap['height'] as int, BufferedImage.TYPE_INT_ARGB)
+      def g2d = image.graphics
+
+      g2d.color = Color.yellow
+      g2d.drawRect(0, 0, image.width, image.height)
+      g2d.dispose()
+      ImageIO.write(image, writer, ostream)
+    }
+  }
+
 }
