@@ -4,9 +4,11 @@
   <meta name="layout" content="main8"/>
   <title>OMAR: Video Data Set List</title>
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
 </head>
+
 <body class="yui-skin-sam">
 <content tag="north">
   <div class="nav">
@@ -34,13 +36,13 @@
 </content>
 
 <omar:bundle contentType="javascript" files="${[
-    [plugin: 'richui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [plugin: 'richui', dir: 'js/yui/connection', file: 'connection-min.js'],
-    [plugin: 'richui', dir: 'js/yui/json', file: 'json-min.js'],
-    [plugin: 'richui', dir: 'js/yui/element', file: 'element-min.js'],
-    [plugin: 'richui', dir: 'js/yui/paginator', file: 'paginator-min.js'],
-    [plugin: 'richui', dir: 'js/yui/datasource', file: 'datasource-min.js'],
-    [plugin: 'richui', dir: 'js/yui/datatable', file: 'datatable-min.js']
+    [plugin: 'yui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+    [plugin: 'yui', dir: 'js/yui/connection', file: 'connection-min.js'],
+    [plugin: 'yui', dir: 'js/yui/json', file: 'json-min.js'],
+    [plugin: 'yui', dir: 'js/yui/element', file: 'element-min.js'],
+    [plugin: 'yui', dir: 'js/yui/paginator', file: 'paginator-min.js'],
+    [plugin: 'yui', dir: 'js/yui/datasource', file: 'datasource-min.js'],
+    [plugin: 'yui', dir: 'js/yui/datatable', file: 'datatable-min.js']
 ]}"/>
 
 <g:javascript>
@@ -75,7 +77,8 @@
 var myPaginator = new YAHOO.widget.Paginator({
       containers: "paging",
       rowsPerPage: 10,
-      template : "{FirstPageLink} {PreviousPageLink} <strong>{PageLinks}</strong> {NextPageLink} {LastPageLink} {CurrentPageReport} <input name='pageNumber' value='1' size='14' type='text' onchange='gotoPage( this.value )'>"
+      template : "{FirstPageLink} {PreviousPageLink} <strong>{PageLinks}</strong> {NextPageLink} {LastPageLink} {CurrentPageReport} <input
+    name='pageNumber' value='1' size='14' type='text' onchange='gotoPage( this.value )'>"
 
     });
 
