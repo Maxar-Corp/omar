@@ -43,7 +43,6 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    compile ":richui:0.8"
   }
 
 }
