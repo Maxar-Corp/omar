@@ -27,16 +27,14 @@
   </style>
 
   <link rel="stylesheet" type="text/css"
-        href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
+        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
   <link rel="stylesheet" type="text/css"
-        href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
+        href="${resource(plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
   <link rel="stylesheet" href="/omar/css/fieldsets.css" type="text/css">
 
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
-
-  <resource:dateChooser/>
 
   <style type="text/css">
   .datechooser {
@@ -70,11 +68,11 @@
         <h3>Temporal Criteria:</h3>
         <label for="startDate">
           Start Date:
-          <richui:dateChooser name="startDate" style="max-width:75%" value="${startDate}" format="yyyy-MM-dd" time="true" hourStyle="max-width:25%" minuteStyle="max-width:25%"/>
+          <g:datePicker name="startDate" value="${startDate}" precision="minute" noSelection="['':'-Choose-']"/>
         </label>
         <label for="endDate">
           End Date:
-          <richui:dateChooser name="endDate" style="max-width:75%" value="${endDate}" format="yyyy-MM-dd" time="true" hourStyle="max-width:25%" minuteStyle="max-width:25%"/>
+          <g:datePicker name="endDate" value="${endDate}" precision="minute" noSelection="['':'-Choose-']"/>
         </label>
       </fieldset>
 
@@ -98,11 +96,11 @@
   <omar:securityClassificationBanner fontSize="20px"/>
 </div>
 
-<g:javascript plugin="richui" src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
-<g:javascript plugin="richui" src="yui/element/element-min.js"/>
-<g:javascript plugin="richui" src="yui/dragdrop/dragdrop-min.js"/>
-<g:javascript plugin="richui" src="yui/resize/resize-min.js"/>
-<g:javascript plugin="richui" src="yui/layout/layout-min.js"/>
+<yui:javascript dir="yahoo-dom-event" file="yahoo-dom-event.js"/>
+<yui:javascript dir="element" file="element-min.js"/>
+<yui:javascript dir="dragdrop" file="dragdrop-min.js"/>
+<yui:javascript dir="resize" file="resize-min.js"/>
+<yui:javascript dir="layout" file="layout-min.js"/>
 <openlayers:loadJavascript/>
 
 <g:javascript>

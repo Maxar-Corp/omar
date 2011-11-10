@@ -26,23 +26,31 @@
   <div id="searchMenu" class="yuimenubar yuimenubarnav">
     <div class="bd">
       <ul class="first-of-type">
-        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu"
+                                                    href="${createLink(controller: 'home', action: 'index')}"
+                                                    title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
         </li>
         <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
+
           <div id="exportMenu" class="yuimenu">
             <div class="bd">
               <ul>
-                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:generateKml()" title="Export KML.  If no selection box is present the view bounds will float in google earth and if you hit refresh it will use the current google viewport to query the latest imagery.  If you specify a selection then it will be fixed to that location">KML Query</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:generateKml()"
+                                           title="Export KML.  If no selection box is present the view bounds will float in google earth and if you hit refresh it will use the current google viewport to query the latest imagery.  If you specify a selection then it will be fixed to that location">KML Query</a>
+                </li>
               </ul>
             </div>
           </div>
         </li>
         <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
+
           <div id="viewMenu" class="yuimenu">
             <div class="bd">
               <ul>
-                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:updateOmarFilters();" title="Refresh the footprints">Refresh Footprints</a></li>
-                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:search();" title="Execute the search for the specified criteria">Search</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:updateOmarFilters();"
+                                           title="Refresh the footprints">Refresh Footprints</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:search();"
+                                           title="Execute the search for the specified criteria">Search</a></li>
               </ul>
             </div>
           </div>
@@ -53,373 +61,465 @@
 </content>
 
 <content tag="left">
-  <div id="spatialTab" class="yui-navset">
-    <ul class="yui-nav">
-      <li class="selected"><a href="#spatialTab1" id="ddTab"><em>DD</em></a></li>
-      <li><a href="#spatialTab2" id="dmsTab"><em>DMS</em></a></li>
-      <li><a href="#spatialTab3" id="mgrsTab"><em>MGRS</em></a></li>
-    </ul>
-    <div class="yui-content">
-      <div id="spatialTab1">
-        <div class="niceBox">
-          <div class="niceBoxHd">Map Center:</div>
-          <div class="niceBoxBody">
-            <ol>
-              <li>
-                <g:checkBox title="If this is checked we will use the center radius to define the Area of Interest" name="searchMethod" id="radiusSearchButton" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
-                <label title="If this is checked we will use the center radius to define the Area of Interest">Use Radius Search</label>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <label for="centerLat">Latitude:</label>
-              </li>
-              <li>
-                <g:textField title="Specify in decimal degrees the center latitude" name="centerLat" value="${queryParams?.centerLat}" onChange="mapWidget.setCenterDd()"/>
-              </li>
-              <li>
-                <label for="centerLon">Longitude:</label>
-              </li>
-              <li>
-                <g:textField title="Specify in decimal degrees the center longitude" name="centerLon" value="${queryParams?.centerLon}" onChange="mapWidget.setCenterDd()"/>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <label for="aoiRadius">Radius in Meters:</label>
-              </li>
-              <li>
-                <g:textField title="Specify the radial search in meters" id="aoiRadius" name="aoiRadius" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters();syncAoiRadius('aoiRadius')"/>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <button type="button" onclick="javascript:mapWidget.setCenterDd();">Set Center</button>
-              </li>
-            </ol>
-          </div>
-        </div>
-        <div class="niceBox">
-          <div class="niceBoxHd">Geospatial Criteria:</div>
-          <div class="niceBoxBody">
-            <input type="hidden" id="viewMinLon" name="viewMinLon" value="${fieldValue(bean: queryParams, field: 'viewMinLon')}"/>
-            <input type="hidden" id="viewMinLat" name="viewMinLat" value="${fieldValue(bean: queryParams, field: 'viewMinLat')}"/>
-            <input type="hidden" id="viewMaxLon" name="viewMaxLon" value="${fieldValue(bean: queryParams, field: 'viewMaxLon')}"/>
-            <input type="hidden" id="viewMaxLat" name="viewMaxLat" value="${fieldValue(bean: queryParams, field: 'viewMaxLat')}"/>
-            <ol>
-              <li>
-                <g:checkBox title="If this is checked we will use the center radius to define the Area of Interest" name="searchMethod" id="bboxSearchButton" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
-                <label title="If this is checked we will use the center radius to define the Area of Interest">Use Bound Box Search</label>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <label for="aoiMaxLat">North Latitude:</label>
-              </li>
-              <li>
-                <input title="Specify the northern latitude in decimal degrees" type="text" id="aoiMaxLat" name="aoiMaxLat" value="${fieldValue(bean: queryParams, field: 'aoiMaxLat')}"/>
-              </li>
-              <li>
-                <label for="aoiMinLon">West Longitude:</label>
-              </li>
-              <li>
-                <input title="Specify the weastern longitude in decimal degrees" type="text" id="aoiMinLon" name="aoiMinLon" value="${fieldValue(bean: queryParams, field: 'aoiMinLon')}"/>
-              </li>
-              <li>
-                <label for="aoiMinLat">South Latitude:</label>
-              </li>
-              <li>
-                <input title="Specify the southern latitude in decimal degrees" type="text" id="aoiMinLat" name="aoiMinLat" value="${fieldValue(bean: queryParams, field: 'aoiMinLat')}"/>
-              </li>
-              <li>
-                <label for="aoiMaxLon">East Longitude:</label>
-              </li>
-              <li>
-                <input title="Specify the estern longitude in decimal degrees" type="text" id="aoiMaxLon" name="aoiMaxLon" value="${fieldValue(bean: queryParams, field: 'aoiMaxLon')}"/>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <button title="Clear the Bounding Box search options" type="button" onclick="javascript:mapWidget.clearAOI();">Clear</button>
-              </li>
-            </ol>
-          </div>
-        </div>
-      </div>
-      <div id="spatialTab2">
-        <div class="niceBox">
-          <div class="niceBoxHd">Map Center:</div>
-          <div class="niceBoxBody">
-            <ol>
-              <li>
-                <g:checkBox title="If this is checked we will use the center radius to define the Area of Interest" name="searchMethod2" id="radiusSearchButton2" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
-                <label title="If this is checked we will use the center radius to define the Area of Interest">Use Radius Search</label>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <label for="centerLat">Latitude:</label>
-              </li>
-              <li>
-                <g:textField title="enter a dms of the form ddmmss.ssssN|S or dd mm ss.sss N|S" name="centerLatDms" value="" onChange="mapWidget.setCenterDms()"/>
-              </li>
-              <li>
-                <label for="centerLon">Longitude:</label>
-              </li>
-              <li>
-                <g:textField title="enter a dms of the form dddmmss.ssssE|W or ddd mm ss.sss E|W" name="centerLonDms" value="" onChange="mapWidget.setCenterDms()"/>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <label for="aoiRadius2">Radius in Meters:</label>
-              </li>
-              <li>
-                <g:textField title="Specify the radial search in meters" id="aoiRadius2" name="aoiRadius2" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters();syncAoiRadius('aoiRadius2')"/>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <button title="Sets the center of the map to the specified coordinate" type="button" onclick="javascript:mapWidget.setCenterDms();">Set Center</button>
-              </li>
-            </ol>
-          </div>
-        </div>
-        <div class="niceBox">
-          <div class="niceBoxHd">Geospatial Criteria:</div>
-          <div class="niceBoxBody">
-            <ol>
-              <li>
-                <g:checkBox title="If this is checked we will use the Bounding Box search" name="searchMethod2" id="bboxSearchButton2" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
-                <label title="If this is checked we will use the Bounding Box search">Use Bound Box Search</label>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <label for="aoiMaxLat">North Latitude:</label>
-              </li>
-              <li>
-                <input title="Enter a dms of the form ddmmss.ssssN|S or dd mm ss.sss N|S" type="text" id="aoiMaxLatDms" name="aoiMaxLatDms"/>
-              </li>
-              <li>
-                <label for="aoiMinLon">West Longitude:</label>
-              </li>
-              <li>
-                <input title="Enter a dms of the form dddmmss.ssssE|W or ddd mm ss.sss E|W" title="" type="text" id="aoiMinLonDms" name="aoiMinLonDms"/>
-              </li>
-              <li>
-                <label for="aoiMinLat">South Latitude:</label>
-              </li>
-              <li>
-                <input title="Enter a dms of the form ddmmss.ssssN|S or dd mm ss.sss N|S" type="text" id="aoiMinLatDms" name="aoiMinLatDms"/>
-              </li>
-              <li>
-                <label for="aoiMaxLon">East Longitude:</label>
-              </li>
-              <li>
-                <input title="Enter a dms of the form dddmmss.ssssE|W or ddd mm ss.sss E|W" type="text" id="aoiMaxLonDms" name="aoiMaxLonDms"/>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <button title="Clear the Bounding Box search options" type="button" onclick="javascript:mapWidget.clearAOI();">Clear</button>
-              </li>
-            </ol>
-          </div>
-        </div>
-      </div>
-      <div id="spatialTab3">
-        <div class="niceBox">
-          <div class="niceBoxHd">Map Center:</div>
-          <div class="niceBoxBody">
-            <ol>
-              <li>
-                <g:checkBox title="If this is checked we will use the Bounding Box search" name="searchMethod3" id="radiusSearchButton3" value="${BaseQuery.RADIUS_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}" onclick="mapWidget.togglePointRadiusCheckBox()"/>
-                <label title="If this is checked we will use the Bounding Box search">Use Radius Search</label>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <label for="centerLat">MGRS:</label>
-              </li>
-              <li>
-                <g:textField title="MGRS formatted input of the form [grid zone designator][100,000-meter square identifier][easting][northing]" name="centerMgrs" value="" onChange="mapWidget.setCenterMgrs()"/>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <label for="aoiRadius3">Radius in Meters:</label>
-              </li>
-              <li>
-                <g:textField title="Specify the radial search in meters" id="aoiRadius3" name="aoiRadius3" value="${fieldValue(bean: queryParams, field: 'aoiRadius')}" onChange="updateOmarFilters();syncAoiRadius('aoiRadius3')"/>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <button title="Sets the center of the map to the specified input field" type="button" onclick="javascript:mapWidget.setCenterMgrs();">Set Center</button>
-              </li>
-            </ol>
-          </div>
-        </div>
-        <div class="niceBox">
-          <div class="niceBoxHd">Geospatial Criteria:</div>
-          <div class="niceBoxBody">
-            <ol>
-              <li>
-                <g:checkBox title="If this is checked we will use the Bounding Box search" name="searchMethod3" id="bboxSearchButton3" value="${BaseQuery.BBOX_SEARCH}" checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}" onclick="mapWidget.toggleBboxCheckBox()"/>
-                <label title="If this is checked we will use the Bounding Box search">Use Bound Box Search</label>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <label for="aoiNeMgrs">MGRS NE:</label>
-              </li>
-              <li>
-                <input title="MGRS formatted input of the form [grid zone designator][100,000-meter square identifier][easting][northing]" type="text" id="aoiNeMgrs" name="aoiNeMgrs" value=""/>
-              </li>
-              <li>
-                <label for="aoiSwMgrs">MGRS SW:</label>
-              </li>
-              <li>
-                <input title="MGRS formatted input of the form [grid zone designator][100,000-meter square identifier][easting][northing]" type="text" id="aoiSwMgrs" name="aoiSwMgrs" value=""/>
-              </li>
-              <li>
-                <br/>
-              </li>
-              <li>
-                <button title="Clear the Bounding Box search options" type="button" onclick="javascript:mapWidget.clearAOI();">Clear</button>
-              </li>
-            </ol>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <input type="hidden" id="units" name="units"/>
+<div id="spatialTab" class="yui-navset">
+<ul class="yui-nav">
+  <li class="selected"><a href="#spatialTab1" id="ddTab"><em>DD</em></a></li>
+  <li><a href="#spatialTab2" id="dmsTab"><em>DMS</em></a></li>
+  <li><a href="#spatialTab3" id="mgrsTab"><em>MGRS</em></a></li>
+</ul>
+
+<div class="yui-content">
+<div id="spatialTab1">
   <div class="niceBox">
-    <div class="niceBoxHd">Temporal Criteria:</div>
+    <div class="niceBoxHd">Map Center:</div>
+
     <div class="niceBoxBody">
       <ol>
         <li>
-          <label for="startDate">Start Date:</label>
+          <g:checkBox title="If this is checked we will use the center radius to define the Area of Interest"
+                      name="searchMethod" id="radiusSearchButton" value="${BaseQuery.RADIUS_SEARCH}"
+                      checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}"
+                      onclick="mapWidget.togglePointRadiusCheckBox()"/>
+          <label
+              title="If this is checked we will use the center radius to define the Area of Interest">Use Radius Search</label>
         </li>
         <li>
-          <%--
-          <richui:dateChooser name="startDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.startDate}" onChange="updateOmarFilters()"/>
-          --%>
-          <omar:dateChooser render="input" containerId="startDateContainer" inputId="startDateInput" name="startDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.startDate}" onChange="updateOmarFilters()"/>
-
-          <g:hiddenField name="startDate_timezone" value="UTC"/>
+          <br/>
         </li>
         <li>
-          <label for='endDate'>End Date:</label>
+          <label for="centerLat">Latitude:</label>
         </li>
         <li>
-          <%--       <%--
-         <richui:dateChooser name="endDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.endDate}" onChange="updateOmarFilters()"/>
-          --%>
-          <omar:dateChooser render="input" containerId="endDateContainer" inputId="endDateInput" name="endDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.endDate}" onChange="updateOmarFilters()"/>
-          <g:hiddenField name="endDate_timezone" value="UTC"/>
+          <g:textField title="Specify in decimal degrees the center latitude" name="centerLat"
+                       value="${queryParams?.centerLat}" onChange="mapWidget.setCenterDd()"/>
+        </li>
+        <li>
+          <label for="centerLon">Longitude:</label>
+        </li>
+        <li>
+          <g:textField title="Specify in decimal degrees the center longitude" name="centerLon"
+                       value="${queryParams?.centerLon}" onChange="mapWidget.setCenterDd()"/>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <label for="aoiRadius">Radius in Meters:</label>
+        </li>
+        <li>
+          <g:textField title="Specify the radial search in meters" id="aoiRadius" name="aoiRadius"
+                       value="${fieldValue(bean: queryParams, field: 'aoiRadius')}"
+                       onChange="updateOmarFilters();syncAoiRadius('aoiRadius')"/>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <button type="button" onclick="javascript:mapWidget.setCenterDd();">Set Center</button>
         </li>
       </ol>
     </div>
   </div>
 
-  <div id="criteriaTab" class="yui-navset">
-    <p/>
-    <ul class="yui-nav">
-      <li class="selected" id="metadataCriteriaTab"><a href="#criteriaTab1"><em>Metadata</em></a></li>
-      <li id="cqlCriteriaTab"><a href="#criteriaTab2"><em>CQL</em></a></li>
-    </ul>
-    <div class="yui-content">
-      <div id="criteriaTab1"><p>
-
-
-
-        <div class="niceBox">
-          <div class="niceBoxHd">Metadata Criteria:</div>
-          <div class="niceBoxBody">
-            <ol>
-              <g:each in="${queryParams?.searchTagValues}" var="searchTagValue" status="i">
-                <g:select
-                    noSelection="${['null':'Select One...']}"
-                    id="searchTagNames[${i}]"
-                    name="searchTagNames[${i}]"
-                    value="${queryParams?.searchTagNames[i]}"
-                    from="${RasterEntrySearchTag.list(sort:'description')}"
-                    optionKey="name" optionValue="description"/>
-                <li>
-                  <g:textField id="searchTagValues[${i}]" name="searchTagValues[${i}]" value="${searchTagValue}" onChange="updateOmarFilters()"/>
-                </li>
-              </g:each>
-            </ol>
-          </div>
-        </div>
-      </p></div>
-      <div id="criteriaTab2"><p>
-
-        <div class="niceBox">
-          <div class="niceBoxHd">Common Query Language:</div>
-          <div class="niceBoxBody">
-            <ol>
-
-              <li>
-                <g:textArea id="filter" name="filter" value="${queryParams.filter}" style='width: 100%; height: 200px;' onChange="updateOmarFilters()"/>
-              </li>
-
-            </ol>
-          </div>
-        </div>
-
-
-
-      </p></div>
-    </div>
-  </div>
-
   <div class="niceBox">
-    <div class="niceBoxHd">Options:</div>
+    <div class="niceBoxHd">Geospatial Criteria:</div>
+
     <div class="niceBoxBody">
+      <input type="hidden" id="viewMinLon" name="viewMinLon"
+             value="${fieldValue(bean: queryParams, field: 'viewMinLon')}"/>
+      <input type="hidden" id="viewMinLat" name="viewMinLat"
+             value="${fieldValue(bean: queryParams, field: 'viewMinLat')}"/>
+      <input type="hidden" id="viewMaxLon" name="viewMaxLon"
+             value="${fieldValue(bean: queryParams, field: 'viewMaxLon')}"/>
+      <input type="hidden" id="viewMaxLat" name="viewMaxLat"
+             value="${fieldValue(bean: queryParams, field: 'viewMaxLat')}"/>
       <ol>
         <li>
-          <label for="max">Max Results:</label>
+          <g:checkBox title="If this is checked we will use the center radius to define the Area of Interest"
+                      name="searchMethod" id="bboxSearchButton" value="${BaseQuery.BBOX_SEARCH}"
+                      checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}"
+                      onclick="mapWidget.toggleBboxCheckBox()"/>
+          <label
+              title="If this is checked we will use the center radius to define the Area of Interest">Use Bound Box Search</label>
         </li>
         <li>
-          <input type="text" id="max" name="max" value="${params?.max}" onChange="validateMaxResults()"/>
+          <br/>
+        </li>
+        <li>
+          <label for="aoiMaxLat">North Latitude:</label>
+        </li>
+        <li>
+          <input title="Specify the northern latitude in decimal degrees" type="text" id="aoiMaxLat" name="aoiMaxLat"
+                 value="${fieldValue(bean: queryParams, field: 'aoiMaxLat')}"/>
+        </li>
+        <li>
+          <label for="aoiMinLon">West Longitude:</label>
+        </li>
+        <li>
+          <input title="Specify the weastern longitude in decimal degrees" type="text" id="aoiMinLon" name="aoiMinLon"
+                 value="${fieldValue(bean: queryParams, field: 'aoiMinLon')}"/>
+        </li>
+        <li>
+          <label for="aoiMinLat">South Latitude:</label>
+        </li>
+        <li>
+          <input title="Specify the southern latitude in decimal degrees" type="text" id="aoiMinLat" name="aoiMinLat"
+                 value="${fieldValue(bean: queryParams, field: 'aoiMinLat')}"/>
+        </li>
+        <li>
+          <label for="aoiMaxLon">East Longitude:</label>
+        </li>
+        <li>
+          <input title="Specify the estern longitude in decimal degrees" type="text" id="aoiMaxLon" name="aoiMaxLon"
+                 value="${fieldValue(bean: queryParams, field: 'aoiMaxLon')}"/>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <button title="Clear the Bounding Box search options" type="button"
+                  onclick="javascript:mapWidget.clearAOI();">Clear</button>
         </li>
       </ol>
     </div>
   </div>
-  <div align="center">
-    <button type="button" onclick="javascript:search();">Search</button>
+</div>
+
+<div id="spatialTab2">
+  <div class="niceBox">
+    <div class="niceBoxHd">Map Center:</div>
+
+    <div class="niceBoxBody">
+      <ol>
+        <li>
+          <g:checkBox title="If this is checked we will use the center radius to define the Area of Interest"
+                      name="searchMethod2" id="radiusSearchButton2" value="${BaseQuery.RADIUS_SEARCH}"
+                      checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}"
+                      onclick="mapWidget.togglePointRadiusCheckBox()"/>
+          <label
+              title="If this is checked we will use the center radius to define the Area of Interest">Use Radius Search</label>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <label for="centerLat">Latitude:</label>
+        </li>
+        <li>
+          <g:textField title="enter a dms of the form ddmmss.ssssN|S or dd mm ss.sss N|S" name="centerLatDms" value=""
+                       onChange="mapWidget.setCenterDms()"/>
+        </li>
+        <li>
+          <label for="centerLon">Longitude:</label>
+        </li>
+        <li>
+          <g:textField title="enter a dms of the form dddmmss.ssssE|W or ddd mm ss.sss E|W" name="centerLonDms" value=""
+                       onChange="mapWidget.setCenterDms()"/>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <label for="aoiRadius2">Radius in Meters:</label>
+        </li>
+        <li>
+          <g:textField title="Specify the radial search in meters" id="aoiRadius2" name="aoiRadius2"
+                       value="${fieldValue(bean: queryParams, field: 'aoiRadius')}"
+                       onChange="updateOmarFilters();syncAoiRadius('aoiRadius2')"/>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <button title="Sets the center of the map to the specified coordinate" type="button"
+                  onclick="javascript:mapWidget.setCenterDms();">Set Center</button>
+        </li>
+      </ol>
+    </div>
   </div>
+
+  <div class="niceBox">
+    <div class="niceBoxHd">Geospatial Criteria:</div>
+
+    <div class="niceBoxBody">
+      <ol>
+        <li>
+          <g:checkBox title="If this is checked we will use the Bounding Box search" name="searchMethod2"
+                      id="bboxSearchButton2" value="${BaseQuery.BBOX_SEARCH}"
+                      checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}"
+                      onclick="mapWidget.toggleBboxCheckBox()"/>
+          <label title="If this is checked we will use the Bounding Box search">Use Bound Box Search</label>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <label for="aoiMaxLat">North Latitude:</label>
+        </li>
+        <li>
+          <input title="Enter a dms of the form ddmmss.ssssN|S or dd mm ss.sss N|S" type="text" id="aoiMaxLatDms"
+                 name="aoiMaxLatDms"/>
+        </li>
+        <li>
+          <label for="aoiMinLon">West Longitude:</label>
+        </li>
+        <li>
+          <input title="Enter a dms of the form dddmmss.ssssE|W or ddd mm ss.sss E|W" title="" type="text"
+                 id="aoiMinLonDms" name="aoiMinLonDms"/>
+        </li>
+        <li>
+          <label for="aoiMinLat">South Latitude:</label>
+        </li>
+        <li>
+          <input title="Enter a dms of the form ddmmss.ssssN|S or dd mm ss.sss N|S" type="text" id="aoiMinLatDms"
+                 name="aoiMinLatDms"/>
+        </li>
+        <li>
+          <label for="aoiMaxLon">East Longitude:</label>
+        </li>
+        <li>
+          <input title="Enter a dms of the form dddmmss.ssssE|W or ddd mm ss.sss E|W" type="text" id="aoiMaxLonDms"
+                 name="aoiMaxLonDms"/>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <button title="Clear the Bounding Box search options" type="button"
+                  onclick="javascript:mapWidget.clearAOI();">Clear</button>
+        </li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<div id="spatialTab3">
+  <div class="niceBox">
+    <div class="niceBoxHd">Map Center:</div>
+
+    <div class="niceBoxBody">
+      <ol>
+        <li>
+          <g:checkBox title="If this is checked we will use the Bounding Box search" name="searchMethod3"
+                      id="radiusSearchButton3" value="${BaseQuery.RADIUS_SEARCH}"
+                      checked="${queryParams?.searchMethod == BaseQuery.RADIUS_SEARCH}"
+                      onclick="mapWidget.togglePointRadiusCheckBox()"/>
+          <label title="If this is checked we will use the Bounding Box search">Use Radius Search</label>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <label for="centerLat">MGRS:</label>
+        </li>
+        <li>
+          <g:textField
+              title="MGRS formatted input of the form [grid zone designator][100,000-meter square identifier][easting][northing]"
+              name="centerMgrs" value="" onChange="mapWidget.setCenterMgrs()"/>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <label for="aoiRadius3">Radius in Meters:</label>
+        </li>
+        <li>
+          <g:textField title="Specify the radial search in meters" id="aoiRadius3" name="aoiRadius3"
+                       value="${fieldValue(bean: queryParams, field: 'aoiRadius')}"
+                       onChange="updateOmarFilters();syncAoiRadius('aoiRadius3')"/>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <button title="Sets the center of the map to the specified input field" type="button"
+                  onclick="javascript:mapWidget.setCenterMgrs();">Set Center</button>
+        </li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="niceBox">
+    <div class="niceBoxHd">Geospatial Criteria:</div>
+
+    <div class="niceBoxBody">
+      <ol>
+        <li>
+          <g:checkBox title="If this is checked we will use the Bounding Box search" name="searchMethod3"
+                      id="bboxSearchButton3" value="${BaseQuery.BBOX_SEARCH}"
+                      checked="${queryParams?.searchMethod == BaseQuery.BBOX_SEARCH}"
+                      onclick="mapWidget.toggleBboxCheckBox()"/>
+          <label title="If this is checked we will use the Bounding Box search">Use Bound Box Search</label>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <label for="aoiNeMgrs">MGRS NE:</label>
+        </li>
+        <li>
+          <input
+              title="MGRS formatted input of the form [grid zone designator][100,000-meter square identifier][easting][northing]"
+              type="text" id="aoiNeMgrs" name="aoiNeMgrs" value=""/>
+        </li>
+        <li>
+          <label for="aoiSwMgrs">MGRS SW:</label>
+        </li>
+        <li>
+          <input
+              title="MGRS formatted input of the form [grid zone designator][100,000-meter square identifier][easting][northing]"
+              type="text" id="aoiSwMgrs" name="aoiSwMgrs" value=""/>
+        </li>
+        <li>
+          <br/>
+        </li>
+        <li>
+          <button title="Clear the Bounding Box search options" type="button"
+                  onclick="javascript:mapWidget.clearAOI();">Clear</button>
+        </li>
+      </ol>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+<input type="hidden" id="units" name="units"/>
+
+<div class="niceBox">
+  <div class="niceBoxHd">Temporal Criteria:</div>
+
+  <div class="niceBoxBody">
+    <ol>
+      <li>
+        <label for="startDate">Start Date:</label>
+      </li>
+      <li>
+        <!--- HACK --->
+        <input class='' style='width:75px' type='text' name='startDateInput' id='startDateInput' value=''/>
+
+        <div id='startDateContainer' class='datechooser yui-skin-sam'></div>
+        <input type='hidden' name='startDate' id='startDate' value='date.struct'/>
+        <input class='null' style='width:25px' type='text' name='startDate_hour' id='startDate_hour' value='00'/>:
+        <input class='null' style='width:25px' type='text' name='startDate_minute' id='startDate_minute' value='00'/>
+        <input type='hidden' name='startDate_day' id='startDate_day' value=''/>
+        <input type='hidden' name='startDate_month' id='startDate_month' value=''/>
+        <!--- HACK --->
+        <input type='hidden' name='startDate_year' id='startDate_year' value=''/>
+        <g:hiddenField name="startDate_timezone" value="UTC"/>
+      </li>
+      <li>
+        <label for='endDate'>End Date:</label>
+      </li>
+      <li>
+        <!-- HACK -->
+        <input class='' style='width:75px' type='text' name='endDateInput' id='endDateInput' value=''/>
+
+        <div id='endDateContainer' class='datechooser yui-skin-sam'></div>
+        <input type='hidden' name='endDate' id='endDate' value='date.struct'/>
+        <input class='null' style='width:25px' type='text' name='endDate_hour' id='endDate_hour' value='00'/>:
+        <input class='null' style='width:25px' type='text' name='endDate_minute' id='endDate_minute' value='00'/>
+        <input type='hidden' name='endDate_day' id='endDate_day' value=''/>
+        <input type='hidden' name='endDate_month' id='endDate_month' value=''/>
+        <input type='hidden' name='endDate_year' id='endDate_year' value=''/>
+        <!-- HACK -->
+        <g:hiddenField name="endDate_timezone" value="UTC"/>
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div id="criteriaTab" class="yui-navset">
+  <p/>
+  <ul class="yui-nav">
+    <li class="selected" id="metadataCriteriaTab"><a href="#criteriaTab1"><em>Metadata</em></a></li>
+    <li id="cqlCriteriaTab"><a href="#criteriaTab2"><em>CQL</em></a></li>
+  </ul>
+
+  <div class="yui-content">
+    <div id="criteriaTab1"><p>
+
+
+      <div class="niceBox">
+        <div class="niceBoxHd">Metadata Criteria:</div>
+
+        <div class="niceBoxBody">
+          <ol>
+            <g:each in="${queryParams?.searchTagValues}" var="searchTagValue" status="i">
+              <g:select
+                  noSelection="${['null':'Select One...']}"
+                  id="searchTagNames[${i}]"
+                  name="searchTagNames[${i}]"
+                  value="${queryParams?.searchTagNames[i]}"
+                  from="${RasterEntrySearchTag.list(sort:'description')}"
+                  optionKey="name" optionValue="description"/>
+              <li>
+                <g:textField id="searchTagValues[${i}]" name="searchTagValues[${i}]" value="${searchTagValue}"
+                             onChange="updateOmarFilters()"/>
+              </li>
+            </g:each>
+          </ol>
+        </div>
+      </div>
+    </p></div>
+
+    <div id="criteriaTab2"><p>
+
+      <div class="niceBox">
+        <div class="niceBoxHd">Common Query Language:</div>
+
+        <div class="niceBoxBody">
+          <ol>
+
+            <li>
+              <g:textArea id="filter" name="filter" value="${queryParams.filter}" style='width: 100%; height: 200px;'
+                          onChange="updateOmarFilters()"/>
+            </li>
+
+          </ol>
+        </div>
+      </div>
+
+
+
+    </p></div>
+  </div>
+</div>
+
+<div class="niceBox">
+  <div class="niceBoxHd">Options:</div>
+
+  <div class="niceBoxBody">
+    <ol>
+      <li>
+        <label for="max">Max Results:</label>
+      </li>
+      <li>
+        <input type="text" id="max" name="max" value="${params?.max}" onChange="validateMaxResults()"/>
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div align="center">
+  <button type="button" onclick="javascript:search();">Search</button>
+</div>
 </content>
 <content tag="center">
 </content>
 <content tag="right">
   <div class="niceBox">
     <div class="niceBoxHd">Map Measurement Tool:</div>
+
     <div class="niceBoxBody">
       <ul>
         <li>Measurement Units:</li>
         <li>Not certified for targeting.</li>
         <li><g:select name="measurementUnits" from="${['kilometers', 'meters', 'feet', 'miles', 'yards']}"
-            title="Select a unit of measuremen and use the path and polygon measurment tools in the map toolbar." onChange="measureUnitChanged(this.value)"/></li>
+                      title="Select a unit of measuremen and use the path and polygon measurment tools in the map toolbar."
+                      onChange="measureUnitChanged(this.value)"/></li>
+
         <div id="pathMeasurement"></div>
+
         <div id="polygonMeasurement"></div>
       </ul>
     </div>
@@ -429,13 +529,34 @@
 <omar:bundle contentType="javascript" files="${[
   [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js'],
   [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js'],
-  [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
-  [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
+  [plugin:'yui' , dir:'js/yui/element', file: 'element-min.js'],
+  [plugin:'yui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
 ]}"/>
 
-<omar:dateChooser render="script" containerId="startDateContainer" inputId="startDateInput" name="startDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.startDate}" onChange="updateOmarFilters()"/>
-<omar:dateChooser render="script" containerId="endDateContainer" inputId="endDateInput" name="endDate" format="MM/dd/yyyy" timezone="${TimeZone.getTimeZone('UTC')}" style="width:75px" time="true" hourStyle="width:25px" minuteStyle="width:25px" value="${queryParams.startDate}" onChange="updateOmarFilters()"/>
 <openlayers:loadJavascript/>
+
+<!-- HACK -->
+<g:javascript>
+	var dateChooser = new DateChooser();
+	dateChooser.setDisplayContainer("startDateContainer");
+	dateChooser.setInputId("startDateInput");
+	dateChooser.setStructId("startDate");
+	dateChooser.setFormat("MM/dd/yyyy");
+	dateChooser.setLocale("en");
+  dateChooser.setChangeCallback("updateOmarFilters()");
+	dateChooser.init();
+</g:javascript>
+<g:javascript>
+	var dateChooser = new DateChooser();
+	dateChooser.setDisplayContainer("endDateContainer");
+	dateChooser.setInputId("endDateInput");
+	dateChooser.setStructId("endDate");
+	dateChooser.setFormat("MM/dd/yyyy");
+	dateChooser.setLocale("en");
+  dateChooser.setChangeCallback("updateOmarFilters()");
+	dateChooser.init();
+</g:javascript>
+<!-- HACK -->
 
 <g:javascript>
 
