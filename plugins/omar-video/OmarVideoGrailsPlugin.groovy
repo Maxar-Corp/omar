@@ -4,9 +4,7 @@ class OmarVideoGrailsPlugin {
   // the version or versions of Grails the plugin is designed for
   def grailsVersion = "1.2.2 > *"
   // the other plugins this plugin depends on
-  def dependsOn = [
-          richui: "0.8 > *"
-  ]
+  def dependsOn = [:]
 
   def loadAfter = ["omarCore"]
 
