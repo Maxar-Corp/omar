@@ -16,8 +16,10 @@
       [dir: 'css', file: 'omar-2.0.css'],
   ]}"/>
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
   <style>
     /*
@@ -34,12 +36,12 @@
     visibility: hidden
   }
 
-  /* Set the background color */
+    /* Set the background color */
   .yui-skin-sam .yui-layout {
     background-color: #FFFFFF;
   }
 
-  /* Style the body */
+    /* Style the body */
   .yui-skin-sam .yui-layout .yui-layout-unit div.yui-layout-bd {
     background-color: #FFFFFF;
   }
@@ -48,25 +50,30 @@
 
   <g:layoutHead/>
 </head>
+
 <body class="yui-skin-sam">
 
 <div id="header">
   <omar:securityClassificationBanner/>
 </div>
+
 <div id="footer">
   <omar:securityClassificationBanner/>
 </div>
+
 <div id="content">
   <div id="doc3" class="yui-t7">
     <div id="hd">
       <img id="logo" src="${resource(dir: 'images', file: 'OMARLarge.png')}" alt="OMAR-2.0 Logo"/>
     </div>
+
     <div id="bd">
       <div class="yui-g">
         <!-- YOUR DATA GOES HERE -->
         <g:layoutBody/>
       </div>
     </div>
+
     <div id="ft">
     </div>
   </div>
@@ -76,9 +83,9 @@
 
 <omar:bundle contentType="javascript" files="${[
     [dir: "js", file: "application.js"],
-    [plugin: 'richui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [plugin: 'richui', dir: 'js/yui/element', file: 'element-min.js'],
-    [plugin: 'richui', dir: 'js/yui/layout', file: 'layout-min.js']
+    [plugin: 'yui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+    [plugin: 'yui', dir: 'js/yui/element', file: 'element-min.js'],
+    [plugin: 'yui', dir: 'js/yui/layout', file: 'layout-min.js']
 ]}"/>
 
 <g:javascript>

@@ -16,11 +16,13 @@
     [dir: 'css', file: 'omar-2.0.css']
   ]}"/>
 
-  <g:javascript plugin="richui" src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
-  <g:javascript plugin="richui" src="yui/element/element-min.js"/>
+  <g:javascript plugin="yui" src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
+  <g:javascript plugin="yui" src="yui/element/element-min.js"/>
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
   <style>
     /*
@@ -31,45 +33,47 @@
     CSS treatments.
     */
 
-  body{
-    height:100%;
-    width:100%;
-    text-align:left;
-    margin:0;
-    padding:0;
-    overflow-y:hidden;
+  body {
+    height: 100%;
+    width: 100%;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
   }
-  #header
-  {
-    width:100%;
+
+  #header {
+    width: 100%;
   }
-  #top
-  {
-    width:100%;
+
+  #top {
+    width: 100%;
   }
-  #content{
-      bottom-margin:-20px;
+
+  #content {
+    bottom-margin: -20px;
   }
-  #center
-  {
-    height:100%;
-    width:100%;
-    overflow-x:hidden;
-    overflow-y:auto;
+
+  #center {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
-  #footer
-  {
-    position:absolute;
-    bottom:0;
-    height:20px;
-    width:100%;
+
+  #footer {
+    position: absolute;
+    bottom: 0;
+    height: 20px;
+    width: 100%;
   }
-  /* Set the background color */
+
+    /* Set the background color */
   .yui-skin-sam .yui-layout {
     background-color: #FFFFFF;
   }
 
-  /* Style the body */
+    /* Style the body */
   .yui-skin-sam .yui-layout .yui-layout-unit div.yui-layout-bd {
     background-color: #FFFFFF;
   }
@@ -78,23 +82,28 @@
   <g:layoutHead/>
   <g:javascript library="application"/>
 </head>
-<body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}" onload="${pageProperty(name: 'body.onload')}bodyOnResize();">
+
+<body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}"
+      onload="${pageProperty(name: 'body.onload')}bodyOnResize();">
 <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
-    [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [plugin:'richui' , dir:'js/yui/element',         file: 'element-min.js']
+    [plugin:'yui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+    [plugin:'yui' , dir:'js/yui/element',         file: 'element-min.js']
 ]}"/>
 <div id="content">
-    <div id="header" class="header">
-      <omar:securityClassificationBanner/>
-    </div>
-    <div id="top">
-      <g:pageProperty name="page.top"/>
-    </div>
-    <div id="center">
-      <g:pageProperty name="page.center"/>
-    </div>
+  <div id="header" class="header">
+    <omar:securityClassificationBanner/>
+  </div>
+
+  <div id="top">
+    <g:pageProperty name="page.top"/>
+  </div>
+
+  <div id="center">
+    <g:pageProperty name="page.center"/>
+  </div>
 </div>
+
 <div id="footer" class="footer">
   <omar:securityClassificationBanner/>
 </div>
@@ -104,20 +113,18 @@
   var bodyOnResize = function()
   {
     var Dom = YAHOO.util.Dom;
-    var header     = Dom.get("header");
-    var top        = Dom.get("top");
-    var centerDiv  = Dom.get("center");
-    var footer     = Dom.get("footer");
+    var header = Dom.get( "header" );
+    var top = Dom.get( "top" );
+    var centerDiv = Dom.get( "center" );
+    var footer = Dom.get( "footer" );
     // IE6 seems to do better to use the root content div and then adjust everyone from  that
-    var top     = top.offsetTop+top.offsetHeight;
-    var bottom  = footer.offsetTop;
-    var centerHeight     = Math.abs(bottom-top);
+    var top = top.offsetTop + top.offsetHeight;
+    var bottom = footer.offsetTop;
+    var centerHeight = Math.abs( bottom - top );
     centerDiv.style.height = centerHeight + "px";
-    centerDiv.style.width  = "100%";
+    centerDiv.style.width = "100%";
   }
 </g:javascript>
 </body>
-
-
 
 </html>

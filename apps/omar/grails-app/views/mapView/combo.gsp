@@ -9,59 +9,59 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="main"/>
-  <title>OMAR Map Viewer</title>
-  <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<meta name="layout" content="main"/>
+<title>OMAR Map Viewer</title>
+<link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
 
-  <openlayers:loadTheme theme="default"/>
-  <openlayers:loadJavascript/>
-  <resource:tabView/>
-  <style type="text/css">
-  .map {
+<openlayers:loadTheme theme="default"/>
+<openlayers:loadJavascript/>
+<resource:tabView/>
+<style type="text/css">
+.map {
+  width: 1024px;
+  height: 512px;
+<%--
+  width: 100%;
+  height: 100%;
+--%> border: 1px solid black;
+}
+
+div.olControlMousePosition {
+  font-family: Verdana;
+  font-size: 1.0em;
+  background-color: white;
+  color: black;
+}
+
+div.olControlScale {
+  background-color: #ffffff;
+  font-size: 1.0em;
+  font-weight: bold;
+}
+
+  /*
+  #config {
+    margin-top: 1em;
     width: 1024px;
-    height: 512px;
-  <%--
-    width: 100%;
-    height: 100%;
-  --%> border: 1px solid black;
+    position: relative;
+    height: 8em;
   }
+  */
 
-  div.olControlMousePosition {
-    font-family: Verdana;
-    font-size: 1.0em;
-    background-color: white;
-    color: black;
-  }
+#controls {
+  padding-left: 2em;
+  margin-left: 0;
+  width: 12em;
+}
 
-  div.olControlScale {
-    background-color: #ffffff;
-    font-size: 1.0em;
-    font-weight: bold;
-  }
+#controls li {
+  padding-top: 0.5em;
+  list-style: none;
+}
 
-    /*
-    #config {
-      margin-top: 1em;
-      width: 1024px;
-      position: relative;
-      height: 8em;
-    }
-    */
-
-  #controls {
-    padding-left: 2em;
-    margin-left: 0;
-    width: 12em;
-  }
-
-  #controls li {
-    padding-top: 0.5em;
-    list-style: none;
-  }
-
-  </style>
-  <g:javascript>
+</style>
+<g:javascript>
 
     var maps = {};
     var title = "OMAR WMS";
@@ -226,54 +226,27 @@ function init()
 
       alert(map.getCenter());    }
 
-  </g:javascript>
+</g:javascript>
 </head>
+
 <body onload="init()" <%--onresize="changeMapSize()"--%>>
 <div class="nav">
   <span class="menuButton">
-   <g:link class="home" uri="/">Home</g:link> 
+    <g:link class="home" uri="/">Home</g:link>
     <button name="" onclick="imageToWorld()">Image to World</button>
-    <button onclick="worldToImage()">World to Image</button>    
+    <button onclick="worldToImage()">World to Image</button>
   </span>
 </div>
+
 <div class="body">
   <h1 id="mapTitle">Map Widget</h1>
   <g:if test="${flash.message}">
     <div class="message">${flash.message}</div>
   </g:if>
 
-<%--
-<richui:tabView id="tabView" event="tabChanged(e);">
- <richui:tabLabels>
-   <richui:tabLabel selected="true" title="Image Space"/>
-   <richui:tabLabel title="Ground Space"/>
- </richui:tabLabels>
- <richui:tabContents>
-
-   <richui:tabContent>
---%>
   <div id="map1" class="map"></div>
 
-  <%--
-      </richui:tabContent>
-
-      <richui:tabContent>
-  --%>
   <div id="map2" class="map"></div>
-  <%--
-      </richui:tabContent>
-
-    </richui:tabContents>
-  </richui:tabView>
-  --%>
-  <%--
-  <div>
-    <a href="${createLink(controller: "ogc", action: "wms",
-            params: [request: "GetCapabilities", layers: filenames])}">
-      WMS GetCapabilities
-    </a>
-  </div>
-  --%>
 </div>
 </body>
 </html>

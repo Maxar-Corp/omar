@@ -37,19 +37,23 @@
   }
   </style>
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/resize/assets/skins/sam', file: 'resize.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/layout/assets/skins/sam', file: 'layout.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/resize/assets/skins/sam', file: 'resize.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/layout/assets/skins/sam', file: 'layout.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
 
-  <g:javascript plugin="richui" src="yui/yahoo/yahoo-min.js"/>
-  <g:javascript plugin="richui" src="yui/event/event-min.js"/>
-  <g:javascript plugin="richui" src="yui/dom/dom-min.js"/>
-  <g:javascript plugin="richui" src="yui/element/element-min.js"/>
-  <g:javascript plugin="richui" src="yui/dragdrop/dragdrop-min.js"/>
-  <g:javascript plugin="richui" src="yui/resize/resize-min.js"/>
-  <g:javascript plugin="richui" src="yui/animation/animation-min.js"/>
-  <g:javascript plugin="richui" src="yui/layout/layout-min.js"/>
+  <g:javascript plugin="yui" src="yui/yahoo/yahoo-min.js"/>
+  <g:javascript plugin="yui" src="yui/event/event-min.js"/>
+  <g:javascript plugin="yui" src="yui/dom/dom-min.js"/>
+  <g:javascript plugin="yui" src="yui/element/element-min.js"/>
+  <g:javascript plugin="yui" src="yui/dragdrop/dragdrop-min.js"/>
+  <g:javascript plugin="yui" src="yui/resize/resize-min.js"/>
+  <g:javascript plugin="yui" src="yui/animation/animation-min.js"/>
+  <g:javascript plugin="yui" src="yui/layout/layout-min.js"/>
 
 
   <openlayers:loadTheme theme="default"/>
@@ -70,12 +74,16 @@
 <div id="top1">
   <div id="panel2" class="olControlPanel"></div>
 </div>
+
 <div id="bottom1">
 </div>
+
 <div id="right1">
 </div>
+
 <div id="left1">
 </div>
+
 <div id="center1">
   <div id="map" class="smallmap"></div>
 </div>
@@ -86,7 +94,7 @@
   (function()
   {
     var Dom = YAHOO.util.Dom,
-            Event = YAHOO.util.Event;
+        Event = YAHOO.util.Event;
 
     Event.onDOMReady( function()
     {
@@ -94,31 +102,31 @@
 
       //map.addLayer(aoiLayer);
       map.setBaseLayer( baseLayer );
-      map.addControl( new OpenLayers.Control.LayerSwitcher( ) );
-      map.addControl( new OpenLayers.Control.PanZoom( ) );
-      map.addControl( new OpenLayers.Control.NavToolbar( ) );
-      map.addControl( new OpenLayers.Control.MousePosition( ) );
-      map.addControl( new OpenLayers.Control.Scale( ) );
+      map.addControl( new OpenLayers.Control.LayerSwitcher() );
+      map.addControl( new OpenLayers.Control.PanZoom() );
+      map.addControl( new OpenLayers.Control.NavToolbar() );
+      map.addControl( new OpenLayers.Control.MousePosition() );
+      map.addControl( new OpenLayers.Control.Scale() );
       map.addControl( new OpenLayers.Control.Permalink( "permalink" ) );
-      map.addControl( new OpenLayers.Control.ScaleLine( ) );
-      map.addControl( new OpenLayers.Control.Attribution( ) );
+      map.addControl( new OpenLayers.Control.ScaleLine() );
+      map.addControl( new OpenLayers.Control.Attribution() );
 
       var dataLayer = new OpenLayers.Layer.WMS(
-              "${dataWMS.title}",
-              "${dataWMS.url}",
-      { layers: "${dataWMS.layers}", format: 'image/png', transparent: true },
-      {'isBaseLayer': false},
-      {buffer:1}
-              );
+          "${dataWMS.title}",
+          "${dataWMS.url}",
+          { layers: "${dataWMS.layers}", format: 'image/png', transparent: true },
+          {'isBaseLayer': false},
+          {buffer:1}
+      );
 
       map.addLayer( dataLayer );
 
       var baseLayer = new OpenLayers.Layer.WMS(
-              "${baseWMS.title}",
-              "${baseWMS.url}",
-      {layers: '${baseWMS.layers}', format: 'image/jpeg' },
-      {buffer:1}
-              );
+          "${baseWMS.title}",
+          "${baseWMS.url}",
+          {layers: '${baseWMS.layers}', format: 'image/jpeg' },
+          {buffer:1}
+      );
 
       map.addLayer( baseLayer );
 
@@ -181,17 +189,17 @@
         Dom.get( "map" ).style.width = mapWidth + "px";
         Dom.get( "map" ).style.height = mapHeight + "px";
 
-        map.updateSize( );
+        map.updateSize();
 
 
       } );
 
 
-      layout.render( );
-      map.zoomToMaxExtent( );
+      layout.render();
+      map.zoomToMaxExtent();
 
     } );
-  })( );
+  })();
 
   function foo()
   {

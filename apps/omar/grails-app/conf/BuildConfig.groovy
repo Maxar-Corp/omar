@@ -44,6 +44,7 @@ grails.project.dependency.resolution = {
 
   plugins {
     compile ":p6spy:0.5"
+    compile ":yui:2.8.2.1"
   }
 }
 

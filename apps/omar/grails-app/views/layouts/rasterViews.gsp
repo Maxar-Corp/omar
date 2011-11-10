@@ -17,19 +17,21 @@
       [dir: 'css', file: 'omar-2.0.css']
   ]}"/>
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
   <omar:bundle contentType="javascript" files="${[
       [dir:'js', file: 'application.js'],
-      [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-      [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
-      [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
-      [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
-      [plugin:'richui' , dir:'js/yui/element', file: 'dragdrop-min.js'],
-      [plugin:'richui' , dir:'js/yui/element', file: 'resize-min.js'],
-      [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
-      [plugin:'richui' , dir:'js/yui/tabview/', file: 'layout-min.js']
+      [plugin:'yui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+      [plugin:'yui' , dir:'js/datechooser', file: 'datechooser.js'],
+      [plugin:'yui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
+      [plugin:'yui' , dir:'js/yui/element', file: 'element-min.js'],
+      [plugin:'yui' , dir:'js/yui/element', file: 'dragdrop-min.js'],
+      [plugin:'yui' , dir:'js/yui/element', file: 'resize-min.js'],
+      [plugin:'yui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
+      [plugin:'yui' , dir:'js/yui/tabview/', file: 'layout-min.js']
   ]}"/>
 
   <style>
@@ -44,16 +46,16 @@
   body {
     margin: 0;
     padding: 0;
-  // visibility: hidden;
+  / / visibility : hidden;
     visibility: visible;
   }
 
-  /* Set the background color */
+    /* Set the background color */
   .yui-skin-sam .yui-layout {
     background-color: #FFFFFF;
   }
 
-  /* Style the body */
+    /* Style the body */
   .yui-skin-sam .yui-layout .yui-layout-unit div.yui-layout-bd {
     background-color: #FFFFFF;
   }
@@ -62,14 +64,17 @@
 
   <g:layoutHead/>
 </head>
+
 <body class="yui-skin-sam">
 
 <div id="header">
   <omar:securityClassificationBanner/>
 </div>
+
 <div id="footer">
   <omar:securityClassificationBanner/>
 </div>
+
 <div id="content">
   <div id="top">
     <g:pageProperty name="page.top"/>
@@ -78,6 +83,7 @@
   <div id="left">
     <g:pageProperty name="page.left"/>
   </div>
+
   <div id="center">
     <g:pageProperty name="page.center"/>
   </div>
@@ -89,7 +95,7 @@
     var Dom = YAHOO.util.Dom;
     var Event = YAHOO.util.Event;
     var Layout = YAHOO.widget.Layout;
-      
+
     Event.onDOMReady( function()
     {
       var outerLayout = new Layout( {

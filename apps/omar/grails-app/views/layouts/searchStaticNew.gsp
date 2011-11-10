@@ -5,8 +5,10 @@
     [dir: 'css', file: 'omar-2.0.css']
   ]}"/>
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
 
   <style>
@@ -90,28 +92,34 @@
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
 </head>
-<body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}" onload="bodyOnResize( false );
-${pageProperty(name: 'body.onload')}bodyOnResize();">
+
+<body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}"
+      onload="bodyOnResize( false );
+      ${pageProperty(name: 'body.onload')}bodyOnResize();">
 
 <div id="content" class="content">
 
   <div id="header" class="header">
     <omar:securityClassificationBanner fontSize="20px"/>
   </div>
+
   <div id="top" class="top">
     <g:pageProperty name="page.top"/>
   </div>
+
   <div id="middle" class="middle">
     <div id="left">
       <g:pageProperty name="page.left"/>
     </div>
+
     <div id="center" class="center">
       <table>
         <tr id="toolbarRow">
           <td>
             <div id="toolBar" class="olControlPanel"></div>
             <button type="button" onclick="javascript:search();">Search</button>
-            <g:checkBox id="spatialSearchFlag" value="true" checked="true" onclick="javascript:this.value = this.checked"/>
+            <g:checkBox id="spatialSearchFlag" value="true" checked="true"
+                        onclick="javascript:this.value = this.checked"/>
             <label>Include spatial</label>
           </td>
         </tr>
@@ -130,10 +138,12 @@ ${pageProperty(name: 'body.onload')}bodyOnResize();">
       </table>
       <g:pageProperty name="page.center"/>
     </div>
+
     <div id="right" class="right">
       <g:pageProperty name="page.right"/>
     </div>
   </div>
+
   <div id="footer">
     <g:pageProperty name="page.footer"/>
     <omar:securityClassificationBanner fontSize="20px"/>
@@ -141,14 +151,14 @@ ${pageProperty(name: 'body.onload')}bodyOnResize();">
 
   <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
-    [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
-    [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
-    [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
-    [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
-    [plugin:'richui' , dir:'js/yui/container/', file: 'container_core-min.js'],
-    [plugin:'richui' , dir:'js/yui/menu/', file: 'menu-min.js'],
-    [plugin:'richui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js'],
+    [plugin:'yui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+    [plugin:'yui' , dir:'js/datechooser', file: 'datechooser.js'],
+    [plugin:'yui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
+    [plugin:'yui' , dir:'js/yui/element', file: 'element-min.js'],
+    [plugin:'yui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
+    [plugin:'yui' , dir:'js/yui/container/', file: 'container_core-min.js'],
+    [plugin:'yui' , dir:'js/yui/menu/', file: 'menu-min.js'],
+    [plugin:'yui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js'],
   ]}"/>
 
 

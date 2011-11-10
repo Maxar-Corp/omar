@@ -20,18 +20,21 @@
   </style>
 
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/fonts', file: 'fonts-min.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/paginator/assets/skins/sam', file: 'paginator.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/datatable/assets/skins/sam', file: 'datatable.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/fonts', file: 'fonts-min.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/paginator/assets/skins/sam', file: 'paginator.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/datatable/assets/skins/sam', file: 'datatable.css')}"/>
 
 
-  <g:javascript plugin="richui" src="js/yui/yahoo-dom-event/yahoo-dom-event.js"/>
-  <g:javascript plugin="richui" src="js/yui/connection/connection-min.js"/>
-  <g:javascript plugin="richui" src="js/yui/json/json-min.js"/>
-  <g:javascript plugin="richui" src="js/yui/element/element-min.js"/>
-  <g:javascript plugin="richui" src="js/yui/paginator/paginator-min.js"/>
-  <g:javascript plugin="richui" src="js/yui/datasource/datasource-min.js"/>
-  <g:javascript plugin="richui" src="js/yui/datatable/datatable-min.js"/>
+  <g:javascript plugin="yui" src="js/yui/yahoo-dom-event/yahoo-dom-event.js"/>
+  <g:javascript plugin="yui" src="js/yui/connection/connection-min.js"/>
+  <g:javascript plugin="yui" src="js/yui/json/json-min.js"/>
+  <g:javascript plugin="yui" src="js/yui/element/element-min.js"/>
+  <g:javascript plugin="yui" src="js/yui/paginator/paginator-min.js"/>
+  <g:javascript plugin="yui" src="js/yui/datasource/datasource-min.js"/>
+  <g:javascript plugin="yui" src="js/yui/datatable/datatable-min.js"/>
 
 
   <!--there is no custom header content for this example-->
@@ -147,7 +150,7 @@
       dt: myDataTable
     };
 
-  }( );
+  }();
 </script>
 </body>
 </html>
