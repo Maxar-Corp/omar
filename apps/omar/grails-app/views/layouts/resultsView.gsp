@@ -14,80 +14,86 @@
   ]}"/>
 
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
 
   <style>
-  body{
-    height:100%;
-    width:100%;
-    text-align:left;
-    margin:0;
-    padding:0;
-    overflow-y:hidden;
+  body {
+    height: 100%;
+    width: 100%;
+    text-align: left;
+    margin: 0;
+    padding: 0;
+    overflow-y: hidden;
   }
-  #content
-  {
-    height:100%;
-    min-height:100%;
-    margin-bottom:-20px ;
+
+  #content {
+    height: 100%;
+    min-height: 100%;
+    margin-bottom: -20px;
   }
-  #header
-  {
-    position:absolute;
-    top:0;
-    width:100%;
+
+  #header {
+    position: absolute;
+    top: 0;
+    width: 100%;
   }
-  #header
-  {
-    position:relative;
-    top:0;
-    width:100%;
+
+  #header {
+    position: relative;
+    top: 0;
+    width: 100%;
   }
-  #center
-  {
-    position:absolute;
-    height:100%;
-    width:100%;
-    overflow-x:auto;
-    overflow-y:auto;
+
+  #center {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
   }
-  #footer
-  {
-    position:relative;
-    bottom:0;
-    height:20px;
-    width:100%;
+
+  #footer {
+    position: relative;
+    bottom: 0;
+    height: 20px;
+    width: 100%;
   }
   </style>
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
 </head>
 
-<body class="yui-skin-sam" onresize="onBodyResize();${pageProperty(name: 'body.onresize')}" onload="onBodyResize();${pageProperty(name: 'body.onload')}">
+<body class="yui-skin-sam" onresize="onBodyResize();${pageProperty(name: 'body.onresize')}"
+      onload="onBodyResize();${pageProperty(name: 'body.onload')}">
 <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
-    [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
-    [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
-    [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
-    [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
-    [plugin:'richui' , dir:'js/yui/container/', file: 'container_core-min.js'],
-    [plugin:'richui' , dir:'js/yui/menu/', file: 'menu-min.js'],
-    [plugin:'richui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js'],
+    [plugin:'yui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+    [plugin:'yui' , dir:'js/datechooser', file: 'datechooser.js'],
+    [plugin:'yui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
+    [plugin:'yui' , dir:'js/yui/element', file: 'element-min.js'],
+    [plugin:'yui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
+    [plugin:'yui' , dir:'js/yui/container/', file: 'container_core-min.js'],
+    [plugin:'yui' , dir:'js/yui/menu/', file: 'menu-min.js'],
+    [plugin:'yui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js'],
 ]}"/>
 <div id="content">
   <div id="header">
     <omar:securityClassificationBanner/>
   </div>
+
   <div id="top">
     <g:pageProperty name="page.top"/>
   </div>
+
   <div id="center">
     <g:pageProperty name="page.body"/>
   </div>
 </div>
+
 <div id="footer">
   <g:pageProperty name="page.footer"/>
   <omar:securityClassificationBanner/>
@@ -125,7 +131,7 @@
               document.getElementById("offset").value = (document.getElementById("pageOffset").value - 1) * maxValue;
               omarSearchResults.setProperties(document);
 
-              var url = "${createLink(action:'results')}?" + omarSearchResults.toUrlParams();
+              var url = "${createLink(action: 'results')}?" + omarSearchResults.toUrlParams();
               //alert(url);
               document.paginateForm.action = url;
               document.paginateForm.submit();
@@ -190,7 +196,6 @@
     centerDiv.style.width  = "100%";
   }
 </g:javascript>
-
 
 </body>
 </html>

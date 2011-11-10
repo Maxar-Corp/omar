@@ -15,7 +15,7 @@
   <openlayers:loadMapToolBar/>
   <openlayers:loadTheme theme="default"/>
   <openlayers:loadJavascript/>
-  
+
   <meta name="layout" content="main6"/>
   <style type="text/css">
   #map {
@@ -49,6 +49,7 @@
   }  </style>
 
 </head>
+
 <body>
 <content tag="north">
   <div class="nav">
@@ -60,11 +61,14 @@
     </span>
     <span class="menuButton">
       <label>Stretch:</label>
-      <g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/>
+      <g:select id="stretch_mode" name="stretch_mode"
+                from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}"
+                onChange="changeHistoOpts()"/>
     </span>
     <span class="menuButton">
       <label>Region:</label>
-      <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts()"/>
+      <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}"
+                onChange="changeHistoOpts()"/>
     </span>
   </div>
 </content>

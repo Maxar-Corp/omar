@@ -17,8 +17,10 @@
       [dir: 'css', file: 'omar-2.0.css']
   ]}"/>
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
   <g:layoutHead/>
 </head>
@@ -39,9 +41,9 @@
 
 <omar:bundle contentType="javascript" files="${[
     [dir: 'js', file: 'application.js'],
-    [plugin: 'richui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [plugin: 'richui', dir: 'js/yui/element', file: 'element-min.js'],
-    [plugin: 'richui', dir: 'js/yui/layout', file: 'layout-min.js']
+    [plugin: 'yui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+    [plugin: 'yui', dir: 'js/yui/element', file: 'element-min.js'],
+    [plugin: 'yui', dir: 'js/yui/layout', file: 'layout-min.js']
 ]}"/>
 
 <g:javascript>

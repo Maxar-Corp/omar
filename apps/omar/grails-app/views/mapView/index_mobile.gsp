@@ -14,9 +14,12 @@
   }
   </style>
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/fonts/assets/skins/sam', file: 'fonts-min.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/container/assets/skins/sam', file: 'container.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/fonts/assets/skins/sam', file: 'fonts-min.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/container/assets/skins/sam', file: 'container.css')}"/>
 
 </head>
 
@@ -44,37 +47,48 @@
       <input type="hidden" name="layers" value=""/>
       <input type="hidden" name="bbox" value=""/>
 
-      <b>Image Sharpen:</b><p>
-      <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/></p>
+      <b>Image Sharpen:</b>
+
+      <p>
+        <g:select id="sharpen_mode" name="sharpen_mode" from="${['none', 'light', 'heavy']}"
+                  onChange="changeSharpenOpts()"/></p>
 
       <p>&nbsp;</p>
 
       <b>Histogram Stretch:</b>
-      <p><g:select id="stretch_mode" name="stretch_mode" from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}" onChange="changeHistoOpts()"/></p>
+
+      <p><g:select id="stretch_mode" name="stretch_mode"
+                   from="${['linear_auto_min_max', 'linear_1std_from_mean', 'linear_2std_from_mean', 'linear_3std_from_mean', 'none']}"
+                   onChange="changeHistoOpts()"/></p>
 
       <p><b>Region Stretch:</b></p>
-      <p><g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts() "/></p>
+
+      <p><g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}"
+                   onChange="changeHistoOpts() "/></p>
 
       <p>&nbsp;</p>
 
       <g:if test="${rasterEntries?.numberOfBands.get(0) == 2}">
         <b>Band Combinations:</b>
+
         <p><g:select id="bands" name="bands" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()"/></p>
       </g:if>
 
       <g:if test="${rasterEntries?.numberOfBands.get(0) >= 3}">
         <b>Band Combinations:</b>
+
         <p><g:select id="bands" name="bands" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()"/></p>
       </g:if>
 
       <p>&nbsp;</p>
 
       <b>Terrain Correction:</b>
+
       <p>
         <g:select id="quicklook" name="quicklook"
-            from="${[[name: 'On', value: 'true'], [name: 'Off', value: 'false']]}"
-            optionValue="name" optionKey="value"
-            onChange="changeQuickLookOpts()"/>
+                  from="${[[name: 'On', value: 'true'], [name: 'Off', value: 'false']]}"
+                  optionValue="name" optionKey="value"
+                  onChange="changeQuickLookOpts()"/>
       </p>
     </g:form>
   </div>
@@ -82,9 +96,9 @@
 
 </body>
 
-<g:javascript plugin='richui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
-<g:javascript plugin='richui' src="yui/element/element-min.js"/>
-<g:javascript plugin='richui' src="yui/container/container-min.js"/>
+<g:javascript plugin='yui' src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
+<g:javascript plugin='yui' src="yui/element/element-min.js"/>
+<g:javascript plugin='yui' src="yui/container/container-min.js"/>
 
 <script>
   YAHOO.namespace( "example.container" );
@@ -98,15 +112,15 @@
     };
 
     YAHOO.example.container.dialog1 = new YAHOO.widget.Dialog( "dialog1",
-    { width : "30em",
-      fixedcenter : true,
-      visible : false,
-      zIndex: 99999,
-      constraintoviewport : true,
-      buttons : [
-        { text:"Close", handler:handleCancel, isDefault:true }
-      ]
-    } );
+        { width : "30em",
+          fixedcenter : true,
+          visible : false,
+          zIndex: 99999,
+          constraintoviewport : true,
+          buttons : [
+            { text:"Close", handler:handleCancel, isDefault:true }
+          ]
+        } );
 
     YAHOO.example.container.dialog1.render();
 
@@ -165,9 +179,9 @@
 
     rasterLayers = [
       new OpenLayers.Layer.WMS( "Raster", "${createLink(controller: 'ogc', action: 'wms')}",
-      { layers: "${(rasterEntries*.indexId).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
-      {isBaseLayer: true, buffer:0, singleTile:false, ratio:1.0, quicklook:false,
-        displayOutsideMaxExtent:false} )
+          { layers: "${(rasterEntries*.indexId).join(',')}", format: format, sharpen_mode:sharpen_mode, stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent  },
+          {isBaseLayer: true, buffer:0, singleTile:false, ratio:1.0, quicklook:false,
+            displayOutsideMaxExtent:false} )
     ];
     map.addLayers( rasterLayers );
   }

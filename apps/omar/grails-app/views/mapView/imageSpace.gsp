@@ -16,8 +16,8 @@
 
   <meta name="layout" content="rasterViewsStatic"/>
 
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
   <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
 
   <style type="text/css">
@@ -27,24 +27,24 @@
     border: 1px solid black;
   }
 
-   #homeMenu{
-   background: url( ../images/skin/house.png )  left no-repeat;
-  	z-index: 99999;
-  }
-  #exportMenu, #viewMenu{
-  	z-index: 99999;
+  #homeMenu {
+    background: url(../images/skin/house.png) left no-repeat;
+    z-index: 99999;
   }
 
-  #slider-brightness-bg, #slider-contrast-bg{
-    width:120px;
-    background:url(${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
+  #exportMenu, #viewMenu {
+    z-index: 99999;
   }
 
- #slider-rotate-bg{
-    
-    background:url(${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
+  #slider-brightness-bg, #slider-contrast-bg {
+    width: 120px;
+    background: url(${resource(plugin: 'yui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
   }
 
+  #slider-rotate-bg {
+
+    background: url(${resource(plugin: 'yui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
+  }
 
   div.olControlMousePosition {
     font-family: Verdana;
@@ -82,164 +82,181 @@
   <openlayers:loadJavascript/>
   <g:javascript plugin="omar-core" src="touch.js"/>
 
-
 </head>
 
-<body class="yui-skin-sam" onload="init();" >
-
+<body class="yui-skin-sam" onload="init();">
 
 <g:form name="wmsFormId" method="POST">
 </g:form>
 <input type="hidden" name="request" value=""/>
 <input type="hidden" name="layers" value=""/>
 <input type="hidden" name="bbox" value=""/>
-<input type="hidden" id="contrast" name="contrast" value="${params.contrast?:0}"/>
-<input type="hidden" id="brightness" name="brightness" value="${params.brightness?:0}"/>
+<input type="hidden" id="contrast" name="contrast" value="${params.contrast ?: 0}"/>
+<input type="hidden" id="brightness" name="brightness" value="${params.brightness ?: 0}"/>
 
 <content tag="top">
 
+  <div id="rasterMenu" class="yuimenubar yuimenubarnav">
+    <div class="bd">
+      <ul class="first-of-type">
+
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu"
+                                                    href="${createLink(controller: 'home', action: 'index')}"
+                                                    title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
+        </li>
 
 
-<div id="rasterMenu" class="yuimenubar yuimenubarnav">
-	<div class="bd">
-		<ul class="first-of-type">
-			
-			<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
-			</li>
-	
-	
-	
-	
-			<li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
-				<div id="viewMenu" class="yuimenu">
-					<div class="bd">
-						<ul>
-							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();" title="Ground Space Viewer">Ground Space</a></li>
-						
-							<li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}" title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a></li>
-						
-						</ul>
-                        <ul>
-                            <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "imageSpace", params: [layers: rasterEntry?.indexId])}" title="Reset Image space">Reset</a></li>
 
-                        </ul>
-					</div>
-				</div>
-			</li>
-	
-	
-	</div>
-</div>
 
-    <label>${(rasterEntry?.filename)}</label>
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
+
+          <div id="viewMenu" class="yuimenu">
+            <div class="bd">
+              <ul>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();"
+                                           title="Ground Space Viewer">Ground Space</a></li>
+
+                <li class="yuimenuitem"><a class="yuimenuitemlabel"
+                                           href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}"
+                                           title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a></li>
+
+              </ul>
+              <ul>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel"
+                                           href="${createLink(action: "imageSpace", params: [layers: rasterEntry?.indexId])}"
+                                           title="Reset Image space">Reset</a></li>
+
+              </ul>
+            </div>
+          </div>
+        </li>
+
+    </div>
+  </div>
+
+  <label>${(rasterEntry?.filename)}</label>
 
 </content>
 
 <content tag="left">
   <div class="niceBox">
-        <div class="niceBoxHd">Image Adjustments:</div>
-        <div class="niceBoxBody">
-          <ol>
-			<li>Interpolation:</li>
-			<li>
-				<g:select id="interpolation" name="interpolation" value="${params.interpolation?:bilinear}" from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}" onChange="chgInterpolation()"/>
-			</li>
-			<hr/>
-			
-				<label>Brightness: <input type="text"  readonly="true" id="brightnessTextField" size="3" maxlength="5" value=""></label>
+    <div class="niceBoxHd">Image Adjustments:</div>
 
-				<li>
-					<div id="slider-brightness-bg" class="yui-h-slider" tabindex="-1" hidefocus="false"> 
-		    			<div id="slider-brightness-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'thumb-n.gif')}"></div> 
-					</div> 
-				</li>
-				<label>Contrast: <input type="text"  readonly="true"  id="contrastTextField" size="3" maxlength="5" value=""></label>
-				<li>
-					<div id="slider-contrast-bg" class="yui-h-slider" tabindex="-1" hidefocus="false"> 
-		    			<div id="slider-contrast-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'thumb-n.gif')}"></div> 
-					</div> 
-				</li>
-              <div align="center">
-                  <button id="brightnessContrastReset" type="button" onclick="javascript:resetBrightnessContrast()">Reset</button>
+    <div class="niceBoxBody">
+      <ol>
+        <li>Interpolation:</li>
+        <li>
+          <g:select id="interpolation" name="interpolation" value="${params.interpolation?:bilinear}"
+                    from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}" onChange="chgInterpolation()"/>
+        </li>
+        <hr/>
 
-              </div>
+        <label>Brightness: <input type="text" readonly="true" id="brightnessTextField" size="3" maxlength="5" value="">
+        </label>
 
-			
-				<hr/>
+        <li>
+          <div id="slider-brightness-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
+            <div id="slider-brightness-thumb" class="yui-slider-thumb"><img
+                src="${resource(plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
+          </div>
+        </li>
+        <label>Contrast: <input type="text" readonly="true" id="contrastTextField" size="3" maxlength="5" value="">
+        </label>
+        <li>
+          <div id="slider-contrast-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
+            <div id="slider-contrast-thumb" class="yui-slider-thumb"><img
+                src="${resource(plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
+          </div>
+        </li>
 
-            <li>Sharpen:</li>
-            <li>
-              <g:select id="sharpen_mode" name="sharpen_mode" value="${params.sharpen_mode?:'none'}" from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
-            </li>
-			<li>Dynamic Range Adjustment:</li>
-            <li>
-				<g:select id="stretch_mode" name="stretch_mode" value="${params.stretch_mode?:'linear_auto_min_max'}" 
-				        from="${[[name: 'Automatic', value: 'linear_auto_min_max'],[name: '1st Std', value: 'linear_1std_from_mean'],[name: '2nd Std', value: 'linear_2std_from_mean'],[name: '3rd Std', value: 'linear_3std_from_mean'],[name: 'No Adjustment', value: 'none']]}"
-				        optionValue="name" optionKey="value"
-				        onChange="changeHistoOpts()"/>
-				</li>
+        <div align="center">
+          <button id="brightnessContrastReset" type="button"
+                  onclick="javascript:resetBrightnessContrast()">Reset</button>
 
-            <li>Region:</li>
-            <li>
-              <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}" onChange="changeHistoOpts()" />
-            </li>
-
-            <g:if test="${rasterEntry?.numberOfBands == 1}">
-              <li>Band:</li>
-              <li><g:select id="bands" name="bands" value="${params.bands?:'0'}" from="${['0']}" onChange="changeBandsOpts()" /> </li>
-            </g:if>
-            <g:if test="${rasterEntry?.numberOfBands == 2}">
-              <li>Bands:</li>
-              <li><g:select id="bands" name="bands" value="${params.bands?:'0,1'}" from="${['0,1','1,0','0','1']}" onChange="changeBandsOpts()" /></li>
-            </g:if>
-            <g:if test="${rasterEntry?.numberOfBands >= 3}">
-              <li>Bands:</li>
-              <li><g:select id="bands" name="bands" value="${params.bands?:'0,1,2'}" from="${['0,1,2','2,1,0','0','1','2']}" onChange="changeBandsOpts()" /></li>
-            </g:if>
-            <li>Image Rotate:</li>
-            <li>
-                <!-- This is hidden to prevent rotating the image unintentionally -->
-                <g:textField name="rotate" value="${params.rotate?:0}" style="display:none" size="1"/> <!-------------------->
-                <!-- A new text field to hold the rotation value -->
-                <g:textField name="rotateAngle" value="0" onChange="rotateSlider.setRealValue(this.value)" size="1"/> <!-------------------->
-                <button id="rotateApply" type="button" onclick="rotateSlider.setRealValue($(rotateAngle).value)">Apply</button>
-
-                <br> <!-------------------->
-
-					<li>
-					
-					
-				
-					
-						<div id="slider-rotate-bg" class="yui-h-slider" tabindex="-1" hidefocus="false"> 
-			    			<div id="slider-rotate-thumb" class="yui-slider-thumb"><img src="${resource(plugin: 'richui', dir:'js/yui/slider/assets', file:'thumb-n.gif')}"></div> 
-						</div> 
-					</li>
-
-               
-                <br> <!-------------------->
-
-                <!-- Buttons for preset rotation values -->
-                <button type="button" onclick="rotateSlider.setRealValue(${rasterEntry.azimuthAngle})">North is Up</button> <!-------------------->
-
-
-                <button type="button" onclick="rotateSlider.setRealValue('0')">Sensor is Up</button> <!-------------------->
-
-
-
-   <button type="button" onclick="refreshVectorLayer()">Refresh Layer</button>
-            </li>
-          </ol>
         </div>
-      </div>
 
-    <!-- A new box to hold the north arrow -->
-    <div class="niceBox"> <!-------------------->
-        <div class="niceBoxHd">North Arrow:</div> <!-------------------->
-        <div class="niceBoxBody"> <!-------------------->
-            <div id="compassMap" style="width:190; height:190"></div> <!-------------------->
-        </div> <!-------------------->
+
+        <hr/>
+
+        <li>Sharpen:</li>
+        <li>
+          <g:select id="sharpen_mode" name="sharpen_mode" value="${params.sharpen_mode?:'none'}"
+                    from="${['none', 'light', 'heavy']}" onChange="changeSharpenOpts()"/>
+        </li>
+        <li>Dynamic Range Adjustment:</li>
+        <li>
+          <g:select id="stretch_mode" name="stretch_mode" value="${params.stretch_mode?:'linear_auto_min_max'}"
+                    from="${[[name: 'Automatic', value: 'linear_auto_min_max'],[name: '1st Std', value: 'linear_1std_from_mean'],[name: '2nd Std', value: 'linear_2std_from_mean'],[name: '3rd Std', value: 'linear_3std_from_mean'],[name: 'No Adjustment', value: 'none']]}"
+                    optionValue="name" optionKey="value"
+                    onChange="changeHistoOpts()"/>
+        </li>
+
+        <li>Region:</li>
+        <li>
+          <g:select id="stretch_mode_region" name="stretch_mode_region" from="${['global', 'viewport']}"
+                    onChange="changeHistoOpts()"/>
+        </li>
+
+        <g:if test="${rasterEntry?.numberOfBands == 1}">
+          <li>Band:</li>
+          <li><g:select id="bands" name="bands" value="${params.bands?:'0'}" from="${['0']}"
+                        onChange="changeBandsOpts()"/></li>
+        </g:if>
+        <g:if test="${rasterEntry?.numberOfBands == 2}">
+          <li>Bands:</li>
+          <li><g:select id="bands" name="bands" value="${params.bands?:'0,1'}" from="${['0,1','1,0','0','1']}"
+                        onChange="changeBandsOpts()"/></li>
+        </g:if>
+        <g:if test="${rasterEntry?.numberOfBands >= 3}">
+          <li>Bands:</li>
+          <li><g:select id="bands" name="bands" value="${params.bands?:'0,1,2'}" from="${['0,1,2','2,1,0','0','1','2']}"
+                        onChange="changeBandsOpts()"/></li>
+        </g:if>
+        <li>Image Rotate:</li>
+        <li>
+          <!-- This is hidden to prevent rotating the image unintentionally -->
+          <g:textField name="rotate" value="${params.rotate?:0}" style="display:none" size="1"/> <!-------------------->
+          <!-- A new text field to hold the rotation value -->
+          <g:textField name="rotateAngle" value="0" onChange="rotateSlider.setRealValue(this.value)"
+                       size="1"/> <!-------------------->
+          <button id="rotateApply" type="button"
+                  onclick="rotateSlider.setRealValue( $( rotateAngle ).value )">Apply</button>
+
+          <br> <!-------------------->
+
+        <li>
+
+          <div id="slider-rotate-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
+            <div id="slider-rotate-thumb" class="yui-slider-thumb"><img
+                src="${resource(plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
+          </div>
+        </li>
+
+
+        <br> <!-------------------->
+
+      <!-- Buttons for preset rotation values -->
+        <button type="button"
+                onclick="rotateSlider.setRealValue( ${rasterEntry.azimuthAngle} )">North is Up</button> <!-------------------->
+
+
+        <button type="button" onclick="rotateSlider.setRealValue( '0' )">Sensor is Up</button> <!-------------------->
+
+
+
+        <button type="button" onclick="refreshVectorLayer()">Refresh Layer</button>
+      </li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- A new box to hold the north arrow -->
+  <div class="niceBox"><!-------------------->
+    <div class="niceBoxHd">North Arrow:</div> <!-------------------->
+    <div class="niceBoxBody"><!-------------------->
+      <div id="compassMap" style="width:190; height:190"></div> <!-------------------->
     </div> <!-------------------->
+  </div> <!-------------------->
 
 </content>
 
@@ -563,8 +580,8 @@ function init(mapWidth, mapHeight)
     	$("brightnessTextField").value = this.getRealValue();
     });
 
-	brightnessSlider.setRealValue(${params.brightness?:0});
-	contrastSlider.setRealValue(${params.contrast?:1});
+	brightnessSlider.setRealValue(${params.brightness ?: 0});
+	contrastSlider.setRealValue(${params.contrast ?: 1});
 
 	// setup the north arrow compass ////////////////////
 	setupCompassMap(); ////////////////////
@@ -600,7 +617,7 @@ function setupCompassMap() ////////////////////
 	compassMap.setCenter(new OpenLayers.LonLat(0,0), 0); ////////////////////
 
     // define the image to be used for the compass ////////////////////
-	var compassImageURL = "${resource(plugin: 'omar', dir:'images', file:'north_arrow.png')}"; ////////////////////
+	var compassImageURL = "${resource(plugin: 'omar', dir: 'images', file: 'north_arrow.png')}"; ////////////////////
 
 	// define a vector layer to add markers to ////////////////////
 	compassVectorLayer = new OpenLayers.Layer.Vector("Compass Layer", ////////////////////
@@ -820,7 +837,7 @@ function sliderRotate(sliderValue) ////////////////////
     rotationAngle = parseInt(sliderValue) + parseInt(${rasterEntry.azimuthAngle}); ////////////////////
 
     // ensure the value of the rotation is normalized such that North is Up is 0 ////////////////////
-    ${"rotateAngle"}.value = rotationAngle - parseInt(${rasterEntry.azimuthAngle}); ////////////////////
+${"rotateAngle"}.value = rotationAngle - parseInt(${rasterEntry.azimuthAngle}); ////////////////////
 
     // remove the image from the map so it can be rotated ////////////////////
 	compassVectorLayer.removeFeatures([compassImage]); ////////////////////
@@ -839,7 +856,7 @@ function sliderRotate(sliderValue) ////////////////////
 
 function rotateTextField() ////////////////////
 { ////////////////////
-    ${"slider"}.value = ${"rotateAngle"}.value; ////////////////////
+${"slider"}.value = ${"rotateAngle"}.value; ////////////////////
 	
     sliderRotate(${"slider"}.value); ////////////////////
 } ////////////////////

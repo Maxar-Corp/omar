@@ -14,8 +14,10 @@
   ]}"/>
 
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
 
 
   <style>
@@ -65,18 +67,22 @@
   <g:layoutHead/>
 </head>
 
-<body class="yui-skin-sam" onresize="onBodyResize();${pageProperty(name: 'body.onresize')}" onload="onBodyResize();${pageProperty(name: 'body.onload')}">
+<body class="yui-skin-sam" onresize="onBodyResize();${pageProperty(name: 'body.onresize')}"
+      onload="onBodyResize();${pageProperty(name: 'body.onload')}">
 <div id="content">
   <div id="header">
     <omar:securityClassificationBanner/>
   </div>
+
   <div id="top">
     <g:pageProperty name="page.top"/>
   </div>
+
   <div id="center">
     <g:pageProperty name="page.body"/>
   </div>
 </div>
+
 <div id="footer">
   <g:pageProperty name="page.footer"/>
   <omar:securityClassificationBanner/>
@@ -84,14 +90,14 @@
 
 <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
-    [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [plugin:'richui' , dir:'js/datechooser', file: 'datechooser.js'],
-    [plugin:'richui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
-    [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
-    [plugin:'richui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
-    [plugin:'richui' , dir:'js/yui/container/', file: 'container_core-min.js'],
-    [plugin:'richui' , dir:'js/yui/menu/', file: 'menu-min.js'],
-    [plugin:'richui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js'],
+    [plugin:'yui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+    [plugin:'yui' , dir:'js/datechooser', file: 'datechooser.js'],
+    [plugin:'yui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
+    [plugin:'yui' , dir:'js/yui/element', file: 'element-min.js'],
+    [plugin:'yui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
+    [plugin:'yui' , dir:'js/yui/container/', file: 'container_core-min.js'],
+    [plugin:'yui' , dir:'js/yui/menu/', file: 'menu-min.js'],
+    [plugin:'yui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js'],
 ]}"/>
 
 <g:javascript>

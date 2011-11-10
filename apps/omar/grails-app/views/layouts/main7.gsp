@@ -21,19 +21,22 @@
       [dir: 'css', file: 'omar-2.0.css']
   ]}"/>
 
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/resize/assets/skins/sam', file: 'resize.css')}"/>
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/layout/assets/skins/sam', file: 'layout.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/resize/assets/skins/sam', file: 'resize.css')}"/>
+  <link rel="stylesheet" type="text/css"
+        href="${resource(plugin: 'yui', dir: 'js/yui/layout/assets/skins/sam', file: 'layout.css')}"/>
   <omar:bundle contentType="javascript" files="${[
       [dir:'js', file: 'application.js'],
-      [plugin:'richui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-      [plugin:'richui' , dir:'js/yui/dragdrop', file: 'dragdrop-min.js'],
-      [plugin:'richui' , dir:'js/yui/resize', file: 'resize-min.js'],
-      [plugin:'richui' , dir:'js/yui/element', file: 'element-min.js'],
-      [plugin:'richui' , dir:'js/yui/layout', file: 'layout-min.js']
+      [plugin:'yui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
+      [plugin:'yui' , dir:'js/yui/dragdrop', file: 'dragdrop-min.js'],
+      [plugin:'yui' , dir:'js/yui/resize', file: 'resize-min.js'],
+      [plugin:'yui' , dir:'js/yui/element', file: 'element-min.js'],
+      [plugin:'yui' , dir:'js/yui/layout', file: 'layout-min.js']
   ]}"/>
   <%--
-  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'richui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
+  <link rel="stylesheet" type="text/css" href="${resource(plugin: 'yui', dir: 'js/yui/button/assets/skins/sam', file: 'button.css')}"/>
   --%>
 
 
@@ -51,12 +54,12 @@
     padding: 0;
   }
 
-  /* Set the background color */
+    /* Set the background color */
   .yui-skin-sam .yui-layout {
     background-color: #FFFFFF;
   }
 
-  /* Style the body */
+    /* Style the body */
   .yui-skin-sam .yui-layout .yui-layout-unit div.yui-layout-bd {
     background-color: #FFFFFF;
   }
@@ -65,14 +68,17 @@
 
   <g:layoutHead/>
 </head>
+
 <body class="yui-skin-sam">
 
 <div id="header">
   <omar:securityClassificationBanner/>
 </div>
+
 <div id="footer">
   <omar:securityClassificationBanner/>
 </div>
+
 <div id="content">
   <div id="north">
     <div id="hd">
@@ -80,12 +86,15 @@
     </div>
     <g:pageProperty name="page.north"/>
   </div>
+
   <div id="south">
     <g:pageProperty name="page.south"/>
   </div>
+
   <div id="west">
     <g:pageProperty name="page.west"/>
   </div>
+
   <div id="center">
     <g:pageProperty name="page.center"/>
   </div>
