@@ -74,11 +74,11 @@
 <omar:bundle contentType="javascript" files="${[
     [dir:'js', file: 'application.js'],
     [plugin:'yui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [plugin:'yui' , dir:'js/datechooser', file: 'datechooser.js'],
+    [ dir:'js', file: 'datechooser.js'],
     [plugin:'yui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
     [plugin:'yui' , dir:'js/yui/element', file: 'element-min.js'],
     [plugin:'yui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
-	[plugin:'yui' , dir:'js/yui/container/', file: 'container_core-min.js'],
+	  [plugin:'yui' , dir:'js/yui/container/', file: 'container_core-min.js'],
     [plugin:'yui' , dir:'js/yui/menu/', file: 'menu-min.js'],
     [plugin:'yui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js']
 ]}"/>
