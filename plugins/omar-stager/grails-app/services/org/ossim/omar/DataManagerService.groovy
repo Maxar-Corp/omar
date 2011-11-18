@@ -1,6 +1,5 @@
 package org.ossim.omar
 
-import joms.oms.DataInfo
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationContext
 import org.apache.commons.collections.map.CaseInsensitiveMap
@@ -18,6 +17,8 @@ class DataManagerService implements ApplicationContextAware
   def acceptFileLog
   def rejectFileLog
   def dataLog
+
+  def dataInfoService
 
   ApplicationContext applicationContext
 
@@ -50,15 +51,7 @@ class DataManagerService implements ApplicationContextAware
     }
     else
     {
-      def dataInfo = new DataInfo()
-      def canOpen = dataInfo.open(params.filename)
-      def xml = null
-      if ( canOpen )
-      {
-        xml = dataInfo.getInfo()?.trim()
-      }
-      dataInfo.close()
-      //def xml = StagerUtil.getInfo(filename)
+      def xml = dataInfoService.getInfo(params.filename)
 
       if ( xml )
       {
@@ -229,60 +222,44 @@ class DataManagerService implements ApplicationContextAware
     }
     else
     {
-      def dataInfo = new DataInfo()
-      def canOpen = dataInfo.open(file.absolutePath)
-
-      if ( canOpen )
+      def xml = dataInfoService.getInfo(params.filename)
+      if ( xml )
       {
-        def xml = dataInfo.getInfo()?.trim()
-        dataInfo.close()
-        if ( xml )
-        {
-          def oms = new XmlSlurper().parseText(xml)
-          def omsInfoParser = applicationContext.getBean("videoInfoParser")
-          def repository = findRepositoryForFile(file)
-          def videoDataSets = omsInfoParser.processDataSets(oms, repository)
+        def oms = new XmlSlurper().parseText(xml)
+        def omsInfoParser = applicationContext.getBean("videoInfoParser")
+        def repository = findRepositoryForFile(file)
+        def videoDataSets = omsInfoParser.processDataSets(oms, repository)
 
-          if ( videoDataSets.size() < 1 )
-          {
-            httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
-            httpStatusMessage.message = "Not a video file: ${file}"
-            log.error(httpStatusMessage.message)
-          }
-          else
-          {
-            videoDataSets.each {videoDataSet ->
-              if ( !videoDataSet.save() )
-              {
-                httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
-                httpStatusMessage.message = "Unable to save ${file}, the file probably alread exists"
-                log.error(httpStatusMessage.message)
-                //stagerHandler.processRejected(file)
-              }
-              else
-              {
-                log.info("Added file ${file}")
-              }
-            }
-            //new org.ossim.omar.DataManagerQueueItem(file: file.absolutePath, baseDir: parent.baseDir, dataInfo: xml).save()
-          }
+        if ( videoDataSets.size() < 1 )
+        {
+          httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
+          httpStatusMessage.message = "Not a video file: ${file}"
+          log.error(httpStatusMessage.message)
         }
         else
         {
-          httpStatusMessage.message = "Unable to save information on file ${file}"
-          httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
-          log.error(httpStatusMessage.message)
+          videoDataSets.each {videoDataSet ->
+            if ( !videoDataSet.save() )
+            {
+              httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
+              httpStatusMessage.message = "Unable to save ${file}, the file probably alread exists"
+              log.error(httpStatusMessage.message)
+              //stagerHandler.processRejected(file)
+            }
+            else
+            {
+              log.info("Added file ${file}")
+            }
+          }
+          //new org.ossim.omar.DataManagerQueueItem(file: file.absolutePath, baseDir: parent.baseDir, dataInfo: xml).save()
         }
       }
       else
       {
-        httpStatusMessage.message = "Unable to get information on file ${file}"
+        httpStatusMessage.message = "Unable to save information on file ${file}"
         httpStatusMessage.status = HttpStatus.UNSUPPORTED_MEDIA_TYPE
         log.error(httpStatusMessage.message)
       }
-
-      dataInfo.close()
-      dataInfo.delete();
     }
   }
 
