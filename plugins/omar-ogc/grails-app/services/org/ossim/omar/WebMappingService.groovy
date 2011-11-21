@@ -1,6 +1,5 @@
 package org.ossim.omar
 
-import java.awt.image.RenderedImage
 import java.awt.Graphics2D
 import java.awt.Color
 import java.awt.BasicStroke
@@ -25,7 +24,6 @@ import joms.oms.ossimImageGeometry
 import joms.oms.ossimUnitConversionTool
 
 import org.ossim.oms.image.omsImageSource
-import javax.imageio.ImageIO
 import org.geotools.geometry.jts.LiteShape
 import geoscript.geom.MultiPolygon
 import java.awt.Rectangle
@@ -37,98 +35,15 @@ import org.springframework.context.ApplicationContextAware
 class WebMappingService implements ApplicationContextAware
 {
   def grailsApplication
-  def rasterEntrySearchService
-  def videoDataSetSearchService
   def rasterChainService
 
   ApplicationContext applicationContext
 
-  public static final String SYSCALL = "syscall"
-  public static final String LIBCALL = "libcall"
   public static final String BLANK = "blank"
-  def mode = LIBCALL
 
   static transactional = false
 
   def transparent = new TransparentFilter()
-
-  void drawCoverage(Graphics2D g, def wmsRequest, def geometries, def styleName)
-  {
-    def minx = -180.0
-    def maxx = 180.0
-    def miny = -90.0
-    def maxy = 90.0
-
-    if ( wmsRequest.bbox )
-    {
-      def bounds = wmsRequest.bbox.split(',')
-      minx = bounds[0] as double
-      miny = bounds[1] as double
-      maxx = bounds[2] as double
-      maxy = bounds[3] as double
-    }
-
-    def w = wmsRequest.width as int
-    def h = wmsRequest.height as int
-    def wmsView = new WmsView()
-    def projPoint = new ossimGpt(maxy, minx)
-    def origin = new ossimDpt(0.0, 0.0)
-    def ls = new ossimDpt(0.0, 0.0)
-
-    wmsView.setProjection(wmsRequest.srs)
-    wmsView.setViewDimensionsAndImageSize(minx, miny, maxx, maxy, w, h)
-
-    def proj = wmsView.getProjection()
-
-    proj.worldToLineSample(projPoint, origin)
-
-    def style = grailsApplication.config.wms.styles.get(styleName)
-
-    if ( !style )
-    {
-      style = grailsApplication.config.wms.styles.get("default")
-    }
-
-    if ( style )
-    {
-      g.setPaint(new Color(style.outlinecolor.r * 255 as int,
-              style.outlinecolor.g * 255 as int,
-              style.outlinecolor.b * 255 as int,
-              style.outlinecolor.a * 255 as int))
-
-      g.setStroke(new BasicStroke(style.width as int))
-    }
-
-    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-            RenderingHints.VALUE_ANTIALIAS_ON);
-
-    for ( def geom in geometries )
-    {
-      //def pointListx = new int[geom.numPoints()]
-      //def pointListy = new int[geom.numPoints()]
-
-      def coordinates = geom.coordinates
-      def pointListx = new int[coordinates.size()]
-      def pointListy = new int[coordinates.size()]
-
-      //def numPoints = geom.numPoints()
-      def numPoints = coordinates.size()
-      for ( def it in (0..<numPoints) )
-      {
-        //def point = geom.getPoint(it);
-        def point = coordinates[it];
-        projPoint.setLatd(point.y);
-        projPoint.setLond(point.x);
-        proj.worldToLineSample(projPoint, ls);
-        ls.x -= origin.x;
-        ls.y -= origin.y;
-        pointListx[it] = (ls.x as int)
-        pointListy[it] = (ls.y as int)
-      }
-
-      g.drawPolyline(pointListx, pointListy, pointListx.size())
-    }
-  }
 
   WMSQuery setupQuery(def wmsRequest)
   {
@@ -316,298 +231,6 @@ class WebMappingService implements ApplicationContextAware
     return result
   }
 
-  RenderedImage getMapOld(def wmsRequest)
-  {
-    RenderedImage image = null
-    def enableOMS = true
-    def quickLookFlagString = wmsRequest?.quicklook ?: "false"
-    def sharpenMode = wmsRequest?.sharpen_mode ?: ""
-    def sharpenWidth = wmsRequest?.sharpen_width ?: ""
-    def sharpenSigma = wmsRequest?.sharpen_sigma ?: ""
-    def stretchMode = wmsRequest?.stretch_mode ?: "linear_auto_min_max"
-    def stretchModeRegion = wmsRequest?.stretch_mode_region ?: "global"
-    def bands = wmsRequest?.bands ?: ""
-    def entryId = 0
-    def bounds = wmsRequest?.bbox?.split(',')
-    int viewableBandCount = 1
-    Point location = null
-    switch ( mode )
-    {
-
-    case SYSCALL:
-      def inputFilenames = []
-
-      for ( def it in wmsRequest?.layers.split(',') )
-      {
-        def rasterEntry = RasterEntry.get(it)
-        inputFilenames << "${rasterEntry?.mainFile.name}|${rasterEntry.entryId}"
-      }
-
-      def ext
-
-      switch ( wmsRequest?.format?.toLowerCase() )
-      {
-      case "jpeg":
-      case "image/jpeg":
-        ext = ".jpg"
-        break
-      case "png":
-      case "image/png":
-        ext = ".png"
-        break
-      case "gif":
-      case "image/gif":
-        ext = ".gif"
-        break
-      }
-
-      def imageFile = File.createTempFile("ogcoms", ext);
-      def cmd = "orthoigen --geo --cut-bbox-ll ${bounds[1]} ${bounds[0]} ${bounds[3]} ${bounds[2]} -t ${wmsRequest?.width} --resample-type bilinear --scale-to-8-bit --hist-auto-minmax --enable-entry-decoding ${inputFilenames.join(' ')} --writer-prop 'create_external_geometry=false' ${imageFile}"
-
-      log.info(cmd.replace("|", "\\|"))
-
-      def process = cmd.execute()
-
-      process.consumeProcessOutput()
-      process.waitFor();
-      image = ImageIO.read(imageFile)
-      imageFile.delete()
-      // delete the geom file
-      new File(imageFile.absolutePath - ext + ".geom").delete()
-
-
-      break
-
-    case BLANK:
-
-      image = new BufferedImage(
-              wmsRequest?.width?.toInteger(),
-              wmsRequest?.height?.toInteger(),
-              BufferedImage.TYPE_INT_RGB
-      )
-
-      break
-
-    case LIBCALL:
-      WmsView view = new WmsView()
-      view.setProjection(wmsRequest.srs)
-      view.setViewDimensionsAndImageSize(bounds[0] as Double,
-              bounds[1] as Double,
-              bounds[2] as Double,
-              bounds[3] as Double,
-              Integer.parseInt(wmsRequest.width),
-              Integer.parseInt(wmsRequest.height))
-      /*
-      * BIL: pixelStride = 1, lineStride = 3*width, bandOffsets = {0, width, 2*width}
-      * BSQ: pixelStride = 1, lineStride = width, bandOffsets = {0, width*height, 2*width*height}
-      * BIP: pixelStride = 3, lineStride = 3*width, bandOffsets = {0, 1, 2}
-      */
-      def WmsMap wmsMap = new WmsMap();
-
-      int width = wmsRequest?.width?.toInteger()
-      int height = wmsRequest?.height?.toInteger()
-
-      if ( sharpenMode.equals("light") )
-      {
-        sharpenWidth = "3"
-        sharpenSigma = ".5"
-      }
-      else if ( sharpenMode.equals("heavy") )
-      {
-        sharpenWidth = "5"
-        sharpenSigma = "1"
-      }
-      def bandSelectorCount = bands ? bands.split(",").length : 0
-
-
-      def quickLookFlag = false
-
-      switch ( quickLookFlagString?.toLowerCase() )
-      {
-      case "true":
-      case "on":
-        quickLookFlag = true
-        break
-      }
-
-      def rasterEntries = new WMSQuery().caseInsensitiveBind(wmsRequest.toMap()).rasterEntriesAsList
-      for ( def rasterEntry in rasterEntries.reverse() )
-      {
-        def geom = (ossimImageGeometry) null
-        def geomPtr = (ossimImageGeometryPtr) null
-        //def rasterEntry = RasterEntry.get(it)
-        if ( rasterEntry != null )
-        {
-          //rasterEntry.adjustAccessTimeIfNeeded(24) // adjust every 24 hours
-          def file = new File(rasterEntry?.mainFile.name)
-
-          if ( !file.exists() )
-          {
-          }
-          else if ( !file.canRead() )
-          {
-          }
-          else
-          {
-            double scaleCheck = 1.0
-            if ( quickLookFlag )
-            {
-              geomPtr = createModelFromTiePointSet(rasterEntry);
-              if ( geomPtr != null )
-              {
-                geom = geomPtr.get()
-              }
-            }
-            // we will use a crude bilinear to test scale change to
-            // verify we have enough overviews to reproject the image
-            if ( geomPtr != null )
-            {
-              scaleCheck = view.getScaleChangeFromInputToView(geomPtr.get())
-            }
-            if ( rasterEntry?.numberOfBands > viewableBandCount )
-            {
-              viewableBandCount = 3
-            }
-            // if we are near zooming to full res just add the image
-            if ( scaleCheck >= 0.9 )
-            {
-              wmsMap.addFile(rasterEntry?.mainFile.name,
-                      rasterEntry?.entryId?.toInteger(),
-                      geom)
-            }
-            // make sure we are within resolution level before adding an image
-            else if ( scaleCheck > 0.0 )
-            {
-              // check to see if the decimation puts us smaller than the bounding rect of the smallest
-              // res level scale
-              //
-              long maxSize = (rasterEntry.width > rasterEntry.height) ? rasterEntry.width : rasterEntry.height
-              if ( (maxSize * scaleCheck) >= (maxSize / (2 ** rasterEntry.numberOfResLevels)) )
-              {
-                wmsMap.addFile(rasterEntry?.mainFile.name,
-                        rasterEntry?.entryId?.toInteger(),
-                        geom)
-              }
-              else
-              {
-              }
-            }
-            geom = (ossimImageGeometry) null
-            geomPtr = (ossimImageGeometryPtr) null
-          }
-        }
-      }
-      if ( bandSelectorCount > 0 )
-      {
-        if ( bandSelectorCount >= 3 )
-        {
-          viewableBandCount = 3;
-        }
-        else
-        {
-          viewableBandCount = 1;
-        }
-      }
-      int pixelStride = viewableBandCount
-      int lineStride = viewableBandCount * width
-      int[] bandOffsets = null;
-      if ( viewableBandCount == 1 )
-      {
-        bandOffsets = [0] as int[]
-      }
-      else bandOffsets = [0, 1, 2] as int[]
-      byte[] data = new byte[width * height * viewableBandCount]
-      if ( enableOMS )
-      {
-        //println bounds
-        def kwl = new ossimKeywordlist();
-        kwl.add("viewable_bands", "${viewableBandCount}")
-        kwl.add("stretch_mode", "${stretchMode}")
-        kwl.add("stretch_region", "${stretchModeRegion}")
-        kwl.add("sharpen_width", "${sharpenWidth}")
-        kwl.add("sharpen_sigma", "${sharpenSigma}")
-        kwl.add("bands", "${bands}")
-        kwl.add("rotate", "${rotate}")
-        kwl.add("null_flip", wmsRequest?.null_flip)
-        wmsMap.setChainParameters(kwl)
-        wmsMap.getMap(
-                wmsRequest.srs,
-                bounds[0] as Double, bounds[1] as Double, bounds[2] as Double, bounds[3] as Double,
-                Integer.parseInt(wmsRequest.width), Integer.parseInt(wmsRequest.height),
-                data
-        )
-
-
-      }
-      else
-      {
-        new java.util.Random().nextBytes(data)
-      }
-//      wmsMap.cleanUp();
-      //      wmsMap.delete()
-      //      wmsMap = null;
-
-      DataBuffer dataBuffer = new DataBufferByte(data, data.size())
-
-      def transparentFlag = wmsRequest?.transparent?.equalsIgnoreCase("true")
-      try
-      {
-        if ( viewableBandCount == 1 )
-        {
-          image = Utility.convertToColorIndexModel(dataBuffer,
-                  width as Integer,
-                  height as Integer,
-                  transparentFlag)
-        }
-        else
-        {
-          WritableRaster raster = WritableRaster.createInterleavedRaster(
-                  dataBuffer,
-                  width,
-                  height,
-                  lineStride,
-                  pixelStride,
-                  bandOffsets,
-                  location)
-
-          ColorModel colorModel = omsImageSource.createColorModel(raster.sampleModel)
-
-          boolean isRasterPremultiplied = true
-          Hashtable<?, ?> properties = null
-
-          image = new BufferedImage(
-                  colorModel,
-                  raster,
-                  isRasterPremultiplied,
-                  properties
-          )
-          if ( image && transparentFlag )
-          {
-            image = TransparentFilter.fixTransparency(new TransparentFilter(), image)
-          }
-          if ( wmsRequest?.format?.equalsIgnoreCase("image/gif") )
-          {
-            image = ImageGenerator.convertRGBAToIndexed(image)
-          }
-        }
-      }
-      catch (Exception e)
-      {
-        e.printStackTrace()
-      }
-      break
-    }
-
-
-
-    return image;
-  }
-
-  def convertToIndexModel()
-  {
-
-  }
-
   BufferedImage getUnprojectedTile(Rectangle rect,
                                    String inputFile,
                                    int entry,
@@ -716,18 +339,18 @@ class WebMappingService implements ApplicationContextAware
 
   String getCapabilities(def wmsRequest, String serviceAddress)
   {
-    def layers = wmsRequest?.layers?.split(',')
-    def rasterEntries = rasterEntrySearchService.getWmsImageLayers(layers)
-    def wmsCapabilites = new WMSCapabilities(rasterEntries, serviceAddress)
+    def layerNames = wmsRequest?.layers?.split(',')
+    def layers = applicationContext.getBean("imageDataSearchService").getWmsImageLayers(layerNames)
+    def wmsCapabilites = new WMSCapabilities(layers, serviceAddress)
 
     return wmsCapabilites.getCapabilities()
   }
 
   String getKML(def wmsRequest, String serviceAddress)
   {
-    def layers = wmsRequest?.layers?.split(',')
-    def rasterEntries = rasterEntrySearchService.getWmsImageLayers(layers)
-    def wmsCapabilities = new WMSCapabilities(rasterEntries, serviceAddress)
+    def layerNames = wmsRequest?.layers?.split(',')
+    def layers = applicationContext.getBean("imageDataSearchService").getWmsImageLayers(layerNames)
+    def wmsCapabilities = new WMSCapabilities(layers, serviceAddress)
 
     return wmsCapabilities.getKML()
   }
@@ -882,48 +505,6 @@ class WebMappingService implements ApplicationContextAware
 
   }
 
-
-  def drawToGraphics(Graphics2D g2d, AffineTransform atx, def geoms)
-  {
-    try
-    {
-/*
-      println "Before"
-
-      g2d.color = Color.BLACK
-      Composite c = g2d.composite
-      g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
-      g2d.stroke = new BasicStroke(2)
-
-      if ( !(geoms instanceof List) )
-      {
-        geoms = [geoms]
-      }
-
-      for ( def g in geoms) {
-        LiteShape shp = new LiteShape(g.g, atx, false)
-        if ( g instanceof Polygon || g instanceof MultiPolygon )
-        {
-          g2d.color = Color.WHITE
-          g2d.composite = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, new Float(0.5).floatValue())
-          //g2d.fill(shp)
-          g2d.draw(shp)
-        }
-        g2d.composite = c
-        g2d.color = Color.BLACK
-        g2d.draw(shp)
-      }
-
-      println "After"
-*/
-      print geoms
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace()
-    }
-
-  }
 
   def drawLayer(def style, String layer, Map params, Date startDate, Date endDate, def wmsRequest, Graphics2D g2d)
   {
