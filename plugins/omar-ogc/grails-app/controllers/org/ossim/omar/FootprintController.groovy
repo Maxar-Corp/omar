@@ -5,7 +5,7 @@ import geoscript.filter.Color
 
 class FootprintController
 {
-
+  def grailsApplication
   def footprintService
 
   def index = {
@@ -31,9 +31,11 @@ class FootprintController
       i++
     }
 
-    layerData  = [layerData[0]]
+    layerData = [layerData[0]]
 
-    [layerData: layerData]
+    def baseLayer = grailsApplication.config.wms.base.layers[0].url
+
+    [layerData: layerData, baseLayer: baseLayer]
   }
 
   def footprints = {
