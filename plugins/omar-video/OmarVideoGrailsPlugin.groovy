@@ -1,4 +1,5 @@
-class OmarVideoGrailsPlugin {
+class OmarVideoGrailsPlugin
+{
   // the plugin version
   def version = "0.4"
   // the version or versions of Grails the plugin is designed for
@@ -65,6 +66,22 @@ OMAR plugin for video support
   def doWithSpring = {
     // TODO Implement runtime spring config (optional)
     videoInfoParser(org.ossim.omar.VideoInfoParser)
+
+    videoDataQueryParam(org.ossim.omar.VideoDataSetQuery) { bean ->
+      bean.singleton = false
+    }
+
+    videosQueryParam(org.ossim.omar.VideoDataSetQuery) { bean ->
+      bean.singleton = false
+    }
+
+    videoDataSearchService(org.ossim.omar.VideoDataSetSearchService) {
+      grailsApplication = ref("grailsApplication")
+    }
+
+    videosSearchService(org.ossim.omar.VideoDataSetSearchService) {
+      grailsApplication = ref("grailsApplication")
+    }
   }
 
   def doWithDynamicMethods = { ctx ->

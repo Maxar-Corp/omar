@@ -30,15 +30,18 @@ import org.geotools.geometry.jts.LiteShape
 import geoscript.geom.MultiPolygon
 import java.awt.Rectangle
 import joms.oms.Chain
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
 
 
-class WebMappingService
+class WebMappingService implements ApplicationContextAware
 {
   def grailsApplication
   def rasterEntrySearchService
   def videoDataSetSearchService
   def rasterChainService
 
+  ApplicationContext applicationContext
 
   public static final String SYSCALL = "syscall"
   public static final String LIBCALL = "libcall"
@@ -924,8 +927,10 @@ class WebMappingService
 
   def drawLayer(def style, String layer, Map params, Date startDate, Date endDate, def wmsRequest, Graphics2D g2d)
   {
-    def queryParams = null
-    def searchService = null
+    layer = layer.replaceFirst(layer[0], layer[0].toLowerCase())
+
+    def queryParams = applicationContext.getBean("${layer}QueryParam")
+    def searchService = applicationContext.getBean("${layer}SearchService")
 
     def width = wmsRequest.width.toInteger()
     def height = wmsRequest.height.toInteger()
@@ -942,39 +947,6 @@ class WebMappingService
       miny = bounds[1] as double
       maxx = bounds[2] as double
       maxy = bounds[3] as double
-    }
-
-    // SCOTTIE HACK - Need to make this pluggable
-    if ( layer == "Imagery" || layer == "ImageData" )
-    {
-      //queryParams = new RasterEntryQuery()
-      try
-      {
-        queryParams = Class.forName("org.ossim.omar.RasterEntryQuery", true,
-                Thread.currentThread().getContextClassLoader()).newInstance()
-      }
-      catch (Exception e)
-      { e.printStackTrace() }
-
-      searchService = rasterEntrySearchService
-
-    }
-    else if ( layer == "Videos" || layer == "VideoData" )
-    {
-      //queryParams = new VideoDataSetQuery()
-      try
-      {
-        queryParams = Class.forName("org.ossim.omar.VideoDataSetQuery", true,
-                Thread.currentThread().getContextClassLoader()).newInstance()
-      }
-      catch (Exception e)
-      { e.printStackTrace() }
-
-      searchService = videoDataSetSearchService
-    }
-    else
-    {
-      log.info("Layer ${layer} is not understood for footprint drawing.  Only layers Imagery or Videos accepted")
     }
 
     queryParams.caseInsensitiveBind(params)
