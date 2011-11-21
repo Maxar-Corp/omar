@@ -1,3 +1,4 @@
+<%@ page import="grails.converters.JSON" %>
 <html>
 <head>
   <openlayers:loadTheme/>
@@ -18,6 +19,8 @@ function init()
     var baseURL = "${createLink(controller: "footprint", action: 'footprints')}";
     var imageType = "image/gif"
 
+    var baseLayer = ${baseLayer as JSON};
+
     layers  = [
     <g:each in="${layerData}" var="currentLayer">
       new OpenLayers.Layer.WMS( "${currentLayer.name} Footprints",
@@ -27,11 +30,7 @@ function init()
               ),
     </g:each>
 
-        new OpenLayers.Layer.WMS( "Reference",
-          "${baseLayer}",
-          {layers: 'omar', format: "image/jpeg"},
-          {isBaseLayer: true, buffer: 0, transitionEffect: "resize"}
-          )
+        new OpenLayers.Layer.WMS( baseLayer.name, baseLayer.url, baseLayer.params, baseLayer.options)
     ];
 
     map.addLayers(layers);

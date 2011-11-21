@@ -33,7 +33,7 @@ class FootprintController
 
     layerData = [layerData[0]]
 
-    def baseLayer = grailsApplication.config.wms.base.layers[0].url
+    def baseLayer = grailsApplication.config.wms.base.layers[0]
 
     [layerData: layerData, baseLayer: baseLayer]
   }
