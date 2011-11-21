@@ -1,6 +1,7 @@
 package org.ossim.omar
 
 import javax.imageio.ImageIO;
+import java.awt.AlphaComposite
 
 import geoscript.filter.Filter
 import geoscript.geom.Bounds
@@ -42,9 +43,14 @@ class FootprintService
   {
     def filter = Filter.intersects("ground_geom", bounds.geometry)
 
-    filter = filter.and(new Filter(filterText))
+//    if ( filterText )
+//    {
+//      filter = filter.and(new Filter(filterText))
+//    }
 
-    return new Filter(filter)
+    // println filter.cql
+
+    return filter
   }
 
 
@@ -209,26 +215,40 @@ class FootprintService
     case "geoscript":
       def coords = wmsGetMap['bbox']?.split(',').collect { it as double }
       def bbox = new Bounds(coords[0], coords[1], coords[2], coords[3])
+      def width = wmsGetMap['width'] as int
+      def height = wmsGetMap['height'] as int
       def srs = new Projection(wmsGetMap['srs'])
+
       def mapParams = [
-              width: wmsGetMap['width'] as int,
-              height: wmsGetMap['height'] as int,
+              width: width,
+              height: height,
               type: writer,
               proj: srs,
               bounds: bbox
       ]
 
       def mapContext = new MapContext(mapParams)
-      def workspace = createWorkspace()
+      def workspace = createWorkspace(true)
       def layer = workspace[wmsGetMap['layers']]
       def style = createStyle(wmsGetMap['styles'])
       def filter = createFilter(wmsGetMap['filter'], bbox)
       def query = new Query(wmsGetMap['layers'], filter.filter)
       def mapLayer = new MapLayer(layer.fs, style.style)
 
+      query.maxFeatures = 10000
       mapLayer.query = query
       mapContext.addLayer(mapLayer)
-      mapContext.render(ostream)
+
+      def image = mapContext.renderToImage()
+
+      if ( wmsGetMap['format'] == "image/gif" && wmsGetMap['transparent']?.toLowerCase() == "true" )
+      {
+        image = ImageGenerator.convertRGBAToIndexed(image)
+      }
+
+      ImageIO.write(image, writer, ostream)
+
+      //mapContext.render(ostream)
       mapContext.close()
       workspace.close()
       break
