@@ -67,6 +67,22 @@ OMAR Raster support
   def doWithSpring = {
     // TODO Implement runtime spring config (optional)
     rasterInfoParser(org.ossim.omar.RasterInfoParser)
+
+    imageDataQueryParam(org.ossim.omar.RasterEntryQuery) { bean ->
+      bean.singleton = false
+    }
+
+    imageryQueryParam(org.ossim.omar.RasterEntryQuery) { bean ->
+      bean.singleton = false
+    }
+
+    imageDataSearchService(org.ossim.omar.RasterEntrySearchService) {
+      grailsApplication = ref("grailsApplication")
+    }
+
+    imagerySearchService(org.ossim.omar.RasterEntrySearchService) {
+      grailsApplication = ref("grailsApplication")
+    }
   }
 
   def doWithDynamicMethods = { ctx ->
