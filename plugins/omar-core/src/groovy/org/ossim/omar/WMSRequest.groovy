@@ -40,22 +40,24 @@ class WMSRequest
   String brightness
   String contrast
   String interpolation
+
   def toMap()
   {
-     return [bbox: bbox, width: width as Integer, height: height as Integer, format: format, layers: layers, srs: srs, service: service,
+    return [bbox: bbox, width: width as Integer, height: height as Integer, format: format, layers: layers, srs: srs, service: service,
             version: version, request: request, transparent: transparent, bgcolor: bgcolor, styles: styles,
             stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
             sharpen_width: sharpen_width as Double, sharpen_sigma: sharpen_sigma as Double, rotate: rotate as Double,
-            time: time, null_flip: null_flip, bands:bands, exception: exception, filter:filter,
-            quicklook: quicklook, brightness:brightness, contrast:contrast, interpolation:interpolation].sort { it.key }
+            time: time, null_flip: null_flip, bands: bands, exception: exception, filter: filter,
+            quicklook: quicklook, brightness: brightness, contrast: contrast, interpolation: interpolation].sort { it.key }
   }
+
   def customParametersToMap()
   {
-     [bands:bands,stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode:sharpen_mode,
-             sharpen_width: sharpen_width as Double, sharpen_sigma: sharpen_sigma as Double, rotate: rotate as Double,
-             time: time, null_flip: null_flip, exception: exception, filter:filter, quicklook: quicklook,
-             brightness:brightness, contrast:contrast, interpolation:interpolation].sort(){it.key}
-}
+    [bands: bands, stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
+            sharpen_width: sharpen_width as Double, sharpen_sigma: sharpen_sigma as Double, rotate: rotate as Double,
+            time: time, null_flip: null_flip, exception: exception, filter: filter, quicklook: quicklook,
+            brightness: brightness, contrast: contrast, interpolation: interpolation].sort() {it.key}
+  }
   /**
    * This is a query param to control the max results when building the criteria
    */
@@ -71,30 +73,31 @@ class WMSRequest
 
   def getBounds()
   {
-      def result = null
-      if(bbox)
+    def result = null
+    if ( bbox )
+    {
+      def splitBbox = bbox.split(",")
+      try
       {
-         def splitBbox = bbox.split(",")
-          try{
-              def minx = splitBbox[0] as Double
-              def miny = splitBbox[1] as Double
-              def maxx = splitBbox[2] as Double
-              def maxy = splitBbox[3] as Double
-              def w = width
-              def h = height
-              result = [minx:minx,
-                        miny:miny,
-                        maxx:maxx,
-                        maxy:maxy,
-                        width:w as Integer,
-                        height:h as Integer]
-          }
-          catch(Exception e)
-          {
-            result = null
-          }
+        def minx = splitBbox[0] as Double
+        def miny = splitBbox[1] as Double
+        def maxx = splitBbox[2] as Double
+        def maxy = splitBbox[3] as Double
+        def w = width
+        def h = height
+        result = [minx: minx,
+                miny: miny,
+                maxx: maxx,
+                maxy: maxy,
+                width: w as Integer,
+                height: h as Integer]
       }
-      result
+      catch (Exception e)
+      {
+        result = null
+      }
+    }
+    result
   }
 
   def getDateRange()
@@ -180,74 +183,4 @@ class WMSRequest
 
     format
   }
-  /*
-  def createDateRangeRestriction()
-  {
-    def dateColumnName = "acquisitionDate"
-    def disj = Restrictions.disjunction();
-
-    def intervals = ISO8601DateParser.parseWMSIntervals(time)
-    intervals.each{interval->
-      def startDate = new Date(interval.getStart().getMillis());
-      def endDate   = new Date(interval.getEnd().getMillis());
-      if(interval.toDurationMillis() == 0)
-      {
-        def range = null
-
-        if ( startDate && endDate )
-        {
-          disj.add(Restrictions.eq(dateColumnName, startDate))
-        }
-      }
-      else
-      {
-        disj.add(Restrictions.and(Restrictions.ge(dateColumnName, startDate),
-                                  Restrictions.le(dateColumnName, endDate)
-                                 )
-                )
-      }
-    }
-    return disj
-  }
-  def createClause()
-  {
-    def names = []
-    if(layers)
-    {
-      layers.split(',').each
-      {
-        names.add(it)
-      }
-    }
-    def  result = Restrictions.conjunction()
-    RasterEntryQuery rasterQuery = new RasterEntryQuery()
-    if ( bbox )
-    {
-      def bounds = bbox.split(',')
-      rasterQuery.aoiMinLon = bounds[0]
-      rasterQuery.aoiMinLat = bounds[1]
-      rasterQuery.aoiMaxLon = bounds[2]
-      rasterQuery.aoiMaxLat = bounds[3]
-    }
-
-    result.add(rasterQuery.createIntersection())
-    
-    def disj = Restrictions.disjunction();
-    names.each() {name ->
-      try
-      {
-        def value = java.lang.Long.valueOf(name)
-        disj.add(Restrictions.eq('id', value))
-      }
-      catch (java.lang.Exception e)
-      {
-        disj.add(Restrictions.eq('title', name))
-        disj.add(Restrictions.eq('imageId', name))
-      }
-    }
-    result.add(disj)
-    result.add(createDateRangeRestriction())
-    return result
-  }
-  */
 }
