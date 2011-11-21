@@ -27,8 +27,8 @@ function init()
               ),
     </g:each>
 
-      new OpenLayers.Layer.WMS( "Reference",
-          "http://${InetAddress.localHost.hostAddress}/tilecache/tilecache.py",
+        new OpenLayers.Layer.WMS( "Reference",
+          "${baseLayer}",
           {layers: 'omar', format: "image/jpeg"},
           {isBaseLayer: true, buffer: 0, transitionEffect: "resize"}
           )
