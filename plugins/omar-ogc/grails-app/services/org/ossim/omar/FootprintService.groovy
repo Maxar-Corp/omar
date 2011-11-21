@@ -43,12 +43,12 @@ class FootprintService
   {
     def filter = Filter.intersects("ground_geom", bounds.geometry)
 
-//    if ( filterText )
-//    {
-//      filter = filter.and(new Filter(filterText))
-//    }
+    if ( filterText )
+    {
+      filter = filter.and(new Filter(filterText))
+    }
 
-    // println filter.cql
+//    println filter.cql
 
     return filter
   }
