@@ -67,16 +67,9 @@ OMAR plugin for video support
     // TODO Implement runtime spring config (optional)
     videoInfoParser(org.ossim.omar.VideoInfoParser)
 
-    videoDataQueryParam(org.ossim.omar.VideoDataSetQuery) { bean ->
-      bean.singleton = false
-    }
 
     videosQueryParam(org.ossim.omar.VideoDataSetQuery) { bean ->
       bean.singleton = false
-    }
-
-    videoDataSearchService(org.ossim.omar.VideoDataSetSearchService) {
-      grailsApplication = ref("grailsApplication")
     }
 
     videosSearchService(org.ossim.omar.VideoDataSetSearchService) {
@@ -89,7 +82,8 @@ OMAR plugin for video support
   }
 
   def doWithApplicationContext = { applicationContext ->
-    // TODO Implement post initialization spring config (optional)
+    applicationContext.registerAlias("videosQueryParam", "videoDataQueryParam")
+    applicationContext.registerAlias("videosSearchService", "videoDataSearchService")
   }
 
   def onChange = { event ->
