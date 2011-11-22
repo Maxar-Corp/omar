@@ -16,7 +16,10 @@ class RssFeedController
     def cc = params.cc
     def be = params.be
 
-    def rasterEntries = RasterEntry.withCriteria {
+    def rssLayerName = grailsApplication.config.rss.keySet().toArray()[0]
+    def domainClass = grailsApplication.getArtefactByLogicalPropertyName("Domain", rssLayerName).newInstance()
+
+    def entries = domainClass.withCriteria {
       isNotNull("acquisitionDate")
       order("acquisitionDate", "desc")
       maxResults(10)
@@ -44,28 +47,28 @@ class RssFeedController
           title("OMAR GeoRSS Feed")
           link(createLink(plugin: 'omar-rss', controller: 'rssFeed', action: 'georss', absolute: true))
           description("Track the newest images added to OMAR")
-          for ( rasterEntry in rasterEntries )
+          for ( entry in entries )
           {
             item() {
-              title("${rasterEntry.acquisitionDate} ${rasterEntry.countryCode} ${rasterEntry.targetId} ${rasterEntry.imageId}")
-              link(createLink(controller: "mapView", params: [layers: rasterEntry.indexId], absolute: true))
+              title("${entry.acquisitionDate} ${entry.countryCode} ${entry.targetId} ${entry.imageId}")
+              link(createLink(controller: "mapView", params: [layers: entry.indexId], absolute: true))
               // Using point because polygon is not supported by ESRI ArcGIS Explorer or OpenLayers
               // The code below will support polygons when everyone else does
               // The polygons array is for adding Multi-polygons in the future.
               if ( !enablePolygon )
               {
-                def centroid = rasterEntry.groundGeom.centroid
+                def centroid = entry.groundGeom.centroid
 
                 'georss:point'("${centroid.y} ${centroid.x}")
               }
               else
               {
-                def pts = rasterEntry.groundGeom.coordinates.collect { "${it.y} ${it.x}" }.join(' ')
+                def pts = entry.groundGeom.coordinates.collect { "${it.y} ${it.x}" }.join(' ')
 
                 'georss:polygon'(pts)
               }
 
-              def bounds = rasterEntry.groundGeom.bounds
+              def bounds = entry.groundGeom.bounds
               def latFormat = "dd@mm'ss.sss\"C"
               def lonFormat = "ddd@mm'ss.sss\"C"
               def minLonDMS = coordinateConversionService.convertToDms(bounds.minLon, lonFormat, false)
@@ -73,10 +76,9 @@ class RssFeedController
               def minLaxDMS = coordinateConversionService.convertToDms(bounds.minLat, latFormat, true)
               def maxLaxDMS = coordinateConversionService.convertToDms(bounds.maxLat, latFormat, true)
 
-
               def content = g.render(plugin: 'omar-rss', template: 'rss', model: [
-                      rasterEntry: rasterEntry,
-                      properties: grailsApplication.config.rss.rasterEntry.properties,
+                      entry: entry,
+                      properties: grailsApplication.config.rss."${rssLayerName}".properties,
                       minLonDMS: minLonDMS,
                       maxLonDMS: maxLonDMS,
                       minLaxDMS: minLaxDMS,

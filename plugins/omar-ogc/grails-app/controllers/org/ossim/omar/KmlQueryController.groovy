@@ -31,61 +31,7 @@ class KmlQueryController implements InitializingBean
     catch (Exception e)
     {}
 
-    /*
-        // Google sends the BBOX with the request
-        def wmsParams = [:]
 
-        // Convert param names to lower case
-        params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
-
-        if ( wmsParams?.bbox )
-        {
-          def bounds = params.bbox?.split(',')
-          if ( bounds.size() >= 4 )
-          {
-            params.aoiMinLon = bounds[0]
-            params.aoiMinLat = bounds[1]
-            params.aoiMaxLon = bounds[2]
-            params.aoiMaxLat = bounds[3]
-          }
-        }
-
-        if ( params.max == null || Integer.parseInt(params.max) > 100 )
-        {
-          params.max = 10
-        }
-
-        def queryParams = new RasterEntryQuery()
-
-        bindData(queryParams, params)
-
-        queryParams.startDate = DateUtil.initializeDate("startDate", params)
-        queryParams.endDate = DateUtil.initializeDate("endDate", params)
-
-        if ( !params.containsKey("dateSort") || params?.dateSort == "true" )
-        {
-          params.order = 'desc'
-          params.sort = 'acquisitionDate'
-          if ( !queryParams.endDate )
-          {
-            queryParams.endDate = new Date()
-          }
-        }
-        //println params
-        log.info(queryParams.toMap())
-
-    //    println "kml  queryParams: ${queryParams.toMap()}"
-    //    println "kml  params: ${params}"
-        String kmlText = ""
-        def rasterEntries = rasterEntrySearchService.runQuery(queryParams, params)
-        if ( !rasterEntries.empty )
-        {
-          kmlText = kmlService.createKml(rasterEntries, wmsParams);
-        }
-
-        response.setHeader("Content-disposition", "attachment; filename=topImages.kml");
-        render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
-    */
   }
 
   def getImagesKml = {
@@ -94,22 +40,15 @@ class KmlQueryController implements InitializingBean
     def caseInsensitiveParams = new CaseInsensitiveMap(params)
     def wmsParams = [:]
     def kmlParams = [:]
-    def maxImages = grailsApplication.config.kml.maxImages?:10
-    def defaultImages = grailsApplication.config.kml.defaultImages?:10
+    def maxImages = grailsApplication.config.kml.maxImages ?: 10
+    def defaultImages = grailsApplication.config.kml.defaultImages ?: 10
 
-//    caseInsensitiveParams -= caseInsensitiveParams.findAll { key, value ->
-//      (!(key =~ "startDate" || key =~ "endDate") && (value == "null") || value == "")
-//    }
 
     caseInsensitiveParams?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
     wmsParams = wmsParams.subMap(wmsPersistParams)
     wmsParams.remove("elevation")
     wmsParams.remove("time")
     kmlParams = caseInsensitiveParams.subMap(kmlPersistParams)
-
-//    caseInsensitiveParams.with {
-//       println "AOI: ${aoiMinLon} ${aoiMinLat} ${aoiMaxLon} ${aoiMaxLat}"
-//     }
 
 
     def aoiSet = caseInsensitiveParams?.aoiMinLon &&
@@ -138,13 +77,6 @@ class KmlQueryController implements InitializingBean
       }
 
     }
-    else
-    {
-//      caseInsensitiveParams.with {
-//        println "Passed in AOI: ${aoiMinLon} ${aoiMinLat} ${aoiMaxLon} ${aoiMaxLat}"
-//
-//      }
-    }
 
     if ( caseInsensitiveParams.bboxToRadius == "true" )
     {
@@ -162,11 +94,11 @@ class KmlQueryController implements InitializingBean
     try
     {
 
-      if((caseInsensitiveParams?.max == null)||!(caseInsensitiveParams.max =~ /\d+/))
+      if ( (caseInsensitiveParams?.max == null) || !(caseInsensitiveParams.max =~ /\d+/) )
       {
         caseInsensitiveParams?.max = defaultImages;
       }
-      else if (Integer.parseInt(params.max) > maxImages )
+      else if ( Integer.parseInt(params.max) > maxImages )
       {
         caseInsensitiveParams?.max = maxImages
       }
@@ -208,11 +140,11 @@ class KmlQueryController implements InitializingBean
     // Convert param names to lower case
 
     //Utility.removeEmptyParams(params)
-      def aoiSet = caseInsensitiveParams?.aoiMinLon &&
-              caseInsensitiveParams?.aoiMinLat &&
-              caseInsensitiveParams?.aoiMaxLon &&
-              caseInsensitiveParams?.aoiMaxLat
-    if ( caseInsensitiveParams?.bbox &&!aoiSet)
+    def aoiSet = caseInsensitiveParams?.aoiMinLon &&
+            caseInsensitiveParams?.aoiMinLat &&
+            caseInsensitiveParams?.aoiMaxLon &&
+            caseInsensitiveParams?.aoiMaxLat
+    if ( caseInsensitiveParams?.bbox && !aoiSet )
     {
       def bounds = caseInsensitiveParams.bbox?.split(',')
       if ( bounds.size() == 4 )
@@ -225,11 +157,11 @@ class KmlQueryController implements InitializingBean
     }
     try
     {
-      if ( (caseInsensitiveParams?.max == null) || !(caseInsensitiveParams.max =~ /\d+/))
+      if ( (caseInsensitiveParams?.max == null) || !(caseInsensitiveParams.max =~ /\d+/) )
       {
         caseInsensitiveParams?.max = defaultVideos;
       }
-      else if (Integer.parseInt(params.max) > maxVideos )
+      else if ( Integer.parseInt(params.max) > maxVideos )
       {
         caseInsensitiveParams?.max = maxVideos
       }
@@ -243,11 +175,11 @@ class KmlQueryController implements InitializingBean
     {
       if ( (caseInsensitiveParams?.googleClientVersion[0] as int) > 4 )
       {
-          params.embed = true
+        params.embed = true
       }
       else
       {
-          params.embed = false
+        params.embed = false
       }
     }
     def queryParams = new org.ossim.omar.VideoDataSetQuery()
@@ -302,15 +234,6 @@ class KmlQueryController implements InitializingBean
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
   }
 
-/*
-  def topImages = {
-    String kmlText = kmlService.createTopImagesKml()
-
-    response.setHeader("Content-disposition", "attachment; filename=topImages.kml");
-    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
-  }
-*/
-
   def topVideos = {
     if ( !(params.maxvideos =~ /\d+/) )
     params.max = grailsApplication.config.kml.defaultVideos
@@ -325,14 +248,6 @@ class KmlQueryController implements InitializingBean
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
   }
 
-/*
-  def topVideos = {
-    String kmlText = kmlService.createTopVideosKml()
-
-    response.setHeader("Content-disposition", "attachment; filename=topVideos.kml");
-    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
-  }
-*/
   def imageFootprints = {
     params.days = params.imagedays
     if ( (params.imagedays == null) || !(params.imagedays =~ /\d+/) )
@@ -353,22 +268,6 @@ class KmlQueryController implements InitializingBean
     response.setHeader("Content-disposition", "attachment; filename=omar_last_${params.days}_days_video_coverage.kml");
     render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
   }
-
-  /*
-  def imageFootprints= {
-    String kmlText = kmlService.createImageFootprint()
-
-    response.setHeader("Content-disposition", "attachment; filename=ImageFootprints.kml");
-    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
-
-  }
-  def videoFootprints={
-    String kmlText = kmlService.createVideoFootprint()
-
-    response.setHeader("Content-disposition", "attachment; filename=VideoFootprints.kml");
-    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
-  }
-  */
 
   public void afterPropertiesSet()
   {
