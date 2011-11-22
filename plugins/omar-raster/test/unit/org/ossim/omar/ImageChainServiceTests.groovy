@@ -2,7 +2,7 @@ package org.ossim.omar
 
 import grails.test.*
 
-class RasterChainServiceTests extends GrailsUnitTestCase {
+class ImageChainServiceTests extends GrailsUnitTestCase {
     protected void setUp() {
         super.setUp()
     }

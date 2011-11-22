@@ -201,6 +201,27 @@ class RasterEntrySearchService implements InitializingBean
     }
   }
 
+  def findRasterEntries(def rasterIdList)
+  {
+    def rasterEntries = RasterEntry.createCriteria().list() {
+      rasterIdList.each() {name ->
+        if ( name ==~ /\d+/ )
+        {
+          eq('id', Long.valueOf(name))
+        }
+        else
+        {
+          or {
+            eq('indexId', name)
+            eq('title', name)
+          }
+        }
+      }
+    }
+
+    return rasterEntries
+  }
+
   void afterPropertiesSet()
   {
     propertyNames = grailsApplication.getDomainClass("org.ossim.omar.RasterEntry")?.properties.name
