@@ -35,7 +35,7 @@ import org.springframework.context.ApplicationContextAware
 class WebMappingService implements ApplicationContextAware
 {
   def grailsApplication
-  def rasterChainService
+  def imageChainService
 
   ApplicationContext applicationContext
 
@@ -107,7 +107,7 @@ class WebMappingService implements ApplicationContextAware
       def srcChains = []
       for ( def rasterEntry in rasterEntries )
       {
-        def chainMap = rasterChainService.createRasterEntryChain(rasterEntry, params)
+        def chainMap = imageChainService.createImageChain(rasterEntry, params)
         //chain.print()
         if ( chainMap && chainMap.chain && (chainMap.chain.getChain() != null) )
         {
@@ -198,7 +198,7 @@ class WebMappingService implements ApplicationContextAware
       {
         mosaic.connectMyInputTo(srcChain.chain)
       }
-      result.image = rasterChainService.grabOptimizedImageFromChain(mosaic, params)
+      result.image = imageChainService.grabOptimizedImageFromChain(mosaic, params)
       mosaic?.deleteChain()
       for ( def it in srcChains )
       {
@@ -225,7 +225,7 @@ class WebMappingService implements ApplicationContextAware
       //      }
       //      def chain = new joms.oms.Chain();
       //      chain.loadChainKwlString(kwlString)
-      //      result.image = rasterChainService.grabOptimizedImageFromChain(chain, params)
+      //      result.image = imageChainService.grabOptimizedImageFromChain(chain, params)
     }
 
     return result

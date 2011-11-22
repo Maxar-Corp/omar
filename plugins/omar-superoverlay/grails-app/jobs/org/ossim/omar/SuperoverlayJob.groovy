@@ -1,5 +1,5 @@
 package org.ossim.omar
-import org.ossim.omar.RasterEntry
+
 import joms.oms.Chain
 
 class SuperoverlayJob {
@@ -9,7 +9,7 @@ class SuperoverlayJob {
 //	def startDelay = 30000 // Delay for about 60 seconds before starting
 	def sessionFactory
 	def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
-	def rasterChainService
+	def imageChainService
 	def execute() {
 		def record = null
 

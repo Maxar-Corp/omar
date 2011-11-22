@@ -12,7 +12,7 @@ import java.awt.image.ColorModel
 import org.ossim.oms.image.omsImageSource
 
 class IcpService {
-	def rasterChainService
+	def imageChainService
 	
   static transactional = true
    def getPixels(Rectangle rect,
@@ -23,7 +23,7 @@ class IcpService {
 //		newParams.image_cut = "${rect.x},${rect.y},${rect.width},${rect.height}"
 		def result = null
 		def maxBands = 0
-		def rasterChain             = rasterChainService.createRasterEntryChain(rasterEntry, params).chain
+		def rasterChain             = imageChainService.createImageChain(rasterEntry, params).chain
 		def stretchMode       = params.stretch_mode?params.stretch_mode.toLowerCase():null
 		def stretchModeRegion = params.stretch_mode_region?params.stretch_mode_region.toLowerCase():null
 		//rasterChain.print()
@@ -70,7 +70,7 @@ class IcpService {
 			
 			//chipChain.print()
 			chipChain.connectMyInputTo(rasterChain)
-			result = rasterChainService.grabOptimizedImageFromChain(chipChain, params)
+			result = imageChainService.grabOptimizedImageFromChain(chipChain, params)
 			chipChain.deleteChain();
 			rasterChain.deleteChain();
 			chipChain = null
