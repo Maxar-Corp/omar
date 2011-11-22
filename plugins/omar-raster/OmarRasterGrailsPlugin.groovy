@@ -68,16 +68,13 @@ OMAR Raster support
     // TODO Implement runtime spring config (optional)
     rasterInfoParser(org.ossim.omar.RasterInfoParser)
 
-    imageDataQueryParam(org.ossim.omar.RasterEntryQuery) { bean ->
-      bean.singleton = false
-    }
+//    imageDataQueryParam(org.ossim.omar.RasterEntryQuery) { bean ->
+    //      bean.singleton = false
+    //    }
+
 
     imageryQueryParam(org.ossim.omar.RasterEntryQuery) { bean ->
       bean.singleton = false
-    }
-
-    imageDataSearchService(org.ossim.omar.RasterEntrySearchService) {
-      grailsApplication = ref("grailsApplication")
     }
 
     imagerySearchService(org.ossim.omar.RasterEntrySearchService) {
@@ -90,7 +87,9 @@ OMAR Raster support
   }
 
   def doWithApplicationContext = { applicationContext ->
-    // TODO Implement post initialization spring config (optional)
+    applicationContext.registerAlias("imageryQueryParam", "imageDataQueryParam")
+    applicationContext.registerAlias("imagerySearchService", "imageDataSearchService")
+
   }
 
   def onChange = { event ->
