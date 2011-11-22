@@ -10,11 +10,11 @@
   <g:each var="property" in="${properties}">
     <tr>
       <td colspan="2">
-        <b>${property.value}</b>: &nbsp;${rasterEntry[property.key]?.encodeAsHTML()}
+        <b>${property.value}</b>: &nbsp;${entry[property.key]?.encodeAsHTML()}
       </td>
     </tr>
   </g:each>
-  <g:set var="bounds" value="${rasterEntry?.groundGeom?.bounds}"/>
+  <g:set var="bounds" value="${entry?.groundGeom?.bounds}"/>
   <tr>
     <td colspan="2">
       <b>Minimum Latitude</b>: &nbsp;${bounds?.minLat}&nbsp;${minLatDMS}
@@ -37,10 +37,11 @@
   </tr>
   <tr>
     <td colspan="2">
-      <b>OMAR Link</b>: <a href="${createLink(controller: "mapView", params: [layers: rasterEntry?.indexId])}">...</a>
+      <b>OMAR Link</b>: <a href="${createLink(controller: "mapView", params: [layers: entry?.indexId])}">...</a>
     </td>
     <td colspan="2">
-      <b>KML Link</b>: <a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: rasterEntry?.indexId, format: "image/png", transparent: "true"])}">...</a>
+      <b>KML Link</b>: <a
+        href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: entry?.indexId, format: "image/png", transparent: "true"])}">...</a>
     </td>
   </tr>
 </table>
