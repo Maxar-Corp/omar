@@ -21,6 +21,7 @@ class DataGeneratorController {
       render(contentType:"text/plain",text:out.toString());
   }
   def rasterFileListing = {
+	/*
     def fileListing = new FileListing()
     def filter = new ImageFileFilter()
     def out = new StringBuffer()
@@ -34,8 +35,10 @@ class DataGeneratorController {
       }
     }
     render(contentType:"text/plain",text:out.toString());
+    */
   }
   def videoFileListing = {
+	/*
     def fileListing = new FileListing()
     def filter = new ImageFileFilter()
     def out = new StringBuffer()
@@ -49,5 +52,6 @@ class DataGeneratorController {
       }
     }
     render(contentType:"text/plain",text:out.toString());
+    */
   }
 }
