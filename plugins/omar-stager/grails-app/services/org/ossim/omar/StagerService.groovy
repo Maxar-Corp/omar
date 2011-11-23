@@ -1,7 +1,5 @@
 package org.ossim.omar
 
-import org.ossim.omar.Repository
-
 class StagerService
 {
 
@@ -9,14 +7,11 @@ class StagerService
 
   def runStager(Repository repository)
   {
-    if ( repository )
-    {
-      def scanStartDate = new Date()
 
-      Repository.executeUpdate("update org.ossim.omar.Repository r set scanStartDate=?, scanEndDate=null where r=?",
-              [scanStartDate, repository])
+    repository.scanStartDate = new Date()
+    repository.scanEndDate = null
+    repository.save()
 
-      StagerJob.triggerNow([baseDir: repository.baseDir])
-    }
+    StagerJob.triggerNow([baseDir: repository.baseDir])
   }
 }

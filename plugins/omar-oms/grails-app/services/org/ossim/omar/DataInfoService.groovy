@@ -10,7 +10,7 @@ class DataInfoService
   String getInfo(String filename)
   {
     def dataInfo = new DataInfo()
-    def canOpen = dataInfo.open(params.filename)
+    def canOpen = dataInfo.open(filename)
     def xml = null
     if ( canOpen )
     {
