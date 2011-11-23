@@ -3,6 +3,7 @@ s<html>
   <title>Welcome to OMAR <g:meta name="app.version"/></title>
   <meta name="layout" content="homeLayout"/>
 </head>
+
 <body class="yui-skin-sam">
 <content tag="top">
   <div align="center">
@@ -60,27 +61,28 @@ s<html>
         <td>
           <ol>
             <li>
-              <g:form name="imageView" url="[controller:'kmlQuery', action:'topImages', params:[stretch_mode:'linear_auto_min_max', stretch_mode_region:'global' ]]">
+              <g:form name="imageView"
+                      url="[controller:'kmlQuery', action:'topImages', params:[stretch_mode:'linear_auto_min_max', stretch_mode_region:'global' ]]">
                 <g:textField name="maximages" size="2" value="${grailsApplication.config.kml.defaultImages}"/>
-                <a href="javascript:submitImageView();">Most Recent Images for View</a>
+                <g:submitButton name="submit" value="Most Recent Images for View"/>
               </g:form>
             </li>
             <li>
               <g:form name="videoView" url="[controller:'kmlQuery', action:'topVideos']">
                 <g:textField name="maxvideos" size="2" value="${grailsApplication.config.kml.defaultVideos}"/>
-                <a href="javascript:submitVideoView();">Most Recent Videos for View</a>
+                <g:submitButton name="submit" value="Most Recent Videos for View"/>
               </g:form>
             </li>
             <li>
               <g:form name="imageFootprints" url="[controller:'kmlQuery', action:'imageFootprints']">
                 <g:textField name="imagedays" size="2" value="${grailsApplication.config.kml.daysCoverage}"/>
-                <a href="javascript:submitImageCoverage();">Most Recent Days Imagery Coverage</a>
+                <g:submitButton name="submit" value="Most Recent Days Imagery Coverage"/>
               </g:form>
             </li>
             <li>
               <g:form name="videoFootprints" url="[controller:'kmlQuery', action:'videoFootprints']">
                 <g:textField name="videodays" size="2" value="${grailsApplication.config.kml.daysCoverage}"/>
-                <a href="javascript:submitVideoCoverage();">Most Recent Days Video Coverage</a>
+                <g:submitButton name="submit" value="Most Recent Days Video Coverage"/>
               </g:form>
             </li>
           </ol>
@@ -94,19 +96,20 @@ s<html>
     <table>
       <tr>
         <td width="120px">
-          <img src="${resource(plugin: 'omar-rss', dir: 'images', file: 'georss-1.png')}" width="96 " height="96" alt="">
+          <img src="${resource(plugin: 'omar-rss', dir: 'images', file: 'georss-1.png')}" width="96 " height="96"
+               alt="">
         </td>
         <td>
           <ol>
             <li>
               <g:form name="ccRss" method="GET" url="[plugin: 'omar-rss', controller:'rssFeed', action:'georss']">
-                <a href="javascript:submitCcRss();">By Country Code</a>
+                <g:submitButton name="submit" value="By Country Code"/>
                 <g:textField name="cc" size="2"/>
               </g:form>
             </li>
             <li>
               <g:form name="beRss" method="GET" url="[plugin: 'omar-rss', controller:'rssFeed', action:'georss']">
-                <a href="javascript:submitBeRss();">By BE Number</a>
+                <g:submitButton name="submit" value="By BE Number"/>
                 <g:textField name="be" size="10"/>
               </g:form>
             </li>
@@ -128,7 +131,8 @@ s<html>
           <td>
             <ol>
               <li><g:link controller="userPreferences" action="editProfile" id="${user?.id}">Edit Profile</g:link></li>
-              <li><g:link controller="userPreferences" action="changePassword" id="${user?.id}">Change Password</g:link></li>
+              <li><g:link controller="userPreferences" action="changePassword"
+                          id="${user?.id}">Change Password</g:link></li>
             </ol>
           </td>
         </tr>
@@ -208,37 +212,5 @@ s<html>
   </sec:ifAllGranted>
 </content>
 
-<g:javascript>
-  function submitImageView()
-  {
-    document.imageView.submit();
-  }
-
-  function submitVideoView()
-  {
-    document.videoView.submit();
-  }
-
-  function submitImageCoverage()
-  {
-    document.imageFootprints.submit();
-  }
-
-  function submitVideoCoverage()
-  {
-    document.videoFootprints.submit();
-  }
-
-  function submitCcRss()
-  {
-    document.ccRss.submit();
-  }
-
-  function submitBeRss()
-  {
-    document.beRss.submit();
-  }
-
-</g:javascript>
 </body>
 </html>

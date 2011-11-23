@@ -186,14 +186,14 @@ wms {
 
 
     raster = [
-            url: "${grails.serverURL}/ogc/footprints",
+            url: "${grails.serverURL}/wms/footprints",
             params: [layers: (supportIE6) ? "Imagery" : "ImageData", format: (supportIE6) ? "image/gif" : "image/png"],
             name: "OMAR Imagery Coverage",
             options: [styles: "green", footprintLayers: "Imagery"]
     ]
 
     video = [
-            url: "${grails.serverURL}/ogc/footprints",
+            url: "${grails.serverURL}/wms/footprints",
             params: [layers: (supportIE6) ? "Videos" : "VideoData", format: (supportIE6) ? "image/gif" : "image/png"],
             name: "OMAR Video Coverage",
             options: [styles: "red", footprintLayers: "Videos"]
