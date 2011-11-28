@@ -31,9 +31,9 @@ OMAR stager for data discovery
   def doWithSpring = {
     // TODO Implement runtime spring config (optional)
 
-    stagerEventHandler(org.ossim.omar.StagerEventHandler) { bean ->
-      bean.scope = "prototype"
-    }
+//    stagerEventHandler(org.ossim.omar.StagerEventHandler) { bean ->
+//      bean.scope = "prototype"
+//    }
   }
 
   def doWithDynamicMethods = { ctx ->
