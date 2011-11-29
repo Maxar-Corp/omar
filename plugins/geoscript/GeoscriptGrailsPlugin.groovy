@@ -5,7 +5,7 @@ import org.geotools.map.MapLayer
 class GeoscriptGrailsPlugin
 {
   // the plugin version
-  def version = "0.5"
+  def version = "0.6"
   // the version or versions of Grails the plugin is designed for
   def grailsVersion = "1.2.2 > *"
   // the other plugins this plugin depends on
@@ -18,7 +18,7 @@ class GeoscriptGrailsPlugin
   // TODO Fill in these fields
   def author = "Scott Bortman"
   def authorEmail = "sbortman@radiantblue.com"
-  def title = "Adds Groovy Geoscript 0.95 support"
+  def title = "Adds Groovy Geoscript 0.98 support + WMS/WFS support"
   def description = '''\\
 Brief description of the plugin.
 '''
@@ -43,6 +43,10 @@ Brief description of the plugin.
       layers.each {layer ->
         switch ( layer )
         {
+        case geoscript.wms.WMSLayer:
+          MapLayer mapLayer = new org.geotools.map.WMSMapLayer(layer.wms, layer.layer)
+          context.addLayer(mapLayer)
+          break
         case geoscript.layer.Layer:
           MapLayer mapLayer = new MapLayer(layer.fs, layer.style.style)
           context.addLayer(mapLayer)
@@ -101,6 +105,11 @@ Brief description of the plugin.
     MapContext.metaClass.addLayer = { org.geotools.map.MapLayer mapLayer ->
       layers.add(mapLayer)
     }
+
+    MapContext.metaClass.addLayer = { geoscript.wms.WMSLayer wmsLayer ->
+      layers.add(wmsLayer)
+    }
+
   }
 
   def doWithApplicationContext = { applicationContext ->
