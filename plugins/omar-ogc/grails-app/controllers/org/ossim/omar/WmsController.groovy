@@ -18,6 +18,9 @@ class WmsController extends OgcController implements InitializingBean
   def scratchDir
 
   def wms = {WmsCommand cmd ->
+
+    //println params
+
     cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
     Utility.simpleCaseInsensitiveBind(cmd, params);
     if ( !cmd.validate() )
@@ -107,7 +110,8 @@ class WmsController extends OgcController implements InitializingBean
             else
             {
             */
-            ImageIO.write(mapResult.image, response.contentType?.split("/")[-1], response.outputStream)
+            def writerType =  response.contentType?.split("/")[-1]
+            ImageIO.write(mapResult.image, writerType, response.outputStream)
             response.outputStream.close()
             //}
           }
@@ -193,6 +197,7 @@ class WmsController extends OgcController implements InitializingBean
         {
           wmsLogParams.ip = request.getRemoteAddr()
         }
+
         if ( logParameters )
         {
           def urlTemp = createLink([controller: 'ogc', action: 'wms', absolute: true, params: params])
@@ -203,7 +208,8 @@ class WmsController extends OgcController implements InitializingBean
             totalTime = (endtime - starttime) / 1000.0
             url = urlTemp
           }
-          wmsLogService.logParams(wmsLogParams)
+
+          //wmsLogService.logParams(wmsLogParams)
         }
       }
       catch (java.lang.Exception e)
