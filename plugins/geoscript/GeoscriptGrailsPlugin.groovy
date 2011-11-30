@@ -1,6 +1,6 @@
 import geoscript.render.Map as MapContext
 import geoscript.geom.Bounds
-import org.geotools.map.MapLayer
+import org.geotools.map.FeatureLayer
 
 class GeoscriptGrailsPlugin
 {
@@ -44,14 +44,14 @@ Brief description of the plugin.
         switch ( layer )
         {
         case geoscript.wms.WMSLayer:
-          MapLayer mapLayer = new org.geotools.map.WMSMapLayer(layer.wms, layer.layer)
+          def mapLayer = new org.geotools.map.WMSLayer(layer.wms, layer.layer)
           context.addLayer(mapLayer)
           break
         case geoscript.layer.Layer:
-          MapLayer mapLayer = new MapLayer(layer.fs, layer.style.style)
+          def mapLayer = new FeatureLayer(layer.fs, layer.style.style)
           context.addLayer(mapLayer)
           break
-        case org.geotools.map.MapLayer:
+        case org.geotools.map.FeatureLayer:
           context.addLayer(layer)
           break
         }
@@ -102,7 +102,7 @@ Brief description of the plugin.
       setBounds(b)
     }
 
-    MapContext.metaClass.addLayer = { org.geotools.map.MapLayer mapLayer ->
+    MapContext.metaClass.addLayer = { org.geotools.map.FeatureLayer mapLayer ->
       layers.add(mapLayer)
     }
 
