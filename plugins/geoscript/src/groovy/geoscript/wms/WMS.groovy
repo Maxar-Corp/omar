@@ -6,6 +6,7 @@ import org.geotools.data.ows.WMSCapabilities
 import org.geotools.data.wms.WebMapServer
 import javax.imageio.ImageIO
 import java.awt.image.BufferedImage
+import org.apache.commons.collections.map.CaseInsensitiveMap
 
 /**
  * A Web Map Server (WMS) module
@@ -84,9 +85,11 @@ class WMS
    */
   BufferedImage getMap(Map options)
   {
+    options = new CaseInsensitiveMap(options)
+
     def mapRequest = wms.createGetMapRequest()
-    int w = options.get('width', 512)
-    int h = options.get('height', 512)
+    int w = options.get('width', 512) as int
+    int h = options.get('height', 512) as int
     double minX
     double minY
     double maxX
@@ -116,8 +119,8 @@ class WMS
     }
     String format = options.get("format", "image/png")
     String srs = options.get('srs', "EPSG:4326")
-    boolean isTransprent = options.get("transparent", true)
-    List layers = options.get("layers")
+    boolean isTransprent = options.get("transparent", "true").toBoolean()
+    List layers = options.get("layers")?.split(',')
 
     mapRequest.setDimensions(w, h)
     mapRequest.SRS = srs
@@ -129,7 +132,30 @@ class WMS
     layers.each {layer ->
       mapRequest.addLayer(layer.toString(), "")
     }
+
+    def vendorParamNames = options.keySet() - [
+            'width', 'height', 'bbox', 'minX', 'minY', 'maxX', 'maxY', 'transparent', 'srs', 'format', 'crs', 'time',
+            'elevation', 'service', 'version', 'request', 'layers', 'styles']
+
+    vendorParamNames?.each { vendorParamName ->
+      def vendorParamValue = options[vendorParamName]
+      if ( vendorParamValue )
+      {
+        //println "${vendorParamName}: ${vendorParamValue}"
+        mapRequest.setVendorSpecificParameter(vendorParamName, vendorParamValue)
+      }
+      else
+      {
+        println "${vendorParamName} is null"
+      }
+    }
+
+    //println mapRequest.finalURL
+
     def response = wms.issueRequest(mapRequest)
+
+    //println response.contentType
+
     ImageIO.read(response.inputStream)
   }
 
