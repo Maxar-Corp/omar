@@ -14,7 +14,7 @@ class SuperOverlayService implements InitializingBean{
 
     def metersPerDegree
     def grailsApplication
-    def kmlService
+    def rasterKmlService
     def webMappingService
     def tileSize = [width:256, height:256]
     def lodValues = [min:128, max:2000]
@@ -64,7 +64,7 @@ class SuperOverlayService implements InitializingBean{
         kmlbuilder.encoding = "UTF-8"
         def newParams = new HashMap(params)
         def tileBounds = tileBound(params, fullResBound)
-        def rasterEntryDescription = kmlService.createImageKmlDescription(rasterEntry)
+        def rasterEntryDescription = rasterKmlService.createImageKmlDescription(rasterEntry)
         newParams.level = 0
         newParams.row   = 0
         newParams.col   = 0
@@ -73,7 +73,7 @@ class SuperOverlayService implements InitializingBean{
           mkp.xmlDeclaration()
           kml("xmlns": "http://earth.google.com/kml/2.1") {
             Document() {
-              name("${kmlService.createName(rasterEntry)}")
+              name("${rasterKmlService.createName(rasterEntry)}")
               Snippet()
               description{mkp.yieldUnescaped("<![CDATA[${rasterEntryDescription}]]>")}
               Style(){
