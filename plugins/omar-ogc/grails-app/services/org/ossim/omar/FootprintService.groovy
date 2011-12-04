@@ -7,7 +7,9 @@ import geoscript.filter.Filter
 import geoscript.geom.Bounds
 import geoscript.layer.Layer
 import geoscript.layer.Shapefile
-import geoscript.render.Map as MapContext
+import geoscript.render.Map as GeoscriptMap
+import geoscript.render.Draw
+
 import geoscript.proj.Projection
 import geoscript.style.Fill
 import geoscript.style.Stroke
@@ -19,7 +21,7 @@ import org.geotools.data.Query
 import org.geotools.jdbc.JDBCFeatureSource
 import org.geotools.data.postgis.PostgisNGDataStoreFactory
 import org.geotools.data.store.ContentEntry
-import org.geotools.map.MapLayer
+import org.geotools.map.FeatureLayer
 
 import org.geotools.factory.CommonFactoryFinder
 
@@ -212,6 +214,38 @@ class FootprintService
 
     switch ( flag )
     {
+    case "foo":
+      def start = System.currentTimeMillis()
+      def workspace = new PostGIS([user: 'postgres', password: 'postgres'], 'omardb-1.8.12-prod')
+      def srs = new Projection(wmsGetMap['srs'])
+      def coords = wmsGetMap['bbox'].split(',').collect { it as double }
+      def bbox = new Bounds(coords[0], coords[1], coords[2], coords[3], srs)
+      def inputLayer = workspace[wmsGetMap['layers']]
+      def schema = inputLayer.schema
+      def filter = new Filter(wmsGetMap['filter']).and(Filter.intersects(schema.geom.name, bbox.geometry))
+      def cursor = inputLayer.getCursor(filter)
+      def outputLayer = new Layer(Layer.newname(), schema)
+      def style = createStyle(wmsGetMap['styles'])
+      def count = 0
+
+      while ( cursor.hasNext() )
+      {
+        def feature = cursor.next()
+
+        outputLayer.add(feature)
+        count++
+      }
+
+      cursor.close()
+      outputLayer.style = style
+      Draw.draw(outputLayer, bbox, [wmsGetMap['width'] as int, wmsGetMap['height'] as int], ostream, writer)
+      workspace.close()
+
+      def stop = System.currentTimeMillis()
+
+//      println "count: ${count}"
+//      println "elapsed: ${stop - start}ms"
+      break
     case "geoscript":
       def coords = wmsGetMap['bbox']?.split(',').collect { it as double }
       def bbox = new Bounds(coords[0], coords[1], coords[2], coords[3])
@@ -227,13 +261,13 @@ class FootprintService
               bounds: bbox
       ]
 
-      def mapContext = new MapContext(mapParams)
+      def mapContext = new GeoscriptMap(mapParams)
       def workspace = createWorkspace(true)
       def layer = workspace[wmsGetMap['layers']]
       def style = createStyle(wmsGetMap['styles'])
       def filter = createFilter(wmsGetMap['filter'], bbox)
       def query = new Query(wmsGetMap['layers'], filter.filter)
-      def mapLayer = new MapLayer(layer.fs, style.style)
+      def mapLayer = new FeatureLayer(layer.fs, style.style)
 
       query.maxFeatures = 10000
       mapLayer.query = query
