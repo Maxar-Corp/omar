@@ -18,6 +18,7 @@
 
       <g:if test='${emailSent}'>
         <br/>
+
         <h1>Account created:</h1>
         <g:message code='spring.security.ui.register.sent'/>
       </g:if>
@@ -46,7 +47,7 @@
               <td valign="top" class="value ${hasErrors(bean: command, field: 'username', 'errors')}">
 
                 <g:textField name='username' labelCode='user.username.label' bean="${command}"
-                    size='40' labelCodeDefault='Username' value="${command.username}"/>
+                             size='40' labelCodeDefault='Username' value="${command.username}"/>
               </td>
             </tr>
 
@@ -57,7 +58,7 @@
               <td valign="top" class="value ${hasErrors(bean: command, field: 'userRealName', 'errors')}">
 
                 <g:textField name='userRealName' labelCode='user.userRealName.label' bean="${command}"
-                    size='40' labelCodeDefault='Full Name' value="${command.userRealName}"/>
+                             size='40' labelCodeDefault='Full Name' value="${command.userRealName}"/>
               </td>
             </tr>
 
@@ -67,7 +68,7 @@
               </td>
               <td valign="top" class="value ${hasErrors(bean: command, field: 'organization', 'errors')}">
                 <g:textField name='organization' bean="${command}" value="${command.organization}"
-                    size='40' labelCode='user.organization.label' labelCodeDefault='Organization'/>
+                             size='40' labelCode='user.organization.label' labelCodeDefault='Organization'/>
               </td>
             </tr>
 
@@ -78,7 +79,7 @@
               <td valign="top" class="value ${hasErrors(bean: command, field: 'phoneNumber', 'errors')}">
 
                 <g:textField name='phoneNumber' labelCode='user.phoneNumber.label' bean="${command}"
-                    size='40' labelCodeDefault='Phone Number' value="${command.phoneNumber}"/>
+                             size='40' labelCodeDefault='Phone Number' value="${command.phoneNumber}"/>
               </td>
             </tr>
 
@@ -88,7 +89,17 @@
               </td>
               <td valign="top" class="value ${hasErrors(bean: command, field: 'email', 'errors')}">
                 <g:textField name='email' bean="${command}" value="${command.email}"
-                    size='40' labelCode='user.email.label' labelCodeDefault='E-mail'/>
+                             size='40' labelCode='user.email.label' labelCodeDefault='E-mail'/>
+              </td>
+            </tr>
+
+            <tr class="prop">
+              <td valign="top" class="name">
+                <label for="email2"><g:message code="user.email2.label" default="E-mail (again)"/></label>
+              </td>
+              <td valign="top" class="value ${hasErrors(bean: command, field: 'email2', 'errors')}">
+                <g:textField name='email2' labelCode='user.email2.label' bean="${command}"
+                                 size='40' labelCodeDefault='E-mail (again)' value="${command.email2}"/>
               </td>
             </tr>
 
@@ -99,7 +110,7 @@
               </td>
               <td valign="top" class="value ${hasErrors(bean: command, field: 'password', 'errors')}">
                 <g:passwordField name='password' labelCode='user.password.label' bean="${command}"
-                    size='40' labelCodeDefault='Password' value="${command.password}"/>
+                                 size='40' labelCodeDefault='Password' value="${command.password}"/>
               </td>
             </tr>
 
@@ -109,7 +120,7 @@
               </td>
               <td valign="top" class="value ${hasErrors(bean: command, field: 'password2', 'errors')}">
                 <g:passwordField name='password2' labelCode='user.password2.label' bean="${command}"
-                    size='40' labelCodeDefault='Password (again)' value="${command.password2}"/>
+                                 size='40' labelCodeDefault='Password (again)' value="${command.password2}"/>
               </td>
             </tr>
 
@@ -120,7 +131,8 @@
 
         <div class="buttons">
           <span class="button">
-            <g:submitButton name='Create' class="save" value='${message(code: 'spring.security.ui.register.submit', default: 'Create')}'/>
+            <g:submitButton name='Create' class="save"
+                            value='${message(code: 'spring.security.ui.register.submit', default: 'Create')}'/>
           </span>
         </div>
 
