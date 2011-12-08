@@ -289,6 +289,14 @@ class RegisterController extends AbstractS2UiController
     }
   }
 
+  static final email2Validator = { value, command ->
+    if ( command.email != command.email2 )
+    {
+      return 'registerCommand.email.error.mismatch'
+    }
+  }
+
+
   private def saveUser(def user)
   {
     def flag = grailsApplication.config.login.registration.createLdapUser
@@ -314,7 +322,9 @@ class RegisterCommand
   String userRealName
   String organization
   String phoneNumber
+
   String email
+  String email2
 
   String password
   String password2
@@ -338,7 +348,10 @@ class RegisterCommand
     userRealName blank: false
     email blank: false, email: true
     password blank: false, minSize: 8, maxSize: 64, validator: RegisterController.passwordValidator
+
     password2 validator: RegisterController.password2Validator
+    email2 validator: RegisterController.email2Validator
+
   }
 }
 

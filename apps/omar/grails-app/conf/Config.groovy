@@ -497,6 +497,12 @@ grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.ossim.oma
 grails.plugins.springsecurity.authority.className = 'org.ossim.omar.SecRole'
 grails.plugins.springsecurity.requestMap.className = 'org.ossim.omar.Requestmap'
 grails.plugins.springsecurity.securityConfigType = 'Requestmap'
+grails.plugins.springsecurity.errors.login.fail = 'Sorry, we were not able to find a user with that username and password.'
+grails.plugins.springsecurity.errors.login.expired = 'Sorry, your login has expired.  Please contact an Administrator.'
+grails.plugins.springsecurity.errors.login.passwordExpired = 'Sorry, your password has expired.  Please contact an Administrator.'
+grails.plugins.springsecurity.errors.login.disabled = 'Sorry, your account has been disabled.  Please contact an Administrator.'
+grails.plugins.springsecurity.errors.login.locked = 'Sorry, your account has been locked.  Please contact an Administrator.'
+
 // Values can be
 // MD2, MD5, SHA-1, SHA-256, SHA-384, SHA-512
 //
