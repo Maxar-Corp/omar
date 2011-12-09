@@ -121,14 +121,14 @@
         </tr>
         <tr id="mapRow">
           <td id="mapColumn" colspan=3>
-            <div id="map"></div>
+            <div id="map"><div id = "compassMap" style = "position: absolute; z-index: 1000"></div></div>
           </td>
         </tr>
 
         <tr>
-          <td width=33.3%><div id="ddMouseMapCtr" style="font-size:14px">&nbsp;</div></td>
-          <td width=33.3%><div id="dmsMouseMapCtr" style="font-size:14px">&nbsp;</div></td>
-          <td width=33.3%><div id="mgrsMouseMapCtr" style="font-size:14px">&nbsp;</div></td>
+          <td width=33.3%><div id="ddMouseMapCtr" style="font-size:14px; color: #00CCFF"">&nbsp;</div></td>
+          <td width=33.3%><div id="dmsMouseMapCtr" style="font-size:14px; color: #00CCFF"">&nbsp;</div></td>
+          <td width=33.3%><div id="mgrsMouseMapCtr" style="font-size:14px; color: #00CCFF"">&nbsp;</div></td>
         </tr>
 
       </table>
