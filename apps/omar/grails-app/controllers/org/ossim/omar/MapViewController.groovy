@@ -230,4 +230,9 @@ class MapViewController implements InitializingBean
     [width: rasterEntry?.width, height: rasterEntry?.height, numRLevels: numRLevels, rasterEntry: rasterEntry]
 
   }
+
+  def shareLink =
+  {
+      render(view: 'imageLink')
+  }
 }
