@@ -1,0 +1,24 @@
+/*  FILTER  */
+
+.filter {
+    background: #fff url(../images/skin/shadow.jpg) bottom repeat-x;
+    border: 1px solid #ccc;
+    color: #666;
+    font-size: 10px;
+    overflow: hidden;
+    padding: 3px 3px;
+	margin: 0 0 5 0;
+    font-weight: bold;
+}
+
+.filterBusy {
+	padding-left: 5px;
+}
+
+.filterError {
+    background: #fff3f3 url(../images/skin/exclamation.png) 8px no-repeat;
+    border: 1px solid red;
+    color: #cc0000;
+    margin: 10px 0 5px 0;
+    padding: 5px 5px 5px 30px
+}
