@@ -51,3 +51,5 @@ grails.project.dependency.resolution = {
     // runtime 'mysql:mysql-connector-java:5.1.13'
   }
 }
+
+grails.plugin.location.'omar-table-filter'='../../plugins/omar-table-filter'

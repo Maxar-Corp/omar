@@ -10,7 +10,7 @@
 
   <div class="nav">
     <span class="menuButton"><a class="home"
-        href="${createLink(uri: '/')}">Home</a></span>
+                                href="${createLink(uri: '/')}">Home</a></span>
   </div>
 
   <div class="body">
@@ -34,6 +34,7 @@
 
         <div class="sign-in">
           <br/>
+
           <h1>
             <g:message code='spring.security.ui.resetPassword.description'/>
           </h1>
@@ -48,9 +49,9 @@
               <td valign="top"
                   class="value ${hasErrors(bean: command, field: 'password', 'errors')}">
                 <g:passwordField name='password'
-                    labelCode='changePasswordCommand.password.label'
-                    bean="${command}" size='40' labelCodeDefault='Password'
-                    value="${command.password}"/>
+                                 labelCode='changePasswordCommand.password.label'
+                                 bean="${command}" size='40' labelCodeDefault='Password'
+                                 value="${command.password}"/>
               </td>
             </tr>
 
@@ -62,9 +63,9 @@
               <td valign="top"
                   class="value ${hasErrors(bean: command, field: 'password2', 'errors')}">
                 <g:passwordField name='password2'
-                    labelCode='changePasswordCommand.password2.label'
-                    bean="${command}" size='40' labelCodeDefault='Password (again)'
-                    value="${command.password2}"/>
+                                 labelCode='changePasswordCommand.password2.label'
+                                 bean="${command}" size='40' labelCodeDefault='Password (again)'
+                                 value="${command.password2}"/>
               </td>
             </tr>
 
@@ -72,12 +73,16 @@
 
         </div>
 
-        <div class="buttons">
-          <span class="button"><g:actionSubmit class="save" action="changePassword" value="${message(code: 'default.button.update.label', default: 'Update')}"/></span>
-        </div>
-
       </g:form>
     </div>
+
+    <div class="buttons">
+      <span class="button">
+        <g:actionSubmit class="save" action="changePassword"
+                        value="${message(code: 'default.button.update.label', default: 'Update')}"/>
+      </span>
+    </div>
+
   </div>
 </content>
 </body>
