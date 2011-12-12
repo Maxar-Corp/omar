@@ -1,50 +1,62 @@
+<%@ page import="org.ossim.omar.Requestmap" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="generatedViews"/>
-  <title>OMAR: Create Permission</title>
+  <g:set var="entityName" value="${message(code: 'requestmap.label', default: 'Requestmap')}"/>
+  <title><g:message code="default.create.label" args="[entityName]"/></title>
 </head>
+
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link class="list" action="list">Permission List</g:link></span>
+    <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a>
+    </span>
+    <span class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label"
+                                                                           args="[entityName]"/></g:link></span>
   </div>
+
   <div class="body">
-    <h1>OMAR: Create Permission</h1>
+    <h1><g:message code="default.create.label" args="[entityName]"/></h1>
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
-    <g:hasErrors bean="${requestmap}">
+    <g:hasErrors bean="${requestmapInstance}">
       <div class="errors">
-        <g:renderErrors bean="${requestmap}" as="list"/>
+        <g:renderErrors bean="${requestmapInstance}" as="list"/>
       </div>
     </g:hasErrors>
-    <g:form action="save" method="post">
+    <g:form action="save">
       <div class="dialog">
         <table>
           <tbody>
+
           <tr class="prop">
             <td valign="top" class="name">
-              <label for="url">URL:</label>
+              <label for="url"><g:message code="requestmap.url.label" default="Url"/></label>
             </td>
-            <td valign="top" class="value ${hasErrors(bean: requestmap, field: 'url', 'errors')}">
-              <input type="text" id="url" name="url" value="${requestmap?.url?.encodeAsHTML()}"/>
+            <td valign="top" class="value ${hasErrors(bean: requestmapInstance, field: 'url', 'errors')}">
+              <g:textField name="url" value="${requestmapInstance?.url}"/>
             </td>
           </tr>
+
           <tr class="prop">
             <td valign="top" class="name">
-              <label for="configAttribute">Role (comma-delimited):</label>
+              <label for="configAttribute"><g:message code="requestmap.configAttribute.label"
+                                                      default="Config Attribute"/></label>
             </td>
-            <td valign="top" class="value ${hasErrors(bean: requestmap, field: 'configAttribute', 'errors')}">
-              <input type="text" id="configAttribute" name="configAttribute" value="${requestmap?.configAttribute?.encodeAsHTML()}"/>
+            <td valign="top" class="value ${hasErrors(bean: requestmapInstance, field: 'configAttribute', 'errors')}">
+              <g:textField name="configAttribute" value="${requestmapInstance?.configAttribute}"/>
             </td>
           </tr>
+
           </tbody>
         </table>
       </div>
+
       <div class="buttons">
-        <span class="button"><input class="save" type="submit" value="Create"/></span>
+        <span class="button"><g:submitButton name="create" class="save"
+                                             value="${message(code: 'default.button.create.label', default: 'Create')}"/></span>
       </div>
     </g:form>
   </div>
