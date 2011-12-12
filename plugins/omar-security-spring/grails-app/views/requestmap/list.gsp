@@ -3,55 +3,33 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="layout" content="generatedViews"/>
-  <title>OMAR: Permission List</title>
+  <g:set var="entityName" value="${message(code: 'requestmap.label', default: 'Requestmap')}"/>
+  <title><g:message code="default.list.label" args="[entityName]"/></title>
+
+  <g:javascript contextPath="" src="prototype/prototype.js"/>
+  <g:javascript contextPath="" src="application.js"/>
+
 </head>
+
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link class="create" action="create">Create Permission</g:link></span>
+    <span class="menuButton"><a class="home" href="${createLink(uri: '/')}">
+      <g:message code="default.home.label"/></a>
+    </span>
+    <span class="menuButton"><g:link class="create" action="create">
+      <g:message code="default.new.label" args="[entityName]"/></g:link>
+    </span>
   </div>
+
   <div class="body">
-    <h1>OMAR: Permission List</h1>
+    <h1><g:message code="default.list.label" args="[entityName]"/></h1>
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
-    <div class="list">
-      <table>
-        <thead>
-        <tr>
-          <g:sortableColumn property="id" title="Id"/>
-          <g:sortableColumn property="url" title="URL"/>
-          <g:sortableColumn property="configAttribute" title="Roles"/>
-        </tr>
-        </thead>
-        <tbody>
-        <g:each in="${requestmapList}" status="i" var="requestmap">
-          <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-            <td><g:link action="show" id="${requestmap.id}">${requestmap.id}</g:link></td>
-            <td>${requestmap.url?.encodeAsHTML()}</td>
-            <%
-              def names = []
-              org.springframework.util.StringUtils.commaDelimitedListToStringArray(requestmap.configAttribute).each { role ->
-                if ( role.startsWith('ROLE_') )
-                {
-                  names << role.substring(5).toLowerCase().encodeAsHTML()
-                }
-                else
-                {
-                  names << role.encodeAsHTML()
-                }
-              }
-            %>
-            <td>${names.join(',')}</td>
-          </tr>
-        </g:each>
-        </tbody>
-      </table>
-    </div>
-    <div class="paginateButtons">
-      <g:paginate total="${Requestmap.count()}"/>
-    </div>
+    <filter:dynamic bean="org.ossim.omar.Requestmap" success="requestmapList"
+                    params="${[plugin: 'omar-security-spring']}"/>
+    <g:render template="list"/>
   </div>
 </content>
 </body>
