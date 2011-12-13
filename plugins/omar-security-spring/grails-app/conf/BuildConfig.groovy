@@ -38,7 +38,7 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    compile ':spring-security-core:1.2.4'
+    compile ':spring-security-core:1.2.6'
     compile ':spring-security-ldap:1.0.5'
     compile ':mail:1.0-SNAPSHOT'
 
