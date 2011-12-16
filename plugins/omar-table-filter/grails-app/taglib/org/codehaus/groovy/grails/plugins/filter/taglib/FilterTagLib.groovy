@@ -126,7 +126,7 @@ class FilterTagLib
       out << "<option value='${it}' "
       out << "fieldtype='${FilterUtils.resolveFieldType(domainClass.clazz, it)}'>"
 //      out << messageSource.getMessage("${prefix}.${it}", null, "${prefix}.${it}", locale)
-      out << it
+      out << domainClass.getPropertyByName(it).naturalName
       out << "</option>"
 
     }
