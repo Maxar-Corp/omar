@@ -290,6 +290,8 @@ class FilterRemoteTagLib
 
     //set bean used on filter controller to determine the domain class
     linkParams.put("bean", attrs.bean)
+    
+    linkParams.put("max", params.max ?: 10)
 
     writer << "<th "
     // process remaining attributes
