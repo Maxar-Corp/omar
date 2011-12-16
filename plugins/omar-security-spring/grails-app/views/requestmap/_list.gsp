@@ -14,11 +14,11 @@
 
         <filter:sortableColumn bean="org.ossim.omar.Requestmap" update="requestmapList" property="id"
                                title="${message(code: 'requestmap.id.label', default: 'Id')}"
-                               params="${[plugin: 'omar-security-spring']}"/>
+                               params="${[plugin: 'omar-security-spring'] }"/>
 
         <filter:sortableColumn bean="org.ossim.omar.Requestmap" update="requestmapList" property="url"
                                title="${message(code: 'requestmap.url.label', default: 'URL')}"
-                               params="${[plugin: 'omar-security-spring']}"/>
+                               params="${[plugin: 'omar-security-spring'] }"/>
 
         <filter:sortableColumn bean="org.ossim.omar.Requestmap" update="requestmapList" property="configAttribute"
                                title="${message(code: 'requestmap.configAttribute.label', default: 'Config Attribute')}"
