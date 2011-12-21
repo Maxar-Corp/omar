@@ -10,6 +10,7 @@ class SecUserController
   }
 
   def list = {
+	if (!params.max) { params.max = 100 }
     params.max = Math.min(params.max ? params.int('max') : 10, 100)
     [secUserInstanceList: SecUser.list(params), secUserInstanceTotal: SecUser.count()]
   }
