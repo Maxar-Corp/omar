@@ -456,6 +456,7 @@ class WmsController extends OgcController implements InitializingBean
         response.outputStream.close()
       }
     }
+    return null
   }
 
   public void afterPropertiesSet()
