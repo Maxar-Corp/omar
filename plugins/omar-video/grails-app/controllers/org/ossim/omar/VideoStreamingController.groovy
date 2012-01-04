@@ -10,7 +10,7 @@ class VideoStreamingController implements InitializingBean
 
   def flashDirRoot
   def flashUrlRoot
-  def kmlService
+  def videoKmlService
 
   def show = {
     def flvUrl
@@ -128,7 +128,7 @@ class VideoStreamingController implements InitializingBean
 
     File mpegFile = videoDataSet.mainFile.name as File
 
-    def kml = kmlService.createVideosKml(videoDataSetList, params)
+    def kml = videoKmlService.createVideosKml(videoDataSetList, params)
 
     response.setHeader("Content-disposition", "attachment; filename=${FilenameUtils.getBaseName(mpegFile.name)}.kml")
     render(contentType: "application/vnd.google-earth.kml+xml", text: "${kml}", encoding: "UTF-8")
