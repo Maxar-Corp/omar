@@ -13,7 +13,6 @@ import org.hibernate.FetchMode
 import com.vividsolutions.jts.geom.Geometry
 import org.hibernate.ScrollableResults
 import org.springframework.beans.factory.InitializingBean
-import javax.media.j3d.Geometry
 
 class VideoDataSetSearchService implements InitializingBean
 {
