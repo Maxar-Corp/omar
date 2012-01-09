@@ -30,4 +30,4 @@ done
 
 # install the mail plugin into OMAR
 cd $OMAR_HOME
-grails install-plugin plugins/grails-mail-1.0-SNAPSHOT.zip
+#grails install-plugin plugins/grails-mail-1.0-SNAPSHOT.zip
