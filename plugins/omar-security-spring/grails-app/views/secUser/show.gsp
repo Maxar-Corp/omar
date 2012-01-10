@@ -24,7 +24,6 @@
     <div class="dialog">
       <table>
         <tbody>
-
         <tr class="prop">
           <td valign="top" class="name"><g:message code="secUser.id.label" default="Id"/></td>
 
@@ -42,10 +41,12 @@
         <tr class="prop">
           <td valign="top" class="name"><g:message code="secUser.password.label" default="Password"/></td>
 
-          <td valign="top" class="value">${fieldValue(bean: secUserInstance, field: "password")}</td>
+            <!--
+            <td valign="top" class="value">${fieldValue(bean: secUserInstance, field: "password")}</td>
+            -->
+            <td valign="top" class="value">********************</td>
 
         </tr>
-
         <tr class="prop">
           <td valign="top" class="name"><g:message code="secUser.userRealName.label" default="User Real Name"/></td>
 
