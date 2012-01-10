@@ -26,19 +26,19 @@
       </div>
     </g:hasErrors>
 
-    <div class="dialog">
 
-      <g:form action='changePassword' name='changePasswordForm' autocomplete='off'>
+    <g:form action='changePassword' name='changePasswordForm' autocomplete='off'>
 
-        <g:hiddenField name='username' value="${command.username}"/>
+      <g:hiddenField name='username' value="${command.username}"/>
 
-        <div class="sign-in">
-          <br/>
+      <div class="sign-in">
+        <br/>
 
-          <h1>
-            <g:message code='spring.security.ui.resetPassword.description'/>
-          </h1>
+        <h1>
+          <g:message code='spring.security.ui.resetPassword.description'/>
+        </h1>
 
+        <div class="dialog">
           <table>
 
             <tr class="prop">
@@ -70,18 +70,18 @@
             </tr>
 
           </table>
-
         </div>
 
-      </g:form>
-    </div>
+        <div class="buttons">
+          <span class="button">
+            <g:actionSubmit class="save" action="changePassword"
+                            value="${message(code: 'default.button.update.label', default: 'Update')}"/>
+          </span>
+        </div>
 
-    <div class="buttons">
-      <span class="button">
-        <g:actionSubmit class="save" action="changePassword"
-                        value="${message(code: 'default.button.update.label', default: 'Update')}"/>
-      </span>
-    </div>
+      </div>
+
+    </g:form>
 
   </div>
 </content>
