@@ -104,7 +104,7 @@
     <div class="bd">
       <ul class="first-of-type">
 
-        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMARâ„¢ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMARâ„¢ Home</a>
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
         </li>
 
         <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
