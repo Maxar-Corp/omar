@@ -54,6 +54,7 @@ public class DbAppender extends org.apache.log4j.AppenderSkeleton
     protected String tableName = ""
     def sql = null
     def modifyParametersClosure = null
+    def params = [:]
   void append(org.apache.log4j.spi.LoggingEvent event)
   {
     if(!sql)
@@ -61,9 +62,13 @@ public class DbAppender extends org.apache.log4j.AppenderSkeleton
       sql = org.codehaus.groovy.grails.commons.ApplicationHolder.application.mainContext.getBean("sql")
       initializeMappings()
     }
-    def params = (grails.converters.JSON.parse(event.message) as Map)
+    params = (grails.converters.JSON.parse(event.message) as Map)
+
       castFieldList?.each{  castField->
-            params."${castField.field}" = castField.cast(params."${castField.field}")
+          if(castField.cast&&castField.field)
+          {
+              params."${castField.field}" = castField.cast(params."${castField.field}")
+          }
       }
    //   dateFieldList?.each{field->
 
@@ -72,7 +77,7 @@ public class DbAppender extends org.apache.log4j.AppenderSkeleton
     //   }
     if(modifyParametersClosure)
     {
-      //params = modifyParametersClosure(params)
+      params = modifyParametersClosure(params)
     }
     try
     {
@@ -115,25 +120,39 @@ public class DbAppender extends org.apache.log4j.AppenderSkeleton
       Connection conn = sql.createConnection()
       DatabaseMetaData meta = conn?.getMetaData();
       def rsColumns = meta?.getColumns(null, null, "wms_log", null);
+
       while (rsColumns?.next())
       {
-        switch(rsColumns.getString("TYPE_NAME").toLowerCase())
-        {
-          case "timestamp":
-            def columnName =  rsColumns.getString("COLUMN_NAME").toLowerCase()
-            columnName = columnName.replaceAll("_[a-zA-Z]", {value->value[1].toUpperCase()})
-            dateFieldList += [columnName]
-            castFieldList << [field:columnName, cast:{value->
-                                      def dateTime = org.ossim.omar.ISO8601DateParser.parseDateTime(params."${field}")
-                                      new java.sql.Timestamp(dateTime.millis)
-                                      }]
-            break
-            default:
-               // println rsColumns.getString("COLUMN_NAME").toLowerCase()+ ", " +
-               //         rsColumns.getString("TYPE_NAME").toLowerCase()
-
+          def columnName =  rsColumns.getString("COLUMN_NAME").toLowerCase()
+          columnName = columnName.replaceAll("_[a-zA-Z]", {value->value[1].toUpperCase()})
+          switch(rsColumns.getString("TYPE_NAME").toLowerCase())
+          {
+              case "timestamp":
+                dateFieldList += [columnName]
+                castFieldList << [field:columnName, cast:{value->
+                                          def dateTime = org.ossim.omar.ISO8601DateParser.parseDateTime(params."${columnName}")
+                                          new java.sql.Timestamp(dateTime.millis)
+                                          }]
                 break
-        }
+              case "int8":
+                   castFieldList << [field:columnName, cast:{value->
+                                                              Long.parseLong(value)
+                                                             }]
+                   break;
+              case "float8":
+                  castFieldList <<  [field:columnName, cast:{value->
+                                                             if(value instanceof String)
+                                                                    Double.parseDouble(value)
+                                                             else value
+                                                             }]
+                  break;
+              default:
+                //castFieldList << [field:columnName, cast:{value->value}]
+                //    println rsColumns.getString("COLUMN_NAME").toLowerCase()+ ", " +
+                //            rsColumns.getString("TYPE_NAME").toLowerCase()
+
+                    break
+          }
       }
       conn?.close()
     }

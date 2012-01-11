@@ -107,7 +107,8 @@ class WmsController extends OgcController implements InitializingBean
             url = urlTemp
           }
 
-          //wmsLogService.logParams(wmsLogParams)
+            println "LOGGING PARAMS FOR WMS CHIPPING TIMES"
+          wmsLogService.logParams(wmsLogParams)
         }
       }
       catch (java.lang.Exception e)
