@@ -60,6 +60,7 @@ class WmsController extends OgcController implements InitializingBean
           log.error("ERROR: Unknown action: ${cmd?.request}")
           break
         }
+          internaltime = System.currentTimeMillis()
 /*
       println "*"*80
       request.getHeaderNames().each{name->
@@ -107,7 +108,6 @@ class WmsController extends OgcController implements InitializingBean
             url = urlTemp
           }
 
-            println "LOGGING PARAMS FOR WMS CHIPPING TIMES"
           wmsLogService.logParams(wmsLogParams)
         }
       }
