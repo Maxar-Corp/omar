@@ -30,15 +30,6 @@ class WmsController extends OgcController implements InitializingBean
     }
     else
     {
-      def starttime = System.currentTimeMillis()
-      def internaltime = starttime
-      def endtime = starttime
-
-      def wmsLogParams = cmd.toMap()
-
-      wmsLogParams.startDate = new Date()
-
-      def logParameters = true
       try
       {
         switch ( cmd?.request?.toLowerCase() )
@@ -56,7 +47,6 @@ class WmsController extends OgcController implements InitializingBean
           forward(action: "getKmz", params: params)
           break
         default:
-          logParameters = false
           log.error("ERROR: Unknown action: ${cmd?.request}")
           break
         }
@@ -67,49 +57,10 @@ class WmsController extends OgcController implements InitializingBean
         println "${name} = ${request.getHeader(name)}"
       }
 */
-        endtime = System.currentTimeMillis()
+        //endtime = System.currentTimeMillis()
 /*
       wmsLogParams.domain = authenticateService.userDomain()
 */
-        def principal = springSecurityService?.principal
-        def hasUserInformation = !(springSecurityService?.principal instanceof String)
-        def secUser = hasUserInformation ? SecUser.findByUsername(principal.username) : null
-        wmsLogParams.userName = secUser ? secUser.username : principal
-        wmsLogParams.domain = ""
-        def domain = null
-        def clientIp = request.getHeader('Client-ip')
-        def XForwarded = request.getHeader('X-Forwarded-For')
-        wmsLogParams.ip = XForwarded
-        if ( clientIp )
-        {
-          if ( wmsLogParams.ip )
-          {
-            wmsLogParams.ip += ", ${clientIp}"
-          }
-          else
-          {
-            wmsLogParams.ip = clientIp
-          }
-        }
-
-        if ( !wmsLogParams.ip )
-        {
-          wmsLogParams.ip = request.getRemoteAddr()
-        }
-
-        if ( logParameters )
-        {
-          def urlTemp = createLink([controller: 'ogc', action: 'wms', absolute: true, params: params])
-          wmsLogParams.with {
-            endDate = new Date()
-            internalTime = (internaltime - starttime) / 1000.0
-            renderTime = (endtime - internaltime) / 1000.0
-            totalTime = (endtime - starttime) / 1000.0
-            url = urlTemp
-          }
-
-          wmsLogService.logParams(wmsLogParams)
-        }
       }
       catch (java.lang.Exception e)
       {
@@ -410,6 +361,13 @@ class WmsController extends OgcController implements InitializingBean
     }
     else
     {
+        def wmsLogParams = cmd.toMap()
+
+        wmsLogParams.startDate = new Date()
+        def starttime = System.currentTimeMillis()
+        def internaltime = starttime
+        def endtime = starttime
+
       //wmsLogParams.request = "getmap"
       switch ( cmd?.format?.toLowerCase() )
       {
@@ -438,8 +396,7 @@ class WmsController extends OgcController implements InitializingBean
       }
 
       def mapResult = webMappingService.getMap(cmd)
-
-      //internaltime = System.currentTimeMillis()
+      internaltime = System.currentTimeMillis()
 
       if ( mapResult.errorMessage )
       {
@@ -456,6 +413,45 @@ class WmsController extends OgcController implements InitializingBean
         ImageIO.write(mapResult.image, writerType, response.outputStream)
         response.outputStream.close()
       }
+        endtime = System.currentTimeMillis()
+
+        def principal = springSecurityService?.principal
+        def hasUserInformation = !(springSecurityService?.principal instanceof String)
+        def secUser = hasUserInformation ? SecUser.findByUsername(principal.username) : null
+        wmsLogParams.userName = secUser ? secUser.username : principal
+        wmsLogParams.domain = ""
+        def domain = null
+        def clientIp = request.getHeader('Client-ip')
+        def XForwarded = request.getHeader('X-Forwarded-For')
+        wmsLogParams.ip = XForwarded
+        if ( clientIp )
+        {
+          if ( wmsLogParams.ip )
+          {
+            wmsLogParams.ip += ", ${clientIp}"
+          }
+          else
+          {
+            wmsLogParams.ip = clientIp
+          }
+        }
+
+        if ( !wmsLogParams.ip )
+        {
+          wmsLogParams.ip = request.getRemoteAddr()
+        }
+
+        def urlTemp = createLink([controller: 'ogc', action: 'getMap', absolute: true, params: params])
+        wmsLogParams.with {
+          endDate = new Date()
+          internalTime = (internaltime - starttime) / 1000.0
+          renderTime = (endtime - internaltime) / 1000.0
+          totalTime = (endtime - starttime) / 1000.0
+          url = urlTemp
+        }
+
+        wmsLogService.logParams(wmsLogParams)
+
     }
     return null
   }
