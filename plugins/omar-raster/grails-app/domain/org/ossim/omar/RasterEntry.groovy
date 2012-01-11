@@ -491,11 +491,16 @@ class RasterEntry
             }
             break;
           case "azimuthangle":
+              if(value)
+              {
+                rasterEntry.azimuthAngle = value as Double
+              }
+              break
           case "angletonorth":
-            if(value&&!rasterEntry.azimuthAngle)
-            {
-              rasterEntry.azimuthAngle = value as Double
-            }
+              if(value&&!rasterEntry.azimuthAngle)
+              {
+                rasterEntry.azimuthAngle = ((value as Double) + 90.0) %360.0;
+              }
             break;
           case "grazingangle":
             if(value&&!rasterEntry.grazingAngle)
