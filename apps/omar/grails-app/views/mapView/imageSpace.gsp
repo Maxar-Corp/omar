@@ -108,7 +108,7 @@
                                 <div class = "bd">
                                     <ul>
                                         <li class = "yuimenuitem"><a class = "yuimenuitemlabel" href = "javascript: chipImage('jpeg')" title = "Export JPEG">JPEG</a></li>
-                                        <li class = "yuimenuitem"><a class = "yuimenuitemlabel" href = "javascript: chipImage('jpeg')" title = "Export PNG">PNG</a></li>
+                                        <li class = "yuimenuitem"><a class = "yuimenuitemlabel" href = "javascript: chipImage('png')" title = "Export PNG">PNG</a></li>
                                     </ul>
                                 </div>
                             </div>
@@ -337,7 +337,7 @@
 	            updateImage();
             }
 
-            function chipImage()
+            function chipImage(format)
             {
                 var imageParams = "";
                 var res = map.getResolution();
@@ -350,6 +350,8 @@
                 var height = parseFloat("${rasterEntry.height}");
                 var scaley = 1.0/(res * tileHypotenuse);
                 var y =  ((height*0.5) - imageBounds.top)*scaley;
+                var tempFormat = format;
+                if(!tempFormat) tempFormat = "jpeg";
                 imageParams += "y=" + y + "&";
                 imageParams += "z=" + map.getZoom() + "&";
                 imageParams += "tileWidth=" + tileHypotenuse + "&";
@@ -365,7 +367,7 @@
                 var imageWidth = map.getCurrentSize().w;
                 var imageHeight = map.getCurrentSize().h;
 
-                document.location.href = "http://localhost" + "${createLink(controller: 'ogc', action: 'chip')}" + "?" + imageParams + "&type=tile" + "&angle=" + rotationAngle + "&imageHeight=" + map.getCurrentSize().h + "&imageWidth=" + map.getCurrentSize().w + "&format=jpeg";
+                document.location.href = "${createLink(controller: 'ogc', action: 'chip')}" + "?" + imageParams + "&type=tile" + "&angle=" + rotationAngle + "&imageHeight=" + map.getCurrentSize().h + "&imageWidth=" + map.getCurrentSize().w + "&format=" + tempFormat;
             }
 
             function getImageURL()
