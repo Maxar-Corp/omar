@@ -49,6 +49,6 @@ grails.project.dependency.resolution = {
     grails.plugin.location.'omar-ogc' = "../../plugins/omar-ogc"
     grails.plugin.location.'omar-stager' = "../../plugins/omar-stager"
     grails.plugin.location.'omar-raster' = "../../plugins/omar-raster"
-    grails.plugin.location.'omar-video' = "../../plugins/omar-video"
+    //grails.plugin.location.'omar-video' = "../../plugins/omar-video"
     grails.plugin.location.'omar-security-spring' = "../../plugins/omar-security-spring"
 }
