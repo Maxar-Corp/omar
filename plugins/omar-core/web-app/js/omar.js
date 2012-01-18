@@ -649,8 +649,6 @@ function Omar() {
 		
 		currentDateTime = document.getElementById("currentDateTimeDiv");
 		currentDateTime.innerHTML = month + "/" + day + "/" + year + " " + hour + ":" + minute + ":" + second + " Zulu";
-		
-		setTimeout("getCurrentDateTime()", 1000);
 	};
 	
 	this.setupMapView = function(viewMinLon, viewMinLat, viewMaxLon, viewMaxLat) {
