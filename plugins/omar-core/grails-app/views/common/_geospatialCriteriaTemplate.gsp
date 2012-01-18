@@ -3,6 +3,9 @@
 <div class="niceBox">
 	<div class="niceBoxHd">Geographic Criteria:</div>
 	<div class="niceBoxBody">
+	<g:checkBox id="spatialSearchFlag" value="true" checked="true"
+	               onclick="javascript:this.value = this.checked"/>
+	   <label>Include spatial</label>
 		<div id="tabview1" class="yui-navset">
 			<ul class="yui-nav">
 				<li><a href="#tab1" id="pointRadiusTab"><em>Point Radius</em></a></li>
