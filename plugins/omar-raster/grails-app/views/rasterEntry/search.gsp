@@ -150,30 +150,17 @@
 		};
 		
 		var updateOmarFilters = function() {
-			var searchTagNames = parseInt("${queryParams?.searchTagNames.size()}");
-			var searchTagValues = parseInt("${queryParams?.searchTagValues.size()}");
+			var numberOfNames = parseInt("${queryParams?.searchTagNames.size()}");
+			var numberOfValues = parseInt("${queryParams?.searchTagValues.size()}");
 			
 			var ogcFilterInput = document.getElementById("filter");
 			var additionalParams = new Array();
-			if(ogcFilterInput) {
-				additionalParams["filter"] = ogcFilterInput.value;
+			
+		    if(ogcFilterInput) {
+				additionalParams['filter']=ogcFilterInput.value;
 			}
 			
-			omar.updateOmarFilters(
-	        	$("startDate_day").value,
-				$("startDate_month").value,
-				$("startDate_year").value,
-				$("startDate_hour").value,
-				$("startDate_minute").value,
-				$("endDate_day").value,
-				$("endDate_month").value,
-				$("endDate_year").value,
-				$("endDate_hour").value,
-				$("endDate_minute").value,
-				searchTagNames,
-				searchTagValues,
-				additionalParams
-			);
+			omar.updateOmarFilters($("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value, $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value, numberOfNames, numberOfValues, additionalParams);
 		};
 	</g:javascript>
 </body>
