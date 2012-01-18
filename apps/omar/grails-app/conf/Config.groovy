@@ -1,9 +1,5 @@
 import grails.util.Environment
 
-//import org.ossim.postgis.Geometry
-//import org.ossim.postgis.GeometryType
-//import com.vividsolutions.jts.geom.Geometry
-
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
 import org.ossim.omar.DbAppender
@@ -13,11 +9,10 @@ grails.gorm.default.mapping = {
   id generator: 'identity'
   "user-type" type: PersistentDateTime, class: DateTime
   "user-type" type: PersistentLocalDate, class: LocalDate
-//  'user-type'(type: GeometryType, class: Geometry)
 }
+
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
-
 
 grails.config.locations = [
 //  "classpath:${appName}-config.properties",
@@ -115,12 +110,6 @@ log4j = {
 
   info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: false
   info 'omarDataManagerAppender': '*DataManagerService', additivity: false
-
-
-
-
-
-
   info omarAppender: 'grails.app', additivity: false
   info omarAppender: 'omar', additivity: false
 
@@ -184,7 +173,6 @@ wms {
       break
     }
 
-
     raster = [
             url: "${grails.serverURL}/wms/footprints",
             params: [layers: (supportIE6) ? "Imagery" : "ImageData", format: (supportIE6) ? "image/gif" : "image/png"],
@@ -197,7 +185,6 @@ wms {
             params: [layers: (supportIE6) ? "Videos" : "VideoData", format: (supportIE6) ? "image/gif" : "image/png"],
             name: "OMAR Video Coverage",
             options: [styles: "red", footprintLayers: "Videos"]
-
     ]
   }
 
