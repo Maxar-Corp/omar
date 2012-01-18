@@ -650,7 +650,7 @@ function Omar() {
 		currentDateTime = document.getElementById("currentDateTimeDiv");
 		currentDateTime.innerHTML = month + "/" + day + "/" + year + " " + hour + ":" + minute + ":" + second + " Zulu";
 		
-		setTimeout("mapWidget.getCurrentDateTime()", 1000);
+		setTimeout("getCurrentDateTime()", 1000);
 	};
 	
 	this.setupMapView = function(viewMinLon, viewMinLat, viewMaxLon, viewMaxLat) {
@@ -667,5 +667,78 @@ function Omar() {
         $("viewMaxLat").value = bounds.top;
         $("viewMaxLon").value = bounds.right;
         $("viewMinLat").value = bounds.bottom;
+    };
+
+	String.prototype.leftPad = function(l, c) {
+		return new Array( l - this.length + 1 ).join( c || '0' ) + this;
+	};
+	
+	this.updateOmarFilters = function(startDay, startMonth, startYear, startHour, startMinute, endDay, endMonth, endYear, endHour, endMinute, numberOfNames, numberOfValues, additionalParams) {
+        var wmsParamsTemp = {};
+
+        var hasStartDate = startDay != "" && startMonth != "" && startYear != "" && startHour != "" && startMinute != "";
+        var startDateNoQuote = startYear + startMonth.leftPad( 2 ) + startDay.leftPad( 2 ) + 'T' + startHour.leftPad( 2 ) + startMinute.leftPad( 2 ) + '00Z';
+
+        var hasEndDate = endDay != "" && endMonth != "" && endYear != "";
+        var endDateNoQuote = endYear + endMonth.leftPad( 2 ) + endDay.leftPad( 2 ) + 'T' + endHour.leftPad( 2 ) + endMinute.leftPad( 2 ) + '00Z';
+
+        var wmsTime = "";
+
+        if ( hasStartDate ) {
+            wmsTime = startDateNoQuote;
+            if ( hasEndDate ) {
+                wmsTime += "/" + endDateNoQuote;
+            }
+            else {
+                wmsTime += "/";
+            }
+        }
+        else {
+            if ( hasEndDate ) {
+                wmsTime += "/" + endDateNoQuote;
+            }
+            else {
+                wmsTime = "";
+            }
+        }
+        var idx = 0;
+
+        wmsParamsTemp = {"time":wmsTime};
+
+        var tempName = "";
+
+        if ( numberOfNames ) {
+			for ( idx = 0; idx < numberOfNames; ++idx ) {
+                tempName = "searchTagNames[" + idx + "]";
+                tempValue = $( tempName ).value;
+                if ( tempValue && !(tempValue === "null") ) {
+                    wmsParamsTemp["searchTagNames[" + idx + "]"] = $( tempName ).value;
+                }
+                else {
+                    wmsParamsTemp["searchTagNames[" + idx + "]"] = "";
+                }
+            }
+        }
+
+        if ( numberOfNames ) {
+            for ( idx = 0; idx < numberOfValues; ++idx ) {
+                tempName = "searchTagValues[" + idx + "]";
+                tempValue = $( tempName ).value;
+                if ( tempValue && !(tempValue === "null") ) {
+                    wmsParamsTemp["searchTagValues[" + idx + "]"] = $( tempName ).value;
+                }
+                else {
+                    wmsParamsTemp["searchTagValues[" + idx + "]"] = "";
+                }
+            }
+        }
+
+        if ( additionalParams ) {
+            for ( attr in additionalParams ) {
+                wmsParamsTemp[attr] = additionalParams[attr];
+            }
+        }
+        //alert(JSON.stringify(wmsParamsTemp));
+        dataLayer.mergeNewParams( wmsParamsTemp );
     };
 }
