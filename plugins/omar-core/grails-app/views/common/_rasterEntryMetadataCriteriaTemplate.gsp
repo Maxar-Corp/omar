@@ -13,9 +13,7 @@
 			
 				<div id="tab1">
 				
-				<g:checkBox id="spatialSearchFlag" value="true" checked="true"
-				               onclick="javascript:this.value = this.checked"/>
-				   <label>Include spatial</label>
+				
 				
 				<ol>
 		            <g:each in="${queryParams?.searchTagValues}" var="searchTagValue" status="i">
