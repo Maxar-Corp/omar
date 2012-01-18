@@ -126,6 +126,8 @@ log4j = {
           'net.sf.ehcache.hibernate'
 
   warn 'org.mortbay.log'
+
+  fatal 'org.grails.plugin.resource'
 }
 //log4j.logger.org.springframework.security='off,stdout'
 
