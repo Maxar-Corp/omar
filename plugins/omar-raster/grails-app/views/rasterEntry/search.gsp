@@ -96,7 +96,7 @@
 				$("radius").value = "${queryParams?.aoiRadius ?: null}";
 			}
 			
-			omar.getCurrentDateTime();
+			//omar.getCurrentDateTime();
 			
 			// preserve date / time
 			//
@@ -147,6 +147,24 @@
 			var url = "${createLink(action: 'kmlnetworklink', controller: 'rasterEntry')}";
 			document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
 			document.searchForm.submit();
+		};
+		
+		this.clearDateTime = function() {
+			$("startDateInput").value = "";
+			$("startDate_day").value = "";
+			$("startDate_month").value = "";
+			$("startDate_year").value = "";
+			$("startDate_hour").value = "00";
+			$("startDate_minute").value = "00";
+			
+			$("endDateInput").value = "";
+			$("endDate_day").value = "";
+			$("endDate_month").value = "";
+			$("endDate_year").value = "";
+			$("endDate_hour").value = "00";
+			$("endDate_minute").value = "00";
+			
+			updateOmarFilters();
 		};
 		
 		var updateOmarFilters = function() {
