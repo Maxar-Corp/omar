@@ -85,12 +85,9 @@ class FilterTagLib
     out << g.select(from: [10, 25, 50, 100], name: "max", value: params.max ?: 10,
             onchange: "new Ajax.Updater({success:'${success}',failure:'${failure}'},'${createLink(action: action, controller: controller)}',{asynchronous:true,evalScripts:true,onLoading:function(e){filterInitialized()},onComplete:function(e){filterFinished()},parameters:Form.serialize(this.form)});return false")
 
-    
     out << "<img id='filterBusy' style='display:none;' src='${resource(plugin: 'omar-table-filter', dir: 'images', file: 'filterSpinner.gif')}' />"
 
     out << "</form>"
-
-    out << "&nbsp;&nbsp;"
 
     out << "</div>"
 

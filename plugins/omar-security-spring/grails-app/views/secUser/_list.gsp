@@ -49,7 +49,7 @@
                                params="${[plugin: 'omar-security-spring']}"/>
 
         <filter:sortableColumn bean="org.ossim.omar.SecUser" update="userList" property="passwordExpired"
-                               title="${message(code: 'secUser.passwordExpired.label', default: 'Account Locked')}"
+                               title="${message(code: 'secUser.passwordExpired.label', default: 'Password Expired')}"
                                params="${[plugin: 'omar-security-spring']}"/>
 
       </tr>
@@ -88,6 +88,7 @@
   <div class="paginateButtons">
     <filter:paginate total="${secUserInstanceTotal}" bean="org.ossim.omar.SecUser" update="userList"
                      params="${[plugin: 'omar-security-spring']}"/>
+
   </div>
 
 </div>
