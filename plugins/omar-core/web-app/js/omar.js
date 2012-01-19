@@ -294,8 +294,10 @@ function Omar() {
 		
 		$("lowerLeft").value = "";
 		$("upperRight").value = "";
-		$("centerLat").value = "";
-		$("centerLon").value = "";
+		$("aoiMinLat").value = "";
+		$("aoiMinLon").value = "";
+		$("aoiMaxLat").value = "";
+		$("aoiMaxLon").value = "";
 	};
 	
 	this.setupSearch = function() {
