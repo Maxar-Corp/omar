@@ -294,6 +294,8 @@ function Omar() {
 		
 		$("lowerLeft").value = "";
 		$("upperRight").value = "";
+		$("centerLat").value = "";
+		$("centerLon").value = "";
 	};
 	
 	this.setupSearch = function() {
