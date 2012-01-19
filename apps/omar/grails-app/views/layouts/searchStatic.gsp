@@ -100,12 +100,15 @@
 <div id="content" class="content">
 
   <div id="header" class="header">
-    <omar:securityClassificationBanner fontSize="20px"/>
+	<g:pageProperty name="page.header"/>
   </div>
 
   <div id="top" class="top">
     <g:pageProperty name="page.top"/>
   </div>
+
+
+
 
   <div id="middle" class="middle">
     <div id="left">
@@ -113,29 +116,7 @@
     </div>
 
     <div id="center" class="center">
-      <table>
-        <tr id="toolbarRow">
-          <td>
-            <div id="toolBar" class="olControlPanel"></div>
-            <button type="button" onclick="javascript:search();">Search</button>
-            <g:checkBox id="spatialSearchFlag" value="true" checked="true"
-                        onclick="javascript:this.value = this.checked"/>
-            <label>Include spatial</label>
-          </td>
-        </tr>
-        <tr id="mapRow">
-          <td id="mapColumn">
-            <div id="map"></div>
-          </td>
-        </tr>
-      </table>
-      <table>
-        <tr id="mouseRow" class="mouseRow">
-          <td width="33%"><div id="mouseHoverDdOutput">&nbsp;</div></td>
-          <td width="33%"><div id="mouseHoverDmsOutput">&nbsp;</div></td>
-          <td width="33%"><div id="mouseHoverMgrsOutput">&nbsp;</div></td>
-        </tr>
-      </table>
+      
       <g:pageProperty name="page.center"/>
     </div>
 
@@ -146,7 +127,6 @@
 
   <div id="footer">
     <g:pageProperty name="page.footer"/>
-    <omar:securityClassificationBanner fontSize="20px"/>
   </div>
 
   <omar:bundle contentType="javascript" files="${[
@@ -178,13 +158,31 @@
 
       //middleDiv.style.top = (topDiv.offsetHeight+header.offsetHeight) + "px";
       // IE6 seems to do better to use the root content div and then adjust everyone from  that
-      var middleHeight = Math.abs( footer.offsetTop - (topDiv.offsetTop + topDiv.offsetHeight) );
       middleDiv.style.height = middleHeight + "px";
-      var mapWidth = Math.abs( rightDiv.offsetLeft - (leftDiv.offsetLeft + leftDiv.offsetWidth) );
+      
+
+
+
+
+
+
+
+
+	var mapWidth = Math.abs( rightDiv.offsetLeft - (leftDiv.offsetLeft + leftDiv.offsetWidth) );
+	
+	var middleHeight = Math.abs( footer.offsetTop - (topDiv.offsetTop + topDiv.offsetHeight) );
       var mapHeight = middleHeight - (toolbarRow.offsetHeight + mouseRow.offsetHeight);
 
       mapDiv.style.width = mapWidth + "px";
-      mapDiv.style.height = mapHeight + "px";
+      mapDiv.style.height = mapHeight- 40 + "px";
+
+
+
+
+
+
+
+
 
 
       if ( changeMapSizeFlag && mapWidget )
