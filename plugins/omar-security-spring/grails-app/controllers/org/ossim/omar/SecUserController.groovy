@@ -1,16 +1,21 @@
 package org.ossim.omar
 
+import au.com.bytecode.opencsv.CSVWriter
+
 class SecUserController
 {
 
   static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+
+  def filterService
 
   def index = {
     redirect(action: "list", params: params)
   }
 
   def list = {
-	if (!params.max) { params.max = 100 }
+    if ( !params.max )
+    { params.max = 100 }
     params.max = Math.min(params.max ? params.int('max') : 10, 100)
     [secUserInstanceList: SecUser.list(params), secUserInstanceTotal: SecUser.count()]
   }
@@ -128,4 +133,59 @@ class SecUserController
       redirect(action: "list")
     }
   }
+
+  def export = {
+
+    def newParams = [
+            filterBean: params.exportFilterBean,
+            filterField: params.exportFilterField,
+            filterCriteria: params.exportFilterCriteria,
+            filterValue: params.exportFilterValue,
+            max: SecUser.count()
+    ]
+
+    def useFilter = newParams.filterField && newParams.filterCriteria && newParams.filterValue
+    def users = (useFilter) ? filterService.filter(newParams)['secUserInstanceList'] : SecUser.list()
+
+    def labels = ['Id', 'Username', 'Real Name', 'Organization', 'Phone Number', 'E-mail', 'Enabled', 'Account Locked', 'Account Expired', 'Password Expired']
+    def fields = ['id', 'username', 'userRealName', 'organization', 'phoneNumber', 'email', 'enabled', 'accountLocked', 'accountExpired', 'passwordExpired']
+    def formatters = [:]
+
+
+    def prefix = "omar-users-"
+    def workDir = grailsApplication.config.export.workDir ?: "/tmp"
+
+    def csvFile = File.createTempFile(prefix, ".csv", workDir as File)
+    def csvWriter = new CSVWriter(csvFile.newWriter())
+
+    csvWriter.writeNext(labels as String[])
+
+
+    for ( user in users )
+    {
+      def data = []
+      for ( field in fields )
+      {
+
+        if ( formatters[field] )
+        {
+          data << formatters[field].call(user[field])
+        }
+        else
+        {
+          data << user[field]
+        }
+      }
+
+      csvWriter.writeNext(data as String[])
+    }
+
+    csvWriter.close()
+
+    response.setHeader("Content-disposition", "attachment; filename=${csvFile.name}");
+    response.contentType = "text/csv"
+    response.outputStream << csvFile.newInputStream()
+    response.outputStream.flush()
+  }
+
 }

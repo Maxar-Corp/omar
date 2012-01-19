@@ -14,10 +14,12 @@
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a>
+    <span class="menuButton"><a class="home" href="${createLink(uri: '/')}">
+      <g:message code="default.home.label"/></a>
     </span>
-    <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label"
-                                                                               args="[entityName]"/></g:link></span>
+    <span class="menuButton"><g:link class="create" action="create">
+      <g:message code="default.new.label" args="[entityName]"/></g:link>
+    </span>
   </div>
 
   <div class="body">
@@ -25,8 +27,30 @@
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
-    <filter:dynamic  bean="org.ossim.omar.SecUser" success="userList" params="${[plugin: 'omar-security-spring']}"/>
+    <filter:dynamic bean="org.ossim.omar.SecUser" success="userList" params="${[plugin: 'omar-security-spring']}"/>
     <g:render template="list"/>
+
+    <g:form name="exportForm" onsubmit="updateExportFilter();">
+      <g:hiddenField name="exportFilterBean" value="org.ossim.omar.SecUser"/>
+      <g:hiddenField name="exportFilterField" value=""/>
+      <g:hiddenField name="exportFilterCriteria" value=""/>
+      <g:hiddenField name="exportFilterValue" value=""/>
+      <div class="buttons">
+        <span class="button">
+          <g:actionSubmit class="save" action="export"
+                          value="${message(code: 'default.button.export.label', default: 'Export')}"/>
+        </span>
+      </div>
+    </g:form>
+    <g:javascript>
+    function updateExportFilter()
+    {
+      $('exportFilterField').value = $('filterField').value;
+      $('exportFilterCriteria').value = $('filterCriteria').value;
+      $('exportFilterValue').value = $('filterValue').value;
+      $('exportForm').submit();
+    }
+    </g:javascript>
   </div>
 </content>
 </body>
