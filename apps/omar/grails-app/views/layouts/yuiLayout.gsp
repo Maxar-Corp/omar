@@ -42,8 +42,10 @@
   <openlayers:loadMapToolBar/>
 
   <title><g:layoutTitle default="Grails"/></title>
+
+  <g:layoutHead/>
+
 </head>
-<g:layoutHead/>
 
 <body class="yui-skin-sam">
 <div id="top1" class="top1">
@@ -79,6 +81,7 @@
     [plugin: 'yui', dir: 'js/yui/calendar', file: 'calendar-min.js'],
     [dir: 'js', file: 'datechooser.js']
 ]}"/>
+
 <openlayers:loadJavascript/>
 
 <g:javascript>

@@ -53,7 +53,7 @@
 
 <omar:bundle contentType="javascript" files="${[
     [plugin: 'omar-core', dir: 'js', file: 'omar.js'],
-    [plugin: 'omar-core', dir: 'js', file: 'coord.js'],
+    [plugin: 'omar-core', dir: 'js', file: 'coord.js']
 ]}"/>
 
 <g:javascript>
