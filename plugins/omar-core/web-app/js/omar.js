@@ -546,7 +546,7 @@ function Omar() {
 		var panel = new OpenLayers.Control.Panel({
 			div: $("toolBar"),
 			defaultControl: panButton,
-			displayClass: "olControlPanel",
+			displayClass: "olControlPanel"
 			});
 		
 		panel.addControls([
