@@ -1,62 +1,70 @@
 <%@ page import="grails.converters.JSON; org.ossim.omar.BaseQuery; org.ossim.omar.RasterEntryQuery; org.ossim.omar.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-	<title>OMAR™ <g:meta name="app.version" />: Raster Search</title>
-	<meta name="layout" content="yuiLayout" />
+  <title>OMAR™ <g:meta name="app.version"/>: Raster Search</title>
+  <meta name="layout" content="yuiLayout"/>
 </head>
 
-<body class="yui-skin-sam" onload="init();">
-	<g:form name="searchForm">
-		<content tag="top">
-			<omar:securityClassificationBanner />
-			<g:render plugin="omar-core" template="/common/searchMenuTemplate" />
-		</content>
-		
-		<content tag="left">
-			<g:render plugin="omar-core" template="/common/geospatialCriteriaTemplate" />
-			<g:render plugin="omar-core" template="/common/dateTimeCriteriaTemplate" />
-			<g:render plugin="omar-core" template="/common/rasterEntryMetadataCriteriaTemplate" />
-			<div align="center">
-				<span id="linkbutton1" class="yui-button yui-link-button" title="Search Rasters"><span class="first-child"><a href="javascript:search();">Search Rasters</a></span></span>
-			</div>
-		</content>
-		
-		<content tag="center">
-			<table>
-				<tr>
-					<td colspan=3 id="top2"><div id="toolBar" class="olControlPanel"></div><span id="linkbutton2" class="yui-button yui-link-button" title="Search Rasters"><span class="first-child"><a href="javascript:search();">Search Rasters</a></span></span></td>
-				</tr>
-				<tr>
-					<td colspan=3 id="middle2"><div id="map"></div></td>
-				</tr>
-				<tr id="bottom2">
-					<td width="33%"><div id="ddMousePosition">&nbsp;</div></td>
-					<td width="33%"><div id="dmsMousePosition">&nbsp;</div></td>
-					<td width="33%"><div id="mgrsMousePosition">&nbsp;</div></td>
-				</tr>
-			</table>
-		</content>
-		
-		<content tag="right">
-			<g:render plugin="omar-core" template="/common/mensurationTemplate" />
-			<g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate" />
-		</content>
-		
-		<content tag="bottom">
-			<omar:securityClassificationBanner />
-		</content>
-	</g:form>
-	
-	<omar:bundle contentType="javascript" files="${[
-		[plugin: 'omar-core', dir: 'js', file: 'omar.js'],
-  		[plugin: 'omar-core', dir: 'js', file: 'coord.js'],
-	]}"/>
-	
-	<g:javascript>
-		var omar = new Omar();
-		var omarSearchParams = new OmarSearchParams();
+<body class="yui-skin-sam">
+<g:form name="searchForm">
+  <content tag="top">
+    <omar:securityClassificationBanner/>
+    <g:render plugin="omar-core" template="/common/searchMenuTemplate"/>
+  </content>
+
+  <content tag="left">
+    <g:render plugin="omar-core" template="/common/geospatialCriteriaTemplate"/>
+    <g:render plugin="omar-core" template="/common/dateTimeCriteriaTemplate"/>
+    <g:render plugin="omar-core" template="/common/rasterEntryMetadataCriteriaTemplate"/>
+    <div align="center">
+      <span id="linkbutton1" class="yui-button yui-link-button" title="Search Rasters"><span class="first-child"><a
+          href="javascript:search();">Search Rasters</a></span></span>
+    </div>
+  </content>
+
+  <content tag="center">
+    <table>
+      <tr>
+        <td colspan=3 id="top2"><div id="toolBar" class="olControlPanel"></div><span id="linkbutton2"
+                                                                                     class="yui-button yui-link-button"
+                                                                                     title="Search Rasters"><span
+              class="first-child"><a href="javascript:search();">Search Rasters</a></span></span></td>
+      </tr>
+      <tr>
+        <td colspan=3 id="middle2"><div id="map"></div></td>
+      </tr>
+      <tr id="bottom2">
+        <td width="33%"><div id="ddMousePosition">&nbsp;</div></td>
+        <td width="33%"><div id="dmsMousePosition">&nbsp;</div></td>
+        <td width="33%"><div id="mgrsMousePosition">&nbsp;</div></td>
+      </tr>
+    </table>
+  </content>
+
+  <content tag="right">
+    <g:render plugin="omar-core" template="/common/mensurationTemplate"/>
+    <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
+  </content>
+
+  <content tag="bottom">
+    <omar:securityClassificationBanner/>
+  </content>
+</g:form>
+
+<omar:bundle contentType="javascript" files="${[
+    [plugin: 'omar-core', dir: 'js', file: 'omar.js'],
+    [plugin: 'omar-core', dir: 'js', file: 'coord.js'],
+]}"/>
+
+<g:javascript>
+		var omar;
+		var omarSearchParams;
 		
 		var init = function() {
+
+      omar = new Omar();
+      omarSearchParams = new OmarSearchParams();
+
 			useBoundBoxSearch();
 			
 			omar.setupMapWidget();
@@ -180,6 +188,6 @@
 			
 			omar.updateOmarFilters($("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value, $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value, numberOfNames, numberOfValues, additionalParams);
 		};
-	</g:javascript>
+</g:javascript>
 </body>
 </html>
