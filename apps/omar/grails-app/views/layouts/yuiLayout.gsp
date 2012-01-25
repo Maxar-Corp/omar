@@ -40,9 +40,9 @@
   }
   </style>
   <openlayers:loadMapToolBar/>
-
+  <openlayers:loadTheme theme="default"/>
   <title><g:layoutTitle default="Grails"/></title>
-
+	
   <g:layoutHead/>
 
 </head>
