@@ -472,12 +472,12 @@ function Omar()
 
     var zoomInButton;
     var measureUnit = new Array();
-    measureUnit = ["", "", "", "", ""];
+    measureUnit = ["", "", "", "", "", ""];
     this.setupToolBar = function ()
     {
         var panButton = new OpenLayers.Control.MouseDefaults( {title:"Click button to activate. Once activated, drag the mouse to pan."} );
 
-        zoomInButton = new OpenLayers.Control.Button( {title:"Click button to zoom in.",
+		zoomInButton = new OpenLayers.Control.Button( {title:"Click button to zoom in.",
             displayClass:"olControlZoomIn",
             trigger:this.zoomIn} );
 
@@ -487,9 +487,12 @@ function Omar()
 
         var zoomMaxExtentButton = new OpenLayers.Control.ZoomToMaxExtent( {title:"Click button to zoom to the max extent of the map.",
             trigger:this.zoomMaxExtent} );
-
-        var zoomBoxButton = new OpenLayers.Control.ZoomBox( {title:"Click button to activate. Once activated, drag the mouse to define a zoom box."} );
-
+		
+		//var zoomBoxButton = new OpenLayers.Control.ZoomBox( {title:"Click button to activate. Once activated, drag the mouse to define a zoom box."} );
+		
+		var zoomBoxButton =  new OpenLayers.Control.ZoomBox({alwaysZoom:true});
+		
+		
         var zoomInFullResButton = new OpenLayers.Control.Button( {title:"Click button to zoom to full resolution.",
             displayClass:"olControlZoomToLayer",
             trigger:this.zoomInFullRes} );
@@ -516,6 +519,7 @@ function Omar()
                         measureUnit[2] = evt.measure * 3280.839895 + " ft";
                         measureUnit[3] = evt.measure * 0.62137119224 + " mi";
                         measureUnit[4] = evt.measure * 1093.6132983 + " yd";
+						measureUnit[5] = evt.measure * 0.17998560115 + " nmi";
                         if ( $( "measurementUnits" ).value == "kilometers" )
                         {
                             pathMeasurement.innerHTML = measureUnit[0];
@@ -535,6 +539,10 @@ function Omar()
                         else if ( $( "measurementUnits" ).value == "yards" )
                         {
                             pathMeasurement.innerHTML = measureUnit[4];
+                        }
+                        else if ( $( "measurementUnits" ).value == "nautical miles" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[5];
                         }
                     }
                     else if ( evt.units == "m" )
@@ -544,6 +552,7 @@ function Omar()
                         measureUnit[2] = evt.measure * 3.280839895 + " ft";
                         measureUnit[3] = evt.measure * 0.00062137119224 + " mi";
                         measureUnit[4] = evt.measure * 1.0936132983 + " yd";
+						measureUnit[5] = evt.measure * 0.00017998560115 + " nmi";
                         if ( $( "measurementUnits" ).value == "kilometers" )
                         {
                             pathMeasurement.innerHTML = measureUnit[0];
@@ -563,6 +572,10 @@ function Omar()
                         else if ( $( "measurementUnits" ).value == "yards" )
                         {
                             pathMeasurement.innerHTML = measureUnit[4];
+                        }
+                        else if ( $( "measurementUnits" ).value == "nautical miles" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[5];
                         }
                     }
                 }
@@ -584,6 +597,7 @@ function Omar()
                         measureUnit[2] = evt.measure * 10763910.416623611025 + " ft^2";
                         measureUnit[3] = evt.measure * .38610215854575903621 + " mi^2";
                         measureUnit[4] = evt.measure * 1195990.04621860478289 + " yd^2";
+						measureUnit[5] = evt.measure * 0.032394816622  + " nmi^2";
                         if ( $( "measurementUnits" ).value == "kilometers" )
                         {
                             pathMeasurement.innerHTML = measureUnit[0];
@@ -603,6 +617,10 @@ function Omar()
                         else if ( $( "measurementUnits" ).value == "yards" )
                         {
                             pathMeasurement.innerHTML = measureUnit[4];
+                        }
+                        else if ( $( "measurementUnits" ).value == "nautical miles" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[5];
                         }
                     }
                     else if ( evt.units == "m" )
@@ -612,6 +630,7 @@ function Omar()
                         measureUnit[2] = evt.measure * 10.763910416623611025 + " ft^2";
                         measureUnit[3] = evt.measure * .00000038610215854575 + " mi^2";
                         measureUnit[4] = evt.measure * 1.19599004621860478289 + " yd^2";
+						measureUnit[5] = evt.measure * 3.2394816622  + " nmi^2";
                         if ( $( "measurementUnits" ).value == "kilometers" )
                         {
                             pathMeasurement.innerHTML = measureUnit[0];
@@ -631,6 +650,10 @@ function Omar()
                         else if ( $( "measurementUnits" ).value == "yards" )
                         {
                             pathMeasurement.innerHTML = measureUnit[4];
+                        }
+                        else if ( $( "measurementUnits" ).value == "nautical miles" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[5];
                         }
                     }
                 }
@@ -718,6 +741,10 @@ function Omar()
         else if ( measureUnit == "yards" )
         {
             pathMeasurement.innerHTML = this.getMeasureUnit()[4];
+        }
+        else if ( measureUnit == "nautical miles" )
+        {
+            pathMeasurement.innerHTML = this.getMeasureUnit()[5];
         }
     };
 
