@@ -135,7 +135,7 @@
 				omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}";
 			}
 			
-			var url = "${createLink(action: 'search', controller: 'rasterEntry')}";
+			var url = "${createLink(action: 'search', controller: 'videoDataSet')}";
 			document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
 			document.searchForm.submit();
 		};
@@ -152,7 +152,7 @@
 				omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}";
 			}
 			
-			var url = "${createLink(action: 'kmlnetworklink', controller: 'rasterEntry')}";
+			var url = "${createLink(action: 'kmlnetworklink', controller: 'videoDataSet')}";
 			document.searchForm.action = url + "?" + omarSearchParams.toUrlParams();
 			document.searchForm.submit();
 		};
