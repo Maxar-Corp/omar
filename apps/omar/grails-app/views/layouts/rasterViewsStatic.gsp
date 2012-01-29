@@ -1,11 +1,5 @@
 <html>
 <head>
-  <omar:bundle contentType="css" files="${[
-      [dir: 'css', file: 'main.css'],
-      [dir: 'css', file: 'omar-2.0.css'],
-      [plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css'],
-      [plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css']
-  ]}"/>
 
   <style>
   body {
@@ -79,25 +73,13 @@
   </style>
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
+  <r:require modules="rasterViewsStatic"/>
+  <r:layoutResources/>
 </head>
 
 <body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}"
       onload="bodyOnResize( false );
       ${pageProperty(name: 'body.onload')}bodyOnResize();">
-<omar:bundle contentType="javascript" files="${[
-    [dir:'js', file: 'application.js'],
-    [plugin:'yui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [dir:'js', file: 'datechooser.js'],
-    [plugin:'yui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
-    [plugin:'yui' , dir:'js/yui/element', file: 'element-min.js'],
-    [plugin:'yui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
-    [plugin:'yui' , dir:'js/yui/container/', file: 'container_core-min.js'],
-    [plugin:'yui' , dir:'js/yui/menu/', file: 'menu-min.js'],
-    [plugin:'yui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js'],
-    [plugin:'yui' , dir:'js/yui/slider', file: 'slider-min.js'],
-    
-]}"/>
-
 <div id="content">
   <div id="header">
     <omar:securityClassificationBanner/>
@@ -121,29 +103,29 @@
         </tr>
         <tr id="mapRow">
           <td id="mapColumn" colspan=3>
-            <div id="map"><div id = "compassMap" style = "position: absolute; z-index: 1000"></div></div>
+            <div id="map"><div id="compassMap" style="position: absolute; z-index: 1000"></div></div>
           </td>
         </tr>
 
         <tr>
           <td width=33.3%><div id="ddMouseMapCtr" style="font-size:14px; color: #00CCFF"">&nbsp;</div></td>
-          <td width=33.3%><div id="dmsMouseMapCtr" style="font-size:14px; color: #00CCFF"">&nbsp;</div></td>
-          <td width=33.3%><div id="mgrsMouseMapCtr" style="font-size:14px; color: #00CCFF"">&nbsp;</div></td>
-        </tr>
+    <td width=33.3%><div id="dmsMouseMapCtr" style="font-size:14px; color: #00CCFF"">&nbsp;</div></td>
+  <td width=33.3%><div id="mgrsMouseMapCtr" style="font-size:14px; color: #00CCFF"">&nbsp;</div></td>
+</tr>
 
-      </table>
-      <g:pageProperty name="page.middle"/>
-    </div>
-  </div>
+</table>
+<g:pageProperty name="page.middle"/>
+</div>
+</div>
 </div>
 
 <div id="footer">
   <omar:securityClassificationBanner/>
 </div>
 
-<g:javascript>
+<r:script>
   //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
-  bodyOnResize = function( changeMapSizeFlag )
+  bodyOnResize = function ( changeMapSizeFlag )
   {
     var Dom = YAHOO.util.Dom;
     var width = Dom.getViewportWidth();
@@ -168,9 +150,9 @@
       changeMapSize();
     }
   }.defaults( true )
-</g:javascript>
+</r:script>
 
 <g:layoutBody/>
-
+<r:layoutResources/>
 </body>
 </html>

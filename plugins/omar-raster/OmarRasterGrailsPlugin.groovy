@@ -25,43 +25,6 @@ OMAR Raster support
   def documentation = "http://grails.org/plugin/omar-raster"
 
   def doWithWebDescriptor = { xml ->
-    def filters = xml.filter
-    def lastFilter = filters[-1]
-
-    lastFilter + {
-      'filter-mapping' {
-        'filter-name'('gzipFilter')
-        'url-pattern'('/rasterEntry/search')
-      }
-    }
-    lastFilter + {
-      'filter-mapping' {
-        'filter-name'('gzipFilter')
-        'url-pattern'('/rasterEntry/results')
-      }
-    }
-
-    lastFilter + {
-      'filter-mapping' {
-        'filter-name'('gzipFilter')
-        'url-pattern'('/rasterEntry/search_mobile')
-      }
-    }
-
-    lastFilter + {
-      'filter-mapping' {
-        'filter-name'('gzipFilter')
-        'url-pattern'('/rasterEntry/results_mobile')
-      }
-    }
-    lastFilter + {
-      'filter-mapping' {
-        'filter-name'('gzipFilter')
-        'url-pattern'('/rasterEntry/list_mobile')
-      }
-    }
-
-
   }
 
   def doWithSpring = {

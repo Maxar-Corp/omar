@@ -1,249 +1,264 @@
-<%@ page contentType = "text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
-    <head>
-        <title>OMAR <g:meta name = "app.version"/>: Image Space Viewer</title>
+<head>
+  <title>OMAR <g:meta name="app.version"/>: Image Space Viewer</title>
 
-        <openlayers:loadMapToolBar/>
-        <openlayers:loadTheme theme = "default"/>
+  <meta name="layout" content="rasterViewsStatic"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+  <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
 
-        <meta name = "layout" content = "rasterViewsStatic"/>
-        <meta name = "apple-mobile-web-app-capable" content = "yes"/>
-        <meta name = "apple-mobile-web-app-status-bar-style" content = "black"/>
-        <meta name = "viewport" content = "minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
+  <style type="text/css">
+  body {
+    background: black;
+    color: white;
+  }
 
-        <style type = "text/css">
-            body
-            {
-                background: black;
-                color: white;
-            }
-            #compassMap
-            {
-                height: 75;
-                width: 75;
-            }
-            #exportMenu, #viewMenu
-            {
-                z-index: 99999;
-            }
-            #homeMenu
-            {
-                background: url(../images/skin/house.png) left no-repeat;
-                z-index: 99999;
-            }
-            #map
-            {
-                border: 1px solid black;
-                height: 100%;
-                width: 100%;
-            }
-            #slider-brightness-bg, #slider-contrast-bg
-            {
-                background: url(${resource(plugin: 'yui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
-                width: 120px;
-            }
-            #slider-rotate-bg
-            {
-                background: url(${resource(plugin: 'yui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
-                width: 140px;
-            }
-            div.olControlMousePosition
-            {
-                background-color: white;
-                color: black;
-                font-family: Verdana;
-                font-size: 1.0em;
-            }
-            div.olControlScale
-            {
-                background-color: #ffffff;
-                font-size: 1.0em;
-                font-weight: bold;
-            }
-            #controls
-            {
-                margin-left: 0;
-                padding-left: 2em;
-                width: 12em;
-            }
-            #controls li
-            {
-                list-style: none;
-                padding-top: 0.5em;
-            }
-        </style>
+  #compassMap {
+    height: 75;
+    width: 75;
+  }
 
-        <openlayers:loadJavascript/>
-        <g:javascript plugin = "omar-core" src = "touch.js"/>
-    </head>
+  #exportMenu, #viewMenu {
+    z-index: 99999;
+  }
 
-    <body class = "yui-skin-sam" onload = "init();">
-        <g:form name = "wmsFormId" method = "POST"></g:form>
-        <input type = "hidden" name = "request" value = ""/>
-        <input type = "hidden" name = "layers" value = ""/>
-        <input type = "hidden" name = "bbox" value = ""/>
-        <input type = "hidden" id = "contrast" name = "contrast" value = "${params.contrast ?: 0}"/>
-        <input type = "hidden" id = "brightness" name = "brightness" value = "${params.brightness ?: 0}"/>
+  #homeMenu {
+    background: url(../images/skin/house.png) left no-repeat;
+    z-index: 99999;
+  }
 
-        <content tag = "top">
-            <div id = "rasterMenu" class = "yuimenubar yuimenubarnav">
-                <div class = "bd">
-                    <ul class = "first-of-type">
-                        <li class = "yuimenubaritem first-of-type"><a class = "yuimenubaritemlabel" id = "homeMenu" href = "${createLink(controller: 'home', action: 'index')}" title = "OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a></li>
-                        <li class = "yuimenubaritem first-of-type"><a class = "yuimenubaritemlabel" href = "#viewMenu">View</a>
-                            <div id = "viewMenu" class = "yuimenu">
-                                <div class = "bd">
-                                    <ul>
-                                        <li class = "yuimenuitem"><a class = "yuimenuitemlabel" href = "javascript:changeToSingleLayer();" title = "Ground Space Viewer">Ground Space</a></li>
-                                        <li class = "yuimenuitem"><a class = "yuimenuitemlabel" href = "${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}" title = "Multi Layer Ground Space Viewer">Multi Layer Ground Space</a></li>
-                                    </ul>
-                                    <ul>
-                                        <li class = "yuimenuitem"><a class = "yuimenuitemlabel" href = "${createLink(action: "imageSpace", params: [layers: rasterEntry?.indexId])}" title = "Reset Image space">Reset</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                        <li class = "yuimenubaritem first-of-type"><a class = "yuimenubaritemlabel" href = "#exportMenu">Export</a>
-                            <div id = "exportMenu" class = "yuimenu">
-                                <div class = "bd">
-                                    <ul>
-                                        <li class = "yuimenuitem"><a class = "yuimenuitemlabel" href = "javascript: chipImage('jpeg')" title = "Export JPEG">JPEG</a></li>
-                                        <li class = "yuimenuitem"><a class = "yuimenuitemlabel" href = "javascript: chipImage('png')" title = "Export PNG">PNG</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </li>
-                </div>
+  #map {
+    border: 1px solid black;
+    height: 100%;
+    width: 100%;
+  }
+
+  #slider-brightness-bg, #slider-contrast-bg {
+    background: url(${resource(plugin: 'yui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
+    width: 120px;
+  }
+
+  #slider-rotate-bg {
+    background: url(${resource(plugin: 'yui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
+    width: 140px;
+  }
+
+  div.olControlMousePosition {
+    background-color: white;
+    color: black;
+    font-family: Verdana;
+    font-size: 1.0em;
+  }
+
+  div.olControlScale {
+    background-color: #ffffff;
+    font-size: 1.0em;
+    font-weight: bold;
+  }
+
+  #controls {
+    margin-left: 0;
+    padding-left: 2em;
+    width: 12em;
+  }
+
+  #controls li {
+    list-style: none;
+    padding-top: 0.5em;
+  }
+  </style>
+
+</head>
+
+<body class="yui-skin-sam" onload="init();">
+<g:form name="wmsFormId" method="POST"></g:form>
+<input type="hidden" name="request" value=""/>
+<input type="hidden" name="layers" value=""/>
+<input type="hidden" name="bbox" value=""/>
+<input type="hidden" id="contrast" name="contrast" value="${params.contrast ?: 0}"/>
+<input type="hidden" id="brightness" name="brightness" value="${params.brightness ?: 0}"/>
+
+<content tag="top">
+  <div id="rasterMenu" class="yuimenubar yuimenubarnav">
+    <div class="bd">
+      <ul class="first-of-type">
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu"
+                                                    href="${createLink(controller: 'home', action: 'index')}"
+                                                    title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a></li>
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
+
+          <div id="viewMenu" class="yuimenu">
+            <div class="bd">
+              <ul>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();"
+                                           title="Ground Space Viewer">Ground Space</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel"
+                                           href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}"
+                                           title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a></li>
+              </ul>
+              <ul>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel"
+                                           href="${createLink(action: "imageSpace", params: [layers: rasterEntry?.indexId])}"
+                                           title="Reset Image space">Reset</a></li>
+              </ul>
             </div>
+          </div>
+        </li>
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
 
-            <label>${(rasterEntry?.filename)}</label>
-        </content>
-
-        <content tag = "left">
-            <div class = "niceBox">
-                <div class = "niceBoxHd" style = "background: #0B0B65">Image Adjustments:</div>
-                <div class = "niceBoxBody" style = "background: #2F2F2F">
-                    <ol>
-                        <li style = "color: #00CCFF">Interpolation:</li>
-                        <li>
-                            <g:select
-                                id = "interpolation"
-                                name = "interpolation"
-                                value = "${params.interpolation?:bilinear}"
-                                from = "${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}"
-                                onChange = "chgInterpolation()"
-                                style = "background: black; color: white"/>
-                        </li>
-                        <hr/>
-                        <label style = "color: #00CCFF">Brightness: <input type = "text" readonly = "true" id = "brightnessTextField" size = "3" maxlength = "5" value = "" style = "background: black; color: white"></label>
-                        <li>
-                            <div id = "slider-brightness-bg" class = "yui-h-slider" tabindex = "-1" hidefocus = "false">
-                                <div id = "slider-brightness-thumb" class = "yui-slider-thumb"><img src = "${resource(plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
-                            </div>
-                        </li>
-
-                        <label style = "color: #00CCFF">Contrast: <input type = "text" readonly = "true" id = "contrastTextField" size = "3" maxlength = "5" value = "" style = "background: black; color: white"></label>
-                        <li>
-                            <div id = "slider-contrast-bg" class = "yui-h-slider" tabindex = "-1" hidefocus = "false">
-                                <div id = "slider-contrast-thumb" class = "yui-slider-thumb"><img src = "${resource(plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
-                            </div>
-                        </li>
-
-                        <div align = "center"><button id = "brightnessContrastReset" type = "button" onclick = "javascript:resetBrightnessContrast()">Reset</button></div>
-                        <hr/>
-
-                        <li style = "color: #00CCFF">Sharpen:</li>
-                        <li>
-                            <g:select
-                                id = "sharpen_mode"
-                                name = "sharpen_mode"
-                                value = "${params.sharpen_mode?:'none'}"
-                                from = "${['none', 'light', 'heavy']}"
-                                onChange = "changeSharpenOpts()"
-                                style = "background: black; color: white"/>
-                        </li>
-
-                        <li style = "color: #00CCFF">Dynamic Range Adjustment:</li>
-                        <li>
-                            <g:select
-                                id = "stretch_mode"
-                                name = "stretch_mode"
-                                value = "${params.stretch_mode?:'linear_auto_min_max'}"
-                                from = "${[[name: 'Automatic', value: 'linear_auto_min_max'],[name: '1st Std', value: 'linear_1std_from_mean'],[name: '2nd Std', value: 'linear_2std_from_mean'],[name: '3rd Std', value: 'linear_3std_from_mean'],[name: 'No Adjustment', value: 'none']]}"
-                                optionValue = "name"
-                                optionKey = "value"
-                                onChange = "changeHistoOpts()"
-                                style = "background: black; color: white"/>
-                        </li>
-
-                        <li style = "color: #00CCFF">Region:</li>
-                        <li>
-                            <g:select
-                                id = "stretch_mode_region"
-                                name = "stretch_mode_region"
-                                from = "${['global', 'viewport']}"
-                                onChange = "changeHistoOpts()"
-                                value = "${params.stretch_mode_region?: 'viewport'}"
-                                style = "background: black; color: white"/>
-                        </li>
-
-                        <li style = "color: #00CCFF">Band:</li>
-                        <g:if test = "${rasterEntry?.numberOfBands == 1}">
-                            <li>
-                                <g:select
-                                    id="bands"
-                                    name="bands"
-                                    value="${params.bands?:'0'}"
-                                    from="${['0']}"
-                                    onChange="changeBandsOpts()"
-                                    style = "background: black; color: white"/>
-                            </li>
-                        </g:if>
-                        <g:if test="${rasterEntry?.numberOfBands == 2}">
-                            <li>
-                                <g:select
-                                    id="bands"
-                                    name="bands"
-                                    value="${params.bands?:'0,1'}"
-                                    from="${['0,1','1,0','0','1']}"
-                                    onChange="changeBandsOpts()"
-                                    style = "background: black; color: white"/>
-                            </li>
-                        </g:if>
-                        <g:if test="${rasterEntry?.numberOfBands >= 3}">
-                            <li>
-                                <g:select
-                                    id="bands"
-                                    name="bands"
-                                    value="${params.bands?:'0,1,2'}"
-                                    from="${['0,1,2','2,1,0','0','1','2']}"
-                                    onChange="changeBandsOpts()"
-                                    style = "background: black; color: white"/>
-                            </li>
-                        </g:if>
-                        <hr/>
-
-                        <li style = "color: #00CCFF">Rotate:</li>
-                        <li>
-                            <g:textField name = "rotateAngle" value = "${params.rotation ?: 0}" onChange = "rotateTextFieldChange(this.value)" size = "1" style = "background: black; color: white"/>
-                            <button id = "rotateApply" type = "button" onclick = "">Apply</button>
-                            <br>
-
-                            <li>
-                                <div id = "slider-rotate-bg" class = "yui-h-slider" tabindex = "-1" hidefocus = "false">
-                                    <div id = "slider-rotate-thumb" class = "yui-slider-thumb"><img src = "${resource(plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
-                                </div>
-                            </li>
-                        </li>
-                    </ol>
-                </div>
+          <div id="exportMenu" class="yuimenu">
+            <div class="bd">
+              <ul>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript: chipImage('jpeg')"
+                                           title="Export JPEG">JPEG</a></li>
+                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript: chipImage('png')"
+                                           title="Export PNG">PNG</a></li>
+              </ul>
             </div>
-        </content>
+          </div>
+        </li>
+    </div>
+  </div>
 
-        <content tag = "center"></div></content>
-        <content tag = "bottom"></content>
+  <label>${(rasterEntry?.filename)}</label>
+</content>
 
-        <g:javascript>
+<content tag="left">
+  <div class="niceBox">
+    <div class="niceBoxHd" style="background: #0B0B65">Image Adjustments:</div>
+
+    <div class="niceBoxBody" style="background: #2F2F2F">
+      <ol>
+        <li style="color: #00CCFF">Interpolation:</li>
+        <li>
+          <g:select
+              id="interpolation"
+              name="interpolation"
+              value="${params.interpolation ?: bilinear}"
+              from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}"
+              onChange="chgInterpolation()"
+              style="background: black; color: white"/>
+        </li>
+        <hr/>
+        <label style="color: #00CCFF">Brightness: <input type="text" readonly="true" id="brightnessTextField" size="3"
+                                                         maxlength="5" value="" style="background: black; color: white">
+        </label>
+        <li>
+          <div id="slider-brightness-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
+            <div id="slider-brightness-thumb" class="yui-slider-thumb"><img
+                src="${resource(plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
+          </div>
+        </li>
+
+        <label style="color: #00CCFF">Contrast: <input type="text" readonly="true" id="contrastTextField" size="3"
+                                                       maxlength="5" value="" style="background: black; color: white">
+        </label>
+        <li>
+          <div id="slider-contrast-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
+            <div id="slider-contrast-thumb" class="yui-slider-thumb"><img
+                src="${resource(plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
+          </div>
+        </li>
+
+        <div align="center"><button id="brightnessContrastReset" type="button"
+                                    onclick="javascript:resetBrightnessContrast()">Reset</button></div>
+        <hr/>
+
+        <li style="color: #00CCFF">Sharpen:</li>
+        <li>
+          <g:select
+              id="sharpen_mode"
+              name="sharpen_mode"
+              value="${params.sharpen_mode ?: 'none'}"
+              from="${['none', 'light', 'heavy']}"
+              onChange="changeSharpenOpts()"
+              style="background: black; color: white"/>
+        </li>
+
+        <li style="color: #00CCFF">Dynamic Range Adjustment:</li>
+        <li>
+          <g:select
+              id="stretch_mode"
+              name="stretch_mode"
+              value="${params.stretch_mode ?: 'linear_auto_min_max'}"
+              from="${[[name: 'Automatic', value: 'linear_auto_min_max'], [name: '1st Std', value: 'linear_1std_from_mean'], [name: '2nd Std', value: 'linear_2std_from_mean'], [name: '3rd Std', value: 'linear_3std_from_mean'], [name: 'No Adjustment', value: 'none']]}"
+              optionValue="name"
+              optionKey="value"
+              onChange="changeHistoOpts()"
+              style="background: black; color: white"/>
+        </li>
+
+        <li style="color: #00CCFF">Region:</li>
+        <li>
+          <g:select
+              id="stretch_mode_region"
+              name="stretch_mode_region"
+              from="${['global', 'viewport']}"
+              onChange="changeHistoOpts()"
+              value="${params.stretch_mode_region ?: 'viewport'}"
+              style="background: black; color: white"/>
+        </li>
+
+        <li style="color: #00CCFF">Band:</li>
+        <g:if test="${rasterEntry?.numberOfBands == 1}">
+          <li>
+            <g:select
+                id="bands"
+                name="bands"
+                value="${params.bands ?: '0'}"
+                from="${['0']}"
+                onChange="changeBandsOpts()"
+                style="background: black; color: white"/>
+          </li>
+        </g:if>
+        <g:if test="${rasterEntry?.numberOfBands == 2}">
+          <li>
+            <g:select
+                id="bands"
+                name="bands"
+                value="${params.bands ?: '0,1'}"
+                from="${['0,1', '1,0', '0', '1']}"
+                onChange="changeBandsOpts()"
+                style="background: black; color: white"/>
+          </li>
+        </g:if>
+        <g:if test="${rasterEntry?.numberOfBands >= 3}">
+          <li>
+            <g:select
+                id="bands"
+                name="bands"
+                value="${params.bands ?: '0,1,2'}"
+                from="${['0,1,2', '2,1,0', '0', '1', '2']}"
+                onChange="changeBandsOpts()"
+                style="background: black; color: white"/>
+          </li>
+        </g:if>
+        <hr/>
+
+        <li style="color: #00CCFF">Rotate:</li>
+        <li>
+          <g:textField name="rotateAngle" value="${params.rotation ?: 0}" onChange="rotateTextFieldChange(this.value)"
+                       size="1" style="background: black; color: white"/>
+          <button id="rotateApply" type="button" onclick="">Apply</button>
+          <br>
+
+        <li>
+          <div id="slider-rotate-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
+            <div id="slider-rotate-thumb" class="yui-slider-thumb"><img
+                src="${resource(plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
+          </div>
+        </li>
+      </li>
+      </ol>
+    </div>
+  </div>
+</content>
+
+<content tag="center"></div></content>
+<content tag="bottom"></content>
+
+<r:script>
             var azimuthAngle;
             var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
             var compassImage;
@@ -569,16 +584,16 @@
 				            graphicWidth : <%=' "${imageWidth}" '%>,
       			            graphicHeight : <%=' "${imageHeight}" '%>,
 				            rotation : <%=' "${angle}" '%>
-			            }
-		            })
+}
+                })
                 });
                 map.addLayer(imageVectorLayer);
             }
 
             function resetBrightnessContrast()
             {
-	            brightnessSlider.setRealValue(0);
-	            contrastSlider.setRealValue(1.0);
+              brightnessSlider.setRealValue(0);
+              contrastSlider.setRealValue(1.0);
 
                 updateImage();
             }
@@ -595,11 +610,11 @@
             {
                 compassMap = new OpenLayers.Map('compassMap', {controls: new OpenLayers.Control.Navigation({autoActivate: false})});
 
-	            var baseLayer = new OpenLayers.Layer("Empty", {isBaseLayer: true});
-	            compassMap.addLayer(baseLayer);
-	            compassMap.setCenter(new OpenLayers.LonLat(0,0), 0);
+              var baseLayer = new OpenLayers.Layer("Empty", {isBaseLayer: true});
+              compassMap.addLayer(baseLayer);
+              compassMap.setCenter(new OpenLayers.LonLat(0,0), 0);
 
-	            var compassImageURL = "${resource(plugin: 'omar', dir: 'images', file: 'north_arrow.png')}";
+              var compassImageURL = "${resource(plugin: 'omar', dir: 'images', file: 'north_arrow.png')}";
 
                 // define a vector layer to add markers to
 	            compassVectorLayer = new OpenLayers.Layer.Vector("Compass Layer",
@@ -612,59 +627,59 @@
 				            graphicWidth : 40,
                             graphicHeight : 40,
 			                rotation : <%=' "${angle}" '%>
-			            }
-		            })
-                });
-                compassMap.addLayer(compassVectorLayer);
+}
+})
+});
+compassMap.addLayer(compassVectorLayer);
 
-	            // define the marker for the image to sit on
-	            compassImage = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0), {angle: 0});
-	            compassVectorLayer.addFeatures([compassImage]);
-            }
+// define the marker for the image to sit on
+compassImage = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0), {angle: 0});
+compassVectorLayer.addFeatures([compassImage]);
+}
 
-            function setupToolbar()
-            {
-                var panButton = new OpenLayers.Control.MouseDefaults({title:'Click pan button to activate. Once activated click the map and drag the mouse to pan.'});
-                var zoomBoxButton = new OpenLayers.Control.ZoomBox({title:"Click the zoom box button to activate. Once activated click and drag over an area of interest on the map to zoom into."});
-                zoomInButton = new OpenLayers.Control.Button({title: "Click to zoom in.", displayClass: "olControlZoomIn", trigger: zoomIn});
-                var zoomInFullResButton = new OpenLayers.Control.Button({title: "Click to zoom into full resolution.", displayClass: "olControlZoomToLayer", trigger: zoomInFullRes});
-                var zoomOutButton = new OpenLayers.Control.Button({title: "Click to zoom out.", displayClass: "olControlZoomOut", trigger: zoomOut});
-                var container = $("toolBar");
-                var panel = new OpenLayers.Control.Panel(
-                {
-                    div: container,defaultControl: panButton,
-                    'displayClass': 'olControlPanel'
-                });
-                var navButton = new OpenLayers.Control.NavigationHistory(
-                {
-                    nextOptions: {title: "Next View" },
-                    previousOptions: {title: "Previous View"}
-                });
+function setupToolbar()
+{
+var panButton = new OpenLayers.Control.MouseDefaults({title:'Click pan button to activate. Once activated click the map and drag the mouse to pan.'});
+var zoomBoxButton = new OpenLayers.Control.ZoomBox({title:"Click the zoom box button to activate. Once activated click and drag over an area of interest on the map to zoom into."});
+zoomInButton = new OpenLayers.Control.Button({title: "Click to zoom in.", displayClass: "olControlZoomIn", trigger: zoomIn});
+var zoomInFullResButton = new OpenLayers.Control.Button({title: "Click to zoom into full resolution.", displayClass: "olControlZoomToLayer", trigger: zoomInFullRes});
+var zoomOutButton = new OpenLayers.Control.Button({title: "Click to zoom out.", displayClass: "olControlZoomOut", trigger: zoomOut});
+var container = $("toolBar");
+var panel = new OpenLayers.Control.Panel(
+{
+div: container,defaultControl: panButton,
+'displayClass': 'olControlPanel'
+});
+var navButton = new OpenLayers.Control.NavigationHistory(
+{
+nextOptions: {title: "Next View" },
+previousOptions: {title: "Previous View"}
+});
 
-                map.addControl(navButton);
-                panel.addControls(
-                [
-                    panButton,
-		            zoomBoxButton,
-                    zoomInButton,
-                    zoomOutButton,
-                    //navButton.next, navButton.previous,
-                    new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent."}),
-                    zoomInFullResButton
-                ]);
-                map.addControl(panel);
-            }
+map.addControl(navButton);
+panel.addControls(
+[
+panButton,
+zoomBoxButton,
+zoomInButton,
+zoomOutButton,
+//navButton.next, navButton.previous,
+new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent."}),
+zoomInFullResButton
+]);
+map.addControl(panel);
+}
 
-            function sliderRotate(sliderValue)
-            {
-                // remove all previous images
-                resetImageVectorLayer();
+function sliderRotate(sliderValue)
+{
+// remove all previous images
+resetImageVectorLayer();
 
-                // calculate the rotation angle taking into account North is Up
-                rotationAngle = 360 - parseInt(sliderValue) + Math.round(${rasterEntry.azimuthAngle});
+// calculate the rotation angle taking into account North is Up
+rotationAngle = 360 - parseInt(sliderValue) + Math.round(${rasterEntry.azimuthAngle});
 
                 // ensure the value of the rotation is normalized such that North is Up is 0
-                ${"rotateAngle"}.value = 360 - rotationAngle + Math.round(${rasterEntry.azimuthAngle});
+${"rotateAngle"}.value = 360 - rotationAngle + Math.round(${rasterEntry.azimuthAngle});
 
                 // remove the image from the map so it can be rotated
 	            compassVectorLayer.removeFeatures([compassImage]);
@@ -809,6 +824,6 @@
                     newImageCenterY + mapHeight / 2
                 );
             }
-        </g:javascript>
-    </body>
+</r:script>
+</body>
 </html>

@@ -1,17 +1,5 @@
 <html>
 <head>
-  <omar:bundle contentType="css" files="${[
-      [dir: 'css', file: 'main.css'],
-      [dir: 'css', file: 'omar-2.0.css']
-  ]}"/>
-
-  <link rel="stylesheet" type="text/css"
-        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css"
-        href="${resource(plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
-
-
-
 
   <style>
   body {
@@ -66,24 +54,13 @@
   </style>
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
+  <r:require modules="multiLayerLayout"/>
+  <r:layoutResources/>
 </head>
 
 <body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}"
       onload="bodyOnResize( false );
       ${pageProperty(name: 'body.onload')}bodyOnResize( true );">
-<omar:bundle contentType="javascript" files="${[
-    [dir:'js', file: 'application.js'],
-    [plugin:'yui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [ dir:'js', file: 'datechooser.js'],
-    [plugin:'yui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
-    [plugin:'yui' , dir:'js/yui/element', file: 'element-min.js'],
-    [plugin:'yui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
-	  [plugin:'yui' , dir:'js/yui/container/', file: 'container_core-min.js'],
-    [plugin:'yui' , dir:'js/yui/menu/', file: 'menu-min.js'],
-    [plugin:'yui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js']
-]}"/>
-
-
 
 <div id="content">
   <div id="header">
@@ -120,9 +97,9 @@
 
 <g:layoutBody/>
 
-<g:javascript>
+<r:script>
   //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
-  bodyOnResize = function( changeMapSizeFlag )
+  bodyOnResize = function ( changeMapSizeFlag )
   {
     var Dom = YAHOO.util.Dom;
     var width = Dom.getViewportWidth();
@@ -144,6 +121,8 @@
       changeMapSize( mapDiv.style.width, mapDiv.style.height );
     }
   }.defaults( true );
-</g:javascript></body>
+</r:script>
+<r:layoutResources/>
+</body>
 
 </html>

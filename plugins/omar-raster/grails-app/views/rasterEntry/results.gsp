@@ -24,12 +24,9 @@
 
   </style>
 
-<%--  <resource:tabView/> --%>
-
 </head>
 
 <body class="yui-skin-sam" onload="init();">
-<g:javascript plugin="omar-core" src="prototype/prototype.js"/>
 <content tag="top">
     <g:form name="paginateForm" method="post">
     </g:form>
@@ -286,7 +283,7 @@
 
 </content>
 
-<g:javascript>
+<r:script>
   var globalActiveIndex=${rasterEntryResultCurrentTab};
   var Dom = YAHOO.util.Dom;
   var tab1Div = Dom.get("tab1");
@@ -370,6 +367,6 @@
     updatePageOffset();
       //alert(omarSearchResults.toUrlParams());
   }
-</g:javascript>
+</r:script>
 </body>
 </html>

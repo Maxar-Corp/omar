@@ -43,8 +43,12 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    compile ":p6spy:0.5"
-    compile ":yui:2.8.2.1"
+    runtime ":p6spy:0.5"
+    runtime ":yui:2.8.2.1"
+    runtime ":resources:1.1.6"
+    runtime ":zipped-resources:1.0"
+    runtime ":yui-minify-resources:0.1.4"
+
   }
 }
 
