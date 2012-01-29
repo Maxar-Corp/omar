@@ -8,18 +8,6 @@
 <html>
 <head>
 
-  <omar:bundle contentType="css" files="${[
-    [dir: 'css', file: 'main.css'],
-    [dir: 'css', file: 'omar-2.0.css']
-  ]}"/>
-
-
-  <link rel="stylesheet" type="text/css"
-        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css"
-        href="${resource(plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
-
-
   <style>
   body {
     height: 100%;
@@ -65,25 +53,19 @@
   </style>
   <title><g:layoutTitle default="Grails"/></title>
   <g:layoutHead/>
+  <r:require modules="resultsView"/>
+  <r:layoutResources/>
 </head>
 
 <body class="yui-skin-sam" onresize="onBodyResize();${pageProperty(name: 'body.onresize')}"
       onload="onBodyResize();${pageProperty(name: 'body.onload')}">
-<omar:bundle contentType="javascript" files="${[
-    [dir:'js', file: 'application.js'],
-    [plugin:'yui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [dir:'js', file: 'datechooser.js'],
-    [plugin:'yui' , dir:'js/yui/calendar', file: 'calendar-min.js'],
-    [plugin:'yui' , dir:'js/yui/element', file: 'element-min.js'],
-    [plugin:'yui' , dir:'js/yui/tabview/', file: 'tabview-min.js'],
-    [plugin:'yui' , dir:'js/yui/container/', file: 'container_core-min.js'],
-    [plugin:'yui' , dir:'js/yui/menu/', file: 'menu-min.js'],
-    [plugin:'yui' , dir:'js/yui/dragdrop', file:'dragdrop-min.js'],
-]}"/>
+
+
+<div id="header">
+  <omar:securityClassificationBanner/>
+</div>
+
 <div id="content">
-  <div id="header">
-    <omar:securityClassificationBanner/>
-  </div>
 
   <div id="top">
     <g:pageProperty name="page.top"/>
@@ -92,15 +74,19 @@
   <div id="center">
     <g:pageProperty name="page.body"/>
   </div>
+
+
 </div>
 
 <div id="footer">
   <g:pageProperty name="page.footer"/>
   <omar:securityClassificationBanner/>
 </div>
+
+
 <g:layoutBody/>
 
-<g:javascript>
+<r:script>
    //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
     var Dom = YAHOO.util.Dom;
     var Event = YAHOO.util.Event;
@@ -195,7 +181,7 @@
     centerDiv.style.height = centerHeight + "px";
     centerDiv.style.width  = "100%";
   }
-</g:javascript>
-
+</r:script>
+<r:layoutResources/>
 </body>
 </html>

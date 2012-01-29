@@ -143,17 +143,24 @@ wms {
     defaultOptions = [isBaseLayer: true, buffer: 0, transitionEffect: "resize"]
     layers = [
             [
+                    url: "http://hyperquad.ucsd.edu/cgi-bin/i-cubed",
+                    params: [layers: "icubed", format: "image/png", transparent: true, bgcolor: '#99B3CC'],
+                    name: "I-Cubed LandSat",
+                    options: defaultOptions
+            ],
+            [
+                    url: "http://hyperquad.ucsd.edu/cgi-bin/onearth",
+                    params: [layers: "OnEarth", format: "image/png", transparent: true, bgcolor: '#99B3CC'],
+                    name: "OnEarth LandSat",
+                    options: defaultOptions
+            ],
+            [
                     url: (useTileCache) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
                     params: [layers: (useTileCache) ? "omar" : "Reference", format: "image/jpeg"],
                     name: "Reference Data",
                     options: defaultOptions
-//            ],
-//            [
-//                    url: "${grails.serverURL}/footprint/footprints",
-//                    params: [layers: "raster_entry", styles: "{fillOpacity:0,strokeColor:'#FF0000'}", format: imageType, filter: "file_type = 'nitf'"],
-//                    name: "NITF Footprints",
-//                    options: [isBaseLayer: false, buffer: 0, transitionEffect: "resize"]
             ]
+
     ]
   }
 
@@ -579,3 +586,8 @@ rss {
     ]
   }
 }
+
+//bundle {
+//  combine = true
+//  compress = true
+//}

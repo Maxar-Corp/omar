@@ -26,41 +26,6 @@ OMAR plugin for video support
   def documentation = "http://grails.org/plugin/omar-video"
 
   def doWithWebDescriptor = { xml ->
-    def filters = xml.filter
-    def lastFilter = filters[-1]
-
-    lastFilter + {
-      'filter-mapping' {
-        'filter-name'('gzipFilter')
-        'url-pattern'('/videoDataSet/search')
-      }
-    }
-    lastFilter + {
-      'filter-mapping' {
-        'filter-name'('gzipFilter')
-        'url-pattern'('/videoDataSet/results')
-      }
-    }
-
-    lastFilter + {
-      'filter-mapping' {
-        'filter-name'('gzipFilter')
-        'url-pattern'('/videoDataSet/search_mobile')
-      }
-    }
-
-    lastFilter + {
-      'filter-mapping' {
-        'filter-name'('gzipFilter')
-        'url-pattern'('/videoDataSet/results_mobile')
-      }
-    }
-    lastFilter + {
-      'filter-mapping' {
-        'filter-name'('gzipFilter')
-        'url-pattern'('/videoDataSet/list_mobile')
-      }
-    }
   }
 
   def doWithSpring = {

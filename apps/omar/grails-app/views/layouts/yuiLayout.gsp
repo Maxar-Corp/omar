@@ -1,11 +1,5 @@
 <html>
 <head>
-  <omar:bundle contentType="css" files="${[
-      [dir: 'css', file: 'main.css'],
-      [dir: 'css', file: 'omar-2.0.css'],
-      [plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css'],
-      [plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css']
-  ]}"/>
   <style type="text/css">
   body {
     visibility: hidden;
@@ -39,11 +33,11 @@
     font-size: 10px;
   }
   </style>
-  <openlayers:loadMapToolBar/>
-  <openlayers:loadTheme theme="default"/>
   <title><g:layoutTitle default="Grails"/></title>
-	
+
   <g:layoutHead/>
+  <r:require modules="yuiLayout"/>
+  <r:layoutResources/>
 
 </head>
 
@@ -70,21 +64,8 @@
   <g:pageProperty name="page.bottom"/>
 </div>
 
-<omar:bundle contentType="javascript" files="${[
-    [dir: 'js', file: 'application.js'],
-    [plugin: 'yui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [plugin: 'yui', dir: 'js/yui/element', file: 'element-min.js'],
-    [plugin: 'yui', dir: 'js/yui/layout/', file: 'layout-min.js'],
-    [plugin: 'yui', dir: 'js/yui/container/', file: 'container_core-min.js'],
-    [plugin: 'yui', dir: 'js/yui/menu/', file: 'menu-min.js'],
-    [plugin: 'yui', dir: 'js/yui/tabview/', file: 'tabview-min.js'],
-    [plugin: 'yui', dir: 'js/yui/calendar', file: 'calendar-min.js'],
-    [dir: 'js', file: 'datechooser.js']
-]}"/>
 
-<openlayers:loadJavascript/>
-
-<g:javascript>
+<r:script>
   (function ()
   {
     var Dom = YAHOO.util.Dom,
@@ -157,7 +138,8 @@
     Dom.setStyle( mapDiv, 'width', mapWidth + "px" );
     Dom.setStyle( mapDiv, 'height', mapHeight + "px" );
   };
-</g:javascript>
+</r:script>
 <g:layoutBody/>
+<r:layoutResources/>
 </body>
 </html>

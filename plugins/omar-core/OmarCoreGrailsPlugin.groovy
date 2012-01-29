@@ -27,23 +27,6 @@ This plugin contains OMAR code that can be shared or accessed from other OMAR pl
   def documentation = "http://grails.org/plugin/omar-core"
 
   def doWithWebDescriptor = { xml ->
-    def filters = xml.filter
-    def lastFilter = filters[-1]
-
-    lastFilter + {
-      filter {
-        'filter-name'('gzipFilter')
-        'filter-class'(com.jspbook.GZIPFilter.name)
-      }
-      'filter-mapping' {
-        'filter-name'('gzipFilter')
-        'url-pattern'('*.js')
-      }
-      'filter-mapping' {
-        'filter-name'('gzipFilter')
-        'url-pattern'('*.css')
-      }
-    }
   }
 
   def doWithSpring = {

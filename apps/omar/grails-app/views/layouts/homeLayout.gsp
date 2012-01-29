@@ -10,20 +10,6 @@
 <html>
 <head>
   <title><g:layoutTitle default="Grails"/></title>
-
-  <omar:bundle contentType="css" files="${[
-    [dir: 'css', file: 'main.css'],
-    [dir: 'css', file: 'omar-2.0.css']
-  ]}"/>
-
-  <g:javascript plugin="yui" src="yui/yahoo-dom-event/yahoo-dom-event.js"/>
-  <g:javascript plugin="yui" src="yui/element/element-min.js"/>
-
-  <link rel="stylesheet" type="text/css"
-        href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
-  <link rel="stylesheet" type="text/css"
-        href="${resource(plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css')}"/>
-
   <style>
     /*
     margin and padding on body element
@@ -62,6 +48,7 @@
   }
 
   #footer {
+
     position: absolute;
     bottom: 0;
     height: 20px;
@@ -80,17 +67,14 @@
   </style>
 
   <g:layoutHead/>
-  <g:javascript library="application"/>
+  <r:require modules="homeLayout"/>
+  <r:layoutResources/>
 </head>
 
 <body class="${pageProperty(name: 'body.class')}" onresize="bodyOnResize();${pageProperty(name: 'body.onresize')}"
       onload="${pageProperty(name: 'body.onload')}bodyOnResize();">
-<omar:bundle contentType="javascript" files="${[
-    [dir:'js', file: 'application.js'],
-    [plugin:'yui' , dir:'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js'],
-    [plugin:'yui' , dir:'js/yui/element',         file: 'element-min.js']
-]}"/>
 <div id="content">
+
   <div id="header" class="header">
     <omar:securityClassificationBanner/>
   </div>
@@ -102,15 +86,16 @@
   <div id="center">
     <g:pageProperty name="page.center"/>
   </div>
+
+  <div id="footer" class="footer">
+    <omar:securityClassificationBanner/>
+  </div>
 </div>
 
-<div id="footer" class="footer">
-  <omar:securityClassificationBanner/>
-</div>
 <g:layoutBody/>
 
-<g:javascript>
-  var bodyOnResize = function()
+<r:script>
+  var bodyOnResize = function ()
   {
     var Dom = YAHOO.util.Dom;
     var header = Dom.get( "header" );
@@ -124,7 +109,9 @@
     centerDiv.style.height = centerHeight + "px";
     centerDiv.style.width = "100%";
   }
-</g:javascript>
+</r:script>
+<r:layoutResources/>
+
 </body>
 
 </html>

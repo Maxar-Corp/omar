@@ -17,7 +17,7 @@ s<html>
     <div class="message">${flash.message}</div>
   </g:if>
   <div>
-    <h1 style="font-size:150%">Search:</h1>
+    <h1 style="font-size:150%" align="left">Search:</h1>
     <table>
       <tr>
         <td width="120px">
@@ -34,7 +34,7 @@ s<html>
   </div>
   <g:if test="${grailsApplication.config.views?.home?.browseEnabled}">
     <div>
-      <h1 style="font-size:150%">Browse:</h1>
+      <h1 style="font-size:150%" align="left">Browse:</h1>
       <table>
         <tr>
           <td width="120px">
@@ -52,7 +52,7 @@ s<html>
   </g:if>
 
   <div>
-    <h1 style="font-size:150%">KML Network Links:</h1>
+    <h1 style="font-size:150%" align="left">KML Network Links:</h1>
     <table>
       <tr>
         <td width="120px">
@@ -62,25 +62,25 @@ s<html>
           <ol>
             <li>
               <g:form name="imageView"
-                      url="[controller:'kmlQuery', action:'topImages', params:[stretch_mode:'linear_auto_min_max', stretch_mode_region:'global' ]]">
+                      url="[controller: 'kmlQuery', action: 'topImages', params: [stretch_mode: 'linear_auto_min_max', stretch_mode_region: 'global']]">
                 <g:textField name="maximages" size="2" value="${grailsApplication.config.kml.defaultImages}"/>
                 <g:submitButton name="submit" value="Most Recent Images for View"/>
               </g:form>
             </li>
             <li>
-              <g:form name="videoView" url="[controller:'kmlQuery', action:'topVideos']">
+              <g:form name="videoView" url="[controller: 'kmlQuery', action: 'topVideos']">
                 <g:textField name="maxvideos" size="2" value="${grailsApplication.config.kml.defaultVideos}"/>
                 <g:submitButton name="submit" value="Most Recent Videos for View"/>
               </g:form>
             </li>
             <li>
-              <g:form name="imageFootprints" url="[controller:'kmlQuery', action:'imageFootprints']">
+              <g:form name="imageFootprints" url="[controller: 'kmlQuery', action: 'imageFootprints']">
                 <g:textField name="imagedays" size="2" value="${grailsApplication.config.kml.daysCoverage}"/>
                 <g:submitButton name="submit" value="Most Recent Days Imagery Coverage"/>
               </g:form>
             </li>
             <li>
-              <g:form name="videoFootprints" url="[controller:'kmlQuery', action:'videoFootprints']">
+              <g:form name="videoFootprints" url="[controller: 'kmlQuery', action: 'videoFootprints']">
                 <g:textField name="videodays" size="2" value="${grailsApplication.config.kml.daysCoverage}"/>
                 <g:submitButton name="submit" value="Most Recent Days Video Coverage"/>
               </g:form>
@@ -92,7 +92,7 @@ s<html>
   </div>
 
   <div>
-    <h1 style="font-size:150%">GeoRSS Links:</h1>
+    <h1 style="font-size:150%" align="left">GeoRSS Links:</h1>
     <table>
       <tr>
         <td width="120px">
@@ -102,13 +102,13 @@ s<html>
         <td>
           <ol>
             <li>
-              <g:form name="ccRss" method="GET" url="[plugin: 'omar-rss', controller:'rssFeed', action:'georss']">
+              <g:form name="ccRss" method="GET" url="[plugin: 'omar-rss', controller: 'rssFeed', action: 'georss']">
                 <g:submitButton name="submit" value="By Country Code"/>
                 <g:textField name="cc" size="2"/>
               </g:form>
             </li>
             <li>
-              <g:form name="beRss" method="GET" url="[plugin: 'omar-rss', controller:'rssFeed', action:'georss']">
+              <g:form name="beRss" method="GET" url="[plugin: 'omar-rss', controller: 'rssFeed', action: 'georss']">
                 <g:submitButton name="submit" value="By BE Number"/>
                 <g:textField name="be" size="10"/>
               </g:form>
@@ -122,7 +122,7 @@ s<html>
 
   <sec:ifNotGranted roles="ROLE_ADMIN">
     <div>
-      <h1 style="font-size:150%">User Preferences:</h1>
+      <h1 style="font-size:150%" align="left">User Preferences:</h1>
       <table>
         <tr>
           <td width="120px">
@@ -140,7 +140,7 @@ s<html>
     </div>
   </sec:ifNotGranted>
   <div>
-    <h1 style="font-size:150%">Report:</h1>
+    <h1 style="font-size:150%" align="left">Report:</h1>
     <table>
       <tr>
         <td width="120px">
@@ -161,7 +161,7 @@ s<html>
   </div>
 
   <div>
-    <h1 style="font-size:150%">Logout</h1>
+    <h1 style="font-size:150%" align="left">Logout</h1>
     <table>
       <tr>
         <td>
@@ -175,7 +175,7 @@ s<html>
 
   <sec:ifAllGranted roles="ROLE_ADMIN">
     <div>
-      <h1 style="font-size:150%">User Management:</h1>
+      <h1 style="font-size:150%" align="left">User Management:</h1>
       <table>
         <tr>
           <td width="120px">
@@ -193,22 +193,22 @@ s<html>
     </div>
 
     <div>
-      <h1 style="font-size:150%">Edit Tables:</h1>
+      <h1 style="font-size:150%" align="left">Edit Tables:</h1>
       <table>
         <tr>
           <td width="120px">
             <img src="${resource(dir: 'images', file: 'extend.gif')}" alt="">
           </td>
-    <td>
-      <ol>
-        <g:each var="c" in="${editableControllers}">
-          <li><g:link controller="${c.path}">${c.name}</g:link></li>
-        </g:each>
-      </ol>
-    </td>
-    </tr>
+          <td>
+            <ol>
+              <g:each var="c" in="${editableControllers}">
+                <li><g:link controller="${c.path}">${c.name}</g:link></li>
+              </g:each>
+            </ol>
+          </td>
+        </tr>
       </table>
-    </div
+    </div>
   </sec:ifAllGranted>
 </content>
 

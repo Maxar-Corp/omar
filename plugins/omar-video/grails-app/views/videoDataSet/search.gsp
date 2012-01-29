@@ -51,12 +51,8 @@
   </content>
 </g:form>
 
-<omar:bundle contentType="javascript" files="${[
-    [plugin: 'omar-core', dir: 'js', file: 'omar.js'],
-    [plugin: 'omar-core', dir: 'js', file: 'coord.js']
-]}"/>
 
-<g:javascript>
+<r:script>
 		var omar;
 		var omarSearchParams;
 		
@@ -188,6 +184,6 @@
 			
 			omar.updateOmarFilters($("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value, $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value, numberOfNames, numberOfValues, additionalParams);
 		};
-</g:javascript>
+</r:script>
 </body>
 </html>
