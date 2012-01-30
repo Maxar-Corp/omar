@@ -1,7 +1,8 @@
 s<html>
 <head>
   <title>Welcome to OMAR <g:meta name="app.version"/></title>
-  <meta name="layout" content="homeLayout"/>
+  <meta name="layout" content="homePageLayout"/>
+  <r:require modules="homePageLayout"/>
 </head>
 
 <body class="yui-skin-sam">
