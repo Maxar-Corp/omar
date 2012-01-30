@@ -43,4 +43,5 @@ def authenticateService
 
     [editableControllers: editableControllers, user: user]
   }
+  def heyMan ={ render "HEY MAN"}
 }
