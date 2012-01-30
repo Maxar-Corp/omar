@@ -22,6 +22,7 @@
     height: 100%;
     min-height: 100%;
     margin-bottom: -20px;
+    text-align: left;
   }
 
   #header {
