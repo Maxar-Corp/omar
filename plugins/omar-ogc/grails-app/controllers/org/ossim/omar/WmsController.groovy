@@ -50,7 +50,6 @@ class WmsController extends OgcController implements InitializingBean
           log.error("ERROR: Unknown action: ${cmd?.request}")
           break
         }
-          internaltime = System.currentTimeMillis()
 /*
       println "*"*80
       request.getHeaderNames().each{name->
