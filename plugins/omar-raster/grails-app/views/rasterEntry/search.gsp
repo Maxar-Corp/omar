@@ -17,6 +17,7 @@
 </head>
 
 <body class=" yui-skin-sam">
+<g:form name="searchForm">
 
 <content tag="top1">
   <omar:securityClassificationBanner/>
@@ -62,7 +63,7 @@
     <td width="33%"><div id="mgrsMousePosition">&nbsp;</div></td>
   </tr></table>
 </content>
-
+</g:form>
 
 <content tag="center2">
   <div id="map"></div>
