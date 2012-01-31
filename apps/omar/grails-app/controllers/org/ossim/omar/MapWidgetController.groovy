@@ -4,4 +4,5 @@ class MapWidgetController
 {
 
   def index = { }
+
 }

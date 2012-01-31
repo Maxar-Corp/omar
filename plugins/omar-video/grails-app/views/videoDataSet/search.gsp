@@ -2,7 +2,8 @@
 <html>
 <head>
   <title>OMAR™ <g:meta name="app.version"/>: Video Search</title>
-  <meta name="layout" content="yuiLayout"/>
+  <meta name="layout" content="searchPageLayout"/>
+  <r:require modules="searchPageLayout"/>
 </head>
 
 <body class="yui-skin-sam">
