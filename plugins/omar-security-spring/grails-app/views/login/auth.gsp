@@ -54,11 +54,5 @@
     <g:link controller="register" action="forgotPassword">Forgot Password</g:link>
   </div>
 </content>
-<r:script>
-  function init()
-  {
-    document.forms['loginForm'].elements['j_username'].focus();
-  }
-</r:script>
 </body>
 </html>
