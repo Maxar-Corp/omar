@@ -24,7 +24,12 @@
         layout.on( 'render', function ()
         {
             Dom.setStyle( document.body, 'visibility', 'visible' );
+            init();
         } );
         layout.render();
     } );
 })();
+function init()
+{
+    YAHOO.util.Dom.get( 'j_username' ).focus();
+}
