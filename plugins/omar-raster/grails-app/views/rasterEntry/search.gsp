@@ -11,7 +11,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>Map Widget Layout 2</title>
+  <title>OMAR <g:meta name="app.version"/>: Raster Search</title>
   <meta content="searchPageLayout" name="layout">
   <r:require modules="searchPageLayout"/>
 </head>
