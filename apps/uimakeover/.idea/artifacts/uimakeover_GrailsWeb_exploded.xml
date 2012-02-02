@@ -1,7 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="exploded-war" name="uimakeover:GrailsWeb exploded">
-    <root id="root">
-      <element id="javaee-facet-resources" facet="uimakeover/web/GrailsWeb" />
-    </root>
-  </artifact>
-</component>
