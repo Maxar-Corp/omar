@@ -1,244 +1,80 @@
 <%--
   Created by IntelliJ IDEA.
-  User: dlucas
-  Date: Nov 16, 2010
-  Time: 8:09:29 PM
+  User: sbortman
+  Date: 1/27/12
+  Time: 7:50 AM
   To change this template use File | Settings | File Templates.
 --%>
+
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="resultsView"/>
   <title>OMAR <g:meta name="app.version"/>: Video Search Results</title>
-
- <style>
- .yui-skin-sam .yui-navset .yui-content {
-     background: none repeat scroll 0 0 #FFFFFF;
- }
- #homeMenu{
- background: url( ../images/skin/house.png )  left no-repeat;
-    z-index: 99999;
-    }
- #exportMenu, #searchMenu{
-     z-index: 100;
- }
-
- </style>
+  <meta content="resultsPageLayout" name="layout"/>
+  <r:require modules="resultsPageLayout"/>
+  <g:set var="entityName" value="${message(code: 'videoDataSet.label', default: 'VideoDataSet')}"/>
 </head>
 
-<body class="yui-skin-sam" onload="init();">
-<g:javascript plugin="omar-core" src="prototype/prototype.js"/>
-<g:javascript>
-</g:javascript>
-  <content tag="top">
-    <g:form name="paginateForm" method="post">
-    </g:form>
-    <g:form name="exportForm" method="post">
-    </g:form>
-    <div id="resultsMenu" class="yuimenubar yuimenubarnav">
-        <div class="bd">
-            <ul class="first-of-type">
-                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu" href="${createLink(controller: 'home', action: 'index')}" title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
-                </li>
-                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="Search" href="#searchMenu" title="Search">Search</a>
-                    <div id="searchMenu" class="yuimenu">
-                         <div class="bd">
-                             <ul>
-                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: 'search')}" title="New Search">New</a></li>
-                                 <li class="yuimenuitem"><a class="yuimenuitemlabel" href="${createLink(action: "search", params: params)}" title="Edit Search">Edit</a></li>
-                             </ul>
-                           </div>
-                     </div>
-                </li>
-                <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
-                    <div id="exportMenu" class="yuimenu">
-                        <div class="bd">
-                            <ul>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:exportAs('csv')" title="Export Csv">Csv File</a></li>
-                                <li class="yuimenuitem"><a class="yuimenuitemlabel" href="javascript:exportAs('shp')" title="Export Shape">Shape File</a></li>
-                            </ul>
-                          </div>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-      <g:hiddenField id="totalCount" name="totalCount" value="${totalCount ?: 0}"/>
-      <g:hiddenField id="offset" name="offset" value="${params.offset}"/>
-      <g:hiddenField name="queryParams" value="${queryParams.toMap()}"/>
-      <g:hiddenField name="order" value="${params.order}"/>
-      <g:hiddenField name="sort" value="${params.sort}"/>
+<body class=" yui-skin-sam">
 
-    <div class="paginateButtons">
-      <g:paginate controller="videoDataSet" action="results" total="${totalCount ?: 0}" max="${params.max}" offset="${params.offset}" params="${queryParams.toMap()}"/>
-      <g:if test="${totalCount == 0}">
+<content tag="top">
+  <g:render template="resultsMenu"/>
+  <h1><g:message code="default.list.label" args="[entityName]"/></h1>
 
-      </g:if>
-      <g:else>
-          <input type="text" id="pageOffset" size="3" onchange="updateOffset();"/> <button type="button"  onclick="javascript:updateOffset();">Go to Page</button>
-          <label for="max">Max:</label>
-          <input type="text" id="max" name="max"  value="${params.max}" onChange="updateMaxCount()"/>
-          <button type="button"  onclick="javascript:updateMaxCount();">Set</button>
-      </g:else>
-    </div>
-  </content>
+  <g:render template="resultsPaginator" model="${[totalCount: totalCount, queryParams: queryParams, params: params]}"/>
+</content>
 
-  <content tag="body">
-    <h1>Video Search Results</h1>
-    <g:if test="${flash.message}">
-      <div class="message">${flash.message}</div>
-    </g:if>
+<content tag="bottom">
+</content>
 
-  <g:if test="${!videoDataSets}">
-    <div class="message">No results found.</div>
+<%--
+<content tag="left">
+</content>
+
+<content tag="right">
+</content>
+--%>
+
+<content tag="center">
+
+  <g:if test="${flash.message}">
+    <div class="message">${flash.message}</div>
   </g:if>
 
-    <div id="resultTab" class="yui-navset">
-      <ul class="yui-nav">
-        <g:if test="${videoDataSetResultCurrentTab == '0'}">
-          <li class="selected"><a href="#resultTab1"><em>Video</em></a></li>
-        </g:if>
-        <g:else>
-          <li><a href="#resultTab1"><em>Video</em></a></li>
-        </g:else>
-          <g:if test="${videoDataSetResultCurrentTab == '1'}">
-            <li class="selected"><a href="#resultTab2"><em>File</em></a></li>
-          </g:if>
-          <g:else>
-            <li><a href="#resultTab2"><em>File</em></a></li>
-          </g:else>
-          <g:if test="${videoDataSetResultCurrentTab == '2'}">
-            <li class="selected"><a href="#resultTab3"><em>Links</em></a></li>
-          </g:if>
-          <g:else>
-            <li><a href="#resultTab3"><em>Links</em></a></li>
-          </g:else>
-      </ul>
+  <div id="demo" class="yui-navset">
+    <ul class="yui-nav">
+      <li class="selected"><a href="#tab1"><em>Video</em></a></li>
+      <li><a href="#tab2"><em>File</em></a></li>
+      <li><a href="#tab3"><em>Links</em></a></li>
+    </ul>
 
-      <div class="yui-content">
-       <g:if test="${videoDataSetResultCurrentTab == '0'}">
-         <div id="resultTab1" style="visibility:visible">
-       </g:if>
-        <g:else>
-          <div id="resultTab1" style="visibility:hidden">
-        </g:else>
-           <div class="list">
-             <table>
-               <thead>
-               <tr>
-                 <th>Thumbnail</th>
-                 <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
-                 <g:sortableColumn property="width" title="Width" params="${queryParams.toMap()}"/>
-                 <g:sortableColumn property="height" title="Height" params="${queryParams.toMap()}"/>
-                 <g:sortableColumn property="startDate" title="Start Date" params="${queryParams.toMap()}"/>
-                 <g:sortableColumn property="endDate" title="End Date" params="${queryParams.toMap()}"/>
-                 <th>Min Lon</th>
-                 <th>Min Lat</th>
-                 <th>Max Lon</th>
-                 <th>Max Lat</th>
-               </tr>
-               </thead>
-               <tbody>
-               <g:each in="${videoDataSets}" status="i" var="videoDataSet">
-                 <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                   <td height="${videoDataSet.height/(Math.max(videoDataSet.width, videoDataSet.height)/128.0)}"><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
-                   <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.id, size: 128])}" alt="Show Frame"/></a></td>
-                   <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
-                   <td>${videoDataSet.width?.encodeAsHTML()}</td>
-                   <td>${videoDataSet.height?.encodeAsHTML()}</td>
-                   <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="GMT" date="${videoDataSet?.startDate}"/></td>
-                   <td><g:formatDate format="yyyy-MM-dd'T'HH:mm:ss.SSS'Z'" timeZone="GMT" date="${videoDataSet?.endDate}"/></td>
-                   <g:set var="bounds" value="${videoDataSet?.groundGeom?.bounds}"/>
-                   <td>${bounds?.minLon?.encodeAsHTML()}</td>
-                   <td>${bounds?.minLat?.encodeAsHTML()}</td>
-                   <td>${bounds?.maxLon?.encodeAsHTML()}</td>
-                   <td>${bounds?.maxLat?.encodeAsHTML()}</td>
-                 </tr>
-               </g:each>
-               </tbody>
-             </table>
-             </div>
-           </div>
-        <g:if test="${videoDataSetResultCurrentTab == '1'}">
-          <div id="resultTab2" style="visibility:visible">
-        </g:if>
-         <g:else>
-           <div id="resultTab2" style="visibility:hidden">
-         </g:else>
-             <div class="list">
-               <table>
-                 <thead>
-                 <tr>
-                   <th>Thumbnail</th>
-                   <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
-                   <th>Filename</th>
-                 </tr>
-                 </thead>
-                 <tbody>
-                 <g:each in="${videoDataSets}" status="i" var="videoDataSet">
-                   <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                       <td height="${videoDataSet.height/(Math.max(videoDataSet.width, videoDataSet.height)/128.0)}"><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
-                     <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.id, size: 128])}" alt="Show Frame"/></a></td>
-                     <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
-                     <td>
-                       <sec:ifAllGranted roles="ROLE_DOWNLOAD">
-                         <a href=${grailsApplication.config.image.download.prefix}${videoDataSet.mainFile?.name?.encodeAsHTML()}>
-                       </sec:ifAllGranted>
-                       ${videoDataSet.mainFile?.name?.encodeAsHTML()}
-                       <sec:ifAllGranted roles="ROLE_DOWNLOAD">
-                         </a>
-                       </sec:ifAllGranted>
-                     </td>
-                   </tr>
-                 </g:each>
-                 </tbody>
-               </table>
-             </div>
-           </div>
-          <g:if test="${videoDataSetResultCurrentTab == '2'}">
-            <div id="resultTab3" style="visibility:visible">
-          </g:if>
-           <g:else>
-             <div id="resultTab3" style="visibility:hidden">
-           </g:else>
-           <div class="list">
-             <table>
-               <thead>
-               <tr>
-                   <th>Thumbnail</th>
-                   <g:sortableColumn property="id" title="Id" params="${queryParams.toMap()}"/>
-                   <th>Generate KML</th>
-               </tr>
-               </thead>
-               <tbody>
-               <g:each in="${videoDataSets}" status="i" var="videoDataSet">
-                  <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-                      <td height="${videoDataSet.height/(Math.max(videoDataSet.width, videoDataSet.height)/128.0)}"><a href="${createLink(controller: "videoStreaming", action: "show", params: [id: videoDataSet.indexId])}">
-                    <img src="${createLink(controller: "thumbnail", action: "frame", params: [id: videoDataSet.id, size: 128])}" alt="Show Frame"/></a></td>
-                    <td><g:link controller="videoDataSet" action="show" id="${videoDataSet.id}">${videoDataSet.id?.encodeAsHTML()}</g:link></td>
-                    <td>
-                        <a href='${createLink(controller: 'videoStreaming', action: "getKML", id: videoDataSet.id)}'>Generate KML</a>
-                    </td>
-                  </tr>
-                </g:each>
-               </tbody>
-              </table>
-            </div>
+    <div class="yui-content">
+      <div id="tab1">
+        <g:render template="videoTab" model="${[rasterEntries: rasterEntries, queryParams: queryParams]}"/>
       </div>
-         </div>
-    </div>
-  </content>
-<g:javascript>
-  var globalActiveIndex=${videoDataSetResultCurrentTab};
-  var Dom = YAHOO.util.Dom;
-  var tab1Div = Dom.get("resultTab1");
-  var tab2Div = Dom.get("resultTab2");
-  var tab3Div = Dom.get("resultTab3");
-  var tabView = new YAHOO.widget.TabView('resultTab');
-  var tab0 = tabView.getTab(0);
-  var tab1 = tabView.getTab(1);
-  var tab2 = tabView.getTab(2);
 
+      <div id="tab2">
+        <g:render template="fileTab" model="${[videoDataSets: videoDataSets, queryParams: queryParams]}"/>
+      </div>
+
+      <div id="tab3">
+        <g:render template="linksTab" model="${[videoDataSets: videoDataSets]}"/>
+      </div>
+
+    </div>
+  </div>
+</content>
+
+<r:script>
+
+    var tabView = new YAHOO.widget.TabView( 'demo' );
+    var oMenu = new YAHOO.widget.MenuBar("resultsMenu", {
+      autosubmenudisplay: true,
+      hidedelay: 750,
+      lazyload: true,
+      showdelay: 0,
+      zIndex:9999});
+    oMenu.render();
     function exportAs(format)
     {
       form = document.getElementById("exportForm");
@@ -254,58 +90,99 @@
         form.submit();
       }
     }
-   function updateCurrentTab(variable, tabIndex)
-  {
-      var link = "${createLink(action: sessionAction, controller: sessionController)}";
-      new Ajax.Request(link+"?"+variable+"="+tabIndex, {method: 'post'});
-  }
 
-  function handleClickTab0(e) {
-    if(globalActiveIndex != 0)
-    {
-        globalActiveIndex = 0;
-        updateCurrentTab("videoDataSetResultCurrentTab", 0);
-    }
-  }
-  function handleClickTab1(e) {
-    if(globalActiveIndex != 1)
-    {
-        globalActiveIndex = 1;
-        updateCurrentTab("videoDataSetResultCurrentTab", 1);
-    }
-  }
-  function handleClickTab2(e) {
-    if(globalActiveIndex != 2)
-    {
-        globalActiveIndex = 2;
-        updateCurrentTab("videoDataSetResultCurrentTab", 2);
-    }
-  }
-
-  function init()
-  {
-      var oMenu = new YAHOO.widget.MenuBar("resultsMenu", {
-                                                    autosubmenudisplay: true,
-                                                    hidedelay: 750,
-                                                    showdelay: 0,
-                                                    lazyload: true,
-                                                    zIndex:9999});
-      oMenu.render();
-      tab0.addListener('click', handleClickTab0);
-      tab1.addListener('click', handleClickTab1);
-      tab2.addListener('click', handleClickTab2);
-      tab1Div.style.visibility = "visible"
-      tab2Div.style.visibility = "visible"
-      tab3Div.style.visibility = "visible"
-
+      //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
+    var Dom = YAHOO.util.Dom;
+    var Event = YAHOO.util.Event;
+  var omarSearchResults= new OmarSearchResults();
 
       omarSearchResults.setProperties(${params.encodeAsJSON()});
       omarSearchResults.setProperties(document);
 
-      updatePageOffset();
+    updatePageOffset();
+
+  function updateOffset()
+  {
+
+      validDataFlag = true;
+      maxValue = parseInt(document.getElementById("max").value);
+      pageOffsetValue = parseInt(document.getElementById("pageOffset").value);
+
+
+      if(!YAHOO.lang.isNumber(pageOffsetValue))
+      {
+        validDataFlag = false;
+        alert("Page offset must be a number");
+      }
+      if(!YAHOO.lang.isNumber(maxValue))
+      {
+        validDataFlag = false;
+        alert("Max value must be a number");
+      }
+
+      if(validDataFlag)
+      {
+          document.getElementById("max").value        = maxValue
+          document.getElementById("pageOffset").value = pageOffsetValue
+
+          pages = Math.ceil(${totalCount ?: 0} / maxValue);
+
+          if( pageOffsetValue >= 1 && pageOffsetValue <= pages)
+          {
+              document.getElementById("offset").value = (document.getElementById("pageOffset").value - 1) * maxValue;
+
+              omarSearchResults.setProperties(document);
+
+              var url = "${createLink(action: 'results')}?" + omarSearchResults.toUrlParams();
+              document.paginateForm.action = url;
+              document.paginateForm.submit();
+          }
+          else
+          {
+              alert("Input must be between 1 and " + pages + ".");
+          }
+      }
+
 
   }
-</g:javascript>
 
+  function updateMaxCount()
+  {
+    maxElement    = document.getElementById("max");
+    offsetElement = document.getElementById("offset");
+    if(offsetElement)
+    {
+       offsetElement.value = 0;
+    }
+    if(!maxElement ||(parseInt(maxElement.value) < 1))
+    {
+        alert("Max value can't be zero");
+        if(maxElement) maxElement.value = omarSearchResults["max"];
+        return;
+    }
+    omarSearchResults.setProperties(document);
+    updatePageOffset();
+
+    updateOffset();
+  }
+
+  function updatePageOffset(){
+      offsetValue = omarSearchResults["offset"];
+      maxValue    = omarSearchResults["max"];
+      totalCountValue    = omarSearchResults["totalCount"];
+      if(!offsetValue) offsetValue = "0"
+      if(maxValue &&totalCountValue)
+      {
+        offsetValue      = parseInt(offsetValue);
+        maxValue    = parseInt(maxValue);
+        totalCountValue  = parseInt(totalCountValue);
+        var pageOffset = document.getElementById("pageOffset");
+        if(pageOffset&&maxValue)
+        {
+           pageOffset.value = (offsetValue/maxValue) + 1;
+        }
+      }
+  }
+</r:script>
 </body>
 </html>

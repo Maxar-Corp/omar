@@ -46,7 +46,7 @@
       <li><a href="#tab1"><em>Image</em></a></li>
       <li class="selected"><a href="#tab2"><em>Metadata</em></a></li>
       <li><a href="#tab3"><em>File</em></a></li>
-      <li><a href="#tab3"><em>Links</em></a></li>
+      <li><a href="#tab4"><em>Links</em></a></li>
     </ul>
 
     <div class="yui-content">
@@ -69,7 +69,9 @@
 
     </div>
   </div>
-  <r:script>
+</content>
+
+<r:script>
 
     var tabView = new YAHOO.widget.TabView( 'demo' );
     var oMenu = new YAHOO.widget.MenuBar("resultsMenu", {
@@ -187,10 +189,6 @@
         }
       }
   }
-  </r:script>
-</content>
-
-<r:script>
 </r:script>
 </body>
 </html>
