@@ -323,12 +323,20 @@ class WmsController extends OgcController implements InitializingBean
       // Convert param names to lower case
       params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
 
-      def rasterIdList = params.layers.split(",")
+      def rasterEntries
+      if ( cmd.layers )
+      {
+        def layerNames = cmd.layers?.split(",") as String[]
+        rasterEntries = rasterEntrySearchService.getWmsImageLayers(layerNames)
+      }
+      else if ( cmd.filter )
+      {
+        rasterEntries = rasterEntrySearchService.getWmsImageLayers(cmd.filter)
+      }
 
       //  def serviceAddress = createLink(controller: "ogc", action: "wms", absolute: true)
       //  def kml = webMappingService.getKML(wmsRequest, serviceAddress)
       def filename = "image.kml"
-      def rasterEntries = rasterEntrySearchService.findRasterEntries(rasterIdList)
 
       def kml = null;
       if ( rasterEntries?.size > 0 )
@@ -360,12 +368,12 @@ class WmsController extends OgcController implements InitializingBean
     }
     else
     {
-        def wmsLogParams = cmd.toMap()
+      def wmsLogParams = cmd.toMap()
 
-        wmsLogParams.startDate = new Date()
-        def starttime = System.currentTimeMillis()
-        def internaltime = starttime
-        def endtime = starttime
+      wmsLogParams.startDate = new Date()
+      def starttime = System.currentTimeMillis()
+      def internaltime = starttime
+      def endtime = starttime
 
       //wmsLogParams.request = "getmap"
       switch ( cmd?.format?.toLowerCase() )
@@ -412,44 +420,44 @@ class WmsController extends OgcController implements InitializingBean
         ImageIO.write(mapResult.image, writerType, response.outputStream)
         response.outputStream.close()
       }
-        endtime = System.currentTimeMillis()
+      endtime = System.currentTimeMillis()
 
-        def principal = springSecurityService?.principal
-        def hasUserInformation = !(springSecurityService?.principal instanceof String)
-        def secUser = hasUserInformation ? SecUser.findByUsername(principal.username) : null
-        wmsLogParams.userName = secUser ? secUser.username : principal
-        wmsLogParams.domain = ""
-        def domain = null
-        def clientIp = request.getHeader('Client-ip')
-        def XForwarded = request.getHeader('X-Forwarded-For')
-        wmsLogParams.ip = XForwarded
-        if ( clientIp )
+      def principal = springSecurityService?.principal
+      def hasUserInformation = !(springSecurityService?.principal instanceof String)
+      def secUser = hasUserInformation ? SecUser.findByUsername(principal.username) : null
+      wmsLogParams.userName = secUser ? secUser.username : principal
+      wmsLogParams.domain = ""
+      def domain = null
+      def clientIp = request.getHeader('Client-ip')
+      def XForwarded = request.getHeader('X-Forwarded-For')
+      wmsLogParams.ip = XForwarded
+      if ( clientIp )
+      {
+        if ( wmsLogParams.ip )
         {
-          if ( wmsLogParams.ip )
-          {
-            wmsLogParams.ip += ", ${clientIp}"
-          }
-          else
-          {
-            wmsLogParams.ip = clientIp
-          }
+          wmsLogParams.ip += ", ${clientIp}"
         }
-
-        if ( !wmsLogParams.ip )
+        else
         {
-          wmsLogParams.ip = request.getRemoteAddr()
+          wmsLogParams.ip = clientIp
         }
+      }
 
-        def urlTemp = createLink([controller: 'ogc', action: 'getMap', absolute: true, params: params])
-        wmsLogParams.with {
-          endDate = new Date()
-          internalTime = (internaltime - starttime) / 1000.0
-          renderTime = (endtime - internaltime) / 1000.0
-          totalTime = (endtime - starttime) / 1000.0
-          url = urlTemp
-        }
+      if ( !wmsLogParams.ip )
+      {
+        wmsLogParams.ip = request.getRemoteAddr()
+      }
 
-        wmsLogService.logParams(wmsLogParams)
+      def urlTemp = createLink([controller: 'ogc', action: 'getMap', absolute: true, params: params])
+      wmsLogParams.with {
+        endDate = new Date()
+        internalTime = (internaltime - starttime) / 1000.0
+        renderTime = (endtime - internaltime) / 1000.0
+        totalTime = (endtime - starttime) / 1000.0
+        url = urlTemp
+      }
+
+      wmsLogService.logParams(wmsLogParams)
 
     }
     return null

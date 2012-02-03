@@ -346,12 +346,10 @@ class WebMappingService implements ApplicationContextAware
 
     if ( layerNames )
     {
-      println "layerNames: ${layerNames}"
       layers = imageDataSearchService?.getWmsImageLayers(layerNames)
     }
     else if ( filter )
     {
-      println "filter: ${filter}"
       layers = imageDataSearchService?.getWmsImageLayers(filter)
     }
 
