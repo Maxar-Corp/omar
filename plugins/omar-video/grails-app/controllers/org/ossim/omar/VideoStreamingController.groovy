@@ -24,7 +24,7 @@ class VideoStreamingController implements InitializingBean
 
     def videoDataSet = VideoDataSet.findByIndexId(params.id) ?: VideoDataSet.get(params.id)
 
-    println params.id
+    //println params.id
 
     if ( videoDataSet )
     {
