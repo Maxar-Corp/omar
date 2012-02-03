@@ -14,14 +14,12 @@ tab1.addListener( 'click', useBoundBoxSearch );
 function useRadiusSearch()
 {
     $( "baseQueryType" ).value = "RADIUS";
-}
-;
+};
 
 function useBoundBoxSearch()
 {
     $( "baseQueryType" ).value = "BBOX";
-}
-;
+};
 
 var tabView2 = new YAHOO.widget.TabView( "tabview2" );
 
@@ -519,7 +517,7 @@ function Omar()
                         measureUnit[2] = evt.measure * 3280.839895 + " ft";
                         measureUnit[3] = evt.measure * 0.62137119224 + " mi";
                         measureUnit[4] = evt.measure * 1093.6132983 + " yd";
-						measureUnit[5] = evt.measure * 0.17998560115 + " nmi";
+						measureUnit[5] = evt.measure * 0.539956803 + " nmi";
                         if ( $( "measurementUnits" ).value == "kilometers" )
                         {
                             pathMeasurement.innerHTML = measureUnit[0];
@@ -552,7 +550,7 @@ function Omar()
                         measureUnit[2] = evt.measure * 3.280839895 + " ft";
                         measureUnit[3] = evt.measure * 0.00062137119224 + " mi";
                         measureUnit[4] = evt.measure * 1.0936132983 + " yd";
-						measureUnit[5] = evt.measure * 0.00017998560115 + " nmi";
+						measureUnit[5] = evt.measure * 0.000539956803 + " nmi";
                         if ( $( "measurementUnits" ).value == "kilometers" )
                         {
                             pathMeasurement.innerHTML = measureUnit[0];
@@ -594,10 +592,10 @@ function Omar()
                     {
                         measureUnit[0] = evt.measure + " km^2";
                         measureUnit[1] = evt.measure * 1000000 + " m^2";
-                        measureUnit[2] = evt.measure * 10763910.416623611025 + " ft^2";
-                        measureUnit[3] = evt.measure * .38610215854575903621 + " mi^2";
-                        measureUnit[4] = evt.measure * 1195990.04621860478289 + " yd^2";
-						measureUnit[5] = evt.measure * 0.032394816622  + " nmi^2";
+                        measureUnit[2] = evt.measure * 10763910.417 + " ft^2";
+                        measureUnit[3] = evt.measure * 0.38610215855  + " mi^2";
+                        measureUnit[4] = evt.measure * 1195990.0463 + " yd^2";
+						measureUnit[5] = evt.measure * 0.2915533496  + " nmi^2";
                         if ( $( "measurementUnits" ).value == "kilometers" )
                         {
                             pathMeasurement.innerHTML = measureUnit[0];
@@ -627,10 +625,10 @@ function Omar()
                     {
                         measureUnit[0] = evt.measure * 0.000001 + " km^2";
                         measureUnit[1] = evt.measure + " m^2";
-                        measureUnit[2] = evt.measure * 10.763910416623611025 + " ft^2";
-                        measureUnit[3] = evt.measure * .00000038610215854575 + " mi^2";
-                        measureUnit[4] = evt.measure * 1.19599004621860478289 + " yd^2";
-						measureUnit[5] = evt.measure * 3.2394816622  + " nmi^2";
+                        measureUnit[2] = evt.measure * 10.763910417 + " ft^2";
+                        measureUnit[3] = evt.measure * 3.8610215855 + " mi^2";
+                        measureUnit[4] = evt.measure * 1.1959900463 + " yd^2";
+						measureUnit[5] = evt.measure * 2.915533496 + " nmi^2";
                         if ( $( "measurementUnits" ).value == "kilometers" )
                         {
                             pathMeasurement.innerHTML = measureUnit[0];
