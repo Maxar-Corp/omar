@@ -15,6 +15,9 @@ import org.hibernate.ScrollableResults
 import org.springframework.beans.factory.InitializingBean
 import java.awt.Polygon
 
+import geoscript.workspace.PostGIS
+import geoscript.filter.Filter
+
 class RasterEntrySearchService implements InitializingBean
 {
   def grailsApplication
@@ -86,12 +89,12 @@ class RasterEntrySearchService implements InitializingBean
     if ( max < 1 ) return null;
     def criteriaBuilder = RasterEntry.createCriteria();
     def x =
-    {
-      projections { property("groundGeom") }
-      firstResult(params.offset as Integer)
-      maxResults(max)
-      cacheMode(CacheMode.GET)
-    }
+      {
+        projections { property("groundGeom") }
+        firstResult(params.offset as Integer)
+        maxResults(max)
+        cacheMode(CacheMode.GET)
+      }
     def criteria = criteriaBuilder.buildCriteria(x)
     criteria.add(rasterEntryQuery?.createClause())
 
@@ -165,9 +168,9 @@ class RasterEntrySearchService implements InitializingBean
   {
     def criteriaBuilder = RasterEntry.createCriteria();
     def x =
-    {
-      projections { rowCount()}
-    }
+      {
+        projections { rowCount()}
+      }
     def criteria = criteriaBuilder.buildCriteria(x)
     criteria.add(rasterEntryQuery?.createClause())
     def totalCount = criteria.list().get(0) as int
@@ -175,30 +178,57 @@ class RasterEntrySearchService implements InitializingBean
   }
 
 
-  def getWmsImageLayers(def layers)
+  def getWmsImageLayers(String[] layerNames)
   {
-    if ( !layers )
+    def layers = null
+
+    if ( layerNames )
     {
-      return null
-    }
-    return RasterEntry.createCriteria().list() {
-      or {
-        layers.each() {name ->
-          if ( name )
-          {
-            try
+      def c = {
+        or {
+          layerNames?.each {name ->
+            if ( name )
             {
-              eq('id', java.lang.Long.valueOf(name))
-            }
-            catch (java.lang.Exception e)
-            {
-              eq('title', name)
-              eq('indexId', name)
+              try
+              {
+                eq('id', java.lang.Long.valueOf(name))
+              }
+              catch (java.lang.Exception e)
+              {
+                eq('title', name)
+                eq('indexId', name)
+              }
             }
           }
         }
       }
+
+      layers = RasterEntry.createCriteria().list(c)
     }
+
+    return layers
+  }
+
+
+  def getWmsImageLayers(String filterText)
+  {
+    def layers = null
+
+    if ( filterText )
+    {
+      def layerName = 'raster_entry'
+      def username = grailsApplication.config.dataSource.username
+      def password = grailsApplication.config.dataSource.password
+      def database = grailsApplication.config.dataSource.url - 'jdbc:postgresql_postGIS:'
+
+      def workspace = new PostGIS([user: username, password: password], database)
+      def layerNames = workspace[layerName]?.getFeatures(new Filter(filterText))?.collect { it.id.split('\\.')[-1] }
+
+      layers = getWmsImageLayers(layerNames as String[])
+      workspace?.close()
+    }
+
+    return layers
   }
 
   def findRasterEntries(def rasterIdList)
