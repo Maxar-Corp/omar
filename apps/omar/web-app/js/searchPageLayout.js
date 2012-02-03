@@ -18,9 +18,9 @@
             minHeight:500,
             units:[
                 { position:'top', height:50, body:'top1', scroll: null, zIndex: 2 },
-                { position:'right', header:'', width:200, resize:true, gutter:'5px', collapse:true, scroll:true, body:'right1', animate:false },
+                { position:'right', header:'', width:200, resize:true, gutter:'0px', collapse:true, scroll:true, body:'right1', animate:false },
                 { position:'bottom', height:25, body:'bottom1' },
-                { position:'left', header:'', width:200, resize:true, body:'left1', gutter:'5px', collapse:true, scroll:true, animate:false },
+                { position:'left', header:'', width:200, resize:true, body:'left1', gutter:'0px', collapse:true, scroll:true, animate:false },
                 { position:'center', minWidth:400, minHeight:200 }
             ]
         } );
@@ -34,7 +34,7 @@
                 units:[
                     { position:'top',  height:35, proxy:false, body:'top2' },
                     { position:'bottom',  height:30, proxy:false, body:'bottom2' },
-                    { position:'center', body:'center2', gutter:'2px' }
+                    { position:'center', body:'center2', gutter:'0px' }
                 ]
             } );
             innerLayout.render();
