@@ -130,8 +130,8 @@ class WebMappingService implements ApplicationContextAware
         }
         def imageRect = wmsView.getViewImageRect()
         def midPoint = imageRect.midPoint()
-        def x = (int) (midPoint.x + 0.5)
-        def y = (int) (midPoint.y + 0.5)
+        def x = (int)(midPoint.x + 0.5)
+        def y = (int)(midPoint.y + 0.5)
         x -= (bounds.width * 0.5);
         y -= (bounds.height * 0.5);
         def w = bounds.width
@@ -339,8 +339,22 @@ class WebMappingService implements ApplicationContextAware
 
   String getCapabilities(def wmsRequest, String serviceAddress)
   {
-    def layerNames = wmsRequest?.layers?.split(',')
-    def layers = applicationContext.getBean("imageDataSearchService").getWmsImageLayers(layerNames)
+    def imageDataSearchService = applicationContext.getBean("imageDataSearchService")
+    def layerNames = wmsRequest?.layers?.split(',')  as String[]
+    def filter = wmsRequest?.filter
+    def layers
+
+    if ( layerNames )
+    {
+      println "layerNames: ${layerNames}"
+      layers = imageDataSearchService?.getWmsImageLayers(layerNames)
+    }
+    else if ( filter )
+    {
+      println "filter: ${filter}"
+      layers = imageDataSearchService?.getWmsImageLayers(filter)
+    }
+
     def wmsCapabilites = new WMSCapabilities(layers, serviceAddress)
 
     return wmsCapabilites.getCapabilities()
@@ -348,8 +362,21 @@ class WebMappingService implements ApplicationContextAware
 
   String getKML(def wmsRequest, String serviceAddress)
   {
-    def layerNames = wmsRequest?.layers?.split(',')
-    def layers = applicationContext.getBean("imageDataSearchService").getWmsImageLayers(layerNames)
+    def imageDataSearchService = applicationContext.getBean("imageDataSearchService")
+    def layerNames = wmsRequest?.layers?.split(',') as String[]
+    def filter = wmsRequest?.filter
+
+    def layers
+
+    if ( layerNames )
+    {
+      layers = imageDataSearchService?.getWmsImageLayers(layerNames)
+    }
+    else if ( filter )
+    {
+      layers = imageDataSearchService?.getWmsImageLayers(filter)
+    }
+
     def wmsCapabilities = new WMSCapabilities(layers, serviceAddress)
 
     return wmsCapabilities.getKML()
