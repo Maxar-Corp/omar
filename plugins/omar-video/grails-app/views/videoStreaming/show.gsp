@@ -9,32 +9,34 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <meta content="generatedViews" name="layout"/>
-  <style type="text/css">
-  #centerid {
-    text-align: center;
-    background-position: center center;
-  }
-  </style>
+  <meta content="showVideoPageLayout" name="layout"/>
+  <r:require modules="showVideoPageLayout"/>
+  <swfobject:resources/>
   <title>OMAR Streaming Video</title>
 </head>
 
-<body>
+<body class="yui-skin-sam">
 
-<content tag="content">
+<content tag="top">
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link
-        url='${createLink(dir: "videoStreaming", action: "getKML", id: params.id)}'>Generate KML</g:link></span>
+    <span class="menuButton">
+      <g:link class="home" uri="/">OMAR™ Home</g:link>
+    </span>
+    <span class="menuButton">
+      <g:link url='${createLink(dir: "videoStreaming", action: "getKML", id: params.id)}'>Generate KML</g:link>
+    </span>
   </div>
+</content>
+<content tag="center">
 
-  <div class="body">
+  <div align="center">
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
     <div id="centerid">
       <h1>${title}</h1>
       <br/>
+
       <div id="test">
         <p>You need <a href="http://www.adobe.com/go/getflashplayer">Flash Player</a>
           installed and JavaScript enabled to play this media.</p>
@@ -42,7 +44,6 @@
     </div>
   </div>
 
-  <g:javascript plugin="swfobject" src="swfobject/swfobject.js"/>
   <g:flashPlayer id="test" varFile="${flvUrl}" width="${videoDataSet.width}" height="${videoDataSet.height}"
                  varAutostart="true"
                  paramAllowFullscreen="true"/>
