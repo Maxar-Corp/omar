@@ -1,162 +1,55 @@
 <%--
   Created by IntelliJ IDEA.
   User: sbortman
-  Date: Sep 26, 2008
-  Time: 11:04:28 AM
+  Date: 1/30/12
+  Time: 3:29 PM
   To change this template use File | Settings | File Templates.
 --%>
 
 <%@ page import="grails.converters.JSON" contentType="text/html;charset=UTF-8" %>
+
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="multiLayerLayout"/>
-
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
-  <meta name="viewport" content="minimum-scale=1.0, width=device-width, maximum-scale=1.6, user-scalable=no">
-
-  <title>OMAR <g:meta name="app.version"/>: Ground Space Multi-Viewer</title>
-
-  <style type="text/css">
-  #map {
-    width: 100%;
-    height: 100%;
-    border: 1px solid black;
-  }
-
-  #homeMenu {
-    background: url(../images/skin/house.png) left no-repeat;
-    z-index: 99999;
-  }
-
-  #exportMenu, #viewMenu {
-    z-index: 99999;
-  }
-
-  div.olControlMousePosition {
-    font-family: Verdana;
-    font-size: 1.0em;
-    background-color: white;
-    color: black;
-  }
-
-  div.olControlScale {
-    background-color: #ffffff;
-    font-size: 1.0em;
-    font-weight: bold;
-  }
-
-    /*
-    #config {
-      margin-top: 1em;
-      width: 1024px;
-      position: relative;
-      height: 8em;
-    }
-    */
-
-  #controls {
-    padding-left: 2em;
-    margin-left: 0;
-    width: 12em;
-  }
-
-  #controls li {
-    padding-top: 0.5em;
-    list-style: none;
-  }
-
-  </style>
-
+  <title>OMAR <g:meta name="app.version"/>: Multi-Layer View</title>
+  <meta content="multiLayerLayout" name="layout">
+  <r:require modules="multiLayerLayout"/>
 </head>
 
-<body class="yui-skin-sam" onload="init();">
-<content tag="top">
-  <form id="wcsForm" method="POST">
-  </form>
+<body class=" yui-skin-sam">
 
-  <div id="rasterMenu" class="yuimenubar yuimenubarnav">
-    <div class="bd">
-      <ul class="first-of-type">
-
-        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" id="homeMenu"
-                                                    href="${createLink(controller: 'home', action: 'index')}"
-                                                    title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
-        </li>
-
-        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
-
-          <div id="exportMenu" class="yuimenu">
-            <div class="bd">
-              <ul>
-
-                <li class="yuimenuitem"><a class="yuimenuitemlabel"
-                                           href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.id).join(',')])}"
-                                           title="Show OGC WMS Capabilities">OGC WMS Capabilities</a></li>
-                <li class="yuimenuitem"><a class="yuimenuitemlabel"
-                                           href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: (rasterEntries*.id).join(',')])}"
-                                           title="Export KML">KML</a></li>
-
-              </ul>
-              <ul>
-                <li class="yuimenuitem"><a class="yuimenuitemlabel"
-                                           href="javascript:getProjectedImage({'format':'image/jpeg', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})"
-                                           title="Export Jpeg">Jpeg</a></li>
-                <li class="yuimenuitem"><a class="yuimenuitemlabel"
-                                           href="javascript:getProjectedImage({'format':'geotiff', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})"
-                                           title="Export Geotiff">Geotiff</a></li>
-                <li class="yuimenuitem"><a class="yuimenuitemlabel"
-                                           href="javascript:getProjectedImage({'format':'geotiff_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})"
-                                           title="Export Geotiff 8-Bit">Geotiff 8-Bit</a></li>
-                <li class="yuimenuitem"><a class="yuimenuitemlabel"
-                                           href="javascript:getProjectedImage({'format':'geojp2', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})"
-                                           title="Export Geo Jpeg 2000">Geo Jpeg 2000</a></li>
-                <li class="yuimenuitem"><a class="yuimenuitemlabel"
-                                           href="javascript:getProjectedImage({'format':'geojp2_uint8', 'crs':'EPSG:4326', 'coverage':'${(rasterEntries*.indexId).join(',')}'})"
-                                           title="Export Geo Jpeg 2000 8-Bit">Geo Jpeg 2000 8-Bit</a></li>
-              </ul>
-            </div>
-          </div>
-        </li>
-
-        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
-
-          <div id="viewMenu" class="yuimenu">
-            <div class="bd">
-              <ul>
-                <li class="yuimenuitem"><a class="yuimenuitemlabel"
-                                           href="${createLink(controller: 'mapView', action: 'index', params: [layers: (rasterEntries*.indexId).join(',')])}"
-                                           title="Ground Space Viewer">Ground Space</a></li>
-                <g:if test="${rasterEntries?.size() == 1}">
-                  <li class="yuimenuitem"><a class="yuimenuitemlabel"
-                                             href="${createLink(controller: 'mapView', action: 'imageSpace', params: [layers: (rasterEntries*.indexId).join(',')])}"
-                                             title="Image Space Viewer (Rotate)">Image Space (Rotate)</a></li>
-                </g:if>
-
-              </ul>
-            </div>
-          </div>
-        </li>
-
-        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel"
-                                                    href="${createLink(controller: 'mapView', action: 'imageSpace', params: [layers: (rasterEntries*.indexId).join(',')])}">Image Space (Rotate)</a>
-        </li>
-
-      </ul>
-    </div>
-  </div>
-
-</content>
-<content tag="center">
-  <%--
-  <h1 id="mapTitle">${rasterEntries*.mainFile.name}</h1>
-  <g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
-  </g:if>
-  --%>
+<content tag="top1">
+  <omar:securityClassificationBanner/>
+  <g:render template="multiLayerMenu" model="${[rasterEntries: rasterEntries]}"/>
 </content>
 
+<content tag="bottom1">
+  <omar:securityClassificationBanner/>
+</content>
+
+<%--
+<content tag="right1">
+</content>
+
+<content tag="left1">
+</content>
+--%>
+
+<content tag="top2">
+  <div id="toolBar" class="olControlPanel"></div>
+</content>
+
+<content tag="bottom2">
+  <table><tr>
+    <td width="33%"><div id="ddMousePosition">&nbsp;</div></td>
+    <td width="33%"><div id="dmsMousePosition">&nbsp;</div></td>
+    <td width="33%"><div id="mgrsMousePosition">&nbsp;</div></td>
+  </tr></table>
+</content>
+
+<content tag="center2">
+  <div id="map"></div>
+</content>
 
 <r:script>
   var mapWidget = new MapWidget();
@@ -259,19 +152,20 @@
     </g:if>
   </g:each>
   ];
+
     mapWidget.getMap().addLayers( layers );
     mapWidget.setupAoiLayer();
-	mapWidget.setupToolBar();
+    mapWidget.setupToolBar();
 
-	mapWidget.getMap().addControl(new OpenLayers.Control.LayerSwitcher());
-	//var overview = new OpenLayers.Control.OverviewMap({maximized: true});
+    mapWidget.getMap().addControl(new OpenLayers.Control.LayerSwitcher());
+    //var overview = new OpenLayers.Control.OverviewMap({maximized: true});
     //mapWidget.getMap().addControl(overview);
-	mapWidget.getMap().addControl(new OpenLayers.Control.Scale());
-	mapWidget.getMap().addControl(new OpenLayers.Control.ScaleLine());
+    mapWidget.getMap().addControl(new OpenLayers.Control.Scale());
+    mapWidget.getMap().addControl(new OpenLayers.Control.ScaleLine());
 
-  	var zoom = mapWidget.getMap().getZoomForExtent(bounds, true);
-	mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
-  }
+    var zoom = mapWidget.getMap().getZoomForExtent(bounds, true);
+    mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
+}
 
 function getProjectedImage(params)
 {
