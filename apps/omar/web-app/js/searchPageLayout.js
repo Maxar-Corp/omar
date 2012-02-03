@@ -17,7 +17,7 @@
             minWidth:1000,
             minHeight:500,
             units:[
-                { position:'top', height:50, body:'top1' },
+                { position:'top', height:50, body:'top1', scroll: null, zIndex: 2 },
                 { position:'right', header:'', width:200, resize:true, gutter:'5px', collapse:true, scroll:true, body:'right1', animate:false },
                 { position:'bottom', height:25, body:'bottom1' },
                 { position:'left', header:'', width:200, resize:true, body:'left1', gutter:'5px', collapse:true, scroll:true, animate:false },
@@ -66,5 +66,5 @@
 
 var bodyOnResize = function ()
 {
-    omar.changeMapSize();
+   // omar.changeMapSize();
 };
