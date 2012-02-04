@@ -249,6 +249,10 @@
                 src="${resource(plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
           </div>
         </li>
+          <button id="upIsUpButtonId" type="button"
+               onclick="javascript:upIsUp()">up-is-up</button>
+          <button id="northUp" type="button"
+               onclick="javascript:northUp()">northUp</button>
       </li>
       </ol>
     </div>
@@ -259,7 +263,8 @@
 <content tag="bottom"></content>
 
 <r:script>
-            var azimuthAngle;
+            var northAngle = parseFloat("${rasterEntry.azimuthAngle}");
+            var upIsUpRotation   =  parseFloat("${upIsUpRotation}");
             var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
             var compassImage;
             var compassMap;
@@ -289,7 +294,6 @@
             var rotateSlider = YAHOO.widget.Slider.getHorizSlider("slider-rotate-bg",  "slider-rotate-thumb", 0, 120, 1);
             var rotationAngle = ${"rotateAngle"}.value;
             var zoomInButton;
-
             function changeBandsOpts()
             {
                 var bands = $("bands").value;
@@ -633,8 +637,17 @@
 compassMap.addLayer(compassVectorLayer);
 
 // define the marker for the image to sit on
-compassImage = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0), {angle: 0});
+compassImage = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0), {angle: -northAngle});
 compassVectorLayer.addFeatures([compassImage]);
+}
+
+function northUp()
+{
+   rotateSlider.setRealValue(northAngle);
+}
+function upIsUp()
+{
+   rotateSlider.setRealValue(upIsUpRotation);
 }
 
 function setupToolbar()
@@ -674,22 +687,17 @@ function sliderRotate(sliderValue)
 {
 // remove all previous images
 resetImageVectorLayer();
-
-// calculate the rotation angle taking into account North is Up
-rotationAngle = 360 - parseInt(sliderValue) + Math.round(${rasterEntry.azimuthAngle});
-
-                // ensure the value of the rotation is normalized such that North is Up is 0
-${"rotateAngle"}.value = 360 - rotationAngle + Math.round(${rasterEntry.azimuthAngle});
-
+            rotationAngle = 360 - parseInt(sliderValue)
+                  ${"rotateAngle"}.value = sliderValue;
                 // remove the image from the map so it can be rotated
 	            compassVectorLayer.removeFeatures([compassImage]);
 	            imageVectorLayer.removeFeatures([image]);
 
 	            // redefine the marker with the new rotation angle
-	            compassImage = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0, 0), {angle: -(rotationAngle + Math.round(${rasterEntry.azimuthAngle}))});
+	            compassImage = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0, 0), {angle: (-northAngle)+sliderValue});
 	            compassVectorLayer.addFeatures([compassImage]);
 
-	            image = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(currentMapCenterX, currentMapCenterY), {urlPath: imageURL, imageWidth: imageHypotenuse, imageHeight: imageHypotenuse, angle: -rotationAngle});
+                 image = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(currentMapCenterX, currentMapCenterY), {urlPath: imageURL, imageWidth: imageHypotenuse, imageHeight: imageHypotenuse, angle: sliderValue});
 	            imageVectorLayer.addFeatures([image]);
             }
 
@@ -756,14 +764,19 @@ ${"rotateAngle"}.value = 360 - rotationAngle + Math.round(${rasterEntry.azimuthA
                 imageURL = getImageURL();
 
                 // calculate the image size so there are no gaps while rotating
-                imageHypotenuse = Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2)));
+                imageHypotenuse = Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) +
+                                                       Math.pow(map.getCurrentSize().h, 2)));
 
                 // get the current map center which is where the image will go
 	            currentMapCenterX = map.getCenter().lon;
 	            currentMapCenterY = map.getCenter().lat;
 
                 // define the marker for the image to sit on
-                image = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(currentMapCenterX, currentMapCenterY), {urlPath: imageURL, imageWidth: imageHypotenuse, imageHeight: imageHypotenuse, angle: -rotationAngle});
+                image = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(currentMapCenterX, currentMapCenterY),
+                                                     {urlPath: imageURL,
+                                                      imageWidth: imageHypotenuse,
+                                                      imageHeight: imageHypotenuse,
+                                                      angle: $("rotateAngle").value});
 	            imageVectorLayer.addFeatures([image]);
 
                 // set the map center coordinate variables to be used the next time the map is moved

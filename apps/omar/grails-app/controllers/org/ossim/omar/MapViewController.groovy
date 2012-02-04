@@ -1,6 +1,7 @@
 package org.ossim.omar
 
 import org.springframework.beans.factory.InitializingBean
+import joms.oms.ImageModel
 
 import javax.media.jai.JAI
 
@@ -176,10 +177,13 @@ class MapViewController implements InitializingBean
     //println "${[width: width, height: height, inputFile: inputFile, entry: rasterEntry.entryId]}"
 
     def model = [:]
-
-//    model.width = rasterEntry?.width
-//    model.height = rasterEntry?.height
-//    model.numRLevels = rasterEntry.numberOfResLevels
+    def imageSpaceModel = new ImageModel();
+    if(imageSpaceModel.setModelFromFile(inputFile, rasterEntry.entryId as Integer))
+    {
+        model.upIsUpRotation = imageSpaceModel.upIsUpRotation();
+        imageSpaceModel.destroy()
+        imageSpaceModel.delete()
+    }
     model.rasterEntry = rasterEntry
     return model
   }
