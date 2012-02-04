@@ -250,9 +250,11 @@
           </div>
         </li>
           <button id="upIsUpButtonId" type="button"
-               onclick="javascript:upIsUp()">up-is-up</button>
+               onclick="javascript:rotateSlider.setRealValue(0)">sensor-up</button>
+          <button id="upIsUpButtonId" type="button"
+               onclick="javascript:rotateSlider.setRealValue(upIsUpRotation)">up-is-up</button>
           <button id="northUp" type="button"
-               onclick="javascript:northUp()">northUp</button>
+               onclick="javascript:rotateSlider.setRealValue(northAngle);">north-up</button>
       </li>
       </ol>
     </div>
@@ -639,15 +641,6 @@ compassMap.addLayer(compassVectorLayer);
 // define the marker for the image to sit on
 compassImage = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0), {angle: -northAngle});
 compassVectorLayer.addFeatures([compassImage]);
-}
-
-function northUp()
-{
-   rotateSlider.setRealValue(northAngle);
-}
-function upIsUp()
-{
-   rotateSlider.setRealValue(upIsUpRotation);
 }
 
 function setupToolbar()
