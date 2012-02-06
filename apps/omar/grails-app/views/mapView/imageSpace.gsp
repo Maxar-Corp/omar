@@ -41,7 +41,7 @@
 
   #slider-rotate-bg {
     background: url(${resource(plugin: 'yui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
-    width: 140px;
+    width: 180px;
   }
 
   div.olControlMousePosition {
@@ -229,7 +229,7 @@
                 id="bands"
                 name="bands"
                 value="${params.bands ?: '0,1,2'}"
-                from="${['0,1,2', '2,1,0', '0', '1', '2']}"
+                from="${['0,1,2', '2,1,0', '1,0,2','1,2,0','2,0,1','0,2,1','0', '1', '2']}"
                 onChange="changeBandsOpts()"
                 style="background: black; color: white"/>
           </li>
@@ -249,12 +249,14 @@
                 src="${resource(plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
           </div>
         </li>
+          <div align="center">
           <button id="upIsUpButtonId" type="button"
-               onclick="javascript:rotateSlider.setRealValue(0)">sensor-up</button>
+               onclick="javascript:rotateSlider.setRealValue(0)">Reset</button>
           <button id="upIsUpButtonId" type="button"
-               onclick="javascript:rotateSlider.setRealValue(upIsUpRotation)">up-is-up</button>
+               onclick="javascript:rotateSlider.setRealValue(northAngle)">North</button>
           <button id="northUp" type="button"
-               onclick="javascript:rotateSlider.setRealValue(northAngle);">north-up</button>
+               onclick="javascript:rotateSlider.setRealValue(upIsUpRotation);">Up</button>
+              </div>
       </li>
       </ol>
     </div>
@@ -293,7 +295,7 @@
             var oldZoomLevel;
             var omarImageSpaceOpenLayersParams = new  OmarImageSpaceOpenLayersParams();
             var resLevels = parseFloat("${rasterEntry.numberOfResLevels}");
-            var rotateSlider = YAHOO.widget.Slider.getHorizSlider("slider-rotate-bg",  "slider-rotate-thumb", 0, 120, 1);
+            var rotateSlider = YAHOO.widget.Slider.getHorizSlider("slider-rotate-bg",  "slider-rotate-thumb", 0, 180, 1);
             var rotationAngle = ${"rotateAngle"}.value;
             var zoomInButton;
             function changeBandsOpts()
@@ -552,8 +554,8 @@
 	            contrastSlider.setRealValue(${params.contrast ?: 1});
 
 	            rotateSlider.animate = false;
-	            rotateSlider.getRealValue = function() { return this.getValue() * 3; }
-                rotateSlider.setRealValue = function(value) { this.setValue(Math.ceil(value / 3)); }
+	            rotateSlider.getRealValue = function() { return this.getValue() * 2; }
+                rotateSlider.setRealValue = function(value) { this.setValue(Math.ceil((value%360.0) / 2)); }
                 rotateSlider.subscribe("change", function() { sliderRotate(this.getRealValue()); });
                 rotateSlider.setRealValue(rotationAngle);
 
