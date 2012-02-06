@@ -16,23 +16,25 @@ class WMSQuery extends BaseQuery
   def bbox
   def layers
   def max
+
   WMSQuery()
   {
     super()
     filterTypeMap = org.ossim.omar.Utility.createTypeMap(RasterEntry.class) +
-                    org.ossim.omar.Utility.createTypeMap(VideoDataSet.class) 
+            org.ossim.omar.Utility.createTypeMap(VideoDataSet.class)
 
   }
-  def createDateRangeRestrictionRaster(def columnName="acquisitionDate")
+
+  def createDateRangeRestrictionRaster(def columnName = "acquisitionDate")
   {
     def dateColumnName = columnName
     def disj = Restrictions.disjunction();
 
     def intervals = ISO8601DateParser.parseOgcTimeIntervals(time)
-    intervals.each{interval->
+    intervals.each {interval ->
       def startDate = new Date(interval.getStart().getMillis());
-      def endDate   = new Date(interval.getEnd().getMillis());
-      if(interval.toDurationMillis() == 0)
+      def endDate = new Date(interval.getEnd().getMillis());
+      if ( interval.toDurationMillis() == 0 )
       {
         def range = null
 
@@ -44,17 +46,19 @@ class WMSQuery extends BaseQuery
       else
       {
         disj.add(Restrictions.and(Restrictions.ge(dateColumnName, startDate),
-                                  Restrictions.le(dateColumnName, endDate)
-                                 )
-                )
+                Restrictions.le(dateColumnName, endDate)
+        )
+        )
       }
     }
     return disj
   }
+
   def createVideoClause()
   {
-    
+
   }
+
   Criterion createIntersection(String geomColumnName = "groundGeom")
   {
     if ( bbox )
@@ -69,38 +73,39 @@ class WMSQuery extends BaseQuery
 
     return super.createIntersection(geomColumnName)
   }
+
   def createRasterClause()
   {
     def names = []
-    if(layers)
+    if ( layers )
     {
       layers.split(',').each
-      {
-        names.add(it)
-      }
+              {
+                names.add(it)
+              }
     }
     def baseClause = super.createClause()
 
     def result = null
-    if(baseClause instanceof org.hibernate.criterion.Conjunction)
+    if ( baseClause instanceof org.hibernate.criterion.Conjunction )
     {
       result = baseClause
     }
     else
     {
-      result =  Restrictions.conjunction();
-      if(baseClause)
+      result = Restrictions.conjunction();
+      if ( baseClause )
       {
         result.add(baseClause)
       }
     }
 
     def geomIntersect = createIntersection()
-    if(geomIntersect)
+    if ( geomIntersect )
     {
       result.add(geomIntersect)
     }
-    if(names.size()>0)
+    if ( names.size() > 0 )
     {
       def disj = Restrictions.disjunction();
       names.each() {name ->
@@ -118,41 +123,42 @@ class WMSQuery extends BaseQuery
       result.add(disj)
     }
     def dateIntersect = createDateRangeRestrictionRaster()
-    if(dateIntersect)
+    if ( dateIntersect )
     {
       result.add(dateIntersect)
     }
 
     return result
   }
+
   def getRasterEntriesAsList()
   {
-    def names = layers?layers.split(","):[]
+    def names = layers ? layers.split(",") : []
     def layersCopy = layers
     def tempMax = 10
     try
     {
       tempMax = Integer.valueOf(max);
     }
-    catch(Exception e)
+    catch (Exception e)
     {
       tempMax = 10;
     }
     def result = []
-    if(names.size() > 0)
+    if ( names.size() > 0 )
     {
       // we must query layer results individually
-      names.each{name->
+      names.each {name ->
         layers = name
-        def tempRasterEntry = RasterEntry.createCriteria().list{
-                                      maxResults(tempMax)
-                                      addToCriteria(createRasterClause())
-                                      }
-        if(tempRasterEntry)
+        def tempRasterEntry = RasterEntry.createCriteria().list {
+          maxResults(tempMax)
+          addToCriteria(createRasterClause())
+        }
+        if ( tempRasterEntry )
         {
-          tempRasterEntry.each{
+          tempRasterEntry.each {
             result.add(it)
-            if(result.size() >= tempMax)
+            if ( result.size() >= tempMax )
             {
               return result
             }
@@ -162,26 +168,26 @@ class WMSQuery extends BaseQuery
     }
     else
     {
-        def ordering = null
-        if(order&&sort)
-        {
-            ordering = (order == "asc") ? Order.asc(sort) : Order.desc(sort)
-        }
-        def tempRasterEntry = RasterEntry.createCriteria().list{
-                                      maxResults(tempMax)
-                                      addToCriteria(createRasterClause())
-                                      if(ordering) addOrder(ordering)
-                                      }
-        if(tempRasterEntry)
-        {
-          tempRasterEntry.each{
-            result.add(it)
-            if(result.size() >= tempMax)
-            {
-              return result
-            }
+      def ordering = null
+      if ( order && sort )
+      {
+        ordering = (order == "asc") ? Order.asc(sort) : Order.desc(sort)
+      }
+      def tempRasterEntry = RasterEntry.createCriteria().list {
+        maxResults(tempMax)
+        addToCriteria(createRasterClause())
+        if ( ordering ) addOrder(ordering)
+      }
+      if ( tempRasterEntry )
+      {
+        tempRasterEntry.each {
+          result.add(it)
+          if ( result.size() >= tempMax )
+          {
+            return result
           }
         }
+      }
       // we will add support for a general query that is similar to the last 10 or last N images.
     }
     layers = layersCopy

@@ -120,7 +120,7 @@
 	var bounds = new OpenLayers.Bounds(minLon, minLat, maxLon, maxLat);
 
 	//mapWidget = new MapWidget();
-	mapWidget.setupMapWidgetWithOptions("map", {controls: []/*,  displayOutsideMaxExtent:true, maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale*/});
+	mapWidget.setupMapWidgetWithOptions("map", {controls: [], theme: null/*,  displayOutsideMaxExtent:true, maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale*/});
 	mapWidget.setFullResScale(parseFloat("${fullResScale}"));
     mapWidget.changeMapSize();
     //map = new OpenLayers.Map( "map", {controls: [], maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale} );
