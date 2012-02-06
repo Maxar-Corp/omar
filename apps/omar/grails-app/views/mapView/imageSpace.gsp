@@ -229,7 +229,7 @@
                 id="bands"
                 name="bands"
                 value="${params.bands ?: '0,1,2'}"
-                from="${['0,1,2', '2,1,0', '1,0,2','1,2,0','2,0,1','0,2,1','0', '1', '2']}"
+                from="${['0,1,2', '2,1,0', '1,0,2', '1,2,0', '2,0,1', '0,2,1', '0', '1', '2']}"
                 onChange="changeBandsOpts()"
                 style="background: black; color: white"/>
           </li>
@@ -249,14 +249,15 @@
                 src="${resource(plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif')}"></div>
           </div>
         </li>
-          <div align="center">
+
+        <div align="center">
           <button id="upIsUpButtonId" type="button"
-               onclick="javascript:rotateSlider.setRealValue(0)">Reset</button>
+                  onclick="javascript:rotateSlider.setRealValue( 0 )">Reset</button>
           <button id="upIsUpButtonId" type="button"
-               onclick="javascript:rotateSlider.setRealValue(northAngle)">North</button>
+                  onclick="javascript:rotateSlider.setRealValue( northAngle )">North</button>
           <button id="northUp" type="button"
-               onclick="javascript:rotateSlider.setRealValue(upIsUpRotation);">Up</button>
-              </div>
+                  onclick="javascript:rotateSlider.setRealValue( upIsUpRotation );">Up</button>
+        </div>
       </li>
       </ol>
     </div>
@@ -683,7 +684,7 @@ function sliderRotate(sliderValue)
 // remove all previous images
 resetImageVectorLayer();
             rotationAngle = 360 - parseInt(sliderValue)
-                  ${"rotateAngle"}.value = sliderValue;
+${"rotateAngle"}.value = sliderValue;
                 // remove the image from the map so it can be rotated
 	            compassVectorLayer.removeFeatures([compassImage]);
 	            imageVectorLayer.removeFeatures([image]);

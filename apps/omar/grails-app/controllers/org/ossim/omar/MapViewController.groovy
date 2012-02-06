@@ -1,8 +1,6 @@
 package org.ossim.omar
 
 import org.springframework.beans.factory.InitializingBean
-import joms.oms.ImageModel
-
 import javax.media.jai.JAI
 
 class MapViewController implements InitializingBean
@@ -12,6 +10,8 @@ class MapViewController implements InitializingBean
   def baseWMS
   def dataWMS
   def webMappingService
+  def imageSpaceService
+  def rasterEntrySearchService
 
   def afterInterceptor = { model, modelAndView ->
     if ( request['isMobile'] )
@@ -29,7 +29,7 @@ class MapViewController implements InitializingBean
 
       rasterEntries = query.getRasterEntriesAsList()
 
-      if(!rasterEntries)
+      if ( !rasterEntries )
       {
         render "Alert: No raster matched with layer param: " + params.layers
         return
@@ -39,10 +39,10 @@ class MapViewController implements InitializingBean
     def kmlOverlays = []
 
     rasterEntries.each { rasterEntry ->
-      if((rasterEntry.validModel != null)&&
-         (rasterEntry.validModel<1))
+      if ( (rasterEntry.validModel != null) &&
+              (rasterEntry.validModel < 1) )
       {
-          flash.message = "Valid rigorous model is not supported defaulting to a simple model."
+        flash.message = "Valid rigorous model is not supported defaulting to a simple model."
       }
       def overlays = RasterEntryFile.findAllByTypeAndRasterEntry("kml", rasterEntry)
       overlays?.each {overlay ->
@@ -104,7 +104,7 @@ class MapViewController implements InitializingBean
 
       rasterEntries = query.getRasterEntriesAsList()
 
-      if(!rasterEntries)
+      if ( !rasterEntries )
       {
         render "Alert: No raster matched with layer param: " + params.layers
         return
@@ -135,57 +135,26 @@ class MapViewController implements InitializingBean
   }
 
   def imageSpace = {
-    WMSQuery query = new WMSQuery();
-    def rasterEntries = []
-    if ( params.layers )
+
+    def layers = params?.layers?.split(',')
+    def rasterEntries = rasterEntrySearchService.findRasterEntries(layers)
+
+
+    if ( rasterEntries )
     {
-      query.layers = params.layers
+      def rasterEntry = rasterEntries?.first()
 
-      rasterEntries = query.getRasterEntriesAsList()
+      def model = [
+              rasterEntry: rasterEntry,
+              upIsUpRotation: imageSpaceService?.computeUpIsUp(rasterEntry.mainFile.name, rasterEntry.entryId as Integer)
+      ]
 
-      if(!rasterEntries)
-      {
-        render "Alert: No raster matched with layer param: " + params.layers
-        return
-      }
+      return model
     }
-
-    def rasterEntry = RasterEntry.findByIndexId(params.layers) ?: RasterEntry.get(params.layers)
-
-    def inputFile = rasterEntry.mainFile.name
-    def width
-    def height
-
-    def mode = "OSSIM"
-
-    switch ( mode )
+    else
     {
-    case "JAI":
-      def image = JAI.create("imageread", inputFile)
-      width = image.width
-      height = image.height
-      break
-
-    case "OSSIM":
-
-      width = rasterEntry?.width
-      height = rasterEntry?.height
-
-      break
+      render contentType: 'text/plain', text: "Alert: No raster matched with layer param: ${layers}"
     }
-
-    //println "${[width: width, height: height, inputFile: inputFile, entry: rasterEntry.entryId]}"
-
-    def model = [:]
-    def imageSpaceModel = new ImageModel();
-    if(imageSpaceModel.setModelFromFile(inputFile, rasterEntry.entryId as Integer))
-    {
-        model.upIsUpRotation = imageSpaceModel.upIsUpRotation();
-        imageSpaceModel.destroy()
-        imageSpaceModel.delete()
-    }
-    model.rasterEntry = rasterEntry
-    return model
   }
 
   public void afterPropertiesSet()
@@ -235,8 +204,7 @@ class MapViewController implements InitializingBean
 
   }
 
-  def shareLink =
-  {
-      render(view: 'imageLink')
+  def shareLink = {
+    render(view: 'imageLink')
   }
 }
