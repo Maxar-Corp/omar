@@ -40,6 +40,7 @@
             } );
             innerLayout.render();
             init();
+            bodyOnResize();
             Dom.setStyle( document.body, 'visibility', 'visible' );
         } );
         outerLayout.render();
@@ -67,5 +68,5 @@
 
 var bodyOnResize = function ()
 {
-    // omar.changeMapSize();
+    mapWidget.getMap().updateSize();
 };
