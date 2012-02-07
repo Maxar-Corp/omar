@@ -1,0 +1,61 @@
+/*
+margin and padding on body element
+can introduce errors in determining
+element position and are not recommended;
+we turn them off as a foundation for YUI
+CSS treatments.
+*/
+body {
+    margin: 0;
+    padding: 0;
+    visibility: hidden;
+    overflow: hidden;
+    background: black;
+    color: white;
+}
+
+#compassMap {
+    height: 75;
+    width: 75;
+}
+
+#exportMenu, #viewMenu {
+    z-index: 99999;
+}
+
+#homeMenu {
+    background: url(../images/skin/house.png) left no-repeat;
+    z-index: 99999;
+}
+
+/*
+#map {
+    border: 1px solid black;
+    height: 100%;
+    width: 100%;
+}
+*/
+
+div.olControlMousePosition {
+    background-color: white;
+    color: black;
+    font-family: Verdana;
+    font-size: 1.0em;
+}
+
+div.olControlScale {
+    background-color: #ffffff;
+    font-size: 1.0em;
+    font-weight: bold;
+}
+
+#controls {
+    margin-left: 0;
+    padding-left: 2em;
+    width: 12em;
+}
+
+#controls li {
+    list-style: none;
+    padding-top: 0.5em;
+}
