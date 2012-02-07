@@ -167,10 +167,9 @@ class RasterEntrySearchService implements InitializingBean
   int getCount(RasterEntryQuery rasterEntryQuery)
   {
     def criteriaBuilder = RasterEntry.createCriteria();
-    def x =
-      {
-        projections { rowCount()}
-      }
+    def x = {
+      projections { rowCount() }
+    }
     def criteria = criteriaBuilder.buildCriteria(x)
     criteria.add(rasterEntryQuery?.createClause())
     def totalCount = criteria.list().get(0) as int
@@ -180,33 +179,7 @@ class RasterEntrySearchService implements InitializingBean
 
   def getWmsImageLayers(String[] layerNames)
   {
-    def layers = null
-
-    if ( layerNames )
-    {
-      def c = {
-        or {
-          layerNames?.each {name ->
-            if ( name )
-            {
-              try
-              {
-                eq('id', java.lang.Long.valueOf(name))
-              }
-              catch (java.lang.Exception e)
-              {
-                eq('title', name)
-                eq('indexId', name)
-              }
-            }
-          }
-        }
-      }
-
-      layers = RasterEntry.createCriteria().list(c)
-    }
-
-    return layers
+    return findRasterEntries(layerNames)
   }
 
 
