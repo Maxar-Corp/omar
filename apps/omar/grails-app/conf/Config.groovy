@@ -133,7 +133,7 @@ log4j = {
 
 /** *********************************************************************************************************/
 wms {
-  referenceDataDirectory = "/data/omar"
+  referenceDataDirectory = "/data/"
   mapServExt = (System.properties['os.name'].startsWith('Windows')) ? ".exe" : ""
   serverAddress = grails.serverIP
   useTileCache = false
