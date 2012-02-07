@@ -191,7 +191,7 @@
                 var imageWidth = map.getCurrentSize().w;
                 var imageHeight = map.getCurrentSize().h;
 
-                document.location.href = "${createLink(controller: 'ogc', action: 'chip')}" + "?" + imageParams + "&type=tile" + "&angle=" + rotationAngle + "&imageHeight=" + map.getCurrentSize().h + "&imageWidth=" + map.getCurrentSize().w + "&format=" + tempFormat;
+                document.location.href = "${createLink(controller: 'ogc', action: 'chip')}" + "?" + imageParams + "&type=tile" + "&angle=" + ${"rotateAngle"}.value + "&imageHeight=" + map.getCurrentSize().h + "&imageWidth=" + map.getCurrentSize().w + "&format=" + tempFormat;
             }
 
             function getImageURL()
