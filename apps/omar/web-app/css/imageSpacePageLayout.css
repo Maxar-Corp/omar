@@ -10,8 +10,6 @@ body {
     padding: 0;
     visibility: hidden;
     overflow: hidden;
-    background: black;
-    color: white;
 }
 
 #compassMap {
@@ -28,34 +26,4 @@ body {
     z-index: 99999;
 }
 
-/*
-#map {
-    border: 1px solid black;
-    height: 100%;
-    width: 100%;
-}
-*/
 
-div.olControlMousePosition {
-    background-color: white;
-    color: black;
-    font-family: Verdana;
-    font-size: 1.0em;
-}
-
-div.olControlScale {
-    background-color: #ffffff;
-    font-size: 1.0em;
-    font-weight: bold;
-}
-
-#controls {
-    margin-left: 0;
-    padding-left: 2em;
-    width: 12em;
-}
-
-#controls li {
-    list-style: none;
-    padding-top: 0.5em;
-}
