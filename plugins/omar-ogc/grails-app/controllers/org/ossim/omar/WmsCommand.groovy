@@ -87,7 +87,11 @@ class WmsCommand {
                 if(val)
                 {
                     try{
-                        Integer.parseInt(val)
+                        def test = Integer.parseInt(val)
+                        if(test<1)
+                        {
+                            message = "WIDTH parameter invalid.  WIDTH is smaller than 1"
+                        }
                     }
                     catch(Exception e)
                     {
@@ -108,7 +112,11 @@ class WmsCommand {
               if(val)
               {
                   try{
-                      Integer.parseInt(val)
+                      def test = Integer.parseInt(val)
+                      if(test<1)
+                      {
+                          message = "HEIGHT parameter invalid.  HEIGHT is smaller than 1"
+                      }
                   }
                   catch(Exception e)
                   {
