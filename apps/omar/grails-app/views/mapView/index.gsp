@@ -54,24 +54,25 @@
 
 
 <r:script>
-var coordConvert = new CoordinateConversion();
+var coordConvert;
 var mapWidget;
 var kmlLayers;
 var rasterLayers;
 var select;
-var wcsParams = new OmarWcsParams();
+var wcsParams;
 
 //var fullResScale = parseFloat("${fullResScale}");
-var minLon = parseFloat("${left}");
-var minLat = parseFloat("${bottom}");
-var maxLon = parseFloat("${right}");
-var maxLat = parseFloat("${top}");
+var minLon;
+var minLat;
+var maxLon;
+var maxLat;
 
-var largestScale = parseFloat("${largestScale}");
-var smallestScale = parseFloat("${smallestScale}");
+var largestScale;
+var smallestScale;
 
-var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
-var contrastSlider= YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
+var brightnessSlider;
+var contrastSlider;
+
 function changeToImageSpace()
 {
    var url = "${createLink(controller: 'mapView', action: 'imageSpace')}";
@@ -101,9 +102,25 @@ function resetMapCenter()
 
 }
 
-function init()
+function init(mapWidth, mapHeight)
 {
     OpenLayers.ImgPath = "${resource(plugin: 'openlayers', dir: 'js/img')}/";
+
+    coordConvert = new CoordinateConversion();
+    wcsParams = new OmarWcsParams();
+
+  //var fullResScale = parseFloat("${fullResScale}");
+  minLon = parseFloat("${left}");
+  minLat = parseFloat("${bottom}");
+  maxLon = parseFloat("${right}");
+  maxLat = parseFloat("${top}");
+
+  largestScale = parseFloat("${largestScale}");
+  smallestScale = parseFloat("${smallestScale}");
+
+  brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
+  contrastSlider= YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
+
 
     var oMenu = new YAHOO.widget.MenuBar("rasterMenu", {
                                                 autosubmenudisplay: true,
@@ -182,9 +199,9 @@ function init()
 	var bounds = new OpenLayers.Bounds(minLon, minLat, maxLon, maxLat);
 
 	mapWidget = new MapWidget();
-	mapWidget.setupMapWidgetWithOptions("map", {controls: [], maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale});
+	mapWidget.setupMapWidgetWithOptions("map", {controls: [], maxExtent:bounds, theme: null, maxResolution:largestScale, minResolution:smallestScale});
 	mapWidget.setFullResScale(parseFloat("${fullResScale}"));
-  mapWidget.changeMapSize();
+  changeMapSize(mapWidth, mapHeight);
 
 
 	setupLayers();
@@ -413,11 +430,11 @@ function changeMapSize(mapWidth, mapHeight)
 	{
 		var Dom = YAHOO.util.Dom;
 
-		Dom.get("map").style.width  = mapWidth + "px";
-		Dom.get("map").style.height = mapHeight + "px";
-	}
+		Dom.setStyle("map", 'width',  mapWidth);
+		Dom.setStyle("map", 'height', mapHeight);
 
-	mapWidget.changeMapSize()
+    mapWidget.changeMapSize();
+	}
 }
 
 function getKML(layers)
@@ -659,7 +676,6 @@ function onFeatureUnselect(event)
 	}
 }
 </r:script>
-
 
 </body>
 </html>

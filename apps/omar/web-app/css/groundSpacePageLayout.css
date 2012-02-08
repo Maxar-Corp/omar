@@ -26,3 +26,8 @@ body {
     z-index: 99999;
 }
 
+
+#map {
+    width: 1024px;
+    height: 512px;
+}
