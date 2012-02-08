@@ -1,21 +1,20 @@
 <div class="niceBox">
-  <div class="niceBoxHd" style="background: #0B0B65">Image Adjustments:</div>
+  <div class="niceBoxHd">Image Adjustments:</div>
 
-  <div class="niceBoxBody" style="background: #2F2F2F">
+  <div class="niceBoxBody">
     <ol>
-      <li style="color: #00CCFF">Interpolation:</li>
+      <li>Interpolation:</li>
       <li>
         <g:select
             id="interpolation"
             name="interpolation"
             value="${params.interpolation ?: bilinear}"
             from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}"
-            onChange="chgInterpolation()"
-            style="background: black; color: white"/>
+            onChange="chgInterpolation()"/>
       </li>
       <hr/>
-      <label style="color: #00CCFF">Brightness: <input type="text" readonly="true" id="brightnessTextField" size="3"
-                                                       maxlength="5" value="" style="background: black; color: white">
+      <label>Brightness: <input type="text" readonly="true" id="brightnessTextField" size="3"
+                                                       maxlength="5" value="">
       </label>
       <li>
         <div id="slider-brightness-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
@@ -24,8 +23,8 @@
         </div>
       </li>
 
-      <label style="color: #00CCFF">Contrast: <input type="text" readonly="true" id="contrastTextField" size="3"
-                                                     maxlength="5" value="" style="background: black; color: white">
+      <label>Contrast: <input type="text" readonly="true" id="contrastTextField" size="3"
+                                                     maxlength="5" value="">
       </label>
       <li>
         <div id="slider-contrast-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
@@ -38,18 +37,17 @@
                                   onclick="javascript:resetBrightnessContrast()">Reset</button></div>
       <hr/>
 
-      <li style="color: #00CCFF">Sharpen:</li>
+      <li>Sharpen:</li>
       <li>
         <g:select
             id="sharpen_mode"
             name="sharpen_mode"
             value="${params.sharpen_mode ?: 'none'}"
             from="${['none', 'light', 'heavy']}"
-            onChange="changeSharpenOpts()"
-            style="background: black; color: white"/>
+            onChange="changeSharpenOpts()"/>
       </li>
 
-      <li style="color: #00CCFF">Dynamic Range Adjustment:</li>
+      <li>Dynamic Range Adjustment:</li>
       <li>
         <g:select
             id="stretch_mode"
@@ -58,22 +56,20 @@
             from="${[[name: 'Automatic', value: 'linear_auto_min_max'], [name: '1st Std', value: 'linear_1std_from_mean'], [name: '2nd Std', value: 'linear_2std_from_mean'], [name: '3rd Std', value: 'linear_3std_from_mean'], [name: 'No Adjustment', value: 'none']]}"
             optionValue="name"
             optionKey="value"
-            onChange="changeHistoOpts()"
-            style="background: black; color: white"/>
+            onChange="changeHistoOpts()"/>
       </li>
 
-      <li style="color: #00CCFF">Region:</li>
+      <li>Region:</li>
       <li>
         <g:select
             id="stretch_mode_region"
             name="stretch_mode_region"
             from="${['global', 'viewport']}"
             onChange="changeHistoOpts()"
-            value="${params.stretch_mode_region ?: 'viewport'}"
-            style="background: black; color: white"/>
+            value="${params.stretch_mode_region ?: 'viewport'}"/>
       </li>
 
-      <li style="color: #00CCFF">Band:</li>
+      <li>Band:</li>
       <g:if test="${rasterEntry?.numberOfBands == 1}">
         <li>
           <g:select
@@ -92,8 +88,7 @@
               name="bands"
               value="${params.bands ?: '0,1'}"
               from="${['0,1', '1,0', '0', '1']}"
-              onChange="changeBandsOpts()"
-              style="background: black; color: white"/>
+              onChange="changeBandsOpts()"/>
         </li>
       </g:if>
       <g:if test="${rasterEntry?.numberOfBands >= 3}">
@@ -103,16 +98,15 @@
               name="bands"
               value="${params.bands ?: '0,1,2'}"
               from="${['0,1,2', '2,1,0', '1,0,2', '1,2,0', '2,0,1', '0,2,1', '0', '1', '2']}"
-              onChange="changeBandsOpts()"
-              style="background: black; color: white"/>
+              onChange="changeBandsOpts()"/>
         </li>
       </g:if>
       <hr/>
 
-      <li style="color: #00CCFF">Rotate:</li>
+      <li>Rotate:</li>
       <li>
         <g:textField name="rotateAngle" value="${params.rotation ?: 0}" onChange="rotateTextFieldChange(this.value)"
-                     size="1" style="background: black; color: white"/>
+                     size="1"/>
         <button id="rotateApply" type="button" onclick="">Apply</button>
         <br>
 
@@ -127,9 +121,9 @@
         <button id="upIsUpButtonId" type="button"
                 onclick="javascript:rotateSlider.setRealValue( 0 )">Reset</button>
         <button id="upIsUpButtonId" type="button"
-                onclick="javascript:rotateSlider.setRealValue( northAngle )">North</button>
+                onclick="javascript:rotateSlider.setRealValue( northAngle )">North Up</button>
         <button id="northUp" type="button"
-                onclick="javascript:rotateSlider.setRealValue( upIsUpRotation );">Up</button>
+                onclick="javascript:rotateSlider.setRealValue( upIsUpRotation );">Up is Up</button>
       </div>
     </li>
     </ol>

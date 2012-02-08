@@ -387,6 +387,10 @@ function measureUnitChanged(unit)
 	{
 		pathMeasurement.innerHTML = mapWidget.getPathUnit()[4];
 	}
+	else if(unit == 'nautical miles')
+	{
+		pathMeasurement.innerHTML = mapWidget.getPathUnit()[5];
+	}
 
 }
 
