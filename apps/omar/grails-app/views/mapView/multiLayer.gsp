@@ -94,6 +94,9 @@
 
   function init()
   {
+
+    OpenLayers.ImgPath = "${resource(plugin: 'openlayers', dir: 'js/img')}/";
+
 	var oMenu = new YAHOO.widget.MenuBar("rasterMenu", {
                                                autosubmenudisplay: true,
                                                hidedelay: 750,
