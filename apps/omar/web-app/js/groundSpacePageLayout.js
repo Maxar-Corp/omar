@@ -38,10 +38,17 @@
                     { position:'center', body:'center2', gutter:'0px' }
                 ]
             } );
+            innerLayout.on( 'render', function ()
+            {
+                var e2 = innerLayout.getUnitByPosition( 'center' ).get( 'wrap' );
+                var width = Dom.getStyle( e2, 'width' );
+                var height = Dom.getStyle( e2, 'height' );
+
+                init( width, height );
+                //bodyOnResize();
+                Dom.setStyle( document.body, 'visibility', 'visible' );
+            } );
             innerLayout.render();
-            init();
-            bodyOnResize();
-            Dom.setStyle( document.body, 'visibility', 'visible' );
         } );
         outerLayout.render();
         outerLayout.getUnitByPosition( "left" ).on( "collapse", function ()
@@ -68,5 +75,9 @@
 
 var bodyOnResize = function ()
 {
-    mapWidget.getMap().updateSize();
+    var Dom = YAHOO.util.Dom;
+    var region = Dom.getRegion( 'center2' );
+    var width = region.width;
+    var height = region.height;
+    changeMapSize( width + 'px', height + 'px' );
 };
