@@ -165,7 +165,7 @@ modules = {
 
 
     resource url: [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js']
-    resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
+    resource url: [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
 
     resource url: [dir: 'js', file: 'application.js']
     //resource url: [dir: 'js', file: 'datechooser.js']
