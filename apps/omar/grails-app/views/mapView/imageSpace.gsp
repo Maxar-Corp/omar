@@ -260,6 +260,8 @@
 
             function init(mapWidth, mapHeight)
             {
+                OpenLayers.ImgPath = "${resource(plugin: 'openlayers', dir: 'js/img')}/";
+
                 var width  = parseFloat("${rasterEntry.width}");
                 var height = parseFloat("${rasterEntry.height}");
                 var r = width;
