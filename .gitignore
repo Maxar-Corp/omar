@@ -86,6 +86,12 @@ apps/omar/web-app/js/*.iml
 apps/omar/web-app/js/prototype/*.iml
 monitoring/*.iml
 plugins/*.iml
+plugins/geodata/*.iml
+plugins/geodata/*.ipr
+plugins/geodata/.classpath
+plugins/geodata/.project
+plugins/geodata/grails-geodata-*.zip
+plugins/geodata/plugin.xml
 plugins/geoscript/*.iml
 plugins/geoscript/.settings/*.iml
 plugins/geoscript/grails-app/*.iml
