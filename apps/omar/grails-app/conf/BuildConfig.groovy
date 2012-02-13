@@ -46,13 +46,14 @@ grails.project.dependency.resolution = {
     runtime ":p6spy:0.5"
     runtime ":yui:2.8.2.1"
     runtime ":resources:1.1.6"
-    runtime ":zipped-resources:1.0"
+//    runtime ":zipped-resources:1.0"
     runtime ":yui-minify-resources:0.1.4"
 
   }
 }
 
 
+grails.plugin.location.'omar-spawar' = "../../plugins/omar-spawar"
 grails.plugin.location."postgis" = "../../plugins/postgis"
 grails.plugin.location."openlayers" = "../../plugins/openlayers"
 grails.plugin.location."geoscript" = "../../plugins/geoscript"
