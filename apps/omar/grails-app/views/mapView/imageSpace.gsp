@@ -197,7 +197,9 @@
             function getImageURL()
             {
                 var res = map.getResolution();
-                var tileHypotenuse = Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2)));
+                r= map.getCurrentSize().w;
+            if(r < map.getCurrentSize().h) r=map.getCurrentSize().h;
+                var tileHypotenuse = r;//Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2)));
             //var x = map.getCenter().lon;
             //var y = map.getCenter().lat;
                 var width  = parseFloat("${rasterEntry.width}");
@@ -268,7 +270,7 @@
                 var height = parseFloat("${rasterEntry.height}");
                 var r = width;
                 if (r < height) r = height;
-                hyp    = Math.sqrt(width*width + height*height)*0.5;
+                hyp    = r;//Math.sqrt(width*width + height*height)*0.5;
                 var left       =  -hyp;
                 var bottom     =  -hyp;
                 var top        =  hyp;
@@ -567,7 +569,9 @@ ${"rotateAngle"}.value = sliderValue;
                 // calculate the map bounds for the TMS call
                 var mapWidthHalf = (map.calculateBounds().right - map.calculateBounds().left) / 2;
                 var mapHeightHalf = (map.calculateBounds().top - map.calculateBounds().bottom) / 2;
-                var mapHypotenuse = Math.sqrt(Math.pow(mapWidthHalf,2) + Math.pow(mapHeightHalf,2));
+                r =  mapWidthHalf;
+                if(r < mapHeightHalf) r = mapHeightHalf;
+                var mapHypotenuse = r;//Math.sqrt(Math.pow(mapWidthHalf,2) + Math.pow(mapHeightHalf,2));
                 imageBounds = new OpenLayers.Bounds(
                     newImageCenterX - mapHypotenuse,
                     newImageCenterY - mapHypotenuse,
@@ -580,9 +584,11 @@ ${"rotateAngle"}.value = sliderValue;
                 // get the URL for the image
                 imageURL = getImageURL();
 
+            r = map.getCurrentSize().w;
+            if(r < map.getCurrentSize().h) r = map.getCurrentSize().h;
                 // calculate the image size so there are no gaps while rotating
-                imageHypotenuse = Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) +
-                                                       Math.pow(map.getCurrentSize().h, 2)));
+                imageHypotenuse = r;//Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) +
+                                      //                 Math.pow(map.getCurrentSize().h, 2)));
 
                 // get the current map center which is where the image will go
 	            currentMapCenterX = map.getCenter().lon;
