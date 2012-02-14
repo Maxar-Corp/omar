@@ -198,7 +198,8 @@
             {
                 var res = map.getResolution();
                 var tileHypotenuse = Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2)));
-
+            //var x = map.getCenter().lon;
+            //var y = map.getCenter().lat;
                 var width  = parseFloat("${rasterEntry.width}");
                 var scalex = 1.0/(res * tileHypotenuse);
                 var x =  (imageBounds.left - (-width*0.5))*scalex;
@@ -206,7 +207,6 @@
                 var height = parseFloat("${rasterEntry.height}");
                 var scaley = 1.0/(res * tileHypotenuse);
                 var y =  ((height*0.5) - imageBounds.top)*scaley;
-
                 var z = map.getZoom();
 
                 omarImageSpaceOpenLayersParams.setProperties(document);
@@ -232,10 +232,12 @@
                 var width  = parseFloat("${rasterEntry.width}");
                 var height = parseFloat("${rasterEntry.height}");
                 var res = this.map.getResolution();
-                var scalex = 1.0/(res * this.tileSize.w);
-                var scaley = 1.0/(res * this.tileSize.h);
-                var x =  (bounds.left - (-width*0.5))*scalex;
-                var y =  ((height*0.5) - bounds.top)*scaley;
+                //var scalex = 1.0/(res * this.tileSize.w);
+                //var scaley = 1.0/(res * this.tileSize.h);
+                //var x =  (bounds.left - (-width*0.5))*scalex;
+                //var y =  ((height*0.5) - bounds.top)*scaley;
+                var x = map.getCenter().lon;
+                var y = map.getCenter().lat;
                 var z = this.map.getZoom();
 
                 omarImageSpaceOpenLayersParams.setProperties(document);
