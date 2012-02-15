@@ -68,21 +68,21 @@
 </content>
 
 <r:script>
-            var northAngle = parseFloat("${rasterEntry.azimuthAngle}");
-            var upIsUpRotation   =  parseFloat("${upIsUpRotation}");
-            var brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
+            var northAngle;
+            var upIsUpRotation;
+            var brightnessSlider;
             var compassImage;
             var compassMap;
             var compassVectorLayer;
-            var contrastSlider = YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
+            var contrastSlider;
             var currentMapCenterX;
             var currentMapCenterY;
-            var format = "image/jpeg";
+            var format;
             var hyp;
             var image;
             var imageBounds;
             var imageURL;
-            var initFlag = 1;
+            var initFlag;
             var imageHypotenuse;
             var imageVectorLayer;
             var layer;
@@ -94,11 +94,12 @@
             var oldMapCenterX;
             var oldMapCenterY;
             var oldZoomLevel;
-            var omarImageSpaceOpenLayersParams = new  OmarImageSpaceOpenLayersParams();
-            var resLevels = parseFloat("${rasterEntry.numberOfResLevels}");
-            var rotateSlider = YAHOO.widget.Slider.getHorizSlider("slider-rotate-bg",  "slider-rotate-thumb", 0, 180, 1);
-            var rotationAngle = ${"rotateAngle"}.value;
+            var omarImageSpaceOpenLayersParams;
+            var resLevels;
+            var rotateSlider;
+            var rotationAngle;
             var zoomInButton;
+
             function changeBandsOpts()
             {
                 var bands = $("bands").value;
@@ -267,6 +268,18 @@
 
             function init(mapWidth, mapHeight)
             {
+
+             northAngle = parseFloat("${rasterEntry.azimuthAngle}");
+             upIsUpRotation   =  parseFloat("${upIsUpRotation}");
+            brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
+            contrastSlider = YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
+            omarImageSpaceOpenLayersParams = new  OmarImageSpaceOpenLayersParams();
+            format = "image/jpeg";
+             resLevels = parseFloat("${rasterEntry.numberOfResLevels}");
+            initFlag = 1;
+             rotateSlider = YAHOO.widget.Slider.getHorizSlider("slider-rotate-bg",  "slider-rotate-thumb", 0, 180, 1);
+            rotationAngle = ${"rotateAngle"}.value;
+
                 OpenLayers.ImgPath = "${resource(plugin: 'openlayers', dir: 'js/img')}/";
 
                 var width  = parseFloat("${rasterEntry.width}");
