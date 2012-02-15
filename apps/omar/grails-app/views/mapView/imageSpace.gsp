@@ -168,7 +168,7 @@
                 imageParams += "res=" + res + "&";
             r= map.getCurrentSize().w;
         if(r < map.getCurrentSize().h) r=map.getCurrentSize().h;
-            var tileHypotenuse = r*1.4;//Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2)));
+            var tileHypotenuse = Math.round(r*1.4);//Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2)));
              //   var tileHypotenuse = Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2)));
                 var width  = parseFloat("${rasterEntry.width}");
                 var scalex = 1.0/(res * tileHypotenuse);
@@ -202,7 +202,7 @@
                 var res = map.getResolution();
                 r= map.getCurrentSize().w;
             if(r < map.getCurrentSize().h) r=map.getCurrentSize().h;
-                var tileHypotenuse = r*1.4;//Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2)));
+                var tileHypotenuse = Math.round(r*1.4);//Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2)));
             //var x = map.getCenter().lon;
             //var y = map.getCenter().lat;
                 var width  = parseFloat("${rasterEntry.width}");
@@ -393,9 +393,6 @@
                 map.zoomIn();
                 // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
 	            oldZoomLevel = map.getZoom();
-
-
-
             }
 
             function resetImageVectorLayer() ////////////////////
@@ -574,7 +571,7 @@ ${"rotateAngle"}.value = sliderValue;
                 var mapHeightHalf = (map.calculateBounds().top - map.calculateBounds().bottom) / 2;
                 r =  mapWidthHalf;
                 if(r < mapHeightHalf) r = mapHeightHalf;
-                var mapHypotenuse = r*1.4;//Math.sqrt(Math.pow(mapWidthHalf,2) + Math.pow(mapHeightHalf,2));
+                var mapHypotenuse = Math.round(r*1.4);//Math.sqrt(Math.pow(mapWidthHalf,2) + Math.pow(mapHeightHalf,2));
                 imageBounds = new OpenLayers.Bounds(
                     newImageCenterX - mapHypotenuse,
                     newImageCenterY - mapHypotenuse,
@@ -590,7 +587,7 @@ ${"rotateAngle"}.value = sliderValue;
             r = map.getCurrentSize().w;
             if(r < map.getCurrentSize().h) r = map.getCurrentSize().h;
                 // calculate the image size so there are no gaps while rotating
-                imageHypotenuse = r*1.4;//Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) +
+                imageHypotenuse = Math.round(r*1.4);//Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) +
                                       //                 Math.pow(map.getCurrentSize().h, 2)));
 
                 // get the current map center which is where the image will go
