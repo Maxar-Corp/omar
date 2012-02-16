@@ -25,7 +25,7 @@
         } );
         layout.on( 'render', function ()
         {
-            //init();
+            init();
             Dom.setStyle( document.body, 'visibility', 'visible' );
         } );
         layout.render();

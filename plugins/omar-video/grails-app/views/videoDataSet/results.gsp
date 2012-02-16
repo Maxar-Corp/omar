@@ -19,9 +19,7 @@
 
 <content tag="top">
   <g:render template="resultsMenu"/>
-  <%--
   <h1><g:message code="default.list.label" args="[entityName]"/></h1>
-   --%>
   <g:render template="resultsPaginator" model="${[totalCount: totalCount, queryParams: queryParams, params: params]}"/>
 </content>
 
@@ -44,14 +42,14 @@
 
   <div id="demo" class="yui-navset">
     <ul class="yui-nav">
-      <li class="selected"><a href="#tab1"><em>Video</em></a></li>
+      <li><a href="#tab1"><em>Video</em></a></li>
       <li><a href="#tab2"><em>File</em></a></li>
       <li><a href="#tab3"><em>Links</em></a></li>
     </ul>
 
     <div class="yui-content">
       <div id="tab1">
-        <g:render template="videoTab" model="${[rasterEntries: rasterEntries, queryParams: queryParams]}"/>
+        <g:render template="videoTab" model="${[videoDataSets: videoDataSets, queryParams: queryParams]}"/>
       </div>
 
       <div id="tab2">
@@ -68,14 +66,40 @@
 
 <r:script>
 
-    var tabView = new YAHOO.widget.TabView( 'demo' );
-    var oMenu = new YAHOO.widget.MenuBar("resultsMenu", {
-      autosubmenudisplay: true,
-      hidedelay: 750,
-      lazyload: true,
-      showdelay: 0,
-      zIndex:9999});
-    oMenu.render();
+    var tabView;
+    var oMenu;
+    var Dom;
+    var Event;
+    var omarSearchResult;
+
+    function init()
+    {
+      tabView = new YAHOO.widget.TabView( 'demo', { activeIndex: ${videoDataSetResultCurrentTab} } );
+
+      tabView.selectTab(${videoDataSetResultCurrentTab});
+      tabView.getTab(0).addListener('click', handleClickTab);
+      tabView.getTab(1).addListener('click', handleClickTab);
+      tabView.getTab(2).addListener('click', handleClickTab);
+
+      oMenu = new YAHOO.widget.MenuBar("resultsMenu", {
+        autosubmenudisplay: true,
+        hidedelay: 750,
+        lazyload: true,
+        showdelay: 0,
+        zIndex:9999
+      });
+      oMenu.render();
+
+      Dom = YAHOO.util.Dom;
+      Event = YAHOO.util.Event;
+
+      omarSearchResults= new OmarSearchResults();
+      omarSearchResults.setProperties(${params.encodeAsJSON()});
+      omarSearchResults.setProperties(document);
+
+      updatePageOffset();
+    }
+
     function exportAs(format)
     {
       form = document.getElementById("exportForm");
@@ -91,16 +115,6 @@
         form.submit();
       }
     }
-
-      //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
-    var Dom = YAHOO.util.Dom;
-    var Event = YAHOO.util.Event;
-  var omarSearchResults= new OmarSearchResults();
-
-      omarSearchResults.setProperties(${params.encodeAsJSON()});
-      omarSearchResults.setProperties(document);
-
-    updatePageOffset();
 
   function updateOffset()
   {
@@ -163,7 +177,6 @@
     }
     omarSearchResults.setProperties(document);
     updatePageOffset();
-
     updateOffset();
   }
 
@@ -183,6 +196,16 @@
            pageOffset.value = (offsetValue/maxValue) + 1;
         }
       }
+  }
+
+  function updateCurrentTab(variable, tabIndex)
+  {
+      var link = "${createLink(action: sessionAction, controller: sessionController)}";
+      new Ajax.Request(link+"?"+variable+"="+tabIndex, {method: 'post'});
+  }
+
+  function handleClickTab(e) {
+    updateCurrentTab("videoDataSetResultCurrentTab", tabView.get('activeIndex'));
   }
 </r:script>
 </body>
