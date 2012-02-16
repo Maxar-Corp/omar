@@ -20,7 +20,6 @@
 <content tag="top">
   <g:render template="resultsMenu"/>
   <h1><g:message code="default.list.label" args="[entityName]"/></h1>
-
   <g:render template="resultsPaginator" model="${[totalCount: totalCount, queryParams: queryParams, params: params]}"/>
 </content>
 
@@ -44,7 +43,7 @@
   <div id="demo" class="yui-navset">
     <ul class="yui-nav">
       <li><a href="#tab1"><em>Image</em></a></li>
-      <li class="selected"><a href="#tab2"><em>Metadata</em></a></li>
+      <li><a href="#tab2"><em>Metadata</em></a></li>
       <li><a href="#tab3"><em>File</em></a></li>
       <li><a href="#tab4"><em>Links</em></a></li>
     </ul>
@@ -73,14 +72,40 @@
 
 <r:script>
 
-    var tabView = new YAHOO.widget.TabView( 'demo' );
-    var oMenu = new YAHOO.widget.MenuBar("resultsMenu", {
-      autosubmenudisplay: true,
-      hidedelay: 750,
-      lazyload: true,
-      showdelay: 0,
-      zIndex:9999});
-    oMenu.render();
+    var tabView;
+    var oMenu;
+    var Dom;
+    var Event;
+    var omarSearchResult;
+
+    function init()
+    {
+      tabView = new YAHOO.widget.TabView( 'demo', { activeIndex: ${rasterEntryResultCurrentTab} } );
+      tabView.selectTab(${rasterEntryResultCurrentTab});
+      tabView.getTab(0).addListener('click', handleClickTab);
+      tabView.getTab(1).addListener('click', handleClickTab);
+      tabView.getTab(2).addListener('click', handleClickTab);
+      tabView.getTab(3).addListener('click', handleClickTab);
+
+      oMenu = new YAHOO.widget.MenuBar("resultsMenu", {
+        autosubmenudisplay: true,
+        hidedelay: 750,
+        lazyload: true,
+        showdelay: 0,
+        zIndex:9999
+      });
+      oMenu.render();
+
+      Dom = YAHOO.util.Dom;
+      Event = YAHOO.util.Event;
+
+      omarSearchResults= new OmarSearchResults();
+      omarSearchResults.setProperties(${params.encodeAsJSON()});
+      omarSearchResults.setProperties(document);
+
+      updatePageOffset();
+    }
+
     function exportAs(format)
     {
       form = document.getElementById("exportForm");
@@ -96,16 +121,6 @@
         form.submit();
       }
     }
-
-      //YAHOO.util.Dom.setStyle(document.body, 'display', 'none');
-    var Dom = YAHOO.util.Dom;
-    var Event = YAHOO.util.Event;
-  var omarSearchResults= new OmarSearchResults();
-
-      omarSearchResults.setProperties(${params.encodeAsJSON()});
-      omarSearchResults.setProperties(document);
-
-    updatePageOffset();
 
   function updateOffset()
   {
@@ -168,7 +183,6 @@
     }
     omarSearchResults.setProperties(document);
     updatePageOffset();
-
     updateOffset();
   }
 
@@ -188,6 +202,16 @@
            pageOffset.value = (offsetValue/maxValue) + 1;
         }
       }
+  }
+
+  function updateCurrentTab(variable, tabIndex)
+  {
+      var link = "${createLink(action: sessionAction, controller: sessionController)}";
+      new Ajax.Request(link+"?"+variable+"="+tabIndex, {method: 'post'});
+  }
+
+  function handleClickTab(e) {
+    updateCurrentTab("rasterEntryResultCurrentTab", tabView.get('activeIndex'));
   }
 </r:script>
 </body>

@@ -18,9 +18,6 @@ class VideoDataSetController implements InitializingBean
   def dataWMS
 
   def index = { redirect(action: list, params: params) }
-/*
-  def authenticateService
-*/
   def springSecurityService
   def videoDataSetSearchService
   def webMappingService
@@ -85,8 +82,8 @@ class VideoDataSetController implements InitializingBean
     if ( chainModel )
     {
       videoDataSets = chainModel.videoDataSets
-      totalCount    = chainModel.totalCount
-      videoFiles    = chainModel.videoFiles
+      totalCount = chainModel.totalCount
+      videoFiles = chainModel.videoFiles
     }
     else
     {
@@ -102,21 +99,18 @@ class VideoDataSetController implements InitializingBean
       }
       else
       {
-          totalCount = 0
+        totalCount = 0
       }
       def endtime = System.currentTimeMillis()
-/*
-      def user = authenticateService.principal()?.username
-*/
       def user = springSecurityService.principal.username
 
       def logData = [
-          TYPE: "video_search",
-          START: new Date(starttime),
-          END: new Date(endtime),
-          ELAPSE_TIME_MILLIS: endtime - starttime,
-          USER: user,
-          PARAMS: params
+              TYPE: "video_search",
+              START: new Date(starttime),
+              END: new Date(endtime),
+              ELAPSE_TIME_MILLIS: endtime - starttime,
+              USER: user,
+              PARAMS: params
       ]
 
       //println "\nparams: ${params?.sort { it.key }}"
@@ -129,30 +123,31 @@ class VideoDataSetController implements InitializingBean
 
     //println "=== results end ==="
 
-    if(!session.videoDataSetResultCurrentTab&&("${session.videoDataSetResultCurrentTab}"!="0"))
+    if ( !session.videoDataSetResultCurrentTab && ("${session.videoDataSetResultCurrentTab}" != "0") )
     {
       session["videoDataSetResultCurrentTab"] = "0"
     }
     withFormat {
-      html{render(view: 'results', model: [
-          videoDataSets: videoDataSets,
-          videoFiles: videoFiles,
-          totalCount: totalCount,
-          tagNameList: tagNameList,
-          tagHeaderList: tagHeaderList,
-          queryParams: queryParams,
-          sessionAction:"updateSession",
-          sessionController:"session",
-          videoDataSetResultCurrentTab:session["videoDataSetResultCurrentTab"]
-          ])
+      html {
+        render(view: 'results', model: [
+                videoDataSets: videoDataSets,
+                videoFiles: videoFiles,
+                totalCount: totalCount,
+                tagNameList: tagNameList,
+                tagHeaderList: tagHeaderList,
+                queryParams: queryParams,
+                sessionAction: "updateSession",
+                sessionController: "session",
+                videoDataSetResultCurrentTab: session["videoDataSetResultCurrentTab"]
+        ])
       }
       xml { render videoDataSets as XML }
       json { render videoDataSets as JSON }
     }
   }
-   def list_mobile = {
+  def list_mobile = {
     if ( !params.max )
-    params.max = 10
+      params.max = 10
 
     def videoDataSetList = null
 
@@ -269,14 +264,14 @@ class VideoDataSetController implements InitializingBean
 
     //println "=== search start ==="
 
-      if ( !params.max || !(params.max =~ /\d+$/) )
-      {
-        params.max = 10
-      }
-      else if((params.max as Integer) > 100)
-      {
-          params.max = 100;
-      }
+    if ( !params.max || !(params.max =~ /\d+$/) )
+    {
+      params.max = 10
+    }
+    else if ( (params.max as Integer) > 100 )
+    {
+      params.max = 100;
+    }
 
     //println "\nparams: ${params?.sort { it.key }}"
 
@@ -291,9 +286,6 @@ class VideoDataSetController implements InitializingBean
 
       //println "queryParams: ${queryParams}"
 
-/*
-      def user = authenticateService.principal().username
-*/
       def user = springSecurityService.principal.username
 
       def starttime = System.currentTimeMillis()
@@ -314,12 +306,12 @@ class VideoDataSetController implements InitializingBean
       def endtime = System.currentTimeMillis()
 
       def logData = [
-          TYPE: "video_search",
-          START: new Date(starttime),
-          END: new Date(endtime),
-          ELAPSE_TIME_MILLIS: endtime - starttime,
-          USER: user,
-          PARAMS: params
+              TYPE: "video_search",
+              START: new Date(starttime),
+              END: new Date(endtime),
+              ELAPSE_TIME_MILLIS: endtime - starttime,
+              USER: user,
+              PARAMS: params
       ]
 
       log.info(logData)
@@ -329,7 +321,7 @@ class VideoDataSetController implements InitializingBean
       //println "=== search end ==="
 
       chain(action: "results",
-              model: [session:session, videoDataSets: videoDataSets, totalCount: totalCount, videoFiles: videoFiles],
+              model: [session: session, videoDataSets: videoDataSets, totalCount: totalCount, videoFiles: videoFiles],
               params: params
       )
     }
@@ -337,7 +329,7 @@ class VideoDataSetController implements InitializingBean
     {
       //println "=== search end ==="
 
-      return [session:session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
+      return [session: session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
     }
   }
 
@@ -345,14 +337,14 @@ class VideoDataSetController implements InitializingBean
 
     //println "=== search start ==="
 
-      if ( !params.max || !(params.max =~ /\d+$/) )
-      {
-        params.max = 10
-      }
-      else if((params.max as Integer) > 100)
-      {
-          params.max = 100;
-      }
+    if ( !params.max || !(params.max =~ /\d+$/) )
+    {
+      params.max = 10
+    }
+    else if ( (params.max as Integer) > 100 )
+    {
+      params.max = 100;
+    }
 
     //println "\nparams: ${params?.sort { it.key }}"
 
@@ -368,9 +360,6 @@ class VideoDataSetController implements InitializingBean
 
       //println "queryParams: ${queryParams}"
 
-/*
-      def user = authenticateService.principal().username
-*/
       def user = springSecurityService.principal.username
       def starttime = System.currentTimeMillis()
 
@@ -390,12 +379,12 @@ class VideoDataSetController implements InitializingBean
       def endtime = System.currentTimeMillis()
 
       def logData = [
-          TYPE: "video_search",
-          START: new Date(starttime),
-          END: new Date(endtime),
-          ELAPSE_TIME_MILLIS: endtime - starttime,
-          USER: user,
-          PARAMS: params
+              TYPE: "video_search",
+              START: new Date(starttime),
+              END: new Date(endtime),
+              ELAPSE_TIME_MILLIS: endtime - starttime,
+              USER: user,
+              PARAMS: params
       ]
 
       log.info(logData)
@@ -439,31 +428,31 @@ class VideoDataSetController implements InitializingBean
 
     def starttime = System.currentTimeMillis()
 
-      if ( !params.max || !(params.max =~ /\d+$/) )
-      {
-        params.max = 10
-      }
-      else if((params.max as Integer) > 100)
-      {
-          params.max = 100;
-      }
+    if ( !params.max || !(params.max =~ /\d+$/) )
+    {
+      params.max = 10
+    }
+    else if ( (params.max as Integer) > 100 )
+    {
+      params.max = 100;
+    }
 
-    if (params?.queryParams)
+    if ( params?.queryParams )
     {
       def serialized = params?.queryParams - "{" - "}";
       def paramsArray = serialized?.split(',')
       params.remove("queryParams")
       params.remove("totalCount")
       paramsArray?.each
-      {
-        def temp = it?.split('=')
-        if (temp.size() == 2)
-        {
-          if (temp[1] == "null") temp[1] = ""
-            params.put(temp[0].trim(), temp[1].trim())
-        }
-        else if (temp.size() == 1) params.put(temp[0].trim(), "")
-      }
+              {
+                def temp = it?.split('=')
+                if ( temp.size() == 2 )
+                {
+                  if ( temp[1] == "null" ) temp[1] = ""
+                  params.put(temp[0].trim(), temp[1].trim())
+                }
+                else if ( temp.size() == 1 ) params.put(temp[0].trim(), "")
+              }
     }
 
     def videoDataSets = null
@@ -483,59 +472,56 @@ class VideoDataSetController implements InitializingBean
 //    }
 //    else
 //    {
-      videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
-      totalCount = videoDataSetSearchService.getCount(queryParams)
+    videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
+    totalCount = videoDataSetSearchService.getCount(queryParams)
 
-      if ( videoDataSets )
-      {
-        videoFiles = VideoFile.createCriteria().list {
-          eq("type", "main")
-          inList("videoDataSet", videoDataSets)
-        }
+    if ( videoDataSets )
+    {
+      videoFiles = VideoFile.createCriteria().list {
+        eq("type", "main")
+        inList("videoDataSet", videoDataSets)
       }
-      else
-      {
-          totalCount = 0
-      }
-      def endtime = System.currentTimeMillis()
+    }
+    else
+    {
+      totalCount = 0
+    }
+    def endtime = System.currentTimeMillis()
 
-/*
-      def user = authenticateService.principal()?.username
-*/
-      def user = springSecurityService.principal.username
+    def user = springSecurityService.principal.username
 
-      def logData = [
-          TYPE: "video_search",
-          START: new Date(starttime),
-          END: new Date(endtime),
-          ELAPSE_TIME_MILLIS: endtime - starttime,
-          USER: user,
-          PARAMS: params
-      ]
+    def logData = [
+            TYPE: "video_search",
+            START: new Date(starttime),
+            END: new Date(endtime),
+            ELAPSE_TIME_MILLIS: endtime - starttime,
+            USER: user,
+            PARAMS: params
+    ]
 
-      //println "\nparams: ${params?.sort { it.key }}"
-      //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
+    //println "\nparams: ${params?.sort { it.key }}"
+    //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
-      log.info(logData)
+    log.info(logData)
 
-      //println logData
- //   }
+    //println logData
+    //   }
 
     //println "=== results end ==="
-    if(!session.videoDataSetResultCurrentTab&&("${session.videoDataSetResultCurrentTab}"!="0"))
+    if ( !session.videoDataSetResultCurrentTab && ("${session.videoDataSetResultCurrentTab}" != "0") )
     {
       session["videoDataSetResultCurrentTab"] = "0"
     }
     render(view: 'results', model: [
-        videoDataSets: videoDataSets,
-        videoFiles: videoFiles,
-        totalCount: totalCount,
-        tagNameList: tagNameList,
-        tagHeaderList: tagHeaderList,
-        queryParams: queryParams,
-        sessionAction:"updateSession",
-        sessionController:"session",
-        videoDataSetResultCurrentTab:session["videoDataSetResultCurrentTab"]
+            videoDataSets: videoDataSets,
+            videoFiles: videoFiles,
+            totalCount: totalCount,
+            tagNameList: tagNameList,
+            tagHeaderList: tagHeaderList,
+            queryParams: queryParams,
+            sessionAction: "updateSession",
+            sessionController: "session",
+            videoDataSetResultCurrentTab: session["videoDataSetResultCurrentTab"]
     ])
 
   }
@@ -546,14 +532,14 @@ class VideoDataSetController implements InitializingBean
 
     def starttime = System.currentTimeMillis()
 
-      if ( !params.max || !(params.max =~ /\d+$/) )
-      {
-        params.max = 10
-      }
-      else if((params.max as Integer) > 100)
-      {
-          params.max = 100;
-      }
+    if ( !params.max || !(params.max =~ /\d+$/) )
+    {
+      params.max = 10
+    }
+    else if ( (params.max as Integer) > 100 )
+    {
+      params.max = 100;
+    }
 
     def videoDataSets = null
     def totalCount = null
@@ -581,18 +567,15 @@ class VideoDataSetController implements InitializingBean
       }
 
       def endtime = System.currentTimeMillis()
-/*
-      def user = authenticateService.principal()?.username
-*/
       def user = springSecurityService.principal.username
 
       def logData = [
-          TYPE: "video_search",
-          START: new Date(starttime),
-          END: new Date(endtime),
-          ELAPSE_TIME_MILLIS: endtime - starttime,
-          USER: user,
-          PARAMS: params
+              TYPE: "video_search",
+              START: new Date(starttime),
+              END: new Date(endtime),
+              ELAPSE_TIME_MILLIS: endtime - starttime,
+              USER: user,
+              PARAMS: params
       ]
 
       //println "\nparams: ${params?.sort { it.key }}"
@@ -605,20 +588,20 @@ class VideoDataSetController implements InitializingBean
 
     //println "=== results end ==="
 
-    if(!session.videoDataSetResultCurrentTab&&("${session.videoDataSetResultCurrentTab}"!="0"))
+    if ( !session.videoDataSetResultCurrentTab && ("${session.videoDataSetResultCurrentTab}" != "0") )
     {
       session["videoDataSetResultCurrentTab"] = "0"
     }
     render(view: 'results_mobile', model: [
-        videoDataSets: videoDataSets,
-        videoFiles: videoFiles,
-        totalCount: totalCount,
-        tagNameList: tagNameList,
-        tagHeaderList: tagHeaderList,
-        queryParams: queryParams,
-        sessionAction:"updateSession",
-        sessionController:"session",
-        videoDataSetResultCurrentTab:session["videoDataSetResultCurrentTab"]
+            videoDataSets: videoDataSets,
+            videoFiles: videoFiles,
+            totalCount: totalCount,
+            tagNameList: tagNameList,
+            tagHeaderList: tagHeaderList,
+            queryParams: queryParams,
+            sessionAction: "updateSession",
+            sessionController: "session",
+            videoDataSetResultCurrentTab: session["videoDataSetResultCurrentTab"]
     ])
 
   }
@@ -631,22 +614,22 @@ class VideoDataSetController implements InitializingBean
 
     params.dateSort = "false"
     def serviceAddress = createLink(absolute: true, controller: "kmlQuery", action: "getVideosKml", params: params)
-      def kmlnode = {
-        mkp.xmlDeclaration()
-        kml("xmlns": "http://earth.google.com/kml/2.1") {
-            NetworkLink() {
-              name("OMAR Video Query Results")
-                open("1")
-               Link() {
-                href() {
-                  mkp.yieldUnescaped("<![CDATA[${serviceAddress}]]>")
-                }
-                viewRefreshMode("onRequest")
-                httpQuery("googleClientVersion=[clientVersion];")
-              }
+    def kmlnode = {
+      mkp.xmlDeclaration()
+      kml("xmlns": "http://earth.google.com/kml/2.1") {
+        NetworkLink() {
+          name("OMAR Video Query Results")
+          open("1")
+          Link() {
+            href() {
+              mkp.yieldUnescaped("<![CDATA[${serviceAddress}]]>")
             }
+            viewRefreshMode("onRequest")
+            httpQuery("googleClientVersion=[clientVersion];")
+          }
         }
       }
+    }
 /*
     def kmlnode = {
       mkp.xmlDeclaration()
