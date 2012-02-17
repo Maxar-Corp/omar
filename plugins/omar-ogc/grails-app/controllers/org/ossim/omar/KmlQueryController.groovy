@@ -3,7 +3,6 @@ package org.ossim.omar
 class KmlQueryController
 {
   def grailsApplication
-  def kmlService
 
   def kmlPersistParams = ["googleversion", "visibility"]
   def getkml = {

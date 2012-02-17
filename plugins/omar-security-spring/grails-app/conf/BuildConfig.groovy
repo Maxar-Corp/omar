@@ -41,6 +41,7 @@ grails.project.dependency.resolution = {
     compile ':spring-security-core:1.1.3'
     compile ':spring-security-ldap:1.0.5'
     compile ':mail:1.0'
+    compile ':csv:0.3.1'
 
 
   }

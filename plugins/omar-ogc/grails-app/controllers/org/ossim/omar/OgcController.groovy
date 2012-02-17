@@ -6,7 +6,6 @@ class OgcController
   def ogcExceptionService
 
   def springSecurityService
-  def kmlService
 
 
   def getTile = {
