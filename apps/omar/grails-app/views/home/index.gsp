@@ -39,7 +39,7 @@ s<html>
       <table>
         <tr>
           <td width="120px">
-            <img src="${resource(dir: 'images', file: 'globe_128.png')}" width="96" height="96" alt="">
+            <img src="${resource(dir: 'images', file: 'globe_128.gif')}" width="96" height="96" alt="">
           </td>
           <td>
             <ol>
@@ -57,7 +57,7 @@ s<html>
     <table>
       <tr>
         <td width="120px">
-          <img src="${resource(dir: 'images', file: 'GoogleEarth_1.png')}" width="96 " height="96" alt="">
+          <img src="${resource(dir: 'images', file: 'GoogleEarth_1.gif')}" width="96 " height="96" alt="">
         </td>
         <td>
           <ol>
@@ -97,7 +97,7 @@ s<html>
     <table>
       <tr>
         <td width="120px">
-          <img src="${resource(plugin: 'omar-rss', dir: 'images', file: 'georss-1.png')}" width="96 " height="96"
+          <img src="${resource(plugin: 'omar-rss', dir: 'images', file: 'georss-1.gif')}" width="96 " height="96"
                alt="">
         </td>
         <td>
@@ -145,7 +145,7 @@ s<html>
     <table>
       <tr>
         <td width="120px">
-          <img src="${resource(dir: 'images', file: 'report.png')}" width="96 " height="96" alt="">
+          <img src="${resource(dir: 'images', file: 'report.gif')}" width="96 " height="96" alt="">
         </td>
         <td>
           <ol>
@@ -167,7 +167,7 @@ s<html>
       <tr>
         <td>
           <a href="${createLink(controller: "logout")}">
-            <img src="${resource(dir: 'images', file: 'logout.png')}" width="96" height="96" alt="">
+            <img src="${resource(dir: 'images', file: 'logout.gif')}" width="96" height="96" alt="">
           </a>
         </td>
       </tr>
