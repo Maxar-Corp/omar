@@ -16,7 +16,6 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
 class SuperOverlayController implements InitializingBean{
 	def baseDir
 	def serverUrl
-    def kmlService
     def superOverlayService
     def outputKmz = false
     def index = { render ""}
