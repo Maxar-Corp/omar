@@ -1,6 +1,6 @@
-<%@ page import="org.ossim.omar.SecUser" %>
-<%@ page import="org.ossim.omar.SecRole" %>
-<%@ page import="org.ossim.omar.SecUserSecRole" %>
+<%@ page import="org.ossim.omar.security.SecUser" %>
+<%@ page import="org.ossim.omar.security.SecRole" %>
+<%@ page import="org.ossim.omar.security.SecUserSecRole" %>
 
 <html>
 <head>

@@ -12,43 +12,43 @@
       <thead>
       <tr>
 
-        <filter:sortableColumn bean="org.ossim.omar.SecUser" update="userList" property="id"
+        <filter:sortableColumn bean="org.ossim.omar.security.SecUser" update="userList" property="id"
                                title="${message(code: 'secUser.id.label', default: 'Id')}"
                                params="${[plugin: 'omar-security-spring']}"/>
 
-        <filter:sortableColumn bean="org.ossim.omar.SecUser" update="userList" property="username"
+        <filter:sortableColumn bean="org.ossim.omar.security.SecUser" update="userList" property="username"
                                title="${message(code: 'secUser.username.label', default: 'Username')}"
                                params="${[plugin: 'omar-security-spring']}"/>
 
-        <filter:sortableColumn bean="org.ossim.omar.SecUser" update="userList" property="userRealName"
+        <filter:sortableColumn bean="org.ossim.omar.security.SecUser" update="userList" property="userRealName"
                                title="${message(code: 'secUser.userRealName.label', default: 'Real Name')}"
                                params="${[plugin: 'omar-security-spring']}"/>
 
-        <filter:sortableColumn bean="org.ossim.omar.SecUser" update="userList" property="organization"
+        <filter:sortableColumn bean="org.ossim.omar.security.SecUser" update="userList" property="organization"
                                title="${message(code: 'secUser.organization.label', default: 'Organization')}"
                                params="${[plugin: 'omar-security-spring']}"/>
 
-        <filter:sortableColumn bean="org.ossim.omar.SecUser" update="userList" property="phoneNumber"
+        <filter:sortableColumn bean="org.ossim.omar.security.SecUser" update="userList" property="phoneNumber"
                                title="${message(code: 'secUser.phoneNumber.label', default: 'Phone Number')}"
                                params="${[plugin: 'omar-security-spring']}"/>
 
-        <filter:sortableColumn bean="org.ossim.omar.SecUser" update="userList" property="email"
+        <filter:sortableColumn bean="org.ossim.omar.security.SecUser" update="userList" property="email"
                                title="${message(code: 'secUser.email.label', default: 'Email')}"
                                params="${[plugin: 'omar-security-spring']}"/>
 
-        <filter:sortableColumn bean="org.ossim.omar.SecUser" update="userList" property="enabled"
+        <filter:sortableColumn bean="org.ossim.omar.security.SecUser" update="userList" property="enabled"
                                title="${message(code: 'secUser.enabled.label', default: 'Enabled')}"
                                params="${[plugin: 'omar-security-spring']}"/>
 
-        <filter:sortableColumn bean="org.ossim.omar.SecUser" update="userList" property="accountExpired"
+        <filter:sortableColumn bean="org.ossim.omar.security.SecUser" update="userList" property="accountExpired"
                                title="${message(code: 'secUser.accountExpired.label', default: 'Account Expired')}"
                                params="${[plugin: 'omar-security-spring']}"/>
 
-        <filter:sortableColumn bean="org.ossim.omar.SecUser" update="userList" property="accountLocked"
+        <filter:sortableColumn bean="org.ossim.omar.security.SecUser" update="userList" property="accountLocked"
                                title="${message(code: 'secUser.accountLocked.label', default: 'Account Locked')}"
                                params="${[plugin: 'omar-security-spring']}"/>
 
-        <filter:sortableColumn bean="org.ossim.omar.SecUser" update="userList" property="passwordExpired"
+        <filter:sortableColumn bean="org.ossim.omar.security.SecUser" update="userList" property="passwordExpired"
                                title="${message(code: 'secUser.passwordExpired.label', default: 'Password Expired')}"
                                params="${[plugin: 'omar-security-spring']}"/>
 
@@ -86,7 +86,7 @@
   </div>
 
   <div class="paginateButtons">
-    <filter:paginate total="${secUserInstanceTotal}" bean="org.ossim.omar.SecUser" update="userList"
+    <filter:paginate total="${secUserInstanceTotal}" bean="org.ossim.omar.security.SecUser" update="userList"
                      params="${[plugin: 'omar-security-spring']}"/>
 
   </div>

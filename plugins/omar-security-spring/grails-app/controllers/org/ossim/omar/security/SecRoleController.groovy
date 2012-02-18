@@ -1,4 +1,7 @@
-package org.ossim.omar
+package org.ossim.omar.security
+
+import org.ossim.omar.security.SecRole
+import org.ossim.omar.security.SecUserSecRole
 
 class SecRoleController
 {

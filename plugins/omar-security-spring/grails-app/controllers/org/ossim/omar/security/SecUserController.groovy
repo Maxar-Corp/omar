@@ -1,6 +1,9 @@
-package org.ossim.omar
+package org.ossim.omar.security
 
 import au.com.bytecode.opencsv.CSVWriter
+import org.ossim.omar.security.SecUser
+import org.ossim.omar.security.SecUserSecRole
+import org.ossim.omar.security.SecRole
 
 class SecUserController
 {

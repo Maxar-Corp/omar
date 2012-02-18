@@ -11,6 +11,7 @@ import groovy.xml.StreamingMarkupBuilder
 import org.ossim.omar.core.WMSRequest
 import org.ossim.omar.core.Utility
 import org.ossim.omar.core.ImageGenerator
+import org.ossim.omar.security.SecUser
 
 class WmsController extends OgcController implements InitializingBean
 {

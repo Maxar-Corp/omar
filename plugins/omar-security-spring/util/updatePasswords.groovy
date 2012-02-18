@@ -1,4 +1,4 @@
-import org.ossim.omar.SecUser
+import org.ossim.omar.security.SecUser
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.binary.Hex
 

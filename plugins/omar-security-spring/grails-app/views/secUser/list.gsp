@@ -1,4 +1,4 @@
-<%@ page import="org.ossim.omar.SecUser" %>
+<%@ page import="org.ossim.omar.security.SecUser" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -27,11 +27,11 @@
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
-    <filter:dynamic bean="org.ossim.omar.SecUser" success="userList" params="${[plugin: 'omar-security-spring']}"/>
+    <filter:dynamic bean="org.ossim.omar.security.SecUser" success="userList" params="${[plugin: 'omar-security-spring']}"/>
     <g:render template="list"/>
 
     <g:form name="exportForm" onsubmit="updateExportFilter();">
-      <g:hiddenField name="exportFilterBean" value="org.ossim.omar.SecUser"/>
+      <g:hiddenField name="exportFilterBean" value="org.ossim.omar.security.SecUser"/>
       <g:hiddenField name="exportFilterField" value=""/>
       <g:hiddenField name="exportFilterCriteria" value=""/>
       <g:hiddenField name="exportFilterValue" value=""/>

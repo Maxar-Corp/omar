@@ -1,12 +1,15 @@
 package org.ossim.omar
 
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper
-import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+
 import org.springframework.security.core.authority.GrantedAuthorityImpl
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.ldap.core.DirContextOperations
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.ldap.core.DirContextAdapter
+import org.ossim.omar.security.SecUser
+import org.ossim.omar.security.SecUserSecRole
+import org.ossim.omar.security.SecRole
 
 /**
  * Created by IntelliJ IDEA.

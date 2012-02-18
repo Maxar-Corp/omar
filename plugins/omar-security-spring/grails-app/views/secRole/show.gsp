@@ -1,4 +1,4 @@
-<%@ page import="org.ossim.omar.SecRole" %>
+<%@ page import="org.ossim.omar.security.SecRole" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>

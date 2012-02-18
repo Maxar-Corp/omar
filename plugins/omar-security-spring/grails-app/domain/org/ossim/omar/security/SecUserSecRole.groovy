@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.security
 
 import org.apache.commons.lang.builder.HashCodeBuilder
 

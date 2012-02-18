@@ -1,4 +1,4 @@
-<%@ page import="org.ossim.omar.Requestmap" %>
+<%@ page import="org.ossim.omar.security.Requestmap" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -27,7 +27,7 @@
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
-    <filter:dynamic bean="org.ossim.omar.Requestmap" success="requestmapList"
+    <filter:dynamic bean="org.ossim.omar.security.Requestmap" success="requestmapList"
                     params="${[plugin: 'omar-security-spring']}"/>
     <g:render template="list"/>
   </div>

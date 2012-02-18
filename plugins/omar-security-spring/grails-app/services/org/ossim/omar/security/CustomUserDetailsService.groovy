@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.security
 
 import org.codehaus.groovy.grails.plugins.springsecurity.GrailsUserDetailsService
 import org.springframework.security.core.userdetails.UserDetails
@@ -6,6 +6,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.core.authority.GrantedAuthorityImpl
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.springframework.security.core.GrantedAuthority
+import org.ossim.omar.security.SecUser
+import org.ossim.omar.CustomUserDetails
 
 class CustomUserDetailsService implements GrailsUserDetailsService
 {
