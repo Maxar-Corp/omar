@@ -488,10 +488,10 @@ export {
 }
 
 // Added by the Spring Security Core plugin:
-grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.ossim.omar.SecUser'
-grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.ossim.omar.SecUserSecRole'
-grails.plugins.springsecurity.authority.className = 'org.ossim.omar.SecRole'
-grails.plugins.springsecurity.requestMap.className = 'org.ossim.omar.Requestmap'
+grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.ossim.omar.security.SecUser'
+grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.ossim.omar.security.SecUserSecRole'
+grails.plugins.springsecurity.authority.className = 'org.ossim.omar.security.SecRole'
+grails.plugins.springsecurity.requestMap.className = 'org.ossim.omar.security.Requestmap'
 grails.plugins.springsecurity.securityConfigType = 'Requestmap'
 grails.plugins.springsecurity.errors.login.fail = 'Sorry, we were not able to find a user with that username and password.'
 grails.plugins.springsecurity.errors.login.expired = 'Sorry, your login has expired.  Please contact an Administrator.'

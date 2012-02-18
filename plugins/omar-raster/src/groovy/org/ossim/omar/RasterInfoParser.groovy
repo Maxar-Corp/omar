@@ -2,6 +2,7 @@ package org.ossim.omar
 
 import groovy.util.slurpersupport.GPathResult
 import org.ossim.omar.core.Repository
+import org.ossim.omar.stager.OmsInfoParser
 
 /**
  * Created by IntelliJ IDEA.

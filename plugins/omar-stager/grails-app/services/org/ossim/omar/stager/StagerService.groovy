@@ -1,6 +1,7 @@
-package org.ossim.omar
+package org.ossim.omar.stager
 
 import org.ossim.omar.core.Repository
+import org.ossim.omar.StagerJob
 
 class StagerService
 {

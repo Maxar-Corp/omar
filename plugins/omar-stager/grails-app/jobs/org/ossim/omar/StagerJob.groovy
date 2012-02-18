@@ -9,6 +9,8 @@ import org.springframework.context.ApplicationContextAware
 
 import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 import org.ossim.omar.core.Repository
+import org.ossim.omar.stager.StagerUtil
+import org.ossim.omar.stager.OmsInfoParser
 
 /**
  * Created by IntelliJ IDEA.

@@ -10,6 +10,7 @@ import org.ossim.omar.VideoDataSet
 import geoscript.geom.Bounds
 import org.ossim.omar.core.DateUtil
 import org.ossim.omar.core.Repository
+import org.ossim.omar.stager.OmsInfoParser
 
 class DataInjectorTests extends GroovyTestCase
 {

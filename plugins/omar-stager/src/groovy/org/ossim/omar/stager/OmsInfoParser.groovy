@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.stager
 
 import groovy.util.slurpersupport.GPathResult
 import org.ossim.omar.core.Repository
