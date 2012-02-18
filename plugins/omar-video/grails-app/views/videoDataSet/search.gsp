@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="grails.converters.JSON; org.ossim.omar.BaseQuery; org.ossim.omar.VideoDataSetQuery; org.ossim.omar.VideoDataSetSearchTag" contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.ossim.omar.core.BaseQuery; grails.converters.JSON; org.ossim.omar.VideoDataSetQuery; org.ossim.omar.VideoDataSetSearchTag" contentType="text/html;charset=UTF-8" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
@@ -143,9 +143,9 @@
 			omarSearchParams.initTime();
 			omarSearchParams.time = "";
 
-			omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
+			omarSearchParams.searchMethod = "${org.ossim.omar.core.BaseQuery.BBOX_SEARCH}"
 			if($("baseQueryType").value == "RADIUS") {
-				omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}";
+				omarSearchParams.searchMethod = "${org.ossim.omar.core.BaseQuery.RADIUS_SEARCH}";
 			}
 
 			var url = "${createLink(action: 'search', controller: 'videoDataSet')}";
@@ -160,9 +160,9 @@
 			omarSearchParams.initTime();
 			omarSearchParams.time = "";
 
-			omarSearchParams.searchMethod = "${BaseQuery.BBOX_SEARCH}"
+			omarSearchParams.searchMethod = "${org.ossim.omar.core.BaseQuery.BBOX_SEARCH}"
 			if($("baseQueryType").value == "RADIUS") {
-				omarSearchParams.searchMethod = "${BaseQuery.RADIUS_SEARCH}";
+				omarSearchParams.searchMethod = "${org.ossim.omar.core.BaseQuery.RADIUS_SEARCH}";
 			}
 
 			var url = "${createLink(action: 'kmlnetworklink', controller: 'videoDataSet')}";

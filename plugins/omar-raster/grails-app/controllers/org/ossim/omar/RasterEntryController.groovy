@@ -2,7 +2,10 @@ package org.ossim.omar
 
 import org.springframework.beans.factory.InitializingBean
 import groovy.xml.StreamingMarkupBuilder
-import org.ossim.omar.WMSRequest
+
+import org.ossim.omar.core.DateUtil
+import org.ossim.omar.core.WMSRequest
+
 class RasterEntryController implements InitializingBean
 {
   def grailsApplication

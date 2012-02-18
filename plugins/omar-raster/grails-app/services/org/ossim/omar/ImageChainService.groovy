@@ -10,7 +10,10 @@ import joms.oms.ossimDpt
 import joms.oms.ossimGpt
 import org.ossim.oms.image.omsImageSource
 import org.ossim.oms.image.omsRenderedImage
-import java.awt.image.*;
+import java.awt.image.*
+import org.ossim.omar.core.TransparentFilter
+import org.ossim.omar.core.ImageGenerator
+import org.ossim.omar.core.Utility;
 
 class ImageChainService
 {

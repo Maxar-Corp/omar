@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 
 import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
+import org.ossim.omar.core.Repository
 
 /**
  * Created by IntelliJ IDEA.

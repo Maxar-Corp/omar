@@ -1,6 +1,5 @@
 package org.ossim.omar
 
-import org.ossim.omar.Repository
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.GeometryCollection
 import com.vividsolutions.jts.geom.MultiPolygon
@@ -9,7 +8,9 @@ import com.vividsolutions.jts.geom.PrecisionModel
 
 
 import com.vividsolutions.jts.io.WKTReader
-import org.joda.time.DateTime
+
+import org.ossim.omar.core.DateUtil
+import org.ossim.omar.core.Repository
 
 class VideoDataSet
 {

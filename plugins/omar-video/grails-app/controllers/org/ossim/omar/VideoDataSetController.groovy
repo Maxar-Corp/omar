@@ -5,6 +5,8 @@ import groovy.xml.StreamingMarkupBuilder
 
 import grails.converters.JSON
 import grails.converters.deep.XML
+import org.ossim.omar.core.DateUtil
+import org.ossim.omar.core.Repository
 
 class VideoDataSetController implements InitializingBean
 {

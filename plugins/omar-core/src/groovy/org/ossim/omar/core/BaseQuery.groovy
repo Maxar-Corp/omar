@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat
 import org.apache.commons.collections.map.CaseInsensitiveMap
 
 import org.apache.log4j.Logger
-import org.ossim.omar.CoordinateConversionService
+import org.ossim.omar.oms.CoordinateConversionService
 
 /**
  * Created by IntelliJ IDEA.

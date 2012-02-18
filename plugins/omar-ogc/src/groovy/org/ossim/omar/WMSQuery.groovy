@@ -3,6 +3,9 @@ package org.ossim.omar
 import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
 import org.hibernate.criterion.Order
+import org.ossim.omar.core.BaseQuery
+import org.ossim.omar.core.ISO8601DateParser
+import org.ossim.omar.core.Utility
 
 /**
  * Created by IntelliJ IDEA.
@@ -20,8 +23,8 @@ class WMSQuery extends BaseQuery
   WMSQuery()
   {
     super()
-    filterTypeMap = org.ossim.omar.Utility.createTypeMap(RasterEntry.class) +
-            org.ossim.omar.Utility.createTypeMap(VideoDataSet.class)
+    filterTypeMap = Utility.createTypeMap(RasterEntry.class) +
+            Utility.createTypeMap(VideoDataSet.class)
 
   }
 

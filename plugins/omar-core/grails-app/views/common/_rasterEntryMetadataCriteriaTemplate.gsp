@@ -1,4 +1,4 @@
-<%@ page import="grails.converters.JSON; org.ossim.omar.BaseQuery; org.ossim.omar.RasterEntryQuery; org.ossim.omar.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; org.ossim.omar.core.BaseQuery; org.ossim.omar.RasterEntryQuery; org.ossim.omar.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
 
 <div class="niceBox">
 	<div class="niceBoxHd">Metadata Criteria:</div>

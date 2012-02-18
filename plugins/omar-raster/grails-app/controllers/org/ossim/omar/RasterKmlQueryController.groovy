@@ -1,6 +1,7 @@
 package org.ossim.omar
 
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.ossim.omar.core.DateUtil
 
 class RasterKmlQueryController extends KmlQueryController
 {

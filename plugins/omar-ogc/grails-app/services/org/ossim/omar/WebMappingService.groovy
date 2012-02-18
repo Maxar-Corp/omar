@@ -30,6 +30,10 @@ import java.awt.Rectangle
 import joms.oms.Chain
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
+import org.ossim.omar.core.WmsLayers
+import org.ossim.omar.core.TransparentFilter
+import org.ossim.omar.core.DateUtil
+import org.ossim.omar.core.Utility
 
 
 class WebMappingService implements ApplicationContextAware

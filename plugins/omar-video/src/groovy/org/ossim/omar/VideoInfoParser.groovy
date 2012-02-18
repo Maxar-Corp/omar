@@ -1,6 +1,7 @@
 package org.ossim.omar
 
 import groovy.util.slurpersupport.GPathResult
+import org.ossim.omar.core.Repository
 
 /**
  * Created by IntelliJ IDEA.
