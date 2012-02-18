@@ -3,6 +3,7 @@ package org.ossim.omar
 import groovy.xml.StreamingMarkupBuilder
 import java.text.SimpleDateFormat
 import org.apache.commons.io.FilenameUtils
+import org.ossim.omar.ogc.KmlService
 
 class VideoKmlService extends KmlService
 {

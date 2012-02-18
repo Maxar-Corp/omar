@@ -1,6 +1,7 @@
 package org.ossim.omar
 
 import grails.test.*
+import org.ossim.omar.ogc.WmsCommand
 
 class WmsCommandTests extends GrailsUnitTestCase {
     protected void setUp() {

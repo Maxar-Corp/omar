@@ -1,7 +1,8 @@
 package org.ossim.omar
 
 import grails.test.*
-import java.awt.image.BufferedImage
+
+import org.ossim.omar.ogc.WcsCommand
 
 class WcsCommandTests extends GrailsUnitTestCase {
     protected void setUp() {

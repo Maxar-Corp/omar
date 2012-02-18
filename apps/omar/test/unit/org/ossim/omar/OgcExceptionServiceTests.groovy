@@ -2,6 +2,8 @@ package org.ossim.omar
 
 import grails.test.*
 import java.awt.image.BufferedImage
+import org.ossim.omar.ogc.WcsCommand
+import org.ossim.omar.ogc.OgcExceptionService
 
 class OgcExceptionServiceTests extends GrailsUnitTestCase {
     def ogcExceptionService

@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.ogc
 
 import au.com.bytecode.opencsv.CSVWriter
 import org.apache.commons.io.FilenameUtils

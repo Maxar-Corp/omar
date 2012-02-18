@@ -2,6 +2,7 @@ package org.ossim.omar
 
 import org.springframework.beans.factory.InitializingBean
 import javax.media.jai.JAI
+import org.ossim.omar.ogc.WMSQuery
 
 class MapViewController implements InitializingBean
 {

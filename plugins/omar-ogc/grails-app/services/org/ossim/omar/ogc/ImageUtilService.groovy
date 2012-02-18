@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.ogc
 
 import java.awt.Graphics2D
 import java.awt.geom.AffineTransform

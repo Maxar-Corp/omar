@@ -2,6 +2,7 @@ package org.ossim.omar
 
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import org.springframework.beans.factory.InitializingBean
+import org.ossim.omar.ogc.KmlQueryController
 
 class VideoKmlQueryController extends KmlQueryController implements InitializingBean
 {

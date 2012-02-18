@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.ogc
 
 import java.text.SimpleDateFormat
 import org.springframework.context.ApplicationContextAware

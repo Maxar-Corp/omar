@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.ogc
 
 import java.awt.Color
 import org.ossim.omar.core.ISO8601DateParser

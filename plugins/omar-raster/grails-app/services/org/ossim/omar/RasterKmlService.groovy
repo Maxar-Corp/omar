@@ -2,6 +2,7 @@ package org.ossim.omar
 
 import groovy.xml.StreamingMarkupBuilder
 import java.text.SimpleDateFormat
+import org.ossim.omar.ogc.KmlService
 
 class RasterKmlService extends KmlService
 {

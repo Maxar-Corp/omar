@@ -2,7 +2,10 @@ package org.ossim.omar
 
 import grails.test.*
 import joms.oms.DataInfo
-import grails.orm.HibernateCriteriaBuilder
+
+import org.ossim.omar.ogc.WcsCommand
+import org.ossim.omar.ogc.OgcController
+
 class OgcControllerTests extends ControllerUnitTestCase {
     OgcController ogcController
 
