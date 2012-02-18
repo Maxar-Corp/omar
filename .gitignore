@@ -157,8 +157,6 @@ plugins/omar-core/src/groovy/org/*.iml
 plugins/omar-core/src/groovy/org/ossim/*.iml
 plugins/omar-core/src/groovy/org/ossim/omar/*.iml
 plugins/omar-core/src/java/*.iml
-plugins/omar-core/src/java/com/*.iml
-plugins/omar-core/src/java/com/jspbook/*.iml
 plugins/omar-core/test/*.iml
 plugins/omar-core/test/integration/*.iml
 plugins/omar-core/test/unit/*.iml

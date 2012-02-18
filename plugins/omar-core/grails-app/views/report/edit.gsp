@@ -1,4 +1,4 @@
-<%@ page import="org.ossim.omar.Report" %>
+<%@ page import="org.ossim.omar.core.Report" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>

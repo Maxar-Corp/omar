@@ -1,4 +1,4 @@
-<%@ page import="org.ossim.omar.WmsLayers" %>
+<%@ page import="org.ossim.omar.core.WmsLayers" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
