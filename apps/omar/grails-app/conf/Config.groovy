@@ -2,7 +2,7 @@ import grails.util.Environment
 
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
-import org.ossim.omar.DbAppender
+import org.ossim.omar.core.DbAppender
 
 grails.gorm.default.mapping = {
   cache true
@@ -506,6 +506,7 @@ grails.plugins.springsecurity.password.algorithm = 'MD5'
 grails.plugins.springsecurity.password.encodeHashAsBase64 = true
 
 // LDAP Configuration
+grails.plugins.springsecurity.ldap.active = false
 //grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
 //grails.plugins.springsecurity.ldap.context.managerDn = 'cn=Administrator,dc=otd,dc=radiantblue,dc=com' //
 //grails.plugins.springsecurity.ldap.context.userDn = 'dc=otd,dc=radiantblue,dc=com' //
