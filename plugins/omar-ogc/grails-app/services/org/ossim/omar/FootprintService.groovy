@@ -1,7 +1,7 @@
 package org.ossim.omar
 
 import javax.imageio.ImageIO;
-import java.awt.AlphaComposite
+
 
 import geoscript.filter.Filter
 import geoscript.geom.Bounds
@@ -31,6 +31,7 @@ import grails.converters.JSON
 import geoscript.workspace.Directory
 import java.awt.image.BufferedImage
 import java.awt.Color
+import org.ossim.omar.core.ImageGenerator
 
 
 class FootprintService

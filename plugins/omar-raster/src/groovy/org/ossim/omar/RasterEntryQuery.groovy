@@ -10,6 +10,9 @@ package org.ossim.omar
 import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
 import org.hibernate.criterion.MatchMode
+import org.ossim.omar.core.BaseQuery
+import org.ossim.omar.core.Utility
+import org.ossim.omar.core.ISO8601DateParser
 
 class RasterEntryQuery extends BaseQuery
 {
@@ -18,7 +21,7 @@ class RasterEntryQuery extends BaseQuery
   RasterEntryQuery()
   {
     super()
-    filterTypeMap = org.ossim.omar.Utility.createTypeMap(RasterEntry.class)
+    filterTypeMap = Utility.createTypeMap(RasterEntry.class)
   }
   Criterion createDateRange(String dateColumnName = "acquisitionDate")
   {

@@ -10,6 +10,8 @@ import java.text.AttributedCharacterIterator
 import java.awt.font.FontRenderContext
 import java.awt.font.LineBreakMeasurer
 import java.awt.font.TextLayout
+import org.ossim.omar.core.HttpStatus
+import org.ossim.omar.core.ImageGenerator
 
 class OgcExceptionService
 {
@@ -186,7 +188,7 @@ class OgcExceptionService
     def result = [status: null,
             message: null,
             mimeType: null]
-    result.status = org.ossim.omar.HttpStatus.BAD_REQUEST
+    result.status = HttpStatus.BAD_REQUEST
 
     def outputType = determineOutputType(params)
     switch ( outputType )

@@ -1,6 +1,7 @@
 package org.ossim.omar
 
 import groovy.util.slurpersupport.GPathResult
+import org.ossim.omar.core.Repository
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,6 +13,6 @@ import groovy.util.slurpersupport.GPathResult
 
 public interface OmsInfoParser
 {
-  public def processDataSets(GPathResult oms, Repository repository);  
+  public def processDataSets(GPathResult oms, Repository repository);
 }
 

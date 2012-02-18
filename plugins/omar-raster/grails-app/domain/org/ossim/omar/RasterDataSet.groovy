@@ -1,5 +1,7 @@
 package org.ossim.omar
 
+import org.ossim.omar.core.Repository
+
 class RasterDataSet
 {
   static hasMany = [fileObjects: RasterFile, rasterEntries: RasterEntry]

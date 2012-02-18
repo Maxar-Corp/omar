@@ -1,4 +1,4 @@
-<%@ page import="org.ossim.omar.BaseQuery; org.ossim.omar.RasterEntryQuery; org.ossim.omar.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.ossim.omar.core.BaseQuery; org.ossim.omar.RasterEntryQuery; org.ossim.omar.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <meta content="yes" name="apple-mobile-web-app-capable"/>

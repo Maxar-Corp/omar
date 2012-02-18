@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.Polygon
 import com.vividsolutions.jts.io.WKTReader
 import org.joda.time.DateTime
+import org.ossim.omar.core.DateUtil
 
 class RasterEntry
 {

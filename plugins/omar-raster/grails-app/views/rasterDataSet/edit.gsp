@@ -1,4 +1,4 @@
-<%@ page import="org.ossim.omar.Repository" %>
+<%@ page import="org.ossim.omar.core.Repository; org.ossim.omar.core.Repository" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -58,7 +58,7 @@
               <label for="repository">Repository:</label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: rasterDataSet, field: 'repository', 'errors')}">
-              <g:select optionKey="id" from="${Repository.list()}" name="repository.id" value="${rasterDataSet?.repository?.id}"></g:select>
+              <g:select optionKey="id" from="${org.ossim.omar.core.Repository.list()}" name="repository.id" value="${rasterDataSet?.repository?.id}"></g:select>
             </td>
           </tr>
           </tbody>

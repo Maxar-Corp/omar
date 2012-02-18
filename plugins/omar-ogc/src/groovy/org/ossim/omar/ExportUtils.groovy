@@ -11,6 +11,7 @@ import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
 
 import org.geotools.graph.util.ZipUtil
+import org.ossim.omar.core.Utility
 
 /**
  * Created by IntelliJ IDEA.
@@ -131,7 +132,7 @@ class ExportUtils
     // add attributes in order
     //builder.length(15).add("acquisition_date", Date.class); // <- 15 chars width for name field
 
-    def typeMap = org.ossim.omar.Utility.createTypeMap(featureClass)
+    def typeMap = Utility.createTypeMap(featureClass)
 
     for ( i in 0..<attributes.size() )
     {

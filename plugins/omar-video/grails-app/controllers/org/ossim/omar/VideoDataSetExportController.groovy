@@ -1,5 +1,7 @@
 package org.ossim.omar
 
+import org.ossim.omar.core.DateUtil
+
 class VideoDataSetExportController
 {
   def exportService

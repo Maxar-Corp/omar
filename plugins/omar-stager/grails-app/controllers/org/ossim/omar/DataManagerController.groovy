@@ -1,5 +1,8 @@
 package org.ossim.omar
 
+import org.ossim.omar.core.HttpStatusMessage
+import org.ossim.omar.core.HttpStatus
+
 /**
  * DataManagerController supplies a simple API to add and remove raster
  * and video datasets to the OMAR tables.  Currently, only a filename argument is passed

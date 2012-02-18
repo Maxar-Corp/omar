@@ -8,6 +8,9 @@ import org.springframework.beans.factory.InitializingBean
 import java.awt.image.BufferedImage
 import java.awt.Graphics2D
 import groovy.xml.StreamingMarkupBuilder
+import org.ossim.omar.core.WMSRequest
+import org.ossim.omar.core.Utility
+import org.ossim.omar.core.ImageGenerator
 
 class WmsController extends OgcController implements InitializingBean
 {

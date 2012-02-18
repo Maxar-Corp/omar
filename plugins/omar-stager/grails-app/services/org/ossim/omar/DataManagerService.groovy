@@ -3,6 +3,8 @@ package org.ossim.omar
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationContext
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.ossim.omar.core.HttpStatus
+import org.ossim.omar.core.Repository
 
 /**
  * This is a service class that manages adding and removing data within the OMAR tables.

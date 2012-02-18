@@ -1,5 +1,7 @@
 package org.ossim.omar
 
+import org.ossim.omar.core.Utility
+
 class WcsController extends OgcController
 {
   def webCoverageService

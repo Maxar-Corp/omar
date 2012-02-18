@@ -9,13 +9,15 @@ package org.ossim.omar
 
 import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
+import org.ossim.omar.core.BaseQuery
+import org.ossim.omar.core.Utility
 
 class VideoDataSetQuery extends BaseQuery
 {
   VideoDataSetQuery()
   {
     super()
-    filterTypeMap = org.ossim.omar.Utility.createTypeMap(VideoDataSet.class)
+    filterTypeMap = Utility.createTypeMap(VideoDataSet.class)
   }
   def createClause()
   {

@@ -10,6 +10,7 @@ import java.awt.Point
 import java.awt.image.WritableRaster
 import java.awt.image.ColorModel
 import org.ossim.oms.image.omsImageSource
+import org.ossim.omar.core.Utility
 
 class IcpService {
 	def imageChainService

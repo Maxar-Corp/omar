@@ -1,18 +1,16 @@
 package org.ossim.omar
 
-import org.ossim.omar.VideoDataSet
-import org.hibernate.CacheMode as CM
 import org.hibernate.CacheMode
-import org.hibernate.FetchMode as FM
-import org.hibernate.FetchMode
- import org.hibernate.criterion.*
+
+import org.hibernate.criterion.*
 //import javax.jws.WebParam
 
 //import org.ossim.postgis.Geometry
 
 import com.vividsolutions.jts.geom.Geometry
-import org.hibernate.ScrollableResults
+
 import org.springframework.beans.factory.InitializingBean
+import org.ossim.omar.core.Utility
 
 class VideoDataSetSearchService implements InitializingBean
 {

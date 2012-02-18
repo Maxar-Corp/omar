@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.oms
 
 import joms.oms.DataInfo
 

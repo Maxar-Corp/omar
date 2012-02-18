@@ -1,6 +1,6 @@
 package org.ossim.omar
 import groovy.xml.StreamingMarkupBuilder
-import org.ossim.omar.WmsCommand
+
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.GeometryFactory
@@ -9,6 +9,7 @@ import joms.oms.ossimGpt
 import joms.oms.ossimDpt
 import org.springframework.beans.factory.InitializingBean
 import java.awt.image.BufferedImage
+import org.ossim.omar.core.Utility
 
 class SuperOverlayService implements InitializingBean{
 
