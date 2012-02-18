@@ -10,6 +10,7 @@ import joms.oms.ossimDpt
 import org.springframework.beans.factory.InitializingBean
 import java.awt.image.BufferedImage
 import org.ossim.omar.core.Utility
+import org.ossim.omar.ogc.WmsCommand
 
 class SuperOverlayService implements InitializingBean{
 

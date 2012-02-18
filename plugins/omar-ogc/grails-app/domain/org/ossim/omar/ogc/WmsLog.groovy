@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.ogc
 
 import com.vividsolutions.jts.geom.Geometry
 

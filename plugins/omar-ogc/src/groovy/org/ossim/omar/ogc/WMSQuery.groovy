@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.ogc
 
 import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
@@ -6,6 +6,9 @@ import org.hibernate.criterion.Order
 import org.ossim.omar.core.BaseQuery
 import org.ossim.omar.core.ISO8601DateParser
 import org.ossim.omar.core.Utility
+
+import org.ossim.omar.RasterEntry
+import org.ossim.omar.VideoDataSet
 
 /**
  * Created by IntelliJ IDEA.

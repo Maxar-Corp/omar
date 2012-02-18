@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.ogc
 
 import java.awt.Graphics2D
 import java.awt.Color
@@ -34,7 +34,6 @@ import org.ossim.omar.core.WmsLayers
 import org.ossim.omar.core.TransparentFilter
 import org.ossim.omar.core.DateUtil
 import org.ossim.omar.core.Utility
-
 
 class WebMappingService implements ApplicationContextAware
 {

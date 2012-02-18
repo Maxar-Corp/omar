@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.ogc
 
 import joms.oms.Chain
 import joms.oms.ossimString
