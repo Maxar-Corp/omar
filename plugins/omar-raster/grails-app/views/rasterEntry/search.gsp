@@ -19,50 +19,50 @@
 <body class=" yui-skin-sam">
 <g:form name="searchForm">
 
-<content tag="top1">
-  <omar:securityClassificationBanner/>
-  <g:render plugin="omar-core" template="/common/searchMenuTemplate"/>
-</content>
+  <content tag="top1">
+    <omar:securityClassificationBanner/>
+    <g:render plugin="omar-core" template="/common/searchMenuTemplate"/>
+  </content>
 
-<content tag="bottom1">
-  <omar:securityClassificationBanner/>
-</content>
+  <content tag="bottom1">
+    <omar:securityClassificationBanner/>
+  </content>
 
-<content tag="right1">
-  <g:render plugin="omar-core" template="/common/mensurationTemplate"/>
-  <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
-</content>
+  <content tag="right1">
+    <g:render plugin="omar-core" template="/common/mensurationTemplate"/>
+    <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
+  </content>
 
-<content tag="left1">
-  <g:render plugin="omar-core" template="/common/geospatialCriteriaTemplate"/>
-  <g:render plugin="omar-core" template="/common/dateTimeCriteriaTemplate"/>
-  <g:render plugin="omar-core" template="/common/rasterEntryMetadataCriteriaTemplate"/>
-  <div align="center">
-    <span id="linkbutton1" class="yui-button yui-link-button" title="Search Rasters">
+  <content tag="left1">
+    <g:render plugin="omar-core" template="/common/geospatialCriteriaTemplate"/>
+    <g:render plugin="omar-core" template="/common/dateTimeCriteriaTemplate"/>
+    <g:render template="rasterEntryMetadataCriteriaTemplate"/>
+    <div align="center">
+      <span id="linkbutton1" class="yui-button yui-link-button" title="Search Rasters">
+        <span class="first-child">
+          <a href="javascript:search();">Search Rasters</a>
+        </span>
+      </span>
+    </div>
+  </content>
+
+
+  <content tag="top2">
+    <div id="toolBar" class="olControlPanel"></div>
+    <span id="linkbutton2" class="yui-button yui-link-button" title="Search Rasters">
       <span class="first-child">
         <a href="javascript:search();">Search Rasters</a>
       </span>
     </span>
-  </div>
-</content>
+  </content>
 
-
-<content tag="top2">
-  <div id="toolBar" class="olControlPanel"></div>
-  <span id="linkbutton2" class="yui-button yui-link-button" title="Search Rasters">
-    <span class="first-child">
-      <a href="javascript:search();">Search Rasters</a>
-    </span>
-  </span>
-</content>
-
-<content tag="bottom2">
-  <table><tr>
-    <td width="33%"><div id="ddMousePosition">&nbsp;</div></td>
-    <td width="33%"><div id="dmsMousePosition">&nbsp;</div></td>
-    <td width="33%"><div id="mgrsMousePosition">&nbsp;</div></td>
-  </tr></table>
-</content>
+  <content tag="bottom2">
+    <table><tr>
+      <td width="33%"><div id="ddMousePosition">&nbsp;</div></td>
+      <td width="33%"><div id="dmsMousePosition">&nbsp;</div></td>
+      <td width="33%"><div id="mgrsMousePosition">&nbsp;</div></td>
+    </tr></table>
+  </content>
 </g:form>
 
 <content tag="center2">
