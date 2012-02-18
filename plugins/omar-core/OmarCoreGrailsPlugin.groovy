@@ -1,4 +1,6 @@
-import org.ossim.omar.MapPropertyEditor
+import org.ossim.omar.core.MapPropertyEditor
+import org.ossim.omar.core.ISO8601DateParser
+import org.ossim.omar.core.CustomEditorRegistrar
 
 class OmarCoreGrailsPlugin
 {
@@ -30,19 +32,19 @@ This plugin contains OMAR code that can be shared or accessed from other OMAR pl
   }
 
   def doWithSpring = {
-    customEditorRegistrar(org.ossim.omar.CustomEditorRegistrar)
+    customEditorRegistrar(CustomEditorRegistrar)
     mapPropertyEditor(MapPropertyEditor)
   }
 
   def doWithDynamicMethods = { ctx ->
     // TODO Implement registering dynamic methods to classes (optional)
     String.metaClass.toDateTime {->
-      org.ossim.omar.ISO8601DateParser.parseDateTime(delegate)
+      ISO8601DateParser.parseDateTime(delegate)
     }
     String.metaClass.toDate {->
 
       def date = null
-      def dateTime = org.ossim.omar.ISO8601DateParser.parseDateTime(delegate.trim())
+      def dateTime = ISO8601DateParser.parseDateTime(delegate.trim())
       if ( dateTime )
       {
         date = new Date(dateTime.millis)
