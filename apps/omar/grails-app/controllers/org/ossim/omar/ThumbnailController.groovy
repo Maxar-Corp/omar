@@ -4,6 +4,9 @@ import javax.imageio.ImageIO
 import org.springframework.beans.factory.InitializingBean
 import java.awt.image.*;
 import java.awt.*
+import org.ossim.omar.core.HttpStatusMessage
+import org.ossim.omar.core.HttpStatus
+import org.ossim.omar.core.ImageGenerator
 
 class ThumbnailController implements InitializingBean
 {

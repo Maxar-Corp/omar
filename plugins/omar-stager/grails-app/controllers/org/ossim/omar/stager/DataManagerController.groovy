@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.stager
 
 import org.ossim.omar.core.HttpStatusMessage
 import org.ossim.omar.core.HttpStatus

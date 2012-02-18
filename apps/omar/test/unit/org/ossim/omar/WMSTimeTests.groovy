@@ -1,7 +1,9 @@
 package org.ossim.omar
 
 import grails.test.*
-import org.joda.time.Interval
+
+import org.ossim.omar.core.ISO8601DateParser
+
 class WMSTimeTests extends GrailsUnitTestCase {
     protected void setUp() {
         super.setUp()

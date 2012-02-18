@@ -2,11 +2,9 @@ package org.ossim.omar
 
 import joms.oms.Video
 import java.awt.image.BufferedImage
-import org.ossim.omar.RasterDataSet
-import org.ossim.omar.RasterEntry
-import org.ossim.omar.RasterFile
-import org.ossim.omar.VideoDataSet
-import org.ossim.omar.VideoFile
+
+import org.ossim.omar.core.HttpStatusMessage
+import org.ossim.omar.core.HttpStatus
 
 class ThumbnailService
 {

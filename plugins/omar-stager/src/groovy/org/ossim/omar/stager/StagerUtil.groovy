@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.stager
 /**
  * Created by IntelliJ IDEA.
  * User: sbortman

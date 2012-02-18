@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.stager
 
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationContext

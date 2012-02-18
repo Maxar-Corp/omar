@@ -18,7 +18,7 @@ class OmarStagerGrailsPlugin
   def authorEmail = "sbortman@radiantblue.com"
   def title = "OMAR Staging"
   def description = '''\\
-OMAR stager for data discovery
+OMAR org.ossim.omar.stager for data discovery
 '''
 
   // URL to the plugin's documentation

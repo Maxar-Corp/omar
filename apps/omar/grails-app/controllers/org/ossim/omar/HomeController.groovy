@@ -28,7 +28,7 @@ def authenticateService
     def editableControllers = []
 
 
-    ((grailsApplication.domainClasses)*.fullName - ["org.ossim.omar.AuthUser", "org.ossim.omar.Role", "org.ossim.omar.Requestmap", "org.ossim.omar.SecUser", "org.ossim.omar.SecRole"]).sort().each {
+    ((grailsApplication.domainClasses)*.fullName - ["org.ossim.omar.AuthUser", "org.ossim.omar.Role", "org.ossim.omar.security.Requestmap", "org.ossim.omar.security.SecUser", "org.ossim.omar.security.SecRole"]).sort().each {
 
       def editableController = grailsApplication.getArtefact("Controller", it + "Controller")
 
