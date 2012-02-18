@@ -1,3 +1,5 @@
+import org.ossim.omar.security.CustomUserDetailsService
+
 class OmarSecuritySpringGrailsPlugin
 {
   // the plugin version
@@ -35,7 +37,7 @@ Adds support for Spring Security to OMAR
   def doWithSpring = {
     // TODO Implement runtime spring config (optional)
 
-    userDetailsService(org.ossim.omar.CustomUserDetailsService)
+    userDetailsService(CustomUserDetailsService)
 
     ldapUserDetailsMapper(org.ossim.omar.CustomLdapUserDetailsMapper) {
       springSecurityService = ref("springSecurityService")

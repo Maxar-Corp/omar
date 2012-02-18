@@ -1,4 +1,4 @@
-<%@ page import="org.ossim.omar.Requestmap" %>
+<%@ page import="org.ossim.omar.security.Requestmap" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>

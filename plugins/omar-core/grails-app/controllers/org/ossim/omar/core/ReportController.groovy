@@ -1,8 +1,8 @@
 package org.ossim.omar.core
 
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
-import org.ossim.omar.core.Report
-import org.ossim.omar.SecUser
+
+import org.ossim.omar.security.SecUser
 
 class ReportController
 {

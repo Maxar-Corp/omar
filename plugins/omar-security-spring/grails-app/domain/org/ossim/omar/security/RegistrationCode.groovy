@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.security
 
 /* Copyright 2009-2010 the original author or authors.
  *

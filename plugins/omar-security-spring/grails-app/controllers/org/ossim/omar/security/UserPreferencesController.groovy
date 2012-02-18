@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.security
 
 import org.codehaus.groovy.grails.plugins.springsecurity.NullSaltSource
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils

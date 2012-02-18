@@ -1,6 +1,6 @@
-<%@ page import="org.ossim.omar.SecUser" %>
-<%@ page import="org.ossim.omar.SecRole" %>
-<%@ page import="org.ossim.omar.SecUserSecRole" %>
+<%@ page import="org.ossim.omar.security.SecRole; org.ossim.omar.security.SecUser" %>
+<%@ page import="org.ossim.omar.security.SecRole" %>
+<%@ page import="org.ossim.omar.security.SecUserSecRole" %>
 
 <html>
 <head>
@@ -134,7 +134,7 @@
         <h1>Roles:</h1>
 
         <g:set var="userRoles" value="${secUserInstance.authorities}"/>
-        <g:set var="allRoles" value="${SecRole.list().sort { it.authority } }"/>
+        <g:set var="allRoles" value="${org.ossim.omar.security.SecRole.list().sort { it.authority } }"/>
 
         <table>
           <tbody>

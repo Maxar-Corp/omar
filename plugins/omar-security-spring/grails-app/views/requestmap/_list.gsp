@@ -12,15 +12,15 @@
       <thead>
       <tr>
 
-        <filter:sortableColumn bean="org.ossim.omar.Requestmap" update="requestmapList" property="id"
+        <filter:sortableColumn bean="org.ossim.omar.security.Requestmap" update="requestmapList" property="id"
                                title="${message(code: 'requestmap.id.label', default: 'Id')}"
                                params="${[plugin: 'omar-security-spring'] }"/>
 
-        <filter:sortableColumn bean="org.ossim.omar.Requestmap" update="requestmapList" property="url"
+        <filter:sortableColumn bean="org.ossim.omar.security.Requestmap" update="requestmapList" property="url"
                                title="${message(code: 'requestmap.url.label', default: 'URL')}"
                                params="${[plugin: 'omar-security-spring'] }"/>
 
-        <filter:sortableColumn bean="org.ossim.omar.Requestmap" update="requestmapList" property="configAttribute"
+        <filter:sortableColumn bean="org.ossim.omar.security.Requestmap" update="requestmapList" property="configAttribute"
                                title="${message(code: 'requestmap.configAttribute.label', default: 'Config Attribute')}"
                                params="${[plugin: 'omar-security-spring']}"/>
 
@@ -44,7 +44,7 @@
   </div>
 
   <div class="paginateButtons">
-    <filter:paginate total="${requestmapInstanceTotal}" bean="org.ossim.omar.Requestmap" update="requestmapList"
+    <filter:paginate total="${requestmapInstanceTotal}" bean="org.ossim.omar.security.Requestmap" update="requestmapList"
                      params="${[plugin: 'omar-security-spring']}"/>
   </div>
 
