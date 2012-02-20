@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.app
 
 import grails.converters.JSON
 import org.ossim.omar.raster.RasterEntryQuery

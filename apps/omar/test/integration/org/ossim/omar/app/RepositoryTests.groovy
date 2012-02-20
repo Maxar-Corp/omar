@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.app
 class RepositoryTests extends GroovyTestCase {
 
     void testSomething() {
