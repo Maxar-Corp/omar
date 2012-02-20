@@ -1,7 +1,9 @@
-package org.ossim.omar
+package org.ossim.omar.video
 
 import grails.converters.XML
 import grails.converters.JSON
+import org.ossim.omar.video.VideoFile
+import org.ossim.omar.video.VideoDataSet
 
 class VideoFileController
 {

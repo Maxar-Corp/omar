@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.video
 /**
  * Created by IntelliJ IDEA.
  * User: sbortman
@@ -11,6 +11,7 @@ import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
 import org.ossim.omar.core.BaseQuery
 import org.ossim.omar.core.Utility
+import org.ossim.omar.video.VideoDataSet
 
 class VideoDataSetQuery extends BaseQuery
 {

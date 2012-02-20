@@ -8,7 +8,7 @@ import org.ossim.omar.core.ISO8601DateParser
 import org.ossim.omar.core.Utility
 
 //import org.ossim.omar.raster.RasterEntry
-//import org.ossim.omar.VideoDataSet
+//import org.ossim.omar.video.VideoDataSet
 
 /**
  * Created by IntelliJ IDEA.

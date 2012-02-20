@@ -4,7 +4,7 @@ import org.ossim.omar.security.SecUserSecRole
 import org.ossim.omar.security.Requestmap
 
 import org.ossim.omar.raster.RasterEntrySearchTag
-import org.ossim.omar.VideoDataSetSearchTag
+import org.ossim.omar.video.VideoDataSetSearchTag
 import org.ossim.omar.core.Repository
 
 import grails.util.GrailsUtil

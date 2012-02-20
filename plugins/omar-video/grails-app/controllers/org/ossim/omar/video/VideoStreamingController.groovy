@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.video
 
 import org.springframework.beans.factory.InitializingBean
 

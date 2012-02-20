@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.video
 
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import org.springframework.beans.factory.InitializingBean
@@ -61,7 +61,7 @@ class VideoKmlQueryController extends KmlQueryController implements Initializing
         params.embed = false
       }
     }
-    def queryParams = new org.ossim.omar.VideoDataSetQuery()
+    def queryParams = new VideoDataSetQuery()
 
     queryParams.caseInsensitiveBind(caseInsensitiveParams)
     //bindData(queryParams, caseInsensitiveParams, ['startDate', 'endDate'])

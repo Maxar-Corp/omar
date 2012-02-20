@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.video
 
 import org.ossim.omar.core.DateUtil
 
@@ -25,7 +25,7 @@ class VideoDataSetExportController
 //    def fields = ["id", "acquisitionDate", "groundGeom"] as String[]
 //    def labels = ["id", "acquisition_date", "ground_geom"] as String[]
 
-//    def domainClass = grailsApplication.getArtefact("Domain", "org.ossim.omar.VideoDataSet")
+//    def domainClass = grailsApplication.getArtefact("Domain", "org.ossim.omar.video.VideoDataSet")
 //    def fields = domainClass.properties*.name
 //    def labels = domainClass.properties*.naturalName
 

@@ -3,9 +3,9 @@ package org.ossim.omar
 import java.text.SimpleDateFormat
 
 import joms.oms.ossimGpt
-import org.ossim.omar.RasterDataSet
+import org.ossim.omar.raster.RasterDataSet
 
-import org.ossim.omar.VideoDataSet
+import org.ossim.omar.video.VideoDataSet
 
 import geoscript.geom.Bounds
 import org.ossim.omar.core.DateUtil

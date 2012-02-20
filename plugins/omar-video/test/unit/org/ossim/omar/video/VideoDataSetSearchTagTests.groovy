@@ -1,8 +1,8 @@
-package org.ossim.omar
+package org.ossim.omar.video
 
 import grails.test.*
 
-class VideoKmlQueryControllerTests extends ControllerUnitTestCase {
+class VideoDataSetSearchTagTests extends GrailsUnitTestCase {
     protected void setUp() {
         super.setUp()
     }

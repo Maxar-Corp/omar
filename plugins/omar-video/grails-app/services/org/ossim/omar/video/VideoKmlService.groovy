@@ -1,16 +1,17 @@
-package org.ossim.omar
+package org.ossim.omar.video
 
 import groovy.xml.StreamingMarkupBuilder
 import java.text.SimpleDateFormat
 import org.apache.commons.io.FilenameUtils
 import org.ossim.omar.ogc.KmlService
+import org.ossim.omar.video.VideoDataSet
 
 class VideoKmlService extends KmlService
 {
   def flashDirRoot
   def flashUrlRoot
 
-  String createVideosKml(List<org.ossim.omar.VideoDataSet> videoEntries, Map params)
+  String createVideosKml(List<VideoDataSet> videoEntries, Map params)
   {
     Boolean embed = params.embed
     SimpleDateFormat isdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")

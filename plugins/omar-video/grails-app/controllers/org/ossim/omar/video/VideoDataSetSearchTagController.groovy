@@ -1,4 +1,6 @@
-package org.ossim.omar
+package org.ossim.omar.video
+
+import org.ossim.omar.video.VideoDataSetSearchTag
 
 class VideoDataSetSearchTagController
 {
