@@ -1,3 +1,7 @@
+import org.ossim.omar.video.VideoDataSetSearchService
+import org.ossim.omar.video.VideoInfoParser
+import org.ossim.omar.video.VideoDataSetQuery
+
 class OmarVideoGrailsPlugin
 {
   // the plugin version
@@ -30,14 +34,14 @@ OMAR plugin for video support
 
   def doWithSpring = {
     // TODO Implement runtime spring config (optional)
-    videoInfoParser(org.ossim.omar.VideoInfoParser)
+    videoInfoParser(VideoInfoParser)
 
 
-    videosQueryParam(org.ossim.omar.VideoDataSetQuery) { bean ->
+    videosQueryParam(VideoDataSetQuery) { bean ->
       bean.singleton = false
     }
 
-    videosSearchService(org.ossim.omar.VideoDataSetSearchService) {
+    videosSearchService(VideoDataSetSearchService) {
       grailsApplication = ref("grailsApplication")
     }
   }

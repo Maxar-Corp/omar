@@ -1,8 +1,9 @@
-package org.ossim.omar
+package org.ossim.omar.video
 
 import groovy.util.slurpersupport.GPathResult
 import org.ossim.omar.core.Repository
 import org.ossim.omar.stager.OmsInfoParser
+import org.ossim.omar.video.VideoDataSet
 
 /**
  * Created by IntelliJ IDEA.

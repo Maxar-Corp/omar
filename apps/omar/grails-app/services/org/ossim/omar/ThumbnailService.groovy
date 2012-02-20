@@ -8,6 +8,8 @@ import org.ossim.omar.core.HttpStatus
 import org.ossim.omar.raster.RasterEntry
 import org.ossim.omar.raster.RasterFile
 import org.ossim.omar.raster.RasterDataSet
+import org.ossim.omar.video.VideoDataSet
+import org.ossim.omar.video.VideoFile
 
 class ThumbnailService
 {

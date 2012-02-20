@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.video
 
 import org.hibernate.CacheMode
 
@@ -233,6 +233,6 @@ class VideoDataSetSearchService implements InitializingBean
 
   void afterPropertiesSet()
   {
-    propertyNames = grailsApplication.getDomainClass("org.ossim.omar.VideoDataSet")?.properties.name
+    propertyNames = grailsApplication.getDomainClass("org.ossim.omar.video.VideoDataSet")?.properties.name
   }
 }

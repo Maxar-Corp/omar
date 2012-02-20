@@ -1,4 +1,4 @@
-<%@ page import="org.ossim.omar.VideoDataSet" %>
+<%@ page import="org.ossim.omar.video.VideoDataSet; org.ossim.omar.video.VideoDataSet" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -48,7 +48,7 @@
               <label for="videoDataSet">Video Data Set:</label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: videoFile, field: 'videoDataSet', 'errors')}">
-              <g:select optionKey="id" from="${VideoDataSet.list()}" name="videoDataSet.id" value="${videoFile?.videoDataSet?.id}"></g:select>
+              <g:select optionKey="id" from="${org.ossim.omar.video.VideoDataSet.list()}" name="videoDataSet.id" value="${videoFile?.videoDataSet?.id}"></g:select>
             </td>
           </tr>
           </tbody>

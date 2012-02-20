@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.video
 
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.GeometryCollection
@@ -67,7 +67,7 @@ class VideoDataSet
 
     if ( !mainFile )
     {
-      //mainFile = org.ossim.omar.VideoFile.findByVideoDataSetAndType(videoDataSet, "main")
+      //mainFile = org.ossim.omar.video.VideoFile.findByVideoDataSetAndType(videoDataSet, "main")
 
       mainFile = VideoFile.createCriteria().get {
         eq("type", "main")

@@ -1,6 +1,4 @@
-package org.ossim.omar
-
-import org.ossim.omar.VideoDataSet
+package org.ossim.omar.video
 
 class VideoFile
 {

@@ -8,6 +8,7 @@ import org.ossim.omar.core.HttpStatusMessage
 import org.ossim.omar.core.HttpStatus
 import org.ossim.omar.core.ImageGenerator
 import org.ossim.omar.raster.RasterEntry
+import org.ossim.omar.video.VideoDataSet
 
 class ThumbnailController implements InitializingBean
 {
