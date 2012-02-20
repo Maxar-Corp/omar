@@ -5,6 +5,9 @@ import java.awt.image.BufferedImage
 
 import org.ossim.omar.core.HttpStatusMessage
 import org.ossim.omar.core.HttpStatus
+import org.ossim.omar.raster.RasterEntry
+import org.ossim.omar.raster.RasterFile
+import org.ossim.omar.raster.RasterDataSet
 
 class ThumbnailService
 {

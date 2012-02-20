@@ -7,6 +7,7 @@ import java.awt.*
 import org.ossim.omar.core.HttpStatusMessage
 import org.ossim.omar.core.HttpStatus
 import org.ossim.omar.core.ImageGenerator
+import org.ossim.omar.raster.RasterEntry
 
 class ThumbnailController implements InitializingBean
 {

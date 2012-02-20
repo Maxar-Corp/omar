@@ -5,9 +5,11 @@ import org.ossim.omar.core.Utility
 class WcsController extends OgcController
 {
   def webCoverageService
-
+  def rasterEntrySearchService
 
   def wcs = {WcsCommand cmd ->
+    
+
     cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
     // for now until we can develop a plugin for the WCS
     // we will hardcode the output format test list here
@@ -53,7 +55,8 @@ class WcsController extends OgcController
             wmsQuery.sort = wmsQuery.sort ?: "acquisitionDate"
             wmsQuery.order = wmsQuery.order ?: "desc"
           }
-          def rasterEntries = wmsQuery.getRasterEntriesAsList();
+          def rasterEntries = rasterEntrySearchService.findRasterEntries(wcsParams?.layers?.split(','))
+
           if ( rasterEntries )
           {
             rasterEntries = rasterEntries?.reverse()
@@ -97,6 +100,7 @@ class WcsController extends OgcController
       }
       catch (Exception e)
       {
+        e.printStackTrace()
         log.error(e)
       }
     }

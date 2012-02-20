@@ -48,6 +48,7 @@ class WebMappingService implements ApplicationContextAware
 
   def transparent = new TransparentFilter()
 
+
   WMSQuery setupQuery(def wmsRequest)
   {
     def wmsQuery = new WMSQuery()
@@ -99,7 +100,8 @@ class WebMappingService implements ApplicationContextAware
       log.error(result)
       return result
     }
-    def rasterEntries = layers ?: wmsQuery.getRasterEntriesAsList();
+    def rasterEntries = layers;
+
     //params.viewGeom = wmsView.getImageGeometry();
     params.wmsView = wmsView
     params.keepWithinScales = true

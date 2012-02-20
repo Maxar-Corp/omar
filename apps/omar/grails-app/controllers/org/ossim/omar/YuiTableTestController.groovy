@@ -1,6 +1,7 @@
 package org.ossim.omar
 
 import grails.converters.JSON
+import org.ossim.omar.raster.RasterEntryQuery
 
 class YuiTableTestController
 {

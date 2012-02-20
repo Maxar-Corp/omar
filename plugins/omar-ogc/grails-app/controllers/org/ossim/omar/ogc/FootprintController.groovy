@@ -3,7 +3,7 @@ package org.ossim.omar.ogc
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import geoscript.filter.Color
 
-import org.ossim.omar.RasterEntry
+//import org.ossim.omar.raster.RasterEntry
 
 class FootprintController
 {
@@ -12,26 +12,26 @@ class FootprintController
 
   def index = {
 
-    def fileTypes = RasterEntry.createCriteria().list {
-      projections {
-        distinct("fileType")
-      }
-      order("fileType", "asc")
-    }
+//    def fileTypes = RasterEntry.createCriteria().list {
+//      projections {
+//        distinct("fileType")
+//      }
+//      order("fileType", "asc")
+//    }
 
     def colorNames = Color.colorNameMap.keySet().toList()
     def layerData = []
     def i = 0
 
-    for ( def fileType in fileTypes )
-    {
-      layerData << [
-              name: fileType,
-              filter: "file_type='${fileType}'",
-              color: Color.colorNameMap[colorNames[i]]
-      ]
-      i++
-    }
+//    for ( def fileType in fileTypes )
+//    {
+//      layerData << [
+//              name: fileType,
+//              filter: "file_type='${fileType}'",
+//              color: Color.colorNameMap[colorNames[i]]
+//      ]
+//      i++
+//    }
 
     //layerData = [layerData[0]]
 

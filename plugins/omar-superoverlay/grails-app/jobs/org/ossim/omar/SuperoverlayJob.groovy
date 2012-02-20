@@ -1,6 +1,7 @@
 package org.ossim.omar
 
 import joms.oms.Chain
+import org.ossim.omar.raster.RasterEntry
 
 class SuperoverlayJob {
 

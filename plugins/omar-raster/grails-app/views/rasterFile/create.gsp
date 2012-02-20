@@ -1,4 +1,4 @@
-<%@ page import="org.ossim.omar.RasterDataSet" %>
+<%@ page import="org.ossim.omar.raster.RasterDataSet; org.ossim.omar.raster.RasterDataSet" %>
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -46,7 +46,7 @@
               <label for="rasterDataSet">Raster Data Set:</label>
             </td>
             <td valign="top" class="value ${hasErrors(bean: rasterFile, field: 'rasterDataSet', 'errors')}">
-              <g:select optionKey="id" from="${RasterDataSet.list()}" name="rasterDataSet.id" value="${rasterFile?.rasterDataSet?.id}"></g:select>
+              <g:select optionKey="id" from="${org.ossim.omar.raster.RasterDataSet.list()}" name="rasterDataSet.id" value="${rasterFile?.rasterDataSet?.id}"></g:select>
             </td>
           </tr>
           </tbody>

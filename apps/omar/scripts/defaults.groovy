@@ -3,7 +3,7 @@ import org.ossim.omar.security.SecUser
 import org.ossim.omar.security.SecUserSecRole
 import org.ossim.omar.security.Requestmap
 
-import org.ossim.omar.RasterEntrySearchTag
+import org.ossim.omar.raster.RasterEntrySearchTag
 import org.ossim.omar.VideoDataSetSearchTag
 import org.ossim.omar.core.Repository
 
