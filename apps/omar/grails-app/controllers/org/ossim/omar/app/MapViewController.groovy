@@ -1,4 +1,4 @@
-package org.ossim.omar
+package org.ossim.omar.app
 
 import org.springframework.beans.factory.InitializingBean
 import javax.media.jai.JAI

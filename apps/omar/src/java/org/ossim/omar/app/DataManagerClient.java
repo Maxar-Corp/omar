@@ -1,4 +1,4 @@
-package org.ossim.omar; /**
+package org.ossim.omar.app; /**
  * Created by IntelliJ IDEA.
  * User: sbortman
  * Date: Jan 19, 2010
