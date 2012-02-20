@@ -229,7 +229,7 @@ class WmsController extends OgcController implements InitializingBean
       cmd.request = "GetMap"
       cmd.srs = "EPSG:4326"
       def wmsQuery = webMappingService.setupQuery(cmd);
-      def rasterEntryList = wmsQuery.getRasterEntriesAsList();
+      def rasterEntryList = rasterEntrySearchService.findRasterEntries(cmd?.layers?.split(','))
 
       def image = webMappingService.getMap(cmd, rasterEntryList).image
       def tempDescription = rasterEntryList ? rasterKmlService.createImageKmlDescription(rasterEntryList[0]) : "No images found for the kmz query"
@@ -406,7 +406,8 @@ class WmsController extends OgcController implements InitializingBean
         break
       }
 
-      def mapResult = webMappingService.getMap(cmd)
+      def layers = rasterEntrySearchService.findRasterEntries(cmd?.layers?.split(','))
+      def mapResult = webMappingService.getMap(cmd, layers)
       internaltime = System.currentTimeMillis()
 
       if ( mapResult.errorMessage )

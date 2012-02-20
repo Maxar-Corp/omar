@@ -1,7 +1,5 @@
 package org.ossim.omar
 
-import org.ossim.omar.RasterEntry
-
 class ThumbnailControllerTests extends GroovyTestCase {
 
     void testSomething() {

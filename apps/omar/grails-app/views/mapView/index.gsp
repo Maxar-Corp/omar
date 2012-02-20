@@ -23,7 +23,7 @@
 <body class=" yui-skin-sam">
 
 <content tag="top1">
-  <g:render template="groundSpaceMenu" model="${[rasterEntries: rasterEntries,]}"/>
+  <g:render template="groundSpaceMenu" model="${[rasterEntries: rasterEntries]}"/>
 </content>
 
 <content tag="bottom1"></content>

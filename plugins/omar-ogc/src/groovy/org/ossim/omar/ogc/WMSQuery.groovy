@@ -7,8 +7,8 @@ import org.ossim.omar.core.BaseQuery
 import org.ossim.omar.core.ISO8601DateParser
 import org.ossim.omar.core.Utility
 
-import org.ossim.omar.RasterEntry
-import org.ossim.omar.VideoDataSet
+//import org.ossim.omar.raster.RasterEntry
+//import org.ossim.omar.VideoDataSet
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,11 +26,12 @@ class WMSQuery extends BaseQuery
   WMSQuery()
   {
     super()
-    filterTypeMap = Utility.createTypeMap(RasterEntry.class) +
-            Utility.createTypeMap(VideoDataSet.class)
+//    filterTypeMap = Utility.createTypeMap(RasterEntry.class) +
+//            Utility.createTypeMap(VideoDataSet.class)
 
   }
 
+/*
   def createDateRangeRestrictionRaster(def columnName = "acquisitionDate")
   {
     def dateColumnName = columnName
@@ -201,4 +202,5 @@ class WMSQuery extends BaseQuery
     return result;
 
   }
+*/
 }

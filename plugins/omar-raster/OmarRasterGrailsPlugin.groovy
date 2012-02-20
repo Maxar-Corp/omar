@@ -1,3 +1,7 @@
+import org.ossim.omar.raster.RasterEntrySearchService
+import org.ossim.omar.raster.RasterEntryQuery
+import org.ossim.omar.raster.RasterInfoParser
+
 class OmarRasterGrailsPlugin
 {
   // the plugin version
@@ -29,18 +33,18 @@ OMAR Raster support
 
   def doWithSpring = {
     // TODO Implement runtime spring config (optional)
-    rasterInfoParser(org.ossim.omar.RasterInfoParser)
+    rasterInfoParser(RasterInfoParser)
 
-//    imageDataQueryParam(org.ossim.omar.RasterEntryQuery) { bean ->
+//    imageDataQueryParam(org.ossim.omar.raster.RasterEntryQuery) { bean ->
     //      bean.singleton = false
     //    }
 
 
-    imageryQueryParam(org.ossim.omar.RasterEntryQuery) { bean ->
+    imageryQueryParam(RasterEntryQuery) { bean ->
       bean.singleton = false
     }
 
-    imagerySearchService(org.ossim.omar.RasterEntrySearchService) {
+    imagerySearchService(RasterEntrySearchService) {
       grailsApplication = ref("grailsApplication")
     }
   }

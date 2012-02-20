@@ -1,17 +1,15 @@
 package org.ossim.omar
 
-import java.util.Date;
-import org.ossim.omar.SuperOverlayQueueItem
-import org.apache.commons.collections.map.CaseInsensitiveMap
 import joms.oms.WmsView
 import joms.oms.ossimUnitType
 import joms.oms.Chain
 import org.springframework.beans.factory.InitializingBean
-import groovy.xml.StreamingMarkupBuilder
+
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 import javax.imageio.ImageIO
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.ossim.omar.raster.RasterEntry
 
 class SuperOverlayController implements InitializingBean{
 	def baseDir

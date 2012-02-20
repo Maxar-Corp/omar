@@ -3,6 +3,8 @@ package org.ossim.omar
 import org.springframework.beans.factory.InitializingBean
 import javax.media.jai.JAI
 import org.ossim.omar.ogc.WMSQuery
+import org.ossim.omar.raster.RasterEntryFile
+import org.ossim.omar.raster.RasterEntry
 
 class MapViewController implements InitializingBean
 {
@@ -28,7 +30,7 @@ class MapViewController implements InitializingBean
     {
       query.layers = params.layers
 
-      rasterEntries = query.getRasterEntriesAsList()
+      rasterEntries = rasterEntrySearchService.findRasterEntries(params.layers?.split(','))
 
       if ( !rasterEntries )
       {
@@ -103,7 +105,7 @@ class MapViewController implements InitializingBean
     {
       query.layers = params.layers
 
-      rasterEntries = query.getRasterEntriesAsList()
+      rasterEntries = rasterEntrySearchService.findRasterEntries(params.layers?.split(','))
 
       if ( !rasterEntries )
       {

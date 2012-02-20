@@ -1,4 +1,4 @@
-<%@ page import="grails.converters.JSON; org.ossim.omar.core.BaseQuery; org.ossim.omar.RasterEntryQuery; org.ossim.omar.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.ossim.omar.raster.RasterEntrySearchTag; grails.converters.JSON; org.ossim.omar.core.BaseQuery; org.ossim.omar.RasterEntryQuery; org.ossim.omar.raster.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
 
 <div class="niceBox">
   <div class="niceBoxHd">Metadata Criteria:</div>
@@ -22,7 +22,7 @@
                   id="searchTagNames[${i}]"
                   name="searchTagNames[${i}]"
                   value="${queryParams?.searchTagNames[i]}"
-                  from="${RasterEntrySearchTag.list(sort: 'description')}"
+                  from="${org.ossim.omar.raster.RasterEntrySearchTag.list(sort: 'description')}"
                   optionKey="name" optionValue="description"/>
               <li>
                 <g:textField id="searchTagValues[${i}]" name="searchTagValues[${i}]" value="${searchTagValue}"
