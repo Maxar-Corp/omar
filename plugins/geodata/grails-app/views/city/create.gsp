@@ -4,11 +4,12 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="layout" content="main" />
+        <meta name="layout" content="generatedViews" />
         <g:set var="entityName" value="${message(code: 'city.label', default: 'City')}" />
         <title><g:message code="default.create.label" args="[entityName]" /></title>
     </head>
     <body>
+		<content tag="content">
         <div class="nav">
             <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
             <span class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]" /></g:link></span>
@@ -99,5 +100,6 @@
                 </div>
             </g:form>
         </div>
+        </content>
     </body>
 </html>
