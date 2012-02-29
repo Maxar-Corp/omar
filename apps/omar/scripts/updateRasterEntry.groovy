@@ -1,4 +1,4 @@
-import org.ossim.omar.RasterEntry
+import org.ossim.omar.raster.RasterEntry
 
 def count = RasterEntry.count()
 

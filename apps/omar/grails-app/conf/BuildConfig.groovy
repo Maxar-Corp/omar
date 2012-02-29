@@ -69,3 +69,5 @@ grails.plugin.location.'omar-superoverlay' = "../../plugins/omar-superoverlay"
 grails.plugin.location.'omar-rss' = "../../plugins/omar-rss"
 //grails.plugin.location.'omar-mobile'="../../plugins/omar-mobile"
 
+
+grails.plugin.location.geodata = "../../plugins/geodata"
