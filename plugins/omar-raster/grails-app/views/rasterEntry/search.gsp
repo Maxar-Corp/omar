@@ -83,8 +83,8 @@
 			omar.setupMapWidget();
 
 			var baseWMS=${baseWMS as JSON};
-			for(layer in baseWMS) {
-				omar.setupBaseLayers(baseWMS[layer].name, baseWMS[layer].url, baseWMS[layer].params, baseWMS[layer].options);
+			for(var i = 0; i < baseWMS.length; i++ ) {
+				omar.setupBaseLayers(baseWMS[i].name, baseWMS[i].url, baseWMS[i].params, baseWMS[i].options);
 			};
 
 			omar.setupDataLayer("${dataWMS.name}", "${dataWMS.url}", "${dataWMS.params.layers}", "${dataWMS.options.styles}", "${dataWMS.params.format}");
