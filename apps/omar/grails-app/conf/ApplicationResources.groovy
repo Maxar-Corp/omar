@@ -38,9 +38,11 @@ modules = {
     resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
     resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
 
+    resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
 
     resource url: [plugin: 'omar-core', dir: 'js', file: 'omar.js']
     resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
+
 
     resource url: [dir: 'js', file: 'application.js']
     resource url: [dir: 'js', file: 'datechooser.js']
