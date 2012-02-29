@@ -1,15 +1,46 @@
-var oMenu = new YAHOO.widget.MenuBar( "menu1", {
-    autosubmenudisplay:true,
-    showdelay:0} );
 
-oMenu.render();
+function omarInit()
+{
+    var oMenu = new YAHOO.widget.MenuBar( "menu1", {
+        autosubmenudisplay:true,
+        showdelay:0} );
 
-var tabView = new YAHOO.widget.TabView( "tabview1" );
-var tab0 = tabView.getTab( 0 );
-var tab1 = tabView.getTab( 1 );
+    oMenu.render();
 
-tab0.addListener( 'click', useRadiusSearch );
-tab1.addListener( 'click', useBoundBoxSearch );
+    var tabView = new YAHOO.widget.TabView( "tabview1" );
+    var tab0 = tabView.getTab( 0 );
+    var tab1 = tabView.getTab( 1 );
+
+    tab0.addListener( 'click', useRadiusSearch );
+    tab1.addListener( 'click', useBoundBoxSearch );
+
+    var tabView2 = new YAHOO.widget.TabView( "tabview2" );
+
+    var startDateChooser = new DateChooser();
+    startDateChooser.setDisplayContainer( "startDateContainer" );
+    startDateChooser.setInputId( "startDateInput" );
+    startDateChooser.setStructId( "startDate" );
+    startDateChooser.setFormat( "MM/dd/yyyy" );
+    startDateChooser.setLocale( "en" );
+    startDateChooser.setChangeCallback( "updateOmarFilters()" );
+    startDateChooser.init();
+
+    var endDateChooser = new DateChooser();
+    endDateChooser.setDisplayContainer( "endDateContainer" );
+    endDateChooser.setInputId( "endDateInput" );
+    endDateChooser.setStructId( "endDate" );
+    endDateChooser.setFormat( "MM/dd/yyyy" );
+    endDateChooser.setLocale( "en" );
+    endDateChooser.setChangeCallback( "updateOmarFilters()" );
+    endDateChooser.init();
+
+    pointRadiusTab.title = "Define a point radius by specifying a Center coordinate in either DD, DMS, or MGRS format and a Radius in meters.";
+    boundBoxTab.title = "Define a bound box by specifing Lower Left and Upper Right coordinates in either DD, DMS, or MGRS format.";
+
+    metadataTab.title = "Metadata";
+    cqlTab.title = "CQL";
+
+}
 
 function useRadiusSearch()
 {
@@ -21,31 +52,6 @@ function useBoundBoxSearch()
     $( "baseQueryType" ).value = "BBOX";
 };
 
-var tabView2 = new YAHOO.widget.TabView( "tabview2" );
-
-var startDateChooser = new DateChooser();
-startDateChooser.setDisplayContainer( "startDateContainer" );
-startDateChooser.setInputId( "startDateInput" );
-startDateChooser.setStructId( "startDate" );
-startDateChooser.setFormat( "MM/dd/yyyy" );
-startDateChooser.setLocale( "en" );
-startDateChooser.setChangeCallback( "updateOmarFilters()" );
-startDateChooser.init();
-
-var endDateChooser = new DateChooser();
-endDateChooser.setDisplayContainer( "endDateContainer" );
-endDateChooser.setInputId( "endDateInput" );
-endDateChooser.setStructId( "endDate" );
-endDateChooser.setFormat( "MM/dd/yyyy" );
-endDateChooser.setLocale( "en" );
-endDateChooser.setChangeCallback( "updateOmarFilters()" );
-endDateChooser.init();
-
-pointRadiusTab.title = "Define a point radius by specifying a Center coordinate in either DD, DMS, or MGRS format and a Radius in meters.";
-boundBoxTab.title = "Define a bound box by specifing Lower Left and Upper Right coordinates in either DD, DMS, or MGRS format.";
-
-metadataTab.title = "Metadata";
-cqlTab.title = "CQL";
 
 function Omar()
 {
