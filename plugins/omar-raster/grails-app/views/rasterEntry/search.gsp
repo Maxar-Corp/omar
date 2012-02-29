@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="grails.converters.JSON; org.ossim.omar.core.BaseQuery; org.ossim.omar.RasterEntryQuery; org.ossim.omar.raster.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON; org.ossim.omar.core.BaseQuery; org.ossim.omar.raster.RasterEntryQuery; org.ossim.omar.raster.RasterEntrySearchTag" contentType="text/html;charset=UTF-8" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
