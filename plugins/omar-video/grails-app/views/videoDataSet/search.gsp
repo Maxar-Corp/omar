@@ -75,6 +75,8 @@
 
 		var init = function() {
 
+      omarInit();
+
       omar = new Omar();
       omarSearchParams = new OmarSearchParams();
 
