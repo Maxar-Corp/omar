@@ -1,7 +1,7 @@
 package org.ossim.omar.raster
 //import javax.jws.WebParam
 
-//import org.ossim.omar.RasterEntryMetadata
+//import org.ossim.omar.raster.RasterEntryMetadata
 
 
 import org.hibernate.CacheMode

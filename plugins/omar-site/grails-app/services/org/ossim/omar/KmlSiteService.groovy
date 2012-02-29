@@ -6,7 +6,7 @@ class KmlSiteService{
 
     static transactional = true
 
-    def myCreateImagesKml(List<org.ossim.omar.RasterEntry> rasterEntries,
+    def myCreateImagesKml(List<org.ossim.omar.raster.RasterEntry> rasterEntries,
                                                 Map wmsParams,
                                                 Map params)
     {

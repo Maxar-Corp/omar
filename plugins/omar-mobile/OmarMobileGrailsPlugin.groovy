@@ -27,7 +27,7 @@ OMAR Mobile support
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)
-    	rasterInfoParser(org.ossim.omar.RasterInfoParser)
+    	rasterInfoParser(org.ossim.omar.raster.RasterInfoParser)
     }
 
     def doWithDynamicMethods = { ctx ->

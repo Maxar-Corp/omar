@@ -336,7 +336,7 @@ class RasterEntryController implements InitializingBean
 
 
 //      def ogcFilterQueryFields =  Utility.generateMapForOgcFilterQuery(grailsApplication.getArtefact("Domain",
-//                                                                        org.ossim.omar.RasterEntry.name),
+//                                                                        org.ossim.omar.raster.RasterEntry.name),
 //                                                                        searchNameList,
 //                                                                        null,
 //                                                                        null)

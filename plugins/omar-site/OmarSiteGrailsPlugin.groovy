@@ -39,7 +39,7 @@ Brief description of the plugin.
         /*
       kmlSiteService = ctx.kmlSiteService
       oldCreateImagesKml  = KmlService.metaClass.getMetaMethod("createImagesKml", [List, Map, Map] as Class[])//, [KmlService] as Class[])
-       KmlService.metaClass.createImagesKml = { List<org.ossim.omar.RasterEntry> rasterEntries,
+       KmlService.metaClass.createImagesKml = { List<org.ossim.omar.raster.RasterEntry> rasterEntries,
                                                 Map wmsParams,
                                                 Map params ->
          kmlSiteService.myCreateImages(rasterEntries, wmsParams, params)
