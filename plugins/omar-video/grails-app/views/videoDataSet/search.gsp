@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page import="org.ossim.omar.core.BaseQuery; grails.converters.JSON; org.ossim.omar.VideoDataSetQuery; org.ossim.omar.video.VideoDataSetSearchTag" contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.ossim.omar.core.BaseQuery; grails.converters.JSON; org.ossim.omar.video.VideoDataSetQuery; org.ossim.omar.video.VideoDataSetSearchTag" contentType="text/html;charset=UTF-8" %>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
