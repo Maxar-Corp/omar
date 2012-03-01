@@ -29,9 +29,6 @@
 				</div>
 			</li>
 			
-			<li style="float: right;" class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel"
-				href="${createLink(controller: 'home', action: 'index')}"
-				title="OMAR™ Home">OMAR Help/User's Guide</a></li>
 		</ul>
 	</div>
 </div>
