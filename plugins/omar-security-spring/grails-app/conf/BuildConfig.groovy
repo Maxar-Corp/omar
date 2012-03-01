@@ -38,7 +38,7 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    compile ':spring-security-core:1.1.3'
+    compile ':spring-security-core:1.2.7.2'
     compile ':spring-security-ldap:1.0.5'
     compile ':mail:1.0'
     compile ':csv:0.3.1'
@@ -53,4 +53,4 @@ grails.project.dependency.resolution = {
   }
 }
 
-grails.plugin.location.'omar-table-filter'='../../plugins/omar-table-filter'
+grails.plugin.location.omarTableFilter ='../../plugins/omar-table-filter'

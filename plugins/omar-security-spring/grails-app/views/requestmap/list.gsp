@@ -6,9 +6,6 @@
   <g:set var="entityName" value="${message(code: 'requestmap.label', default: 'Requestmap')}"/>
   <title><g:message code="default.list.label" args="[entityName]"/></title>
 
-  <g:javascript contextPath="" src="prototype/prototype.js"/>
-  <g:javascript contextPath="" src="application.js"/>
-
 </head>
 
 <body>

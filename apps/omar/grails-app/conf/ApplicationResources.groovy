@@ -187,10 +187,11 @@ modules = {
     resource url: [plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css']
 
     resource url: [dir: 'js', file: 'application.js']
+    resource url: [dir: 'js/prototype', file: 'prototype.js']
+
     resource url: [plugin: 'yui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js']
     resource url: [plugin: 'yui', dir: 'js/yui/element', file: 'element-min.js']
     resource url: [plugin: 'yui', dir: 'js/yui/layout', file: 'layout-min.js']
-
   }
 
 
