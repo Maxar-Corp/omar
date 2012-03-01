@@ -403,7 +403,9 @@
 	            initFlag = 0;
                 resetImageVectorLayer();
 
-            map.setCenter(new  OpenLayers.LonLat(0.0), 0);
+                offsetX = width/2.0 -  hyp;
+                offsetY = height/2.0 - hyp;
+            map.setCenter(new  OpenLayers.LonLat(offsetX,offsetY), 0);
             //map.zoomToMaxExtent();
                // map.zoomIn();
                 // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
