@@ -122,8 +122,29 @@
 			//omar.getCurrentDateTime();
 
 			// preserve date / time
-			//
-			//
+			if ("${params?.startDate_month}" || "${params?.startDate_day}" || "${params?.startDate_year}")
+			{
+				$("startDateInput").value = "${params?.startDate_month ?: null}/${params?.startDate_day ?: null}/${params?.startDate_year ?: null}";
+				
+				$("startDate_month").value = "${params?.startDate_month ?: null}";
+				$("startDate_day").value = "${params?.startDate_day ?: null}";
+				$("startDate_year").value = "${params?.startDate_year ?: null}";
+				
+				$("startDate_hour").value = "${params?.startDate_hour ?: '00'}";
+				$("startDate_minute").value = "${params?.startDate_minute ?: '00'}";
+			}
+			
+			if ("${params?.endDate_month}" || "${params?.endDate_day}" || "${params?.endDate_year}")
+			{
+				$("endDateInput").value = "${params?.endDate_month ?: null}/${params?.endDate_day ?: null}/${params?.endDate_year ?: null}";
+				
+				$("endDate_month").value = "${params?.endDate_month ?: null}";
+				$("endDate_day").value = "${params?.endDate_day ?: null}";
+				$("endDate_year").value = "${params?.endDate_year ?: null}";
+				
+				$("endDate_hour").value = "${params?.endDate_hour ?: '00'}";
+				$("endDate_minute").value = "${params?.endDate_minute ?: '00'}";
+			}
 
 			var startDate_hour = document.getElementById("startDate_hour");
 			var startDate_minute = document.getElementById("startDate_minute");
