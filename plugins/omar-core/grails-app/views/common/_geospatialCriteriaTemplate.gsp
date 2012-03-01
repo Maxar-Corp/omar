@@ -9,7 +9,7 @@
 		<div id="tabview1" class="yui-navset">
 			<ul class="yui-nav">
 				<li><a href="#tab1" id="pointRadiusTab"><em>Point Radius</em></a></li>
-				<li class="selected" id="boundBoxTab"><a href="#tab2"><em>Bound Box</em></a></li>
+				<li><a href="#tab2" id="boundBoxTab"><em>Bound Box</em></a></li>
 			</ul>
 			<div class="yui-content">
 				<div id="tab1">
