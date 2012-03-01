@@ -7,15 +7,6 @@ function omarInit()
 
     oMenu.render();
 
-    var tabView = new YAHOO.widget.TabView( "tabview1" );
-    var tab0 = tabView.getTab( 0 );
-    var tab1 = tabView.getTab( 1 );
-
-    tab0.addListener( 'click', useRadiusSearch );
-    tab1.addListener( 'click', useBoundBoxSearch );
-
-    var tabView2 = new YAHOO.widget.TabView( "tabview2" );
-
     var startDateChooser = new DateChooser();
     startDateChooser.setDisplayContainer( "startDateContainer" );
     startDateChooser.setInputId( "startDateInput" );
@@ -41,17 +32,6 @@ function omarInit()
     cqlTab.title = "CQL";
 
 }
-
-function useRadiusSearch()
-{
-    $( "baseQueryType" ).value = "RADIUS";
-};
-
-function useBoundBoxSearch()
-{
-    $( "baseQueryType" ).value = "BBOX";
-};
-
 
 function Omar()
 {
