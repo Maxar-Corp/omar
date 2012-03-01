@@ -1,6 +1,7 @@
 import org.ossim.omar.core.MapPropertyEditor
 import org.ossim.omar.core.ISO8601DateParser
 import org.ossim.omar.core.CustomEditorRegistrar
+import org.ossim.omar.core.DbAppender
 
 class OmarCoreGrailsPlugin
 {
@@ -34,6 +35,29 @@ This plugin contains OMAR code that can be shared or accessed from other OMAR pl
   def doWithSpring = {
     customEditorRegistrar(CustomEditorRegistrar)
     mapPropertyEditor(MapPropertyEditor)
+
+    wmsLoggingAppender(DbAppender) {
+      tableMapping = [
+              width: ":width",
+              height: ":height",
+              layers: ":layers",
+              styles: ":styles",
+              format: ":format",
+              request: ":request",
+              bbox: ":bbox",
+              internal_time: ":internalTime",
+              render_time: ":renderTime",
+              total_time: ":totalTime",
+              start_date: ":startDate",
+              end_date: ":endDate",
+              user_name: ":userName",
+              ip: ":ip",
+              url: ":url",
+              mean_gsd: ":meanGsd",
+              geometry: "ST_GeomFromText(:geometry, 4326)"
+      ]
+      tableName = "wms_log"
+    }
   }
 
   def doWithDynamicMethods = { ctx ->

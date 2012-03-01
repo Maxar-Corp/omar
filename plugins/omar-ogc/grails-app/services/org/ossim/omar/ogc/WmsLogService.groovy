@@ -5,15 +5,33 @@ import joms.oms.ossimDpt
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
 import geoscript.geom.Bounds
+import org.apache.commons.lang.builder.ToStringBuilder
+
+import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 
 class WmsLogService
 {
   static transactional = true
   static metersPerDegree = null
 
+  def wmsLoggingAppender
+
+  def sessionFactory
+  def propertyInstanceMap = DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+
+  def index = 0
+
+  def cleanUpGorm()
+  {
+    def session = sessionFactory.currentSession
+    session.flush()
+    session.clear()
+    propertyInstanceMap.get().clear()
+  }
+
   def fixLogParamsForRouting(def params)
   {
-    def paramsSave = [:]//new HashMap(params)
+    def paramsSave = [:]
 
     params.each {k, v ->
       if ( params."${k}" != null )
@@ -22,10 +40,11 @@ class WmsLogService
       }
     }
 
-    def startDate = new DateTime(paramsSave.startDate?.time).toDateTime(DateTimeZone.UTC)
-    def endDate = new DateTime(paramsSave.endDate?.time).toDateTime(DateTimeZone.UTC)
-    paramsSave."startDate" = startDate.toString()
-    paramsSave."endDate" = endDate.toString()
+    def startDate = new DateTime(paramsSave.startDate?.time).toDateTime(DateTimeZone.UTC).toDate()
+    def endDate = new DateTime(paramsSave.endDate?.time).toDateTime(DateTimeZone.UTC).toDate()
+
+    paramsSave["startDate"] = startDate.toString()
+    paramsSave["endDate"] = endDate.toString()
 
     def bboxSplit = params.bbox?.split(',')
     if ( bboxSplit?.size() == 4 )
@@ -35,7 +54,7 @@ class WmsLogService
       double maxX = bboxSplit[2] as double;
       double maxY = bboxSplit[3] as double;
 
-      paramsSave."geometry" = new Bounds(minX, minY, maxX, maxY).polygon.wkt
+      paramsSave["geometry"] = new Bounds(minX, minY, maxX, maxY).polygon.g
 
       // we are assuming SRS 4326.
       // need to support others later
@@ -65,6 +84,23 @@ class WmsLogService
   def logParams(def params)
   {
     def paramsSave = fixLogParamsForRouting(params)
-    log.info(paramsSave as grails.converters.JSON)
+    def foo = new WmsLog()
+
+    foo.properties = paramsSave
+
+    //println ToStringBuilder.reflectionToString(foo)
+
+    if ( foo.hasErrors() || !foo.save() )
+    {
+      foo.errors.allErrors.each { println it }
+    }
+
+    synchronized ( index )
+    {
+      if ( ++index % 100 == 0 )
+      {
+        cleanUpGorm()
+      }
+    }
   }
 }
