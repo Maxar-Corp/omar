@@ -418,8 +418,8 @@ class WebMappingService implements ApplicationContextAware
           largestScale = testScale
         }
       }
-      // now allow at least 8x zoom in
-      testScale = 0.125 * fullResScale
+      // now allow at least 32x zoom in
+      testScale = 1.0/(2**6) * fullResScale
       if ( testScale < smallestScale )
       {
         smallestScale = testScale;

@@ -294,7 +294,7 @@
                 var url = "${createLink(controller: 'icp', action: 'getTileOpenLayers')}";
                 var bounds = new OpenLayers.Bounds(Math.round(left), Math.round(bottom), Math.round(right), Math.round(top));
 
-                map = new OpenLayers.Map("map", { controls:[], theme: null, maxExtent:bounds, numZoomLevels:(resLevels+2) });
+                map = new OpenLayers.Map("map", { controls:[], theme: null, maxExtent:bounds, numZoomLevels:(resLevels+5) });
                 map.events.register('zoomend', null, theMapHasZoomed);
                 map.events.register("moveend", null, theMapHasMoved);
 
