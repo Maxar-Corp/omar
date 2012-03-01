@@ -4,8 +4,8 @@ class RasterEntrySearchTag {
   String description
 
   static constraints = {
-    name(unique:true)
-    description(unique:true)
+    name(unique:true, blank:false)
+    description(unique:true, blank:false)
   }
 
   static mapping = {
