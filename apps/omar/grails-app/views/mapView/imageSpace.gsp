@@ -403,7 +403,8 @@
 	            initFlag = 0;
                 resetImageVectorLayer();
 
-                map.zoomIn();
+            map.zoomToMaxExtent();
+               // map.zoomIn();
                 // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
 	            oldZoomLevel = map.getZoom();
             }
