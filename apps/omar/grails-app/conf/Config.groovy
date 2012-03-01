@@ -2,7 +2,7 @@ import grails.util.Environment
 
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
-import org.ossim.omar.core.DbAppender
+//import org.ossim.omar.core.DbAppender
 
 grails.gorm.default.mapping = {
   cache true
@@ -89,15 +89,15 @@ log4j = {
     // uncomment for DB appending.  Do this after the first build of OMAR.
     // Then uncomment the wmsLoggingAppender redirection below.
     // add in the import org.ossim.omar.DbAppender at the top
-    appender new DbAppender(name: "wmsLoggingAppender",
-            threshold: org.apache.log4j.Level.INFO,
-            tableMapping: [width: ":width", height: ":height", layers: ":layers", styles: ":styles",
-                    format: ":format", request: ":request", bbox: ":bbox", internal_time: ":internalTime",
-                    render_time: ":renderTime", total_time: ":totalTime", start_date: ":startDate",
-                    end_date: ":endDate", user_name: ":userName", ip: ":ip", url: ":url", mean_gsd: ":meanGsd",
-                    geometry: "ST_GeomFromText(:geometry, 4326)"],
-            tableName: "wms_log"
-    )
+//    appender new DbAppender(name: "wmsLoggingAppender",
+//            threshold: org.apache.log4j.Level.INFO,
+//            tableMapping: [width: ":width", height: ":height", layers: ":layers", styles: ":styles",
+//                    format: ":format", request: ":request", bbox: ":bbox", internal_time: ":internalTime",
+//                    render_time: ":renderTime", total_time: ":totalTime", start_date: ":startDate",
+//                    end_date: ":endDate", user_name: ":userName", ip: ":ip", url: ":url", mean_gsd: ":meanGsd",
+//                    geometry: "ST_GeomFromText(:geometry, 4326)"],
+//            tableName: "wms_log"
+//    )
     appender new org.apache.log4j.DailyRollingFileAppender(name: "omarDataManagerAppender",
             datePattern: "'.'yyyy-MM-dd",
             file: "/tmp/logs/omarDataManagerAppender.log",
@@ -108,7 +108,7 @@ log4j = {
             layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5}  %m%n'))
   }
 
-  info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: false
+//  info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: false
   info 'omarDataManagerAppender': '*DataManagerService', additivity: false
   info omarAppender: 'grails.app', additivity: false
   info omarAppender: 'omar', additivity: false

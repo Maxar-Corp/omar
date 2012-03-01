@@ -20,9 +20,12 @@ tar xvfz $OMAR_HOME/plugins/m2Repository.tgz
 
 # Package OMAR plugins
 cd $OMAR_DEV_HOME/plugins
-for x in geoscript postgis openlayers omar-oms  omar-table-filter omar-security-spring omar-core omar-ogc omar-stager omar-video omar-raster omar-superoverlay omar-rss; do
+for x in postgis geoscript openlayers omar-oms  omar-table-filter omar-security-spring omar-core omar-ogc omar-stager omar-video omar-raster omar-superoverlay omar-rss; do
 	cd $x
 	grails clean
 	grails package-plugin 
 	cd ..
 done
+
+# plugin.xml files will be regenerated when creating the war
+rm `find . -name plugin.xml`

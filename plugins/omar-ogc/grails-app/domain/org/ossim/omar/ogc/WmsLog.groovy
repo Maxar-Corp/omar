@@ -28,6 +28,7 @@ class WmsLog {
   String url
   Double meanGsd
   Geometry geometry
+
   static constraints =
   {
     width(nullable:true)
