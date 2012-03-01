@@ -273,6 +273,17 @@ class RasterEntryController implements InitializingBean
       }
 //    println "\nparams: ${params?.sort { it.key }}"
 
+if ( !session.rasterEntrySearchCurrentTab1)
+{
+  session["rasterEntrySearchCurrentTab1"] = "1"
+}
+
+if ( !session.rasterEntrySearchCurrentTab2)
+{
+  session["rasterEntrySearchCurrentTab2"] = "0"
+}
+
+
     def queryParams = initRasterEntryQuery(params)
 
 //    println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
@@ -335,6 +346,8 @@ class RasterEntryController implements InitializingBean
       //println logData
 
 
+
+
 //      def ogcFilterQueryFields =  Utility.generateMapForOgcFilterQuery(grailsApplication.getArtefact("Domain",
 //                                                                        org.ossim.omar.raster.RasterEntry.name),
 //                                                                        searchNameList,
@@ -352,7 +365,7 @@ class RasterEntryController implements InitializingBean
  //                                                                      null)
 
 //      return [ogcFilterQueryFields:ogcFilterQueryFields, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
-      return [action: "results", session:session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
+      return [action: "results", session:session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS, sessionAction: "updateSession", sessionController: "session", rasterEntrySearchCurrentTab1: session.rasterEntrySearchCurrentTab1, rasterEntrySearchCurrentTab2: session.rasterEntrySearchCurrentTab2]
     }
   }
 
