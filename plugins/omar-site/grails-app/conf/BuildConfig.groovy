@@ -29,10 +29,11 @@ grails.project.dependency.resolution = {
         // runtime 'mysql:mysql-connector-java:5.1.5'
     }
 }
-grails.plugin.location.'omar-core' = '../../plugins/omar-core'
-grails.plugin.location.'omar-ogc' = '../../plugins/omar-ogc'
-grails.plugin.location.'omar-raster' = '../../plugins/omar-raster'
-grails.plugin.location.'omar-video' = '../../plugins/omar-video'
-grails.plugin.location.'postgis' = '../../plugins/postgis'
+
+grails.plugin.location.omarCore = '../../plugins/omar-core'
+grails.plugin.location.omarOgc = '../../plugins/omar-ogc'
+grails.plugin.location.omarRaster = '../../plugins/omar-raster'
+grails.plugin.location.omarVideo = '../../plugins/omar-video'
+grails.plugin.location.postgis = '../../plugins/postgis'
 grails.plugin.location.geoscript = '../../plugins/geoscript'
-grails.plugin.location.'omar-security-spring' = '../../plugins/omar-security-spring'
+grails.plugin.location.omarSecuritySpring = '../../plugins/omar-security-spring'
