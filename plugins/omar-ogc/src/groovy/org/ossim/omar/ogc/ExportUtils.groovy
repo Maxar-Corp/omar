@@ -127,7 +127,7 @@ class ExportUtils
     def builder = new SimpleFeatureTypeBuilder();
 
     builder.name = featureClass.name
-    builder.crs = DefaultGeographicCRS.WGS84  // <- Coordinate reference system
+    builder.CRS = DefaultGeographicCRS.WGS84  // <- Coordinate reference system
 
     // add attributes in order
     //builder.length(15).add("acquisition_date", Date.class); // <- 15 chars width for name field
