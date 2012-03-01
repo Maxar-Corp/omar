@@ -281,6 +281,16 @@ class VideoDataSetController implements InitializingBean
 
     //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
+	if ( !session.videoDataSetSearchCurrentTab1)
+	{
+	  session["videoDataSetSearchCurrentTab1"] = "1"
+	}
+
+	if ( !session.videoDataSetSearchCurrentTab2)
+	{
+	  session["videoDataSetSearchCurrentTab2"] = "0"
+	}
+
     if ( request.method == 'POST' )
     {
       params.order = 'desc'
@@ -331,7 +341,7 @@ class VideoDataSetController implements InitializingBean
     {
       //println "=== search end ==="
 
-      return [session: session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
+      return [session: session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS, sessionAction: "updateSession", sessionController: "session", videoDataSetSearchCurrentTab1: session.videoDataSetSearchCurrentTab1, videoDataSetSearchCurrentTab2: session.videoDataSetSearchCurrentTab2]
     }
   }
 

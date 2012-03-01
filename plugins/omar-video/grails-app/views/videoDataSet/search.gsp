@@ -79,9 +79,9 @@
 
       omar = new Omar();
       omarSearchParams = new OmarSearchParams();
-
-			useBoundBoxSearch();
-
+			
+			updateGeoTab();
+			
 			omar.setupMapWidget();
 
 			var baseWMS=${baseWMS as JSON};
@@ -203,6 +203,48 @@
 
 			omar.updateOmarFilters($("startDate_day").value, $("startDate_month").value, $("startDate_year").value, $("startDate_hour").value, $("startDate_minute").value, $("endDate_day").value, $("endDate_month").value, $("endDate_year").value, $("endDate_hour").value, $("endDate_minute").value, numberOfNames, numberOfValues, additionalParams);
 		};
+		
+		
+			var tabView = new YAHOO.widget.TabView( 'tabview1', { activeIndex: ${videoDataSetSearchCurrentTab1} } );
+			tabView.selectTab(${videoDataSetSearchCurrentTab1});
+			var tab0 = tabView.getTab( 0 );
+		    var tab1 = tabView.getTab( 1 );
+		    tab0.addListener( 'click', updateGeoTab );
+		    tab1.addListener( 'click', updateGeoTab );
+
+			var tabView2 = new YAHOO.widget.TabView( 'tabview2', { activeIndex: ${videoDataSetSearchCurrentTab2} } );
+			tabView2.selectTab(${videoDataSetSearchCurrentTab2});
+			var tab2 = tabView2.getTab( 0 );
+		    var tab3 = tabView2.getTab( 1 );
+		    tab2.addListener( 'click', updateMetaTab );
+		    tab3.addListener( 'click', updateMetaTab );
+
+			function updateMetaTab() {
+				updateCurrentTab("videoDataSetSearchCurrentTab2", tabView2.get('activeIndex'));
+			}
+
+			function updateGeoTab() {
+				updateCurrentTab("videoDataSetSearchCurrentTab1", tabView.get('activeIndex'));
+
+				if (tabView.get('activeIndex') == "0") {
+					//alert('radius');
+				 	$( "baseQueryType" ).value = "RADIUS";
+				}
+			 	else if (tabView.get('activeIndex') == "1") {
+					//alert('bbox');
+					$( "baseQueryType" ).value = "BBOX";
+				}
+
+			}
+
+			function updateCurrentTab(variable, tabIndex)
+		  	{
+				var link = "${createLink(action: sessionAction, controller: sessionController)}";
+		      	new Ajax.Request(link+"?"+variable+"="+tabIndex, {method: 'post'});
+		  	}
+		
+		
+		
 </r:script>
 </body>
 </html>
