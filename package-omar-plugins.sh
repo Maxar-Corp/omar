@@ -28,4 +28,10 @@ for x in postgis geoscript openlayers omar-oms  omar-table-filter omar-security-
 done
 
 # plugin.xml files will be regenerated when creating the war
-rm `find . -name plugin.xml`
+# rm `find . -name plugin.xml`
+# the removing seems to still not work.  We will just retouch the postgis plugin and see if
+# that will help
+cd $OMAR_DEV_HOME/plugins/postgis
+grails package-plugin
+cd $OMAR_DEV_HOME
+
