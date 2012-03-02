@@ -1,7 +1,8 @@
 package org.ossim.omar.core
 
 import org.ossim.omar.core.Repository
-
+import org.ossim.omar.raster.RasterDataSet
+import org.ossim.omar.video.VideoDataSet
 class RepositoryController
 {
 
