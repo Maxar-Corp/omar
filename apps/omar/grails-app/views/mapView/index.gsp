@@ -226,63 +226,59 @@ function setMapCtrTxt()
 {
     var center = mapWidget.getMap().getCenter();
     $("ddMapCtr").value = center.lat + ", " + center.lon;
-	$("dmsMapCtr").value = coordConvert.ddToDms(center.lat, "lat") + ", " + coordConvert.ddToDms(center.lon, "lon");
-	$("centerMgrs").value = coordConvert.ddToMgrs(center.lat, center.lon);
+	$("dmsMapCtr").value = coordConvert.ddToDms(center.lat, center.lon);
+	$("point").value = coordConvert.ddToMgrs(center.lat, center.lon);
 }
 
-function setMapCtr(unit, value)
-{
-	if(unit == "dd")
-	{
-		var ddRegExp = /^(\-?\d{1,2}\.?\d+)\,?\s?(\-?\d{1,3}\.?\d+)$/
-		if($("ddMapCtr").value.match(ddRegExp))
-		{
-			var ddMapCtr = new OpenLayers.LonLat(RegExp.$2, RegExp.$1);
-			mapWidget.getMap().setCenter(ddMapCtr, mapWidget.getMap().getZoom());
+var ddRegExp = /^(\-?\d{1,2})(\.\d+)?\,?\s?(\-?\d{1,3})(\.\d+)?$/
+var dmsRegExp = /^(\d{1,2})\°?\s?(\d{1,2})\'?\s?(\d{1,2})\s?(\.\d+)?\"?\s?([NnSs])?\,?\s?(\d{1,3})\°?\s?(\d{1,2})\'?\s?(\d{1,2})\s?(\.\d+)?\"?\s?([EeWw])?$/
+var mgrsRegExp = /^(\d{1,2})\s?([C-X])\s?([A-Z])\s?([A-Z])\s?(\d{1,5})\s?(\d{1,5})?/
+
+function setMapCtr(unit, value) {
+	if(unit == "dd") {
+		
+		if($("ddMapCtr").value.match(ddRegExp)) {
+			var match = ddRegExp.exec( $( "ddMapCtr" ).value );
+        	var lat = match[1] + match[2];
+        	var lon = match[3] + match[4];
+        	var center = new OpenLayers.LonLat( lon, lat );
+			
+			mapWidget.getMap().setCenter(center, mapWidget.getMap().getZoom());
 		}
-		else
-		{
-			alert("Invalid Input.");
+		else {
+			alert("Invalid DD Input.");
 		}
 	}
-	else if(unit == "dms")
-	{
-		var dmsRegExp = /^(\d{1,2})\Â°?\s?(\d{2})\'?\s?(\d{2}\.?\d+)\"?\s?([NnSs])\,?\s?(\d{1,3})\Â°?\s?(\d{2})\'?\s?(\d{2}\.?\d+)\"?\s?([EeWw])$/
-		if($("dmsMapCtr").value.match(dmsRegExp))
-		{
-			var dmsMapCtr = new OpenLayers.LonLat(coordConvert.dmsToDd(RegExp.$5, RegExp.$6, RegExp.$7, RegExp.$8),
-													coordConvert.dmsToDd(RegExp.$1, RegExp.$2, RegExp.$3, RegExp.$4));
-			mapWidget.getMap().setCenter(dmsMapCtr, mapWidget.getMap().getZoom());
+	else if(unit == "dms") {
+		if($("dmsMapCtr").value.match(dmsRegExp)) {
+			var match = dmsRegExp.exec( $( "dmsMapCtr" ).value );
+        	 var lat = coordConvert.dmsToDd( match[1], match[2], match[3] + match[4], match[5] );
+		     var lon = coordConvert.dmsToDd( match[6], match[7], match[8] + match[9], match[10] );
+        	var center = new OpenLayers.LonLat( lon, lat );
+			
+			mapWidget.getMap().setCenter(center, mapWidget.getMap().getZoom());
 		}
-		else
-		{
-			alert("Invalid Input.");
+		else {
+			alert("Invalid DMS Input.");
 		}
 	}
 	else if(unit == "mgrs")
 	{
-
-
-
-		var foo = coordConvert.mgrsToUtm($("centerMgrs").value);
-
-
-
-		var mgrsRegExpUtm = /^(-?\d{1,2})(\.\d+)?\s?(-?\d{1,3})(\.\d+)?/
-
-
-        if ( foo.match( mgrsRegExpUtm ) )
-        {
-            var centerLat = parseInt( RegExp.$1, 10 ) + RegExp.$2;
-            var centerLon = parseInt( RegExp.$3, 10 ) + RegExp.$4;
-
-			  var zoom = mapWidget.getMap().getZoom();
-		        var center = new OpenLayers.LonLat( centerLon, centerLat );
-
-		        mapWidget.getMap().setCenter( center, zoom );
-        }
+		if($("point").value.match(mgrsRegExp)) {
+			var match = mgrsRegExp.exec( $( "point" ).value );
+        	var mgrs = coordConvert.mgrsToDd( match[1], match[2], match[3], match[4], match[5], match[6] );
+        	var match2 = ddRegExp.exec( mgrs );
+        	var lat = match2[1] + match2[2];
+        	var lon = match2[3] + match2[4];
+        	var center = new OpenLayers.LonLat( lon, lat );
+        	
+        	mapWidget.getMap().setCenter(center, mapWidget.getMap().getZoom());
+		}
+		else {
+			alert("Invalid MGRS Input.");
+		}
 	}
-
+	
 	// call this because the center is clamped so we need to reset the center on the
 	// display just in case a user typed a number outside the bounds of the image
 	setMapCtrTxt();
@@ -377,7 +373,7 @@ function setMouseMapCtrTxt(evt)
     ddMouseMapCtr.innerHTML = "DD: " + center.lat.toFixed(fixed) + ", " + center.lon.toFixed(fixed);
 
     var dmsMouseCtr = document.getElementById("dmsMouseMapCtr");
-    dmsMouseMapCtr.innerHTML = "DMS: " + coordConvert.ddToDms(center.lat, "lat") + ", " + coordConvert.ddToDms(center.lon, "lon");
+    dmsMouseMapCtr.innerHTML = "DMS: " + coordConvert.ddToDms(center.lat, center.lon);
 
     var mgrsMouseCtr = document.getElementById("mgrsMouseMapCtr");
     mgrsMouseMapCtr.innerHTML = "MGRS: " + coordConvert.ddToMgrs(center.lat, center.lon);
