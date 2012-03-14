@@ -535,12 +535,11 @@ function OmarMatrix3x3(){
         return this;
      }
 
-     this.makeScale = function(x,y,z)
+     this.makeScale = function(x,y)
      {
 
         if(x) this.m00 = x;
         if(y) this.m11 = y;
-        if(z) this.m22 = z;
 
         return this;
      }
@@ -615,5 +614,139 @@ function OmarMatrix3x3(){
                  this.m10 + ", " + this.m11 + ", " + this.m12 + "\n"+
                  this.m20 + ", " + this.m21 + ", " + this.m22);
      }
+
+}
+
+
+function OmarImageBounds(){
+    this.left   = 0.0;
+    this.right  = 0.0;
+    this.top    = 0.0;
+    this.bottom = 0.0;
+}
+
+function OmarAffineImageModel(){
+    this.m_center   = new OmarPoint(0.0,0.0); // center x
+    this.m_pivot    = new OmarPoint(0.0,0.0); // center x
+    this.m_width    = 0;
+    this.m_height   = 0;
+    this.m_rotation = 0.0;
+    this.m_scalex   = 1.0;
+    this.m_scaley   = 1.0;
+    this.m_matrix   = new OmarMatrix3x3();
+
+    this.makeCopy =function(){
+        result = new OmarAffineImageModel();
+        result.m_center   = this.m_center;
+        result.m_width    = this.m_width;
+        result.m_height   = this.m_height;
+        result.m_rotation = this.m_rotation;
+        result.m_scalex   = this.m_scalex;
+        result.m_scaley   = this.m_scaley;
+
+        result.buildTransform();
+
+        return result;
+    }
+    this.setScale = function(sx,sy){
+        this.m_scalex = sx;
+        if(sy) this.m_scaley = sy;
+        else this.m_scaley = this.m_scalex;
+        this.buildTransform();
+    }
+    this.setRotate = function(r){
+        this.m_rotation = r;
+        this.buildTransform();
+    }
+    this.setCenter = function(pt){
+        this.m_center = pt;
+        this.buildTransform();
+    }
+    this.setPivot  = function(pt){
+        this.m_pivot = pt;
+        this.buildTransform();
+    }
+    this.buildTransform = function(){
+        transM              = new OmarMatrix3x3(); // translate to center first
+        scaleM              = new OmarMatrix3x3(); // scale to center first
+        transOriginM        = new OmarMatrix3x3();
+        transOriginNegatedM = new OmarMatrix3x3();
+        rotzM               = new OmarMatrix3x3(); // rotate to center first
+
+        transM.makeTranslate(-this.m_center.x, -this.m_center.y);
+        transOriginM.makeTranslate(this.m_pivot.x, this.m_pivot.y);
+        transOriginNegatedM.makeTranslate(-this.m_pivot.x, -this.m_pivot.y);
+        scaleM.makeScale(this.m_scalex, this.m_scaley);
+
+        this.m_matrix = scaleM.times(
+                                     transM.times(
+                                                  transOriginM.times(
+                                                        rotzM.times(transOriginNegatedM))));
+
+        this.m_matrixInv = this.m_matrix.inv();
+    }
+    this.setImageInfo = function(x,y,w,h){
+        this.m_center = new OmarPoint(x,y);
+        this.m_width  = w;
+        this.m_height = h;
+        this.buildTransform();
+    }
+
+    this.setIdentity = function()
+    {
+        this.m_scalex = 1.0;
+        this.m_scaley = 1.0;
+        this.rotation = 0.0;
+        this.m_matrix = new OmarMatrix3x3();
+        this.m_matrixInv = new OmarMatrix3x3();
+    }
+    this.getPivot = function()
+    {
+        return this.m_pivot;
+    }
+    this.getCenter = function()
+    {
+        return this.m_center;
+    }
+    this.centerToView = function()
+    {
+        return this.m_matrix.transform(this.m_center);
+    }
+    this.imageToView = function(pt){
+       return this.m_matrix.transform(pt);
+    }
+    this.viewToImage = function(pt){
+        return this.m_matrixInv.transform(pt);
+    }
+    this.viewCorners = function(){
+        result = [];
+        result[0] = this.imageToView(new OmarPoint(0.0,0.0));
+        result[1] = this.imageToView(new OmarPoint(this.m_width-1,0.0));
+        result[2] = this.imageToView(new OmarPoint(this.m_width-1,this.m_height-1));
+        result[3] = this.imageToView(new OmarPoint(0.0,this.m_height-1));
+
+        return result;
+    }
+    this.viewBounds = function(){
+        corners = this.viewCorners();
+        idx = 0;
+        minx = corners[0].x;
+        miny = corners[0].y;
+        maxx = corners[0].x;
+        maxy = corners[0].y;
+
+        for(idx =1; idx < corners.length; ++idx)
+        {
+            if(corners[idx].x < minx) minx = corners[idx].x;
+            if(corners[idx].x > maxx) maxx = corners[idx].x;
+            if(corners[idx].y < miny) miny = corners[idx].y;
+            if(corners[idx].y > maxy) maxy = corners[idx].y;
+        }
+
+        return { minx: minx,
+                 maxx: maxx,
+                 miny: miny,
+                 maxy: maxy};
+    }
 
 }
