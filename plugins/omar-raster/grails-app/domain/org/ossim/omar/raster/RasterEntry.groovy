@@ -1,7 +1,5 @@
 package org.ossim.omar.raster
 
-
-
 //import org.ossim.postgis.Geometry
 
 import com.vividsolutions.jts.geom.Geometry
@@ -120,7 +118,7 @@ class RasterEntry
 
   static constraints = {
     entryId()
-    excludePolicy(nullable:true)
+    excludePolicy(nullable: true)
     width(min: 0l)
     height(min: 0l)
     numberOfBands(min: 0)
@@ -134,8 +132,8 @@ class RasterEntry
 
     tiePointSet(nullable: true)
 
-    filename(nullable:true)
-    indexId(nullable:false, unique:false, blank: false)
+    filename(nullable: true)
+    indexId(nullable: false, unique: false, blank: false)
     imageId(nullable: true, blank: false/*, unique: true*/)
     targetId(nullable: true)
     productId(nullable: true)
@@ -179,10 +177,10 @@ class RasterEntry
     if ( !ingestDate )
     {
       ingestDate = new DateTime();
-      if(!indexId)
+      if ( !indexId )
       {
         def mainFile = rasterEntry.rasterDataSet.getFileFromObjects("main")
-        if(mainFile)
+        if ( mainFile )
         {
           def value = "${entryId}-${mainFile}"
           indexId = mainFile.omarIndexId;
@@ -215,6 +213,7 @@ class RasterEntry
   {
     return fileObjects?.find { it.type == type }
   }
+
   def getMetersPerPixel()
   {
     // need to check unit type but for mow assume meters
@@ -239,44 +238,46 @@ class RasterEntry
 
     return mainFile
   }
+
   def getHistogramFile()
   {
-      def result = getFileFromObjects("histogram")?.name
-      if(!result)
+    def result = getFileFromObjects("histogram")?.name
+    if ( !result )
+    {
+      result = mainFile?.name
+      if ( result )
       {
-          result = mainFile?.name
-          if(result)
+        def nEntries = rasterDataSet?.rasterEntries?.size() ?: 1
+        def ext = result.substring(result.lastIndexOf("."))
+        if ( ext )
+        {
+          if ( nEntries > 1 )
           {
-              def nEntries = rasterDataSet?.rasterEntries?.size()?:1
-              def ext =result.substring(result.lastIndexOf("."))
-              if(ext)
-              {
-                  if(nEntries>1)
-                  {
-                      result=result.replace(ext,"_e${entryId}.his")
-                  }
-                  else
-                  {
-                      result=result.replace(ext,".his")
-                  }
-              }
-              else
-              {
-                  if(nEntries>1)
-                  {
-                      result=result+"_e${entryId}.his"
-                  }
-                  else
-                  {
-                      result=result+".his"
-                  }
-              }
+            result = result.replace(ext, "_e${entryId}.his")
           }
-          println result
+          else
+          {
+            result = result.replace(ext, ".his")
+          }
+        }
+        else
+        {
+          if ( nEntries > 1 )
+          {
+            result = result + "_e${entryId}.his"
+          }
+          else
+          {
+            result = result + ".his"
+          }
+        }
       }
+      println result
+    }
 
-      result
+    result
   }
+
   static RasterEntry initRasterEntry(def rasterEntryNode, RasterEntry rasterEntry = null)
   {
     rasterEntry = rasterEntry ?: new RasterEntry()
@@ -290,13 +291,13 @@ class RasterEntry
     rasterEntry.dataType = rasterEntryNode?.dataType
     if ( rasterEntryNode?.TiePointSet )
     {
-      rasterEntry.tiePointSet = "<TiePointSet><Image><coordinates>${rasterEntryNode?.TiePointSet.Image.coordinates.toString().replaceAll("\n", "")}</coordinates></Image>"
-      rasterEntry.tiePointSet += "<Ground><coordinates>${rasterEntryNode?.TiePointSet.Ground.coordinates.toString().replaceAll("\n", "")}</coordinates></Ground></TiePointSet>"
+      rasterEntry.tiePointSet = "<TiePointSet><Image><coordinates>${rasterEntryNode?.TiePointSet.Image.coordinates.text().replaceAll("\n", "")}</coordinates></Image>"
+      rasterEntry.tiePointSet += "<Ground><coordinates>${rasterEntryNode?.TiePointSet.Ground.coordinates.text().replaceAll("\n", "")}</coordinates></Ground></TiePointSet>"
     }
     def gsdNode = rasterEntryNode?.gsd
-    def dx = gsdNode?.@dx?.toString()
-    def dy = gsdNode?.@dy?.toString()
-    def gsdUnit = gsdNode?.@unit.toString()
+    def dx = gsdNode?.@dx?.text()
+    def dy = gsdNode?.@dy?.text()
+    def gsdUnit = gsdNode?.@unit.text()
     if ( dx && dy && gsdUnit )
     {
       rasterEntry.gsdX = (dx != "nan") ? dx?.toDouble() : null
@@ -337,24 +338,25 @@ class RasterEntry
 
     def mainFile = rasterEntry.rasterDataSet.getFileFromObjects("main")
     def filename = mainFile?.name
-    if(!rasterEntry.filename&&filename)
+    if ( !rasterEntry.filename && filename )
     {
       rasterEntry.filename = filename
     }
-    if(!rasterEntry.indexId)
+    if ( !rasterEntry.indexId )
     {
       rasterEntry.indexId = "${rasterEntry.entryId}-${filename}".encodeAsSHA256()
     }
-    if(rasterEntry.validModel==null)
+    if ( rasterEntry.validModel == null )
     {
       rasterEntry.validModel = 1
     }
     return rasterEntry
   }
+
   static Geometry initGroundGeom(def groundGeomNode)
   {
-    def wkt = groundGeomNode?.toString().trim()
-    def srs = groundGeomNode?.@srs?.toString().trim()
+    def wkt = groundGeomNode?.text().trim()
+    def srs = groundGeomNode?.@srs?.text().trim()
     def groundGeom = null
 
     if ( wkt && srs )
@@ -425,53 +427,53 @@ class RasterEntry
         {
           switch ( name.toLowerCase() )
           {
-            case "filename":
-              if(value&&!rasterEntry.filename)
-              {
-                rasterEntry.filename = value as File
-              }
-              break;
+          case "filename":
+            if ( value && !rasterEntry.filename )
+            {
+              rasterEntry.filename = value as File
+            }
+            break;
           case "imageid":
           case "iid":
-            if(value&&!rasterEntry.imageId)
+            if ( value && !rasterEntry.imageId )
             {
               rasterEntry.imageId = value
             }
             break;
           case "irep":
-            if(value&&!rasterEntry.imageRepresentation)
+            if ( value && !rasterEntry.imageRepresentation )
             {
               rasterEntry.imageRepresentation = value
             }
             break;
           case "targetid":
           case "tgtid":
-            if(value&&!rasterEntry.targetId)
+            if ( value && !rasterEntry.targetId )
             {
               rasterEntry.targetId = value
             }
             break;
           case "productid":
-            if(value&&!rasterEntry.productId)
+            if ( value && !rasterEntry.productId )
             {
               rasterEntry.productId = value
             }
             break;
           case "benumber":
-            if(value)
+            if ( value )
             {
               rasterEntry.beNumber = value;
             }
             break;
           case "sensorid":
-            if(value&&!rasterEntry.sensorId)
+            if ( value && !rasterEntry.sensorId )
             {
               rasterEntry.sensorId = value
             }
             break;
           case "country":
           case "countryCode":
-            if(value&&!rasterEntry.countryCode)
+            if ( value && !rasterEntry.countryCode )
             {
               rasterEntry.countryCode = value
             }
@@ -479,38 +481,38 @@ class RasterEntry
           case "mission":
           case "missionid":
           case "isorce":
-            if(value&&!rasterEntry.missionId)
+            if ( value && !rasterEntry.missionId )
             {
               rasterEntry.missionId = value
             }
             break;
           case "imagecategory":
           case "icat":
-            if(value&&!rasterEntry.imageCategory)
+            if ( value && !rasterEntry.imageCategory )
             {
               rasterEntry.imageCategory = value
             }
             break;
           case "azimuthangle":
-              if(value)
-              {
-                rasterEntry.azimuthAngle = value as Double
-              }
-              break
+            if ( value && value != "nan" )
+            {
+              rasterEntry.azimuthAngle = value as Double
+            }
+            break
           case "angletonorth":
-              if(value&&!rasterEntry.azimuthAngle)
-              {
-                rasterEntry.azimuthAngle = ((value as Double) + 90.0) %360.0;
-              }
+            if ( value && value != "nan" && !rasterEntry.azimuthAngle )
+            {
+              rasterEntry.azimuthAngle = ((value as Double) + 90.0) % 360.0;
+            }
             break;
           case "grazingangle":
-            if(value&&!rasterEntry.grazingAngle)
+            if ( value && value != "nan" && !rasterEntry.grazingAngle )
             {
               rasterEntry.grazingAngle = value as Double
             }
             break;
           case "oblang":
-            if(value&&!rasterEntry.grazingAngle)
+            if ( value && value != "nan" && !rasterEntry.grazingAngle )
             {
               rasterEntry.grazingAngle = 90 - (value as Double)
             }
@@ -518,7 +520,7 @@ class RasterEntry
 
           case "securityclassification":
           case "isclas":
-            if(value&&!rasterEntry.securityClassification)
+            if ( value && !rasterEntry.securityClassification )
             {
               rasterEntry.securityClassification = value
             }
@@ -526,32 +528,32 @@ class RasterEntry
           case "title":
           case "ititle":
           case "iid2":
-            if(value&&!rasterEntry.title)
+            if ( value && !rasterEntry.title )
             {
               rasterEntry.title = value
             }
             break;
           case "organization":
           case "oname":
-            if(value&&!rasterEntry.organization)
+            if ( value && !rasterEntry.organization )
             {
               rasterEntry.organization = value
             }
             break;
-            case "description":
-              if(value&&!rasterEntry.description)
-              {
-                rasterEntry.description = value
-              }
-              break;
-            case "wac":
-              if(value&&!rasterEntry.wacCode)
-              {
-                rasterEntry.wacCode = value
-              }
-              break;
+          case "description":
+            if ( value && !rasterEntry.description )
+            {
+              rasterEntry.description = value
+            }
+            break;
+          case "wac":
+            if ( value && !rasterEntry.wacCode )
+            {
+              rasterEntry.wacCode = value
+            }
+            break;
           case "niirs":
-            if(value&&!rasterEntry.niirs)
+            if ( value && value != "nan" && !rasterEntry.niirs )
             {
               rasterEntry.niirs = value as Double
             }
@@ -560,7 +562,7 @@ class RasterEntry
           // Just for testing
           case "filetype":
           case "file_type":
-            if(value&&!rasterEntry.fileType)
+            if ( value && !rasterEntry.fileType )
             {
               rasterEntry.fileType = value
             }
@@ -568,16 +570,16 @@ class RasterEntry
 
           case "classname":
           case "class_name":
-            if(value&&!rasterEntry.className)
+            if ( value && !rasterEntry.className )
             {
               rasterEntry.className = value
             }
             break
           case "validmodel":
-              if(value&&!rasterEntry.className)
-              {
-                  rasterEntry.validModel = value as Integer
-              }
+            if ( value && !rasterEntry.className )
+            {
+              rasterEntry.validModel = value as Integer
+            }
             break;
           default:
             rasterEntry.otherTagsMap[name] = value
@@ -605,10 +607,11 @@ class RasterEntry
       rasterEntry.otherTagsXml = builder.toString()
     }
   }
+
   static Date initAcquisitionDate(rasterEntryNode)
   {
     def when = rasterEntryNode?.TimeStamp?.when
 
-    return DateUtil.parseDate(when?.toString())
+    return DateUtil.parseDate(when?.text())
   }
 }
