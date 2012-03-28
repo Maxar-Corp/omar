@@ -1,10 +1,12 @@
 package org.ossim.omar.core
 
-import org.ossim.omar.core.Repository
-import org.ossim.omar.raster.RasterDataSet
-import org.ossim.omar.video.VideoDataSet
-class RepositoryController
+import org.springframework.context.ApplicationContextAware
+import org.springframework.context.ApplicationContext
+
+class RepositoryController implements ApplicationContextAware
 {
+  def grailsApplication
+  def applicationContext
 
   def index = { redirect(action: list, params: params) }
   def stagerService
@@ -14,7 +16,7 @@ class RepositoryController
 
   def list = {
     if ( !params.max )
-    params.max = 10
+      params.max = 10
 
     def repositoryList = Repository.createCriteria().list(params) {}
 
@@ -38,32 +40,14 @@ class RepositoryController
 
     if ( repository )
     {
-      //println "Deleting: ${this}"
+      def dataSetClasses = grailsApplication.getArtefacts("Domain").grep { it.name ==~ /.*DataSet/ }
 
       Repository.withTransaction {
-        def rasterDataSets = RasterDataSet.findAllByRepository(repository, [max: 10])
 
-        while ( rasterDataSets?.size() > 0 )
-        {
-          rasterDataSets?.each {
-            //println "\nDeleting ${it}"
-            it.delete()
-          }
+        dataSetClasses?.each { dataSetClass ->
+          def service = applicationContext.getBean("${dataSetClass.propertyName}Service")
 
-          rasterDataSets = RasterDataSet.findAllByRepository(repository, [max: 10])
-        }
-
-
-        def videoDataSets = VideoDataSet.findAllByRepository(repository, [max: 10])
-
-        while ( videoDataSets?.size() > 0 )
-        {
-          videoDataSets?.each {
-            //println "\nDeleting ${it}"
-            it.delete()
-          }
-
-          videoDataSets = VideoDataSet.findAllByRepository(repository, [max: 10])
+          service?.deleteFromRepository(repository)
         }
 
         repository.delete()
@@ -156,5 +140,10 @@ class RepositoryController
 
       redirect(action: show, id: params.id)
     }
+  }
+
+  void setApplicationContext(ApplicationContext applicationContext)
+  {
+    this.applicationContext = applicationContext
   }
 }
