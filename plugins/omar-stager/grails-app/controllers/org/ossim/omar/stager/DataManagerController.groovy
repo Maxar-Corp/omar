@@ -48,7 +48,6 @@ class DataManagerController implements ApplicationContextAware
       break
     case "POST":
     case "DELETE":
-      println "${op} ${type}"
       def serviceName = "${type[0].toLowerCase() + type.substring(1) }DataSetService"
       def service = applicationContext.getBean(serviceName)
       def status = service."${params.opType}"(httpStatusMessage, params)
