@@ -19,12 +19,12 @@ class RasterEntryFile
     }
   }
 
-  static RasterEntryFile initRasterEntryFile(def rasterEntryFileNode)
+  static RasterEntryFile initRasterEntryFile( def rasterEntryFileNode )
   {
     def rasterEntryFile = new RasterEntryFile()
 
-    rasterEntryFile.name = rasterEntryFileNode?.name
-    rasterEntryFile.type = rasterEntryFileNode?.@type
+    rasterEntryFile.name = new File( rasterEntryFileNode?.name?.text() ).absolutePath
+    rasterEntryFile.type = rasterEntryFileNode?.@type?.text()
     return rasterEntryFile
   }
 
