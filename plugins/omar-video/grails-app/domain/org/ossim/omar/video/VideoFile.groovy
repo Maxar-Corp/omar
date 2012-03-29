@@ -9,7 +9,7 @@ class VideoFile
   static belongsTo = [videoDataSet: VideoDataSet]
 
   static constraints = {
-    name(unique: true)
+    name( unique: true )
     type()
     format()
   }
@@ -24,13 +24,13 @@ class VideoFile
   }
 
 
-  static VideoFile initVideoFile(def videoFileNode)
+  static VideoFile initVideoFile( def videoFileNode )
   {
     def videoFile = new VideoFile()
 
-    videoFile.name = videoFileNode.name
-    videoFile.format = videoFileNode.@format
-    videoFile.type = videoFileNode.@type
+    videoFile.name = new File( videoFileNode?.name?.text() ).absolutePath
+    videoFile.format = videoFileNode?.@format?.text()
+    videoFile.type = videoFileNode?.@type?.text()
     return videoFile
   }
 }
