@@ -4,7 +4,7 @@ grails.project.test.reports.dir = "target/test-reports"
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 grails.project.dependency.resolution = {
   // inherit Grails' default dependencies
-  inherits("global") {
+  inherits( "global" ) {
     // uncomment to disable ehcache
     // excludes 'ehcache'
   }
@@ -28,10 +28,15 @@ grails.project.dependency.resolution = {
 
     // runtime 'mysql:mysql-connector-java:5.1.13'
   }
+  plugins {
+    runtime ":yui:2.8.2.1"
+  }
 }
 
 
-grails.plugin.location.postgis='../../plugins/postgis'
-grails.plugin.location.geoscript='../../plugins/geoscript'
-grails.plugin.location.openlayers='../../plugins/openlayers'
-grails.plugin.location.geodata='../../plugins/geodata'
+grails.plugin.location.postgis = '../../plugins/postgis'
+grails.plugin.location.geoscript = '../../plugins/geoscript'
+grails.plugin.location.openlayers = '../../plugins/openlayers'
+grails.plugin.location.geodata = '../../plugins/geodata'
+grails.plugin.location.omarSecuritySpring = '../../plugins/omar-security-spring'
+grails.plugin.location.icodeAis = "${System.env['HOME']}/projects/icode-mda/OMAR/icode-ais"
