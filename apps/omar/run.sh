@@ -39,7 +39,7 @@ esac
 
 case "$3" in
 true)
-grails ${mode} run-${style}  
+grails  ${mode} run-${style}  
 ;;
 *)
 nohup grails ${mode} run-${style} & 

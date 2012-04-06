@@ -1,9 +1,7 @@
 package org.ossim.omar.app
+
 class HomeController
 {
-/*
-def authenticateService
-*/
   def springSecurityService
 
   def afterInterceptor = { model, modelAndView ->
@@ -17,6 +15,7 @@ def authenticateService
   }
 
   def grailsApplication
+
   def index = {
 /*
     def user = AuthUser.findByUsername(authenticateService.userDomain().username)
@@ -43,5 +42,4 @@ def authenticateService
 
     [editableControllers: editableControllers, user: user]
   }
-  def heyMan ={ render "HEY MAN"}
 }
