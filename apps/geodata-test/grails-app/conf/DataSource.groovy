@@ -15,7 +15,7 @@ environments {
   development {
     dataSource {
       dbCreate = "create-drop" // one of 'create', 'create-drop','update'
-      url = "jdbc:postgresql_postGIS:geodata-dev"
+      url = "jdbc:postgresql_postGIS:geodatadb-dev"
     }
   }
   test {
