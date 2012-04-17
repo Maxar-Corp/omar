@@ -26,6 +26,9 @@ class City
 
   static mapping = {
     columns {
+      name index:  'city_name_idx'
+      country index:  'city_country_idx'
+      population index:  'city_population_idx'
       groundGeom type: org.hibernatespatial.GeometryUserType
     }
   }
