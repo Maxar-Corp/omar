@@ -54,13 +54,13 @@ grails.exceptionresolver.params.exclude = ['password']
 // set per-environment serverURL stem for creating absolute links
 environments {
   production {
-    grails.serverURL = "http://localhost:8080/${appName}"
+    grails.serverURL = "http://${InetAddress.localHost.hostAddress}:8080/${appName}"
   }
   development {
-    grails.serverURL = "http://localhost:8080/${appName}"
+    grails.serverURL = "http://${InetAddress.localHost.hostAddress}:8080/${appName}"
   }
   test {
-    grails.serverURL = "http://localhost:8080/${appName}"
+    grails.serverURL = "http://${InetAddress.localHost.hostAddress}:8080/${appName}"
   }
 
 }
@@ -93,3 +93,6 @@ grails.gorm.default.mapping = {
   cache true
   id generator: 'identity'
 }
+
+
+wms.tilecache.enabled=false
