@@ -12,56 +12,63 @@ import joms.oms.DataInfo
 
 class StagerUtil
 {
-  static DataInfo sharedDataInfo       = new DataInfo()
+  static DataInfo sharedDataInfo = new DataInfo()
   static ImageStager sharedImageStager = new ImageStager()
 
-  public static def getInfo(File file)
+  public static def getInfo( File file )
   {
-    DataInfo dataInfo = new DataInfo()
-
-    def canOpen = dataInfo.open(file.absolutePath)
     def xml = null
+    DataInfo dataInfo = new DataInfo()
+    ImageStager imageStager
 
-    if ( canOpen )
+    try
     {
-      ImageStager imageStager = new ImageStager()
 
-      if(imageStager.open(file.absolutePath))
+      def canOpen = dataInfo.open( file.absolutePath )
+
+      if ( canOpen )
       {
-        imageStager.setUseFastHistogramStagingFlag(true)
-        def generated = imageStager.stageAll()
 
-        imageStager.delete()
+        imageStager = new ImageStager()
 
-        if ( generated )
+        if ( imageStager.open( file.absolutePath ) )
         {
-          dataInfo.close()
-          dataInfo.open(file.absolutePath)
+          imageStager.setUseFastHistogramStagingFlag( true )
+          def generated = imageStager.stageAll()
+
+          if ( generated )
+          {
+            dataInfo.close()
+            dataInfo.open( file.absolutePath )
+          }
         }
-      }
-      else
-      {
-        imageStager.delete();
-        imageStager = null
-      }
-      xml = dataInfo.getInfo()?.trim()
 
-//      if ( xml )
-//      {
-//        def oms = new XmlSlurper().parseText(xml)
-//      }
+        xml = dataInfo.getInfo()?.trim()
+      }
     }
+    catch ( Exception e )
+    {
+      xml = null
+      println "ERROR: ${file}"
+    }
+    finally
+    {
+      if ( imageStager )
+      {
+        imageStager.delete()
+      }
 
-    dataInfo.close()
-    dataInfo.delete()
+      dataInfo.close()
+      dataInfo.delete()
+    }
 
     return xml
   }
 
 
-  public static synchronized def getInfoSynchronized(File file)
+  public static synchronized def getInfoSynchronized( File file )
   {
-    def canOpen = sharedDataInfo.open(file.absolutePath)
+    def canOpen = sharedDataInfo.open( file.absolutePath )
     def xml = null
 
     if ( canOpen )
@@ -73,7 +80,7 @@ class StagerUtil
       if ( generated )
       {
         sharedDataInfo.close()
-        sharedDataInfo.open(file.absolutePath)
+        sharedDataInfo.open( file.absolutePath )
       }
 
       xml = sharedDataInfo.getInfo()?.trim()

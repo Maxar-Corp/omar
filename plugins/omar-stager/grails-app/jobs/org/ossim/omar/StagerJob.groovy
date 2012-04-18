@@ -37,26 +37,26 @@ class StagerJob implements ApplicationContextAware
 
   def repository
 
-  def filterDir(def dir)
+  def filterDir( def dir )
   {
     def status = FileVisitResult.CONTINUE
-    def atoc = new File(dir, "a.toc")
+    def atoc = new File( dir, "a.toc" )
 
     if ( atoc.exists() )
     {
-      processFile(atoc)
+      processFile( atoc )
       status = FileVisitResult.SKIP_SUBTREE
     }
 
-    def dht = new File(dir, "dht")
+    def dht = new File( dir, "dht" )
 
     if ( dht.exists() )
     {
-      processFile(dht)
+      processFile( dht )
       status = FileVisitResult.SKIP_SUBTREE
     }
 
-    def noScan = new File(dir, "__OSSIM_NO_SCAN__")
+    def noScan = new File( dir, "__OSSIM_NO_SCAN__" )
 
     if ( noScan.exists() )
     {
@@ -66,9 +66,9 @@ class StagerJob implements ApplicationContextAware
     return status
   }
 
-  def filterFile(def file)
+  def filterFile( def file )
   {
-    def ext = FilenameUtils.getExtension(file.name).toLowerCase()
+    def ext = FilenameUtils.getExtension( file.name ).toLowerCase()
     def status = true
 
     switch ( ext )
@@ -124,56 +124,62 @@ class StagerJob implements ApplicationContextAware
     // LandSet7
     case "fst":
       def openLandSat = ~/.*b[1-8][0-2].fst/
-      status = !(openLandSat.matcher(file.name.toLowerCase()).matches())
+      status = !( openLandSat.matcher( file.name.toLowerCase() ).matches() )
       break
     }
 
     return status
   }
 
-  def processFile(def file)
+  def processFile( def file )
   {
-    //filesLog.append("${file.absolutePath}\n")
-    def start = System.currentTimeMillis()
-    //def xml = dataInfoService.getInfo(file.absolutePath)
-    def xml = StagerUtil.getInfo(file)
-
-    if ( xml )
+    try
     {
-      def oms = new XmlSlurper().parseText(xml)
-      def omsInfoParsers = applicationContext.getBeansOfType(OmsInfoParser.class)
+      //filesLog.append("${file.absolutePath}\n")
+      def start = System.currentTimeMillis()
+      //def xml = dataInfoService.getInfo(file.absolutePath)
+      def xml = StagerUtil.getInfo( file )
 
-      omsInfoParsers?.each { name, value ->
+      if ( xml )
+      {
+        def oms = new XmlSlurper().parseText( xml )
+        def omsInfoParsers = applicationContext.getBeansOfType( OmsInfoParser.class )
 
-        def dataSets = value.processDataSets(oms, repository)
+        omsInfoParsers?.each { name, value ->
 
-        dataSets?.each {dataSet ->
-          if ( dataSet.save() )
-          {
-            filesLog.append("${file.absolutePath}\n")
-          }
-          else
-          {
-            rejectsLog.append("${file.absolutePath}\n")
+          def dataSets = value.processDataSets( oms, repository )
+
+          dataSets?.each {dataSet ->
+            if ( dataSet.save() )
+            {
+              filesLog.append( "${file.absolutePath}\n" )
+            }
+            else
+            {
+              rejectsLog.append( "${file.absolutePath}\n" )
+            }
           }
         }
       }
+      else
+      {
+        rejectsLog.append( "${file.absolutePath}\n" )
+      }
+
+      if ( ++index % 100 == 0 )
+      {
+        cleanUpGorm()
+      }
+
+      def end = System.currentTimeMillis()
     }
-    else
+    catch ( Exception e )
     {
-      rejectsLog.append("${file.absolutePath}\n")
+      println "ERROR: ${file}"
     }
-
-    if ( ++index % 100 == 0 )
-    {
-      cleanUpGorm()
-    }
-
-    def end = System.currentTimeMillis()
-
   }
 
-  def cleanUpGorm()
+  def cleanUpGorm( )
   {
     def session = sessionFactory.currentSession
     session.flush()
@@ -182,7 +188,7 @@ class StagerJob implements ApplicationContextAware
   }
 
 
-  def execute(def context)
+  def execute( def context )
   {
     def baseDir = context.mergedJobDataMap['baseDir'] as File
 
@@ -192,16 +198,16 @@ class StagerJob implements ApplicationContextAware
             filter: this.&filterFile
     ]
 
-    filesLog.write("")
-    rejectsLog.write("")
+    filesLog.write( "" )
+    rejectsLog.write( "" )
 
     index = 0
-    repository = Repository.findByBaseDir(baseDir.absolutePath)
-    baseDir.traverse(options, this.&processFile)
+    repository = Repository.findByBaseDir( baseDir.absolutePath )
+    baseDir.traverse( options, this.&processFile )
     cleanUpGorm()
 
     Repository.withTransaction {
-      repository = Repository.findByBaseDir(baseDir.absolutePath)
+      repository = Repository.findByBaseDir( baseDir.absolutePath )
       repository.scanEndDate = new Date()
       repository.save()
     }
