@@ -23,25 +23,22 @@
     </tr>
     </thead>
     <tbody>
-    <g:each in="${rasterEntries}" status="i" var="rasterEntry">
-      <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
-
-        <td height="${rasterEntry.height / (Math.max(rasterEntry.width, rasterEntry.height) / 128.0)}">
-          <a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
-            <img src="${createLink(controller: "thumbnail", action: "show", id: rasterEntry.id, params:
-                [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
-          </a>
-        </td>
-
-        <td>
-          <g:link controller="rasterEntry" action="show"
-                  id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link>
-        </td>
-
-        <td>${fieldValue(bean: rasterEntry, field: "filename")}</td>
-
-      </tr>
-    </g:each>
-    </tbody>
+            <g:each in="${rasterEntries}" status="i" var="rasterEntry">
+              <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+                  <td height="${rasterEntry.height/(Math.max(rasterEntry.width, rasterEntry.height)/128.0)}"><a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
+                  <img src="${createLink(controller: "thumbnail", action: "show", id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/></a></td>
+                <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
+                <td>
+                  <sec:ifAllGranted roles="ROLE_DOWNLOAD">
+                    <a href=${grailsApplication.config.image.download.prefix}${rasterEntry.mainFile?.name?.encodeAsHTML()}>
+                  </sec:ifAllGranted>
+                  ${rasterEntry.mainFile?.name?.encodeAsHTML()}
+                  <sec:ifAllGranted roles="ROLE_DOWNLOAD">
+                    </a>
+                  </sec:ifAllGranted>
+                </td>
+              </tr>
+            </g:each>
+     </tbody>
   </table>
 </div>
