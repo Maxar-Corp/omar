@@ -13,7 +13,8 @@ class BootStrap
     
     if (Ais.count() == 0)
     {
-      AisData.load()
+      AisData.load('SanDiego.csv')
+      AisData.load('Chile2.csv')
     }
   }
 
