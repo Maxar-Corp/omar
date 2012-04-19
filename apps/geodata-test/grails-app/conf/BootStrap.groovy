@@ -19,6 +19,7 @@ class BootStrap
 
       aisData.loadAisCSV('SanDiego.csv')
       aisData.loadAisCSV('Chile2.csv')
+      aisData.loadCountryData()
     }
   }
 
