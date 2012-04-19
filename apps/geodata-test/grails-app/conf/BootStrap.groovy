@@ -5,6 +5,8 @@ import gov.spawar.icode.AisData
 
 class BootStrap
 {
+  def sessionFactory
+
   def init = { servletContext ->
     if ( City.count() == 0 )
     {
@@ -13,8 +15,10 @@ class BootStrap
     
     if (Ais.count() == 0)
     {
-      AisData.load('SanDiego.csv')
-      AisData.load('Chile2.csv')
+      def aisData = new AisData(sessionFactory: sessionFactory)
+
+      aisData.loadAisCSV('SanDiego.csv')
+      aisData.loadAisCSV('Chile2.csv')
     }
   }
 
