@@ -267,6 +267,14 @@ function OmarImageSpaceOpenLayersParams(){
     this.id = "";
     this.view = "";
 }
+function OmarImageSpaceGetTileParams(){
+    this.scale = "";
+    this.width = "";
+    this.height = "";
+    this.x = "";
+    this.y = "";
+    this.id = "";
+}
 
 function OmarSearchParams(){
 
@@ -420,9 +428,9 @@ OmarSearchParams.inherits(OmarParams);
 OmarSearchResults.inherits(OmarSearchParams);
 OmarOgcParams.inherits(OmarImageAdjustmentParams);
 OmarImageSpaceOpenLayersParams.inherits(OmarImageAdjustmentParams);
+OmarImageSpaceGetTileParams.inherits(OmarImageAdjustmentParams);
 OmarWmsParams.inherits(OmarOgcParams);
 OmarWcsParams.inherits(OmarOgcParams);
-
 
 function OmarPoint(px,py){
 
