@@ -11,9 +11,8 @@ class ProjectionService
   static transactional = false
 
     // Projection with no error propagation
-    def imageSpaceToGroundSpace(String filename, double samp, double line, Integer entryId)
+    def imageSpaceToGroundSpace(def filename, def samp, def line, def entryId)
     {
-        Init.instance().initialize()
 
         def imageSpaceModel = new ImageModel()
         def imagePoint = new ossimDpt(samp, line)
@@ -27,11 +26,45 @@ class ProjectionService
         imageSpaceModel.destroy()
         imageSpaceModel.delete()
 
-        return [groundPoint.latd(),
-                groundPoint.lond(),
-                groundPoint.height()
-        ]
+        return [lat:groundPoint.latd(),
+                lon:groundPoint.lond(),
+                hgt:groundPoint.height()];
 
+    }
+    /**
+     *
+     * @param filename
+     * @param pointList List of points of
+     * @param entryId
+     * @return
+     */
+    def imageSpaceListToGroundSpace(def filename, def pointList, def entryId)
+    {
+        def result = [];
+        def imageSpaceModel = new ImageModel()
+        def imagePoint = new ossimDpt(0.0,0.0);
+        def groundPoint = new ossimGpt()
+        if ( imageSpaceModel.setModelFromFile(filename, entryId) )
+        {
+            pointList.each{pt->
+                imagePoint.x = pt.x as double;
+                imagePoint.y = pt.y as double;
+                imageSpaceModel.imageToGround(imagePoint,
+                                              groundPoint,
+                                              entryId) ;
+                if(groundPoint.isHgtNan())
+                {
+                    groundPoint.height = 0.0;
+                }
+                result.add([x:pt.x, 
+                            y:pt.y,
+                            lat:groundPoint.latd(),
+                            lon:groundPoint.lond(),
+                            hgt:groundPoint.height()]);
+            }
+        }
+
+        result;
     }
 
 
@@ -53,7 +86,6 @@ class ProjectionService
     def imageSpaceToGroundSpace(String filename, double samp, double line, Integer entryId,
                                 double probLev, double angInc, int [] ellSamp, int [] ellLine)
     {
-        Init.instance().initialize()
 
         def imageSpaceModel = new ImageModel()
         def imagePoint = new ossimDpt(samp, line)
