@@ -20,7 +20,7 @@
                 { position:'bottom', height:25, body:'bottom1' },
                 //{ position:'left', header:'Left', width:200, resize:true, body:'left1', gutter:'5px', collapse:true, scroll:true },
                 //{ position:'right', header:'Right', width:300, resize:true, body:'right1', gutter:'5px', collapse:true, scroll:true },
-                { position:'center', body:'center1', scroll: true }
+                { position:'center', body:'center1', scroll:true }
             ]
         } );
         layout.on( 'render', function ()
