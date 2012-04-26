@@ -23,12 +23,105 @@
     width: 180px;
   }
 
+ .olControlPanel .olControlButtonPanItemActive { 
+  width:  24px;  
+  height: 22px;
+  background-image: url(${resource(plugin: 'openlayers', dir:'js/theme/default/img/', file:'pan_on.png')});
+  background-repeat: no-repeat;
+}
+
+.olControlPanel .olControlButtonPanItemInactive { 
+  width:  24px;  
+  height: 22px;
+  background-color: orange;
+  background-image: url(${resource(plugin: 'openlayers', dir:'js/theme/default/img/', file:'pan_off.png')});
+  background-repeat: no-repeat;
+}
+
+.olControlPanel .olControlButtonSelectAOIItemInactive { 
+  width:  24px;  
+  height: 24px;
+  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis/grass', file:'mActionSelect.png')});
+  background-repeat: no-repeat;
+}
+
+.olControlPanel .olControlButtonSelectAOIItemActive { 
+  width:  24px;  
+  height: 24px;
+  background-color: orange;
+  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis/grass', file:'mActionSelect.png')});
+  background-repeat: no-repeat;
+}
+
+.olControlPanel .olControlButtonDeleteAOIItemInactive { 
+  width:  24px;  
+  height: 24px;
+  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionDeleteSelected.png')});
+  background-repeat: no-repeat;
+}
+
+.olControlPanel .olControlButtonDeleteAOIItemActive { 
+  width:  24px;  
+  height: 24px;
+  background-color: orange;
+  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionDeleteSelected.png')});
+  background-repeat: no-repeat;
+}
+
+.olControlPanel .olControlButtonMeasurePointItemActive { 
+  width:  24px;  
+  height: 24px;
+  background-color: orange;
+  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'bullseye.png')});
+  background-repeat: no-repeat;
+}
+
+.olControlPanel .olControlButtonMeasurePointItemInactive { 
+  width:  24px;  
+  height: 24px;
+  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'bullseye.png')});
+  background-repeat: no-repeat;
+}
+
+.olControlPanel .olControlButtonMeasurePathItemActive { 
+  width:  24px;  
+  height: 24px;
+  background-color: orange;
+  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionMeasure.png')});
+  background-repeat: no-repeat;
+}
+
+.olControlPanel .olControlButtonMeasurePathItemInactive { 
+  width:  24px;  
+  height: 24px;
+  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionMeasure.png')});
+  background-repeat: no-repeat;
+}
+
+.olControlPanel .olControlButtonMeasureAreaItemActive { 
+  width:  24px;  
+  height: 24px;
+  background-color: orange;
+  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionMeasureArea.png')});
+  background-repeat: no-repeat;
+}
+
+.olControlPanel .olControlButtonMeasureAreaItemInactive { 
+  width:  24px;  
+  height: 24px;
+  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionMeasureArea.png')});
+  background-repeat: no-repeat;
+}
+
   </style>
+  <g:javascript dir="js" src="matrix.js"/>
+  <g:javascript dir="js" src="OpenLayersImageManipulator.js"/>
+
+
 </head>
 
 <body class=" yui-skin-sam">
-
-<g:form name="wmsFormId" method="POST"></g:form>
+ <g:form name="wmsFormId" method="POST"></g:form>
 <input type="hidden" name="request" value=""/>
 <input type="hidden" name="layers" value=""/>
 <input type="hidden" name="bbox" value=""/>
@@ -55,19 +148,706 @@
 </content>
 
 <content tag="bottom2">
-  <table><tr>
+
+      <div id="mouseDisplayId" align="left"></div>
+
+<!--  <table><tr>
     <td width="33%"><div id="ddMousePosition">&nbsp;</div></td>
     <td width="33%"><div id="dmsMousePosition">&nbsp;</div></td>
     <td width="33%"><div id="mgrsMousePosition">&nbsp;</div></td>
   </tr></table>
-
+-->
 </content>
 
 <content tag="center2">
-  <div id="map"><div id="compassMap" style="position: absolute; z-index: 1000"></div></div>
+
+    
+ <div id="eventDivId"></div>
+ <div id="hudDivId"></div>
+ <div id="map"></div>
 </content>
 
 <r:script>
+
+
+OMAR.ProjectionType = {
+  PIXEL: 0,
+  GEOGRAPHIC: 1
+};
+
+OMAR.ToolModeType = {
+  PAN_ZOOM: "panzoom",
+  ZOOM_BOX: "zoombox",
+  BOX_AOI: "boxaoi",
+  POINT: "point",
+  LINE: "line",
+  POLYGON: "polygon"
+};
+
+OMAR.OpenLayersImageManipulator = OpenLayers.Class({
+  mouseDragStart:null,
+  map:null,
+  zoomBox:null,
+  selectBox:null,
+  mousePosition:null,
+  eventDiv:null,
+  annotationDiv:null,
+  affineParams:null,
+  affineM: null,
+  containerDiv: null,
+  containerDivRegion: null,
+  projectionType: OMAR.ProjectionType.PIXEL,
+  documentListenersAdded: false,
+  toolMode: OMAR.ToolModeType.PAN_ZOOM,
+  vectorLayer: null,
+  drawControls:null,
+  currentDrawControl:null,
+  wheelListener:null,
+  events: null,
+  EVENT_TYPES:["measureAddPointFinished"],
+   destroy : function() 
+   {
+   //   YAHOO.util.Event.removeListener(this.eventDiv, "click", this.click);
+   //   YAHOO.util.Event.removeListener(this.eventDiv, "dblclick", this.dblClick);
+   //   YAHOO.util.Event.removeListener(this.eventDiv, "mousedown", this.mousedown);
+   //   YAHOO.util.Event.removeListener(this.eventDiv, "mouseup", this.mouseUu);
+   //   YAHOO.util.Event.removeListener(this.eventDiv, "mousemove", this.mousemove);
+   //   YAHOO.util.Event.removeListener(this.eventDiv, "mouseout", this.mouseout);    
+   //   YAHOO.util.Event.removeListener(this.eventDiv, "mousewheel", this.mousewheel);    
+   //   YAHOO.util.Event.removeListener(window,   "DOMMouseScroll", this.mousewheel);
+   //   YAHOO.util.Event.removeListener(window,   "mousewheel", this.mousewheel);
+   //   YAHOO.util.Event.removeListener(document, "mousewheel", this.mousewheel);
+   },
+   initialize : function()
+   {
+    this.affineParams =  new OmarAffineParams();
+    this.affineM = new OmarMatrix3x3();
+   },
+   setToolMode: function(mode)
+   {
+        var stateChangedFlag = (mode != this.toolMode);
+
+        // need to add clearing the state information when changing states.
+        this.toolMode = mode;
+
+        if(stateChangedFlag)
+        {
+            this.toolModeChanged();
+        }
+   },
+   toolModeChanged: function()
+   {
+        if(this.zoomBox)
+        {
+            this.zoomBoxEnd();
+        }
+        if(this.documentListenersAdded)
+        {
+            YAHOO.util.Event.removeListener(document, "mousemove", this.mousemove);
+            YAHOO.util.Event.removeListener(document, "mouseUp", this.mouseup);
+            this.documentListenersAdded = false;
+        }
+        if(this.currentDrawControl) this.currentDrawControl.deactivate();
+        this.currentDrawControl = null;
+
+        switch(this.toolMode)
+        {
+            case OMAR.ToolModeType.LINE:
+            {
+                this.vectorLayer.destroyFeatures();
+                this.currentDrawControl = this.drawControls.line;
+                this.currentDrawControl.activate();
+                break;
+            }
+            case OMAR.ToolModeType.POLYGON:
+            {
+                this.currentDrawControl = this.drawControls.polygon;
+                this.currentDrawControl.activate();
+                this.vectorLayer.destroyFeatures();
+                break;
+            }
+        }
+    },
+   setup : function(containerDiv, mapObj, annDiv, topDiv){
+    this.map           = mapObj;
+    this.eventDiv      = this.getDivElement(topDiv);
+    this.annotationDiv = this.getDivElement(annDiv);
+    this.containerDiv  = this.getDivElement(containerDiv);
+    this.containerDivRegion = YAHOO.util.Region.getRegion(this.containerDiv);
+    this.vectorLayer = new OpenLayers.Layer.Vector();
+    this.map.addLayer(this.vectorLayer);
+    this.events = new OpenLayers.Events(this, this.eventDiv, this.EVENT_TYPES);
+
+    this.drawControls = {
+                    point: new OpenLayers.Control.DrawFeature(this.vectorLayer,
+                        OpenLayers.Handler.Point),
+                    line: new OpenLayers.Control.DrawFeature(this.vectorLayer,
+                        OpenLayers.Handler.Path),
+                    polygon: new OpenLayers.Control.DrawFeature(this.vectorLayer,
+                        OpenLayers.Handler.Polygon)//,
+                 };
+    this.map.addControl(this.drawControls.line);
+    this.map.addControl(this.drawControls.polygon);
+    if(this.containerDiv)
+    {
+      if(!this.annotationDiv)
+      {
+        this.annotationDiv = document.createElement("div");
+        this.annotationDiv.setAttribute('id', 'hudDiv');
+        this.annotationDiv.style.position='absolute';
+        this.annotationDiv.style.zIndex = '5';
+        this.containerDiv.insertBefore(this.annotationDiv, this.map.div);
+      }
+      if(!this.eventDiv)
+      {
+        this.eventDiv = document.createElement("div");     
+        this.eventDiv.setAttribute('id', 'eventDiv');
+        this.eventDiv.style.backgroundColor ='#fff';
+        this.eventDiv.style.opacity=0;
+        this.eventDiv.style.filter='alpha(opacity=1)';
+        this.eventDiv.style.position='absolute';
+        this.eventDiv.style.zIndex= '6';
+        this.containerDiv.insertBefore(this.eventDiv, this.annotationDiv);
+      }
+    }
+    this.events.on ({
+        "click":this.click,
+        "dblclick":this.dblClick,
+        "mousedown":this.mousedown,
+        "mouseup":this.mouseup,
+        "mousemove": this.mousemove,
+        "mouseout": this.mouseout,
+        "wheel": this.wheel,
+        "scope":this
+    });
+    this.wheelListener = OpenLayers.Function.bindAsEventListener(this.wheel, this);
+
+    OpenLayers.Event.observe(window, "DOMMouseScroll", this.wheelListener);
+    OpenLayers.Event.observe(window, "mousewheel", this.wheelListener);
+    OpenLayers.Event.observe(document, "mousewheel", this.wheelListener);
+    this.containerResized();
+  },
+   adaptOpenLayersXY : function(evt, pt){
+
+    evt.xy={x:pt.x,y:pt.y};
+    evt.xy.equals = function(xy){
+        return ((this.x == xy.x)&&(this.y == xy.y));
+    }
+    return evt;
+   },
+  getAffineParams : function(){
+    return this.affineParams;
+  },
+  applyRotate : function(rot){
+    this.affineParams.rotate = rot;
+    this.updateTransform();
+    this.transformDiv();
+  },
+  regionsEqual : function(r1, r2){
+    return ((r1.top == r2.top)&&
+            (r1.right == r2.right)&&
+            (r1.bottom==r2.bottom)&&
+            (r1.left==r2.left)&&
+            (r1.width==r2.width) &&
+            (r1.height==r2.height));
+  },
+  setChildDivDimensions: function(div){
+      var wRad = 0.0;//Math.round(this.containerDivRegion.width*0.5*Math.sqrt(2));
+      var hRad = 0.0;//Math.round(this.containerDivRegion.height*0.5*Math.sqrt(2));
+
+      var newW = this.containerDivRegion.width+wRad*2; //Math.round(max*1.5);
+      var newH = this.containerDivRegion.height+hRad*2; //Math.round(max*1.5);
+
+      // now center about container
+      var shiftLeft = -Math.round(wRad);//Math.round((containerCenterX-centerX)/2);
+      var shiftTop  = -Math.round(hRad);//Math.round((containerCenterY-centerY)/2);
+      
+      div.style.left   = shiftLeft + "px";
+      div.style.top    = shiftTop + "px";
+      div.style.width  = newW+"px";
+      div.style.height = newH+"px";
+
+     },
+  containerResized: function(){
+    var center = this.map.getCenter();
+      var region = YAHOO.util.Region.getRegion(this.containerDiv);
+      this.containerDivRegion = region;
+      //alert(region);
+      this.setChildDivDimensions(this.map.div);
+      this.setChildDivDimensions(this.eventDiv);
+      this.setChildDivDimensions(this.annotationDiv);
+
+      this.updateTransform();
+      this.map.updateSize();
+      this.map.setCenter(center, this.map.getZoom());
+  },  
+  checkResize: function(){
+    var region = YAHOO.util.Region.getRegion(this.containerDiv);
+    if(!this.regionsEqual(region,this.containerDivRegion))
+    {
+        this.containerResized();
+     }
+  },
+  updateTransform: function(){
+    if(!this.annotationDiv) return;
+      var region = YAHOO.util.Region.getRegion(this.annotationDiv);
+      var centerPx = new OmarPoint((region.width)/2 , (region.height)/2 );
+      this.affineParams.pivot.x = centerPx.x;
+      this.affineParams.pivot.y = centerPx.y;
+      this.affineParams.scale.x = 1;
+      this.affineParams.scale.y = 1;
+      this.affineParams.translate.x = -region.left;
+      this.affineParams.translate.y = -region.top;
+
+      this.affineM = this.affineParams.toMatrix();
+ 
+  },
+  generateOssimFullImageTransform: function(){
+    var affine =  new OmarAffineParams();
+    var res = OMAR.imageManipulator.map.getResolution();
+    var scale = 1.0/res;
+ 
+    var center =  this.getCenterLocal();
+    affine.rotate  = -this.affineParams.rotate;
+    affine.scale.x = scale;
+    affine.scale.y = scale;
+    affine.pivot.x = center.x;
+    affine.pivot.y = center.y;
+    return affine.toMatrix();
+  },
+  transformDiv: function(){
+      if(this.map && this.map.div)
+      {
+        cssSandpaper.setTransform(this.map.div,
+                                  "rotate(" + this.affineParams.rotate+"deg)");
+      }
+  },
+  getDivElement: function(div){
+      if(typeof div == "string")
+      {
+        return document.getElementById(div);
+      }
+      return div;
+  },
+  mouseToPoint: function(evt){
+      var mouseXY = YAHOO.util.Event.getXY(evt);
+      return new OmarPoint(mouseXY[0], mouseXY[1]);
+  },
+  annotationPointToPoint: function(pt){
+    var region = YAHOO.util.Region.getRegion(this.annotationDiv);
+    return {x:(pt.x + region.left), y:(pt.y + region.top)};
+  },
+  pointToTransformPoint: function(pt){
+    return this.affineM.transform(pt);
+  },
+  pointToMap: function(pt){
+    var endPt     = this.pointToTransformPoint(pt);
+    return this.map.getLonLatFromViewPortPx(endPt);
+  },
+  pointReflect: function(pt){
+      var result = new OmarPoint(pt.x, pt.y);
+      if(this.projectionType == OMAR.ProjectionType.PIXEL)
+      {
+        if(this.map.maxExtent.top > this.map.maxExtent.bottom)
+        {
+            //reflect
+            result.y = this.map.maxExtent.top - result.y;
+        }
+      }
+      return result;
+  },
+  pointToLocal: function(pt){
+      var mapPt = this.pointToMap(pt);
+      return this.pointReflect(new OmarPoint(mapPt.lon, mapPt.lat));
+
+   },
+   getCenterLocal: function()
+   {
+     var mapPt = this.map.getCenter();
+     return this.pointReflect(new OmarPoint(mapPt.lon, mapPt.lat));
+   },
+   withinDiv: function(xy, el){
+    var region = YAHOO.util.Dom.getRegion(el);
+    var top    = region.top;
+    var left   = region.left;
+    var bottom = region.bottom;
+    var right  = region.right;
+    var mX     = xy.x;
+    var mY     = xy.y;
+    
+    return (mX > left && mX < right && mY > top && mY < bottom);
+  },
+  wheel: function(evt){
+    if(!this.withinDiv(this.mouseToPoint(evt), this.eventDiv.parentNode))
+    {
+      return;
+    }
+    if (evt.wheelDelta) 
+    {
+      delta = evt.wheelDelta / 120;
+      if (window.opera && window.opera.version() < 9.2) {
+        delta = -delta;
+      }
+    } 
+    else if (evt.detail) 
+    {
+      delta = -evt.detail / 3;
+    }
+    if (delta) 
+    {
+      if (delta < 0) 
+      {
+        this.wheelDown(evt);
+      } 
+      else 
+      {
+        this.wheelUp(evt);
+      }
+    }
+    YAHOO.util.Event.stopEvent(evt);
+  },
+  wheelUp: function(evt){
+      if (this.map.getZoom() < this.map.getNumZoomLevels()) 
+      {
+         this.map.setCenter(this.map.getCenter(), this.map.getZoom() + 1);
+      }
+  },
+  wheelDown: function(evt){
+      if (this.map.getZoom() > 0) 
+      {
+         this.map.setCenter(this.map.getCenter(), this.map.getZoom() - 1);
+      }
+  },
+  click: function(evt)
+  {
+    
+  },
+  dblClick: function(evt){
+
+     switch(this.toolMode)
+     {
+        case OMAR.ToolModeType.PAN_ZOOM:
+        case OMAR.ToolModeType.ZOOM_BOX:
+        {
+             var endPt     = this.affineM.transform(this.mouseToPoint(evt));
+             var newCenter = this.map.getLonLatFromViewPortPx(endPt);
+          //alert("AFFINE: " + affineM +"\nMOUSE POS = " + this.mouseToPoint(evt)+"\nTRANSFORMED: " + endPt + "\nMAP CENTER: " + mapCenter);
+
+             this.map.setCenter(newCenter, this.map.zoom + 1);
+             OpenLayers.Event.stop(evt);  
+             break;
+        }
+        case OMAR.ToolModeType.LINE:
+        case OMAR.ToolModeType.POLYGON:
+        {
+            var wasDrawing = this.currentDrawControl.handler.drawing;
+            this.currentDrawControl.handler.dblclick(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+            if(wasDrawing&&!this.currentDrawControl.handler.drawing)
+            {
+                this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
+            }
+            OpenLayers.Event.stop(evt);  
+           break;
+        }
+     }
+   },
+   mouseout: function(evt){
+    /*
+      if (this.mouseDragStart != null && OpenLayers.Util.mouseLeft(evt, this.map.div))
+      {
+         if (this.zoomBox) 
+         {
+            this.removeZoomBox();
+         }
+         this.mouseDragStart = null;
+      }
+      */
+   },
+   mousedown: function(evt){
+      switch(this.toolMode)
+      {
+        case OMAR.ToolModeType.PAN_ZOOM:
+        case OMAR.ToolModeType.ZOOM_BOX:
+        {
+            this.documentListenersAdded = false;
+            this.mouseDragStart = null;
+            this.performedDrag = false;
+            if (OMAR.ToolModeType.PAN_ZOOM&&(!OpenLayers.Event.isLeftClick(evt))) {
+             return;
+            }
+            /** This simulates a capture mouse events from the entire document window so we
+            * can continue dragging even if the mouse goes outside the DIV.
+            *
+            * We may want a utility method for this.
+            */
+            if(this.withinDiv(this.mouseToPoint(evt), this.eventDiv))
+            {
+                // this.documentListenersAdded = true;
+                // YAHOO.util.Event.addListener(document, "mousemove", this.mouseMove, null, this);
+                // YAHOO.util.Event.addListener(document, "mouseup", this.mouseUp, null, this);
+            }
+
+            this.mouseDragStart = this.mouseToPoint(evt);
+            if (evt.shiftKey||(this.toolMode==OMAR.ToolModeType.ZOOM_BOX)) 
+            {
+                var region = YAHOO.util.Region.getRegion(this.annotationDiv);
+                this.eventDiv.style.cursor = "crosshair";
+                this.zoomBox = OpenLayers.Util.createDiv('zoomBox', 
+                                                         new OmarPoint(-region.left +this.mouseDragStart.x,
+                                                                       -region.top +this.mouseDragStart.y), 
+                                                         null, null, "absolute", "2px solid red");
+                this.zoomBox.id="zoomBox";
+                this.zoomBox.style.backgroundColor = "white";
+                this.zoomBox.style.filter = "alpha(opacity=50)";
+                this.zoomBox.style.opacity = "0.50";
+                this.zoomBox.style.fontSize = "1px";
+                this.zoomBox.style.zIndex = this.map.Z_INDEX_BASE["Popup"] - 1;
+
+                if(this.annotationDiv!=null) this.annotationDiv.appendChild(this.zoomBox);
+                OpenLayers.Event.stop(evt);  
+            }
+            else
+            {
+                this.map.div.style.cursor = "move";
+            }
+            document.onselectstart = OpenLayers.Function.False;
+            break;
+        }
+        case OMAR.ToolModeType.BOX_AOI:
+        {
+           this.removeSelectionBox();
+           this.mouseDragStart = this.mouseToPoint(evt);
+           if(!this.selectionBox)
+            {
+                var region = YAHOO.util.Region.getRegion(this.annotationDiv);
+                this.selectionBox = OpenLayers.Util.createDiv('selectionBox', 
+                                                         new OmarPoint(-region.left +this.mouseDragStart.x,
+                                                                       -region.top +this.mouseDragStart.y), 
+                                                         null, null, "absolute", "");
+                this.selectionBox.id="selectionBox";
+                this.selectionBox.style.backgroundColor = "orange";
+                this.selectionBox.style.filter = "alpha(opacity=50)";
+                this.selectionBox.style.opacity = "0.50";
+                this.selectionBox.style.fontSize = "1px";
+                this.selectionBox.style.zIndex = this.map.Z_INDEX_BASE["Popup"] - 1;
+
+                if(this.annotationDiv!=null) this.annotationDiv.appendChild(this.selectionBox);
+           }
+            OpenLayers.Event.stop(evt);  
+            document.onselectstart = OpenLayers.Function.False;
+         break;
+        }
+        case OMAR.ToolModeType.LINE:
+        case OMAR.ToolModeType.POLYGON:
+        {
+            if(!this.currentDrawControl.handler.drawing)
+                 this.vectorLayer.destroyFeatures();
+
+            this.currentDrawControl.handler.mousedown(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+            OpenLayers.Event.stop(evt); 
+            document.onselectstart = OpenLayers.Function.False;
+           break;
+        }
+      }
+    },
+    mouseup: function(evt){
+       if(this.documentListenersAdded)
+       {
+           YAHOO.util.Event.removeListener(document, "mousemove", this.mouseMove);
+           YAHOO.util.Event.removeListener(document, "mouseUp", this.mouseUp);
+           this.documentListenersAdded = false;
+       }
+       switch(this.toolMode)
+       {
+        case OMAR.ToolModeType.BOX_AOI:
+        {
+           if(this.selectionBox)
+           {
+              OpenLayers.Event.stop(evt);  
+           }
+           document.onselectstart = null;
+           this.mouseDragStart = null;
+           this.map.div.style.cursor = ""; 
+
+           break; 
+        } 
+        case OMAR.ToolModeType.PAN_ZOOM:
+        case OMAR.ToolModeType.ZOOM_BOX:
+        {
+
+          if (OMAR.ToolModeType.PAN_ZOOM&&(!OpenLayers.Event.isLeftClick(evt))) {
+             return;
+          }
+          if (this.zoomBox) 
+          {
+            this.zoomBoxEnd(evt);
+            OpenLayers.Event.stop(evt);  
+            this.eventDiv.style.cursor = "";
+          } 
+          else 
+          {
+             if (this.performedDrag) 
+             {
+                this.map.setCenter(this.map.center);
+                OpenLayers.Event.stop(evt);  
+             }
+          }
+          document.onselectstart = null;
+          this.mouseDragStart = null;
+          this.map.div.style.cursor = "";  
+          break;
+        }
+        case OMAR.ToolModeType.LINE:
+        case OMAR.ToolModeType.POLYGON:
+        {
+           if(this.currentDrawControl.handler.drawing)
+           {
+                this.currentDrawControl.handler.mouseup(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+                OpenLayers.Event.stop(evt); 
+
+                // check for triggering finished 
+                if(!this.currentDrawControl.handler.drawing)
+                {
+                 this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
+                }
+           }
+           document.onselectstart = null;
+           break;
+        }
+
+    }
+  },
+  mousemove: function(evt){
+     var updateBox = function(evt, box, scopePtr) {
+            var region = YAHOO.util.Region.getRegion(scopePtr.annotationDiv);
+            var deltaX = Math.abs(scopePtr.mouseDragStart.x - scopePtr.mousePosition.x);
+            var deltaY = Math.abs(scopePtr.mouseDragStart.y - scopePtr.mousePosition.y);
+            var w = Math.max(1, deltaX);
+            var h = Math.max(1, deltaY);
+            box.style.width  = w + "px";
+            box.style.height = h + "px";
+
+            var x =  scopePtr.mouseDragStart.x;
+            var y =  scopePtr.mouseDragStart.y;
+            if(x > scopePtr.mousePosition.x) x = scopePtr.mousePosition.x;
+            if(y > scopePtr.mousePosition.y) y = scopePtr.mousePosition.y;
+
+            box.style.left = (-region.left + x) + "px";
+            box.style.top  = (-region.top + y) + "px";
+
+            var boxRegion = YAHOO.util.Region.getRegion(box);
+       };
+      switch(this.toolMode)
+      {
+        case OMAR.ToolModeType.BOX_AOI:
+        {
+          this.mousePosition = this.mouseToPoint(evt);
+           if (this.mouseDragStart != null) 
+           {
+             if(this.selectionBox)
+             {
+                updateBox(evt, this.selectionBox, this);
+             }
+            OpenLayers.Event.stop(evt);  
+          }
+           break;
+        }
+        case OMAR.ToolModeType.PAN_ZOOM:
+        case OMAR.ToolModeType.ZOOM_BOX:
+        {
+          this.mousePosition = this.mouseToPoint(evt);
+          if (this.mouseDragStart != null) 
+          {
+
+             //var region = YAHOO.util.Region.getRegion(this.annotationDiv);
+             if (this.zoomBox) 
+             {
+                updateBox(evt, this.zoomBox, this);
+             /*
+                var deltaX = Math.abs(this.mouseDragStart.x - this.mousePosition.x);
+                var deltaY = Math.abs(this.mouseDragStart.y - this.mousePosition.y);
+                var w = Math.max(1, deltaX) + "px";
+                var h = Math.max(1, deltaY) + "px";
+                this.zoomBox.style.width = Math.max(1, deltaX) + "px";
+                this.zoomBox.style.height = Math.max(1, deltaY) + "px";
+                
+                if (this.mousePosition.x < this.mouseDragStart.x) {
+                   this.zoomBox.style.left = -region.left + this.mousePosition.x + "px";
+                }
+                if (this.mousePosition.y < this.mouseDragStart.y) {
+                   this.zoomBox.style.top =  -region.top + this.mousePosition.y + "px";
+                }
+             */
+             } 
+             else 
+             {
+                var startPt   = this.affineM.transform(this.mouseDragStart);
+                var endPt     = this.affineM.transform(this.mousePosition);
+                var deltaPt   = startPt.sub(endPt);
+                var size      = this.map.getSize();
+                var newXY     = new OpenLayers.Pixel(size.w / 2 + deltaPt.x, size.h / 2 + deltaPt.y);
+                var newCenter = this.map.getLonLatFromViewPortPx(newXY);
+                this.map.setCenter(newCenter, null, true);
+                this.mouseDragStart       = this.mouseToPoint(evt);
+                this.map.div.style.cursor = "move";
+             }
+             this.performedDrag = true;
+             OpenLayers.Event.stop(evt);  
+          }
+          break;
+       }
+      case OMAR.ToolModeType.LINE:
+      case OMAR.ToolModeType.POLYGON:
+      {
+        if(this.currentDrawControl.handler.drawing)
+        {
+            this.currentDrawControl.handler.mousemove(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+            OpenLayers.Event.stop(evt);
+        }  
+        break;
+     }
+    }
+   },
+   zoomBoxEnd:function(evt){
+      var currentPoint = this.mouseToPoint(evt);
+      if (this.mouseDragStart != null) {
+         if (Math.abs(this.mouseDragStart.x - currentPoint.x) > 5 || 
+                      Math.abs(this.mouseDragStart.y - currentPoint.y) > 5) {
+            
+            var startPt    =  this.affineM.transform(this.mouseDragStart);
+            var endPt      =  this.affineM.transform(this.mouseToPoint(evt));
+            var start              = this.map.getLonLatFromViewPortPx(startPt);
+            var end                = this.map.getLonLatFromViewPortPx(endPt);
+            var top = Math.max(start.lat, end.lat);
+            var bottom = Math.min(start.lat, end.lat);
+            var left = Math.min(start.lon, end.lon);
+            var right = Math.max(start.lon, end.lon);
+            var bounds = new OpenLayers.Bounds(left, bottom, right, top);
+
+            this.map.zoomToExtent(bounds);
+         } 
+         else 
+         {
+            var end = this.map.getLonLatFromViewPortPx(this.pointToTransformPoint(this.mouseToPoint(evt)));
+            this.map.setCenter(new OpenLayers.LonLat((end.lon), (end.lat)), this.map.getZoom());
+         }
+         this.removeZoomBox();
+      }
+   },
+   removeSelectionBox: function(){
+    if(this.selectionBox)
+    {
+        this.annotationDiv.removeChild(this.selectionBox);
+        this.selectionBox = null;
+    }
+   },
+   removeZoomBox: function(){
+      this.annotationDiv.removeChild(this.zoomBox);
+      this.zoomBox = null;
+   },
+   CLASS_NAME: "OMAR.OpenLayersImageManipulator"
+});
+
             var northAngle;
             var upIsUpRotation;
             var brightnessSlider;
@@ -78,34 +858,36 @@
             var currentMapCenterX;
             var currentMapCenterY;
             var format;
-            var hyp;
             var image;
             var imageBounds;
             var imageURL;
             var initFlag;
-            var imageHypotenuse;
-            var imageVectorLayer;
             var layer;
             var map;
-            var newImageCenterX;
-            var newImageCenterY;
-            var oldImageCenterX;
-            var oldImageCenterY;
-            var oldMapCenterX;
-            var oldMapCenterY;
-            var oldZoomLevel;
             var omarImageSpaceOpenLayersParams;
             var resLevels;
             var rotateSlider;
             var rotationAngle;
             var zoomInButton;
 
+        function resetRotate()
+        {
+           rotateSlider.setRealValue(0.0);
+        }
+        function rotateUpIsUp()
+        {
+           rotateSlider.setRealValue(upIsUpRotation);
+        }
+        function rotateNorthUp()
+        {
+           rotateSlider.setRealValue(northAngle);
+        }
             function changeBandsOpts()
             {
                 var bands = $("bands").value;
                 layer.mergeNewParams({bands:bands});
 
-                updateImage();
+               // updateImage();
             }
 
             function changeHistoOpts()
@@ -113,7 +895,7 @@
                 var stretch_mode = $("stretch_mode").value;
                 var stretch_mode_region = $("stretch_mode_region").value;
                 layer.mergeNewParams({stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region});
-                updateImage(); ////////////////////
+                //updateImage(); ////////////////////
             }
 
             function changeMapSize( mapWidth, mapHeight )
@@ -136,7 +918,7 @@
                 var sharpen_mode = $("sharpen_mode").value;
                 layer.mergeNewParams({sharpen_mode:sharpen_mode});
 
-                updateImage();
+                //updateImage();
             }
 
             function changeToSingleLayer()
@@ -159,78 +941,70 @@
 	            var interpolation = $("interpolation").value;
 	            layer.mergeNewParams({interpolation:interpolation});
 
-	            updateImage();
+	            //updateImage();
             }
 
             function chipImage(format)
             {
-                var imageParams = "";
-                var res = map.getResolution();
-                imageParams += "res=" + res + "&";
-            r= map.getCurrentSize().w;
-        if(r < map.getCurrentSize().h) r=map.getCurrentSize().h;
-            var tileHypotenuse = Math.round(r*1.4);//Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2)));
-             //   var tileHypotenuse = Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2)));
-                var width  = parseFloat("${rasterEntry.width}");
-                var scalex = 1.0/(res * tileHypotenuse);
-                var x = (imageBounds.left - (-width*0.5))*scalex;
-                imageParams += "x=" + x + "&";
-                var height = parseFloat("${rasterEntry.height}");
-                var scaley = 1.0/(res * tileHypotenuse);
-                var y =  ((height*0.5) - imageBounds.top)*scaley;
-                var tempFormat = format;
-                if(!tempFormat) tempFormat = "jpeg";
-                imageParams += "y=" + y + "&";
-                imageParams += "z=" + map.getZoom() + "&";
-                imageParams += "tileWidth=" + tileHypotenuse + "&";
-                imageParams += "tileHeight=" + tileHypotenuse + "&";
-                imageParams += "id=" + "${rasterEntry?.id}" + "&";
-                imageParams += "interpolation=" + $("interpolation").value + "&";
-                imageParams += "brightness=" + brightnessSlider.getRealValue() + "&";
-                imageParams += "contrast=" + contrastSlider.getRealValue() + "&";
-                imageParams += "sharpen_mode=" + $("sharpen_mode").value + "&";
-                imageParams += "stretch_mode=" + $("stretch_mode").value + "&";
-                imageParams += "stretch_mode_region=" + $("stretch_mode_region").value + "&";
-                imageParams += "bands=" + $("bands").value + "&";
-                var imageWidth = map.getCurrentSize().w;
-                var imageHeight = map.getCurrentSize().h;
+                var res = OMAR.imageManipulator.map.getResolution();
+                var scale = 1.0/res;
+                var url = "${createLink(controller: 'imageSpace', action: 'getTile')}";
+                var x = null;
+                var y = null;
+                var w = null;
+                var h = null;
+                var pivot = null;
+                var affineM      = OMAR.imageManipulator.generateOssimFullImageTransform();
 
-                document.location.href = "${createLink(controller: 'ogc', action: 'chip')}" + "?" + imageParams + "&type=tile" + "&angle=" + ${"rotateAngle"}.value + "&imageHeight=" + map.getCurrentSize().h + "&imageWidth=" + map.getCurrentSize().w + "&format=" + tempFormat;
-            }
 
-            function getImageURL()
-            {
-                var res = map.getResolution();
-                r= map.getCurrentSize().w;
-            if(r < map.getCurrentSize().h) r=map.getCurrentSize().h;
-                var tileHypotenuse = Math.round(r*1.4);//Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) + Math.pow(map.getCurrentSize().h, 2)));
-            //var x = map.getCenter().lon;
-            //var y = map.getCenter().lat;
-                var width  = parseFloat("${rasterEntry.width}");
-                var scalex = 1.0/(res * tileHypotenuse);
-                var x =  (imageBounds.left - (-width*0.5))*scalex;
-
-                var height = parseFloat("${rasterEntry.height}");
-                var scaley = 1.0/(res * tileHypotenuse);
-                var y =  ((height*0.5) - imageBounds.top)*scaley;
-                var z = map.getZoom();
-
-                omarImageSpaceOpenLayersParams.setProperties(document);
-                omarImageSpaceOpenLayersParams.setProperties(
+                if(OMAR.imageManipulator.selectionBox)
                 {
-                    'res' : res,
-                    'x' : x,
-                    'y' : y,
-                    'z' : z,
-                    'id' : "${rasterEntry?.id}",
-                    'tileWidth' : tileHypotenuse,
-                    'tileHeight' : tileHypotenuse
+                    x = parseInt(OMAR.imageManipulator.selectionBox.style.left);
+                    y = parseInt(OMAR.imageManipulator.selectionBox.style.top);
+                    w = parseInt(OMAR.imageManipulator.selectionBox.style.width);
+                    h = parseInt(OMAR.imageManipulator.selectionBox.style.height);
+                    var centerChip = OMAR.imageManipulator.pointToLocal(OMAR.imageManipulator.annotationPointToPoint({x:x+w/2,y:y+h/2}));
+                    var center =  OMAR.imageManipulator.getCenterLocal();
+                    pivot = Math.round(center.x) + "," + Math.round(center.y);
+ 
+                    var centerView = affineM.transform(centerChip);
+
+                    x = Math.round(centerView.x-w/2);
+                    y = Math.round(centerView.y-h/2);
+                }
+                else
+                {
+                    // we will chip the viewport only
+                    //
+                    var w = Math.abs(OMAR.imageManipulator.containerDivRegion.right - OMAR.imageManipulator.containerDivRegion.left) + 1;
+                    var h = Math.abs(OMAR.imageManipulator.containerDivRegion.top - OMAR.imageManipulator.containerDivRegion.bottom) + 1;
+                    var center =  OMAR.imageManipulator.getCenterLocal();
+                    pivot = Math.round(center.x) + "," + Math.round(center.y);
+                    var centerView = affineM.transform(center);
+                    x = Math.round(centerView.x-w/2);
+                    y = Math.round(centerView.y-h/2);
+               }
+
+                //var size = bounds.getSize();
+
+                var z = this.map.getZoom();
+                var params = new OmarImageSpaceGetTileParams();
+
+                params.setProperties(document);
+                params.setProperties(
+                {
+                                    'x': x,
+                                    'y': y,
+                                    'scale':scale,
+                                    'rotate': -parseFloat(${"rotateAngle"}.value),
+                                    'width':w,
+                                    'height':h,
+                                    'format':"image/"+format,
+                                    'id' : "${rasterEntry?.id}",
+                                    'pivot' : pivot
                 });
 
-                var path = "?"+omarImageSpaceOpenLayersParams.toUrlParams();
-                var url = "${createLink(controller: 'icp', action: 'getTileOpenLayers')}";
-
-                return url + path;
+                 document.location.href = "${createLink(controller: 'imageSpace', action: 'getTile')}" + "?" + params.toUrlParams();
             }
 
             function get_my_url (bounds)
@@ -238,79 +1012,73 @@
                 var width  = parseFloat("${rasterEntry.width}");
                 var height = parseFloat("${rasterEntry.height}");
                 var res = this.map.getResolution();
-                //var scalex = 1.0/(res * this.tileSize.w);
-                //var scaley = 1.0/(res * this.tileSize.h);
-                //var x =  (bounds.left - (-width*0.5))*scalex;
-                //var y =  ((height*0.5) - bounds.top)*scaley;
-                var x = map.getCenter().lon;
-                var y = map.getCenter().lat;
-                var z = this.map.getZoom();
+                var scale = 1.0/res;
+                var size = bounds.getSize();
+                var x = ((map.getCenter().lon - 
+                          size.w/2.0)*scale);
+                var y = ((height-map.getCenter().lat - 
+                          size.h/2.0)*scale);
 
-                omarImageSpaceOpenLayersParams.setProperties(document);
-                omarImageSpaceOpenLayersParams.setProperties(
+                var z = this.map.getZoom();
+                var params = new OmarImageSpaceGetTileParams();
+
+                params.setProperties(document);
+                params.setProperties(
                 {
-                    'res': res,
-                    'x': x,
-                    'y': y,
-                    'z': z,
-                    // define an id of 0 to set the background image base layer to black ////////////////////
-                    'id': 0,
-                    'tileWidth':2,//this.tileSize.w,
-                    'tileHeight':2//this.tileSize.h
+                                    'x': x,
+                                    'y': y,
+                                    'scale':scale,
+                                    'width':this.tileSize.w,
+                                    'height':this.tileSize.h,
+                                    'id' : "${rasterEntry?.id}"
                 });
 
-                var path = "?"+omarImageSpaceOpenLayersParams.toUrlParams();
+                var path = "?"+params.toUrlParams();
                 var url = this.url;
 
                 if (url instanceof Array) { url = this.selectUrl(path, url); }
+
                 return url + path;
             }
 
             function init(mapWidth, mapHeight)
             {
-
-             northAngle = parseFloat("${rasterEntry.azimuthAngle}");
-             upIsUpRotation   =  parseFloat("${upIsUpRotation}");
-            brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
-            contrastSlider = YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
-            omarImageSpaceOpenLayersParams = new  OmarImageSpaceOpenLayersParams();
-            format = "image/jpeg";
-             resLevels = parseFloat("${rasterEntry.numberOfResLevels}");
-            initFlag = 1;
-             rotateSlider = YAHOO.widget.Slider.getHorizSlider("slider-rotate-bg",  "slider-rotate-thumb", 0, 180, 1);
-            rotationAngle = ${"rotateAngle"}.value;
+                OMAR.imageManipulator = new OMAR.OpenLayersImageManipulator();
+                OMAR.imageManipulator.click = function(evt)
+                {
+                   getCoordinates(OMAR.imageManipulator.pointToLocal(this.mouseToPoint(evt)));
+                }
+               northAngle = parseFloat("${rasterEntry.azimuthAngle}");
+                upIsUpRotation   =  parseFloat("${upIsUpRotation}");
+                brightnessSlider = YAHOO.widget.Slider.getHorizSlider("slider-brightness-bg",  "slider-brightness-thumb", 0, 100, 1);
+                contrastSlider = YAHOO.widget.Slider.getHorizSlider("slider-contrast-bg",  "slider-contrast-thumb", 0, 100, 1);
+                omarImageSpaceOpenLayersParams = new  OmarImageSpaceOpenLayersParams();
+                format = "image/jpeg";
+                resLevels = parseFloat("${rasterEntry.numberOfResLevels}");
+                initFlag = 1;
+                rotateSlider = YAHOO.widget.Slider.getHorizSlider("slider-rotate-bg",  "slider-rotate-thumb", 0, 180, 1);
+                rotationAngle = ${"rotateAngle"}.value;
 
                 OpenLayers.ImgPath = "${resource(plugin: 'openlayers', dir: 'js/img')}/";
 
                 var width  = parseFloat("${rasterEntry.width}");
                 var height = parseFloat("${rasterEntry.height}");
-                var r = width;
-                if (r < height) r = height;
-                hyp    = r*0.5;//Math.sqrt(width*width + height*height)*0.5;
-                var left       =  -hyp;
-                var bottom     =  -hyp;
-                var top        =  hyp;
-                var right      =  hyp;
-                var url = "${createLink(controller: 'icp', action: 'getTileOpenLayers')}";
-                var bounds = new OpenLayers.Bounds(Math.round(left), Math.round(bottom), Math.round(right), Math.round(top));
-
-                map = new OpenLayers.Map("map", { controls:[], theme: null, maxExtent:bounds, numZoomLevels:(resLevels+5) });
-                map.events.register('zoomend', null, theMapHasZoomed);
-                map.events.register("moveend", null, theMapHasMoved);
-
+                //var url = "${createLink(controller: 'imageSpace', action: 'getTileOpenLayers')}";
+                var url = "${createLink(controller: 'imageSpace', action: 'getTile')}";
+                var bounds = new OpenLayers.Bounds(0, 0, width, height);
+                map = new OpenLayers.Map("map", { controls:[], theme: null, maxExtent:bounds, maxResolution: 16, numZoomLevels:(resLevels+5) });
                 var options = {
-                    controls: [],
-                    maxExtent: bounds,
-                    getURL: get_my_url,
-                    isBaseLayer: true,
-                    maxResolution: (width) / map.getTileSize().w,
-                    ratio: 1.0,
-                    transitionEffect: "resize",
-                    units:'pixel',
-                    singleTile:true,
-                    format: format
-                };
-
+                     controls: [],
+                     maxExtent: bounds,
+                     getURL: get_my_url,
+                     isBaseLayer: true,
+                     maxResolution: (width) / map.getTileSize().w,
+                     transitionEffect: "resize",
+                     units:'pixel',
+                     singleTile:true,
+                     format: format
+                 };
+ 
 	            var oMenu = new YAHOO.widget.MenuBar("rasterMenu",
 	            {
 	                autosubmenudisplay: true,
@@ -321,19 +1089,21 @@
 	            oMenu.render();
 
 
+             //map.events.register('zoomend', null, theMapHasZoomed);
+             //map.events.register("moveend", null, theMapHasMoved);
 
-                layer = new OpenLayers.Layer.TMS( "Image Space Viewer", url, options);
-                //layer = new OpenLayers.Layer("Empty", options);
+               layer = new OpenLayers.Layer.TMS( "Image Space Viewer", url, options);
+              layer.getURL = get_my_url;
+               layer.singleTile = true;
                 map.addLayer(layer);
-                map.addControl(new OpenLayers.Control.MouseDefaults());
+                //map.addControl(new OpenLayers.Control.MouseDefaults());
                 map.addControl(new OpenLayers.Control.KeyboardDefaults());
                 map.setBaseLayer(layer);
-                changeMapSize(mapWidth, mapHeight);
-                map.zoomToMaxExtent();
+                //changeMapSize(mapWidth, mapHeight);
+               map.zoomToMaxExtent();
 
 
                 setupToolbar();
-
                 /*
                 var isiPad = navigator.userAgent.match( /iPad/i ) != null;
                 if ( isiPad )
@@ -357,7 +1127,7 @@
 		            if(layer)
 		            {
 			            layer.mergeNewParams({brightness:this.getRealValue()});
-                        updateImage();
+                        //updateImage();
 		            }
                 });
                 brightnessSlider.setRealValue(${params.brightness ?: 0});
@@ -378,7 +1148,7 @@
 		            if(layer)
 		            {
 			            layer.mergeNewParams({contrast:this.getRealValue()});
-                        updateImage();
+                        //updateImage();
 		            }
                 });
 	            contrastSlider.setRealValue(${params.contrast ?: 1});
@@ -386,58 +1156,58 @@
 	            rotateSlider.animate = false;
 	            rotateSlider.getRealValue = function() { return this.getValue() * 2; }
                 rotateSlider.setRealValue = function(value) { this.setValue(Math.ceil((value%360.0) / 2)); }
-                rotateSlider.subscribe("change", function() { sliderRotate(this.getRealValue()); });
+                 rotateSlider.subscribe("change", function() { sliderRotate(this.getRealValue()); });
                 rotateSlider.setRealValue(rotationAngle);
-
-	            setupCompassMap();
-
-	            // initialize old and new coordinate center variables ////////////////////
-	            oldMapCenterX = map.getCenter().lon;
-	            oldMapCenterY = map.getCenter().lat;
-	            oldImageCenterX = map.getCenter().lon;
-	            oldImageCenterY = map.getCenter().lat;
-	            newImageCenterX = map.getCenter().lon;
-	            newImageCenterY = map.getCenter().lat;
 
 	            // set the initialization flag so the moveend and zoomend code can execute
 	            initFlag = 0;
-                resetImageVectorLayer();
 
-                offsetX = width/2.0 -  hyp;
-                offsetY = height/2.0 - hyp;
-            map.setCenter(new  OpenLayers.LonLat(offsetX,offsetY), 0);
-            //map.zoomToMaxExtent();
-               // map.zoomIn();
+                var offsetX = width/2.0;
+                var offsetY = height/2.0;
+                map.setCenter(new  OpenLayers.LonLat(0.0,0.0), 0);
+                map.zoomToMaxExtent();
+                // map.zoomIn();
                 // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
-	            oldZoomLevel = map.getZoom();
-            }
 
-            function resetImageVectorLayer() ////////////////////
-            {
-                // remove the image vector layer and all previous images
-                if (imageVectorLayer) { imageVectorLayer.destroy(); }
-	            imageVectorLayer = new OpenLayers.Layer.Vector("Simple Geometry",
-	            {
-		            styleMap: new OpenLayers.StyleMap
-		            ({
-			            "default":
-			            {
-				            externalGraphic : <%=' "${urlPath}" '%>,
-				            graphicWidth : <%=' "${imageWidth}" '%>,
-      			            graphicHeight : <%=' "${imageHeight}" '%>,
-				            rotation : <%=' "${angle}" '%>
-}
-                })
+               OMAR.imageManipulator.affineParams.rotate = parseFloat(${"rotateAngle"}.value);
+
+               OMAR.imageManipulator.setup("center2", map, "hudDivId", "eventDivId");
+               // add these just in case there were settings passed to the GSP 
+               // but we only want to apply them once the page is finished with setup
+               OMAR.imageManipulator.updateTransform(); 
+               OMAR.imageManipulator.transformDiv();
+               // OMAR.iamgeManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
+               //alert(map.getMaxExtents());
+
+               OMAR.imageManipulator.events.on({
+                        "measureAddPointFinished": measureFinished
                 });
-                map.addLayer(imageVectorLayer);
-            }
+           }
 
+            function measureFinished(evt){
+                if(evt&&evt.feature)
+                {
+                    var url = "/omar/imageSpace/measure"; 
+                    var request = OpenLayers.Request.POST({
+                         url: url,
+                         //params: {id:${rasterEntry.id}, feature:jsonText.toString()},
+                         data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id}, 
+                                                          feature:{wkt:evt.feature.geometry.toString()}
+                                                         }),
+                         callback: function (transport){
+                            var temp = YAHOO.lang.JSON.parse(transport.responseText);
+                            alert(transport.responseText);
+                        }
+                    });
+
+                }
+            }
             function resetBrightnessContrast()
             {
               brightnessSlider.setRealValue(0);
               contrastSlider.setRealValue(1.0);
 
-                updateImage();
+                //updateImage();
             }
 
             function rotateTextFieldChange(angle)
@@ -446,6 +1216,7 @@
                 rotateSlider.unsubscribe("change");
                 rotateSlider.setRealValue(angle);
                 rotateSlider.subscribe("change", function() { sliderRotate(this.getRealValue()); });
+                OMAR.imageManipulator.applyRotate(angle);
             }
 
             function setupCompassMap()
@@ -473,7 +1244,7 @@
 				            graphicWidth : 40,
                             graphicHeight : 40,
 			                rotation : <%=' "${angle}" '%>
-}
+            }
 })
 });
 
@@ -482,150 +1253,104 @@ compassMap.addLayer(compassVectorLayer);
 
 
 // define the marker for the image to sit on
-compassImage = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0), {angle: -northAngle});
-compassVectorLayer.addFeatures([compassImage]);
+//compassImage = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0,0), {angle: -northAngle});
+//compassVectorLayer.addFeatures([compassImage]);
 }
 
 function setupToolbar()
 {
-var panButton = new OpenLayers.Control.MouseDefaults({title:'Click pan button to activate. Once activated click the map and drag the mouse to pan.'});
-var zoomBoxButton = new OpenLayers.Control.ZoomBox({title:"Click the zoom box button to activate. Once activated click and drag over an area of interest on the map to zoom into."});
-zoomInButton = new OpenLayers.Control.Button({title: "Click to zoom in.", displayClass: "olControlZoomIn", trigger: zoomIn});
-var zoomInFullResButton = new OpenLayers.Control.Button({title: "Click to zoom into full resolution.", displayClass: "olControlZoomToLayer", trigger: zoomInFullRes});
-var zoomOutButton = new OpenLayers.Control.Button({title: "Click to zoom out.", displayClass: "olControlZoomOut", trigger: zoomOut});
-var container = $("toolBar");
-var panel = new OpenLayers.Control.Panel(
-{
-div: container,defaultControl: panButton,
-'displayClass': 'olControlPanel'
-});
-var navButton = new OpenLayers.Control.NavigationHistory(
-{
-nextOptions: {title: "Next View" },
-previousOptions: {title: "Previous View"}
-});
 
-map.addControl(navButton);
-panel.addControls(
-[
-panButton,
-zoomBoxButton,
-zoomInButton,
-zoomOutButton,
-//navButton.next, navButton.previous,
-new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent."}),
-zoomInFullResButton
-]);
-map.addControl(panel);
+ //  var panButton = new OpenLayers.Control.MouseDefaults({title:'Click pan button to activate. Once activated click the map and drag the mouse to pan.'});
+   
+    panButton = new OpenLayers.Control.Button({title: "Click to zoom in.", 
+                                                id: "PAN",
+                                                trigger: panMode,
+                                                type:OpenLayers.Control.TYPE_TOOL,
+                                                displayClass: "olControlButtonPan"});
+
+   var selectAoi = new OpenLayers.Control.Button({title: "Click to select an AOI with an upright rectangle.", 
+                                                   id: "SELECT_AOI",
+                                                trigger: selectAoiClicked,
+                                                type:OpenLayers.Control.TYPE_TOOL,
+                                                displayClass: "olControlButtonSelectAOI"});
+
+  var deleteAoi = new OpenLayers.Control.Button({title: "Click to zoom in.", 
+                                                   id: "DELETE_AOI",
+                                                trigger: deleteAoiClicked,
+                                                type:OpenLayers.Control.TYPE_BUTTON,
+                                                displayClass: "olControlButtonDeleteAOI"});
+
+    var pointButton = new OpenLayers.Control.Button({title: "Click to drop a point", 
+                                                   id: "POINT_BUTTON",
+                                                trigger: pointModeClicked,
+                                                type:OpenLayers.Control.TYPE_TOOL,
+                                                displayClass: "olControlButtonMeasurePoint"});
+  
+    var measurePathButton = new OpenLayers.Control.Button({title: "Click to measure a path", 
+                                                   id: "MEASURE_PATH",
+                                                trigger: measurePathModeClicked,
+                                                type:OpenLayers.Control.TYPE_TOOL,
+                                                displayClass: "olControlButtonMeasurePath"});
+    var measureAreaButton = new OpenLayers.Control.Button({title: "Click to measure a path", 
+                                                    id: "MEASURE_AREA",
+                                               trigger: measureAreaModeClicked,
+                                                type:OpenLayers.Control.TYPE_TOOL,
+                                                displayClass: "olControlButtonMeasureArea"});
+
+    var zoomBoxButton = new OpenLayers.Control.ZoomBox({title:"Click the zoom box button to activate. Once activated click and drag over an area of interest on the map to zoom into.",id:"ZOOM_BOX", trigger:zoomBoxClicked});
+    zoomInButton = new OpenLayers.Control.Button({title: "Click to zoom in.", 
+                                                 id:"ZOOM_IN",
+                                                 displayClass: "olControlZoomIn", 
+                                                 trigger: zoomIn});
+    var zoomInFullResButton = new OpenLayers.Control.Button({title: "Click to zoom into full resolution.", displayClass: "olControlZoomToLayer", id:"ZOOM_IN_FULL", trigger: zoomInFullRes});
+    var zoomOutButton = new OpenLayers.Control.Button({title: "Click to zoom out.", displayClass: "olControlZoomOut", trigger: zoomOut,
+                                                      id:"ZOOM_OUT"});
+    var container = $("toolBar");
+
+    var panel = new OpenLayers.Control.Panel(
+    {
+       div: container,
+       defaultControl: panButton,
+      'displayClass': 'olControlPanel',
+      activateControl: controlActivated
+      });
+
+    panel.addControls(
+    [
+      panButton,
+      zoomBoxButton,
+      zoomInButton,
+      zoomOutButton,
+      zoomInFullResButton,
+      new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent."}),
+      selectAoi,
+      deleteAoi,
+      pointButton,
+      measurePathButton,
+      measureAreaButton
+    ]);
+    map.addControl(panel);
 }
 
 function sliderRotate(sliderValue)
 {
-// remove all previous images
-resetImageVectorLayer();
             rotationAngle = 360 - parseInt(sliderValue)
-${"rotateAngle"}.value = sliderValue;
-                // remove the image from the map so it can be rotated
-	            compassVectorLayer.removeFeatures([compassImage]);
-	            imageVectorLayer.removeFeatures([image]);
-
-	            // redefine the marker with the new rotation angle
-	            compassImage = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(0, 0), {angle: (-northAngle)+sliderValue});
-	            compassVectorLayer.addFeatures([compassImage]);
-
-                 image = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(currentMapCenterX, currentMapCenterY), {urlPath: imageURL, imageWidth: imageHypotenuse, imageHeight: imageHypotenuse, angle: sliderValue});
-	            imageVectorLayer.addFeatures([image]);
-            }
+            ${"rotateAngle"}.value = sliderValue;
+            OMAR.imageManipulator.applyRotate(sliderValue);
+}
 
             function theMapHasMoved()
             {
-                if (initFlag == 0) { updateImage(); }
+                if (initFlag == 0) { 
+                    //updateImage(); 
+                }
             }
 
             function theMapHasZoomed()
             {
                 if (initFlag == 0)
                 {
-                    // remove the image vector layer and erase all previous images
-
-                    // reset the image vector layer an make a new one
-                    resetImageVectorLayer();
-
-                    //if ((map.getZoom() - oldZoomLevel) > 0) { imageHypotenuse = imageHypotenuse * 2; }
-                    //else if((map.getZoom() - oldZoomLevel) < 0) { imageHypotenuse = imageHypotenuse * 0.5; }
-                    //image = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(currentMapCenterX, currentMapCenterY), {urlPath: imageURL, imageWidth: imageHypotenuse, imageHeight: imageHypotenuse, angle: -rotationAngle});
-	                //imageVectorLayer.addFeatures([image]);
-
-                    // reset the zoom variable to be used next time
-                    oldZoomLevel = map.getZoom();
 	            }
-            }
-
-            function updateImage()
-            {
-                // calculate the change in actual map movement
-                var deltaMovementX = map.getCenter().lon - oldMapCenterX;
-	            var deltaMovementY = map.getCenter().lat - oldMapCenterY;
-	            var deltaMovementMagnitude = Math.sqrt(Math.pow(deltaMovementX,2) + Math.pow(deltaMovementY,2));
-                var beta = 0;
-                // calculate the angle of the actual map movement
-	            if (deltaMovementY >= 0 && deltaMovementX > 0) { beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI; }
-	            else if (deltaMovementY >= 0 && deltaMovementX < 0) { beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI + 180; }
-	            else if (deltaMovementY < 0 && deltaMovementX < 0) { beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI + 180; }
-	            else if (deltaMovementY < 0 && deltaMovementX > 0) { beta = Math.atan(deltaMovementY / deltaMovementX) * 180/Math.PI + 360; }
-
-	            // relate the actual map movement to relative image movement
-	            var theta = beta - rotationAngle;
-	            var relativeXDelta = Math.cos(theta * Math.PI/180) * deltaMovementMagnitude;
-	            var relativeYDelta = Math.sin(theta * Math.PI/180) * deltaMovementMagnitude;
-
-                // calculate the new map center
-	            newImageCenterX = oldImageCenterX + relativeXDelta;
-	            newImageCenterY = oldImageCenterY + relativeYDelta;
-
-                // calculate the map bounds for the TMS call
-                var mapWidthHalf = (map.calculateBounds().right - map.calculateBounds().left) / 2;
-                var mapHeightHalf = (map.calculateBounds().top - map.calculateBounds().bottom) / 2;
-                r =  mapWidthHalf;
-                if(r < mapHeightHalf) r = mapHeightHalf;
-                var mapHypotenuse = Math.round(r*1.4);//Math.sqrt(Math.pow(mapWidthHalf,2) + Math.pow(mapHeightHalf,2));
-                imageBounds = new OpenLayers.Bounds(
-                    newImageCenterX - mapHypotenuse,
-                    newImageCenterY - mapHypotenuse,
-                    newImageCenterX + mapHypotenuse,
-                    newImageCenterY + mapHypotenuse
-                );
-
-                //calculateImageBounds();
-
-                // get the URL for the image
-                imageURL = getImageURL();
-
-            r = map.getCurrentSize().w;
-            if(r < map.getCurrentSize().h) r = map.getCurrentSize().h;
-                // calculate the image size so there are no gaps while rotating
-                imageHypotenuse = Math.round(r*1.4);//Math.round(Math.sqrt(Math.pow(map.getCurrentSize().w, 2) +
-                                      //                 Math.pow(map.getCurrentSize().h, 2)));
-
-                // get the current map center which is where the image will go
-	            currentMapCenterX = map.getCenter().lon;
-	            currentMapCenterY = map.getCenter().lat;
-
-                // define the marker for the image to sit on
-                image = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(currentMapCenterX, currentMapCenterY),
-                                                     {urlPath: imageURL,
-                                                      imageWidth: imageHypotenuse,
-                                                      imageHeight: imageHypotenuse,
-                                                      angle: $("rotateAngle").value});
-	            imageVectorLayer.addFeatures([image]);
-
-                // set the map center coordinate variables to be used the next time the map is moved
-	            oldMapCenterX = map.getCenter().lon;
-	            oldMapCenterY = map.getCenter().lat;
-
-                // set the image center coordinate variables to be used the next time the map is moved
-	            oldImageCenterX = newImageCenterX;
-	            oldImageCenterY = newImageCenterY;
             }
 
             function zoomIn()
@@ -636,7 +1361,68 @@ ${"rotateAngle"}.value = sliderValue;
 		            zoomInButton.displayClass = "olControlFoo";
 	            }
             }
+            function zoomBoxClicked()
+            {
+                OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.ZOOM_BOX);
+            }
+            function panMode()
+            {
+                OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
+            }
+            function measurePathModeClicked()
+            {
+                OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.LINE);
+            }
+            function measureAreaModeClicked()
+            {
+                OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.POLYGON);
+            }
+            function pointModeClicked()
+            {
+                OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.POINT);
+            }
+            function controlActivated(control)
+            {
+               if (!this.active) {
+                     return false;
+               }
+               if (control.type == OpenLayers.Control.TYPE_BUTTON) 
+               {
+                 if(control.trigger) control.trigger();
+                 this.redraw();
+                 return;
+               }
+               if (control.type == OpenLayers.Control.TYPE_TOGGLE) 
+               {
+                 if (control.active) {
+                    control.deactivate();
+                 } else {
+                    control.activate();
+                 }
+                 this.redraw();
+                 return;
+               }
+               for (var i = 0, len = this.controls.length; i < len; i++) {
+                 if (this.controls[i] != control) 
+                 {
+                    if (this.controls[i].type != OpenLayers.Control.TYPE_TOGGLE) 
+                    {
+                       this.controls[i].deactivate();
+                    }
+                 }
+              }
+              control.activate();
+              if(control.trigger) control.trigger();
+            }
 
+            function deleteAoiClicked()
+            {
+                OMAR.imageManipulator.removeSelectionBox();
+            }
+            function selectAoiClicked()
+            {
+                OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.BOX_AOI);
+            }
             function zoomInFullRes()
             {
                 // we are image space so set to a 1:1 scale
@@ -648,35 +1434,41 @@ ${"rotateAngle"}.value = sliderValue;
             function zoomOut()
             {
                 map.zoomOut();
-	            if(map.getZoom() < map.getZoomForResolution(1.0, true)) { zoomInButton.displayClass = "olControlZoomIn"; }
+	              if(map.getZoom() < map.getZoomForResolution(1.0, true)) { zoomInButton.displayClass = "olControlZoomIn"; }
+            }
+
+          function getCoordinates(ipt)
+          {
+                 var jsonText = YAHOO.lang.JSON.stringify([
+                                  {"x":Math.round(ipt.x), "y":Math.round(ipt.y)}
+                                  ]
+                                );
+                 //var url = "/omar/imageSpace/imageToGround?id=${rasterEntry.id}&x="+Math.round(ipt.x)+"&y="+Math.round(ipt.y)
+                 var url = "/omar/imageSpace/imageToGround?id=${rasterEntry.id}&imagePoints="+jsonText.toString();
+
+                 new OpenLayers.Ajax.Request(url, {
+                      onSuccess: function(transport) {
+                      var temp = YAHOO.lang.JSON.parse(transport.responseText);
+                      var out = document.getElementById("mouseDisplayId");
+                      if(out)
+                      {
+                        if(temp.length>0)
+                        {
+                          out.innerHTML = "<table><tr><td width='10%'>x: " + temp[0].x + "</td>" +"<td width='10%'>y: " + temp[0].y +
+                                          "</td>" + "<td width='20%'>lat: " + temp[0].lat + "</td><td width='20%'>lon: " + temp[0].lon + "</td>" + 
+                                          "<td width='20%'>hgt: " + temp[0].hgt + " m </td>";
+                        }
+                        else
+                        {
+                          out.innerHTML = "";
+                        }
+                      }
+                 }
+
+                });
             }
 
 
-            function calculateImageBounds()
-            {
-                //alert("Map Width / 2 =" + map.getCurrentSize().w/2);
-                //alert("Map Height / 2 =" + map.getCurrentSize().h/2);
-                var alpha = Math.atan((map.getCurrentSize().h/2) / (map.getCurrentSize().w/2)) * 180/Math.PI;
-                var beta = rotationAngle - alpha;
-                var hypotenuse1 = (map.getCurrentSize().w/2) / Math.cos(beta * Math.PI/180);
-                var hypotenuse2 = Math.sqrt(Math.pow(map.getCurrentSize().w/2,2) + Math.pow(map.getCurrentSize().h/2,2)) - hypotenuse1;
-                var extensionLength = Math.sin((90 - beta) * Math.PI/180) * hypotenuse2;
-                //alert(extensionLength);
-
-                var mapWidth = map.calculateBounds().right - map.calculateBounds().left;
-                var mapHeight = map.calculateBounds().top - map.calculateBounds().bottom;
-                alpha = Math.atan((mapHeight / 2) / (mapWidth / 2)) * 180/Math.PI;
-                hypotenuse1 = (mapWidth / 2) / Math.cos(beta * Math.PI/180);
-                hypotenuse2 = Math.sqrt(Math.pow(mapWidth / 2,2) + Math.pow(mapHeight / 2,2)) - hypotenuse1;
-                extensionLength = Math.sin((90 - beta) * Math.PI/180) * hypotenuse2;
-
-                var imageBounds1 = new OpenLayers.Bounds(
-                    newImageCenterX - mapWidth / 2 + extensionLength,
-                    newImageCenterY - mapHeight / 2,
-                    newImageCenterX + mapWidth / 2 + extensionLength,
-                    newImageCenterY + mapHeight / 2
-                );
-            }
-</r:script>
+ </r:script>
 </body>
 </html>
