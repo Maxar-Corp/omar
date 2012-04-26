@@ -36,6 +36,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     this.affineM = new OmarMatrix3x3();
    },
    setup : function(containerDiv, mapObj, annDiv, topDiv){
+    alert("adfadsfasdfasdfasdfasd");
     this.map           = mapObj;
     this.eventDiv      = this.getDivElement(topDiv);
     this.annotationDiv = this.getDivElement(annDiv);
@@ -245,7 +246,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         this.wheelUp(evt);
       }
     }
-    //YAHOO.util.Event.stopEvent(evt);
+    YAHOO.util.Event.stopEvent(evt);
   },
   wheelUp: function(evt){
       if (this.map.getZoom() < this.map.getNumZoomLevels()) 
@@ -272,7 +273,6 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       return true;
    },
    mouseOut: function(evt){
-    return;
     /*
       if (this.mouseDragStart != null && OpenLayers.Util.mouseLeft(evt, this.map.div))
       {
@@ -296,12 +296,12 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         *
         * We may want a utility method for this.
         */
-      //if(this.withinDiv(this.mouseToPoint(evt), this.eventDiv))
-     // {
-     //   this.documentListenersAdded = true;
-      //   YAHOO.util.Event.addListener(document, "mousemove", this.mouseMove, null, this);
-      //   YAHOO.util.Event.addListener(document, "mouseup", this.mouseUp, null, this);
-     // }
+      if(this.withinDiv(this.mouseToPoint(evt), this.eventDiv))
+      {
+        this.documentListenersAdded = true;
+         YAHOO.util.Event.addListener(document, "mousemove", this.mouseMove, null, this);
+         YAHOO.util.Event.addListener(document, "mouseup", this.mouseUp, null, this);
+      }
 
       this.mouseDragStart = this.mouseToPoint(evt);
       if (evt.shiftKey) 
@@ -322,11 +322,16 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
          if(this.annotationDiv!=null) this.annotationDiv.appendChild(this.zoomBox);
       }
       document.onselectstart = OpenLayers.Function.False;
-      //OpenLayers.Event.stop(evt);  
+      OpenLayers.Event.stop(evt);  
     },
     mouseUp: function(evt){
       if (!OpenLayers.Event.isLeftClick(evt)) {
          return;
+      }
+      if(this.documentListenersAdded)
+      {
+          YAHOO.util.Event.removeListener(document, "mousemove", this.mouseMove);
+          YAHOO.util.Event.removeListener(document, "mouseUp", this.mouseUp);
       }
       //if(this.withinDiv(this.mouseToPoint(evt), this.eventDiv))
      // {
@@ -347,6 +352,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       document.onselectstart = null;
       this.mouseDragStart = null;
       this.map.div.style.cursor = "";  
+      OpenLayers.Event.stop(evt);  
   },
   mouseMove: function(evt){
       this.mousePosition = this.mouseToPoint(evt);
@@ -383,7 +389,8 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
          }
          this.performedDrag = true;
       }
-    },
+       OpenLayers.Event.stop(evt);  
+   },
     zoomBoxEnd:function(evt){
       var currentPoint = this.mouseToPoint(evt);
       if (this.mouseDragStart != null) {
