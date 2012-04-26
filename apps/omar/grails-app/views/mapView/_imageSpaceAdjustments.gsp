@@ -117,13 +117,13 @@
         </div>
       </li>
 
-      <div align="center">
+     <div align="center">
+        <button id="resetButtonId" type="button"
+                onclick="javascript:resetRotate()">Reset</button>
+        <button id="northUpUpButtonId" type="button"
+                onclick="javascript:rotateNorthUp()">North Up</button>
         <button id="upIsUpButtonId" type="button"
-                onclick="javascript:rotateSlider.setRealValue( 0 )">Reset</button>
-        <button id="upIsUpButtonId" type="button"
-                onclick="javascript:rotateSlider.setRealValue( northAngle )">North Up</button>
-        <button id="northUp" type="button"
-                onclick="javascript:rotateSlider.setRealValue( upIsUpRotation );">Up is Up</button>
+                onclick="javascript:rotateUpIsUp();">Up is Up</button>
       </div>
     </li>
     </ol>
