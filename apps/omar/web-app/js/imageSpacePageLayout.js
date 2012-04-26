@@ -26,6 +26,13 @@
                 { position:'center', minWidth:400, minHeight:200 }
             ]
         } );
+     outerLayout.on('resize', function(evt) {
+        if(OMAR.imageManipulator)
+        {
+            OMAR.imageManipulator.checkResize();
+        }
+        //bodyOnResize();
+      });
         outerLayout.on( 'render', function ()
         {
             var el = outerLayout.getUnitByPosition( 'center' ).get( 'wrap' );
@@ -40,7 +47,6 @@
                 ]
             } );
             innerLayout.render();
-            init();
             bodyOnResize();
             Dom.setStyle( document.body, 'visibility', 'visible' );
         } );
@@ -64,10 +70,16 @@
         {
             bodyOnResize();
         } );
+       init();
+
     } );
 })();
 
 var bodyOnResize = function ()
 {
-    map.updateSize();
+   if(OMAR.imageManipulator) 
+    {
+        OMAR.imageManipulator.checkResize();
+    }
+   // map.updateSize();
 };
