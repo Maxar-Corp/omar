@@ -11,6 +11,8 @@
     var Dom = YAHOO.util.Dom,
             Event = YAHOO.util.Event;
 
+    Event.addListener(window, 'resize', bodyOnResize);
+
 
     Event.onDOMReady( function ()
     {
