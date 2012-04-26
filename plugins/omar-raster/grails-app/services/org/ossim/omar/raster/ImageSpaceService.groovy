@@ -11,8 +11,9 @@ import java.awt.image.WritableRaster
 import java.awt.image.ColorModel
 import org.ossim.oms.image.omsImageSource
 import org.ossim.omar.core.Utility
+import joms.oms.ImageModel
 
-class IcpService {
+class ImageSpaceService {
 	def imageChainService
 	
   static transactional = true
@@ -175,5 +176,19 @@ class IcpService {
                 properties)
       }
       return image
+    }
+    def computeUpIsUp(String filename, Integer entryId)
+    {
+        Double upIsUp = 0.0
+
+        def imageSpaceModel = new ImageModel()
+        if ( imageSpaceModel.setModelFromFile(filename, entryId as Integer) )
+        {
+            upIsUp = imageSpaceModel.upIsUpRotation();
+            imageSpaceModel.destroy()
+            imageSpaceModel.delete()
+        }
+
+        return upIsUp
     }
 }
