@@ -3,7 +3,9 @@ package org.ossim.omar.oms
 import joms.oms.ImageModel
 import joms.oms.ossimDpt
 import joms.oms.ossimGpt
+import joms.oms.ossimEcefPoint
 import joms.oms.Init
+import geoscript.geom.Geometry
 
 class ProjectionService
 {
@@ -13,7 +15,7 @@ class ProjectionService
     // Projection with no error propagation
     def imageSpaceToGroundSpace(def filename, def samp, def line, def entryId)
     {
-
+        def result;
         def imageSpaceModel = new ImageModel()
         def imagePoint = new ossimDpt(samp, line)
         def groundPoint = new ossimGpt()
@@ -21,15 +23,87 @@ class ProjectionService
         if ( imageSpaceModel.setModelFromFile(filename, entryId) )
         {
             // Perform projection
-            imageSpaceModel.imageToGround(imagePoint, groundPoint, entryId)
+            imageSpaceModel.imageToGround(imagePoint, groundPoint)
         }
         imageSpaceModel.destroy()
         imageSpaceModel.delete()
 
-        return [lat:groundPoint.latd(),
+
+        result = [lat:groundPoint.latd(),
                 lon:groundPoint.lond(),
                 hgt:groundPoint.height()];
 
+        groundPoint.delete();
+        groundPoint = null;
+        result;
+    }
+    /**
+     *
+     * @param params should contain a filename, entryId and a wkt variable
+     * @return
+     */
+    def imageSpaceWKTMeasure(def params)
+    {
+        def geom = null
+        def imagePoint = new ossimDpt(0.0, 0.0)
+        def groundPoint = new ossimGpt()
+        def ecefPoint = new ossimEcefPoint()
+        def lastGroundPoint;
+        def distance = 0.0;
+        def area     = 0.0;
+        def result = [distance:0.0, area: 0.0, baseUnit: "m"];
+        def coordinateList = []
+        try{
+            geom = Geometry.fromWKT(params.wkt);
+        }
+        catch(def e)
+        {
+
+        }
+        if(geom)
+        {
+            distance = 0.0;
+            area     = 0.0;
+            def imageSpaceModel = new ImageModel()
+            if( imageSpaceModel.setModelFromFile(params.filename, params.entryId) )
+            {
+                def coordinates = geom.getCoordinates();
+                coordinates.each{pt->
+                    imagePoint.x = pt.x;
+                    imagePoint.y = pt.y;
+                    imageSpaceModel.imageToGround(imagePoint, groundPoint);
+                    if(lastGroundPoint)
+                    {
+                        distance += lastGroundPoint.distanceTo(groundPoint);
+                        lastGroundPoint.assign(groundPoint);
+                        ecefPoint.assign(groundPoint);
+                        coordinateList << [ecefPoint.x, ecefPoint.y, ecefPoint.z];
+                    }
+                    else
+                    {
+                        lastGroundPoint = new ossimGpt(groundPoint);
+                        ecefPoint.assign(lastGroundPoint);
+                        coordinateList << [ecefPoint.x, ecefPoint.y, ecefPoint.z];
+                    }
+                    //coordinateList << coordinateList[0];
+               }
+                // add area calculations
+                if(geom instanceof geoscript.geom.Polygon)
+                {
+                    def tempPoly = new geoscript.geom.Polygon([coordinateList])
+                    area = tempPoly.area;
+                }
+                result.distance = distance
+                result.area     = area
+          }
+          imageSpaceModel.delete()
+          imageSpaceModel = null
+        }
+        imagePoint.delete()
+        groundPoint.delete()
+        ecefPoint.delete()
+        if(lastGroundPoint) lastGroundPoint.delete();
+        result;
     }
     /**
      *
@@ -50,8 +124,7 @@ class ProjectionService
                 imagePoint.x = pt.x as double;
                 imagePoint.y = pt.y as double;
                 imageSpaceModel.imageToGround(imagePoint,
-                                              groundPoint,
-                                              entryId) ;
+                                              groundPoint) ;
                 if(groundPoint.isHgtNan())
                 {
                     groundPoint.height = 0.0;
