@@ -274,6 +274,9 @@ function OmarImageSpaceGetTileParams(){
     this.x = "";
     this.y = "";
     this.id = "";
+    this.format = "";
+    this.filter = "";
+    this.pivot = "";
 }
 
 function OmarSearchParams(){
