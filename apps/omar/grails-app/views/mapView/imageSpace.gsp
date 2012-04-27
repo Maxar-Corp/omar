@@ -233,51 +233,6 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     this.affineParams =  new OmarAffineParams();
     this.affineM = new OmarMatrix3x3();
    },
-   setToolMode: function(mode)
-   {
-        var stateChangedFlag = (mode != this.toolMode);
-
-        // need to add clearing the state information when changing states.
-        this.toolMode = mode;
-
-        if(stateChangedFlag)
-        {
-            this.toolModeChanged();
-        }
-   },
-   toolModeChanged: function()
-   {
-        if(this.zoomBox)
-        {
-            this.zoomBoxEnd();
-        }
-        if(this.documentListenersAdded)
-        {
-            YAHOO.util.Event.removeListener(document, "mousemove", this.mousemove);
-            YAHOO.util.Event.removeListener(document, "mouseUp", this.mouseup);
-            this.documentListenersAdded = false;
-        }
-        if(this.currentDrawControl) this.currentDrawControl.deactivate();
-        this.currentDrawControl = null;
-
-        switch(this.toolMode)
-        {
-            case OMAR.ToolModeType.LINE:
-            {
-                this.vectorLayer.destroyFeatures();
-                this.currentDrawControl = this.drawControls.line;
-                this.currentDrawControl.activate();
-                break;
-            }
-            case OMAR.ToolModeType.POLYGON:
-            {
-                this.currentDrawControl = this.drawControls.polygon;
-                this.currentDrawControl.activate();
-                this.vectorLayer.destroyFeatures();
-                break;
-            }
-        }
-    },
    setup : function(containerDiv, mapObj, annDiv, topDiv){
     this.map           = mapObj;
     this.eventDiv      = this.getDivElement(topDiv);
@@ -337,6 +292,51 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     OpenLayers.Event.observe(document, "mousewheel",     this.wheelListener);
     this.containerResized();
   },
+   setToolMode: function(mode)
+   {
+        var stateChangedFlag = (mode != this.toolMode);
+
+        // need to add clearing the state information when changing states.
+        this.toolMode = mode;
+
+        if(stateChangedFlag)
+        {
+            this.toolModeChanged();
+        }
+   },
+   toolModeChanged: function()
+   {
+        if(this.zoomBox)
+        {
+            this.zoomBoxEnd();
+        }
+        if(this.documentListenersAdded)
+        {
+            YAHOO.util.Event.removeListener(document, "mousemove", this.mousemove);
+            YAHOO.util.Event.removeListener(document, "mouseUp", this.mouseup);
+            this.documentListenersAdded = false;
+        }
+        if(this.currentDrawControl) this.currentDrawControl.deactivate();
+        this.currentDrawControl = null;
+
+        switch(this.toolMode)
+        {
+            case OMAR.ToolModeType.LINE:
+            {
+                this.vectorLayer.destroyFeatures();
+                this.currentDrawControl = this.drawControls.line;
+                this.currentDrawControl.activate();
+                break;
+            }
+            case OMAR.ToolModeType.POLYGON:
+            {
+                this.currentDrawControl = this.drawControls.polygon;
+                this.currentDrawControl.activate();
+                this.vectorLayer.destroyFeatures();
+                break;
+            }
+        }
+    },
    adaptOpenLayersXY : function(evt, pt){
 
     evt.xy={x:pt.x,y:pt.y};
