@@ -31,7 +31,7 @@ class ImageSpaceController {
           case "jpg":
           case "image/jpeg":
           case "image/jpg":
-                format = "image/png"
+                format = "image/jpeg"
                 ext = ".jpg"
               break
           case "png":
