@@ -276,7 +276,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     this.containerDivRegion = YAHOO.util.Region.getRegion(this.containerDiv);
     this.vectorLayer = new OpenLayers.Layer.Vector();
     this.map.addLayer(this.vectorLayer);
-    this.events = new OpenLayers.Events(this, this.eventDiv, this.EVENT_TYPES);
+    this.events = new OpenLayers.Events(this, this.eventDiv, this.EVENT_TYPES, true);
 
     this.drawControls = {
                     point: new OpenLayers.Control.DrawFeature(this.vectorLayer,
@@ -531,7 +531,6 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         {
              var endPt     = this.affineM.transform(this.mouseToPoint(evt));
              var newCenter = this.map.getLonLatFromViewPortPx(endPt);
-          //alert("AFFINE: " + affineM +"\nMOUSE POS = " + this.mouseToPoint(evt)+"\nTRANSFORMED: " + endPt + "\nMAP CENTER: " + mapCenter);
 
              this.map.setCenter(newCenter, this.map.zoom + 1);
              OpenLayers.Event.stop(evt);  
@@ -661,7 +660,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
        {
         case OMAR.ToolModeType.BOX_AOI:
         {
-           if(this.selectionBox)
+           if(this.selectionBox&&this.mouseDragStart)
            {
               OpenLayers.Event.stop(evt);  
            }
@@ -749,7 +748,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
                 updateBox(evt, this.selectionBox, this);
              }
             OpenLayers.Event.stop(evt);  
-          }
+           }
            break;
         }
         case OMAR.ToolModeType.PAN_ZOOM:
@@ -763,23 +762,9 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
              if (this.zoomBox) 
              {
                 updateBox(evt, this.zoomBox, this);
-             /*
-                var deltaX = Math.abs(this.mouseDragStart.x - this.mousePosition.x);
-                var deltaY = Math.abs(this.mouseDragStart.y - this.mousePosition.y);
-                var w = Math.max(1, deltaX) + "px";
-                var h = Math.max(1, deltaY) + "px";
-                this.zoomBox.style.width = Math.max(1, deltaX) + "px";
-                this.zoomBox.style.height = Math.max(1, deltaY) + "px";
-                
-                if (this.mousePosition.x < this.mouseDragStart.x) {
-                   this.zoomBox.style.left = -region.left + this.mousePosition.x + "px";
-                }
-                if (this.mousePosition.y < this.mouseDragStart.y) {
-                   this.zoomBox.style.top =  -region.top + this.mousePosition.y + "px";
-                }
-             */
+                OpenLayers.Event.stop(evt);  
              } 
-             else 
+             else if(this.mouseDragStart)
              {
                 var startPt   = this.affineM.transform(this.mouseDragStart);
                 var endPt     = this.affineM.transform(this.mousePosition);
@@ -790,9 +775,9 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
                 this.map.setCenter(newCenter, null, true);
                 this.mouseDragStart       = this.mouseToPoint(evt);
                 this.map.div.style.cursor = "move";
-             }
+                 OpenLayers.Event.stop(evt);  
+            }
              this.performedDrag = true;
-             OpenLayers.Event.stop(evt);  
           }
           break;
        }
@@ -802,7 +787,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         if(this.currentDrawControl.handler.drawing)
         {
             this.currentDrawControl.handler.mousemove(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
-            OpenLayers.Event.stop(evt);
+            OpenLayers.Event.stop(evt);  
         }  
         break;
      }
