@@ -215,6 +215,6 @@ class ProjectionService
         groundPoint.delete();
         groundPoint = null;
 
-        [result, ellPts]
+        [ellpar: result, ellpts: ellPts]
     }
 }
