@@ -4,7 +4,6 @@ import joms.oms.ImageModel
 import joms.oms.ossimDpt
 import joms.oms.ossimGpt
 import joms.oms.ossimEcefPoint
-import joms.oms.Init
 import geoscript.geom.Geometry
 
 class ProjectionService
@@ -12,9 +11,18 @@ class ProjectionService
 
   static transactional = false
 
-    // Projection with no error propagation
+    /**
+     * @brief Single-ray projection with no error propagation
+     * @param filename
+     * @param samp
+     * @param line
+     * @param entryId
+     * @return
+     */
     def imageSpaceToGroundSpace(def filename, def samp, def line, def entryId)
     {
+
+
         def result;
         def imageSpaceModel = new ImageModel()
         def imagePoint = new ossimDpt(samp, line)
@@ -106,7 +114,6 @@ class ProjectionService
         result;
     }
     /**
-     *
      * @param filename
      * @param pointList List of points of
      * @param entryId
@@ -129,7 +136,7 @@ class ProjectionService
                 {
                     groundPoint.height = 0.0;
                 }
-                result.add([x:pt.x, 
+                result.add([x:pt.x,
                             y:pt.y,
                             lat:groundPoint.latd(),
                             lon:groundPoint.lond(),
@@ -139,55 +146,75 @@ class ProjectionService
 
         result;
     }
-
-
-    // Projection with RPC error propagation
-    //   Error prop input...
-    //      probLev probability level (.5,.9,.95)
-    //      angInc  angular increment (deg) for image space ellipse points
-    //  Error prop output...
-    //      ellSamp array of sample coordinates
-    //      ellLine array of line coordinates
-    //  Returns...
-    //      intersected position lat, lon, hgt (deg)
-    //      pqeArray [0]   CE
-    //               [1]   LE
-    //               [2]   ellipse SMA
-    //               [3]   ellipse SMI
-    //               [4]   ellipse SMA azimuth (rad)
-    //               [5]   number of image ellipse points
-    def imageSpaceToGroundSpace(String filename, double samp, double line, Integer entryId,
-                                double probLev, double angInc, int [] ellSamp, int [] ellLine)
+    /**
+     * @brief Single-ray projection with RPC error propagation
+     * @param filename
+     * @param samp
+     * @param line
+     * @param entryId
+     * @param probLev probability level (.5,.9,.95)
+     * @param angInc angular increment (deg) for image space ellipse points
+     * @return
+     */
+    def imageSpaceToGroundSpace(def filename, def samp, def line, def entryId, def probLev, def angInc)
     {
+        def result = [];
+        def ellPts = [];
 
         def imageSpaceModel = new ImageModel()
         def imagePoint = new ossimDpt(samp, line)
         def groundPoint = new ossimGpt()
         boolean errorPropAvailable = false
+
+        int numPnts = 360/angInc + 1
+        double [] ellSamp = new double[numPnts]
+        double [] ellLine = new double[numPnts]
         double [] pqeArray = new double[6]
 
         if ( imageSpaceModel.setModelFromFile(filename, entryId) )
         {
             // Perform projection
-            imageSpaceModel.imageToGround(imagePoint, groundPoint, entryId)
+            imageSpaceModel.imageToGround(imagePoint, groundPoint)
 
             // Perform error propagation
             errorPropAvailable =
-                imageSpaceModel.imageToGroundErrorPropagation(groundPoint, probLev, angInc, pqeArray, ellSamp, ellLine)
+                imageSpaceModel.imageToGroundErrorPropagation(groundPoint,
+                                                              probLev as double,
+                                                              angInc as double,
+                                                              pqeArray,
+                                                              ellSamp,
+                                                              ellLine)
         }
         imageSpaceModel.destroy()
         imageSpaceModel.delete()
 
-        return [groundPoint.latd(),
-                groundPoint.lond(),
-                groundPoint.height(),
-                pqeArray[0],
-                pqeArray[1],
-                pqeArray[2],
-                pqeArray[3],
-                pqeArray[4],
-                pqeArray[5]
-        ]
+        if (errorPropAvailable)
+        {
+            for(int i = 0; i < numPnts; i++){
+                ellPts << [xe: ellSamp[i], ye: ellLine[i]]
+            }
 
+            if(groundPoint.isHgtNan())
+            {
+                groundPoint.height = 0.0;
+            }
+            result = [x: samp,
+                      y: line,
+                      lat:  groundPoint.latd(),
+                      lon:  groundPoint.lond(),
+                      hgt:  groundPoint.height(),
+                      CE:   pqeArray[0],
+                      LE:   pqeArray[1],
+                      SMA:  pqeArray[2],
+                      SMI:  pqeArray[3],
+                      AZ:   Math.toDegrees(pqeArray[4]),
+                      lvl:  probLev,
+                      nELL: pqeArray[5]];
+        }
+
+        groundPoint.delete();
+        groundPoint = null;
+
+        [result, ellPts]
     }
 }
