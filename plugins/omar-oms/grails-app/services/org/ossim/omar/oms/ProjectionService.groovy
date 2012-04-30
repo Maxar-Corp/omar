@@ -4,6 +4,7 @@ import joms.oms.ImageModel
 import joms.oms.ossimDpt
 import joms.oms.ossimGpt
 import joms.oms.ossimEcefPoint
+import joms.oms.Init
 import geoscript.geom.Geometry
 
 class ProjectionService
@@ -21,6 +22,7 @@ class ProjectionService
      */
     def imageSpaceToGroundSpace(def filename, def samp, def line, def entryId)
     {
+        Init.instance().initialize()
 
 
         def result;
@@ -175,6 +177,10 @@ class ProjectionService
         {
             // Perform projection
             imageSpaceModel.imageToGround(imagePoint, groundPoint)
+            if(groundPoint.isHgtNan())
+            {
+                groundPoint.height = 0.0;
+            }
 
             // Perform error propagation
             errorPropAvailable =
@@ -194,10 +200,6 @@ class ProjectionService
                 ellPts << [xe: ellSamp[i], ye: ellLine[i]]
             }
 
-            if(groundPoint.isHgtNan())
-            {
-                groundPoint.height = 0.0;
-            }
             result = [x: samp,
                       y: line,
                       lat:  groundPoint.latd(),
@@ -209,7 +211,15 @@ class ProjectionService
                       SMI:  pqeArray[3],
                       AZ:   Math.toDegrees(pqeArray[4]),
                       lvl:  probLev,
-                      nELL: pqeArray[5]];
+                      nELL: pqeArray[5]]
+        }
+        else
+        {
+            result = [x: samp,
+                      y: line,
+                      lat:  groundPoint.latd(),
+                      lon:  groundPoint.lond(),
+                      hgt:  groundPoint.height()]
         }
 
         groundPoint.delete();
