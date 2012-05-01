@@ -106,17 +106,13 @@
   background-repeat: no-repeat;
 }
 
-.olControlPanel .olControlButtonMeasureAreaItemInactive { 
-  width:  24px;  
-  height: 24px;
-  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionMeasureArea.png')});
-  background-repeat: no-repeat;
+#hudChildDivId {
+	width:50px;
 }
+</style>
 
-  </style>
-  <g:javascript dir="js" src="matrix.js"/>
-  <g:javascript dir="js" src="OpenLayersImageManipulator.js"/>
-
+<g:javascript dir="js" src="matrix.js"/>
+<g:javascript dir="js" src="OpenLayersImageManipulator.js"/>
 
 </head>
 
@@ -127,7 +123,6 @@
 <input type="hidden" name="bbox" value=""/>
 <input type="hidden" id="contrast" name="contrast" value="${params.contrast ?: 0}"/>
 <input type="hidden" id="brightness" name="brightness" value="${params.brightness ?: 0}"/>
-
 
 <content tag="top1">
   <g:render template="imageSpaceMenu" model="${[rasterEntry: rasterEntry]}"/>
@@ -163,12 +158,16 @@
 
     
  <div id="eventDivId"></div>
- <div id="hudDivId"></div>
+ <div id="hudDivId">
+	<div id="hudChildDivId">
+		<img src="${resource(plugin: 'omar', dir: 'images', file: 'north_arrow.png')}">
+	</div>
+ </div>
  <div id="map"></div>
 </content>
 
 <r:script>
-
+var hudChildDivId = document.getElementById("hudChildDivId")
 
 OMAR.ProjectionType = {
   PIXEL: 0,
@@ -430,6 +429,9 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       {
         cssSandpaper.setTransform(this.map.div,
                                   "rotate(" + this.affineParams.rotate+"deg)");
+
+		cssSandpaper.setTransform(hudChildDivId,
+		 						  "rotate(" + this.affineParams.rotate+"deg)");
       }
   },
   getDivElement: function(div){
@@ -1471,6 +1473,15 @@ function sliderRotate(sliderValue)
                 map.zoomOut();
 	              if(map.getZoom() < map.getZoomForResolution(1.0, true)) { zoomInButton.displayClass = "olControlZoomIn"; }
             }
+
+			function rotateCompass()
+			{
+			//cssSandpaper.setTransform(ex.div, "rotate(" + this.affineParams.180+"deg)");
+				}
+
+
+
+
 
           function getCoordinates(ipt)
           {
