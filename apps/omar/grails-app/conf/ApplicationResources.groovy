@@ -237,7 +237,8 @@ resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
 
     resource url: [dir: 'js', file: 'application.js']
     resource url: [dir: 'js', file: 'matrix.js']
-    //resource url: [dir: 'js', file: 'OpenLayersImageManipulator.js']
+     resource url: [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
+   //resource url: [dir: 'js', file: 'OpenLayersImageManipulator.js']
     //resource url: [dir: 'js', file: 'datechooser.js']
 
     resource url: [dir: 'css', file: 'imageSpacePageLayout.css']
