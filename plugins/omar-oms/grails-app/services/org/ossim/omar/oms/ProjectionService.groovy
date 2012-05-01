@@ -61,7 +61,7 @@ class ProjectionService
         def lastGroundPoint;
         def distance = 0.0;
         def area     = 0.0;
-        def result = [distance:0.0, area: 0.0, baseUnit: "m"];
+        def result = [distance:0.0, area: 0.0, unit: "m"];
         def coordinateList = []
         try{
             geom = Geometry.fromWKT(params.wkt);
@@ -140,6 +140,50 @@ class ProjectionService
                 }
                 result.add([x:pt.x,
                             y:pt.y,
+                            lat:groundPoint.latd(),
+                            lon:groundPoint.lond(),
+                            hgt:groundPoint.height()]);
+            }
+        }
+
+        result;
+    }
+
+    /**
+     * @param filename
+     * @param pointList List of points of
+     * @param entryId
+     * @return
+     */
+    def groundSpaceListToImageSpace(def filename, def pointList, def entryId)
+    {
+        def result = [];
+        def imageSpaceModel = new ImageModel()
+        def imagePoint = new ossimDpt(0.0,0.0);
+        def groundPoint = new ossimGpt()
+        if ( imageSpaceModel.setModelFromFile(filename, entryId) )
+        {
+            pointList.each{pt->
+                groundPoint.makeNan();
+                groundPoint.latd = pt.lat as double;
+                groundPoint.lond = pt.lon as double;
+                if(pt.hgt)
+                {
+                  groundPoint.hgt = pt.hgt;
+                }
+                imageSpaceModel.groundToImage(groundPoint,
+                                              imagePoint) ;
+                if(imagePoint.hasNans())
+                {
+                    imagePoint.x = 0;
+                    imagePoint.y = 0;
+                }
+                if(groundPoint.isHgtNan())
+                {
+                    groundPoint.height = 0.0;
+                }
+                result.add([x:imagePoint.x,
+                            y:imagePoint.y,
                             lat:groundPoint.latd(),
                             lon:groundPoint.lond(),
                             hgt:groundPoint.height()]);

@@ -1,4 +1,35 @@
 <div class="niceBox">
+  <div class="niceBoxHd">Map Center:</div>
+
+  <div class="niceBoxBody">
+    <ol>
+      <li>DD:</li>
+      <li><g:textField name="ddMapCtr" id="ddMapCtr" value="" onChange="setMapCtr('dd', this.value)" size="28"
+                       title="Enter decimal degree coordinates and click off the text field to re-center the map. Example: 25.77, -80.18"
+                       /></li>
+    </ol>
+    <ol>
+      <li>DMS:</li>
+      <li><g:textField name="dmsMapCtr" id="dmsMapCtr" value="" onChange="setMapCtr('dms', this.value)" size="28"
+                       title="Enter degree minute seconds coordinates and click off the text field to re-center the map. Example: 25Â°46'20.66'' N, 80Â°11'23.64'' W"
+                       /></li>
+    </ol>
+    <ol>
+      <li>MGRS:</li>
+      <li><g:textField name="point" id="point" value="" onChange="setMapCtr('mgrs', this.value)" size="28"
+                       title="Enter mgrs coordinate and click off the text field to re-center the map. Example: 17RNJ8123050729 or 17 RNJ 81230 50729"
+                       /></li>
+    </ol>
+
+    <div align="center">
+      <button id="applyCenterButton" type="button" onclick="">Apply</button>
+      <button id="resetCenterButton" type="button" onclick="javascript:OMAR.imageManipulator.moveToCenter()"
+              title="Resets the view to the center of the image but keeps the current zoom level">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="niceBox">
   <div class="niceBoxHd">Image Adjustments:</div>
 
   <div class="niceBoxBody">
@@ -129,3 +160,26 @@
     </ol>
   </div>
 </div>
+
+
+<div class="niceBox">
+  <div class="niceBoxHd">Map Measurement Tool:</div>
+
+  <div class="niceBoxBody">
+    <ul>
+      <li>Measurement Units:</li>
+      <li>Not certified for targeting.</li>
+      <li>       <g:select
+              id="unitSelectionID"
+              name="Units"
+              value="meters"
+              from="${['kilometers', 'meters', 'feet', 'yards', 'miles', 'nautical miles']}"
+              onChange="unitsChanged(this.value)"/>
+     </li>
+
+      <div id="mensurationDivId"></div>
+
+    </ul>
+  </div>
+</div>
+
