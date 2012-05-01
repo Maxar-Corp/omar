@@ -148,7 +148,7 @@ resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
       resource url: [dir: 'js/cssSandpaper', file: 'EventHelpers.js']
       resource url: [dir: 'js/cssSandpaper', file: 'cssQuery-p.js']
       resource url: [dir: 'js/cssSandpaper/jcoglan.com', file: 'sylvester.js']
-      resource url: [dir: 'js/cssSandpaper', file: 'cssSandpaper.js']
+      resource url: [dir: 'js/cssSandpaper', file: 'cssSandpaper-lite.js']
 
    resource url: [plugin: 'yui', dir: "js/yui/reset-fonts-grids", file: "reset-fonts-grids.css"]
     resource url: [plugin: 'yui', dir: "js/yui/assets/skins/sam", file: "skin.css"]
