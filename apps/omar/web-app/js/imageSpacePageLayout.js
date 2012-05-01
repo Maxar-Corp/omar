@@ -26,13 +26,13 @@
                 { position:'center', minWidth:400, minHeight:200 }
             ]
         } );
-     outerLayout.on('resize', function(evt) {
-        if(OMAR.imageManipulator)
-        {
-            OMAR.imageManipulator.checkResize();
-        }
+        outerLayout.on('resize', function(evt) {
+            if(OMAR.imageManipulator)
+            {
+                OMAR.imageManipulator.checkResize();
+            }
         //bodyOnResize();
-      });
+        });
         outerLayout.on( 'render', function ()
         {
             var el = outerLayout.getUnitByPosition( 'center' ).get( 'wrap' );
