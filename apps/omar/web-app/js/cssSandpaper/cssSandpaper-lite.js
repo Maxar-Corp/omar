@@ -2377,11 +2377,11 @@ function RGBColor(color_string){
     
     
     
-}
+};
 
 //document.write('<style type="text/css">.cssSandpaper-initiallyHidden { visibility: hidden;} </style>');
 
 
 
-//EventHelpers.addPageLoadEvent('cssSandpaper.init')
+EventHelpers.addPageLoadEvent('cssSandpaper.init');
 
