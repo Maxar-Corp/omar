@@ -58,9 +58,9 @@ var cssSandpaper = new function(){
             return;
         }
 		
-        body = document.body;
+  //      body = document.body;
         
-        tempObj = document.createElement('div');
+  //      tempObj = document.createElement('div');
   /*      
         getStyleSheets();
         
@@ -97,7 +97,7 @@ var cssSandpaper = new function(){
             obj.style[property] = value;
         }
     }
-    
+  /*  
     function fixOpacity(){
     
         var transformRules = getRuleList('opacity').values;
@@ -113,7 +113,7 @@ var cssSandpaper = new function(){
         }
         
     }
-    
+    */
     
     me.setTransform = function(obj, transformString){
         var property = CSS3Helpers.findProperty(obj, 'transform');
@@ -125,6 +125,7 @@ var cssSandpaper = new function(){
             obj.style[property] = transformString;
         }
     }
+    /*
     function fixTransforms(){
     
         var transformRules = getRuleList('-sand-transform').values;
@@ -142,6 +143,7 @@ var cssSandpaper = new function(){
         }
         
     }
+    */
     me.setBoxShadow = function(obj, value){
         var property = CSS3Helpers.findProperty(obj, 'boxShadow');
         
@@ -157,7 +159,7 @@ var cssSandpaper = new function(){
             obj.style[property] = value;
         }
     }
-    
+ /*   
     function fixBoxShadow(){
         var transformRules = getRuleList('-sand-box-shadow').values;
         
@@ -178,7 +180,7 @@ var cssSandpaper = new function(){
             
         }
     }
-    
+   */ 
     function setGradientFilter(node, values){
     
         if (values.colorStops.length == 2 &&
@@ -324,7 +326,7 @@ var cssSandpaper = new function(){
         }
     		
     }
-    
+ /*   
     function fixLinearGradients(){
         var backgroundRules = getRuleList('background').values.concat(getRuleList('background-image').values);
         
@@ -336,7 +338,8 @@ var cssSandpaper = new function(){
             }
         }
   }
-    
+*/ 
+/*
     function fixBackgrounds(){
     
         var support = CSS3Helpers.reportColorSpaceSupport('RGBA', colorType.BACKGROUND);
@@ -360,7 +363,7 @@ var cssSandpaper = new function(){
             }
         }
     }
-
+*/
     me.getProperties = function (obj, objName)
 	{
 		var result = ""
@@ -379,6 +382,7 @@ var cssSandpaper = new function(){
 		}
 		return result
 	}
+/*
     function fixColors() {
     	var support = CSS3Helpers.reportColorSpaceSupport('HSL', colorType.FOREGROUND);
     	if (support == implementation.NATIVE) {
@@ -421,7 +425,7 @@ var cssSandpaper = new function(){
         }
     }
     
-    
+*/    
     
     function listColorStops(colorStops){
         var sb = new StringBuffer();
@@ -455,7 +459,7 @@ var cssSandpaper = new function(){
         
         return sheetCssText;
     }
-    
+ /*   
     function getStyleSheets(){
     
         styleNodes = document.querySelectorAll('style, link[rel="stylesheet"]');
@@ -466,7 +470,7 @@ var cssSandpaper = new function(){
             }
         }
     }
-    
+ */   
     function indexRules(){
     
         for (var i = 0; i < styleSheets.length; i++) {
@@ -2375,9 +2379,9 @@ function RGBColor(color_string){
     
 }
 
-document.write('<style type="text/css">.cssSandpaper-initiallyHidden { visibility: hidden;} </style>');
+//document.write('<style type="text/css">.cssSandpaper-initiallyHidden { visibility: hidden;} </style>');
 
 
 
-EventHelpers.addPageLoadEvent('cssSandpaper.init')
+//EventHelpers.addPageLoadEvent('cssSandpaper.init')
 
