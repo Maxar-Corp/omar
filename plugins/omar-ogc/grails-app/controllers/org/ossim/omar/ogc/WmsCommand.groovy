@@ -10,6 +10,8 @@ import org.ossim.omar.core.ISO8601DateParser
  * Time: 1:27 PM
  * To change this template use File | Settings | File Templates.
  */
+ @grails.validation.Validateable
+
 class WmsCommand
 {
   String bbox

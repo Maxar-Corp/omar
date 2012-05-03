@@ -17,15 +17,15 @@ grails.project.dependency.resolution = {
     grailsHome()
     grailsCentral()
 
-    def localPlugins = new FileSystemResolver(name: 'my-local-repo')
-    localPlugins.with {
-      addArtifactPattern("${System.env['OMAR_HOME']}/plugins/grails-[artifact]-[revision].[ext]")
-      settings = ivySettings
-      latestStrategy = new LatestTimeStrategy()
-      changingPattern = ".*SNAPSHOT"
-      setCheckmodified(true)
-    }
-    resolver(localPlugins)
+//    def localPlugins = new FileSystemResolver(name: 'my-local-repo')
+//    localPlugins.with {
+//      addArtifactPattern("${System.env['OMAR_HOME']}/plugins/grails-[artifact]-[revision].[ext]")
+//      settings = ivySettings
+//      latestStrategy = new LatestTimeStrategy()
+//      changingPattern = ".*SNAPSHOT"
+//      setCheckmodified(true)
+//    }
+//    resolver(localPlugins)
 
     // uncomment the below to enable remote dependency resolution
     // from public Maven repositories
@@ -38,7 +38,7 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    compile ':spring-security-core:1.2.7.2'
+    compile ':spring-security-core:1.2.7.3'
     compile ':spring-security-ldap:1.0.5'
     compile ':mail:1.0'
     compile ':csv:0.3.1'

@@ -229,7 +229,7 @@ function init()
 </g:javascript>
 </head>
 
-<body onload="init()" <%--onresize="changeMapSize()"--%>>
+<body onload="init()" >
 <div class="nav">
   <span class="menuButton">
     <g:link class="home" uri="/">Home</g:link>

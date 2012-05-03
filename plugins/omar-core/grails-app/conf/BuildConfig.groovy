@@ -17,20 +17,20 @@ grails.project.dependency.resolution = {
     grailsHome()
     grailsCentral()
 
-    def localPlugins = new FileSystemResolver(name: 'my-local-repo')
-    localPlugins.with {
-      addArtifactPattern("${System.env['OMAR_HOME']}/plugins/grails-[artifact]-[revision].[ext]")
-      settings = ivySettings
-      latestStrategy = new LatestTimeStrategy()
-      changingPattern = ".*SNAPSHOT"
-      setCheckmodified(true)
-    }
-    resolver(localPlugins)
+//    def localPlugins = new FileSystemResolver(name: 'my-local-repo')
+//    localPlugins.with {
+//      addArtifactPattern("${System.env['OMAR_HOME']}/plugins/grails-[artifact]-[revision].[ext]")
+//      settings = ivySettings
+//      latestStrategy = new LatestTimeStrategy()
+//      changingPattern = ".*SNAPSHOT"
+//      setCheckmodified(true)
+//    }
+//    resolver(localPlugins)
 
     // uncomment the below to enable remote dependency resolution
     // from public Maven repositories
     mavenLocal()
-    //mavenCentral()
+    mavenCentral()
     //mavenRepo "http://snapshots.repository.codehaus.org"
     //mavenRepo "http://repository.codehaus.org"
     //mavenRepo "http://download.java.net/maven/2/"
@@ -40,10 +40,14 @@ grails.project.dependency.resolution = {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
     // runtime 'mysql:mysql-connector-java:5.1.5'
+    compile("joda-time:joda-time-hibernate:1.3") {
+	excludes "joda-time", "hibernate"
+    }
   }
 
   plugins {
-    compile ":joda-time:1.2"
+    compile ":joda-time:1.4"
+
   }
 
 }

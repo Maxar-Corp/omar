@@ -1,5 +1,5 @@
 package org.ossim.omar.core
-public static class HttpStatus {
+public class HttpStatus {
   // Informational repsonses 1xx
   public static def CONTINUE    = 100
   public static def SWITCHING_PROTOCOLS = 101

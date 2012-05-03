@@ -17,15 +17,15 @@ grails.project.dependency.resolution = {
     grailsHome()
     grailsCentral()
 
-    def localPlugins = new FileSystemResolver(name: 'my-local-repo')
-    localPlugins.with {
-      addArtifactPattern("${System.env['OMAR_HOME']}/plugins/grails-[artifact]-[revision].[ext]")
-      settings = ivySettings
-      latestStrategy = new LatestTimeStrategy()
-      changingPattern = ".*SNAPSHOT"
-      setCheckmodified(true)
-    }
-    resolver(localPlugins)
+//    def localPlugins = new FileSystemResolver(name: 'my-local-repo')
+//    localPlugins.with {
+//      addArtifactPattern("${System.env['OMAR_HOME']}/plugins/grails-[artifact]-[revision].[ext]")
+//      settings = ivySettings
+//      latestStrategy = new LatestTimeStrategy()
+//      changingPattern = ".*SNAPSHOT"
+//      setCheckmodified(true)
+//    }
+//    resolver(localPlugins)
 
     // uncomment the below to enable remote dependency resolution
     // from public Maven repositories

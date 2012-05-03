@@ -1,27 +1,34 @@
 package org.ossim.omar.ogc
 
 import org.ossim.omar.core.Utility
+import org.apache.commons.collections.map.CaseInsensitiveMap
 
 class WcsController extends OgcController
 {
   def webCoverageService
   def rasterEntrySearchService
 
-  def wcs = {WcsCommand cmd ->
-    
+  def wcs = {
+    WcsCommand cmd = new WcsCommand()
 
-    cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
+    bindData( cmd, new CaseInsensitiveMap( params ) )
+
+    //cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
     // for now until we can develop a plugin for the WCS
     // we will hardcode the output format test list here
-    //
+
     def starttime = System.currentTimeMillis()
     def internaltime = starttime
     def endtime = starttime
-    Utility.simpleCaseInsensitiveBind(cmd, params)
-    if ( !cmd.validate() )
+
+    //Utility.simpleCaseInsensitiveBind( cmd, params )
+
+    if ( !cmd.validate( [
+            'width', 'height', 'format', 'crs', 'coverage', 'bbox'
+    ] ) )
     {
-      log.error(cmd.createErrorString())
-      ogcExceptionService.writeResponse(response, ogcExceptionService.formatWcsException(cmd))
+      log.error( cmd.createErrorString() )
+      ogcExceptionService.writeResponse( response, ogcExceptionService.formatWcsException( cmd ) )
     }
     else
     {
@@ -45,7 +52,7 @@ class WcsController extends OgcController
           //
           def max = params.max ? params.max as Integer : 10
           if ( max > 10 ) max = 10
-          Utility.simpleCaseInsensitiveBind(wmsQuery, wcsParams)
+          Utility.simpleCaseInsensitiveBind( wmsQuery, wcsParams )
           wmsQuery.max = max
 
           // for now we will sort by the date field if no layers are given
@@ -55,7 +62,8 @@ class WcsController extends OgcController
             wmsQuery.sort = wmsQuery.sort ?: "acquisitionDate"
             wmsQuery.order = wmsQuery.order ?: "desc"
           }
-          def rasterEntries = rasterEntrySearchService.findRasterEntries(wcsParams?.layers?.split(','))
+
+          def rasterEntries = rasterEntrySearchService.findRasterEntries( wcsParams?.layers?.split( ',' ) )
 
           if ( rasterEntries )
           {
@@ -65,27 +73,27 @@ class WcsController extends OgcController
           {
             def message = "WCS server Error: No coverage found for ${coverage}"
             // no data to process
-            log.error(message)
+            log.error( message )
 
-            def ogcFormattedException = ogcExceptionService.formatOgcException(cmd.toMap(), message)
-            ogcExceptionService.writeResponse(response, ogcFormattedException)
+            def ogcFormattedException = ogcExceptionService.formatOgcException( cmd.toMap(), message )
+            ogcExceptionService.writeResponse( response, ogcFormattedException )
           }
           else
           {
-            def result = webCoverageService.getCoverage(rasterEntries, cmd)
+            def result = webCoverageService.getCoverage( rasterEntries, cmd )
             if ( result )
             {
               def imageFile = result.file
               def attachment = result.outputName ? "filename=${result.outputName}" : ""
-              response.setHeader("Content-disposition", "attachment; ${attachment}")
+              response.setHeader( "Content-disposition", "attachment; ${attachment}" )
               response.contentType = result.contentType
               try
               {
-                Utility.writeFileToOutputStream(imageFile, response.outputStream, 4096);
+                Utility.writeFileToOutputStream( imageFile, response.outputStream, 4096 );
               }
-              catch (Exception e)
+              catch ( Exception e )
               {
-                log.error(e)
+                log.error( e )
               }
               response.outputStream.flush()
               response.outputStream.close()
@@ -98,10 +106,10 @@ class WcsController extends OgcController
           break
         }
       }
-      catch (Exception e)
+      catch ( Exception e )
       {
         e.printStackTrace()
-        log.error(e)
+        log.error( e )
       }
     }
     null

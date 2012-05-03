@@ -13,6 +13,8 @@ import org.ossim.omar.core.Utility
 import org.ossim.omar.core.ImageGenerator
 import org.ossim.omar.security.SecUser
 
+import org.apache.commons.io.FilenameUtils
+
 class WmsController extends OgcController implements InitializingBean
 {
   def rasterEntrySearchService
@@ -21,68 +23,76 @@ class WmsController extends OgcController implements InitializingBean
   def wmsLogService
   def scratchDir
 
-  def wms = {WmsCommand cmd ->
-
+  def wms = {
     //println params
 
-    cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
-    Utility.simpleCaseInsensitiveBind(cmd, params);
-    if ( !cmd.validate() )
+    WmsCommand cmd = new WmsCommand()
+
+    bindData( cmd, new CaseInsensitiveMap( params ) )
+
+//	println cmd
+
+//    cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
+
+//    Utility.simpleCaseInsensitiveBind(cmd, params);
+
+//    if ( !cmd.validate() )
+//    {
+//      log.error(cmd.createErrorString())
+//      ogcExceptionService.writeResponse(response, ogcExceptionService.formatWmsException(cmd))
+//    }
+//    else
+//    {
+    try
     {
-      log.error(cmd.createErrorString())
-      ogcExceptionService.writeResponse(response, ogcExceptionService.formatWmsException(cmd))
-    }
-    else
-    {
-      try
+      switch ( cmd?.request?.toLowerCase() )
       {
-        switch ( cmd?.request?.toLowerCase() )
-        {
-        case "getmap":
-          forward(action: "getMap", params: params)
-          break
-        case "getcapabilities":
-          forward(action: "getCapabilities", params: params)
-          break
-        case "getkml":
-          forward(action: "getKml", params: params)
-          break
-        case "getkmz":
-          forward(action: "getKmz", params: params)
-          break
-        default:
-          log.error("ERROR: Unknown action: ${cmd?.request}")
-          break
-        }
+      case "getmap":
+        forward( action: "getMap_", params: params )
+        break
+      case "getcapabilities":
+        forward( action: "getCapabilities_", params: params )
+        break
+      case "getkmz":
+        forward( action: "getKmz_", params: params )
+        break
+      case "getkml":
+        forward( action: "getKml_", params: params )
+        break
+      default:
+        log.error( "ERROR: Unknown action: ${cmd?.request}" )
+        break
+      }
 /*
       println "*"*80
       request.getHeaderNames().each{name->
         println "${name} = ${request.getHeader(name)}"
       }
 */
-        //endtime = System.currentTimeMillis()
+      //endtime = System.currentTimeMillis()
 /*
       wmsLogParams.domain = authenticateService.userDomain()
 */
-      }
-      catch (java.lang.Exception e)
-      {
-        log.error("OGC::WMS exception: ${e.message}")
-      }
     }
+    catch ( java.lang.Exception e )
+    {
+      log.error( "OGC::WMS exception: ${e.message}" )
+    }
+//    }
+
     return null
   }
 
   def footprints = {
 //    def start = System.currentTimeMillis()
-    Utility.removeEmptyParams(params)
+    Utility.removeEmptyParams( params )
     if ( params.max == null )
     {
       params.max = grailsApplication.config.wms.vector.maxcount
     }
     def wmsRequest = new WMSRequest()
 
-    Utility.simpleCaseInsensitiveBind(wmsRequest, params);
+    Utility.simpleCaseInsensitiveBind( wmsRequest, params );
 
     // default to geographic bounds
     if ( !wmsRequest.srs )
@@ -100,19 +110,19 @@ class WmsController extends OgcController implements InitializingBean
 
       if ( wmsRequest.transparentFlag )
       {
-        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB)
+        image = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB )
       }
       else
       {
-        image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB)
+        image = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB )
       }
 
       g2d = image.createGraphics()
 
       if ( wmsRequest.bgcolor )
       {
-        g2d.setPaint(wmsRequest.backgroundColor)
-        g2d.fillRect(0, 0, width, height)
+        g2d.setPaint( wmsRequest.backgroundColor )
+        g2d.fillRect( 0, 0, width, height )
       }
 
       def dateRange = wmsRequest.dateRange
@@ -133,8 +143,8 @@ class WmsController extends OgcController implements InitializingBean
       }
 
 
-      String[] layers = wmsRequest.layers?.split(",")
-      String[] styles = wmsRequest.styles?.split(",")
+      String[] layers = wmsRequest.layers?.split( "," )
+      String[] styles = wmsRequest.styles?.split( "," )
 
       for ( def index in 0..<layers.size() )
       {
@@ -148,7 +158,7 @@ class WmsController extends OgcController implements InitializingBean
           styleName = styles[index]
           style = grailsApplication.config.wms.styles[styleName]
         }
-        catch (Exception e)
+        catch ( Exception e )
         {
           styleName = "default"
           style = grailsApplication.config.wms.styles[styleName]
@@ -163,23 +173,29 @@ class WmsController extends OgcController implements InitializingBean
                 startDate,
                 endDate,
                 wmsRequest,
-                g2d)
+                g2d )
       }
 
-      if ( (wmsRequest.format == "image/gif") && wmsRequest.transparentFlag )
+      if ( ( wmsRequest.format == "image/gif" ) && wmsRequest.transparentFlag )
       {
-        image = ImageGenerator.convertRGBAToIndexed(image)
+        image = ImageGenerator.convertRGBAToIndexed( image )
       }
 
-      def formatName = wmsRequest.format?.split("/")[-1]
+      def formatName = wmsRequest.format?.split( "/" )[-1]
+      def ostream = new ByteArrayOutputStream()
+
+      ImageIO.write( image, formatName, ostream )
+
+      def bytes = ostream.toByteArray()
 
       response.contentType = wmsRequest.format
-      ImageIO.write(image, formatName, response.outputStream)
-      response.outputStream.close()
+      response.contentLength = bytes.size()
+      response.outputStream << bytes
+
     }
-    catch (java.lang.Exception e)
+    catch ( java.lang.Exception e )
     {
-      log.error("Exception OGC:FOOTPRINTS: ${e.message}")
+      log.error( "Exception OGC:FOOTPRINTS: ${e.message}" )
     }
 
     if ( g2d )
@@ -188,135 +204,103 @@ class WmsController extends OgcController implements InitializingBean
     }
 //    def stop = System.currentTimeMillis()
     //    println "${wmsRequest.bbox}: ${stop - start}ms"
+
+    return null
   }
 
-  def getKmz = {WmsCommand cmd ->
-    cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
-    Utility.simpleCaseInsensitiveBind(cmd, params);
-    if ( !cmd.validate() )
+  def getKmz_ = {
+
+    WmsCommand cmd = new WmsCommand()
+
+    bindData( cmd, new CaseInsensitiveMap( params ) )
+
+    //cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
+    //Utility.simpleCaseInsensitiveBind(cmd, params);
+
+
+    if ( !cmd.validate( [
+            'request',
+            'layers',
+            'format',
+            'transparent',
+            'bbox',
+            'srs',
+            'width',
+            'height'
+    ] ) )
     {
-      log.error(cmd.createErrorString())
-      ogcExceptionService.writeResponse(response, ogcExceptionService.formatWmsException(cmd))
+      cmd.errors.each { println it }
+      log.error( cmd.createErrorString() )
+      ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
     else
     {
+      def bytes = createKMZ( cmd )
+      response.setHeader( "Content-disposition", "attachment; filename=output.kmz" )
+      response.contentType = "application/vnd.google-earth.kmz"
+      response.contentLength = bytes.size()
+      response.outputStream << bytes
+    }
 
-      def kmlbuilder = new StreamingMarkupBuilder()
-      kmlbuilder.encoding = "UTF-8"
+    null
+  }
 
+  def getCapabilities_ = {
 
-      Utility.simpleCaseInsensitiveBind(cmd, params);
-      // will only support png or jpegs
-      def format = cmd.format ?: "image/png"
-      def ext = ".png"
+    WmsCommand cmd = new WmsCommand()
 
-      switch ( format.toLowerCase() )
-      {
-      case ~/.*jpeg.*/:
-        format = "image/jpeg"
-        ext = ".jpg"
-        break
-      case ~/.*png.*/:
-        format = "image/png"
-        ext = ".png"
-        break
-      default:
-        format = "image/png"
-        ext = ".png"
-        break
-      }
-      cmd.format = format
-      cmd.request = "GetMap"
-      cmd.srs = "EPSG:4326"
-      def wmsQuery = webMappingService.setupQuery(cmd);
-      def rasterEntryList = rasterEntrySearchService.findRasterEntries(cmd?.layers?.split(','))
+    //cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
 
-      def image = webMappingService.getMap(cmd, rasterEntryList).image
-      def tempDescription = rasterEntryList ? rasterKmlService.createImageKmlDescription(rasterEntryList[0]) : "No images found for the kmz query"
-      if ( image && (rasterEntryList.size() > 0) )
-      {
-        def nameString = rasterEntryList[0].title
-        nameString = nameString ?: rasterEntryList[0].indexId
-        def bounds = cmd.bounds
-        def kmlnode = {
-          mkp.xmlDeclaration()
-          kml("xmlns": "http://earth.google.com/kml/2.1") {
-            Document() {
-              GroundOverlay() {
-                name("${nameString}")
-                Snippet()
-                description { mkp.yieldUnescaped("<![CDATA[${tempDescription}]]>") }
-                open("1")
-                visibility("1")
-                Icon() {
-                  href { mkp.yieldUnescaped("images/image${ext}") }
-                }
-                LatLonBox() {
-                  north(bounds.maxy)
-                  south(bounds.miny)
-                  east(bounds.maxx)
-                  west(bounds.minx)
-                }
-              }
-            }
-          }
-        }
+    //Utility.simpleCaseInsensitiveBind(cmd, params);
 
-        response.contentType = "application/vnd.google-earth.kmz"
-        response.setHeader("Content-disposition", "attachment; filename=output.kmz")
-        def zos = new ZipOutputStream(response.outputStream)
-        //create a new zip entry
-        def anEntry = null
+    bindData( cmd, new CaseInsensitiveMap( params ) )
 
-        anEntry = new ZipEntry("doc.kml");
-        //place the zip entry in the ZipOutputStream object
-        zos.putNextEntry(anEntry);
-
-        zos << kmlbuilder.bind(kmlnode).toString()
-        anEntry = new ZipEntry("images/image${ext}");
-        //place the zip entry in the ZipOutputStream object
-        zos.putNextEntry(anEntry);
-        if ( image )
-        {
-          ImageIO.write(image, format.split("/")[-1], zos);
-        }
-        zos.close();
-        response.outputStream.close()
-      }
-      else
-      {
-        render(contentType: "text/plain", text: "Unable to chip image for KMZ given parameters ${params}")
-      }
+    if ( !cmd.validate( [/*'service', , 'version',*/ 'request'] ) )
+    {
+      cmd.errors.each { println it }
+      log.error( cmd.createErrorString() )
+      ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
+    }
+    else
+    {
+      //wmsLogParams.request = "getcapabilities"
+      def serviceAddress = createLink( controller: "ogc", action: "wms", absolute: true ) as String
+      def capabilities = webMappingService?.getCapabilities( cmd, serviceAddress )
+      //internaltime = System.currentTimeMillis();
+      render( contentType: "text/xml", text: capabilities )
     }
     null
   }
 
-  def getCapabilities = { WmsCommand cmd ->
-    cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
-    Utility.simpleCaseInsensitiveBind(cmd, params);
-    if ( !cmd.validate() )
-    {
-      log.error(cmd.createErrorString())
-      ogcExceptionService.writeResponse(response, ogcExceptionService.formatWmsException(cmd))
-    }
-    else
-    {
+  def getKml_ = {
 
-      //wmsLogParams.request = "getcapabilities"
-      def serviceAddress = createLink(controller: "ogc", action: "wms", absolute: true) as String
-      def capabilities = webMappingService?.getCapabilities(cmd, serviceAddress)
-      //internaltime = System.currentTimeMillis();
-      render(contentType: "text/xml", text: capabilities)
-    }
-  }
+    WmsCommand cmd = new WmsCommand()
 
-  def getKml = { WmsCommand cmd ->
-    cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
-    Utility.simpleCaseInsensitiveBind(cmd, params);
-    if ( !cmd.validate() )
+    bindData( cmd, new CaseInsensitiveMap( params ) )
+
+    //cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
+    //Utility.simpleCaseInsensitiveBind(cmd, params);
+
+    if ( !cmd.validate( [
+//		'bands',
+//		'bbox',
+//		'brightness',
+//		'contrast',
+//		'height',
+//		'interpolation',
+            'layers',
+//		'quicklook',
+            'request' //,
+//		'sharpen_mode',
+//		'srs',
+//		'stretch_mode',
+//		'stretch_mode_region',
+//		'width'
+    ] ) )
     {
-      log.error(cmd.createErrorString())
-      ogcExceptionService.writeResponse(response, ogcExceptionService.formatWmsException(cmd))
+      cmd.errors.each { println it }
+      log.error( cmd.createErrorString() )
+      ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
     else
     {
@@ -325,31 +309,32 @@ class WmsController extends OgcController implements InitializingBean
       //wmsLogParams.request = "getkml"
 
       // Convert param names to lower case
-      params?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
+      params?.each { wmsParams?.put( it.key.toLowerCase(), it.value )}
 
       def rasterEntries
       if ( cmd.layers )
       {
-        def layerNames = cmd.layers?.split(",") as String[]
-        rasterEntries = rasterEntrySearchService.getWmsImageLayers(layerNames)
+        def layerNames = cmd.layers?.split( "," ) as String[]
+        rasterEntries = rasterEntrySearchService.getWmsImageLayers( layerNames )
       }
       else if ( cmd.filter )
       {
-        rasterEntries = rasterEntrySearchService.getWmsImageLayers(cmd.filter)
+        rasterEntries = rasterEntrySearchService.getWmsImageLayers( cmd.filter )
       }
 
       //  def serviceAddress = createLink(controller: "ogc", action: "wms", absolute: true)
       //  def kml = webMappingService.getKML(wmsRequest, serviceAddress)
+
       def filename = "image.kml"
 
       def kml = null;
       if ( rasterEntries?.size > 0 )
       {
-        def tempMap = new CaseInsensitiveMap(params)
-        def file = (rasterEntries[0].mainFile.name as File).name
+        def tempMap = new CaseInsensitiveMap( params )
+        def file = ( rasterEntries[0].mainFile.name as File ).name
 
         filename = "${file}.kml"
-        kml = rasterKmlService.createImagesKml(rasterEntries, cmd.toMap(), tempMap)
+        kml = rasterKmlService.createImagesKml( rasterEntries, cmd.toMap(), tempMap )
       }
       else
       {
@@ -357,18 +342,29 @@ class WmsController extends OgcController implements InitializingBean
         filename = "empty.kml"
       }
       //internaltime = System.currentTimeMillis();
-      response.setHeader("Content-disposition", "attachment; filename=${filename}")
-      render(contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8")
+      response.setHeader( "Content-disposition", "attachment; filename=${filename}" )
+      render( contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8" )
     }
+
+    null
   }
 
-  def getMap = { WmsCommand cmd ->
-    cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
-    Utility.simpleCaseInsensitiveBind(cmd, params);
-    if ( !cmd.validate() )
+  def getMap_ = {
+    WmsCommand cmd = new WmsCommand()
+
+    bindData( cmd, new CaseInsensitiveMap( params ) )
+
+//	println cmd
+
+//    cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
+
+//    Utility.simpleCaseInsensitiveBind(cmd, params);
+
+    if ( !cmd.validate( ['reqeust', 'layers', 'bbox', 'srs', 'width', 'height', 'format'] ) )
     {
-      log.error(cmd.createErrorString())
-      ogcExceptionService.writeResponse(response, ogcExceptionService.formatWmsException(cmd))
+      cmd.errors.each { println it }
+      log.error( cmd.createErrorString() )
+      ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
     else
     {
@@ -386,7 +382,7 @@ class WmsController extends OgcController implements InitializingBean
       case "jpg":
       case "image/jpeg":
       case "image/jpg":
-        if ( cmd?.transparent?.equalsIgnoreCase("true") )
+        if ( cmd?.transparent?.equalsIgnoreCase( "true" ) )
         {
           cmd.format = "image/png"
           response.contentType = "image/png"
@@ -406,35 +402,47 @@ class WmsController extends OgcController implements InitializingBean
         break
       }
 
-      def layers = rasterEntrySearchService.findRasterEntries(cmd?.layers?.split(','))
-      def mapResult = webMappingService.getMap(cmd, layers)
+      def layers = rasterEntrySearchService.findRasterEntries( cmd?.layers?.split( ',' ) )
+      def mapResult = webMappingService.getMap( cmd, layers )
+
       internaltime = System.currentTimeMillis()
 
       if ( mapResult.errorMessage )
       {
         def message = "WMS server Error: ${mapResult.errorMessage}"
         // no data to process
-        log.error(message)
+        log.error( message )
 
-        def ogcFormattedException = ogcExceptionService.formatOgcException(cmd.toMap(), message)
-        ogcExceptionService.writeResponse(response, ogcFormattedException)
+        def ogcFormattedException = ogcExceptionService.formatOgcException( cmd.toMap(), message )
+        ogcExceptionService.writeResponse( response, ogcFormattedException )
       }
       else
       {
-        def writerType = response.contentType?.split("/")[-1]
-        ImageIO.write(mapResult.image, writerType, response.outputStream)
-        response.outputStream.close()
+        try
+        {
+          def writerType = response.contentType?.split( "/" )[-1]
+          def ostream = new ByteArrayOutputStream()
+
+          ImageIO.write( mapResult.image, writerType, ostream )
+
+          def bytes = ostream.toByteArray()
+
+          response.contentLength = bytes.size()
+          response.outputStream << bytes
+        }
+        catch ( Exception e )
+        {}
       }
       endtime = System.currentTimeMillis()
 
       def principal = springSecurityService?.principal
-      def hasUserInformation = !(springSecurityService?.principal instanceof String)
-      def secUser = hasUserInformation ? SecUser.findByUsername(principal.username) : null
+      def hasUserInformation = !( springSecurityService?.principal instanceof String )
+      def secUser = hasUserInformation ? SecUser.findByUsername( principal.username ) : null
       wmsLogParams.userName = secUser ? secUser.username : principal
       wmsLogParams.domain = ""
       def domain = null
-      def clientIp = request.getHeader('Client-ip')
-      def XForwarded = request.getHeader('X-Forwarded-For')
+      def clientIp = request.getHeader( 'Client-ip' )
+      def XForwarded = request.getHeader( 'X-Forwarded-For' )
       wmsLogParams.ip = XForwarded
       if ( clientIp )
       {
@@ -453,22 +461,119 @@ class WmsController extends OgcController implements InitializingBean
         wmsLogParams.ip = request.getRemoteAddr()
       }
 
-      def urlTemp = createLink([controller: 'ogc', action: 'getMap', absolute: true, params: params])
+      def urlTemp = createLink( [controller: 'ogc', action: 'getMap', absolute: true, params: params] )
       wmsLogParams.with {
         endDate = new Date()
-        internalTime = (internaltime - starttime) / 1000.0
-        renderTime = (endtime - internaltime) / 1000.0
-        totalTime = (endtime - starttime) / 1000.0
+        internalTime = ( internaltime - starttime ) / 1000.0
+        renderTime = ( endtime - internaltime ) / 1000.0
+        totalTime = ( endtime - starttime ) / 1000.0
         url = urlTemp
       }
 
-      wmsLogService.logParams(wmsLogParams)
+      wmsLogService.logParams( wmsLogParams )
 
     }
+
     return null
   }
 
-  public void afterPropertiesSet()
+
+  private def createKMZ( def cmd )
+  {
+    def kmlbuilder = new StreamingMarkupBuilder()
+    kmlbuilder.encoding = "UTF-8"
+
+    //Utility.simpleCaseInsensitiveBind(cmd, params);
+
+    // will only support png or jpegs
+    def format = cmd.format ?: "image/png"
+    def ext = ".png"
+
+    switch ( format.toLowerCase() )
+    {
+    case ~/.*jpeg.*/:
+      format = "image/jpeg"
+      ext = ".jpg"
+      break
+    case ~/.*png.*/:
+      format = "image/png"
+      ext = ".png"
+      break
+    default:
+      format = "image/png"
+      ext = ".png"
+      break
+    }
+    cmd.format = format
+    cmd.request = "GetMap"
+    cmd.srs = "EPSG:4326"
+    def wmsQuery = webMappingService.setupQuery( cmd );
+    def rasterEntryList = rasterEntrySearchService.findRasterEntries( cmd?.layers?.split( ',' ) )
+
+    def image = webMappingService.getMap( cmd, rasterEntryList ).image
+    def tempDescription = rasterEntryList ? rasterKmlService.createImageKmlDescription( rasterEntryList[0] ) : "No images found for the kmz query"
+    if ( image && ( rasterEntryList.size() > 0 ) )
+    {
+      def nameString = rasterEntryList[0].title
+      nameString = nameString ?: rasterEntryList[0].indexId
+      def bounds = cmd.bounds
+      def kmlnode = {
+        mkp.xmlDeclaration()
+        kml( "xmlns": "http://earth.google.com/kml/2.1" ) {
+          Document() {
+            GroundOverlay() {
+              name( "${nameString}" )
+              Snippet()
+              description { mkp.yieldUnescaped( "<![CDATA[${tempDescription}]]>" ) }
+              open( "1" )
+              visibility( "1" )
+              Icon() {
+                href { mkp.yieldUnescaped( "images/image${ext}" ) }
+              }
+              LatLonBox() {
+                north( bounds.maxy )
+                south( bounds.miny )
+                east( bounds.maxx )
+                west( bounds.minx )
+              }
+            }
+          }
+        }
+      }
+
+      def ostream = new ByteArrayOutputStream()
+      def zos = new ZipOutputStream( ostream )
+
+      //create a new zip entry
+      def anEntry = null
+
+      anEntry = new ZipEntry( "doc.kml" );
+      //place the zip entry in the ZipOutputStream object
+      zos.putNextEntry( anEntry );
+
+      zos << kmlbuilder.bind( kmlnode ).toString()
+      anEntry = new ZipEntry( "images/image${ext}" );
+      //place the zip entry in the ZipOutputStream object
+      zos.putNextEntry( anEntry );
+      if ( image )
+      {
+        def imstream = new ByteArrayOutputStream()
+        ImageIO.write( image, format.split( "/" )[-1], imstream );
+        zos << imstream.toByteArray()
+      }
+
+      zos.close();
+      return ostream.toByteArray()
+    }
+    else
+    {
+//        render(contentType: "text/plain", text: "Unable to chip image for KMZ given parameters ${params}".toBytes())
+      "ERROR: Shouldn't see this"
+    }
+  }
+
+
+  public void afterPropertiesSet( )
   {
     scratchDir = grailsApplication.config.export.workDir ?: "/tmp";
   }
