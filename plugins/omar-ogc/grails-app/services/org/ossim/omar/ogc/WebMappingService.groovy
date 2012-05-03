@@ -72,7 +72,7 @@ class WebMappingService implements ApplicationContextAware
     wmsQuery
   }
 
-  def getMap(def wmsRequest, def layers = null)
+  def /*synchronized*/ getMap(def wmsRequest, def layers = null)
   {
     def result = [image: null, errorMessage: null]
     def params = wmsRequest.toMap();
@@ -81,14 +81,17 @@ class WebMappingService implements ApplicationContextAware
     def wmsQuery = layers ? null : setupQuery(wmsRequest);
     def stretchMode = wmsRequest?.stretch_mode ? wmsRequest?.stretch_mode.toLowerCase() : null
     def stretchModeRegion = wmsRequest?.stretch_mode_region ?: null
+
     def wmsView = new WmsView()
     def srs = wmsRequest?.srs
+
     if ( !wmsView.setProjection(srs) )
     {
       result.errorMessage = "Unsupported projection ${srs}"
       log.error(result)
       return result
     }
+
     if ( !wmsView.setViewDimensionsAndImageSize(bounds.minx,
             bounds.miny,
             bounds.maxx,

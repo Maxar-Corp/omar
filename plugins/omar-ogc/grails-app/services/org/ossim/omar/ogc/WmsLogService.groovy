@@ -40,11 +40,11 @@ class WmsLogService
       }
     }
 
-    def startDate = new DateTime(paramsSave.startDate?.time).toDateTime(DateTimeZone.UTC).toDate()
-    def endDate = new DateTime(paramsSave.endDate?.time).toDateTime(DateTimeZone.UTC).toDate()
+    //def startDate = new DateTime(paramsSave.startDate?.time).toDateTime(DateTimeZone.UTC).toDate()
+    //def endDate = new DateTime(paramsSave.endDate?.time).toDateTime(DateTimeZone.UTC).toDate()
 
-    paramsSave["startDate"] = startDate.toString()
-    paramsSave["endDate"] = endDate.toString()
+    paramsSave["startDate"] = params.startDate //.toString()
+    paramsSave["endDate"] = params.endDate //.toString()
 
     def bboxSplit = params.bbox?.split(',')
     if ( bboxSplit?.size() == 4 )

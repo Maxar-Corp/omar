@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>OMAR <g:meta name="app.version"/>: Ground Space - ${(rasterEntries*.id)?.join(', ')}</title>
+  <title>OMAR <g:meta name="app.version"/>: Ground Space - ${( rasterEntries*.id )?.join( ', ' )}</title>
   <meta content="groundSpacePageLayout" name="layout">
   <r:require modules="groundSpacePageLayout"/>
   <style type="text/css">
@@ -75,13 +75,13 @@ var contrastSlider;
 
 function changeToImageSpace()
 {
-   var url = "${createLink(controller: 'mapView', action: 'imageSpace')}";
+   var url = "${createLink( controller: 'mapView', action: 'imageSpace' )}";
    var wmsFormElement = $("wmsFormId");
    if(wmsFormElement)
    {
      wmsParams = new OmarWmsParams();
      wmsParams.setProperties(wcsParams);
-     wmsParams.layers = "${(rasterEntries*.indexId).join(',')}";
+     wmsParams.layers = "${( rasterEntries*.indexId ).join( ',' )}";
     wmsFormElement.action = url + "?"+wmsParams.toUrlParams();
     wmsFormElement.method = "POST";
     wmsFormElement.submit();
@@ -104,7 +104,7 @@ function resetMapCenter()
 
 function init(mapWidth, mapHeight)
 {
-    OpenLayers.ImgPath = "${resource(plugin: 'openlayers', dir: 'js/img')}/";
+    OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
 
     coordConvert = new CoordinateConversion();
     wcsParams = new OmarWcsParams();
@@ -143,7 +143,7 @@ function init(mapWidth, mapHeight)
         bands:$("bands").value,
         quicklook: "${params.quicklook ?: 'false'}"
     });
-    if(${rasterEntries?.numberOfBands.get(0) >= 3})
+    if(${rasterEntries?.numberOfBands.get( 0 ) >= 3})
     {
         wcsParams.setProperties({bands:"0,1,2"});
     }
@@ -438,7 +438,7 @@ function getKML(layers)
 	var wmsParamForm = document.getElementById('wmsFormId');
 	var wmsUrlParams  = new OmarWmsParams();
 
-	 var link   = "${createLink(action: "wms", controller: "ogc")}";
+	 var link   = "${createLink( action: "wms", controller: "ogc" )}";
 	 var extent = mapWidget.getSelectedOrViewportExtents();
 	 var size   = mapWidget.getSizeInPixelsFromExtents(extent);
 	 var wmsProperties = {"request":"GetKML",
@@ -467,7 +467,7 @@ function getKML(layers)
 	wmsParamForm.sharpen_mode.value = $("sharpen_mode").value;
 	wmsParamForm.stretch_mode.value = $("stretch_mode").value;
 	wmsParamForm.stretch_mode_region.value = $("stretch_mode_region").value;
-	var numberOfBands = parseInt("${rasterEntries?.numberOfBands.get(0)}");
+	var numberOfBands = parseInt("${rasterEntries?.numberOfBands.get( 0 )}");
 	if(numberOfBands > 1)
 	{
 		wmsParamForm.bands.value = $("bands").value;              /////// bands doesn't appear to working on kml output ///////
@@ -490,8 +490,8 @@ function setupLayers()
 	var stretch_mode_region = $("stretch_mode_region").value;
 
 	rasterLayers = [
-	   new OpenLayers.Layer.WMS("Raster", "${createLink(controller: "ogc", action: "wms")}",
-               {layers: "${(rasterEntries*.indexId).join(',')}",
+	   new OpenLayers.Layer.WMS("Raster", "${createLink( controller: "ogc", action: "wms" )}",
+               {layers: "${( rasterEntries*.indexId ).join( ',' )}",
                 format: format, sharpen_mode:sharpen_mode,
                 stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent,
          brightness:brightnessSlider.getRealValue(),
@@ -583,10 +583,10 @@ function getKmlSuperOverlay()
 	var wmsParamForm = document.getElementById('wmsFormId');
 	var imageAdjustementParams  = new OmarImageAdjustmentParams();
 
-	var link   = "${createLink(action: "createKml", controller: "superOverlay")}";
+	var link   = "${createLink( action: "createKml", controller: "superOverlay" )}";
     imageAdjustementParams.setProperties(document);
 
-    var url = link + "?" + "id=${(rasterEntries*.indexId).join(',')}" + "&"+imageAdjustementParams.toUrlParams();
+    var url = link + "?" + "id=${( rasterEntries*.indexId ).join( ',' )}" + "&"+imageAdjustementParams.toUrlParams();
     if(wmsParamForm)
     {
         wmsParamForm.action = url;
@@ -596,7 +596,7 @@ function getKmlSuperOverlay()
 
 function getProjectedImage(params)
 {
-	 var link   = "${createLink(action: "wcs", controller: "ogc")}";
+	 var link   = "${createLink( action: "wcs", controller: "ogc" )}";
 	 var extent = mapWidget.getSelectedExtents();
 
 	 if(extent&&extent.left)
@@ -639,7 +639,7 @@ function getLocalKmz(params)
 	var wmsParamForm = document.getElementById('wmsFormId');
 	var wmsUrlParams  = new OmarWmsParams();
 
-	 var link   = "${createLink(action: "wms", controller: "ogc")}";
+	 var link   = "${createLink( action: "wms", controller: "ogc" )}";
 	 var extent = mapWidget.getSelectedOrViewportExtents();
 	 var size   = mapWidget.getSizeInPixelsFromExtents(extent);
 	 var wmsProperties = {"request":"GetKMZ",

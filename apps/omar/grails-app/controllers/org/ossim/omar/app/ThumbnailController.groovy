@@ -27,7 +27,7 @@ class ThumbnailController implements InitializingBean
     }
     catch(Exception e)
     {
-      
+
     }
   }
   def show =
@@ -39,6 +39,8 @@ class ThumbnailController implements InitializingBean
       def rasterEntry = RasterEntry.findByIndexId(params.id) ?:RasterEntry.get(params.id);
       def image = null
       def mimeType = "image/jpeg"
+	  File outputFile
+
       if ( !rasterEntry )
       {
         httpStatusMessage.message = "RasterEntry not found with id ${params.id}"
@@ -49,7 +51,7 @@ class ThumbnailController implements InitializingBean
       else
       {
           params.mimeType = mimeType
-          File outputFile = thumbnailService.getRasterEntryThumbnailFile(httpStatusMessage, rasterEntry, params)
+          outputFile = thumbnailService.getRasterEntryThumbnailFile(httpStatusMessage, rasterEntry, params)
           if ( (httpStatusMessage.status == HttpStatus.OK)&&
                   outputFile.exists() &&
                   (outputFile.length() > 0) )
@@ -61,14 +63,23 @@ class ThumbnailController implements InitializingBean
             image = ImageGenerator.createErrorImage(128, 128);
           }
       }
+
       httpStatusMessage.initializeResponse(response)
+
+	  def bytes = outputFile.bytes
       response.contentType = mimeType
-      ImageIO.write(image, "jpeg", response.outputStream)
+      response.contentLength = bytes.size()
+      response.outputStream << bytes
+
+      //ImageIO.write(image, "jpeg", response.outputStream)
+
     }
     catch (Exception e)
     {
       log.error("exception ${e.message}")
     }
+
+	return null
   }
 
 

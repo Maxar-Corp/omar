@@ -2,8 +2,8 @@ import org.springframework.context.ApplicationContext
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import grails.util.GrailsUtil
 
-import geodata.City
-import geodata.CityData
+//import geodata.City
+//import geodata.CityData
 
 class BootStrap
 {
@@ -23,10 +23,10 @@ class BootStrap
       shell?.run("./scripts/defaults.groovy" as File, [])
 
 
-      if ( City.count() == 0 )
-      {
-        CityData.load()
-      }
+//      if ( City.count() == 0 )
+//      {
+//        CityData.load()
+//      }
 
     }
   }
