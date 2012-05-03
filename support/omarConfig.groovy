@@ -1,5 +1,5 @@
-grails.serverIP="107.21.242.56"
-grails.serverURL= "http://${grails.serverIP}/omar"
+//grails.serverIP=org.ossim.omar.app.NetUtil.ipAddress
+//grails.serverURL= "http://${grails.serverIP}/omar"
 wms.referenceDataDirectory="/data/omar"
 wms.mapFile= "${wms.referenceDataDirectory}/bmng.map"
 thumbnail.cacheDir="${wms.referenceDataDirectory}/omar-cache"
