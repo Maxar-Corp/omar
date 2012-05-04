@@ -3,50 +3,85 @@ OMAR.ProjectionType = {
   GEOGRAPHIC: 1
 };
 
+OMAR.ToolModeType = {
+  PAN_ZOOM: "panzoom",
+  ZOOM_BOX: "zoombox",
+  BOX_AOI: "boxaoi",
+  POINT: "point",
+  LINE: "line",
+  POLYGON: "polygon"
+};
+
 OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   mouseDragStart:null,
   map:null,
   zoomBox:null,
+  selectBox:null,
   mousePosition:null,
   eventDiv:null,
   annotationDiv:null,
+  compassDiv:null,
   affineParams:null,
   affineM: null,
   containerDiv: null,
   containerDivRegion: null,
   projectionType: OMAR.ProjectionType.PIXEL,
   documentListenersAdded: false,
-  //projectionSpace: OMAR.OpenLayersProjectionSpace.PIXEL,
-/*
-   this.destroy = function() 
-   {
-      YAHOO.util.Event.removeListener(this.eventDiv, "click", this.mouseClick);
-      YAHOO.util.Event.removeListener(this.eventDiv, "dblclick", this.mouseDblClick);
-      YAHOO.util.Event.removeListener(this.eventDiv, "mousedown", this.mouseDown);
-      YAHOO.util.Event.removeListener(this.eventDiv, "mouseup", this.mouseUp);
-      YAHOO.util.Event.removeListener(this.eventDiv, "mousemove", this.mouseMove);
-      YAHOO.util.Event.removeListener(this.eventDiv, "mouseout", this.mouseOut);    
-      YAHOO.util.Event.removeListener(this.eventDiv, "mousewheel", this.mouseWheel);    
+  toolMode: OMAR.ToolModeType.PAN_ZOOM,
+  vectorLayer: null,
+  drawControls:null,
+  currentDrawControl:null,
+  wheelListener:null,
+  events: null,
+  editMode:null,
+  localImageBounds:null,
+  upIsUpAngle:null,
+  northAngle:null,
 
-   }
-   */
+  EVENT_TYPES:["measureAddPointFinished", "measureRemoved"],
+   destroy : function() 
+   {
+        this.events.un ({
+            "click":this.click,
+            "dblclick":this.dblClick,
+            "mousedown":this.mousedown,
+            "mouseup":this.mouseup,
+            "mousemove": this.mousemove,
+            "mouseout": this.mouseout,
+            "wheel": this.wheel
+    });
+   },
    initialize : function()
    {
     this.affineParams =  new OmarAffineParams();
     this.affineM = new OmarMatrix3x3();
    },
-   setup : function(containerDiv, mapObj, annDiv, topDiv){
-    alert("adfadsfasdfasdfasdfasd");
+   setup : function(containerDiv, mapObj, annDiv, topDiv, compass){
     this.map           = mapObj;
     this.eventDiv      = this.getDivElement(topDiv);
     this.annotationDiv = this.getDivElement(annDiv);
     this.containerDiv  = this.getDivElement(containerDiv);
+    this.compassDiv    = this.getDivElement(compass);
     this.containerDivRegion = YAHOO.util.Region.getRegion(this.containerDiv);
+    this.vectorLayer = new OpenLayers.Layer.Vector();
+    this.map.addLayer(this.vectorLayer);
+    this.events = new OpenLayers.Events(this, this.eventDiv, this.EVENT_TYPES, true);
+
+    this.drawControls = {
+                    point: new OpenLayers.Control.DrawFeature(this.vectorLayer,
+                        OpenLayers.Handler.Point),
+                    line: new OpenLayers.Control.DrawFeature(this.vectorLayer,
+                        OpenLayers.Handler.Path),
+                    polygon: new OpenLayers.Control.DrawFeature(this.vectorLayer,
+                        OpenLayers.Handler.Polygon)//,
+                 };
+    this.map.addControl(this.drawControls.line);
+    this.map.addControl(this.drawControls.polygon);
     if(this.containerDiv)
     {
       if(!this.annotationDiv)
       {
-        this.annotationDiv = document.createElement("div");//OpenLayers.Util.createDiv('annotationDiv', null,  null, null, "absolute", "");
+        this.annotationDiv = document.createElement("div");
         this.annotationDiv.setAttribute('id', 'hudDiv');
         this.annotationDiv.style.position='absolute';
         this.annotationDiv.style.zIndex = '5';
@@ -54,7 +89,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       }
       if(!this.eventDiv)
       {
-        this.eventDiv = document.createElement("div");//OpenLayers.Util.createDiv('eventDiv', null,  null, null, "absolute", "");        
+        this.eventDiv = document.createElement("div");     
         this.eventDiv.setAttribute('id', 'eventDiv');
         this.eventDiv.style.backgroundColor ='#fff';
         this.eventDiv.style.opacity=0;
@@ -64,20 +99,81 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         this.containerDiv.insertBefore(this.eventDiv, this.annotationDiv);
       }
     }
+    this.events.on ({
+        "click":this.click,
+        "dblclick":this.dblClick,
+        "mousedown":this.mousedown,
+        "mouseup":this.mouseup,
+        "mousemove": this.mousemove,
+        "mouseout": this.mouseout,
+        "wheel": this.wheel,
+        "scope":this
+    });
+    this.wheelListener = OpenLayers.Function.bindAsEventListener(this.wheel, this);
 
-    YAHOO.util.Event.addListener(this.eventDiv, "click", this.mouseClick , null, this);
-    YAHOO.util.Event.addListener(this.eventDiv, "dblclick", this.mouseDblClick , null, this);
-    YAHOO.util.Event.addListener(this.eventDiv, "mousedown", this.mouseDown, null, this);
-    YAHOO.util.Event.addListener(this.eventDiv, "mouseup", this.mouseUp , null, this);
-    YAHOO.util.Event.addListener(this.eventDiv, "mousemove", this.mouseMove , null, this);
-    YAHOO.util.Event.addListener(this.eventDiv, "mouseout", this.mouseOut , null, this);
-    YAHOO.util.Event.addListener(this.eventDiv, "mousewheel", this.mouseWheel, null, this);
-    YAHOO.util.Event.addListener(window,   "DOMMouseScroll", this.mouseWheel,null, this);
-    YAHOO.util.Event.addListener(window,   "mousewheel", this.mouseWheel, null, this);
-    YAHOO.util.Event.addListener(document, "mousewheel", this.mouseWheel, null, this);
-
+    OpenLayers.Event.observe(window,   "DOMMouseScroll", this.wheelListener);
+    OpenLayers.Event.observe(window,   "mousewheel",     this.wheelListener);
+    OpenLayers.Event.observe(document, "mousewheel",     this.wheelListener);
     this.containerResized();
   },
+   setToolMode: function(mode)
+   {
+        var stateChangedFlag = (mode != this.toolMode);
+
+
+        // need to add clearing the state information when changing states.
+        this.toolMode = mode;
+
+        if(stateChangedFlag)
+        {
+            this.toolModeChanged();
+        }
+  },
+   toolModeChanged: function()
+   {
+       if(this.zoomBox)
+        {
+            this.zoomBoxEnd();
+        }
+        if(this.documentListenersAdded)
+        {
+            YAHOO.util.Event.removeListener(document, "mousemove", this.mousemove);
+            YAHOO.util.Event.removeListener(document, "mouseUp", this.mouseup);
+            this.documentListenersAdded = false;
+        }
+        if(this.currentDrawControl) this.currentDrawControl.deactivate();
+
+        this.currentDrawControl = null;
+
+        var removedMeasurements = this.vectorLayer.features.length > 0;
+        this.vectorLayer.destroyFeatures();
+        switch(this.toolMode)
+        {
+            case OMAR.ToolModeType.LINE:
+            {
+                this.currentDrawControl = this.drawControls.line;
+                this.currentDrawControl.activate();
+                removedMeasurements = true;
+                break;
+            }
+            case OMAR.ToolModeType.POLYGON:
+            {
+                this.currentDrawControl = this.drawControls.polygon;
+                this.currentDrawControl.activate();
+                removedMeasurements = true;
+                break;
+            }
+        }
+        if(removedMeasurements) this.events.triggerEvent("measureRemoved");
+    },
+   adaptOpenLayersXY : function(evt, pt){
+
+    evt.xy={x:pt.x,y:pt.y};
+    evt.xy.equals = function(xy){
+        return ((this.x == xy.x)&&(this.y == xy.y));
+    }
+    return evt;
+   },
   getAffineParams : function(){
     return this.affineParams;
   },
@@ -95,10 +191,8 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
             (r1.height==r2.height));
   },
   setChildDivDimensions: function(div){
-    
-
-      var wRad = 0.0;//Math.round(this.containerDivRegion.width*0.5*Math.sqrt(2));
-      var hRad = 0.0;//Math.round(this.containerDivRegion.height*0.5*Math.sqrt(2));
+      var wRad = 0;//Math.round(this.containerDivRegion.width*0.5*Math.sqrt(2));
+      var hRad = 0;//Math.round(this.containerDivRegion.height*0.5*Math.sqrt(2));
 
       var newW = this.containerDivRegion.width+wRad*2; //Math.round(max*1.5);
       var newH = this.containerDivRegion.height+hRad*2; //Math.round(max*1.5);
@@ -107,49 +201,23 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       var shiftLeft = -Math.round(wRad);//Math.round((containerCenterX-centerX)/2);
       var shiftTop  = -Math.round(hRad);//Math.round((containerCenterY-centerY)/2);
       
-      div.style.left   = shiftLeft + "px";//Math.round(region.left-(newW * 0.25)) + "px";
-      div.style.top    = shiftTop + "px";//Math.round(region.top-(newH * 0.25)) + "px";
-      div.style.width  = newW+"px";//newW + "px";
-      div.style.height = newH+"px";//newH + "px";
-
-    /*
-      var radius = Math.max(this.containerDivRegion.width, this.containerDivRegion.height);
-
-      var maxHalf = Math.round(radius*Math.sqrt(2));
-      var newW = this.containerDivRegion.width+maxHalf; //Math.round(max*1.5);
-      var newH = this.containerDivRegion.height+maxHalf; //Math.round(max*1.5);
-
-      // now center about container
-      var shiftLeft = -Math.round(maxHalf/2.0);//Math.round((containerCenterX-centerX)/2);
-      var shiftTop  = -Math.round(maxHalf/2.0);//Math.round((containerCenterY-centerY)/2);
-      
-      div.style.left   = shiftLeft + "px";//Math.round(region.left-(newW * 0.25)) + "px";
-      div.style.top    = shiftTop + "px";//Math.round(region.top-(newH * 0.25)) + "px";
-      div.style.width  = newW+"px";//newW + "px";
-      div.style.height = newH+"px";//newH + "px";
-      */
-  },
+      div.style.left   = shiftLeft + "px";
+      div.style.top    = shiftTop + "px";
+      div.style.width  = newW+"px";
+      div.style.height = newH+"px";
+     },
   containerResized: function(){
-    var center = this.map.getCenter();
+      var center = this.map.getCenter();
       var region = YAHOO.util.Region.getRegion(this.containerDiv);
       this.containerDivRegion = region;
       //alert(region);
       this.setChildDivDimensions(this.map.div);
       this.setChildDivDimensions(this.eventDiv);
       this.setChildDivDimensions(this.annotationDiv);
-        //    alert(YAHOO.util.Region.getRegion(this.map.div) + "\n" +
-        //          YAHOO.util.Region.getRegion(document.window));
 
-      //var region2 = YAHOO.util.Region.getRegion(this.map.div);
-
-    //alert((region.left) +" == " +(region2.left));
       this.updateTransform();
-
-  //var currentCenter = this.map.getCenter();
       this.map.updateSize();
-  
       this.map.setCenter(center, this.map.getZoom());
-     // this.map.setCenter(currentCenter ,this.map.getZoom());
   },  
   checkResize: function(){
     var region = YAHOO.util.Region.getRegion(this.containerDiv);
@@ -170,12 +238,33 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       this.affineParams.translate.y = -region.top;
 
       this.affineM = this.affineParams.toMatrix();
+ 
+  },
+  generateOssimFullImageTransform: function(){
+    var affine =  new OmarAffineParams();
+    var res = OMAR.imageManipulator.map.getResolution();
+    var scale = 1.0/res;
+ 
+    var center =  this.getCenterLocal();
+    affine.rotate  = -this.affineParams.rotate;
+    affine.scale.x = scale;
+    affine.scale.y = scale;
+    affine.pivot.x = center.x;
+    affine.pivot.y = center.y;
+    return affine.toMatrix();
   },
   transformDiv: function(){
       if(this.map && this.map.div)
       {
         cssSandpaper.setTransform(this.map.div,
                                   "rotate(" + this.affineParams.rotate+"deg)");
+
+        if(this.compassDiv)
+        {
+          var rotate =  (this.affineParams.rotate-this.northAngle)%360;
+          cssSandpaper.setTransform(this.compassDiv,
+                                  "rotate(" + rotate+"deg)");
+        }
       }
   },
   getDivElement: function(div){
@@ -189,14 +278,19 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       var mouseXY = YAHOO.util.Event.getXY(evt);
       return new OmarPoint(mouseXY[0], mouseXY[1]);
   },
-  mouseToMap: function(evt){
-    var endPt     = this.affineM.transform(this.mouseToPoint(evt));
+  annotationPointToPoint: function(pt){
+    var region = YAHOO.util.Region.getRegion(this.annotationDiv);
+    return {x:(pt.x + region.left), y:(pt.y + region.top)};
+  },
+  pointToTransformPoint: function(pt){
+    return this.affineM.transform(pt);
+  },
+  pointToMap: function(pt){
+    var endPt     = this.pointToTransformPoint(pt);
     return this.map.getLonLatFromViewPortPx(endPt);
   },
-  mouseToLocal: function(evt){
-      var mapPt = this.mouseToMap(evt);
-      var result = new OmarPoint(mapPt.lon, mapPt.lat);
-
+  pointReflect: function(pt){
+      var result = new OmarPoint(pt.x, pt.y);
       if(this.projectionType == OMAR.ProjectionType.PIXEL)
       {
         if(this.map.maxExtent.top > this.map.maxExtent.bottom)
@@ -205,10 +299,46 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
             result.y = this.map.maxExtent.top - result.y;
         }
       }
- 
-     return result;
+      return result;
+  },
+  moveToCenter: function(pt){
+    if(this.localImageBounds)
+    {
+      if(this.projectionType == OMAR.ProjectionType.PIXEL)
+      {
+        var w = Math.abs(this.localImageBounds.right-this.localImageBounds.left);
+        var h = Math.abs(this.localImageBounds.bottom-this.localImageBounds.top);
+        this.setCenterGivenImagePoint(new OmarPoint(this.localImageBounds.left + w*0.5,
+                                                    this.localImageBounds.bottom + h*0.5));
+      }
+    }
+  },
+  setCenterGivenImagePoint: function(pt){
+    if(this.map)
+    {
+        if((this.projectionType == OMAR.ProjectionType.PIXEL)&&
+           this.localImageBounds)
+        {
+            var newCenter = new OpenLayers.LonLat(pt.x, (this.localImageBounds.top - pt.y ) );
+            this.map.setCenter(newCenter);
+        }
+        else
+        {
+            alert("We only have support for setCenterGiveImagePoint for image space operations.");
+        }
+    }
+  },
+  pointToLocal: function(pt){
+      var mapPt = this.pointToMap(pt);
+      return this.pointReflect(new OmarPoint(mapPt.lon, mapPt.lat));
+
    },
-  withinDiv: function(xy, el){
+   getCenterLocal: function()
+   {
+     var mapPt = this.map.getCenter();
+     return this.pointReflect(new OmarPoint(mapPt.lon, mapPt.lat));
+   },
+   withinDiv: function(xy, el){
     var region = YAHOO.util.Dom.getRegion(el);
     var top    = region.top;
     var left   = region.left;
@@ -219,7 +349,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     
     return (mX > left && mX < right && mY > top && mY < bottom);
   },
-  mouseWheel: function(evt){
+  wheel: function(evt){
     if(!this.withinDiv(this.mouseToPoint(evt), this.eventDiv.parentNode))
     {
       return;
@@ -260,19 +390,39 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
          this.map.setCenter(this.map.getCenter(), this.map.getZoom() - 1);
       }
   },
-  mouseClick: function(evt)
+  click: function(evt)
   {
     
   },
-  mouseDblClick: function(evt){
-      var endPt     = this.affineM.transform(this.mouseToPoint(evt));
-      var newCenter = this.map.getLonLatFromViewPortPx(endPt);
-  //alert("AFFINE: " + affineM +"\nMOUSE POS = " + this.mouseToPoint(evt)+"\nTRANSFORMED: " + endPt + "\nMAP CENTER: " + mapCenter);
+  dblClick: function(evt){
 
-      this.map.setCenter(newCenter, this.map.zoom + 1);
-      return true;
+     switch(this.toolMode)
+     {
+        case OMAR.ToolModeType.PAN_ZOOM:
+        case OMAR.ToolModeType.ZOOM_BOX:
+        {
+             var endPt     = this.affineM.transform(this.mouseToPoint(evt));
+             var newCenter = this.map.getLonLatFromViewPortPx(endPt);
+
+             this.map.setCenter(newCenter, this.map.zoom + 1);
+             OpenLayers.Event.stop(evt);  
+             break;
+        }
+        case OMAR.ToolModeType.LINE:
+        case OMAR.ToolModeType.POLYGON:
+        {
+            var wasDrawing = this.currentDrawControl.handler.drawing;
+            this.currentDrawControl.handler.dblclick(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+            if(wasDrawing&&!this.currentDrawControl.handler.drawing)
+            {
+                this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
+            }
+            OpenLayers.Event.stop(evt);  
+           break;
+        }
+     }
    },
-   mouseOut: function(evt){
+   mouseout: function(evt){
     /*
       if (this.mouseDragStart != null && OpenLayers.Util.mouseLeft(evt, this.map.div))
       {
@@ -284,114 +434,278 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       }
       */
    },
-   mouseDown: function(evt){
-      documentListenersAdded = false;
-      this.mouseDragStart = null;
-      this.performedDrag = false;
-      if (!OpenLayers.Event.isLeftClick(evt)) {
-         return;
+   mousedown: function(evt){
+      this.mousePosition = this.mouseToPoint(evt);
+      this.editMode = false;
+
+      switch(this.toolMode)
+      {
+        case OMAR.ToolModeType.PAN_ZOOM:
+        case OMAR.ToolModeType.ZOOM_BOX:
+        {
+            this.documentListenersAdded = false;
+            this.mouseDragStart = null;
+            this.performedDrag = false;
+            if (OMAR.ToolModeType.PAN_ZOOM&&(!OpenLayers.Event.isLeftClick(evt))) {
+             return;
+            }
+            /** This simulates a capture mouse events from the entire document window so we
+            * can continue dragging even if the mouse goes outside the DIV.
+            *
+            * We may want a utility method for this.
+            */
+
+            this.mouseDragStart = this.mouseToPoint(evt);
+            if (evt.shiftKey||(this.toolMode==OMAR.ToolModeType.ZOOM_BOX)) 
+            {
+                var region = YAHOO.util.Region.getRegion(this.annotationDiv);
+                this.eventDiv.style.cursor = "crosshair";
+                this.zoomBox = OpenLayers.Util.createDiv('zoomBox', 
+                                                         new OmarPoint(-region.left +this.mouseDragStart.x,
+                                                                       -region.top +this.mouseDragStart.y), 
+                                                         null, null, "absolute", "2px solid red");
+                this.zoomBox.id="zoomBox";
+                this.zoomBox.style.backgroundColor = "white";
+                this.zoomBox.style.filter = "alpha(opacity=50)";
+                this.zoomBox.style.opacity = "0.50";
+                this.zoomBox.style.fontSize = "1px";
+                this.zoomBox.style.zIndex = this.map.Z_INDEX_BASE["Popup"] - 1;
+
+                if(this.annotationDiv!=null) this.annotationDiv.appendChild(this.zoomBox);
+                OpenLayers.Event.stop(evt);  
+            }
+            else
+            {
+                this.map.div.style.cursor = "move";
+            }
+            document.onselectstart = OpenLayers.Function.False;
+            break;
+        }
+        case OMAR.ToolModeType.BOX_AOI:
+        {
+           this.mouseDragStart = this.mouseToPoint(evt);
+           if(!evt.shiftKey)
+           {
+                this.removeSelectionBox();
+                if(!this.selectionBox)
+                {
+
+                    var region = YAHOO.util.Region.getRegion(this.annotationDiv);
+                    this.selectionBox = OpenLayers.Util.createDiv('selectionBox', 
+                                                             new OmarPoint(-region.left +this.mouseDragStart.x,
+                                                                           -region.top +this.mouseDragStart.y), 
+                                                             null, null, "absolute", "");
+                    this.selectionBox.id="selectionBox";
+                    this.selectionBox.style.backgroundColor = "orange";
+                    this.selectionBox.style.filter = "alpha(opacity=50)";
+                    this.selectionBox.style.opacity = "0.50";
+                    this.selectionBox.style.fontSize = "1px";
+                    this.selectionBox.style.zIndex = this.map.Z_INDEX_BASE["Popup"] - 1;
+
+                    if(this.annotationDiv!=null) this.annotationDiv.appendChild(this.selectionBox);
+                }
+            }
+            else
+            {
+                if(this.withinDiv(this.mousePosition, this.selectionBox))
+                {
+                    this.editMode = true;
+                }
+            }
+ 
+            OpenLayers.Event.stop(evt);  
+            document.onselectstart = OpenLayers.Function.False;
+         break;
+        }
+        case OMAR.ToolModeType.LINE:
+        case OMAR.ToolModeType.POLYGON:
+        {
+            if(!this.currentDrawControl.handler.drawing)
+                 this.vectorLayer.destroyFeatures();
+
+            this.currentDrawControl.handler.mousedown(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+            OpenLayers.Event.stop(evt); 
+            document.onselectstart = OpenLayers.Function.False;
+           break;
+        }
       }
-      /** This simulates a capture mouse events from the entire document window so we
-        * can continue dragging even if the mouse goes outside the DIV.
-        *
-        * We may want a utility method for this.
-        */
       if(this.withinDiv(this.mouseToPoint(evt), this.eventDiv))
       {
-        this.documentListenersAdded = true;
-         YAHOO.util.Event.addListener(document, "mousemove", this.mouseMove, null, this);
-         YAHOO.util.Event.addListener(document, "mouseup", this.mouseUp, null, this);
+          this.documentListenersAdded = true;
+          YAHOO.util.Event.addListener(document, "mousemove", this.mousemove, null, this);
+          YAHOO.util.Event.addListener(document, "mouseup", this.mouseup, null, this);
       }
-
-      this.mouseDragStart = this.mouseToPoint(evt);
-      if (evt.shiftKey) 
-      {
-        var region = YAHOO.util.Region.getRegion(this.annotationDiv);
-         this.map.div.style.cursor = "crosshair";
-         this.zoomBox = OpenLayers.Util.createDiv('zoomBox', new OmarPoint(-region.left +this.mouseDragStart.x,
-                                                                           -region.top +this.mouseDragStart.y), 
-                                                  null, null, "absolute", "2px solid red");
-         this.zoomBox.id="zoomBox";
-         this.zoomBox.style.backgroundColor = "white";
-         this.zoomBox.style.filter = "alpha(opacity=50)";
-         this.zoomBox.style.opacity = "0.50";
-         this.zoomBox.style.fontSize = "1px";
-         this.zoomBox.style.zIndex = this.map.Z_INDEX_BASE["Popup"] - 1;
-
-         //this.zoomBox.event.event.stopPropagation();
-         if(this.annotationDiv!=null) this.annotationDiv.appendChild(this.zoomBox);
-      }
-      document.onselectstart = OpenLayers.Function.False;
-      OpenLayers.Event.stop(evt);  
     },
-    mouseUp: function(evt){
-      if (!OpenLayers.Event.isLeftClick(evt)) {
-         return;
-      }
-      if(this.documentListenersAdded)
-      {
-          YAHOO.util.Event.removeListener(document, "mousemove", this.mouseMove);
-          YAHOO.util.Event.removeListener(document, "mouseUp", this.mouseUp);
-      }
-      //if(this.withinDiv(this.mouseToPoint(evt), this.eventDiv))
-     // {
-     //    YAHOO.util.Event.removeListener(document, "mousemove", this.mouseMove);
-     //    YAHOO.util.Event.removeListener(document, "mouseUp", this.mouseUp);
-     // }
-      if (this.zoomBox) 
-      {
-        this.zoomBoxEnd(evt);
-      } 
-      else 
-      {
-         if (this.performedDrag) 
-         {
-            this.map.setCenter(this.map.center);
-         }
-      }
-      document.onselectstart = null;
-      this.mouseDragStart = null;
-      this.map.div.style.cursor = "";  
-      OpenLayers.Event.stop(evt);  
+    mouseup: function(evt){
+       this.editMode = false;
+       if(this.documentListenersAdded)
+       {
+           YAHOO.util.Event.removeListener(document, "mousemove", this.mousemove);
+           YAHOO.util.Event.removeListener(document, "mouseup", this.mouseup);
+           this.documentListenersAdded = false;
+       }
+       switch(this.toolMode)
+       {
+        case OMAR.ToolModeType.BOX_AOI:
+        {
+           if(this.selectionBox&&this.mouseDragStart)
+           {
+              OpenLayers.Event.stop(evt);  
+           }
+           document.onselectstart = null;
+           this.mouseDragStart = null;
+           this.map.div.style.cursor = ""; 
+
+           break; 
+        } 
+        case OMAR.ToolModeType.PAN_ZOOM:
+        case OMAR.ToolModeType.ZOOM_BOX:
+        {
+
+          if (OMAR.ToolModeType.PAN_ZOOM&&(!OpenLayers.Event.isLeftClick(evt))) {
+             return;
+          }
+          if (this.zoomBox) 
+          {
+            this.zoomBoxEnd(evt);
+            OpenLayers.Event.stop(evt);  
+            this.eventDiv.style.cursor = "";
+          } 
+          else 
+          {
+             if (this.performedDrag) 
+             {
+                this.map.setCenter(this.map.center);
+                OpenLayers.Event.stop(evt);  
+             }
+          }
+          document.onselectstart = null;
+          this.mouseDragStart = null;
+          this.map.div.style.cursor = "";  
+          break;
+        }
+        case OMAR.ToolModeType.LINE:
+        case OMAR.ToolModeType.POLYGON:
+        {
+           if(this.currentDrawControl.handler.drawing)
+           {
+                this.currentDrawControl.handler.mouseup(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+                OpenLayers.Event.stop(evt); 
+
+                // check for triggering finished 
+                if(!this.currentDrawControl.handler.drawing)
+                {
+                 this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
+                }
+           }
+           document.onselectstart = null;
+           break;
+        }
+
+    }
   },
-  mouseMove: function(evt){
-      this.mousePosition = this.mouseToPoint(evt);
-      if (this.mouseDragStart != null) 
+  mousemove: function(evt){
+     var updateBox = function(evt, box, scopePtr, translateOnly) {
+
+            var region = YAHOO.util.Region.getRegion(scopePtr.annotationDiv);
+            var deltaX = (scopePtr.mousePosition.x - scopePtr.mouseDragStart.x);
+            var deltaY = (scopePtr.mousePosition.y - scopePtr.mouseDragStart.y);
+            if(translateOnly)
+            {
+                var left = parseInt(box.style.left);
+                var top  = parseInt(box.style.top);
+                left += deltaX;
+                top  += deltaY;
+
+                box.style.left = left + "px";
+                box.style.top  = top  + "px";
+            }
+            else
+            {
+                deltaX = Math.abs(deltaX);
+                deltaY = Math.abs(deltaY);
+                 var w = Math.max(1, deltaX);
+                var h = Math.max(1, deltaY);
+                box.style.width  = w + "px";
+                box.style.height = h + "px";
+
+                var x =  scopePtr.mouseDragStart.x;
+                var y =  scopePtr.mouseDragStart.y;
+                if(x > scopePtr.mousePosition.x) x = scopePtr.mousePosition.x;
+                if(y > scopePtr.mousePosition.y) y = scopePtr.mousePosition.y;
+
+                box.style.left = (-region.left + x) + "px";
+                box.style.top  = (-region.top + y) + "px";
+            }
+        };
+     this.mousePosition = this.mouseToPoint(evt);
+     switch(this.toolMode)
       {
-         var region = YAHOO.util.Region.getRegion(this.annotationDiv);
-        if (this.zoomBox) 
-         {
-            var deltaX = Math.abs(this.mouseDragStart.x - this.mousePosition.x);
-            var deltaY = Math.abs(this.mouseDragStart.y - this.mousePosition.y);
-            var w = Math.max(1, deltaX) + "px";
-            var h = Math.max(1, deltaY) + "px";
-            this.zoomBox.style.width = Math.max(1, deltaX) + "px";
-            this.zoomBox.style.height = Math.max(1, deltaY) + "px";
-            
-            if (this.mousePosition.x < this.mouseDragStart.x) {
-               this.zoomBox.style.left = -region.left + this.mousePosition.x + "px";
+        case OMAR.ToolModeType.BOX_AOI:
+        {
+           if (this.mouseDragStart != null) 
+           {
+             if(this.selectionBox)
+             {
+                if(this.editMode)
+                {
+                    updateBox(evt, this.selectionBox, this, true);
+                }
+                else if(!evt.shiftKey)
+                {
+                    updateBox(evt, this.selectionBox, this, false);
+                }
             }
-            if (this.mousePosition.y < this.mouseDragStart.y) {
-               this.zoomBox.style.top =  -region.top + this.mousePosition.y + "px";
+            OpenLayers.Event.stop(evt);  
+           }
+           break;
+        }
+        case OMAR.ToolModeType.PAN_ZOOM:
+        case OMAR.ToolModeType.ZOOM_BOX:
+        {
+          if (this.mouseDragStart != null) 
+          {
+
+             //var region = YAHOO.util.Region.getRegion(this.annotationDiv);
+             if (this.zoomBox) 
+             {
+                updateBox(evt, this.zoomBox, this);
+                OpenLayers.Event.stop(evt);  
+             } 
+             else if(this.mouseDragStart)
+             {
+                var startPt   = this.affineM.transform(this.mouseDragStart);
+                var endPt     = this.affineM.transform(this.mousePosition);
+                var deltaPt   = startPt.sub(endPt);
+                var size      = this.map.getSize();
+                var newXY     = new OpenLayers.Pixel(size.w / 2 + deltaPt.x, size.h / 2 + deltaPt.y);
+                var newCenter = this.map.getLonLatFromViewPortPx(newXY);
+                this.map.setCenter(newCenter, null, true);
+                this.mouseDragStart       = this.mouseToPoint(evt);
+                this.map.div.style.cursor = "move";
+                 OpenLayers.Event.stop(evt);  
             }
-         } 
-         else 
-         {
-            var startPt   = this.affineM.transform(this.mouseDragStart);
-            var endPt     = this.affineM.transform(this.mousePosition);
-            var deltaPt   = startPt.sub(endPt);
-            var size      = this.map.getSize();
-            var newXY     = new OpenLayers.Pixel(size.w / 2 + deltaPt.x, size.h / 2 + deltaPt.y);
-            var newCenter = this.map.getLonLatFromViewPortPx(newXY);
-            this.map.setCenter(newCenter, null, true);
-            this.mouseDragStart       = this.mouseToPoint(evt);
-            this.map.div.style.cursor = "move";
-         }
-         this.performedDrag = true;
-      }
-       OpenLayers.Event.stop(evt);  
+             this.performedDrag = true;
+          }
+          break;
+       }
+      case OMAR.ToolModeType.LINE:
+      case OMAR.ToolModeType.POLYGON:
+      {
+        if(this.currentDrawControl.handler.drawing)
+        {
+            this.currentDrawControl.handler.mousemove(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+            OpenLayers.Event.stop(evt);  
+        }  
+        break;
+     }
+    }
+    if(this.editMode)
+    {
+        this.mouseDragStart = this.mouseToPoint(evt);
+    }
    },
-    zoomBoxEnd:function(evt){
+   zoomBoxEnd:function(evt){
       var currentPoint = this.mouseToPoint(evt);
       if (this.mouseDragStart != null) {
          if (Math.abs(this.mouseDragStart.x - currentPoint.x) > 5 || 
@@ -411,11 +725,18 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
          } 
          else 
          {
-            var end = this.map.getLonLatFromViewPortPx(this.mouseToPoint(evt));
-            this.map.setCenter(new OpenLayers.LonLat((end.lon), (end.lat)), this.map.getZoom() + 1);
+            var end = this.map.getLonLatFromViewPortPx(this.pointToTransformPoint(this.mouseToPoint(evt)));
+            this.map.setCenter(new OpenLayers.LonLat((end.lon), (end.lat)), this.map.getZoom());
          }
          this.removeZoomBox();
       }
+   },
+   removeSelectionBox: function(){
+    if(this.selectionBox)
+    {
+        this.annotationDiv.removeChild(this.selectionBox);
+        this.selectionBox = null;
+    }
    },
    removeZoomBox: function(){
       this.annotationDiv.removeChild(this.zoomBox);
