@@ -22,9 +22,6 @@ class ProjectionService
      */
     def imageSpaceToGroundSpace(def filename, def samp, def line, def entryId)
     {
-        Init.instance().initialize()
-
-
         def result;
         def imageSpaceModel = new ImageModel()
         def imagePoint = new ossimDpt(samp, line)
