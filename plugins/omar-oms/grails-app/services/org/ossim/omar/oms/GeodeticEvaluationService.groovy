@@ -16,8 +16,6 @@ class GeodeticEvaluationService {
      */
     def getHgtMSL(def groundPointList)
     {
-        Init.instance().initialize()
-
         def result = [];
         def geodeticEvaluatorModel = new GeodeticEvaluator()
         def groundPoint = new ossimGpt()
@@ -29,6 +27,9 @@ class GeodeticEvaluationService {
             double mslHgt = geodeticEvaluatorModel.getHeightMSL(groundPoint)
             result.add([mslHgt:mslHgt])
         }
+        geodeticEvaluatorModel.destroy()
+        geodeticEvaluatorModel.delete()
+        groundPoint.delete()
 
         result;
     }
