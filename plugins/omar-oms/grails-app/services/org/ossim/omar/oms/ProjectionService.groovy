@@ -48,6 +48,36 @@ class ProjectionService
         result;
     }
     /**
+     * @brief Single-ray projection ground to image
+     * @param filename
+     * @param geoPoint (lat,lon,hgt)
+     * @param entryId
+     * @return
+     */
+    def groundSpaceToImageSpace(def filename, def geoPoint, def entryId)
+    {
+        def result;
+        def imageSpaceModel = new ImageModel()
+        def groundPoint = new ossimGpt(geoPoint.lat, geoPoint.lon, geoPoint.hgt)
+        def imagePoint = new ossimDpt(0.0, 0.0)
+
+        if ( imageSpaceModel.setModelFromFile(filename, entryId) )
+        {
+            // Perform projection
+            imageSpaceModel.groundToImage(groundPoint, imagePoint, entryId)
+        }
+        imageSpaceModel.destroy()
+        imageSpaceModel.delete()
+
+
+        result = [x:imagePoint.x,
+                  y:imagePoint.y];
+
+        imagePoint.delete();
+        imagePoint = null;
+        result;
+    }
+    /**
      *
      * @param params should contain a filename, entryId and a wkt variable
      * @return
@@ -169,7 +199,7 @@ class ProjectionService
                 groundPoint.lond = pt.lon as double;
                 if(pt.hgt)
                 {
-                  groundPoint.hgt = pt.hgt;
+                  groundPoint.height = pt.hgt;
                 }
                 imageSpaceModel.groundToImage(groundPoint,
                                               imagePoint) ;
