@@ -29,6 +29,7 @@ grails.project.dependency.resolution = {
     // runtime 'mysql:mysql-connector-java:5.1.13'
   }
   plugins {
+    compile ":filterpane:2.0.1.1"
     runtime ":yui:2.8.2.1"
   }
 }

@@ -95,4 +95,9 @@ grails.gorm.default.mapping = {
 }
 
 
-wms.tilecache.enabled=false
+wms.tilecache.enabled = true
+
+grails.plugins.springsecurity.ldap.active = false
+
+grails.resources.debug=true
+
