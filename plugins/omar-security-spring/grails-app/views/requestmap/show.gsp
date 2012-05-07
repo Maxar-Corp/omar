@@ -1,68 +1,67 @@
 <%@ page import="org.ossim.omar.security.Requestmap" %>
+<!doctype html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="generatedViews"/>
-  <g:set var="entityName" value="${message(code: 'requestmap.label', default: 'Requestmap')}"/>
+  <meta name="layout" content="mainG2">
+  <g:set var="entityName" value="${message( code: 'requestmap.label', default: 'Requestmap' )}"/>
   <title><g:message code="default.show.label" args="[entityName]"/></title>
 </head>
 
 <body>
+
 <content tag="content">
-  <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a>
-    </span>
-    <span class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label"
-                                                                           args="[entityName]"/></g:link></span>
-    <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label"
-                                                                               args="[entityName]"/></g:link></span>
+  <a href="#show-requestmap" class="skip" tabindex="-1">
+    <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
+  </a>
+
+  <div class="nav" role="navigation">
+    <ul>
+      <li><a class="home" href="${createLink( uri: '/' )}"><g:message code="default.home.label"/></a></li>
+      <li><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
+      <li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]"/></g:link></li>
+    </ul>
   </div>
 
-  <div class="body">
+  <div id="show-requestmap" class="content scaffold-show" role="main">
     <h1><g:message code="default.show.label" args="[entityName]"/></h1>
     <g:if test="${flash.message}">
-      <div class="message">${flash.message}</div>
+      <div class="message" role="status">${flash.message}</div>
     </g:if>
-    <div class="dialog">
-      <table>
-        <tbody>
+    <ol class="property-list requestmap">
 
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="requestmap.id.label" default="Id"/></td>
+      <g:if test="${requestmapInstance?.url}">
+        <li class="fieldcontain">
+          <span id="url-label" class="property-label"><g:message code="requestmap.url.label" default="Url"/></span>
 
-          <td valign="top" class="value">${fieldValue(bean: requestmapInstance, field: "id")}</td>
+          <span class="property-value" aria-labelledby="url-label"><g:fieldValue bean="${requestmapInstance}"
+                                                                                 field="url"/></span>
 
-        </tr>
+        </li>
+      </g:if>
 
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="requestmap.url.label" default="Url"/></td>
+      <g:if test="${requestmapInstance?.configAttribute}">
+        <li class="fieldcontain">
+          <span id="configAttribute-label" class="property-label"><g:message code="requestmap.configAttribute.label"
+                                                                             default="Config Attribute"/></span>
 
-          <td valign="top" class="value">${fieldValue(bean: requestmapInstance, field: "url")}</td>
+          <span class="property-value" aria-labelledby="configAttribute-label"><g:fieldValue
+              bean="${requestmapInstance}"
+              field="configAttribute"/></span>
 
-        </tr>
+        </li>
+      </g:if>
 
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="requestmap.configAttribute.label"
-                                                   default="Config Attribute"/></td>
-
-          <td valign="top" class="value">${fieldValue(bean: requestmapInstance, field: "configAttribute")}</td>
-
-        </tr>
-
-        </tbody>
-      </table>
-    </div>
-
-    <div class="buttons">
-      <g:form>
+    </ol>
+    <g:form>
+      <fieldset class="buttons">
         <g:hiddenField name="id" value="${requestmapInstance?.id}"/>
-        <span class="button"><g:actionSubmit class="edit" action="edit"
-                                             value="${message(code: 'default.button.edit.label', default: 'Edit')}"/></span>
-        <span class="button"><g:actionSubmit class="delete" action="delete"
-                                             value="${message(code: 'default.button.delete.label', default: 'Delete')}"
-                                             onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/></span>
-      </g:form>
-    </div>
+        <g:link class="edit" action="edit" id="${requestmapInstance?.id}"><g:message code="default.button.edit.label"
+                                                                                     default="Edit"/></g:link>
+        <g:actionSubmit class="delete" action="delete"
+                        value="${message( code: 'default.button.delete.label', default: 'Delete' )}"
+                        onclick="return confirm('${message( code: 'default.button.delete.confirm.message', default: 'Are you sure?' )}');"/>
+      </fieldset>
+    </g:form>
   </div>
 </content>
 </body>

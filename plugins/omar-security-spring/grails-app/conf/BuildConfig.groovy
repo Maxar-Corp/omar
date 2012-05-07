@@ -7,7 +7,7 @@ grails.project.test.reports.dir = "target/test-reports"
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 grails.project.dependency.resolution = {
   // inherit Grails' default dependencies
-  inherits("global") {
+  inherits( "global" ) {
     // uncomment to disable ehcache
     // excludes 'ehcache'
   }
@@ -42,7 +42,7 @@ grails.project.dependency.resolution = {
     compile ':spring-security-ldap:1.0.5'
     compile ':mail:1.0'
     compile ':csv:0.3.1'
-
+    compile ':filterpane:2.0.1.1'
 
   }
 
@@ -53,4 +53,4 @@ grails.project.dependency.resolution = {
   }
 }
 
-grails.plugin.location.omarTableFilter ='../../plugins/omar-table-filter'
+grails.plugin.location.omarTableFilter = '../../plugins/omar-table-filter'
