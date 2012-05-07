@@ -1,79 +1,89 @@
 <%@ page import="geodata.City" %>
+<!doctype html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="generatedViews"/>
-  <g:set var="entityName" value="${message(code: 'city.label', default: 'City')}"/>
+  <meta name="layout" content="main">
+  <g:set var="entityName" value="${message( code: 'city.label', default: 'City' )}"/>
   <title><g:message code="default.list.label" args="[entityName]"/></title>
+  <filterpane:includes/>
 </head>
 
 <body>
-<content tag="content">
 
-<div class="nav">
-  <span class="menuButton">
-    <a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a>
-  </span>
-  <span class="menuButton"><g:link class="create" action="create">
-    <g:message code="default.new.label" args="[entityName]"/></g:link>
-  </span>
+<a href="#list-city" class="skip" tabindex="-1">
+  <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
+</a>
+
+<div class="nav" role="navigation">
+  <ul>
+    <li><a class="home" href="${createLink( uri: '/' )}"><g:message code="default.home.label"/></a></li>
+    <li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]"/></g:link></li>
+  </ul>
 </div>
 
-<div class="body">
+<div id="list-city" class="content scaffold-list" role="main">
   <h1><g:message code="default.list.label" args="[entityName]"/></h1>
   <g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
+    <div class="message" role="status">${flash.message}</div>
   </g:if>
-  <div class="list">
-    <table>
-      <thead>
-      <tr>
 
-        <g:sortableColumn property="id" title="${message(code: 'city.id.label', default: 'Id')}"/>
+  <filterpane:currentCriteria domainBean="geodata.City"
+                              removeImgDir="images" removeImgFile="bullet_delete.png"
+                              fullAssociationPathFieldNames="no"/>
 
-        <g:sortableColumn property="name" title="${message(code: 'city.name.label', default: 'Name')}"/>
+  <table>
+    <thead>
+    <tr>
 
-        <g:sortableColumn property="country" title="${message(code: 'city.country.label', default: 'Country')}"/>
+      <g:sortableColumn property="name" title="${message( code: 'city.name.label', default: 'Name' )}"
+                        params="${filterParams}"/>
 
-        <g:sortableColumn property="population"
-                          title="${message(code: 'city.population.label', default: 'Population')}"/>
+      <g:sortableColumn property="country" title="${message( code: 'city.country.label', default: 'Country' )}"
+                        params="${filterParams}"/>
 
-        <g:sortableColumn property="capital" title="${message(code: 'city.capital.label', default: 'Capital')}"/>
+      <g:sortableColumn property="population"
+                        title="${message( code: 'city.population.label', default: 'Population' )}"
+                        params="${filterParams}"/>
 
-        <g:sortableColumn property="longitude" title="${message(code: 'city.longitude.label', default: 'Longitude')}"/>
+      <g:sortableColumn property="capital" title="${message( code: 'city.capital.label', default: 'Capital' )}"
+                        params="${filterParams}"/>
 
-        <g:sortableColumn property="latitude" title="${message(code: 'city.latitude.label', default: 'Latitude')}"/>
+      <g:sortableColumn property="longitude" title="${message( code: 'city.longitude.label', default: 'Longitude' )}"
+                        params="${filterParams}"/>
+
+      <g:sortableColumn property="latitude" title="${message( code: 'city.latitude.label', default: 'Latitude' )}"
+                        params="${filterParams}"/>
+
+    </tr>
+    </thead>
+    <tbody>
+    <g:each in="${cityInstanceList}" status="i" var="cityInstance">
+      <tr class="${( i % 2 ) == 0 ? 'even' : 'odd'}">
+
+        <td><g:link action="show"
+                    id="${cityInstance.id}">${fieldValue( bean: cityInstance, field: "name" )}</g:link></td>
+
+        <td>${fieldValue( bean: cityInstance, field: "country" )}</td>
+
+        <td>${fieldValue( bean: cityInstance, field: "population" )}</td>
+
+        <td><g:formatBoolean boolean="${cityInstance.capital}"/></td>
+
+        <td>${fieldValue( bean: cityInstance, field: "longitude" )}</td>
+
+        <td>${fieldValue( bean: cityInstance, field: "latitude" )}</td>
 
       </tr>
-      </thead>
-      <tbody>
-      <g:each in="${cityInstanceList}" status="i" var="cityInstance">
-        <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
+    </g:each>
+    </tbody>
+  </table>
 
-          <td><g:link action="show" id="${cityInstance.id}">${fieldValue(bean: cityInstance, field: "id")}</g:link></td>
-
-          <td>${fieldValue(bean: cityInstance, field: "name")}</td>
-
-          <td>${fieldValue(bean: cityInstance, field: "country")}</td>
-
-          <td>${fieldValue(bean: cityInstance, field: "population")}</td>
-
-          <td><g:formatBoolean boolean="${cityInstance.capital}"/></td>
-
-          <td>${fieldValue(bean: cityInstance, field: "longitude")}</td>
-
-          <td>${fieldValue(bean: cityInstance, field: "latitude")}</td>
-
-        </tr>
-      </g:each>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="paginateButtons">
-    <g:paginate total="${cityInstanceTotal}"/>
+  <div class="pagination">
+    <g:paginate total="${cityInstanceTotal == null ? City.count() : cityInstanceTotal}"
+                params="${filterParams}"/>
+    <filterpane:filterButton text="Add Filter"/>
   </div>
 </div>
-</content>
+<filterpane:filterPane domain="geodata.City" dialog="true"/>
 </body>
 </html>
