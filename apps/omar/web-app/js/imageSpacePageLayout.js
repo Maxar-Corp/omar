@@ -81,5 +81,9 @@ var bodyOnResize = function ()
     {
         OMAR.imageManipulator.checkResize();
     }
+    else
+    {
+        init();
+    }
    // map.updateSize();
 };
