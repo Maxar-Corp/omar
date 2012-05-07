@@ -234,7 +234,7 @@ resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
       resource url: [dir: 'js/cssSandpaper', file: 'cssQuery-p.js']
       resource url: [dir: 'js/cssSandpaper/jcoglan.com', file: 'sylvester.js']
       resource url: [dir: 'js/cssSandpaper', file: 'cssSandpaper-lite.js']
-  //resource url: [dir: 'js', file: 'OpenLayersImageManipulator.js']
+    resource url: [dir: 'js', file: 'OpenLayersImageManipulator.js']
     //resource url: [dir: 'js', file: 'datechooser.js']
 
     resource url: [dir: 'css', file: 'imageSpacePageLayout.css']
