@@ -12,6 +12,100 @@ OMAR.ToolModeType = {
   POLYGON: "polygon"
 };
 
+/**
+* This is temporarily used to filter coordinates for different features.
+* I could not figure out a generic way of doing it so the code is duplicated 
+* for each feature type we need (Point, Line, Polygon).
+* 
+*/
+OMAR.OpenLayersPointHandler = OpenLayers.Class(OpenLayers.Handler.Point,{
+  EVENT_TYPES:["featureDone"],
+  customEvents:null,
+   initialize : function(control, callbacks, options){
+   // this.manipulator = options.manipulator;
+    OpenLayers.Handler.Path.prototype.initialize.apply(this, arguments);
+    this.customEvents = new OpenLayers.Events(this, null, this.EVENT_TYPES, true);
+    this.callbacks.done = this.featureDone;
+
+   },
+   mousemove:function(evt){
+    return this.move(this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
+   },
+   mouseup:function(evt){
+    return this.up(this.manipulator.adaptOpenLayersXY(evt, 
+                                      this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
+   },
+   mousedown:function(evt){
+    return this.down(this.manipulator.adaptOpenLayersXY(evt, 
+                                      this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
+   },
+   featureDone: function(geom){
+    this.drawFeature(geom);
+    // pass the added object to the layer not the object we are drawing
+    this.handler.customEvents.triggerEvent("featureDone", {feature:this.layer.features[this.layer.features.length-1]});
+   },
+   CLASS_NAME: "OMAR.OpenLayersPointHandler"
+});
+
+
+OMAR.OpenLayersPathHandler = OpenLayers.Class(OpenLayers.Handler.Path,{
+  EVENT_TYPES:["featureDone"],
+  customEvents:null,
+   initialize : function(control, callbacks, options){
+   // this.manipulator = options.manipulator;
+    OpenLayers.Handler.Path.prototype.initialize.apply(this, arguments);
+    this.customEvents = new OpenLayers.Events(this, null, this.EVENT_TYPES, true);
+    this.callbacks.done = this.featureDone;
+
+   },
+   mousemove:function(evt){
+    return this.move(this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
+   },
+   mouseup:function(evt){
+    return this.up(this.manipulator.adaptOpenLayersXY(evt, 
+                                      this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
+   },
+   mousedown:function(evt){
+    return this.down(this.manipulator.adaptOpenLayersXY(evt, 
+                                      this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
+   },
+   featureDone: function(geom){
+    this.drawFeature(geom);
+    // pass the added object to the layer not the object we are drawing
+    this.handler.customEvents.triggerEvent("featureDone", {feature:this.layer.features[this.layer.features.length-1]});
+   },
+   CLASS_NAME: "OMAR.OpenLayersPathHandler"
+});
+
+OMAR.OpenLayersPolygonHandler = OpenLayers.Class(OpenLayers.Handler.Polygon,{
+  EVENT_TYPES:["featureDone"],
+  customEvents:null,
+   initialize : function(control, callbacks, options){
+   // this.manipulator = options.manipulator;
+    OpenLayers.Handler.Path.prototype.initialize.apply(this, arguments);
+    this.customEvents = new OpenLayers.Events(this, null, this.EVENT_TYPES, true);
+    this.callbacks.done = this.featureDone;
+
+   },
+   mousemove:function(evt){
+    return this.move(this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
+   },
+   mouseup:function(evt){
+    return this.up(this.manipulator.adaptOpenLayersXY(evt, 
+                                      this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
+   },
+   mousedown:function(evt){
+    return this.down(this.manipulator.adaptOpenLayersXY(evt, 
+                                      this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
+   },
+   featureDone: function(geom){
+    this.drawFeature(geom);
+    // pass the added object to the layer not the object we are drawing
+    this.handler.customEvents.triggerEvent("featureDone", {feature:this.layer.features[this.layer.features.length-1]});
+   },
+   CLASS_NAME: "OMAR.OpenLayersPolygonHandler"
+});
+
 OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   mouseDragStart:null,
   map:null,
@@ -37,8 +131,9 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   localImageBounds:null,
   upIsUpAngle:null,
   northAngle:null,
+  fillAreaFlag:true,
 
-  EVENT_TYPES:["measureAddPointFinished", "measureRemoved"],
+  EVENT_TYPES:["featureDone", "featureRemoved"],
    destroy : function() 
    {
         this.events.un ({
@@ -66,17 +161,57 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     this.vectorLayer = new OpenLayers.Layer.Vector();
     this.map.addLayer(this.vectorLayer);
     this.events = new OpenLayers.Events(this, this.eventDiv, this.EVENT_TYPES, true);
-
     this.drawControls = {
                     point: new OpenLayers.Control.DrawFeature(this.vectorLayer,
-                        OpenLayers.Handler.Point),
+                        //OpenLayers.Handler.Point) ,
+                        OMAR.OpenLayersPointHandler, {
+                          handlerOptions:{
+                            manipulator:this
+                          }
+                        }),
                     line: new OpenLayers.Control.DrawFeature(this.vectorLayer,
-                        OpenLayers.Handler.Path),
+                       //OpenLayers.Handler.Path),
+                        OMAR.OpenLayersPathHandler, {
+                          handlerOptions:{
+                            manipulator: this
+                          }
+                        }),
                     polygon: new OpenLayers.Control.DrawFeature(this.vectorLayer,
-                        OpenLayers.Handler.Polygon)//,
+                        //OpenLayers.Handler.Polygon)//,
+                        OMAR.OpenLayersPolygonHandler, {
+                          handlerOptions:{
+                            manipulator:this
+                          }
+                        })
                  };
+
+         this.vectorLayer.events.on({
+            "beforefeaturesadded": function(){
+                //this.events.triggerEvent("measureAddPointFinished");
+             this.vectorLayer.destroyFeatures();
+            },
+            scope:this
+          });
+//          this.drawControls.line.events.on({
+//            //"featureadded": function (){alert("HERE")},
+//            scope: this
+//          });
+
     this.map.addControl(this.drawControls.line);
     this.map.addControl(this.drawControls.polygon);
+
+    this.drawControls.line.handler.customEvents.on({
+      "featureDone": function(feature){
+        this.events.triggerEvent("featureDone", feature);//{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
+      },
+      scope:this
+    });
+    this.drawControls.polygon.handler.customEvents.on({
+      "featureDone": function(feature){
+        this.events.triggerEvent("featureDone", feature);//{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
+      },
+      scope:this
+    });
     if(this.containerDiv)
     {
       if(!this.annotationDiv)
@@ -115,7 +250,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     OpenLayers.Event.observe(window,   "mousewheel",     this.wheelListener);
     OpenLayers.Event.observe(document, "mousewheel",     this.wheelListener);
     this.containerResized();
-  },
+ },
    setToolMode: function(mode)
    {
         var stateChangedFlag = (mode != this.toolMode);
@@ -164,14 +299,17 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
                 break;
             }
         }
-        if(removedMeasurements) this.events.triggerEvent("measureRemoved");
+        if(removedMeasurements) this.events.triggerEvent("featureRemoved");
     },
    adaptOpenLayersXY : function(evt, pt){
 
-    evt.xy={x:pt.x,y:pt.y};
-    evt.xy.equals = function(xy){
-        return ((this.x == xy.x)&&(this.y == xy.y));
-    }
+      evt.xy = this.events.getMousePosition(evt);
+      evt.xy.x = pt.x;
+      evt.xy.y = pt.y;
+//    evt.xy={x:pt.x,y:pt.y};
+//    evt.xy.equals = function(xy){
+//        return ((this.x == xy.x)&&(this.y == xy.y));
+//    }
     return evt;
    },
   getAffineParams : function(){
@@ -191,32 +329,92 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
             (r1.height==r2.height));
   },
   setChildDivDimensions: function(div){
-      var wRad = 0;//Math.round(this.containerDivRegion.width*0.5*Math.sqrt(2));
-      var hRad = 0;//Math.round(this.containerDivRegion.height*0.5*Math.sqrt(2));
+      var center = new OmarPoint(this.containerDivRegion.width*0.5, this.containerDivRegion.height*0.5);
+      //var maxValueRadius = maxValue*0.5;
+      var tempAffine = new OmarAffineParams();
+      tempAffine.rotate = this.affineParams.rotate;
+      var m = tempAffine.toMatrix();
 
-      var newW = this.containerDivRegion.width+wRad*2; //Math.round(max*1.5);
-      var newH = this.containerDivRegion.height+hRad*2; //Math.round(max*1.5);
+
+      var wRad      = this.containerDivRegion.width*0.5;
+      var hRad      = this.containerDivRegion.height*0.5;
+      var p1        = new OmarPoint(-wRad, hRad);
+      var p2        = new OmarPoint(wRad, hRad);
+      var p3        = new OmarPoint(wRad, -hRad);
+      var p4        = new OmarPoint(-wRad,-hRad);
+
+// IE's have problems and there is an offset when I rotate.  Until we can figure it out
+// we will disable viewport filling when rotating the div
+//
+      if((OpenLayers.BROWSER_NAME != "msie")&&this.fillAreaFlag)
+      {
+        p1  = m.transform(p1);
+        p2  = m.transform(p2);
+        p3  = m.transform(p3);
+        p4  = m.transform(p4);
+      }
+
+      var minX = wRad + Math.min(Math.min(Math.min(p1.x, p2.x), p3.x), p4.x);
+      var maxX = wRad + Math.max(Math.max(Math.max(p1.x, p2.x), p3.x), p4.x);
+      var minY = hRad + Math.min(Math.min(Math.min(p1.y, p2.y), p3.y), p4.y);
+      var maxY = hRad + Math.max(Math.max(Math.max(p1.y, p2.y), p3.y), p4.y);
+      
+
+     // var top  = Math.round(minY);
+      var w    = Math.abs(Math.round(maxX-minX));
+      var h    = Math.abs(Math.round(maxY-minY));
+      var left = Math.round(center.x-(w*0.5));
+      var top  = Math.round(center.y-(h*0.5));
+
+ //    alert("left: " + left + "\n" +
+ //           "top: " + top + "\n" +
+ //           "w: " + w + "\n" +
+ //           "h: " + h + "\n" +
+ //           "Old w: " + this.containerDivRegion.width + "\n" +
+ //           "Old h: " + this.containerDivRegion.height);
+      //var extraW    = 0;//wRad*extension;
+      //var extraH    = 0;//hRad*extension;
+
+      //var wRad = 0;//Math.round(this.containerDivRegion.width*0.5*Math.sqrt(2));
+      //var hRad = 0;//Math.round(this.containerDivRegion.height*0.5*Math.sqrt(2));
+      //var wRad = this.containerDivRegion.width*0.5*extension;//maxValueRadius*extension;
+      //var hRad = this.containerDivRegion.height*0.5*extension;
+
+      //var newW = wRad*2;//this.containerDivRegion.width+wRad*2; //Math.round(max*1.5);
+      //var newH = hRad*2;//this.containerDivRegion.height+hRad*2; //Math.round(max*1.5);
+
+
+      //var newW = this.containerDivRegion.width + 2*extraW;
+      //var newH = this.containerDivRegion.height + 2*extraH;
 
       // now center about container
-      var shiftLeft = -Math.round(wRad);//Math.round((containerCenterX-centerX)/2);
-      var shiftTop  = -Math.round(hRad);//Math.round((containerCenterY-centerY)/2);
+      //var shiftLeft = -Math.round(extraW);//Math.round((containerCenterX-centerX)/2);
+      //var shiftTop  = -Math.round(extraH);//Math.round((containerCenterY-centerY)/2);
       
-      div.style.left   = shiftLeft + "px";
-      div.style.top    = shiftTop + "px";
-      div.style.width  = newW+"px";
-      div.style.height = newH+"px";
-     },
+     // YAHOO.util.Dom.setStyle(div, "left", left);
+     // YAHOO.util.Dom.setStyle(div, "top", top);
+     // YAHOO.util.Dom.setStyle(div, "width", w);
+     // YAHOO.util.Dom.setStyle(div, "height", h);
+     // div.style.left   = left + "px";//shiftLeft + "px";
+     // div.style.top    = top + "px";//shiftTop + "px";
+     // div.style.width  = w + "px";
+     // div.style.height = h + "px";
+
+
+     OpenLayers.Util.modifyDOMElement(div, null, {x:left,y:top}, {w:w,h:h});
+   },
   containerResized: function(){
       var center = this.map.getCenter();
       var region = YAHOO.util.Region.getRegion(this.containerDiv);
       this.containerDivRegion = region;
-      //alert(region);
       this.setChildDivDimensions(this.map.div);
       this.setChildDivDimensions(this.eventDiv);
       this.setChildDivDimensions(this.annotationDiv);
 
       this.updateTransform();
-      this.map.updateSize();
+
+      this.map.updateSize(); // tell the map to adjust itself
+
       this.map.setCenter(center, this.map.getZoom());
   },  
   checkResize: function(){
@@ -411,12 +609,12 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         case OMAR.ToolModeType.LINE:
         case OMAR.ToolModeType.POLYGON:
         {
-            var wasDrawing = this.currentDrawControl.handler.drawing;
+            //var wasDrawing = this.currentDrawControl.handler.drawing;
             this.currentDrawControl.handler.dblclick(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
-            if(wasDrawing&&!this.currentDrawControl.handler.drawing)
-            {
-                this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
-            }
+            //if(wasDrawing&&!this.currentDrawControl.handler.drawing)
+            //{
+            //    this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
+            //}
             OpenLayers.Event.stop(evt);  
            break;
         }
@@ -520,10 +718,10 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         case OMAR.ToolModeType.LINE:
         case OMAR.ToolModeType.POLYGON:
         {
-            if(!this.currentDrawControl.handler.drawing)
-                 this.vectorLayer.destroyFeatures();
-
-            this.currentDrawControl.handler.mousedown(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+            //if(!this.currentDrawControl.handler.drawing)
+             //    this.vectorLayer.destroyFeatures();
+             this.currentDrawControl.handler.mousedown(evt);
+            //this.currentDrawControl.handler.mousedown(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
             OpenLayers.Event.stop(evt); 
             document.onselectstart = OpenLayers.Function.False;
            break;
@@ -587,17 +785,19 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         case OMAR.ToolModeType.LINE:
         case OMAR.ToolModeType.POLYGON:
         {
-           if(this.currentDrawControl.handler.drawing)
-           {
-                this.currentDrawControl.handler.mouseup(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+          // if(this.currentDrawControl.handler.drawing)
+           //{
+
+                this.currentDrawControl.handler.mouseup(evt);
+                //this.currentDrawControl.handler.mouseup(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
                 OpenLayers.Event.stop(evt); 
 
                 // check for triggering finished 
-                if(!this.currentDrawControl.handler.drawing)
-                {
-                 this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
-                }
-           }
+               // if(!this.currentDrawControl.handler.drawing)
+               // {
+                // this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
+               // }
+           //}
            document.onselectstart = null;
            break;
         }
@@ -692,11 +892,9 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       case OMAR.ToolModeType.LINE:
       case OMAR.ToolModeType.POLYGON:
       {
-        if(this.currentDrawControl.handler.drawing)
-        {
-            this.currentDrawControl.handler.mousemove(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
-            OpenLayers.Event.stop(evt);  
-        }  
+          this.currentDrawControl.handler.mousemove(evt);
+            //this.currentDrawControl.handler.mousemove(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+          OpenLayers.Event.stop(evt);  
         break;
      }
     }
