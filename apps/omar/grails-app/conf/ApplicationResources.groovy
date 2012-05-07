@@ -196,6 +196,21 @@ resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
   }
 
 
+  mainG2 {
+    resource url: [dir: 'css', file: 'mainG2.css']
+    resource url: [dir: 'css', file: 'omar-2.0.css']
+
+    resource url: [plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css']
+    resource url: [plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css']
+
+    resource url: [dir: 'js', file: 'application.js']
+    //resource url: [dir: 'js/prototype', file: 'prototype.js']
+
+    resource url: [plugin: 'yui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js']
+    resource url: [plugin: 'yui', dir: 'js/yui/element', file: 'element-min.js']
+    resource url: [plugin: 'yui', dir: 'js/yui/layout', file: 'layout-min.js']
+  }
+
   imageSpacePageLayout {
 
     resource url: [dir: 'css', file: 'main.css']

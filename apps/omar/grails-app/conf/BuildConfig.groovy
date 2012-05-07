@@ -7,7 +7,7 @@ grails.project.test.reports.dir = "target/test-reports"
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 grails.project.dependency.resolution = {
   // inherit Grails' default dependencies
-  inherits("global") {
+  inherits( "global" ) {
     // uncomment to disable ehcache
     // excludes 'ehcache'
   }
@@ -46,9 +46,9 @@ grails.project.dependency.resolution = {
     runtime ":p6spy:0.5"
     runtime ":yui:2.8.2.1"
     runtime ":resources:1.1.6"
- //   runtime ":zipped-resources:1.0"
+    //   runtime ":zipped-resources:1.0"
     runtime ":yui-minify-resources:0.1.5"
-
+    compile ":filterpane:2.0.1.1"
   }
 }
 
@@ -67,6 +67,5 @@ grails.plugin.location.omarRss = "../../plugins/omar-rss"
 //grails.plugin.location.omarScheduler = "../../plugins/omar-scheduler"
 grails.plugin.location.omarSuperoverlay = "../../plugins/omar-superoverlay"
 //grails.plugin.location.omarMobile="../../plugins/omar-mobile"
-
 
 //grails.plugin.location.geodata = "../../plugins/geodata"
