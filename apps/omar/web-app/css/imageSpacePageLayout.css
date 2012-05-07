@@ -12,11 +12,7 @@ body {
     overflow: hidden;
 }
 
-#compassMap {
-    height: 75;
-    width: 75;
-    position: absolute;
-}
+
 
 #exportMenu, #viewMenu {
     z-index: 99999;
@@ -25,6 +21,12 @@ body {
 #homeMenu {
     background: url(../images/skin/house.png) left no-repeat;
     z-index: 99999;
+}
+
+#compassDivId {
+    width: 50;
+    position: absolute;
+    z-index:15;
 }
 
 #map {
