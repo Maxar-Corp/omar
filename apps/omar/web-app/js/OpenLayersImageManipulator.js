@@ -150,6 +150,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
    {
     this.affineParams =  new OmarAffineParams();
     this.affineM = new OmarMatrix3x3();
+
    },
    setup : function(containerDiv, mapObj, annDiv, topDiv, compass){
     this.map           = mapObj;
@@ -196,7 +197,6 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 //            //"featureadded": function (){alert("HERE")},
 //            scope: this
 //          });
-
     this.map.addControl(this.drawControls.line);
     this.map.addControl(this.drawControls.polygon);
 
@@ -610,7 +610,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         case OMAR.ToolModeType.POLYGON:
         {
             //var wasDrawing = this.currentDrawControl.handler.drawing;
-            this.currentDrawControl.handler.dblclick(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+            if(this.currentDrawControl) this.currentDrawControl.handler.dblclick(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
             //if(wasDrawing&&!this.currentDrawControl.handler.drawing)
             //{
             //    this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
@@ -672,10 +672,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
                 if(this.annotationDiv!=null) this.annotationDiv.appendChild(this.zoomBox);
                 OpenLayers.Event.stop(evt);  
             }
-            else
-            {
-                this.map.div.style.cursor = "move";
-            }
+            this.map.div.style.cursor = "move";
             document.onselectstart = OpenLayers.Function.False;
             break;
         }
@@ -734,76 +731,6 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
           YAHOO.util.Event.addListener(document, "mouseup", this.mouseup, null, this);
       }
     },
-    mouseup: function(evt){
-       this.editMode = false;
-       if(this.documentListenersAdded)
-       {
-           YAHOO.util.Event.removeListener(document, "mousemove", this.mousemove);
-           YAHOO.util.Event.removeListener(document, "mouseup", this.mouseup);
-           this.documentListenersAdded = false;
-       }
-       switch(this.toolMode)
-       {
-        case OMAR.ToolModeType.BOX_AOI:
-        {
-           if(this.selectionBox&&this.mouseDragStart)
-           {
-              OpenLayers.Event.stop(evt);  
-           }
-           document.onselectstart = null;
-           this.mouseDragStart = null;
-           this.map.div.style.cursor = ""; 
-
-           break; 
-        } 
-        case OMAR.ToolModeType.PAN_ZOOM:
-        case OMAR.ToolModeType.ZOOM_BOX:
-        {
-
-          if (OMAR.ToolModeType.PAN_ZOOM&&(!OpenLayers.Event.isLeftClick(evt))) {
-             return;
-          }
-          if (this.zoomBox) 
-          {
-            this.zoomBoxEnd(evt);
-            OpenLayers.Event.stop(evt);  
-            this.eventDiv.style.cursor = "";
-          } 
-          else 
-          {
-             if (this.performedDrag) 
-             {
-                this.map.setCenter(this.map.center);
-                OpenLayers.Event.stop(evt);  
-             }
-          }
-          document.onselectstart = null;
-          this.mouseDragStart = null;
-          this.map.div.style.cursor = "";  
-          break;
-        }
-        case OMAR.ToolModeType.LINE:
-        case OMAR.ToolModeType.POLYGON:
-        {
-          // if(this.currentDrawControl.handler.drawing)
-           //{
-
-                this.currentDrawControl.handler.mouseup(evt);
-                //this.currentDrawControl.handler.mouseup(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
-                OpenLayers.Event.stop(evt); 
-
-                // check for triggering finished 
-               // if(!this.currentDrawControl.handler.drawing)
-               // {
-                // this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
-               // }
-           //}
-           document.onselectstart = null;
-           break;
-        }
-
-    }
-  },
   mousemove: function(evt){
      var updateBox = function(evt, box, scopePtr, translateOnly) {
 
@@ -856,7 +783,8 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
                     updateBox(evt, this.selectionBox, this, false);
                 }
             }
-            OpenLayers.Event.stop(evt);  
+             this.map.div.style.cursor = "move";
+//           OpenLayers.Event.stop(evt);  
            }
            break;
         }
@@ -893,8 +821,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       case OMAR.ToolModeType.POLYGON:
       {
           this.currentDrawControl.handler.mousemove(evt);
-            //this.currentDrawControl.handler.mousemove(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
-          OpenLayers.Event.stop(evt);  
+          //OpenLayers.Event.stop(evt);  
         break;
      }
     }
@@ -903,6 +830,92 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         this.mouseDragStart = this.mouseToPoint(evt);
     }
    },
+   mouseup: function(evt){
+       var setCenterForLayers = function(scopePtr){
+          var extent = scopePtr.map.getExtent();
+          var idx = 0;
+          for(idx = 0; idx < scopePtr.map.layers.length; ++idx)
+          {
+            scopePtr.map.layers[idx].moveTo(extent);
+          }
+
+       }
+       this.mousePosition = this.mouseToPoint(evt);
+       this.editMode = false;
+       if(this.documentListenersAdded)
+       {
+           YAHOO.util.Event.removeListener(document, "mousemove", this.mousemove);
+           YAHOO.util.Event.removeListener(document, "mouseup", this.mouseup);
+           this.documentListenersAdded = false;
+       }
+       switch(this.toolMode)
+       {
+        case OMAR.ToolModeType.BOX_AOI:
+        {
+           if(this.selectionBox&&this.mouseDragStart)
+           {
+              OpenLayers.Event.stop(evt);  
+           }
+           document.onselectstart = null;
+           this.mouseDragStart = null;
+           this.map.div.style.cursor = ""; 
+
+           break; 
+        } 
+        case OMAR.ToolModeType.PAN_ZOOM:
+        case OMAR.ToolModeType.ZOOM_BOX:
+        {
+          if (OMAR.ToolModeType.PAN_ZOOM&&(!OpenLayers.Event.isLeftClick(evt))) {
+             return;
+          }
+          if (this.zoomBox) 
+          {
+            this.zoomBoxEnd(evt);
+            OpenLayers.Event.stop(evt);  
+            this.eventDiv.style.cursor = "";
+          } 
+          else 
+          {
+             if (this.performedDrag) 
+             {
+                 // now lets make sure all layers are refreshed to the current
+                 // extents when drag finished
+                 setCenterForLayers(this);
+                 
+                 //this.map.setCenter(this.map.center);
+
+                 //this.map.baseLayer.moveTo(this.map.getExtent());
+
+                 OpenLayers.Event.stop(evt);  
+             }
+          }
+          document.onselectstart = null;
+          this.mouseDragStart = null;
+          this.map.div.style.cursor = "";  
+          break;
+        }
+        case OMAR.ToolModeType.LINE:
+        case OMAR.ToolModeType.POLYGON:
+        {
+          // if(this.currentDrawControl.handler.drawing)
+           //{
+
+                this.currentDrawControl.handler.mouseup(evt);
+                //this.currentDrawControl.handler.mouseup(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
+                OpenLayers.Event.stop(evt); 
+
+                // check for triggering finished 
+               // if(!this.currentDrawControl.handler.drawing)
+               // {
+                // this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
+               // }
+           //}
+           document.onselectstart = null;
+           break;
+        }
+
+    }
+  },
    zoomBoxEnd:function(evt){
       var currentPoint = this.mouseToPoint(evt);
       if (this.mouseDragStart != null) {
