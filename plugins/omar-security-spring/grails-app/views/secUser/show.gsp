@@ -1,154 +1,154 @@
 <%@ page import="org.ossim.omar.security.SecUser" %>
-<%@ page import="org.ossim.omar.security.SecRole" %>
-<%@ page import="org.ossim.omar.security.SecUserSecRole" %>
-
+<!doctype html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="generatedViews"/>
-  <g:set var="entityName" value="${message(code: 'secUser.label', default: 'SecUser')}"/>
+  <meta name="layout" content="mainG2">
+  <g:set var="entityName" value="${message( code: 'secUser.label', default: 'SecUser' )}"/>
   <title><g:message code="default.show.label" args="[entityName]"/></title>
 </head>
+
 <body>
+
 <content tag="content">
-  <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
-    <span class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></span>
-    <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]"/></g:link></span>
+  <a href="#show-secUser" class="skip" tabindex="-1">
+    <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
+  </a>
+
+  <div class="nav" role="navigation">
+    <ul>
+      <li><a class="home" href="${createLink( uri: '/' )}"><g:message code="default.home.label"/></a></li>
+      <li><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
+      <li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]"/></g:link></li>
+    </ul>
   </div>
-  <div class="body">
+
+  <div id="show-secUser" class="content scaffold-show" role="main">
     <h1><g:message code="default.show.label" args="[entityName]"/></h1>
     <g:if test="${flash.message}">
-      <div class="message">${flash.message}</div>
+      <div class="message" role="status">${flash.message}</div>
     </g:if>
-    <div class="dialog">
-      <table>
-        <tbody>
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="secUser.id.label" default="Id"/></td>
+    <ol class="property-list secUser">
 
-          <td valign="top" class="value">${fieldValue(bean: secUserInstance, field: "id")}</td>
+      <g:if test="${secUserInstance?.username}">
+        <li class="fieldcontain">
+          <span id="username-label" class="property-label"><g:message code="secUser.username.label"
+                                                                      default="Username"/></span>
 
-        </tr>
+          <span class="property-value" aria-labelledby="username-label"><g:fieldValue bean="${secUserInstance}"
+                                                                                      field="username"/></span>
 
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="secUser.username.label" default="Username"/></td>
+        </li>
+      </g:if>
 
-          <td valign="top" class="value">${fieldValue(bean: secUserInstance, field: "username")}</td>
+      <g:if test="${secUserInstance?.password}">
+        <li class="fieldcontain">
+          <span id="password-label" class="property-label"><g:message code="secUser.password.label"
+                                                                      default="Password"/></span>
 
-        </tr>
+          <span class="property-value" aria-labelledby="password-label"><g:fieldValue bean="${secUserInstance}"
+                                                                                      field="password"/></span>
 
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="secUser.password.label" default="Password"/></td>
+        </li>
+      </g:if>
 
-            <!--
-            <td valign="top" class="value">${fieldValue(bean: secUserInstance, field: "password")}</td>
-            -->
-            <td valign="top" class="value">********************</td>
+      <g:if test="${secUserInstance?.userRealName}">
+        <li class="fieldcontain">
+          <span id="userRealName-label" class="property-label"><g:message code="secUser.userRealName.label"
+                                                                          default="User Real Name"/></span>
 
-        </tr>
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="secUser.userRealName.label" default="User Real Name"/></td>
+          <span class="property-value" aria-labelledby="userRealName-label"><g:fieldValue bean="${secUserInstance}"
+                                                                                          field="userRealName"/></span>
 
-          <td valign="top" class="value">${fieldValue(bean: secUserInstance, field: "userRealName")}</td>
+        </li>
+      </g:if>
 
-        </tr>
+      <g:if test="${secUserInstance?.email}">
+        <li class="fieldcontain">
+          <span id="email-label" class="property-label"><g:message code="secUser.email.label" default="Email"/></span>
 
+          <span class="property-value" aria-labelledby="email-label"><g:fieldValue bean="${secUserInstance}"
+                                                                                   field="email"/></span>
 
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="secUser.organization.label" default="Organization"/></td>
+        </li>
+      </g:if>
 
-          <td valign="top" class="value">${fieldValue(bean: secUserInstance, field: "organization")}</td>
+      <g:if test="${secUserInstance?.organization}">
+        <li class="fieldcontain">
+          <span id="organization-label" class="property-label"><g:message code="secUser.organization.label"
+                                                                          default="Organization"/></span>
 
-        </tr>
+          <span class="property-value" aria-labelledby="organization-label"><g:fieldValue bean="${secUserInstance}"
+                                                                                          field="organization"/></span>
 
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="secUser.phoneNumber.label" default="Phone Number"/></td>
+        </li>
+      </g:if>
 
-          <td valign="top" class="value">${fieldValue(bean: secUserInstance, field: "phoneNumber")}</td>
+      <g:if test="${secUserInstance?.phoneNumber}">
+        <li class="fieldcontain">
+          <span id="phoneNumber-label" class="property-label"><g:message code="secUser.phoneNumber.label"
+                                                                         default="Phone Number"/></span>
 
-        </tr>
+          <span class="property-value" aria-labelledby="phoneNumber-label"><g:fieldValue bean="${secUserInstance}"
+                                                                                         field="phoneNumber"/></span>
 
+        </li>
+      </g:if>
 
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="secUser.email.label" default="Email"/></td>
+      <g:if test="${secUserInstance?.accountExpired}">
+        <li class="fieldcontain">
+          <span id="accountExpired-label" class="property-label"><g:message code="secUser.accountExpired.label"
+                                                                            default="Account Expired"/></span>
 
-          <td valign="top" class="value">${fieldValue(bean: secUserInstance, field: "email")}</td>
+          <span class="property-value" aria-labelledby="accountExpired-label"><g:formatBoolean
+              boolean="${secUserInstance?.accountExpired}"/></span>
 
-        </tr>
+        </li>
+      </g:if>
 
+      <g:if test="${secUserInstance?.accountLocked}">
+        <li class="fieldcontain">
+          <span id="accountLocked-label" class="property-label"><g:message code="secUser.accountLocked.label"
+                                                                           default="Account Locked"/></span>
 
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="secUser.enabled.label" default="Enabled"/></td>
+          <span class="property-value" aria-labelledby="accountLocked-label"><g:formatBoolean
+              boolean="${secUserInstance?.accountLocked}"/></span>
 
-          <td valign="top" class="value"><g:formatBoolean boolean="${secUserInstance?.enabled}"/></td>
+        </li>
+      </g:if>
 
-        </tr>
+      <g:if test="${secUserInstance?.enabled}">
+        <li class="fieldcontain">
+          <span id="enabled-label" class="property-label"><g:message code="secUser.enabled.label"
+                                                                     default="Enabled"/></span>
 
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="secUser.accountExpired.label" default="Account Expired"/></td>
+          <span class="property-value" aria-labelledby="enabled-label"><g:formatBoolean
+              boolean="${secUserInstance?.enabled}"/></span>
 
-          <td valign="top" class="value"><g:formatBoolean boolean="${secUserInstance?.accountExpired}"/></td>
+        </li>
+      </g:if>
 
-        </tr>
+      <g:if test="${secUserInstance?.passwordExpired}">
+        <li class="fieldcontain">
+          <span id="passwordExpired-label" class="property-label"><g:message code="secUser.passwordExpired.label"
+                                                                             default="Password Expired"/></span>
 
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="secUser.accountLocked.label" default="Account Locked"/></td>
+          <span class="property-value" aria-labelledby="passwordExpired-label"><g:formatBoolean
+              boolean="${secUserInstance?.passwordExpired}"/></span>
 
-          <td valign="top" class="value"><g:formatBoolean boolean="${secUserInstance?.accountLocked}"/></td>
+        </li>
+      </g:if>
 
-        </tr>
-
-        <tr class="prop">
-          <td valign="top" class="name"><g:message code="secUser.passwordExpired.label" default="Password Expired"/></td>
-
-          <td valign="top" class="value"><g:formatBoolean boolean="${secUserInstance?.passwordExpired}"/></td>
-
-        </tr>
-
-        <tr class="prop">
-          <td valign="top" class="name">Roles:</td>
-          <td valign="top" class="value">
-            <ul>
-              <g:collect in="${secUserInstance.authorities}" expr="${it.authority}">
-                <li>${it?.substring(5)?.toLowerCase()}</li>
-              </g:collect>
-            </ul>
-          </td>
-        </tr>
-
-        </tbody>
-      </table>
-
-      <hr/>
-
-      <h1>Roles:</h1>
-
-      <g:set var="userRoles" value="${secUserInstance.authorities}"/>
-      <g:set var="allRoles" value="${SecRole.list().sort { it.authority } }"/>
-
-      <table>
-        <tbody>
-        <g:each var="role" in="${allRoles}">
-          <tr class="prop">
-            <td valign="top" class="name">
-              <label for="${role.authority}">${role.authority}</label>
-            </td>
-            <td valign="top">
-              ${role.authority in userRoles.authority}
-            </td>
-          </tr>
-        </g:each>
-        </tbody>
-      </table>
-    </div>
-    <div class="buttons">
-      <g:form>
+    </ol>
+    <g:form>
+      <fieldset class="buttons">
         <g:hiddenField name="id" value="${secUserInstance?.id}"/>
-        <span class="button"><g:actionSubmit class="edit" action="edit" value="${message(code: 'default.button.edit.label', default: 'Edit')}"/></span>
-        <span class="button"><g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');"/></span>
-      </g:form>
-    </div>
+        <g:link class="edit" action="edit" id="${secUserInstance?.id}"><g:message code="default.button.edit.label"
+                                                                                  default="Edit"/></g:link>
+        <g:actionSubmit class="delete" action="delete"
+                        value="${message( code: 'default.button.delete.label', default: 'Delete' )}"
+                        onclick="return confirm('${message( code: 'default.button.delete.confirm.message', default: 'Are you sure?' )}');"/>
+      </fieldset>
+    </g:form>
   </div>
 </content>
 </body>

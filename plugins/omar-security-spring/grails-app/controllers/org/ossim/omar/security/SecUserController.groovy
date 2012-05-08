@@ -1,53 +1,72 @@
 package org.ossim.omar.security
 
 import au.com.bytecode.opencsv.CSVWriter
-import org.ossim.omar.security.SecUser
-import org.ossim.omar.security.SecUserSecRole
-import org.ossim.omar.security.SecRole
+import org.grails.plugin.filterpane.FilterPaneUtils
 
 class SecUserController
 {
 
   static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
-  def filterService
+  def filterPaneService
 
   def index = {
-    redirect(action: "list", params: params)
+    redirect( action: "list", params: params )
   }
 
-  def list = {
+  def list( )
+  {
     if ( !params.max )
-    { params.max = 100 }
-    params.max = Math.min(params.max ? params.int('max') : 10, 100)
-    [secUserInstanceList: SecUser.list(params), secUserInstanceTotal: SecUser.count()]
+    {
+      params.max = 10
+    }
+    render( view: 'list',
+            model: [secUserInstanceList: filterPaneService.filter( params, SecUser ),
+                    secUserInstanceTotal: filterPaneService.count( params, SecUser ),
+                    filterParams: FilterPaneUtils.extractFilterParams( params ), params: params] )
   }
 
-  def create = {
+  def filter( )
+  {
+    if ( !params.max )
+    {
+      params.max = 10
+    }
+    render( view: 'list',
+            model: [secUserInstanceList: filterPaneService.filter( params, SecUser ),
+                    secUserInstanceTotal: filterPaneService.count( params, SecUser ),
+                    filterParams: FilterPaneUtils.extractFilterParams( params ),
+                    params: params] )
+  }
+
+  def create( )
+  {
     def secUserInstance = new SecUser()
     secUserInstance.properties = params
     return [secUserInstance: secUserInstance]
   }
 
-  def save = {
-    def secUserInstance = new SecUser(params)
-    if ( secUserInstance.save(flush: true) )
+  def save( )
+  {
+    def secUserInstance = new SecUser( params )
+    if ( secUserInstance.save( flush: true ) )
     {
-      flash.message = "${message(code: 'default.created.message', args: [message(code: 'secUser.label', default: 'SecUser'), secUserInstance.id])}"
-      redirect(action: "show", id: secUserInstance.id)
+      flash.message = "${message( code: 'default.created.message', args: [message( code: 'secUser.label', default: 'SecUser' ), secUserInstance.id] )}"
+      redirect( action: "show", id: secUserInstance.id )
     }
     else
     {
-      render(view: "create", model: [secUserInstance: secUserInstance])
+      render( view: "create", model: [secUserInstance: secUserInstance] )
     }
   }
 
-  def show = {
-    def secUserInstance = SecUser.get(params.id)
+  def show( )
+  {
+    def secUserInstance = SecUser.get( params.id )
     if ( !secUserInstance )
     {
-      flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'secUser.label', default: 'SecUser'), params.id])}"
-      redirect(action: "list")
+      flash.message = "${message( code: 'default.not.found.message', args: [message( code: 'secUser.label', default: 'SecUser' ), params.id] )}"
+      redirect( action: "list" )
     }
     else
     {
@@ -55,12 +74,13 @@ class SecUserController
     }
   }
 
-  def edit = {
-    def secUserInstance = SecUser.get(params.id)
+  def edit( )
+  {
+    def secUserInstance = SecUser.get( params.id )
     if ( !secUserInstance )
     {
-      flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'secUser.label', default: 'SecUser'), params.id])}"
-      redirect(action: "list")
+      flash.message = "${message( code: 'default.not.found.message', args: [message( code: 'secUser.label', default: 'SecUser' ), params.id] )}"
+      redirect( action: "list" )
     }
     else
     {
@@ -68,8 +88,9 @@ class SecUserController
     }
   }
 
-  def update = {
-    def secUserInstance = SecUser.get(params.id)
+  def update( )
+  {
+    def secUserInstance = SecUser.get( params.id )
     if ( secUserInstance )
     {
       if ( params.version )
@@ -78,8 +99,8 @@ class SecUserController
         if ( secUserInstance.version > version )
         {
 
-          secUserInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'secUser.label', default: 'SecUser')] as Object[], "Another user has updated this SecUser while you were editing")
-          render(view: "edit", model: [secUserInstance: secUserInstance])
+          secUserInstance.errors.rejectValue( "version", "default.optimistic.locking.failure", [message( code: 'secUser.label', default: 'SecUser' )] as Object[], "Another user has updated this SecUser while you were editing" )
+          render( view: "edit", model: [secUserInstance: secUserInstance] )
           return
         }
       }
@@ -88,67 +109,59 @@ class SecUserController
 
       //println params.sort()
 
-      def roleNames = params.keySet().grep { it.startsWith("ROLE_")}
+      def roleNames = params.keySet().grep { it.startsWith( "ROLE_" )}
 
-      SecUserSecRole.removeAll(secUserInstance)
-      roleNames?.each { SecUserSecRole.create(secUserInstance, SecRole.findByAuthority(it))}
+      SecUserSecRole.removeAll( secUserInstance )
+      roleNames?.each { SecUserSecRole.create( secUserInstance, SecRole.findByAuthority( it ) )}
 
-      if ( !secUserInstance.hasErrors() && secUserInstance.save(flush: true) )
+      if ( !secUserInstance.hasErrors() && secUserInstance.save( flush: true ) )
       {
-        flash.message = "${message(code: 'default.updated.message', args: [message(code: 'secUser.label', default: 'SecUser'), secUserInstance.id])}"
-        redirect(action: "show", id: secUserInstance.id)
+        flash.message = "${message( code: 'default.updated.message', args: [message( code: 'secUser.label', default: 'SecUser' ), secUserInstance.id] )}"
+        redirect( action: "show", id: secUserInstance.id )
       }
       else
       {
-        render(view: "edit", model: [secUserInstance: secUserInstance])
+        render( view: "edit", model: [secUserInstance: secUserInstance] )
       }
     }
     else
     {
-      flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'secUser.label', default: 'SecUser'), params.id])}"
-      redirect(action: "list")
+      flash.message = "${message( code: 'default.not.found.message', args: [message( code: 'secUser.label', default: 'SecUser' ), params.id] )}"
+      redirect( action: "list" )
     }
   }
 
-  def delete = {
-    def secUserInstance = SecUser.get(params.id)
+  def delete( )
+  {
+    def secUserInstance = SecUser.get( params.id )
     if ( secUserInstance )
     {
       try
       {
         SecUser.withTransaction {
-          SecUserSecRole.removeAll(secUserInstance)
-          secUserInstance.delete(flush: true)
+          SecUserSecRole.removeAll( secUserInstance )
+          secUserInstance.delete( flush: true )
         }
 
-        flash.message = "${message(code: 'default.deleted.message', args: [message(code: 'secUser.label', default: 'SecUser'), params.id])}"
-        redirect(action: "list")
+        flash.message = "${message( code: 'default.deleted.message', args: [message( code: 'secUser.label', default: 'SecUser' ), params.id] )}"
+        redirect( action: "list" )
       }
-      catch (org.springframework.dao.DataIntegrityViolationException e)
+      catch ( org.springframework.dao.DataIntegrityViolationException e )
       {
-        flash.message = "${message(code: 'default.not.deleted.message', args: [message(code: 'secUser.label', default: 'SecUser'), params.id])}"
-        redirect(action: "show", id: params.id)
+        flash.message = "${message( code: 'default.not.deleted.message', args: [message( code: 'secUser.label', default: 'SecUser' ), params.id] )}"
+        redirect( action: "show", id: params.id )
       }
     }
     else
     {
-      flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'secUser.label', default: 'SecUser'), params.id])}"
-      redirect(action: "list")
+      flash.message = "${message( code: 'default.not.found.message', args: [message( code: 'secUser.label', default: 'SecUser' ), params.id] )}"
+      redirect( action: "list" )
     }
   }
 
-  def export = {
-
-    def newParams = [
-            filterBean: params.exportFilterBean,
-            filterField: params.exportFilterField,
-            filterCriteria: params.exportFilterCriteria,
-            filterValue: params.exportFilterValue,
-            max: SecUser.count()
-    ]
-
-    def useFilter = newParams.filterField && newParams.filterCriteria && newParams.filterValue
-    def users = (useFilter) ? filterService.filter(newParams)['secUserInstanceList'] : SecUser.list()
+  def export( )
+  {
+    def users = filterPaneService.filter( params, SecUser )
 
     def labels = ['Id', 'Username', 'Real Name', 'Organization', 'Phone Number', 'E-mail', 'Enabled', 'Account Locked', 'Account Expired', 'Password Expired']
     def fields = ['id', 'username', 'userRealName', 'organization', 'phoneNumber', 'email', 'enabled', 'accountLocked', 'accountExpired', 'passwordExpired']
@@ -158,10 +171,10 @@ class SecUserController
     def prefix = "omar-users-"
     def workDir = grailsApplication.config.export.workDir ?: "/tmp"
 
-    def csvFile = File.createTempFile(prefix, ".csv", workDir as File)
-    def csvWriter = new CSVWriter(csvFile.newWriter())
+    def csvFile = File.createTempFile( prefix, ".csv", workDir as File )
+    def csvWriter = new CSVWriter( csvFile.newWriter() )
 
-    csvWriter.writeNext(labels as String[])
+    csvWriter.writeNext( labels as String[] )
 
 
     for ( user in users )
@@ -172,7 +185,7 @@ class SecUserController
 
         if ( formatters[field] )
         {
-          data << formatters[field].call(user[field])
+          data << formatters[field].call( user[field] )
         }
         else
         {
@@ -180,15 +193,14 @@ class SecUserController
         }
       }
 
-      csvWriter.writeNext(data as String[])
+      csvWriter.writeNext( data as String[] )
     }
 
     csvWriter.close()
 
-    response.setHeader("Content-disposition", "attachment; filename=${csvFile.name}");
+    response.setHeader( "Content-disposition", "attachment; filename=${csvFile.name}" );
     response.contentType = "text/csv"
     response.outputStream << csvFile.newInputStream()
     response.outputStream.flush()
   }
-
 }

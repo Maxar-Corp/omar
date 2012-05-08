@@ -1,55 +1,96 @@
 <%@ page import="org.ossim.omar.security.SecUser" %>
+<!doctype html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="generatedViews"/>
+  <meta name="layout" content="mainG2">
   <g:set var="entityName" value="${message( code: 'secUser.label', default: 'SecUser' )}"/>
   <title><g:message code="default.list.label" args="[entityName]"/></title>
-  <g:javascript library="prototype"/>
+  <filterpane:includes/>
 </head>
 
 <body>
 <content tag="content">
-  <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLink( uri: '/' )}">
-      <g:message code="default.home.label"/></a>
-    </span>
-    <span class="menuButton"><g:link class="create" action="create">
-      <g:message code="default.new.label" args="[entityName]"/></g:link>
-    </span>
+  <a href="#list-secUser" class="skip" tabindex="-1">
+    <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
+  </a>
+
+  <div class="nav" role="navigation">
+    <ul>
+      <li><a class="home" href="${createLink( uri: '/' )}"><g:message code="default.home.label"/></a></li>
+      <li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]"/></g:link></li>
+    </ul>
   </div>
 
-  <div class="body">
+
+  <div id="list-secUser" class="content scaffold-list" role="main">
     <h1><g:message code="default.list.label" args="[entityName]"/></h1>
     <g:if test="${flash.message}">
-      <div class="message">${flash.message}</div>
+      <div class="message" role="status">${flash.message}</div>
     </g:if>
-    <filter:dynamic bean="org.ossim.omar.security.SecUser" success="userList"
-                    params="${[plugin: 'omar-security-spring']}"/>
-    <g:render template="list"/>
 
-    <g:form name="exportForm" onsubmit="updateExportFilter();">
-      <g:hiddenField name="exportFilterBean" value="org.ossim.omar.security.SecUser"/>
-      <g:hiddenField name="exportFilterField" value=""/>
-      <g:hiddenField name="exportFilterCriteria" value=""/>
-      <g:hiddenField name="exportFilterValue" value=""/>
-      <div class="buttons">
-        <span class="button">
-          <g:actionSubmit class="save" action="export"
-                          value="${message( code: 'default.button.export.label', default: 'Export' )}"/>
-        </span>
-      </div>
-    </g:form>
-    <g:javascript>
-      function updateExportFilter()
-      {
-        $( 'exportFilterField' ).value = $( 'filterField' ).value;
-        $( 'exportFilterCriteria' ).value = $( 'filterCriteria' ).value;
-        $( 'exportFilterValue' ).value = $( 'filterValue' ).value;
-        $( 'exportForm' ).submit();
-      }
-    </g:javascript>
+    <filterpane:currentCriteria domainBean="org.ossim.omar.security.SecUser"
+                                removeImgDir="images" removeImgFile="bullet_delete.png"
+                                fullAssociationPathFieldNames="no"/>
+
+    <table>
+      <thead>
+      <tr>
+
+        <g:sortableColumn property="username"
+                          title="${message( code: 'secUser.username.label', default: 'Username' )}"
+                          params="${filterParams}"/>
+
+        <g:sortableColumn property="password"
+                          title="${message( code: 'secUser.password.label', default: 'Password' )}"
+                          params="${filterParams}"/>
+
+        <g:sortableColumn property="userRealName"
+                          title="${message( code: 'secUser.userRealName.label', default: 'User Real Name' )}"
+                          params="${filterParams}"/>
+
+        <g:sortableColumn property="email" title="${message( code: 'secUser.email.label', default: 'Email' )}"
+                          params="${filterParams}"/>
+
+        <g:sortableColumn property="organization"
+                          title="${message( code: 'secUser.organization.label', default: 'Organization' )}"
+                          params="${filterParams}"/>
+
+        <g:sortableColumn property="phoneNumber"
+                          title="${message( code: 'secUser.phoneNumber.label', default: 'Phone Number' )}"
+                          params="${filterParams}"/>
+
+      </tr>
+      </thead>
+      <tbody>
+      <g:each in="${secUserInstanceList}" status="i" var="secUserInstance">
+        <tr class="${( i % 2 ) == 0 ? 'even' : 'odd'}">
+
+          <td><g:link action="show"
+                      id="${secUserInstance.id}">${fieldValue( bean: secUserInstance, field: "username" )}</g:link></td>
+
+          <td>${fieldValue( bean: secUserInstance, field: "password" )}</td>
+
+          <td>${fieldValue( bean: secUserInstance, field: "userRealName" )}</td>
+
+          <td>${fieldValue( bean: secUserInstance, field: "email" )}</td>
+
+          <td>${fieldValue( bean: secUserInstance, field: "organization" )}</td>
+
+          <td>${fieldValue( bean: secUserInstance, field: "phoneNumber" )}</td>
+
+        </tr>
+      </g:each>
+      </tbody>
+    </table>
+
+    <div class="pagination">
+      <g:paginate total="${secUserInstanceTotal == null ? SecUser.count() : secUserInstanceTotal}"
+                  params="${filterParams}"/>
+      <filterpane:filterButton text="Add Filter"/>
+      <g:link action="export" params="${filterParams}">Export</g:link>
+    </div>
   </div>
+  <filterpane:filterPane domain="org.ossim.omar.security.SecUser" dialog="true"/>
 </content>
 </body>
 </html>
