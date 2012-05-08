@@ -155,7 +155,6 @@
 
 <content tag="center2">
 
-    
 <div id="eventDivId"></div>
 <div id="compassDivId" align="left">
     <img src="${resource(plugin: 'omar', dir: 'images', file: 'north_arrow.png')}">
@@ -395,10 +394,10 @@ function init(mapWidth, mapHeight)
 
     loadUnitSelection();
     OMAR.imageManipulator = new OMAR.OpenLayersImageManipulator();
-    OMAR.imageManipulator.click = function(evt)
-    {
-       getCoordinates(OMAR.imageManipulator.pointToLocal(this.mouseToPoint(evt)));
-    }
+    //OMAR.imageManipulator.click = function(evt)
+    //{
+    //   getCoordinates(OMAR.imageManipulator.pointToLocal(this.mouseToPoint(evt)));
+   // }
     OMAR.coordConvert = new CoordinateConversion();
 
     OMAR.imageManipulator.northAngle = parseFloat("${rasterEntry.azimuthAngle}");
@@ -521,13 +520,12 @@ function init(mapWidth, mapHeight)
     map.zoomToMaxExtent();
     // map.zoomIn();
     // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
-
    OMAR.imageManipulator.affineParams.rotate = parseFloat(${"rotateAngle"}.value);
-
    OMAR.imageManipulator.localImageBounds = new OpenLayers.Bounds(0, 0, width, height);
    OMAR.imageManipulator.setup("center2", map, "hudDivId", "eventDivId", "compassDivId");
    // add these just in case there were settings passed to the GSP 
    // but we only want to apply them once the page is finished with setup
+   
    OMAR.imageManipulator.updateTransform(); 
    OMAR.imageManipulator.transformDiv();
    // OMAR.iamgeManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
@@ -535,8 +533,13 @@ function init(mapWidth, mapHeight)
 
    OMAR.imageManipulator.events.on({
             "featureDone": measureFinished,
-            "featureRemoved" : measureRemoved
+            "featureRemoved" : measureRemoved,
+            "click" : mouseClick
     });
+}
+
+function mouseClick(evt){
+  getCoordinates(OMAR.imageManipulator.pointToLocal(this.mouseToPoint(evt)));
 }
 function convertPathAreaMetersToTargetUnit(pathLength, area, targetUnit)
 {
