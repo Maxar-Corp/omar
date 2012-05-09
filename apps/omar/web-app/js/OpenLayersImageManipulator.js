@@ -333,8 +333,9 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 
       var w = this.containerDivRegion.width;
       var h = this.containerDivRegion.height;
-      var extraW = w*0.5*(Math.sqrt(2)- 1.0);
-      var extraH = h*0.5*(Math.sqrt(2)- 1.0);
+      var maxWH = Math.max(w,h);
+      var extraW = 0.5*(maxWH -w);//w*0.5*(Math.sqrt(2)- 1.0);
+      var extraH = 0.5*(maxWH -h);//h*0.5*(Math.sqrt(2)- 1.0);
 
       tempAffine.rotate = 45;//this.affineParams.rotate;
       tempAffine.pivot  = new OmarPoint(w*0.5, h*0.5);
@@ -345,11 +346,11 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         extraH = 0.0;
         tempAffine.rotate = 0;
       }
-      var p1            = new OmarPoint(-extraW, -extraH);
-      var p2            = new OmarPoint(w+extraW, -extraH);
-      var p3            = new OmarPoint(w+extraW, h+extraH);
-      var p4            = new OmarPoint(-extraW,h+extraH);
-      var m             = tempAffine.toMatrix();
+      var p1 = new OmarPoint(-extraW, -extraH);
+      var p2 = new OmarPoint(w+extraW, -extraH);
+      var p3 = new OmarPoint(w+extraW, h+extraH);
+      var p4 = new OmarPoint(-extraW,h+extraH);
+      var m  = tempAffine.toMatrix();
       p1  = m.transform(p1);
       p2  = m.transform(p2);
       p3  = m.transform(p3);
@@ -370,21 +371,11 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       var region = YAHOO.util.Region.getRegion(this.containerDiv);
       this.containerDivRegion = region;
       this.setChildDivDimensions(this.map.div);
-
-//      OpenLayers.Util.modifyDOMElement(this.eventDiv, null, 
-//                                     {x:0,y:0}, 
-//                                     {w:(region.width),h:(region.height)});
-//      OpenLayers.Util.modifyDOMElement(this.annotationDiv, null, 
-//                                     {x:0,y:0}, 
-//                                     {w:(region.width),h:(region.height)});
       this.setChildDivDimensions(this.eventDiv);
       this.setChildDivDimensions(this.annotationDiv);
 
-
       this.updateTransform();
-
       this.map.updateSize(); // tell the map to adjust itself
-
       this.map.setCenter(center, this.map.getZoom());
   },  
   checkResize: function(){
