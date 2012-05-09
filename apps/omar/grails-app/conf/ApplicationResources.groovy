@@ -16,10 +16,10 @@ modules = {
 
   searchPageLayout {
 
-   resource url: [dir: 'css', file: 'main.css']
+    resource url: [dir: 'css', file: 'main.css']
     resource url: [dir: 'css', file: 'omar-2.0.css']
 
-       resource url: [plugin: 'yui', dir: "js/yui/reset-fonts-grids", file: "reset-fonts-grids.css"]
+    resource url: [plugin: 'yui', dir: "js/yui/reset-fonts-grids", file: "reset-fonts-grids.css"]
     resource url: [plugin: 'yui', dir: "js/yui/assets/skins/sam", file: "skin.css"]
 
     resource url: [plugin: 'yui', dir: "js/yui/yahoo-dom-event", file: "yahoo-dom-event.js"]
@@ -37,15 +37,15 @@ modules = {
     resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
 
 
-resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
+    resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
     resource url: [plugin: 'omar-core', dir: 'js', file: 'omar.js']
     resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
-	
-	//resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
+
+    //resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
 
     resource url: [dir: 'js', file: 'OMAR.js']
-      resource url: [dir: 'js', file: 'application.js']
-      resource url: [dir: 'js', file: 'datechooser.js']
+    resource url: [dir: 'js', file: 'application.js']
+    resource url: [dir: 'js', file: 'datechooser.js']
 
     resource url: [dir: 'css', file: 'searchPageLayout.css']
     resource url: [dir: 'js', file: 'searchPageLayout.js']
@@ -138,7 +138,6 @@ resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
     resource url: [dir: 'js', file: 'multiLayerLayout.js']
 
 
-
   }
 
   groundSpacePageLayout {
@@ -146,7 +145,7 @@ resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
     resource url: [dir: 'css', file: 'omar-2.0.css']
 
 
-   resource url: [plugin: 'yui', dir: "js/yui/reset-fonts-grids", file: "reset-fonts-grids.css"]
+    resource url: [plugin: 'yui', dir: "js/yui/reset-fonts-grids", file: "reset-fonts-grids.css"]
     resource url: [plugin: 'yui', dir: "js/yui/assets/skins/sam", file: "skin.css"]
 
     resource url: [plugin: 'yui', dir: "js/yui/yahoo-dom-event", file: "yahoo-dom-event.js"]
@@ -174,41 +173,10 @@ resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
     resource url: [dir: 'js', file: 'application.js']
     resource url: [dir: 'js', file: 'matrix.js']
     resource url: [dir: 'js', file: 'OpenLayersImageManipulator.js']
-   //resource url: [dir: 'js', file: 'datechooser.js']
+    //resource url: [dir: 'js', file: 'datechooser.js']
 
     resource url: [dir: 'css', file: 'groundSpacePageLayout.css']
     resource url: [dir: 'js', file: 'groundSpacePageLayout.js']
-  }
-
-  generatedViews {
-    resource url: [dir: 'css', file: 'main.css']
-    resource url: [dir: 'css', file: 'omar-2.0.css']
-
-    resource url: [plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css']
-    resource url: [plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css']
-
-    resource url: [dir: 'js', file: 'application.js']
-    resource url: [dir: 'js/prototype', file: 'prototype.js']
-
-    resource url: [plugin: 'yui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js']
-    resource url: [plugin: 'yui', dir: 'js/yui/element', file: 'element-min.js']
-    resource url: [plugin: 'yui', dir: 'js/yui/layout', file: 'layout-min.js']
-  }
-
-
-  mainG2 {
-    resource url: [dir: 'css', file: 'mainG2.css']
-    resource url: [dir: 'css', file: 'omar-2.0.css']
-
-    resource url: [plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css']
-    resource url: [plugin: 'yui', dir: 'js/yui/assets/skins/sam', file: 'skin.css']
-
-    resource url: [dir: 'js', file: 'application.js']
-    //resource url: [dir: 'js/prototype', file: 'prototype.js']
-
-    resource url: [plugin: 'yui', dir: 'js/yui/yahoo-dom-event', file: 'yahoo-dom-event.js']
-    resource url: [plugin: 'yui', dir: 'js/yui/element', file: 'element-min.js']
-    resource url: [plugin: 'yui', dir: 'js/yui/layout', file: 'layout-min.js']
   }
 
   imageSpacePageLayout {
@@ -239,16 +207,16 @@ resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
 
 
     resource url: [dir: 'js', file: 'OMAR.js']
-  //resource url: [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js']
+    //resource url: [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js']
     resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
 
     resource url: [dir: 'js', file: 'application.js']
     resource url: [dir: 'js', file: 'matrix.js']
-     resource url: [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
-      resource url: [dir: 'js/cssSandpaper', file: 'EventHelpers.js']
-      resource url: [dir: 'js/cssSandpaper', file: 'cssQuery-p.js']
-      resource url: [dir: 'js/cssSandpaper/jcoglan.com', file: 'sylvester.js']
-      resource url: [dir: 'js/cssSandpaper', file: 'cssSandpaper-lite.js']
+    resource url: [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
+    resource url: [dir: 'js/cssSandpaper', file: 'EventHelpers.js']
+    resource url: [dir: 'js/cssSandpaper', file: 'cssQuery-p.js']
+    resource url: [dir: 'js/cssSandpaper/jcoglan.com', file: 'sylvester.js']
+    resource url: [dir: 'js/cssSandpaper', file: 'cssSandpaper-lite.js']
     resource url: [dir: 'js', file: 'OpenLayersImageManipulator.js']
     //resource url: [dir: 'js', file: 'datechooser.js']
 
