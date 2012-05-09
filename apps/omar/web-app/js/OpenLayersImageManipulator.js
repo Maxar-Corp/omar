@@ -330,72 +330,39 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   },
   setChildDivDimensions: function(div){
       var tempAffine    = new OmarAffineParams();
-      tempAffine.rotate = this.affineParams.rotate;
+
       var w = this.containerDivRegion.width;
       var h = this.containerDivRegion.height;
+      var extraW = w*0.5*(Math.sqrt(2)- 1.0);
+      var extraH = h*0.5*(Math.sqrt(2)- 1.0);
 
-      var wRad      = (w*0.5);//this.containerDivRegion.width*0.5;
-      var hRad      = (h*0.5);//this.containerDivRegion.height*0.5;
-      var wRadFill  = wRad;
-      var hRadFill  = hRad;
+      tempAffine.rotate = 45;//this.affineParams.rotate;
+      tempAffine.pivot  = new OmarPoint(w*0.5, h*0.5);
 
-
-      // can't figure out the shift in windows so will disable the bound 
-      // expansion for filling pixels in the viewport for rotations
-      //
-      if(OpenLayers.BROWSER_NAME != "msie")
+      if(!this.fillAreaFlag||(OpenLayers.BROWSER_NAME == "msie"))
       {
-        if(this.fillAreaFlag)
-        {
-          // cover worst case for 45 deee rotation and a square 
-          wRadFill  = Math.max(wRad, hRad);
-          hRadFill  = wRadFill;
-
-          tempAffine.rotate = 45;
-        }
+        extraW = 0.0;
+        extraH = 0.0;
+        tempAffine.rotate = 0;
       }
-      else
-      {
-        // turn off bounds calculations and use original values
-         tempAffine.rotate = 0;
-      }
- 
-      var p1        = new OmarPoint(-wRadFill, hRadFill);
-      var p2        = new OmarPoint(wRadFill, hRadFill);
-      var p3        = new OmarPoint(wRadFill, -hRadFill);
-      var p4        = new OmarPoint(-wRadFill,-hRadFill);
-      var m         = tempAffine.toMatrix();
-
-// IE's have problems and there is an offset when I rotate.  Until we can figure it out
-// we will disable viewport filling when rotating the div for MSIE
-//
-      //if((OpenLayers.BROWSER_NAME != "msie")&&this.fillAreaFlag)
-      {
-        p1  = m.transform(p1);
-        p2  = m.transform(p2);
-        p3  = m.transform(p3);
-        p4  = m.transform(p4);
-      }
-
-      var minX = wRad + Math.min(Math.min(Math.min(p1.x, p2.x), p3.x), p4.x);
-      var maxX = wRad + Math.max(Math.max(Math.max(p1.x, p2.x), p3.x), p4.x);
-      var minY = hRad + Math.min(Math.min(Math.min(p1.y, p2.y), p3.y), p4.y);
-      var maxY = hRad + Math.max(Math.max(Math.max(p1.y, p2.y), p3.y), p4.y);
-      
-      //var minX = Math.min(Math.min(Math.min(p1.x, p2.x), p3.x), p4.x);
-      //var maxX = Math.max(Math.max(Math.max(p1.x, p2.x), p3.x), p4.x);
-      //var minY = Math.min(Math.min(Math.min(p1.y, p2.y), p3.y), p4.y);
-      //var maxY = Math.max(Math.max(Math.max(p1.y, p2.y), p3.y), p4.y);
-      
-
-     // var top  = Math.round(minY);
+      var p1            = new OmarPoint(-extraW, -extraH);
+      var p2            = new OmarPoint(w+extraW, -extraH);
+      var p3            = new OmarPoint(w+extraW, h+extraH);
+      var p4            = new OmarPoint(-extraW,h+extraH);
+      var m             = tempAffine.toMatrix();
+      p1  = m.transform(p1);
+      p2  = m.transform(p2);
+      p3  = m.transform(p3);
+      p4  = m.transform(p4);
+      var minX = Math.min(Math.min(Math.min(p1.x, p2.x), p3.x), p4.x);
+      var maxX = Math.max(Math.max(Math.max(p1.x, p2.x), p3.x), p4.x);
+      var minY = Math.min(Math.min(Math.min(p1.y, p2.y), p3.y), p4.y);
+      var maxY = Math.max(Math.max(Math.max(p1.y, p2.y), p3.y), p4.y);
       var width    = Math.abs(Math.round(maxX-minX));
       var height    = Math.abs(Math.round(maxY-minY));
-      var left = Math.round(minX);//Math.round(center.x-(w*0.5));
-      var top  = Math.round(minY);//Math.round(center.y-(h*0.5));
+      var left = Math.round(minX);
+      var top  = Math.round(minY);
     
-      //alert("TOP: " + top + "\n" + "BOTTOM: " + (hRad*2) + " ---- " + (h+top) + "\n" +
-      //      "LEFT: " + left + "\n" + "RIGHT: " + (wRad*2) + " ---- " + (w+left));
       OpenLayers.Util.modifyDOMElement(div, null, {x:left,y:top}, {w:(width),h:(height)});
    },
   containerResized: function(){
@@ -403,8 +370,16 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       var region = YAHOO.util.Region.getRegion(this.containerDiv);
       this.containerDivRegion = region;
       this.setChildDivDimensions(this.map.div);
+
+//      OpenLayers.Util.modifyDOMElement(this.eventDiv, null, 
+//                                     {x:0,y:0}, 
+//                                     {w:(region.width),h:(region.height)});
+//      OpenLayers.Util.modifyDOMElement(this.annotationDiv, null, 
+//                                     {x:0,y:0}, 
+//                                     {w:(region.width),h:(region.height)});
       this.setChildDivDimensions(this.eventDiv);
       this.setChildDivDimensions(this.annotationDiv);
+
 
       this.updateTransform();
 
