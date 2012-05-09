@@ -54,4 +54,4 @@ grails.project.dependency.resolution = {
   }
 }
 
-//grails.plugin.location.omarTableFilter = '../../plugins/omar-table-filter'
+grails.plugin.location.omarCommonUi = '../../plugins/omar-common-ui'
