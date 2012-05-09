@@ -18,7 +18,7 @@
             units:[
                 { position:'top', height:75, body:'top1' },
                 { position:'bottom', height:25, body:'bottom1' },
-                { position:'center', body:'center1', scroll: true }
+                { position:'center', body:'center1', scroll:true }
             ]
         } );
         layout.on( 'render', function ()
