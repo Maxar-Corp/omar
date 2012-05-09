@@ -329,24 +329,47 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
             (r1.height==r2.height));
   },
   setChildDivDimensions: function(div){
-      var center = new OmarPoint(this.containerDivRegion.width*0.5, this.containerDivRegion.height*0.5);
-      //var maxValueRadius = maxValue*0.5;
-      var tempAffine = new OmarAffineParams();
+      var tempAffine    = new OmarAffineParams();
       tempAffine.rotate = this.affineParams.rotate;
-      var m = tempAffine.toMatrix();
+      var w = this.containerDivRegion.width;
+      var h = this.containerDivRegion.height;
+
+      var wRad      = (w*0.5);//this.containerDivRegion.width*0.5;
+      var hRad      = (h*0.5);//this.containerDivRegion.height*0.5;
+      var wRadFill  = wRad;
+      var hRadFill  = hRad;
 
 
-      var wRad      = this.containerDivRegion.width*0.5;
-      var hRad      = this.containerDivRegion.height*0.5;
-      var p1        = new OmarPoint(-wRad, hRad);
-      var p2        = new OmarPoint(wRad, hRad);
-      var p3        = new OmarPoint(wRad, -hRad);
-      var p4        = new OmarPoint(-wRad,-hRad);
+      // can't figure out the shift in windows so will disable the bound 
+      // expansion for filling pixels in the viewport for rotations
+      //
+      if(OpenLayers.BROWSER_NAME != "msie")
+      {
+        if(this.fillAreaFlag)
+        {
+          // cover worst case for 45 deee rotation and a square 
+          wRadFill  = Math.max(wRad, hRad);
+          hRadFill  = wRadFill;
+
+          tempAffine.rotate = 45;
+        }
+      }
+      else
+      {
+        // turn off bounds calculations and use original values
+         tempAffine.rotate = 0;
+      }
+ 
+      var p1        = new OmarPoint(-wRadFill, hRadFill);
+      var p2        = new OmarPoint(wRadFill, hRadFill);
+      var p3        = new OmarPoint(wRadFill, -hRadFill);
+      var p4        = new OmarPoint(-wRadFill,-hRadFill);
+      var m         = tempAffine.toMatrix();
 
 // IE's have problems and there is an offset when I rotate.  Until we can figure it out
-// we will disable viewport filling when rotating the div
+// we will disable viewport filling when rotating the div for MSIE
 //
-      if((OpenLayers.BROWSER_NAME != "msie")&&this.fillAreaFlag)
+      //if((OpenLayers.BROWSER_NAME != "msie")&&this.fillAreaFlag)
       {
         p1  = m.transform(p1);
         p2  = m.transform(p2);
@@ -359,49 +382,21 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       var minY = hRad + Math.min(Math.min(Math.min(p1.y, p2.y), p3.y), p4.y);
       var maxY = hRad + Math.max(Math.max(Math.max(p1.y, p2.y), p3.y), p4.y);
       
+      //var minX = Math.min(Math.min(Math.min(p1.x, p2.x), p3.x), p4.x);
+      //var maxX = Math.max(Math.max(Math.max(p1.x, p2.x), p3.x), p4.x);
+      //var minY = Math.min(Math.min(Math.min(p1.y, p2.y), p3.y), p4.y);
+      //var maxY = Math.max(Math.max(Math.max(p1.y, p2.y), p3.y), p4.y);
+      
 
      // var top  = Math.round(minY);
-      var w    = Math.abs(Math.round(maxX-minX));
-      var h    = Math.abs(Math.round(maxY-minY));
-      var left = Math.round(center.x-(w*0.5));
-      var top  = Math.round(center.y-(h*0.5));
-
- //    alert("left: " + left + "\n" +
- //           "top: " + top + "\n" +
- //           "w: " + w + "\n" +
- //           "h: " + h + "\n" +
- //           "Old w: " + this.containerDivRegion.width + "\n" +
- //           "Old h: " + this.containerDivRegion.height);
-      //var extraW    = 0;//wRad*extension;
-      //var extraH    = 0;//hRad*extension;
-
-      //var wRad = 0;//Math.round(this.containerDivRegion.width*0.5*Math.sqrt(2));
-      //var hRad = 0;//Math.round(this.containerDivRegion.height*0.5*Math.sqrt(2));
-      //var wRad = this.containerDivRegion.width*0.5*extension;//maxValueRadius*extension;
-      //var hRad = this.containerDivRegion.height*0.5*extension;
-
-      //var newW = wRad*2;//this.containerDivRegion.width+wRad*2; //Math.round(max*1.5);
-      //var newH = hRad*2;//this.containerDivRegion.height+hRad*2; //Math.round(max*1.5);
-
-
-      //var newW = this.containerDivRegion.width + 2*extraW;
-      //var newH = this.containerDivRegion.height + 2*extraH;
-
-      // now center about container
-      //var shiftLeft = -Math.round(extraW);//Math.round((containerCenterX-centerX)/2);
-      //var shiftTop  = -Math.round(extraH);//Math.round((containerCenterY-centerY)/2);
-      
-     // YAHOO.util.Dom.setStyle(div, "left", left);
-     // YAHOO.util.Dom.setStyle(div, "top", top);
-     // YAHOO.util.Dom.setStyle(div, "width", w);
-     // YAHOO.util.Dom.setStyle(div, "height", h);
-     // div.style.left   = left + "px";//shiftLeft + "px";
-     // div.style.top    = top + "px";//shiftTop + "px";
-     // div.style.width  = w + "px";
-     // div.style.height = h + "px";
-
-
-     OpenLayers.Util.modifyDOMElement(div, null, {x:left,y:top}, {w:w,h:h});
+      var width    = Math.abs(Math.round(maxX-minX));
+      var height    = Math.abs(Math.round(maxY-minY));
+      var left = Math.round(minX);//Math.round(center.x-(w*0.5));
+      var top  = Math.round(minY);//Math.round(center.y-(h*0.5));
+    
+      //alert("TOP: " + top + "\n" + "BOTTOM: " + (hRad*2) + " ---- " + (h+top) + "\n" +
+      //      "LEFT: " + left + "\n" + "RIGHT: " + (wRad*2) + " ---- " + (w+left));
+      OpenLayers.Util.modifyDOMElement(div, null, {x:left,y:top}, {w:(width),h:(height)});
    },
   containerResized: function(){
       var center = this.map.getCenter();
