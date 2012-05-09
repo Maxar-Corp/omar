@@ -11,13 +11,13 @@
 <content tag="top">
   <div align="center">
     <g:link class="home" uri="/">
-      <img src="${resource(plugin: 'omar', dir: 'images', file: 'omarLogo.png')}" alt="OMAR Logo"/>
+      <img src="${resource( plugin: 'omar-common-ui', dir: 'images', file: 'omarLogo.png' )}" alt="OMAR Logo"/>
     </g:link>
   </div>
 </content>
 
 <content tag="center">
-  <div align="center"><a href="${createLink(view: "login", action: "about")}">About OMAR</a></div>
+  <div align="center"><a href="${createLink( view: "login", action: "about" )}">About OMAR</a></div>
 
   <div id='login'>
     <div class='inner'>
