@@ -355,17 +355,17 @@ function moveToCenter()
 {
  if(OMAR.imageManipulator) OMAR.imageManipulator.moveToCenter();
 }
-function get_my_url (bounds)
+function getTileUrl (bounds)
 {
     var width  = parseFloat("${rasterEntry.width}");
     var height = parseFloat("${rasterEntry.height}");
     var res = this.map.getResolution();
     var scale = 1.0/res;
     var size = bounds.getSize();
-    var x = ((map.getCenter().lon - 
-              size.w/2.0)*scale);
-    var y = ((height-map.getCenter().lat - 
-              size.h/2.0)*scale);
+
+
+    var x = bounds.left*scale;
+    var y = (height-bounds.top)*scale;
 
     var z = this.map.getZoom();
     var params = new OmarImageSpaceGetTileParams();
@@ -422,7 +422,7 @@ function init(mapWidth, mapHeight)
     var options = {
          controls: [],
          maxExtent: bounds,
-         getURL: get_my_url,
+         getURL: getTileUrl,
          isBaseLayer: true,
          maxResolution: (width) / map.getTileSize().w,
          transitionEffect: "resize",
@@ -445,11 +445,9 @@ function init(mapWidth, mapHeight)
     //map.events.register("moveend", null, theMapHasMoved);
 
     layer = new OpenLayers.Layer.TMS( "Image Space Viewer", url, options);
-    layer.getURL = get_my_url;
-    layer.singleTile = true;
     map.addLayer(layer);
     //map.addControl(new OpenLayers.Control.MouseDefaults());
-    map.addControl(new OpenLayers.Control.KeyboardDefaults());
+    //map.addControl(new OpenLayers.Control.KeyboardDefaults());
     map.setBaseLayer(layer);
     //changeMapSize(mapWidth, mapHeight);
     map.zoomToMaxExtent();
