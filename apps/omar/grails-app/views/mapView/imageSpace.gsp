@@ -506,7 +506,7 @@ function init(mapWidth, mapHeight)
   rotateSlider.getRealValue = function() { return this.getValue() * 2; }
   rotateSlider.setRealValue = function(value) { this.setValue(Math.ceil((value%360.0) / 2)); }
   rotateSlider.subscribe("change", function() { sliderRotate(this.getRealValue()); });
-  rotateSlider.subscribe("slideEnd", function() { OMAR.imageManipulator.containerResized() });
+  //rotateSlider.subscribe("slideEnd", function() { OMAR.imageManipulator.containerResized() });
   rotateSlider.setRealValue(rotationAngle);
 
   // set the initialization flag so the moveend and zoomend code can execute
