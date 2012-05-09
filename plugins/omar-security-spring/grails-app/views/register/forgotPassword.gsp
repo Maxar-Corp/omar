@@ -7,9 +7,11 @@
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><a class="home"
-        href="${createLink(uri: '/')}">Home</a></span>
+    <ul>
+      <li><a class="home" href="${createLink( uri: '/' )}">Home</a></li>
+    </ul>
   </div>
+
   <div class="body">
 
     <g:if test="${flash.message}">
@@ -24,10 +26,11 @@
     <p/>
 
     <g:form action='forgotPassword' name="forgotPasswordForm"
-        autocomplete='off'>
+            autocomplete='off'>
 
       <g:if test='${emailSent}'>
         <br/>
+
         <h1>
           <g:message code='spring.security.ui.forgotPassword.sent'/>
         </h1>
@@ -36,6 +39,7 @@
       <g:else>
 
         <br/>
+
         <h1>
           <g:message code='spring.security.ui.forgotPassword.description'/>
         </h1>
@@ -53,9 +57,9 @@
         </div>
 
         <div class="buttons">
-          <span class="button"><g:submitButton name='Reset'
-              class="save" form='forgotPasswordForm'
-              value="${message(code:'spring.security.ui.forgotPassword.submit')}"/>
+          <span class="button">
+            <g:submitButton name='Reset' class="save" form='forgotPasswordForm'
+                            value="${message( code: 'spring.security.ui.forgotPassword.submit' )}"/>
           </span>
         </div>
       </g:else>
