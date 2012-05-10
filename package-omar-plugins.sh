@@ -20,7 +20,7 @@ tar xvfz $OMAR_HOME/plugins/m2Repository.tgz
 
 # Package OMAR plugins
 cd $OMAR_DEV_HOME/plugins
-for x in postgis geoscript openlayers omar-oms  omar-table-filter omar-security-spring omar-core omar-ogc omar-stager omar-video omar-raster omar-superoverlay omar-rss; do
+for x in postgis geoscript openlayers omar-oms  omar-common-ui omar-security-spring omar-core omar-ogc omar-stager omar-video omar-raster omar-superoverlay omar-rss; do
 	cd $x
 	grails clean
 	grails package-plugin 
