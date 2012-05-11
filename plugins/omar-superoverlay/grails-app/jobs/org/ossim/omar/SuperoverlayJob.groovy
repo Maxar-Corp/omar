@@ -11,6 +11,7 @@ class SuperoverlayJob {
 	def sessionFactory
 	def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
 	def imageChainService
+    static triggers={}
 	def execute() {
 		def record = null
 
