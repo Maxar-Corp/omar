@@ -108,8 +108,7 @@
               name="bands"
               value="${params.bands ?: '0'}"
               from="${['0']}"
-              onChange="changeBandsOpts()"
-              style="background: black; color: white"/>
+              onChange="changeBandsOpts()"/>
         </li>
       </g:if>
       <g:if test="${rasterEntry?.numberOfBands == 2}">
