@@ -101,6 +101,10 @@
                    href="${createLink( controller: 'mapView', action: 'multiLayer', params: [layers: ( rasterEntries*.indexId ).join( ',' )] )}"
                    title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a>
               </li>
+	      <li class="yuimenuitem">
+		<a class="yuimenuitemlabel" href="${createLink( controller: 'rasterEntry', action: 'show', params: [id: ( rasterEntries*.id ).join( ',' )] )}" 
+		   title="Detailed Metadata">Detailed Metadata</a>	 
+	      </li>
             </ul>
             <ul>
               <li class="yuimenuitem">
