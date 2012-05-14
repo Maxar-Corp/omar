@@ -914,8 +914,8 @@ function sliderRotate(sliderValue)
                             if(temp.length>0)
                             {
                               out.innerHTML = "<table><tr><td width='10%'>x: " + temp[0].x + "</td>" +"<td width='10%'>y: " + temp[0].y +
-                                              "</td>" + "<td width='20%'>lat: " + temp[0].lat + "</td><td width='20%'>lon: " + temp[0].lon + "</td>" + 
-                                              "<td width='20%'>hgt: " + temp[0].hgt + " m </td>";
+                                              "</td>" + "<td width='15%'>lat: " + temp[0].lat + "</td><td width='15%'>lon: " + temp[0].lon + "</td>" +
+                                              "<td width='15%'>hgt: " + temp[0].hgt.toFixed(1) + "<td width='15%'>MSL: " + temp[0].hgtMsl.toFixed(1) + " m </td>";
                             }
                             else
                             {
