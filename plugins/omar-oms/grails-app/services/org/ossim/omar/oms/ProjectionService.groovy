@@ -4,7 +4,7 @@ import joms.oms.ImageModel
 import joms.oms.ossimDpt
 import joms.oms.ossimGpt
 import joms.oms.ossimEcefPoint
-import joms.oms.Init
+import joms.oms.GeodeticEvaluator
 import geoscript.geom.Geometry
 
 class ProjectionService
@@ -152,6 +152,7 @@ class ProjectionService
     {
         def result = [];
         def imageSpaceModel = new ImageModel()
+        def geodeticEvaluator = new GeodeticEvaluator()
         def imagePoint = new ossimDpt(0.0,0.0);
         def groundPoint = new ossimGpt()
         if ( imageSpaceModel.setModelFromFile(filename, entryId) )
@@ -165,11 +166,15 @@ class ProjectionService
                 {
                     groundPoint.height = 0.0;
                 }
+
+                def hgtMsl = geodeticEvaluator.getHeightMSL(groundPoint);
+
                 result.add([x:pt.x,
                             y:pt.y,
                             lat:groundPoint.latd(),
                             lon:groundPoint.lond(),
-                            hgt:groundPoint.height()]);
+                            hgt:groundPoint.height(),
+                            hgtMsl:hgtMsl]);
             }
         }
 
