@@ -19,28 +19,31 @@ class AdjustmentService
    *
    * @return
    */
-  def adjustImages2(def obsCollection, def report)
+  def adjustImageParameters(def obsCollection, def report)
   {
       def adjModel = new AdjustmentModel(report)
 
-      def obsList = new ArrayList()
+      def obs = new ossimPointObservation()
 
       // Observation (obs) loop
       obsCollection.each{pobs->
-          obsList.add(new ossimPointObservation())
-          obsList.last().setID(pobs.obs.id)
-          obsList.last().setGroundPoint(pobs.obs.lat as double, pobs.obs.lon as double, pobs.obs.hgt as double,)
-          obsList.last().setGroundSigmas(pobs.obs.sigLat as double, pobs.obs.sigLon as double, pobs.obs.sigHgt as double,)
-          println pobs.obs
+          obs.setID(pobs.obs.id)
+          obs.setGroundSigmas(pobs.obs.sigLat as double, pobs.obs.sigLon as double, pobs.obs.sigHgt as double)
+          obs.setGroundPoint(pobs.obs.lat as double, pobs.obs.lon as double, pobs.obs.hgt as double)
 
           // Measurement (meas) loop
           pobs.meas.each{pmeas->
-              obsList.last().addMeasurement(pmeas.x as double, pmeas.y as double, pmeas.filename)
+              obs.addMeasurement(pmeas.x as double, pmeas.y as double, pmeas.filename)
           }
 
           // Add complete observation to model
-          adjModel.addObservation(obsList.last())
+          adjModel.addObservation(obs)
+
+          obs.reset();
       }
+
+      obs.delete()
+      obs = null
 
       // Initialize solution
       if ( adjModel.initAdjustment() )
@@ -51,12 +54,10 @@ class AdjustmentService
 
       boolean adjOK = adjModel.isValid()
 
-      obsList.clear()
-
       adjModel.delete()
       adjModel = null
 
-      // Temporary return for now
+      // Return solution status
       return [status:adjOK]
   }
 }
