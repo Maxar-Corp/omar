@@ -671,6 +671,35 @@ function onFeatureUnselect(event)
 		delete feature.popup;
 	}
 }
+
+function shareImage()
+{
+	var baseURL = "${createLink(absolute: 'true', action: 'index')}";
+	
+	var layer = mapWidget.getMap().layers[0];
+	var params = layer.params;	
+	var layers = params["LAYERS"];
+	var interpolation = params["INTERPOLATION"];
+	var brightness = params["BRIGHTNESS"];
+	var contrast = params["CONTRAST"];
+	var sharpen_mode = params["SHARPEN_MODE"];
+	var stretch_mode = params["STRETCH_MODE"];
+	var stretch_mode_region = params["STRETCH_MODE_REGION"];
+	var bands = params["BANDS"];
+	
+	var shareLink = baseURL + "?" + 
+		"layers=" + layers + 
+		"&interpolation=" + interpolation + 
+		"&brightness=" + brightness + 
+		"&contrast=" + contrast +
+		"&sharpen_mode=" + sharpen_mode +
+		"stretch_mode=" + stretch_mode +
+		"strech_mode_region=" + stretch_mode_region +
+		"&bands=" + bands;
+	
+	var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
+	popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
+}
 </r:script>
 
 </body>
