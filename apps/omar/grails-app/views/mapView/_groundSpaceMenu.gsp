@@ -120,6 +120,9 @@
       <li class="yuimenubaritem first-of-type">
         <a class="yuimenubaritemlabel" href="javascript:changeToImageSpace();">Image Space (Rotate)</a>
       </li>
+      <li class="yuiMenubaritem first-of-type">
+	<a class="yuimenubaritemlabel" href="javascript:shareImage();">Share</a>
+      </li>
     </ul>
   </div>
 </div>
