@@ -12,6 +12,7 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
 
 import org.apache.log4j.Logger
 import org.ossim.omar.oms.CoordinateConversionService
+import org.hibernate.criterion.Restrictions
 
 /**
  * Created by IntelliJ IDEA.
@@ -243,12 +244,22 @@ class BaseQuery
 
   def createClause()
   {
-    def clause = null
+    def clause = createIntersection()
     if ( filter )
     {
       try
       {
-        clause = GeoQueryUtil.createClauseFromOgcFilter(filterTypeMap, filter)
+
+        def filterClause = GeoQueryUtil.createClauseFromOgcFilter(filterTypeMap, filter)
+
+        if(clause)
+        {
+          def temp = Restrictions.conjunction();
+          temp.add(clause)
+          clause = temp
+          clause.add(filterClause);
+        }
+        clause = filterClause;
       }
       catch (Exception e)
       {
