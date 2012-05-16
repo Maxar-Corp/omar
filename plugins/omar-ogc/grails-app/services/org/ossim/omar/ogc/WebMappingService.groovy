@@ -34,6 +34,8 @@ import org.ossim.omar.core.WmsLayers
 import org.ossim.omar.core.TransparentFilter
 import org.ossim.omar.core.DateUtil
 import org.ossim.omar.core.Utility
+import org.ossim.omar.raster.RasterEntry
+import org.hibernate.CacheMode
 
 class WebMappingService implements ApplicationContextAware
 {
@@ -63,16 +65,15 @@ class WebMappingService implements ApplicationContextAware
     }
     // for now we will sort by the date field if no layers are given
     //
-    if ( !wmsQuery.layers )
+    if ( !wmsQuery.layers && (wmsQuery.time || wmsQuery.startDate || wmsQuery.endDate) )
     {
       wmsQuery.sort = wmsQuery.sort ?: "acquisitionDate"
       wmsQuery.order = wmsQuery.order ?: "desc"
     }
-
     wmsQuery
   }
 
-  def /*synchronized*/ getMap(def wmsRequest, def layers = null)
+  def getMap(def wmsRequest, def layers = null)
   {
     def result = [image: null, errorMessage: null]
     def params = wmsRequest.toMap();
@@ -81,17 +82,14 @@ class WebMappingService implements ApplicationContextAware
     def wmsQuery = layers ? null : setupQuery(wmsRequest);
     def stretchMode = wmsRequest?.stretch_mode ? wmsRequest?.stretch_mode.toLowerCase() : null
     def stretchModeRegion = wmsRequest?.stretch_mode_region ?: null
-
     def wmsView = new WmsView()
     def srs = wmsRequest?.srs
-
     if ( !wmsView.setProjection(srs) )
     {
       result.errorMessage = "Unsupported projection ${srs}"
       log.error(result)
       return result
     }
-
     if ( !wmsView.setViewDimensionsAndImageSize(bounds.minx,
             bounds.miny,
             bounds.maxx,
@@ -103,7 +101,36 @@ class WebMappingService implements ApplicationContextAware
       log.error(result)
       return result
     }
+
+
+
     def rasterEntries = layers;
+
+    if(wmsQuery)
+    {
+    def x = {
+        maxResults(10)
+      }
+
+      def criteriaBuilder = RasterEntry.createCriteria();
+      def criteria = criteriaBuilder.buildCriteria(x)
+
+      criteria.add(wmsQuery?.createClause())
+
+      def eachCriteria = criteria.scroll()
+      def status = eachCriteria.first()
+      rasterEntries = []
+
+      while ( status )
+      {
+        rasterEntries << eachCriteria.get(0)
+
+        status = eachCriteria.next()
+      }
+
+      eachCriteria.close()
+    }
+
 
     //params.viewGeom = wmsView.getImageGeometry();
     params.wmsView = wmsView
