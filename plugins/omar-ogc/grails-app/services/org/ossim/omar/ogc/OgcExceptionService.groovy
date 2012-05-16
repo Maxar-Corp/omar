@@ -177,7 +177,7 @@ class OgcExceptionService
     else
     {
       response.contentType = params.mimeType
-      response.outputStream.write(params.message.bytes)
+      response.outputStream.write(params?.message?.toString().bytes)
     }
     response.outputStream.close()
     null
