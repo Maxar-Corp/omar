@@ -217,9 +217,16 @@ function init(mapWidth, mapHeight)
 	mapWidget.getMap().events.register('mousemove',map,setMouseMapCtrTxt);
 	mapWidget.getMap().events.register("moveend", map, this.setMapCtrTxt);
 
-  var zoom = mapWidget.getMap().getZoomForExtent(bounds, true);
-	mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
+	var mapBBOX = new OpenLayers.Bounds(${params.bbox ?: "bounds.left, bounds.bottom, bounds.right, bounds.top"});
+	var zoom = mapWidget.getMap().getZoomForExtent(mapBBOX, true);
 
+	var mapCenterLatitude = bounds.getCenterLonLat().lat;
+	mapCenterLatitude = ${params.latitude ?: "mapCenterLatitude"};
+	var mapCenterLongitude = bounds.getCenterLonLat().lon;
+	mapCenterLongitude = ${params.longitude ?: "mapCenterLongitude"};
+	var mapCenter = new OpenLayers.LonLat(mapCenterLongitude, mapCenterLatitude);	
+
+	mapWidget.getMap().setCenter(mapCenter, zoom);
 }
 
 function setMapCtrTxt()
@@ -686,6 +693,8 @@ function shareImage()
 	var stretch_mode = params["STRETCH_MODE"];
 	var stretch_mode_region = params["STRETCH_MODE_REGION"];
 	var bands = params["BANDS"];
+	var centerLatitude = mapWidget.getMap().getCenter().lat;
+	var centerLongitude = mapWidget.getMap().getCenter().lon;
 	
 	var shareLink = baseURL + "?" + 
 		"layers=" + layers + 
@@ -695,10 +704,22 @@ function shareImage()
 		"&sharpen_mode=" + sharpen_mode +
 		"stretch_mode=" + stretch_mode +
 		"strech_mode_region=" + stretch_mode_region +
-		"&bands=" + bands;
+		"&bands=" + bands +
+		"&latitude=" + mapWidget.getMap().getCenter().lat +
+		"&longitude=" + mapWidget.getMap().getCenter().lon +
+		"&bbox=" + mapWidget.getMap().getExtent();
 	
 	var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
 	popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
+}
+
+function exportTemplate()
+{
+	var imageURL = mapWidget.getMap().layers[0].getURL(mapWidget.getMap().getExtent());
+	imageURL = imageURL.replace(/&/g,"\\%26");
+	var templateURL = "${createLink( controller: 'templateExport', action: 'index')}" + "?imageURL=" + imageURL;
+	//alert(templateURL);
+	window.open(templateURL);
 }
 </r:script>
 
