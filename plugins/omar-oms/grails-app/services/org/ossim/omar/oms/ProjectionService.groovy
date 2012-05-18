@@ -227,20 +227,20 @@ class ProjectionService
     /**
      * @brief Single-ray projection with RPC error propagation
      * @param filename
-     * @param samp
-     * @param line
-     * @param entryId
+     * @param imgPt
      * @param probLev probability level (.5,.9,.95)
      * @param angInc angular increment (deg) for image space ellipse points
+     * @param entryId
      * @return
      */
-    def imageSpaceToGroundSpace(def filename, def samp, def line, def entryId, def probLev, def angInc)
+    def imageSpaceToGroundSpace(def filename, def imgPt, def probLev, def angInc, def entryId)
     {
         def result = [];
         def ellPts = [];
 
         def imageSpaceModel = new ImageModel()
-        def imagePoint = new ossimDpt(samp, line)
+        def geodeticEvaluator = new GeodeticEvaluator()
+        def imagePoint = new ossimDpt(imgPt.x as double, imgPt.y as double)
         def groundPoint = new ossimGpt()
         boolean errorPropAvailable = false
 
@@ -248,6 +248,7 @@ class ProjectionService
         double [] ellSamp = new double[numPnts]
         double [] ellLine = new double[numPnts]
         double [] pqeArray = new double[6]
+        double hgtMsl
 
         if ( imageSpaceModel.setModelFromFile(filename, entryId) )
         {
@@ -258,6 +259,8 @@ class ProjectionService
                 groundPoint.height = 0.0;
             }
 
+            hgtMsl = geodeticEvaluator.getHeightMSL(groundPoint);
+
             // Perform error propagation
             errorPropAvailable =
                 imageSpaceModel.imageToGroundErrorPropagation(groundPoint,
@@ -267,8 +270,8 @@ class ProjectionService
                                                               ellSamp,
                                                               ellLine)
         }
-        imageSpaceModel.destroy()
         imageSpaceModel.delete()
+        geodeticEvaluator.delete()
 
         if (errorPropAvailable)
         {
@@ -276,26 +279,28 @@ class ProjectionService
                 ellPts << [xe: ellSamp[i], ye: ellLine[i]]
             }
 
-            result = [x: samp,
-                      y: line,
-                      lat:  groundPoint.latd(),
-                      lon:  groundPoint.lond(),
-                      hgt:  groundPoint.height(),
-                      CE:   pqeArray[0],
-                      LE:   pqeArray[1],
-                      SMA:  pqeArray[2],
-                      SMI:  pqeArray[3],
-                      AZ:   Math.toDegrees(pqeArray[4]),
-                      lvl:  probLev,
-                      nELL: pqeArray[5]]
+            result = [x:      imgPt.x,
+                      y:      imgPt.y,
+                      lat:    groundPoint.latd(),
+                      lon:    groundPoint.lond(),
+                      hgt:    groundPoint.height(),
+                      hgtMsl: hgtMsl,
+                      CE:     pqeArray[0],
+                      LE:     pqeArray[1],
+                      SMA:    pqeArray[2],
+                      SMI:    pqeArray[3],
+                      AZ:     Math.toDegrees(pqeArray[4]),
+                      lvl:    probLev,
+                      nELL:   pqeArray[5]]
         }
         else
         {
-            result = [x: samp,
-                      y: line,
-                      lat:  groundPoint.latd(),
-                      lon:  groundPoint.lond(),
-                      hgt:  groundPoint.height()]
+            result = [x:      imgPt.x,
+                      y:      imgPt.y,
+                      lat:    groundPoint.latd(),
+                      lon:    groundPoint.lond(),
+                      hgt:    groundPoint.height(),
+                      hgtMsl: hgtMsl];
         }
 
         groundPoint.delete();
