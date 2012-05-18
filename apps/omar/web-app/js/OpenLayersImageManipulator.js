@@ -239,7 +239,8 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
          this.vectorLayer.events.on({
             "beforefeaturesadded": function(){
                 //this.events.triggerEvent("measureAddPointFinished");
-             this.vectorLayer.destroyFeatures();
+                if(!OMAR.ToolModeType.POINT)
+                  this.vectorLayer.destroyFeatures();
             },
             scope:this
           });
@@ -247,6 +248,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 //            //"featureadded": function (){alert("HERE")},
 //            scope: this
 //          });
+    this.map.addControl(this.drawControls.point);
     this.map.addControl(this.drawControls.line);
     this.map.addControl(this.drawControls.polygon);
 
@@ -344,6 +346,13 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
             case OMAR.ToolModeType.POLYGON:
             {
                 this.currentDrawControl = this.drawControls.polygon;
+                this.currentDrawControl.activate();
+                removedMeasurements = true;
+                break;
+            }
+            case OMAR.ToolModeType.POINT:
+            {
+                this.currentDrawControl = this.drawControls.point;
                 this.currentDrawControl.activate();
                 removedMeasurements = true;
                 break;
@@ -629,6 +638,11 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
             OpenLayers.Event.stop(evt);  
            break;
         }
+        case OMAR.ToolModeType.POINT:
+        {
+          if(this.currentDrawControl) this.currentDrawControl.handler.dblclick(evt);
+          break;
+        }
      }
    },
    mouseout: function(evt){
@@ -725,7 +739,8 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         }
         case OMAR.ToolModeType.LINE:
         case OMAR.ToolModeType.POLYGON:
-        {
+        case OMAR.ToolModeType.POINT:
+       {
             //if(!this.currentDrawControl.handler.drawing)
              //    this.vectorLayer.destroyFeatures();
              this.currentDrawControl.handler.mousedown(evt);
@@ -734,7 +749,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
             document.onselectstart = OpenLayers.Function.False;
            break;
         }
-      }
+       }
       if(this.withinDiv(this.mouseToPoint(evt), this.eventDiv))
       {
           this.documentListenersAdded = true;
@@ -830,6 +845,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
        }
       case OMAR.ToolModeType.LINE:
       case OMAR.ToolModeType.POLYGON:
+      case OMAR.ToolModeType.POINT:
       {
           this.currentDrawControl.handler.mousemove(evt);
           //OpenLayers.Event.stop(evt);  
