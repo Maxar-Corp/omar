@@ -12,6 +12,55 @@ OMAR.ToolModeType = {
   POLYGON: "polygon"
 };
 
+
+OMAR.OpenLayersFeatureHandler = OpenLayers.Class(OpenLayers.Handler.Feature, {
+
+    touchstart: function(evt) {
+    var adaptedEvt = this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt)))
+    if (!this.touch) {
+         this.touch = true;
+         this.map.events.un({
+            mousedown: this.mousedown,
+            mouseup: this.mouseup,
+            mousemove: this.mousemove,
+            click: this.click,
+            dblclick: this.dblclick,
+            scope: this
+         });
+      }
+      return OpenLayers.Event.isMultiTouch(adaptedEvt) ? true : this.mousedown(evt);
+   },
+   touchmove: function(evt) {
+     var adaptedEvt = this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt)))
+     OpenLayers.Event.stop(adaptedEvt);
+   },
+   mousedown: function(evt) {
+      var adaptedEvt = this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt)))
+      this.down = adaptedEvt.xy;
+      return this.handle(adaptedEvt) ? !this.stopDown : true;
+   },
+   mouseup: function(evt) {
+     var adaptedEvt = this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt)))
+      this.up = adaptedEvt.xy;
+      return this.handle(adaptedEvt) ? !this.stopUp : true;
+   },
+   click: function(evt) {
+     var adaptedEvt = this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt)))
+     return this.handle(adaptedEvt) ? !this.stopClick : true;
+   },
+   mousemove: function(evt) {
+    var adaptedEvt = this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt)))
+      return this.move();
+      if (!this.callbacks['over'] && !this.callbacks['out']) {
+         return true;
+      }
+      this.handle(adaptedEvt);
+      return true;
+   },
+
+   CLASS_NAME: "OMAR.OpenLayersFeatureHandler"
+});
+
 /**
 * This is temporarily used to filter coordinates for different features.
 * I could not figure out a generic way of doing it so the code is duplicated 
@@ -163,9 +212,10 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     this.map.addLayer(this.vectorLayer);
     this.events = new OpenLayers.Events(this, this.eventDiv, this.EVENT_TYPES, true);
     this.drawControls = {
-                    point: new OpenLayers.Control.DrawFeature(this.vectorLayer,
+                    point: 
+                    new OpenLayers.Control.SelectFeature(this.vectorLayer,
                         //OpenLayers.Handler.Point) ,
-                        OMAR.OpenLayersPointHandler, {
+                        OMAR.OpenLayersFeatureHandler, {
                           handlerOptions:{
                             manipulator:this
                           }
