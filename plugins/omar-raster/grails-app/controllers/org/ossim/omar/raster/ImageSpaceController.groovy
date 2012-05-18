@@ -133,80 +133,163 @@ class ImageSpaceController {
     return null;
   }
 
-  /**
-  * This can take a request formated with either:
-  *  id=<index|record|image>&x= & y= &
-  * or you can pass a JSON formatted text string listing a sequence of points to
-  * transform
-  *  id=<index|record|image>
-  *
-  *  POST data fiels format:
-  * 
-  *
-  *  {id:${rasterEntry.id}, 
-  *    imagePoints:[{"x":<x value>, "y":<y value>}]
-  *   } 
-  *
-  * you can optionally pass the id in the json text or as a parameter to the method.  The imagePoints is
-  * a formatted list of jason x,y point objects.
-  * 
-  * @return a list of Json objects with properties x,y of the original request and the lat, lon, hgt values
-  *           [ {x:pt.x,
-  *                          y:pt.y,
-  *                          lat:groundPoint.latd(),
-  *                          lon:groundPoint.lond(),
-  *                          hgt:groundPoint.height()}, ..... ]
-  */
-  def imageToGround = {
-      // support reading from a post data variable or from URL
-      // bound params
-      //
-      def data =  request.reader.text;
-      def result = [:]
-      def paramsIgnoreCase    = new CaseInsensitiveMap(params)
-      def jsonData
-      def jsonPoints
-      if(data)
-      {
-          jsonData =  JSON.parse(data);
-      }
-      if(!paramsIgnoreCase.id)
-      {
-          paramsIgnoreCase.id = jsonData?.id
-      }
-      if(!paramsIgnoreCase.imagePoints)
-      {
-          jsonPoints = jsonData.imagePoints
-      }
-      else
-      {
-         jsonPoints = JSON.parse(paramsIgnoreCase.imagePoints).imagePoints
-      }
-      def rasterEntry = RasterEntry.findByIndexId(paramsIgnoreCase.id)?:
-          RasterEntry.findByTitle(paramsIgnoreCase.id)?:
-              RasterEntry.findById(paramsIgnoreCase.id)
+    /**
+     * This can take a request formated with either:
+     *  id=<index|record|image>&x= & y= &
+     * or you can pass a JSON formatted text string listing a sequence of points to
+     * transform
+     *  id=<index|record|image>
+     *
+     *  POST data fiels format:
+     *
+     *
+     *  {id:${rasterEntry.id},
+     *    imagePoints:[{"x":<x value>, "y":<y value>}]
+     *   }
+     *
+     * you can optionally pass the id in the json text or as a parameter to the method.  The imagePoints is
+     * a formatted list of jason x,y point objects.
+     *
+     * @return a list of Json objects with properties x,y of the original request and the lat, lon, hgt values
+     *           [ {x:pt.x,
+     *                          y:pt.y,
+     *                          lat:groundPoint.latd(),
+     *                          lon:groundPoint.lond(),
+     *                          hgt:groundPoint.height()}, ..... ]
+     */
+    def imageToGround = {
+        // support reading from a post data variable or from URL
+        // bound params
+        //
+        def data =  request.reader.text;
+        def result = [:]
+        def paramsIgnoreCase    = new CaseInsensitiveMap(params)
+        def jsonData
+        def jsonPoints
+        if(data)
+        {
+            jsonData =  JSON.parse(data);
+        }
+        if(!paramsIgnoreCase.id)
+        {
+            paramsIgnoreCase.id = jsonData?.id
+        }
+        if(!paramsIgnoreCase.imagePoints)
+        {
+            jsonPoints = jsonData.imagePoints
+        }
+        else
+        {
+            jsonPoints = JSON.parse(paramsIgnoreCase.imagePoints).imagePoints
+        }
+        def rasterEntry = RasterEntry.findByIndexId(paramsIgnoreCase.id)?:
+            RasterEntry.findByTitle(paramsIgnoreCase.id)?:
+                RasterEntry.findById(paramsIgnoreCase.id)
 
-      if(rasterEntry)
-      {
-          String inputFile = rasterEntry?.mainFile.name
-          if(paramsIgnoreCase.x&&paramsIgnoreCase.y)
-          {
-              result = projectionService.imageSpaceToGroundSpace(inputFile,
-                      paramsIgnoreCase.x as double,
-                      paramsIgnoreCase.y as double,
-                      rasterEntry.entryId as Integer)
-          }
-          else if(jsonPoints)
-          {
-             result =  projectionService.imageSpaceListToGroundSpace(inputFile,
-                      jsonPoints,
-                      rasterEntry.entryId as Integer)
-          }
-     }
-     render(result as JSON);
-  }
+        if(rasterEntry)
+        {
+            String inputFile = rasterEntry?.mainFile.name
+            if(paramsIgnoreCase.x&&paramsIgnoreCase.y)
+            {
+                result = projectionService.imageSpaceToGroundSpace(inputFile,
+                        paramsIgnoreCase.x as double,
+                        paramsIgnoreCase.y as double,
+                        rasterEntry.entryId as Integer)
+            }
+            else if(jsonPoints)
+            {
+                result =  projectionService.imageSpaceListToGroundSpace(inputFile,
+                        jsonPoints,
+                        rasterEntry.entryId as Integer)
+            }
+        }
+        render(result as JSON);
+    }
 
-  /**
+
+    /**
+     * This can take a request formatted with either:
+     *  id=<index|record|image>&x= & y= &
+     * or you can pass a JSON formatted text string listing a sequence of points to
+     * transform
+     *  id=<index|record|image>
+     *
+     *  POST data fields format:
+     *
+     *
+     *  {id:${rasterEntry.id},
+     *    imagePoints:[{"x":<x value>, "y":<y value>}]
+     *   }
+     *
+     * you can optionally pass the id in the JSON text or as a parameter to the method.  The imagePoints is
+     * a formatted list of JSON x,y point objects.
+     *
+     * @return a list of JSON objects with properties x,y of the original request and the lat, lon, hgt values
+     *           [ {x:pt.x,
+     *                          y:pt.y,
+     *                          lat:groundPoint.latd(),
+     *                          lon:groundPoint.lond(),
+     *                          hgt:groundPoint.height()}, ..... ]
+     */
+    def imageToGroundFull = {
+        // support reading from a post data variable or from URL
+        // bound params
+        //
+        def data =  request.reader.text;
+        def result = [:]
+        def paramsIgnoreCase    = new CaseInsensitiveMap(params)
+        def jsonData
+        def jsonPoints
+        if(data)
+        {
+            jsonData =  JSON.parse(data);
+        }
+        if(!paramsIgnoreCase.id)
+        {
+            paramsIgnoreCase.id = jsonData?.id
+        }
+        if(!paramsIgnoreCase.imagePoints)
+        {
+            jsonPoints = jsonData.imagePoints
+        }
+        else
+        {
+            jsonPoints = JSON.parse(paramsIgnoreCase.imagePoints).imagePoints
+        }
+        def rasterEntry = RasterEntry.findByIndexId(paramsIgnoreCase.id)?:
+            RasterEntry.findByTitle(paramsIgnoreCase.id)?:
+                RasterEntry.findById(paramsIgnoreCase.id)
+
+        if(rasterEntry)
+        {
+            String inputFile = rasterEntry?.mainFile.name
+            if(paramsIgnoreCase.x&&paramsIgnoreCase.y)
+            {
+                result = projectionService.imageSpaceToGroundSpace(inputFile,
+                        paramsIgnoreCase.x as double,
+                        paramsIgnoreCase.y as double,
+                        rasterEntry.entryId as Integer)
+            }
+            else if(jsonPoints)
+            {
+                def ellAngInc = 10.0
+                def pLevel = 0.9
+                String xs = jsonPoints.x
+                String xss = xs.replace('[','').replace(']','')
+                String ys = jsonPoints.y
+                String yss = ys.replace('[','').replace(']','')
+                def pt = [x: xss as double, y: yss as double]
+                result =  projectionService.imageSpaceToGroundSpace(inputFile,
+                        pt,
+                        pLevel,
+                        ellAngInc,
+                        rasterEntry.entryId as Integer)
+            }
+        }
+        render(result as JSON);
+    }
+
+    /**
   * This can take a request formated with either:
   *  id=<index|record|image>&lat= & lon= & hgt=
   * or you can pass a JSON formatted text string listing a sequence of points to
