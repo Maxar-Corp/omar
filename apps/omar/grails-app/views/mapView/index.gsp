@@ -702,8 +702,8 @@ function shareImage()
 		"&brightness=" + brightness + 
 		"&contrast=" + contrast +
 		"&sharpen_mode=" + sharpen_mode +
-		"stretch_mode=" + stretch_mode +
-		"strech_mode_region=" + stretch_mode_region +
+		"&stretch_mode=" + stretch_mode +
+		"&strech_mode_region=" + stretch_mode_region +
 		"&bands=" + bands +
 		"&latitude=" + mapWidget.getMap().getCenter().lat +
 		"&longitude=" + mapWidget.getMap().getCenter().lon +
