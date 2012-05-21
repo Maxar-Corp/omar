@@ -928,6 +928,49 @@ function sliderRotate(sliderValue)
                 });
             }
 
+	function shareImage()
+	{
+		var baseURL = "${createLink(absolute: 'true', action: 'imageSpace')}";
+		var layers = "${rasterEntry?.indexId}";
+		var interpolation = $("interpolation").value;
+		var brightness = $("brightness").value;
+		var contrast = $("contrast").value;
+		var sharpen_mode = $("sharpen_mode").value;
+        	var stretch_mode = $("stretch_mode").value;
+		var stretch_mode_region = $("stretch_mode_region").value;
+		var bands = $("bands").value;
+
+		var request = OpenLayers.Request.POST({
+			url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
+			data: YAHOO.lang.JSON.stringify({
+				id:${rasterEntry.id},
+				imagePoints:[{"x":map.getCenter().lon, "y":map.getCenter().lat}]
+			}),     
+			callback: function (transport)
+			{
+				var temp = YAHOO.lang.JSON.parse(transport.responseText);                               
+				var centerLatitude = temp[0].lat;
+				var centerLongitude = temp[0].lon;
+
+				        var shareLink = baseURL + "?" +
+						"layers=" + "${rasterEntry?.indexId}" +
+						"&interpolation=" + interpolation +
+						"&brightness=" + brightness +
+						"&contrast=" + contrast +
+						"&sharpen_mode=" + sharpen_mode +
+						"&stretch_mode=" + stretch_mode +
+						"&strech_mode_region=" + stretch_mode_region +
+						"&bands=" + bands +
+						"&latitude=" + centerLatitude +
+						"&longitude=" + centerLongitude ;
+        				//        "&bbox=" + mapWidget.getMap().getExtent();
+       				
+        				var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
+        				popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
+			}
+		});
+	}
+
 
  </r:script>
 </body>
