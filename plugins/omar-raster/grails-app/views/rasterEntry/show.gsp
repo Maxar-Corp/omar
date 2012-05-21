@@ -102,7 +102,7 @@
           <td valign="top" class="value">${fieldValue(bean: rasterEntry, field: 'description')}</td>
         </tr>
         <tr class="prop">
-          <td valign="top" class="name">Niirs:</td>
+          <td valign="top" class="name">NIIRS:</td>
           <td valign="top" class="value">${fieldValue(bean: rasterEntry, field: 'niirs')}</td>
         </tr>
         <tr class="prop">
