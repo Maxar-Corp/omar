@@ -65,6 +65,9 @@
           </div>
         </div>
       </li>
+      <li class="yuimenubaritem first_of_type">
+ 	<a class="yuimenubaritemlabel" href="javascript:shareImage()">Share</a>
+      </li>
     </ul>
   </div>
 </div>
