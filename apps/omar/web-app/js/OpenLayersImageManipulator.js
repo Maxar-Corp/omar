@@ -252,7 +252,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     this.map.addControl(this.drawControls.line);
     this.map.addControl(this.drawControls.polygon);
 
-    this.drawControls.line.handler.customEvents.on({
+       this.drawControls.line.handler.customEvents.on({
       "featureDone": function(feature){
         this.events.triggerEvent("featureDone", feature);//{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
       },
