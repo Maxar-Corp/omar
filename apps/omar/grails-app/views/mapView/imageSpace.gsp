@@ -240,17 +240,33 @@ function changeSharpenOpts()
 
 function changeToSingleLayer()
 {
-    var url = "${createLink(controller: 'mapView', action: 'index')}";
-    var wmsFormElement = $("wmsFormId");
-    if(wmsFormElement)
-    {
-        var imageAdjustmentParams = new OmarWmsParams();
-        imageAdjustmentParams.setProperties(document);
-        imageAdjustmentParams.layers = "${rasterEntry.indexId}";
-        wmsFormElement.action = url + "?"+imageAdjustmentParams.toUrlParams();
-        wmsFormElement.method = "POST";
-        wmsFormElement.submit();
-    }
+	var request = OpenLayers.Request.POST({
+		url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
+		data: YAHOO.lang.JSON.stringify({
+			id:${rasterEntry.id},
+			imagePoints:[{"x":OMAR.imageManipulator.getCenterLocal().x, "y":OMAR.imageManipulator.getCenterLocal().y}]
+			}),
+		callback: function (transport)
+		{
+			var temp = YAHOO.lang.JSON.parse(transport.responseText);
+			var centerLatitude = temp[0].lat;
+			var centerLongitude = temp[0].lon;
+
+			var url = "${createLink(controller: 'mapView', action: 'index')}";
+    			var wmsFormElement = $("wmsFormId");
+    			if(wmsFormElement)
+    			{
+        			var imageAdjustmentParams = new OmarWmsParams();
+        			imageAdjustmentParams.setProperties(document);
+        			imageAdjustmentParams.layers = "${rasterEntry.indexId}";
+				imageAdjustmentParams.latitude = centerLatitude;
+				imageAdjustmentParams.longitude = centerLongitude;
+        			wmsFormElement.action = url + "?"+imageAdjustmentParams.toUrlParams();
+        			wmsFormElement.method = "POST";
+				wmsFormElement.submit();
+   			}
+                }
+        });
 }
 
 function chgInterpolation()
@@ -410,7 +426,7 @@ function init(mapWidth, mapHeight)
     resLevels = parseFloat("${rasterEntry.numberOfResLevels}");
     initFlag = 1;
     rotateSlider = YAHOO.widget.Slider.getHorizSlider("slider-rotate-bg",  "slider-rotate-thumb", 0, 180, 1);
-    rotationAngle = ${"rotateAngle"}.value;
+    rotationAngle = "${params.rotate ?: 0}";///${"rotateAngle"}.value;
     OpenLayers.ImgPath = "${resource(plugin: 'openlayers', dir: 'js/img')}/";
 
     var width  = parseFloat("${rasterEntry.width}");
@@ -1145,36 +1161,40 @@ function setMapCtr(unit, value)
         var stretch_mode = $("stretch_mode").value;
         var stretch_mode_region = $("stretch_mode_region").value;
         var bands = $("bands").value;
+	var rotate = ${"rotateAngle"}.value;
+	var mapCenter = OMAR.imageManipulator.getCenterLocal();
+
         var request = OpenLayers.Request.POST({
     		url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
-			data: YAHOO.lang.JSON.stringify({
+		data: YAHOO.lang.JSON.stringify({
 				id:${rasterEntry.id},
-				imagePoints:[{"x":map.getCenter().lon, "y":map.getCenter().lat}]
+				imagePoints:[{"x":mapCenter.x, "y":mapCenter.y}]
 			}),     
-			callback: function (transport)
-			{
-				var temp = YAHOO.lang.JSON.parse(transport.responseText);                               
-				var centerLatitude = temp[0].lat;
-				var centerLongitude = temp[0].lon;
+		callback: function (transport)
+		{
+			var temp = YAHOO.lang.JSON.parse(transport.responseText);                               
+			var centerLatitude = temp[0].lat;
+			var centerLongitude = temp[0].lon;
 
-				        var shareLink = baseURL + "?" +
-						"layers=" + "${rasterEntry?.indexId}" +
-						"&interpolation=" + interpolation +
-						"&brightness=" + brightness +
-						"&contrast=" + contrast +
-						"&sharpen_mode=" + sharpen_mode +
-						"&stretch_mode=" + stretch_mode +
-						"&strech_mode_region=" + stretch_mode_region +
-						"&bands=" + bands +
-						"&latitude=" + centerLatitude +
-						"&longitude=" + centerLongitude ;
-        				//        "&bbox=" + mapWidget.getMap().getExtent();
+		        var shareLink = baseURL + "?" +
+				"layers=" + "${rasterEntry?.indexId}" +
+				"&interpolation=" + interpolation +
+				"&brightness=" + brightness +
+				"&contrast=" + contrast +
+				"&sharpen_mode=" + sharpen_mode +
+				"&stretch_mode=" + stretch_mode +
+				"&strech_mode_region=" + stretch_mode_region +
+				"&bands=" + bands +
+				"&latitude=" + centerLatitude +
+				"&longitude=" + centerLongitude +
+        		//        "&bbox=" + mapWidget.getMap().getExtent();
+				"&rotate=" + rotate;
        				
-        				var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
-        				popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
-			}
-		});
-	}
+        		var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
+        		popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
+		}
+	});
+    }
 
 
 </r:script>
