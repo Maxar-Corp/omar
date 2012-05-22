@@ -185,6 +185,7 @@ var resLevels;
 var rotateSlider;
 var rotationAngle;
 var zoomInButton;
+var selectedFeature;
 
 function resetRotate()
 {
@@ -552,11 +553,66 @@ function init(mapWidth, mapHeight)
             "featureRemoved" : measureRemoved,
             "click" : mouseClick
     });
+
+
+    //=========================================================================
+    selectControl = new OpenLayers.Control.SelectFeature(
+      OMAR.imageManipulator.vectorLayer, {
+        hover: true,
+        onSelect: onFeatureSelect,
+        onUnselect: null
+    });
+    map.addControl(selectControl);
+    selectControl.activate();
+    //=========================================================================
+
 }
 
-function mouseClick(evt){
-  getCoordinates(OMAR.imageManipulator.pointToLocal(this.mouseToPoint(evt)));
+
+
+function onFeatureSelect(feature) {
+//   selectedFeature = feature;
+   selectedFeature = ellipse;
+   // add code to create tooltip/popup
+   popup = new OpenLayers.Popup.FramedCloud(
+      "popup",
+      selectedFeature.geometry.getBounds().getCenterLonLat(),
+      null,
+      "<div>some text here</div>",
+      null,
+      false,
+      onPopupClose);
+
+   selectedFeature.popup = popup;
+
+   map.addPopup(popup);
+   // return false to disable selection and redraw
+   // or return true for default behaviour
+   return true;
 }
+
+//function onFeatureUnselect(feature) {
+//   // remove tooltip
+//   map.removePopup(selectedFeature.popup);
+//   selectedFeature.popup.destroy();
+//   selectedFeature.popup=null;
+//}
+
+//function onPopupClose(evt) {
+//   selectControl.unselect(selectedFeature);
+//}
+
+
+function mouseClick(evt){
+  // basic point drop
+//getCoordinates(OMAR.imageManipulator.pointToLocal(this.mouseToPoint(evt)));
+
+    // point drop with error propagation (PQE)
+    if(OMAR.imageManipulator.toolMode == 'point')
+        getProjectedGround(OMAR.imageManipulator.pointToLocal(this.mouseToPoint(evt)));
+}
+
+
 function convertPathAreaMetersToTargetUnit(pathLength, area, targetUnit)
 {
     var openLayersMapping = OMAR.measure.units.openlayersMapping[targetUnit];
@@ -582,8 +638,6 @@ function displayMeasurements()
       
        if(OMAR.imageManipulator.measureLength)
        {
-
-
              div.innerHTML = "<table><tr><td>Length:</td><td>" + convertedValues.distance + " "+OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "</td>" + "<tr><td>Area: </td><td>" + convertedValues.area + " "+ OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "^2 </td></table>";
        }
        else
@@ -674,7 +728,8 @@ function setupToolbar()
                                                 trigger: measurePathModeClicked,
                                                 type:OpenLayers.Control.TYPE_TOOL,
                                                 displayClass: "olControlButtonMeasurePath"});
-    var measureAreaButton = new OpenLayers.Control.Button({title: "Click to measure a path", 
+
+    var measureAreaButton = new OpenLayers.Control.Button({title: "Click to measure an area",
                                                     id: "MEASURE_AREA",
                                                trigger: measureAreaModeClicked,
                                                 type:OpenLayers.Control.TYPE_TOOL,
@@ -801,12 +856,12 @@ function setMapCtr(unit, value)
     
 }
 
-function sliderRotate(sliderValue)
-{
-            rotationAngle = 360 - parseInt(sliderValue)
-            ${"rotateAngle"}.value = sliderValue;
-            OMAR.imageManipulator.applyRotate(sliderValue);
-}
+            function sliderRotate(sliderValue)
+            {
+                        rotationAngle = 360 - parseInt(sliderValue)
+                        ${"rotateAngle"}.value = sliderValue;
+                        OMAR.imageManipulator.applyRotate(sliderValue);
+            }
 
             function theMapHasMoved()
             {
@@ -850,11 +905,20 @@ function sliderRotate(sliderValue)
             {
                 OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.POINT);
             }
+
             function controlActivated(control)
             {
                if (!this.active) {
                      return false;
                }
+
+
+               while( map.popups.length ) {
+                  map.removePopup(map.popups[0]);
+               }
+               var pointDropInfo = document.getElementById("mouseDisplayId");
+               pointDropInfo.innerHTML = "";
+
                if (control.type == OpenLayers.Control.TYPE_BUTTON) 
                {
                  if(control.trigger) control.trigger();
@@ -945,20 +1009,144 @@ function sliderRotate(sliderValue)
                 });
             }
 
-	function shareImage()
-	{
-		var baseURL = "${createLink(absolute: 'true', action: 'imageSpace')}";
-		var layers = "${rasterEntry?.indexId}";
-		var interpolation = $("interpolation").value;
-		var brightness = $("brightness").value;
-		var contrast = $("contrast").value;
-		var sharpen_mode = $("sharpen_mode").value;
-        	var stretch_mode = $("stretch_mode").value;
-		var stretch_mode_region = $("stretch_mode_region").value;
-		var bands = $("bands").value;
+          function getProjectedGround(ipt)
+          {
+              var url = "/omar/imageSpace/imageToGroundFull"
 
-		var request = OpenLayers.Request.POST({
-			url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
+              var request = OpenLayers.Request.POST({
+                  url: url,
+                  data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
+                                                   imagePoints:[{"x":Math.round(ipt.x), "y":Math.round(ipt.y)}]
+                                                  }),
+                  callback: function (transport){
+                     var tmp = YAHOO.lang.JSON.parse(transport.responseText);
+                     var tmpout = document.getElementById("mouseDisplayId");
+                     if(tmpout)
+                     {
+                        tmpout.innerHTML = "<table><tr>" +
+                                           "<td width='20%'>Img: (" + tmp.ellpar.x + ", "+ tmp.ellpar.y+")</td>" +
+                                           "<td width='40%'>Gnd: (" + tmp.ellpar.lat + ", "+ tmp.ellpar.lon+")</td>" +
+                                           "<td width='10%'>HAE: " + tmp.ellpar.hgt.toFixed(1) + " m </td>" +
+                                           "<td width='10%'>MSL: " + tmp.ellpar.hgtMsl.toFixed(1) + " m </td>" +
+                                           "<td width='10%'>" + "<i>" + tmp.ellpar.sInfo + "</i>" + "</td>" +
+                                           "<td width='10%'>" + "<i>" + tmp.ellpar.type + "</i>" + "</td>"
+                                           "</tr></table>";
+                        drawProjectedGround(tmp);
+                     }
+//                     alert(transport.responseText);
+                  }
+              });
+          }
+
+
+          function drawProjectedGround(pointData)
+          {
+             OMAR.imageManipulator.vectorLayer.removeAllFeatures()
+             while( map.popups.length ) {
+                map.removePopup(map.popups[0]);
+             }
+
+//             layerStyle = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
+//             var sampleStyle = OpenLayers.Util.extend({}, layerStyle);
+//             sampleStyle.externalGraphic = "";
+//             sampleStyle.graphicWidth = 17;
+//             sampleStyle.graphicHeight = 19;
+//             sampleStyle.graphicOpacity = .7; // from 0 to 1
+//             var size = new OpenLayers.Size(17,19);
+//             var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+//             sampleStyle.graphicXOffset = offset.x;
+//             sampleStyle.graphicYOffset = offset.y;
+             var style_green = {
+                 strokeColor: "#00FF00",
+                 strokeOpacity: 0.6,
+                 strokeWidth: 1,
+                 fillColor: "#00FF00",
+                 fillOpacity: 0.3
+             };
+
+             // Point mark
+             height = parseFloat("${rasterEntry.height}");
+             var xd = pointData.ellpar.x;
+             var yd = -(pointData.ellpar.y - height);
+             xPoint = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(xd, yd), null, null);
+
+             // Ellipse
+             var CE   = pointData.ellpar.CE;
+             var LE   = pointData.ellpar.LE;
+             var SMA  = pointData.ellpar.SMA;
+             var SMI  = pointData.ellpar.SMI;
+             var AZ   = pointData.ellpar.AZ;
+             var pLvl = pointData.ellpar.lvl;
+             var nEll = pointData.ellpar.nELL;
+
+             var ellPnts = [];
+             for(var i=0; i<nEll; i++){
+                var obj = pointData.ellpts[i];
+                var xell = obj.xe;
+                var yell = -(obj.ye - height);
+                ellPnts.push(new OpenLayers.Geometry.Point(xell, yell));
+             }
+             linearRing = new OpenLayers.Geometry.LinearRing(ellPnts);
+             ellipse = new OpenLayers.Feature.Vector(linearRing, null, style_green);
+
+             smaPts = new Array(ellPnts[0], ellPnts[18]);
+             smaLineStr = new OpenLayers.Geometry.LineString(smaPts);
+             smaAxis = new OpenLayers.Feature.Vector(smaLineStr, null, style_green);
+
+             smiPts = new Array(ellPnts[9], ellPnts[27]);
+             smiLineStr = new OpenLayers.Geometry.LineString(smiPts);
+             smiAxis = new OpenLayers.Feature.Vector(smiLineStr, null, style_green);
+
+             OMAR.imageManipulator.vectorLayer.addFeatures([ellipse]);
+             OMAR.imageManipulator.vectorLayer.addFeatures([smaAxis]);
+             OMAR.imageManipulator.vectorLayer.addFeatures([smiAxis]);
+             OMAR.imageManipulator.vectorLayer.addFeatures([xPoint]);
+
+               //OpenLayers.Popup.FramedCloud.prototype.fixedRelativePosition = true;
+               //OpenLayers.Popup.FramedCloud.prototype.relativePosition = "tr";
+               offset = {'size': new OpenLayers.Size(0,0), 'offset': new OpenLayers.Pixel(50,50)};
+               poptest = new OpenLayers.Popup.Anchored(
+                  "poptest",
+                  xPoint.geometry.getBounds().getCenterLonLat(),
+                  null,
+                  createPointInfoForm(),
+                  offset,
+                  false,
+                  null);
+               poptest.autoSize = true;
+               poptest.setOpacity(.9);
+               poptest.setBackgroundColor("#BBCCFF");
+               xPoint.popup = poptest;
+               map.addPopup(poptest);
+
+              function createPointInfoForm(){
+                var theHTML = '';
+                theHTML += "<h3 style='font-weight:bold;color:#BBCCFF;background-color:#003366;'>" + "PQE Summary" + "</h3><hr>";
+                theHTML += "<table style='background-color:#BBB;border:0px solid black;'>";
+                theHTML += "<tr><td>CE/LE</td>"  + "<td style='text-align:right;'>"+CE.toFixed(1)+"</td>"  + "<td style='text-align:right;'>/"+LE.toFixed(1)+"</td>"  + "<td style='text-align:right;'>"+"m"+"</td>";
+                theHTML += "<tr><td>SMA/SMI</td>"+ "<td style='text-align:right;'>"+SMA.toFixed(1)+"</td>" + "<td style='text-align:right;'>/"+SMI.toFixed(1)+"</td>" + "<td style='text-align:right;'>"+"m"+"</td>";
+                theHTML += "<tr><td>SMA AZ</td>" + "<td style='text-align:right;'>"+AZ.toFixed(1)+"</td>"  + "<td style='text-align:right;'>"+""+"</td>"             + "<td style='text-align:right;'>"+"deg"+"</td>";
+                theHTML += '</table>';
+                theHTML += "Probability Level: " + pLvl +"P";
+                theHTML += "<hr>";
+                return theHTML;
+              }
+          }
+
+
+    function shareImage()
+    {
+        var baseURL = "${createLink(absolute: 'true', action: 'imageSpace')}";
+        var layers = "${rasterEntry?.indexId}";
+        var interpolation = $("interpolation").value;
+        var brightness = $("brightness").value;
+        var contrast = $("contrast").value;
+        var sharpen_mode = $("sharpen_mode").value;
+        var stretch_mode = $("stretch_mode").value;
+        var stretch_mode_region = $("stretch_mode_region").value;
+        var bands = $("bands").value;
+        var request = OpenLayers.Request.POST({
+    		url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
 			data: YAHOO.lang.JSON.stringify({
 				id:${rasterEntry.id},
 				imagePoints:[{"x":map.getCenter().lon, "y":map.getCenter().lat}]
@@ -989,6 +1177,6 @@ function sliderRotate(sliderValue)
 	}
 
 
- </r:script>
+</r:script>
 </body>
 </html>
