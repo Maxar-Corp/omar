@@ -272,8 +272,13 @@ class ImageSpaceController {
             }
             else if(jsonPoints)
             {
+                // Angular increment for plotting ellipse polygon in image space
                 def ellAngInc = 10.0
+
+                // Probability level (.5P, .9P, .95P)
+                // TODO: this should be exposed to user
                 def pLevel = 0.9
+
                 String xs = jsonPoints.x
                 String xss = xs.replace('[','').replace(']','')
                 String ys = jsonPoints.y
