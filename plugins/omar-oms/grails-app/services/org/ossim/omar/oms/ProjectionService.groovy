@@ -4,6 +4,7 @@ import joms.oms.ImageModel
 import joms.oms.ossimDpt
 import joms.oms.ossimGpt
 import joms.oms.ossimEcefPoint
+import joms.oms.ossimString
 import joms.oms.GeodeticEvaluator
 import geoscript.geom.Geometry
 
@@ -244,6 +245,11 @@ class ProjectionService
         def groundPoint = new ossimGpt()
         boolean errorPropAvailable = false
 
+        boolean surfaceInfoAvailable = false
+        def infoString = new ossimString()
+        def typeString = new ossimString()
+        String projType
+
         int numPnts = 360/angInc + 1
         double [] ellSamp = new double[numPnts]
         double [] ellLine = new double[numPnts]
@@ -259,7 +265,13 @@ class ProjectionService
                 groundPoint.height = 0.0;
             }
 
+            typeString = imageSpaceModel.getType()
+            projType = typeString
+            projType = projType.minus("ossim")
+
             hgtMsl = geodeticEvaluator.getHeightMSL(groundPoint);
+
+            surfaceInfoAvailable = imageSpaceModel.getProjSurfaceInfo(groundPoint, infoString)
 
             // Perform error propagation
             errorPropAvailable =
@@ -273,6 +285,17 @@ class ProjectionService
         imageSpaceModel.delete()
         geodeticEvaluator.delete()
 
+        String info
+        if (surfaceInfoAvailable)
+        {
+            info = infoString
+            info = info.minus("ossim")
+        }
+        else
+        {
+            info = "NO SURFACE INFO"
+        }
+
         if (errorPropAvailable)
         {
             for(int i = 0; i < numPnts; i++){
@@ -284,7 +307,9 @@ class ProjectionService
                       lat:    groundPoint.latd(),
                       lon:    groundPoint.lond(),
                       hgt:    groundPoint.height(),
+                      type:   projType,
                       hgtMsl: hgtMsl,
+                      sInfo:  info,
                       CE:     pqeArray[0],
                       LE:     pqeArray[1],
                       SMA:    pqeArray[2],
@@ -300,7 +325,9 @@ class ProjectionService
                       lat:    groundPoint.latd(),
                       lon:    groundPoint.lond(),
                       hgt:    groundPoint.height(),
-                      hgtMsl: hgtMsl];
+                      type:   projType,
+                      hgtMsl: hgtMsl,
+                      sInfo:  info];
         }
 
         groundPoint.delete();
