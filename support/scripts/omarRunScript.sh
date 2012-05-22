@@ -57,7 +57,7 @@ To bring up this usage:
 To bring up help on any script please use the following format: 
    ${runScriptFile.name} <script> --help
 
-The .groovy extension is not needed and will be appended when running a script file if the script is not present.  
+The .groovy extension is not needed and will be appended when running a script file if the extension .groovy is not present.  
 To get help on any script please run:
 
    ${runScriptFile.name} <script> --help
@@ -66,11 +66,7 @@ To get help on any script please run:
    }
    def run(args)
    {
-      if(!args.length)
-      {
-         return 1
-      }
-      if(args[0] == "--help")
+      if(!args.length || (args[0] == "--help"))
       {
          outputUsage();
          return 0;
