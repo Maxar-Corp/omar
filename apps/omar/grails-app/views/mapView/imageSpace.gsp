@@ -550,6 +550,10 @@ function init(mapWidth, mapHeight)
 		});
 	</g:if>
 
+	<g:if test="${params.bbox != null}">
+		bboxToPixel();
+	</g:if>
+
     map.zoomToMaxExtent();
     // map.zoomIn();
     // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
@@ -584,7 +588,66 @@ function init(mapWidth, mapHeight)
 
 }
 
+<g:if test="${params.bbox != null}">
+function bboxToPixel(bbox)
+{
+	var bbox = "${params.bbox}";
+	var mapBBOX = bbox.split(",");
+	if (mapBBOX.length == 4)
+	{
+		var cornerPoint = new Array();
+		cornerPoint[0] = mapBBOX[0];
+		cornerPoint[1] = mapBBOX[1];
+		cornerPoint[2] = mapBBOX[2];
+		cornerPoint[3] = mapBBOX[3];
+                
+		var url = "/omar/imageSpace/groundToImage";
+                var request = OpenLayers.Request.POST({
+                	url:url,
+                	data: YAHOO.lang.JSON.stringify({
+				id:${rasterEntry.id},
+				groundPoints:[{"lat":cornerPoint[1], "lon":cornerPoint[0]}]
+			}),
+			callback: function (transport){
+				var temp = YAHOO.lang.JSON.parse(transport.responseText);
+				bboxToPixelFinish(0,temp[0].x,temp[0].y);
+				}
+		});
+		var request = OpenLayers.Request.POST({
+			url:url,
+			data: YAHOO.lang.JSON.stringify({
+				id:${rasterEntry.id},
+				groundPoints:[{"lat":cornerPoint[3], "lon":cornerPoint[2]}]
+			}),
+			callback: function (transport){
+				var temp = YAHOO.lang.JSON.parse(transport.responseText);
+				bboxToPixelFinish(1,temp[0].x,temp[0].y);
+			}
+		});			
+	}
+	else { map.zoomToMaxExtent(); }
+}
 
+var lowerLeftCoordinate;
+var upperRightCoordinate;
+function bboxToPixelFinish(i,longitude,latitude)
+{
+	if (i == 0)
+	{
+		lowerLeftCoordinate = [longitude,latitude];
+	}
+	else if (i == 1)
+	{
+		upperRightCoordinate = [longitude,latitude];
+	}
+
+	if ((lowerLeftCoordinate != null) && (upperRightCoordinate != null))
+	{
+		var zoom = map.getZoomForExtent(new OpenLayers.Bounds(lowerLeftCoordinate[0],lowerLeftCoordinate[1],upperRightCoordinate[0],upperRightCoordinate[1]), true);
+		map.zoomTo(zoom);
+	}
+}
+</g:if>
 
 function onFeatureSelect(feature) {
 //   selectedFeature = feature;
