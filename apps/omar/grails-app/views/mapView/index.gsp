@@ -82,6 +82,8 @@ function changeToImageSpace()
      wmsParams = new OmarWmsParams();
      wmsParams.setProperties(wcsParams);
      wmsParams.layers = "${( rasterEntries*.indexId ).join( ',' )}";
+     wmsParams.latitude = mapWidget.getMap().getCenter().lat;
+     wmsParams.longitude = mapWidget.getMap().getCenter().lon; 
     wmsFormElement.action = url + "?"+wmsParams.toUrlParams();
     wmsFormElement.method = "POST";
     wmsFormElement.submit();
