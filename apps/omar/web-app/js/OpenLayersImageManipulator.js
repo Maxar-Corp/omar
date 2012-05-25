@@ -12,152 +12,159 @@ OMAR.ToolModeType = {
   POLYGON: "polygon"
 };
 
+if(window.console&&(OpenLayers.BROWSER_NAME == "firefox"))
+{
+//  OpenLayers.Util.extend(OpenLayers.Console, console);
+}
 
-OMAR.OpenLayersFeatureHandler = OpenLayers.Class(OpenLayers.Handler.Feature, {
-
-    touchstart: function(evt) {
-    var adaptedEvt = this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt)))
-    if (!this.touch) {
-         this.touch = true;
-         this.map.events.un({
-            mousedown: this.mousedown,
-            mouseup: this.mouseup,
-            mousemove: this.mousemove,
-            click: this.click,
-            dblclick: this.dblclick,
-            scope: this
-         });
-      }
-      return OpenLayers.Event.isMultiTouch(adaptedEvt) ? true : this.mousedown(evt);
-   },
-   touchmove: function(evt) {
-     var adaptedEvt = this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt)))
-     OpenLayers.Event.stop(adaptedEvt);
-   },
-   mousedown: function(evt) {
-      var adaptedEvt = this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt)))
-      this.down = adaptedEvt.xy;
-      return this.handle(adaptedEvt) ? !this.stopDown : true;
-   },
-   mouseup: function(evt) {
-     var adaptedEvt = this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt)))
-      this.up = adaptedEvt.xy;
-      return this.handle(adaptedEvt) ? !this.stopUp : true;
-   },
-   click: function(evt) {
-     var adaptedEvt = this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt)))
-     return this.handle(adaptedEvt) ? !this.stopClick : true;
-   },
-   mousemove: function(evt) {
-    var adaptedEvt = this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt)))
-      return this.move();
-      if (!this.callbacks['over'] && !this.callbacks['out']) {
-         return true;
-      }
-      this.handle(adaptedEvt);
-      return true;
-   },
-
-   CLASS_NAME: "OMAR.OpenLayersFeatureHandler"
-});
-
-/**
-* This is temporarily used to filter coordinates for different features.
-* I could not figure out a generic way of doing it so the code is duplicated 
-* for each feature type we need (Point, Line, Polygon).
+/*
+* MouseEvent
+* Visit http://createjs.com/ for documentation, updates and examples.
+*
+* Copyright (c) 2010 gskinner.com, inc.
 * 
+* Permission is hereby granted, free of charge, to any person
+* obtaining a copy of this software and associated documentation
+* files (the "Software"), to deal in the Software without
+* restriction, including without limitation the rights to use,
+* copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following
+* conditions:
+* 
+* The above copyright notice and this permission notice shall be
+* included in all copies or substantial portions of the Software.
+* 
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+* OTHER DEALINGS IN THE SOFTWARE.
 */
-OMAR.OpenLayersPointHandler = OpenLayers.Class(OpenLayers.Handler.Point,{
-  EVENT_TYPES:["featureDone"],
-  customEvents:null,
-   initialize : function(control, callbacks, options){
-   // this.manipulator = options.manipulator;
-    OpenLayers.Handler.Path.prototype.initialize.apply(this, arguments);
-    this.customEvents = new OpenLayers.Events(this, null, this.EVENT_TYPES, true);
-    this.callbacks.done = this.featureDone;
 
-   },
-   mousemove:function(evt){
-    return this.move(this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
-   },
-   mouseup:function(evt){
-    return this.up(this.manipulator.adaptOpenLayersXY(evt, 
-                                      this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
-   },
-   mousedown:function(evt){
-    return this.down(this.manipulator.adaptOpenLayersXY(evt, 
-                                      this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
-   },
-   featureDone: function(geom){
-    this.drawFeature(geom);
-    // pass the added object to the layer not the object we are drawing
-    this.handler.customEvents.triggerEvent("featureDone", {feature:this.layer.features[this.layer.features.length-1]});
-   },
-   CLASS_NAME: "OMAR.OpenLayersPointHandler"
-});
+(function(window) {
+var MouseEvent = function(type, clientX, clientY, target, nativeEvent) {
+  this.initialize(type, clientX, clientY, target, nativeEvent);
+}
+var p = MouseEvent.prototype;
+  p.clientX = 0;
+  p.clientY = 0;
+  p.type = null;
+  p.nativeEvent = null;
+  p.target = null;
+//  p.screenX = 0;
+//  p.screenY = 0;
+  p.ctrlKey = null;
+  p.shiftKey = null;
+  p.altKey = null;
+  p.button = null;
+  p.metaKey = null;
+  p.preventDefault = function(){return this};
+  p.stopPropagation = function(){return this};
 
+  p.initialize = function(type, clientX, clientY, target, nativeEvent) {
+    this.type = type;
+    this.nativeEvent = nativeEvent;
+    var tempString = "";
+//         OpenLayers.Console.info(tempString);
 
-OMAR.OpenLayersPathHandler = OpenLayers.Class(OpenLayers.Handler.Path,{
-  EVENT_TYPES:["featureDone"],
-  customEvents:null,
-   initialize : function(control, callbacks, options){
-   // this.manipulator = options.manipulator;
-    OpenLayers.Handler.Path.prototype.initialize.apply(this, arguments);
-    this.customEvents = new OpenLayers.Events(this, null, this.EVENT_TYPES, true);
-    this.callbacks.done = this.featureDone;
+//alert(target);
+   if(this.nativeEvent)
+   {
 
-   },
-   mousemove:function(evt){
-    return this.move(this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
-   },
-   mouseup:function(evt){
-    return this.up(this.manipulator.adaptOpenLayersXY(evt, 
-                                      this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
-   },
-   mousedown:function(evt){
-    return this.down(this.manipulator.adaptOpenLayersXY(evt, 
-                                      this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
-   },
-   featureDone: function(geom){
-    this.drawFeature(geom);
-    // pass the added object to the layer not the object we are drawing
-    this.handler.customEvents.triggerEvent("featureDone", {feature:this.layer.features[this.layer.features.length-1]});
-   },
-   CLASS_NAME: "OMAR.OpenLayersPathHandler"
-});
+//    var tempClone = OMAR.getCloneOfObject(this.nativeEvent);
+//    for(x in tempClone)
+ //   {
+ //     tempString = (tempString + x + "\n");
+ //   }
+    OpenLayers.Util.extend(this, nativeEvent);
+    for( key in this.nativeEvent)
+    {
+      if(typeof this.nativeEvent[key] == "function")
+      {
+        this[key].this = this;
+      }
+    }
+    //  for(key in this.nativeEvent)
+    //  { 
+    //    if(!key in ["preventDefault","stopPropagation","clientX","clientY","x","y","target"])
+    //      this[key] = this.nativeEvent[key];
+      //this.ctrlKey = this.nativeEvent.ctrlKey;
+      //this.shiftKey = this.nativeEvent.shiftKey;
+      //this.altKey = this.nativeEvent.altKey;
+      //this.metaKey = this.nativeEvent.metaKey;
+      //this.button = this.nativeEvent.button;
 
-OMAR.OpenLayersPolygonHandler = OpenLayers.Class(OpenLayers.Handler.Polygon,{
-  EVENT_TYPES:["featureDone"],
-  customEvents:null,
-   initialize : function(control, callbacks, options){
-   // this.manipulator = options.manipulator;
-    OpenLayers.Handler.Path.prototype.initialize.apply(this, arguments);
-    this.customEvents = new OpenLayers.Events(this, null, this.EVENT_TYPES, true);
-    this.callbacks.done = this.featureDone;
+    //  }
+    // this.preventDefault = this.nativeEvent.preventDefault;
+    }
 
-   },
-   mousemove:function(evt){
-    return this.move(this.manipulator.adaptOpenLayersXY(evt, this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
-   },
-   mouseup:function(evt){
-    return this.up(this.manipulator.adaptOpenLayersXY(evt, 
-                                      this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
-   },
-   mousedown:function(evt){
-    return this.down(this.manipulator.adaptOpenLayersXY(evt, 
-                                      this.manipulator.pointToTransformPoint(this.manipulator.mouseToPoint(evt))));
-   },
-   featureDone: function(geom){
-    this.drawFeature(geom);
-    // pass the added object to the layer not the object we are drawing
-    this.handler.customEvents.triggerEvent("featureDone", {feature:this.layer.features[this.layer.features.length-1]});
-   },
-   CLASS_NAME: "OMAR.OpenLayersPolygonHandler"
-});
+    this.x = clientX;
+    this.y = clientY;
+    this.clientX = clientX;
+    this.clientY = clientY;
+    this.target = target;
+    this.preventDefault = null;
+    this.stopPropagation = null;
+    OpenLayers.Console.info(clientX + "==" + this.clientX);
 
+  }
+
+// public methods:
+  /**
+   * Returns a clone of the MouseEvent instance.
+   * @method clone
+   * @return {MouseEvent} a clone of the MouseEvent instance.
+   **/
+  p.clone = function() {
+    return new MouseEvent(this.type, this.clientX, this.clientY, this.target, this.nativeEvent);
+  }
+
+  p.toString = function() {
+    return "";
+  }
+
+window.MouseEvent = MouseEvent;
+}(window));
+
+OpenLayers.Control.Click = OpenLayers.Class(OpenLayers.Control, {
+        defaultHandlerOptions: {
+            'single': true,
+            'double': false,
+            'pixelTolerance': 0,
+            'stopSingle': false,
+            'stopDouble': false
+        },
+
+        initialize: function(options) {
+            this.handlerOptions = OpenLayers.Util.extend(
+                {}, this.defaultHandlerOptions
+            );
+            OpenLayers.Control.prototype.initialize.apply(
+                this, arguments
+            ); 
+            this.handler = new OpenLayers.Handler.Click(
+                this, {
+                    'click': this.trigger
+                }, 
+                this.handlerOptions
+            );
+        }, 
+
+        trigger: function(e) {
+          //  var lonlat = map.getLonLatFromViewPortPx(e.xy);
+          //  alert("You clicked near " + lonlat.lat + " N, " +
+           //                           + lonlat.lon + " E");
+        }
+
+    });
 OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   mouseDragStart:null,
   map:null,
+  mapEventsDiv:null,
   zoomBox:null,
   selectBox:null,
   mousePosition:null,
@@ -166,6 +173,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   compassDiv:null,
   affineParams:null,
   affineM: null,
+  eventDivToMapDivM: null,
   containerDiv: null,
   containerDivRegion: null,
   projectionType: OMAR.ProjectionType.PIXEL,
@@ -185,21 +193,27 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   EVENT_TYPES:["featureDone", "featureRemoved"],
    destroy : function() 
    {
-        this.events.un ({
-            "click":this.click,
-            "dblclick":this.dblClick,
-            "mousedown":this.mousedown,
-            "mouseup":this.mouseup,
-            "mousemove": this.mousemove,
-            "mouseout": this.mouseout,
-            "wheel": this.wheel
+    this.events.un ({
+        "click":this.click,
+        "dblclick":this.dblClick,
+        "mousedown":this.mousedown,
+        "mouseup":this.mouseup,
+        "mousemove": this.mousemove,
+        "mouseout": this.mouseout,
+        "wheel": this.wheel,
+        "mouseover":this.mouseover,
+        "touchstart":this.touchstart, 
+        "touchmove":this.touchmove,
+        "touchend": this.touchend,
+       "scope":this
     });
    },
    initialize : function()
    {
     this.affineParams =  new OmarAffineParams();
     this.affineM = new OmarMatrix3x3();
-
+    this.eventDivToMapDivM = new OmarMatrix3x3();
+    //[i for(i in document)].filter(function(i){return i.substring(0,2)=='on'&&(document[i]==null||typeof document[i]=='function');})
    },
    setup : function(containerDiv, mapObj, annDiv, topDiv, compass){
     this.map           = mapObj;
@@ -212,58 +226,34 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     this.map.addLayer(this.vectorLayer);
     this.events = new OpenLayers.Events(this, this.eventDiv, this.EVENT_TYPES, true);
     this.drawControls = {
-                    point: 
-                    new OpenLayers.Control.SelectFeature(this.vectorLayer,
-                        //OpenLayers.Handler.Point) ,
-                        OMAR.OpenLayersFeatureHandler, {
-                          handlerOptions:{
-                            manipulator:this
-                          }
-                        }),
+                    point: new OpenLayers.Control.DrawFeature(this.vectorLayer,
+                        OpenLayers.Handler.Point) ,
                     line: new OpenLayers.Control.DrawFeature(this.vectorLayer,
-                       //OpenLayers.Handler.Path),
-                        OMAR.OpenLayersPathHandler, {
-                          handlerOptions:{
-                            manipulator: this
-                          }
-                        }),
+                       OpenLayers.Handler.Path),
                     polygon: new OpenLayers.Control.DrawFeature(this.vectorLayer,
-                        //OpenLayers.Handler.Polygon)//,
-                        OMAR.OpenLayersPolygonHandler, {
-                          handlerOptions:{
-                            manipulator:this
+                        OpenLayers.Handler.Polygon),
+
+                    selectHover: new OpenLayers.Control.SelectFeature(
+                        this.vectorLayer,
+                        {
+                          hover: true,
+                          highlightOnly: true,
+                          //renderIntent: "temporary",
+                          eventListeners: {
+                              beforefeaturehighlighted: this.report,
+                              featurehighlighted: this.report,
+                              featureunhighlighted: this.report
                           }
                         })
-                 };
+                  };
 
-         this.vectorLayer.events.on({
-            "beforefeaturesadded": function(){
-                //this.events.triggerEvent("measureAddPointFinished");
-                if(!OMAR.ToolModeType.POINT)
-                  this.vectorLayer.destroyFeatures();
-            },
-            scope:this
-          });
-//          this.drawControls.line.events.on({
-//            //"featureadded": function (){alert("HERE")},
-//            scope: this
-//          });
-    this.map.addControl(this.drawControls.point);
-    this.map.addControl(this.drawControls.line);
-    this.map.addControl(this.drawControls.polygon);
-
-       this.drawControls.line.handler.customEvents.on({
-      "featureDone": function(feature){
-        this.events.triggerEvent("featureDone", feature);//{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
-      },
-      scope:this
-    });
-    this.drawControls.polygon.handler.customEvents.on({
-      "featureDone": function(feature){
-        this.events.triggerEvent("featureDone", feature);//{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
-      },
-      scope:this
-    });
+    for(var key in this.drawControls) {
+        this.map.addControl(this.drawControls[key]);
+    }
+    var clickControl = new OpenLayers.Control.Click();
+    this.map.addControl(clickControl);
+    clickControl.activate();
+    this.drawControls.selectHover.activate();
     if(this.containerDiv)
     {
       if(!this.annotationDiv)
@@ -294,15 +284,25 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         "mousemove": this.mousemove,
         "mouseout": this.mouseout,
         "wheel": this.wheel,
-        "scope":this
+        "mouseover":this.mouseover,
+        "touchstart":this.touchstart, 
+        "touchmove":this.touchmove,
+        "touchend": this.touchend,
+       "scope":this
     });
     this.wheelListener = OpenLayers.Function.bindAsEventListener(this.wheel, this);
+    //this.eventHandler = OpenLayers.Function.bindAsEventListener(this.handleBrowserEvent, this);
 
     OpenLayers.Event.observe(window,   "DOMMouseScroll", this.wheelListener);
     OpenLayers.Event.observe(window,   "mousewheel",     this.wheelListener);
     OpenLayers.Event.observe(document, "mousewheel",     this.wheelListener);
     this.containerResized();
- },
+    this.mapEventsDiv = OpenLayers.Util.getElement(this.map.id + "_events");
+},
+//handleBrowserEvent: function(evt)
+//{
+
+//}
    setToolMode: function(mode)
    {
         var stateChangedFlag = (mode != this.toolMode);
@@ -446,18 +446,46 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   },
   updateTransform: function(){
     if(!this.annotationDiv) return;
-      var region = YAHOO.util.Region.getRegion(this.annotationDiv);
-      var centerPx = new OmarPoint((region.width)/2 , (region.height)/2 );
+      region = YAHOO.util.Region.getRegion(this.annotationDiv);
+      var centerPx = new OmarPoint(region.width*0.5, region.height*0.5);
       this.affineParams.pivot.x = centerPx.x;
       this.affineParams.pivot.y = centerPx.y;
       this.affineParams.scale.x = 1;
       this.affineParams.scale.y = 1;
-      this.affineParams.translate.x = -region.left;
-      this.affineParams.translate.y = -region.top;
-
+      this.affineParams.translate.x = -region.x;
+      this.affineParams.translate.y = -region.y;
       this.affineM = this.affineParams.toMatrix();
- 
+    if(this.map)
+    {
+        // let's make sure openlayers offsets are initialize
+        //
+        var tempPt = {clientX:0, clientY:0};
+        var offset = this.map.events.getMousePosition(tempPt);
+    }
+    if(this.eventDiv)
+    {
+        var eventDivRegion = YAHOO.util.Region.getRegion(this.eventDiv); 
+        var centerEvent    = new OmarPoint((eventDivRegion.right+eventDivRegion.left)*0.5,
+                                           (eventDivRegion.bottom+eventDivRegion.top)*0.5);
+        var rotate       = new OmarAffineParams();
+        rotate.rotate    = this.affineParams.rotate;
+        var transEvent   = new OmarMatrix3x3();
+        var transEvent2  = new OmarMatrix3x3();
+        
+        //alert(offset);
+        //OpenLayers.Console.info(offset);
+
+        // rotate about center
+        transEvent.makeTranslate(-centerEvent.x, -centerEvent.y);
+        transEvent2.makeTranslate(centerEvent.x, centerEvent.y);
+        OpenLayers.Console.info(rotate);
+        this.eventDivToMapDivM = transEvent2.transform(rotate.toMatrix().transform(transEvent));
+    }
+
+  //    OpenLayers.Console.info(region); 
+
   },
+
   generateOssimFullImageTransform: function(){
     var affine =  new OmarAffineParams();
     var res = OMAR.imageManipulator.map.getResolution();
@@ -469,22 +497,27 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     affine.scale.y = scale;
     affine.pivot.x = center.x;
     affine.pivot.y = center.y;
+
     return affine.toMatrix();
   },
   transformDiv: function(){
-      if(this.map && this.map.div)
+    if(this.map && this.map.div)
+    {
+      if(this.map&&this.map.div)
       {
         cssSandpaper.setTransform(this.map.div,
                                   "rotate(" + this.affineParams.rotate+"deg)");
-
-        if(this.compassDiv)
-        {
-          var rotate =  (this.affineParams.rotate-this.northAngle)%360;
-          cssSandpaper.setTransform(this.compassDiv,
-                                  "rotate(" + rotate+"deg)");
-        }
       }
-  },
+
+      if(this.compassDiv)
+      {
+        var rotate =  (this.affineParams.rotate-this.northAngle)%360;
+        cssSandpaper.setTransform(this.compassDiv,
+                                "rotate(" + rotate+"deg)");
+      }
+    }
+
+ },
   getDivElement: function(div){
       if(typeof div == "string")
       {
@@ -493,8 +526,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       return div;
   },
   mouseToPoint: function(evt){
-      var mouseXY = YAHOO.util.Event.getXY(evt);
-      return new OmarPoint(mouseXY[0], mouseXY[1]);
+      return new OmarPoint(evt.clientX, evt.clientY);//YAHOO.util.Event.getXY(evt);
   },
   annotationPointToPoint: function(pt){
     var region = YAHOO.util.Region.getRegion(this.annotationDiv);
@@ -567,6 +599,55 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     
     return (mX > left && mX < right && mY > top && mY < bottom);
   },
+  mouseEventToMapEvent: function(evt, type){
+    var tempPt = this.eventDivToMapDivM.transform(new OmarPoint(evt.clientX, evt.clientY)); 
+
+//var event = evt;
+
+//var tempString = "";
+//for(x in evt){tempString = (tempString + x + "\n");}
+var t  = type?type:evt.type;
+var event = new window.MouseEvent(t, tempPt.x, tempPt.y, this.mapEventsDiv, evt);
+//var tempString = "";
+//for(x in event){tempString = (tempString + x + "\n");}
+ // alert(tempString);
+   //var event = document.createEvent("MouseEvents");
+    
+
+   /*
+    var event = CustomEvent.prototype;
+    event.type = evt.type;
+    event.clientX = 0;
+    event.clientY = 0;
+    event.target = evt.target;
+    event.clientX = tempPt.x;
+    event.clientY = tempPt.y;
+    event.x = tempPt.x;
+    event.y = tempPt.y;
+    event.screenX = evt.screenX;
+    event.screenY = evt.screenY;
+    event.shiftKey = evt.shiftKey;
+    event.altKey   = evt.altKey;
+    event.ctrlKey  = evt.ctrlKey;
+    event.metaKey = evt.metaKey;
+    event.button  = evt.button;
+    event.relatedTarget = evt.relatedTarget;
+    event.canBubble = evt.canBubbleArg;
+    event.cancelable = evt.cancelable;
+*
+
+/*
+   var event = document.createEvent("MouseEvents");
+    event.initMouseEvent(evt.type, false, true, this.mapEventDiv, 
+               evt.detail, evt.screenX, evt.screenY, tempPt.x, tempPt.y, 
+               evt.ctrlKey, evt.altKey, evt.shiftKey, evt.metaKey, 
+               evt.button,null);
+    event.target = evt.target;
+    event.srcElement = evt.srcElement;
+    */
+  //  var event = document.createEvent("MouseEvents");
+     return event;
+  },
   wheel: function(evt){
     if(!this.withinDiv(this.mouseToPoint(evt), this.eventDiv.parentNode))
     {
@@ -597,23 +678,39 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     YAHOO.util.Event.stopEvent(evt);
   },
   wheelUp: function(evt){
+      var event = this.mouseEventToMapEvent(evt, "mousemove");
       if (this.map.getZoom() < this.map.getNumZoomLevels()) 
       {
          this.map.setCenter(this.map.getCenter(), this.map.getZoom() + 1);
       }
+    this.map.events.handleBrowserEvent(event);
   },
   wheelDown: function(evt){
+      var event = this.mouseEventToMapEvent(evt, "mousemove");
       if (this.map.getZoom() > 0) 
       {
          this.map.setCenter(this.map.getCenter(), this.map.getZoom() - 1);
       }
+    this.map.events.handleBrowserEvent(event);
   },
   click: function(evt)
   {
-    
+    this.map.events.handleBrowserEvent(this.mouseEventToMapEvent(evt));
+  },
+  mouseover: function(evt){
+    this.map.events.handleBrowserEvent(this.mouseEventToMapEvent(evt));
+  },
+  touchstart: function(evt){
+    //this.map.events.handleBrowserEvent(this.mouseEventToMapEvent(evt));
+  }, 
+  touchmove: function(evt){
+    //this.map.events.handleBrowserEvent(this.mouseEventToMapEvent(evt));
+  }, 
+  touchend: function(evt){
+    //this.map.events.handleBrowserEvent(this.mouseEventToMapEvent(evt));
   },
   dblClick: function(evt){
-
+    var event = this.mouseEventToMapEvent(evt);
      switch(this.toolMode)
      {
         case OMAR.ToolModeType.PAN_ZOOM:
@@ -628,24 +725,18 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         }
         case OMAR.ToolModeType.LINE:
         case OMAR.ToolModeType.POLYGON:
-        {
-            //var wasDrawing = this.currentDrawControl.handler.drawing;
-            if(this.currentDrawControl) this.currentDrawControl.handler.dblclick(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
-            //if(wasDrawing&&!this.currentDrawControl.handler.drawing)
-            //{
-            //    this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
-            //}
-            OpenLayers.Event.stop(evt);  
-           break;
-        }
         case OMAR.ToolModeType.POINT:
         {
-          if(this.currentDrawControl) this.currentDrawControl.handler.dblclick(evt);
+          OpenLayers.Event.stop(evt);  
           break;
         }
-     }
-   },
+    }
+    this.map.events.handleBrowserEvent(event);
+    document.onselectstart = OpenLayers.Function.False;
+},
    mouseout: function(evt){
+    //this.map.events.handleBrowserEvent(this.mouseEventToMapEvent(evt));
+
     /*
       if (this.mouseDragStart != null && OpenLayers.Util.mouseLeft(evt, this.map.div))
       {
@@ -658,7 +749,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       */
    },
    mousedown: function(evt){
-      this.mousePosition = this.mouseToPoint(evt);
+     this.mousePosition = this.mouseToPoint(evt);
       this.editMode = false;
 
       switch(this.toolMode)
@@ -740,25 +831,25 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         case OMAR.ToolModeType.LINE:
         case OMAR.ToolModeType.POLYGON:
         case OMAR.ToolModeType.POINT:
-       {
-            //if(!this.currentDrawControl.handler.drawing)
-             //    this.vectorLayer.destroyFeatures();
-             this.currentDrawControl.handler.mousedown(evt);
-            //this.currentDrawControl.handler.mousedown(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
-            OpenLayers.Event.stop(evt); 
+        {
             document.onselectstart = OpenLayers.Function.False;
            break;
         }
-       }
+      }
       if(this.withinDiv(this.mouseToPoint(evt), this.eventDiv))
       {
           this.documentListenersAdded = true;
           YAHOO.util.Event.addListener(document, "mousemove", this.mousemove, null, this);
           YAHOO.util.Event.addListener(document, "mouseup", this.mouseup, null, this);
       }
-    },
-  mousemove: function(evt){
-     var updateBox = function(evt, box, scopePtr, translateOnly) {
+      this.map.events.handleBrowserEvent(this.mouseEventToMapEvent(evt));
+   },
+
+ mousemove: function(evt){
+        //OpenLayers.Console.info(evt); 
+
+       var event = this.mouseEventToMapEvent(evt);
+    var updateBox = function(evt, box, scopePtr, translateOnly) {
 
             var region = YAHOO.util.Region.getRegion(scopePtr.annotationDiv);
             var deltaX = (scopePtr.mousePosition.x - scopePtr.mouseDragStart.x);
@@ -827,7 +918,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
                 OpenLayers.Event.stop(evt);  
              } 
              else if(this.mouseDragStart)
-             {
+             {               
                 var startPt   = this.affineM.transform(this.mouseDragStart);
                 var endPt     = this.affineM.transform(this.mousePosition);
                 var deltaPt   = startPt.sub(endPt);
@@ -837,7 +928,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
                 this.map.setCenter(newCenter, null, true);
                 this.mouseDragStart       = this.mouseToPoint(evt);
                 this.map.div.style.cursor = "move";
-                 OpenLayers.Event.stop(evt);  
+                OpenLayers.Event.stop(evt);  
             }
              this.performedDrag = true;
           }
@@ -847,8 +938,6 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       case OMAR.ToolModeType.POLYGON:
       case OMAR.ToolModeType.POINT:
       {
-          this.currentDrawControl.handler.mousemove(evt);
-          //OpenLayers.Event.stop(evt);  
         break;
      }
     }
@@ -856,6 +945,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     {
         this.mouseDragStart = this.mouseToPoint(evt);
     }
+    this.map.events.handleBrowserEvent(event);
    },
    mouseup: function(evt){
        var setCenterForLayers = function(scopePtr){
@@ -921,28 +1011,17 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
           this.map.div.style.cursor = "";  
           break;
         }
+        case OMAR.ToolModeType.POINT:
         case OMAR.ToolModeType.LINE:
         case OMAR.ToolModeType.POLYGON:
         {
-          // if(this.currentDrawControl.handler.drawing)
-           //{
-
-                this.currentDrawControl.handler.mouseup(evt);
-                //this.currentDrawControl.handler.mouseup(this.adaptOpenLayersXY(evt, this.pointToTransformPoint(this.mouseToPoint(evt))));
-                OpenLayers.Event.stop(evt); 
-
-                // check for triggering finished 
-               // if(!this.currentDrawControl.handler.drawing)
-               // {
-                // this.events.triggerEvent("measureAddPointFinished",{feature:this.vectorLayer.features[this.vectorLayer.features.length-1]});
-               // }
-           //}
-           document.onselectstart = null;
-           break;
+          document.onselectstart = null;
+          break;
         }
 
     }
-  },
+    this.map.events.handleBrowserEvent(this.mouseEventToMapEvent(evt));
+ },
    zoomBoxEnd:function(evt){
       var currentPoint = this.mouseToPoint(evt);
       if (this.mouseDragStart != null) {
