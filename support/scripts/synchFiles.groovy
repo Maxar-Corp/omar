@@ -33,9 +33,6 @@ thumbnail will also be removed.
       PID_FILE          idientify the location where you want this script's process ID written to.  The user 
                         must have write priviledges to the PID_FILE location.
                         export PID_FILE=/var/run/omar/parallelStage.groovy.pid
-
-      NTHREADS          controls the number of threads used for the staging process.
-                        export NTHREADS=4
                         
       OMAR_THUMBNAIL_CACHE  Specifies the location where OMAR keeps its thumbnail cahce directory.
                             Typical locaiton is /data/omar/omar-cache
