@@ -24,9 +24,23 @@ body {
 }
 
 #compassDivId {
-    width: 50;
+    width: 50px;
     position: absolute;
     z-index:15;
+}
+
+#popDivId {
+    background-color: #BBCCFF;
+    filter: alpha(opacity=80);
+    opacity: .8;
+    position: absolute;
+    width: 200px;
+    height: 130px;
+    left: 20px;
+    top: 20px;
+    padding: 5px;
+    z-index: 30;
+    visibility:hidden;
 }
 
 #map {
