@@ -204,6 +204,7 @@ modules = {
 
     resource url: [plugin: 'openlayers', dir: 'css', file: 'mapwidget2.css']
     resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
+    //resource url: [plugin: 'openlayers', dir: 'js/lib/Firebug', file: 'firebug.js']
     resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
 
 
@@ -211,13 +212,13 @@ modules = {
     //resource url: [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js']
     resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
 
-    resource url: [dir: 'js', file: 'application.js']
-    resource url: [dir: 'js', file: 'matrix.js']
-    resource url: [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
     resource url: [dir: 'js/cssSandpaper', file: 'EventHelpers.js']
     resource url: [dir: 'js/cssSandpaper', file: 'cssQuery-p.js']
     resource url: [dir: 'js/cssSandpaper/jcoglan.com', file: 'sylvester.js']
     resource url: [dir: 'js/cssSandpaper', file: 'cssSandpaper-lite.js']
+    resource url: [dir: 'js', file: 'application.js']
+    resource url: [dir: 'js', file: 'matrix.js']
+    resource url: [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
     resource url: [dir: 'js', file: 'OpenLayersImageManipulator.js']
     //resource url: [dir: 'js', file: 'datechooser.js']
 
