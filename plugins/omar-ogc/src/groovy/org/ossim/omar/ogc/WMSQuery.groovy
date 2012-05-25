@@ -6,9 +6,9 @@ import org.hibernate.criterion.Order
 import org.ossim.omar.core.BaseQuery
 import org.ossim.omar.core.ISO8601DateParser
 import org.ossim.omar.core.Utility
-
-//import org.ossim.omar.raster.RasterEntry
-//import org.ossim.omar.video.VideoDataSet
+import  org.ossim.omar.raster.RasterEntryQuery
+import org.ossim.omar.raster.RasterEntry
+import org.ossim.omar.video.VideoDataSet
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,20 +17,49 @@ import org.ossim.omar.core.Utility
  * Time: 10:11:18 AM
  * To change this template use File | Settings | File Templates.
  */
-class WMSQuery extends BaseQuery
+class WMSQuery extends RasterEntryQuery
 {
   def bbox
   def layers
   def max
-
   WMSQuery()
   {
     super()
+
 //    filterTypeMap = Utility.createTypeMap(RasterEntry.class) +
 //            Utility.createTypeMap(VideoDataSet.class)
 
   }
+  Criterion createIntersection(String geomColumnName = "groundGeom")
+  {
+    if ( bbox )
+    {
+      def bounds = bbox.split(',')
+      aoiMinLon = bounds[0]
+      aoiMinLat = bounds[1]
+      aoiMaxLon = bounds[2]
+      aoiMaxLat = bounds[3]
+      searchMethod = BBOX_SEARCH
+    }
 
+    return super.createIntersection(geomColumnName)
+  }
+  def caseInsensitiveBind(def params)
+  {
+      super.caseInsensitiveBind(params)
+
+      if(time)
+      {
+        startDate = null
+        endDate   = null
+      }
+  }
+  def createClause()
+  {
+    def baseClause = super.createClause()
+
+    baseClause
+  }
 /*
   def createDateRangeRestrictionRaster(def columnName = "acquisitionDate")
   {
