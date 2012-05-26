@@ -242,7 +242,7 @@ function changeToSingleLayer()
 {
 	var bboxCoords = new Array();
 	var bboxPixels = map.calculateBounds().toArray();
-	var lowerLeft = OMAR.imageManipulator.pointToLocal({x:bboxPixels[0],y:bboxPixels[1]});
+	var lowerLeft = OMAR.imageManipulator.pointToLocal({x:bboxPixels[0],y:bboxPixels[1]}); 
 	var upperRight = OMAR.imageManipulator.pointToLocal({x:bboxPixels[2],y:bboxPixels[3]});
 
 	var request = OpenLayers.Request.POST({
@@ -1262,9 +1262,9 @@ function setMapCtr(unit, value)
 	var mapCenter = OMAR.imageManipulator.getCenterLocal();
 	
 	var bboxCoords = new Array();
-        var bboxPixels = map.calculateBounds().toArray();alert(bboxPixels);
-        var lowerLeft = OMAR.imageManipulator.pointToLocal({x:bboxPixels[0],y:bboxPixels[1]});alert(lowerLeft);
-        var upperRight = OMAR.imageManipulator.pointToLocal({x:bboxPixels[2],y:bboxPixels[3]});alert(upperRight);
+        var bboxPixels = map.calculateBounds().toArray();
+        var lowerLeft = OMAR.imageManipulator.pointToLocal({x:bboxPixels[0],y:bboxPixels[1]});
+        var upperRight = OMAR.imageManipulator.pointToLocal({x:bboxPixels[2],y:bboxPixels[3]});
         
 	var request = OpenLayers.Request.POST({
     		url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
