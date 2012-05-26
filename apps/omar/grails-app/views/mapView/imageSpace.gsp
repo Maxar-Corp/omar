@@ -240,33 +240,67 @@ function changeSharpenOpts()
 
 function changeToSingleLayer()
 {
+	var bboxCoords = new Array();
+	var bboxPixels = map.calculateBounds().toArray();
+	var lowerLeft = OMAR.imageManipulator.pointToLocal({x:bboxPixels[0],y:bboxPixels[1]});
+	var upperRight = OMAR.imageManipulator.pointToLocal({x:bboxPixels[2],y:bboxPixels[3]});
+
 	var request = OpenLayers.Request.POST({
 		url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
 		data: YAHOO.lang.JSON.stringify({
 			id:${rasterEntry.id},
-			imagePoints:[{"x":OMAR.imageManipulator.getCenterLocal().x, "y":OMAR.imageManipulator.getCenterLocal().y}]
-			}),
+			imagePoints:[{"x":lowerLeft.x, "y":lowerLeft.y}]
+		}),
 		callback: function (transport)
 		{
 			var temp = YAHOO.lang.JSON.parse(transport.responseText);
-			var centerLatitude = temp[0].lat;
-			var centerLongitude = temp[0].lon;
+			bboxCoords[0] = temp[0].lon;
+			bboxCoords[1] = temp[0].lat;
 
-			var url = "${createLink(controller: 'mapView', action: 'index')}";
-    			var wmsFormElement = $("wmsFormId");
-    			if(wmsFormElement)
-    			{
-        			var imageAdjustmentParams = new OmarWmsParams();
-        			imageAdjustmentParams.setProperties(document);
-        			imageAdjustmentParams.layers = "${rasterEntry.indexId}";
-				imageAdjustmentParams.latitude = centerLatitude;
-				imageAdjustmentParams.longitude = centerLongitude;
-        			wmsFormElement.action = url + "?"+imageAdjustmentParams.toUrlParams();
-        			wmsFormElement.method = "POST";
-				wmsFormElement.submit();
-   			}
-                }
-        });
+			var request = OpenLayers.Request.POST({
+				url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
+				data: YAHOO.lang.JSON.stringify({
+					id:${rasterEntry.id},
+					imagePoints:[{"x":upperRight.x, "y":upperRight.y}] 
+				 }),
+				callback: function (transport)
+				{
+					var temp = YAHOO.lang.JSON.parse(transport.responseText);
+					bboxCoords[2] = temp[0].lon;
+					bboxCoords[3] = temp[0].lat;
+
+					var request = OpenLayers.Request.POST({
+						url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
+						data: YAHOO.lang.JSON.stringify({
+							id:${rasterEntry.id},
+							imagePoints:[{"x":OMAR.imageManipulator.getCenterLocal().x, "y":OMAR.imageManipulator.getCenterLocal().y}]
+						}),
+						callback: function (transport)
+						{
+							var temp = YAHOO.lang.JSON.parse(transport.responseText);
+							var centerLatitude = temp[0].lat;
+							var centerLongitude = temp[0].lon;
+
+							var url = "${createLink(controller: 'mapView', action: 'index')}";
+							var wmsFormElement = $("wmsFormId");
+							if(wmsFormElement)
+							{
+								var imageAdjustmentParams = new OmarWmsParams();
+								imageAdjustmentParams.setProperties(document);
+								imageAdjustmentParams.layers = "${rasterEntry.indexId}";
+								imageAdjustmentParams.latitude = centerLatitude;
+								imageAdjustmentParams.longitude = centerLongitude;
+								imageAdjustmentParams.bbox = bboxCoords[0] + "," + bboxCoords[1] + "," + bboxCoords[2] + "," + bboxCoords[3];
+								wmsFormElement.action = url + "?"+imageAdjustmentParams.toUrlParams();
+								wmsFormElement.method = "POST";
+								wmsFormElement.submit();
+							}
+						}
+					});
+				}
+        		});
+		}
+	});
 }
 
 function chgInterpolation()
@@ -1226,35 +1260,68 @@ function setMapCtr(unit, value)
         var bands = $("bands").value;
 	var rotate = ${"rotateAngle"}.value;
 	var mapCenter = OMAR.imageManipulator.getCenterLocal();
-
-        var request = OpenLayers.Request.POST({
+	
+	var bboxCoords = new Array();
+        var bboxPixels = map.calculateBounds().toArray();alert(bboxPixels);
+        var lowerLeft = OMAR.imageManipulator.pointToLocal({x:bboxPixels[0],y:bboxPixels[1]});alert(lowerLeft);
+        var upperRight = OMAR.imageManipulator.pointToLocal({x:bboxPixels[2],y:bboxPixels[3]});alert(upperRight);
+        
+	var request = OpenLayers.Request.POST({
     		url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
 		data: YAHOO.lang.JSON.stringify({
 				id:${rasterEntry.id},
-				imagePoints:[{"x":mapCenter.x, "y":mapCenter.y}]
-			}),     
+				imagePoints:[{"x":lowerLeft.x, "y":lowerLeft.y}]
+		}),     
 		callback: function (transport)
 		{
-			var temp = YAHOO.lang.JSON.parse(transport.responseText);                               
-			var centerLatitude = temp[0].lat;
-			var centerLongitude = temp[0].lon;
+			var temp = YAHOO.lang.JSON.parse(transport.responseText);
+			bboxCoords[0] = temp[0].lon;
+			bboxCoords[1] = temp[0].lat;			
 
-		        var shareLink = baseURL + "?" +
-				"layers=" + "${rasterEntry?.indexId}" +
-				"&interpolation=" + interpolation +
-				"&brightness=" + brightness +
-				"&contrast=" + contrast +
-				"&sharpen_mode=" + sharpen_mode +
-				"&stretch_mode=" + stretch_mode +
-				"&strech_mode_region=" + stretch_mode_region +
-				"&bands=" + bands +
-				"&latitude=" + centerLatitude +
-				"&longitude=" + centerLongitude +
-        		//        "&bbox=" + mapWidget.getMap().getExtent();
-				"&rotate=" + rotate;
+			var request = OpenLayers.Request.POST({
+				url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
+				data: YAHOO.lang.JSON.stringify({
+					id:${rasterEntry.id},
+					imagePoints:[{"x":upperRight.x, "y":upperRight.y}]
+				}),
+				callback: function (transport)
+				{
+					var temp = YAHOO.lang.JSON.parse(transport.responseText);
+					bboxCoords[2] = temp[0].lon;
+					bboxCoords[3] = temp[0].lat;
+
+					var request = OpenLayers.Request.POST({
+						url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
+						data: YAHOO.lang.JSON.stringify({
+							id:${rasterEntry.id},
+							imagePoints:[{"x":mapCenter.x, "y":mapCenter.y}]
+						}),
+						callback: function (transport)
+						{
+							var temp = YAHOO.lang.JSON.parse(transport.responseText);                               
+							var centerLatitude = temp[0].lat;
+							var centerLongitude = temp[0].lon;
+
+		        				var shareLink = baseURL + "?" +
+							"layers=" + "${rasterEntry?.indexId}" +
+							"&interpolation=" + interpolation +
+							"&brightness=" + brightness +
+							"&contrast=" + contrast +
+							"&sharpen_mode=" + sharpen_mode +
+							"&stretch_mode=" + stretch_mode +
+							"&strech_mode_region=" + stretch_mode_region +
+							"&bands=" + bands +
+							"&latitude=" + centerLatitude +
+							"&longitude=" + centerLongitude +
+							"&bbox=" + bboxCoords[0] + "," + bboxCoords[1] + "," + bboxCoords[2] + "," + bboxCoords[3] +
+							"&rotate=" + rotate;
        				
-        		var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
-        		popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
+							var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
+							popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
+						}
+					});
+				}
+			});
 		}
 	});
     }
