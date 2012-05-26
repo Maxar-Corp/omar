@@ -83,7 +83,9 @@ function changeToImageSpace()
      wmsParams.setProperties(wcsParams);
      wmsParams.layers = "${( rasterEntries*.indexId ).join( ',' )}";
      wmsParams.latitude = mapWidget.getMap().getCenter().lat;
-     wmsParams.longitude = mapWidget.getMap().getCenter().lon; 
+     wmsParams.longitude = mapWidget.getMap().getCenter().lon;
+     var bboxParams = mapWidget.getMap().calculateBounds().toArray();
+     wmsParams.bbox = bboxParams[0] + "," + bboxParams[1] + "," + bboxParams[2] + "," + bboxParams[3]; 
     wmsFormElement.action = url + "?"+wmsParams.toUrlParams();
     wmsFormElement.method = "POST";
     wmsFormElement.submit();
@@ -705,7 +707,7 @@ function shareImage()
 		"&contrast=" + contrast +
 		"&sharpen_mode=" + sharpen_mode +
 		"&stretch_mode=" + stretch_mode +
-		"&strech_mode_region=" + stretch_mode_region +
+		"&stretch_mode_region=" + stretch_mode_region +
 		"&bands=" + bands +
 		"&latitude=" + mapWidget.getMap().getCenter().lat +
 		"&longitude=" + mapWidget.getMap().getCenter().lon +
