@@ -334,7 +334,8 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 
         var removedMeasurements = this.vectorLayer.features.length > 0;
         this.vectorLayer.destroyFeatures();
-        switch(this.toolMode)
+       this.eventDiv.style.cursor = "";
+       switch(this.toolMode)
         {
             case OMAR.ToolModeType.LINE:
             {
@@ -355,6 +356,11 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
                 this.currentDrawControl = this.drawControls.point;
                 this.currentDrawControl.activate();
                 removedMeasurements = true;
+                var isIE=document.all;
+                if (isIE)
+                    this.eventDiv.style.cursor = "url('../images/mens.cur'),crosshair";
+                else
+                    this.eventDiv.style.cursor = "url('../images/mens.cur') 17 17,crosshair";
                 break;
             }
         }
