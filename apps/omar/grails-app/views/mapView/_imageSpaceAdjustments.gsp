@@ -17,7 +17,7 @@
     <ol>
       <li>MGRS:</li>
       <li><g:textField name="point" id="point" value="" onChange="setMapCtr('mgrs', this.value)" size="28"
-                       title="Enter mgrs coordinate and click off the text field to re-center the map. Example: 17RNJ8123050729 or 17 RNJ 81230 50729"
+                       title="Enter MGRS coordinates and click off the text field to re-center the map. Example: 17RNJ8123050729 or 17 RNJ 81230 50729"
                        /></li>
     </ol>
 
