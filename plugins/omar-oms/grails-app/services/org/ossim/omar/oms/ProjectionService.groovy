@@ -254,7 +254,8 @@ class ProjectionService
         double [] ellSamp = new double[numPnts]
         double [] ellLine = new double[numPnts]
         double [] pqeArray = new double[6]
-        double hgtMsl
+        String hgtMSL
+        String hgtHAE
 
         if ( imageSpaceModel.setModelFromFile(filename, entryId) )
         {
@@ -262,16 +263,22 @@ class ProjectionService
             imageSpaceModel.imageToGround(imagePoint, groundPoint)
             if(groundPoint.isHgtNan())
             {
-                groundPoint.height = 0.0;
+                hgtHAE = "---";
+                hgtMSL = "---";
+                groundPoint.height = 0.0
+            }
+            else
+            {
+                def hgtE = groundPoint.height()
+                hgtHAE = Double.toString(hgtE.round(1))
+                def hgtM = geodeticEvaluator.getHeightMSL(groundPoint)
+                hgtMSL = Double.toString(hgtM.round(1))
             }
 
+            // Get projection info
             typeString = imageSpaceModel.getType()
             projType = typeString
             projType = projType.minus("ossim")
-
-            hgtMsl = geodeticEvaluator.getHeightMSL(groundPoint);
-
-            surfaceInfoAvailable = imageSpaceModel.getProjSurfaceInfo(groundPoint, infoString)
 
             // Perform error propagation
             errorPropAvailable =
@@ -282,9 +289,9 @@ class ProjectionService
                                                               ellSamp,
                                                               ellLine)
         }
-        imageSpaceModel.delete()
-        geodeticEvaluator.delete()
 
+        // Get surface info
+        surfaceInfoAvailable = imageSpaceModel.getProjSurfaceInfo(groundPoint, infoString)
         String info
         if (surfaceInfoAvailable)
         {
@@ -306,9 +313,9 @@ class ProjectionService
                       y:      imgPt.y,
                       lat:    groundPoint.latd(),
                       lon:    groundPoint.lond(),
-                      hgt:    groundPoint.height(),
+                      hgt:    hgtHAE,
                       type:   projType,
-                      hgtMsl: hgtMsl,
+                      hgtMsl: hgtMSL,
                       sInfo:  info,
                       CE:     pqeArray[0],
                       LE:     pqeArray[1],
@@ -324,12 +331,14 @@ class ProjectionService
                       y:      imgPt.y,
                       lat:    groundPoint.latd(),
                       lon:    groundPoint.lond(),
-                      hgt:    groundPoint.height(),
+                      hgt:    hgtHAE,
                       type:   projType,
-                      hgtMsl: hgtMsl,
+                      hgtMsl: hgtMSL,
                       sInfo:  info];
         }
 
+        imageSpaceModel.delete()
+        geodeticEvaluator.delete()
         groundPoint.delete();
         groundPoint = null;
 
