@@ -588,3 +588,9 @@ rss {
   }
 }
 
+// Image Magick Parameters (for template exports in ground/image space)
+// Requires Image Magick -v 6.7.7
+pathToImageMagick = "/usr/local/bin/"
+logoFilesLocation = "/Users/Shared/Development/omar/apps/omar/web-app/images/"
+tempFilesLocation = "/tmp/"
+templateExportScriptLocation = "/Users/Shared/Development/omar/apps/omar/grails-app/controllers/org/ossim/omar/app/"
