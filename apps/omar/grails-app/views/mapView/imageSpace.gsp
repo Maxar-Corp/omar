@@ -160,9 +160,12 @@
     <img src="${resource(plugin: 'omar', dir: 'images', file: 'north_arrow.png')}">
 </div>
  <div id="hudDivId">
-
  </div>
- <div id="map"></div>
+
+<div id="popDivId">
+</div>
+
+    <div id="map"></div>
 </content>
 
 <r:script>
@@ -609,16 +612,15 @@ function init(mapWidth, mapHeight)
     });
 
 
-    //=========================================================================
-    selectControl = new OpenLayers.Control.SelectFeature(
-      OMAR.imageManipulator.vectorLayer, {
-        hover: true,
-        onSelect: onFeatureSelect,
-        onUnselect: null
-    });
-    map.addControl(selectControl);
-    selectControl.activate();
-    //=========================================================================
+    // Key press check for error ellipse popup
+    document.onkeyup = KeyCheck;
+
+    // Offset for popup positioning
+    var region = YAHOO.util.Region.getRegion(OMAR.imageManipulator.containerDiv);
+    regionOffX = region.left - 1;
+    regionOffY = region.top - 1;
+    regionRight = region.right - regionOffX;
+    regionBottom = region.bottom - regionOffY;
 
 }
 
@@ -683,46 +685,29 @@ function bboxToPixelFinish(i,longitude,latitude)
 }
 </g:if>
 
-function onFeatureSelect(feature) {
-//   selectedFeature = feature;
-   selectedFeature = ellipse;
-   // add code to create tooltip/popup
-   popup = new OpenLayers.Popup.FramedCloud(
-      "popup",
-      selectedFeature.geometry.getBounds().getCenterLonLat(),
-      null,
-      "<div>some text here</div>",
-      null,
-      false,
-      onPopupClose);
-
-   selectedFeature.popup = popup;
-
-   map.addPopup(popup);
-   // return false to disable selection and redraw
-   // or return true for default behaviour
-   return true;
-}
-
-//function onFeatureUnselect(feature) {
-//   // remove tooltip
-//   map.removePopup(selectedFeature.popup);
-//   selectedFeature.popup.destroy();
-//   selectedFeature.popup=null;
-//}
-
-//function onPopupClose(evt) {
-//   selectControl.unselect(selectedFeature);
-//}
-
 
 function mouseClick(evt){
-  // basic point drop
-//getCoordinates(OMAR.imageManipulator.pointToLocal(this.mouseToPoint(evt)));
 
     // point drop with error propagation (PQE)
     if(OMAR.imageManipulator.toolMode == 'point')
-        getProjectedGround(OMAR.imageManipulator.pointToLocal(this.mouseToPoint(evt)));
+    {
+        var isIE=document.all;
+        var xyPop = new OmarPoint();
+        if (isIE)
+        {
+            xyPop.x = event.clientX;
+            xyPop.y = event.clientY;
+        }
+        else
+        {
+            xyPop.x = evt.clientX;
+            xyPop.y = evt.clientY;
+        }
+
+        var point = OMAR.imageManipulator.pointToLocal(this.mouseToPoint(evt));
+
+        getProjectedGround(point, xyPop);
+    }
 }
 
 
@@ -1026,9 +1011,8 @@ function setMapCtr(unit, value)
                }
 
 
-               while( map.popups.length ) {
-                  map.removePopup(map.popups[0]);
-               }
+               var overlay = document.getElementById("popDivId");
+               overlay.style.visibility = "hidden";
                var pointDropInfo = document.getElementById("mouseDisplayId");
                pointDropInfo.innerHTML = "";
 
@@ -1085,44 +1069,7 @@ function setMapCtr(unit, value)
 
 
 
-
-
-          function getCoordinates(ipt)
-          {
-                var url = "/omar/imageSpace/imageToGround"
-
-                var request = OpenLayers.Request.POST({
-                     url: url,
-                    // params: {imagePoints:YAHOO.lang.JSON.stringify(
-                    //          {imagePoints:[{"x":Math.round(ipt.x), "y":Math.round(ipt.y)}]}
-                    //          )
-                    //        , id:${rasterEntry.id}},
-                     data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id}, 
-                                                      imagePoints:[{"x":Math.round(ipt.x), "y":Math.round(ipt.y)}]
-                                                     }),
-                     callback: function (transport){
-                        var temp = YAHOO.lang.JSON.parse(transport.responseText);
-                        var out = document.getElementById("mouseDisplayId");
-                         if(out)
-                          {
-                            if(temp.length>0)
-                            {
-                              out.innerHTML = "<table><tr><td width='10%'>x: " + temp[0].x + "</td>" +"<td width='10%'>y: " + temp[0].y +
-                                              "</td>" + "<td width='15%'>lat: " + temp[0].lat + "</td><td width='15%'>lon: " + temp[0].lon + "</td>" +
-                                              "<td width='15%'>HAE: " + temp[0].hgt.toFixed(1) + "<td width='15%'>HMSL: " + temp[0].hgtMsl.toFixed(1) + " m </td>";
-                            }
-                            else
-                            {
-                              out.innerHTML = "";
-                            }
-                          }
-
-                        //alert(transport.responseText);
-                    }
-                });
-            }
-
-          function getProjectedGround(ipt)
+          function getProjectedGround(ipt, xyPop)
           {
               var url = "/omar/imageSpace/imageToGroundFull"
 
@@ -1138,37 +1085,23 @@ function setMapCtr(unit, value)
                      {
                         tmpout.innerHTML = "<table><tr>" +
                                            "<td width='20%'>Img: (" + tmp.ellpar.x + ", "+ tmp.ellpar.y+")</td>" +
-                                           "<td width='40%'>Gnd: (" + tmp.ellpar.lat + ", "+ tmp.ellpar.lon+")</td>" +
-                                           "<td width='10%'>HAE: " + tmp.ellpar.hgt.toFixed(1) + " m </td>" +
-                                           "<td width='10%'>MSL: " + tmp.ellpar.hgtMsl.toFixed(1) + " m </td>" +
+                                           "<td width='40%'>Gnd: (" + tmp.ellpar.lat + ", "+ tmp.ellpar.lon+") DD</td>" +
+                                           "<td width='10%'>HAE: " + tmp.ellpar.hgt + " m </td>" +
+                                           "<td width='10%'>MSL: " + tmp.ellpar.hgtMsl + " m </td>" +
                                            "<td width='10%'>" + "<i>" + tmp.ellpar.sInfo + "</i>" + "</td>" +
                                            "<td width='10%'>" + "<i>" + tmp.ellpar.type + "</i>" + "</td>"
                                            "</tr></table>";
-                        drawProjectedGround(tmp);
+                        drawProjectedGround(tmp, xyPop);
                      }
-//                     alert(transport.responseText);
                   }
               });
           }
 
 
-          function drawProjectedGround(pointData)
+          function drawProjectedGround(pointData, xyPop)
           {
              OMAR.imageManipulator.vectorLayer.removeAllFeatures()
-             while( map.popups.length ) {
-                map.removePopup(map.popups[0]);
-             }
 
-//             layerStyle = OpenLayers.Util.extend({}, OpenLayers.Feature.Vector.style['default']);
-//             var sampleStyle = OpenLayers.Util.extend({}, layerStyle);
-//             sampleStyle.externalGraphic = "";
-//             sampleStyle.graphicWidth = 17;
-//             sampleStyle.graphicHeight = 19;
-//             sampleStyle.graphicOpacity = .7; // from 0 to 1
-//             var size = new OpenLayers.Size(17,19);
-//             var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-//             sampleStyle.graphicXOffset = offset.x;
-//             sampleStyle.graphicYOffset = offset.y;
              var style_green = {
                  strokeColor: "#00FF00",
                  strokeOpacity: 0.6,
@@ -1182,69 +1115,125 @@ function setMapCtr(unit, value)
              var xd = pointData.ellpar.x;
              var yd = -(pointData.ellpar.y - height);
              xPoint = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(xd, yd), null, null);
-
-             // Ellipse
-             var CE   = pointData.ellpar.CE;
-             var LE   = pointData.ellpar.LE;
-             var SMA  = pointData.ellpar.SMA;
-             var SMI  = pointData.ellpar.SMI;
-             var AZ   = pointData.ellpar.AZ;
-             var pLvl = pointData.ellpar.lvl;
-             var nEll = pointData.ellpar.nELL;
-
-             var ellPnts = [];
-             for(var i=0; i<nEll; i++){
-                var obj = pointData.ellpts[i];
-                var xell = obj.xe;
-                var yell = -(obj.ye - height);
-                ellPnts.push(new OpenLayers.Geometry.Point(xell, yell));
-             }
-             linearRing = new OpenLayers.Geometry.LinearRing(ellPnts);
-             ellipse = new OpenLayers.Feature.Vector(linearRing, null, style_green);
-
-             smaPts = new Array(ellPnts[0], ellPnts[18]);
-             smaLineStr = new OpenLayers.Geometry.LineString(smaPts);
-             smaAxis = new OpenLayers.Feature.Vector(smaLineStr, null, style_green);
-
-             smiPts = new Array(ellPnts[9], ellPnts[27]);
-             smiLineStr = new OpenLayers.Geometry.LineString(smiPts);
-             smiAxis = new OpenLayers.Feature.Vector(smiLineStr, null, style_green);
-
-             OMAR.imageManipulator.vectorLayer.addFeatures([ellipse]);
-             OMAR.imageManipulator.vectorLayer.addFeatures([smaAxis]);
-             OMAR.imageManipulator.vectorLayer.addFeatures([smiAxis]);
              OMAR.imageManipulator.vectorLayer.addFeatures([xPoint]);
 
-               //OpenLayers.Popup.FramedCloud.prototype.fixedRelativePosition = true;
-               //OpenLayers.Popup.FramedCloud.prototype.relativePosition = "tr";
-               offset = {'size': new OpenLayers.Size(0,0), 'offset': new OpenLayers.Pixel(50,50)};
-               poptest = new OpenLayers.Popup.Anchored(
-                  "poptest",
-                  xPoint.geometry.getBounds().getCenterLonLat(),
-                  null,
-                  createPointInfoForm(),
-                  offset,
-                  false,
-                  null);
-               poptest.autoSize = true;
-               poptest.setOpacity(.9);
-               poptest.setBackgroundColor("#BBCCFF");
-               xPoint.popup = poptest;
-               map.addPopup(poptest);
+             // Ellipse
+             var nEll = pointData.ellpar.nELL;
 
-              function createPointInfoForm(){
-                var theHTML = '';
-                theHTML += "<h3 style='font-weight:bold;color:#BBCCFF;background-color:#003366;'>" + "PQE Summary" + "</h3><hr>";
-                theHTML += "<table style='background-color:#BBB;border:0px solid black;'>";
-                theHTML += "<tr><td>CE/LE</td>"  + "<td style='text-align:right;'>"+CE.toFixed(1)+"</td>"  + "<td style='text-align:right;'>/"+LE.toFixed(1)+"</td>"  + "<td style='text-align:right;'>"+"m"+"</td>";
-                theHTML += "<tr><td>SMA/SMI</td>"+ "<td style='text-align:right;'>"+SMA.toFixed(1)+"</td>" + "<td style='text-align:right;'>/"+SMI.toFixed(1)+"</td>" + "<td style='text-align:right;'>"+"m"+"</td>";
-                theHTML += "<tr><td>SMA AZ</td>" + "<td style='text-align:right;'>"+AZ.toFixed(1)+"</td>"  + "<td style='text-align:right;'>"+""+"</td>"             + "<td style='text-align:right;'>"+"deg"+"</td>";
-                theHTML += '</table>';
-                theHTML += "Probability Level: " + pLvl +"P";
-                theHTML += "<hr>";
-                return theHTML;
-              }
-          }
+             if (nEll > 0)
+             {
+                 var CE   = pointData.ellpar.CE;
+                 var LE   = pointData.ellpar.LE;
+                 var SMA  = pointData.ellpar.SMA;
+                 var SMI  = pointData.ellpar.SMI;
+                 var AZ   = pointData.ellpar.AZ;
+                 var pLvl = pointData.ellpar.lvl;
+
+                 var ellPnts = [];
+                 for(var i=0; i<nEll; i++){
+                    var obj = pointData.ellpts[i];
+                    var xell = obj.xe;
+                    var yell = -(obj.ye - height);
+                    ellPnts.push(new OpenLayers.Geometry.Point(xell, yell));
+                 }
+                 linearRing = new OpenLayers.Geometry.LinearRing(ellPnts);
+                 ellipse = new OpenLayers.Feature.Vector(linearRing, null, style_green);
+
+                 smaPts = new Array(ellPnts[0], ellPnts[18]);
+                 smaLineStr = new OpenLayers.Geometry.LineString(smaPts);
+                 smaAxis = new OpenLayers.Feature.Vector(smaLineStr, null, style_green);
+
+                 smiPts = new Array(ellPnts[9], ellPnts[27]);
+                 smiLineStr = new OpenLayers.Geometry.LineString(smiPts);
+                 smiAxis = new OpenLayers.Feature.Vector(smiLineStr, null, style_green);
+
+                 OMAR.imageManipulator.vectorLayer.addFeatures([ellipse]);
+                 OMAR.imageManipulator.vectorLayer.addFeatures([smaAxis]);
+                 OMAR.imageManipulator.vectorLayer.addFeatures([smiAxis]);
+
+             }
+
+             // Ellipse popup
+             drawEllipsePopup(xyPop, nEll);
+
+
+             function drawEllipsePopup(xyPop, nEll)
+             {
+                // Offset from ellipse center
+                var space = 20;
+
+                // Get popup dimensions
+                var overlay = document.getElementById("popDivId");
+                var owid = overlay.clientWidth;
+                var ohgt = overlay.clientHeight;
+
+                // Start assuming lower right display
+                var offX = regionOffX - space;
+                var offY = regionOffY - space;
+
+                // Check for right side obscured
+                var rightExtent = xyPop.x - offX + owid;
+                if (rightExtent > regionRight)
+                    offX = regionOffX + space + owid;
+
+                // Check for bottom obscured
+                var bottomExtent = xyPop.y - offY + ohgt;
+                if (bottomExtent > regionBottom)
+                    offY = regionOffY + space + ohgt;
+
+                // Upper left popup corner
+                overlay.style.left = xyPop.x - offX;
+                overlay.style.top  = xyPop.y - offY;
+
+                // Load content
+                if (nEll > 0)
+                    overlay.innerHTML = createPointInfoForm();
+                else
+                    overlay.innerHTML = createNoInfoForm();
+
+                overlay.style.visibility = "hidden";
+             }
+
+             function createPointInfoForm(){
+               var theHTML = '';
+               theHTML += "<h3 style='font-weight:bold;color:#BBCCFF;background-color:#003366;'>" + "PQE Summary" + "</h3><hr>";
+               theHTML += "<table style='background-color:#BBB;border:0px solid black;'>";
+               theHTML += "<tr><td>CE/LE</td>"  + "<td style='text-align:right;'>"+CE.toFixed(1)+"</td>"  + "<td style='text-align:right;'>/"+LE.toFixed(1)+"</td>"  + "<td style='text-align:right;'>"+"m"+"</td>";
+               theHTML += "<tr><td>SMA/SMI</td>"+ "<td style='text-align:right;'>"+SMA.toFixed(1)+"</td>" + "<td style='text-align:right;'>/"+SMI.toFixed(1)+"</td>" + "<td style='text-align:right;'>"+"m"+"</td>";
+               theHTML += "<tr><td>SMA AZ</td>" + "<td style='text-align:right;'>"+AZ.toFixed(1)+"</td>"  + "<td style='text-align:right;'>"+""+"</td>"             + "<td style='text-align:right;'>"+"deg"+"</td>";
+               theHTML += '</table>';
+               theHTML += "Probability Level: " + pLvl +"P";
+               theHTML += "<hr>";
+               return theHTML;
+             }
+
+             function createNoInfoForm(){
+               var theHTML = '';
+               theHTML += "<h3 style='font-weight:bold;color:#BBCCFF;background-color:#003366;'>" + "PQE Summary" + "</h3><hr>";
+               theHTML += "No Error Ellipse Available";
+               theHTML += "<hr>";
+               return theHTML;
+             }
+
+          }//end drawProjectedGround
+
+
+    // Toggle popup
+    //   check for "p" key
+    function KeyCheck(e) {
+        if(OMAR.imageManipulator.toolMode == 'point')
+        {
+            var KeyID = (window.event) ? event.keyCode : e.keyCode;
+            if (KeyID==80)  //key = p
+            {
+                var overlay = document.getElementById("popDivId");
+                if (overlay.style.visibility == "visible")
+                   overlay.style.visibility = "hidden";
+                else
+                   overlay.style.visibility = "visible";
+            }
+        }
+    }
 
 
     function shareImage()
