@@ -17,7 +17,7 @@
     <ol>
       <li>MGRS:</li>
       <li><g:textField name="point" id="point" value="" onChange="setMapCtr('mgrs', this.value)" size="28"
-                       title="Enter mgrs coordinate and click off the text field to re-center the map. Example: 17RNJ8123050729 or 17 RNJ 81230 50729"
+                       title="Enter MGRS coordinates and click off the text field to re-center the map. Example: 17RNJ8123050729 or 17 RNJ 81230 50729"
                        /></li>
     </ol>
 
@@ -129,7 +129,7 @@
       <li>Measurement Units:</li>
       <li>Not certified for targeting.</li>
       <li><g:select name="measurementUnits" from="${['kilometers', 'meters', 'feet', 'miles', 'yards','nautical miles']}"
-                    title="Select a unit of measuremen and use the path and polygon measurment tools in the map toolbar."
+                    title="Select a unit of measurement and use the path and polygon measurement tools in the map toolbar."
                     onChange="measureUnitChanged(this.value)"/></li>
 
       <div id="pathMeasurement"></div>
