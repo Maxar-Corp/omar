@@ -66,6 +66,11 @@
                    title="Export Geo JPEG 2000 8-Bit">Geo JPEG 2000 8-Bit</a>
               </li>
             </ul>
+	    <ul>
+	      <li class="yuimenuitem">
+		<a class="yuimenuitemlabel" href="javascript:exportTemplate()" title="Template">Template</a>
+	      </li>
+	    </ul>
             <ul>
               <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
