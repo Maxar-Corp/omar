@@ -551,8 +551,6 @@ grails.plugins.springsecurity.ldap.active = false
     // the database, then uncomment the line below
     grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
 */
-    // Depending on how passwords are configured, specify encryption below if necessary
-    // grails.plugins.springsecurity.password.algorithm = 'SHA-256'
 
 /***********   END config for OpenLdap    ***********/
 
