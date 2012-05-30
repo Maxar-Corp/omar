@@ -225,9 +225,12 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     this.events = new OpenLayers.Events(this, this.eventDiv, this.EVENT_TYPES, true);
     //this.map.events.includeXY = false;
 
-    this.drawControls = {
+       var crossStyle =  new OpenLayers.Style({"default": {fillColor: "#000000"},
+           "temporary": {fillColor: "#000000", graphicName: "cross"}});
+
+       this.drawControls = {
                     point: new OpenLayers.Control.DrawFeature(this.vectorLayer,
-                        OpenLayers.Handler.Point) ,
+                        OpenLayers.Handler.Point, {handlerOptions:{style:crossStyle}}),
                     line: new OpenLayers.Control.DrawFeature(this.vectorLayer,
                        OpenLayers.Handler.Path),
                     polygon: new OpenLayers.Control.DrawFeature(this.vectorLayer,
