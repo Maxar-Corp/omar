@@ -204,7 +204,6 @@ modules = {
 
     resource url: [plugin: 'openlayers', dir: 'css', file: 'mapwidget2.css']
     resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
-    //resource url: [plugin: 'openlayers', dir: 'js/lib/Firebug', file: 'firebug.js']
     resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
 
 
