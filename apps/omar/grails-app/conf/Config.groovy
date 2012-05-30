@@ -128,8 +128,15 @@ log4j = {
   warn 'org.mortbay.log'
 
   fatal 'org.grails.plugin.resource'
+
+ // debug 'org.springframework.security',
+ //       'com.sun.jndi.ldap'   
+
+  //root {
+  //      debug 'stdout'
+  //  }
+
 }
-//log4j.logger.org.springframework.security='off,stdout'
 
 /** *********************************************************************************************************/
 wms {
@@ -312,7 +319,7 @@ login {
      * false: Prevents user registration and removes the register link from the OMAR login page. We recommend
      *        setting enabled to false if you are using LDAP for user authentication.
      */
-    enabled = true
+    enabled = false
 
     /**
      * userVerification has the following values:
@@ -487,6 +494,8 @@ export {
   }
 }
 
+
+
 // Added by the Spring Security Core plugin:
 grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.ossim.omar.security.SecUser'
 grails.plugins.springsecurity.userLookup.authorityJoinClassName = 'org.ossim.omar.security.SecUserSecRole'
@@ -499,25 +508,62 @@ grails.plugins.springsecurity.errors.login.passwordExpired = 'Sorry, your passwo
 grails.plugins.springsecurity.errors.login.disabled = 'Sorry, your account has been disabled.  Please contact an Administrator.'
 grails.plugins.springsecurity.errors.login.locked = 'Sorry, your account has been locked.  Please contact an Administrator.'
 
+
+
+
+
+
 // Values can be
 // MD2, MD5, SHA-1, SHA-256, SHA-384, SHA-512
 //
 grails.plugins.springsecurity.password.algorithm = 'MD5'
 grails.plugins.springsecurity.password.encodeHashAsBase64 = true
 
-// LDAP Configuration
 grails.plugins.springsecurity.ldap.active = false
-//grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
-//grails.plugins.springsecurity.ldap.context.managerDn = 'cn=Administrator,dc=otd,dc=radiantblue,dc=com' //
-//grails.plugins.springsecurity.ldap.context.userDn = 'dc=otd,dc=radiantblue,dc=com' //
 
-//grails.plugins.springsecurity.ldap.context.managerPassword = 'omarldap'                                //
-//grails.plugins.springsecurity.ldap.search.base = 'ou=people,dc=otd,dc=radiantblue,dc=com'
-//grails.plugins.springsecurity.ldap.authorities.retrieveGroupRoles = false
-//grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
-//grails.plugins.springsecurity.ldap.search.searchSubtree = true
-//grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=group,dc=otd,dc=radiantblue,dc=com'
-//grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'ou=group,memberUid=demo,dc=otd,dc=radiantblue,dc=com'
+
+/*********** LDAP config for Active Directory    **********/
+    /*
+    //grails.plugins.springsecurity.ldap.context.managerDn = 'CN=Administrator,OU=users,DC=otd,DC=radiantblue,DC=com'
+    grails.plugins.springsecurity.ldap.context.managerDn = 'cn=administrator,cn=users,dc=otd,dc=radiantblue,dc=com'
+    grails.plugins.springsecurity.ldap.context.managerPassword = 'abc123!@#'
+    grails.plugins.springsecurity.ldap.context.server = 'ldap://otd-dc.otd.radiantblue.com:389/'
+    grails.plugins.springsecurity.ldap.authorities.ignorePartialResultException = true // typically needed for Active Directory
+    //grails.plugins.springsecurity.ldap.search.base = 'cn=users,dc=otd,dc=radiantblue,dc=com'
+    grails.plugins.springsecurity.ldap.search.base = 'dc=otd,dc=radiantblue,dc=com'
+    grails.plugins.springsecurity.ldap.search.filter="sAMAccountName={0}" // for Active Directory you need this
+    grails.plugins.springsecurity.ldap.search.searchSubtree = true
+    grails.plugins.springsecurity.ldap.auth.hideUserNotFoundExceptions = false
+    */
+/***********   END config for active directory    ***********/
+
+
+/***********      LDAP config for OpenLdap        **********/
+
+/*
+    grails.plugins.springsecurity.ldap.context.managerDn = 'cn=Administrator,dc=otd,dc=radiantblue,dc=com'
+    grails.plugins.springsecurity.ldap.context.managerPassword = 'omarldap'
+    grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server.otd.radiantblue.com:389'
+    grails.plugins.springsecurity.ldap.authorities.groupSearchBase = 'dc=otd,dc=radiantblue,dc=com'
+    grails.plugins.springsecurity.ldap.search.base = 'dc=otd,dc=radiantblue,dc=com'
+
+    // If you want to also assign application-specific roles to users in
+    // the database, then uncomment the line below
+    grails.plugins.springsecurity.ldap.authorities.retrieveDatabaseRoles = true
+*/
+    // Depending on how passwords are configured, specify encryption below if necessary
+    // grails.plugins.springsecurity.password.algorithm = 'SHA-256'
+
+/***********   END config for OpenLdap    ***********/
+
+
+/*********** Optional ldap settings (group, search attributes, etc.)  **********/
+
+    //grails.plugins.springsecurity.ldap.search.attributesToReturn = ['mail', 'displayName'] // extra attributes you want returned; see below for custom classes that access this data
+    //grails.plugins.springsecurity.providerNames = ['ldapAuthProvider', 'anonymousAuthenticationProvider']
+    //grails.plugins.springsecurity.providerNames= ['adAuthenticationProvider']
+
+    //grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
 
 // LDAP user:
 //  username: demo
