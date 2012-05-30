@@ -561,7 +561,6 @@ function init(mapWidth, mapHeight)
   rotateSlider.setRealValue = function(value) { this.setValue(Math.ceil((value%360.0) / 2)); }
   rotateSlider.subscribe("change", function() { sliderRotate(this.getRealValue()); });
   //rotateSlider.subscribe("slideEnd", function() { OMAR.imageManipulator.containerResized() });
-  rotateSlider.setRealValue(rotationAngle);
 
   // set the initialization flag so the moveend and zoomend code can execute
   initFlag = 0;
@@ -594,14 +593,16 @@ function init(mapWidth, mapHeight)
     map.zoomToMaxExtent();
     // map.zoomIn();
     // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
-   OMAR.imageManipulator.affineParams.rotate = parseFloat(${"rotateAngle"}.value);
+   //OMAR.imageManipulator.affineParams.rotate = parseFloat(${"rotateAngle"}.value);
    OMAR.imageManipulator.localImageBounds = new OpenLayers.Bounds(0, 0, width, height);
    OMAR.imageManipulator.setup("center2", map, "hudDivId", "eventDivId", "compassDivId");
    // add these just in case there were settings passed to the GSP 
    // but we only want to apply them once the page is finished with setup
    
-   OMAR.imageManipulator.updateTransform(); 
-   OMAR.imageManipulator.transformDiv();
+   //OMAR.imageManipulator.updateTransform(); 
+   //OMAR.imageManipulator.transformDiv();
+   //OMAR.imageManipulator.applyRotate(0.0);
+   //OMAR.imageManipulator.applyRotate(${"rotateAngle"}.value);
    // OMAR.iamgeManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
    //alert(map.getMaxExtents());
 
@@ -621,9 +622,10 @@ function init(mapWidth, mapHeight)
     regionOffY = region.top - 1;
     regionRight = region.right - regionOffX;
     regionBottom = region.bottom - regionOffY;
-
+    rotateSlider.setRealValue(rotationAngle);
+    //OMAR.imageManipulator.applyRotate(${"rotateAngle"}.value);
+    //setTimeout("applyRotationAfterInit()", 100);
 }
-
 <g:if test="${params.bbox != null}">
 function bboxToPixel(bbox)
 {
@@ -957,7 +959,7 @@ function setMapCtr(unit, value)
             function sliderRotate(sliderValue)
             {
                         rotationAngle = 360 - parseInt(sliderValue)
-                        ${"rotateAngle"}.value = sliderValue;
+                        document.getElementById("rotateAngle").value = sliderValue;
                         OMAR.imageManipulator.applyRotate(sliderValue);
             }
 
