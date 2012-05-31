@@ -166,8 +166,8 @@
 
   <div class="niceBoxBody">
     <ul>
-      <li>Measurement Units:</li>
-      <li>Not certified for targeting.</li>
+        <li><P ALIGN=Center><i><small>NOT CERTIFIED FOR TARGETING</small></i></li><hr>
+        <li>Measurement Units:</li>
       <li>       <g:select
               id="unitSelectionID"
               name="Units"
