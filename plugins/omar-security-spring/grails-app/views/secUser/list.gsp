@@ -36,14 +36,18 @@
       <thead>
       <tr>
 
-        <g:sortableColumn property="username"
-                          title="${message( code: 'secUser.username.label', default: 'Username' )}"
-                          params="${filterParams}"/>
+          <g:sortableColumn property="id"
+                            title="${message( code: 'secUser.id.label', default: 'Id' )}"
+                            params="${filterParams}"/>
 
-        <g:sortableColumn property="password"
-                          title="${message( code: 'secUser.password.label', default: 'Password' )}"
-                          params="${filterParams}"/>
-
+          <g:sortableColumn property="username"
+                            title="${message( code: 'secUser.username.label', default: 'Username' )}"
+                            params="${filterParams}"/>
+          <!--
+                 <g:sortableColumn property="password"
+                                   title="${message( code: 'secUser.password.label', default: 'Password' )}"
+                                   params="${filterParams}"/>
+          -->
         <g:sortableColumn property="userRealName"
                           title="${message( code: 'secUser.userRealName.label', default: 'User Real Name' )}"
                           params="${filterParams}"/>
@@ -64,11 +68,11 @@
       <tbody>
       <g:each in="${secUserInstanceList}" status="i" var="secUserInstance">
         <tr class="${( i % 2 ) == 0 ? 'even' : 'odd'}">
-
+            <td>${fieldValue( bean: secUserInstance, field: "id" )}</td>
           <td><g:link action="show"
                       id="${secUserInstance.id}">${fieldValue( bean: secUserInstance, field: "username" )}</g:link></td>
 
-          <td>${fieldValue( bean: secUserInstance, field: "password" )}</td>
+<!--          <td>${fieldValue( bean: secUserInstance, field: "password" )}</td>    -->
 
           <td>${fieldValue( bean: secUserInstance, field: "userRealName" )}</td>
 
