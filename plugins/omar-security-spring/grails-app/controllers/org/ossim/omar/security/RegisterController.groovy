@@ -38,7 +38,6 @@ class RegisterController extends AbstractS2UiController
   }
 
   def register = { RegisterCommand command ->
-
     if ( command.hasErrors() )
     {
       render view: 'index', model: [command: command]
@@ -67,22 +66,43 @@ class RegisterController extends AbstractS2UiController
     switch ( grailsApplication.config.login.registration.userVerification )
     {
     case "email":
-      def registrationCode = new RegistrationCode(username: user.username).save()
-      String url = generateLink('verifyRegistration', [t: registrationCode.token])
+        if (SpringSecurityUtils.ifAllGranted("ROLE_ADMIN"))
+        {
+            if ( !grailsApplication.config.login.registration.createLdapUser )
+            {
+                SecUser.withTransaction {
+                    user.accountLocked = false
+                    user.save()
+                    def UserRole = lookupUserRoleClass()
+                    def Role = lookupRoleClass()
+                    for ( roleName in conf.ui.register.defaultRoleNames )
+                    {
+                        UserRole.create user, Role.findByAuthority(roleName)
+                    }
+                }
+            }
+            flash.message = "User ${user.username} Added"
+            redirect controller: "secUser", action: "list"
+        }
+        else
+        {
+            def registrationCode = new RegistrationCode(username: user.username).save()
+            String url = generateLink('verifyRegistration', [t: registrationCode.token])
 
-      def body = conf.ui.register.emailBody
-      if ( body.contains('$') )
-      {
-        body = evaluate(body, [user: user, url: url])
-      }
-      mailService.sendMail {
-        to command.email
-        from conf.ui.register.emailFrom
-        subject conf.ui.register.emailSubject
-        html body.toString()
-      }
+            def body = conf.ui.register.emailBody
+            if ( body.contains('$') )
+            {
+                body = evaluate(body, [user: user, url: url])
+            }
+            mailService.sendMail {
+                to command.email
+                from conf.ui.register.emailFrom
+                subject conf.ui.register.emailSubject
+                html body.toString()
+            }
 
-      render view: 'index', model: [emailSent: true]
+            render view: 'index', model: [emailSent: true]
+        }
       break
     case "none":
       if ( !grailsApplication.config.login.registration.createLdapUser )
@@ -98,20 +118,36 @@ class RegisterController extends AbstractS2UiController
           }
         }
       }
-      flash.message = "You may now login with your credentials"
-      redirect controller: "login", action: "auth"
+        if (SpringSecurityUtils.ifAllGranted("ROLE_ADMIN"))
+        {
+            flash.message = "User ${user.username} Added"
+            redirect controller: "secUser", action: "list"
+        }
+        else
+        {
+            flash.message = "You may now login with your credentials"
+            redirect controller: "login", action: "auth"
+        }
+
       break
     default:
-      SecUser.withTransaction {
-        def UserRole = lookupUserRoleClass()
-        def Role = lookupRoleClass()
-        for ( roleName in conf.ui.register.defaultRoleNames )
-        {
-          UserRole.create user, Role.findByAuthority(roleName)
+        SecUser.withTransaction {
+            def UserRole = lookupUserRoleClass()
+            def Role = lookupRoleClass()
+            for ( roleName in conf.ui.register.defaultRoleNames )
+            {
+                UserRole.create user, Role.findByAuthority(roleName)
+            }
         }
-      }
-      flash.message = "Your account must be approved by an administrator before you can login"
-      redirect controller: "login", action: "auth"
+        if (SpringSecurityUtils.ifAllGranted("ROLE_ADMIN"))
+        {
+            redirect controller: "secUser", action: "list"
+        }
+        else
+        {
+            flash.message = "Your account must be approved by an administrator before you can login"
+            redirect controller: "login", action: "auth"
+        }
     }
   }
 
