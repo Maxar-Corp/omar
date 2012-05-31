@@ -10,8 +10,10 @@
 <content tag="content">
 
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">Home</g:link></span>
-    <span class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]"/></g:link></span>
+      <ul>
+          <li class="menuButton"><g:link class="home" uri="/">Home</g:link></li>
+          <li class="menuButton"><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]"/></g:link></li>
+      </ul>
   </div>
   <div class="body">
 
