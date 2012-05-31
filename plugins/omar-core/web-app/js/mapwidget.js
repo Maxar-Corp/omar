@@ -628,11 +628,12 @@ function MapWidget()
                     {
                         if ( evt.units == "km" )
                         {
-                            pathUnit[0] = evt.measure + " km";
-                            pathUnit[1] = evt.measure * 1000 + " m";
-                            pathUnit[2] = evt.measure * 3280.839895 + " ft";
-                            pathUnit[3] = evt.measure * 0.62137119224 + " mi";
-                            pathUnit[4] = evt.measure * 1093.6132983 + " yd";
+                            pathUnit[0] = evt.measure.toFixed(4) + " km";
+                            pathUnit[1] = evt.measure.toFixed(1) * 1000 + " m";
+                            pathUnit[2] = (evt.measure * 3280.839895).toFixed(1) + " ft";
+                            pathUnit[3] = (evt.measure * 0.62137119224).toFixed(4) + " mi";
+                            pathUnit[4] = (evt.measure * 1093.6132983).toFixed(1) + " yd";
+                            pathUnit[5] = (evt.measure * 0.539956803).toFixed(4) + " nmi";
 
                             if ( $( "measurementUnits" ).value == "kilometers" )
                             {
@@ -653,15 +654,20 @@ function MapWidget()
                             else if ( $( "measurementUnits" ).value == "yards" )
                             {
                                 pathMeasurement.innerHTML = pathUnit[4];
+                            }
+                            else if ( $( "measurementUnits" ).value == "nautical miles" )
+                            {
+                                pathMeasurement.innerHTML = pathUnit[5];
                             }
                         }
                         else if ( evt.units == "m" )
                         {
-                            pathUnit[0] = evt.measure * 0.001 + " km";
-                            pathUnit[1] = evt.measure + " m";
-                            pathUnit[2] = evt.measure * 3.280839895 + " ft";
-                            pathUnit[3] = evt.measure * 0.00062137119224 + " mi";
-                            pathUnit[4] = evt.measure * 1.0936132983 + " yd";
+                            pathUnit[0] = (evt.measure * 0.001).toFixed(4) + " km";
+                            pathUnit[1] = evt.measure.toFixed(1) + " m";
+                            pathUnit[2] = (evt.measure * 3.280839895).toFixed(1) + " ft";
+                            pathUnit[3] = (evt.measure * 0.00062137119224).toFixed(4) + " mi";
+                            pathUnit[4] = (evt.measure * 1.0936132983).toFixed(1) + " yd";
+                            pathUnit[5] = (evt.measure * 0.539956803).toFixed(4) + " nmi";
 
                             if ( $( "measurementUnits" ).value == "kilometers" )
                             {
@@ -682,6 +688,10 @@ function MapWidget()
                             else if ( $( "measurementUnits" ).value == "yards" )
                             {
                                 pathMeasurement.innerHTML = pathUnit[4];
+                            }
+                            else if ( $( "measurementUnits" ).value == "nautical miles" )
+                            {
+                                pathMeasurement.innerHTML = pathUnit[5];
                             }
                         }
                     }
@@ -703,11 +713,12 @@ function MapWidget()
                     {
                         if ( evt.units == "km" )
                         {
-                            pathUnit[0] = evt.measure + " km^2";
-                            pathUnit[1] = evt.measure * 1000000 + " m^2";
-                            pathUnit[2] = evt.measure * 10763910.416623611025 + " ft^2";
-                            pathUnit[3] = evt.measure * .38610215854575903621 + " mi^2";
-                            pathUnit[4] = evt.measure * 1195990.04621860478289 + " yd^2";
+                            pathUnit[0] = evt.measure.toFixed(4) + " km^2";
+                            pathUnit[1] = (evt.measure * 1000000).toFixed(1) + " m^2";
+                            pathUnit[2] = (evt.measure * 10763910.416623611025).toFixed(1) + " ft^2";
+                            pathUnit[3] = (evt.measure * .38610215854575903621).toFixed(4) + " mi^2";
+                            pathUnit[4] = (evt.measure * 1195990.04621860478289).toFixed(1) + " yd^2";
+                            pathUnit[5] = (evt.measure * 0.2915533496).toFixed(4) + " nmi^2";
 
                             if ( $( "measurementUnits" ).value == "kilometers" )
                             {
@@ -728,15 +739,20 @@ function MapWidget()
                             else if ( $( "measurementUnits" ).value == "yards" )
                             {
                                 pathMeasurement.innerHTML = pathUnit[4];
+                            }
+                            else if ( $( "measurementUnits" ).value == "nautical miles" )
+                            {
+                                pathMeasurement.innerHTML = pathUnit[5];
                             }
                         }
                         else if ( evt.units == "m" )
                         {
-                            pathUnit[0] = evt.measure * 0.000001 + " km^2";
-                            pathUnit[1] = evt.measure + " m^2";
-                            pathUnit[2] = evt.measure * 10.763910416623611025 + " ft^2";
-                            pathUnit[3] = evt.measure * .00000038610215854575 + " mi^2";
-                            pathUnit[4] = evt.measure * 1.19599004621860478289 + " yd^2";
+                            pathUnit[0] = (evt.measure * 0.000001).toFixed(4) + " km^2";
+                            pathUnit[1] = evt.measure.toFixed(1) + " m^2";
+                            pathUnit[2] = (evt.measure * 10.763910416623611025).toFixed(1) + " ft^2";
+                            pathUnit[3] = (evt.measure * .00000038610215854575).toFixed(4) + " mi^2";
+                            pathUnit[4] = (evt.measure * 1.19599004621860478289).toFixed(1) + " yd^2";
+                            pathUnit[5] = (evt.measure * 0.2915533496).toFixed(4) + " nmi^2";
 
                             if ( $( "measurementUnits" ).value == "kilometers" )
                             {
@@ -757,6 +773,10 @@ function MapWidget()
                             else if ( $( "measurementUnits" ).value == "yards" )
                             {
                                 pathMeasurement.innerHTML = pathUnit[4];
+                            }
+                            else if ( $( "measurementUnits" ).value == "nautical miles" )
+                            {
+                                pathMeasurement.innerHTML = pathUnit[5];
                             }
                         }
                     }
