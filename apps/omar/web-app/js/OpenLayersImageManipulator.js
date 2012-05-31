@@ -262,6 +262,9 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         if(this.drawControls[key]&&this.drawControls[key].handler)
         {
           this.drawControls[key].handler.imageManipulator = this;
+
+
+
           this.drawControls[key].handler.mousemove = function(evt){
                   return this.move(this.imageManipulator.adaptOpenLayersXY(evt,
                                         this.imageManipulator.pointToTransformPoint(this.imageManipulator.mouseToPoint(evt))));
@@ -275,6 +278,34 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
                                         this.imageManipulator.pointToTransformPoint(this.imageManipulator.mouseToPoint(evt))));
           };
 
+          this.drawControls[key].handler.touchstart= function(evt) {
+            if (!this.touch) {
+                 this.touch = true;
+                 this.map.events.un({
+                    mousedown: this.mousedown,
+                    mouseup: this.mouseup,
+                    mousemove: this.mousemove,
+                    click: this.click,
+                    dblclick: this.dblclick,
+                    scope: this
+                 });
+              }
+              this.lastTouchPx = evt.xy;
+              return this.down(this.imageManipulator.adaptOpenLayersXY(evt,
+                                        this.imageManipulator.pointToTransformPoint(this.imageManipulator.mouseToPoint(evt))));
+          };
+          this.drawControls[key].handler.touchmove= function(evt) {
+            var modifiedEvt = this.imageManipulator.adaptOpenLayersXY(evt,
+                                        this.imageManipulator.pointToTransformPoint(this.imageManipulator.mouseToPoint(evt)));
+            this.lastTouchPx = modifiedEvt.xy;
+            return this.move(modifiedEvt);
+          };
+          this.drawControls[key].handler.touchend= function(evt) {
+           var modifiedEvt = this.imageManipulator.adaptOpenLayersXY(evt,
+                                        this.imageManipulator.pointToTransformPoint(this.imageManipulator.mouseToPoint(evt)));
+            //evt.xy = this.lastTouchPx;
+            return this.up(modifiedEvt);
+          }          
           this.drawControls[key].handler.featureDone = function(geom){
             this.drawFeature(geom);
             //OpenLayers.Console.info(this.layer.features[this.layer.features.length-1]);
@@ -710,6 +741,17 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   touchmove: function(evt){
   }, 
   touchend: function(evt){
+     switch(this.toolMode)
+     {
+        case OMAR.ToolModeType.LINE:
+        case OMAR.ToolModeType.POLYGON:
+        case OMAR.ToolModeType.POINT:
+        {
+          this.currentDrawControl.handler.touchend(evt);
+          OpenLayers.Event.stop(evt);  
+          break;
+        }
+     }
   },
   dblClick: function(evt){
      switch(this.toolMode)
@@ -735,7 +777,6 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     }
     //this.map.events.handleBrowserEvent(event);
     document.onselectstart = OpenLayers.Function.False;
-    return true;
 },
    mouseout: function(evt){
 
