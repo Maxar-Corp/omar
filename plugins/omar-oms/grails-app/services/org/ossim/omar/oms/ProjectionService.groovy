@@ -88,9 +88,13 @@ class ProjectionService
         def ecefPoint = new ossimEcefPoint()
         def lastGroundPoint;
         def distance = 0.0;
-        def area     = 0.0;
-        def result = [distance:0.0, area: 0.0, unit: "m"];
+        def gdist = 0.0;
+        def area = 0.0;
+        def result = [gdist:0.0, distance:0.0, area: 0.0, unit: "m"];
         def coordinateList = []
+        def geodeticEvaluator = new GeodeticEvaluator()
+        double [] daArray = new double[3]
+
         try{
             geom = Geometry.fromWKT(params.wkt);
         }
@@ -101,7 +105,8 @@ class ProjectionService
         if(geom)
         {
             distance = 0.0;
-            area     = 0.0;
+            gdist = 0.0;
+            area = 0.0;
             def imageSpaceModel = new ImageModel()
             if( imageSpaceModel.setModelFromFile(params.filename, params.entryId) )
             {
@@ -112,7 +117,13 @@ class ProjectionService
                     imageSpaceModel.imageToGround(imagePoint, groundPoint);
                     if(lastGroundPoint)
                     {
+                        // Linear distance
                         distance += lastGroundPoint.distanceTo(groundPoint);
+
+                        // Geodetic distance
+                        geodeticEvaluator.computeEllipsoidalDistAz(lastGroundPoint, groundPoint, daArray)
+                        gdist += daArray[0]
+
                         lastGroundPoint.assign(groundPoint);
                         ecefPoint.assign(groundPoint);
                         coordinateList << [ecefPoint.x, ecefPoint.y, ecefPoint.z];
@@ -131,8 +142,9 @@ class ProjectionService
                     def tempPoly = new geoscript.geom.Polygon([coordinateList])
                     area = tempPoly.area;
                 }
+                result.gdist = gdist
                 result.distance = distance
-                result.area     = area
+                result.area = area
           }
           imageSpaceModel.delete()
           imageSpaceModel = null
@@ -140,6 +152,7 @@ class ProjectionService
         imagePoint.delete()
         groundPoint.delete()
         ecefPoint.delete()
+        geodeticEvaluator.delete()
         if(lastGroundPoint) lastGroundPoint.delete();
         result;
     }
