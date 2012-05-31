@@ -7,11 +7,13 @@
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link class="list" action="list">Video File List</g:link></span>
-    <sec:ifAllGranted roles="ROLE_ADMIN">
-      <span class="menuButton"><g:link class="create" action="create">Create Video File</g:link></span>
-    </sec:ifAllGranted>
+      <ul>
+          <li class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></li>
+          <li class="menuButton"><g:link class="list" action="list">Video File List</g:link></li>
+          <sec:ifAllGranted roles="ROLE_ADMIN">
+              <li class="menuButton"><g:link class="create" action="create">Create Video File</g:link></li>
+          </sec:ifAllGranted>
+      </ul>
   </div>
   <div class="body">
     <h1>OMAR: Show Video File ${fieldValue(bean: videoFile, field: 'id')}</h1>
