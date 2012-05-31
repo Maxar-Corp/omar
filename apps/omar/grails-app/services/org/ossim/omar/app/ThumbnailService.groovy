@@ -18,8 +18,24 @@ class ThumbnailService
   def nullImage = new BufferedImage(128, 128, BufferedImage.TYPE_INT_RGB);
   static int rasterFileOutputLock
   static int videoFrameOutputLock
+  static def idHash = [:]
+  static int idHashLock =0;
   def grailsApplication
 
+  def getLock(def id)
+  {
+      def result
+      synchronized(idHashLock)  {
+          result = idHash.get(id, 0)
+      }
+      result
+  }
+  def removeLock(def id)
+  {
+      synchronized(idHashLock)  {
+          idHash.remove(id)
+      }
+  }
   def getThumbnail(HttpStatusMessage httpStatusMessage,
                    String cacheDirPath, String thumbnailPrefix, int size, String mimeType,
                    String inputFilename, String entryId, String projectionType,
@@ -68,9 +84,10 @@ class ThumbnailService
     {
       projectionType = "imagespace"
     }
-    if ( !outputFile.exists() || overwrite )
+    def lockVar = getLock(inputFilename);
+    synchronized ( lockVar )
     {
-      synchronized ( rasterFileOutputLock )
+      if ( !outputFile.exists() || overwrite )
       {
         log.info("Outputting raster thumbnail to ${outputFile as String}")
         def stretchTypeToUse = histogramStretchType
@@ -85,40 +102,44 @@ class ThumbnailService
                 stretchTypeToUse, true)
       }
     }
-
+    removeLock(inputFilename);
     return outputFile
   }
 
   def getFrame(String cacheDirPath, String thumbnailPrefix, int size, String inputFilename, boolean overwrite = false)
   {
-    def outputFile = new File(cacheDirPath, "${thumbnailPrefix}.jpg")
+      def outputFile = new File(cacheDirPath, "${thumbnailPrefix}.jpg")
 
-    if ( !outputFile.exists() || overwrite )
-    {
-      Video video = new Video()
-
-      if ( video.open(inputFilename) )
+      def lockVar = getLock(inputFilename);
+      synchronized ( lockVar )
       {
-        int idx = 0;
-        for ( idx = 0; idx < 15; ++idx )
-        {
-          video.nextFrame();
-        }
-        synchronized ( videoFrameOutputLock )
-        {
-          log.info("Outputting video thumbnail to ${outputFile.absolutePath}")
-          video.writeCurrentFrameToFile(outputFile.absolutePath, size);
-        }
-        video.close()
-        video = null;
-      }
-      else
-      {
-        log.error("Unable to open video file ${outputFile.absolutePath}")
-      }
-    }
+          if ( !outputFile.exists() || overwrite )
+          {
+              Video video = new Video()
 
-    return outputFile
+              if ( video.open(inputFilename) )
+              {
+                  int idx = 0;
+                  for ( idx = 0; idx < 15; ++idx )
+                  {
+                      video.nextFrame();
+                  }
+                  synchronized ( videoFrameOutputLock )
+                  {
+                      log.info("Outputting video thumbnail to ${outputFile.absolutePath}")
+                      video.writeCurrentFrameToFile(outputFile.absolutePath, size);
+                  }
+                  video.close()
+                  video = null;
+              }
+              else
+              {
+                  log.error("Unable to open video file ${outputFile.absolutePath}")
+              }
+          }
+      }
+      removeLock(inputFilename);
+      return outputFile
   }
 
   public File getRasterEntryThumbnailFile(def httpStatusMessage, RasterEntry rasterEntry, Map params)
