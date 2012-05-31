@@ -41,9 +41,7 @@ class SecUserController
 
   def create( )
   {
-    def secUserInstance = new SecUser()
-    secUserInstance.properties = params
-    return [secUserInstance: secUserInstance]
+      redirect( controller:  "Register", action: "register", params: params )
   }
 
   def save( )
