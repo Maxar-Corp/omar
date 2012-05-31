@@ -7,10 +7,13 @@
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <sec:ifAllGranted roles="ROLE_ADMIN">
-      <span class="menuButton"><g:link class="create" action="create">Create Repository</g:link></span>
-    </sec:ifAllGranted>
+      <ul>
+          <li class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></li>
+          <sec:ifAllGranted roles="ROLE_ADMIN">
+              <li class="menuButton"><g:link class="create" action="create">Create Repository</g:link></li>
+          </sec:ifAllGranted>
+
+      </ul>
   </div>
   <div class="body">
     <h1>OMAR: Repository List</h1>
