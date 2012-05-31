@@ -19,7 +19,7 @@ class RasterKmlService extends KmlService
             params: [layers: rasterEntry.indexId])
     def thumbnailUrl = tagLibBean.createLink(absolute: true, controller: "thumbnail",
             action: "show", id: rasterEntry.id, params: [size: 128, projectionType: 'imagespace'])
-    def logoUrl = "${grailsApplication.config.grails.serverURL}/images/omarLogo.png"
+    def logoUrl = "${grailsApplication.config.serverURL}/images/omarLogo.png"
 
     def mpp = rasterEntry.getMetersPerPixel()
     def fieldMap = [
@@ -43,7 +43,7 @@ class RasterKmlService extends KmlService
       description += "<th align='right'>${k}:</th>"
       description += "<td>${v}</td></tr>"
     }
-    description += "<tfoot><tr><td colspan='2'><a href='${grailsApplication.config.grails.serverURL}'><img src='${logoUrl}'/></a></td></tr></tfoot>"
+    description += "<tfoot><tr><td colspan='2'><a href='${grailsApplication.config.serverURL}'><img src='${logoUrl}'/></a></td></tr></tfoot>"
     description += "</table>"
 
     description

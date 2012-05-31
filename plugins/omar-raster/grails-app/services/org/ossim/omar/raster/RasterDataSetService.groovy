@@ -3,6 +3,7 @@ package org.ossim.omar.raster
 import org.ossim.omar.core.Repository
 import org.ossim.omar.core.HttpStatus
 import org.ossim.omar.stager.DataManagerService
+import org.ossim.omar.stager.StagerUtil
 
 class RasterDataSetService extends DataManagerService
 {
@@ -45,7 +46,8 @@ class RasterDataSetService extends DataManagerService
     }
     else
     {
-      def xml = dataInfoService.getInfo( params.filename )
+      //def xml = dataInfoService.getInfo( params.filename )
+      def xml = StagerUtil.getInfo(params.filename as File)
 
       if ( xml )
       {

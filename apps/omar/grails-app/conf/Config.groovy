@@ -20,7 +20,8 @@ grails.config.locations = [
 //  "file:${userHome}/.grails/${appName}-config.properties",
 //     "file:${userHome}/.grails/${appName}-config.groovy"
 ]
-if ( new File("${userHome}/.grails/${appName}-config.groovy").exists() )
+
+if ( new File( "${userHome}/.grails/${appName}-config.groovy" ).exists() )
 {
   grails.config.locations << "file:${userHome}/.grails/${appName}-config.groovy"
 }
@@ -60,24 +61,27 @@ grails.converters.encoding = "UTF-8"
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
 
-grails.serverIP=org.ossim.omar.app.NetUtil.ipAddress
-// set per-environment serverURL stem for creating absolute links
-environments {
-  development {
-    databaseName = "omardb-${appVersion}-dev"
-    grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
-  }
-  test {
-    databaseName = "omardb-${appVersion}-test"
-    grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
-  }
-  production {
-    databaseName = "omardb-${appVersion}-prod"
-    //grails.serverURL = "http://${grails.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
-    grails.serverURL = "http://${grails.serverIP}/${appName}"
 
-  }
-}
+serverIP = org.ossim.omar.app.NetUtil.ipAddress
+serverURL = "http://${serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
+
+//
+//// set per-environment serverURL stem for creating absolute links
+//environments {
+//  development {
+//    databaseName = "omardb-${appVersion}-dev"
+//    serverURL = "http://${serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
+//  }
+//  test {
+//    databaseName = "omardb-${appVersion}-test"
+//    serverURL = "http://${serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
+//  }
+//  production {
+//    databaseName = "omardb-${appVersion}-prod"
+//    serverURL = "http://${serverIP}/${appName}"
+//
+//  }
+//}
 
 // log4j configuration
 log4j = {
@@ -98,14 +102,14 @@ log4j = {
 //                    geometry: "ST_GeomFromText(:geometry, 4326)"],
 //            tableName: "wms_log"
 //    )
-    appender new org.apache.log4j.DailyRollingFileAppender(name: "omarDataManagerAppender",
+    appender new org.apache.log4j.DailyRollingFileAppender( name: "omarDataManagerAppender",
             datePattern: "'.'yyyy-MM-dd",
             file: "/tmp/logs/omarDataManagerAppender.log",
-            layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n'))
-    appender new org.apache.log4j.DailyRollingFileAppender(name: "omarAppender",
+            layout: pattern( conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n' ) )
+    appender new org.apache.log4j.DailyRollingFileAppender( name: "omarAppender",
             datePattern: "'.'yyyy-MM-dd",
             file: "/tmp/logs/omar.log",
-            layout: pattern(conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5}  %m%n'))
+            layout: pattern( conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5}  %m%n' ) )
   }
 
 //  info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: false
@@ -129,8 +133,8 @@ log4j = {
 
   fatal 'org.grails.plugin.resource'
 
- // debug 'org.springframework.security',
- //       'com.sun.jndi.ldap'   
+  // debug 'org.springframework.security',
+  //       'com.sun.jndi.ldap'
 
   //root {
   //      debug 'stdout'
@@ -141,8 +145,8 @@ log4j = {
 /** *********************************************************************************************************/
 wms {
   referenceDataDirectory = "/data/omar"
-  mapServExt = (System.properties['os.name'].startsWith('Windows')) ? ".exe" : ""
-  serverAddress = grails.serverIP
+  mapServExt = ( System.properties['os.name'].startsWith( 'Windows' ) ) ? ".exe" : ""
+  serverAddress = serverIP
   useTileCache = false
   mapFile = "${referenceDataDirectory}/bmng.map"
 
@@ -162,8 +166,8 @@ wms {
                     options: defaultOptions
             ],
             [
-                    url: (useTileCache) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
-                    params: [layers: (useTileCache) ? "omar" : "Reference", format: "image/jpeg"],
+                    url: ( useTileCache ) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
+                    params: [layers: ( useTileCache ) ? "omar" : "Reference", format: "image/jpeg"],
                     name: "Reference Data",
                     options: defaultOptions
             ]
@@ -190,15 +194,15 @@ wms {
     }
 
     raster = [
-            url: "${grails.serverURL}/wms/footprints",
-            params: [layers: (supportIE6) ? "Imagery" : "ImageData", format: (supportIE6) ? "image/gif" : "image/png"],
+            url: "${serverURL}/wms/footprints",
+            params: [layers: ( supportIE6 ) ? "Imagery" : "ImageData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
             name: "OMAR Imagery Coverage",
             options: [styles: "green", footprintLayers: "Imagery"]
     ]
 
     video = [
-            url: "${grails.serverURL}/wms/footprints",
-            params: [layers: (supportIE6) ? "Videos" : "VideoData", format: (supportIE6) ? "image/gif" : "image/png"],
+            url: "${serverURL}/wms/footprints",
+            params: [layers: ( supportIE6 ) ? "Videos" : "VideoData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
             name: "OMAR Video Coverage",
             options: [styles: "red", footprintLayers: "Videos"]
     ]
@@ -231,7 +235,7 @@ wms {
 
 
 thumbnail {
-  cacheDir = (System.properties["os.name"] == "Windows XP") ? "c:/temp" : "${wms.referenceDataDirectory}/omar-cache"
+  cacheDir = ( System.properties["os.name"] == "Windows XP" ) ? "c:/temp" : "${wms.referenceDataDirectory}/omar-cache"
   defaultSize = 512
 }
 
@@ -246,7 +250,7 @@ security {
   level = "UNCLASS"
 }
 
-image.download.prefix = "http://${grails.serverIP}"
+image.download.prefix = "http://${serverIP}"
 
 /** ********************************* CONDITIONALS FOR VIEWS                           ***********************************************/
 // flags for different views
@@ -265,7 +269,7 @@ views {
 videoStreaming {
   flashDirRoot = "/Library/WebServer/Documents/videos"
   //flashDirRoot = "/var/www/html/videos"
-  flashUrlRoot = "http://${grails.serverIP}/videos"
+  flashUrlRoot = "http://${serverIP}/videos"
 }
 
 rasterEntry {
@@ -357,7 +361,7 @@ grails.doc.title = "OMAR"
 grails.doc.subtitle = ""
 grails.doc.logo = """<a href="http://www.ossim.org" ><img src="../img/OMAR.png" border="0"/></a>"""
 grails.doc.sponsorLogo = """<a href="http://www.radiantblue.com" ><img src="../img/RBT.png" border="0"/></a>"""
-grails.doc.images = new File("web-app/images")
+grails.doc.images = new File( "web-app/images" )
 
 tomcat {
   servers = [
@@ -462,7 +466,7 @@ export {
 
 
     formatters = [
-            groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join(',') }
+            groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' ) }
     ]
   }
 
@@ -488,13 +492,11 @@ export {
             'Width'
     ]
     formatters = [
-            groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join(',') }
+            groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' ) }
     ]
 
   }
 }
-
-
 
 // Added by the Spring Security Core plugin:
 grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.ossim.omar.security.SecUser'
@@ -508,11 +510,6 @@ grails.plugins.springsecurity.errors.login.passwordExpired = 'Sorry, your passwo
 grails.plugins.springsecurity.errors.login.disabled = 'Sorry, your account has been disabled.  Please contact an Administrator.'
 grails.plugins.springsecurity.errors.login.locked = 'Sorry, your account has been locked.  Please contact an Administrator.'
 
-
-
-
-
-
 // Values can be
 // MD2, MD5, SHA-1, SHA-256, SHA-384, SHA-512
 //
@@ -521,22 +518,20 @@ grails.plugins.springsecurity.password.encodeHashAsBase64 = true
 
 grails.plugins.springsecurity.ldap.active = false
 
-
 /*********** LDAP config for Active Directory    **********/
-    /*
-    //grails.plugins.springsecurity.ldap.context.managerDn = 'CN=Administrator,OU=users,DC=otd,DC=radiantblue,DC=com'
-    grails.plugins.springsecurity.ldap.context.managerDn = 'cn=administrator,cn=users,dc=otd,dc=radiantblue,dc=com'
-    grails.plugins.springsecurity.ldap.context.managerPassword = 'abc123!@#'
-    grails.plugins.springsecurity.ldap.context.server = 'ldap://otd-dc.otd.radiantblue.com:389/'
-    grails.plugins.springsecurity.ldap.authorities.ignorePartialResultException = true // typically needed for Active Directory
-    //grails.plugins.springsecurity.ldap.search.base = 'cn=users,dc=otd,dc=radiantblue,dc=com'
-    grails.plugins.springsecurity.ldap.search.base = 'dc=otd,dc=radiantblue,dc=com'
-    grails.plugins.springsecurity.ldap.search.filter="sAMAccountName={0}" // for Active Directory you need this
-    grails.plugins.springsecurity.ldap.search.searchSubtree = true
-    grails.plugins.springsecurity.ldap.auth.hideUserNotFoundExceptions = false
-    */
+/*
+//grails.plugins.springsecurity.ldap.context.managerDn = 'CN=Administrator,OU=users,DC=otd,DC=radiantblue,DC=com'
+grails.plugins.springsecurity.ldap.context.managerDn = 'cn=administrator,cn=users,dc=otd,dc=radiantblue,dc=com'
+grails.plugins.springsecurity.ldap.context.managerPassword = 'abc123!@#'
+grails.plugins.springsecurity.ldap.context.server = 'ldap://otd-dc.otd.radiantblue.com:389/'
+grails.plugins.springsecurity.ldap.authorities.ignorePartialResultException = true // typically needed for Active Directory
+//grails.plugins.springsecurity.ldap.search.base = 'cn=users,dc=otd,dc=radiantblue,dc=com'
+grails.plugins.springsecurity.ldap.search.base = 'dc=otd,dc=radiantblue,dc=com'
+grails.plugins.springsecurity.ldap.search.filter="sAMAccountName={0}" // for Active Directory you need this
+grails.plugins.springsecurity.ldap.search.searchSubtree = true
+grails.plugins.springsecurity.ldap.auth.hideUserNotFoundExceptions = false
+*/
 /***********   END config for active directory    ***********/
-
 
 /***********      LDAP config for OpenLdap        **********/
 
@@ -554,14 +549,13 @@ grails.plugins.springsecurity.ldap.active = false
 
 /***********   END config for OpenLdap    ***********/
 
-
 /*********** Optional ldap settings (group, search attributes, etc.)  **********/
 
-    //grails.plugins.springsecurity.ldap.search.attributesToReturn = ['mail', 'displayName'] // extra attributes you want returned; see below for custom classes that access this data
-    //grails.plugins.springsecurity.providerNames = ['ldapAuthProvider', 'anonymousAuthenticationProvider']
-    //grails.plugins.springsecurity.providerNames= ['adAuthenticationProvider']
+//grails.plugins.springsecurity.ldap.search.attributesToReturn = ['mail', 'displayName'] // extra attributes you want returned; see below for custom classes that access this data
+//grails.plugins.springsecurity.providerNames = ['ldapAuthProvider', 'anonymousAuthenticationProvider']
+//grails.plugins.springsecurity.providerNames= ['adAuthenticationProvider']
 
-    //grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
+//grails.plugins.springsecurity.ldap.context.server = 'ldap://sles11-ldap-server'
 
 // LDAP user:
 //  username: demo
@@ -621,7 +615,7 @@ rss {
     properties = [
             imageId: 'Image ID',
             missionId: 'Mission ID',
-            securityClassification: 'Security Class',
+            kmlClassification: 'Security Class',
             niirs: 'NIIRS',
             countryCode: 'Country Code',
             beNumber: 'BE Number',
@@ -630,6 +624,11 @@ rss {
             height: 'Height',
     ]
   }
+}
+
+thumbnail {
+  cacheDir = ( System.properties["os.name"] == "Windows XP" ) ? "c:/temp" : "${wms.referenceDataDirectory}/omar-cache"
+  defaultSize = 512
 }
 
 // Image Magick Parameters (for template exports in ground/image space)
