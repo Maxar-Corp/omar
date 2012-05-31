@@ -319,7 +319,7 @@ login {
      * false: Prevents user registration and removes the register link from the OMAR login page. We recommend
      *        setting enabled to false if you are using LDAP for user authentication.
      */
-    enabled = false
+    enabled = true
 
     /**
      * userVerification has the following values:
