@@ -9,9 +9,11 @@
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLink(uri: '/')}">OMAR™ Home</a></span>
-    <span class="menuButton"><g:link class="list" action="list">Video Search Tag List</g:link></span>
-    <span class="menuButton"><g:link class="create" action="create">Create Video Search Tag</g:link></span>
+      <ul>
+          <li class="menuButton"><a class="home" href="${createLink(uri: '/')}">OMAR™ Home</a></li>
+          <li class="menuButton"><g:link class="list" action="list">Video Search Tag List</g:link></li>
+          <li class="menuButton"><g:link class="create" action="create">Create Video Search Tag</g:link></li>
+      </ul>
   </div>
   <div class="body">
     <h1>OMAR: Show Video Search Tag ${fieldValue(bean: videoDataSetSearchTagInstance, field: "id")}</h1>
