@@ -9,8 +9,11 @@
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></span>
-    <span class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></span>
+      <ul>
+          <li class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
+          <li class="menuButton"><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]"/></g:link></li>
+
+      </ul>
   </div>
   <div class="body">
     <h1><g:message code="default.create.label" args="[entityName]"/></h1>
