@@ -713,32 +713,44 @@ function mouseClick(evt){
 }
 
 
-function convertPathAreaMetersToTargetUnit(pathLength, area, targetUnit)
+function convertPathAreaMetersToTargetUnit(geodLength, pathLength, area, targetUnit)
 {
     var openLayersMapping = OMAR.measure.units.openlayersMapping[targetUnit];
-    var inchesSourceMultiplier = 1.0/OpenLayers.METERS_PER_INCH; 
-    var inchesSource = inchesSourceMultiplier*pathLength;
-    var inchesSourceArea = area*(inchesSourceMultiplier*inchesSourceMultiplier);
+    var inchesSourceMultiplier = 1.0/OpenLayers.METERS_PER_INCH;
+
     var targetMultiplier  = 1.0/OpenLayers.INCHES_PER_UNIT[openLayersMapping];
     var targetLen  = targetMultiplier;
     var targetArea = targetMultiplier*targetMultiplier;
-    var dist = Math.round(targetLen*inchesSource *OMAR.measure.units.precisionMapping[targetUnit])/OMAR.measure.units.precisionMapping[targetUnit];
+
+    var inchesSourceG = inchesSourceMultiplier*geodLength;
+    var inchesSource = inchesSourceMultiplier*pathLength;
+    var inchesSourceArea = area*(inchesSourceMultiplier*inchesSourceMultiplier);
+
+    var gdist = Math.round(targetLen*inchesSourceG*OMAR.measure.units.precisionMapping[targetUnit])/OMAR.measure.units.precisionMapping[targetUnit];
+    var dist = Math.round(targetLen*inchesSource*OMAR.measure.units.precisionMapping[targetUnit])/OMAR.measure.units.precisionMapping[targetUnit];
     var area = Math.round(targetArea*inchesSourceArea*OMAR.measure.units.precisionMapping[targetUnit])/OMAR.measure.units.precisionMapping[targetUnit];
 
-   return {distance:dist, area:area};
+    return {gdistance: gdist, distance:dist, area:area};
 }
+
 function displayMeasurements()
 {
    var div = $("mensurationDivId");
     if(div)
     {
-       var convertedValues = convertPathAreaMetersToTargetUnit(OMAR.imageManipulator.measureLength, 
+       var convertedValues = convertPathAreaMetersToTargetUnit(OMAR.imageManipulator.measureLengthG,
+                                                               OMAR.imageManipulator.measureLength,
                                                                OMAR.imageManipulator.measureArea, 
                                                                OMAR.measure.units.active);
       
        if(OMAR.imageManipulator.measureLength)
        {
-             div.innerHTML = "<table><tr><td>Length:</td><td>" + convertedValues.distance + " "+OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "</td>" + "<tr><td>Area: </td><td>" + convertedValues.area + " "+ OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "^2 </td></table>";
+            div.innerHTML  =
+            "<table>" +
+            "<tr><td style='padding-left:2px'>Geodetic Dist: </td><td>" + convertedValues.gdistance + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "</td></tr>" +
+            "<tr><td style='padding-left:2px'>Rect Dist: </td><td>" + convertedValues.distance + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "</td></tr>" +
+            "<tr><td style='padding-left:2px'>Area: </td><td>" + convertedValues.area + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "^2</td></tr>" +
+            "</table>";
        }
        else
        {
@@ -748,6 +760,7 @@ function displayMeasurements()
 }
 function measureRemoved(){
     OMAR.imageManipulator.measureLength = null;
+    OMAR.imageManipulator.measureLengthG = null;
     OMAR.imageManipulator.measureArea    = null;
     displayMeasurements();
 }
@@ -763,8 +776,9 @@ function measureFinished(evt){
                                              }),
              callback: function (transport){
                 var temp = YAHOO.lang.JSON.parse(transport.responseText);
-                OMAR.imageManipulator.measureLength = temp.distance;
-                OMAR.imageManipulator.measureArea   = temp.area;
+                OMAR.imageManipulator.measureLengthG = temp.gdist;
+                OMAR.imageManipulator.measureLength  = temp.distance;
+                OMAR.imageManipulator.measureArea    = temp.area;
 
                displayMeasurements();
             }
@@ -1203,7 +1217,7 @@ function setMapCtr(unit, value)
                theHTML += "<tr><td>CE/LE</td>"  + "<td style='text-align:right;'>"+CE.toFixed(1)+"</td>"  + "<td style='text-align:right;'>/"+LE.toFixed(1)+"</td>"  + "<td style='text-align:right;'>"+"m"+"</td>";
                theHTML += "<tr><td>SMA/SMI</td>"+ "<td style='text-align:right;'>"+SMA.toFixed(1)+"</td>" + "<td style='text-align:right;'>/"+SMI.toFixed(1)+"</td>" + "<td style='text-align:right;'>"+"m"+"</td>";
                theHTML += "<tr><td>SMA AZ</td>" + "<td style='text-align:right;'>"+AZ.toFixed(1)+"</td>"  + "<td style='text-align:right;'>"+""+"</td>"             + "<td style='text-align:right;'>"+"deg"+"</td>";
-               theHTML += '</table>';
+               theHTML += "</table>";
                theHTML += "Probability Level: " + pLvl +"P";
                theHTML += "<hr>";
                return theHTML;
