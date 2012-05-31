@@ -8,11 +8,13 @@
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link class="list" action="list">Raster Entry List</g:link></span>
-    <sec:ifAllGranted roles="ROLE_ADMIN">
-      <span class="menuButton"><g:link class="create" action="create">Create Raster Entry</g:link></span>
-    </sec:ifAllGranted>
+      <ul>
+          <li class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></li>
+          <li class="menuButton"><g:link class="list" action="list">Raster Entry List</g:link></li>
+          <sec:ifAllGranted roles="ROLE_ADMIN">
+              <li class="menuButton"><g:link class="create" action="create">Create Raster Entry</g:link></li>
+          </sec:ifAllGranted>
+      </ul>
   </div>
   <div class="body">
     <h1>OMAR: Edit Raster Entry ${fieldValue(bean: rasterEntry, field: 'id')}</h1>

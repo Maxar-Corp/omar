@@ -7,11 +7,13 @@
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <sec:ifAllGranted roles="ROLE_ADMIN">
-      <span class="menuButton"><g:link class="create" action="create">Create Raster Set</g:link></span>
-    </sec:ifAllGranted>
-  </div>
+      <ul>
+          <li class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></li>
+          <sec:ifAllGranted roles="ROLE_ADMIN">
+              <li class="menuButton"><g:link class="create" action="create">Create Raster Set</g:link></li>
+          </sec:ifAllGranted>
+      </ul>
+   </div>
   <div class="body">
     <h1>OMAR: Raster Set List</h1>
     <g:if test="${flash.message}">
