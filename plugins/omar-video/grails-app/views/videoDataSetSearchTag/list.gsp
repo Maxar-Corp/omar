@@ -9,8 +9,10 @@
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><a class="home" href="${createLink(uri: '/')}">OMAR™ Home</a></span>
-    <span class="menuButton"><g:link class="create" action="create">Create Video Search Tag</g:link></span>
+      <ul>
+          <li class="menuButton"><a class="home" href="${createLink(uri: '/')}">OMAR™ Home</a></li>
+          <li class="menuButton"><g:link class="create" action="create">Create Video Search Tag</g:link></li>
+      </ul>
   </div>
   <div class="body">
     <h1>OMAR: Video Search Tag List</h1>
