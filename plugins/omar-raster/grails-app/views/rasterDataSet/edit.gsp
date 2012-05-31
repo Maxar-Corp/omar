@@ -8,9 +8,11 @@
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link class="list" action="list">Raster Set List</g:link></span>
-    <span class="menuButton"><g:link class="create" action="create">Create Raster Set</g:link></span>
+      <ul>
+          <li class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></li>
+          <li class="menuButton"><g:link class="list" action="list">Raster Set List</g:link></li>
+          <li class="menuButton"><g:link class="create" action="create">Create Raster Set</g:link></li>
+      </ul>
   </div>
   <div class="body">
     <h1>OMAR: Edit Raster Set ${rasterDataSet.id}</h1>
