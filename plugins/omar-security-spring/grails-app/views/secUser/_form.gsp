@@ -10,12 +10,17 @@
 	<g:textField name="username" required="" value="${secUserInstance?.username}"/>
 </div>
 
+
 <div class="fieldcontain ${hasErrors(bean: secUserInstance, field: 'password', 'error')} required">
 	<label for="password">
 		<g:message code="secUser?.password.label" default="Password" />
 		<span class="required-indicator">*</span>
 	</label>
+    <g:link controller="userPreferences" action="changePassword"
+                id="${secUserInstance?.id}">Change Password</g:link>
+    <%--
 	<g:passwordField name="password" required="" value="${secUserInstance?.password}"/>
+    --%>
 </div>
 
 <div class="fieldcontain ${hasErrors(bean: secUserInstance, field: 'userRealName', 'error')} ">
