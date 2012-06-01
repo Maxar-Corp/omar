@@ -481,12 +481,12 @@ th:hover, tr:hover {
 }
 
 /* PAGINATION */
-
 .pagination {
 	border-top: 0;
 	margin: 0;
 	padding: 0.3em 0.2em;
-	text-align: center;
+    align:left;
+	text-align: left;
 	   -moz-box-shadow: 0 0 3px 1px #AAAAAA;
 	-webkit-box-shadow: 0 0 3px 1px #AAAAAA;
 	        box-shadow: 0 0 3px 1px #AAAAAA;
@@ -497,10 +497,11 @@ th:hover, tr:hover {
 .pagination .currentStep {
 	color: #666666;
 	display: inline-block;
-	margin: 0 0.1em;
+    margin: 0 0.1em;
 	padding: 0.25em 0.7em;
 	text-decoration: none;
-	   -moz-border-radius: 0.3em;
+    text-align: left;
+    -moz-border-radius: 0.3em;
 	-webkit-border-radius: 0.3em;
 	        border-radius: 0.3em;
 }
