@@ -298,6 +298,7 @@ rasterEntry {
 
   searchTagData = [
           [name: "fileType", description: "File Type"],
+          [name: "filename", description: "Filename"],
           [name: "className", description: "Class Name"],
           [name: "missionId", description: "Mission"],
           [name: "countryCode", description: "Country"],
