@@ -17,4 +17,7 @@ class OmarTagLib
        ${levelMap.description}
      </div>"""
   }
+    def logout = {attrs->
+        out<< """<div class=\"logout\"><a href="${createLink( controller: 'logout' )}">Logout</a></div>"""
+    }
 }
