@@ -8,7 +8,7 @@
 
 <form action="/omar/rasterEntry/index" method="post" name="paginateForm" id="paginateForm" ></form>
 
-<div class="paginateButtons">
+<div class="pagination">
   <g:paginate event="testing('tabView');" controller="rasterEntry" action="results" total="${totalCount ?: 0}"
               max="${params.max}" offset="${params.offset}" params="${params}"/>
 

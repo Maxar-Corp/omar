@@ -8,7 +8,7 @@
 
 <form action="/omar/videoDataSet/index" method="post" name="paginateForm" id="paginateForm" ></form>
 
-<div class="paginateButtons">
+<div class="pagination">
   <g:paginate event="testing('tabView');" controller="videoDataSet" action="results" total="${totalCount ?: 0}"
               max="${params.max}" offset="${params.offset}" params="${params}"/>
 
