@@ -603,7 +603,7 @@ function init(mapWidth, mapHeight)
    //OMAR.imageManipulator.transformDiv();
    //OMAR.imageManipulator.applyRotate(0.0);
    //OMAR.imageManipulator.applyRotate(${"rotateAngle"}.value);
-   // OMAR.iamgeManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
+   //OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
    //alert(map.getMaxExtents());
 
    OMAR.imageManipulator.events.on({
@@ -750,6 +750,8 @@ function displayMeasurements()
             "<tr><td style='padding-left:2px'>Geodetic Dist: </td><td>" + convertedValues.gdistance + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "</td></tr>" +
             "<tr><td style='padding-left:2px'>Rect Dist: </td><td>" + convertedValues.distance + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "</td></tr>" +
             "<tr><td style='padding-left:2px'>Area: </td><td>" + convertedValues.area + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "^2</td></tr>" +
+            "<tr><td style='padding-left:2px'><hr></td><td><hr></td></tr>" +
+            "<tr><td style='padding-left:2px'>Azimuth: </td><td>" + OMAR.imageManipulator.measureAzimuth.toFixed(1) + " deg" + "</td></tr>" +
             "</table>";
        }
        else
@@ -759,29 +761,47 @@ function displayMeasurements()
     }
 }
 function measureRemoved(){
-    OMAR.imageManipulator.measureLength = null;
+    OMAR.imageManipulator.measureLength  = null;
     OMAR.imageManipulator.measureLengthG = null;
     OMAR.imageManipulator.measureArea    = null;
+    OMAR.imageManipulator.measureAzimuth = null;
     displayMeasurements();
 }
 function measureFinished(evt){
-   if(evt&&evt.feature)
+   if(evt && evt.feature)
     {
-        var url = "/omar/imageSpace/measure"; 
+        var url = "/omar/imageSpace/measure";
+
+        // Convert WKT lineString to true image coordinates
+        var pathString = evt.feature.geometry.toString();
+        var path = new OpenLayers.Format.WKT().read(pathString);
+        var nodes = path.geometry.getVertices();
+        var pts = [];
+        for (var i=0; i<nodes.length; i++) {
+            var pt = OMAR.imageManipulator.pointReflect(nodes[i]);
+            pts[i] = new OpenLayers.Geometry.Point(pt.x, pt.y);
+        }
+        var feat;
+        if (pathString.indexOf("POLYGON") >= 0)
+        {
+            var ring = new OpenLayers.Geometry.LinearRing(pts);
+            feat = new OpenLayers.Geometry.Polygon(ring);
+        }
+        else
+            feat = new OpenLayers.Geometry.LineString(pts);
+
         var request = OpenLayers.Request.POST({
              url: url,
-             //params: {id:${rasterEntry.id}, feature:jsonText.toString()},
-             data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id}, 
-                                              feature:{wkt:evt.feature.geometry.toString()}
-                                             }),
+             data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id}, feature:{wkt:feat.toString()}}),
              callback: function (transport){
                 var temp = YAHOO.lang.JSON.parse(transport.responseText);
                 OMAR.imageManipulator.measureLengthG = temp.gdist;
                 OMAR.imageManipulator.measureLength  = temp.distance;
                 OMAR.imageManipulator.measureArea    = temp.area;
+                OMAR.imageManipulator.measureAzimuth = temp.azimuth * 180/Math.PI;
 
-               displayMeasurements();
-            }
+                displayMeasurements();
+             }
         });
 
     }
