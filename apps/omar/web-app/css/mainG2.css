@@ -484,7 +484,7 @@ th:hover, tr:hover {
     border-top: 0;
     margin: 0;
     padding: 0.3em 0.2em;
-    text-align: center;
+    text-align: left;
     -moz-box-shadow: 0 0 3px 1px #AAAAAA;
     -webkit-box-shadow: 0 0 3px 1px #AAAAAA;
     box-shadow: 0 0 3px 1px #AAAAAA;
@@ -495,6 +495,7 @@ th:hover, tr:hover {
 .pagination .currentStep {
     color: #666666;
     display: inline-block;
+    text-align: left;
     margin: 0 0.1em;
     padding: 0.25em 0.7em;
     text-decoration: none;
