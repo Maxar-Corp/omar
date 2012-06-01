@@ -223,7 +223,7 @@
       <g:hiddenField id="max" name="max" value="${params.max}"/>
     </g:form>
 
-    <div class="paginateButtons">
+    <div class="pagination">
       <g:paginate total="${rasterEntryList.totalCount}" params="${[rasterDataSet:params.rasterDataSetId]}"/>
       <g:if test="${rasterEntryList.totalCount == 0}">
 

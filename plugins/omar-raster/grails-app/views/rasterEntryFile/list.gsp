@@ -41,7 +41,7 @@
         </tbody>
       </table>
     </div>
-    <div class="paginateButtons">
+    <div class="pagination">
       <g:paginate total="${rasterEntryFileList.totalCount}" params="${[rasterEntryId:params.rasterEntryId]}"/>
     </div>
   </div>
