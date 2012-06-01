@@ -18,6 +18,7 @@
 
 <div id="top1">
   <omar:securityClassificationBanner/>
+  <omar:logout/>
   <g:pageProperty name="page.top1"/>
 </div>
 
