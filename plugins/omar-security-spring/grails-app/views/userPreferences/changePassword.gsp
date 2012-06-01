@@ -7,7 +7,7 @@
 <body>
 <content tag="content">
   <p/>
-
+  <omar:logout/>
   <div class="nav">
     <span class="menuButton"><a class="home"
                                 href="${createLink(uri: '/')}">Home</a></span>
