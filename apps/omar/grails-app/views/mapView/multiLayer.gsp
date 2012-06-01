@@ -20,7 +20,8 @@
 
 <content tag="top1">
   <omar:securityClassificationBanner/>
-  <g:render template="multiLayerMenu" model="${[rasterEntries: rasterEntries]}"/>
+    <omar:logout/>
+    <g:render template="multiLayerMenu" model="${[rasterEntries: rasterEntries]}"/>
 </content>
 
 <content tag="bottom1">

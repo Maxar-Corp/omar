@@ -6,7 +6,8 @@
 </head>
 <body>
 <content tag="content">
-  <div class="nav">
+    <omar:logout/>
+    <div class="nav">
       <ul>
           <li class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></li>
           <li class="menuButton"><g:link class="list" action="list">Raster Entry List</g:link></li>
