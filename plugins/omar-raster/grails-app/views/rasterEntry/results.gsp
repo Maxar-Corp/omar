@@ -18,7 +18,8 @@
 <body class=" yui-skin-sam">
 
 <content tag="top">
-  <g:render template="resultsMenu"/>
+    <omar:logout/>
+    <g:render template="resultsMenu"/>
   <h1><g:message code="default.list.label" args="[entityName]"/></h1>
   <g:render template="resultsPaginator" model="${[totalCount: totalCount, queryParams: queryParams, params: params]}"/>
 </content>

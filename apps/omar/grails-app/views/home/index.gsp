@@ -1,4 +1,5 @@
-s<html>
+s
+<html xmlns="http://www.w3.org/1999/html">
 <head>
   <title>Welcome to OMAR <g:meta name="app.version"/></title>
   <meta name="layout" content="homePageLayout"/>
@@ -7,7 +8,7 @@ s<html>
 
 <body class="yui-skin-sam">
 <content tag="top">
-  <div align="center">
+    <div align="center">
     <g:link class="home" uri="/">
       <img src="${resource( plugin: 'omar-common-ui', dir: 'images', file: 'omarLogo.png' )}" alt="OMAR Logo"/>
     </g:link>
@@ -168,7 +169,7 @@ s<html>
     <table>
       <tr>
         <td>
-          <a href="${createLink( controller: "logout" )}">
+          <a href="${createLink( controller: 'logout' )}">
             <img src="${resource( dir: 'images', file: 'logout.gif' )}" width="96" height="96" alt="">
           </a>
         </td>

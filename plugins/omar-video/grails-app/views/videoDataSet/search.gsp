@@ -21,7 +21,8 @@
 
   <content tag="top1">
     <omar:securityClassificationBanner/>
-    <g:render plugin="omar-core" template="/common/searchMenuTemplate"/>
+      <omar:logout/>
+      <g:render plugin="omar-core" template="/common/searchMenuTemplate"/>
   </content>
 
   <content tag="bottom1">
