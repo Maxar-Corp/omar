@@ -47,6 +47,14 @@ body {
 	background-color: #abbf78;
 }
 
+.logout{
+    position:absolute;
+    top:auto;
+    right:10px;
+    left:auto;
+    z-index:100;
+    float: right;
+}
 /* replace with .no-boxshadow body if you have modernizr available */
 .ie6 body,
 .ie7 body,
