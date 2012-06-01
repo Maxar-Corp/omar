@@ -1040,7 +1040,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
           document.onselectstart = null;
           this.mouseDragStart = null;
           this.map.div.style.cursor = "";  
-          bre
+          break;
         }
         case OMAR.ToolModeType.POINT:
         case OMAR.ToolModeType.LINE:
