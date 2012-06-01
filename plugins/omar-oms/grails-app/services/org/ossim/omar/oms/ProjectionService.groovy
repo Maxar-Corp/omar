@@ -90,7 +90,7 @@ class ProjectionService
         def distance = 0.0;
         def gdist = 0.0;
         def area = 0.0;
-        def result = [gdist:0.0, distance:0.0, area: 0.0, unit: "m"];
+        def result = [gdist:0.0, distance:0.0, area: 0.0, unit: "m", azimuth: 0.0];
         def coordinateList = []
         def geodeticEvaluator = new GeodeticEvaluator()
         double [] daArray = new double[3]
@@ -120,7 +120,7 @@ class ProjectionService
                         // Linear distance
                         distance += lastGroundPoint.distanceTo(groundPoint);
 
-                        // Geodetic distance
+                        // Geodetic distance & azimuth
                         geodeticEvaluator.computeEllipsoidalDistAz(lastGroundPoint, groundPoint, daArray)
                         gdist += daArray[0]
 
@@ -134,9 +134,9 @@ class ProjectionService
                         ecefPoint.assign(lastGroundPoint);
                         coordinateList << [ecefPoint.x, ecefPoint.y, ecefPoint.z];
                     }
-                    //coordinateList << coordinateList[0];
-               }
-                // add area calculations
+                }
+
+                // Add area calculations
                 if(geom instanceof geoscript.geom.Polygon)
                 {
                     def tempPoly = new geoscript.geom.Polygon([coordinateList])
@@ -145,6 +145,7 @@ class ProjectionService
                 result.gdist = gdist
                 result.distance = distance
                 result.area = area
+                result.azimuth = daArray[1]
           }
           imageSpaceModel.delete()
           imageSpaceModel = null
