@@ -8,6 +8,7 @@
 </head>
 <body>
 <content tag="content">
+    <omar:logout/>
   <div class="nav">
       <ul>
           <li class="menuButton"><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
