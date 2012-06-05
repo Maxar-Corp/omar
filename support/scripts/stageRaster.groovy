@@ -20,23 +20,23 @@ def outputHelp()
       OMARDB            identify the postgres database name holding the omar tables.  Version number might
                         be different for your distribution but it will be of the form omardb-<VERSION>-prod. 
                         In this example we will use version 1.8.12:
-                        export OMARDB=omardb-1.8.12-prod
+                        OMARDB=omardb-1.8.12-prod
 
       POSTGRES_USER     identify the postgres user name that has modifcation priviledges.  Example:
-                        export POSTGRES_USER=postgres
+                        POSTGRES_USER=postgres
 
       POSTGRES_PASSWORD identify the posgres user password
-                        export POSTGRES_PASSWORD=postgres
+                        POSTGRES_PASSWORD=postgres
 
       OMAR_URL          identify the OMAR URL.  If running local:
-                        export OMAR_URL=http://localhost/omar
+                        OMAR_URL=http://localhost/omar
 
       PID_FILE          idientify the location where you want this script's process ID written to.  The user 
                         must have write priviledges to the PID_FILE location.
-                        export PID_FILE=/var/run/omar/parallelStage.groovy.pid
+                        PID_FILE=/var/run/omar/parallelStage.groovy.pid
 
       NTHREADS          controls the number of threads used for the staging process.
-                        export NTHREADS=4
+                        NTHREADS=4
 
    OPTIONAL ENVIRONMENT VARIABLES
    
@@ -51,11 +51,11 @@ def outputHelp()
 
       POST_COMMAND_LINE defaults to using java code for posting.  This value can be YES or NO.  if
                         YES then it will use curl command line application to post to the server.
-                        export POST_COMMAND_LINE=NO
+                        POST_COMMAND_LINE=NO
 
       STAGE_FILE_FILTER Is a comma separated list of extensions without the dot.  Examples:
                         stage only nitf files:
-                        export STAGE_FILE_FILTER="nitf,ntf"
+                        STAGE_FILE_FILTER="nitf,ntf"
 
                         if blank all files that OSSIM core engine used by OMAR will be staged into the system.
                         It is recommended that you use a filter for only data that you want staged.  
