@@ -19,22 +19,22 @@ thumbnail will also be removed.
       OMARDB            identify the postgres database name holding the omar tables.  Version number might
                         be different for your distribution but it will be of the form omardb-<VERSION>-prod. 
                         In this example we will use version 1.8.12:
-                        export OMARDB=omardb-1.8.12-prod
+                        OMARDB=omardb-1.8.12-prod
 
       POSTGRES_USER     identify the postgres user name that has modifcation priviledges.  Example:
-                        export POSTGRES_USER=postgres
+                        POSTGRES_USER=postgres
 
       POSTGRES_PASSWORD identify the posgres user password
-                        export POSTGRES_PASSWORD=postgres
+                        POSTGRES_PASSWORD=postgres
 
       OMAR_URL          identify the OMAR URL.  If running local:
-                        export OMAR_URL=http://localhost/omar
+                        OMAR_URL=http://localhost/omar
 
       PID_FILE          idientify the location where you want this script's process ID written to.  The user 
                         must have write priviledges to the PID_FILE location.
-                        export PID_FILE=/var/run/omar/parallelStage.groovy.pid
+                        PID_FILE=/var/run/omar/parallelStage.groovy.pid
                         
-      OMAR_THUMBNAIL_CACHE  Specifies the location where OMAR keeps its thumbnail cahce directory.
+      OMAR_THUMBNAIL_CACHE  Specifies the location where OMAR keeps its thumbnail cache directory.
                             Typical locaiton is /data/omar/omar-cache
 
    OPTIONAL ENVIRONMENT VARIABLES
