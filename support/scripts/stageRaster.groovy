@@ -43,11 +43,11 @@ def outputHelp()
       LOG_FILE          identify where the log file is written.  If blank then to standard output.
 
       OVERVIEW_OPTIONS  specifies the overview options.  example:
-                        export OVERVIEW_OPTIONS="--compression-type JPEG --compression-quality 75"  
+                        OVERVIEW_OPTIONS="--compression-type JPEG --compression-quality 75"  
 
       HISTOGRAM_OPTIONS specifies the histogram option to use. exmaples:
-                        export HISTOGRAM_OPTIONS="--create-histogram-fast"
-                        export HISTOGRAM_OPTIONS="--create-histogram"
+                        HISTOGRAM_OPTIONS="--create-histogram-fast"
+                        HISTOGRAM_OPTIONS="--create-histogram"
 
       POST_COMMAND_LINE defaults to using java code for posting.  This value can be YES or NO.  if
                         YES then it will use curl command line application to post to the server.
