@@ -11,6 +11,8 @@ environmentVariables =[
    PID_FILE:"",
    CLASSPATH:"${System.env.OSSIM_DIST_ROOT}/tomcat/webapps/omar/WEB-INF/lib", 
    STAGE_FILE_FILTER:"nitf,ntf",
+   HISTOGRAM_OPTIONS:"--create-histogram-fast",
+   OVERVIEW_OPTIONS:"--compression-type JPEG --compression-quality 75"
 ]
 
 
