@@ -1274,7 +1274,7 @@ function setMapCtr(unit, value)
 
     function shareImage()
     {
-        var baseURL = "${createLink(absolute: 'true', action: 'imageSpace')}";
+        var baseURL = "${createLink(absolute: 'true', action: 'imageSpace', base: grailsApplication.config.omar.serverURL)}";
         var layers = "${rasterEntry?.indexId}";
         var interpolation = $("interpolation").value;
         var brightness = $("brightness").value;

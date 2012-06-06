@@ -685,7 +685,7 @@ function onFeatureUnselect(event)
 
 function shareImage()
 {
-	var baseURL = "${createLink(absolute: 'true', action: 'index')}";
+	var baseURL = "${createLink(absolute: 'true', action: 'index', base: grailsApplication.config.omar.serverURL)}";
 	
 	var layer = mapWidget.getMap().layers[0];
 	var params = layer.params;	
