@@ -19,7 +19,7 @@ class StagerUtil
   {
     def xml = null
     DataInfo dataInfo = new DataInfo()
-    ImageStager imageStager
+//    ImageStager imageStager
 
     try
     {
@@ -29,19 +29,20 @@ class StagerUtil
       if ( canOpen )
       {
 
-        imageStager = new ImageStager()
-
-        if ( imageStager.open( file.absolutePath ) )
-        {
-          imageStager.setUseFastHistogramStagingFlag( true )
-          def generated = imageStager.stageAll()
-
-          if ( generated )
-          {
+//        imageStager = new ImageStager()
+//
+//        if ( imageStager.open( file.absolutePath ) )
+//        {
+//          imageStager.setUseFastHistogramStagingFlag( true )
+//          def generated = imageStager.stageAll()
+//
+//          if ( generated )
+//          {
+            buildOvrsAndHis(file)
             dataInfo.close()
             dataInfo.open( file.absolutePath )
-          }
-        }
+//          }
+//        }
 
         xml = dataInfo.getInfo()?.trim()
       }
@@ -53,10 +54,10 @@ class StagerUtil
     }
     finally
     {
-      if ( imageStager )
-      {
-        imageStager.delete()
-      }
+//      if ( imageStager )
+//      {
+//        imageStager.delete()
+//      }
 
       dataInfo.close()
       dataInfo.delete()
@@ -94,5 +95,21 @@ class StagerUtil
     sharedDataInfo.close()
 
     return xml
+  }
+
+  static def buildOvrsAndHis(def file)
+  {
+    def fileRoot = file.name.substring(0, file.name.lastIndexOf('.'))
+    def hisFile =  new File( file.parent, "${fileRoot}.his")
+    def hisFlag = (hisFile.exists()) ? '' : '--create-histogram-fast'
+    def cmd = "ossim-img2rr ${hisFlag} ${file.absolutePath}"
+
+    def proc = cmd.execute()
+
+    proc.consumeProcessOutput()
+
+    def exitCode = proc.waitFor()
+
+    return exitCode
   }
 }
