@@ -44,7 +44,7 @@ class WebFeatureService
   def getCapabilities( )
   {
     def workspace = createWorkspace()
-    def wfsURL = "${grailsApplication.config.serverURL}/wfs"
+    def wfsURL = "${grailsApplication.config.omar.serverURL}/wfs"
 
     def name = "OMAR WFS"
     def title = "OMAR Data"

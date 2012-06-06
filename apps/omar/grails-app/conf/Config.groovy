@@ -62,8 +62,8 @@ grails.converters.encoding = "UTF-8"
 grails.enable.native2ascii = true
 
 
-serverIP = org.ossim.omar.app.NetUtil.ipAddress
-serverURL = "http://${serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
+omar.serverIP = org.ossim.omar.app.NetUtil.ipAddress
+omar.serverURL = "http://${omar.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
 
 //
 //// set per-environment serverURL stem for creating absolute links
@@ -146,7 +146,7 @@ log4j = {
 wms {
   referenceDataDirectory = "/data/omar"
   mapServExt = ( System.properties['os.name'].startsWith( 'Windows' ) ) ? ".exe" : ""
-  serverAddress = serverIP
+  serverAddress = omar.serverIP
   useTileCache = false
   mapFile = "${referenceDataDirectory}/bmng.map"
 
@@ -194,14 +194,14 @@ wms {
     }
 
     raster = [
-            url: "${serverURL}/wms/footprints",
+            url: "${omar.serverURL}/wms/footprints",
             params: [layers: ( supportIE6 ) ? "Imagery" : "ImageData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
             name: "OMAR Imagery Coverage",
             options: [styles: "green", footprintLayers: "Imagery"]
     ]
 
     video = [
-            url: "${serverURL}/wms/footprints",
+            url: "${omar.serverURL}/wms/footprints",
             params: [layers: ( supportIE6 ) ? "Videos" : "VideoData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
             name: "OMAR Video Coverage",
             options: [styles: "red", footprintLayers: "Videos"]
@@ -250,7 +250,7 @@ security {
   level = "UNCLASS"
 }
 
-image.download.prefix = "http://${serverIP}"
+image.download.prefix = "http://${omar.serverIP}"
 
 /** ********************************* CONDITIONALS FOR VIEWS                           ***********************************************/
 // flags for different views
@@ -269,7 +269,7 @@ views {
 videoStreaming {
   flashDirRoot = "/Library/WebServer/Documents/videos"
   //flashDirRoot = "/var/www/html/videos"
-  flashUrlRoot = "http://${serverIP}/videos"
+  flashUrlRoot = "http://${omar.serverIP}/videos"
 }
 
 rasterEntry {

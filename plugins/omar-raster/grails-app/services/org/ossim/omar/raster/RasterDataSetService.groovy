@@ -46,8 +46,16 @@ class RasterDataSetService extends DataManagerService
     }
     else
     {
-      //def xml = dataInfoService.getInfo( params.filename )
-      def xml = StagerUtil.getInfo(params.filename as File)
+      def xml
+
+      if ( params.buildOvrs?.toBoolean() == true )
+      {
+        xml = StagerUtil.getInfo( params.filename as File )
+      }
+      else
+      {
+        xml = dataInfoService.getInfo( params.filename )
+      }
 
       if ( xml )
       {

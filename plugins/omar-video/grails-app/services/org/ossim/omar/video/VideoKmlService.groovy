@@ -113,7 +113,7 @@ class VideoKmlService extends KmlService
               def createFlvUrl = tagLibBean.createLink(absolute: true, controller: "videoStreaming", action: "show", id: videoDataSet.indexId)
               def descriptionText = ""
               def bounds = videoDataSet.groundGeom?.bounds
-              def logoUrl = "${grailsApplication.config.serverURL}/images/omarLogo.png"
+              def logoUrl = "${grailsApplication.config.omar.serverURL}/images/omarLogo.png"
               def thumbnailUrl = tagLibBean.createLink(absolute: true, controller: "thumbnail", action: "frame", id: videoDataSet.id, params: [size: 128])
 
               if ( embed )
@@ -135,7 +135,7 @@ class VideoKmlService extends KmlService
                     </td></tr>
                     <tfoot>
                       <tr><td colspan="2">
-                         <a href='${grailsApplication.config.serverURL}'><img src='${logoUrl}'/></a>
+                         <a href='${grailsApplication.config.omar.serverURL}'><img src='${logoUrl}'/></a>
                       </td></tr>
                     </tfoot>
                   </table>
@@ -156,7 +156,7 @@ class VideoKmlService extends KmlService
                     <tr><th align="right">Max Lon:</th><td align="left">${bounds?.maxLon}</td></tr>
                     <tfoot>
                       <tr><td colspan="2">
-                         <a href='${grailsApplication.config.grails.serverURL}'><img src='${logoUrl}'/></a>
+                         <a href='${grailsApplication.config.grails.omar.serverURL}'><img src='${logoUrl}'/></a>
                       </td></tr>
                     </tfoot>
                   </table>

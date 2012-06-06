@@ -32,9 +32,9 @@
       <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
 
         <td height="${rasterEntry.height / (Math.max(rasterEntry.width, rasterEntry.height) / 128.0)}">
-          <a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId], absolute: true, base: grailsApplication.config.serverURL)}">
+          <a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId], absolute: true, base: grailsApplication.config.omar.serverURL)}">
             <img src="${createLink(controller: "thumbnail", action: "show", id: rasterEntry.id, params:
-                [size: 128, projectionType: "imagespace"], absolute: true, base: grailsApplication.config.serverURL)}" alt="Show Thumbnail"/>
+                [size: 128, projectionType: "imagespace"], absolute: true, base: grailsApplication.config.omar.serverURL)}" alt="Show Thumbnail"/>
           </a>
         </td>
 
