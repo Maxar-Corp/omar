@@ -39,5 +39,5 @@ grails.plugin.location.postgis = '../../plugins/postgis'
 grails.plugin.location.geoscript = '../../plugins/geoscript'
 grails.plugin.location.openlayers = '../../plugins/openlayers'
 grails.plugin.location.geodata = '../../plugins/geodata'
-grails.plugin.location.omarSecuritySpring = '../../plugins/omar-security-spring'
+//grails.plugin.location.omarSecuritySpring = '../../plugins/omar-security-spring'
 grails.plugin.location.icodeAis = "${System.env['HOME']}/projects/icode-mda/OMAR/icode-ais"
