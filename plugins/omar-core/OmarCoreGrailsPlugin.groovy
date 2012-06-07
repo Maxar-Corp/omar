@@ -33,10 +33,12 @@ This plugin contains OMAR code that can be shared or accessed from other OMAR pl
   }
 
   def doWithSpring = {
-    customEditorRegistrar(CustomEditorRegistrar)
-    mapPropertyEditor(MapPropertyEditor)
+    coreUtility( org.ossim.omar.core.Utility )
 
-    wmsLoggingAppender(DbAppender) {
+    customEditorRegistrar( CustomEditorRegistrar )
+    mapPropertyEditor( MapPropertyEditor )
+
+    wmsLoggingAppender( DbAppender ) {
       tableMapping = [
               width: ":width",
               height: ":height",
@@ -63,15 +65,15 @@ This plugin contains OMAR code that can be shared or accessed from other OMAR pl
   def doWithDynamicMethods = { ctx ->
     // TODO Implement registering dynamic methods to classes (optional)
     String.metaClass.toDateTime {->
-      ISO8601DateParser.parseDateTime(delegate)
+      ISO8601DateParser.parseDateTime( delegate )
     }
     String.metaClass.toDate {->
 
       def date = null
-      def dateTime = ISO8601DateParser.parseDateTime(delegate.trim())
+      def dateTime = ISO8601DateParser.parseDateTime( delegate.trim() )
       if ( dateTime )
       {
-        date = new Date(dateTime.millis)
+        date = new Date( dateTime.millis )
       }
 
       date
