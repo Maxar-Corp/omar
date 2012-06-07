@@ -199,10 +199,4 @@ class WMSQuery extends BaseQuery
         endDate   = null
       }
   }
-  def createClause()
-  {
-    def baseClause = super.createClause()
-
-    baseClause
-  }
 }
