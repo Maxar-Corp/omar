@@ -236,6 +236,11 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
                     polygon: new OpenLayers.Control.DrawFeature(this.vectorLayer,
                         OpenLayers.Handler.Polygon)
                   };
+       var isIE=document.all;
+       if (isIE)
+           this.eventDiv.style.cursor = "url('../images/hand.cur'),pointer";
+       else
+           this.eventDiv.style.cursor = "url('../images/hand.cur') 24 24,pointer";
 
 // now setup overrides
 //
@@ -410,9 +415,18 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 
         var removedMeasurements = this.vectorLayer.features.length > 0;
         this.vectorLayer.destroyFeatures();
-       this.eventDiv.style.cursor = "";
-       switch(this.toolMode)
+        this.eventDiv.style.cursor = "";
+        switch(this.toolMode)
         {
+            case OMAR.ToolModeType.PAN_ZOOM:
+            {
+                var isIE=document.all;
+                if (isIE)
+                    this.eventDiv.style.cursor = "url('../images/hand.cur'),pointer";
+                else
+                    this.eventDiv.style.cursor = "url('../images/hand.cur') 24 24,pointer";
+                break;
+            }
             case OMAR.ToolModeType.LINE:
             {
                 this.currentDrawControl = this.drawControls.line;
