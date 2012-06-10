@@ -2,10 +2,12 @@ import geoscript.render.Map as GeoscriptMap
 import geoscript.geom.Bounds
 import org.geotools.map.FeatureLayer
 
+import org.geotools.factory.Hints
+
 class GeoscriptGrailsPlugin
 {
   // the plugin version
-  def version = "0.6"
+  def version = "0.7"
   // the version or versions of Grails the plugin is designed for
   def grailsVersion = "1.2.2 > *"
   // the other plugins this plugin depends on
@@ -36,6 +38,7 @@ Brief description of the plugin.
 
   def doWithDynamicMethods = { ctx ->
     // TODO Implement registering dynamic methods to classes (optional)
+    Hints.putSystemDefault( Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE )
 
     GeoscriptMap.metaClass.setUpRendering = {->
 
