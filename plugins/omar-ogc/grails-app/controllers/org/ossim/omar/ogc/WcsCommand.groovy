@@ -2,6 +2,8 @@ package org.ossim.omar.ogc
 
 import org.ossim.omar.core.ISO8601DateParser
 
+//import org.codehaus.groovy.grails.validation.Validateable
+import grails.validation.Validateable
 /**
  * Created by IntelliJ IDEA.
  * User: gpotts
@@ -9,6 +11,7 @@ import org.ossim.omar.core.ISO8601DateParser
  * Time: 11:02 AM
  * To change this template use File | Settings | File Templates.
  */
+@Validateable
 class WcsCommand {
     static final def OUTPUT_FORMATS = ["jpeg","image/jpeg", "png", "image/png", "png_uint8",
             "image/tiff", "geotiff", "geotiff_uint8", "geojp2_uint8",
@@ -34,7 +37,7 @@ class WcsCommand {
     String sharpen_sigma
     String quicklook
     String null_flip
-    String exception
+    String exceptions
     String bands
     String time
     String interpolation
@@ -124,7 +127,8 @@ class WcsCommand {
             }
             message
         })
-        resx(validator:{val, obj->
+        depth(nullable: true)
+        resx(nullable: true,validator:{val, obj->
             def message = true
             if(obj.request?.toLowerCase() == "getcoverage")
             {
@@ -145,7 +149,8 @@ class WcsCommand {
             }
             message
         })
-        resy(validator:{val, obj->
+        resy(nullable: true,
+            validator:{val, obj->
             def message = true
             if(obj.request?.toLowerCase() == "getcoverage")
             {
@@ -166,6 +171,7 @@ class WcsCommand {
             }
             message
         })
+        resz(nullable: true)
         format(validator:{val,obj->
             def message = true
             if(obj.request?.toLowerCase() == "getcoverage")
@@ -211,8 +217,10 @@ class WcsCommand {
             }
             message
         })
-        response_crs(validator:{val, obj->
-            def message = true
+        response_crs(
+                nullable: true,
+                validator:{val, obj->
+                def message = true
             if(obj.request?.toLowerCase() == "getcoverage")
             {
                 if(val && (val != obj.crs))
@@ -222,10 +230,12 @@ class WcsCommand {
             }
             message
         })
-        service(validator:{val, obj->
+        service(nullable: true,
+                validator:{val, obj->
             true
         })
-        version(validator:{val, obj->
+        version(nullable: true,
+                validator:{val, obj->
             true
         })
         request(validator:{val,obj->
@@ -246,7 +256,21 @@ class WcsCommand {
             }
             message
         })
-
+        stretch_mode(nullable: true)
+        stretch_mode_region(nullable: true)
+        sharpen_mode(nullable: true)
+        sharpen_width(nullable: true)
+        sharpen_sigma(nullable: true)
+        quicklook(nullable: true)
+        null_flip(nullable: true)
+        exceptions(nullable: true)
+        bands(nullable: true)
+        time(nullable: true)
+        interpolation(nullable: true)
+        filter(nullable: true)
+        max(nullable: true)
+        brightness(nullable: true)
+        contrast(nullable: true)
     }
     def toMap()
     {
@@ -256,7 +280,7 @@ class WcsCommand {
                version: version, request: request, stretch_mode: stretch_mode, interpolation:interpolation,
                stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
                sharpen_width: sharpen_width as Double, sharpen_sigma: sharpen_sigma as Double,
-               time: time, null_flip: null_flip, exception: exception, filter:filter,
+               time: time, null_flip: null_flip, exceptions: exceptions, filter:filter,
                quicklook: quicklook, max:max, brightness:brightness, contrast:contrast].sort { it.key }
     }
     String[] getDates()
@@ -337,7 +361,7 @@ class WcsCommand {
         errorPairs.each{pair->
             if(pair.code)
             {
-                errorString +=  (pair.code + "\n")
+                errorString +=  ("${pair.field}: ${pair.code}\n")
             }
         }
 

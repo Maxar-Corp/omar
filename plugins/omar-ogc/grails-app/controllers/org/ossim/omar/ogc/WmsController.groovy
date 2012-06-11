@@ -36,49 +36,50 @@ class WmsController extends OgcController implements InitializingBean
 
 //    Utility.simpleCaseInsensitiveBind(cmd, params);
 
-//    if ( !cmd.validate() )
-//    {
-//      log.error(cmd.createErrorString())
-//      ogcExceptionService.writeResponse(response, ogcExceptionService.formatWmsException(cmd))
-//    }
-//    else
-//    {
-    try
+    if ( !cmd.validate() )
     {
-      switch ( cmd?.request?.toLowerCase() )
-      {
-      case "getmap":
-        forward( action: "getMap_", params: params )
-        break
-      case "getcapabilities":
-        forward( action: "getCapabilities_", params: params )
-        break
-      case "getkmz":
-        forward( action: "getKmz_", params: params )
-        break
-      case "getkml":
-        forward( action: "getKml_", params: params )
-        break
-      default:
-        log.error( "ERROR: Unknown action: ${cmd?.request}" )
-        break
-      }
-/*
-      println "*"*80
-      request.getHeaderNames().each{name->
-        println "${name} = ${request.getHeader(name)}"
-      }
-*/
-      //endtime = System.currentTimeMillis()
-/*
-      wmsLogParams.domain = authenticateService.userDomain()
-*/
+     // log.error(cmd.createErrorString())
+        println cmd.createErrorString()
+      ogcExceptionService.writeResponse(response, ogcExceptionService.formatWmsException(cmd))
     }
-    catch ( java.lang.Exception e )
+    else
     {
-      log.error( "OGC::WMS exception: ${e.message}" )
+        try
+        {
+          switch ( cmd?.request?.toLowerCase() )
+          {
+          case "getmap":
+            forward( action: "getMap_", params: params )
+            break
+          case "getcapabilities":
+            forward( action: "getCapabilities_", params: params )
+            break
+          case "getkmz":
+            forward( action: "getKmz_", params: params )
+            break
+          case "getkml":
+            forward( action: "getKml_", params: params )
+            break
+          default:
+            log.error( "ERROR: Unknown action: ${cmd?.request}" )
+            break
+          }
+    /*
+          println "*"*80
+          request.getHeaderNames().each{name->
+            println "${name} = ${request.getHeader(name)}"
+          }
+    */
+          //endtime = System.currentTimeMillis()
+    /*
+          wmsLogParams.domain = authenticateService.userDomain()
+    */
+        }
+        catch ( java.lang.Exception e )
+        {
+          log.error( "OGC::WMS exception: ${e.message}" )
+        }
     }
-//    }
 
     return null
   }
@@ -272,6 +273,9 @@ class WmsController extends OgcController implements InitializingBean
     null
   }
 
+  def getFeatureInfo_ ={
+
+  }
   def getKml_ = {
 
     WmsCommand cmd = new WmsCommand()

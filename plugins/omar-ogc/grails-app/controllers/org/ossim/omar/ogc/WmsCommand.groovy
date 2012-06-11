@@ -10,8 +10,7 @@ import org.ossim.omar.core.ISO8601DateParser
  * Time: 1:27 PM
  * To change this template use File | Settings | File Templates.
  */
- @grails.validation.Validateable
-
+@grails.validation.Validateable
 class WmsCommand
 {
   String bbox
@@ -35,7 +34,7 @@ class WmsCommand
   String rotate
   String quicklook
   String null_flip
-  String exception
+  String exceptions
   String bands
   String filter
   String brightness
@@ -45,7 +44,8 @@ class WmsCommand
   static constraints = {
     bbox(validator: {val, obj ->
       def message = true
-      if ( obj.request?.toLowerCase() == "getmap" )
+      def tempRequest = obj.request?.toLowerCase()
+      if ( tempRequest == "getmap" || tempRequest == "getfeatureinfo" )
       {
         if ( !val )
         {
@@ -84,7 +84,8 @@ class WmsCommand
     )
     width(validator: {val, obj ->
       def message = true
-      if ( obj.request?.toLowerCase() == "getmap" )
+      def tempRequest = obj.request?.toLowerCase()
+      if ( tempRequest == "getmap" || tempRequest == "getfeatureinfo")
       {
         if ( !val )
         {
@@ -110,7 +111,8 @@ class WmsCommand
     })
     height(validator: {val, obj ->
       def message = true
-      if ( obj.request?.toLowerCase() == "getmap" )
+      def tempRequest = obj.request?.toLowerCase()
+      if (tempRequest == "getmap" || tempRequest == "getfeatureinfo")
       {
         if ( !val )
         {
@@ -192,10 +194,10 @@ class WmsCommand
       }
       message
     })
-    service(validator: {val, obj ->
+    service(nullable: true, validator: {val, obj ->
       true
     })
-    version(validator: {val, obj ->
+    version(nullable: true,validator: {val, obj ->
       true
     })
     request(validator: {val, obj ->
@@ -210,7 +212,9 @@ class WmsCommand
       }
       message
     })
-    bgcolor(validator: {val, obj ->
+    transparent(nullable: true)
+    bgcolor(nullable: true,
+      validator: {val, obj ->
       def message = true
       if ( val )
       {
@@ -241,7 +245,8 @@ class WmsCommand
       }
       message
     })
-    time(validator: {val, obj ->
+    time(nullable: true,
+      validator: {val, obj ->
       def message = true
       if ( val )
       {
@@ -249,14 +254,16 @@ class WmsCommand
       }
       message
     })
-    stretch_mode(validator: {val, obj ->
+    stretch_mode(nullable: true,
+            validator: {val, obj ->
       def message = true
       if ( val )
       {
       }
       message
     })
-    stretch_mode_region(validator: {val, obj ->
+    stretch_mode_region(nullable: true,
+            validator: {val, obj ->
       def message = true
       if ( obj.request?.toLowerCase() == "getmap" )
       {
@@ -270,7 +277,8 @@ class WmsCommand
       }
       message
     })
-    rotate(validator: {val, obj ->
+    rotate(nullable: true,
+           validator: {val, obj ->
       def message = true
       if ( obj.request?.toLowerCase() == "getmap" )
       {
@@ -288,6 +296,15 @@ class WmsCommand
       }
       message
     })
+    quicklook(nullable:  true)
+    null_flip(nullable:  true)
+    exceptions(nullable:  true)
+    bands(nullable:  true)
+    filter(nullable:  true)
+    brightness(nullable:  true)
+    contrast(nullable:  true)
+    interpolation(nullable:  true)
+
   }
 
   def toMap()
@@ -296,7 +313,7 @@ class WmsCommand
             version: version, request: request, transparent: transparent, bgcolor: bgcolor, styles: styles,
             stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
             sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, rotate: rotate,
-            time: time, null_flip: null_flip, bands: bands, exception: exception, filter: filter,
+            time: time, null_flip: null_flip, bands: bands, exceptions: exceptions, filter: filter,
             quicklook: quicklook, brightness: brightness, contrast: contrast, interpolation: interpolation].sort { it.key }
   }
 
@@ -304,7 +321,7 @@ class WmsCommand
   {
     [bands: bands, stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
             sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, rotate: rotate,
-            time: time, null_flip: null_flip, exception: exception, filter: filter, quicklook: quicklook,
+            time: time, null_flip: null_flip, exceptions: exceptions, filter: filter, quicklook: quicklook,
             brightness: brightness, contrast: contrast, interpolation: interpolation].sort() {it.key}
   }
 
@@ -416,7 +433,7 @@ class WmsCommand
     errorPairs.each {pair ->
       if ( pair.code )
       {
-        errorString += (pair.code + "\n")
+          errorString +=  ("${pair.field}: ${pair.code}\n")
       }
     }
 

@@ -23,9 +23,10 @@ class WcsController extends OgcController
 
     //Utility.simpleCaseInsensitiveBind( cmd, params )
 
-    if ( !cmd.validate( [
-            'width', 'height', 'format', 'crs', 'coverage', 'bbox'
-    ] ) )
+  //  if ( !cmd.validate( [
+  //          'width', 'height', 'format', 'crs', 'coverage', 'bbox'
+  //  ] ) )
+    if (!cmd.validate())
     {
       log.error( cmd.createErrorString() )
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWcsException( cmd ) )
