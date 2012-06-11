@@ -43,7 +43,9 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    compile ":flash-player:1.4"
+    compile (":flash-player:1.4") {
+      excludes "resources"
+    }
     compile ":swfobject:2.2.1"
     compile ":resources:1.1.6"
   }
