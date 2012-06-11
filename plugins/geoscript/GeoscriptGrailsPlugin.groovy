@@ -100,7 +100,7 @@ Brief description of the plugin.
             }
           }
         }
-        b = new Bounds(b.l, b.b, b.r, b.t, p)
+        b = new Bounds(b.minX, b.minY, b.maxX, b.maxY, p)
       }
       setBounds(b)
     }
