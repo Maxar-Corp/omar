@@ -1,4 +1,4 @@
-package org.ossim.omar.ogc
+package org.ossim.omar.raster
 
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import java.util.zip.ZipOutputStream
@@ -11,6 +11,8 @@ import groovy.xml.StreamingMarkupBuilder
 import org.ossim.omar.core.WMSRequest
 import org.ossim.omar.core.Utility
 import org.ossim.omar.core.ImageGenerator
+import org.ossim.omar.ogc.OgcController
+import org.ossim.omar.ogc.WmsCommand
 import org.ossim.omar.security.SecUser
 
 import org.apache.commons.io.FilenameUtils
