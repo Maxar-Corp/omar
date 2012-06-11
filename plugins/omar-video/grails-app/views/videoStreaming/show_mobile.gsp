@@ -9,7 +9,9 @@
 <body>
 
 <div class="nav">
-  <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
+  <ul>
+  <li><g:link class="home" uri="/">OMAR™ Home</g:link></li>
+  </ul>
 </div>
 
 <div class="body">

@@ -8,11 +8,13 @@
 <body>
 <content tag="content">
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-    <span class="menuButton"><g:link class="list" action="list">Video Data Set List</g:link></span>
+    <ul>
+    <li><g:link class="home" uri="/">OMAR™ Home</g:link></li>
+    <li><g:link class="list" action="list">Video Data Set List</g:link></li>
     <sec:ifAllGranted roles="ROLE_ADMIN">
-      <span class="menuButton"><g:link class="create" action="create">Create Video Data Set</g:link></span>
+      <li><g:link class="create" action="create">Create Video Data Set</g:link></li>
     </sec:ifAllGranted>
+    </ul>
   </div>
 
   <div class="body">

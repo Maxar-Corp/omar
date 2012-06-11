@@ -19,12 +19,14 @@
 
 <content tag="top">
   <div class="nav">
-    <span class="menuButton">
+    <ul>
+    <li>
       <g:link class="home" uri="/">OMAR™ Home</g:link>
-    </span>
-    <span class="menuButton">
+    </li>
+    <li>
       <g:link url='${createLink(dir: "videoStreaming", action: "getKML", id: params.id)}'>Generate KML</g:link>
-    </span>
+    </li>
+    </ul>
   </div>
 </content>
 <content tag="center">

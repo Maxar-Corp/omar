@@ -10,11 +10,13 @@
 <body onload="init()">
 
 <div class="nav">
-  <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-  <span class="menuButton"><g:link class="search" url="javascript:search();">Search Videos</g:link></span>
-  <span class="menuButton"><g:link url="javascript:zoomIn();">Zoom In</g:link></span>
-  <span class="menuButton"><g:link url="javascript:zoomOut();">Zoom Out</g:link></span>
-  <span class="menuButton"><g:link url="javascript:zoomMaxExtent();">Max Extent</g:link></span>
+  <ul>
+  <li><g:link class="home" uri="/">OMAR™ Home</g:link></li>
+  <li><g:link class="search" url="javascript:search();">Search Videos</g:link></li>
+  <li><g:link url="javascript:zoomIn();">Zoom In</g:link></li>
+  <li><g:link url="javascript:zoomOut();">Zoom Out</g:link></li>
+  <li><g:link url="javascript:zoomMaxExtent();">Max Extent</g:link></li>
+  </ul>
 </div>
 
 <div class="body">
