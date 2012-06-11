@@ -1,6 +1,8 @@
-package org.ossim.omar.ogc
+package org.ossim.omar.raster
 
 import org.ossim.omar.core.Utility
+import org.ossim.omar.ogc.OgcController
+import org.ossim.omar.ogc.WcsCommand
 import org.apache.commons.collections.map.CaseInsensitiveMap
 
 class WcsController extends OgcController

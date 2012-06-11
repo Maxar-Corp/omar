@@ -2,7 +2,7 @@ package org.ossim.omar.app
 
 import org.springframework.beans.factory.InitializingBean
 import javax.media.jai.JAI
-import org.ossim.omar.ogc.WMSQuery
+import org.ossim.omar.raster.WMSQuery
 import org.ossim.omar.raster.RasterEntryFile
 import org.ossim.omar.raster.RasterEntry
 

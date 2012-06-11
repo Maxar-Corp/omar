@@ -72,3 +72,6 @@ grails.plugin.location.omarSuperoverlay = "../../plugins/omar-superoverlay"
 //grails.plugin.location.omarMobile="../../plugins/omar-mobile"
 
 //grails.plugin.location.geodata = "../../plugins/geodata"
+
+
+//grails.plugin.location.omarOgcCore="../../plugins/omar-ogc-core"

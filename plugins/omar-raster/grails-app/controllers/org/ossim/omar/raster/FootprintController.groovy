@@ -1,4 +1,4 @@
-package org.ossim.omar.ogc
+package org.ossim.omar.raster
 
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import geoscript.filter.Color

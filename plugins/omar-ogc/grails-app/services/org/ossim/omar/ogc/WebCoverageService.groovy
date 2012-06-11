@@ -6,6 +6,7 @@ import joms.oms.WmsView
 import joms.oms.Util
 import joms.oms.ossimDpt
 import joms.oms.ossimDrect
+
 import org.springframework.beans.factory.InitializingBean
 
 class WebCoverageService implements InitializingBean
