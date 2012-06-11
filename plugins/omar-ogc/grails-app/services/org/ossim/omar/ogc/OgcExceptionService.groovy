@@ -133,9 +133,26 @@ class OgcExceptionService
    */
   def determineOutputType(def ogcParams)
   {
-    def exception = ogcParams.exception ?: "text/plain"
+    def exception = (ogcParams.exceptions ?: "text/plain").toLowerCase()
     def result
-    switch ( exception.toLowerCase() )
+
+      if(exception.contains("xml"))
+      {
+          result = "xml"
+      }
+      else if(exception.contains("blank")){
+          result = "blank"
+      }
+      else if(exception.contains("text"))
+      {
+          result = "text"
+      }
+      else if(exception.contains("image"))
+      {
+          result = "image"
+      }
+      /*
+    switch ( exception )
     {
     case "application/vnd.ogc.se_inimage":
     case "inimage":
@@ -157,6 +174,7 @@ class OgcExceptionService
       result = "xml"
       break
     }
+    */
     result
   }
   /**
