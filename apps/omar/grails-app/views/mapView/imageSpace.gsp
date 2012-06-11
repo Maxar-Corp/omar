@@ -243,16 +243,26 @@ function changeSharpenOpts()
 
 function changeToSingleLayer()
 {
+	var affineM = OMAR.imageManipulator.generateOssimFullImageTransform();
+	var w = Math.abs(OMAR.imageManipulator.containerDivRegion.right - OMAR.imageManipulator.containerDivRegion.left) + 1;
+	var h = Math.abs(OMAR.imageManipulator.containerDivRegion.top - OMAR.imageManipulator.containerDivRegion.bottom) + 1;
+	var center =  OMAR.imageManipulator.getCenterLocal();
+	var pivot = Math.round(center.x) + "," + Math.round(center.y);
+	var centerView = affineM.transform(center);
+	var x = Math.round(centerView.x - w/2);
+	var y = Math.round(centerView.y - h/2);
+	var bboxPixels = new Array();
+	bboxPixels[0] = Math.round(x);
+	bboxPixels[1] = Math.round(parseFloat("${rasterEntry.height}") - (y + OMAR.imageManipulator.map.getResolution() * h));
+	bboxPixels[2] = Math.round(x + OMAR.imageManipulator.map.getResolution() * w);
+	bboxPixels[3] = Math.round(parseFloat("${rasterEntry.height}") - y);
 	var bboxCoords = new Array();
-	var bboxPixels = map.calculateBounds().toArray();
-	var lowerLeft = OMAR.imageManipulator.pointToLocal({x:bboxPixels[0],y:bboxPixels[1]}); 
-	var upperRight = OMAR.imageManipulator.pointToLocal({x:bboxPixels[2],y:bboxPixels[3]});
-
+	
 	var request = OpenLayers.Request.POST({
 		url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
 		data: YAHOO.lang.JSON.stringify({
 			id:${rasterEntry.id},
-			imagePoints:[{"x":lowerLeft.x, "y":lowerLeft.y}]
+			imagePoints:[{"x":bboxPixels[0], "y":bboxPixels[1]}]
 		}),
 		callback: function (transport)
 		{
@@ -264,7 +274,7 @@ function changeToSingleLayer()
 				url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
 				data: YAHOO.lang.JSON.stringify({
 					id:${rasterEntry.id},
-					imagePoints:[{"x":upperRight.x, "y":upperRight.y}] 
+					imagePoints:[{"x":bboxPixels[2], "y":bboxPixels[3]}] 
 				 }),
 				callback: function (transport)
 				{
@@ -682,7 +692,7 @@ function bboxToPixelFinish(i,longitude,latitude)
 	if ((lowerLeftCoordinate != null) && (upperRightCoordinate != null))
 	{
 		var zoom = map.getZoomForExtent(new OpenLayers.Bounds(lowerLeftCoordinate[0],lowerLeftCoordinate[1],upperRightCoordinate[0],upperRightCoordinate[1]), true);
-		map.zoomTo(zoom);
+		map.zoomTo(zoom - 1);
 	}
 }
 </g:if>
@@ -1286,35 +1296,45 @@ function setMapCtr(unit, value)
 	var rotate = ${"rotateAngle"}.value;
 	var mapCenter = OMAR.imageManipulator.getCenterLocal();
 	
+	var affineM = OMAR.imageManipulator.generateOssimFullImageTransform();
+	var w = Math.abs(OMAR.imageManipulator.containerDivRegion.right - OMAR.imageManipulator.containerDivRegion.left) + 1;
+	var h = Math.abs(OMAR.imageManipulator.containerDivRegion.top - OMAR.imageManipulator.containerDivRegion.bottom) + 1;
+	var center =  OMAR.imageManipulator.getCenterLocal();
+	var pivot = Math.round(center.x) + "," + Math.round(center.y);
+	var centerView = affineM.transform(center);
+	var x = Math.round(centerView.x - w/2);
+	var y = Math.round(centerView.y - h/2);
 	var bboxCoords = new Array();
-        var bboxPixels = map.calculateBounds().toArray();
-        var lowerLeft = OMAR.imageManipulator.pointToLocal({x:bboxPixels[0],y:bboxPixels[1]});
-        var upperRight = OMAR.imageManipulator.pointToLocal({x:bboxPixels[2],y:bboxPixels[3]});
-        
+        var bboxPixels = new Array();
+	bboxPixels[0] = Math.round(x);
+	bboxPixels[1] = Math.round(parseFloat("${rasterEntry.height}") - (y + OMAR.imageManipulator.map.getResolution() * h));
+	bboxPixels[2] = Math.round(x + OMAR.imageManipulator.map.getResolution() * w);
+	bboxPixels[3] = Math.round(parseFloat("${rasterEntry.height}") - y);
+       
 	var request = OpenLayers.Request.POST({
     		url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
 		data: YAHOO.lang.JSON.stringify({
 				id:${rasterEntry.id},
-				imagePoints:[{"x":lowerLeft.x, "y":lowerLeft.y}]
+				imagePoints:[{"x":bboxPixels[0], "y":bboxPixels[1]}]
 		}),     
 		callback: function (transport)
 		{
 			var temp = YAHOO.lang.JSON.parse(transport.responseText);
 			bboxCoords[0] = temp[0].lon;
 			bboxCoords[1] = temp[0].lat;			
-
+			console.dir(temp);
 			var request = OpenLayers.Request.POST({
 				url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
 				data: YAHOO.lang.JSON.stringify({
 					id:${rasterEntry.id},
-					imagePoints:[{"x":upperRight.x, "y":upperRight.y}]
+					imagePoints:[{"x":bboxPixels[2], "y":bboxPixels[3]}]
 				}),
 				callback: function (transport)
 				{
 					var temp = YAHOO.lang.JSON.parse(transport.responseText);
 					bboxCoords[2] = temp[0].lon;
 					bboxCoords[3] = temp[0].lat;
-
+					console.dir(bboxCoords);
 					var request = OpenLayers.Request.POST({
 						url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
 						data: YAHOO.lang.JSON.stringify({
