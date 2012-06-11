@@ -12,13 +12,15 @@
 <body class="yui-skin-sam">
 <content tag="north">
   <div class="nav">
-    <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
+    <ul>
+    <li><g:link class="home" uri="/">OMAR™ Home</g:link></li>
     <sec:ifAllGranted roles="ROLE_ADMIN">
-      <span class="menuButton"><g:link class="create" action="create">Create Video Set</g:link></span>
+      <li><g:link class="create" action="create">Create Video Set</g:link></li>
     </sec:ifAllGranted>
-    <span class="menuButton"><g:link action="search">Search Video</g:link></span>
-    <span class="menuButton"><a href="javascript:toggleThumbnails()">Toggle Thumbnails</a></span>
-    <span class="menuButton"><a href="javascript:toggleDetails()">Toggle Details</a></span>
+    <li><g:link action="search">Search Video</g:link></li>
+    <li><a href="javascript:toggleThumbnails()">Toggle Thumbnails</a></li>
+    <li><a href="javascript:toggleDetails()">Toggle Details</a></li>
+    </ul>
   </div>
 </content>
 <content tag="center">

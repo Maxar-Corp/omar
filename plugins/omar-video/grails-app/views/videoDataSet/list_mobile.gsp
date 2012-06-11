@@ -9,8 +9,10 @@
 <body>
 
 <div class="nav">
-  <span class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></span>
-  <span class="menuButton"><g:link action="search_mobile">Search Videos</g:link></span>
+  <ul>
+  <li><g:link class="home" uri="/">OMAR™ Home</g:link></li>
+  <li><g:link action="search_mobile">Search Videos</g:link></li>
+  </ul>
 </div>
 
 <div class="body">
