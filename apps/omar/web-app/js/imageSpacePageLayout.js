@@ -16,8 +16,8 @@
     Event.onDOMReady( function ()
     {
         var outerLayout = new YAHOO.widget.Layout( {
-            minWidth:1000,
-            minHeight:500,
+           // minWidth:1000,
+           // minHeight:500,
             units:[
                 { position:'top', height:50, body:'top1', scroll: null, zIndex: 2 },
                 /*{ position:'right', header:'', width:200, resize:true, gutter:'0px', collapse:true, scroll:true, body:'right1', animate:false },*/
@@ -27,11 +27,25 @@
             ]
         } );
         outerLayout.on('resize', function(evt) {
+          //  if(OMAR.imageManipulator)
+          //  {
+          //      OMAR.imageManipulator.checkResize();
+           // }
+          //bodyOnResize();
             if(OMAR.imageManipulator)
             {
-                OMAR.imageManipulator.checkResize();
+                // all IE's seem to be shifted when just using bodyOnResize
+                // I will force a reload by tacking on a variable at the end
+                //
+                if(OpenLayers.BROWSER_NAME == "msie")
+                {
+                    window.location.href = window.location.href;
+                }
+                else
+                {
+                    bodyOnResize();
+                }
             }
-        //bodyOnResize();
         });
         outerLayout.on( 'render', function ()
         {
@@ -77,8 +91,9 @@
 
 var bodyOnResize = function ()
 {
-   if(OMAR.imageManipulator) 
+    if(OMAR.imageManipulator)
     {
+        //window.location.reload()
         OMAR.imageManipulator.checkResize();
     }
     else
