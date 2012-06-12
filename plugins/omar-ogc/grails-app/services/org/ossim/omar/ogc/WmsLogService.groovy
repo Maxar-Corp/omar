@@ -84,15 +84,15 @@ class WmsLogService
   def logParams(def params)
   {
     def paramsSave = fixLogParamsForRouting(params)
-    def foo = new WmsLog()
+    def wmsLogRecord = new WmsLog()
 
-    foo.properties = paramsSave
+      wmsLogRecord.properties = paramsSave
 
     //println ToStringBuilder.reflectionToString(foo)
 
-    if ( foo.hasErrors() || !foo.save() )
+    if ( wmsLogRecord.hasErrors() || !wmsLogRecord.save() )
     {
-      foo.errors.allErrors.each { println it }
+        wmsLogRecord.errors.allErrors.each { println it }
     }
 
     synchronized ( index )
