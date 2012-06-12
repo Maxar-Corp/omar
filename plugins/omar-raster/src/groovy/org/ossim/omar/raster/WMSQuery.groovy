@@ -1,5 +1,6 @@
 package org.ossim.omar.raster
 
+import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
 import org.ossim.omar.core.Utility
 import org.ossim.omar.core.ISO8601DateParser
