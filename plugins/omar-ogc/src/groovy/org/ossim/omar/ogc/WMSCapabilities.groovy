@@ -292,6 +292,71 @@ public class WMSCapabilities
               Format(format)
             }
           }
+            VendorSpecificCapabilities(){
+                stretch_mode(required:"0"){
+                    Title("Histogram Stretch Type")
+                    Abstract("""Histogram stretch types can be one of the following:
+                                linear_auto_min_max,
+                                linear_1std_from_mean,
+                                linear_2std_from_mean,
+                                linear_3std_from_mean""")
+                }
+                stretch_mode_region(required:"0"){
+                    Title("Defines the region to use for stretching")
+                    Abstract("""The values can be 'global' or 'viewport'.  Viewport says calculate a
+                                histogram for the requesting BBOX.  If the stretch is 'global' then
+                                use the global histogram for all BBOX requests for that image
+                                being chipped.""")
+                }
+                sharpen_mode(required:"0"){
+                    Title("Sharpen an image")
+                    Abstract("""The image is sharpened based on the mode.  The mode can be
+                             light or heavy
+                             """)
+                }
+                sharpen_width(required:"0"){
+                    Title("Defines the width of the sharpen kernel used to sharpen the image.")
+                    Abstract("")
+                }
+                sharpen_sigma(required:"0"){
+                    Title("This is a parameter used to calculate the weights for the kernel")
+                    Abstract("")
+                }
+                rotate(required:"0"){
+                    Title("Image rotation")
+                    Abstract("")
+                }
+                quicklook(required:"0"){
+                    Title("Specifies whether to use the full model to reproject the image or just a quick corner calculation.")
+                    Abstract("")
+                }
+                null_flip(required:"0"){
+                    Title("Flips null pixels to a valid pixel value.")
+                    Abstract("""This will take the images null pixel value, typically 0, and flip it to a valid
+                                pixel value, typically 1""")
+                }
+                bands(required:"0"){
+                    Title("A comma separated list of band indices for the output product")
+                    Abstract("""This is a comma separated list of band numbers
+                                used to specify the output product.  Example: bands=2,1,0 defines
+                                a 3 band output product where the first 3 bands are reversed""")
+                }
+                brightness(required:"0"){
+                    Title("Parameter used to brighten the image")
+                    Abstract("This is a normalized parameter between -1 and 1.")
+                }
+                contrast(required:"0"){
+                    Title("This is a multiplier for te image pixel.")
+                    Abstract("")
+                }
+                interpolation(required:"0"){
+                    Title("Interpolation type to use")
+                    Abstract("""This is the interpolation type to use when resampling an image.
+                                The types supported can be: nearest neighbor, bilinear, gaussian, cubic,
+                                hanning, hamming, lanczos, mitchell, catrom, blackman, sinc,
+                                quadratic, hermite, bspline""")
+                }
+            }
           UserDefinedSymbolization()
           Layer() {
             Name(map?.name)
@@ -300,7 +365,7 @@ public class WMSCapabilities
             LatLonBoundingBox(minx: "${map?.minX}", miny: "${map?.minY}", maxx: "${map?.maxX}", maxy: "${map?.maxY}")
             BoundingBox(SRS: "${map?.srs}", minx: "${map?.minX}", miny: "${map?.minY}", maxx: "${map?.maxX}", maxy: "${map?.maxY}")
             map?.layers?.each {layer ->
-              Layer() {
+              Layer(queryable:"0") {
                 Name(layer?.name)
                 Title(layer?.title)
                 Abstract(layer?.description)
