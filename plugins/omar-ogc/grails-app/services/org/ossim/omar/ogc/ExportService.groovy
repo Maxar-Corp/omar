@@ -20,7 +20,7 @@ class ExportService
 
     switch ( format )
     {
-    case "csv":
+    case ~/.*csv.*/:
       def csvFile = File.createTempFile(prefix, ".csv", workDir as File)
       def csvWriter = new CSVWriter(csvFile.newWriter())
 
@@ -48,8 +48,8 @@ class ExportService
       csvWriter.close()
       file = csvFile
       mimeType = "text/csv"
-      break
-    case "shp":
+     break
+     case ~/.*shp.*/:
       def featureClass = parameters.featureClass
       def featureType = ExportUtils.createFeatureType(featureClass, fields, labels)
       def collection = ExportUtils.createFeatures(featureType, objects, fields, labels)
