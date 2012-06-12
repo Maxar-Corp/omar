@@ -36,8 +36,9 @@ public class WMSCapabilities
   ]
 
   def getFeatureInfoFormats = [
-          "text/plain",
-          "application/vnd.ogc.gml"
+          "text/csv",
+          "shp"
+ //         "application/vnd.ogc.gml"
   ]
 
   def describeLayerFormats = [
@@ -69,7 +70,7 @@ public class WMSCapabilities
     //println "${layers} ${serviceAddress}"
 
     map = new MapObject(
-            name: "OMAR",
+            name: "raster_entry",
             title: "Imagery from OMAR",
             srs: "EPSG:4326",
             minX: -180,
@@ -358,14 +359,14 @@ public class WMSCapabilities
                 }
             }
           UserDefinedSymbolization()
-          Layer() {
+          Layer(queryable:"1") {
             Name(map?.name)
             Title(map?.title)
             SRS(map?.srs)
             LatLonBoundingBox(minx: "${map?.minX}", miny: "${map?.minY}", maxx: "${map?.maxX}", maxy: "${map?.maxY}")
             BoundingBox(SRS: "${map?.srs}", minx: "${map?.minX}", miny: "${map?.minY}", maxx: "${map?.maxX}", maxy: "${map?.maxY}")
             map?.layers?.each {layer ->
-              Layer(queryable:"0") {
+              Layer(queryable:"1") {
                 Name(layer?.name)
                 Title(layer?.title)
                 Abstract(layer?.description)
