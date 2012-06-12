@@ -16,6 +16,8 @@ import org.ossim.omar.ogc.WmsCommand
 import org.ossim.omar.security.SecUser
 
 import org.apache.commons.io.FilenameUtils
+import org.ossim.omar.core.DateUtil
+import org.hibernate.QueryParameterException
 
 class WmsController extends OgcController implements InitializingBean
 {
@@ -24,8 +26,9 @@ class WmsController extends OgcController implements InitializingBean
   def webMappingService
   def wmsLogService
   def scratchDir
+  def exportService
 
-  def wms = {
+    def wms = {
     //println params
 
     WmsCommand cmd = new WmsCommand()
@@ -50,10 +53,13 @@ class WmsController extends OgcController implements InitializingBean
         {
           switch ( cmd?.request?.toLowerCase() )
           {
-          case "getmap":
-            forward( action: "getMap_", params: params )
-            break
-          case "getcapabilities":
+              case "getmap":
+                  forward( action: "getMap_", params: params )
+                  break
+           case "getfeatureinfo":
+                  forward( action: "getFeatureInfo_", params: params )
+                  break
+              case "getcapabilities":
             forward( action: "getCapabilities_", params: params )
             break
           case "getkmz":
@@ -275,9 +281,6 @@ class WmsController extends OgcController implements InitializingBean
     null
   }
 
-  def getFeatureInfo_ ={
-
-  }
   def getKml_ = {
 
     WmsCommand cmd = new WmsCommand()
@@ -354,7 +357,51 @@ class WmsController extends OgcController implements InitializingBean
 
     null
   }
+  def getFeatureInfo_ = {
+      WmsCommand cmd = new WmsCommand()
 
+      def paramsClone = new CaseInsensitiveMap( params )
+
+      def format = paramsClone.query_format?:"csv"
+      def queryParams = new WMSQuery()
+      paramsClone.max = cmd.feature_count?:1
+      queryParams.layers = cmd.query_layers
+
+      bindData( cmd,  paramsClone)
+
+      bindData(queryParams, paramsClone)
+      if (!queryParams.time)
+      {
+        if (!queryParams.startDate)
+        {
+            queryParams.startDate = DateUtil.initializeDate("startDate", paramsClone)
+        }
+        if (!queryParams.endDate)
+        {
+            queryParams.endDate = DateUtil.initializeDate("endDate", paramsClone)
+        }
+      }
+
+      def objects = rasterEntrySearchService.runQuery(queryParams, paramsClone)
+      def fields = grailsApplication.config.export.rasterEntry.fields.clone()
+      def labels = grailsApplication.config.export.rasterEntry.labels.clone()
+      def formatters = grailsApplication.config.export.rasterEntry.formatters
+      fields << "groundGeom"
+      labels << "groundGeom"
+      def (file, mimeType) = exportService.export(
+              format,
+              objects,
+              fields,
+              labels,
+              formatters,
+              [featureClass: RasterEntry.class]
+      )
+
+      response.setHeader("Content-disposition", "attachment; filename=${file?.name}");
+      response.contentType = mimeType
+      response.outputStream << file?.newInputStream()
+      response.outputStream.flush()
+  }
   def getMap_ = {
     WmsCommand cmd = new WmsCommand()
 
