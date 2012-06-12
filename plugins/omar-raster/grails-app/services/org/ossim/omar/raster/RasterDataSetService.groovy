@@ -99,6 +99,8 @@ class RasterDataSetService extends DataManagerService
                   //stagerHandler.processSuccessful(filename, xml)
                   httpStatusMessage.status = HttpStatus.OK
                   log.info( httpStatusMessage.message )
+                  def ids = rasterDataSet.rasterEntries.collect{it.id}.join(",")
+                  httpStatusMessage.message = "Added raster ${ids}:${filename}"
                 }
                 else
                 {
@@ -208,7 +210,7 @@ class RasterDataSetService extends DataManagerService
     def filename = params.filename as File
 
 
-    println filename
+   // println filename
 
     def rasterFile = RasterFile.findByNameAndType( filename.absolutePath, "main" )
 
@@ -216,7 +218,8 @@ class RasterDataSetService extends DataManagerService
     {
       rasterFile?.rasterDataSet.delete( flush: true )
       httpStatusMessage.status = HttpStatus.OK
-      httpStatusMessage.message = "Removed raster ${filename}"
+      def ids =  rasterFile?.rasterDataSet?.rasterEntries.collect{it.id}.join(",")
+      httpStatusMessage.message = "removed raster ${ids}:${filename}"
       log.info( httpStatusMessage.message )
     }
     else
