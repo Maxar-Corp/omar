@@ -723,9 +723,9 @@ function exportTemplate()
 	var centerLongitude = mapWidget.getMap().getCenter().lon;
 	var mgrs = coordConvert.ddToMgrs(centerLatitude, centerLongitude);
 
-	var acquisitionDate = "${rasterEntries.acquisitionDate}";
-	var countryCode = "${rasterEntries.countryCode}";
-	var imageId = "${rasterEntries.title}";
+	var acquisitionDate = "${(rasterEntries.acquisitionDate).join(',')}";
+	var countryCode = "${(rasterEntries.countryCode).join(',')}";
+	var imageId = "${(rasterEntries.title).join(',')}";
 	var imageURL = mapWidget.getMap().layers[0].getURL(mapWidget.getMap().getExtent());
 	imageURL = imageURL.replace(/&/g,"%26");
 	var templateURL = "${createLink( controller: 'templateExport', action: 'index')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&mgrs=" + mgrs;
