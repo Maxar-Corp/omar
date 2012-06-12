@@ -41,11 +41,20 @@ class WmsCommand
   String contrast
   String interpolation
 
+  // getfeatureinfo additions
+  String x
+  String y
+  String query_layers
+  String info_format
+  String feature_count
+
+
   static constraints = {
-    bbox(validator: {val, obj ->
+    bbox(nullable: true,validator: {val, obj ->
       def message = true
-      def tempRequest = obj.request?.toLowerCase()
-      if ( tempRequest == "getmap" || tempRequest == "getfeatureinfo" )
+      def requestLowerCase =  obj.request?.toLowerCase()
+      if ( (requestLowerCase == "getmap") ||
+           (requestLowerCase == "getfeatureinfo" ))
       {
         if ( !val )
         {
@@ -82,10 +91,10 @@ class WmsCommand
       message
     }
     )
-    width(validator: {val, obj ->
+    width(nullable: true,validator: {val, obj ->
       def message = true
       def tempRequest = obj.request?.toLowerCase()
-      if ( tempRequest == "getmap" || tempRequest == "getfeatureinfo")
+      if ( tempRequest == "getmap")
       {
         if ( !val )
         {
@@ -109,10 +118,10 @@ class WmsCommand
       }
       message
     })
-    height(validator: {val, obj ->
+    height(nullable: true,validator: {val, obj ->
       def message = true
       def tempRequest = obj.request?.toLowerCase()
-      if (tempRequest == "getmap" || tempRequest == "getfeatureinfo")
+      if (tempRequest == "getmap")
       {
         if ( !val )
         {
@@ -136,7 +145,7 @@ class WmsCommand
       }
       message
     })
-    format(validator: {val, obj ->
+    format(nullable: true,validator: {val, obj ->
       def message = true
       if ( obj.request?.toLowerCase() == "getmap" )
       {
@@ -157,7 +166,7 @@ class WmsCommand
       }
       message
     })
-    layers(validator: {val, obj ->
+    layers(nullable: true,validator: {val, obj ->
       def message = true
       if ( obj.request?.toLowerCase() == "getmap" )
       {
@@ -168,7 +177,7 @@ class WmsCommand
       }
       message
     })
-    styles(validator: {val, obj ->
+    styles(nullable: true,validator: {val, obj ->
       def message = true
       if ( val == null )
       {
@@ -176,9 +185,10 @@ class WmsCommand
       }
       message
     })
-    srs(validator: {val, obj ->
+    srs(nullable: true,validator: {val, obj ->
       def message = true
-      if ( obj.request?.toLowerCase() == "getmap" )
+      if ( (obj.request?.toLowerCase() == "getmap") ||
+           (obj.request?.toLowerCase() == "getfeatureinfo" ))
       {
         if ( !val )
         {
@@ -206,9 +216,9 @@ class WmsCommand
       {
         message = "REQUEST parameter not found.  Values can be getmap, getcapabilities"
       }
-      else if ( !(val.toLowerCase() in ["getmap", "getcapabilities", "getkml", "getkmz"]) )
+      else if ( !(val.toLowerCase() in ["getmap", "getfeatureinfo", "getcapabilities", "getkml", "getkmz"]) )
       {
-        message = "REQUEST parameter ${val} is not valid, value can only be GetMap or GetCapabilities or GetKml."
+        message = "REQUEST parameter ${val} is not valid, value can only be GetMap, GetFeatureInfo, GetCapabilities or GetKml."
       }
       message
     })
@@ -304,7 +314,25 @@ class WmsCommand
     brightness(nullable:  true)
     contrast(nullable:  true)
     interpolation(nullable:  true)
+    x(nullable:  true, validator: { val, obj->
+        def message = true
+        if ( obj.request?.toLowerCase() == "getfeatureinfo" )
+        {
+        }
+     })
+    y(nullable:  true)
+    query_layers(nullable: true,
+            validator:  {val, obj ->
+        def message = true
 
+        if ( obj.request?.toLowerCase() == "getfeatureinfo" )
+        {
+        }
+
+        message
+    })
+    info_format(nullable: true)
+    feature_count(nullable: true)
   }
 
   def toMap()
