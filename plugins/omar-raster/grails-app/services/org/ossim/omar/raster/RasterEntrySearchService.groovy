@@ -26,7 +26,7 @@ class RasterEntrySearchService implements InitializingBean
 
   def propertyNames
 
-  List<RasterEntryQuery> runQuery(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
+  List<RasterEntryQuery> runQuery(def rasterEntryQuery, Map<String, String> params)
   {
     def max = null;
     if ( params?.max != null ) max = (params.max as Integer);
