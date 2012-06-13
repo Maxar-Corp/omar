@@ -187,6 +187,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   upIsUpAngle:null,
   northAngle:null,
   fillAreaFlag:true,
+  outScaleAOI:null,
 
   EVENT_TYPES:["featureDone", "featureRemoved"],
    destroy : function() 
@@ -733,13 +734,26 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   wheelUp: function(evt){
       if (this.map.getZoom() < this.map.getNumZoomLevels()) 
       {
-         this.map.setCenter(this.map.getCenter(), this.map.getZoom() + 1);
+          this.map.setCenter(this.map.getCenter(), this.map.getZoom() + 1);
+
+          // Remove selection box until code is added to scale it with zoom
+          if (this.outScaleAOI == 'Image')
+          {
+              this.removeSelectionBox();
+          }
+
       }
   },
   wheelDown: function(evt){
       if (this.map.getZoom() > 0) 
       {
-         this.map.setCenter(this.map.getCenter(), this.map.getZoom() - 1);
+          this.map.setCenter(this.map.getCenter(), this.map.getZoom() - 1);
+
+          // Remove selection box until code is added to scale it with zoom
+          if (this.outScaleAOI == 'Image')
+          {
+              this.removeSelectionBox();
+          }
       }
   },
   click: function(evt)
@@ -1091,6 +1105,12 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
             this.map.setCenter(new OpenLayers.LonLat((end.lon), (end.lat)), this.map.getZoom());
          }
          this.removeZoomBox();
+
+         // Remove selection box until code is added to scale it with zoom
+         if (this.outScaleAOI == 'Image')
+         {
+           this.removeSelectionBox();
+         }
       }
    },
    removeSelectionBox: function(){
@@ -1100,9 +1120,9 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         this.selectionBox = null;
     }
    },
-   removeZoomBox: function(){
-      this.annotationDiv.removeChild(this.zoomBox);
-      this.zoomBox = null;
-   },
-   CLASS_NAME: "OMAR.OpenLayersImageManipulator"
+    removeZoomBox: function(){
+        this.annotationDiv.removeChild(this.zoomBox);
+        this.zoomBox = null;
+    },
+    CLASS_NAME: "OMAR.OpenLayersImageManipulator"
 });
