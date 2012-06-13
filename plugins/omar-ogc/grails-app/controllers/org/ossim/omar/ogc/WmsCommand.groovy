@@ -177,14 +177,14 @@ class WmsCommand
       }
       message
     })
-    styles(nullable: true,validator: {val, obj ->
-      def message = true
-      if ( val == null )
-      {
-        message = "STYLES parameter not found.  This is a required parameter."
-      }
-      message
-    })
+    styles(nullable: true)//,validator: {val, obj ->
+      //def message = true
+      //if ( val == null )
+      //{
+      //  message = "STYLES parameter not found.  This is a required parameter."
+      //}
+      //message
+    //})
     srs(nullable: true,validator: {val, obj ->
       def message = true
       if ( (obj.request?.toLowerCase() == "getmap") ||
