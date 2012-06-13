@@ -35,12 +35,21 @@ function MapWidget()
         openlayersMap.events.register( "mousemove", map, this.handleMouseHover );
         openlayersMap.events.register( "moveend", map, this.setPointRadiusText );
         openlayersMap.events.register( "zoomend", map, this.setBoundLatLonText );
-
+        openlayersMap.events.register("mouseup", map, this.setCenterForLayers)
         var isiPad = navigator.userAgent.match( /iPad/i ) != null;
 
         if ( isiPad )
         {
             this.touchhandler = new TouchHandler( map, 4 );
+        }
+    }
+    this.setCenterForLayers = function()
+    {
+        var extent = openlayersMap.getExtent();
+        var idx = 0;
+        for(idx = 0; idx < openlayersMap.layers.length; ++idx)
+        {
+            openlayersMap.layers[idx].moveTo(extent);
         }
     }
     this.getMap = function()
