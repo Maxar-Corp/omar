@@ -1371,6 +1371,50 @@ function setMapCtr(unit, value)
 	});
     }
 
+    function exportTemplate()
+    {
+	//var centerLatitude = mapWidget.getMap().getCenter().lat;
+        //var centerLongitude = mapWidget.getMap().getCenter().lon;
+        var mgrs = 0;//coordConvert.ddToMgrs(centerLatitude, centerLongitude);
+
+	var acquisitionDate = "${rasterEntry.acquisitionDate}";
+	var countryCode = "${rasterEntry.countryCode}";
+	var imageId = "${rasterEntry.title}"; 
+	var northArrowAngle = parseFloat(${"rotateAngle"}.value);
+
+	var res = OMAR.imageManipulator.map.getResolution();
+	var scale = 1.0/res;
+	var affineM = OMAR.imageManipulator.generateOssimFullImageTransform();
+
+	var w = Math.abs(OMAR.imageManipulator.containerDivRegion.right - OMAR.imageManipulator.containerDivRegion.left) + 1;
+	var h = Math.abs(OMAR.imageManipulator.containerDivRegion.top - OMAR.imageManipulator.containerDivRegion.bottom) + 1;
+	var center =  OMAR.imageManipulator.getCenterLocal();
+	var pivot = Math.round(center.x) + "," + Math.round(center.y);
+	var centerView = affineM.transform(center);
+	var x = Math.round(centerView.x-w/2);
+	var y = Math.round(centerView.y-h/2);
+   	var z = this.map.getZoom();
+	var params = new OmarImageSpaceGetTileParams();
+
+	params.setProperties(document);
+	params.setProperties(
+	{
+		'x': x,
+		'y': y,
+		'scale':scale,
+		'rotate': -parseFloat(${"rotateAngle"}.value),
+		'width':w,
+		'height':h,
+		'format':"image/png",
+		'id' : "${rasterEntry?.id}",
+		'pivot' : pivot
+	});
+
+     	var imageURL  = "${createLink(absolute: 'true', controller: 'imageSpace', action: 'getTile')}" + "?" + params.toUrlParams();
+	imageURL = imageURL.replace(/&/g,"%26");
+	var templateURL = "${createLink( controller: 'templateExport', action: 'index')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&mgrs=" + mgrs + "&northArrowAngle=" + northArrowAngle;
+        window.open(templateURL);
+    }
 
 </r:script>
 </body>
