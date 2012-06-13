@@ -18,9 +18,10 @@ $logoFile = @params[2];;
 $line1 = @params[3];
 $line2 = @params[4];
 $line3 = @params[5];
-$logoFilesLocation = @params[6];
-$tempFilesLocation = @params[7];
-$date = @params[8];
+$northAngle = @params[6];
+$logoFilesLocation = @params[7];
+$tempFilesLocation = @params[8];
+$date = @params[9];
 
 $imageFile = $tempFilesLocation.$date."omarImage.png";
 
@@ -67,8 +68,7 @@ $x = "rm $tempFilesLocation".$date."text.png";
 $x = $pathToImageMagick."convert $logoFilesLocation"."northArrow.png -resize $logoWidth"."x$logoHeight $tempFilesLocation".$date."northArrowScaled.png";
 `$x`;
 
-$rotateAngle = 215;
-$x = $pathToImageMagick."convert $tempFilesLocation".$date."northArrowScaled.png -rotate $rotateAngle $tempFilesLocation".$date."northArrowRotated.png";
+$x = $pathToImageMagick."convert $tempFilesLocation".$date."northArrowScaled.png -rotate $northAngle $tempFilesLocation".$date."northArrowRotated.png";
 `$x`;
 
 $x = $pathToImageMagick."identify -format %w $tempFilesLocation".$date."northArrowScaled.png";
