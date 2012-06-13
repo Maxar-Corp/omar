@@ -10,7 +10,8 @@ class TemplateExportController
 		def imageId = params.imageId
 		def imageURL = params.imageURL
 		def mgrs = params.mgrs
-	
+		def northArrowAngle = params.northArrowAngle
+		
 		render(
 			view:"templateExport.gsp", 
 			model:
@@ -18,8 +19,9 @@ class TemplateExportController
 				acquisitionDate: acquisitionDate, 
 				countryCode: countryCode, 
 				imageId: imageId,
-				imageURL: "http://localhost" + imageURL,
-				mgrs: mgrs
+				imageURL: imageURL,
+				mgrs: mgrs,
+				northArrowAngle: northArrowAngle
 			]
 		)
         }
@@ -36,6 +38,7 @@ class TemplateExportController
 		//println "${line2}"
 		def line3 = params.line3
 		//println "${line3}"
+		def northAngle = params.northArrowAngle
 		
  		def pathToImageMagick = grailsApplication.config.pathToImageMagick
                 def logoFilesLocation = grailsApplication.config.logoFilesLocation
@@ -50,6 +53,7 @@ class TemplateExportController
 		paramsFile.append("${line1}\n")
 		paramsFile.append("${line2}\n")
 		paramsFile.append("${line3}\n")
+		paramsFile.append("${northAngle}\n")
 		paramsFile.append("${logoFilesLocation}\n")
 		paramsFile.append("${tempFilesLocation}\n")
 		paramsFile.append("${date}\n")
@@ -61,7 +65,6 @@ class TemplateExportController
 		//println "${fileName}"
 		
 		def file = new File("${fileName}")
-		println "cheese"
 		if (file.exists())
 		{
 			response.setContentType("application/octet-stream")
