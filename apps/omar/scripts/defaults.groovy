@@ -6,6 +6,7 @@ import org.ossim.omar.security.Requestmap
 import org.ossim.omar.raster.RasterEntrySearchTag
 import org.ossim.omar.video.VideoDataSetSearchTag
 import org.ossim.omar.core.Repository
+import org.ossim.omar.ChipFormat
 
 import grails.util.GrailsUtil
 
@@ -125,16 +126,29 @@ searchTagData.each {
 if ( GrailsUtil.isDevelopmentEnv() )
 {
   def baseDirs = ["/", "/data/uav", "/Volumes/Iomega_HDD/data"]
-
   baseDirs.each {baseDir ->
     def repository = Repository.findByBaseDir(baseDir)
 
     if ( !repository )
     {
       new Repository(baseDir: baseDir).save()
-
     }
   }
+
+
+  def chips = ["Large 4X3", "800", "600", "Temporary"]
+  def chipFmt = ChipFormat.findByLabel(chips[0])
+  if ( !chipFmt )
+  {
+    new ChipFormat(label:chips[0],width:chips[1],height:chips[2],comment:chips[3]).save()
+  }
+  chips = ["PowerPoint 1", "976", "780", "NGA analyst recommended"]
+  chipFmt = ChipFormat.findByLabel(chips[0])
+  if ( !chipFmt )
+  {
+    new ChipFormat(label:chips[0],width:chips[1],height:chips[2],comment:chips[3]).save()
+  }
+
 }
 else
 {
