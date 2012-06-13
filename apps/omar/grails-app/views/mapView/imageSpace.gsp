@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="org.ossim.omar.ChipFormat" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
   <title>OMAR <g:meta name="app.version"/>: Image Space - ${(rasterEntry?.filename)}</title>
@@ -138,7 +138,20 @@
 --%>
 
 <content tag="top2">
-  <div id="toolBar" class="olControlPanel"></div>
+    <div id="toolBar" class="olControlPanel"></div>
+    <small>AOI:
+    <g:select
+            from="${ChipFormat.list()}"
+            name="selString"
+            noSelection="['Custom':'Custom']"
+            onChange="genAOI(this.value)"/>
+    Output Scale:
+    <g:select
+            from="${['Screen']}"
+            name="outScale"
+            noSelection="['Image':'Image']"
+            onChange="setOutScale(this.value)"/>
+    </small>
 </content>
 
 <content tag="bottom2">
@@ -351,6 +364,17 @@ function chipImage(format)
 
         x = Math.round(centerView.x-w/2);
         y = Math.round(centerView.y-h/2);
+
+        // AOI applies to full res image
+        if (OMAR.imageManipulator.outScaleAOI == 'Image')
+        {
+            w = w/scale;
+            h = h/scale;
+            x = Math.round(centerView.x/scale-w/2);
+            y = Math.round(centerView.y/scale-h/2);
+            scale = 1;
+        }
+
     }
     else
     {
@@ -386,6 +410,7 @@ function chipImage(format)
 
      document.location.href = "${createLink(controller: 'imageSpace', action: 'getTile')}" + "?" + params.toUrlParams();
 }
+
 function initUnit()
 {
     OpenLayers.INCHES_PER_UNIT['m'] = 39.3700787;
@@ -624,14 +649,18 @@ function init(mapWidth, mapHeight)
 
 
     // Key press check for error ellipse popup
-    document.onkeyup = KeyCheck;
+    document.onkeyup = keyCheck;
 
-    // Offset for popup positioning
+    // AOI chip scale
+    OMAR.imageManipulator.outScaleAOI = "Image";
+
+    // Offset for error ellipse popup positioning
     var region = YAHOO.util.Region.getRegion(OMAR.imageManipulator.containerDiv);
     regionOffX = region.left - 1;
     regionOffY = region.top - 1;
     regionRight = region.right - regionOffX;
     regionBottom = region.bottom - regionOffY;
+
     rotateSlider.setRealValue(rotationAngle);
     //OMAR.imageManipulator.applyRotate(${"rotateAngle"}.value);
     //setTimeout("applyRotationAfterInit()", 100);
@@ -701,7 +730,7 @@ function bboxToPixelFinish(i,longitude,latitude)
 function mouseClick(evt){
 
     // point drop with error propagation (PQE)
-    if(OMAR.imageManipulator.toolMode == 'point')
+    if(OMAR.imageManipulator.toolMode == OMAR.ToolModeType.POINT)
     {
         var isIE=document.all;
         var xyPop = new OmarPoint();
@@ -748,28 +777,46 @@ function displayMeasurements()
    var div = $("mensurationDivId");
     if(div)
     {
-       var convertedValues = convertPathAreaMetersToTargetUnit(OMAR.imageManipulator.measureLengthG,
+        var convertedValues = convertPathAreaMetersToTargetUnit(OMAR.imageManipulator.measureLengthG,
                                                                OMAR.imageManipulator.measureLength,
                                                                OMAR.imageManipulator.measureArea, 
                                                                OMAR.measure.units.active);
       
-       if(OMAR.imageManipulator.measureLength)
-       {
-            div.innerHTML  =
-            "<table>" +
-            "<tr><td style='padding-left:2px'>Geodetic Dist: </td><td>" + convertedValues.gdistance + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "</td></tr>" +
-            "<tr><td style='padding-left:2px'>Rect Dist: </td><td>" + convertedValues.distance + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "</td></tr>" +
-            "<tr><td style='padding-left:2px'>Area: </td><td>" + convertedValues.area + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "^2</td></tr>" +
-            "<tr><td style='padding-left:2px'><hr></td><td><hr></td></tr>" +
-            "<tr><td style='padding-left:2px'>Azimuth: </td><td>" + OMAR.imageManipulator.measureAzimuth.toFixed(1) + " deg" + "</td></tr>" +
-            "</table>";
-       }
-       else
-       {
-            div.innerHTML = "";
-       }
+        switch(OMAR.imageManipulator.toolMode)
+        {
+            case OMAR.ToolModeType.LINE:
+            {
+                if(OMAR.imageManipulator.measureLength)
+                {
+                    div.innerHTML  =
+                    "<table>" +
+                    "<tr><td style='padding-left:2px'>Geodetic Dist: </td><td>" + convertedValues.gdistance + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "</td></tr>" +
+                    "<tr><td style='padding-left:2px'>Rect Dist: </td><td>" + convertedValues.distance + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "</td></tr>" +
+                    "<tr><td style='padding-left:2px'><hr></td><td><hr></td></tr>" +
+                    "<tr><td style='padding-left:2px'>Azimuth: </td><td>" + OMAR.imageManipulator.measureAzimuth.toFixed(1) + " deg" + "</td></tr>" +
+                    "</table>";
+                }
+                break;
+            }
+            case OMAR.ToolModeType.POLYGON:
+            {
+                if(OMAR.imageManipulator.measureArea)
+                {
+                    div.innerHTML  =
+                    "<table>" +
+                    "<tr><td style='padding-left:2px'>Geodetic Dist: </td><td>" + convertedValues.gdistance + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "</td></tr>" +
+                    "<tr><td style='padding-left:2px'>Rect Dist: </td><td>" + convertedValues.distance + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "</td></tr>" +
+                    "<tr><td style='padding-left:2px'>Area: </td><td>" + convertedValues.area + " " + OMAR.measure.units.extensionMapping[OMAR.measure.units.active] + "^2</td></tr>" +
+                    "</table>";
+                }
+                break;
+            }
+            default:
+                div.innerHTML = "";
+        }
     }
 }
+
 function measureRemoved(){
     OMAR.imageManipulator.measureLength  = null;
     OMAR.imageManipulator.measureLengthG = null;
@@ -777,6 +824,7 @@ function measureRemoved(){
     OMAR.imageManipulator.measureAzimuth = null;
     displayMeasurements();
 }
+
 function measureFinished(evt){
    if(evt && evt.feature)
     {
@@ -849,13 +897,13 @@ function setupToolbar()
                                                 type:OpenLayers.Control.TYPE_TOOL,
                                                 displayClass: "olControlButtonPan"});
 
-   var selectAoi = new OpenLayers.Control.Button({title: "Click to select an AOI with an upright rectangle.", 
+   var selectAoi = new OpenLayers.Control.Button({title: "Click to drag/select an AOI with an upright rectangle.",
                                                    id: "SELECT_AOI",
                                                 trigger: selectAoiClicked,
                                                 type:OpenLayers.Control.TYPE_TOOL,
                                                 displayClass: "olControlButtonSelectAOI"});
 
-  var deleteAoi = new OpenLayers.Control.Button({title: "Click to zoom in.", 
+  var deleteAoi = new OpenLayers.Control.Button({title: "Click to clear AOI.",
                                                    id: "DELETE_AOI",
                                                 trigger: deleteAoiClicked,
                                                 type:OpenLayers.Control.TYPE_BUTTON,
@@ -897,92 +945,94 @@ function setupToolbar()
       activateControl: controlActivated
       });
 
-    panel.addControls(
-    [
-      panButton,
-      zoomBoxButton,
-      zoomInButton,
-      zoomOutButton,
-      zoomInFullResButton,
-      new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent."}),
-      selectAoi,
-      deleteAoi,
-      pointButton,
-      measurePathButton,
-      measureAreaButton
-    ]);
-    map.addControl(panel);
+    var zoomToMaxExtentButton = new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent.",id:"ZOOM_MAX_EXTENT", trigger:zoomMaxExtentClicked});
+
+panel.addControls(
+[
+panButton,
+zoomBoxButton,
+zoomInButton,
+zoomOutButton,
+zoomInFullResButton,
+zoomToMaxExtentButton,
+selectAoi,
+deleteAoi,
+pointButton,
+measurePathButton,
+measureAreaButton
+]);
+map.addControl(panel);
 }
 
 function setMapCtrTxt()
 {
-    //var center = mapWidget.getMap().getCenter();
-    
-   // $("ddMapCtr").value = center.lat + ", " + center.lon;
-   // $("dmsMapCtr").value = coordConvert.ddToDms(center.lat, center.lon);
-   // $("point").value = coordConvert.ddToMgrs(center.lat, center.lon);
+//var center = mapWidget.getMap().getCenter();
+
+// $("ddMapCtr").value = center.lat + ", " + center.lon;
+// $("dmsMapCtr").value = coordConvert.ddToDms(center.lat, center.lon);
+// $("point").value = coordConvert.ddToMgrs(center.lat, center.lon);
 }
 
 
 function setMapCtr(unit, value)
 {
-    var lat, lon;
+var lat, lon;
 
-    if(unit == "dd") {
-        
-        if($("ddMapCtr").value.match(OMAR.ddRegExp)) {
-            var match = OMAR.ddRegExp.exec( $( "ddMapCtr" ).value );
-            lat = match[1] + match[2];
-            lon = match[3] + match[4];
+if(unit == "dd") {
+
+if($("ddMapCtr").value.match(OMAR.ddRegExp)) {
+var match = OMAR.ddRegExp.exec( $( "ddMapCtr" ).value );
+lat = match[1] + match[2];
+lon = match[3] + match[4];
 
 
 
-          //  var center = new OpenLayers.LonLat( lon, lat );
-            
-          //  mapWidget.getMap().setCenter(center, mapWidget.getMap().getZoom());
-        }
-        else {
-            alert("Invalid DD Input.");
-            return;
-        }
-    }
-    else if(unit == "dms") {
-        if($("dmsMapCtr").value.match(OMAR.dmsRegExp)) {
-            var match = OMAR.dmsRegExp.exec( $( "dmsMapCtr" ).value );
-            lat = OMAR.coordConvert.dmsToDd( match[1], match[2], match[3] + match[4], match[5] );
-            lon = OMAR.coordConvert.dmsToDd( match[6], match[7], match[8] + match[9], match[10] );
-            //var center = new OpenLayers.LonLat( lon, lat );
-            
-           // mapWidget.getMap().setCenter(center, mapWidget.getMap().getZoom());
-        }
-        else {
-            alert("Invalid DMS Input.");
-            return;
-        }
-    }
-    else if(unit == "mgrs")
-    {
-        if($("point").value.match(OMAR.mgrsRegExp)) {
-            var match = OMAR.mgrsRegExp.exec( $( "point" ).value );
-            var mgrs = OMAR.coordConvert.mgrsToDd( match[1], match[2], match[3], match[4], match[5], match[6] );
-            var match2 = OMAR.ddRegExp.exec( mgrs );
-            lat = match2[1] + match2[2];
-            lon = match2[3] + match2[4];
-            //var center = new OpenLayers.LonLat( lon, lat );
-            
-           // mapWidget.getMap().setCenter(center, mapWidget.getMap().getZoom());
-        }
-        else {
-            alert("Invalid MGRS Input.");
-            return;
-        }
-    }
-    if(lat&&lon)
-    {
-        var url = "/omar/imageSpace/groundToImage";
-        var request = OpenLayers.Request.POST({
-                      url:url,
-                      data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id}, 
+//  var center = new OpenLayers.LonLat( lon, lat );
+
+//  mapWidget.getMap().setCenter(center, mapWidget.getMap().getZoom());
+}
+else {
+alert("Invalid DD Input.");
+return;
+}
+}
+else if(unit == "dms") {
+if($("dmsMapCtr").value.match(OMAR.dmsRegExp)) {
+var match = OMAR.dmsRegExp.exec( $( "dmsMapCtr" ).value );
+lat = OMAR.coordConvert.dmsToDd( match[1], match[2], match[3] + match[4], match[5] );
+lon = OMAR.coordConvert.dmsToDd( match[6], match[7], match[8] + match[9], match[10] );
+//var center = new OpenLayers.LonLat( lon, lat );
+
+// mapWidget.getMap().setCenter(center, mapWidget.getMap().getZoom());
+}
+else {
+alert("Invalid DMS Input.");
+return;
+}
+}
+else if(unit == "mgrs")
+{
+if($("point").value.match(OMAR.mgrsRegExp)) {
+var match = OMAR.mgrsRegExp.exec( $( "point" ).value );
+var mgrs = OMAR.coordConvert.mgrsToDd( match[1], match[2], match[3], match[4], match[5], match[6] );
+var match2 = OMAR.ddRegExp.exec( mgrs );
+lat = match2[1] + match2[2];
+lon = match2[3] + match2[4];
+//var center = new OpenLayers.LonLat( lon, lat );
+
+// mapWidget.getMap().setCenter(center, mapWidget.getMap().getZoom());
+}
+else {
+alert("Invalid MGRS Input.");
+return;
+}
+}
+if(lat&&lon)
+{
+var url = "/omar/imageSpace/groundToImage";
+var request = OpenLayers.Request.POST({
+url:url,
+data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
                                                       groundPoints:[{"lat":lat, "lon":lon}]
                                                      }),
                      callback: function (transport){
@@ -1028,10 +1078,19 @@ function setMapCtr(unit, value)
 	            {
 		            zoomInButton.displayClass = "olControlFoo";
 	            }
+	            updateAOI();
             }
             function zoomBoxClicked()
             {
                 OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.ZOOM_BOX);
+            }
+            function zoomMaxExtentClicked()
+            {
+                map.zoomToMaxExtent();
+                if (OMAR.imageManipulator.outScaleAOI == 'Image')
+                {
+                    OMAR.imageManipulator.removeSelectionBox();
+                }
             }
             function panMode()
             {
@@ -1105,12 +1164,14 @@ function setMapCtr(unit, value)
                 var zoom = map.getZoomForResolution(1.0, true)
                 map.zoomTo(zoom)
 	            zoomInButton.displayClass = "olControlFoo";
+	            updateAOI();
             }
 
             function zoomOut()
             {
                 map.zoomOut();
 	              if(map.getZoom() < map.getZoomForResolution(1.0, true)) { zoomInButton.displayClass = "olControlZoomIn"; }
+	            updateAOI();
             }
 
 
@@ -1213,7 +1274,7 @@ function setMapCtr(unit, value)
                 var owid = overlay.clientWidth;
                 var ohgt = overlay.clientHeight;
 
-                // Start assuming lower right display
+                // Start by assuming lower right display
                 var offX = regionOffX - space;
                 var offY = regionOffY - space;
 
@@ -1243,7 +1304,7 @@ function setMapCtr(unit, value)
              function createPointInfoForm(){
                var theHTML = '';
                theHTML += "<h3 style='font-weight:bold;color:#BBCCFF;background-color:#003366;'>" + "PQE Summary" + "</h3><hr>";
-               theHTML += "<table style='background-color:#BBB;border:0px solid black;'>";
+               theHTML += "<table style='background-color:#BBB;border:0px solid black'>";
                theHTML += "<tr><td>CE/LE</td>"  + "<td style='text-align:right;'>"+CE.toFixed(1)+"</td>"  + "<td style='text-align:right;'>/"+LE.toFixed(1)+"</td>"  + "<td style='text-align:right;'>"+"m"+"</td>";
                theHTML += "<tr><td>SMA/SMI</td>"+ "<td style='text-align:right;'>"+SMA.toFixed(1)+"</td>" + "<td style='text-align:right;'>/"+SMI.toFixed(1)+"</td>" + "<td style='text-align:right;'>"+"m"+"</td>";
                theHTML += "<tr><td>SMA AZ</td>" + "<td style='text-align:right;'>"+AZ.toFixed(1)+"</td>"  + "<td style='text-align:right;'>"+""+"</td>"             + "<td style='text-align:right;'>"+"deg"+"</td>";
@@ -1264,13 +1325,14 @@ function setMapCtr(unit, value)
           }//end drawProjectedGround
 
 
-    // Toggle popup
-    //   check for "p" key
-    function KeyCheck(e) {
+    // Toggle PQE popup
+    //   check for "P" key
+    function keyCheck(e) {
+        var keyID = (window.event) ? event.keyCode : e.keyCode;
+
         if(OMAR.imageManipulator.toolMode == 'point')
         {
-            var KeyID = (window.event) ? event.keyCode : e.keyCode;
-            if (KeyID==80)  //key = p
+            if (keyID==80)  //key = P
             {
                 var overlay = document.getElementById("popDivId");
                 if (overlay.style.visibility == "visible")
@@ -1279,6 +1341,77 @@ function setMapCtr(unit, value)
                    overlay.style.visibility = "visible";
             }
         }
+    }
+
+    function genAOI(dimensionsAOI)
+    {
+        if (OMAR.imageManipulator.toolMode == OMAR.ToolModeType.BOX_AOI)
+        {
+            OMAR.imageManipulator.removeSelectionBox();
+            if(!OMAR.imageManipulator.selectionBox)
+            {
+                // Handle "Custom" selection
+                if (dimensionsAOI == "Custom")
+                {
+                    dimensionsAOI = prompt("Enter AOI dimensions (wxh)","100x100");
+                    dimensionsAOI = " :" + dimensionsAOI;
+                }
+
+                // Parse dimensions
+                var labDim = dimensionsAOI.split(":");
+                var dimxy = labDim[1].split("x");
+
+                if (dimxy.length == 2)
+                {
+                    var region = YAHOO.util.Region.getRegion(OMAR.imageManipulator.annotationDiv);
+                    var centerX = (region.right - region.left)/2;
+                    var centerY = (region.bottom - region.top)/2;
+
+                    var factor = 1.0;
+
+                    // AOI applies to full res image
+                    if (OMAR.imageManipulator.outScaleAOI == 'Image')
+                    {
+                        factor = OMAR.imageManipulator.map.getResolution();
+                    }
+
+                    var dimx = dimxy[0]/factor;
+                    var dimy = dimxy[1]/factor;
+                    var offx = centerX - dimx/2;
+                    var offy = centerY - dimy/2;
+
+                    OMAR.imageManipulator.selectionBox = OpenLayers.Util.createDiv('selectionBox',
+                                                             null, null, null, "absolute", "");
+                    OMAR.imageManipulator.selectionBox.id="selectionBox";
+                    OMAR.imageManipulator.selectionBox.style.left = offx;
+                    OMAR.imageManipulator.selectionBox.style.top = offy;
+                    OMAR.imageManipulator.selectionBox.style.width = dimx;
+                    OMAR.imageManipulator.selectionBox.style.height = dimy;
+                    OMAR.imageManipulator.selectionBox.style.backgroundColor = "orange";
+                    OMAR.imageManipulator.selectionBox.style.filter = "alpha(opacity=50)";
+                    OMAR.imageManipulator.selectionBox.style.opacity = "0.50";
+                    OMAR.imageManipulator.selectionBox.style.fontSize = "1px";
+                    OMAR.imageManipulator.selectionBox.style.zIndex = OMAR.imageManipulator.map.Z_INDEX_BASE["Popup"] - 1;
+
+                    if(OMAR.imageManipulator.annotationDiv!=null)
+                        OMAR.imageManipulator.annotationDiv.appendChild(OMAR.imageManipulator.selectionBox);
+                }
+            }
+        }
+    }
+
+    function updateAOI()
+    {
+        if (OMAR.imageManipulator.outScaleAOI == 'Image')
+        {
+            OMAR.imageManipulator.removeSelectionBox();
+        }
+    }
+
+    function setOutScale(scaleAOI)
+    {
+        OMAR.imageManipulator.outScaleAOI = scaleAOI;
+        OMAR.imageManipulator.removeSelectionBox();
     }
 
 
@@ -1305,7 +1438,7 @@ function setMapCtr(unit, value)
 	var x = Math.round(centerView.x - w/2);
 	var y = Math.round(centerView.y - h/2);
 	var bboxCoords = new Array();
-        var bboxPixels = new Array();
+    var bboxPixels = new Array();
 	bboxPixels[0] = Math.round(x);
 	bboxPixels[1] = Math.round(parseFloat("${rasterEntry.height}") - (y + OMAR.imageManipulator.map.getResolution() * h));
 	bboxPixels[2] = Math.round(x + OMAR.imageManipulator.map.getResolution() * w);
