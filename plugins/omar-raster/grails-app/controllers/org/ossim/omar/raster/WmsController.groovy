@@ -35,16 +35,11 @@ class WmsController extends OgcController implements InitializingBean
 
     bindData( cmd, new CaseInsensitiveMap( params ) )
 
-//	println cmd
-
-//    cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
-
-//    Utility.simpleCaseInsensitiveBind(cmd, params);
 
     if ( !cmd.validate() )
     {
-     // log.error(cmd.createErrorString())
-        println cmd.createErrorString()
+      log.error(cmd.createErrorString())
+     //   println cmd.createErrorString()
       ogcExceptionService.writeResponse(response, ogcExceptionService.formatWmsException(cmd))
     }
     else
@@ -403,7 +398,7 @@ class WmsController extends OgcController implements InitializingBean
       response.outputStream.flush()
   }
   def getMap_ = {
-    WmsCommand cmd = new WmsCommand()
+      WmsCommand cmd = new WmsCommand()
 
     bindData( cmd, new CaseInsensitiveMap( params ) )
 
@@ -413,7 +408,7 @@ class WmsController extends OgcController implements InitializingBean
 
 //    Utility.simpleCaseInsensitiveBind(cmd, params);
 
-    if ( !cmd.validate( ['reqeust', 'layers', 'bbox', 'srs', 'width', 'height', 'format'] ) )
+    if ( !cmd.validate())// ['reqeust', 'layers', 'bbox', 'srs', 'width', 'height', 'format'] ) )
     {
       cmd.errors.each { println it }
       log.error( cmd.createErrorString() )
