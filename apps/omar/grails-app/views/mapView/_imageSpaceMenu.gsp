@@ -62,6 +62,11 @@
                    title="Export GIF">GIF</a>
               </li>
             </ul>
+	    <ul>
+              <li class="yuimenuitem">
+                <a class="yuimenuitemlabel" href="javascript:exportTemplate()" title="Template">Template</a>
+              </li>
+            </ul>
           </div>
         </div>
       </li>
