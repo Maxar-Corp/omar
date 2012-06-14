@@ -115,7 +115,6 @@ class ImageSpaceController {
 			paramsIgnoreCase.pivot = "${rasterEntry.width*0.5},${rasterEntry.height*0.5}"
 		}
 
-
         image = imageSpaceService.getPixels(
                 rect,
 				rasterEntry,
@@ -276,8 +275,7 @@ class ImageSpaceController {
                 def ellAngInc = 10.0
 
                 // Probability level (.5P, .9P, .95P)
-                // TODO: this should be exposed to user
-                def pLevel = 0.9
+                def pLevel = jsonData.pLevel
 
                 String xs = jsonPoints.x
                 String xss = xs.replace('[','').replace(']','')
