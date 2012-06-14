@@ -138,6 +138,8 @@
 
 <content tag="top2">
     <div id="toolBar" class="olControlPanel"></div>
+    <div id="AOI_TEMPLATES_DIV_ID" style='display: none'>
+
     <small>AOI:
         <g:select name="selectAoiTemplateId"
                 id="selectAoiTemplateId"
@@ -152,6 +154,7 @@
             noSelection="['Image':'Image']"
             onclick="setOutScale(this.value);genAOI(document.getElementById('selectAoiTemplateId').value)"/>
     </small>
+    </div>
 </content>
 
 <content tag="bottom2">
@@ -478,6 +481,20 @@ function getTileUrl (bounds)
     return url + path;
 }
 
+
+function toolModeChanged()
+{
+    var el = document.getElementById("AOI_TEMPLATES_DIV_ID");
+    if(OMAR.imageManipulator.toolMode == OMAR.ToolModeType.BOX_AOI)
+    {
+        el.style.display = "block";
+    }
+    else
+    {
+        el.style.display = "none";
+    }
+}
+
 function init(mapWidth, mapHeight)
 {
 loadUnitSelection();
@@ -643,7 +660,9 @@ loadUnitSelection();
    OMAR.imageManipulator.events.on({
             "featureDone": measureFinished,
             "featureRemoved" : measureRemoved,
-            "click" : mouseClick
+            "toolModeChanged" : toolModeChanged,
+            "click" : mouseClick,
+            scope:this
     });
 
 
@@ -1367,11 +1386,10 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
 
     function genAOI(dimensionsAOI)
     {
-        if (OMAR.imageManipulator.toolMode == OMAR.ToolModeType.BOX_AOI)
-        {
+       //OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.BOX_AOI);
+       // if (OMAR.imageManipulator.toolMode == OMAR.ToolModeType.BOX_AOI)
+       // {
             OMAR.imageManipulator.removeSelectionBox();
-            if(!OMAR.imageManipulator.selectionBox)
-            {
                 // Handle "Custom" selection
                 if (dimensionsAOI == "Custom")
                 {
@@ -1402,24 +1420,38 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
                     var offx = centerX - dimx/2;
                     var offy = centerY - dimy/2;
 
-                    OMAR.imageManipulator.selectionBox = OpenLayers.Util.createDiv('selectionBox',
-                                                             null, null, null, "absolute", "");
-                    OMAR.imageManipulator.selectionBox.id="selectionBox";
-                    OMAR.imageManipulator.selectionBox.style.left = offx;
-                    OMAR.imageManipulator.selectionBox.style.top = offy;
-                    OMAR.imageManipulator.selectionBox.style.width = dimx;
-                    OMAR.imageManipulator.selectionBox.style.height = dimy;
-                    OMAR.imageManipulator.selectionBox.style.backgroundColor = "orange";
-                    OMAR.imageManipulator.selectionBox.style.filter = "alpha(opacity=50)";
-                    OMAR.imageManipulator.selectionBox.style.opacity = "0.50";
-                    OMAR.imageManipulator.selectionBox.style.fontSize = "1px";
-                    OMAR.imageManipulator.selectionBox.style.zIndex = OMAR.imageManipulator.map.Z_INDEX_BASE["Popup"] - 1;
+                    if(!OMAR.imageManipulator.selectionBox)
+                    {
+                        OMAR.imageManipulator.selectionBox = OpenLayers.Util.createDiv('selectionBox',
+                                                            {x:offx,y:offy}, {w:dimx,h:dimy}, null, "absolute", null, null, .5);
+                        OMAR.imageManipulator.selectionBox.style.backgroundColor = "orange";
+                        OMAR.imageManipulator.selectionBox.style.fontSize = "1px";
+                        OMAR.imageManipulator.selectionBox.style.zIndex = OMAR.imageManipulator.map.Z_INDEX_BASE["Popup"] - 1;
+                        if(OMAR.imageManipulator.annotationDiv!=null)
+                        {
+                            OMAR.imageManipulator.annotationDiv.appendChild(OMAR.imageManipulator.selectionBox);
+                        }
+                    }
+                    else
+                    {
+                        OpenLayers.Util.modifyDomElement(OMAR.imageManipulator.selectionBox,
+                        null,    // id
+                        {x:offx,y:offy}, // x,y
+                        {w:dimx,h:dimy}, // width, height
+                        null,            //position
+                        null,null,null);
+                    }
 
-                    if(OMAR.imageManipulator.annotationDiv!=null)
-                        OMAR.imageManipulator.annotationDiv.appendChild(OMAR.imageManipulator.selectionBox);
-                }
+                    //OMAR.imageManipulator.selectionBox = OpenLayers.Util.createDiv(OMAR.imageManipulator.selectionBox,
+                    //                                         null, null, null, "absolute", "");
+                    //OMAR.imageManipulator.selectionBox.id="selectionBox";
+                 //   OMAR.imageManipulator.selectionBox.style.left = offx;
+                 //   OMAR.imageManipulator.selectionBox.style.top = offy;
+                 //   OMAR.imageManipulator.selectionBox.style.width = dimx;
+                 //   OMAR.imageManipulator.selectionBox.style.height = dimy;
+
             }
-        }
+       // }
     }
 
     function updateAOI()

@@ -189,7 +189,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   fillAreaFlag:true,
   outScaleAOI:null,
 
-  EVENT_TYPES:["featureDone", "featureRemoved"],
+  EVENT_TYPES:["toolModeChanged","featureDone", "featureRemoved"],
    destroy : function() 
    {
     this.events.un ({
@@ -395,10 +395,11 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 
         if(stateChangedFlag)
         {
-            this.toolModeChanged();
+            this.applyToolMode();
+            this.events.triggerEvent("toolModeChanged");
         }
   },
-   toolModeChanged: function()
+   applyToolMode: function()
    {
        if(this.zoomBox)
         {
