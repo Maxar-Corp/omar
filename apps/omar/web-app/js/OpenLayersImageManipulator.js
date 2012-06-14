@@ -417,7 +417,11 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         var removedMeasurements = this.vectorLayer.features.length > 0;
         this.vectorLayer.destroyFeatures();
         this.eventDiv.style.cursor = "";
-        switch(this.toolMode)
+
+       var pqeBox = document.getElementById("pqeDivId");
+       pqeBox.innerHTML = ' ';
+
+       switch(this.toolMode)
         {
             case OMAR.ToolModeType.PAN_ZOOM:
             {
