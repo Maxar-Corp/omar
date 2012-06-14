@@ -339,7 +339,7 @@ function chgInterpolation()
 
 function chipImage(format)
 {
-   var res = OMAR.imageManipulator.map.getResolution();
+    var res = OMAR.imageManipulator.map.getResolution();
     var scale = 1.0/res;
     var url = "${createLink(controller: 'imageSpace', action: 'getTile')}";
     var x = null;
@@ -660,6 +660,9 @@ function init(mapWidth, mapHeight)
     regionOffY = region.top - 1;
     regionRight = region.right - regionOffX;
     regionBottom = region.bottom - regionOffY;
+
+    // Probability level for PQE
+    currProbLevel = 0.9;
 
     rotateSlider.setRealValue(rotationAngle);
     //OMAR.imageManipulator.applyRotate(${"rotateAngle"}.value);
@@ -1183,7 +1186,8 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
               var request = OpenLayers.Request.POST({
                   url: url,
                   data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
-                                                   imagePoints:[{"x":Math.round(ipt.x), "y":Math.round(ipt.y)}]
+                                                   imagePoints:[{"x":Math.round(ipt.x), "y":Math.round(ipt.y)}],
+                                                   pLevel:currProbLevel
                                                   }),
                   callback: function (transport){
                      var tmp = YAHOO.lang.JSON.parse(transport.responseText);
@@ -1292,19 +1296,28 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
                 overlay.style.left = xyPop.x - offX;
                 overlay.style.top  = xyPop.y - offY;
 
+                // Left side PQE div
+                var pqeBox = document.getElementById("pqeDivId");
+
                 // Load content
                 if (nEll > 0)
-                    overlay.innerHTML = createPointInfoForm();
+                {
+                    //overlay.innerHTML = createPointInfoForm();
+                    pqeBox.innerHTML = createPointInfoForm();
+                }
                 else
-                    overlay.innerHTML = createNoInfoForm();
+                {
+                    //overlay.innerHTML = createNoInfoForm();
+                    pqeBox.innerHTML = createNoInfoForm();
+                }
 
                 overlay.style.visibility = "hidden";
              }
 
              function createPointInfoForm(){
                var theHTML = '';
-               theHTML += "<h3 style='font-weight:bold;color:#BBCCFF;background-color:#003366;'>" + "PQE Summary" + "</h3><hr>";
-               theHTML += "<table style='background-color:#BBB;border:0px solid black'>";
+               //theHTML += "<h3 style='font-weight:bold;color:#BBCCFF;background-color:#003366;'>" + "Summary" + "</h3><hr>";
+               theHTML += "<table style='background-color:#F0F8FF;border:0px solid black'>";
                theHTML += "<tr><td>CE/LE</td>"  + "<td style='text-align:right;'>"+CE.toFixed(1)+"</td>"  + "<td style='text-align:right;'>/"+LE.toFixed(1)+"</td>"  + "<td style='text-align:right;'>"+"m"+"</td>";
                theHTML += "<tr><td>SMA/SMI</td>"+ "<td style='text-align:right;'>"+SMA.toFixed(1)+"</td>" + "<td style='text-align:right;'>/"+SMI.toFixed(1)+"</td>" + "<td style='text-align:right;'>"+"m"+"</td>";
                theHTML += "<tr><td>SMA AZ</td>" + "<td style='text-align:right;'>"+AZ.toFixed(1)+"</td>"  + "<td style='text-align:right;'>"+""+"</td>"             + "<td style='text-align:right;'>"+"deg"+"</td>";
@@ -1314,15 +1327,23 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
                return theHTML;
              }
 
-             function createNoInfoForm(){
-               var theHTML = '';
-               theHTML += "<h3 style='font-weight:bold;color:#BBCCFF;background-color:#003366;'>" + "PQE Summary" + "</h3><hr>";
-               theHTML += "No Error Ellipse Available";
-               theHTML += "<hr>";
-               return theHTML;
-             }
 
           }//end drawProjectedGround
+
+    function setPropLevel(pLev)
+    {
+        currProbLevel = pLev.replace("P","");
+
+        var feats = OMAR.imageManipulator.vectorLayer.features
+        var pt = feats[0].geometry;
+        var xd = pt.x;
+        var yd = height - pt.y;
+
+        var xyPop = new OmarPoint(xd, yd);
+        var point = new OmarPoint(xd, yd);
+
+        getProjectedGround(point, xyPop);
+    }
 
 
     // Toggle PQE popup
@@ -1334,11 +1355,12 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
         {
             if (keyID==80)  //key = P
             {
-                var overlay = document.getElementById("popDivId");
-                if (overlay.style.visibility == "visible")
-                   overlay.style.visibility = "hidden";
-                else
-                   overlay.style.visibility = "visible";
+// Popup disabled
+//                var overlay = document.getElementById("popDivId");
+//                if (overlay.style.visibility == "visible")
+//                   overlay.style.visibility = "hidden";
+//                else
+//                   overlay.style.visibility = "visible";
             }
         }
     }
