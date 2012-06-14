@@ -309,7 +309,7 @@ class ImageSpaceController {
   * you can optionally pass the id in the json text or as a parameter to the method.  The imagePoints is
   * a formatted list of jason x,y point objects.
   * 
-  * @return a list of Json objects with properties lat,lon,hgt of the original request and the x,y rsultvalues
+  * @return a list of Json objects with properties lat,lon,hgt of the original request and the x,y resultValues
   *           [ {x:pt.x,
   *                          y:pt.y,
   *                          lat:groundPoint.latd(),
