@@ -111,8 +111,7 @@
   background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionMeasureArea.png')});
   background-repeat: no-repeat;
 }
-
-</style>
+  </style>
 </head>
 
 <body class=" yui-skin-sam">
@@ -140,17 +139,18 @@
 <content tag="top2">
     <div id="toolBar" class="olControlPanel"></div>
     <small>AOI:
-    <g:select
-            from="${ChipFormat.list()}"
-            name="selString"
-            noSelection="['Custom':'Custom']"
-            onChange="genAOI(this.value)"/>
-    Output Scale:
-    <g:select
+        <g:select name="selectAoiTemplateId"
+                id="selectAoiTemplateId"
+                noSelection="['Custom':'Custom']"
+                from="${ChipFormat.list()}"
+                onclick="genAOI(this.value)">
+        </g:select>
+    Output Scale:<g:select
             from="${['Screen']}"
-            name="outScale"
+            name="aoiScaleId"
+            id="aoiScaleId"
             noSelection="['Image':'Image']"
-            onChange="setOutScale(this.value)"/>
+            onclick="setOutScale(this.value);genAOI(document.getElementById('selectAoiTemplateId').value)"/>
     </small>
 </content>
 
@@ -480,8 +480,7 @@ function getTileUrl (bounds)
 
 function init(mapWidth, mapHeight)
 {
-
-    loadUnitSelection();
+loadUnitSelection();
     OMAR.imageManipulator = new OMAR.OpenLayersImageManipulator();
     //OMAR.imageManipulator.click = function(evt)
     //{
@@ -768,9 +767,10 @@ function convertPathAreaMetersToTargetUnit(geodLength, pathLength, area, targetU
     var inchesSource = inchesSourceMultiplier*pathLength;
     var inchesSourceArea = area*(inchesSourceMultiplier*inchesSourceMultiplier);
 
-    var gdist = Math.round(targetLen*inchesSourceG*OMAR.measure.units.precisionMapping[targetUnit])/OMAR.measure.units.precisionMapping[targetUnit];
-    var dist = Math.round(targetLen*inchesSource*OMAR.measure.units.precisionMapping[targetUnit])/OMAR.measure.units.precisionMapping[targetUnit];
-    var area = Math.round(targetArea*inchesSourceArea*OMAR.measure.units.precisionMapping[targetUnit])/OMAR.measure.units.precisionMapping[targetUnit];
+    var precision = OMAR.measure.units.precisionMapping[targetUnit];
+    var gdist = Math.round(targetLen*inchesSourceG*precision)/precision;
+    var dist = Math.round(targetLen*inchesSource*precision)/precision;
+    var area = Math.round(targetArea*inchesSourceArea*precision)/precision;
 
     return {gdistance: gdist, distance:dist, area:area};
 }
@@ -1186,8 +1186,8 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
               var request = OpenLayers.Request.POST({
                   url: url,
                   data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
-                                                   imagePoints:[{"x":Math.round(ipt.x), "y":Math.round(ipt.y)}],
-                                                   pLevel:currProbLevel
+                    imagePoints:[{"x":ipt.x, "y":ipt.y}],
+                    pLevel:currProbLevel
                                                   }),
                   callback: function (transport){
                      var tmp = YAHOO.lang.JSON.parse(transport.responseText);
@@ -1195,10 +1195,10 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
                      if(tmpout)
                      {
                         tmpout.innerHTML = "<table><tr>" +
-                                           "<td width='20%'>Img: (" + tmp.ellpar.x + ", "+ tmp.ellpar.y+")</td>" +
+                                           "<td width='20%'>Img: (" + Math.round(tmp.ellpar.x*1000.0)/1000.0 + ", "+ Math.round(tmp.ellpar.y*1000.0)/1000.0+")</td>" +
                                            "<td width='40%'>Gnd: (" + tmp.ellpar.lat + ", "+ tmp.ellpar.lon+") DD</td>" +
-                                           "<td width='10%'>HAE: " + tmp.ellpar.hgt + " m </td>" +
-                                           "<td width='10%'>MSL: " + tmp.ellpar.hgtMsl + " m </td>" +
+                                           "<td width='10%'>HAE: " + Math.round(tmp.ellpar.hgt*10.0)/10.0 + " m </td>" +
+                                           "<td width='10%'>MSL: " + Math.round(tmp.ellpar.hgtMsl*10.0)/10.0 + " m </td>" +
                                            "<td width='10%'>" + "<i>" + tmp.ellpar.sInfo + "</i>" + "</td>" +
                                            "<td width='10%'>" + "<i>" + tmp.ellpar.type + "</i>" + "</td>"
                                            "</tr></table>";
