@@ -162,23 +162,43 @@
 
 
 <div class="niceBox">
-  <div class="niceBoxHd">Map Measurement Tool:</div>
+    <div class="niceBoxHd">Map Measurement Tool:</div>
 
-  <div class="niceBoxBody">
-    <ul>
-        <li><P ALIGN=Center><i><small>NOT CERTIFIED FOR TARGETING</small></i></li><hr>
-        <li>Measurement Units:</li>
-      <li>       <g:select
-              id="unitSelectionID"
-              name="Units"
-              value="meters"
-              from="${['kilometers', 'meters', 'feet', 'yards', 'miles', 'nautical miles']}"
-              onChange="unitsChanged(this.value)"/>
-     </li>
+    <div class="niceBoxBody">
+        <ul>
+            <li><P ALIGN=Center><i><small>NOT CERTIFIED FOR TARGETING</small></i></li><hr>
+            <li>Measurement Units:</li>
+            <li>       <g:select
+                    id="unitSelectionID"
+                    name="Units"
+                    value="meters"
+                    from="${['kilometers', 'meters', 'feet', 'yards', 'miles', 'nautical miles']}"
+                    onChange="unitsChanged(this.value)"/>
+            </li>
 
-      <div id="mensurationDivId"></div>
+            <div id="mensurationDivId"></div>
 
-    </ul>
-  </div>
+        </ul>
+    </div>
+</div>
+
+
+<div class="niceBox">
+    <div class="niceBoxHd">Position Quality Evaluator:</div>
+
+    <div class="niceBoxBody">
+        <ul>
+            <li><P ALIGN=Center><i><small>NOT CERTIFIED FOR TARGETING</small></i></li><hr>
+
+            <div id="pqeDivId"></div>
+
+            <li><g:select
+                    from="${['0.95P','0.5P']}"
+                    name="probLevel"
+                    noSelection="['0.9P':'0.9P']"
+                    onChange="setPropLevel(this.value)"/>
+            </li>
+        </ul>
+    </div>
 </div>
 
