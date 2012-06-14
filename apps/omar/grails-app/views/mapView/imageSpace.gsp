@@ -661,8 +661,7 @@ loadUnitSelection();
             "featureDone": measureFinished,
             "featureRemoved" : measureRemoved,
             "toolModeChanged" : toolModeChanged,
-            "click" : mouseClick,
-            scope:this
+            "click" : mouseClick
     });
 
 
