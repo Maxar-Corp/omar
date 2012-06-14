@@ -37,6 +37,10 @@ class ProjectionService
         imageSpaceModel.delete()
 
 
+        if(groundPoint.isHgtNan())
+        {
+            groundPoint
+        }
         result = [lat:groundPoint.latd(),
                 lon:groundPoint.lond(),
                 hgt:groundPoint.height()];
@@ -277,17 +281,31 @@ class ProjectionService
             imageSpaceModel.imageToGround(imagePoint, groundPoint)
             if(groundPoint.isHgtNan())
             {
-                hgtHAE = "---";
-                hgtMSL = "---";
-                groundPoint.height = 0.0
+
+                Double ellipsHeight =  geodeticEvaluator.getHeightEllipsoid(groundPoint)
+                if(!ellipsHeight.naN)
+                {
+                    def hgtM = geodeticEvaluator.getHeightMSL(groundPoint)
+                    def hgtE   = ellipsHeight
+                    groundPoint.height = ellipsHeight
+                    hgtHAE = Double.toString(hgtE)
+                    hgtMSL = Double.toString(hgtM)
+                }
+                else
+                {
+                    hgtHAE = "---";
+                    hgtMSL = "---";
+                    groundPoint.height = 0.0
+                }
             }
             else
             {
                 def hgtE = groundPoint.height()
-                hgtHAE = Double.toString(hgtE.round(1))
                 def hgtM = geodeticEvaluator.getHeightMSL(groundPoint)
-                hgtMSL = Double.toString(hgtM.round(1))
+                hgtHAE = Double.toString(hgtE)
+                hgtMSL = Double.toString(hgtM)
             }
+
 
             // Get projection info
             typeString = imageSpaceModel.getType()
