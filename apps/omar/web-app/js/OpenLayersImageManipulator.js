@@ -189,7 +189,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   fillAreaFlag:true,
   outScaleAOI:null,
 
-  EVENT_TYPES:["toolModeChanged","featureDone", "featureRemoved"],
+  EVENT_TYPES:["onDragFinished", "onScaleChanged", "onAoiFinished", "onAoiModified", "onToolModeChanged","onFeatureDone", "onFeatureRemoved"],
    destroy : function() 
    {
     this.events.un ({
@@ -315,7 +315,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
           this.drawControls[key].handler.featureDone = function(geom){
             this.drawFeature(geom);
             //OpenLayers.Console.info(this.layer.features[this.layer.features.length-1]);
-            this.handler.imageManipulator.events.triggerEvent("featureDone", {feature:this.layer.features[this.layer.features.length-1]});
+            this.handler.imageManipulator.events.triggerEvent("onFeatureDone", {feature:this.layer.features[this.layer.features.length-1]});
           }
           this.drawControls[key].handler.callbacks.done = this.drawControls[key].handler.featureDone;
        }
@@ -395,11 +395,11 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 
         if(stateChangedFlag)
         {
-            this.applyToolMode();
-            this.events.triggerEvent("toolModeChanged");
+            this.toolModeChanged();
+            this.events.triggerEvent("onToolModeChanged");
         }
-  },
-   applyToolMode: function()
+   },
+   toolModeChanged: function()
    {
        if(this.zoomBox)
         {
@@ -460,7 +460,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
                 break;
             }
         }
-        if(removedMeasurements) this.events.triggerEvent("featureRemoved");
+        if(removedMeasurements) this.events.triggerEvent("onFeatureRemoved");
     },
   getAffineParams : function(){
     return this.affineParams;
@@ -623,6 +623,19 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
        return new OmarPoint(mouseXY[0], mouseXY[1]);
       //return new OmarPoint(evt.clientX, evt.clientY);//YAHOO.util.Event.getXY(evt);
   },
+  generateAnnotationPointToFullImage:function(){
+      var region = YAHOO.util.Region.getRegion(this.annotationDiv);
+      var annotationPointToPointM = new OmarMatrix3x3();
+      annotationPointToPointM.makeTranslate(region.left, region.top);
+      var fullImageTrans = this.generateOssimFullImageTransform();
+
+      var tempAffine = new OmarAffineParams();
+      tempAffine.scale.y = -1.0;
+      tempAffine.scale.x = 1.0;
+      tempAffine.translate.y = this.map.maxExtent.top;
+      var tempAffineM = tempAffine.toMatrix();
+      return fullImageTrans.transform((this.affineM.transform(annotationPointToPointM)));
+  },
   annotationPointToPoint: function(pt){
     var region = YAHOO.util.Region.getRegion(this.annotationDiv);
     return {x:(pt.x + region.left), y:(pt.y + region.top)};
@@ -741,11 +754,12 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       {
           this.map.setCenter(this.map.getCenter(), this.map.getZoom() + 1);
 
+          this.events.triggerEvent("onScaleChanged");
           // Remove selection box until code is added to scale it with zoom
-          if (this.outScaleAOI == 'Image')
-          {
-              this.removeSelectionBox();
-          }
+          //if (this.outScaleAOI == 'Image')
+          //{
+              //this.removeSelectionBox();
+          //}
 
       }
   },
@@ -754,11 +768,12 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       {
           this.map.setCenter(this.map.getCenter(), this.map.getZoom() - 1);
 
+          this.events.triggerEvent("onScaleChanged");
           // Remove selection box until code is added to scale it with zoom
-          if (this.outScaleAOI == 'Image')
-          {
-              this.removeSelectionBox();
-          }
+          //if (this.outScaleAOI == 'Image')
+          //{
+          //    this.removeSelectionBox();
+          //}
       }
   },
   click: function(evt)
@@ -796,7 +811,8 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
              var newCenter = this.map.getLonLatFromViewPortPx(endPt);
 
              this.map.setCenter(newCenter, this.map.zoom + 1);
-             OpenLayers.Event.stop(evt);  
+             OpenLayers.Event.stop(evt);
+            this.events.triggerEvent("onScaleChanged");
              break;
         }
         case OMAR.ToolModeType.LINE:
@@ -810,7 +826,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     }
     //this.map.events.handleBrowserEvent(event);
     document.onselectstart = OpenLayers.Function.False;
-},
+   },
    mouseout: function(evt){
 
    },
@@ -1022,7 +1038,6 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 
        }
        this.mousePosition = this.mouseToPoint(evt);
-       this.editMode = false;
        if(this.documentListenersAdded)
        {
            YAHOO.util.Event.removeListener(document, "mousemove", this.mousemove);
@@ -1039,7 +1054,15 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
            }
            document.onselectstart = null;
            this.mouseDragStart = null;
-           this.map.div.style.cursor = ""; 
+           this.map.div.style.cursor = "";
+           if(this.editMode)
+           {
+               this.events.triggerEvent("onAoiModified");
+           }
+           else
+           {
+               this.events.triggerEvent("onAoiFinished");
+           }
 
            break; 
         } 
@@ -1067,7 +1090,8 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 
                  //this.map.baseLayer.moveTo(this.map.getExtent());
 
-                 OpenLayers.Event.stop(evt);  
+                 OpenLayers.Event.stop(evt);
+                 this.events.triggerEvent("onDragFinished");
              }
           }
           document.onselectstart = null;
@@ -1084,8 +1108,9 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
           break;
         }
 
-    }
- },
+       }
+       this.editMode = false;
+   },
    zoomBoxEnd:function(evt){
       var currentPoint = this.mouseToPoint(evt);
       if (this.mouseDragStart != null) {
@@ -1112,10 +1137,11 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
          this.removeZoomBox();
 
          // Remove selection box until code is added to scale it with zoom
-         if (this.outScaleAOI == 'Image')
-         {
-           this.removeSelectionBox();
-         }
+        // if (this.outScaleAOI == 'Image')
+        // {
+        //   this.removeSelectionBox();
+        // }
+        this.events.triggerEvent("onScaleChanged");
       }
    },
    removeSelectionBox: function(){
