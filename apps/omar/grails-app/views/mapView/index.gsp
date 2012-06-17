@@ -60,6 +60,7 @@ var kmlLayers;
 var rasterLayers;
 var select;
 var wcsParams;
+var templateParams;
 
 //var fullResScale = parseFloat("${fullResScale}");
 var minLon;
@@ -722,13 +723,41 @@ function exportTemplate()
 	var centerLatitude = mapWidget.getMap().getCenter().lat;
 	var centerLongitude = mapWidget.getMap().getCenter().lon;
 	var mgrs = coordConvert.ddToMgrs(centerLatitude, centerLongitude);
+	var northArrowAngle = 0;
 
 	var acquisitionDate = "${(rasterEntries.acquisitionDate).join(',')}";
 	var countryCode = "${(rasterEntries.countryCode).join(',')}";
 	var imageId = "${(rasterEntries.title).join(',')}";
-	var imageURL = mapWidget.getMap().layers[0].getURL(mapWidget.getMap().getExtent());
+	
+	var baseURL = "${createLink(absolute: true, action: "wms", controller: "ogc" )}";
+	var extent = mapWidget.getViewportExtents();
+	var size = mapWidget.getSizeInPixelsFromExtents(extent);
+	
+	var layer = mapWidget.getMap().layers[0];
+	var params = layer.params;
+
+	var wmsProperties = 
+	{
+		"bands" : params["BANDS"],
+		"bbox" : extent.toBBOX(),
+		"brightness" : params["BRIGHTNESS"],
+		"contrast" : params["CONTRAST"], 
+		"layers" : "${(rasterEntries.indexId).join(',')}",
+		"srs": "EPSG:4326",
+		"format" : "image/png",
+		"height" : size.h,
+		"interpolation" : params["INTERPOLATION"],
+		"request" : "GetMap",
+		"sharpen_mode" : params["SHARPEN_MODE"],
+		"stretch_mode" : params["STRETCH_MODE"],
+		"stretch_mode_region" : params["STRETCH_MODE_REGION"],
+		"width" : size.w,
+	}
+	templateParams = new OmarWmsParams();
+    	templateParams.setProperties(wmsProperties);
+	var imageURL = baseURL + "?" + templateParams.toUrlParams();
 	imageURL = imageURL.replace(/&/g,"%26");
-	var templateURL = "${createLink( controller: 'templateExport', action: 'index')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&mgrs=" + mgrs;
+	var templateURL = "${createLink(action: 'index',  controller: 'templateExport')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&mgrs=" + mgrs + "&northArrowAngle=" + northArrowAngle;
 	window.open(templateURL);
 }
 </r:script>
