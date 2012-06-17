@@ -88,7 +88,7 @@
       <li>Region:</li>
       <li>
         <g:select id="stretch_mode_region" name="stretch_mode_region"
-                  value="${params.stretch_mode_region ?: 'global'}" from="${['global', 'viewport']}"
+                  value="${params.stretch_mode_region ?: 'viewport'}" from="${['global', 'viewport']}"
                   onChange="mergeNewParams()"/>
       </li>
 
