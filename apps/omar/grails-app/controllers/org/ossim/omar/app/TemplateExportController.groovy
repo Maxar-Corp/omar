@@ -3,12 +3,13 @@ package org.ossim.omar.app
 class TemplateExportController 
 {
 	def grailsApplication
+	def imageURL
 	def index = 
         {
 		def acquisitionDate = params.acquisitionDate
 		def countryCode = params.countryCode
 		def imageId = params.imageId
-		def imageURL = params.imageURL
+		imageURL = params.imageURL
 		def mgrs = params.mgrs
 		def northArrowAngle = params.northArrowAngle
 		
@@ -19,7 +20,6 @@ class TemplateExportController
 				acquisitionDate: acquisitionDate, 
 				countryCode: countryCode, 
 				imageId: imageId,
-				imageURL: imageURL,
 				mgrs: mgrs,
 				northArrowAngle: northArrowAngle
 			]
@@ -28,16 +28,11 @@ class TemplateExportController
 
 	def export = 
 	{
-		def imageFile = params.imageURL
-		//println "${imageFile}"
+		def imageFile = imageURL
 		def logo = params.logo
-		//prinln "${logo}"
 		def line1 = params.line1
-		//println "${line1}"
 		def line2 = params.line2
-		//println "${line2}"
 		def line3 = params.line3
-		//println "${line3}"
 		def northAngle = params.northArrowAngle
 		
  		def pathToImageMagick = grailsApplication.config.pathToImageMagick
@@ -62,7 +57,6 @@ class TemplateExportController
 		def scriptProc = script.execute()
 		scriptProc.waitFor()
 		def fileName = scriptProc.text
-		//println "${fileName}"
 		
 		def file = new File("${fileName}")
 		if (file.exists())
