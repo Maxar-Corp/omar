@@ -5,7 +5,7 @@
 	<div class="niceBoxBody">
 	<g:checkBox id="spatialSearchFlag" value="true" checked="true"
 	               onclick="javascript:this.value = this.checked"/>
-	   <label>Include spatial</label>
+	   <label>Use Map Bounds</label>
 		<div id="tabview1" class="yui-navset">
 			<ul class="yui-nav">
 				<li><a href="#tab1" id="pointRadiusTab"><em>Point Radius</em></a></li>
