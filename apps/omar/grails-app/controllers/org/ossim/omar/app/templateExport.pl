@@ -54,8 +54,28 @@ $x = "rm $tempFilesLocation".$date.$logoFile."Scaled.png";
 `$x`;
 
 $textWidth = int(0.6654 * $headerWidth);
-$textHeight = $logoHeight;
-$x = $pathToImageMagick."convert -background white -fill black -size $textWidth"."x$textHeight -gravity West caption:'".$line1."\n".$line2."\n".$line3."' $tempFilesLocation".$date."text.png";
+$line1Height = int(0.41 * $logoHeight);
+$x = $pathToImageMagick."convert -background white -fill black -size $textWidth"."x$line1Height -gravity West caption:'".$line1."' $tempFilesLocation".$date."line1.png";
+`$x`;
+
+$line2Height = int(0.33 * $logoHeight);
+$x = $pathToImageMagick."convert -background white -fill black -size $textWidth"."x$line2Height -gravity West caption:'".$line2."' $tempFilesLocation".$date."line2.png";
+`$x`;
+
+$line3Height = int(0.28 * $logoHeight);
+$x = $pathToImageMagick."convert -background white -fill black -size $textWidth"."x$line3Height -gravity West caption:'".$line3."' $tempFilesLocation".$date."line3.png";
+`$x`;
+
+$x = $pathToImageMagick."convert $tempFilesLocation".$date."line1.png $tempFilesLocation".$date."line2.png $tempFilesLocation".$date."line3.png -append $tempFilesLocation".$date."text.png";
+`$x`;
+
+$x = "rm $tempFilesLocation".$date."line1.png";
+`$x`;
+
+$x = "rm $tempFilesLocation".$date."line2.png";
+`$x`;
+
+$x = "rm $tempFilesLocation".$date."line3.png";
 `$x`;
 
 $textOffset = 2 * $logoOffset + $logoWidth;
