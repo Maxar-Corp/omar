@@ -3,13 +3,12 @@ package org.ossim.omar.app
 class TemplateExportController 
 {
 	def grailsApplication
-	def imageURL
 	def index = 
         {
 		def acquisitionDate = params.acquisitionDate
 		def countryCode = params.countryCode
 		def imageId = params.imageId
-		imageURL = params.imageURL
+		flash.imageURL = params.imageURL
 		def mgrs = params.mgrs
 		def northArrowAngle = params.northArrowAngle
 		
@@ -28,7 +27,7 @@ class TemplateExportController
 
 	def export = 
 	{
-		def imageFile = imageURL
+		def imageFile = flash.imageURL
 		def logo = params.logo
 		def line1 = params.line1
 		def line2 = params.line2
