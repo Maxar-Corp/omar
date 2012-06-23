@@ -234,13 +234,45 @@ $x = "rm $tempFilesLocation".$date."header.png";
 ########## Determine security classification
 # stub for external script
 $securityClassification = "UNCLASSIFIED // FOUO";
+
 ########## Generate security banner text
 $securityTextHeight = int(0.25 * $headerHeight);
-$x = $pathToImageMagick."convert -background white -fill black -size x$securityTextHeight -gravity West label:'".$securityClassification."' $tempFilesLocation".$date."securityBanner.png";
+$x = $pathToImageMagick."convert -background white -fill black -size x$securityTextHeight -gravity West label:'".$securityClassification."' $tempFilesLocation".$date."securityText.png";
+`$x`;
+
+########## Determine the width of the security banner
+$x = $pathToImageMagick."identify -format %w $tempFilesLocation".$date."securityText.png";
+$securityBannerWidth = `$x`;
+chomp($securityBannerWidth);
+$securityBannerWidth = 1.1 * $securityBannerWidth;
+
+########## Determine the height of the security banner
+$x = $pathToImageMagick."identify -format %h $tempFilesLocation".$date."securityText.png";
+$securityBannerHeight = `$x`;
+chomp($securityBannerHeight);
+$securityBannerHeight = 1.1 * $securityBannerHeight;
+
+########## Generate security banner
+$x = $pathToImageMagick."convert -size $securityBannerWidth"."x$securityBannerHeight xc:#00000000 -transparent black -fill white -draw \"roundrectangle 0,0 $securityBannerWidth,$securityBannerHeight 10,10\" $tempFilesLocation".$date."securityBanner.png";
+`$x`;
+
+########## Add text to security banner
+$x = $pathToImageMagick."composite $tempFilesLocation".$date."securityText.png -gravity Center -geometry +0+0 $tempFilesLocation".$date."securityBanner.png $tempFilesLocation".$date."securityBanner.png";
+`$x`;
+
+########## Delete the security text file
+$x = "rm $tempFilesLocation".$date."securityText.png";
+`$x`;
+
+########## Add a shadow to the security banner
+$x = $pathToImageMagick."convert -page +4+4 $tempFilesLocation".$date."securityBanner.png -matte \\( +clone -background black -shadow 60x4+4+4 \\) +swap -background none -mosaic $tempFilesLocation".$date."securityBanner.png";
 `$x`;
 
 ########## Add security banner to finished product
-$x = $pathToImageMagick."composite $tempFilesLocation".$date."securityBanner.png -gravity SouthWest -geometry +0+0 $tempFilesLocation".$date."finishedProduct.png $tempFilesLocation".$date."finishedProduct.png";
+$securityBannerOffsetX = ($imageWidth - $headerWidth) / 4;
+$securityBannerOffsetX = int($securityBannerOffsetX);
+$securityBannerOffsetY = int($securityBannerOffsetX / 2);
+$x = $pathToImageMagick."composite $tempFilesLocation".$date."securityBanner.png -gravity SouthWest -geometry +$securityBannerOffsetX+$securityBannerOffsetY $tempFilesLocation".$date."finishedProduct.png $tempFilesLocation".$date."finishedProduct.png";
 `$x`;
 
 ########## Delete the security banner file
