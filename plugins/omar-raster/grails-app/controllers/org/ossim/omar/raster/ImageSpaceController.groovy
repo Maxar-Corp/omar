@@ -179,9 +179,9 @@ class ImageSpaceController {
         }
         else
         {
-            jsonPoints = JSON.parse(paramsIgnoreCase.imagePoints).imagePoints
+            jsonPoints = JSON.parse(paramsIgnoreCase.imagePoints)
         }
-        def rasterEntry = RasterEntry.findByIndexId(paramsIgnoreCase.id)?:
+         def rasterEntry = RasterEntry.findByIndexId(paramsIgnoreCase.id)?:
             RasterEntry.findByTitle(paramsIgnoreCase.id)?:
                 RasterEntry.findById(paramsIgnoreCase.id)
 
@@ -253,7 +253,7 @@ class ImageSpaceController {
         }
         else
         {
-            jsonPoints = JSON.parse(paramsIgnoreCase.imagePoints).imagePoints
+            jsonPoints = JSON.parse(paramsIgnoreCase.imagePoints)
         }
         def rasterEntry = RasterEntry.findByIndexId(paramsIgnoreCase.id)?:
             RasterEntry.findByTitle(paramsIgnoreCase.id)?:
@@ -275,7 +275,7 @@ class ImageSpaceController {
                 def ellAngInc = 10.0
 
                 // Probability level (.5P, .9P, .95P)
-                def pLevel = jsonData.pLevel
+                def pLevel = jsonData?.pLevel?:0.9
 
                 String xs = jsonPoints.x
                 String xss = xs.replace('[','').replace(']','')
