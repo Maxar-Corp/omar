@@ -1521,8 +1521,8 @@ function updateCenter()
     {
         var currentDimensions = getSelectionBoxDimensions();
 //OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.BOX_AOI);
-       // if (OMAR.imageManipulator.toolMode == OMAR.ToolModeType.BOX_AOI)
-       // {
+        if (OMAR.imageManipulator.toolMode == OMAR.ToolModeType.BOX_AOI)
+        {
             //OMAR.imageManipulator.removeSelectionBox();
             // Handle "Custom" selection
             if (dimensionsAOI == "Custom")
@@ -1578,7 +1578,7 @@ function updateCenter()
                     null);
                 }
             }
-       // }
+        }
     }
 
     function updateAOI()
