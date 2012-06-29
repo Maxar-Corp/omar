@@ -169,6 +169,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   eventDiv:null,
   annotationDiv:null,
   compassDiv:null,
+  metersPerPixelFullRes:0.0,
   affineParams:null,
   affineM: null,
   eventDivToMapDivM: null,
@@ -189,7 +190,13 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   fillAreaFlag:true,
   outScaleAOI:null,
 
-  EVENT_TYPES:["onDragFinished", "onScaleChanged", "onAoiFinished", "onAoiModified", "onToolModeChanged","onFeatureDone", "onFeatureRemoved"],
+  EVENT_TYPES:["onDragFinished",
+               "onScaleChanged",
+               "onAoiFinished",
+               "onAoiModified",
+               "onToolModeChanged",
+               "onFeatureDone",
+               "onFeatureRemoved"],
    destroy : function() 
    {
     this.events.un ({
@@ -207,11 +214,12 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
        "scope":this
     });
    },
-   initialize : function()
+   initialize : function(options)
    {
     this.affineParams =  new OmarAffineParams();
     this.affineM = new OmarMatrix3x3();
     this.eventDivToMapDivM = new OmarMatrix3x3();
+    this.metersPerPixelFullRes = options.metersPerPixelFullRes?options.metersPerPixelFullRes:0.0;
     //[i for(i in document)].filter(function(i){return i.substring(0,2)=='on'&&(document[i]==null||typeof document[i]=='function');})
    },
    setup : function(containerDiv, mapObj, annDiv, topDiv, compass){
@@ -385,6 +393,32 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 //{
 
 //}
+   calculateMetersPerPixel: function()
+   {
+       var result = 0.0;
+       switch(this.projectionType)
+       {
+           case OMAR.ProjectionType.PIXEL:
+           {
+               result = this.metersPerPixelFullRes*this.map.getResolution();
+               break;
+           }
+           default:
+           {
+               result = (OpenLayers.INCHES_PER_UNIT[this.map.units]*
+                         this.map.getResolution()*
+                         OpenLayers.METERS_PER_INCH);
+               break;
+           }
+       }
+       return result;
+   },
+   calculateAzimuth: function()
+   {
+       var rot = (this.northAngle - this.affineParams.rotate);
+       if(rot < 0.0) rot += 360.0;
+       return rot%360;
+   },
    setToolMode: function(mode)
    {
         var stateChangedFlag = (mode != this.toolMode);
@@ -671,14 +705,39 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       }
     }
   },
-  setCenterGivenImagePoint: function(pt){
+  findZoomForMetersPerPixel: function(mpp){
+      var zoom = null;
+      if(this.projectionType == OMAR.ProjectionType.PIXEL)
+      {
+          var idx = 0;
+          var ratio = mpp/this.metersPerPixelFullRes;
+          for(idx=0;idx < this.map.getNumZoomLevels();++idx)
+          {
+              if(this.map.layers[0].resolutions[idx]<ratio)
+              {
+                  break;
+              }
+          }
+          if(idx >= this.map.getNumZoomLevels()) idx =  this.map.getNumZoomLevels() -1;
+          zoom = idx;
+      }
+      else
+      {
+          resolution = (1.0/OpenLayers.INCHES_PER_UNIT["degrees"])*
+                       (OpenLayers.INCHES_PER_UNIT["m"]*viewParam.mpp);
+          zoom =this.map.getZoomForResolution(resolution);
+      }
+
+      return zoom
+  },
+  setCenterGivenImagePoint: function(pt, zoom){
     if(this.map)
     {
         if((this.projectionType == OMAR.ProjectionType.PIXEL)&&
            this.localImageBounds)
         {
             var newCenter = new OpenLayers.LonLat(pt.x, (this.localImageBounds.top - pt.y ) );
-            this.map.setCenter(newCenter);
+            this.map.setCenter(newCenter, zoom);
         }
         else
         {
