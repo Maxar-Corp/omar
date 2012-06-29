@@ -159,9 +159,10 @@ modules = {
     resource url: [plugin: 'yui', dir: 'js/yui/tabview/', file: 'tabview-min.js']
     //resource url: [plugin: 'yui', dir: 'js/yui/calendar', file: 'calendar-min.js']
     resource url: [plugin: 'yui', dir: 'js/yui/slider', file: 'slider-min.js']
+    resource url: [plugin: 'yui', dir: 'js/yui/json', file: 'json-min.js']
 
 
-    resource url: [plugin: 'openlayers', dir: 'css', file: 'mapwidget2.css']
+      resource url: [plugin: 'openlayers', dir: 'css', file: 'mapwidget2.css']
     resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
     resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
 

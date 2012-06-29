@@ -70,13 +70,35 @@ var maxLat;
 
 var largestScale;
 var smallestScale;
-
+var fullResScale;
 var brightnessSlider;
 var contrastSlider;
 
 function changeToImageSpace()
 {
-   var url = "${createLink( controller: 'mapView', action: 'imageSpace' )}";
+    var url = "${createLink( controller: 'mapView', action: 'imageSpace' )}";
+    var wmsFormElement = $("wmsFormId");
+    if(wmsFormElement)
+    {
+        var mpp = calculateMetersPerPixel();
+        wmsParams = new OmarWmsParams();
+        wmsParams.setProperties(wcsParams);
+        wmsParams.layers = "${( rasterEntries*.indexId ).join( ',' )}";
+        wmsParams.latitude = mapWidget.getMap().getCenter().lat;
+        wmsParams.longitude = mapWidget.getMap().getCenter().lon;
+        // need to calculate an azimuth if we go to other projectors
+        // for now just hard code to 0.0
+        //  if we ever to UTM grids we need to modify this
+        wmsParams.view = YAHOO.lang.JSON.stringify({latitude:mapWidget.getMap().getCenter().lat,
+                                                    longitude:mapWidget.getMap().getCenter().lon,
+                                                    mpp:mpp,
+                                                    azimuth:0.0});
+        wmsFormElement.action = url + "?"+wmsParams.toUrlParams();
+        wmsFormElement.method = "POST";
+        wmsFormElement.submit();
+    }
+/*
+var url = "${createLink( controller: 'mapView', action: 'imageSpace' )}";
    var wmsFormElement = $("wmsFormId");
    if(wmsFormElement)
    {
@@ -85,13 +107,18 @@ function changeToImageSpace()
      wmsParams.layers = "${( rasterEntries*.indexId ).join( ',' )}";
      wmsParams.latitude = mapWidget.getMap().getCenter().lat;
      wmsParams.longitude = mapWidget.getMap().getCenter().lon;
-     var bboxParams = mapWidget.getMap().calculateBounds().toArray();
-     wmsParams.bbox = bboxParams[0] + "," + bboxParams[1] + "," + bboxParams[2] + "," + bboxParams[3]; 
+alert("MPP: " +    YAHOO.lang.JSON.stringify);
+
+     wmsParams.view = YAHOO.lang.JSON.stringify({latitude:mapWidget.getMap().getCenter().lat,
+                                                 longitude:mapWidget.getMap().getCenter().lon,
+                                                 mpp:calculateMetersPerPixel()});
+    // var bboxParams = mapWidget.getMap().calculateBounds().toArray();
+    // wmsParams.bbox = bboxParams[0] + "," + bboxParams[1] + "," + bboxParams[2] + "," + bboxParams[3];
     wmsFormElement.action = url + "?"+wmsParams.toUrlParams();
     wmsFormElement.method = "POST";
     wmsFormElement.submit();
    }
-
+*/
 }
 
 function resetBrightnessContrast()
@@ -114,7 +141,7 @@ function init(mapWidth, mapHeight)
     coordConvert = new CoordinateConversion();
     wcsParams = new OmarWcsParams();
 
-  //var fullResScale = parseFloat("${fullResScale}");
+  fullResScale = parseFloat("${fullResScale}");
   minLon = parseFloat("${left}");
   minLat = parseFloat("${bottom}");
   maxLon = parseFloat("${right}");
@@ -202,15 +229,14 @@ function init(mapWidth, mapHeight)
 	brightnessSlider.setRealValue(${params.brightness ?: 0});
 	contrastSlider.setRealValue(${params.contrast ?: 1});
 	var bounds = new OpenLayers.Bounds(minLon, minLat, maxLon, maxLat);
-
 	mapWidget = new MapWidget();
 	mapWidget.setupMapWidgetWithOptions("map", {controls: [], maxExtent:bounds, theme: null, maxResolution:largestScale, minResolution:smallestScale});
 	mapWidget.setFullResScale(parseFloat("${fullResScale}"));
-  changeMapSize(mapWidth, mapHeight);
+    changeMapSize(mapWidth, mapHeight);
 
 
 	setupLayers();
-  mapWidget.setupAoiLayer();
+    mapWidget.setupAoiLayer();
 	mapWidget.setupToolBar();
 
 	mapWidget.getMap().addControl(new OpenLayers.Control.LayerSwitcher());
@@ -222,16 +248,29 @@ function init(mapWidth, mapHeight)
 	mapWidget.getMap().events.register('mousemove',map,setMouseMapCtrTxt);
 	mapWidget.getMap().events.register("moveend", map, this.setMapCtrTxt);
 
-	var mapBBOX = new OpenLayers.Bounds(${params.bbox ?: "bounds.left, bounds.bottom, bounds.right, bounds.top"});
-	var zoom = mapWidget.getMap().getZoomForExtent(mapBBOX, true);
+    var viewParam = ${params.view?:"null"};
+    if(viewParam)
+    {
+        var mapCenter = new OpenLayers.LonLat(viewParam.longitude, viewParam.latitude);
+        var normScale = OpenLayers.Util.normalizeScale(viewParam.mpp);
+        resolution = (1.0/OpenLayers.INCHES_PER_UNIT["degrees"])*
+                     (OpenLayers.INCHES_PER_UNIT["m"]*viewParam.mpp);
+        mapWidget.getMap().setCenter(mapCenter,
+                                     mapWidget.getMap().getZoomForResolution(resolution));
+    }
+    else
+    {
+        var mapBBOX = new OpenLayers.Bounds(${params.bbox ?: "bounds.left, bounds.bottom, bounds.right, bounds.top"});
+        var zoom = mapWidget.getMap().getZoomForExtent(mapBBOX, true);
 
-	var mapCenterLatitude = bounds.getCenterLonLat().lat;
-	mapCenterLatitude = ${params.latitude ?: "mapCenterLatitude"};
-	var mapCenterLongitude = bounds.getCenterLonLat().lon;
-	mapCenterLongitude = ${params.longitude ?: "mapCenterLongitude"};
-	var mapCenter = new OpenLayers.LonLat(mapCenterLongitude, mapCenterLatitude);	
+        var mapCenterLatitude = bounds.getCenterLonLat().lat;
+        mapCenterLatitude = ${params.latitude ?: "mapCenterLatitude"};
+        var mapCenterLongitude = bounds.getCenterLonLat().lon;
+        mapCenterLongitude = ${params.longitude ?: "mapCenterLongitude"};
+        var mapCenter = new OpenLayers.LonLat(mapCenterLongitude, mapCenterLatitude);
 
-	mapWidget.getMap().setCenter(mapCenter, zoom);
+        mapWidget.getMap().setCenter(mapCenter, zoom);
+    }
 }
 
 function setMapCtrTxt()
@@ -684,9 +723,18 @@ function onFeatureUnselect(event)
 	}
 }
 
+function calculateMetersPerPixel()
+{
+    return (OpenLayers.INCHES_PER_UNIT[mapWidget.getMap().units]*
+            mapWidget.getMap().getResolution()*
+            OpenLayers.METERS_PER_INCH);
+}
+
 function shareImage()
 {
-	var baseURL = "${createLink(absolute: 'true', action: 'index', base: grailsApplication.config.omar.serverURL)}";
+    var baseURL = "${createLink(absolute: 'true',
+                            action: 'index',
+                            base: grailsApplication.config.omar.serverURL)}";
 	
 	var layer = mapWidget.getMap().layers[0];
 	var params = layer.params;	
@@ -751,7 +799,7 @@ function exportTemplate()
 		"sharpen_mode" : params["SHARPEN_MODE"],
 		"stretch_mode" : params["STRETCH_MODE"],
 		"stretch_mode_region" : params["STRETCH_MODE_REGION"],
-		"width" : size.w,
+		"width" : size.w
 	}
 	templateParams = new OmarWmsParams();
     	templateParams.setProperties(wmsProperties);

@@ -268,69 +268,34 @@ function changeToSingleLayer()
 	var centerView = affineM.transform(center);
 	var x = Math.round(centerView.x - w/2);
 	var y = Math.round(centerView.y - h/2);
-	var bboxPixels = new Array();
-	bboxPixels[0] = Math.round(x);
-	bboxPixels[1] = Math.round(parseFloat("${rasterEntry.height}") - (y + OMAR.imageManipulator.map.getResolution() * h));
-	bboxPixels[2] = Math.round(x + OMAR.imageManipulator.map.getResolution() * w);
-	bboxPixels[3] = Math.round(parseFloat("${rasterEntry.height}") - y);
-	var bboxCoords = new Array();
-	
-	var request = OpenLayers.Request.POST({
-		url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
-		data: YAHOO.lang.JSON.stringify({
-			id:${rasterEntry.id},
-			imagePoints:[{"x":bboxPixels[0], "y":bboxPixels[1]}]
-		}),
-		callback: function (transport)
-		{
-			var temp = YAHOO.lang.JSON.parse(transport.responseText);
-			bboxCoords[0] = temp[0].lon;
-			bboxCoords[1] = temp[0].lat;
+    var match = OMAR.ddRegExp.exec( $( "ddMapCtr" ).value );
+    var lat = match[1] + match[2];
+    var lon = match[3] + match[4];
 
-			var request = OpenLayers.Request.POST({
-				url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
-				data: YAHOO.lang.JSON.stringify({
-					id:${rasterEntry.id},
-					imagePoints:[{"x":bboxPixels[2], "y":bboxPixels[3]}] 
-				 }),
-				callback: function (transport)
-				{
-					var temp = YAHOO.lang.JSON.parse(transport.responseText);
-					bboxCoords[2] = temp[0].lon;
-					bboxCoords[3] = temp[0].lat;
+    var tempWmsParams = new OmarWmsParams();
 
-					var request = OpenLayers.Request.POST({
-						url: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
-						data: YAHOO.lang.JSON.stringify({
-							id:${rasterEntry.id},
-							imagePoints:[{"x":OMAR.imageManipulator.getCenterLocal().x, "y":OMAR.imageManipulator.getCenterLocal().y}]
-						}),
-						callback: function (transport)
-						{
-							var temp = YAHOO.lang.JSON.parse(transport.responseText);
-							var centerLatitude = temp[0].lat;
-							var centerLongitude = temp[0].lon;
+    tempWmsParams.setProperties(document);
+    tempWmsParams.layers = "${rasterEntry.indexId}";
+    tempWmsParams.latitude = lat;
+    tempWmsParams.longitude = lon;
+    tempWmsParams.view = YAHOO.lang.JSON.stringify({"latitude":lat,
+                                                    "longitude":lon,
+                                                    "mpp":OMAR.imageManipulator.calculateMetersPerPixel(),
+                                                    "azimuth":OMAR.imageManipulator.calculateAzimuth()
+                                                    });
+    var wmsFormElement = $("wmsFormId");
 
-							var url = "${createLink(controller: 'mapView', action: 'index')}";
-							var wmsFormElement = $("wmsFormId");
-							if(wmsFormElement)
-							{
-								var imageAdjustmentParams = new OmarWmsParams();
-								imageAdjustmentParams.setProperties(document);
-								imageAdjustmentParams.layers = "${rasterEntry.indexId}";
-								imageAdjustmentParams.latitude = centerLatitude;
-								imageAdjustmentParams.longitude = centerLongitude;
-								imageAdjustmentParams.bbox = bboxCoords[0] + "," + bboxCoords[1] + "," + bboxCoords[2] + "," + bboxCoords[3];
-								wmsFormElement.action = url + "?"+imageAdjustmentParams.toUrlParams();
-								wmsFormElement.method = "POST";
-								wmsFormElement.submit();
-							}
-						}
-					});
-				}
-        		});
-		}
-	});
+    if(wmsFormElement)
+    {
+        var url = "${createLink(controller: 'mapView', action: 'index')}";
+        wmsFormElement.action = url + "?"+tempWmsParams.toUrlParams();
+        wmsFormElement.method = "POST";
+        wmsFormElement.submit();
+    }
+    else
+    {
+        alert("Unable to change to single layer. Can't find wmsFormElement");
+    }
 }
 
 function chgInterpolation()
@@ -522,7 +487,7 @@ function init(mapWidth, mapHeight)
 {
     customAoi = {w:256, h:256}
     loadUnitSelection();
-    OMAR.imageManipulator = new OMAR.OpenLayersImageManipulator();
+    OMAR.imageManipulator = new OMAR.OpenLayersImageManipulator({metersPerPixelFullRes:${rasterEntry.gsdY}});
     //OMAR.imageManipulator.click = function(evt)
     //{
     //   getCoordinates(OMAR.imageManipulator.pointToLocal(this.mouseToPoint(evt)));
@@ -645,6 +610,9 @@ function init(mapWidth, mapHeight)
 
     map.setCenter(new  OpenLayers.LonLat(0.0,0.0), 0);
 
+
+
+    <%--
 	<g:if test="${(params.latitude != null) && (params.longitude != null)}">
 		var url = "/omar/imageSpace/groundToImage";
 		var request = OpenLayers.Request.POST({
@@ -655,16 +623,17 @@ function init(mapWidth, mapHeight)
 				}),
 			callback: function (transport)
 			{
-				var temp = YAHOO.lang.JSON.parse(transport.responseText);
+				 var temp = YAHOO.lang.JSON.parse(transport.responseText);
 				 OMAR.imageManipulator.setCenterGivenImagePoint(temp[0]);
 			}
 		});
 	</g:if>
-
+    --%>
+<%--
 	<g:if test="${params.bbox != null}">
 		bboxToPixel();
 	</g:if>
-
+--%>
     map.zoomToMaxExtent();
     // map.zoomIn();
     // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
@@ -712,68 +681,38 @@ function init(mapWidth, mapHeight)
     //OMAR.imageManipulator.applyRotate(${"rotateAngle"}.value);
     //setTimeout("applyRotationAfterInit()", 100);
     updateCenter();
-}
-<g:if test="${params.bbox != null}">
-function bboxToPixel(bbox)
-{
-	var bbox = "${params.bbox}";
-	var mapBBOX = bbox.split(",");
-	if (mapBBOX.length == 4)
-	{
-		var cornerPoint = new Array();
-		cornerPoint[0] = mapBBOX[0];
-		cornerPoint[1] = mapBBOX[1];
-		cornerPoint[2] = mapBBOX[2];
-		cornerPoint[3] = mapBBOX[3];
-                
-		var url = "/omar/imageSpace/groundToImage";
-                var request = OpenLayers.Request.POST({
-                	url:url,
-                	data: YAHOO.lang.JSON.stringify({
-				id:${rasterEntry.id},
-				groundPoints:[{"lat":cornerPoint[1], "lon":cornerPoint[0]}]
-			}),
-			callback: function (transport){
-				var temp = YAHOO.lang.JSON.parse(transport.responseText);
-				bboxToPixelFinish(0,temp[0].x,temp[0].y);
-				}
-		});
-		var request = OpenLayers.Request.POST({
-			url:url,
-			data: YAHOO.lang.JSON.stringify({
-				id:${rasterEntry.id},
-				groundPoints:[{"lat":cornerPoint[3], "lon":cornerPoint[2]}]
-			}),
-			callback: function (transport){
-				var temp = YAHOO.lang.JSON.parse(transport.responseText);
-				bboxToPixelFinish(1,temp[0].x,temp[0].y);
-			}
-		});			
-	}
-	else { map.zoomToMaxExtent(); }
-}
+    var lat = ${params.latitude?:"null"};
+    var lon = ${params.longitude?:"null"};
+    var view = ${params.view?:"null"};
+    var url = "/omar/imageSpace/groundToImage";
+    if(view)
+    {
+        lat = view.latitude;
+        lon = view.longitude;
+    }
 
-var lowerLeftCoordinate;
-var upperRightCoordinate;
-function bboxToPixelFinish(i,longitude,latitude)
-{
-	if (i == 0)
-	{
-		lowerLeftCoordinate = [longitude,latitude];
-	}
-	else if (i == 1)
-	{
-		upperRightCoordinate = [longitude,latitude];
-	}
-
-	if ((lowerLeftCoordinate != null) && (upperRightCoordinate != null))
-	{
-		var zoom = map.getZoomForExtent(new OpenLayers.Bounds(lowerLeftCoordinate[0],lowerLeftCoordinate[1],upperRightCoordinate[0],upperRightCoordinate[1]), true);
-		map.zoomTo(zoom - 1);
-	}
+    if(view.azimuth != null)
+    {
+        rotateSlider.setRealValue(view.azimuth + OMAR.imageManipulator.northAngle);
+    }
+    if(lat&&lon)
+    {
+        var request = OpenLayers.Request.POST({
+            url:url,
+            data: YAHOO.lang.JSON.stringify({
+            id:${rasterEntry.id},
+            groundPoints:[{"lat":${params.latitude}, "lon":${params.longitude}}]
+            }),
+            callback: function (transport)
+            {
+                var view = ${params.view};
+                var temp = YAHOO.lang.JSON.parse(transport.responseText);
+                var zoom = OMAR.imageManipulator.findZoomForMetersPerPixel(view.mpp);
+                OMAR.imageManipulator.setCenterGivenImagePoint(temp[0], zoom);
+            }
+            });
+    }
 }
-</g:if>
-
 
 function mouseClick(evt){
 
@@ -798,7 +737,6 @@ function mouseClick(evt){
         getProjectedGround(point, xyPop);
     }
 }
-
 
 function convertPathAreaMetersToTargetUnit(geodLength, pathLength, area, targetUnit)
 {
