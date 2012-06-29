@@ -319,6 +319,8 @@ class WmsCommand
         if ( obj.request?.toLowerCase() == "getfeatureinfo" )
         {
         }
+
+        message
      })
     y(nullable:  true)
     query_layers(nullable: true,
