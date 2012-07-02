@@ -32,6 +32,9 @@ class TemplateExportController
 		def line1 = params.line1
 		def line2 = params.line2
 		def line3 = params.line3
+		def includeOutlineMap = params.includeOutlineMap
+		def includeOverviewMap = params.includeOverviewMap
+		def country = params.country
 		def northAngle = params.northArrowAngle
 		
  		def pathToImageMagick = grailsApplication.config.pathToImageMagick
@@ -47,6 +50,9 @@ class TemplateExportController
 		paramsFile.append("${line1}\n")
 		paramsFile.append("${line2}\n")
 		paramsFile.append("${line3}\n")
+		paramsFile.append("${includeOutlineMap}\n")
+		paramsFile.append("${includeOverviewMap}\n")
+		paramsFile.append("${country}\n")
 		paramsFile.append("${northAngle}\n")
 		paramsFile.append("${logoFilesLocation}\n")
 		paramsFile.append("${tempFilesLocation}\n")
