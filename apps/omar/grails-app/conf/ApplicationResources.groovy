@@ -259,5 +259,4 @@ modules = {
     resource url: [dir: 'css', file: 'showVideoPageLayout.css']
     resource url: [dir: 'js', file: 'showVideoPageLayout.js']
   }
-
 }
