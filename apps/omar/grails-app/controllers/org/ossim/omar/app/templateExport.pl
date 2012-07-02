@@ -27,10 +27,14 @@ $logoFile = @params[2];
 $line1 = @params[3];
 $line2 = @params[4];
 $line3 = @params[5];
-$northAngle = @params[6];
-$logoFilesLocation = @params[7];
-$tempFilesLocation = @params[8];
-$date = @params[9];
+$includeOutlineMap = @params[6];
+$includeOverviewMap = @params[7];
+$country = @params[8];
+$northAngle = @params[9];
+$logoFilesLocation = @params[10];
+$mapFilesLocation = @params[10]."overviewMaps/";
+$tempFilesLocation = @params[11];
+$date = @params[12];
 
 
 
@@ -53,12 +57,12 @@ $x = "curl -L '$imageURL' -o $imageFile";
 ##################################################################################################
 ######################################## Image Dimensions ########################################
 ##################################################################################################
-########## Determine the width of the image 
+########## Determine the width of the image
 $x = $pathToImageMagick."identify -format %w $imageFile";
 $imageWidth = `$x`;
 chomp($imageWidth);
 
-########## Determine the height of the image 
+########## Determine the height of the image
 $x = $pathToImageMagick."identify -format %h $imageFile";
 $imageHeight = `$x`;
 chomp($imageHeight);
@@ -70,9 +74,9 @@ chomp($imageHeight);
 ###################################################################################################
 ######################################## Header Adjustment ########################################
 ###################################################################################################
-########## Generate header
-$headerWidth = int(0.9633 * $imageWidth);
-$headerHeight = int(0.1286 * $imageHeight);
+########## Generate blank header
+$headerWidth = int(0.96 * $imageWidth);
+$headerHeight = int(0.14 * $imageHeight);
 $x = $pathToImageMagick."convert -size $headerWidth"."x$headerHeight xc:#00000000 -transparent black -fill white -draw \"roundrectangle 0,0 $headerWidth,$headerHeight 10,10\" $tempFilesLocation".$date."header.png";
 `$x`;
 
@@ -84,17 +88,17 @@ $x = $pathToImageMagick."convert -size $headerWidth"."x$headerHeight xc:#0000000
 ######################################## Logo Icon ########################################
 ###########################################################################################
 ########## Scale the logo
-$logoWidth = int(0.75 * $headerHeight);#
+$logoWidth = int(0.75 * $headerHeight);
 $logoHeight = $logoWidth;
 $x = $pathToImageMagick."convert $logoFilesLocation".$logoFile.".png -resize $logoWidth"."x$logoHeight $tempFilesLocation".$date.$logoFile."Scaled.png";
 `$x`;
 
 ########## Add the logo to the header 
-$logoOffset = ($headerHeight - $logoHeight) / 2;																		       
+$logoOffset = ($headerHeight - $logoHeight) / 2;
 $x = $pathToImageMagick."composite $tempFilesLocation".$date.$logoFile."Scaled.png -gravity West -geometry +$logoOffset+0 $tempFilesLocation".$date."header.png $tempFilesLocation".$date."header.png";
 `$x`;
 
-########## Delete the scaled logo file#
+########## Delete the scaled logo file
 $x = "rm $tempFilesLocation".$date.$logoFile."Scaled.png";
 `$x`;
 
@@ -103,9 +107,66 @@ $x = "rm $tempFilesLocation".$date.$logoFile."Scaled.png";
 
 
 #############################################################################################
+######################################## Outline Map ########################################
+#############################################################################################
+########## Determine the height of the outline map
+$outlineMapHeight = int(0.2 * $imageHeight);
+
+##########
+if ($includeOutlineMap eq "on")
+{
+	########## Scale the outline map
+	$x = $pathToImageMagick."convert $mapFilesLocation".$country.".gif -resize x$outlineMapHeight $tempFilesLocation".$date."outlineMapScaled.png";
+	`$x`;
+
+	########## Determine the height of the outline map
+	$x = $pathToImageMagick."identify -format %h $tempFilesLocation".$date."outlineMapScaled.png";
+	$outlineMapHeight = `$x`;
+	chomp($outlineMapHeight);
+
+	########## Add a shadow to the outline map
+	$x = $pathToImageMagick."convert -page +4+4 $tempFilesLocation".$date."outlineMapScaled.png -matte \\( +clone -background black -shadow 60x4+4+4 \\) +swap -background none -mosaic $tempFilesLocation".$date."outlineMapScaled.png";
+	`$x`;
+
+	########## Determine the width of the outline map with a shadow
+	$x = $pathToImageMagick."identify -format %w $tempFilesLocation".$date."outlineMapScaled.png";
+	$outlineMapWidth = `$x`;
+	chomp($outlineMapWidth);
+}
+
+
+
+
+
+##################################################################################################################
+################################################## Overview Map ##################################################
+##################################################################################################################
+if ($includeOverviewMap eq "on")
+{
+	########## Scale the overview map
+	$overviewMapHeight = $outlineMapHeight;
+	$x = $pathToImageMagick."convert $mapFilesLocation".$country.".gif -resize x$overviewMapHeight $tempFilesLocation".$date."overviewMapScaled.png";
+	`$x`;
+
+	########## Add a shadow to the overview map
+	$x = $pathToImageMagick."convert -page +4+4 $tempFilesLocation".$date."overviewMapScaled.png -matte \\( +clone -background black -shadow 60x4+4+4 \\) +swap -background none -mosaic $tempFilesLocation".$date."overviewMapScaled.png";
+	`$x`;
+
+	########## Determine the width of the overview map
+	$x = $pathToImageMagick."identify -format %w $tempFilesLocation".$date."overviewMapScaled.png";
+	$overviewMapWidth = `$x`;
+	chomp($overviewMapWidth);
+}
+
+
+
+
+
+#############################################################################################
 ######################################## Header Text ########################################
 #############################################################################################
-$textWidth = int(0.6654 * $headerWidth);
+########## Determine the maximum width for each line of text
+$textWidth = int($headerWidth - (2 * $logoWidth) - (5 * $logoOffset) - $outlineMapWidth - $overviewMapWidth);
 
 ########## Generate 1st line of text
 $line1Height = int(0.41 * $logoHeight);
@@ -142,9 +203,9 @@ $x = "rm $tempFilesLocation".$date."line3.png";
 
 
 
-###################################################################################################
-######################################## Header Adjustment ########################################
-###################################################################################################
+#######################################################################################################################
+################################################## Header Adjustment ##################################################
+#######################################################################################################################
 ########## Add the header text to the header 
 $textOffset = 2 * $logoOffset + $logoWidth;
 $x = $pathToImageMagick."composite $tempFilesLocation".$date."text.png -gravity West -geometry +$textOffset+0 $tempFilesLocation".$date."header.png $tempFilesLocation".$date."header.png";
@@ -158,9 +219,9 @@ $x = "rm $tempFilesLocation".$date."text.png";
 
 
 
-#############################################################################################
-######################################## North Arrow ########################################
-#############################################################################################
+#################################################################################################################
+################################################## North Arrow ##################################################
+#################################################################################################################
 ########## Scale the north arrow
 $x = $pathToImageMagick."convert $logoFilesLocation"."northArrow.png -resize $logoWidth"."x$logoHeight $tempFilesLocation".$date."northArrowScaled.png";
 `$x`;
@@ -207,16 +268,15 @@ $x = "rm $tempFilesLocation".$date."northArrowRotated.png";
 
 
 
-###################################################################################################
-######################################## Header Adjustment ########################################
-###################################################################################################
+#######################################################################################################################
+################################################## Header Adjustment ##################################################
+#######################################################################################################################
 ########## Add a shadow to the header
 $x = $pathToImageMagick."convert -page +4+4 $tempFilesLocation".$date."header.png -matte \\( +clone -background black -shadow 60x4+4+4 \\) +swap -background none -mosaic $tempFilesLocation".$date."header.png";
 `$x`;
 
 ########## Add the header to the image 
-$headerOffset = ($imageWidth - $headerWidth) / 4;
-$headerOffset = int($headerOffset);
+$headerOffset = int(($imageWidth - 0.96 * $imageWidth) / 4);
 $x = $pathToImageMagick."composite $tempFilesLocation".$date."header.png -gravity North -geometry +0+$headerOffset $imageFile $tempFilesLocation".$date."finishedProduct.png";
 `$x`;
 
@@ -228,9 +288,39 @@ $x = "rm $tempFilesLocation".$date."header.png";
 
 
 
-#################################################################################################
-######################################## Security Banner ########################################
-#################################################################################################
+#######################################################################################################################
+################################################## Report Adjustment ##################################################
+#######################################################################################################################
+########## Add the outline map to the finished product
+$outlineMapOffset = ($imageWidth - $headerWidth) / 2 +  $northArrowWidth + 2 * $northArrowOffset;
+$x = $pathToImageMagick."composite $tempFilesLocation".$date."outlineMapScaled.png -gravity NorthEast -geometry +$outlineMapOffset+0 $tempFilesLocation".$date."finishedProduct.png $tempFilesLocation".$date."finishedProduct.png";
+`$x`;
+
+
+
+
+
+#######################################################################################################################
+################################################## Report Adjustment ##################################################
+#######################################################################################################################
+########## Add the overview map to the finished product
+$overviewMapOffset = $outlineMapOffset + $outlineMapWidth;;
+$x = $pathToImageMagick."composite $tempFilesLocation".$date."overviewMapScaled.png -gravity NorthEast -geometry +$overviewMapOffset+0 $tempFilesLocation".$date."finishedProduct.png $tempFilesLocation".$date."finishedProduct.png"; 
+`$x`;
+
+$x = "rm $tempFilesLocation".$date."outlineMapScaled.png";
+`$x`;
+
+$x = "rm $tempFilesLocation".$date."overviewMapScaled.png";
+`$x`;
+
+
+
+
+
+#####################################################################################################################
+################################################## Security Banner ##################################################
+#####################################################################################################################
 ########## Determine security classification
 # stub for external script
 $securityClassification = "UNCLASSIFIED // FOUO";
@@ -269,7 +359,7 @@ $x = $pathToImageMagick."convert -page +4+4 $tempFilesLocation".$date."securityB
 `$x`;
 
 ########## Add security banner to finished product
-$securityBannerOffsetX = ($imageWidth - $headerWidth) / 4;
+$securityBannerOffsetX = ($imageWidth - 0.96 * $imageWidth) / 4;
 $securityBannerOffsetX = int($securityBannerOffsetX);
 $securityBannerOffsetY = int($securityBannerOffsetX / 2);
 $x = $pathToImageMagick."composite $tempFilesLocation".$date."securityBanner.png -gravity SouthWest -geometry +$securityBannerOffsetX+$securityBannerOffsetY $tempFilesLocation".$date."finishedProduct.png $tempFilesLocation".$date."finishedProduct.png";
@@ -299,4 +389,6 @@ $x = "rm $tempFilesLocation".$date."omarImage.png";
 
 
 
+########## Report Location ##########
+######### Print the location of the finished product#
 print "$tempFilesLocation".$date."finishedProduct.png";
