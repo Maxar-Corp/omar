@@ -7,7 +7,7 @@ grails.project.test.reports.dir = "target/test-reports"
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 grails.project.dependency.resolution = {
   // inherit Grails' default dependencies
-  inherits("global") {
+  inherits( "global" ) {
     // uncomment to disable ehcache
     // excludes 'ehcache'
   }
@@ -40,14 +40,13 @@ grails.project.dependency.resolution = {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
     // runtime 'mysql:mysql-connector-java:5.1.5'
-    compile("joda-time:joda-time-hibernate:1.3") {
-	excludes "joda-time", "hibernate"
+    compile( "joda-time:joda-time-hibernate:1.3" ) {
+      excludes "joda-time", "hibernate"
     }
   }
 
   plugins {
     compile ":joda-time:1.4"
-
   }
 
 }
