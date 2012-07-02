@@ -1,5 +1,7 @@
 package org.ossim.omar
 
+import org.ossim.omar.ogc.OgcController
+
 class OgcExtendController extends OgcController{
 
     def wmsFilter = {

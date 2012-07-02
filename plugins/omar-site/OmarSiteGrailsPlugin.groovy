@@ -1,5 +1,5 @@
-import org.ossim.omar.KmlService
-import org.ossim.omar.OgcController
+import org.ossim.omar.ogc.KmlService
+import org.ossim.omar.ogc.OgcController
 
 class OmarSiteGrailsPlugin {
     // the plugin version
