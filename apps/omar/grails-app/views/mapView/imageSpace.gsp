@@ -1662,7 +1662,7 @@ function updateCenter()
 
 				var imageURL  = "${createLink(absolute: 'true', controller: 'imageSpace', action: 'getTile')}" + "?" + params.toUrlParams();
 				imageURL = imageURL.replace(/&/g,"%26");
-				var templateURL = "${createLink( controller: 'templateExport', action: 'index')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&mgrs=" + mgrs + "&northArrowAngle=" + northArrowAngle;
+				var templateURL = "${createLink( controller: 'templateExport', action: 'index', plugin: 'omar-image-magick')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&mgrs=" + mgrs + "&northArrowAngle=" + northArrowAngle;
 				window.open(templateURL);
 			}
 		}
