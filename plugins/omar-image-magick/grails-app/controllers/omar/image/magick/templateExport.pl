@@ -333,12 +333,7 @@ if ($DEBUG) { print "Add a shadow to the header: $x\n"; }
 $headerOffset = int(($imageWidth - 0.96 * $imageWidth) / 4);
 $x = $pathToImageMagick."composite $tempFilesLocation".$date."header.png -gravity North -geometry +0+$headerOffset $imageFile $tempFilesLocation".$date."finishedProduct.png";
 `$x`;
-if ($DEBUG) { print "Add the header to the image: $x\n"; }
-
-########## Delete the header file
-$x = "rm $tempFilesLocation".$date."header.png";
-`$x`;
-if ($DEBUG) { print "Delete the header file: $x\n\n"; }
+if ($DEBUG) { print "Add the header to the image: $x\n\n"; }
 
 
 
@@ -369,15 +364,8 @@ if ($includeOverviewMap eq "on")
 	$overviewMapOffset = $outlineMapOffset + $outlineMapWidth;;
 	$x = $pathToImageMagick."composite $tempFilesLocation".$date."overviewMapScaled.png -gravity NorthEast -geometry +$overviewMapOffset+0 $tempFilesLocation".$date."finishedProduct.png $tempFilesLocation".$date."finishedProduct.png"; 
 	`$x`;
-	if ($DEBUG) { print "Add the overview map to the finished product: $x\n"; }
+	if ($DEBUG) { print "Add the overview map to the finished product: $x\n\n"; }
 }
-
-########## Remove
-$x = "rm $tempFilesLocation".$date."outlineMapScaled.png";
-`$x`;
-
-$x = "rm $tempFilesLocation".$date."overviewMapScaled.png";
-`$x`;
 
 
 
@@ -431,14 +419,50 @@ $securityBannerOffsetY = int($securityBannerOffsetX / 2);
 $x = $pathToImageMagick."composite $tempFilesLocation".$date."securityBanner.png -gravity SouthWest -geometry +$securityBannerOffsetX+$securityBannerOffsetY $tempFilesLocation".$date."finishedProduct.png $tempFilesLocation".$date."finishedProduct.png";
 `$x`;
 
-$securityBannerOffsetY = $securityBannerOffsetY + $headerOffset + $headerHeight;
+##########
+if ($includeOutlineMap eq "on")
+{
+	$x = $pathToImageMagick."identify -format %h $tempFilesLocation".$date."outlineMapScaled.png";
+	$outlineMapHeight = `$x`;
+	chomp($outlineMapHeight);
+	$securityBannerOffsetY = $outlineMapHeight;
+}
+elsif ($includeOverviewMap eq "on")
+{
+	$x = $pathToImageMagick."identify -format %h $tempFilesLocation".$date."overviewMapScaled.png";
+	$overviewMapHeight = `$x`;
+	chomp($overviewMapHeight);
+	$securityBannerOffsetY = $overviewMapHeight;
+}
+else
+{
+	$x = $pathToImageMagick."identify -format %h $tempFilesLocation".$date."header.png";
+	$headerHeight = `$x`;
+	chomp($headerHeight);
+	$securityBannerOffsetY = $headerHeight + $headerOffset;
+}
 $x = $pathToImageMagick."composite $tempFilesLocation".$date."securityBanner.png -gravity NorthEast -geometry +$securityBannerOffsetX+$securityBannerOffsetY $tempFilesLocation".$date."finishedProduct.png $tempFilesLocation".$date."finishedProduct.png";
 `$x`;
+
+########## Delete the header file
+$x = "rm $tempFilesLocation".$date."header.png";
+`$x`;
+if ($DEBUG) { print "Delete the header file: $x\n"; }
+
+########## Delete the outline map file
+$x = "rm $tempFilesLocation".$date."outlineMapScaled.png";
+`$x`;
+if ($DEBUG) { print "Delete the outline map file: $x\n"; }
+
+########## Delete the overview map file
+$x = "rm $tempFilesLocation".$date."overviewMapScaled.png";
+`$x`;
+if ($DEBUG) { print "Delete the overview map file: $x\n"; }
 
 ########## Delete the security banner file
 $x = "rm $tempFilesLocation".$date."securityBanner.png";
 `$x`;
-
+if ($DEBUG) { print "Delete the security banner file\n\n"; }
 
 
 
