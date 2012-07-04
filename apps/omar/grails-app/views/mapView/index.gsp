@@ -805,7 +805,7 @@ function exportTemplate()
     	templateParams.setProperties(wmsProperties);
 	var imageURL = baseURL + "?" + templateParams.toUrlParams();
 	imageURL = imageURL.replace(/&/g,"%26");
-	var templateURL = "${createLink(action: 'index',  controller: 'templateExport')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&mgrs=" + mgrs + "&northArrowAngle=" + northArrowAngle;
+	var templateURL = "${createLink(action: 'index',  controller: 'templateExport', plugin: 'omar-image-magick')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&mgrs=" + mgrs + "&northArrowAngle=" + northArrowAngle;
 	window.open(templateURL);
 }
 </r:script>
