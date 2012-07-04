@@ -1,0 +1,22 @@
+<plugin name='omar-image-magick' version='0.1' grailsVersion='2.0 &gt; *'>
+  <author>Your name</author>
+  <title>Omar Image Magick Plugin</title>
+  <description>Brief summary/description of the plugin.
+</description>
+  <documentation>http://grails.org/plugin/omar-image-magick</documentation>
+  <type>OmarImageMagickGrailsPlugin</type>
+  <resources>
+    <resource>omar.image.magick.TemplateExportController</resource>
+  </resources>
+  <repositories>
+    <repository name='grailsCentral' url='http://plugins.grails.org' />
+    <repository name='http://repo.grails.org/grails/plugins' url='http://repo.grails.org/grails/plugins/' />
+    <repository name='http://repo.grails.org/grails/core' url='http://repo.grails.org/grails/core/' />
+    <repository name='grailsCore' url='http://svn.codehaus.org/grails/trunk/grails-plugins' />
+    <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+  </repositories>
+  <dependencies />
+  <plugins />
+  <runtimePluginRequirements />
+  <behavior />
+</plugin>
