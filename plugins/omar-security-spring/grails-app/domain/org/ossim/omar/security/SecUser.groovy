@@ -18,7 +18,8 @@ class SecUser
     username blank: false, unique: true
     password blank: false
     userRealName nullable: true
-    email email: true, blank: false
+    //email email: true, blank: false
+    email nullable: true
     organization nullable: true
     phoneNumber nullable: true
   }
