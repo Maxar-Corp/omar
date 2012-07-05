@@ -168,6 +168,7 @@ plugins/omar-core/web-app/css/*.iml
 plugins/omar-core/web-app/images/*.iml
 plugins/omar-core/web-app/js/*.iml
 plugins/omar-core/web-app/js/prototype/*.iml
+plugins/omar-image-magick/target
 plugins/omar-jmeter/*.iml
 plugins/omar-jmeter/.settings/*.iml
 plugins/omar-jmeter/grails-app/*.iml
