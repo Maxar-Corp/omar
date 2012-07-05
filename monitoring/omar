@@ -80,29 +80,35 @@ start() {
 }
 
 stop() {
-    COUNT="0"
-    WAIT="10"
+    COUNT=0
+    WAIT=10
     if [ -e "$CATALINA_PID" ]; then
 		read PID < $CATALINA_PID
+#echo ${PID}
         if checkpid $PID 2>&1; then
             echo -ne $"Stopping $PROG: "
 			/bin/su - $OMAR_USER $CATALINA_HOME/bin/shutdown.sh >> $OMAR_ERROR_LOG 2>&1
 			RETVAL="$?"
-			if [ "$RETVAL" -eq 0 ]; then
-				echo_success
-				echo -en "\n"
-			else
-				until [ "$(ps -p $PID | grep -c $PID)" -eq "0" ]; do
+			sleep 2
+#			if [ "$RETVAL" -eq 0 ]; then
+#				echo_successss
+#				echo -en "\n"
+#			else
+				while [ "$(ps -p $PID | grep -c $PID)" -eq "1"  -a  "$COUNT" -lt "$WAIT" ]; do
 				echo -ne "\nWaiting on $PROG process to exit..."
-				let COUNT="${COUNT}+1"
+				COUNT=`expr $COUNT + 1`
+				sleep .3
+#				echo $COUNT
 				done
-					if [ "$COUNT" -gt "$WAIT" ]; then
-						echo -ne "\nKilling $PROG process which did not shutdown properly after $WAIT seconds"
+
+#					if [ "$COUNT" -gt "$WAIT" ]; then
+					if [ "$(ps -p $PID | grep -c $PID)" == "1" ] ; then
+						echo -ne "\nCouldn't shutdown, forcing shutdown of $PROG process"
 						kill -9 $PID
 					fi
 					echo_success
 					echo -en "\n"
-			fi
+#			fi
 		fi
 	else
 		echo -ne $"Stopping $PROG: "
