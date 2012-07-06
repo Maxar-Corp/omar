@@ -11,7 +11,13 @@ class TemplateExportController
 		def imageURL = params.imageURL
 		def mgrs = params.mgrs
 		def northArrowAngle = params.northArrowAngle
-		
+
+		def scriptLocation = grailsApplication.config.templateExportScriptLocation	
+		def securityClassificationScript = "${scriptLocation}securityClassification.pl ${imageId} ${countryCode}"	
+		def securityClassificationScriptProc = securityClassificationScript.execute()
+                securityClassificationScriptProc.waitFor()
+                def securityClassification = securityClassificationScriptProc.text
+	
 		render(
 			view:"templateExport.gsp", 
 			model:
@@ -21,7 +27,8 @@ class TemplateExportController
 				imageId: imageId,
 				imageURL: imageURL,
 				mgrs: mgrs,
-				northArrowAngle: northArrowAngle
+				northArrowAngle: northArrowAngle,
+				securityClassification: securityClassification
 			]
 		)
         }
@@ -37,7 +44,8 @@ class TemplateExportController
 		def includeOverviewMap = params.includeOverviewMap
 		def country = params.country
 		def northAngle = params.northArrowAngle
-		
+		def securityClassification = params.securityClassification	
+	
  		def pathToImageMagick = grailsApplication.config.pathToImageMagick
                 def logoFilesLocation = grailsApplication.config.logoFilesLocation
                 def tempFilesLocation = grailsApplication.config.tempFilesLocation
@@ -55,6 +63,7 @@ class TemplateExportController
 		paramsFile.append("${includeOverviewMap}\n")
 		paramsFile.append("${country}\n")
 		paramsFile.append("${northAngle}\n")
+		paramsFile.append("${securityClassification}\n")
 		paramsFile.append("${logoFilesLocation}\n")
 		paramsFile.append("${tempFilesLocation}\n")
 		paramsFile.append("${date}\n")
@@ -92,6 +101,7 @@ class TemplateExportController
 		def includeOverviewMap = params.includeOverviewMap
 		def country = params.country
 		def northAngle = params.northArrowAngle
+		def securityClassification = params.securityClassification
 
 		def pathToImageMagick = grailsApplication.config.pathToImageMagick
 		def logoFilesLocation = grailsApplication.config.logoFilesLocation
@@ -110,6 +120,7 @@ class TemplateExportController
 		paramsFile.append("${includeOverviewMap}\n")
 		paramsFile.append("${country}\n")
 		paramsFile.append("${northAngle}\n")
+		paramsFile.append("${securityClassification}\n")
 		paramsFile.append("${logoFilesLocation}\n")
 		paramsFile.append("${tempFilesLocation}\n")
 		paramsFile.append("${date}\n")
