@@ -31,10 +31,11 @@ $includeOutlineMap = @params[6];
 $includeOverviewMap = @params[7];
 $country = @params[8];
 $northAngle = @params[9];
-$logoFilesLocation = @params[10];
-$mapFilesLocation = @params[10]."overviewMaps/";
-$tempFilesLocation = @params[11];
-$date = @params[12];
+$securityClassification = @params[10];
+$logoFilesLocation = @params[11];
+$mapFilesLocation = @params[11]."overviewMaps/";
+$tempFilesLocation = @params[12];
+$date = @params[13];
 
 
 
@@ -375,10 +376,6 @@ if ($includeOverviewMap eq "on")
 ################################################## Security Banner ##################################################
 #####################################################################################################################
 if ($DEBUG) { print "##### Security Banner #####\n"; }
-########## Determine security classification
-# stub for external script
-$securityClassification = "UNCLASSIFIED // FOUO";
-
 ########## Generate security banner text
 $securityTextHeight = int(0.25 * $headerHeight);
 $x = $pathToImageMagick."convert -background white -fill black -size x$securityTextHeight -gravity West label:'".$securityClassification."' $tempFilesLocation".$date."securityText.png";
