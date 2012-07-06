@@ -6,6 +6,7 @@ import joms.oms.ossimGpt
 import joms.oms.ossimEcefPoint
 import joms.oms.ossimString
 import joms.oms.GeodeticEvaluator
+import joms.oms.ossimElevationAccuracyInfo
 import geoscript.geom.Geometry
 
 class ProjectionService
@@ -264,8 +265,8 @@ class ProjectionService
         boolean errorPropAvailable = false
 
         boolean surfaceInfoAvailable = false
-        def infoString = new ossimString()
-        def typeString = new ossimString()
+        def accuracyInfo = new ossimElevationAccuracyInfo()
+        def typeString   = new ossimString()
         String projType
 
         int numPnts = 360/angInc + 1
@@ -323,14 +324,12 @@ class ProjectionService
         }
 
         // Get surface info
-        surfaceInfoAvailable = imageSpaceModel.getProjSurfaceInfo(groundPoint, infoString)
+        surfaceInfoAvailable = imageSpaceModel.getProjSurfaceInfo(groundPoint, accuracyInfo)
         String info
-        if (surfaceInfoAvailable)
-        {
-            info = infoString
-            info = info.minus("ossim")
-        }
-        else
+        info = accuracyInfo.surfaceName
+        accuracyInfo.delete()
+        accuracyInfo = null
+        if (!surfaceInfoAvailable)
         {
             info = "NO SURFACE INFO"
         }
