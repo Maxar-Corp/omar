@@ -17,6 +17,34 @@
     width: 120px;
     background: url(${resource(plugin: 'yui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
   }
+  .olControlPanel .olControlButtonSelectAOIItemInactive {
+      width:  24px;
+      height: 24px;
+      background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis/grass', file:'mActionSelect.png')});
+    background-repeat: no-repeat;
+  }
+
+  .olControlPanel .olControlButtonSelectAOIItemActive {
+      width:  24px;
+      height: 24px;
+      background-color: orange;
+      background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis/grass', file:'mActionSelect.png')});
+      background-repeat: no-repeat;
+  }
+  .olControlPanel .olControlButtonPanItemActive {
+      width:  24px;
+      height: 22px;
+      background-image: url(${resource(plugin: 'openlayers', dir:'js/theme/default/img/', file:'pan_on.png')});
+  background-repeat: no-repeat;
+      }
+
+  .olControlPanel .olControlButtonPanItemInactive {
+      width:  24px;
+      height: 22px;
+      background-color: orange;
+      background-image: url(${resource(plugin: 'openlayers', dir:'js/theme/default/img/', file:'pan_off.png')});
+  background-repeat: no-repeat;
+      }
   </style>
 </head>
 
@@ -89,8 +117,8 @@ function changeToImageSpace()
         // need to calculate an azimuth if we go to other projectors
         // for now just hard code to 0.0
         //  if we ever to UTM grids we need to modify this
-        wmsParams.view = YAHOO.lang.JSON.stringify({latitude:mapWidget.getMap().getCenter().lat,
-                                                    longitude:mapWidget.getMap().getCenter().lon,
+        wmsParams.view = YAHOO.lang.JSON.stringify({lat:mapWidget.getMap().getCenter().lat,
+                                                    lon:mapWidget.getMap().getCenter().lon,
                                                     mpp:mpp,
                                                     azimuth:0.0});
         wmsFormElement.action = url + "?"+wmsParams.toUrlParams();
@@ -251,7 +279,7 @@ function init(mapWidth, mapHeight)
     var viewParam = ${params.view?:"null"};
     if(viewParam)
     {
-        var mapCenter = new OpenLayers.LonLat(viewParam.longitude, viewParam.latitude);
+        var mapCenter = new OpenLayers.LonLat(viewParam.lon, viewParam.lat);
         var normScale = OpenLayers.Util.normalizeScale(viewParam.mpp);
         resolution = (1.0/OpenLayers.INCHES_PER_UNIT["degrees"])*
                      (OpenLayers.INCHES_PER_UNIT["m"]*viewParam.mpp);
@@ -764,6 +792,7 @@ function shareImage()
 	
 	var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
 	popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
+    popUpWindow.document.close();
 }
 
 function exportTemplate()
