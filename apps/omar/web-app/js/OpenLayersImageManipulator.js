@@ -715,6 +715,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
           {
               if(this.map.layers[0].resolutions[idx]<ratio)
               {
+                  if(idx > 0) --idx;
                   break;
               }
           }
