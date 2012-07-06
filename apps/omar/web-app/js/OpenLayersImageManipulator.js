@@ -415,7 +415,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
    },
    calculateAzimuth: function()
    {
-       var rot = (this.northAngle - this.affineParams.rotate);
+       var rot = (this.affineParams.rotate - this.northAngle);
        if(rot < 0.0) rot += 360.0;
        return rot%360;
    },
