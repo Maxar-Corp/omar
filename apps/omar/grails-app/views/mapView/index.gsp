@@ -274,9 +274,9 @@ function init(mapWidth, mapHeight)
 	mapWidget.getMap().addControl(new OpenLayers.Control.ScaleLine());
 
 	mapWidget.getMap().events.register('mousemove',map,setMouseMapCtrTxt);
-	mapWidget.getMap().events.register("moveend", map, this.setMapCtrTxt);
+    mapWidget.getMap().events.register("mouseup", map, this.setMapCtrTxt);
 
-    var viewParam = ${params.view?:"null"};
+var viewParam = ${params.view?:"null"};
     if(viewParam)
     {
         var mapCenter = new OpenLayers.LonLat(viewParam.lon, viewParam.lat);
@@ -303,6 +303,7 @@ function init(mapWidth, mapHeight)
 
 function setMapCtrTxt()
 {
+
     var center = mapWidget.getMap().getCenter();
     $("ddMapCtr").value = center.lat + ", " + center.lon;
 	$("dmsMapCtr").value = coordConvert.ddToDms(center.lat, center.lon);
