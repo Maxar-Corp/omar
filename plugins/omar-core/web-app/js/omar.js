@@ -482,7 +482,8 @@ function Omar()
             trigger:this.zoomInFullRes} );
 
         var boundBoxButton = new OpenLayers.Control.DrawFeature( aoiLayer, OpenLayers.Handler.RegularPolygon,
-                {handlerOptions:{sides:4, irregular:true}, title:"Click button to activate. Once activated, drag the mouse to define a bound box."} );
+                {handlerOptions:{sides:4, irregular:true},
+                    title:"Click button to activate. Once activated, drag the mouse to define a bound box."} );
 
         var clearAoiButton = new OpenLayers.Control.Button( {title:"Click button to clear the bound box.",
             displayClass:"olControlClearAreaOfInterest",
@@ -651,11 +652,11 @@ function Omar()
 
         panel.addControls( [
             panButton,
+            zoomBoxButton,
             zoomInButton,
             zoomOutButton,
-            zoomMaxExtentButton,
-            zoomBoxButton,
             zoomInFullResButton,
+            zoomMaxExtentButton,
             boundBoxButton,
             clearAoiButton,
             pathMeasurementButton,
