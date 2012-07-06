@@ -17,6 +17,7 @@
 </head>
 
 <body class=" yui-skin-sam">
+<g:form name="wcsForm" method="POST"/>
 
 <content tag="top1">
   <omar:securityClassificationBanner/>
