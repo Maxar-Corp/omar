@@ -278,8 +278,8 @@ function changeToSingleLayer()
     tempWmsParams.layers = "${rasterEntry.indexId}";
     tempWmsParams.latitude = lat;
     tempWmsParams.longitude = lon;
-    tempWmsParams.view = YAHOO.lang.JSON.stringify({"latitude":lat,
-                                                    "longitude":lon,
+    tempWmsParams.view = YAHOO.lang.JSON.stringify({"lat":lat,
+                                                    "lon":lon,
                                                     "mpp":OMAR.imageManipulator.calculateMetersPerPixel(),
                                                     "azimuth":OMAR.imageManipulator.calculateAzimuth()
                                                     });
@@ -687,10 +687,9 @@ function init(mapWidth, mapHeight)
     var url = "/omar/imageSpace/groundToImage";
     if(view)
     {
-        lat = view.latitude;
-        lon = view.longitude;
+        lat = view.lat;
+        lon = view.lon;
     }
-
     if(view.azimuth != null)
     {
         rotateSlider.setRealValue(view.azimuth + OMAR.imageManipulator.northAngle);
@@ -701,7 +700,7 @@ function init(mapWidth, mapHeight)
             url:url,
             data: YAHOO.lang.JSON.stringify({
             id:${rasterEntry.id},
-            groundPoints:[{"lat":${params.latitude}, "lon":${params.longitude}}]
+            groundPoints:[{"lat":lat, "lon":lon}]
             }),
             callback: function (transport)
             {
@@ -979,9 +978,9 @@ lon = match[3] + match[4];
 //  mapWidget.getMap().setCenter(center, mapWidget.getMap().getZoom());
 }
 else {
-alert("Invalid DD Input.");
-return;
-}
+        alert("Invalid DD Input.");
+        return;
+    }
 }
 else if(unit == "dms") {
 if($("dmsMapCtr").value.match(OMAR.dmsRegExp)) {
@@ -993,8 +992,8 @@ lon = OMAR.coordConvert.dmsToDd( match[6], match[7], match[8] + match[9], match[
 // mapWidget.getMap().setCenter(center, mapWidget.getMap().getZoom());
 }
 else {
-alert("Invalid DMS Input.");
-return;
+    alert("Invalid DMS Input.");
+    return;
 }
 }
 else if(unit == "mgrs")
@@ -1553,6 +1552,7 @@ function updateCenter()
     }
     function shareImage()
     {
+        var center =  OMAR.imageManipulator.getCenterLocal();
         var baseURL = "${createLink(absolute: 'true', action: 'imageSpace', base: grailsApplication.config.omar.serverURL)}";
         var layers = "${rasterEntry?.indexId}";
         var interpolation = $("interpolation").value;
@@ -1568,49 +1568,30 @@ function updateCenter()
         var affineM = OMAR.imageManipulator.generateOssimFullImageTransform();
         var w = Math.abs(OMAR.imageManipulator.containerDivRegion.right - OMAR.imageManipulator.containerDivRegion.left) + 1;
         var h = Math.abs(OMAR.imageManipulator.containerDivRegion.top - OMAR.imageManipulator.containerDivRegion.bottom) + 1;
-        var center =  OMAR.imageManipulator.getCenterLocal();
         var pivot = Math.round(center.x) + "," + Math.round(center.y);
         var centerView = affineM.transform(center);
         var x = Math.round(centerView.x - w/2);
         var y = Math.round(centerView.y - h/2);
-        var bboxCoords = new Array();
-        var bboxPixels = new Array();
-        bboxPixels[0] = Math.round(x);
-        bboxPixels[1] = Math.round(parseFloat("${rasterEntry.height}") - (y + OMAR.imageManipulator.map.getResolution() * h));
-        bboxPixels[2] = Math.round(x + OMAR.imageManipulator.map.getResolution() * w);
-        bboxPixels[3] = Math.round(parseFloat("${rasterEntry.height}") - y);
 
-
-        imageToGround([{x:bboxPixels[0], y:bboxPixels[1]},
-                       {x:bboxPixels[2], y:bboxPixels[3]},
-                       {x:center.x, y:center.y}
-                      ],
+        imageToGround([{x:center.x, y:center.y}],
                       function(transport){
                         var temp = YAHOO.lang.JSON.parse(transport.responseText);
-
-                        if(temp.length == 3)
+                        if(temp.length == 1)
                         {
-                            var centerLatitude = temp[2].lat;
-                            var centerLongitude = temp[2].lon;
-
-                            var shareLink = baseURL + "?" +
-                            "layers=" + "${rasterEntry?.indexId}" +
-                            "&interpolation=" + interpolation +
-                            "&brightness=" + brightness +
-                            "&contrast=" + contrast +
-                            "&sharpen_mode=" + sharpen_mode +
-                            "&stretch_mode=" + stretch_mode +
-                            "&strech_mode_region=" + stretch_mode_region +
-                            "&bands=" + bands +
-                            "&latitude=" + centerLatitude +
-                            "&longitude=" + centerLongitude +
-                            "&bbox=" + temp[0].lon + "," + temp[0].lat + "," + temp[1].lon + "," + temp[1].lat +
-                            "&rotate=" + rotate;
-
+                            var tempWmsParams = new OmarWmsParams();
+                            tempWmsParams.setProperties(document);
+                            tempWmsParams.layers = "${rasterEntry.indexId}";
+                            tempWmsParams.view = YAHOO.lang.JSON.stringify({"lat":temp[0].lat,
+                                                                            "lon":temp[0].lon,
+                                                                            "mpp":OMAR.imageManipulator.calculateMetersPerPixel(),
+                                                                            "azimuth":OMAR.imageManipulator.calculateAzimuth()
+                                                 });
+                            var shareLink = baseURL +"?"+ tempWmsParams.toUrlParams();
                             var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
-                            popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
-                        }
 
+                            popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
+                            popUpWindow.document.close();
+                        }
                        }
                      );
     }
