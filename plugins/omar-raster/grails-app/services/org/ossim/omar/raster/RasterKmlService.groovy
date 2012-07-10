@@ -7,24 +7,30 @@ import org.ossim.omar.raster.RasterEntry
 
 class RasterKmlService extends KmlService
 {
-  String createName(RasterEntry rasterEntry)
+  def grailsApplication
+
+  String createName( RasterEntry rasterEntry )
   {
     rasterEntry.title ?: rasterEntry.filename
   }
 
-  String createImageKmlDescription(RasterEntry rasterEntry)
+  String createImageKmlDescription( RasterEntry rasterEntry )
   {
     def description = ""
-    def imageUrl = tagLibBean.createLink(absolute: true, controller: "mapView",
-            params: [layers: rasterEntry.indexId])
-    def thumbnailUrl = tagLibBean.createLink(absolute: true, controller: "thumbnail",
-            action: "show", id: rasterEntry.id, params: [size: 128, projectionType: 'imagespace'])
+
+    def imageUrl = tagLibBean.createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+            controller: "mapView", params: [layers: rasterEntry.indexId] )
+
+    def thumbnailUrl = tagLibBean.createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+            controller: "thumbnail", action: "show", id: rasterEntry.id,
+            params: [size: 128, projectionType: 'imagespace'] )
+
     def logoUrl = "${grailsApplication.config.omar.serverURL}/images/omarLogo.png"
 
     def mpp = rasterEntry.getMetersPerPixel()
     def fieldMap = [
             Thumbnail: "<img src='${thumbnailUrl}'/>",
-            File: "<a href='${imageUrl}'>${(rasterEntry.mainFile.name as File).name}</a>",
+            File: "<a href='${imageUrl}'>${( rasterEntry.mainFile.name as File ).name}</a>",
             'Entry Id': rasterEntry.entryId ?: "",
             'Image Id': rasterEntry.imageId ?: "",
             'Title': rasterEntry.title ?: "",
@@ -49,14 +55,14 @@ class RasterKmlService extends KmlService
     description
   }
 
-  String createImagesKml(List rasterEntries, Map wmsParams, Map params)
+  String createImagesKml( List rasterEntries, Map wmsParams, Map params )
   {
     def kmlbuilder = new StreamingMarkupBuilder()
 
     kmlbuilder.encoding = "UTF-8"
 
     wmsParams?.request = "GetMap"
-    if ( !params?.containsKey("version") )
+    if ( !params?.containsKey( "version" ) )
     {
       wmsParams.version = "1.1.1"
     }
@@ -68,101 +74,108 @@ class RasterKmlService extends KmlService
     //    {
     //      wmsParams.height = "512"
     //    }
-    if ( !params?.containsKey("format") )
+    if ( !params?.containsKey( "format" ) )
     {
       wmsParams.format = "image/png"
     }
-    if ( !params?.containsKey("transparent") )
+    if ( !params?.containsKey( "transparent" ) )
     {
       wmsParams.transparent = "TRUE"
     }
     wmsParams?.srs = "EPSG:4326"
-    def bbox = wmsParams?.bbox?.split(',')?.collect { it.toDouble() };
+    def bbox = wmsParams?.bbox?.split( ',' )?.collect { it.toDouble() };
 
-    wmsParams?.remove("bbox");
-    wmsParams?.remove("width");
-    wmsParams?.remove("height");
-    wmsParams.remove("action")
-    wmsParams.remove("controller")
+    wmsParams?.remove( "bbox" );
+    wmsParams?.remove( "width" );
+    wmsParams?.remove( "height" );
+    wmsParams.remove( "action" )
+    wmsParams.remove( "controller" )
     def rasterIdx = 0
     def descriptionMap = [:]
     rasterEntries?.each {rasterEntry ->
-      descriptionMap.put(rasterIdx, createImageKmlDescription(rasterEntry))
+      descriptionMap.put( rasterIdx, createImageKmlDescription( rasterEntry ) )
       rasterIdx++;
     }
     def kmlnode = {
       mkp.xmlDeclaration()
-      kml("xmlns": "http://earth.google.com/kml/2.1") {
+      kml( "xmlns": "http://earth.google.com/kml/2.1" ) {
         Document() {
 //          Folder() {
-          name("Omar WMS")
+          name( "Omar WMS" )
           rasterIdx = 0
           rasterEntries?.each {rasterEntry ->
             def minLonDMS
             def maxLonDMS
             def minLatDMS
             def maxLatDMS
-            def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : null
+            def acquisition = ( rasterEntry?.acquisitionDate ) ? sdf.format( rasterEntry?.acquisitionDate ) : null
             def bounds = rasterEntry?.groundGeom?.bounds
-            def groundCenterLon = (bounds?.minLon + bounds?.maxLon) * 0.5;
-            def groundCenterLat = (bounds?.minLat + bounds?.maxLat) * 0.5;
+            def groundCenterLon = ( bounds?.minLon + bounds?.maxLon ) * 0.5;
+            def groundCenterLat = ( bounds?.minLat + bounds?.maxLat ) * 0.5;
             wmsParams?.layers = rasterEntry?.indexId
 
-            def renderedHtml = "${descriptionMap.get(rasterIdx)}"
+            def renderedHtml = "${descriptionMap.get( rasterIdx )}"
             rasterIdx++
             def mpp = rasterEntry.getMetersPerPixel()
             // calculate a crude metric for putting an image that almost fits within the google viewport
             //
-            def defaultRange = mpp * Math.sqrt((rasterEntry.width ** 2) + (rasterEntry.height ** 2));
+            def defaultRange = mpp * Math.sqrt( ( rasterEntry.width ** 2 ) + ( rasterEntry.height ** 2 ) );
             if ( defaultRange < 1 )
             {
               defaultRange = 15000
             }
             GroundOverlay() {
 
-              name(createName(rasterEntry))
+              name( createName( rasterEntry ) )
               Snippet()
-              description { mkp.yieldUnescaped("<![CDATA[${renderedHtml}]]>") }
+              description { mkp.yieldUnescaped( "<![CDATA[${renderedHtml}]]>" ) }
               LookAt() {
-                longitude(groundCenterLon)
-                latitude(groundCenterLat)
-                altitude(0.0)
-                heading(0.0)
-                tilt(0.0)
-                range(defaultRange)
-                altitudeMode("clampToGround")
+                longitude( groundCenterLon )
+                latitude( groundCenterLat )
+                altitude( 0.0 )
+                heading( 0.0 )
+                tilt( 0.0 )
+                range( defaultRange )
+                altitudeMode( "clampToGround" )
               }
-              open("1")
-              visibility("1")
+              open( "1" )
+              visibility( "1" )
               Icon() {
-                def wmsURL = tagLibBean.createLink(absolute: true, controller: "ogc", action: "wms", params: wmsParams)
+                def wmsURL = tagLibBean.createLink(
+                        absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+                        controller: "ogc", action: "wms", params: wmsParams
+                )
 
-                href { mkp.yieldUnescaped("<![CDATA[${wmsURL}]]>") }
-                viewRefreshMode("onStop")
-                viewRefreshTime("1")
-                viewBoundScale("0.85")
-                viewFormat("""BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&width=[horizPixels]&height=[vertPixels]""")
+                href { mkp.yieldUnescaped( "<![CDATA[${wmsURL}]]>" ) }
+                viewRefreshMode( "onStop" )
+                viewRefreshTime( "1" )
+                viewBoundScale( "0.85" )
+                viewFormat {
+                  mkp.yieldUnescaped(
+                          "<![CDATA[BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&width=[horizPixels]&height=[vertPixels]]]>"
+                  )
+                }
               }
               LatLonBox() {
                 if ( bbox )
                 {
-                  north(Math.max(bbox[3], bbox[1]))
-                  south(Math.min(bbox[1], bbox[3]))
-                  east(Math.max(bbox[2], bbox[0]))
-                  west(Math.min(bbox[0], bbox[2]))
+                  north( Math.max( bbox[3], bbox[1] ) )
+                  south( Math.min( bbox[1], bbox[3] ) )
+                  east( Math.max( bbox[2], bbox[0] ) )
+                  west( Math.min( bbox[0], bbox[2] ) )
                 }
                 else
                 {
-                  north(bounds?.maxLat)
-                  south(bounds?.minLat)
-                  east(bounds?.maxLon)
-                  west(bounds?.minLon)
+                  north( bounds?.maxLat )
+                  south( bounds?.minLat )
+                  east( bounds?.maxLon )
+                  west( bounds?.minLon )
                 }
               }
               if ( acquisition )
               {
                 TimeStamp() {
-                  when(acquisition)
+                  when( acquisition )
                 }
               }
             }
@@ -173,30 +186,32 @@ class RasterKmlService extends KmlService
     }
     def kmlwriter = new StringWriter()
 
-    kmlwriter << kmlbuilder.bind(kmlnode)
+    kmlwriter << kmlbuilder.bind( kmlnode )
 
     String kmlText = kmlwriter.buffer
     return kmlText
   }
 
-  String createTopImagesKml(Map params)
+  String createTopImagesKml( Map params )
   {
-    def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "kmlQuery", action: "getImagesKml", params: params)
+    def kmlQueryUrl = tagLibBean.createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+            controller: "kmlQuery", action: "getImagesKml", params: params )
+
     def kmlbuilder = new StreamingMarkupBuilder()
 
     kmlbuilder.encoding = "UTF-8"
 
     def kmlnode = {
       mkp.xmlDeclaration()
-      kml("xmlns", "http://earth.google.com/kml/2.1") {
+      kml( "xmlns", "http://earth.google.com/kml/2.1" ) {
         NetworkLink() {
-          name("OMAR Last ${params.max} Images For View")
+          name( "OMAR Last ${params.max} Images For View" )
           Link() {
             href {
-              mkp.yieldUnescaped("<![CDATA[${kmlQueryUrl}]]>")
+              mkp.yieldUnescaped( "<![CDATA[${kmlQueryUrl}]]>" )
             }
-            httpQuery("googleClientVersion=[clientVersion];")
-            viewRefreshMode("onRequest")
+            httpQuery( "googleClientVersion=[clientVersion];" )
+            viewRefreshMode( "onRequest" )
           }
         }
       }
@@ -204,18 +219,18 @@ class RasterKmlService extends KmlService
 
     def kmlwriter = new StringWriter()
 
-    kmlwriter << kmlbuilder.bind(kmlnode)
+    kmlwriter << kmlbuilder.bind( kmlnode )
 
     String kmlText = kmlwriter.buffer
 
     return kmlText
   }
 
-  String createImageFootprint(Map params)
+  String createImageFootprint( Map params )
   {
-    def dateFormat = new SimpleDateFormat("yyyyMMdd");
+    def dateFormat = new SimpleDateFormat( "yyyyMMdd" );
     def date = new Date()
-    def url = buildUrl(grailsApplication.config.wms.data.raster.url,
+    def url = buildUrl( grailsApplication.config.wms.data.raster.url,
             [VERSION: "1.1.1",
                     REQUEST: "GetMap",
                     LAYERS: "${grailsApplication.config.wms.data.raster.options.footprintLayers}",
@@ -224,34 +239,34 @@ class RasterKmlService extends KmlService
                     WIDTH: "1024",
                     HEIGHT: "512",
                     TRANSPARENT: "TRUE",
-                    TIME: "P${params.days}D/${dateFormat.format(date)}",
+                    TIME: "P${params.days}D/${dateFormat.format( date )}",
 //            IMAGEFILTER: "acquisition_date>=(date(now())-integer'${params.imagedays}')",
-                    FORMAT: "image/png"])
+                    FORMAT: "image/png"] )
 
     def kmlbuilder = new StreamingMarkupBuilder()
     def kmlnode = {
       mkp.xmlDeclaration()
-      kml("xmlns", "http://earth.google.com/kml/2.1") {
+      kml( "xmlns", "http://earth.google.com/kml/2.1" ) {
         GroundOverlay() {
-          name("OMAR Last ${params.days} Days Imagery Coverage")
-          open("1")
-          visibility("1")
+          name( "OMAR Last ${params.days} Days Imagery Coverage" )
+          open( "1" )
+          visibility( "1" )
           Icon() {
-            href(url)
-            viewRefreshMode("onStop")
-            viewRefreshTime("${grailsApplication.config.kml.viewRefreshTime}")
-            viewBoundScale("1.0")
+            href( url )
+            viewRefreshMode( "onStop" )
+            viewRefreshTime( "${grailsApplication.config.kml.viewRefreshTime}" )
+            viewBoundScale( "1.0" )
           }
           LatLonBox() {
-            north(90)
-            south(-90)
-            east(180)
-            west(-180)
+            north( 90 )
+            south( -90 )
+            east( 180 )
+            west( -180 )
           }
         }
       }
     }
-    return kmlbuilder.bind(kmlnode).toString()
+    return kmlbuilder.bind( kmlnode ).toString()
   }
 
 }
