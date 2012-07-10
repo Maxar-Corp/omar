@@ -173,6 +173,8 @@ def stageAndAddClosure ={file->
       {
          commandLine = "ossim-create-histo ${parent.env.HISTOGRAM_OPTIONS} ${file.absolutePath}";
       }
+      imageStager?.delete();
+      imageStager = null
       def exitCode = 0
       if(commandLine)
       {
@@ -236,19 +238,9 @@ if(parent.scriptArgs.size())
    dirList.each{dir->
       dir.traverse( options){file->
          def row = sql?.firstRow("SELECT name FROM raster_file where name = ${file.toString()}")
-         if(row)
+         if(!row)
          {
-         }
-         else
-         {  
-            def dataInfo = new DataInfo();
-
-            if(dataInfo.open(file as String))
-            {
-               futures << threadPool.submit({-> stageAndAddClosure file } as Callable);
-            }
-            dataInfo.delete()
-            dataInfo = null
+            futures << threadPool.submit({-> stageAndAddClosure file } as Callable);
          }
       }
    }
