@@ -1178,7 +1178,7 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
                   callback: function (transport){
                      var tmp = YAHOO.lang.JSON.parse(transport.responseText);
                      var tmpout = document.getElementById("mouseDisplayId");
-                     if(tmpout)
+                     if(tmpout&&tmp&&tmp.ellpar&&tmp.ellpar.lon)
                      {
                         tmpout.innerHTML = "<table><tr>" +
                                            "<td width='20%'>Img: (" + Math.round(tmp.ellpar.x*1000.0)/1000.0 + ", "+ Math.round(tmp.ellpar.y*1000.0)/1000.0+")</td>" +
@@ -1213,7 +1213,6 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
              var yd = -(pointData.ellpar.y - height);
              xPoint = new OpenLayers.Feature.Vector(new OpenLayers.Geometry.Point(xd, yd), null, null);
              OMAR.imageManipulator.vectorLayer.addFeatures([xPoint]);
-
              // Ellipse
              var nEll = pointData.ellpar.nELL;
 
@@ -1591,7 +1590,7 @@ function updateCenter()
 
                             popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
                             popUpWindow.document.close();
-                        }
+}
                        }
                      );
     }
