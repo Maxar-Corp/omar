@@ -120,8 +120,8 @@ class SuperOverlayService implements InitializingBean
                                   absolute: true, base: grailsApplication.config.omar.serverURL,
                                   action: params.action, params: newParams )
                         }]]>""" )
-                viewRefreshMode( "onExpire" )
               }
+              viewRefreshMode( "onExpire" )
             }
           }
         }
