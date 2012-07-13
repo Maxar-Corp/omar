@@ -23,94 +23,7 @@
     width: 180px;
   }
 
- .olControlPanel .olControlButtonPanItemActive { 
-  width:  24px;  
-  height: 22px;
-  background-image: url(${resource(plugin: 'openlayers', dir:'js/theme/default/img/', file:'pan_on.png')});
-  background-repeat: no-repeat;
-}
 
-.olControlPanel .olControlButtonPanItemInactive { 
-  width:  24px;  
-  height: 22px;
-  background-color: orange;
-  background-image: url(${resource(plugin: 'openlayers', dir:'js/theme/default/img/', file:'pan_off.png')});
-  background-repeat: no-repeat;
-}
-
-.olControlPanel .olControlButtonSelectAOIItemInactive { 
-  width:  24px;  
-  height: 24px;
-  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis/grass', file:'mActionSelect.png')});
-  background-repeat: no-repeat;
-}
-
-.olControlPanel .olControlButtonSelectAOIItemActive { 
-  width:  24px;  
-  height: 24px;
-  background-color: orange;
-  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis/grass', file:'mActionSelect.png')});
-  background-repeat: no-repeat;
-}
-
-.olControlPanel .olControlButtonDeleteAOIItemInactive { 
-  width:  24px;  
-  height: 24px;
-  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionDeleteSelected.png')});
-  background-repeat: no-repeat;
-}
-
-.olControlPanel .olControlButtonDeleteAOIItemActive { 
-  width:  24px;  
-  height: 24px;
-  background-color: orange;
-  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionDeleteSelected.png')});
-  background-repeat: no-repeat;
-}
-
-.olControlPanel .olControlButtonMeasurePointItemActive { 
-  width:  24px;  
-  height: 24px;
-  background-color: orange;
-  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'bullseye.png')});
-  background-repeat: no-repeat;
-}
-
-.olControlPanel .olControlButtonMeasurePointItemInactive { 
-  width:  24px;  
-  height: 24px;
-  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'bullseye.png')});
-  background-repeat: no-repeat;
-}
-
-.olControlPanel .olControlButtonMeasurePathItemActive { 
-  width:  24px;  
-  height: 24px;
-  background-color: orange;
-  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionMeasure.png')});
-  background-repeat: no-repeat;
-}
-
-.olControlPanel .olControlButtonMeasurePathItemInactive { 
-  width:  24px;  
-  height: 24px;
-  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionMeasure.png')});
-  background-repeat: no-repeat;
-}
-
-.olControlPanel .olControlButtonMeasureAreaItemActive { 
-  width:  24px;  
-  height: 24px;
-  background-color: orange;
-  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionMeasureArea.png')});
-  background-repeat: no-repeat;
-}
-.olControlPanel .olControlButtonMeasureAreaItemInactive { 
-  width:  24px;  
-  height: 24px;
-  background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'mActionMeasureArea.png')});
-  background-repeat: no-repeat;
-}
   </style>
 </head>
 
@@ -881,19 +794,19 @@ function setupToolbar()
                                                 id: "PAN",
                                                 trigger: panMode,
                                                 type:OpenLayers.Control.TYPE_TOOL,
-                                                displayClass: "olControlButtonPan"});
+                                                displayClass: "olControlDragPan"});
 
    var selectAoi = new OpenLayers.Control.Button({title: "Click to drag/select an AOI with an upright rectangle.",
                                                    id: "SELECT_AOI",
                                                 trigger: selectAoiClicked,
                                                 type:OpenLayers.Control.TYPE_TOOL,
-                                                displayClass: "olControlButtonSelectAOI"});
+                                                displayClass: "olControlDrawFeature"});
 
   var deleteAoi = new OpenLayers.Control.Button({title: "Click to clear AOI.",
                                                    id: "DELETE_AOI",
                                                 trigger: deleteAoiClicked,
                                                 type:OpenLayers.Control.TYPE_BUTTON,
-                                                displayClass: "olControlButtonDeleteAOI"});
+                                                displayClass: "olControlClearAreaOfInterest"});
 
     var pointButton = new OpenLayers.Control.Button({title: "Click to drop a point", 
                                                    id: "POINT_BUTTON",
@@ -905,13 +818,13 @@ function setupToolbar()
                                                    id: "MEASURE_PATH",
                                                 trigger: measurePathModeClicked,
                                                 type:OpenLayers.Control.TYPE_TOOL,
-                                                displayClass: "olControlButtonMeasurePath"});
+                                                displayClass: "olControlMeasureDistance"});
 
     var measureAreaButton = new OpenLayers.Control.Button({title: "Click to measure an area",
                                                     id: "MEASURE_AREA",
                                                trigger: measureAreaModeClicked,
                                                 type:OpenLayers.Control.TYPE_TOOL,
-                                                displayClass: "olControlButtonMeasureArea"});
+                                                displayClass: "olControlMeasureArea"});
 
     var zoomBoxButton = new OpenLayers.Control.ZoomBox({title:"Click the zoom box button to activate. Once activated click and drag over an area of interest on the map to zoom into.",id:"ZOOM_BOX", trigger:zoomBoxClicked});
     zoomInButton = new OpenLayers.Control.Button({title: "Click to zoom in.", 
