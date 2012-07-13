@@ -21,6 +21,20 @@ div.olControlOverviewMap {
     margin: 5px;
 }
 
+
+/*
+.sprite-bullseye{ background-position: 0 0; width: 24px; height: 24px; }
+.sprite-mActionDeleteSelected{ background-position: 0 -25px; width: 24px; height: 24px; }
+.sprite-mActionMeasure{ background-position: 0 -50px; width: 24px; height: 24px; }
+.sprite-mActionMeasureArea{ background-position: 0 -75px; width: 24px; height: 24px; }
+.sprite-mActionSelect{ background-position: 0 -100px; width: 24px; height: 24px; }
+.sprite-mActionZoomFullExtent{ background-position: 0 -125px; width: 24px; height: 24px; }
+.sprite-mActionZoomIn{ background-position: 0 -150px; width: 24px; height: 24px; }
+.sprite-mActionZoomOut{ background-position: 0 -175px; width: 24px; height: 24px; }
+.sprite-mActionZoomToLayer{ background-position: 0 -200px; width: 24px; height: 24px; }
+.sprite-mActionZoomToSelected{ background-position: 0 -225px; width: 24px; height: 24px; }
+.sprite-pan{ background-position: 0 -250px; width: 24px; height: 22px; }
+*/
 .olControlPanel div {
     float: left;
     display: block;
@@ -28,8 +42,26 @@ div.olControlOverviewMap {
     width: 150px;
     margin: 5px;
     border: 1px solid #ccc;
-    background: url('../images/themes/gis/csg-4c9cd9fa89479.gif') no-repeat top left;
+    /*background: url('../images/themes/gis/csg-4c9cd9fa89479.gif') no-repeat top left;*/
+    background: url('../images/themes/gis/csg-5000521933771.gif') no-repeat top left;
 
+}
+
+.olControlPanel .olControlButtonMeasurePointItemActive {
+    width:  24px;
+    height: 24px;
+    background-color: orange;
+   /* background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'bullseye.png')}); */
+    background-repeat: no-repeat;
+    background-position: 0 0px;
+}
+
+.olControlPanel .olControlButtonMeasurePointItemInactive {
+    width:  24px;
+    height: 24px;
+   /* background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis', file:'bullseye.png')});   */
+    background-repeat: no-repeat;
+    background-position: 0 0px;
 }
 
 .olControlPanel .olControlMouseDefaultsItemActive {
@@ -41,7 +73,7 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -296px;
+    background-position: 0 -250px;
 }
 
 .olControlPanel .olControlMouseDefaultsItemInactive {
@@ -52,10 +84,10 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -296px;
+    background-position: 0 -250px;
 }
 
-.olControlPanel .olControlDragPanItemActive {
+.olControlPanel .olControlDragPanItemActive{
     width: 24px;
     height: 24px;
     background-color: orange;
@@ -64,10 +96,10 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -296px;
+    background-position: 0 -250px;
 }
 
-.olControlPanel .olControlDragPanItemInactive {
+.olControlPanel .olControlDragPanItemInactive{
     width: 24px;
     height: 24px; /*background-color: blue;*/
     /*
@@ -75,10 +107,10 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -296px;
+    background-position: 0 -250px;
 }
 
-.olControlPanel .olControlDrawFeatureItemActive {
+.olControlPanel .olControlDrawFeatureItemActive  {
     width: 24px;
     height: 24px;
     background-color: orange;
@@ -87,7 +119,7 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -74px;
+    background-position: 0 -100px;
 }
 
 .olControlPanel .olControlDrawFeatureItemInactive {
@@ -98,7 +130,7 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -74px;
+    background-position: 0 -100px;
 
 }
 
@@ -110,7 +142,7 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -666px;
+    background-position: 0 -225px;
 }
 
 .olControlPanel .olControlZoomBoxItemActive {
@@ -122,7 +154,7 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -666px;
+    background-position: 0 -225px;
 }
 
 .olControlPanel .olControlZoomToMaxExtentItemInactive {
@@ -133,25 +165,7 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -370px;
-}
-
-.olControlPanel .olControlFooItemActive {
-    width: 24px;
-    height: 24px;
-    background-color: gray;
-    background-image: url('../images/themes/gis/mActionZoomIn.gif');
-    background-repeat: no-repeat;
-    background-size: 100%;
-}
-
-.olControlPanel .olControlFooItemInactive {
-    width: 24px;
-    height: 24px;
-    background-color: gray;
-    background-image: url('../images/themes/gis/mActionZoomIn.gif');
-    background-repeat: no-repeat;
-    background-size: 100%;
+    background-position: 0 -125px;
 }
 
 .olControlPanel .olControlZoomInItemInactive {
@@ -162,7 +176,7 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -444px;
+    background-position: 0 -150px;
 }
 
 .olControlPanel .olControlZoomOutItemInactive {
@@ -173,7 +187,7 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -518px;
+    background-position: 0 -175px;;
 }
 
 .olControlPanel .olControlClearAreaOfInterestItemInactive {
@@ -184,7 +198,18 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 0;
+    background-position: 0 -25px;
+}
+.olControlPanel .olControlClearAreaOfInterestItemActive {
+    width: 24px;
+    height: 24px; /*background-color: blue;*/
+    background-color: orange;
+    /*
+    background-image: url('../images/themes/gis/mActionDeleteSelected.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    */
+    background-position: 0 -25px;
 }
 
 .olControlPanel .olControlNavigationHistory {
@@ -222,7 +247,7 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -148px;
+    background-position: 0 -50px;
 }
 
 .olControlPanel .olControlMeasureDistanceItemInactive {
@@ -233,7 +258,7 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -148px;
+    background-position: 0 -50px;
 }
 
 .olControlPanel .olControlMeasureAreaItemActive {
@@ -245,7 +270,7 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -222px;
+    background-position: 0 -75px;
 }
 
 .olControlPanel .olControlMeasureAreaItemInactive {
@@ -256,7 +281,7 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -222px;
+    background-position: 0 -75px;
 }
 
 .olControlPanel .olControlZoomToLayerItemInactive {
@@ -267,5 +292,5 @@ div.olControlOverviewMap {
     background-repeat: no-repeat;
     background-size: 100%;
     */
-    background-position: 0 -592px;
+    background-position: 0 -200px;
 }

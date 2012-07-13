@@ -17,34 +17,6 @@
     width: 120px;
     background: url(${resource(plugin: 'yui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
   }
-  .olControlPanel .olControlButtonSelectAOIItemInactive {
-      width:  24px;
-      height: 24px;
-      background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis/grass', file:'mActionSelect.png')});
-    background-repeat: no-repeat;
-  }
-
-  .olControlPanel .olControlButtonSelectAOIItemActive {
-      width:  24px;
-      height: 24px;
-      background-color: orange;
-      background-image: url(${resource(plugin: 'openlayers', dir:'images/themes/gis/grass', file:'mActionSelect.png')});
-      background-repeat: no-repeat;
-  }
-  .olControlPanel .olControlButtonPanItemActive {
-      width:  24px;
-      height: 22px;
-      background-image: url(${resource(plugin: 'openlayers', dir:'js/theme/default/img/', file:'pan_on.png')});
-  background-repeat: no-repeat;
-      }
-
-  .olControlPanel .olControlButtonPanItemInactive {
-      width:  24px;
-      height: 22px;
-      background-color: orange;
-      background-image: url(${resource(plugin: 'openlayers', dir:'js/theme/default/img/', file:'pan_off.png')});
-  background-repeat: no-repeat;
-      }
   </style>
 </head>
 

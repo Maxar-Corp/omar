@@ -612,7 +612,7 @@ function MapWidget()
         if ( aoiLayer )
         {
             boundBoxButton = new OpenLayers.Control.DrawFeature( aoiLayer, OpenLayers.Handler.RegularPolygon,
-            {handlerOptions: {sides: 4, irregular: true}, title: "Click and drag to specify an area of interest."} );
+            {handlerOptions: {sides: 4, irregular: true}, displayClass: "olControlDrawFeature", title: "Click and drag to specify an area of interest."} );
 
             clearAoiButton = new OpenLayers.Control.Button(
             {title: "Click to clear area of interest", displayClass: "olControlClearAreaOfInterest", trigger: this.clearAOI} );
