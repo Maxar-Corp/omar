@@ -625,7 +625,7 @@ class VideoDataSetController implements InitializingBean
     params.remove("_action_kmlnetworklink")
 
     params.dateSort = "false"
-    def serviceAddress = createLink(absolute: true, controller: "kmlQuery", action: "getVideosKml", params: params)
+    def serviceAddress = createLink(absolute: true, controller: "videoKmlQuery", action: "getVideosKml", params: params)
     def kmlnode = {
       mkp.xmlDeclaration()
       kml("xmlns": "http://earth.google.com/kml/2.1") {

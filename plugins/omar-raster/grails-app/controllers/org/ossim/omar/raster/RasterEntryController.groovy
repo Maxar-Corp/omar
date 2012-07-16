@@ -698,7 +698,7 @@ class RasterEntryController implements InitializingBean
       }
     }
 
-    def serviceAddress = createLink( absolute: true,  base: "${grailsApplication.config.omar.serverURL}", controller: "kmlQuery", action: "getImagesKml", params: params )
+    def serviceAddress = createLink( absolute: true,  base: "${grailsApplication.config.omar.serverURL}", controller: "rasterKmlQuery", action: "getImagesKml", params: params )
 
 /*
     def kmlnode = {
