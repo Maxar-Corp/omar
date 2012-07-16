@@ -202,7 +202,7 @@ class VideoKmlService extends KmlService
 
   String createTopVideosKml(Map params)
   {
-    def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "kmlQuery", action: "getVideosKml", params: params)
+    def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "videoKmlQuery", action: "getVideosKml", params: params)
     def kmlbuilder = new StreamingMarkupBuilder()
 
     kmlbuilder.encoding = "UTF-8"
