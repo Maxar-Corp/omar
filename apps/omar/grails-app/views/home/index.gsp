@@ -66,25 +66,25 @@ s
           <ol>
             <li>
               <g:form name="imageView"
-                      url="[controller: 'kmlQuery', action: 'topImages', params: [stretch_mode: 'linear_auto_min_max', stretch_mode_region: 'global']]">
+                      url="[controller: 'rasterKmlQuery', action: 'topImages', params: [stretch_mode: 'linear_auto_min_max', stretch_mode_region: 'global']]">
                 <g:textField name="maximages" size="2" value="${grailsApplication.config.kml.defaultImages}"/>
                 <g:submitButton name="submit" value="Most Recent Images for View"/>
               </g:form>
             </li>
             <li>
-              <g:form name="videoView" url="[controller: 'kmlQuery', action: 'topVideos']">
+              <g:form name="videoView" url="[controller: 'videoKmlQuery', action: 'topVideos']">
                 <g:textField name="maxvideos" size="2" value="${grailsApplication.config.kml.defaultVideos}"/>
                 <g:submitButton name="submit" value="Most Recent Videos for View"/>
               </g:form>
             </li>
             <li>
-              <g:form name="imageFootprints" url="[controller: 'kmlQuery', action: 'imageFootprints']">
+              <g:form name="imageFootprints" url="[controller: 'rasterKmlQuery', action: 'imageFootprints']">
                 <g:textField name="imagedays" size="2" value="${grailsApplication.config.kml.daysCoverage}"/>
                 <g:submitButton name="submit" value="Most Recent Days Imagery Coverage"/>
               </g:form>
             </li>
             <li>
-              <g:form name="videoFootprints" url="[controller: 'kmlQuery', action: 'videoFootprints']">
+              <g:form name="videoFootprints" url="[controller: 'videoKmlQuery', action: 'videoFootprints']">
                 <g:textField name="videodays" size="2" value="${grailsApplication.config.kml.daysCoverage}"/>
                 <g:submitButton name="submit" value="Most Recent Days Video Coverage"/>
               </g:form>
