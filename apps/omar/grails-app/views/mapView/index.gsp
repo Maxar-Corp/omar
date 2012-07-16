@@ -97,28 +97,6 @@ function changeToImageSpace()
         wmsFormElement.method = "POST";
         wmsFormElement.submit();
     }
-/*
-var url = "${createLink( controller: 'mapView', action: 'imageSpace' )}";
-   var wmsFormElement = $("wmsFormId");
-   if(wmsFormElement)
-   {
-     wmsParams = new OmarWmsParams();
-     wmsParams.setProperties(wcsParams);
-     wmsParams.layers = "${( rasterEntries*.indexId ).join( ',' )}";
-     wmsParams.latitude = mapWidget.getMap().getCenter().lat;
-     wmsParams.longitude = mapWidget.getMap().getCenter().lon;
-alert("MPP: " +    YAHOO.lang.JSON.stringify);
-
-     wmsParams.view = YAHOO.lang.JSON.stringify({latitude:mapWidget.getMap().getCenter().lat,
-                                                 longitude:mapWidget.getMap().getCenter().lon,
-                                                 mpp:calculateMetersPerPixel()});
-    // var bboxParams = mapWidget.getMap().calculateBounds().toArray();
-    // wmsParams.bbox = bboxParams[0] + "," + bboxParams[1] + "," + bboxParams[2] + "," + bboxParams[3];
-    wmsFormElement.action = url + "?"+wmsParams.toUrlParams();
-    wmsFormElement.method = "POST";
-    wmsFormElement.submit();
-   }
-*/
 }
 
 function resetBrightnessContrast()
@@ -248,7 +226,7 @@ function init(mapWidth, mapHeight)
 	mapWidget.getMap().events.register('mousemove',map,setMouseMapCtrTxt);
     mapWidget.getMap().events.register("mouseup", map, this.setMapCtrTxt);
 
-var viewParam = ${params.view?:"null"};
+    var viewParam = ${params.view?:"null"};
     if(viewParam)
     {
         var mapCenter = new OpenLayers.LonLat(viewParam.lon, viewParam.lat);
