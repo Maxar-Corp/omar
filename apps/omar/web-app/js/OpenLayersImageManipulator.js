@@ -893,13 +893,14 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
    mousedown: function(evt){
      this.mousePosition = this.mouseToPoint(evt);
       this.editMode = false;
-      switch(this.toolMode)
+      this.mouseDragStart = null;
+       this.mouseDragStart = this.mouseToPoint(evt);
+       switch(this.toolMode)
       {
         case OMAR.ToolModeType.PAN_ZOOM:
         case OMAR.ToolModeType.ZOOM_BOX:
         {
             this.documentListenersAdded = false;
-            this.mouseDragStart = null;
             this.performedDrag = false;
             if (OMAR.ToolModeType.PAN_ZOOM&&(!OpenLayers.Event.isLeftClick(evt))) {
              return;
@@ -910,8 +911,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
             * We may want a utility method for this.
             */
 
-            this.mouseDragStart = this.mouseToPoint(evt);
-            if (evt.shiftKey||(this.toolMode==OMAR.ToolModeType.ZOOM_BOX)) 
+            if (evt.shiftKey||(this.toolMode==OMAR.ToolModeType.ZOOM_BOX))
             {
                 var region = YAHOO.util.Region.getRegion(this.annotationDiv);
                 this.eventDiv.style.cursor = "crosshair";
@@ -935,7 +935,6 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         }
         case OMAR.ToolModeType.BOX_AOI:
         {
-           this.mouseDragStart = this.mouseToPoint(evt);
            if(!evt.shiftKey)
            {
                 this.removeSelectionBox();
@@ -1077,8 +1076,32 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       case OMAR.ToolModeType.POLYGON:
       case OMAR.ToolModeType.POINT:
       {
-        if(this.currentDrawControl) this.currentDrawControl.handler.mousemove(evt);
-        break;
+          if ((this.mouseDragStart != null) && (!evt.shiftKey))
+          {
+
+              //var region = YAHOO.util.Region.getRegion(this.annotationDiv);
+              if (this.zoomBox)
+              {
+                  updateBox(evt, this.zoomBox, this);
+                  OpenLayers.Event.stop(evt);
+              }
+              else if(this.mouseDragStart)
+              {
+                  var startPt   = this.affineM.transform(this.mouseDragStart);
+                  var endPt     = this.affineM.transform(this.mousePosition);
+                  var deltaPt   = startPt.sub(endPt);
+                  var size      = this.map.getSize();
+                  var newXY     = new OpenLayers.Pixel(size.w / 2 + deltaPt.x, size.h / 2 + deltaPt.y);
+                  var newCenter = this.map.getLonLatFromViewPortPx(newXY);
+                  this.map.setCenter(newCenter, null, true);
+                  this.mouseDragStart       = this.mouseToPoint(evt);
+                  this.map.div.style.cursor = "move";
+                  OpenLayers.Event.stop(evt);
+              }
+              this.performedDrag = true;
+          }
+          if(this.currentDrawControl) this.currentDrawControl.handler.mousemove(evt);
+          break;
      }
     }
     if(this.editMode)
@@ -1155,8 +1178,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
              }
           }
           document.onselectstart = null;
-          this.mouseDragStart = null;
-          this.map.div.style.cursor = "";  
+          this.map.div.style.cursor = "";
           break;
         }
         case OMAR.ToolModeType.POINT:
@@ -1169,6 +1191,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         }
 
        }
+       this.mouseDragStart = null;
        this.editMode = false;
    },
    zoomBoxEnd:function(evt){
