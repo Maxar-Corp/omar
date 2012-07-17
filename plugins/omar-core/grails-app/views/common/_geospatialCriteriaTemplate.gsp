@@ -8,7 +8,7 @@
   <div class="niceBoxBody">
     <g:checkBox id="spatialSearchFlag" value="true" checked="true"
                 onclick="javascript:this.value = this.checked"/>
-    <label>Use Map Bounds</label>
+    <label>Include Criteria</label>
 
     <div id="tabview1" class="yui-navset">
       <ul class="yui-nav">
