@@ -10,14 +10,23 @@ class DataInfoService
   String getInfo(String filename)
   {
     def dataInfo = new DataInfo()
-    def canOpen = dataInfo.open(filename)
-    def xml = null
-    if ( canOpen )
+
+    try
     {
-      xml = dataInfo.getInfo()?.trim()
+        def canOpen = dataInfo.open(filename)
+        def xml = null
+        if ( canOpen )
+        {
+            xml = dataInfo.getInfo()?.trim()
+        }
     }
-    dataInfo.close()
-    //def xml = StagerUtil.getInfo(filename)
+    catch(def e)
+    {
+
+    }
+    dataInfo?.close()
+    dataInfo?.delete()
+    dataInfo = null
 
     return xml
   }
