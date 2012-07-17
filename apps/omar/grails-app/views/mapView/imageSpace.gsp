@@ -86,7 +86,7 @@
 
 <div id="eventDivId"></div>
 <div id="compassDivId" align="left">
-    <img src="${resource(plugin: 'omar', dir: 'images', file: 'north_arrow.png')}">
+    <img src="${resource(plugin: 'omar', dir: 'images', file: 'north_arrow.gif')}">
 </div>
  <div id="hudDivId">
  </div>
