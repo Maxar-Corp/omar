@@ -119,6 +119,7 @@ var rotationAngle;
 var zoomInButton;
 var selectedFeature;
 var customAoi;
+var currentCenterLatLon = {lat:0.0,lon:0.0}
 
 function resetRotate()
 {
@@ -1361,6 +1362,7 @@ function updateCenter()
        imageToGround(OMAR.imageManipulator.getCenterLocal(),
                      function(transport){
                         var tmp = YAHOO.lang.JSON.parse(transport.responseText);
+                        currentCenterLatLon = tmp[0];
                         setMapCtrTxt(tmp[0]);
                      }
                     );
@@ -1485,27 +1487,22 @@ function updateCenter()
         var x = Math.round(centerView.x - w/2);
         var y = Math.round(centerView.y - h/2);
 
-        imageToGround([{x:center.x, y:center.y}],
-                      function(transport){
-                        var temp = YAHOO.lang.JSON.parse(transport.responseText);
-                        if(temp.length == 1)
-                        {
-                            var tempWmsParams = new OmarWmsParams();
-                            tempWmsParams.setProperties(document);
-                            tempWmsParams.layers = "${rasterEntry.indexId}";
-                            tempWmsParams.view = YAHOO.lang.JSON.stringify({"lat":temp[0].lat,
-                                                                            "lon":temp[0].lon,
-                                                                            "mpp":OMAR.imageManipulator.calculateMetersPerPixel(),
-                                                                            "azimuth":OMAR.imageManipulator.calculateAzimuth()
-                                                 });
-                            var shareLink = baseURL +"?"+ tempWmsParams.toUrlParams();
-                            var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
 
-                            popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
-                            popUpWindow.document.close();
-}
-                       }
-                     );
+        var tempWmsParams = new OmarWmsParams();
+        tempWmsParams.setProperties(document);
+        tempWmsParams.layers = "${rasterEntry.indexId}";
+        tempWmsParams.view = YAHOO.lang.JSON.stringify({"lat":currentCenterLatLon.lat,
+                                                        "lon":currentCenterLatLon.lon,
+                                                        "mpp":OMAR.imageManipulator.calculateMetersPerPixel(),
+                                                        "azimuth":OMAR.imageManipulator.calculateAzimuth()
+                                                        });
+        var shareLink = baseURL +"?"+ tempWmsParams.toUrlParams();
+        var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
+
+        popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
+        popUpWindow.document.close();
+
+
     }
 
     function exportTemplate()
