@@ -249,6 +249,7 @@ function init(mapWidth, mapHeight)
 
         mapWidget.getMap().setCenter(mapCenter, zoom);
     }
+    setMapCtrTxt();
 }
 
 function setMapCtrTxt()
