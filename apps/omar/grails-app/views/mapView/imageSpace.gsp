@@ -1521,7 +1521,7 @@ function updateCenter()
 				var acquisitionDate = "${rasterEntry.acquisitionDate}";
 				var countryCode = "${rasterEntry.countryCode}";
 				var imageId = "${rasterEntry.title}";
-				var northArrowAngle = parseFloat(${"rotateAngle"}.value);
+				var northArrowAngle = parseFloat(${"rotateAngle"}.value) - parseFloat("${rasterEntry.azimuthAngle}");
 
 				var res = OMAR.imageManipulator.map.getResolution();
 				var scale = 1.0/res;
