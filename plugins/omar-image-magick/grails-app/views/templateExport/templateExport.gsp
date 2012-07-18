@@ -6,7 +6,7 @@
 			
 			function changeLogo(logo)
 			{
-				${"logoImage"}.src = "${resource(dir: 'images/', plugin: 'omar-image-magick')}" + logo + ".png?_debugResources=y";
+				document.getElementById("logoImage").src = "${resource(dir: 'images/', plugin: 'omar-image-magick')}" + logo + ".png?_debugResources=y";
 			}
 			
 			function changeCountry(country)
@@ -19,10 +19,10 @@
 			{
 				exportPreviewSetup();
 				var previewUrl = "${createLink(action: 'exportPreview')}";
-					var countryCode = ${"country"}.options.selectedIndex;
-				previewUrl += "?country=" + ${"country"}.options[countryCode].value;
-				previewUrl += "&imageURL=" + (${"imageURL"}.value).replace(/&/g,"%26");
-				//if (${"includeOutlineMap"}.checked)
+					var countryCode = document.getElementById("country").options.selectedIndex;
+				previewUrl += "?country=" + document.getElementById("country").options[countryCode].value;
+				previewUrl += "&imageURL=" + (document.getElementById("imageURL").value).replace(/&/g,"%26");
+				//if (document.getElementById("includeOutlineMap").checked)
 				//{
 				//	previewUrl += "&includeOutlineMap=on";
 				//}
@@ -30,7 +30,7 @@
 				//{
 					previewUrl += "&includeOutlineMap=null";
 				//}
-				if (${"includeOverviewMap"}.checked)
+				if (document.getElementById("includeOverviewMap").checked)
 				{
 					previewUrl += "&includeOverviewMap=on";
 				}
@@ -38,36 +38,36 @@
 				{
 					previewUrl += "&includeOverviewMap=null";
 				}
-					var logoId = ${"logo"}.options.selectedIndex;
-				previewUrl += "&logo=" + ${"logo"}.options[logoId].value;
-				previewUrl += "&line1=" + ${"line1"}.value;
-				previewUrl += "&line2=" + ${"line2"}.value;
-				previewUrl += "&line3=" + ${"line3"}.value;
-				previewUrl += "&northArrowAngle=" + ${"northArrowAngle"}.value;
-				previewUrl += "&securityClassification=" + ${"securityClassification"}.value;
-				${"preview"}.onload = function() { exportPreviewCleanup(); }
-				${"preview"}.src = previewUrl;
+					var logoId = document.getElementById("logo").options.selectedIndex;
+				previewUrl += "&logo=" + document.getElementById("logo").options[logoId].value;
+				previewUrl += "&line1=" + document.getElementById("line1").value;
+				previewUrl += "&line2=" + document.getElementById("line2").value;
+				previewUrl += "&line3=" + document.getElementById("line3").value;
+				previewUrl += "&northArrowAngle=" + document.getElementById("northArrowAngle").value;
+				previewUrl += "&securityClassification=" + document.getElementById("securityClassification").value;
+				document.getElementById("preview").onload = function() { exportPreviewCleanup(); }
+				document.getElementById("preview").src = previewUrl;
 				
 			}
 
 			function exportPreviewCleanup()
 			{
-				${"templateStatus"}.style.display = "none";
-				${"loading"}.style.display = "none";
-				${"preview"}.style.display = "block";
+				document.getElementById("templateStatus").style.display = "none";
+				document.getElementById("loading").style.display = "none";
+				document.getElementById("preview").style.display = "block";
 			}
 
 			function exportPreviewSetup()
 			{
-				${"templateStatus"}.style.display = "block";
-				${"loading"}.src = "${resource(dir: 'images/', plugin: 'omar-image-magick')}imageLoading.gif?_debugResources=y";
-				${"loading"}.style.display = "block";
-				${"preview"}.style.display = "none";
+				document.getElementById("templateStatus").style.display = "block";
+				document.getElementById("loading").src = "${resource(dir: 'images/', plugin: 'omar-image-magick')}imageLoading.gif?_debugResources=y";
+				document.getElementById("loading").style.display = "block";
+				document.getElementById("preview").style.display = "none";
 			}
 
 			function init()
 			{
-				${"templateStatus"}.style.display = "none";
+				document.getElementById("templateStatus").style.display = "none";
 
 				countryMap = "yy";
 				var countryCode = "${countryCode}".toLowerCase();
@@ -86,20 +86,20 @@
 
 			function submitTemplate()
 			{
-				${"templateStatus"}.style.display = "block";
+				document.getElementById("templateStatus").style.display = "block";
 			}
 
 			function updateCountryMaps()
 			{
-				if (${"includeOverviewMap"}.checked)
+				if (document.getElementById("includeOverviewMap").checked)
 				{	
-					${"overviewMap"}.style.visibility = "visible";
+					document.getElementById("overviewMap").style.visibility = "visible";
 					var image = "${resource(dir: 'images/overviewMaps/', plugin: 'omar-image-magick')}" + countryMap + ".gif?_debugResources=y";
-					${"overviewMap"}.innerHTML = "<img src = '" + image + "' width = '100'/>";
+					document.getElementById("overviewMap").innerHTML = "<img src = '" + image + "' width = '100'/>";
 				}
 				else 
 				{
-					${"overviewMap"}.style.visibility = "hidden";
+					document.getElementById("overviewMap").style.visibility = "hidden";
 				}
 			}
 		</r:script>
