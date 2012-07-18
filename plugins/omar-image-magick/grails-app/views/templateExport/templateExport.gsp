@@ -1,6 +1,7 @@
 <html>
 	<head>
-		<script type = "text/javascript">
+		<meta content = "templateExportLayout" name = "layout">
+		<r:script>
 			var countryMap;
 			
 			function changeLogo(logo)
@@ -100,7 +101,7 @@
 					${"overviewMap"}.style.visibility = "hidden";
 				}
 			}
-		</script>
+		</r:script>
 	</head>
 	<body onLoad = "init()">
 		<form id = "templateExport" action = "${createLink(action: 'export')}" method = "post">
