@@ -2,7 +2,7 @@ package omar.image.magick
 
 class TemplateExportController 
 {
-	def grailsApplication
+	def templateExportService
 	def index = 
         {
 		def acquisitionDate = params.acquisitionDate
@@ -46,33 +46,8 @@ class TemplateExportController
 		def northAngle = params.northArrowAngle
 		def securityClassification = params.securityClassification	
 	
- 		def pathToImageMagick = grailsApplication.config.pathToImageMagick
-                def logoFilesLocation = grailsApplication.config.logoFilesLocation
-                def tempFilesLocation = grailsApplication.config.tempFilesLocation
-                def scriptLocation = grailsApplication.config.templateExportScriptLocation
-               
-		def date = new Date().getTime() 
-		def paramsFile = new File("${tempFilesLocation}${date}" + "paramsFile.txt")
-		paramsFile.write("${pathToImageMagick}\n")
-		paramsFile.append("${imageFile}\n")
-		paramsFile.append("${logo}\n")
-		paramsFile.append("${line1}\n")
-		paramsFile.append("${line2}\n")
-		paramsFile.append("${line3}\n")
-		paramsFile.append("${includeOutlineMap}\n")
-		paramsFile.append("${includeOverviewMap}\n")
-		paramsFile.append("${country}\n")
-		paramsFile.append("${northAngle}\n")
-		paramsFile.append("${securityClassification}\n")
-		paramsFile.append("${logoFilesLocation}\n")
-		paramsFile.append("${tempFilesLocation}\n")
-		paramsFile.append("${date}\n")
-		
-		def script = "${scriptLocation}templateExport.pl ${tempFilesLocation}${date}"+ "paramsFile.txt"
-		def scriptProc = script.execute()
-		scriptProc.waitFor()
-		def fileName = scriptProc.text
-		
+ 		def fileName = templateExportService.serviceMethod(imageFile, logo, line1, line2, line3, includeOutlineMap, includeOverviewMap, country, northAngle, securityClassification)
+
 		def file = new File("${fileName}")
 		if (file.exists())
 		{
@@ -84,10 +59,6 @@ class TemplateExportController
 			def removeImageFileProc = removeImageFile.execute()
 			removeImageFileProc.waitFor()
 		}
-		
-		def removeParamsFile = "rm ${tempFilesLocation}${date}" + "paramsFile.txt"
-		def removeParamsFileProc = removeParamsFile.execute()
-		removeParamsFileProc.waitFor()
 	}
 
 	def exportPreview =
@@ -103,32 +74,7 @@ class TemplateExportController
 		def northAngle = params.northArrowAngle
 		def securityClassification = params.securityClassification
 
-		def pathToImageMagick = grailsApplication.config.pathToImageMagick
-		def logoFilesLocation = grailsApplication.config.logoFilesLocation
-		def tempFilesLocation = grailsApplication.config.tempFilesLocation
-		def scriptLocation = grailsApplication.config.templateExportScriptLocation
-
-		def date = new Date().getTime()
-		def paramsFile = new File("${tempFilesLocation}${date}" + "paramsFile.txt")
-		paramsFile.write("${pathToImageMagick}\n")
-		paramsFile.append("${imageFile}\n")
-		paramsFile.append("${logo}\n")
-		paramsFile.append("${line1}\n")
-		paramsFile.append("${line2}\n")
-		paramsFile.append("${line3}\n")
-		paramsFile.append("${includeOutlineMap}\n")
-		paramsFile.append("${includeOverviewMap}\n")
-		paramsFile.append("${country}\n")
-		paramsFile.append("${northAngle}\n")
-		paramsFile.append("${securityClassification}\n")
-		paramsFile.append("${logoFilesLocation}\n")
-		paramsFile.append("${tempFilesLocation}\n")
-		paramsFile.append("${date}\n")
-
-		def script = "${scriptLocation}templateExport.pl ${tempFilesLocation}${date}"+ "paramsFile.txt"
-		def scriptProc = script.execute()
-		scriptProc.waitFor()
-		def fileName = scriptProc.text
+		def fileName = templateExportService.serviceMethod(imageFile, logo, line1, line2, line3, includeOutlineMap, includeOverviewMap, country, northAngle, securityClassification)
 
 		def file = new File("${fileName}")
 		if (file.exists())
@@ -142,9 +88,5 @@ class TemplateExportController
 			def removeImageFileProc = removeImageFile.execute()
 			removeImageFileProc.waitFor()
 		}
-
-		def removeParamsFile = "rm ${tempFilesLocation}${date}" + "paramsFile.txt"
-		def removeParamsFileProc = removeParamsFile.execute()
-		removeParamsFileProc.waitFor()
         }
 }
