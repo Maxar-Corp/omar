@@ -7,7 +7,7 @@ class TemplateExportService
 
 	LinkGenerator grailsLinkGenerator
 
-	def DEBUG = true
+	def DEBUG = false
 	def grailsApplication
 
 	def command
