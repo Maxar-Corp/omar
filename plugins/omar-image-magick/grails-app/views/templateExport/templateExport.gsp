@@ -1,108 +1,29 @@
 <html>
 	<head>
 		<meta content = "templateExportLayout" name = "layout">
-		<r:script>
-			var countryMap;
-			
-			function changeLogo(logo)
+		<style type = "text/css">
+			body
 			{
-				document.getElementById("logoImage").src = "${resource(dir: 'images/', plugin: 'omar-image-magick')}" + logo + ".png?_debugResources=y";
+				margin: 0;
+				padding: 0;
 			}
-			
-			function changeCountry(country)
+			#countryCode
 			{
-				countryMap = country;
-				updateCountryMaps();
+				display: none;
 			}
-
-			function exportPreview()
+			#exportPreviewUrl
 			{
-				exportPreviewSetup();
-				var previewUrl = "${createLink(action: 'exportPreview')}";
-					var countryCode = document.getElementById("country").options.selectedIndex;
-				previewUrl += "?country=" + document.getElementById("country").options[countryCode].value;
-				previewUrl += "&imageURL=" + (document.getElementById("imageURL").value).replace(/&/g,"%26");
-				//if (document.getElementById("includeOutlineMap").checked)
-				//{
-				//	previewUrl += "&includeOutlineMap=on";
-				//}
-				//else 
-				//{
-					previewUrl += "&includeOutlineMap=null";
-				//}
-				if (document.getElementById("includeOverviewMap").checked)
-				{
-					previewUrl += "&includeOverviewMap=on";
-				}
-				else
-				{
-					previewUrl += "&includeOverviewMap=null";
-				}
-					var logoId = document.getElementById("logo").options.selectedIndex;
-				previewUrl += "&logo=" + document.getElementById("logo").options[logoId].value;
-				previewUrl += "&line1=" + document.getElementById("line1").value;
-				previewUrl += "&line2=" + document.getElementById("line2").value;
-				previewUrl += "&line3=" + document.getElementById("line3").value;
-				previewUrl += "&northArrowAngle=" + document.getElementById("northArrowAngle").value;
-				previewUrl += "&securityClassification=" + document.getElementById("securityClassification").value;
-				document.getElementById("preview").onload = function() { exportPreviewCleanup(); }
-				document.getElementById("preview").src = previewUrl;
-				
+				display: none;
 			}
-
-			function exportPreviewCleanup()
+			#imageResourceLocation
 			{
-				document.getElementById("templateStatus").style.display = "none";
-				document.getElementById("loading").style.display = "none";
-				document.getElementById("preview").style.display = "block";
+				display: none;
 			}
-
-			function exportPreviewSetup()
+			#templateStatus
 			{
-				document.getElementById("templateStatus").style.display = "block";
-				document.getElementById("loading").src = "${resource(dir: 'images/', plugin: 'omar-image-magick')}imageLoading.gif?_debugResources=y";
-				document.getElementById("loading").style.display = "block";
-				document.getElementById("preview").style.display = "none";
+				display: none;
 			}
-
-			function init()
-			{
-				document.getElementById("templateStatus").style.display = "none";
-
-				countryMap = "yy";
-				var countryCode = "${countryCode}".toLowerCase();
-				var countryElement = document.getElementById("country");
-				for (var i = 0; i < countryElement.options.length; i++)
-				{
-					if (countryCode == countryElement.options[i].value)
-					{
-						countryElement.options.selectedIndex = i;
-						countryMap = countryElement.options[i].value;
-					}	
-				}
-				updateCountryMaps();
-				changeLogo("ciaLogo");
-			}
-
-			function submitTemplate()
-			{
-				document.getElementById("templateStatus").style.display = "block";
-			}
-
-			function updateCountryMaps()
-			{
-				if (document.getElementById("includeOverviewMap").checked)
-				{	
-					document.getElementById("overviewMap").style.visibility = "visible";
-					var image = "${resource(dir: 'images/overviewMaps/', plugin: 'omar-image-magick')}" + countryMap + ".gif?_debugResources=y";
-					document.getElementById("overviewMap").innerHTML = "<img src = '" + image + "' width = '100'/>";
-				}
-				else 
-				{
-					document.getElementById("overviewMap").style.visibility = "hidden";
-				}
-			}
-		</r:script>
+		</style>
 	</head>
 	<body onLoad = "init()">
 		<form id = "templateExport" action = "${createLink(action: 'export')}" method = "post">
@@ -132,7 +53,7 @@
 							<option value = "nsaLogo">NSA</option>
 						</select>
 						<br><br>
-						<img id = "logoImage" width = "100"/>
+						<img id = "logoImage" src = "${resource(dir: 'images/', plugin: 'omar-image-magick')}ciaLogo.png" width = "100"/>
 					</td>
 					<td>
 						Line 1: <input id = "line1" name = "line1" value = "${imageId}" size = "100" type = "text">
@@ -144,7 +65,6 @@
 					<td>
 						<g:render template = "overviewMapSelectOptions"/>
 						<br>
-						<!--Outline Map: <input checked = "true" id = "includeOutlineMap" name = "includeOutlineMap" onChange = "updateCountryMaps()" type = "checkbox">-->
 						Overview Map: <input checked = "true" id = "includeOverviewMap" name = "includeOverviewMap" onChange = "updateCountryMaps()" type = "checkbox">
 						<br>
 						<div id = "overviewMap"></div> 
@@ -171,5 +91,8 @@
 			<img id = "loading" width = "25"/>
 			<img id = "preview" width = "65%"/>
 		</div>
+		<div id = "countryCode">${countryCode}</div>
+		<div id = "exportPreviewUrl">${createLink(action: 'exportPreview')}</div>
+		<div id = "imageResourceLocation">${resource(dir: 'images/', plugin: 'omar-image-magick')}</div>
 	</body>
 </html>
