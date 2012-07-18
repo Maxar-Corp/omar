@@ -1,7 +1,7 @@
 #! /opt/local/bin/perl
 
 $paramsFile = @ARGV[0];
-$DEBUG = 0;
+$DEBUG = 1;
 
 
 
@@ -46,13 +46,14 @@ $date = @params[13];
 ################################################################################################
 if ($DEBUG) { print "##### Image Download #####\n"; }
 ########## Image filename once it is downloaded
+if ($DEBUG) { print "Image filename once it is downloaded: "; }
 $imageFile = $tempFilesLocation.$date."omarImage.png";
-if ($DEBUG) { print "Image filename once it is downloaded: $imageFile\n"; }
+if ($DEBUG) { print "$imageFile\n"; }
 
 ########## Download the image file
 $x = "curl -s -L '$imageURL' -o $imageFile";
-`$x`;
 if ($DEBUG) { print "Download the image file: $x\n\n"; }
+`$x`;
 
 
 
@@ -64,15 +65,17 @@ if ($DEBUG) { print "Download the image file: $x\n\n"; }
 if ($DEBUG) { print "##### Image Dimensions #####\n";}
 ########## Determine the width of the image
 $x = $pathToImageMagick."identify -format %w $imageFile";
+if ($DEBUG) { print "Determine the width of the image: "; }
 $imageWidth = `$x`;
 chomp($imageWidth);
-if ($DEBUG) { print "Determine the width of the image: $imageWidth\n"; }
+if ($DEBUG) { print "$imageWidth pixels\n"; }
 
 ########## Determine the height of the image
 $x = $pathToImageMagick."identify -format %h $imageFile";
+if ($DEBUG) { print "Determine the height of the image: "; }
 $imageHeight = `$x`;
 chomp($imageHeight);
-if ($DEBUG) { print "Determine the height of the image: $imageHeight\n\n"; }
+if ($DEBUG) { print "$imageHeight pixels\n\n"; }
 
 
 
@@ -86,8 +89,8 @@ if ($DEBUG) { print "##### Header Adjustment #####\n"; }
 $headerWidth = int(0.96 * $imageWidth);
 $headerHeight = int(0.14 * $imageHeight);
 $x = $pathToImageMagick."convert -size $headerWidth"."x$headerHeight xc:#00000000 -transparent black -fill white -draw \"roundrectangle 0,0 $headerWidth,$headerHeight 10,10\" $tempFilesLocation".$date."header.png";
-`$x`;
 if ($DEBUG) { print "Generate the header: $x\n\n"; }
+`$x`;
 
 
 
@@ -101,19 +104,19 @@ if ($DEBUG) { print "##### Logo Icon #####\n"; }
 $logoWidth = int(0.75 * $headerHeight);
 $logoHeight = $logoWidth;
 $x = $pathToImageMagick."convert $logoFilesLocation".$logoFile.".png -resize $logoWidth"."x$logoHeight $tempFilesLocation".$date.$logoFile."Scaled.png";
-`$x`;
 if ($DEBUG) { print "Scale the logo: $x\n"; }
+`$x`;
 
 ########## Add the logo to the header 
 $logoOffset = ($headerHeight - $logoHeight) / 2;
 $x = $pathToImageMagick."composite $tempFilesLocation".$date.$logoFile."Scaled.png -gravity West -geometry +$logoOffset+0 $tempFilesLocation".$date."header.png $tempFilesLocation".$date."header.png";
-`$x`;
 if ($DEBUG) { print "Add the logo to the header: $x\n"; }
+`$x`;
 
 ########## Delete the scaled logo file
 $x = "rm $tempFilesLocation".$date.$logoFile."Scaled.png";
-`$x`;
 if ($DEBUG) { print "Delete the scaled logo file: $x\n\n"; }
+`$x`;
 
 
 
@@ -125,7 +128,7 @@ if ($DEBUG) { print "Delete the scaled logo file: $x\n\n"; }
 if ($DEBUG) { print "##### Outline Map #####\n"; }
 ########## Determine the height of the outline map
 $outlineMapHeight = int(0.2 * $imageHeight);
-if ($DEBUG) { print "Determine the height of the outline map: $outlineMapHeight\n"; }
+if ($DEBUG) { print "Determine the height of the outline map: $outlineMapHeight pixels\n"; }
 
 ##########
 if ($includeOutlineMap eq "on")
@@ -139,7 +142,7 @@ if ($includeOutlineMap eq "on")
 	$x = $pathToImageMagick."identify -format %h $tempFilesLocation".$date."outlineMapScaled.png";
 	$outlineMapHeight = `$x`;
 	chomp($outlineMapHeight);
-	if ($DEBUG) { print "Determine the height of the scaled outline map: $outlineMapHeight\n"; }
+	if ($DEBUG) { print "Determine the height of the scaled outline map: $outlineMapHeight pixels\n"; }
 
 	########## Add a shadow to the outline map
 	$x = $pathToImageMagick."convert -page +4+4 $tempFilesLocation".$date."outlineMapScaled.png -matte \\( +clone -background black -shadow 60x4+4+4 \\) +swap -background none -mosaic $tempFilesLocation".$date."outlineMapScaled.png";
@@ -150,7 +153,7 @@ if ($includeOutlineMap eq "on")
 	$x = $pathToImageMagick."identify -format %w $tempFilesLocation".$date."outlineMapScaled.png";
 	$outlineMapWidth = `$x`;
 	chomp($outlineMapWidth);
-	if ($DEBUG) { print "Determine the width of the outline map with a shadow: $outlineMapWidth\n\\n"; }
+	if ($DEBUG) { print "Determine the width of the outline map with a shadow: $outlineMapWidth\n\n"; }
 }
 else 
 {
@@ -182,7 +185,7 @@ if ($includeOverviewMap eq "on")
 	$x = $pathToImageMagick."identify -format %w $tempFilesLocation".$date."overviewMapScaled.png";
 	$overviewMapWidth = `$x`;
 	chomp($overviewMapWidth);
-	if ($DEBUG) { print "Determine the width of the overview map: $overviewMapWidth\n\n"; }
+	if ($DEBUG) { print "Determine the width of the overview map: $overviewMapWidth pixels\n\n"; }
 }
 else 
 {
@@ -199,7 +202,7 @@ else
 if ($DEBUG) { print "##### Header Text #####\n"; }
 ########## Determine the maximum width for each line of text
 $textWidth = int($headerWidth - (2 * $logoWidth) - (5 * $logoOffset) - $outlineMapWidth - $overviewMapWidth);
-if ($DEBUG) { print "Determine the maximum width for each line of text: $textWidth\n"; }
+if ($DEBUG) { print "Determine the maximum width for each line of text: $textWidth pixels\n"; }
 
 ########## Generate 1st line of text
 $line1Height = int(0.41 * $logoHeight);
@@ -380,12 +383,14 @@ if ($DEBUG) { print "##### Security Banner #####\n"; }
 $securityTextHeight = int(0.25 * $headerHeight);
 $x = $pathToImageMagick."convert -background white -fill black -size x$securityTextHeight -gravity West label:'".$securityClassification."' $tempFilesLocation".$date."securityText.png";
 `$x`;
+if ($DEBUG) { print "Generate security banner text: $x\n"; }
 
 ########## Determine the width of the security banner
 $x = $pathToImageMagick."identify -format %w $tempFilesLocation".$date."securityText.png";
 $securityBannerWidth = `$x`;
 chomp($securityBannerWidth);
 $securityBannerWidth = 1.1 * $securityBannerWidth;
+
 
 ########## Determine the height of the security banner
 $x = $pathToImageMagick."identify -format %h $tempFilesLocation".$date."securityText.png";
@@ -467,19 +472,22 @@ if ($DEBUG) { print "Delete the security banner file\n\n"; }
 ################################################################################################
 ######################################## Diclaimer Text ########################################
 ################################################################################################
+if ($DEBUG) { print "##### Disclaimer Text #####\n"; }
 ########## Generate disclaimer text
 $disclaimerTextWidth = $imageWidth;
 $disclaimerTextHeight = int(0.035 * $imageHeight); 
 $x = $pathToImageMagick."convert $tempFilesLocation".$date."finishedProduct.png -background yellow -fill black -size $disclaimerTextWidth"."x$disclaimerTextHeight -gravity center label:'Not an intelligence product  //  For informational use only  //  Not certified for targeting' -append $tempFilesLocation".$date."finishedProduct.png";
 `$x`;
+if ($DEBUG) { print "Generate disclaimer text: $x\n"; }
 
 ########## Delete the image file
 $x = "rm $tempFilesLocation".$date."omarImage.png";
 `$x`;
+if ($DEBUG) { print "Delete the image file: $x\n\n"; }
 
 
 
 
 ########## Report Location ##########
-######### Print the location of the finished product#
-print "$tempFilesLocation".$date."finishedProduct.png";
+######### Print the location of the finished product
+print "$tempFilesLocation".$date."finishedProduct.png\n";
