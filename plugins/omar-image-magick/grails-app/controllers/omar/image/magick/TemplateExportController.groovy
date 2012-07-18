@@ -1,7 +1,8 @@
 package omar.image.magick
 
 class TemplateExportController 
-{	
+{
+	def grailsApplication	
 	def templateExportService
 	def index = 
         {
@@ -11,8 +12,7 @@ class TemplateExportController
 		def imageURL = params.imageURL
 		def mgrs = params.mgrs
 		def northArrowAngle = params.northArrowAngle
-
-		def securityClassification = "UNK"
+		def securityClassification = grailsApplication.config.security[grailsApplication.config.security.level].description
 		
 		render(
 			view:"templateExport.gsp", 
@@ -48,7 +48,7 @@ class TemplateExportController
 		if (file.exists())
 		{
 			response.setContentType("application/octet-stream")
-			response.setHeader("Content-disposition", "filename=${file.name}")
+			response.setHeader("Content-disposition", 'attachment; "filename=${file.name}")
 			response.outputStream << file.bytes
 
 			def removeImageFile = "rm ${file}"
