@@ -75,7 +75,7 @@
 				{
 					if (countryCode == ${"country"}.options[i].value)
 					{
-						${"country"}.options.selectedIndex = i;
+						document.getElementById("country").options.selectedIndex = i;
 						countryMap = ${"country"}.options[i].value;
 					}	
 				}
