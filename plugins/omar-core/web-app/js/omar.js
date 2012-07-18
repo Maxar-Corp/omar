@@ -37,7 +37,8 @@ function Omar()
 {
     var map;
     var convert = new CoordinateConversion();
-
+    var ddGraticuleLayer;
+    var dmsGraticuleLayer;
     this.setupMapWidget = function ()
     {
         map = new OpenLayers.Map( "map", {controls:[], theme:null} );
@@ -49,6 +50,7 @@ function Omar()
 
         map.events.register( "mousemove", map, this.setMousePositionDiv );
         map.events.register( "moveend", map, this.setMapCenterTextField );
+        map.events.register( "mouseup", map, this.setMapCenterTextField );
     };
 
     this.changeMapSize = function ()
@@ -60,7 +62,7 @@ function Omar()
     var graticuleOpacity = "0.7";
     this.setupGraticuleLayers = function ()
     {
-        var ddGraticuleLayer = new OpenLayers.Control.Graticule( {
+        ddGraticuleLayer = new OpenLayers.Control.Graticule( {
             visible:false,
             numPoints:2,
             layerName:"DD Grid",
@@ -70,7 +72,7 @@ function Omar()
             labelSymbolizer:{fontColor:graticuleColor, fontOpacity:graticuleOpacity}
         } );
 
-        var dmsGraticuleLayer = new OpenLayers.Control.Graticule( {
+        dmsGraticuleLayer = new OpenLayers.Control.Graticule( {
             visible:false,
             numPoints:2,
             layerName:"DMS Grid",
@@ -80,8 +82,11 @@ function Omar()
             labelSymbolizer:{fontColor:graticuleColor, fontOpacity:graticuleOpacity}
         } );
 
-        map.addControl( new OpenLayers.Control( ddGraticuleLayer ) );
-        map.addControl( new OpenLayers.Control( dmsGraticuleLayer ) );
+
+        map.addControl(ddGraticuleLayer);
+        map.addControl(dmsGraticuleLayer);
+        //map.addControl( new OpenLayers.Control( ddGraticuleLayer ) );
+        //map.addControl( new OpenLayers.Control( dmsGraticuleLayer ) );
     };
 
     var baseLayer;
@@ -153,6 +158,17 @@ function Omar()
         else if ( $( "displayUnit" ).value == "MGRS" )
         {
             $( "point" ).value = convert.ddToMgrs( center.lat, center.lon );
+        }
+        if(ddGraticuleLayer.active)
+        {
+            ddGraticuleLayer.deactivate();
+            ddGraticuleLayer.activate();
+
+        }
+        if(dmsGraticuleLayer.active)
+        {
+            dmsGraticuleLayer.deactivate();
+            dmsGraticuleLayer.activate();
         }
     };
 
