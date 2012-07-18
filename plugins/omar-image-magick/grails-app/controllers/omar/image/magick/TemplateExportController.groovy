@@ -1,7 +1,7 @@
 package omar.image.magick
 
 class TemplateExportController 
-{
+{	
 	def templateExportService
 	def index = 
         {
@@ -13,7 +13,7 @@ class TemplateExportController
 		def northArrowAngle = params.northArrowAngle
 
 		def securityClassification = "UNK"
-	
+		
 		render(
 			view:"templateExport.gsp", 
 			model:
@@ -69,7 +69,7 @@ class TemplateExportController
 		def country = params.country
 		def northAngle = params.northArrowAngle
 		def securityClassification = params.securityClassification
-
+	
 		def fileName = templateExportService.serviceMethod(imageFile, logo, line1, line2, line3, includeOutlineMap, includeOverviewMap, country, northAngle, securityClassification)
 
 		def file = new File("${fileName}")
