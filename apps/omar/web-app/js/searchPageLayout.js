@@ -43,6 +43,9 @@
             init();
             Dom.setStyle( document.body, 'visibility', 'visible' );
         } );
+        outerLayout.on('resize', function(evt) {
+            bodyOnResize();
+        });
         outerLayout.render();
         outerLayout.getUnitByPosition( "left" ).on( "collapse", function ()
         {
