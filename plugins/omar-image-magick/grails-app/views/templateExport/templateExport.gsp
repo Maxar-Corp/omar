@@ -71,12 +71,13 @@
 
 				countryMap = "yy";
 				var countryCode = "${countryCode}".toLowerCase();
-				for (var i = 0; i < ${"country"}.options.length; i++)
+				var countryElement = document.getElementById("country");
+				for (var i = 0; i < countryElement.options.length; i++)
 				{
-					if (countryCode == ${"country"}.options[i].value)
+					if (countryCode == countryElement.options[i].value)
 					{
-						document.getElementById("country").options.selectedIndex = i;
-						countryMap = ${"country"}.options[i].value;
+						countryElement.options.selectedIndex = i;
+						countryMap = countryElement.options[i].value;
 					}	
 				}
 				updateCountryMaps();
