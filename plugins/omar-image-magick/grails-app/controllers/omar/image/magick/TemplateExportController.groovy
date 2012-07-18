@@ -48,7 +48,7 @@ class TemplateExportController
 		if (file.exists())
 		{
 			response.setContentType("application/octet-stream")
-			response.setHeader("Content-disposition", 'attachment; "filename=${file.name}")
+			response.setHeader("Content-disposition", "attachment; filename=${file.name}")
 			response.outputStream << file.bytes
 
 			def removeImageFile = "rm ${file}"
