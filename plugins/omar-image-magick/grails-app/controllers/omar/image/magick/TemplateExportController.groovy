@@ -12,11 +12,7 @@ class TemplateExportController
 		def mgrs = params.mgrs
 		def northArrowAngle = params.northArrowAngle
 
-		def scriptLocation = grailsApplication.config.templateExportScriptLocation	
-		def securityClassificationScript = "${scriptLocation}securityClassification.pl ${imageId} ${countryCode}"	
-		def securityClassificationScriptProc = securityClassificationScript.execute()
-                securityClassificationScriptProc.waitFor()
-                def securityClassification = securityClassificationScriptProc.text
+		def securityClassification = "UNK"
 	
 		render(
 			view:"templateExport.gsp", 
