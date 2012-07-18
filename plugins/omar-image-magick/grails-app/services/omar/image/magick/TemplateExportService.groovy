@@ -1,7 +1,12 @@
 package omar.image.magick
 
+import org.codehaus.groovy.grails.web.mapping.LinkGenerator
+
 class TemplateExportService 
 {
+
+	LinkGenerator grailsLinkGenerator
+
 	def DEBUG = true
 	def grailsApplication
 
@@ -10,8 +15,8 @@ class TemplateExportService
 	{
 		def date = new Date().getTime()
 
-		def tempFilesLocation = grailsApplication.config.tempFilesLocation
-		def logoFilesLocation = grailsApplication.config.logoFilesLocation
+		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
+		def logoFilesLocation = grailsLinkGenerator.resource(absolute: true, dir: 'images', plugin: 'omar-image-magick') + "/"
 		def mapFilesLocation = logoFilesLocation + "overviewMaps/"
 
 		//##############################################################################################################################
