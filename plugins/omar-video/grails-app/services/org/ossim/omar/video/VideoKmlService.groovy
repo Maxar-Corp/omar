@@ -10,7 +10,7 @@ class VideoKmlService extends KmlService
 {
   def flashDirRoot
   def flashUrlRoot
-
+  def grailsApplication
   String createVideosKml(List<VideoDataSet> videoEntries, Map params)
   {
     Boolean embed = params.embed
@@ -105,16 +105,16 @@ class VideoKmlService extends KmlService
             File mpegFile = videoDataSet.mainFile.name as File
             File flvFile = "${flashDirRoot}/${mpegFile.name}.flv" as File
             URL flvUrl = new URL("${flashUrlRoot}/${flvFile.name}")
-            def flashPlayerUrl = tagLibBean.createLinkTo(dir: "js", file: "player.swf", absolute: true)
+            def flashPlayerUrl = tagLibBean.createLinkTo(dir: "js", file: "player.swf", base: "${grailsApplication.config.omar.serverURL}", absolute: true)
             Placemark() {
               styleUrl("#red")
               def flashbasename = "${FilenameUtils.getBaseName(videoDataSet.mainFile?.name)}.flv"
               name(flashbasename)
-              def createFlvUrl = tagLibBean.createLink(absolute: true, controller: "videoStreaming", action: "show", id: videoDataSet.indexId)
+              def createFlvUrl = tagLibBean.createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}",controller: "videoStreaming", action: "show", id: videoDataSet.indexId)
               def descriptionText = ""
               def bounds = videoDataSet.groundGeom?.bounds
               def logoUrl = "${grailsApplication.config.omar.serverURL}/images/omarLogo.png"
-              def thumbnailUrl = tagLibBean.createLink(absolute: true, controller: "thumbnail", action: "frame", id: videoDataSet.id, params: [size: 128])
+              def thumbnailUrl = tagLibBean.createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "thumbnail", action: "frame", id: videoDataSet.id, params: [size: 128])
 
               if ( embed )
               {
@@ -202,7 +202,7 @@ class VideoKmlService extends KmlService
 
   String createTopVideosKml(Map params)
   {
-    def kmlQueryUrl = tagLibBean.createLink(absolute: true, controller: "videoKmlQuery", action: "getVideosKml", params: params)
+    def kmlQueryUrl = tagLibBean.createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "videoKmlQuery", action: "getVideosKml", params: params)
     def kmlbuilder = new StreamingMarkupBuilder()
 
     kmlbuilder.encoding = "UTF-8"

@@ -23,6 +23,7 @@ class VideoDataSetController implements InitializingBean
   def springSecurityService
   def videoDataSetSearchService
   def webMappingService
+  def grailsApplication
 
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
@@ -625,7 +626,7 @@ class VideoDataSetController implements InitializingBean
     params.remove("_action_kmlnetworklink")
 
     params.dateSort = "false"
-    def serviceAddress = createLink(absolute: true, controller: "videoKmlQuery", action: "getVideosKml", params: params)
+    def serviceAddress = createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "videoKmlQuery", action: "getVideosKml", params: params)
     def kmlnode = {
       mkp.xmlDeclaration()
       kml("xmlns": "http://earth.google.com/kml/2.1") {
