@@ -28,9 +28,16 @@
 									<option value = "ciaLogo">CIA</option>
 									<option value = "diaLogo">DIA</option>
 									<option value = "dhsLogo">DHS</option>
+									<option value = "dodLogo">DOD</option>
+									<option value = "dosLogo">DOS</option>
 									<option value = "ngaLogo">NGA</option>
 									<option value = "nroLogo">NRO</option>
 									<option value = "nsaLogo">NSA</option>
+									<option value = "airForceLogo">Air Force</option>
+									<option value = "armyLogo">Army</option>
+									<option value = "coastGaurdLogo">Coast Gaurd</option>
+									<option value = "marineCorpsLogo">Marine Corps</option>
+									<option value = "navyLogo">Navy</option>
 								</select>
 								<br><br>
 								<img id = "logoImage" src = "${resource(dir: 'images/', plugin: 'omar-image-magick')}ciaLogo.png" width = "100"/>
