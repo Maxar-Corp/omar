@@ -504,7 +504,7 @@ class TemplateExportService
 				"convert", 
 				"${tempFilesLocation}${date}northArrowRotated.png", 
 				"-crop", "${northArrowWidth}x${northArrowHeight}+0+0", 
-				"+repage", 
+				//"+repage", 
 				"${tempFilesLocation}${date}northArrowRotated.png"
 		]
 		if (DEBUG) { println "${command}" }
