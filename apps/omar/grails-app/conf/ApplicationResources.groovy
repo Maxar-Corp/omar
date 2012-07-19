@@ -217,7 +217,8 @@ modules = {
     resource url: [dir: 'js/cssSandpaper', file: 'cssSandpaper-lite.js']
     resource url: [dir: 'js', file: 'application.js']
     resource url: [dir: 'js', file: 'matrix.js']
-    resource url: [plugin: 'omar-core', dir: 'js', file: 'coordinateConversion.js']
+    resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']    
+
     resource url: [dir: 'js', file: 'OpenLayersImageManipulator.js']
     //resource url: [dir: 'js', file: 'datechooser.js']
 
