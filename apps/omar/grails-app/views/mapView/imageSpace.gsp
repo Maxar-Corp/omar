@@ -622,9 +622,10 @@ function init(mapWidth, mapHeight)
                 var temp = YAHOO.lang.JSON.parse(transport.responseText);
                 var zoom = OMAR.imageManipulator.findZoomForMetersPerPixel(view.mpp);
                 OMAR.imageManipulator.setCenterGivenImagePoint(temp[0], zoom);
+		updateCenter();
             }
             });
-    }
+    }	
 }
 
 function mouseClick(evt){
