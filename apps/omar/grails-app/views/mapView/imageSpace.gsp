@@ -618,7 +618,7 @@ function init(mapWidth, mapHeight)
             }),
             callback: function (transport)
             {
-                var view = ${params.view};
+                var view = ${params.view?:"null"};
                 var temp = YAHOO.lang.JSON.parse(transport.responseText);
                 var zoom = OMAR.imageManipulator.findZoomForMetersPerPixel(view.mpp);
                 OMAR.imageManipulator.setCenterGivenImagePoint(temp[0], zoom);
