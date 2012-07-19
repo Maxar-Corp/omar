@@ -46,7 +46,7 @@
 							<td>
 								<g:render template = "overviewMapSelectOptions"/>
 								<br>
-								Overview Map: <input id = "includeOverviewMap" name = "includeOverviewMap" onChange = "updateCountryMaps()" type = "checkbox">
+								Overview Map: <input id = "includeOverviewMap" name = "includeOverviewMap" onClick = "updateCountryMaps()" type = "checkbox">
 								<br>
 								<div id = "overviewMap"></div> 
 							</td>
