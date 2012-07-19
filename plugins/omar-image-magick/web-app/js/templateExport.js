@@ -1,8 +1,9 @@
 var countryMap;
+var dom = YAHOO.util.Dom;
 
 function changeLogo(logo)
 {
-	document.getElementById("logoImage").src = document.getElementById("imageResourceLocation").innerHTML + logo + ".png";
+	dom.get("logoImage").src = document.getElementById("imageResourceLocation").innerHTML + logo + ".png";
 }
 
 function changeCountry(country)
@@ -14,13 +15,13 @@ function changeCountry(country)
 function exportPreview()
 {
 	exportPreviewSetup();
-	var previewUrl = document.getElementById("exportPreviewUrl").innerHTML;
-		var countryCode = document.getElementById("country").options.selectedIndex;
-	previewUrl += "?country=" + document.getElementById("country").options[countryCode].value;
-	previewUrl += "&imageURL=" + (document.getElementById("imageURL").value).replace(/&/g,"%26");
+	var previewUrl = dom.get("exportPreviewUrl").innerHTML;
+		var countryCode = dom.get("country").options.selectedIndex;
+	previewUrl += "?country=" + dom.get("country").options[countryCode].value;
+	previewUrl += "&imageURL=" + (dom.get("imageURL").value).replace(/&/g,"%26");
 	previewUrl += "&includeOutlineMap=null";
 
-	if (document.getElementById("includeOverviewMap").checked)
+	if (dom.get("includeOverviewMap").checked)
 	{
 		previewUrl += "&includeOverviewMap=on";
 	}
@@ -28,43 +29,43 @@ function exportPreview()
 	{
 		previewUrl += "&includeOverviewMap=null";
 	}
-		var logoId = document.getElementById("logo").options.selectedIndex;
-	previewUrl += "&logo=" + document.getElementById("logo").options[logoId].value;
-	previewUrl += "&line1=" + document.getElementById("line1").value;
-	previewUrl += "&line2=" + document.getElementById("line2").value;
-	previewUrl += "&line3=" + document.getElementById("line3").value;
-	previewUrl += "&northArrowAngle=" + document.getElementById("northArrowAngle").value;
-	previewUrl += "&securityClassification=" + document.getElementById("securityClassification").value;
-	document.getElementById("preview").onload = function() { exportPreviewCleanup(); }
-	document.getElementById("preview").src = previewUrl;
+		var logoId = dom.get("logo").options.selectedIndex;
+	previewUrl += "&logo=" + dom.get("logo").options[logoId].value;
+	previewUrl += "&line1=" + dom.get("line1").value;
+	previewUrl += "&line2=" + dom.get("line2").value;
+	previewUrl += "&line3=" + dom.get("line3").value;
+	previewUrl += "&northArrowAngle=" + dom.get("northArrowAngle").value;
+	previewUrl += "&securityClassification=" + dom.get("securityClassification").value;
+	dom.get("preview").onload = function() { exportPreviewCleanup(); }
+	dom.get("preview").src = previewUrl;
 }
 
 function exportPreviewCleanup()
 {
-	document.getElementById("templateStatus").style.display = "none";
-	document.getElementById("loading").style.display = "none";
-	document.getElementById("preview").style.display = "block";
+	dom.get("templateStatus").style.display = "none";
+	dom.get("loading").style.display = "none";
+	dom.get("preview").style.display = "block";
 }
 
 function exportPreviewSetup()
 {
-	document.getElementById("templateStatus").style.display = "block";
-	document.getElementById("loading").src = document.getElementById("imageResourceLocation").innerHTML + "imageLoading.gif";
-	document.getElementById("loading").style.display = "block";
-	document.getElementById("preview").style.display = "none";
+	dom.get("templateStatus").style.display = "block";
+	dom.get("loading").src = dom.get("imageResourceLocation").innerHTML + "imageLoading.gif";
+	dom.get("loading").style.display = "block";
+	dom.get("preview").style.display = "none";
 }
 
 function init()
 {
 	countryMap = "aa";
-	var countryCode = document.getElementById("countryCode").innerHTML.toLowerCase();
-	for (var i = 0; i < document.getElementById("country").options.length; i++)
+	var countryCode = dom.get("countryCode").innerHTML.toLowerCase();
+	for (var i = 0; i < dom.get("country").options.length; i++)
 	{
-		if (countryCode == document.getElementById("country").options[i].value)
+		if (countryCode == dom.get("country").options[i].value)
 		{
-			document.getElementById("country").options.selectedIndex = i;
-			countryMap = document.getElementById("country").options[i].value;
-			document.getElementById("includeOverviewMap").checked = true;
+			dom.get("country").options.selectedIndex = i;
+			countryMap = dom.get("country").options[i].value;
+			dom.get("includeOverviewMap").checked = true;
 		}
 	}
 	updateCountryMaps();
@@ -72,26 +73,25 @@ function init()
 
 function submitTemplate()
 {
-	document.getElementById("templateStatus").style.display = "block";
+	dom.get("templateStatus").style.display = "block";
 }
 
 function updateCountryMaps()
 {
-	if (document.getElementById("includeOverviewMap").checked)
+	if (dom.get("includeOverviewMap").checked)
 	{
-		document.getElementById("overviewMap").style.visibility = "visible";
-		var image = document.getElementById("imageResourceLocation").innerHTML + "overviewMaps/" + countryMap + ".gif";
-		document.getElementById("overviewMap").innerHTML = "<img src = '" + image + "' width = '100'/>";
+		dom.get("overviewMap").style.visibility = "visible";
+		var image = dom.get("imageResourceLocation").innerHTML + "overviewMaps/" + countryMap + ".gif";
+		dom.get("overviewMap").innerHTML = "<img src = '" + image + "' width = '100'/>";
 	}
 	else
 	{
-		document.getElementById("overviewMap").style.visibility = "hidden";
+		dom.get("overviewMap").style.visibility = "hidden";
 	}
 }
 
 (function ()
 {
-	var Dom = YAHOO.util.Dom,
 	Event = YAHOO.util.Event;
 	Event.onDOMReady( function ()
 	{
@@ -105,7 +105,7 @@ function updateCountryMaps()
 		});
 		layout.on( 'render', function ()
 		{
-			Dom.setStyle( document.body, 'visibility', 'visible' );
+			dom.setStyle( document.body, 'visibility', 'visible' );
 		});
 		layout.render();
 	});
