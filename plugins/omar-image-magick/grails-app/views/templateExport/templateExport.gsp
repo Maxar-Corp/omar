@@ -1,48 +1,8 @@
 <html>
 	<head>
 		<meta content = "templateExportLayout" name = "layout">
-		<style type = "text/css">
-			body
-			{
-				height: 100%;
-				margin: 0;
-				overflow-y: hidden;
-				padding: 0;
-				width: 100%
-			}
-			#center
-			{
-				height: 100%;
-				overflow-x: auto;		
-				overflow-y: auto;
-				position: absolute;
-				width: 100%;
-			}
-			#countryCode, #exportPreviewUrl, #imageResourceLocation, #templateStatus
-			{
-				display: none;
-			}
-			#footer
-			{
-				bottom: 0;
-				height: 20px;
-				position: absolute;
-				width: 100%;
-			}
-			#header 
-			{
-				position: relative;
-				top: 0;
-				width: 100%;
-			}
-			#line1, #line2, #line3
-			{
-				width: 80%;
-			}
-		</style>
 	</head>
 	<body onLoad = "init()">
-		
 		<content tag = "header"></content>
 		<content tag = "center">
 			<div id = "center">		
@@ -81,11 +41,12 @@
 								Line 2: <input id = "line2" name = "line2" value = "${acquisitionDate}" type = "text">
 								<br>
 								Line 3: <input id = "line3" name = "line3" value = "GEO: ${mgrs} Country: ${countryCode}" type = "text">
+								<br>	
 							</td>
 							<td>
 								<g:render template = "overviewMapSelectOptions"/>
 								<br>
-								Overview Map: <input checked = "true" id = "includeOverviewMap" name = "includeOverviewMap" onChange = "updateCountryMaps()" type = "checkbox">
+								Overview Map: <input id = "includeOverviewMap" name = "includeOverviewMap" onChange = "updateCountryMaps()" type = "checkbox">
 								<br>
 								<div id = "overviewMap"></div> 
 							</td>
