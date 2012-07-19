@@ -1,4 +1,4 @@
- var countryMap;
+var countryMap;
 
 function changeLogo(logo)
 {
@@ -64,6 +64,7 @@ function init()
 		{
 			document.getElementById("country").options.selectedIndex = i;
 			countryMap = document.getElementById("country").options[i].value;
+			document.getElementById("includeOverviewMap").checked = true;
 		}
 	}
 	updateCountryMaps();
