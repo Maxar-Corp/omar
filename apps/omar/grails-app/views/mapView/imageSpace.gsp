@@ -1510,7 +1510,9 @@ function updateCenter()
     {		
 	var centerLatitude = currentCenterLatLon.lat;
 	var centerLongitude = currentCenterLatLon.lon;
+	var dms = OMAR.coordConvert.ddToDms(centerLatitude, centerLongitude);
 	var mgrs = OMAR.coordConvert.ddToMgrs(centerLatitude, centerLongitude);
+	var centerGeo = dms + " " + mgrs;
 
 	var acquisitionDate = "${rasterEntry.acquisitionDate}";
 	var countryCode = "${rasterEntry.countryCode}";
@@ -1546,7 +1548,7 @@ function updateCenter()
 
 	var imageURL  = "${createLink(absolute: 'true', controller: 'imageSpace', action: 'getTile')}" + "?" + params.toUrlParams();
 	imageURL = imageURL.replace(/&/g,"%26");
-	var templateURL = "${createLink( controller: 'templateExport', action: 'index', plugin: 'omar-image-magick')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&mgrs=" + mgrs + "&northArrowAngle=" + northArrowAngle;
+	var templateURL = "${createLink( controller: 'templateExport', action: 'index', plugin: 'omar-image-magick')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&centerGeo=" + centerGeo + "&northArrowAngle=" + northArrowAngle;
 	window.open(templateURL);		
     }
 
