@@ -38,9 +38,9 @@
 							<td>
 								Line 1: <input id = "line1" name = "line1" value = "${imageId}" type = "text"/>
 								<br>
-								Line 2: <input id = "line2" name = "line2" value = "${acquisitionDate}" type = "text">
+								Line 2: <input id = "line2" name = "line2" value = "Acquisition Date: ${acquisitionDate}" type = "text">
 								<br>
-								Line 3: <input id = "line3" name = "line3" value = "GEO: ${mgrs} Country: ${countryCode}" type = "text">
+								Line 3: <input id = "line3" name = "line3" value = "GEO: ${centerGeo} Country: ${countryCode}" type = "text">
 								<br>	
 							</td>
 							<td>
