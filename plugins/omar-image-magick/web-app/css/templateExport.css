@@ -16,7 +16,7 @@ body
 	width: 100%;
 }
 
-#countryCode, #exportPreviewUrl, #imageResourceLocation, #templateStatus
+#countryCode, #exportPreviewUrl, #imageResourceLocation, #loading, #preview, #templateStatus
 {
 	display: none;
 }
@@ -40,4 +40,3 @@ body
 {
 	width: 80%;
 }
-
