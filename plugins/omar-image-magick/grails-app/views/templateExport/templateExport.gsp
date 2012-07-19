@@ -3,7 +3,7 @@
 		<meta content = "templateExportLayout" name = "layout">
 	</head>
 	<body onLoad = "init()">
-		<content tag = "header"></content>
+		<content tag = "top"></content>
 		<content tag = "center">
 			<div id = "center">		
 				<form id = "templateExport" action = "${createLink(action: 'export')}" method = "post">
@@ -77,6 +77,6 @@
 				<div id = "imageResourceLocation">${resource(dir: 'images/', plugin: 'omar-image-magick')}</div>
 			</div>
 		</content>
-		<content tag = "footer"></content>
+		<content tag = "bottom"></content>
 	</body>
 </html>
