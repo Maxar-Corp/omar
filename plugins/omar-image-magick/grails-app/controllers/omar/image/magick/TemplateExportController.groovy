@@ -7,10 +7,10 @@ class TemplateExportController
 	def index = 
         {
 		def acquisitionDate = params.acquisitionDate
+		def centerGeo = params.centerGeo
 		def countryCode = params.countryCode
 		def imageId = params.imageId
 		def imageURL = params.imageURL
-		def mgrs = params.mgrs
 		def northArrowAngle = params.northArrowAngle
 		def securityClassification = grailsApplication.config.security[grailsApplication.config.security.level].description
 		
@@ -19,10 +19,10 @@ class TemplateExportController
 			model:
 			[
 				acquisitionDate: acquisitionDate, 
+				centerGeo: centerGeo,
 				countryCode: countryCode, 
 				imageId: imageId,
 				imageURL: imageURL,
-				mgrs: mgrs,
 				northArrowAngle: northArrowAngle,
 				securityClassification: securityClassification
 			]
