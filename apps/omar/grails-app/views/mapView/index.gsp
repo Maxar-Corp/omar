@@ -751,7 +751,9 @@ function exportTemplate()
 {
 	var centerLatitude = mapWidget.getMap().getCenter().lat;
 	var centerLongitude = mapWidget.getMap().getCenter().lon;
+	var dms = coordConvert.ddToDms(centerLatitude, centerLongitude);
 	var mgrs = coordConvert.ddToMgrs(centerLatitude, centerLongitude);
+	var centerGeo = dms + " " + mgrs;	
 	var northArrowAngle = 0;
 
 	var acquisitionDate = "${(rasterEntries.acquisitionDate).join(',')}";
@@ -786,7 +788,7 @@ function exportTemplate()
     	templateParams.setProperties(wmsProperties);
 	var imageURL = baseURL + "?" + templateParams.toUrlParams();
 	imageURL = imageURL.replace(/&/g,"%26");
-	var templateURL = "${createLink(action: 'index',  controller: 'templateExport', plugin: 'omar-image-magick')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&mgrs=" + mgrs + "&northArrowAngle=" + northArrowAngle;
+	var templateURL = "${createLink(action: 'index',  controller: 'templateExport', plugin: 'omar-image-magick')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&centerGeo=" + centerGeo + "&northArrowAngle=" + northArrowAngle;
 	window.open(templateURL);
 }
 </r:script>
