@@ -1,0 +1,43 @@
+body
+{
+	height: 100%;
+	margin: 0;
+	overflow-y: hidden;
+	padding: 0;
+	width: 100%
+}
+
+#center
+{
+	height: 100%;
+	overflow-x: auto;
+	overflow-y: auto;
+	position: absolute;
+	width: 100%;
+}
+
+#countryCode, #exportPreviewUrl, #imageResourceLocation, #templateStatus
+{
+	display: none;
+}
+
+#footer
+{
+	bottom: 0;
+	height: 20px;
+	position: absolute;
+	width: 100%;
+}
+
+#header
+{
+	position: relative;
+	top: 0;
+	width: 100%;
+}
+
+#line1, #line2, #line3
+{
+	width: 80%;
+}
+
