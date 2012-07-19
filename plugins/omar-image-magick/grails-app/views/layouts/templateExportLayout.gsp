@@ -6,14 +6,16 @@
 		<r:layoutResources/>
 	</head>
 	<body class = "yui-skin-sam" onLoad = "${pageProperty(name: 'body.onload')}">
-	<div id = "header">
+	<div id = "top1">
 		<omar:securityClassificationBanner/>
+		<g:pageProperty name="page.top"/>
 	</div>
-	<div id = "center">
+	<div id = "center1">
 		<g:pageProperty name = "page.center"/>
 	</div>
-	<div id = "footer">
+	<div id = "bottom1">
 		<omar:securityClassificationBanner/>
+		<g:pageProperty name="page.bottom"/>
 	</div>	
 		<g:layoutBody/>
 		<r:layoutResources/>
