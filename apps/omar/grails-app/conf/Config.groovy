@@ -616,7 +616,7 @@ rss {
     properties = [
             imageId: 'Image ID',
             missionId: 'Mission ID',
-            kmlClassification: 'Security Class',
+            securityClassification: 'Security Class',
             niirs: 'NIIRS',
             countryCode: 'Country Code',
             beNumber: 'BE Number',
