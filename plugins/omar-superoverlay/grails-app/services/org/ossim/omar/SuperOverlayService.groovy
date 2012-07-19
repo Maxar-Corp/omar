@@ -117,7 +117,7 @@ class SuperOverlayService implements InitializingBean
                 mkp.yieldUnescaped(
                         """<![CDATA[${
                           appTagLib.createLink(
-                                  absolute: true, base: grailsApplication.config.omar.serverURL,
+                                  absolute: true, base: "${grailsApplication.config.omar.serverURL}",
                                   action: params.action, params: newParams )
                         }]]>""" )
               }
