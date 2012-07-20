@@ -40,7 +40,7 @@
 									<option value = "navyLogo">Navy</option>
 								</select>
 								<br><br>
-								<img id = "logoImage" src = "${resource(dir: 'images/', plugin: 'omar-image-magick')}ciaLogo.png" width = "100"/>
+								<img id = "logoImage" src = "${resource(dir: 'images/', plugin: 'omar-image-magick')}ciaLogoForWeb.png"/>
 							</td>
 							<td>
 								Line 1: <input id = "line1" name = "line1" value = "${imageId}" type = "text"/>
@@ -71,6 +71,7 @@
 					<div align = "center">
 						<input onClick = "exportPreview()" type = "button" value = "Preview">
 						<input onClick = "submitTemplate()" type = "submit" value = "Download">
+						<br><br>
 					</div>
 					<input id = "imageURL" name = "imageURL" style = "display: none", type = "text" value = "${imageURL}">
 				</form>
