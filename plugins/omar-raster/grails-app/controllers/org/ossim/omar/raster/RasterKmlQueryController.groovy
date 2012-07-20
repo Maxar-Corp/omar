@@ -16,21 +16,22 @@ class RasterKmlQueryController extends KmlQueryController
           "service", "version", "request", "quicklook", "bands",
           "transparent", "bgcolor", "styles", "null_flip", "bbox"]
 
-  def getImagesKml = {
+  def getImagesKml( )
+  {
     //println "getImagesKml: ${params}"
 
-    def caseInsensitiveParams = new CaseInsensitiveMap(params)
+    def caseInsensitiveParams = new CaseInsensitiveMap( params )
     def wmsParams = [:]
     def kmlParams = [:]
     def maxImages = grailsApplication.config.kml.maxImages ?: 10
     def defaultImages = grailsApplication.config.kml.defaultImages ?: 10
 
 
-    caseInsensitiveParams?.each { wmsParams?.put(it.key.toLowerCase(), it.value)}
-    wmsParams = wmsParams.subMap(wmsPersistParams)
-    wmsParams.remove("elevation")
-    wmsParams.remove("time")
-    kmlParams = caseInsensitiveParams.subMap(kmlPersistParams)
+    caseInsensitiveParams?.each { wmsParams?.put( it.key.toLowerCase(), it.value )}
+    wmsParams = wmsParams.subMap( wmsPersistParams )
+    wmsParams.remove( "elevation" )
+    wmsParams.remove( "time" )
+    kmlParams = caseInsensitiveParams.subMap( kmlPersistParams )
 
 
     def aoiSet = caseInsensitiveParams?.aoiMinLon &&
@@ -44,7 +45,7 @@ class RasterKmlQueryController extends KmlQueryController
 
     if ( wmsParams?.bbox && !aoiSet )
     {
-      bounds = wmsParams.bbox?.split(',')
+      bounds = wmsParams.bbox?.split( ',' )
 
       if ( bounds.size() == 4 )
       {
@@ -63,10 +64,10 @@ class RasterKmlQueryController extends KmlQueryController
     if ( caseInsensitiveParams.bboxToRadius == "true" )
     {
       caseInsensitiveParams.searchMethod = "RADIUS"
-      caseInsensitiveParams.centerLon = (caseInsensitiveParams.aoiMinLon.toDouble() +
-              caseInsensitiveParams.aoi.MaxLon.toDouble()) * 0.5
-      caseInsensitiveParams.centerLat = (caseInsensitiveParams.aoiMinLat.toDouble() +
-              caseInsensitiveParams.aoi.MaxLat.toDouble()) * 0.5
+      caseInsensitiveParams.centerLon = ( caseInsensitiveParams.aoiMinLon.toDouble() +
+              caseInsensitiveParams.aoi.MaxLon.toDouble() ) * 0.5
+      caseInsensitiveParams.centerLat = ( caseInsensitiveParams.aoiMinLat.toDouble() +
+              caseInsensitiveParams.aoi.MaxLat.toDouble() ) * 0.5
       if ( !caseInsensitiveParams.aoiRadius )
       {
         caseInsensitiveParams.aoiRadius = 0.0
@@ -76,27 +77,27 @@ class RasterKmlQueryController extends KmlQueryController
     try
     {
 
-      if ( (caseInsensitiveParams?.max == null) || !(caseInsensitiveParams.max =~ /\d+/) )
+      if ( ( caseInsensitiveParams?.max == null ) || !( caseInsensitiveParams.max =~ /\d+/ ) )
       {
         caseInsensitiveParams?.max = defaultImages;
       }
-      else if ( Integer.parseInt(params.max) > maxImages )
+      else if ( Integer.parseInt( params.max ) > maxImages )
       {
         caseInsensitiveParams?.max = maxImages
       }
     }
-    catch (Exception e)   // sanity check
+    catch ( Exception e )   // sanity check
     {
       // this is only caused by a numeric parse we will default to maxImages
       caseInsensitiveParams?.max = 10
     }
     def queryParams = new RasterEntryQuery()
 
-    queryParams.caseInsensitiveBind(caseInsensitiveParams)
-    queryParams.startDate = DateUtil.initializeDate("startDate", caseInsensitiveParams)
-    queryParams.endDate = DateUtil.initializeDate("endDate", caseInsensitiveParams)
+    queryParams.caseInsensitiveBind( caseInsensitiveParams )
+    queryParams.startDate = DateUtil.initializeDate( "startDate", caseInsensitiveParams )
+    queryParams.endDate = DateUtil.initializeDate( "endDate", caseInsensitiveParams )
 
-    if ( !caseInsensitiveParams?.containsKey("dateSort") || caseInsensitiveParams?.dateSort == "true" )
+    if ( !caseInsensitiveParams?.containsKey( "dateSort" ) || caseInsensitiveParams?.dateSort == "true" )
     {
       caseInsensitiveParams.order = 'desc'
       caseInsensitiveParams.sort = 'acquisitionDate'
@@ -105,32 +106,34 @@ class RasterKmlQueryController extends KmlQueryController
         queryParams.endDate = new Date()
       }
     }
-    log.info(queryParams.toMap())
+    log.info( queryParams.toMap() )
 
-    def rasterEntries = rasterEntrySearchService.runQuery(queryParams, caseInsensitiveParams)
-    String kmlText = rasterKmlService.createImagesKml(rasterEntries, wmsParams, caseInsensitiveParams)
+    def rasterEntries = rasterEntrySearchService.runQuery( queryParams, caseInsensitiveParams )
+    String kmlText = rasterKmlService.createImagesKml( rasterEntries, wmsParams, caseInsensitiveParams )
 
-    response.setHeader("Content-disposition", "attachment; filename=omar_last_${caseInsensitiveParams.max}_images.kml");
-    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
+    response.setHeader( "Content-disposition", "attachment; filename=omar_last_${caseInsensitiveParams.max}_images.kml" );
+    render( contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8" )
   }
 
-  def imageFootprints = {
+  def imageFootprints( )
+  {
     //println "imageFootprints: ${params}"
 
     params.days = params.imagedays
-    if ( (params.imagedays == null) || !(params.imagedays =~ /\d+/) )
-    params.days = grailsApplication.config.kml.daysCoverage
-    params.remove("imagedays")
+    if ( ( params.imagedays == null ) || !( params.imagedays =~ /\d+/ ) )
+      params.days = grailsApplication.config.kml.daysCoverage
+    params.remove( "imagedays" )
 
-    String kmlText = rasterKmlService.createImageFootprint(params)
-    response.setHeader("Content-disposition", "attachment; filename=omar_last_${params.days}_days_imagery_coverage.kml");
-    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
+    String kmlText = rasterKmlService.createImageFootprint( params )
+    response.setHeader( "Content-disposition", "attachment; filename=omar_last_${params.days}_days_imagery_coverage.kml" );
+    render( contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8" )
   }
 
-  def topImages = {
+  def topImages( )
+  {
     //println "topImages: ${params}"
 
-    if ( !(params.maximages =~ /\d+/) )
+    if ( !( params.maximages =~ /\d+/ ) )
     {
       params.max = grailsApplication.config.kml.defaultImages
     }
@@ -144,13 +147,13 @@ class RasterKmlQueryController extends KmlQueryController
       params.max = grailsApplication.config.kml.maxImages
     }
 
-    params.remove("maximages")
+    params.remove( "maximages" )
     params.stretch_mode_region = "viewport"
 
-    String kmlText = rasterKmlService.createTopImagesKml(params)
+    String kmlText = rasterKmlService.createTopImagesKml( params )
 
-    response.setHeader("Content-disposition", "attachment; filename=omar_last_${params.max}_images_for_view.kml");
-    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8")
+    response.setHeader( "Content-disposition", "attachment; filename=omar_last_${params.max}_images_for_view.kml" );
+    render( contentType: "application/vnd.google-earth.kml+xml", text: kmlText, encoding: "UTF-8" )
   }
 
 }

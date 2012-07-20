@@ -5,7 +5,9 @@ class KmlQueryController
   def grailsApplication
 
   def kmlPersistParams = ["googleversion", "visibility"]
-  def getkml = {
+
+  def getkml( )
+  {
     // let's just reuse the getImagesKml code
     //redirect(controller: "kmlQuery", action: "getImagesKml", params:params)
 
@@ -14,9 +16,9 @@ class KmlQueryController
 
     try
     {
-      forward(controller: "kmlQuery", action: "getImagesKml", params: params)
+      forward( controller: "kmlQuery", action: "getImagesKml", params: params )
     }
-    catch (Exception e)
+    catch ( Exception e )
     {}
   }
 }

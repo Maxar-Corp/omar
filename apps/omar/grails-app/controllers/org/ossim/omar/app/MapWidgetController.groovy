@@ -3,6 +3,6 @@ package org.ossim.omar.app
 class MapWidgetController
 {
 
-  def index = { }
+  def index () { }
 
 }
