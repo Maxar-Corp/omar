@@ -3,7 +3,8 @@ package org.ossim.omar.raster
 
 class RasterSearchController
 {
-  def search = {
+  def search( )
+  {
     def model = [:]
     if ( request.method.toUpperCase() == "POST" )
     {
@@ -11,10 +12,10 @@ class RasterSearchController
       model['endDate'] = params['endDate']
       println model
     }
-    [model:model]
+    [model: model]
   }
 
-  def results = {
+  def results() {
 
   }
 }

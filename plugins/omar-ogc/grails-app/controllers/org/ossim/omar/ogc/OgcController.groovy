@@ -8,20 +8,22 @@ class OgcController
   def springSecurityService
 
 
-  def getTile = {
-    log.warn("OgcController getTile is deprecated and image space operations should go through ../icp/getTile\ninstead of /ogc/getTile")
-    redirect(controller: "icp", action: "getTile", params: params)
+  def getTile( )
+  {
+    log.warn( "OgcController getTile is deprecated and image space operations should go through ../icp/getTile\ninstead of /ogc/getTile" )
+    redirect( controller: "icp", action: "getTile", params: params )
   }
 
   def imageUtilService
 
 
-  def chip = {
+  def chip( )
+  {
     def url = ""
     if ( params.type == "tile" )
     {
       url = "http://localhost"
-      url += "${createLink(controller: 'icp', action: 'getTileOpenLayers')}" + "?"
+      url += "${createLink( controller: 'icp', action: 'getTileOpenLayers' )}" + "?"
       url += "res=" + params.res + "&"
       url += "x=" + params.x + "&"
       url += "y=" + params.y + "&"
@@ -33,8 +35,9 @@ class OgcController
     }
     else
     {
-      println("cheese")
+      println( "cheese" )
     }
+
     // def url = "http://localhost"+ "${createLink(controller: "ogc", action: "wms")}" + "?"
     // url += "request=GetMap&"
     // url += "layers=" + params.layers + "&"
@@ -52,16 +55,16 @@ class OgcController
     // url += "height=" + params.height + "&"
     // url += "format=image/png"
 
-    def inputImage = imageUtilService.readImage(url.toURL())
-    def outputImage = imageUtilService.rotateImage(inputImage, params.double('imageHeight'), params.double('imageWidth'), params.double('angle'))
+    def inputImage = imageUtilService.readImage( url.toURL() )
+    def outputImage = imageUtilService.rotateImage( inputImage, params.double( 'imageHeight' ), params.double( 'imageWidth' ), params.double( 'angle' ) )
     def format = params.format ?: "jpeg"
     def ostream = response.outputStream
 
-    def filename = File.createTempFile("foo", ".${format}")
+    def filename = File.createTempFile( "foo", ".${format}" )
 
-    response.setHeader("Content-disposition", "attachment; filename=${filename}");
+    response.setHeader( "Content-disposition", "attachment; filename=${filename}" );
     response.contentType = "image/${format}"
-    imageUtilService.writeImageToStream(outputImage, format, ostream)
+    imageUtilService.writeImageToStream( outputImage, format, ostream )
 
     ostream.close()
   }

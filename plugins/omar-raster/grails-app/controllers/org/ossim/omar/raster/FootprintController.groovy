@@ -10,7 +10,8 @@ class FootprintController
   def grailsApplication
   def footprintService
 
-  def index = {
+  def index( )
+  {
 
 //    def fileTypes = RasterEntry.createCriteria().list {
 //      projections {
@@ -40,15 +41,16 @@ class FootprintController
     [layerData: layerData, baseLayer: baseLayer]
   }
 
-  def footprints = {
+  def footprints( )
+  {
     //def ostream = response.outputStream
     def ostream = new ByteArrayOutputStream()
 
-    def caseInsensitiveParams = new CaseInsensitiveMap(params)
+    def caseInsensitiveParams = new CaseInsensitiveMap( params )
     def start = System.currentTimeMillis()
 
-    response.contentType = caseInsensitiveParams.get("format", "image/png")
-    footprintService.render(params, ostream)
+    response.contentType = caseInsensitiveParams.get( "format", "image/png" )
+    footprintService.render( params, ostream )
     //ostream.flush()
     //ostream.close()
 

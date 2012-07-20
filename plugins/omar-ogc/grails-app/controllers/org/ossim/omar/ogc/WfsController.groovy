@@ -7,12 +7,13 @@ class WfsController
 {
   def webFeatureService
 
-  def index = {
-    def wfsParams = new CaseInsensitiveMap(params).subMap([
+  def index( )
+  {
+    def wfsParams = new CaseInsensitiveMap( params ).subMap( [
             'service', 'version', 'request',
             'typeName', 'filter',
             'max', 'offset', 'sort', 'order'
-    ])
+    ] )
 
     def xml = null
     switch ( wfsParams.request?.toLowerCase() )
@@ -21,7 +22,7 @@ class WfsController
       xml = webFeatureService.capabilities
       break
     case "describefeaturetype":
-      xml = webFeatureService.describeFeatureType(wfsParams.typeName)
+      xml = webFeatureService.describeFeatureType( wfsParams.typeName )
       break
     case "getfeature":
       def pagination = [
@@ -35,7 +36,7 @@ class WfsController
       //println pagination
       //println '*' * 40
 
-      xml = webFeatureService.getFeature(wfsParams.typeName, wfsParams.filter, pagination)
+      xml = webFeatureService.getFeature( wfsParams.typeName, wfsParams.filter, pagination )
       break
     default:
       xml = "ERROR"

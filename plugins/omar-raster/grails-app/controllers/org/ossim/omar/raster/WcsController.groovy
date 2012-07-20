@@ -10,7 +10,8 @@ class WcsController extends OgcController
   def webCoverageService
   def rasterEntrySearchService
 
-  def wcs = {
+  def wcs( )
+  {
     WcsCommand cmd = new WcsCommand()
 
     bindData( cmd, new CaseInsensitiveMap( params ) )
@@ -25,10 +26,10 @@ class WcsController extends OgcController
 
     //Utility.simpleCaseInsensitiveBind( cmd, params )
 
-  //  if ( !cmd.validate( [
-  //          'width', 'height', 'format', 'crs', 'coverage', 'bbox'
-  //  ] ) )
-    if (!cmd.validate())
+    //  if ( !cmd.validate( [
+    //          'width', 'height', 'format', 'crs', 'coverage', 'bbox'
+    //  ] ) )
+    if ( !cmd.validate() )
     {
       log.error( cmd.createErrorString() )
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWcsException( cmd ) )

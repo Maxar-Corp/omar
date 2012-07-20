@@ -28,7 +28,9 @@ class WmsController extends OgcController implements InitializingBean
   def scratchDir
   def exportService
   def grailsApplication
-  def wms = {
+
+  def wms( )
+  {
     //println params
 
     WmsCommand cmd = new WmsCommand()
@@ -87,7 +89,8 @@ class WmsController extends OgcController implements InitializingBean
     return null
   }
 
-  def footprints = {
+  def footprints( )
+  {
 //    def start = System.currentTimeMillis()
     Utility.removeEmptyParams( params )
     if ( params.max == null )
@@ -212,7 +215,8 @@ class WmsController extends OgcController implements InitializingBean
     return null
   }
 
-  def getKmz_ = {
+  def getKmz_( )
+  {
 
     WmsCommand cmd = new WmsCommand()
 
@@ -249,7 +253,8 @@ class WmsController extends OgcController implements InitializingBean
     null
   }
 
-  def getCapabilities_ = {
+  def getCapabilities_( )
+  {
 
     WmsCommand cmd = new WmsCommand()
 
@@ -276,7 +281,8 @@ class WmsController extends OgcController implements InitializingBean
     null
   }
 
-  def getKml_ = {
+  def getKml_( )
+  {
 
     WmsCommand cmd = new WmsCommand()
 
@@ -352,7 +358,9 @@ class WmsController extends OgcController implements InitializingBean
 
     null
   }
-  def getFeatureInfo_ = {
+
+  def getFeatureInfo_( )
+  {
     WmsCommand cmd = new WmsCommand()
 
     def paramsClone = new CaseInsensitiveMap( params )
@@ -397,7 +405,9 @@ class WmsController extends OgcController implements InitializingBean
     response.outputStream << file?.newInputStream()
     response.outputStream.flush()
   }
-  def getMap_ = {
+
+  def getMap_( )
+  {
     WmsCommand cmd = new WmsCommand()
 
     bindData( cmd, new CaseInsensitiveMap( params ) )

@@ -21,7 +21,8 @@ class RasterEntryController implements InitializingBean
   def tagHeaderList
   def tagNameList
 
-  def index = { redirect( action: list, params: params ) }
+  def index( )
+  { redirect( action: list, params: params ) }
 
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
@@ -60,7 +61,9 @@ class RasterEntryController implements InitializingBean
     ]
   }
    */
-  def list = {
+
+  def list( )
+  {
 
     def starttime = System.currentTimeMillis()
     def max = null;
@@ -147,7 +150,9 @@ class RasterEntryController implements InitializingBean
     ] )
 
   }
-  def list_mobile = {
+
+  def list_mobile( )
+  {
     if ( !params.max )
       params.max = 10
 
@@ -169,7 +174,8 @@ class RasterEntryController implements InitializingBean
     [rasterEntryList: rasterEntryList]
   }
 
-  def show = {
+  def show( )
+  {
 
     def rasterEntry = RasterEntry.findByIndexId( params.id ) ?: RasterEntry.get( params.id );
 
@@ -183,7 +189,8 @@ class RasterEntryController implements InitializingBean
     { return [rasterEntry: rasterEntry] }
   }
 
-  def delete = {
+  def delete( )
+  {
     def rasterEntry = RasterEntry.findByIndexId( params.id ) ?: RasterEntry.get( params.id );
     if ( rasterEntry )
     {
@@ -198,7 +205,8 @@ class RasterEntryController implements InitializingBean
     }
   }
 
-  def edit = {
+  def edit( )
+  {
     def rasterEntry = RasterEntry.findByIndexId( params.id ) ?: RasterEntry.get( params.id );
 
     if ( !rasterEntry )
@@ -212,7 +220,8 @@ class RasterEntryController implements InitializingBean
     }
   }
 
-  def update = {
+  def update( )
+  {
     def rasterEntry = RasterEntry.findByIndexId( params.id ) ?: RasterEntry.get( params.id );
     if ( rasterEntry )
     {
@@ -234,13 +243,15 @@ class RasterEntryController implements InitializingBean
     }
   }
 
-  def create = {
+  def create( )
+  {
     def rasterEntry = new RasterEntry()
     rasterEntry.properties = params
     return ['rasterEntry': rasterEntry]
   }
 
-  def save = {
+  def save( )
+  {
     def rasterEntry = new RasterEntry( params )
     if ( !rasterEntry.hasErrors() && rasterEntry.save() )
     {
@@ -253,7 +264,8 @@ class RasterEntryController implements InitializingBean
     }
   }
 
-  def search = {
+  def search( )
+  {
 
 //    println "=== search start ==="
     def max = null;
@@ -366,7 +378,8 @@ class RasterEntryController implements InitializingBean
     }
   }
 
-  def search_mobile = {
+  def search_mobile( )
+  {
 
 //    println "=== search start ==="
 
@@ -456,7 +469,8 @@ class RasterEntryController implements InitializingBean
     return queryParams
   }
 
-  def results = {
+  def results( )
+  {
 
     def starttime = System.currentTimeMillis()
 
@@ -570,7 +584,8 @@ class RasterEntryController implements InitializingBean
 
   }
 
-  def results_mobile = {
+  def results_mobile( )
+  {
 
 //    println "=== results start ==="
 
@@ -655,7 +670,8 @@ class RasterEntryController implements InitializingBean
 
   }
 
-  def getKML = {
+  def getKML( )
+  {
 
     def rasterEntry = RasterEntry.get( params.rasterEntryIds )
 
@@ -677,7 +693,8 @@ class RasterEntryController implements InitializingBean
     }
   }
 
-  def kmlnetworklink = {
+  def kmlnetworklink( )
+  {
     def kmlbuilder = new StreamingMarkupBuilder()
 
     kmlbuilder.encoding = "UTF-8"
@@ -698,7 +715,7 @@ class RasterEntryController implements InitializingBean
       }
     }
 
-    def serviceAddress = createLink( absolute: true,  base: "${grailsApplication.config.omar.serverURL}", controller: "rasterKmlQuery", action: "getImagesKml", params: params )
+    def serviceAddress = createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "rasterKmlQuery", action: "getImagesKml", params: params )
 
 /*
     def kmlnode = {
