@@ -10,11 +10,11 @@ class DataInfoService
   String getInfo(String filename)
   {
     def dataInfo = new DataInfo()
+    def xml = null
 
     try
     {
         def canOpen = dataInfo.open(filename)
-        def xml = null
         if ( canOpen )
         {
             xml = dataInfo.getInfo()?.trim()

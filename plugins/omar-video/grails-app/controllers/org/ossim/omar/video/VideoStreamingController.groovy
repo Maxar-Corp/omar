@@ -12,17 +12,18 @@ class VideoStreamingController implements InitializingBean
   def flashUrlRoot
   def videoKmlService
 
-  def show = {
+  def show( )
+  {
     def flvUrl
     def title
 
-    if(!VideoDataSet.findByIndexId(params.id))
+    if ( !VideoDataSet.findByIndexId( params.id ) )
     {
       render "Alert: No video matched with id param: " + params.id
       return
     }
 
-    def videoDataSet = VideoDataSet.findByIndexId(params.id) ?: VideoDataSet.get(params.id)
+    def videoDataSet = VideoDataSet.findByIndexId( params.id ) ?: VideoDataSet.get( params.id )
 
     //println params.id
 
@@ -35,7 +36,7 @@ class VideoStreamingController implements InitializingBean
       switch ( mainFile.format?.toUpperCase() )
       {
       case "MPEG":
-        flvFile = "${flashDirRoot}/${FilenameUtils.getBaseName(videoFile.name)}.flv" as File
+        flvFile = "${flashDirRoot}/${FilenameUtils.getBaseName( videoFile.name )}.flv" as File
 
         if ( !flvFile.exists() )
         {
@@ -45,7 +46,7 @@ class VideoStreamingController implements InitializingBean
           process.waitFor()
         }
 
-        flvUrl = new URL("${flashUrlRoot}/${flvFile.name}")
+        flvUrl = new URL( "${flashUrlRoot}/${flvFile.name}" )
 
         break
 
@@ -54,7 +55,7 @@ class VideoStreamingController implements InitializingBean
         //def flvContext = videoFile.absolutePath - videoDataSet.repository.baseDir
         def flvContext = videoFile.absolutePath - flashDirRoot
 
-        flvUrl = new URL("${flashUrlRoot}/${flvContext}")
+        flvUrl = new URL( "${flashUrlRoot}/${flvContext}" )
         break
       }
 
@@ -63,17 +64,18 @@ class VideoStreamingController implements InitializingBean
     else
     {
       flash.message = "VideoDataSet not found with id ${params.id}"
-      redirect(controller: "videoDataSet", action: "list", params: [flash: flash])
+      redirect( controller: "videoDataSet", action: "list", params: [flash: flash] )
     }
 
     [flvUrl: flvUrl, videoDataSet: videoDataSet, title: title]
   }
 
-    def show_mobile = {
+  def show_mobile( )
+  {
     def flvUrl
     def title
 
-    def videoDataSet = VideoDataSet.findByIndexId(params.id) ?: VideoDataSet.get(params.id)
+    def videoDataSet = VideoDataSet.findByIndexId( params.id ) ?: VideoDataSet.get( params.id )
 
     if ( videoDataSet )
     {
@@ -85,8 +87,8 @@ class VideoStreamingController implements InitializingBean
       switch ( mainFile.format?.toUpperCase() )
       {
       case "MPEG":
-        flvFile = "${flashDirRoot}/${FilenameUtils.getBaseName(videoFile.name)}.flv" as File
-        mp4 = "${flashDirRoot}/${FilenameUtils.getBaseName(videoFile.name)}.mp4" as File
+        flvFile = "${flashDirRoot}/${FilenameUtils.getBaseName( videoFile.name )}.flv" as File
+        mp4 = "${flashDirRoot}/${FilenameUtils.getBaseName( videoFile.name )}.mp4" as File
 
         if ( !mp4.exists() )
         {
@@ -96,7 +98,7 @@ class VideoStreamingController implements InitializingBean
           process.waitFor()
         }
 
-        flvUrl = new URL("${flashUrlRoot}/${mp4.name}")
+        flvUrl = new URL( "${flashUrlRoot}/${mp4.name}" )
 
         break
       case "FLV":
@@ -106,7 +108,7 @@ class VideoStreamingController implements InitializingBean
         //def flvContext = videoFile.absolutePath - videoDataSet.repository.baseDir
         def flvContext = videoFile.absolutePath - flashDirRoot
 
-        flvUrl = new URL("${flashUrlRoot}/${flvContext}")
+        flvUrl = new URL( "${flashUrlRoot}/${flvContext}" )
         break
       }
 
@@ -115,26 +117,27 @@ class VideoStreamingController implements InitializingBean
     else
     {
       flash.message = "VideoDataSet not found with id ${params.id}"
-      redirect(controller: "videoDataSet", action: "list", params: [flash: flash])
+      redirect( controller: "videoDataSet", action: "list", params: [flash: flash] )
     }
 
     [flvUrl: flvUrl, videoDataSet: videoDataSet, title: title]
   }
 
-  def getKML = {
+  def getKML( )
+  {
 
-    def videoDataSet = VideoDataSet.findByIndexId(params.id) ?: VideoDataSet.get(params.id)
+    def videoDataSet = VideoDataSet.findByIndexId( params.id ) ?: VideoDataSet.get( params.id )
     def videoDataSetList = [videoDataSet]
 
     File mpegFile = videoDataSet.mainFile.name as File
 
-    def kml = videoKmlService.createVideosKml(videoDataSetList, params)
+    def kml = videoKmlService.createVideosKml( videoDataSetList, params )
 
-    response.setHeader("Content-disposition", "attachment; filename=${FilenameUtils.getBaseName(mpegFile.name)}.kml")
-    render(contentType: "application/vnd.google-earth.kml+xml", text: "${kml}", encoding: "UTF-8")
+    response.setHeader( "Content-disposition", "attachment; filename=${FilenameUtils.getBaseName( mpegFile.name )}.kml" )
+    render( contentType: "application/vnd.google-earth.kml+xml", text: "${kml}", encoding: "UTF-8" )
   }
 
-  public void afterPropertiesSet()
+  public void afterPropertiesSet( )
   {
     flashDirRoot = grailsApplication.config.videoStreaming.flashDirRoot
     flashUrlRoot = grailsApplication.config.videoStreaming.flashUrlRoot

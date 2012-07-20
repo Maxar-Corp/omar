@@ -17,8 +17,12 @@ class SuperOverlayController implements InitializingBean
   def serverUrl
   def superOverlayService
   def outputKmz = false
-  def index = { render ""}
-  def createKml = {
+
+  def index( )
+  { render ""}
+
+  def createKml( )
+  {
     def rasterEntry = null
     try
     {

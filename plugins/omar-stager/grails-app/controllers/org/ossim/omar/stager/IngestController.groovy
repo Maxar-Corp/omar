@@ -7,8 +7,18 @@ class IngestController
 
   def dataInfo( )
   {
-    def oms = request.XML
     def message
+
+//    def xml =  request.reader.text
+//
+//    println xml
+
+//    new File( '/tmp/foo.xml' ).write(xml)
+//
+//    def oms = new XmlSlurper(  ).parseText(xml)
+
+
+    def oms = request.XML
 
 
     if ( oms )

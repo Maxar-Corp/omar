@@ -1,9 +1,10 @@
 package org.ossim.omar.core
 
-class RunningController {
+class RunningController
+{
 
-    def index =
-    {
-      render(text:"OMAR_RUNNING",contentType:"text/plain",encoding:"UTF-8")
-    }
+  def index( )
+  {
+    render( text: "OMAR_RUNNING", contentType: "text/plain", encoding: "UTF-8" )
+  }
 }

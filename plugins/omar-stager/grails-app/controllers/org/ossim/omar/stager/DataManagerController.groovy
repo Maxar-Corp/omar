@@ -19,10 +19,12 @@ class DataManagerController implements ApplicationContextAware
 {
   ApplicationContext applicationContext
 
-  def index = {
+  def index( )
+  {
   }
 
-  def action = {
+  def action( )
+  {
     def method = request.method.toUpperCase()
     def httpStatusMessage = new HttpStatusMessage()
 
@@ -48,23 +50,23 @@ class DataManagerController implements ApplicationContextAware
       break
     case "POST":
     case "DELETE":
-      def serviceName = "${type[0].toLowerCase() + type.substring(1) }DataSetService"
-      def service = applicationContext.getBean(serviceName)
-      def status = service."${params.opType}"(httpStatusMessage, params)
+      def serviceName = "${type[0].toLowerCase() + type.substring( 1 ) }DataSetService"
+      def service = applicationContext.getBean( serviceName )
+      def status = service."${params.opType}"( httpStatusMessage, params )
 
       response.status = httpStatusMessage.status
-      render(httpStatusMessage.message)
+      render( httpStatusMessage.message )
       break
     default:
       httpStatusMessage.status = HttpStatus.METHOD_NOT_ALLOWED
       httpStatusMessage.message = "Unsupported method ${method} for action ${params.opType} with filename ${filename}"
       httpStatusMessage.header.Allow = "GET, POST, DELETE"
-      httpStatusMessage.initializeResponse(response)
-      render(httpStatusMessage.message)
+      httpStatusMessage.initializeResponse( response )
+      render( httpStatusMessage.message )
     }
   }
 
-  void setApplicationContext(org.springframework.context.ApplicationContext applicationContext)
+  void setApplicationContext( org.springframework.context.ApplicationContext applicationContext )
   {
     this.applicationContext = applicationContext
   }
