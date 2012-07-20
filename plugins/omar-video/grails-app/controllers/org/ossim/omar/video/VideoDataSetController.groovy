@@ -19,7 +19,9 @@ class VideoDataSetController implements InitializingBean
   def baseWMS
   def dataWMS
 
-  def index = { redirect(action: list, params: params) }
+  def index( )
+  { redirect( action: list, params: params ) }
+
   def springSecurityService
   def videoDataSetSearchService
   def webMappingService
@@ -28,7 +30,7 @@ class VideoDataSetController implements InitializingBean
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
 /*
-  def list = {
+  def list () {
     if ( !params.max )
     params.max = 10
 
@@ -66,12 +68,14 @@ class VideoDataSetController implements InitializingBean
 
   }
   */
-  def list = {
+
+  def list( )
+  {
     //println "=== results start ==="
 
     def starttime = System.currentTimeMillis()
 
-    if ( !params.max || !(params.max =~ /\d+$/) || (params.max as Integer) > 100 )
+    if ( !params.max || !( params.max =~ /\d+$/ ) || ( params.max as Integer ) > 100 )
     {
       params.max = 10
     }
@@ -80,7 +84,7 @@ class VideoDataSetController implements InitializingBean
     def totalCount = null
     def videoFiles = null
 
-    def queryParams = initVideoDataSetQuery(params)
+    def queryParams = initVideoDataSetQuery( params )
 
     if ( chainModel )
     {
@@ -90,14 +94,14 @@ class VideoDataSetController implements InitializingBean
     }
     else
     {
-      videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
-      totalCount = videoDataSetSearchService.getCount(queryParams)
+      videoDataSets = videoDataSetSearchService.runQuery( queryParams, params )
+      totalCount = videoDataSetSearchService.getCount( queryParams )
 
       if ( videoDataSets )
       {
         videoFiles = VideoFile.createCriteria().list {
-          eq("type", "main")
-          inList("videoDataSet", videoDataSets)
+          eq( "type", "main" )
+          inList( "videoDataSet", videoDataSets )
         }
       }
       else
@@ -109,8 +113,8 @@ class VideoDataSetController implements InitializingBean
 
       def logData = [
               TYPE: "video_search",
-              START: new Date(starttime),
-              END: new Date(endtime),
+              START: new Date( starttime ),
+              END: new Date( endtime ),
               ELAPSE_TIME_MILLIS: endtime - starttime,
               USER: user,
               PARAMS: params
@@ -119,20 +123,20 @@ class VideoDataSetController implements InitializingBean
       //println "\nparams: ${params?.sort { it.key }}"
       //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
-      log.info(logData)
+      log.info( logData )
 
       //println logData
     }
 
     //println "=== results end ==="
 
-    if ( !session.videoDataSetResultCurrentTab && ("${session.videoDataSetResultCurrentTab}" != "0") )
+    if ( !session.videoDataSetResultCurrentTab && ( "${session.videoDataSetResultCurrentTab}" != "0" ) )
     {
       session["videoDataSetResultCurrentTab"] = "0"
     }
     withFormat {
       html {
-        render(view: 'results', model: [
+        render( view: 'results', model: [
                 videoDataSets: videoDataSets,
                 videoFiles: videoFiles,
                 totalCount: totalCount,
@@ -142,13 +146,15 @@ class VideoDataSetController implements InitializingBean
                 sessionAction: "updateSession",
                 sessionController: "session",
                 videoDataSetResultCurrentTab: session["videoDataSetResultCurrentTab"]
-        ])
+        ] )
       }
       xml { render videoDataSets as XML }
       json { render videoDataSets as JSON }
     }
   }
-  def list_mobile = {
+
+  def list_mobile( )
+  {
     if ( !params.max )
       params.max = 10
 
@@ -156,15 +162,15 @@ class VideoDataSetController implements InitializingBean
 
     if ( params.repositoryId )
     {
-      def repository = Repository.get(params.repositoryId)
+      def repository = Repository.get( params.repositoryId )
 
-      videoDataSetList = VideoDataSet.createCriteria().list(params) {
-        eq("repository", repository)
+      videoDataSetList = VideoDataSet.createCriteria().list( params ) {
+        eq( "repository", repository )
       }
     }
     else
     {
-      videoDataSetList = VideoDataSet.createCriteria().list(params) {}
+      videoDataSetList = VideoDataSet.createCriteria().list( params ) {}
     }
 
     //[videoDataSetList: videoDataSetList]
@@ -175,13 +181,14 @@ class VideoDataSetController implements InitializingBean
     }
   }
 
-  def show = {
-    def videoDataSet = VideoDataSet.get(params.id)
+  def show( )
+  {
+    def videoDataSet = VideoDataSet.get( params.id )
 
     if ( !videoDataSet )
     {
       flash.message = "VideoDataSet not found with id ${params.id}"
-      redirect(action: list)
+      redirect( action: list )
     }
     else
     {
@@ -193,28 +200,30 @@ class VideoDataSetController implements InitializingBean
     }
   }
 
-  def delete = {
-    def videoDataSet = VideoDataSet.get(params.id)
+  def delete( )
+  {
+    def videoDataSet = VideoDataSet.get( params.id )
     if ( videoDataSet )
     {
       videoDataSet.delete()
       flash.message = "VideoDataSet ${params.id} deleted"
-      redirect(action: list)
+      redirect( action: list )
     }
     else
     {
       flash.message = "VideoDataSet not found with id ${params.id}"
-      redirect(action: list)
+      redirect( action: list )
     }
   }
 
-  def edit = {
-    def videoDataSet = VideoDataSet.get(params.id)
+  def edit( )
+  {
+    def videoDataSet = VideoDataSet.get( params.id )
 
     if ( !videoDataSet )
     {
       flash.message = "VideoDataSet not found with id ${params.id}"
-      redirect(action: list)
+      redirect( action: list )
     }
     else
     {
@@ -222,75 +231,79 @@ class VideoDataSetController implements InitializingBean
     }
   }
 
-  def update = {
-    def videoDataSet = VideoDataSet.get(params.id)
+  def update( )
+  {
+    def videoDataSet = VideoDataSet.get( params.id )
     if ( videoDataSet )
     {
       videoDataSet.properties = params
       if ( !videoDataSet.hasErrors() && videoDataSet.save() )
       {
         flash.message = "VideoDataSet ${params.id} updated"
-        redirect(action: show, id: videoDataSet.id)
+        redirect( action: show, id: videoDataSet.id )
       }
       else
       {
-        render(view: 'edit', model: [videoDataSet: videoDataSet])
+        render( view: 'edit', model: [videoDataSet: videoDataSet] )
       }
     }
     else
     {
       flash.message = "VideoDataSet not found with id ${params.id}"
-      redirect(action: edit, id: params.id)
+      redirect( action: edit, id: params.id )
     }
   }
 
-  def create = {
+  def create( )
+  {
     def videoDataSet = new VideoDataSet()
     videoDataSet.properties = params
     return ['videoDataSet': videoDataSet]
   }
 
-  def save = {
-    def videoDataSet = new VideoDataSet(params)
+  def save( )
+  {
+    def videoDataSet = new VideoDataSet( params )
     if ( !videoDataSet.hasErrors() && videoDataSet.save() )
     {
       flash.message = "VideoDataSet ${videoDataSet.id} created"
-      redirect(action: show, id: videoDataSet.id)
+      redirect( action: show, id: videoDataSet.id )
     }
     else
     {
-      render(view: 'create', model: [videoDataSet: videoDataSet])
+      render( view: 'create', model: [videoDataSet: videoDataSet] )
     }
   }
 
-  def search = {
+  def search( )
+  {
 
     //println "=== search start ==="
 
-    if ( !params.max || !(params.max =~ /\d+$/) )
+    if ( !params.max || !( params.max =~ /\d+$/ ) )
     {
       params.max = 10
     }
-    else if ( (params.max as Integer) > 100 )
+    else if ( ( params.max as Integer ) > 100 )
     {
       params.max = 100;
     }
 
     //println "\nparams: ${params?.sort { it.key }}"
 
-    def queryParams = initVideoDataSetQuery(params)
+    def queryParams = initVideoDataSetQuery( params )
 
     //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
-	if ( !session.videoDataSetSearchCurrentTab1)
-	{
-	  session["videoDataSetSearchCurrentTab1"] = "1"
-	}
+    if ( !session.videoDataSetSearchCurrentTab1 )
+    {
+      session["videoDataSetSearchCurrentTab1"] = "1"
+    }
 
-	if ( !session.videoDataSetSearchCurrentTab2)
-	{
-	  session["videoDataSetSearchCurrentTab2"] = "0"
-	}
+    if ( !session.videoDataSetSearchCurrentTab2 )
+    {
+      session["videoDataSetSearchCurrentTab2"] = "0"
+    }
 
     if ( request.method == 'POST' )
     {
@@ -303,16 +316,16 @@ class VideoDataSetController implements InitializingBean
 
       def starttime = System.currentTimeMillis()
 
-      def videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
-      def totalCount = videoDataSetSearchService.getCount(queryParams)
+      def videoDataSets = videoDataSetSearchService.runQuery( queryParams, params )
+      def totalCount = videoDataSetSearchService.getCount( queryParams )
 
       def videoFiles = []
 
       if ( videoDataSets )
       {
         videoFiles = VideoFile.createCriteria().list {
-          eq("type", "main")
-          inList("videoDataSet", videoDataSets)
+          eq( "type", "main" )
+          inList( "videoDataSet", videoDataSets )
         }
       }
 
@@ -320,20 +333,20 @@ class VideoDataSetController implements InitializingBean
 
       def logData = [
               TYPE: "video_search",
-              START: new Date(starttime),
-              END: new Date(endtime),
+              START: new Date( starttime ),
+              END: new Date( endtime ),
               ELAPSE_TIME_MILLIS: endtime - starttime,
               USER: user,
               PARAMS: params
       ]
 
-      log.info(logData)
+      log.info( logData )
 
       //println logData
 
       //println "=== search end ==="
 
-      chain(action: "results",
+      chain( action: "results",
               model: [session: session, videoDataSets: videoDataSets, totalCount: totalCount, videoFiles: videoFiles],
               params: params
       )
@@ -346,22 +359,23 @@ class VideoDataSetController implements InitializingBean
     }
   }
 
-  def search_mobile = {
+  def search_mobile( )
+  {
 
     //println "=== search start ==="
 
-    if ( !params.max || !(params.max =~ /\d+$/) )
+    if ( !params.max || !( params.max =~ /\d+$/ ) )
     {
       params.max = 10
     }
-    else if ( (params.max as Integer) > 100 )
+    else if ( ( params.max as Integer ) > 100 )
     {
       params.max = 100;
     }
 
     //println "\nparams: ${params?.sort { it.key }}"
 
-    def queryParams = initVideoDataSetQuery(params)
+    def queryParams = initVideoDataSetQuery( params )
 
     //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
@@ -376,16 +390,16 @@ class VideoDataSetController implements InitializingBean
       def user = springSecurityService.principal.username
       def starttime = System.currentTimeMillis()
 
-      def videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
-      def totalCount = videoDataSetSearchService.getCount(queryParams)
+      def videoDataSets = videoDataSetSearchService.runQuery( queryParams, params )
+      def totalCount = videoDataSetSearchService.getCount( queryParams )
 
       def videoFiles = []
 
       if ( videoDataSets )
       {
         videoFiles = VideoFile.createCriteria().list {
-          eq("type", "main")
-          inList("videoDataSet", videoDataSets)
+          eq( "type", "main" )
+          inList( "videoDataSet", videoDataSets )
         }
       }
 
@@ -393,20 +407,20 @@ class VideoDataSetController implements InitializingBean
 
       def logData = [
               TYPE: "video_search",
-              START: new Date(starttime),
-              END: new Date(endtime),
+              START: new Date( starttime ),
+              END: new Date( endtime ),
               ELAPSE_TIME_MILLIS: endtime - starttime,
               USER: user,
               PARAMS: params
       ]
 
-      log.info(logData)
+      log.info( logData )
 
       //println logData
 
       //println "=== search end ==="
 
-      chain(action: "results_mobile",
+      chain( action: "results_mobile",
               model: [videoDataSets: videoDataSets, totalCount: totalCount, videoFiles: videoFiles],
               params: params
       )
@@ -419,14 +433,14 @@ class VideoDataSetController implements InitializingBean
     }
   }
 
-  private def initVideoDataSetQuery(Map params)
+  private def initVideoDataSetQuery( Map params )
   {
     def queryParams = new VideoDataSetQuery()
 
-    bindData(queryParams, params)
+    bindData( queryParams, params )
 
-    queryParams.startDate = DateUtil.initializeDate("startDate", params)
-    queryParams.endDate = DateUtil.initializeDate("endDate", params)
+    queryParams.startDate = DateUtil.initializeDate( "startDate", params )
+    queryParams.endDate = DateUtil.initializeDate( "endDate", params )
 
 //    println "params: ${params}"
 //    println "startDate: ${queryParams.startDate}"
@@ -435,17 +449,18 @@ class VideoDataSetController implements InitializingBean
     return queryParams
   }
 
-  def results = {
+  def results( )
+  {
 
     //println "=== results start ==="
 
     def starttime = System.currentTimeMillis()
 
-    if ( !params.max || !(params.max =~ /\d+$/) )
+    if ( !params.max || !( params.max =~ /\d+$/ ) )
     {
       params.max = 10
     }
-    else if ( (params.max as Integer) > 100 )
+    else if ( ( params.max as Integer ) > 100 )
     {
       params.max = 100;
     }
@@ -453,18 +468,18 @@ class VideoDataSetController implements InitializingBean
     if ( params?.queryParams )
     {
       def serialized = params?.queryParams - "{" - "}";
-      def paramsArray = serialized?.split(',')
-      params.remove("queryParams")
-      params.remove("totalCount")
+      def paramsArray = serialized?.split( ',' )
+      params.remove( "queryParams" )
+      params.remove( "totalCount" )
       paramsArray?.each
               {
-                def temp = it?.split('=')
+                def temp = it?.split( '=' )
                 if ( temp.size() == 2 )
                 {
                   if ( temp[1] == "null" ) temp[1] = ""
-                  params.put(temp[0].trim(), temp[1].trim())
+                  params.put( temp[0].trim(), temp[1].trim() )
                 }
-                else if ( temp.size() == 1 ) params.put(temp[0].trim(), "")
+                else if ( temp.size() == 1 ) params.put( temp[0].trim(), "" )
               }
     }
 
@@ -472,7 +487,7 @@ class VideoDataSetController implements InitializingBean
     def totalCount = null
     def videoFiles = null
 
-    def queryParams = initVideoDataSetQuery(params)
+    def queryParams = initVideoDataSetQuery( params )
 // chain model is messing with the max count.  When maxCount is 0 the totalCount
 // is still the entire database.  I have commented the chainModel out
 // for now.
@@ -485,14 +500,14 @@ class VideoDataSetController implements InitializingBean
 //    }
 //    else
 //    {
-    videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
-    totalCount = videoDataSetSearchService.getCount(queryParams)
+    videoDataSets = videoDataSetSearchService.runQuery( queryParams, params )
+    totalCount = videoDataSetSearchService.getCount( queryParams )
 
     if ( videoDataSets )
     {
       videoFiles = VideoFile.createCriteria().list {
-        eq("type", "main")
-        inList("videoDataSet", videoDataSets)
+        eq( "type", "main" )
+        inList( "videoDataSet", videoDataSets )
       }
     }
     else
@@ -505,8 +520,8 @@ class VideoDataSetController implements InitializingBean
 
     def logData = [
             TYPE: "video_search",
-            START: new Date(starttime),
-            END: new Date(endtime),
+            START: new Date( starttime ),
+            END: new Date( endtime ),
             ELAPSE_TIME_MILLIS: endtime - starttime,
             USER: user,
             PARAMS: params
@@ -515,17 +530,17 @@ class VideoDataSetController implements InitializingBean
     //println "\nparams: ${params?.sort { it.key }}"
     //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
-    log.info(logData)
+    log.info( logData )
 
     //println logData
     //   }
 
     //println "=== results end ==="
-    if ( !session.videoDataSetResultCurrentTab && ("${session.videoDataSetResultCurrentTab}" != "0") )
+    if ( !session.videoDataSetResultCurrentTab && ( "${session.videoDataSetResultCurrentTab}" != "0" ) )
     {
       session["videoDataSetResultCurrentTab"] = "0"
     }
-    render(view: 'results', model: [
+    render( view: 'results', model: [
             videoDataSets: videoDataSets,
             videoFiles: videoFiles,
             totalCount: totalCount,
@@ -535,21 +550,22 @@ class VideoDataSetController implements InitializingBean
             sessionAction: "updateSession",
             sessionController: "session",
             videoDataSetResultCurrentTab: session["videoDataSetResultCurrentTab"]
-    ])
+    ] )
 
   }
 
-  def results_mobile = {
+  def results_mobile( )
+  {
 
     //println "=== results start ==="
 
     def starttime = System.currentTimeMillis()
 
-    if ( !params.max || !(params.max =~ /\d+$/) )
+    if ( !params.max || !( params.max =~ /\d+$/ ) )
     {
       params.max = 10
     }
-    else if ( (params.max as Integer) > 100 )
+    else if ( ( params.max as Integer ) > 100 )
     {
       params.max = 100;
     }
@@ -558,7 +574,7 @@ class VideoDataSetController implements InitializingBean
     def totalCount = null
     def videoFiles = null
 
-    def queryParams = initVideoDataSetQuery(params)
+    def queryParams = initVideoDataSetQuery( params )
 
     if ( chainModel )
     {
@@ -568,14 +584,14 @@ class VideoDataSetController implements InitializingBean
     }
     else
     {
-      videoDataSets = videoDataSetSearchService.runQuery(queryParams, params)
-      totalCount = videoDataSetSearchService.getCount(queryParams)
+      videoDataSets = videoDataSetSearchService.runQuery( queryParams, params )
+      totalCount = videoDataSetSearchService.getCount( queryParams )
 
       if ( videoDataSets )
       {
         videoFiles = VideoFile.createCriteria().list {
-          eq("type", "main")
-          inList("videoDataSet", videoDataSets)
+          eq( "type", "main" )
+          inList( "videoDataSet", videoDataSets )
         }
       }
 
@@ -584,8 +600,8 @@ class VideoDataSetController implements InitializingBean
 
       def logData = [
               TYPE: "video_search",
-              START: new Date(starttime),
-              END: new Date(endtime),
+              START: new Date( starttime ),
+              END: new Date( endtime ),
               ELAPSE_TIME_MILLIS: endtime - starttime,
               USER: user,
               PARAMS: params
@@ -594,18 +610,18 @@ class VideoDataSetController implements InitializingBean
       //println "\nparams: ${params?.sort { it.key }}"
       //println "\nqueryParams: ${queryParams?.toMap()?.sort { it.key } }"
 
-      log.info(logData)
+      log.info( logData )
 
       //println logData
     }
 
     //println "=== results end ==="
 
-    if ( !session.videoDataSetResultCurrentTab && ("${session.videoDataSetResultCurrentTab}" != "0") )
+    if ( !session.videoDataSetResultCurrentTab && ( "${session.videoDataSetResultCurrentTab}" != "0" ) )
     {
       session["videoDataSetResultCurrentTab"] = "0"
     }
-    render(view: 'results_mobile', model: [
+    render( view: 'results_mobile', model: [
             videoDataSets: videoDataSets,
             videoFiles: videoFiles,
             totalCount: totalCount,
@@ -615,30 +631,31 @@ class VideoDataSetController implements InitializingBean
             sessionAction: "updateSession",
             sessionController: "session",
             videoDataSetResultCurrentTab: session["videoDataSetResultCurrentTab"]
-    ])
+    ] )
 
   }
 
-  def kmlnetworklink = {
+  def kmlnetworklink( )
+  {
     def kmlbuilder = new StreamingMarkupBuilder()
     kmlbuilder.encoding = "UTF-8"
 
-    params.remove("_action_kmlnetworklink")
+    params.remove( "_action_kmlnetworklink" )
 
     params.dateSort = "false"
-    def serviceAddress = createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "videoKmlQuery", action: "getVideosKml", params: params)
+    def serviceAddress = createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "videoKmlQuery", action: "getVideosKml", params: params )
     def kmlnode = {
       mkp.xmlDeclaration()
-      kml("xmlns": "http://earth.google.com/kml/2.1") {
+      kml( "xmlns": "http://earth.google.com/kml/2.1" ) {
         NetworkLink() {
-          name("OMAR Video Query Results")
-          open("1")
+          name( "OMAR Video Query Results" )
+          open( "1" )
           Link() {
             href() {
-              mkp.yieldUnescaped("<![CDATA[${serviceAddress}]]>")
+              mkp.yieldUnescaped( "<![CDATA[${serviceAddress}]]>" )
             }
-            viewRefreshMode("onRequest")
-            httpQuery("googleClientVersion=[clientVersion];")
+            viewRefreshMode( "onRequest" )
+            httpQuery( "googleClientVersion=[clientVersion];" )
           }
         }
       }
@@ -674,28 +691,29 @@ class VideoDataSetController implements InitializingBean
       }
     }
     */
-    kmlbuilder.bind(kmlnode)
-    response.setHeader("Content-disposition", "attachment; filename=singleRequestTopVideos.kml")
-    render(contentType: "application/vnd.google-earth.kml+xml", text: kmlbuilder.bind(kmlnode).toString(), encoding: "UTF-8")
+    kmlbuilder.bind( kmlnode )
+    response.setHeader( "Content-disposition", "attachment; filename=singleRequestTopVideos.kml" )
+    render( contentType: "application/vnd.google-earth.kml+xml", text: kmlbuilder.bind( kmlnode ).toString(), encoding: "UTF-8" )
 
   }
 
-  public void afterPropertiesSet()
+  public void afterPropertiesSet( )
   {
     baseWMS = webMappingService.baseLayers
     dataWMS = grailsApplication.config.wms.data.video
   }
 
-  def listTest = {
-    params.max = Math.min(params.max ? params.int('max') : 10, 100)
+  def listTest( )
+  {
+    params.max = Math.min( params.max ? params.int( 'max' ) : 10, 100 )
     params.offset = params.offset ?: 0
     params.sort = params.sort ?: "id"
     params.order = params.order ?: "asc"
 
-    def queryParams = initVideoDataSetQuery(params)
+    def queryParams = initVideoDataSetQuery( params )
 
-    def initialRequest = g.createLink(action: "query.json", params: queryParams.toMap())
-    initialRequest = initialRequest.substring(initialRequest.indexOf('?') + 1)
+    def initialRequest = g.createLink( action: "query.json", params: queryParams.toMap() )
+    initialRequest = initialRequest.substring( initialRequest.indexOf( '?' ) + 1 )
 
     def myColumnDefs = [
             [key: 'thumbnail', label: 'Thumbnail', sortable: false, resizeable: true, width: thumbnailSize, formatter: 'thumbnail'],
@@ -732,20 +750,21 @@ class VideoDataSetController implements InitializingBean
     ]
   }
 
-  def query = {
-    params.max = Math.min(params.max ? params.int('max') : 10, 100)
+  def query( )
+  {
+    params.max = Math.min( params.max ? params.int( 'max' ) : 10, 100 )
     params.offset = params.offset ?: 0
     params.sort = params.sort ?: "id"
     params.order = params.order ?: "asc"
 
-    def queryParams = initVideoDataSetQuery(params)
+    def queryParams = initVideoDataSetQuery( params )
 
-    def videoDataSet = videoDataSetSearchService.runQuery(queryParams, params)
-    def videoDataSetTotal = videoDataSetSearchService.getCount(queryParams)
+    def videoDataSet = videoDataSetSearchService.runQuery( queryParams, params )
+    def videoDataSetTotal = videoDataSetSearchService.getCount( queryParams )
 
     def results = videoDataSet.collect {
-      def thumbnailURL = g.createLink(controller: "thumbnail", action: "frame", id: it.id, params: [size: thumbnailSize])
-      def thumbnailTarget = g.createLink(controller: "videoStreaming", action: "show", params: [id: it.indexId])
+      def thumbnailURL = g.createLink( controller: "thumbnail", action: "frame", id: it.id, params: [size: thumbnailSize] )
+      def thumbnailTarget = g.createLink( controller: "videoStreaming", action: "show", params: [id: it.indexId] )
       def startDate = it.startDate.toString()
       def endDate = it.endDate.toString()
       def bounds = it.groundGeom?.bounds
