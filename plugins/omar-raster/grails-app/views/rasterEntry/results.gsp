@@ -24,8 +24,6 @@
   <g:render template="resultsPaginator" model="${[totalCount: totalCount, queryParams: queryParams, params: params]}"/>
 </content>
 
-<content tag="bottom">
-</content>
 
 <%--
 <content tag="left">
@@ -71,6 +69,9 @@
   </div>
 </content>
 
+<content tag="bottom">
+</content>
+
 <r:script>
 
     var tabView;
@@ -81,7 +82,7 @@
 
     function init()
     {
-      tabView = new YAHOO.widget.TabView( 'demo', { activeIndex: ${rasterEntryResultCurrentTab} } );
+        tabView= new YAHOO.widget.TabView( 'demo', { activeIndex: ${rasterEntryResultCurrentTab} } );
       tabView.selectTab(${rasterEntryResultCurrentTab});
       tabView.getTab(0).addListener('click', handleClickTab);
       tabView.getTab(1).addListener('click', handleClickTab);

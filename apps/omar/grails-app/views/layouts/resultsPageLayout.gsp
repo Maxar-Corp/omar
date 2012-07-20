@@ -21,6 +21,10 @@
   <g:pageProperty name="page.top"/>
 </div>
 
+<div id="center1">
+    <g:pageProperty name="page.center"/>
+</div>
+
 <div id="bottom1">
   <omar:securityClassificationBanner/>
   <g:pageProperty name="page.bottom"/>
@@ -36,9 +40,6 @@
 </div>
 --%>
 
-<div id="center1">
-  <g:pageProperty name="page.center"/>
-</div>
 
 <g:layoutBody/>
 <r:layoutResources/>
