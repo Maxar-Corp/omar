@@ -502,10 +502,11 @@ class TemplateExportService
 		if (DEBUG) { println "Crop the north rotated north arrow:" }
 		command = [
 				"convert",
-				"-gravity center", 
-				"${tempFilesLocation}${date}northArrowRotated.png", 
-				"-crop", "${northArrowWidth}x${northArrowHeight}+0+0", 
-				"+repage", 
+				"${tempFilesLocation}${date}northArrowRotated.png",
+				"+repage",
+				"-gravity",
+				"center", 
+				"-crop", "${northArrowWidth}x${northArrowHeight}+0+0",   
 				"${tempFilesLocation}${date}northArrowRotated.png"
 		]
 		if (DEBUG) { println "${command}" }
@@ -889,7 +890,7 @@ class TemplateExportService
 		executeCommand(command)
 
 		//####################################################################################################################
-		//################################################## Diclaimer Text ##################################################
+		//################################################## Disclaimer Text ##################################################
 		//####################################################################################################################
 		if (DEBUG) { println "##### Disclaimer Text #####" }
 		//########## Generate disclaimer text
