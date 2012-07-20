@@ -3,7 +3,7 @@ var dom = YAHOO.util.Dom;
 
 function changeLogo(logo)
 {
-	dom.get("logoImage").src = document.getElementById("imageResourceLocation").innerHTML + logo + ".png";
+	dom.get("logoImage").src = document.getElementById("imageResourceLocation").innerHTML + logo + "ForWeb.png";
 }
 
 function changeCountry(country)
