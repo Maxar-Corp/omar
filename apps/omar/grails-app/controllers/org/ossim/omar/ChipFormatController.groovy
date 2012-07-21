@@ -82,7 +82,7 @@ class ChipFormatController
       if ( !chipFormat.hasErrors() && chipFormat.save() )
       {
         flash.message = "ChipFormat ${params.id} updated"
-        redirect( action: show, id: chipFormat.id )
+        redirect( action: 'show', id: chipFormat.id )
       }
       else
       {
@@ -92,7 +92,7 @@ class ChipFormatController
     else
     {
       flash.message = "Chip format not found with id ${params.id}"
-      redirect( action: edit, id: params.id )
+      redirect( action: 'edit', id: params.id )
     }
   }
 

@@ -22,7 +22,7 @@ class RasterEntryController implements InitializingBean
   def tagNameList
 
   def index( )
-  { redirect( action: list, params: params ) }
+  { redirect( action: 'list', params: params ) }
 
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
@@ -183,7 +183,7 @@ class RasterEntryController implements InitializingBean
     if ( !rasterEntry )
     {
       flash.message = "RasterEntry not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     { return [rasterEntry: rasterEntry] }
@@ -196,12 +196,12 @@ class RasterEntryController implements InitializingBean
     {
       rasterEntry.delete()
       flash.message = "RasterEntry ${params.id} deleted"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
       flash.message = "RasterEntry not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
   }
 
@@ -212,7 +212,7 @@ class RasterEntryController implements InitializingBean
     if ( !rasterEntry )
     {
       flash.message = "RasterEntry not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
@@ -229,7 +229,7 @@ class RasterEntryController implements InitializingBean
       if ( !rasterEntry.hasErrors() && rasterEntry.save() )
       {
         flash.message = "RasterEntry ${params.id} updated"
-        redirect( action: show, id: rasterEntry.id )
+        redirect( action: 'show', id: rasterEntry.id )
       }
       else
       {
@@ -239,7 +239,7 @@ class RasterEntryController implements InitializingBean
     else
     {
       flash.message = "RasterEntry not found with id ${params.id}"
-      redirect( action: edit, id: params.id )
+      redirect( action: 'edit', id: params.id )
     }
   }
 
@@ -256,7 +256,7 @@ class RasterEntryController implements InitializingBean
     if ( !rasterEntry.hasErrors() && rasterEntry.save() )
     {
       flash.message = "RasterEntry ${rasterEntry.id} created"
-      redirect( action: show, id: rasterEntry.id )
+      redirect( action: 'show', id: rasterEntry.id )
     }
     else
     {
@@ -678,7 +678,7 @@ class RasterEntryController implements InitializingBean
     if ( !rasterEntry )
     {
       flash.message = "RasterEntry not found with id ${params.rasterEntryIds}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {

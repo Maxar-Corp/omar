@@ -9,7 +9,7 @@ class VideoFileController
 {
 
   def index( )
-  { redirect( action: list, params: params ) }
+  { redirect( action: 'list', params: params ) }
 
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
@@ -48,7 +48,7 @@ class VideoFileController
     if ( !videoFile )
     {
       flash.message = "VideoFile not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
@@ -67,12 +67,12 @@ class VideoFileController
     {
       videoFile.delete()
       flash.message = "VideoFile ${params.id} deleted"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
       flash.message = "VideoFile not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
   }
 
@@ -83,7 +83,7 @@ class VideoFileController
     if ( !videoFile )
     {
       flash.message = "VideoFile not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
@@ -100,7 +100,7 @@ class VideoFileController
       if ( !videoFile.hasErrors() && videoFile.save() )
       {
         flash.message = "VideoFile ${params.id} updated"
-        redirect( action: show, id: videoFile.id )
+        redirect( action: 'show', id: videoFile.id )
       }
       else
       {
@@ -110,7 +110,7 @@ class VideoFileController
     else
     {
       flash.message = "VideoFile not found with id ${params.id}"
-      redirect( action: edit, id: params.id )
+      redirect( action: 'edit', id: params.id )
     }
   }
 
@@ -127,7 +127,7 @@ class VideoFileController
     if ( !videoFile.hasErrors() && videoFile.save() )
     {
       flash.message = "VideoFile ${videoFile.id} created"
-      redirect( action: show, id: videoFile.id )
+      redirect( action: 'show', id: videoFile.id )
     }
     else
     {

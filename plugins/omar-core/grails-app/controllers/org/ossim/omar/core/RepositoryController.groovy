@@ -9,7 +9,7 @@ class RepositoryController implements ApplicationContextAware
   def applicationContext
 
   def index( )
-  { redirect( action: list, params: params ) }
+  { redirect( action: 'list', params: params ) }
 
   def stagerService
 
@@ -33,7 +33,7 @@ class RepositoryController implements ApplicationContextAware
     if ( !repository )
     {
       flash.message = "Repository not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     { return [repository: repository] }
@@ -59,12 +59,12 @@ class RepositoryController implements ApplicationContextAware
       }
 
       flash.message = "Repository ${params.id} deleted"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
       flash.message = "Repository not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
   }
 
@@ -75,7 +75,7 @@ class RepositoryController implements ApplicationContextAware
     if ( !repository )
     {
       flash.message = "Repository not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
@@ -102,7 +102,7 @@ class RepositoryController implements ApplicationContextAware
     else
     {
       flash.message = "Repository not found with id ${params.id}"
-      redirect( action: edit, id: params.id )
+      redirect( action: 'edit', id: params.id )
     }
   }
 
@@ -119,7 +119,7 @@ class RepositoryController implements ApplicationContextAware
     if ( !repository.hasErrors() && repository.save() )
     {
       flash.message = "Repository ${repository.id} created"
-      redirect( action: show, id: repository.id )
+      redirect( action: 'show', id: repository.id )
     }
     else
     {
@@ -137,7 +137,7 @@ class RepositoryController implements ApplicationContextAware
     if ( !repository )
     {
       flash.message = "Repository not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
@@ -148,7 +148,7 @@ class RepositoryController implements ApplicationContextAware
       stagerService.runStager( repository )
       //println "After"
 
-      redirect( action: show, id: params.id )
+      redirect( action: 'show', id: params.id )
     }
   }
 

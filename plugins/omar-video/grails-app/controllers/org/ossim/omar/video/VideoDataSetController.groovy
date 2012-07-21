@@ -20,7 +20,7 @@ class VideoDataSetController implements InitializingBean
   def dataWMS
 
   def index( )
-  { redirect( action: list, params: params ) }
+  { redirect( action: 'list', params: params ) }
 
   def springSecurityService
   def videoDataSetSearchService
@@ -188,7 +188,7 @@ class VideoDataSetController implements InitializingBean
     if ( !videoDataSet )
     {
       flash.message = "VideoDataSet not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
@@ -207,12 +207,12 @@ class VideoDataSetController implements InitializingBean
     {
       videoDataSet.delete()
       flash.message = "VideoDataSet ${params.id} deleted"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
       flash.message = "VideoDataSet not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
   }
 
@@ -223,7 +223,7 @@ class VideoDataSetController implements InitializingBean
     if ( !videoDataSet )
     {
       flash.message = "VideoDataSet not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
@@ -240,7 +240,7 @@ class VideoDataSetController implements InitializingBean
       if ( !videoDataSet.hasErrors() && videoDataSet.save() )
       {
         flash.message = "VideoDataSet ${params.id} updated"
-        redirect( action: show, id: videoDataSet.id )
+        redirect( action: 'show', id: videoDataSet.id )
       }
       else
       {
@@ -250,7 +250,7 @@ class VideoDataSetController implements InitializingBean
     else
     {
       flash.message = "VideoDataSet not found with id ${params.id}"
-      redirect( action: edit, id: params.id )
+      redirect( action: 'edit', id: params.id )
     }
   }
 
@@ -267,7 +267,7 @@ class VideoDataSetController implements InitializingBean
     if ( !videoDataSet.hasErrors() && videoDataSet.save() )
     {
       flash.message = "VideoDataSet ${videoDataSet.id} created"
-      redirect( action: show, id: videoDataSet.id )
+      redirect( action: 'show', id: videoDataSet.id )
     }
     else
     {
