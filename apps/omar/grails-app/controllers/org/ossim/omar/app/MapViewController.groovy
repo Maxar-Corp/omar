@@ -79,7 +79,7 @@ class MapViewController implements InitializingBean
     if ( !kmlFile )
     {
       flash.message = "RasterEntryFile not found with id ${params.id}"
-      redirect( action: index )
+      redirect( action: 'index' )
     }
     else
     {

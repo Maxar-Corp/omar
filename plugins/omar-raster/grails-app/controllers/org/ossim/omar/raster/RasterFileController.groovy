@@ -7,7 +7,7 @@ class RasterFileController
 {
 
   def index( )
-  { redirect( action: list, params: params ) }
+  { redirect( action: 'list', params: params ) }
 
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
@@ -43,7 +43,7 @@ class RasterFileController
     if ( !rasterFile )
     {
       flash.message = "RasterFile not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     { return [rasterFile: rasterFile] }
@@ -55,12 +55,12 @@ class RasterFileController
     {
       rasterFile.delete()
       flash.message = "RasterFile ${params.id} deleted"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
       flash.message = "RasterFile not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
   }
 
@@ -71,7 +71,7 @@ class RasterFileController
     if ( !rasterFile )
     {
       flash.message = "RasterFile not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
@@ -88,7 +88,7 @@ class RasterFileController
       if ( !rasterFile.hasErrors() && rasterFile.save() )
       {
         flash.message = "RasterFile ${params.id} updated"
-        redirect( action: show, id: rasterFile.id )
+        redirect( action: 'show', id: rasterFile.id )
       }
       else
       {
@@ -98,7 +98,7 @@ class RasterFileController
     else
     {
       flash.message = "RasterFile not found with id ${params.id}"
-      redirect( action: edit, id: params.id )
+      redirect( action: 'edit', id: params.id )
     }
   }
 
@@ -115,7 +115,7 @@ class RasterFileController
     if ( !rasterFile.hasErrors() && rasterFile.save() )
     {
       flash.message = "RasterFile ${rasterFile.id} created"
-      redirect( action: show, id: rasterFile.id )
+      redirect( action: 'show', id: rasterFile.id )
     }
     else
     {

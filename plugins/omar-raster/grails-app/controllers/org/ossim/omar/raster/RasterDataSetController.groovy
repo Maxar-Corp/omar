@@ -7,7 +7,7 @@ class RasterDataSetController
 {
 
   def index( )
-  { redirect( action: list, params: params ) }
+  { redirect( action: 'list', params: params ) }
 
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
@@ -42,7 +42,7 @@ class RasterDataSetController
     if ( !rasterDataSet )
     {
       flash.message = "RasterDataSet not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     { return [rasterDataSet: rasterDataSet] }
@@ -55,12 +55,12 @@ class RasterDataSetController
     {
       rasterDataSet.delete()
       flash.message = "RasterDataSet ${params.id} deleted"
-      redirect( action: list )
+      redirect( action: 'list')
     }
     else
     {
       flash.message = "RasterDataSet not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
   }
 
@@ -71,7 +71,7 @@ class RasterDataSetController
     if ( !rasterDataSet )
     {
       flash.message = "RasterDataSet not found with id ${params.id}"
-      redirect( action: list )
+      redirect( action: 'list' )
     }
     else
     {
@@ -88,7 +88,7 @@ class RasterDataSetController
       if ( !rasterDataSet.hasErrors() && rasterDataSet.save() )
       {
         flash.message = "RasterDataSet ${params.id} updated"
-        redirect( action: show, id: rasterDataSet.id )
+        redirect( action: 'show', id: rasterDataSet.id )
       }
       else
       {
@@ -98,7 +98,7 @@ class RasterDataSetController
     else
     {
       flash.message = "RasterDataSet not found with id ${params.id}"
-      redirect( action: edit, id: params.id )
+      redirect( action: 'edit', id: params.id )
     }
   }
 
@@ -115,7 +115,7 @@ class RasterDataSetController
     if ( !rasterDataSet.hasErrors() && rasterDataSet.save() )
     {
       flash.message = "RasterDataSet ${rasterDataSet.id} created"
-      redirect( action: show, id: rasterDataSet.id )
+      redirect( action: 'show', id: rasterDataSet.id )
     }
     else
     {
