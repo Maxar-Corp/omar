@@ -26,9 +26,9 @@
     <g:each in="${rasterEntries}" status="i" var="rasterEntry">
       <tr class="${( i % 2 ) == 0 ? 'odd' : 'even'}">
         <td height="${rasterEntry.height / ( Math.max( rasterEntry.width, rasterEntry.height ) / 128.0 )}"><a
-            href="${createLink( controller: "mapView", params: [layers: rasterEntry.indexId], absolute: true, base: grailsApplication.config.omar.serverURL )}">
+            href="${createLink( controller: "mapView", params: [layers: rasterEntry.indexId])}">
           <img
-              src="${createLink( controller: "thumbnail", action: "show", id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"], absolute: true, base: grailsApplication.config.omar.serverURL )}"
+              src="${createLink( controller: "thumbnail", action: "show", id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}"
               alt="Show Thumbnail"/></a></td>
         <td><g:link controller="rasterEntry" action="show"
                     id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
