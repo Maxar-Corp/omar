@@ -31,9 +31,9 @@ To change this template use File | Settings | File Templates.
         <g:each in="${rasterEntries}" status="i" var="rasterEntry">
             <tr class="${(i % 2) == 0 ? 'odd' : 'even'}">
                 <td height="${rasterEntry.height / (Math.max(rasterEntry.width, rasterEntry.height) / 128.0)}">
-                    <a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId], absolute: false)}">
+                    <a href="${createLink(controller: "mapView", params: [layers: rasterEntry.indexId])}">
                     <img src="${createLink(controller: "thumbnail", action: "show", id: rasterEntry.id,
-                    params: [size: 128, projectionType: "imagespace"], absolute: false)}" alt="Show Thumbnail"/>
+                    params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                     </a>
                 </td>
                 <td>
