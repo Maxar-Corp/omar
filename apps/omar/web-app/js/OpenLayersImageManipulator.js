@@ -386,7 +386,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     OpenLayers.Event.observe(window,   "DOMMouseScroll", this.wheelListener);
     OpenLayers.Event.observe(window,   "mousewheel",     this.wheelListener);
     OpenLayers.Event.observe(document, "mousewheel",     this.wheelListener);
-    this.containerResized();
+    this.containerResized(true);
     this.mapEventsDiv = OpenLayers.Util.getElement(this.map.id + "_events");
 },
 //handleBrowserEvent: function(evt)
@@ -523,18 +523,42 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
  //    }
      return evt;
     }, 
-    setChildDivDimensions: function(div){
+    setChildDivDimensions: function(div, initializing, oldRegion){
+      if(oldRegion&&(OpenLayers.BROWSER_NAME == "msie")&&!initializing)
+      {
+          /*
+          try{
+              var shiftW = -(this.containerDivRegion.width-oldRegion.width)/2;
+              var shiftH = -(this.containerDivRegion.height-oldRegion.height)/2;
+              var x = parseInt(div.style.left);
+              var y = parseInt(div.style.top);
+
+              if(!isNaN(shiftW) && !isNaN(shiftH)&&!isNaN(x)&&!isNaN(y))
+              {
+                  //div.style.left = x-shiftW+"px";
+                  //div.style.top  = y-shiftH+"px";
+                  // alert("modify: " + x +", " +shiftW +", "+y+", "+shiftH);
+                  //OpenLayers.Util.modifyDOMElement(div, null, {x:(x-shiftW),y:(y-shiftH)});
+                  OpenLayers.Util.modifyDOMElement(div, null, {x:x,y:(y)});
+              }
+          }
+        catch(e)
+          {
+          }
+          */
+          return;
+      }
       var tempAffine    = new OmarAffineParams();
 
       var w = this.containerDivRegion.width;
       var h = this.containerDivRegion.height;
-      var maxWH = Math.max(w,h);
+        var shiftW =0.0;
+        var shiftH =0.0;
+        var maxWH = Math.max(w,h);
       var extraW = 0.5*(maxWH -w);//w*0.5*(Math.sqrt(2)- 1.0);
       var extraH = 0.5*(maxWH -h);//h*0.5*(Math.sqrt(2)- 1.0);
-
       tempAffine.rotate = 45;//this.affineParams.rotate;
       tempAffine.pivot  = new OmarPoint(w*0.5, h*0.5);
-
       if(!this.fillAreaFlag)//||(OpenLayers.BROWSER_NAME == "msie"))
       {
         extraW = 0.0;
@@ -561,13 +585,14 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     
       OpenLayers.Util.modifyDOMElement(div, null, {x:left,y:top}, {w:(width),h:(height)});
    },
-  containerResized: function(){
+  containerResized: function(initializing){
       var center = this.map.getCenter();
       var region = YAHOO.util.Region.getRegion(this.containerDiv);
+      var oldRegion = this.containerDivRegion;
       this.containerDivRegion = region;
-      this.setChildDivDimensions(this.map.div);
-      this.setChildDivDimensions(this.eventDiv);
-      this.setChildDivDimensions(this.annotationDiv);
+      this.setChildDivDimensions(this.map.div, initializing, oldRegion);
+      this.setChildDivDimensions(this.eventDiv, initializing, oldRegion);
+      this.setChildDivDimensions(this.annotationDiv, initializing, oldRegion);
 
       this.updateTransform();
       this.map.updateSize(); // tell the map to adjust itself
