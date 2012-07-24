@@ -27,24 +27,9 @@
             ]
         } );
         outerLayout.on('resize', function(evt) {
-          //  if(OMAR.imageManipulator)
-          //  {
-          //      OMAR.imageManipulator.checkResize();
-           // }
-          //bodyOnResize();
             if(OMAR.imageManipulator)
             {
-                // all IE's seem to be shifted when just using bodyOnResize
-                // I will force a reload by tacking on a variable at the end
-                //
-                if(OpenLayers.BROWSER_NAME == "msie")
-                {
-                    window.location.href = window.location.href;
-                }
-                else
-                {
-                    bodyOnResize();
-                }
+                OMAR.imageManipulator.checkResize();
             }
         });
         outerLayout.on( 'render', function ()
