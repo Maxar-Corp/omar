@@ -39,6 +39,21 @@ class TemplateExportService
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
+		//########## Change the image to RGB colorspace
+		if (DEBUG) { println "Change the image to RGB colorspace:" }
+		command = [
+				"convert",
+				"${imageFile}",
+				"-type",
+				"TrueColor",
+				"${tempFilesLocation}${date}omarImage.tif"
+		]
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		command = "rm ${imageFile}"
+		executeCommand(command)
+
 		//################################################################################################################################
 		//############################################################ Image Dimensions ##################################################
 		//################################################################################################################################
@@ -49,7 +64,7 @@ class TemplateExportService
 				"identify", 
 				"-format", 
 				"%w", 
-				"${imageFile}"
+				"${tempFilesLocation}${date}omarImage.tif"
 		]
 		if (DEBUG) { println "${command}" }
 		def imageWidth = executeCommand(command)
@@ -63,7 +78,7 @@ class TemplateExportService
 				"identify", 
 				"-format", 
 				"%h", 
-				"${imageFile}"
+				"${tempFilesLocation}${date}omarImage.tif"
 		]
 		if (DEBUG) { println "${command}"; }
 		def imageHeight = executeCommand(command)
@@ -594,7 +609,7 @@ class TemplateExportService
 				"North",
 				"-geometry",
 				"+0+${headerOffset}",
-				"${imageFile}",
+				"${tempFilesLocation}${date}omarImage.tif",
 				"${tempFilesLocation}${date}finishedProduct.png"
 		]
 		if (DEBUG) { println "${command}" }
@@ -890,7 +905,7 @@ class TemplateExportService
 		executeCommand(command)
 
 		//####################################################################################################################
-		//################################################## Disclaimer Text ##################################################
+		//################################################## Disclaimer Text #################################################
 		//####################################################################################################################
 		if (DEBUG) { println "##### Disclaimer Text #####" }
 		//########## Generate disclaimer text
@@ -919,7 +934,7 @@ class TemplateExportService
 
 		//########## Delete the image file
 		if (DEBUG) { println "Delete the image file:" }
-		command = "rm ${tempFilesLocation}${date}omarImage.png"
+		command = "rm ${tempFilesLocation}${date}omarImage.tif"
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
