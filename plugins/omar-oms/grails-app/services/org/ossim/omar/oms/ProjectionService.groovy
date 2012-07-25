@@ -187,8 +187,11 @@ class ProjectionService
                     groundPoint.height = 0.0;
                 }
 
-                def hgtMsl = geodeticEvaluator.getHeightMSL(groundPoint);
-
+                Double hgtMsl = geodeticEvaluator.getHeightMSL(groundPoint);
+                if(hgtMsl.naN)
+                {
+                    hgtMsl = 0.0;
+                }
                 result.add([x:pt.x,
                             y:pt.y,
                             lat:groundPoint.latd(),
