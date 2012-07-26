@@ -19,11 +19,19 @@
         <div id="viewMenu" class="yuimenu">
           <div class="bd">
             <ul>
-              <li class="yuimenuitem">
-                <a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();"
-                   title="Ground Space Viewer">Ground Space</a>
-              </li>
-              <li class="yuimenuitem">
+                <li class="yuimenuitem">
+                    <a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();"
+                       title="Ground Space Viewer">ORTHO</a>
+                </li>
+                <li class="yuimenuitem">
+                    <a class="yuimenuitemlabel" href="javascript:rotateNorthUp();"
+                       title="North Up">NORTH</a>
+                </li>
+                <li class="yuimenuitem">
+                    <a class="yuimenuitemlabel" href="javascript:rotateUpIsUp();"
+                       title="Up Is Up">UP</a>
+                </li>
+                <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
                    href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}"
                    title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a>

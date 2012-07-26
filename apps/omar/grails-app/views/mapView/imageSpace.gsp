@@ -1498,10 +1498,11 @@ function updateCenter()
                                                         "azimuth":OMAR.imageManipulator.calculateAzimuth()
                                                         });
         var shareLink = baseURL +"?"+ tempWmsParams.toUrlParams();
-        var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
+        window.prompt ("Copy to clipboard: Ctrl+C, Enter", shareLink);
 
-        popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
-        popUpWindow.document.close();
+//var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
+//popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
+//popUpWindow.document.close();
 
 
     }
