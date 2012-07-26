@@ -741,10 +741,11 @@ function shareImage()
 		"&latitude=" + mapWidget.getMap().getCenter().lat +
 		"&longitude=" + mapWidget.getMap().getCenter().lon +
 		"&bbox=" + mapWidget.getMap().getExtent();
-	
-	var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
-	popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
-    popUpWindow.document.close();
+    window.prompt ("Copy to clipboard: Ctrl+C, Enter", shareLink);
+
+//var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
+//	popUpWindow.document.write("Copy and paste this <a href='" + shareLink + "' target='_new'>link</a> to share the image!");
+//    popUpWindow.document.close();
 }
 
 function exportTemplate()

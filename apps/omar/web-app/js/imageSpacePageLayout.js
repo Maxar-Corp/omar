@@ -87,3 +87,7 @@ var bodyOnResize = function ()
     }
    // map.updateSize();
 };
+
+function copyToClipboard(value)
+{
+}
