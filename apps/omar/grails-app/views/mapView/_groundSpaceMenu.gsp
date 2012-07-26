@@ -97,11 +97,15 @@
         <div id="viewMenu" class="yuimenu">
           <div class="bd">
             <ul>
-              <li class="yuimenuitem">
-                <a class="yuimenuitemlabel" href="javascript:changeToImageSpace();"
-                   title="Image Space Viewer (Rotate)">Image Space (Rotate)</a>
-              </li>
-              <li class="yuimenuitem">
+                <li class="yuimenuitem">
+                    <a class="yuimenuitemlabel" href="javascript:rotateUpIsUp();"
+                       title="UP">Up</a>
+                </li>
+                <li class="yuimenuitem">
+                    <a class="yuimenuitemlabel" href="javascript:rotateNorthUp();"
+                       title="NORTH">North</a>
+                </li>
+                <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
                    href="${createLink( controller: 'mapView', action: 'multiLayer', params: [layers: ( rasterEntries*.indexId ).join( ',' )] )}"
                    title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a>
@@ -122,9 +126,6 @@
         </div>
       </li>
 
-      <li class="yuimenubaritem first-of-type">
-        <a class="yuimenubaritemlabel" href="javascript:changeToImageSpace();">Image Space (Rotate)</a>
-      </li>
       <li class="yuiMenubaritem first-of-type">
 	<a class="yuimenubaritemlabel" href="javascript:shareImage();">Share</a>
       </li>

@@ -151,10 +151,12 @@
         <button id="resetButtonId" type="button"
                 onclick="javascript:resetRotate()">Reset</button>
         <button id="northUpUpButtonId" type="button"
-                onclick="javascript:rotateNorthUp()">North Up</button>
-        <button id="upIsUpButtonId" type="button"
-                onclick="javascript:rotateUpIsUp();">Up is Up</button>
-      </div>
+                onclick="javascript:rotateNorthUp()">North</button>
+         <button id="upIsUpButtonId" type="button"
+                 onclick="javascript:rotateUpIsUp();">Up</button>
+         <button id="orthoButtonId" type="button"
+                 onclick="javascript:changeToSingleLayer();">Ortho</button>
+     </div>
     </li>
     </ol>
   </div>

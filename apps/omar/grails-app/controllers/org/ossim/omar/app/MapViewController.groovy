@@ -42,7 +42,13 @@ class MapViewController implements InitializingBean
 
     def kmlOverlays = []
 
+    def mainFile;
+      def entryId;
+      def azimuth;
     rasterEntries.each { rasterEntry ->
+        mainFile=rasterEntry.mainFile.name;
+        entryId = rasterEntry.entryId as Integer;
+        azimuth = rasterEntry.azimuthAngle;
       if ( ( rasterEntry.validModel != null ) &&
               ( rasterEntry.validModel < 1 ) )
       {
@@ -65,6 +71,8 @@ class MapViewController implements InitializingBean
 
     model.rasterEntries = rasterEntries
     model.kmlOverlays = kmlOverlays
+    model.upIsUpAngle= imageSpaceService?.computeUpIsUp( mainFile, entryId)
+    model.azimuth=azimuth
     model.putAll( webMappingService.computeScales( rasterEntries ) )
     model.putAll( webMappingService.computeBounds( rasterEntries ) )
 

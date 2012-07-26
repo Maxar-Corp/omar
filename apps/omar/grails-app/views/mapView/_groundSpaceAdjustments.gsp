@@ -116,6 +116,18 @@
                   optionValue="name" optionKey="value"
                   onChange="mergeNewParams()"/>
       </li>
+
+        <hr/>
+
+        <li>Rotate:</li>
+        <div align="center">
+            <button id="northUpUpButtonId" type="button"
+                    onclick="javascript:rotateNorthUp()">North</button>
+            <button id="upIsUpButtonId" type="button"
+                    onclick="javascript:rotateUpIsUp();">Up</button>
+        </div>
+
+
     </ol>
   </div>
 </div>
