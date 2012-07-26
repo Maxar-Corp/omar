@@ -21,15 +21,7 @@
             <ul>
                 <li class="yuimenuitem">
                     <a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();"
-                       title="Ground Space Viewer">ORTHO</a>
-                </li>
-                <li class="yuimenuitem">
-                    <a class="yuimenuitemlabel" href="javascript:rotateNorthUp();"
-                       title="North Up">NORTH</a>
-                </li>
-                <li class="yuimenuitem">
-                    <a class="yuimenuitemlabel" href="javascript:rotateUpIsUp();"
-                       title="Up Is Up">UP</a>
+                       title="Ground Space Viewer">Ortho</a>
                 </li>
                 <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"

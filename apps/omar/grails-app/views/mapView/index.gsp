@@ -73,13 +73,16 @@ var smallestScale;
 var fullResScale;
 var brightnessSlider;
 var contrastSlider;
-
-function changeToImageSpace()
+var azimuthAngle = parseFloat("${azimuthAngle}");
+var upIsUpAngle  = parseFloat("${upIsUpAngle}");
+function changeToImageSpace(azimuth)
 {
+    var rotation = azimuth;
     var url = "${createLink( controller: 'mapView', action: 'imageSpace' )}";
     var wmsFormElement = $("wmsFormId");
     if(wmsFormElement)
     {
+        if(!azimuth) rotation = 0.0;
         var mpp = calculateMetersPerPixel();
         wmsParams = new OmarWmsParams();
         wmsParams.setProperties(wcsParams);
@@ -92,11 +95,21 @@ function changeToImageSpace()
         wmsParams.view = YAHOO.lang.JSON.stringify({lat:mapWidget.getMap().getCenter().lat,
                                                     lon:mapWidget.getMap().getCenter().lon,
                                                     mpp:mpp,
-                                                    azimuth:0.0});
+                                                    azimuth:rotation});
         wmsFormElement.action = url + "?"+wmsParams.toUrlParams();
         wmsFormElement.method = "POST";
         wmsFormElement.submit();
     }
+}
+
+function rotateUpIsUp()
+{
+    changeToImageSpace(upIsUpAngle);
+}
+
+function rotateNorthUp()
+{
+    changeToImageSpace(0.0);
 }
 
 function resetBrightnessContrast()
