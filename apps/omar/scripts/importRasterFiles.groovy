@@ -1,20 +1,33 @@
-import org.ossim.omar.stager.StagerUtil
 import org.ossim.omar.core.Repository
 import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 
-def inputFile = "raster_file_list.txt" as File
+def inputFile = ( System.properties['inputFile'] ?: "raster_file_list.txt" ) as File
 def reader = inputFile.newReader()
 
 filename = null
 index = 0
+batchSize = ctx.grailsApplication.config.hibernate.jdbc.batch_size as int
 
 repository = Repository.findByBaseDir( "/" )
 rasterInfoParser = ctx.rasterInfoParser
 sessionFactory = ctx.sessionFactory
+
+session = null
+
+if ( true )
+{
+  session = sessionFactory.currentSession
+}
+else
+{
+  session = sessionFactory.openStatelessSession()
+}
+
+
 propertyInstanceMap = DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
 
-filesLog = "/tmp/files.txt" as File
-rejectsLog = "/tmp/rejects.txt" as File
+filesLog = new File( "/tmp/files.txt" ).newWriter()
+rejectsLog = new File( "/tmp/rejects.txt" ).newWriter()
 dataInfoService = ctx.dataInfoService
 
 while ( ( filename = reader.readLine() ) != null )
@@ -23,6 +36,12 @@ while ( ( filename = reader.readLine() ) != null )
 }
 
 reader?.close()
+
+filesLog.flush()
+filesLog.close()
+
+rejectsLog.flush()
+rejectsLog.close()
 
 def processFile( def filename )
 {
@@ -37,11 +56,11 @@ def processFile( def filename )
     dataSets?.each {dataSet ->
       if ( dataSet.save() )
       {
-        filesLog.append( "${filename}\n" )
+        filesLog.println filename
       }
       else
       {
-        rejectsLog.append( "${filename}\n" )
+        rejectsLog.println filename
       }
     }
   }
@@ -55,8 +74,11 @@ def processFile( def filename )
 
 def cleanUpGorm( )
 {
-  def session = sessionFactory.currentSession
-  session.flush()
-  session.clear()
+  //def session = sessionFactory.currentSession
+  if ( true )
+  {
+    session.flush()
+    session.clear()
+  }
   propertyInstanceMap.get().clear()
 }

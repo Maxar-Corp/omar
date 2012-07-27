@@ -19,7 +19,7 @@ class StagerUtil
   {
     def xml = null
     DataInfo dataInfo = new DataInfo()
-//    ImageStager imageStager
+    ImageStager imageStager
 
     try
     {
@@ -28,7 +28,6 @@ class StagerUtil
 
       if ( canOpen )
       {
-
 //        imageStager = new ImageStager()
 //
 //        if ( imageStager.open( file.absolutePath ) )
@@ -36,15 +35,17 @@ class StagerUtil
 //          imageStager.setUseFastHistogramStagingFlag( true )
 //          def generated = imageStager.stageAll()
 //
-//          if ( generated )
-//          {
-            buildOvrsAndHis(file)
-            dataInfo.close()
-            dataInfo.open( file.absolutePath )
-//          }
+        xml = dataInfo.getInfo()?.trim()
+
+        if ( needsOvrs( xml ) )
+        {
+          buildOvrsAndHis( file )
+          dataInfo.close()
+          dataInfo.open( file.absolutePath )
+          xml = dataInfo.getInfo()?.trim()
+        }
 //        }
 
-        xml = dataInfo.getInfo()?.trim()
       }
     }
     catch ( Exception e )
@@ -97,13 +98,12 @@ class StagerUtil
     return xml
   }
 
-  static def buildOvrsAndHis(def file)
+  static def buildOvrsAndHis( def file )
   {
-    def fileRoot = file.name.substring(0, file.name.lastIndexOf('.'))
-    def hisFile =  new File( file.parent, "${fileRoot}.his")
-    def hisFlag = (hisFile.exists()) ? '' : '--create-histogram-fast'
+    def fileRoot = file.name.substring( 0, file.name.lastIndexOf( '.' ) )
+    def hisFile = new File( file.parent, "${fileRoot}.his" )
+    def hisFlag = ( hisFile.exists() ) ? '' : '--create-histogram-fast'
     def cmd = "ossim-img2rr ${hisFlag} ${file.absolutePath}"
-
     def proc = cmd.execute()
 
     proc.consumeProcessOutput()
@@ -111,5 +111,35 @@ class StagerUtil
     def exitCode = proc.waitFor()
 
     return exitCode
+  }
+
+  static def needsOvrs( def xml )
+  {
+    def oms = new XmlSlurper().parseText( xml )
+    def status = false
+
+    for ( def x in oms.dataSets.RasterDataSet )
+    {
+      for ( def y in x.rasterEntries.RasterEntry )
+      {
+        def width = y?.width?.text()?.toInteger()
+        def height = y.height?.text()?.toInteger()
+        def numberOfResLevels = y.numberOfResLevels?.text()?.toInteger()
+
+        def size = Math.max( width, height )
+        numberOfResLevels.times { size /= 2 }
+        status = ( status || size > 128 )
+
+//        def debug = [
+//          width: width,
+//          height: height,
+//          numberOfResLevels: numberOfResLevels,
+//          status: status
+//        ]
+//        println debug
+      }
+    }
+
+    return status
   }
 }

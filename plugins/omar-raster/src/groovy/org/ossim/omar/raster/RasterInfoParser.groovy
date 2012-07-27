@@ -16,14 +16,15 @@ class RasterInfoParser implements OmsInfoParser
 {
   def additionalTags
   //def tagFile = new File("tags.txt")
-  
-  public def processDataSets(GPathResult oms, Repository repository = null)
+
+  public def processDataSets( GPathResult oms, Repository repository = null )
   {
     def rasterDataSets = []
 
-    oms?.dataSets?.RasterDataSet.each {rasterDataSetNode ->
+    for ( def rasterDataSetNode in oms?.dataSets?.RasterDataSet )
+    {
 
-      RasterDataSet rasterDataSet = RasterDataSet.initRasterDataSet(rasterDataSetNode)
+      RasterDataSet rasterDataSet = RasterDataSet.initRasterDataSet( rasterDataSetNode )
 
       if ( rasterDataSet.rasterEntries )
       {
