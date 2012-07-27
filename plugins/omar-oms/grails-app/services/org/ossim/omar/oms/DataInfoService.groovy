@@ -7,20 +7,25 @@ class DataInfoService
 
   static transactional = false
 
-  String getInfo(String filename)
+  String getInfo( File file )
+  {
+    this.getInfo( file?.absolutePath )
+  }
+
+  String getInfo( String filename )
   {
     def dataInfo = new DataInfo()
     def xml = null
 
     try
     {
-        def canOpen = dataInfo.open(filename)
-        if ( canOpen )
-        {
-            xml = dataInfo.getInfo()?.trim()
-        }
+      def canOpen = dataInfo.open( filename )
+      if ( canOpen )
+      {
+        xml = dataInfo.getInfo()?.trim()
+      }
     }
-    catch(def e)
+    catch ( def e )
     {
 
     }

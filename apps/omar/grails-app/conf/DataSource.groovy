@@ -2,7 +2,7 @@ def useP6Spy = false // use this to enable p6spy logging
 
 dataSource {
   pooled = true
-  driverClassName = (useP6Spy) ? "com.p6spy.engine.spy.P6SpyDriver" : "org.postgis.DriverWrapper"
+  driverClassName = ( useP6Spy ) ? "com.p6spy.engine.spy.P6SpyDriver" : "org.postgis.DriverWrapper"
   username = "postgres"
   password = "postgres"
 //  dialect = "org.ossim.postgis.PostGISDialectNG"

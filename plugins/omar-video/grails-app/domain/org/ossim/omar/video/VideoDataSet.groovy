@@ -19,6 +19,8 @@ class VideoDataSet
   Long height
 
   static hasMany = [fileObjects: VideoFile]
+  Collection fileObjects
+
   Repository repository
 
   MultiPolygon groundGeom
@@ -49,19 +51,19 @@ class VideoDataSet
   }
 
   static constraints = {
-    width(min: 0L)
-    height(min: 0L)
-    filename(nullable: true)
-    otherTagsXml(nullable: true, blank: false)
-    startDate(nullable: true)
-    endDate(nullable: true)
-    groundGeom(nullable: true)
-    indexId(nullable: false, blank: false, unique: true)
-    styleId(nullable: true)
+    width( min: 0L )
+    height( min: 0L )
+    filename( nullable: true )
+    otherTagsXml( nullable: true, blank: false )
+    startDate( nullable: true )
+    endDate( nullable: true )
+    groundGeom( nullable: true )
+    indexId( nullable: false, blank: false, unique: true )
+    styleId( nullable: true )
 //    metadata(nullable: true)
   }
 
-  def getMainFile()
+  def getMainFile( )
   {
     def mainFile = null
 
@@ -70,9 +72,9 @@ class VideoDataSet
       //mainFile = org.ossim.omar.video.VideoFile.findByVideoDataSetAndType(videoDataSet, "main")
 
       mainFile = VideoFile.createCriteria().get {
-        eq("type", "main")
-        createAlias("videoDataSet", "d")
-        eq("videoDataSet", this)
+        eq( "type", "main" )
+        createAlias( "videoDataSet", "d" )
+        eq( "videoDataSet", this )
       }
 
     }
@@ -80,22 +82,23 @@ class VideoDataSet
     return mainFile
   }
 
-  def getFileFromObjects(def type = "main")
+  def getFileFromObjects( def type = "main" )
   {
     return fileObjects?.find { it.type == type }
   }
 
-  static VideoDataSet initVideoDataSet(def videoDataSetNode, VideoDataSet videoDataSet = null)
+  static VideoDataSet initVideoDataSet( def videoDataSetNode, VideoDataSet videoDataSet = null )
   {
     if ( !videoDataSet )
     {
       videoDataSet = new VideoDataSet()
     }
 
-    videoDataSetNode.fileObjects.VideoFile.each {videoFileNode ->
-      VideoFile videoFile = VideoFile.initVideoFile(videoFileNode)
+    for ( def videoFileNode in videoDataSetNode.fileObjects.VideoFile )
+    {
+      VideoFile videoFile = VideoFile.initVideoFile( videoFileNode )
 
-      videoDataSet.addToFileObjects(videoFile)
+      videoDataSet.addToFileObjects( videoFile )
     }
 
     videoDataSet.width = videoDataSetNode?.width?.toLong()
@@ -103,57 +106,59 @@ class VideoDataSet
 
     def start = videoDataSetNode?.TimeSpan?.begin?.toString()
     def end = videoDataSetNode?.TimeSpan?.end?.toString()
-    videoDataSet.startDate = DateUtil.parseDate(start)
-    videoDataSet.endDate = DateUtil.parseDate(end)
+    videoDataSet.startDate = DateUtil.parseDate( start )
+    videoDataSet.endDate = DateUtil.parseDate( end )
 
     def defaultGeometry;
     if ( videoDataSetNode?.groundGeom?.toString() )
     {
-      videoDataSet.groundGeom = initGroundGeom(videoDataSetNode?.groundGeom)
+      videoDataSet.groundGeom = initGroundGeom( videoDataSetNode?.groundGeom )
     }
     else if ( videoDataSetNode?.spatialMetadata?.toString() )
     {
       def srsId = 4326;
-      videoDataSetNode?.spatialMetadata?.groundGeom?.each { groundGeomNode ->
+
+      for ( def groundGeomNode in videoDataSetNode?.spatialMetadata?.groundGeom )
+      {
         def sensorDistance = groundGeomNode?.@sensorDistance?.toString().trim()
         def elevation = groundGeomNode.@elevation?.toString().trim()
         // just in case we will make sure that we have at least one geometry
         if ( !defaultGeometry )
         {
-          defaultGeometry = initGroundGeom(groundGeomNode)
+          defaultGeometry = initGroundGeom( groundGeomNode )
         }
         if ( sensorDistance && elevation )
         {
-          double ratio = (sensorDistance as Double) / (elevation as Double);
+          double ratio = ( sensorDistance as Double ) / ( elevation as Double );
           if ( ratio < 20 )
           {
             if ( videoDataSet.groundGeom == null )
             {
-              videoDataSet.groundGeom = initGroundGeom(groundGeomNode)
+              videoDataSet.groundGeom = initGroundGeom( groundGeomNode )
               srsId = videoDataSet.groundGeom?.getSRID()
             }
             else
             {
-              def x = initGroundGeom(groundGeomNode)
-              def y = videoDataSet.groundGeom.union(x)
+              def x = initGroundGeom( groundGeomNode )
+              def y = videoDataSet.groundGeom.union( x )
               def z = null
 
               switch ( y )
               {
               case Polygon:
-                z = convertPolyToMultiPoly(y)
+                z = convertPolyToMultiPoly( y )
                 break
               case GeometryCollection:
                 if ( y.isEmpty() )
                 {
-                  z = new MultiPolygon([] as Polygon[], new PrecisionModel(PrecisionModel.FLOATING), 4326)
+                  z = new MultiPolygon( [] as Polygon[], new PrecisionModel( PrecisionModel.FLOATING ), 4326 )
                 }
                 break
               default:
                 z = y
               }
 
-              z?.setSRID(srsId);
+              z?.setSRID( srsId );
               videoDataSet.groundGeom = z
             }
           }
@@ -169,9 +174,9 @@ class VideoDataSet
 
 
     def metadataNode = videoDataSetNode?.metadata
-    initVideoDataSetMetadata(metadataNode, videoDataSet)
-    initVideoDataSetOtherTagsXml(videoDataSet)
-    def mainFile = videoDataSet.getFileFromObjects("main")
+    initVideoDataSetMetadata( metadataNode, videoDataSet )
+    initVideoDataSetOtherTagsXml( videoDataSet )
+    def mainFile = videoDataSet.getFileFromObjects( "main" )
     def filename
     if ( mainFile )
     {
@@ -179,27 +184,28 @@ class VideoDataSet
     }
     if ( !videoDataSet.filename && filename )
     {
-      videoDataSet.filename = (filename as File)
+      videoDataSet.filename = ( filename as File )
     }
     if ( !videoDataSet.indexId )
     {
       if ( filename )
       {
-        def tempFilename = filename.replaceAll("/|\\\\", "_")
+        def tempFilename = filename.replaceAll( "/|\\\\", "_" )
         videoDataSet.indexId = "${filename}".encodeAsSHA256()
       }
     }
     return videoDataSet
   }
 
-  static def initVideoDataSetOtherTagsXml(VideoDataSet videoDataSet)
+  static def initVideoDataSetOtherTagsXml( VideoDataSet videoDataSet )
   {
     if ( videoDataSet )
     {
       def builder = new groovy.xml.StreamingMarkupBuilder().bind {
         metadata {
-          videoDataSet.otherTagsMap.each {k, v ->
-            "${k}"(v)
+          for ( def entry in videoDataSet.otherTagsMap )
+          {
+            "${entry.key}"( entry.value )
           }
         }
       }
@@ -208,11 +214,12 @@ class VideoDataSet
     }
   }
 
-  static void initVideoDataSetMetadata(def node, VideoDataSet videoDataSet)
+  static void initVideoDataSetMetadata( def node, VideoDataSet videoDataSet )
   {
     if ( !videoDataSet ) return;
 
-    node.children().each {tagNode ->
+    for ( def tagNode in node.children() )
+    {
 
       if ( tagNode.children().size() > 0 )
       {
@@ -221,7 +228,7 @@ class VideoDataSet
         switch ( name )
         {
         default:
-          initVideoDataSetMetadata(tagNode, videoDataSet)
+          initVideoDataSetMetadata( tagNode, videoDataSet )
         }
       }
       else
@@ -244,7 +251,7 @@ class VideoDataSet
     }
   }
 
-  static MultiPolygon initGroundGeom(def groundGeomNode)
+  static MultiPolygon initGroundGeom( def groundGeomNode )
   {
     def wkt = groundGeomNode?.toString().trim()
     def srs = groundGeomNode?.@srs?.toString().trim()
@@ -259,30 +266,30 @@ class VideoDataSet
 //        def geomString = "SRID=${srs};${wkt}"
 
         //groundGeom = Geometry.fromString(geomString)
-        groundGeom = new WKTReader().read(wkt)
-        groundGeom.setSRID(Integer.parseInt(srs))
+        groundGeom = new WKTReader().read( wkt )
+        groundGeom.setSRID( Integer.parseInt( srs ) )
 //        println "GROUND GEOM ============= ${groundGeom}"
       }
-      catch (Exception e)
+      catch ( Exception e )
       {
-        System.err.println("Cannt create geom for: srs=${srs} wkt=${wkt}")
+        System.err.println( "Cannt create geom for: srs=${srs} wkt=${wkt}" )
       }
     }
 
     if ( groundGeom instanceof Polygon )
     {
-      groundGeom = convertPolyToMultiPoly(groundGeom)
+      groundGeom = convertPolyToMultiPoly( groundGeom )
     }
 
     return groundGeom
   }
 
-  static MultiPolygon convertPolyToMultiPoly(Polygon poly)
+  static MultiPolygon convertPolyToMultiPoly( Polygon poly )
   {
     return new MultiPolygon(
             [poly] as Polygon[],
-            new PrecisionModel(PrecisionModel.FLOATING),
-            poly.getSRID())
+            new PrecisionModel( PrecisionModel.FLOATING ),
+            poly.getSRID() )
 
   }
 }

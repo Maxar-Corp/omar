@@ -17,13 +17,14 @@ class VideoInfoParser implements OmsInfoParser
   def additionalTags
   //def tagFile = new File("tags.txt")
 
-  public def processDataSets(GPathResult oms, Repository repository = null)
+  public def processDataSets( GPathResult oms, Repository repository = null )
   {
     def videoDataSets = []
 
-    oms?.dataSets?.VideoDataSet.each {videoDataSetNode ->
+    for ( def videoDataSetNode in oms?.dataSets?.VideoDataSet )
+    {
 
-      VideoDataSet videoDataSet = VideoDataSet.initVideoDataSet(videoDataSetNode)
+      VideoDataSet videoDataSet = VideoDataSet.initVideoDataSet( videoDataSetNode )
 
       videoDataSet.repository = repository
       videoDataSets << videoDataSet

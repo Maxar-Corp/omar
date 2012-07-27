@@ -4,13 +4,10 @@ import groovy.io.FileType
 import groovy.io.FileVisitResult
 
 import org.apache.commons.io.FilenameUtils
-import org.springframework.context.ApplicationContext
-import org.springframework.context.ApplicationContextAware
 
 import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 import org.ossim.omar.core.Repository
 import org.ossim.omar.stager.StagerUtil
-import org.ossim.omar.stager.OmsInfoParser
 
 /**
  * Created by IntelliJ IDEA.
@@ -19,11 +16,13 @@ import org.ossim.omar.stager.OmsInfoParser
  * Time: 8:56 PM
  * To change this template use File | Settings | File Templates.
  */
-class StagerJob implements ApplicationContextAware
+class StagerJob
 {
   static triggers = {}
 
   def dataInfoService
+  def ingestService
+
   def sessionFactory
   def index
 
@@ -32,8 +31,6 @@ class StagerJob implements ApplicationContextAware
 
   def propertyInstanceMap = DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
 
-
-  ApplicationContext applicationContext
 
   def repository
 
@@ -137,28 +134,24 @@ class StagerJob implements ApplicationContextAware
     {
       //filesLog.append("${file.absolutePath}\n")
       def start = System.currentTimeMillis()
-      //def xml = dataInfoService.getInfo(file.absolutePath)
-      def xml = StagerUtil.getInfo( file )
+
+
+      def xml = dataInfoService.getInfo(file.absolutePath)
+      //def xml = StagerUtil.getInfo( file )
 
       if ( xml )
       {
         def oms = new XmlSlurper().parseText( xml )
-        def omsInfoParsers = applicationContext.getBeansOfType( OmsInfoParser.class )
+        def (status, message) = ingestService.ingest( oms )
 
-        omsInfoParsers?.each { name, value ->
-
-          def dataSets = value.processDataSets( oms, repository )
-
-          dataSets?.each {dataSet ->
-            if ( dataSet.save() )
-            {
-              filesLog.append( "${file.absolutePath}\n" )
-            }
-            else
-            {
-              rejectsLog.append( "${file.absolutePath}\n" )
-            }
-          }
+        switch ( status )
+        {
+        case 200:
+          filesLog.append( "${file.absolutePath}\n" )
+          break
+        case 500:
+          rejectsLog.append( "${file.absolutePath} ${message}\n" )
+          break
         }
       }
       else
@@ -173,9 +166,10 @@ class StagerJob implements ApplicationContextAware
 
       def end = System.currentTimeMillis()
     }
+
     catch ( Exception e )
     {
-      println "ERROR: ${file}"
+      println "ERROR: ${file} ${e.message}"
     }
   }
 
@@ -212,4 +206,5 @@ class StagerJob implements ApplicationContextAware
       repository.save()
     }
   }
+
 }

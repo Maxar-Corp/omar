@@ -80,6 +80,7 @@ class RasterEntry
   static belongsTo = [rasterDataSet: RasterDataSet]
 
   static hasMany = [fileObjects: RasterEntryFile]
+  Collection fileObjects
 
   static mapping = {
     columns {
@@ -118,59 +119,59 @@ class RasterEntry
 
   static constraints = {
     entryId()
-    excludePolicy(nullable: true)
-    width(min: 0l)
-    height(min: 0l)
-    numberOfBands(min: 0)
-    bitDepth(min: 0)
+    excludePolicy( nullable: true )
+    width( min: 0l )
+    height( min: 0l )
+    numberOfBands( min: 0 )
+    bitDepth( min: 0 )
     dataType()
 
-    numberOfResLevels(nullable: true)
-    gsdUnit(nullable: true)
-    gsdX(nullable: true)
-    gsdY(nullable: true)
+    numberOfResLevels( nullable: true )
+    gsdUnit( nullable: true )
+    gsdX( nullable: true )
+    gsdY( nullable: true )
 
-    tiePointSet(nullable: true)
+    tiePointSet( nullable: true )
 
-    filename(nullable: true)
-    indexId(nullable: false, unique: false, blank: false)
-    imageId(nullable: true, blank: false/*, unique: true*/)
-    targetId(nullable: true)
-    productId(nullable: true)
-    sensorId(nullable: true)
-    missionId(nullable: true)
-    imageCategory(nullable: true)
-    imageRepresentation(nullable: true)
-    azimuthAngle(nullable: true)
-    grazingAngle(nullable: true)
-    securityClassification(nullable: true)
-    securityCode(nullable: true)
-    title(nullable: true)
-    niirs(nullable: true)
-    isorce(nullable: true)
-    wacCode(nullable: true)
-    sunElevation(nullable: true)
-    sunAzimuth(nullable: true)
-    cloudCover(nullable: true)
-    organization(nullable: true)
-    description(nullable: true)
-    countryCode(nullable: true)
-    beNumber(nullable: true)
-    accessDate(nullable: true)
-    ingestDate(nullable: true)
-    receiveDate(nullable: true)
-    releaseId(nullable: true)
-    styleId(nullable: true)
-    keepForever(nullable: true)
-    validModel(nullable: true)
+    filename( nullable: true )
+    indexId( nullable: false, unique: false, blank: false )
+    imageId( nullable: true, blank: false/*, unique: true*/ )
+    targetId( nullable: true )
+    productId( nullable: true )
+    sensorId( nullable: true )
+    missionId( nullable: true )
+    imageCategory( nullable: true )
+    imageRepresentation( nullable: true )
+    azimuthAngle( nullable: true )
+    grazingAngle( nullable: true )
+    securityClassification( nullable: true )
+    securityCode( nullable: true )
+    title( nullable: true )
+    niirs( nullable: true )
+    isorce( nullable: true )
+    wacCode( nullable: true )
+    sunElevation( nullable: true )
+    sunAzimuth( nullable: true )
+    cloudCover( nullable: true )
+    organization( nullable: true )
+    description( nullable: true )
+    countryCode( nullable: true )
+    beNumber( nullable: true )
+    accessDate( nullable: true )
+    ingestDate( nullable: true )
+    receiveDate( nullable: true )
+    releaseId( nullable: true )
+    styleId( nullable: true )
+    keepForever( nullable: true )
+    validModel( nullable: true )
     // Just for testing
-    fileType(nullable: true)
-    className(nullable: true)
+    fileType( nullable: true )
+    className( nullable: true )
 
-    otherTagsXml(nullable: true, blank: false)
+    otherTagsXml( nullable: true, blank: false )
 
-    groundGeom(nullable: false)
-    acquisitionDate(nullable: true)
+    groundGeom( nullable: false )
+    acquisitionDate( nullable: true )
   }
 
   def beforeInsert = {
@@ -179,7 +180,7 @@ class RasterEntry
       ingestDate = new DateTime();
       if ( !indexId )
       {
-        def mainFile = rasterEntry.rasterDataSet.getFileFromObjects("main")
+        def mainFile = rasterEntry.rasterDataSet.getFileFromObjects( "main" )
         if ( mainFile )
         {
           def value = "${entryId}-${mainFile}"
@@ -189,7 +190,7 @@ class RasterEntry
     }
   }
 
-  def adjustAccessTimeIfNeeded(def everyNHours = 24)
+  def adjustAccessTimeIfNeeded( def everyNHours = 24 )
   {
     if ( !accessDate )
     {
@@ -201,7 +202,7 @@ class RasterEntry
       long currentAccessMil = accessDate.getMillis()
       long currentMil = current.getMillis()
       double millisPerHour = 3600000 // 60*60*1000  <seconds>*<minutes in an hour>*<milliseconds>
-      double hours = (currentMil - currentAccessMil) / millisPerHour
+      double hours = ( currentMil - currentAccessMil ) / millisPerHour
       if ( hours > everyNHours )
       {
         accessDate = current
@@ -209,18 +210,18 @@ class RasterEntry
     }
   }
 
-  def getFileFromObjects(def type)
+  def getFileFromObjects( def type )
   {
     return fileObjects?.find { it.type == type }
   }
 
-  def getMetersPerPixel()
+  def getMetersPerPixel( )
   {
     // need to check unit type but for mow assume meters
     return gsdY; // use Y since X may decrease along lat.
   }
 
-  def getMainFile()
+  def getMainFile( )
   {
     def mainFile = null//rasterDataSet?.fileObjects?.find { it.type == 'main' }
 
@@ -229,9 +230,9 @@ class RasterEntry
       //mainFile = org.ossim.omar.raster.RasterFile.findByRasterDataSetAndType(rasterDataSet, "main")
 
       mainFile = RasterFile.createCriteria().get {
-        eq("type", "main")
-        createAlias("rasterDataSet", "d")
-        eq("rasterDataSet", this.rasterDataSet)
+        eq( "type", "main" )
+        createAlias( "rasterDataSet", "d" )
+        eq( "rasterDataSet", this.rasterDataSet )
       }
 
     }
@@ -239,25 +240,25 @@ class RasterEntry
     return mainFile
   }
 
-  def getHistogramFile()
+  def getHistogramFile( )
   {
-    def result = getFileFromObjects("histogram")?.name
+    def result = getFileFromObjects( "histogram" )?.name
     if ( !result )
     {
       result = mainFile?.name
       if ( result )
       {
         def nEntries = rasterDataSet?.rasterEntries?.size() ?: 1
-        def ext = result.substring(result.lastIndexOf("."))
+        def ext = result.substring( result.lastIndexOf( "." ) )
         if ( ext )
         {
           if ( nEntries > 1 )
           {
-            result = result.replace(ext, "_e${entryId}.his")
+            result = result.replace( ext, "_e${entryId}.his" )
           }
           else
           {
-            result = result.replace(ext, ".his")
+            result = result.replace( ext, ".his" )
           }
         }
         else
@@ -278,7 +279,7 @@ class RasterEntry
     result
   }
 
-  static RasterEntry initRasterEntry(def rasterEntryNode, RasterEntry rasterEntry = null)
+  static RasterEntry initRasterEntry( def rasterEntryNode, RasterEntry rasterEntry = null )
   {
     rasterEntry = rasterEntry ?: new RasterEntry()
 
@@ -291,8 +292,8 @@ class RasterEntry
     rasterEntry.dataType = rasterEntryNode?.dataType
     if ( rasterEntryNode?.TiePointSet )
     {
-      rasterEntry.tiePointSet = "<TiePointSet><Image><coordinates>${rasterEntryNode?.TiePointSet.Image.coordinates.text().replaceAll("\n", "")}</coordinates></Image>"
-      rasterEntry.tiePointSet += "<Ground><coordinates>${rasterEntryNode?.TiePointSet.Ground.coordinates.text().replaceAll("\n", "")}</coordinates></Ground></TiePointSet>"
+      rasterEntry.tiePointSet = "<TiePointSet><Image><coordinates>${rasterEntryNode?.TiePointSet.Image.coordinates.text().replaceAll( "\n", "" )}</coordinates></Image>"
+      rasterEntry.tiePointSet += "<Ground><coordinates>${rasterEntryNode?.TiePointSet.Ground.coordinates.text().replaceAll( "\n", "" )}</coordinates></Ground></TiePointSet>"
     }
     def gsdNode = rasterEntryNode?.gsd
     def dx = gsdNode?.@dx?.text()
@@ -300,12 +301,12 @@ class RasterEntry
     def gsdUnit = gsdNode?.@unit.text()
     if ( dx && dy && gsdUnit )
     {
-      rasterEntry.gsdX = (dx != "nan") ? dx?.toDouble() : null
-      rasterEntry.gsdY = (dy != "nan") ? dy?.toDouble() : null
+      rasterEntry.gsdX = ( dx != "nan" ) ? dx?.toDouble() : null
+      rasterEntry.gsdY = ( dy != "nan" ) ? dy?.toDouble() : null
       rasterEntry.gsdUnit = gsdUnit
     }
-    rasterEntry.groundGeom = initGroundGeom(rasterEntryNode?.groundGeom)
-    rasterEntry.acquisitionDate = initAcquisitionDate(rasterEntryNode)
+    rasterEntry.groundGeom = initGroundGeom( rasterEntryNode?.groundGeom )
+    rasterEntry.acquisitionDate = initAcquisitionDate( rasterEntryNode )
 
     if ( rasterEntry.groundGeom && !rasterEntry.tiePointSet )
     {
@@ -315,10 +316,12 @@ class RasterEntry
       if ( groundGeom.numPoints() >= 4 )
       {
         rasterEntry.tiePointSet = "<TiePointSet><Image><coordinates>0.0,0.0 ${w},0.0 ${w},${h} 0.0,${h}</coordinates></Image><Ground><coordinates>"
-        (0..<4).each {
-          def point = groundGeom.getPoint(it);
+        for ( def i in ( 0..<4 ) )
+        {
+          def point = groundGeom.getPoint( i );
           rasterEntry.tiePointSet += "${point.x},${point.y}"
-          if ( it != 3 )
+
+          if ( i != 3 )
           {
             rasterEntry.tiePointSet += " "
           }
@@ -326,17 +329,18 @@ class RasterEntry
         rasterEntry.tiePointSet += "</coordinates></Ground></TiePointSet>"
       }
     }
-    rasterEntryNode.fileObjects?.RasterEntryFile.each {rasterEntryFileNode ->
-      RasterEntryFile rasterEntryFile = RasterEntryFile.initRasterEntryFile(rasterEntryFileNode)
+    for ( def rasterEntryFileNode in rasterEntryNode.fileObjects?.RasterEntryFile )
+    {
+      RasterEntryFile rasterEntryFile = RasterEntryFile.initRasterEntryFile( rasterEntryFileNode )
 
-      rasterEntry.addToFileObjects(rasterEntryFile)
+      rasterEntry.addToFileObjects( rasterEntryFile )
     }
     def metadataNode = rasterEntryNode.metadata
 
-    initRasterEntryMetadata(metadataNode, rasterEntry)
-    initRasterEntryOtherTagsXml(rasterEntry)
+    initRasterEntryMetadata( metadataNode, rasterEntry )
+    initRasterEntryOtherTagsXml( rasterEntry )
 
-    def mainFile = rasterEntry.rasterDataSet.getFileFromObjects("main")
+    def mainFile = rasterEntry.rasterDataSet.getFileFromObjects( "main" )
     def filename = mainFile?.name
     if ( !rasterEntry.filename && filename )
     {
@@ -353,7 +357,7 @@ class RasterEntry
     return rasterEntry
   }
 
-  static Geometry initGroundGeom(def groundGeomNode)
+  static Geometry initGroundGeom( def groundGeomNode )
   {
     def wkt = groundGeomNode?.text().trim()
     def srs = groundGeomNode?.@srs?.text().trim()
@@ -368,12 +372,12 @@ class RasterEntry
         //def geomString = "SRID=${srs};${wkt}"
 
         //groundGeom = Geometry.fromString(geomString)
-        groundGeom = new WKTReader().read(wkt)
-        groundGeom.setSRID(Integer.parseInt(srs))
+        groundGeom = new WKTReader().read( wkt )
+        groundGeom.setSRID( Integer.parseInt( srs ) )
       }
-      catch (Exception e)
+      catch ( Exception e )
       {
-        System.err.println("Cannt create geom for: srs=${srs} wkt=${wkt}")
+        System.err.println( "Cannt create geom for: srs=${srs} wkt=${wkt}" )
       }
 
     }
@@ -381,7 +385,7 @@ class RasterEntry
     return groundGeom
   }
 
-  static initRasterEntryMetadata(def metadataNode, def rasterEntry)
+  static initRasterEntryMetadata( def metadataNode, def rasterEntry )
   {
 //    if ( !rasterEntry.metadata )
 //    {
@@ -389,7 +393,8 @@ class RasterEntry
 //      rasterEntry.metadata.rasterEntry = rasterEntry
 //    }
 
-    metadataNode.children().each {tagNode ->
+    for ( def tagNode in metadataNode.children() )
+    {
 
       if ( tagNode.children().size() > 0 )
       {
@@ -405,7 +410,7 @@ class RasterEntry
 //          case "USE00A":
 //            break
         default:
-          initRasterEntryMetadata(tagNode, rasterEntry)
+          initRasterEntryMetadata( tagNode, rasterEntry )
         }
       }
       else
@@ -502,7 +507,7 @@ class RasterEntry
           case "angletonorth":
             if ( value && value != "nan" && !rasterEntry.azimuthAngle )
             {
-              rasterEntry.azimuthAngle = ((value as Double) + 90.0) % 360.0;
+              rasterEntry.azimuthAngle = ( ( value as Double ) + 90.0 ) % 360.0;
             }
             break;
           case "grazingangle":
@@ -514,7 +519,7 @@ class RasterEntry
           case "oblang":
             if ( value && value != "nan" && !rasterEntry.grazingAngle )
             {
-              rasterEntry.grazingAngle = 90 - (value as Double)
+              rasterEntry.grazingAngle = 90 - ( value as Double )
             }
             break;
 
@@ -592,14 +597,15 @@ class RasterEntry
 
   }
 
-  static initRasterEntryOtherTagsXml(RasterEntry rasterEntry)
+  static initRasterEntryOtherTagsXml( RasterEntry rasterEntry )
   {
     if ( rasterEntry )
     {
       def builder = new groovy.xml.StreamingMarkupBuilder().bind {
         metadata {
-          rasterEntry.otherTagsMap.each {k, v ->
-            "${k}"(v)
+          for ( def entry in rasterEntry.otherTagsMap )
+          {
+            "${entry.key}"( entry.value )
           }
         }
       }
@@ -608,10 +614,10 @@ class RasterEntry
     }
   }
 
-  static Date initAcquisitionDate(rasterEntryNode)
+  static Date initAcquisitionDate( rasterEntryNode )
   {
     def when = rasterEntryNode?.TimeStamp?.when
 
-    return DateUtil.parseDate(when?.text())
+    return DateUtil.parseDate( when?.text() )
   }
 }
