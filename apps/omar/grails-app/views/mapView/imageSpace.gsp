@@ -119,7 +119,8 @@ var rotationAngle;
 var zoomInButton;
 var selectedFeature;
 var customAoi;
-var currentCenterLatLon = {lat:0.0,lon:0.0}
+var currentCenterLatLon = {lat:0.0,lon:0.0};
+var pqePoint = {x:0.0,y:0.0,lat:0.0,lon:0.0,hgt:0.0,hgtMsl:0.0,type:"",sInfo:"", displayUnit:"DD"}
 
 function resetRotate()
 {
@@ -396,9 +397,21 @@ function aoiFinished()
         alert("Element id's are not found: selectAoiTemplateId and aoiScaleId");
     }
 }
+function setCurrentPqeDisplayUnitSelection()
+{
+    var pqeSelectionEl = YAHOO.util.Dom.get("pqeDisplayUnit");
+    if(pqeSelectionEl)
+    {
+        pqeSelectionEl.value = pqePoint.displayUnit;
+    }
+}
 
 function init(mapWidth, mapHeight)
 {
+    OMAR.coordConvert = new CoordinateConversion();
+    pqePoint.displayUnit = "${pqeDisplayUnit?:"DMS"}"
+    setCurrentPqeDisplayUnitSelection();
+
     customAoi = {w:256, h:256}
     loadUnitSelection();
     OMAR.imageManipulator = new OMAR.OpenLayersImageManipulator({metersPerPixelFullRes:${rasterEntry.gsdY}});
@@ -406,7 +419,6 @@ function init(mapWidth, mapHeight)
     //{
     //   getCoordinates(OMAR.imageManipulator.pointToLocal(this.mouseToPoint(evt)));
    // }
-    OMAR.coordConvert = new CoordinateConversion();
 
     OMAR.imageManipulator.northAngle = parseFloat("${rasterEntry.azimuthAngle}");
     OMAR.imageManipulator.upIsUpAngle   =  parseFloat("${upIsUpRotation}");
@@ -1076,8 +1088,42 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
 	            updateAOI();
             }
 
+          function formatPqePoint()
+          {
+                switch(pqePoint.displayUnit)
+                {
+                    case "MGRS":
+                    {
+                        return OMAR.coordConvert.ddToMgrs(pqePoint.lat, pqePoint.lon);
+                    }
+                    case "DMS":
+                    {
+                        return OMAR.coordConvert.ddToDms(pqePoint.lat, pqePoint.lon);
+                    }
+                    case "DD":
+                    {
+                        return (pqePoint.lat + ", "+ pqePoint.lon);
+                    }
+
+                }
+          }
+          function updateStatusLine()
+          {
+            var tmpout = document.getElementById("mouseDisplayId");
 
 
+            if(tmpout&&pqePoint&&pqePoint.x&&pqePoint.lon)
+            {
+tmpout.innerHTML = "<table><tr>" +
+    "<td width='20%'>Img: (" + Math.round(pqePoint.x*1000.0)/1000.0 + ", "+ Math.round(pqePoint.y*1000.0)/1000.0+")</td>" +
+    "<td width='40%'>Gnd: (" + formatPqePoint() +") "+  pqePoint.displayUnit + "</td>" +
+    "<td width='10%'>HAE: " + Math.round(pqePoint.hgt*10.0)/10.0 + " m </td>" +
+    "<td width='10%'>MSL: " + Math.round(pqePoint.hgtMsl*10.0)/10.0 + " m </td>" +
+    "<td width='10%'>" + "<i>" + pqePoint.sInfo + "</i>" + "</td>" +
+    "<td width='10%'>" + "<i>" + pqePoint.type + "</i>" + "</td>"
+    "</tr></table>";
+              }
+          }
           function getProjectedGround(ipt, xyPop)
           {
 
@@ -1091,17 +1137,17 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
                                                   }),
                   callback: function (transport){
                      var tmp = YAHOO.lang.JSON.parse(transport.responseText);
-                     var tmpout = document.getElementById("mouseDisplayId");
-                     if(tmpout&&tmp&&tmp.ellpar&&tmp.ellpar.lon)
+                    pqePoint.x = tmp.ellpar.x;
+                    pqePoint.y = tmp.ellpar.y;
+                    pqePoint.lat = tmp.ellpar.lat;
+                    pqePoint.lon = tmp.ellpar.lon;
+                    pqePoint.hgt = tmp.ellpar.hgt;
+                    pqePoint.hgtMsl = tmp.ellpar.hgtMsl;
+                    pqePoint.sInfo = tmp.ellpar.sInfo;
+                    pqePoint.type = tmp.ellpar.type;
+                    updateStatusLine();
+                     if(tmp&&tmp.ellpar&&tmp.ellpar.lon)
                      {
-                        tmpout.innerHTML = "<table><tr>" +
-                                           "<td width='20%'>Img: (" + Math.round(tmp.ellpar.x*1000.0)/1000.0 + ", "+ Math.round(tmp.ellpar.y*1000.0)/1000.0+")</td>" +
-                                           "<td width='40%'>Gnd: (" + tmp.ellpar.lat + ", "+ tmp.ellpar.lon+") DD</td>" +
-                                           "<td width='10%'>HAE: " + Math.round(tmp.ellpar.hgt*10.0)/10.0 + " m </td>" +
-                                           "<td width='10%'>MSL: " + Math.round(tmp.ellpar.hgtMsl*10.0)/10.0 + " m </td>" +
-                                           "<td width='10%'>" + "<i>" + tmp.ellpar.sInfo + "</i>" + "</td>" +
-                                           "<td width='10%'>" + "<i>" + tmp.ellpar.type + "</i>" + "</td>"
-                                           "</tr></table>";
                         drawProjectedGround(tmp, xyPop);
                      }
                   }
@@ -1505,7 +1551,11 @@ function updateCenter()
 
 
     }
-
+    function setCurrentPqeDisplayUnit(value)
+    {
+        pqePoint.displayUnit = value;
+        updateStatusLine();
+    }
     function exportTemplate()
     {		
 	var centerLatitude = currentCenterLatLon.lat;
