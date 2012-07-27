@@ -11,9 +11,10 @@
     <thead>
     <tr>
 
-      <th>Thumbnail</th>
+        <th>Thumbnail</th>
+        <th>View</th>
 
-      <g:sortableColumn property="id" title="${message( code: 'rasterEntry.id.label', default: 'Id' )}"
+        <g:sortableColumn property="id" title="${message( code: 'rasterEntry.id.label', default: 'Id' )}"
                         params="${queryParams?.toMap()}"/>
 
       <g:sortableColumn property="filename"
@@ -25,11 +26,17 @@
     <tbody>
     <g:each in="${rasterEntries}" status="i" var="rasterEntry">
       <tr class="${( i % 2 ) == 0 ? 'odd' : 'even'}">
-        <td height="${rasterEntry.height / ( Math.max( rasterEntry.width, rasterEntry.height ) / 128.0 )}"><a
-            href="${createLink( controller: "mapView", params: [layers: rasterEntry.indexId])}">
-          <img
-              src="${createLink( controller: "thumbnail", action: "show", id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}"
-              alt="Show Thumbnail"/></a></td>
+        <td height="${rasterEntry.height / ( Math.max( rasterEntry.width, rasterEntry.height ) / 128.0 )}">
+            <a href="${createLink( controller: 'mapView', action:'imageSpace', params: [layers: rasterEntry.indexId])}">
+               <img src="${createLink( controller: 'thumbnail', action: 'show', id: rasterEntry.id, params: [size: 128, projectionType: "imagespace"])}"
+                 alt="Show Thumbnail"/>
+            </a>
+        </td>
+        <td>
+            <div><a href="${createLink( controller: 'mapView', action:'imageSpace', params: [layers: rasterEntry.indexId])}" >Raw</a></div>
+            <div><a href="${createLink( controller: 'mapView', action:'index', params: [layers: rasterEntry.indexId])}" >Ortho</a> </div>
+
+        </td>
         <td><g:link controller="rasterEntry" action="show"
                     id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
         <td>

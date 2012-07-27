@@ -12,6 +12,7 @@ To change this template use File | Settings | File Templates.
         <tr>
 
             <th>Thumbnail</th>
+            <th>View</th>
             <g:sortableColumn property="id" title="Id" params="${queryParams?.toMap()}"/>
             <g:sortableColumn property="entryId" title="Entry Id" params="${queryParams?.toMap()}"/>
             <g:sortableColumn property="width" title="Width" params="${queryParams?.toMap()}"/>
@@ -35,6 +36,11 @@ To change this template use File | Settings | File Templates.
                     <img src="${createLink(controller: "thumbnail", action: "show", id: rasterEntry.id,
                     params: [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
                     </a>
+                </td>
+                <td>
+                    <div><a href="${createLink( controller: 'mapView', action:'imageSpace', params: [layers: rasterEntry.indexId])}" >Raw</a></div>
+                    <div><a href="${createLink( controller: 'mapView', action:'index', params: [layers: rasterEntry.indexId])}" >Ortho</a> </div>
+
                 </td>
                 <td>
                     <g:link controller="rasterEntry" action="show"
