@@ -10,8 +10,9 @@
     <thead>
     <tr>
 
-      <th>Thumbnail</th>
-      <g:sortableColumn property="id" title="Id" params="${queryParams?.toMap()}"/>
+        <th>Thumbnail</th>
+        <th>View</th>
+        <g:sortableColumn property="id" title="Id" params="${queryParams?.toMap()}"/>
       <th>WMS GetCapabilities</th>
       <th>WMS GetMap</th>
       <th>Generate KML</th>
@@ -28,13 +29,18 @@
                 [id: rasterEntry.id, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
           </a>
         </td>
-        <td>
+          <td>
+              <div><a href="${createLink( controller: 'mapView', action:'imageSpace', params: [layers: rasterEntry.indexId])}" >Raw</a></div>
+              <div><a href="${createLink( controller: 'mapView', action:'index', params: [layers: rasterEntry.indexId])}" >Ortho</a> </div>
+
+          </td>
+          <td>
           <g:link controller="rasterEntry" action="show"
                   id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link>
         </td>
         <td>
           <a href="${createLink( controller: "ogc", action: "wms", params: [request: "GetCapabilities",
-              layers: rasterEntry.indexId])}">WMS GetCapabilities</a>
+              layers: rasterEntry.indexId])}">WMS GetCapabilities</a>   <br/>
         </td>
         <td>
           <g:set var="bounds" value="${rasterEntry?.groundGeom?.bounds}"/>

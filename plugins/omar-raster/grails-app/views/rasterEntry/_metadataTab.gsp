@@ -11,9 +11,10 @@
     <thead>
     <tr>
 
-      <th>Thumbnailh</th>
+        <th>Thumbnailh</th>
+        <th>View</th>
 
-      <g:sortableColumn property="id" title="${message(code: 'rasterEntry.id.label', default: 'Id')}"
+        <g:sortableColumn property="id" title="${message(code: 'rasterEntry.id.label', default: 'Id')}"
                         params="${queryParams?.toMap()}"/>
 
       <g:sortableColumn property="acquisitionDate"
@@ -37,8 +38,13 @@
                 [size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/>
           </a>
         </td>
+          <td>
+              <div><a href="${createLink( controller: 'mapView', action:'imageSpace', params: [layers: rasterEntry.indexId])}" >Raw</a></div>
+              <div><a href="${createLink( controller: 'mapView', action:'index', params: [layers: rasterEntry.indexId])}" >Ortho</a> </div>
 
-        <td>
+          </td>
+
+          <td>
           <g:link controller="rasterEntry" action="show"
                   id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link>
         </td>
