@@ -98,17 +98,17 @@
           <div class="bd">
             <ul>
                 <li class="yuimenuitem">
-                    <a class="yuimenuitemlabel" href="javascript:rotateUpIsUp();"
-                       title="UP">Up</a>
+                    <a class="yuimenuitemlabel" href="javascript:rotateNorthUp();"
+                       title="Image Space (North)">Image Space (North)</a>
                 </li>
                 <li class="yuimenuitem">
-                    <a class="yuimenuitemlabel" href="javascript:rotateNorthUp();"
-                       title="NORTH">North</a>
+                    <a class="yuimenuitemlabel" href="javascript:rotateUpIsUp();"
+                       title="Image Space (Up Is Up)">Image Space (Up Is Up)</a>
                 </li>
                 <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
                    href="${createLink( controller: 'mapView', action: 'multiLayer', params: [layers: ( rasterEntries*.indexId ).join( ',' )] )}"
-                   title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a>
+                   title="Multi Layer Ground Space Viewer">Orthorectified Multi Layer</a>
               </li>
 	      <li class="yuimenuitem">
 		<a class="yuimenuitemlabel" href="${createLink( controller: 'rasterEntry', action: 'show', params: [id: ( rasterEntries*.id ).join( ',' )] )}" 

@@ -154,8 +154,6 @@
                 onclick="javascript:rotateNorthUp()">North</button>
          <button id="upIsUpButtonId" type="button"
                  onclick="javascript:rotateUpIsUp();">Up</button>
-         <button id="orthoButtonId" type="button"
-                 onclick="javascript:changeToSingleLayer();">Ortho</button>
      </div>
     </li>
     </ol>
