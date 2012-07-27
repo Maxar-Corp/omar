@@ -1,11 +1,10 @@
 package org.ossim.omar.oms
 
-import joms.oms.DataInfo
-
 class DataInfoService
 {
-
   static transactional = false
+
+  def infoGetterPool
 
   String getInfo( File file )
   {
@@ -14,24 +13,10 @@ class DataInfoService
 
   String getInfo( String filename )
   {
-    def dataInfo = new DataInfo()
-    def xml = null
+    def infoGetter = infoGetterPool.borrowObject()
+    def xml = infoGetter.runDataInfo(filename)
 
-    try
-    {
-      def canOpen = dataInfo.open( filename )
-      if ( canOpen )
-      {
-        xml = dataInfo.getInfo()?.trim()
-      }
-    }
-    catch ( def e )
-    {
-
-    }
-    dataInfo?.close()
-    dataInfo?.delete()
-    dataInfo = null
+    infoGetterPool.returnObject(infoGetter)
 
     return xml
   }

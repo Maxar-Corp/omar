@@ -26,10 +26,12 @@ class StagerJob
   def sessionFactory
   def index
 
-  def filesLog = "/tmp/files.txt" as File
-  def rejectsLog = "/tmp/rejects.txt" as File
+  def filesLog = ( "/tmp/files.txt" as File ).newPrintWriter()
+  def rejectsLog = ( "/tmp/rejects.txt" as File ).newPrintWriter()
 
   def propertyInstanceMap = DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+
+  def parserPool
 
 
   def repository
@@ -136,27 +138,31 @@ class StagerJob
       def start = System.currentTimeMillis()
 
 
-      def xml = dataInfoService.getInfo(file.absolutePath)
+      def xml = dataInfoService.getInfo( file.absolutePath )
       //def xml = StagerUtil.getInfo( file )
 
       if ( xml )
       {
-        def oms = new XmlSlurper().parseText( xml )
-        def (status, message) = ingestService.ingest( oms )
+        def parser = parserPool.borrowObject()
+        def oms = new XmlSlurper(parser).parseText( xml )
+
+        parserPool.returnObject(parser)
+
+        def (status, message) = ingestService.ingest( oms, repository )
 
         switch ( status )
         {
         case 200:
-          filesLog.append( "${file.absolutePath}\n" )
+          filesLog.println file.absolutePath
           break
         case 500:
-          rejectsLog.append( "${file.absolutePath} ${message}\n" )
+          rejectsLog.println "${file.absolutePath} ${message}"
           break
         }
       }
       else
       {
-        rejectsLog.append( "${file.absolutePath}\n" )
+        rejectsLog.println file.absolutePath
       }
 
       if ( ++index % 100 == 0 )
@@ -192,19 +198,27 @@ class StagerJob
             filter: this.&filterFile
     ]
 
-    filesLog.write( "" )
-    rejectsLog.write( "" )
-
     index = 0
-    repository = Repository.findByBaseDir( baseDir.absolutePath )
-    baseDir.traverse( options, this.&processFile )
+    repository = Repository.findByBaseDir( baseDir?.absolutePath )
+
+    if ( baseDir?.exists() )
+    {
+      baseDir?.traverse( options, this.&processFile )
+    }
+
     cleanUpGorm()
 
     Repository.withTransaction {
-      repository = Repository.findByBaseDir( baseDir.absolutePath )
+      repository = Repository.findByBaseDir( baseDir?.absolutePath )
       repository.scanEndDate = new Date()
       repository.save()
     }
+
+    filesLog.flush()
+    filesLog.close()
+
+    rejectsLog.flush()
+    rejectsLog.close()
   }
 
 }

@@ -18,20 +18,22 @@ import org.ossim.omar.core.Utility;
 class ImageChainService
 {
 
-  static transactional = true
+  static transactional = false
+
+  def parserPool
 
   /**
    * @param numberOfInputBands
    * @param bandSelection
    * @return true if the bandSelection list is valid or false otherwise
    */
-  static def validBandSelection(def numberOfInputBands, def bandSelection)
+  static def validBandSelection( def numberOfInputBands, def bandSelection )
   {
     def bandArray = []
     def validBands = true
     if ( bandSelection instanceof String )
     {
-      bandArray = bandSelection.split(",")
+      bandArray = bandSelection.split( "," )
     }
     // validate that the ban list is within the desired ranges
     // the http request is 0 based.
@@ -44,12 +46,12 @@ class ImageChainService
       bandArray.each {
         try
         {
-          if ( Integer.parseInt(it) >= numberOfInputBands )
+          if ( Integer.parseInt( it ) >= numberOfInputBands )
           {
             validBands = false;
           }
         }
-        catch (Exception e)
+        catch ( Exception e )
         {
           validBands = false
         }
@@ -62,7 +64,7 @@ class ImageChainService
    * @param params
    * @return a map that allocates a chain if specified and the keywordlist string representing the parameters
    */
-  def createImageChain(def entry, def params, def allocateChain = true)
+  def createImageChain( def entry, def params, def allocateChain = true )
   {
     def quickLookFlagString = params?.quicklook ?: "false"
     def interpolation = params.interpolation ? params.interpolation : "bilinear"
@@ -79,9 +81,9 @@ class ImageChainService
     def scale = params?.scale ?: null
     def pivot = params?.pivot ?: null
     def tempHistogramFile = entry?.getHistogramFile()//getFileFromObjects("histogram")?.name
-    def tempOverviewFile = entry?.getFileFromObjects("overview")?.name
-    def histogramFile = new File(tempHistogramFile ?: "")
-    def overviewFile = new File(tempOverviewFile ?: "")
+    def tempOverviewFile = entry?.getFileFromObjects( "overview" )?.name
+    def histogramFile = new File( tempHistogramFile ?: "" )
+    def overviewFile = new File( tempOverviewFile ?: "" )
     def objectPrefixIdx = 0
     def kwlString = "type: ossimImageChain\n"
     def quickLookFlag = false
@@ -92,21 +94,21 @@ class ImageChainService
     def contrast = params.contrast ?: 1
     // we will use this for a crude check to see if we are within decimation levels
     //
-    def geomPtr = createModelFromTiePointSet(entry);
+    def geomPtr = createModelFromTiePointSet( entry );
     double scaleCheck = 1.0
 
-    if ( (geomPtr != null) && params.wmsView && keepWithinScales )
+    if ( ( geomPtr != null ) && params.wmsView && keepWithinScales )
     {
-      scaleCheck = params.wmsView.getScaleChangeFromInputToView(geomPtr.get())
+      scaleCheck = params.wmsView.getScaleChangeFromInputToView( geomPtr.get() )
     }
-    if ( (scaleCheck < 0.9) && entry )
+    if ( ( scaleCheck < 0.9 ) && entry )
     {
       // do we have enough zoom levels?
       // check to see if the decimation puts us smaller than the bounding rect of the smallest
       // res level scale
       //
-      long maxSize = (entry.width > entry.height) ? entry.width : entry.height
-      if ( (maxSize * scaleCheck) < (maxSize / (2 ** entry.numberOfResLevels)) )
+      long maxSize = ( entry.width > entry.height ) ? entry.width : entry.height
+      if ( ( maxSize * scaleCheck ) < ( maxSize / ( 2 ** entry.numberOfResLevels ) ) )
       {
         return [chain: null, kwl: "", prefixIdx: 0]
       }
@@ -141,7 +143,7 @@ class ImageChainService
     {
       if ( entry )
       {
-        if ( validBandSelection(entry.numberOfBands, bands) )
+        if ( validBandSelection( entry.numberOfBands, bands ) )
         {
           // the keywordlist in ossim takes a list of integers surrounded
           // by parenthesis
@@ -152,7 +154,7 @@ class ImageChainService
         }
         else
         {
-          log.error("Invalid band selection (${bands}) for image ${entry.id}")
+          log.error( "Invalid band selection (${bands}) for image ${entry.id}" )
         }
       }
       else
@@ -160,7 +162,7 @@ class ImageChainService
         def validBands = true
         if ( params.maxBands )
         {
-          validBands = validBandSelection(maxBands, bands)
+          validBands = validBandSelection( maxBands, bands )
         }
         if ( validBands )
         {
@@ -183,7 +185,7 @@ class ImageChainService
     //
     if ( stretchMode && stretchModeRegion )
     {
-      if ( (stretchModeRegion == "global") && (stretchMode != "none") )
+      if ( ( stretchModeRegion == "global" ) && ( stretchMode != "none" ) )
       {
         if ( histogramFile.exists() )
         {
@@ -194,12 +196,12 @@ class ImageChainService
         }
         else
         {
-          log.error("Histogram file does not exist and will ignore the stretch: ${histogramFile}")
+          log.error( "Histogram file does not exist and will ignore the stretch: ${histogramFile}" )
         }
       }
     }
     // if we are not the identity then add
-    if ( (brightness != 0) || (contrast != 1) )
+    if ( ( brightness != 0 ) || ( contrast != 1 ) )
     {
       kwlString += "object${objectPrefixIdx}.type:ossimBrightnessContrastSource\n"
       kwlString += "object${objectPrefixIdx}.brightness: ${brightness ?: 0.0}\n"
@@ -250,16 +252,16 @@ class ImageChainService
       kwlString += "object${objectPrefixIdx}.resampler.magnify_type:  ${interpolation}\n"
       kwlString += "object${objectPrefixIdx}.resampler.minify_type:  ${interpolation}\n"
       def kwl = new ossimKeywordlist()
-      kwl.add("object${objectPrefixIdx}.image_view_trans.type", "ossimImageViewProjectionTransform")
+      kwl.add( "object${objectPrefixIdx}.image_view_trans.type", "ossimImageViewProjectionTransform" )
       if ( viewGeom?.get() )
       {
-        viewGeom?.get().saveState(kwl, "object${objectPrefixIdx}.image_view_trans.view_geometry.")
+        viewGeom?.get().saveState( kwl, "object${objectPrefixIdx}.image_view_trans.view_geometry." )
       }
       if ( quickLookFlag && entry )
       {
         if ( geomPtr != null )
         {
-          geomPtr.get().saveState(kwl, "object${objectPrefixIdx}.image_view_trans.image_geometry.")
+          geomPtr.get().saveState( kwl, "object${objectPrefixIdx}.image_view_trans.image_geometry." )
 
         }
         geomPtr.delete()
@@ -332,7 +334,7 @@ class ImageChainService
     if ( allocateChain )
     {
       chain = new joms.oms.Chain()
-      chain.loadChainKwlString(kwlString)
+      chain.loadChainKwlString( kwlString )
     }
     [chain: chain, kwl: kwlString, prefixIdx: objectPrefixIdx]
   }
@@ -341,7 +343,7 @@ class ImageChainService
    * @param params
    * @return A Map that contains the content-type and the chain object
    */
-  def createWriterChain(def params, def prefix = "")
+  def createWriterChain( def params, def prefix = "" )
   {
     def requestFormat = params?.format?.toLowerCase()
     def temporaryDirectory = params?.temporaryDirectory
@@ -378,7 +380,7 @@ class ImageChainService
       ext = ".png"
       break
     default:
-      log.error("Unsupported FORMAT=${requestFormat}")
+      log.error( "Unsupported FORMAT=${requestFormat}" )
       break
     }
     def writer = null
@@ -386,42 +388,44 @@ class ImageChainService
     def tempFile = null
     if ( ext != null )
     {
-      tempFile = File.createTempFile(tempFilenamePrefix, ext, temporaryDirectory ? new File(temporaryDirectory) : null);
+      tempFile = File.createTempFile( tempFilenamePrefix, ext, temporaryDirectory ? new File( temporaryDirectory ) : null );
       // now establish a writer
       //
       kwlString += "filename:${tempFile}\n"
       writer = new joms.oms.Chain();
-      writer.loadChainKwlString(kwlString)
+      writer.loadChainKwlString( kwlString )
     }
 
     return [chain: writer, contentType: contentType, file: tempFile, ext: ext]
   }
 
-  def createModelFromTiePointSet(def entry)
+  def createModelFromTiePointSet( def entry )
   {
     def gptArray = new ossimGptVector();
     def dptArray = new ossimDptVector();
     if ( entry?.tiePointSet )
     {
-      def tiepoints = new XmlSlurper().parseText(entry?.tiePointSet)
+      def parser = parserPool.borrowObject()
+      def tiepoints = new XmlSlurper( parser ).parseText( entry?.tiePointSet )
+      parserPool.returnObject( parser )
       def imageCoordinates = tiepoints.Image.toString().trim()
       def groundCoordinates = tiepoints.Ground.toString().trim()
-      def splitImageCoordinates = imageCoordinates.split(" ");
-      def splitGroundCoordinates = groundCoordinates.split(" ");
+      def splitImageCoordinates = imageCoordinates.split( " " );
+      def splitGroundCoordinates = groundCoordinates.split( " " );
       splitImageCoordinates.each {
-        def point = it.split(",")
+        def point = it.split( "," )
         if ( point.size() >= 2 )
         {
-          dptArray.add(new ossimDpt(Double.parseDouble(point.getAt(0)),
-                  Double.parseDouble(point.getAt(1))))
+          dptArray.add( new ossimDpt( Double.parseDouble( point.getAt( 0 ) ),
+                  Double.parseDouble( point.getAt( 1 ) ) ) )
         }
       }
       splitGroundCoordinates.each {
-        def point = it.split(",")
+        def point = it.split( "," )
         if ( point.size() >= 2 )
         {
-          gptArray.add(new ossimGpt(Double.parseDouble(point.getAt(1)),
-                  Double.parseDouble(point.getAt(0))))
+          gptArray.add( new ossimGpt( Double.parseDouble( point.getAt( 1 ) ),
+                  Double.parseDouble( point.getAt( 0 ) ) ) )
         }
       }
     }
@@ -432,27 +436,27 @@ class ImageChainService
       {
         def w = width as double
         def h = height as double
-        (0..<4).each {
+        ( 0..<4 ).each {
           def point = coordinates[it];
-          gptArray.add(new ossimGpt(coordinates[it].y, coordinates[it].x));
+          gptArray.add( new ossimGpt( coordinates[it].y, coordinates[it].x ) );
         }
-        dptArray.add(new ossimDpt(0.0, 0.0))
-        dptArray.add(new ossimDpt(w - 1, 0.0))
-        dptArray.add(new ossimDpt(w - 1, h - 1))
-        dptArray.add(new ossimDpt(0.0, h - 1))
+        dptArray.add( new ossimDpt( 0.0, 0.0 ) )
+        dptArray.add( new ossimDpt( w - 1, 0.0 ) )
+        dptArray.add( new ossimDpt( w - 1, h - 1 ) )
+        dptArray.add( new ossimDpt( 0.0, h - 1 ) )
       }
     }
-    if ( (gptArray.size() < 1) || (dptArray.size() < 1) )
+    if ( ( gptArray.size() < 1 ) || ( dptArray.size() < 1 ) )
     {
       return null
     }
-    return Util.createBilinearModel(dptArray, gptArray)
+    return Util.createBilinearModel( dptArray, gptArray )
   }
 
-  def grabOptimizedImageFromChain(def inputChain, def params)
+  def grabOptimizedImageFromChain( def inputChain, def params )
   {
-    def imageSource = new omsImageSource(inputChain.getChainAsImageSource())
-    def renderedImage = new omsRenderedImage(imageSource)
+    def imageSource = new omsImageSource( inputChain.getChainAsImageSource() )
+    def renderedImage = new omsRenderedImage( imageSource )
     def image = renderedImage.getData();
 
     ColorModel colorModel = renderedImage.colorModel
@@ -461,13 +465,13 @@ class ImageChainService
     Hashtable<?, ?> properties = null
 
     def result = null
-    def transparentFlag = params?.transparent?.equalsIgnoreCase("true")
+    def transparentFlag = params?.transparent?.equalsIgnoreCase( "true" )
     if ( image.numBands == 1 )
     {
-      result = Utility.convertToColorIndexModel(image.dataBuffer,
+      result = Utility.convertToColorIndexModel( image.dataBuffer,
               image.width,
               image.height,
-              transparentFlag)
+              transparentFlag )
     }
     else
     {
@@ -481,11 +485,11 @@ class ImageChainService
       {
         if ( transparentFlag )
         {
-          result = TransparentFilter.fixTransparency(new TransparentFilter(), result)
+          result = TransparentFilter.fixTransparency( new TransparentFilter(), result )
         }
-        if ( params?.format?.equalsIgnoreCase("image/gif") )
+        if ( params?.format?.equalsIgnoreCase( "image/gif" ) )
         {
-          result = ImageGenerator.convertRGBAToIndexed(result)
+          result = ImageGenerator.convertRGBAToIndexed( result )
         }
       }
     }
