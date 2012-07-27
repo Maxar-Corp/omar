@@ -563,7 +563,6 @@ function init(mapWidth, mapHeight)
    //OMAR.imageManipulator.applyRotate(${"rotateAngle"}.value);
    //OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
    //alert(map.getMaxExtents());
-
    OMAR.imageManipulator.events.on({
             "onFeatureDone": measureFinished,
             "onFeatureRemoved" : measureRemoved,
@@ -603,10 +602,10 @@ function init(mapWidth, mapHeight)
     {
         lat = view.lat;
         lon = view.lon;
-    }
-    if(view.azimuth != null)
-    {
-        rotateSlider.setRealValue(view.azimuth + OMAR.imageManipulator.northAngle);
+        if(view.azimuth)
+        {
+            rotateSlider.setRealValue(view.azimuth + OMAR.imageManipulator.northAngle);
+        }
     }
     if(lat&&lon)
     {
@@ -624,7 +623,7 @@ function init(mapWidth, mapHeight)
                 OMAR.imageManipulator.setCenterGivenImagePoint(temp[0], zoom);
 		updateCenter();
             }
-            });
+           });
     }	
 }
 
