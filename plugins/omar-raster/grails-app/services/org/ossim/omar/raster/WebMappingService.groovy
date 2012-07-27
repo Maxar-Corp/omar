@@ -46,6 +46,8 @@ class WebMappingService implements ApplicationContextAware
   def grailsApplication
   def imageChainService
 
+  def parserPool
+
   ApplicationContext applicationContext
 
   public static final String BLANK = "blank"
@@ -499,7 +501,9 @@ class WebMappingService implements ApplicationContextAware
     def dptArray = new ossimDptVector();
     if ( rasterEntry?.tiePointSet )
     {
-      def tiepoints = new XmlSlurper().parseText( rasterEntry?.tiePointSet )
+      def parser = parserPool.borrowObject()
+      def tiepoints = new XmlSlurper( parser ).parseText( rasterEntry?.tiePointSet )
+      parserPool.returnObject( parser )
       def imageCoordinates = tiepoints.Image.toString().trim()
       def groundCoordinates = tiepoints.Ground.toString().trim()
       def splitImageCoordinates = imageCoordinates.split( " " );

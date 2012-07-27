@@ -2,6 +2,7 @@ import org.ossim.omar.core.MapPropertyEditor
 import org.ossim.omar.core.ISO8601DateParser
 import org.ossim.omar.core.CustomEditorRegistrar
 import org.ossim.omar.core.DbAppender
+import org.ossim.omar.core.XmlParserPool
 
 class OmarCoreGrailsPlugin
 {
@@ -60,6 +61,8 @@ This plugin contains OMAR code that can be shared or accessed from other OMAR pl
       ]
       tableName = "wms_log"
     }
+
+    parserPool( XmlParserPool, 32 )
   }
 
   def doWithDynamicMethods = { ctx ->

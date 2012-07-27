@@ -9,6 +9,8 @@ class VideoDataSetService extends DataManagerService
 
   static transactional = true
 
+  def parserPool
+
   def deleteFromRepository( Repository repository )
   {
     def videoDataSets = VideoDataSet.findAllByRepository( repository )
@@ -42,7 +44,9 @@ class VideoDataSetService extends DataManagerService
       def xml = dataInfoService.getInfo( params.filename )
       if ( xml )
       {
-        def oms = new XmlSlurper().parseText( xml )
+        def parser = parserPool.borrowObject()
+        def oms = new XmlSlurper( parser ).parseText( xml )
+        parserPool.returnObject( parser )
         def omsInfoParser = applicationContext.getBean( "videoInfoParser" )
         def repository = findRepositoryForFile( file )
         def videoDataSets = omsInfoParser.processDataSets( oms, repository )

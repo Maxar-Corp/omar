@@ -10,6 +10,8 @@ class RasterDataSetService extends DataManagerService
 
   static transactional = true
 
+  def parserPool
+
   def deleteFromRepository( Repository repository )
   {
     def rasterDataSets = RasterDataSet.findAllByRepository( repository )
@@ -76,7 +78,10 @@ class RasterDataSetService extends DataManagerService
         }
         else
         {
-          def oms = new XmlSlurper().parseText( xml )
+          def parser = parserPool.borrowObject()
+          def oms = new XmlSlurper( parser ).parseText( xml )
+
+          parserPool.returnObject( parser )
           def omsInfoParser = applicationContext.getBean( "rasterInfoParser" )
           def repository = findRepositoryForFile( filename )
           def rasterDataSets = omsInfoParser.processDataSets( oms, repository )
@@ -99,7 +104,7 @@ class RasterDataSetService extends DataManagerService
                   //stagerHandler.processSuccessful(filename, xml)
                   httpStatusMessage.status = HttpStatus.OK
                   log.info( httpStatusMessage.message )
-                  def ids = rasterDataSet.rasterEntries.collect{it.id}.join(",")
+                  def ids = rasterDataSet.rasterEntries.collect {it.id}.join( "," )
                   httpStatusMessage.message = "Added raster ${ids}:${filename}"
                 }
                 else
@@ -149,7 +154,9 @@ class RasterDataSetService extends DataManagerService
           dataInfo.close()
           if ( xml )
           {
-            def oms = new XmlSlurper().parseText(xml)
+            def parser = parserPool.borrowObject()
+            def oms = new XmlSlurper(parser).parseText(xml)
+            parserPool.returnObject(parser)
             RasterEntry.initRasterEntry(oms?.dataSets?.RasterDataSet?.rasterEntries?.RasterEntry, rasterEntry)
             rasterEntry.save()
           }
@@ -186,7 +193,9 @@ class RasterDataSetService extends DataManagerService
                 dataInfo = null;
                 if ( xml )
                 {
-                  def oms = new XmlSlurper().parseText(xml)
+                  def parser = parserPool.borrowObject()
+                  def oms = new XmlSlurper(parser).parseText(xml)
+                  parserPool.returnObject(parser)
                   rasterEntry.initRasterEntry(oms?.dataSets?.RasterDataSet?.rasterEntries?.RasterEntry)
                   rasterEntry.save()
                 }
@@ -209,8 +218,7 @@ class RasterDataSetService extends DataManagerService
     def status = false
     def filename = params.filename as File
 
-
-   // println filename
+    // println filename
 
     def rasterFile = RasterFile.findByNameAndType( filename.absolutePath, "main" )
 
@@ -218,7 +226,7 @@ class RasterDataSetService extends DataManagerService
     {
       rasterFile?.rasterDataSet.delete( flush: true )
       httpStatusMessage.status = HttpStatus.OK
-      def ids =  rasterFile?.rasterDataSet?.rasterEntries.collect{it.id}.join(",")
+      def ids = rasterFile?.rasterDataSet?.rasterEntries.collect {it.id}.join( "," )
       httpStatusMessage.message = "removed raster ${ids}:${filename}"
       log.info( httpStatusMessage.message )
     }

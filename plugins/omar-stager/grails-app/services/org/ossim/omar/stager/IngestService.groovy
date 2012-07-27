@@ -11,7 +11,7 @@ class IngestService implements ApplicationContextAware
   def applicationContext
 
 
-  def ingest( def oms )
+  def ingest( def oms, def repository = Repository.findByBaseDir( '/' ) )
   {
     def status
     def message
@@ -19,7 +19,6 @@ class IngestService implements ApplicationContextAware
     if ( oms )
     {
       def omsInfoParsers = applicationContext.getBeansOfType( OmsInfoParser.class )
-      def repository = Repository.findByBaseDir( '/' )
 
       for ( def parser in omsInfoParsers?.values() )
       {

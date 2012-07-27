@@ -1,3 +1,5 @@
+import org.ossim.omar.oms.InfoGetterPool
+
 class OmarOmsGrailsPlugin
 {
   // the plugin version
@@ -28,6 +30,8 @@ Add the JNI bindings from OMS to the grails environment.
 
   def doWithSpring = {
     // TODO Implement runtime spring config (optional)
+    infoGetterPool(InfoGetterPool, 8)
+
   }
 
   def doWithDynamicMethods = { ctx ->
