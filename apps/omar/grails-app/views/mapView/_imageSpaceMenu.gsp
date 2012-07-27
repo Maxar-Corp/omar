@@ -21,12 +21,12 @@
             <ul>
                 <li class="yuimenuitem">
                     <a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();"
-                       title="Ground Space Viewer">Ortho</a>
+                       title="Ground Space Viewer">Orthorectified</a>
                 </li>
                 <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
                    href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}"
-                   title="Multi Layer Ground Space Viewer">Multi Layer Ground Space</a>
+                   title="Multi Layer Ground Space Viewer">Orthorectified Multi Layer</a>
               </li>
 	      <li class="yuimenuitem">
                 <a class="yuimenuitemlabel" href="${createLink( controller: 'rasterEntry', action: 'show', params: [id: rasterEntry?.id] )}" 
