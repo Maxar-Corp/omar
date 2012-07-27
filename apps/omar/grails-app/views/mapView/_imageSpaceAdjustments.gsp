@@ -194,11 +194,17 @@
 
             <div id="pqeDivId"></div>
 
-            <li><g:select
+            <li><p>Confidence: <g:select
                     from="${['0.95P','0.5P']}"
                     name="probLevel"
                     noSelection="['0.9P':'0.9P']"
-                    onChange="setPropLevel(this.value)"/>
+                    onChange="setPropLevel(this.value)"/>  </p>
+            </li>
+            <li>
+                <p>Display Unit: <g:select id="pqeDisplayUnit" name="pqeDisplayUnit" from="${['DD', 'DMS', 'MGRS']}"
+                                           title="Select decimal degrees, degrees minutes seconds, or military grid reference system for coordinate readouts."
+                                           onChange="javascript:setCurrentPqeDisplayUnit(this.value);"/></p>
+
             </li>
         </ul>
     </div>
