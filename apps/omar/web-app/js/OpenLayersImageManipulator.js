@@ -415,7 +415,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
    },
    calculateAzimuth: function()
    {
-       var rot = (this.northAngle + this.affineParams.rotate);
+       var rot = (this.northxAngle + this.affineParams.rotate);
        //if(rot < 0.0) rot += 360.0;
        return rot%360;
    },
@@ -864,7 +864,6 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   click: function(evt)
   {
     if(this.currentDrawControl) this.currentDrawControl.handler.click(evt);
-    document.onselectstart = OpenLayers.Function.False;
 
   },
   mouseover: function(evt){
@@ -910,7 +909,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         }
     }
     //this.map.events.handleBrowserEvent(event);
-    document.onselectstart = OpenLayers.Function.False;
+    //document.onselectstart = OpenLayers.Function.False;
    },
    mouseout: function(evt){
 
