@@ -71,7 +71,7 @@
               <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
                    href="${createLink(controller: 'mapView', action: 'index', params: [layers: (rasterEntries*.indexId).join(',')])}"
-                   title="Ground Space Viewer">Ground Space</a>
+                   title="Ortho Viewer">Orthorectified Single Layer</a>
               </li>
               <g:if test="${rasterEntries?.size() == 1}">
                 <li class="yuimenuitem">
