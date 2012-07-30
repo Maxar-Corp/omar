@@ -33,8 +33,8 @@
             </a>
         </td>
         <td>
-            <a href="${createLink( controller: 'mapView', action:'imageSpace', params: [layers: rasterEntry.indexId])}" >Raw</a><br/>
-            <a href="${createLink( controller: 'mapView', action:'index', params: [layers: rasterEntry.indexId])}" >Ortho</a>
+            <a class='buttons' href="${createLink( controller: 'mapView', action:'imageSpace', params: [layers: rasterEntry.indexId])}" >Raw</a><br/>
+            <a class='buttons' href="${createLink( controller: 'mapView', action:'index', params: [layers: rasterEntry.indexId])}" >Ortho</a>
 
         </td>
         <td><g:link controller="rasterEntry" action="show"
