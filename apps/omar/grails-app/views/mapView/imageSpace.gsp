@@ -122,6 +122,11 @@ var customAoi;
 var currentCenterLatLon = {lat:0.0,lon:0.0};
 var pqePoint = {x:0.0,y:0.0,lat:0.0,lon:0.0,hgt:0.0,hgtMsl:0.0,type:"",sInfo:"", displayUnit:"DD"}
 
+function getDetailedMetadata()
+{
+    window.open("${createLink( controller: 'rasterEntry', action: 'show', params: [id: rasterEntry?.id] )}");
+}
+
 function resetRotate()
 {
 rotateSlider.setRealValue(0.0);

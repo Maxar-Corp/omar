@@ -29,7 +29,7 @@
                    title="Multi Layer Ortho Viewer">Orthorectified Multi Layer</a>
               </li>
 	      <li class="yuimenuitem">
-                <a class="yuimenuitemlabel" href="${createLink( controller: 'rasterEntry', action: 'show', params: [id: rasterEntry?.id] )}" 
+                <a class="yuimenuitemlabel" href="javascript:getDetailedMetadata()"
                    title="Detailed Metadata">Detailed Metadata</a>       
               </li>
             </ul>
