@@ -41,7 +41,7 @@
     <div align="center">
       <span id="linkbutton1" class="yui-button yui-link-button" title="Search Rasters">
         <span class="first-child">
-          <a href="javascript:search();">Search Rasters</a>
+          <a href="javascript:search();">Search</a>
         </span>
       </span>
     </div>
@@ -52,7 +52,7 @@
     <div id="toolBar" class="olControlPanel"></div>
     <span id="linkbutton2" class="yui-button yui-link-button" title="Search Rasters">
       <span class="first-child">
-        <a href="javascript:search();">Search Rasters</a>
+        <a href="javascript:search();">Search</a>
       </span>
     </span>
   </content>
