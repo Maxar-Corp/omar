@@ -42,6 +42,11 @@ class TemplateExportController
     def country = params.country
     def northAngle = params.northArrowAngle
     def securityClassification = params.securityClassification
+	if ("${securityClassification}" == "")
+	{                
+		securityClassification = "UNK"
+	}
+
 
     def fileName = templateExportService.serviceMethod( imageFile, logo, line1, line2, line3, includeOutlineMap, includeOverviewMap, country, northAngle, securityClassification )
 
@@ -70,6 +75,10 @@ class TemplateExportController
     def country = params.country
     def northAngle = params.northArrowAngle
     def securityClassification = params.securityClassification
+	if ("${securityClassification}" == "")
+	{
+		securityClassification = "UNK"
+	}
 
     def fileName = templateExportService.serviceMethod( imageFile, logo, line1, line2, line3, includeOutlineMap, includeOverviewMap, country, northAngle, securityClassification )
 
