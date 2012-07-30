@@ -21,7 +21,7 @@
             <ul>
                 <li class="yuimenuitem">
                     <a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();"
-                       title="Ground Space Viewer">Orthorectified</a>
+                       title="Ortho Viewer">Orthorectified</a>
                 </li>
                 <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
