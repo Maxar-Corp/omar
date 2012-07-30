@@ -195,7 +195,7 @@ class RasterKmlService extends KmlService
   String createTopImagesKml( Map params )
   {
     def kmlQueryUrl = tagLibBean.createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
-            controller: "kmlQuery", action: "getImagesKml", params: params )
+            controller: "rasterKmlQuery", action: "getImagesKml", params: params )
 
     def kmlbuilder = new StreamingMarkupBuilder()
 

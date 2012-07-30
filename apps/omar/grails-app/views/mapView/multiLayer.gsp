@@ -11,7 +11,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>OMAR <g:meta name="app.version"/>: Multi-Layer View</title>
+  <title>OMAR <g:meta name="app.version"/>: Orthorectified Multi-Layer View</title>
   <meta content="multiLayerLayout" name="layout">
   <r:require modules="multiLayerLayout"/>
 </head>

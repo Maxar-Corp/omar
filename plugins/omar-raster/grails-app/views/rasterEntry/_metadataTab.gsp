@@ -11,7 +11,7 @@
     <thead>
     <tr>
 
-        <th>Thumbnailh</th>
+        <th>Thumbnail</th>
         <th>View</th>
 
         <g:sortableColumn property="id" title="${message(code: 'rasterEntry.id.label', default: 'Id')}"

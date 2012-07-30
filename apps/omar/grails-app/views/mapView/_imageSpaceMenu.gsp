@@ -26,7 +26,7 @@
                 <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
                    href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}"
-                   title="Multi Layer Ground Space Viewer">Orthorectified Multi Layer</a>
+                   title="Multi Layer Ortho Viewer">Orthorectified Multi Layer</a>
               </li>
 	      <li class="yuimenuitem">
                 <a class="yuimenuitemlabel" href="${createLink( controller: 'rasterEntry', action: 'show', params: [id: rasterEntry?.id] )}" 

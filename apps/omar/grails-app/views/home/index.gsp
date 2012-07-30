@@ -66,7 +66,7 @@ s
           <ol>
             <li>
               <g:form name="imageView"
-                      url="[controller: 'rasterKmlQuery', action: 'topImages', params: [stretch_mode: 'linear_auto_min_max', stretch_mode_region: 'global']]">
+                      url="[action:'topImages', controller:'rasterKmlQuery', params: [stretch_mode: 'linear_auto_min_max', stretch_mode_region: 'global'] ]">
                 <g:textField name="maximages" size="2" value="${grailsApplication.config.kml.defaultImages}"/>
                 <g:submitButton name="submit" value="Most Recent Images for View"/>
               </g:form>
