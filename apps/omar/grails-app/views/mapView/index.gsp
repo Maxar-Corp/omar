@@ -9,7 +9,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>OMAR <g:meta name="app.version"/>: Ground Space - ${( rasterEntries*.id )?.join( ', ' )}</title>
+  <title>OMAR <g:meta name="app.version"/>: Orthorectified View - ${( rasterEntries*.id )?.join( ', ' )}</title>
   <meta content="groundSpacePageLayout" name="layout">
   <r:require modules="groundSpacePageLayout"/>
   <style type="text/css">
@@ -75,6 +75,17 @@ var brightnessSlider;
 var contrastSlider;
 var azimuthAngle = parseFloat("${azimuthAngle}");
 var upIsUpAngle  = parseFloat("${upIsUpAngle}");
+
+function getCapabilities()
+{
+    window.open("${createLink( controller: 'ogc', action: 'wms', params: [request: 'GetCapabilities', layers: ( rasterEntries*.indexId ).join( ',' )] )}");
+}
+
+function getDetailedMetadata()
+{
+    window.open("${createLink( controller: 'rasterEntry', action: 'show', params: [id: ( rasterEntries*.id ).join( ',' )] )}");
+}
+
 function changeToImageSpace(azimuth)
 {
     var rotation = azimuth;

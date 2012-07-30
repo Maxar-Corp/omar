@@ -17,10 +17,17 @@
             <ul>
               <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
-                   href="${createLink( controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: ( rasterEntries*.indexId ).join( ',' )] )}"
+                   href="javascript:getCapabilities()"
                    title="Show OGC WMS Capabilities">OGC WMS Capabilities</a>
               </li>
-              <li class="yuimenuitem">
+                <%--
+                <li class="yuimenuitem">
+                    <a class="yuimenuitemlabel"
+                       href="${createLink( controller: 'ogc', action: 'wms', params: [request:'GetCapabilities', layers: ( rasterEntries*.indexId ).join( ',' )] )}"
+                    title="Show OGC WMS Capabilities">OGC WMS Capabilities</a>
+                </li>
+                --%>
+                <li class="yuimenuitem">
                 <a class="yuimenuitemlabel" href="javascript:getKML('${( rasterEntries*.indexId ).join( ',' )}')"
                    title="Export KML">KML</a>
               </li>
@@ -111,7 +118,7 @@
                    title="Multi Layer Ground Space Viewer">Orthorectified Multi Layer</a>
               </li>
 	      <li class="yuimenuitem">
-		<a class="yuimenuitemlabel" href="${createLink( controller: 'rasterEntry', action: 'show', params: [id: ( rasterEntries*.id ).join( ',' )] )}" 
+		<a class="yuimenuitemlabel" href="javascript:getDetailedMetadata()"
 		   title="Detailed Metadata">Detailed Metadata</a>	 
 	      </li>
             </ul>
