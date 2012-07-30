@@ -6,12 +6,12 @@ import org.springframework.context.ApplicationContextAware
 
 class IngestService implements ApplicationContextAware
 {
-  static transactional = false
+  static transactional = true
 
   def applicationContext
 
 
-  def ingest( def oms, def repository = Repository.findByBaseDir( '/' ) )
+  def ingest( def oms, def baseDir = '/' )
   {
     def status
     def message
@@ -19,6 +19,7 @@ class IngestService implements ApplicationContextAware
     if ( oms )
     {
       def omsInfoParsers = applicationContext.getBeansOfType( OmsInfoParser.class )
+      def repository = Repository.findByBaseDir(baseDir.absolutePath)
 
       for ( def parser in omsInfoParsers?.values() )
       {
