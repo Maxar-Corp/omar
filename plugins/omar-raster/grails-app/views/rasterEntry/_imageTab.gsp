@@ -39,6 +39,7 @@ To change this template use File | Settings | File Templates.
                 </td>
                 <td>
                     <a class='buttons' href="${createLink( controller: 'mapView', action:'imageSpace', params: [layers: rasterEntry.indexId])}" >Raw</a><br/>
+                    <br/>
                     <a class='buttons' href="${createLink( controller: 'mapView', action:'index', params: [layers: rasterEntry.indexId])}" >Ortho</a>
 
                 </td>
