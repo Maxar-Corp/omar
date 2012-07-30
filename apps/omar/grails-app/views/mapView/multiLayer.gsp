@@ -54,7 +54,7 @@
 </content>
 
 <r:script>
-  var mapWidget = new MapWidget();
+    var mapWidget = new MapWidget();
     var minLon = parseFloat("${left}");
     var minLat = parseFloat("${bottom}");
     var maxLon = parseFloat("${right}");
@@ -96,7 +96,6 @@
 
   function init()
   {
-
     OpenLayers.ImgPath = "${resource(plugin: 'openlayers', dir: 'js/img')}/";
 
 	var oMenu = new YAHOO.widget.MenuBar("rasterMenu", {
@@ -121,11 +120,21 @@
 
     var format = "${format}";
     var transparent = true;
-
-	var bounds = new OpenLayers.Bounds(minLon, minLat, maxLon, maxLat);
+    // lets expand out twice
+    var lonDeltaHalf = (maxLon-minLon)*0.5;
+    var latDeltaHalf = (maxLat-minLat)*0.5;
+    var minLatTemp = minLat-latDeltaHalf;
+    var minLonTemp = minLon-lonDeltaHalf;
+    var maxLatTemp = maxLat+latDeltaHalf;
+    var maxLonTemp = maxLon+lonDeltaHalf;
+    minLatTemp = minLatTemp < -90.0?-90.0:minLatTemp;
+    maxLatTemp = maxLatTemp >90.0?90.0:maxLatTemp;
+    minLonTemp = minLonTemp < -180.0?-180.0:minLonTemp;
+    maxLonTemp = maxLonTemp >180.0?180.0:maxLonTemp;
+    var bounds = new OpenLayers.Bounds(minLonTemp, minLatTemp, maxLonTemp, maxLatTemp);
 
 	//mapWidget = new MapWidget();
-	mapWidget.setupMapWidgetWithOptions("map", {controls: [], theme: null/*,  displayOutsideMaxExtent:true, maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale*/});
+	mapWidget.setupMapWidgetWithOptions("map", {controls: [], theme: null,  displayOutsideMaxExtent:true, maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale});
 	mapWidget.setFullResScale(parseFloat("${fullResScale}"));
     mapWidget.changeMapSize();
     //map = new OpenLayers.Map( "map", {controls: [], maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale} );
