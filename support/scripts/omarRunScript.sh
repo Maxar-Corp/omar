@@ -3,14 +3,15 @@ environmentVariables =[
    OMAR_URL:"http://localhost:8080/omar",
    OMAR_THUMBNAIL_CACHE:"/data/omar/omar-cache",
    NTHREADS: 4,
-   OMARDB:"omardb-${System.env.OSSIM_RELEASE_VERSION_NUMBER?:System.env.OSSIM_VERSION}-prod",
+   OMARDB:"omardb-${System.env.OSSIM_RELEASE_VERSION_NUMBER?:System.env.OSSIM_VERSION}-dev",
    POSTGRES_USER:"postgres",
    POSTGRES_PASSWORD:"postgres",
    POST_COMMAND_LINE:"NO",
    LOG_FILE:"",
    PID_FILE:"",
-   CLASSPATH:"${System.env.OSSIM_DIST_ROOT}/tomcat/webapps/omar/WEB-INF/lib", 
-   STAGE_FILE_FILTER:"nitf,ntf",
+   //CLASSPATH:"${System.env.OSSIM_DIST_ROOT}/tomcat/webapps/omar/WEB-INF/lib", 
+   CLASSPATH:"${System.env.OMAR_HOME}/target", 
+//   STAGE_FILE_FILTER:"nitf,ntf",
    HISTOGRAM_OPTIONS:"--create-histogram-fast",
    OVERVIEW_OPTIONS:"--compression-type JPEG --compression-quality 75"
 ]
