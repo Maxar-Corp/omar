@@ -9,6 +9,10 @@ import org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin
 import org.ossim.omar.core.Repository
 import org.ossim.omar.stager.StagerUtil
 
+import java.util.concurrent.atomic.AtomicInteger
+
+import static groovyx.gpars.GParsPool.withPool
+
 /**
  * Created by IntelliJ IDEA.
  * User: sbortman
@@ -19,6 +23,15 @@ import org.ossim.omar.stager.StagerUtil
 class StagerJob
 {
   static triggers = {}
+
+  enum Mode {
+    SEQ, POOL
+  }
+
+  enum Action {
+    BUILD_OVRS,
+    INDEX_ONLY
+  }
 
   def dataInfoService
   def ingestService
@@ -33,8 +46,11 @@ class StagerJob
 
   def parserPool
 
+  def grailsApplication
 
-  def repository
+  def batchSize
+
+  def baseDir
 
   def filterDir( def dir )
   {
@@ -138,17 +154,27 @@ class StagerJob
       def start = System.currentTimeMillis()
 
 
-      def xml = dataInfoService.getInfo( file.absolutePath )
-      //def xml = StagerUtil.getInfo( file )
+      def xml = null
+      def action = Action.BUILD_OVRS
+
+      switch ( action )
+      {
+      case Action.BUILD_OVRS:
+        xml = StagerUtil.getInfo( file )
+        break
+      case Action.INDEX_ONLY:
+        xml = dataInfoService.getInfo( file.absolutePath )
+        break
+      }
 
       if ( xml )
       {
         def parser = parserPool.borrowObject()
-        def oms = new XmlSlurper(parser).parseText( xml )
+        def oms = new XmlSlurper( parser ).parseText( xml )
 
-        parserPool.returnObject(parser)
+        parserPool.returnObject( parser )
 
-        def (status, message) = ingestService.ingest( oms, repository )
+        def (status, message) = ingestService.ingest( oms, baseDir )
 
         switch ( status )
         {
@@ -165,7 +191,7 @@ class StagerJob
         rejectsLog.println file.absolutePath
       }
 
-      if ( ++index % 100 == 0 )
+      if ( index?.incrementAndGet() % batchSize == 0 )
       {
         cleanUpGorm()
       }
@@ -190,7 +216,7 @@ class StagerJob
 
   def execute( def context )
   {
-    def baseDir = context.mergedJobDataMap['baseDir'] as File
+    baseDir = context.mergedJobDataMap['baseDir'] as File
 
     def options = [
             type: FileType.FILES,
@@ -198,18 +224,31 @@ class StagerJob
             filter: this.&filterFile
     ]
 
-    index = 0
-    repository = Repository.findByBaseDir( baseDir?.absolutePath )
+    index = new AtomicInteger( 0 )
+    batchSize = grailsApplication.config.hibernate.jdbc.batch_size as int
+
 
     if ( baseDir?.exists() )
     {
-      baseDir?.traverse( options, this.&processFile )
+      def mode = Mode.SEQ
+
+      switch ( mode )
+      {
+      case Mode.SEQ:
+        baseDir?.traverse( options, this.&processFile )
+        break
+      case Mode.POOL:
+        withPool {
+          baseDir.traverse( options ) { file -> this.&processFile.callAsync( file ) }
+        }
+        break
+      }
     }
 
     cleanUpGorm()
 
     Repository.withTransaction {
-      repository = Repository.findByBaseDir( baseDir?.absolutePath )
+      def repository = Repository.findByBaseDir( baseDir?.absolutePath )
       repository.scanEndDate = new Date()
       repository.save()
     }
