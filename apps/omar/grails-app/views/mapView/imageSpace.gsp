@@ -300,17 +300,6 @@ function chipImage(format)
      document.location.href = "${createLink(controller: 'imageSpace', action: 'getTile')}" + "?" + params.toUrlParams();
 }
 
-function initUnit()
-{
-    OpenLayers.INCHES_PER_UNIT['m'] = 39.3700787;
-    OMAR.measure = {}
-    OMAR.measure.units = { labels:["kilometers", "meters", "feet", "yards", "miles", "nautical miles"],
-                           openlayersMapping:{"kilometers":"Kilometer", "meters":"Meter", "feet":"Foot", "yards":"Yard", "miles": "Mile", "nautical miles":"NautM"},
-                           extensionMapping:{"kilometers":"km", "meters":"m", "feet":"ft", "yards":"yd", "miles": "mi", "nautical miles":"nmi" },
-                           precisionMapping:{"kilometers":10000,"meters":1000,"feet":100,"yards":100, "miles":10000, "nautical miles":10000},
-                           active:"meters"
-                         };
-}
 function unitsChanged(value)
 {
    OMAR.measure.units.active = value;
@@ -319,10 +308,6 @@ function unitsChanged(value)
 }
 function loadUnitSelection()
 {
-    if(!OMAR.measure)
-    {
-        initUnit();
-    }
     var selectionUnit = $("unitSelectionId");
     if(selectionUnit)
     {
