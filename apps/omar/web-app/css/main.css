@@ -327,6 +327,19 @@ fieldset.embedded legend {
 }
 
 /* MESSAGES AND ERRORS */
+.messageNoBorder {
+    font-size: 0.8em;
+    line-height: 2;
+    left-margin: 1em;
+    padding: 0em;
+    /*border: 1px solid #b2d1ff*/;
+    color: #006dba;
+    -moz-box-shadow: 0 0 0.25em #b2d1ff;
+    -webkit-box-shadow: 0 0 0.25em #b2d1ff;
+    box-shadow: 0 0 0.25em #b2d1ff;
+    background: transparent url(../images/skin/information.png) 0 50% no-repeat;
+    text-indent: 22px;
+}
 
 .errors,
 .message {
@@ -337,12 +350,12 @@ fieldset.embedded legend {
 }
 
 .message {
-	background: #f3f3ff;
-	border: 1px solid #b2d1ff;
-	color: #006dba;
-	   -moz-box-shadow: 0 0 0.25em #b2d1ff;
-	-webkit-box-shadow: 0 0 0.25em #b2d1ff;
-	        box-shadow: 0 0 0.25em #b2d1ff;
+    background: #f3f3ff;
+    border: 1px solid #b2d1ff;
+    color: #006dba;
+    -moz-box-shadow: 0 0 0.25em #b2d1ff;
+    -webkit-box-shadow: 0 0 0.25em #b2d1ff;
+    box-shadow: 0 0 0.25em #b2d1ff;
 }
 
 .errors {
