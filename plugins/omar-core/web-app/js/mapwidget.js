@@ -2,7 +2,7 @@ function MapWidget()
 {
     var pathUnit = new Array();
     pathUnit = [" "," "," "," "," "];
-
+    var wheelListener = null;
     var aoiLayer = null;
     var openlayersMap = null;
     var convert = new CoordinateConversion();
@@ -10,7 +10,8 @@ function MapWidget()
     var zoomOutButton = null;
     var zoomInFullResButton = null;
     var zoomFullResScale = null;
-
+    var lastTick = (new Date()).getTime();
+    var panButton = null;
     this.getZoomInButton = function()
     {
         return zoomInButton;
@@ -578,6 +579,17 @@ function MapWidget()
         $( "pathUnits" ).value = pathUnit;
     };
 
+    this.wheel = function(e){
+
+        var currentTick = (new Date()).getTime();
+        if((currentTick - this.lastTick) < 500)
+        {
+            YAHOO.util.Event.stopEvent(e);
+            return;
+        }
+         this.lastTick = currentTick;
+        this.panButton.onWheelEvent(e);
+     }
     //////////////////////////////////
 
     /////////////////////
@@ -587,7 +599,7 @@ function MapWidget()
     var message = "Alert: Not certified for targeting.\n";
     this.setupToolBar = function()
     {
-        var panButton = new OpenLayers.Control.MouseDefaults( {title: "Click pan button to activate. Once activated click the map and drag the mouse to pan."} );
+        this.panButton = new OpenLayers.Control.MouseDefaults( {title: "Click pan button to activate. Once activated click the map and drag the mouse to pan."} );
 
         var zoomBoxButton = new OpenLayers.Control.ZoomBox( {title: "Click the zoom box button to activate. Once activated click and drag over an area of interest on the map to zoom into."} );
 
@@ -706,6 +718,9 @@ function MapWidget()
                     }
                 }
             } );
+
+
+
         }
 
         var polygonMeasurement = document.getElementById( "polygonMeasurement" );
@@ -798,14 +813,14 @@ function MapWidget()
         var panel = new OpenLayers.Control.Panel(
         {
             div: container,
-            defaultControl: panButton,
+            defaultControl: this.panButton,
             displayClass: "olControlPanel"
         } );
 
         openlayersMap.addControl( navButton );
 
         panel.addControls( [
-            panButton,
+            this.panButton,
             zoomInButton,
             zoomOutButton,
             zoomMaxExtentButton,
@@ -833,6 +848,18 @@ function MapWidget()
 
 
         openlayersMap.addControl( panel );
+
+        OpenLayers.Event.stopObserving(window, "DOMMouseScroll", this.panButton.wheelObserver);
+        OpenLayers.Event.stopObserving(window, "mousewheel", this.panButton.wheelObserver);
+        OpenLayers.Event.stopObserving(document, "mousewheel", this.panButton.wheelObserver);
+
+        this.wheelListener = OpenLayers.Function.bindAsEventListener(this.wheel, this);
+
+        OpenLayers.Event.observe(window,   "DOMMouseScroll", this.wheelListener);
+        OpenLayers.Event.observe(window,   "mousewheel",     this.wheelListener);
+        OpenLayers.Event.observe(document, "mousewheel",     this.wheelListener);
+
+        this.panButton.wheelObserver = null;
     };
 
     this.zoomInFullRes = function()
