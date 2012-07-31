@@ -189,6 +189,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
   northAngle:null,
   fillAreaFlag:true,
   outScaleAOI:null,
+  lastTick:null,
 
   EVENT_TYPES:["onDragFinished",
                "onScaleChanged",
@@ -220,9 +221,12 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     this.affineM = new OmarMatrix3x3();
     this.eventDivToMapDivM = new OmarMatrix3x3();
     this.metersPerPixelFullRes = options.metersPerPixelFullRes?options.metersPerPixelFullRes:0.0;
+    this.lastTick = (new Date()).getTime();
+
     //[i for(i in document)].filter(function(i){return i.substring(0,2)=='on'&&(document[i]==null||typeof document[i]=='function');})
    },
    setup : function(containerDiv, mapObj, annDiv, topDiv, compass){
+
     this.map           = mapObj;
     this.eventDiv      = this.getDivElement(topDiv);
     this.annotationDiv = this.getDivElement(annDiv);
@@ -810,6 +814,14 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     {
       return;
     }
+    var currentTick = (new Date()).getTime();
+
+    if((currentTick - this.lastTick) < 500)
+    {
+        YAHOO.util.Event.stopEvent(evt);
+        return;
+    }
+    this.lastTick = currentTick;
     if (evt.wheelDelta) 
     {
       delta = evt.wheelDelta / 120;
