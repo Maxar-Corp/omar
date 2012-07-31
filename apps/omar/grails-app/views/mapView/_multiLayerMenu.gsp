@@ -21,12 +21,12 @@
           <div class="bd">
             <ul>
 
-              <li class="yuimenuitem">
-                <a class="yuimenuitemlabel"
-                   href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: (rasterEntries*.id).join(',')])}"
-                   title="Show OGC WMS Capabilities">OGC WMS Capabilities</a>
-              </li>
-              <li class="yuimenuitem">
+                <li class="yuimenuitem">
+                    <a class="yuimenuitemlabel"
+                       href="javascript:getCapabilities()"
+                       title="Show OGC WMS Capabilities">OGC WMS Capabilities</a>
+                </li>
+                <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
                    href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: (rasterEntries*.id).join(',')])}"
                    title="Export KML">KML</a>
