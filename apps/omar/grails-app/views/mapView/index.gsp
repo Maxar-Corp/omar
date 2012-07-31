@@ -24,6 +24,12 @@
 
 <content tag="top1">
   <g:render template="groundSpaceMenu" model="${[rasterEntries: rasterEntries]}"/>
+    <div  style="float: none"><div  style="float: left" id='imageIdField'>No Image ID present</div>
+        <g:if test="${flash.message}">
+            <div  style="float: left" class="messageNoBorder">${flash.message}</div>
+        </g:if>
+    </div>
+
 </content>
 
 <content tag="bottom1"></content>
@@ -75,6 +81,14 @@ var brightnessSlider;
 var contrastSlider;
 var azimuthAngle = parseFloat("${azimuthAngle}");
 var upIsUpAngle  = parseFloat("${upIsUpAngle}");
+
+
+function setImageId()
+{
+    var imageIdFieldEl = YAHOO.util.Dom.get("imageIdField");
+    imageIdFieldEl.innerHTML = "<b>Image Id:</b> ${imageIds}";
+
+}
 
 function getCapabilities()
 {
@@ -138,6 +152,7 @@ function resetMapCenter()
 
 function init(mapWidth, mapHeight)
 {
+    setImageId();
     OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
 
     coordConvert = new CoordinateConversion();

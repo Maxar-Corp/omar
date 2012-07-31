@@ -45,17 +45,26 @@ class MapViewController implements InitializingBean
     def mainFile;
       def entryId;
       def azimuth;
-    rasterEntries.each { rasterEntry ->
+      def imageIds = ""
+      rasterEntries.each { rasterEntry ->
         mainFile=rasterEntry.mainFile.name;
         entryId = rasterEntry.entryId as Integer;
         azimuth = rasterEntry.azimuthAngle;
+          if(rasterEntry.title)
+          {
+              imageIds = imageIds?"${imageIds}, ${rasterEntry.title}": rasterEntry.title
+          }
+          else if(rasterEntry.filename)
+          {
+              imageIds = imageIds?"${imageIds}, ${(rasterEntry.filename as File).name}": (rasterEntry.filename as File).name
+          }
       if ( ( rasterEntry.validModel != null ) &&
-              ( rasterEntry.validModel < 1 ) )
+           ( rasterEntry.validModel < 1 ) )
       {
         flash.message = "Valid rigorous model is not supported defaulting to a simple model."
       }
-      def overlays = RasterEntryFile.findAllByTypeAndRasterEntry( "kml", rasterEntry )
-      overlays?.each {overlay ->
+          def overlays = RasterEntryFile.findAllByTypeAndRasterEntry( "kml", rasterEntry )
+         overlays?.each {overlay ->
 
         def kmlOverlay = [:]
 
@@ -69,7 +78,9 @@ class MapViewController implements InitializingBean
 
     def model = [:]
 
-    model.rasterEntries = rasterEntries
+
+      model.rasterEntries = rasterEntries
+    model.imageIds=imageIds
     model.kmlOverlays = kmlOverlays
     model.upIsUpAngle= imageSpaceService?.computeUpIsUp( mainFile, entryId)
     model.azimuth=azimuth
@@ -159,9 +170,10 @@ class MapViewController implements InitializingBean
     if ( rasterEntries )
     {
       def rasterEntry = rasterEntries?.first()
-
+      def imageIds = rasterEntry.title?:(rasterEntry.filename as File).name
       def model = [
               rasterEntry: rasterEntry,
+              imageIds: imageIds,
               upIsUpRotation: imageSpaceService?.computeUpIsUp( rasterEntry.mainFile.name, rasterEntry.entryId as Integer )
       ]
 

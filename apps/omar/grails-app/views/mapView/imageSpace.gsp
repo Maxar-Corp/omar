@@ -37,6 +37,7 @@
 
 <content tag="top1">
   <g:render template="imageSpaceMenu" model="${[rasterEntry: rasterEntry]}"/>
+    <div id='imageIdField'>No Image ID present</div>
 </content>
 
 <content tag="bottom1"></content>
@@ -52,34 +53,33 @@
 <content tag="top2">
     <div id="toolBar" class="olControlPanel"></div>
     <div id="AOI_TEMPLATES_DIV_ID" style='display: none'>
-
-    <small>AOI:
-        <g:select name="selectAoiTemplateId"
-                id="selectAoiTemplateId"
-                noSelection="['Custom':'Custom']"
-                from="${ChipFormat.list()}"
-                onclick="genAOI(this.value)">
-        </g:select>
-    Output Scale:<g:select
-            from="${['Screen']}"
-            name="aoiScaleId"
-            id="aoiScaleId"
-            noSelection="['Image':'Image']"
-            onclick="setOutScale(this.value);genAOI(document.getElementById('selectAoiTemplateId').value)"/>
-    </small>
+        <small>AOI:
+            <g:select name="selectAoiTemplateId"
+                    id="selectAoiTemplateId"
+                    noSelection="['Custom':'Custom']"
+                    from="${ChipFormat.list()}"
+                    onclick="genAOI(this.value)">
+            </g:select>
+        Output Scale:<g:select
+                from="${['Screen']}"
+                name="aoiScaleId"
+                id="aoiScaleId"
+                noSelection="['Image':'Image']"
+                onclick="setOutScale(this.value);genAOI(document.getElementById('selectAoiTemplateId').value)"/>
+        </small>
     </div>
 </content>
 
  <content tag="bottom2">
 
-      <div id="mouseDisplayId" align="left"></div>
+     <div id="mouseDisplayId" align="left"></div>
 
-<!--  <table><tr>
-    <td width="33%"><div id="ddMousePosition">&nbsp;</div></td>
-    <td width="33%"><div id="dmsMousePosition">&nbsp;</div></td>
-    <td width="33%"><div id="mgrsMousePosition">&nbsp;</div></td>
-  </tr></table>
--->
+     <!--  <table><tr>
+         <td width="33%"><div id="ddMousePosition">&nbsp;</div></td>
+         <td width="33%"><div id="dmsMousePosition">&nbsp;</div></td>
+         <td width="33%"><div id="mgrsMousePosition">&nbsp;</div></td>
+       </tr></table>
+     -->
 </content>
 
 <content tag="center2">
@@ -121,6 +121,13 @@ var selectedFeature;
 var customAoi;
 var currentCenterLatLon = {lat:0.0,lon:0.0};
 var pqePoint = {x:0.0,y:0.0,lat:0.0,lon:0.0,hgt:0.0,hgtMsl:0.0,type:"",sInfo:"", displayUnit:"DD"}
+
+function setImageId()
+{
+    var imageIdFieldEl = YAHOO.util.Dom.get("imageIdField");
+    imageIdFieldEl.innerHTML = "<b>Image Id:</b> ${imageIds}";
+
+}
 
 function getDetailedMetadata()
 {
@@ -398,6 +405,7 @@ function setCurrentPqeDisplayUnitSelection()
 
 function init(mapWidth, mapHeight)
 {
+    setImageId();
     OMAR.coordConvert = new CoordinateConversion();
     pqePoint.displayUnit = "${pqeDisplayUnit?:"DMS"}"
     setCurrentPqeDisplayUnitSelection();
