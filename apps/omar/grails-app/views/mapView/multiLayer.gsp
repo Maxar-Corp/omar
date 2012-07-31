@@ -63,6 +63,10 @@
     var smallestScale = parseFloat("${smallestScale}");
     var wcsParams = new OmarWcsParams();
 
+  function getCapabilities()
+  {
+    window.open("${createLink( controller: 'ogc', action: 'wms', params: [request: 'GetCapabilities', layers: ( rasterEntries*.indexId ).join( ',' )] )}");
+  }
   function changeMapSize()
   {
     var Dom = YAHOO.util.Dom;
