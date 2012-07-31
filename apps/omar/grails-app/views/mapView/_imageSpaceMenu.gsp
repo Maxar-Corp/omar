@@ -14,36 +14,7 @@
            href="${createLink(controller: 'home', action: 'index')}"
            title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
       </li>
-      <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
-
-        <div id="viewMenu" class="yuimenu">
-          <div class="bd">
-            <ul>
-                <li class="yuimenuitem">
-                    <a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();"
-                       title="Ortho Viewer">Orthorectified</a>
-                </li>
-                <li class="yuimenuitem">
-                <a class="yuimenuitemlabel"
-                   href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}"
-                   title="Multi Layer Ortho Viewer">Orthorectified Multi Layer</a>
-              </li>
-	      <li class="yuimenuitem">
-                <a class="yuimenuitemlabel" href="javascript:getDetailedMetadata()"
-                   title="Detailed Metadata">Detailed Metadata</a>       
-              </li>
-            </ul>
-            <ul>
-              <li class="yuimenuitem">
-                <a class="yuimenuitemlabel"
-                   href="${createLink(action: "imageSpace", params: [layers: rasterEntry?.indexId])}"
-                   title="Reset Image space">Reset</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </li>
-      <li class="yuimenubaritem first-of-type">
+       <li class="yuimenubaritem first-of-type">
         <a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
 
         <div id="exportMenu" class="yuimenu">
@@ -70,7 +41,37 @@
           </div>
         </div>
       </li>
-      <li class="yuimenubaritem first_of_type">
+        <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#viewMenu">View</a>
+
+            <div id="viewMenu" class="yuimenu">
+                <div class="bd">
+                    <ul>
+                        <li class="yuimenuitem">
+                            <a class="yuimenuitemlabel" href="javascript:changeToSingleLayer();"
+                               title="Ortho Viewer">Orthorectified</a>
+                        </li>
+                        <li class="yuimenuitem">
+                            <a class="yuimenuitemlabel"
+                               href="${createLink(controller: "mapView", action: "multiLayer", params: [layers: rasterEntry?.indexId])}"
+                            title="Multi Layer Ortho Viewer">Orthorectified Multi Layer</a>
+                        </li>
+                        <li class="yuimenuitem">
+                            <a class="yuimenuitemlabel" href="javascript:getDetailedMetadata()"
+                               title="Detailed Metadata">Detailed Metadata</a>
+                        </li>
+                    </ul>
+                    <ul>
+                        <li class="yuimenuitem">
+                            <a class="yuimenuitemlabel"
+                               href="${createLink(action: "imageSpace", params: [layers: rasterEntry?.indexId])}"
+                            title="Reset Image space">Reset</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+
+        <li class="yuimenubaritem first_of_type">
  	<a class="yuimenubaritemlabel" href="javascript:shareImage()">Share</a>
       </li>
     </ul>
