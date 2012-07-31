@@ -688,7 +688,7 @@ function MapWidget()
                             pathUnit[2] = (evt.measure * 3.280839895).toFixed(1) + " ft";
                             pathUnit[3] = (evt.measure * 0.00062137119224).toFixed(4) + " mi";
                             pathUnit[4] = (evt.measure * 1.0936132983).toFixed(1) + " yd";
-                            pathUnit[5] = (evt.measure * 0.539956803).toFixed(4) + " nmi";
+                            pathUnit[5] = (evt.measure * 0.000539957).toFixed(4) + " nmi";
 
                             if ( $( "measurementUnits" ).value == "kilometers" )
                             {
