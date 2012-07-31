@@ -139,6 +139,3 @@
     </ul>
   </div>
 </div>
-<g:if test='${flash.message}'>
-  <label class='message'>${flash.message}</label>
-</g:if>
