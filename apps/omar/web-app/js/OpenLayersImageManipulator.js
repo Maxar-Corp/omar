@@ -1223,7 +1223,10 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         {
           if(this.currentDrawControl) this.currentDrawControl.handler.mouseup(evt);
           document.onselectstart = null;
-          if(this.performedDrag) setCenterForLayers(this);
+          if(this.performedDrag){
+              setCenterForLayers(this);
+              this.events.triggerEvent("onDragFinished");
+          }
 
             break;
         }
