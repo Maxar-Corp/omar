@@ -27,6 +27,9 @@
                 { position:'center', minWidth:400, minHeight:200 }
             ]
         } );
+        outerLayout.on('resize', function(evt) {
+                bodyOnResize();
+        });
         outerLayout.on( 'render', function ()
         {
             var el = outerLayout.getUnitByPosition( 'center' ).get( 'wrap' );
