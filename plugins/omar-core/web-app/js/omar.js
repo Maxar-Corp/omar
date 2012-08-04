@@ -48,9 +48,19 @@ function Omar()
         map.addControl( new OpenLayers.Control.Scale() );
         map.addControl( new OpenLayers.Control.ScaleLine() );
 
-        map.events.register( "mousemove", map, this.setMousePositionDiv );
-        map.events.register( "moveend", map, this.setMapCenterTextField );
-        map.events.register( "mouseup", map, this.setMapCenterTextField );
+        map.events.register("mousemove", map, this.setMousePositionDiv );
+        map.events.register("moveend", this, this.setCenterForLayers );
+        map.events.register("mouseup", this, this.setCenterForLayers)
+    };
+    this.setCenterForLayers = function(evt)
+    {
+        var extent = map.getExtent();
+        var idx = 0;
+        for(idx = 0; idx < map.layers.length; ++idx)
+        {
+            map.layers[idx].moveTo(extent);
+        }
+        this.setMapCenterTextField();
     };
 
     this.changeMapSize = function ()
