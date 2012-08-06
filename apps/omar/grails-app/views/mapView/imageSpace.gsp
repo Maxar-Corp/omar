@@ -608,14 +608,17 @@ function init(mapWidth, mapHeight)
     var lon = ${params.longitude?:"null"};
     var view = ${params.view?:"null"};
     var url = "/omar/imageSpace/groundToImage";
+
     if(view)
     {
         lat = view.lat;
         lon = view.lon;
-        if(view.azimuth)
+
+        if(view.azimuth != null)
         {
             rotateSlider.setRealValue(view.azimuth + OMAR.imageManipulator.northAngle);
         }
+
     }
     if(lat&&lon)
     {
