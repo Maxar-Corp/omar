@@ -129,7 +129,7 @@ function changeToImageSpace(azimuth)
 
 function rotateUpIsUp()
 {
-    changeToImageSpace(upIsUpAngle);
+    changeToImageSpace((upIsUpAngle-azimuthAngle)%360.0);
 }
 
 function rotateNorthUp()
