@@ -89,7 +89,7 @@ class RasterEntryController implements InitializingBean
     def rasterEntries = null
     def totalCount = null
     def rasterFiles = null
-
+ /*
     if ( params.rasterDataSetId )
     {
       def rasterDataSet = RasterDataSet.get( params.rasterDataSetId )
@@ -102,7 +102,7 @@ class RasterEntryController implements InitializingBean
     {
       rasterEntries = RasterEntry.createCriteria().list( params ) {}
     }
-
+*/
     def queryParams = initRasterEntryQuery( params )
     rasterEntries = rasterEntrySearchService.runQuery( queryParams, params )
 

@@ -17,7 +17,7 @@ import org.ossim.omar.core.ISO8601DateParser
 class RasterEntryQuery extends BaseQuery
 {
   String niirs
-
+  String rasterDataSetId
   RasterEntryQuery()
   {
     super()
@@ -140,7 +140,11 @@ class RasterEntryQuery extends BaseQuery
     {
       result.add(Restrictions.ge("niirs", niirs as double))
     }
-
+    if(rasterDataSetId)
+    {
+        def rasterDataSet = RasterDataSet.get( rasterDataSetId )
+        result.add(Restrictions.eq("rasterDataSet", rasterDataSet ))
+    }
     searchTagNames?.size()?.times {i ->
       String name = searchTagNames[i]
       String value = searchTagValues[i]
