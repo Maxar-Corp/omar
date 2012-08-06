@@ -5,6 +5,7 @@
   Time: 9:08 AM
   To change this template use File | Settings | File Templates.
 --%>
+<g:form name="wmsFormId" method="POST"/>
 
 <div id="rasterMenu" class="yuimenubar yuimenubarnav">
   <div class="bd">
@@ -19,7 +20,15 @@
 
         <div id="exportMenu" class="yuimenu">
           <div class="bd">
-            <ul>
+              <ul>
+                  <li class="yuimenuitem">
+                      <a class="yuimenuitemlabel"
+                         href="javascript:getCapabilities()"
+                         title="Show OGC WMS Capabilities">OGC WMS Capabilities</a>
+                  </li>
+              </ul>
+
+              <ul>
               <li class="yuimenuitem">
                 <a class="yuimenuitemlabel" href="javascript: chipImage('jpeg')"
                    title="Export JPEG">JPEG</a>
@@ -33,7 +42,7 @@
                    title="Export GIF">GIF</a>
               </li>
             </ul>
-	    <ul>
+	        <ul>
               <li class="yuimenuitem">
                 <a class="yuimenuitemlabel" href="javascript:exportTemplate()" title="Template">Template</a>
               </li>

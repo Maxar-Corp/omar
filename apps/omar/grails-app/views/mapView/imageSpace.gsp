@@ -129,10 +129,16 @@ function setImageId()
 
 }
 
+function getCapabilities()
+{
+    window.open("${createLink( controller: 'ogc', action: 'wms', params: [request: 'GetCapabilities', layers: rasterEntry.indexId] )}");
+}
+
 function getDetailedMetadata()
 {
     window.open("${createLink( controller: 'rasterEntry', action: 'show', params: [id: rasterEntry?.id] )}");
 }
+
 
 function resetRotate()
 {
