@@ -1549,7 +1549,7 @@ function updateCenter()
                                                         "mpp":OMAR.imageManipulator.calculateMetersPerPixel(),
                                                         "azimuth":OMAR.imageManipulator.calculateAzimuth()
                                                         });
-        var shareLink = baseURL +"?"+ tempWmsParams.toUrlParams();
+        var shareLink = baseURL + "?" + tempWmsParams.toUrlParams() + "&rotate=" + rotate;
         window.prompt ("Copy to clipboard: Ctrl+C, Enter", shareLink);
 
 //var popUpWindow = window.open("", "OMARImageShare", "width=400, height=50");
