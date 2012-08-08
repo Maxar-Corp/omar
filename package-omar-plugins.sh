@@ -1,21 +1,17 @@
 #!/bin/sh
 
 # Cleanup old
-rm -rf ~/.ivy2/cache
-rm -rf ~/.grails
+rm -rf ~/.grails/ivy-cache
 rm -rf ~/.m2/repository
 
 # Setup ivy cache
-cd ~
-mkdir -p ~/.ivy2/cache
-cd ~/.ivy2/cache
+mkdir -p ~/.grails
+cd ~/.grails
 tar xvfz $OMAR_HOME/plugins/ivyCache.tgz
 
 # Setup maven cache
-cd $OMAR_HOME/plugins
-cd ~ 
-mkdir -p .m2/repository
-cd .m2/repository
+mkdir -p ~/.m2
+cd ~/.m2
 tar xvfz $OMAR_HOME/plugins/m2Repository.tgz
 
 # Package OMAR plugins
@@ -31,7 +27,7 @@ done
 # rm `find . -name plugin.xml`
 # the removing seems to still not work.  We will just retouch the postgis plugin and see if
 # that will help
-cd $OMAR_DEV_HOME/plugins/postgis
-grails package-plugin
+#cd $OMAR_DEV_HOME/plugins/postgis
+#grails package-plugin
 cd $OMAR_DEV_HOME
 

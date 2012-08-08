@@ -6,7 +6,9 @@
   <documentation>http://grails.org/plugin/omar-image-magick</documentation>
   <type>OmarImageMagickGrailsPlugin</type>
   <resources>
+    <resource>TemplateExportResources</resource>
     <resource>omar.image.magick.TemplateExportController</resource>
+    <resource>omar.image.magick.TemplateExportService</resource>
   </resources>
   <repositories>
     <repository name='grailsCentral' url='http://plugins.grails.org' />
@@ -16,7 +18,12 @@
     <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
   </repositories>
   <dependencies />
-  <plugins />
+  <plugins>
+    <runtime>
+      <plugin group='org.grails.plugins' name='resources' version='1.1.6' />
+      <plugin group='org.grails.plugins' name='yui-minify-resources' version='0.1.5' />
+    </runtime>
+  </plugins>
   <runtimePluginRequirements />
   <behavior />
 </plugin>
