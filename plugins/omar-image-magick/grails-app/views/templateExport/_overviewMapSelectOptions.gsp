@@ -186,7 +186,7 @@
 	<option value ="nz">NZ New Zealand</option>
 	<option value ="od">OD South Sudan</option>
 	<option value ="pa">PA Paraguay</option>
-	<option value = "pc">PC Pitcairn Islands</option>
+	<option value ="pc">PC Pitcairn Islands</option>
 	<option value ="pe">PE Peru</option>
 	<option value ="pf">PF Paracel Islands</option>
 	<option value ="pg">PG Spratly Islands</option>
@@ -267,7 +267,7 @@
 	<option value ="ws">WS Samoa</option>
 	<option value ="wz">WZ Swaziland</option>
 	<option value ="ym">YM Yemen</option>
-	<option value = "YY"> YY Other </option>
-	<option value = "za"> ZA Zambia </option>
-	<option value = "zi"> ZI Zimbabwe </option>
+	<option value ="yy">YY Other </option>
+	<option value ="za">ZA Zambia </option>
+	<option value ="zi">ZI Zimbabwe </option>
 </select>
