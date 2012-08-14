@@ -35,7 +35,7 @@ class ThumbnailController implements InitializingBean
   {
     try
     {
-      def httpStatusMessage = new HttpStatusMessage()
+        def httpStatusMessage = new HttpStatusMessage()
       httpStatusMessage.status = HttpStatus.OK
       def rasterEntry = RasterEntry.findByIndexId( params.id ) ?: RasterEntry.get( params.id );
       def image = null
@@ -46,37 +46,58 @@ class ThumbnailController implements InitializingBean
       {
         httpStatusMessage.message = "RasterEntry not found with id ${params.id}"
         httpStatusMessage.status = HttpStatus.NOT_FOUND
-        image = ImageGenerator.createErrorImage( 128, 128 );
+        image = ImageGenerator.createErrorImage( 128, 128, "Raster Image Not\nFound" );
         log.error( httpStatusMessage )
       }
       else
       {
-        params.mimeType = mimeType
+          //params.mimeType = mimeType
         outputFile = thumbnailService.getRasterEntryThumbnailFile( httpStatusMessage, rasterEntry, params )
-        if ( ( httpStatusMessage.status == HttpStatus.OK ) &&
-                outputFile.exists() &&
-                ( outputFile.length() > 0 ) )
+       // if ( ( httpStatusMessage.status == HttpStatus.OK ) &&
+       //         outputFile?.exists() &&
+       //         ( outputFile.length() > 0 ) )
+       // {
+       //   image = ImageIO.read( outputFile )
+        //}
+       // if ( !image )
+        if (httpStatusMessage.status != HttpStatus.OK)
         {
-          image = ImageIO.read( outputFile )
-        }
-        if ( !image )
-        {
-          image = ImageGenerator.createErrorImage( 128, 128 );
+            image = ImageGenerator.createErrorImage( 128, 128, "Unable to produce thumbnail\nNo overviews present\n");
+
         }
       }
 
       httpStatusMessage.initializeResponse( response )
 
-      def bytes = outputFile.bytes
-      response.contentType = mimeType
-      response.contentLength = bytes.size()
-      response.outputStream << bytes
-
-      //ImageIO.write(image, "jpeg", response.outputStream)
+      if (outputFile?.exists())
+      {
+          def tempFile = outputFile as String
+          def ext = tempFile.substring(0, tempFile.lastIndexOf('.'))
+          ext = ext.toLowerCase()
+          switch(ext)
+          {
+              case 'jpeg':
+                  mimeType = "image/jpeg"
+                  break;
+              default:
+                  mimeType = "image/${ext}"
+                  break;
+          }
+          def bytes = outputFile.bytes
+          response.contentType = mimeType
+          response.contentLength = bytes.size()
+          response.outputStream << bytes
+      }
+      else if (image)
+      {
+          response.contentType = "image/jpeg"
+          ImageIO.write(image, "jpeg", response.outputStream)
+      }
 
     }
     catch ( Exception e )
     {
+        println(e.message)
       log.error( "exception ${e.message}" )
     }
 

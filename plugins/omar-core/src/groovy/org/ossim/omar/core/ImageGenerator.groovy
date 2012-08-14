@@ -4,13 +4,28 @@ import java.awt.image.*;
 import java.awt.*;
 class ImageGenerator {
 
-  static Image createErrorImage(int w, int h) {
+  static Image createErrorImage(int w, int h, def message) {
     def errorImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB)
     Graphics g = errorImage.getGraphics();
-    g.setPaint(Color.red);
-    g.setStroke(new BasicStroke(4));
-    g.drawLine(0, 0, w, h);
-    g.drawLine(w, 0, 0, h);
+    FontMetrics fontMetrics= g.getFontMetrics()
+
+    //float fontHeight = fontMetrics.height;
+    def stringArray = message.split('\n');
+    float originY = 0.0;
+    float originX = 0.0;
+    g.setPaint(Color.white);
+    g.setStroke(new BasicStroke(1));
+    stringArray.each{ str->
+        def bounds = fontMetrics.getStringBounds(str, g);
+        originY+=bounds.getHeight();
+        originX = (w/2 - (bounds.getWidth()/2));
+        if(originX < 0) originX = 0;
+        g.drawString(str, originX, originY);
+    }
+    //g.setPaint(Color.red);
+    //g.setStroke(new BasicStroke(4));
+    //g.drawLine(0, 0, w, h);
+    //g.drawLine(w, 0, 0, h);
 
     return errorImage
   }

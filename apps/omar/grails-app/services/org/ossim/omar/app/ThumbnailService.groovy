@@ -10,6 +10,10 @@ import org.ossim.omar.raster.RasterFile
 import org.ossim.omar.raster.RasterDataSet
 import org.ossim.omar.video.VideoDataSet
 import org.ossim.omar.video.VideoFile
+import java.awt.Graphics2D
+import javax.imageio.ImageIO
+import java.awt.RenderingHints
+import java.awt.AlphaComposite
 
 class ThumbnailService
 {
@@ -144,6 +148,12 @@ class ThumbnailService
 
   public File getRasterEntryThumbnailFile(def httpStatusMessage, RasterEntry rasterEntry, Map params)
   {
+    // check to see if there is a thumbnail associated with the image
+    // if so we will use java to scale that to the desired output
+    // using bilinear scaling
+    //
+    def thumbnailFile = rasterEntry.getAssociationType("thumbnail")
+
     def projectionType = params.projectionType;
     RasterDataSet rasterDataSet = rasterEntry.rasterDataSet
     RasterFile rasterFile = RasterFile.findWhere(rasterDataSet: rasterDataSet, type: "main")
@@ -153,13 +163,64 @@ class ThumbnailService
     int resLevels = rasterEntry.numberOfResLevels;
     int maxSize = rasterEntry.width > rasterEntry.height ? rasterEntry.width : rasterEntry.height
 
+    String cacheDirPath = grailsApplication.config.thumbnail.cacheDir
+    String thumbnailPrefix = "${rasterEntry.id}-${size}-${projectionType}"
+    def outputFile = new File(
+              cacheDirPath,
+              "${thumbnailPrefix}.jpg"
+    )
+    if(outputFile.exists())
+    {
+        return outputFile
+    }
     if ( !size )
-    size = grailsApplication.config.thumbnail.defaultSize
+    {
+        size = grailsApplication.config.thumbnail.defaultSize
+    }
     if ( size > maxSize )
     {
       size = maxSize
     }
+    if(thumbnailFile)
+    {
+      BufferedImage img = ImageIO.read(new File(thumbnailFile.name))
+      def outW = size;
+      def outH = size;
 
+      if(img.width > img.height)
+      {
+        if(img.width > size)
+        {
+            outH = (img.height*((float)size/(float)img.width)+0.5) as Integer;
+        }
+      }
+      else if(img.height > img.width)
+      {
+        if(img.height > size)
+        {
+            outH = (img.width*((float)size/(float)img.height)+0.5) as Integer;
+        }
+      }
+      BufferedImage resizedImage = new BufferedImage(outW, outH, img.type);
+      Graphics2D g = resizedImage.createGraphics();
+      g.drawImage(img, 0, 0, outW, outH, null);
+      g.dispose();
+      g.setComposite(AlphaComposite.Src);
+      g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+      g.setRenderingHint(RenderingHints.KEY_RENDERING,RenderingHints.VALUE_RENDER_QUALITY);
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+
+
+        def lockVar = getLock(rasterFile.name);
+        synchronized ( lockVar )
+        {
+            if ( !outputFile.exists() || overwrite )
+            {
+                ImageIO.write(resizedImage, "jpg", outputFile);
+            }
+        }
+      return outputFile
+    }
     // check if size request for thumbnail can be generated
     // we will allow generation to 1 r-level downsample.
     // So if we have only 2 rlevels for an image but need 4 r-levels
@@ -174,10 +235,8 @@ class ThumbnailService
       return new File("")
     }
 
-    String cacheDirPath = grailsApplication.config.thumbnail.cacheDir
-    String thumbnailPrefix = "${rasterEntry.id}-${size}-${projectionType}"
 
-    File outputFile = this.getThumbnail(httpStatusMessage,
+    outputFile = this.getThumbnail(httpStatusMessage,
             cacheDirPath,
             thumbnailPrefix,
             size,
