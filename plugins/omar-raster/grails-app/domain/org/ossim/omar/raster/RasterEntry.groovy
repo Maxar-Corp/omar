@@ -239,7 +239,16 @@ class RasterEntry
 
     return mainFile
   }
+  def getAssociationType(def type)
+  {
+      def tempFile = RasterEntryFile.createCriteria().get {
+          eq( "type", "${type}" )
+          createAlias( "rasterEntry", "r" )
+          eq( "rasterEntry", this )
+      }
 
+      tempFile;
+  }
   def getHistogramFile( )
   {
     def result = getFileFromObjects( "histogram" )?.name
