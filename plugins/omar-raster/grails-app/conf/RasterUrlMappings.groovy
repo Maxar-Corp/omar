@@ -1,4 +1,4 @@
-class RasterKmlUrlMappings {
+class RasterUrlMappings {
 
 	static mappings = {
     "/icp/getTile"(controller: "imageSpace", action: "getTile")
