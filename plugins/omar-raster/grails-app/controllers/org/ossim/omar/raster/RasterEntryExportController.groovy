@@ -16,7 +16,6 @@ class RasterEntryExportController
   {
     def format = params.format
     def queryParams = new RasterEntryQuery()
-
     bindData( queryParams, params )
 
     queryParams.startDate = DateUtil.initializeDate( "startDate", params )
@@ -34,6 +33,24 @@ class RasterEntryExportController
     def fields = grailsApplication.config.export.rasterEntry.fields
     def labels = grailsApplication.config.export.rasterEntry.labels
     def formatters = grailsApplication.config.export.rasterEntry.formatters
+
+    if (params.fields)
+    {
+        def tempFields = params?.fields?.split(",")
+        fields = []
+        tempFields.each{field->
+            fields<<field
+        }
+    }
+    if (params.labels)
+    {
+        def tempLabels = params?.labels?.split(",")
+        labels = []
+        tempLabels.each{label->
+            labels << label;
+        }
+    }
+
 
     def (file, mimeType) = exportService.export(
             format,
