@@ -68,6 +68,8 @@ class ExportService
           {
               file = File.createTempFile(prefix, ".json", workDir as File)
               def outputFirstObject = false;
+              file <<"["
+
               for ( object in objects )
               {
                   if(outputFirstObject) file <<","
@@ -90,6 +92,7 @@ class ExportService
                   file<<"}"
                   outputFirstObject = true;
               }
+              file << "]"
           }
           mimeType = "application/json"
         break;
