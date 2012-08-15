@@ -18,6 +18,10 @@ class RasterEntryQuery extends BaseQuery
 {
   String niirs
   String rasterDataSetId
+  String id
+  String indexId
+  String imageId
+  String title
   RasterEntryQuery()
   {
     super()
@@ -140,11 +144,84 @@ class RasterEntryQuery extends BaseQuery
     {
       result.add(Restrictions.ge("niirs", niirs as double))
     }
+    if(id)
+    {
+        if(id.contains(","))
+        {
+            def idArray = id.split(",");
+            def disjunct =  Restrictions.disjunction();
+
+            for(idTemp in idArray)
+            {
+                disjunct.add(Restrictions.eq("id", idTemp as Long))
+            }
+
+            result.add(disjunct)
+        }
+        else
+        {
+            result.add(Restrictions.eq("id", id as Long))
+        }
+    }
+    if(indexId)
+    {
+        if(indexId.contains(","))
+        {
+            def indexIdArray = indexId.split(",");
+            def disjunct =  Restrictions.disjunction();
+
+            for(indexIdTemp in indexIdArray)
+            {
+                disjunct.add(Restrictions.eq("indexId", indexIdTemp))
+            }
+
+            result.add(disjunct)
+        }
+        else
+        {
+            result.add(Restrictions.eq("indexId", indexId))
+        }
+    }
+    if(imageId)
+    {
+        if(imageId.contains(","))
+        {
+            def idArray = imageId.split(",")
+            def disjunct =  Restrictions.disjunction();
+            for(idTemp in idArray)
+            {
+                disjunct.add(Restrictions.ilike("imageId", "%${idTemp}%"))
+            }
+            result.add(disjunct)
+        }
+        else
+        {
+            result.add(Restrictions.ilike("imageId", "%${imageId}%"))
+        }
+    }
+    if(title)
+    {
+        if(title.contains(","))
+        {
+            def titleArray = title.split(",")
+            def disjunct =  Restrictions.disjunction();
+            for(titleTemp in titleArray)
+            {
+                disjunct.add(Restrictions.ilike("title", "%${titleTemp}%"))
+            }
+            result.add(disjunct)
+        }
+        else
+        {
+            result.add(Restrictions.eq("title", title))
+        }
+    }
     if(rasterDataSetId)
     {
         def rasterDataSet = RasterDataSet.get( rasterDataSetId )
         result.add(Restrictions.eq("rasterDataSet", rasterDataSet ))
     }
+
     searchTagNames?.size()?.times {i ->
       String name = searchTagNames[i]
       String value = searchTagValues[i]

@@ -31,7 +31,6 @@ class ExportService
         def data = []
         for ( field in fields )
         {
-
           if ( formatters[field] )
           {
             data << formatters[field].call(object[field])
@@ -64,6 +63,36 @@ class ExportService
 
 
       break
+      case ~/.*json.*/:
+          if(fields.size()==labels.size())
+          {
+              file = File.createTempFile(prefix, ".json", workDir as File)
+              def outputFirstObject = false;
+              for ( object in objects )
+              {
+                  if(outputFirstObject) file <<","
+                  file <<"{"
+                  def outputFirstField = false;
+                  for (idx in 0..fields.size()-1)
+                  {
+                      if ( formatters[fields[idx]] )
+                      {
+                          if(outputFirstField) file <<","
+                          file << "\"${labels[idx]}\":\"${formatters[fields[idx]].call(object[fields[idx]])}\""
+                      }
+                      else
+                      {
+                          if(outputFirstField) file <<","
+                          file << "\"${labels[idx]}\":\"${object[fields[idx]]}\""
+                      }
+                      outputFirstField = true;
+                  }
+                  file<<"}"
+                  outputFirstObject = true;
+              }
+          }
+          mimeType = "application/json"
+        break;
     }
 
     return [file, mimeType]
