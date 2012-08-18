@@ -68,6 +68,10 @@
                 onclick="setOutScale(this.value);genAOI(document.getElementById('selectAoiTemplateId').value)"/>
         </small>
     </div>
+    <div id="busyCursor" style="position:absolute;top:-9999px;right:-9999px">
+        <label id="busyCursorLabel" onclick="" style="font-weight:bold;"></label>
+        <img id="busyCursorImage"  src="../images/spinner.gif"/>
+    </div>
 </content>
 
  <content tag="bottom2">
@@ -100,7 +104,7 @@
 <r:script>
  
 //var hudChildDivId = document.getElementById("hudChildDivId")
-
+var numberOfResLevels=parseInt("${rasterEntry.numberOfResLevels}");
 var brightnessSlider;
 var contrastSlider;
 var currentMapCenterX;
@@ -441,7 +445,8 @@ function init(mapWidth, mapHeight)
     //var url = "${createLink(controller: 'imageSpace', action: 'getTileOpenLayers')}";
     var url = "${createLink(controller: 'imageSpace', action: 'getTile')}";
     var bounds = new OpenLayers.Bounds(0, 0, width, height);
-    map = new OpenLayers.Map("map", { controls:[], theme: null, maxExtent:bounds, maxResolution: 16, numZoomLevels:(resLevels+5) });
+    var numZoomLevels=resLevels>1?resLevels+5:resLevels;
+    map = new OpenLayers.Map("map", { controls:[], theme: null, maxExtent:bounds, maxResolution: 16, numZoomLevels:numZoomLevels });
     map.events.manipulator = OMAR.imageManipulator;
     var options = {
          controls: [],
@@ -470,7 +475,11 @@ function init(mapWidth, mapHeight)
 
     layer = new OpenLayers.Layer.TMS( "Image Space Viewer", url, options);
     map.addLayer(layer);
-    //map.addControl(new OpenLayers.Control.MouseDefaults());
+    //var loadingPanel = new OpenLayers.Control.LoadingPanel();
+    //map.addControl( loadingPanel );
+    //loadingPanel.maximizeControl();
+
+//map.addControl(new OpenLayers.Control.MouseDefaults());
     //map.addControl(new OpenLayers.Control.KeyboardDefaults());
     map.setBaseLayer(layer);
     //changeMapSize(mapWidth, mapHeight);
@@ -643,7 +652,59 @@ function init(mapWidth, mapHeight)
 		updateCenter();
             }
            });
-    }	
+    }
+    setupOverviewCheck();
+}
+
+function setupOverviewCheck(){
+    if(numberOfResLevels <2)
+    {
+        var label = YAHOO.util.Dom.get("busyCursorLabel");
+        YAHOO.util.Dom.setStyle("busyCursor", "top", "5px");
+        YAHOO.util.Dom.setStyle("busyCursor", "right", "12px");
+        YAHOO.util.Dom.setStyle("busyCursorImage", "display", "inline");
+
+        YAHOO.util.Dom.setStyle("busyCursor", "display", "inline");
+        YAHOO.util.Dom.setStyle("busyCursorLabel", "display", "inline");
+        YAHOO.util.Dom.setStyle("busyCursorImage", "display", "inline");
+        label.innerHTML = "Generating overviews...";
+        setTimeout(checkOverview, 5000);
+    }
+}
+
+function checkOverview(){
+    var url = "/omar/rasterEntryExport/export";
+
+    var request = OpenLayers.Request.POST({
+                        url: url+"?id=${rasterEntry.id}&max=1&format=json&fields=numberOfResLevels&labels=rlevels",
+                        callback: function (transport){
+                            var temp = YAHOO.lang.JSON.parse(transport.responseText);
+                            if(temp&&temp.length>0)
+                            {
+                                var ok = true;
+                                var idx = 0;
+                                for(idx=0; idx < temp.length;++idx)
+                                {
+                                    if(parseInt(temp[idx].rlevels) < 2)
+                                    {
+                                        ok = false
+                                    }
+                                }
+                                if(ok)
+                                {
+                                    var label = YAHOO.util.Dom.get("busyCursorLabel");
+                                    YAHOO.util.Dom.setStyle("busyCursorImage", "display", "none");
+                                    YAHOO.util.Dom.setStyle("busyCursorLabel", "text-decoration", "underline");
+                                    label.innerHTML = "Click now to refresh";
+                                    label.onclick=function(){window.location = window.location};
+                                }
+                                else
+                                {
+                                    setTimeout(checkOverview, 5000);
+                                }
+                            } // endif
+                        } // callback
+                  });
 }
 
 function mouseClick(evt){
