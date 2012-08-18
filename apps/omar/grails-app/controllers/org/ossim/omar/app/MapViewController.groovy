@@ -5,6 +5,8 @@ import javax.media.jai.JAI
 import org.ossim.omar.raster.WMSQuery
 import org.ossim.omar.raster.RasterEntryFile
 import org.ossim.omar.raster.RasterEntry
+import org.ossim.omar.stager.StagerQueueJob
+import org.ossim.omar.stager.StageImageJob
 
 class MapViewController implements InitializingBean
 {
@@ -15,7 +17,7 @@ class MapViewController implements InitializingBean
   def webMappingService
   def imageSpaceService
   def rasterEntrySearchService
-
+  def stageImageService
   def afterInterceptor = { model, modelAndView ->
     if ( request['isMobile'] )
     {
@@ -177,6 +179,8 @@ class MapViewController implements InitializingBean
               imageIds: imageIds,
               upIsUpRotation: imageSpaceService?.computeUpIsUp( rasterEntry.mainFile.name, rasterEntry.entryId as Integer )
       ]
+      for (entry in rasterEntries)
+        stageImageService.checkAndAddStageImageJob(entry)
 
       return model
     }
