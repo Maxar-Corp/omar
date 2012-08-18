@@ -282,7 +282,7 @@ class RasterEntry
           }
         }
       }
-      println result
+      //println result
     }
 
     result
@@ -340,9 +340,15 @@ class RasterEntry
     }
     for ( def rasterEntryFileNode in rasterEntryNode.fileObjects?.RasterEntryFile )
     {
-      RasterEntryFile rasterEntryFile = RasterEntryFile.initRasterEntryFile( rasterEntryFileNode )
-
-      rasterEntry.addToFileObjects( rasterEntryFile )
+        def obj = rasterEntry?.fileObjects?.find { it.name == rasterEntryFileNode?.name?.text() }
+        if(!obj)
+        {
+            RasterEntryFile rasterEntryFile = RasterEntryFile.initRasterEntryFile( rasterEntryFileNode )
+            if(rasterEntryFile)
+            {
+                rasterEntry.addToFileObjects( rasterEntryFile )
+            }
+        }
     }
     def metadataNode = rasterEntryNode.metadata
 
@@ -628,5 +634,10 @@ class RasterEntry
     def when = rasterEntryNode?.TimeStamp?.when
 
     return DateUtil.parseDate( when?.text() )
+  }
+
+  static update(def file, def entryId)
+  {
+    def rasterFile = RasterFile.findWhere(name:file)
   }
 }
