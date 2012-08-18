@@ -6,16 +6,22 @@ class DataInfoService
 
   def infoGetterPool
 
-  String getInfo( File file )
+  String getInfo( File file, Integer entryId=null )
   {
     this.getInfo( file?.absolutePath )
   }
 
-  String getInfo( String filename )
+  String getInfo( String filename, Integer entryId = null )
   {
     def infoGetter = infoGetterPool.borrowObject()
-    def xml = infoGetter.runDataInfo(filename)
-
+    def xml
+    try{
+        xml = infoGetter.runDataInfo(filename, entryId)
+    }
+    catch(def e)
+    {
+        xml = null
+    }
     infoGetterPool.returnObject(infoGetter)
 
     return xml
