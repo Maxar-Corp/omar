@@ -13,13 +13,20 @@ class InfoGetter
 {
   def dataInfo = new DataInfo();
 
-  def runDataInfo(def filename)
+  def runDataInfo(def filename, def entryId=null)
   {
     def xml = null
 
     if ( dataInfo.open(filename) )
     {
-      xml = dataInfo.info
+      if(entryId)
+      {
+          xml = dataInfo.getImageInfo(entryId as Integer);
+      }
+      else
+      {
+          xml = dataInfo.info
+      }
     }
     dataInfo.close()
 
