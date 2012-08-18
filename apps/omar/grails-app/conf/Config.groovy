@@ -29,7 +29,10 @@ if ( System.env.OMAR_CONFIG )
 {
   grails.config.locations << "file:${System.env.OMAR_CONFIG}"
 }
-
+if ( System.env.QUARTZ_CONFIG )
+{
+    grails.config.locations << "file:${System.env.QUARTZ_CONFIG}"
+}
 // if(System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
@@ -133,12 +136,12 @@ log4j = {
 
   fatal 'org.grails.plugin.resource'
 
-  // debug 'org.springframework.security',
-  //       'com.sun.jndi.ldap'
+//   debug 'org.springframework.security',
+//         'com.sun.jndi.ldap',
 
-  //root {
-  //      debug 'stdout'
-  //  }
+//  root {
+//        debug 'stdout'
+//    }
 
 }
 
@@ -630,5 +633,16 @@ rss {
 thumbnail {
   cacheDir = ( System.properties["os.name"] == "Windows XP" ) ? "c:/temp" : "${wms.referenceDataDirectory}/omar-cache"
   defaultSize = 512
+}
+
+stager{
+    queue{
+        threads = 4
+    }
+    histogramOptions = ""
+    overview{
+        compressionType = "JPEG"
+        compressionQuality = 75
+    }
 }
 
