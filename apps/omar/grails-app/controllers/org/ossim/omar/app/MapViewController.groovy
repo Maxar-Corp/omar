@@ -174,7 +174,8 @@ class MapViewController implements InitializingBean
     {
       def rasterEntry = rasterEntries?.first()
       def imageIds = rasterEntry.title?:(rasterEntry.filename as File).name
-      for (entry in rasterEntries)
+       def nAdded = 0
+        for (entry in rasterEntries)
       {
           nAdded = stageImageService.checkAndAddStageImageJob(entry)
       }
