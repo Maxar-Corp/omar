@@ -644,5 +644,6 @@ stager{
         compressionType = "JPEG"
         compressionQuality = 75
     }
+	onDemand = true
 }
 
