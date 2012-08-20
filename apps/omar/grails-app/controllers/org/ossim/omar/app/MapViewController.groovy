@@ -174,14 +174,16 @@ class MapViewController implements InitializingBean
     {
       def rasterEntry = rasterEntries?.first()
       def imageIds = rasterEntry.title?:(rasterEntry.filename as File).name
-      def model = [
+      for (entry in rasterEntries)
+      {
+          nAdded = stageImageService.checkAndAddStageImageJob(entry)
+      }
+        def model = [
               rasterEntry: rasterEntry,
+              stagingImagery: (nAdded > 0),
               imageIds: imageIds,
               upIsUpRotation: imageSpaceService?.computeUpIsUp( rasterEntry.mainFile.name, rasterEntry.entryId as Integer )
       ]
-      for (entry in rasterEntries)
-        stageImageService.checkAndAddStageImageJob(entry)
-
       return model
     }
     else
