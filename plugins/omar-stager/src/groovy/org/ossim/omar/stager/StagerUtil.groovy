@@ -126,9 +126,10 @@ class StagerUtil
         def height = y.height?.text()?.toInteger()
         def numberOfResLevels = y.numberOfResLevels?.text()?.toInteger()
 
-        def size = Math.max( width, height )
-        numberOfResLevels.times { size /= 2 }
-        status = ( status || size > 128 )
+        status = (status || needsOvrs(width, height, numberOfResLevels))
+        //def size = Math.max( width, height )
+        //numberOfResLevels.times { size /= 2 }
+        //status = ( status || size > 128 )
 
 //        def debug = [
 //          width: width,
@@ -141,5 +142,11 @@ class StagerUtil
     }
 
     return status
+  }
+  static def needsOvrs(def fullResWidth, def fullResHeight, def nRlevels)
+  {
+      def size = Math.max( fullResWidth, fullResHeight )
+      nRlevels.times { size /= 2 }
+      (size > 64)
   }
 }

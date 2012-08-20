@@ -9,6 +9,7 @@ import org.quartz.JobDataMap
 import org.ossim.omar.stager.StageImageJob
 import net.sf.ehcache.constructs.blocking.UpdatingCacheEntryFactory
 import org.quartz.Scheduler
+import org.ossim.omar.stager.StagerUtil
 
 class StageImageService {
     def grailsApplication
@@ -21,7 +22,7 @@ class StageImageService {
         for(rasterEntry in rasterEntries)
         {
 
-            if (rasterEntry.numberOfResLevels < 2)
+            if (StagerUtil.needsOvrs(rasterEntry.width, rasterEntry.height, rasterEntry.numberOfResLevels))
             {
                 if(!quartzScheduler?.getTrigger(rasterEntry.mainFile.name, "STAGE"))
                 {
