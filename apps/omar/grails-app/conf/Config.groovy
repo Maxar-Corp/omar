@@ -623,7 +623,7 @@ rss {
             niirs: 'NIIRS',
             countryCode: 'Country Code',
             beNumber: 'BE Number',
-            acquisitionDate: 'Acquistion Date',
+            acquisitionDate: 'Acquisition Date',
             width: 'Width',
             height: 'Height',
     ]
