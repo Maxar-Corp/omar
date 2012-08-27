@@ -485,7 +485,9 @@ class RasterEntry
               rasterEntry.beNumber = value;
             }
             break;
-          case "sensorid":
+           case "sensorid":
+           case "sensor_id":
+           case "sensor_type":
             if ( value && !rasterEntry.sensorId )
             {
               rasterEntry.sensorId = value
