@@ -62,7 +62,7 @@ class ThumbnailController implements InitializingBean
        // if ( !image )
         if (httpStatusMessage.status != HttpStatus.OK)
         {
-            image = ImageGenerator.createErrorImage( 128, 128, "Unable to produce thumbnail\nNo overviews present\n");
+            image = ImageGenerator.createErrorImage( 128, 128, "\nUnable to\n produce\n thumbnail.\n\nNo overviews\npresent.\n");
 
         }
       }
