@@ -123,11 +123,39 @@ def outputLog(value)
     println value;
   }
 }
+ def getFileFilterExtList(){
+    def extList = []
+    if(parent.env.STAGE_FILE_FILTER)
+    {
+       extList = new String(parent.env.STAGE_FILE_FILTER).split(",")
+    }
+    else
+    {
+       def supportedExtensions = new joms.oms.StringVector()
+       joms.oms.ossimImageHandlerRegistry.instance().getSupportedExtensions(supportedExtensions);
+       supportedExtensions.size().times{extList << supportedExtensions.get(it)}
+       supportedExtensions.delete()
+       supportedExtensions=null
+    }
+
+    extList
+ }
+ def getFileFilterExtListAsRegEx(){
+    def extList = getFileFilterExtList()
+
+    def regExpression =".*("
+    def count = 0;
+    extList.each{it->
+       if(count) regExpression +="|${it}"
+       else regExpression += "${it}"
+    }
+
+    regExpression
+ }
 
 def parallelStagerPid = outputPid();
 
 Init.instance().initialize();
-extList=[]
 sql = parent.newSqlConnection()
 
 if(!sql)
@@ -135,20 +163,8 @@ if(!sql)
    return 1
 }
 
-/*
-if(parent.env.STAGE_FILE_FILTER)
-{
-  extList = new String(parent.env.STAGE_FILE_FILTER).split(",")
-}
-else
-{
-  supportedExtensions = new StringVector()
-  ossimImageHandlerRegistry.instance().getSupportedExtensions(supportedExtensions);
-  supportedExtensions.size().times{extList << supportedExtensions.get(it)}
-  supportedExtensions.delete()
-  supportedExtensions=null
-}
-*/
+extList = getFileFilterExtList()
+
 nThreads = parent.env.NTHREADS?:4
 threadPool = Executors.newFixedThreadPool(nThreads);
 futures = []
@@ -218,12 +234,12 @@ def options = [
        }
        return status
     },
-    nameFilter: parent.env.STAGE_FILE_FILTER
-    //filter: { file ->  
-    //    def ext = FilenameUtils.getExtension(file.name).toLowerCase()
-//
-//         return ((ext in extList)&&(ext!="til"))
-//     }
+    //nameFilter: parent.env.STAGE_FILE_FILTER
+    filter: { file ->  
+        def ext = FilenameUtils.getExtension(file.name).toLowerCase()
+
+         return ((ext in extList)&&(ext!="til"))
+     }
 ]
 
 

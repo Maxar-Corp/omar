@@ -10,10 +10,12 @@ environmentVariables =[
    LOG_FILE:"",
    PID_FILE:"",
    //CLASSPATH:"${System.env.OSSIM_DIST_ROOT}/tomcat/webapps/omar/WEB-INF/lib", 
-   CLASSPATH:"${System.env.OMAR_HOME}/target/WEB-INF/lib", 
-   //STAGE_FILE_FILTER:"nitf,ntf",
+   CLASSPATH:"${System.env.OMAR_HOME}/target/WEB-INF/lib",
+   //STAGE_FILE_FILTER:"", 
+   STAGE_FILE_FILTER:"nitf,ntf",
+   //STAGE_FILE_FILTER:"tif,tiff,jpg,img,nitf,ntf",
    //STAGE_FILE_FILTER:~/.*(tif|TIF|ntf|NTF|toc|TOC)/,
-   STAGE_FILE_FILTER:~/.*(ntf|NTF)/,
+  // STAGE_FILE_FILTER:~/.*(ntf|NTF|jpg|JPG|tif|TIF|TIFF|tiff|toc|TOC)/,
    HISTOGRAM_OPTIONS:"--create-histogram-fast",
    OVERVIEW_OPTIONS:"--compression-type JPEG --compression-quality 75"
 ]
@@ -22,6 +24,7 @@ environmentVariables =[
 import java.lang.management.ManagementFactory
 import groovy.io.FileType
 import groovy.sql.Sql
+
 
 class OmarRunScript{
    def env
@@ -100,7 +103,6 @@ To get help on any script please run:
       shell.setVariable("parent", this)
       return shell.evaluate(scriptToRun)
    }
-
    def findScriptToRun(script)
    {
       def result = script
