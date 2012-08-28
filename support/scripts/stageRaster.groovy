@@ -135,6 +135,7 @@ if(!sql)
    return 1
 }
 
+/*
 if(parent.env.STAGE_FILE_FILTER)
 {
   extList = new String(parent.env.STAGE_FILE_FILTER).split(",")
@@ -147,6 +148,7 @@ else
   supportedExtensions.delete()
   supportedExtensions=null
 }
+*/
 nThreads = parent.env.NTHREADS?:4
 threadPool = Executors.newFixedThreadPool(nThreads);
 futures = []
@@ -215,12 +217,13 @@ def options = [
          } 
        }
        return status
-    }, 
-    filter: { file ->  
-        def ext = FilenameUtils.getExtension(file.name).toLowerCase()
-
-         return ((ext in extList)&&(ext!="til"))
-     }
+    },
+    nameFilter: parent.env.STAGE_FILE_FILTER
+    //filter: { file ->  
+    //    def ext = FilenameUtils.getExtension(file.name).toLowerCase()
+//
+//         return ((ext in extList)&&(ext!="til"))
+//     }
 ]
 
 

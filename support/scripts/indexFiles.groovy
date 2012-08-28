@@ -80,18 +80,18 @@ class indexFileQueue
     def db
     def dataInfoPool
     def sqlPool
+    def nthreads
 
     def count
     def batchSize = 100
 
     def batch
 
-    def  insertSQL = """
+    def static final  insertSQL = """
         INSERT INTO stager_queue_item (version, status, file, base_dir, data_info, date_created, last_updated) 
         VALUES (:version, :status, :file, :base_dir, :data_info, :date_created, :last_updated) 
         """
-
-
+    def static final testFileSQL = "SELECT id FROM stager_queue_item where file = :file"
  
     def runDataInfo(def file)
     {
@@ -193,20 +193,27 @@ class indexFileQueue
     {
         def options = [
             type: FileType.FILES,
-            nameFilter: ~/.*(tif|TIF|ntf|NTF|toc|TOC)/
+            //nameFilter: ~/.*(tif|TIF|ntf|NTF|toc|TOC)/
+            nameFilter: parent.env.STAGE_FILE_FILTER
         ]
 
   //      baseDir?.traverse(options, this.&processFile)
 
 
-        withPool(4) {
+        withPool(nthreads) {
             baseDir?.traverse(options) { file ->
-                batch << file
-
-                if ( count?.incrementAndGet() % batchSize == 0 )
+               def sql = sqlPool.borrowObject()
+               def row = sql?.firstRow(testFileSQL, [file:file.absolutePath])
+                sqlPool.returnObject(sql)
+                if(!row)
                 {
-                    this.&insertBatch.callAsync(batch.clone(), count.intValue())
-                    batch = []
+                    batch << file
+
+                    if ( count?.incrementAndGet() % batchSize == 0 )
+                    {
+                        this.&insertBatch.callAsync(batch.clone(), count.intValue())
+                        batch = []
+                    }
                 }
             }
             if(batch.size())
@@ -215,10 +222,11 @@ class indexFileQueue
                 batch = []
            }
         }
-    }
+   }
 
     def run()
     {
+        nthreads = parent.env.NTHREADS?:4
         if ( baseDir?.exists() )
         {
             dataInfoPool = new GenericObjectPool(new DataInfoPoolableObjectFactory() )     
