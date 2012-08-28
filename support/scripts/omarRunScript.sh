@@ -29,7 +29,7 @@ if(!(environmentVariables.CLASSPATH as File).exists())
       environmentVariables.CLASSPATH=testFile.absolutePath
    }
 }
-println "*************************** ${environmentVariables.CLASSPATH}"
+//println "*************************** ${environmentVariables.CLASSPATH}"
 class OmarRunScript{
    def env
    def runScriptFile
