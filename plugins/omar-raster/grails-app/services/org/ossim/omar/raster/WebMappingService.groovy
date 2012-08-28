@@ -57,7 +57,7 @@ class WebMappingService implements ApplicationContextAware
   def transparent = new TransparentFilter()
 
 
-  WMSQuery setupQuery( def wmsRequest )
+  WMSQuery setupQuery(def wmsRequest)
   {
     def wmsQuery = new WMSQuery()
     def params = wmsRequest.toMap();
@@ -79,7 +79,7 @@ class WebMappingService implements ApplicationContextAware
     wmsQuery
   }
 
-  def getMap( def wmsRequest, def layers = null )
+  def getMap(def wmsRequest, def layers = null)
   {
     def result = [image: null, errorMessage: null]
     def params = wmsRequest.toMap();
@@ -92,16 +92,16 @@ class WebMappingService implements ApplicationContextAware
     def srs = wmsRequest?.srs
     if ( !wmsView.setProjection( srs ) )
     {
-      result.errorMessage = "Unsupported projection ${srs}"
+      result.errorMessage = "Unsupported projection ${ srs }"
       log.error( result )
       return result
     }
     if ( !wmsView.setViewDimensionsAndImageSize( bounds.minx,
-            bounds.miny,
-            bounds.maxx,
-            bounds.maxy,
-            bounds.width,
-            bounds.height ) )
+        bounds.miny,
+        bounds.maxx,
+        bounds.maxy,
+        bounds.width,
+        bounds.height ) )
     {
       result.errorMessage = "Unable to set the dimensions for the view bounds"
       log.error( result )
@@ -165,7 +165,7 @@ class WebMappingService implements ApplicationContextAware
         if ( srcChains.size() > 1 )
         {
           // now establish mosaic and cut to match the output dimensions
-          kwlString += "object${objectPrefixIdx}.type:ossimImageMosaic\n"
+          kwlString += "object${ objectPrefixIdx }.type:ossimImageMosaic\n"
           ++objectPrefixIdx
         }
         def imageRect = wmsView.getViewImageRect()
@@ -180,44 +180,44 @@ class WebMappingService implements ApplicationContextAware
         midPoint = null
 
         // for now scale all WMS requests to 8-bit
-        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
-        kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+        kwlString += "object${ objectPrefixIdx }.type:ossimScalarRemapper\n"
+        kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
         ++connectionId
         ++objectPrefixIdx
         // and make it either 1 band or 3 band output
         //
         if ( maxBands == 2 )
         {
-          kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-          kwlString += "object${objectPrefixIdx}.bands:(0)\n"
-          kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+          kwlString += "object${ objectPrefixIdx }.type:ossimBandSelector\n"
+          kwlString += "object${ objectPrefixIdx }.bands:(0)\n"
+          kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
           ++connectionId
           ++objectPrefixIdx
         }
         else if ( maxBands > 3 )
         {
-          kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-          kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
-          kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+          kwlString += "object${ objectPrefixIdx }.type:ossimBandSelector\n"
+          kwlString += "object${ objectPrefixIdx }.bands:(0,1,2)\n"
+          kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
           ++connectionId
           ++objectPrefixIdx
         }
-        kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
-        kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
-        kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
-        kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+        kwlString += "object${ objectPrefixIdx }.type:ossimRectangleCutFilter\n"
+        kwlString += "object${ objectPrefixIdx }.rect:(${ x },${ y },${ w },${ h },lh)\n"
+        kwlString += "object${ objectPrefixIdx }.cut_type:null_outside\n"
+        kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
         ++objectPrefixIdx
         if ( ( stretchModeRegion == "viewport" ) &&
-                ( stretchMode != "none" ) )
+            ( stretchMode != "none" ) )
         {
-          kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
-          kwlString += "object${objectPrefixIdx}.id:${connectionId + 1}\n"
+          kwlString += "object${ objectPrefixIdx }.type:ossimImageHistogramSource\n"
+          kwlString += "object${ objectPrefixIdx }.id:${ connectionId + 1 }\n"
           ++objectPrefixIdx
-          kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
-          kwlString += "object${objectPrefixIdx}.id:${connectionId + 2}\n"
-          kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
-          kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId}\n"
-          kwlString += "object${objectPrefixIdx}.input_connection2:${connectionId + 1}\n"
+          kwlString += "object${ objectPrefixIdx }.type:ossimHistogramRemapper\n"
+          kwlString += "object${ objectPrefixIdx }.id:${ connectionId + 2 }\n"
+          kwlString += "object${ objectPrefixIdx }.stretch_mode:${ stretchMode }\n"
+          kwlString += "object${ objectPrefixIdx }.input_connection1:${ connectionId }\n"
+          kwlString += "object${ objectPrefixIdx }.input_connection2:${ connectionId + 1 }\n"
           ++objectPrefixIdx
           connectionId += 2
         }
@@ -227,7 +227,7 @@ class WebMappingService implements ApplicationContextAware
         kwlString = "type:ossimMemoryImageSource\n"
         if ( params.width && params.height )
         {
-          kwlString += "rect:(0,0,${bounds.width},${bounds.height},lh)\n"
+          kwlString += "rect:(0,0,${ bounds.width },${ bounds.height },lh)\n"
           kwlString += "scalar_type:ossim_uint8\n"
           kwlString += "number_bands:1\n"
         }
@@ -271,13 +271,13 @@ class WebMappingService implements ApplicationContextAware
     return result
   }
 
-  BufferedImage getUnprojectedTile( Rectangle rect,
-                                    String inputFile,
-                                    int entry,
-                                    def inputBandCount,
-                                    BigDecimal scale,
-                                    int startSample, int endSample, int startLine, int endLine,
-                                    def params )
+  BufferedImage getUnprojectedTile(Rectangle rect,
+                                   String inputFile,
+                                   int entry,
+                                   def inputBandCount,
+                                   BigDecimal scale,
+                                   int startSample, int endSample, int startLine, int endLine,
+                                   def params)
   {
     def sharpenMode = params.sharpen_mode ?: ""
     def bands = params?.bands ?: ""
@@ -323,15 +323,15 @@ class WebMappingService implements ApplicationContextAware
     {
       kwl.add( param.key, param.value )
     }
-    kwl.add( "viewable_bands", "${viewableBandCount}" )
-    kwl.add( "rotate", "${rotate}" )
+    kwl.add( "viewable_bands", "${ viewableBandCount }" )
+    kwl.add( "rotate", "${ rotate }" )
     WmsMap.getUnprojectedMap(
-            inputFile,
-            entry,
-            scale,
-            startSample, endSample, startLine, endLine,
-            data,
-            kwl
+        inputFile,
+        entry,
+        scale,
+        startSample, endSample, startLine, endLine,
+        data,
+        kwl
     )
     DataBuffer dataBuffer = new DataBufferByte( data, data.size() )
     int pixelStride = viewableBandCount
@@ -354,13 +354,13 @@ class WebMappingService implements ApplicationContextAware
     {
       Point location = null
       WritableRaster raster = WritableRaster.createInterleavedRaster(
-              dataBuffer,
-              rect.width as Integer,
-              rect.height as Integer,
-              lineStride,
-              pixelStride,
-              bandOffsets,
-              location )
+          dataBuffer,
+          rect.width as Integer,
+          rect.height as Integer,
+          lineStride,
+          pixelStride,
+          bandOffsets,
+          location )
 
       ColorModel colorModel = omsImageSource.createColorModel( raster.sampleModel )
 
@@ -368,16 +368,16 @@ class WebMappingService implements ApplicationContextAware
       Hashtable<?, ?> properties = null
 
       image = new BufferedImage(
-              colorModel,
-              raster,
-              isRasterPremultiplied,
-              properties )
+          colorModel,
+          raster,
+          isRasterPremultiplied,
+          properties )
     }
 
     return image
   }
 
-  String getCapabilities( def wmsRequest, String serviceAddress )
+  String getCapabilities(def wmsRequest, String serviceAddress)
   {
     def imageDataSearchService = applicationContext.getBean( "imageDataSearchService" )
     def layerNames = wmsRequest?.layers?.split( ',' ) as String[]
@@ -398,7 +398,7 @@ class WebMappingService implements ApplicationContextAware
     return wmsCapabilites.getCapabilities()
   }
 
-  String getKML( def wmsRequest, String serviceAddress )
+  String getKML(def wmsRequest, String serviceAddress)
   {
     def imageDataSearchService = applicationContext.getBean( "imageDataSearchService" )
     def layerNames = wmsRequest?.layers?.split( ',' ) as String[]
@@ -420,7 +420,7 @@ class WebMappingService implements ApplicationContextAware
     return wmsCapabilities.getKML()
   }
 
-  def computeScales( def rasterEntries )
+  def computeScales(def rasterEntries)
   {
     def unitConversion = new ossimUnitConversionTool( 1.0 )
     def fullResScale = 0.0 // default to 1 unit per pixel
@@ -464,7 +464,7 @@ class WebMappingService implements ApplicationContextAware
     return [fullResScale: fullResScale, smallestScale: smallestScale, largestScale: largestScale]
   }
 
-  def computeBounds( def rasterEntries )
+  def computeBounds(def rasterEntries)
   {
     def unionBounds = null
     for ( def rasterEntry in rasterEntries )
@@ -495,7 +495,7 @@ class WebMappingService implements ApplicationContextAware
     return [left: minx, right: maxx, top: maxy, bottom: miny]
   }
 
-  def createModelFromTiePointSet( def rasterEntry )
+  def createModelFromTiePointSet(def rasterEntry)
   {
     def gptArray = new ossimGptVector();
     def dptArray = new ossimDptVector();
@@ -514,7 +514,7 @@ class WebMappingService implements ApplicationContextAware
         if ( point.size() >= 2 )
         {
           dptArray.add( new ossimDpt( Double.parseDouble( point.getAt( 0 ) ),
-                  Double.parseDouble( point.getAt( 1 ) ) ) )
+              Double.parseDouble( point.getAt( 1 ) ) ) )
         }
       }
       for ( def it in splitGroundCoordinates )
@@ -523,7 +523,7 @@ class WebMappingService implements ApplicationContextAware
         if ( point.size() >= 2 )
         {
           gptArray.add( new ossimGpt( Double.parseDouble( point.getAt( 1 ) ),
-                  Double.parseDouble( point.getAt( 0 ) ) ) )
+              Double.parseDouble( point.getAt( 0 ) ) ) )
         }
       }
     }
@@ -553,7 +553,7 @@ class WebMappingService implements ApplicationContextAware
   }
 
 
-  def wmsToScreen( double minx, double miny, double maxx, double maxy, int imageWidth, int imageHeight )
+  def wmsToScreen(double minx, double miny, double maxx, double maxy, int imageWidth, int imageHeight)
   {
     // Extent width and height
     double extentWidth = maxx - minx
@@ -573,29 +573,20 @@ class WebMappingService implements ApplicationContextAware
   }
 
 
-  def drawLayer( def style, String layer, Map params, Date startDate, Date endDate, def wmsRequest, Graphics2D g2d )
+  def drawLayer(
+      def layer, def style,
+      def params,
+      def startDate, def endDate,
+      def minx, def miny, def maxx, def maxy,
+      def width, def height,
+      def g2d)
   {
     layer = layer.replaceFirst( layer[0], layer[0].toLowerCase() )
 
-    def queryParams = applicationContext.getBean( "${layer}QueryParam" )
-    def searchService = applicationContext.getBean( "${layer}SearchService" )
+    def queryParams = applicationContext.getBean( "${ layer }QueryParam" )
+    def searchService = applicationContext.getBean( "${ layer }SearchService" )
 
-    def width = wmsRequest.width.toInteger()
-    def height = wmsRequest.height.toInteger()
 
-    def minx = -180.0
-    def maxx = 180.0
-    def miny = -90.0
-    def maxy = 90.0
-
-    if ( wmsRequest.bbox )
-    {
-      def bounds = wmsRequest.bbox.split( ',' )
-      minx = bounds[0] as double
-      miny = bounds[1] as double
-      maxx = bounds[2] as double
-      maxy = bounds[3] as double
-    }
 
     queryParams.caseInsensitiveBind( params )
 
@@ -604,12 +595,6 @@ class WebMappingService implements ApplicationContextAware
       aoiMinLat = miny
       aoiMaxLon = maxx
       aoiMinLon = minx
-    }
-
-    if ( !startDate && !endDate )
-    {
-      startDate = DateUtil.initializeDate( "startDate", params )
-      endDate = DateUtil.initializeDate( "endDate", params )
     }
 
     queryParams.startDate = startDate
@@ -622,10 +607,10 @@ class WebMappingService implements ApplicationContextAware
 
 
     g2d.color = new Color(
-            style.outlinecolor.r as float,
-            style.outlinecolor.g as float,
-            style.outlinecolor.b as float,
-            style.outlinecolor.a as float
+        style.outlinecolor.r as float,
+        style.outlinecolor.g as float,
+        style.outlinecolor.b as float,
+        style.outlinecolor.a as float
     )
 
     Composite c = g2d.composite
@@ -649,10 +634,13 @@ class WebMappingService implements ApplicationContextAware
 
     }
 
-    searchService?.scrollGeometries( queryParams, params, closure )
+    def pageParams = [
+        max: grailsApplication.config.wms.vector.maxcount
+    ]
+    searchService?.scrollGeometries( queryParams, pageParams, closure )
   }
 
-  def getBaseLayers( )
+  def getBaseLayers()
   {
     def baseWMS = grailsApplication.config.wms.base.layers
 
@@ -662,10 +650,10 @@ class WebMappingService implements ApplicationContextAware
     for ( def wmsLayer in wmsLayers )
     {
       def newLayer = [
-              name: wmsLayer.name,
-              url: wmsLayer.url,
-              params: wmsLayer.params ?: grailsApplication.config.wms.base.defaultParams,
-              options: wmsLayer.options ?: [:]
+          name: wmsLayer.name,
+          url: wmsLayer.url,
+          params: wmsLayer.params ?: grailsApplication.config.wms.base.defaultParams,
+          options: wmsLayer.options ?: [:]
       ]
 
       if ( !baseWMS.find { it.name == newLayer.name } )

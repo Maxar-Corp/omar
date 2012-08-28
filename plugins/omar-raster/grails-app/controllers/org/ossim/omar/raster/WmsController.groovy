@@ -29,7 +29,7 @@ class WmsController extends OgcController implements InitializingBean
   def exportService
   def grailsApplication
 
-  def wms( )
+  def wms()
   {
     //println params
 
@@ -66,7 +66,7 @@ class WmsController extends OgcController implements InitializingBean
           forward( action: "getKml_", params: params )
           break
         default:
-          log.error( "ERROR: Unknown action: ${cmd?.request}" )
+          log.error( "ERROR: Unknown action: ${ cmd?.request }" )
           break
         }
         /*
@@ -82,14 +82,14 @@ class WmsController extends OgcController implements InitializingBean
       }
       catch ( java.lang.Exception e )
       {
-        log.error( "OGC::WMS exception: ${e.message}" )
+        log.error( "OGC::WMS exception: ${ e.message }" )
       }
     }
 
     return null
   }
 
-  def footprints( )
+  def footprints()
   {
 //    def start = System.currentTimeMillis()
     Utility.removeEmptyParams( params )
@@ -112,8 +112,23 @@ class WmsController extends OgcController implements InitializingBean
     try
     {
       def image = null
+
       def width = wmsRequest.width.toInteger()
       def height = wmsRequest.height.toInteger()
+
+      def minx = -180.0
+      def maxx = 180.0
+      def miny = -90.0
+      def maxy = 90.0
+
+      if ( wmsRequest.bbox )
+      {
+        def bounds = wmsRequest.bbox.split( ',' )
+        minx = bounds[0] as double
+        miny = bounds[1] as double
+        maxx = bounds[2] as double
+        maxy = bounds[3] as double
+      }
 
       if ( wmsRequest.transparentFlag )
       {
@@ -149,6 +164,11 @@ class WmsController extends OgcController implements InitializingBean
         }
       }
 
+      if ( !startDate && !endDate )
+      {
+        startDate = DateUtil.initializeDate( "startDate", params )
+        endDate = DateUtil.initializeDate( "endDate", params )
+      }
 
       String[] layers = wmsRequest.layers?.split( "," )
       String[] styles = wmsRequest.styles?.split( "," )
@@ -173,14 +193,18 @@ class WmsController extends OgcController implements InitializingBean
 
         //println "${styleName}: ${style}"
 
+
         webMappingService.drawLayer(
-                style,
-                layers[index],
-                params,
-                startDate,
-                endDate,
-                wmsRequest,
-                g2d )
+            layers[index], style,
+
+            params,
+
+            startDate, endDate,
+
+            minx, miny, maxx, maxy,
+            width, height,
+
+            g2d )
       }
 
       if ( ( wmsRequest.format == "image/gif" ) && wmsRequest.transparentFlag )
@@ -202,7 +226,7 @@ class WmsController extends OgcController implements InitializingBean
     }
     catch ( java.lang.Exception e )
     {
-      log.error( "Exception OGC:FOOTPRINTS: ${e.message}" )
+      log.error( "Exception OGC:FOOTPRINTS: ${ e.message }" )
     }
 
     if ( g2d )
@@ -215,7 +239,7 @@ class WmsController extends OgcController implements InitializingBean
     return null
   }
 
-  def getKmz_( )
+  def getKmz_()
   {
 
     WmsCommand cmd = new WmsCommand()
@@ -227,14 +251,14 @@ class WmsController extends OgcController implements InitializingBean
 
 
     if ( !cmd.validate( [
-            'request',
-            'layers',
-            'format',
-            'transparent',
-            'bbox',
-            'srs',
-            'width',
-            'height'
+        'request',
+        'layers',
+        'format',
+        'transparent',
+        'bbox',
+        'srs',
+        'width',
+        'height'
     ] ) )
     {
       cmd.errors.each { println it }
@@ -253,7 +277,7 @@ class WmsController extends OgcController implements InitializingBean
     null
   }
 
-  def getCapabilities_( )
+  def getCapabilities_()
   {
 
     WmsCommand cmd = new WmsCommand()
@@ -273,7 +297,7 @@ class WmsController extends OgcController implements InitializingBean
     else
     {
       //wmsLogParams.request = "getcapabilities"
-      def serviceAddress = createLink( controller: "ogc", action: "wms", base: "${grailsApplication.config.omar.serverURL}", absolute: true ) as String
+      def serviceAddress = createLink( controller: "ogc", action: "wms", base: "${ grailsApplication.config.omar.serverURL }", absolute: true ) as String
       def capabilities = webMappingService?.getCapabilities( cmd, serviceAddress )
       //internaltime = System.currentTimeMillis();
       render( contentType: "text/xml", text: capabilities )
@@ -281,7 +305,7 @@ class WmsController extends OgcController implements InitializingBean
     null
   }
 
-  def getKml_( )
+  def getKml_()
   {
 
     WmsCommand cmd = new WmsCommand()
@@ -298,9 +322,9 @@ class WmsController extends OgcController implements InitializingBean
 //		'contrast',
 //		'height',
 //		'interpolation',
-            'layers',
+        'layers',
 //		'quicklook',
-            'request' //,
+        'request' //,
 //		'sharpen_mode',
 //		'srs',
 //		'stretch_mode',
@@ -319,7 +343,7 @@ class WmsController extends OgcController implements InitializingBean
       //wmsLogParams.request = "getkml"
 
       // Convert param names to lower case
-      params?.each { wmsParams?.put( it.key.toLowerCase(), it.value )}
+      params?.each { wmsParams?.put( it.key.toLowerCase(), it.value ) }
 
       def rasterEntries
       if ( cmd.layers )
@@ -343,7 +367,7 @@ class WmsController extends OgcController implements InitializingBean
         def tempMap = new CaseInsensitiveMap( params )
         def file = ( rasterEntries[0].mainFile.name as File ).name
 
-        filename = "${file}.kml"
+        filename = "${ file }.kml"
         kml = rasterKmlService.createImagesKml( rasterEntries, cmd.toMap(), tempMap )
       }
       else
@@ -352,14 +376,14 @@ class WmsController extends OgcController implements InitializingBean
         filename = "empty.kml"
       }
       //internaltime = System.currentTimeMillis();
-      response.setHeader( "Content-disposition", "attachment; filename=${filename}" )
+      response.setHeader( "Content-disposition", "attachment; filename=${ filename }" )
       render( contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8" )
     }
 
     null
   }
 
-  def getFeatureInfo_( )
+  def getFeatureInfo_()
   {
     WmsCommand cmd = new WmsCommand()
 
@@ -392,21 +416,21 @@ class WmsController extends OgcController implements InitializingBean
     fields << "groundGeom"
     labels << "groundGeom"
     def (file, mimeType) = exportService.export(
-            format,
-            objects,
-            fields,
-            labels,
-            formatters,
-            [featureClass: RasterEntry.class]
+        format,
+        objects,
+        fields,
+        labels,
+        formatters,
+        [featureClass: RasterEntry.class]
     )
 
-    response.setHeader( "Content-disposition", "attachment; filename=${file?.name}" );
+    response.setHeader( "Content-disposition", "attachment; filename=${ file?.name }" );
     response.contentType = mimeType
     response.outputStream << file?.newInputStream()
     response.outputStream.flush()
   }
 
-  def getMap_( )
+  def getMap_()
   {
     WmsCommand cmd = new WmsCommand()
 
@@ -467,7 +491,7 @@ class WmsController extends OgcController implements InitializingBean
 
       if ( mapResult.errorMessage )
       {
-        def message = "WMS server Error: ${mapResult.errorMessage}"
+        def message = "WMS server Error: ${ mapResult.errorMessage }"
         // no data to process
         log.error( message )
 
@@ -489,7 +513,7 @@ class WmsController extends OgcController implements InitializingBean
           response.outputStream << bytes
         }
         catch ( Exception e )
-        {}
+        { }
       }
       endtime = System.currentTimeMillis()
 
@@ -506,7 +530,7 @@ class WmsController extends OgcController implements InitializingBean
       {
         if ( wmsLogParams.ip )
         {
-          wmsLogParams.ip += ", ${clientIp}"
+          wmsLogParams.ip += ", ${ clientIp }"
         }
         else
         {
@@ -519,7 +543,7 @@ class WmsController extends OgcController implements InitializingBean
         wmsLogParams.ip = request.getRemoteAddr()
       }
 
-      def urlTemp = createLink( [controller: 'ogc', action: 'getMap', base: "${grailsApplication.config.omar.serverURL}", absolute: true, params: params] )
+      def urlTemp = createLink( [controller: 'ogc', action: 'getMap', base: "${ grailsApplication.config.omar.serverURL }", absolute: true, params: params] )
       wmsLogParams.with {
         endDate = new Date()
         internalTime = ( internaltime - starttime ) / 1000.0
@@ -536,7 +560,7 @@ class WmsController extends OgcController implements InitializingBean
   }
 
 
-  private def createKMZ( def cmd )
+  private def createKMZ(def cmd)
   {
     def kmlbuilder = new StreamingMarkupBuilder()
     kmlbuilder.encoding = "UTF-8"
@@ -580,13 +604,13 @@ class WmsController extends OgcController implements InitializingBean
         kml( "xmlns": "http://earth.google.com/kml/2.1" ) {
           Document() {
             GroundOverlay() {
-              name( "${nameString}" )
+              name( "${ nameString }" )
               Snippet()
-              description { mkp.yieldUnescaped( "<![CDATA[${tempDescription}]]>" ) }
+              description { mkp.yieldUnescaped( "<![CDATA[${ tempDescription }]]>" ) }
               open( "1" )
               visibility( "1" )
               Icon() {
-                href { mkp.yieldUnescaped( "images/image${ext}" ) }
+                href { mkp.yieldUnescaped( "images/image${ ext }" ) }
               }
               LatLonBox() {
                 north( bounds.maxy )
@@ -610,7 +634,7 @@ class WmsController extends OgcController implements InitializingBean
       zos.putNextEntry( anEntry );
 
       zos << kmlbuilder.bind( kmlnode ).toString()
-      anEntry = new ZipEntry( "images/image${ext}" );
+      anEntry = new ZipEntry( "images/image${ ext }" );
       //place the zip entry in the ZipOutputStream object
       zos.putNextEntry( anEntry );
       if ( image )
@@ -631,7 +655,7 @@ class WmsController extends OgcController implements InitializingBean
   }
 
 
-  public void afterPropertiesSet( )
+  public void afterPropertiesSet()
   {
     scratchDir = grailsApplication.config.export.workDir ?: "/tmp";
   }
