@@ -19,6 +19,9 @@ import org.apache.commons.pool.impl.GenericObjectPool
 
 import java.sql.Timestamp
 import java.util.concurrent.atomic.AtomicInteger 
+import java.util.regex.Pattern
+import joms.oms.StringVector
+import joms.oms.ossimImageHandlerRegistry
 
 def outputHelp()
 {
@@ -34,6 +37,8 @@ if(!parent.scriptArgs.size() ||parent.scriptArgs[0] == "--help")
 }
 
 enum Mode {SEQ, POOL}
+
+
 
 class DataInfoPoolableObjectFactory extends BasePoolableObjectFactory
 {    
@@ -80,8 +85,8 @@ class indexFileQueue
     def db
     def dataInfoPool
     def sqlPool
-    def nthreads
-
+    def nThreads
+    def nameFilter
     def count
     def batchSize = 100
 
@@ -117,18 +122,21 @@ class indexFileQueue
     {
         def flag = true
         def xml = (flag) ? runDataInfo(item) : null
+        def record
+        if(flag&&xml || (!flag))
+        {
+             record= [ 
+                version: 0, 
+                status: 'new', 
+                file: item.absolutePath, 
+                base_dir: baseDir.absolutePath, 
+                data_info: xml, 
+                date_created: timestamp, 
+                last_updated: timestamp 
+            ]
+        }
 
-        def record = [ 
-            version: 0, 
-            status: 'new', 
-            file: item.absolutePath, 
-            base_dir: baseDir.absolutePath, 
-            data_info: xml, 
-            date_created: timestamp, 
-            last_updated: timestamp 
-        ]
-
-        return record        
+        record        
     }
 
     def insertBatch(def batch, def batchId)
@@ -141,7 +149,7 @@ class indexFileQueue
         switch(mode) 
         {
         case Mode.POOL:
-            withPool(4) {
+            withPool(nThreads) {
                 records = batch.collectParallel { item -> createRecord(item, timestamp) }
             }                
             break
@@ -176,6 +184,37 @@ class indexFileQueue
         println "threadId: ${threadId}, batchId: ${batchId}, batchTime: ${batchTime}, size: ${batch.size()}"        
 
     }
+    def getFileFilterExtList(){
+        def extList = []
+        if(parent.env.STAGE_FILE_FILTER)
+        {
+           extList = new String(parent.env.STAGE_FILE_FILTER).split(",")
+        }
+        else
+        {
+           def supportedExtensions = new StringVector()
+           ossimImageHandlerRegistry.instance().getSupportedExtensions(supportedExtensions);
+           supportedExtensions.size().times{extList << supportedExtensions.get(it)}
+           supportedExtensions.delete()
+           supportedExtensions=null
+        }
+
+        extList
+     }
+     def getFileFilterExtListAsPattern(){
+        def extList = getFileFilterExtList()
+
+        def regExpression =".*("
+        def count = 0;
+        extList.each{it->
+           if(count) regExpression +="|${it.toLowerCase()}|${it.toUpperCase()}"
+           else regExpression += "${it.toLowerCase()}|${it.toUpperCase()}"
+           ++count
+        }
+        regExpression += ")"
+
+        Pattern.compile(regExpression)
+     }
 
 /*
     def processFile(def file)
@@ -193,14 +232,13 @@ class indexFileQueue
     {
         def options = [
             type: FileType.FILES,
-            //nameFilter: ~/.*(tif|TIF|ntf|NTF|toc|TOC)/
-            nameFilter: parent.env.STAGE_FILE_FILTER
+            nameFilter: nameFilter
         ]
 
   //      baseDir?.traverse(options, this.&processFile)
 
 
-        withPool(nthreads) {
+        withPool(nThreads) {
             baseDir?.traverse(options) { file ->
                def sql = sqlPool.borrowObject()
                def row = sql?.firstRow(testFileSQL, [file:file.absolutePath])
@@ -226,7 +264,8 @@ class indexFileQueue
 
     def run()
     {
-        nthreads = parent.env.NTHREADS?:4
+        nThreads = parent.env.NTHREADS?:4
+        nameFilter = getFileFilterExtListAsPattern()
         if ( baseDir?.exists() )
         {
             dataInfoPool = new GenericObjectPool(new DataInfoPoolableObjectFactory() )     
