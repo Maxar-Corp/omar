@@ -9,8 +9,11 @@ environmentVariables =[
    POST_COMMAND_LINE:"NO",
    LOG_FILE:"",
    PID_FILE:"",
-   CLASSPATH:"${System.env.OSSIM_DIST_ROOT}/tomcat/webapps/omar/WEB-INF/lib", 
-   STAGE_FILE_FILTER:"nitf,ntf",
+   //CLASSPATH:"${System.env.OSSIM_DIST_ROOT}/tomcat/webapps/omar/WEB-INF/lib", 
+   CLASSPATH:"${System.env.OMAR_HOME}/target/WEB-INF/lib", 
+   //STAGE_FILE_FILTER:"nitf,ntf",
+   //STAGE_FILE_FILTER:~/.*(tif|TIF|ntf|NTF|toc|TOC)/,
+   STAGE_FILE_FILTER:~/.*(ntf|NTF)/,
    HISTOGRAM_OPTIONS:"--create-histogram-fast",
    OVERVIEW_OPTIONS:"--compression-type JPEG --compression-quality 75"
 ]
