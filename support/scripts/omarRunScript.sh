@@ -3,19 +3,15 @@ environmentVariables =[
    OMAR_URL:"http://localhost:8080/omar",
    OMAR_THUMBNAIL_CACHE:"/data/omar/omar-cache",
    NTHREADS: 4,
-   OMARDB:"omardb-${System.env.OSSIM_RELEASE_VERSION_NUMBER?:System.env.OSSIM_VERSION}-dev",
+   OMARDB:"omardb-${System.env.OSSIM_RELEASE_VERSION_NUMBER?:System.env.OSSIM_VERSION}-prod",
    POSTGRES_USER:"postgres",
    POSTGRES_PASSWORD:"postgres",
    POST_COMMAND_LINE:"NO",
    LOG_FILE:"",
    PID_FILE:"",
-   //CLASSPATH:"${System.env.OSSIM_DIST_ROOT}/tomcat/webapps/omar/WEB-INF/lib", 
-   CLASSPATH:"${System.env.OMAR_HOME}/target/WEB-INF/lib",
+   CLASSPATH:"${System.env.OSSIM_DIST_ROOT}/tomcat/webapps/omar/WEB-INF/lib", 
    //STAGE_FILE_FILTER:"", 
    STAGE_FILE_FILTER:"nitf,ntf",
-   //STAGE_FILE_FILTER:"tif,tiff,jpg,img,nitf,ntf",
-   //STAGE_FILE_FILTER:~/.*(tif|TIF|ntf|NTF|toc|TOC)/,
-  // STAGE_FILE_FILTER:~/.*(ntf|NTF|jpg|JPG|tif|TIF|TIFF|tiff|toc|TOC)/,
    HISTOGRAM_OPTIONS:"--create-histogram-fast",
    OVERVIEW_OPTIONS:"--compression-type JPEG --compression-quality 75"
 ]
@@ -25,7 +21,15 @@ import java.lang.management.ManagementFactory
 import groovy.io.FileType
 import groovy.sql.Sql
 
-
+if(!(environmentVariables.CLASSPATH as File).exists())
+{
+   File testFile = new File("${System.env.OMAR_HOME}/target/WEB-INF/lib")
+   if(testFile.exists())
+   {
+      environmentVariables.CLASSPATH=testFile.absolutePath
+   }
+}
+println "*************************** ${environmentVariables.CLASSPATH}"
 class OmarRunScript{
    def env
    def runScriptFile
