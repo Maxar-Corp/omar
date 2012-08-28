@@ -1,23 +1,26 @@
 package org.ossim.omar.raster
 
 import org.apache.commons.collections.map.CaseInsensitiveMap
+
+import org.springframework.beans.factory.InitializingBean
+
+import java.awt.Graphics2D
+import java.awt.image.BufferedImage
+
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
 import javax.imageio.ImageIO
-import org.springframework.beans.factory.InitializingBean
-import java.awt.image.BufferedImage
-import java.awt.Graphics2D
+
 import groovy.xml.StreamingMarkupBuilder
-import org.ossim.omar.core.WMSRequest
-import org.ossim.omar.core.Utility
+
 import org.ossim.omar.core.ImageGenerator
+import org.ossim.omar.core.Utility
+import org.ossim.omar.core.WMSRequest
 import org.ossim.omar.ogc.OgcController
 import org.ossim.omar.ogc.WmsCommand
 import org.ossim.omar.security.SecUser
 
-import org.apache.commons.io.FilenameUtils
 import org.ossim.omar.core.DateUtil
-import org.hibernate.QueryParameterException
 
 class WmsController extends OgcController implements InitializingBean
 {
@@ -28,6 +31,7 @@ class WmsController extends OgcController implements InitializingBean
   def scratchDir
   def exportService
   def grailsApplication
+  def drawService
 
   def wms()
   {
@@ -170,10 +174,12 @@ class WmsController extends OgcController implements InitializingBean
         endDate = DateUtil.initializeDate( "endDate", params )
       }
 
-      String[] layers = wmsRequest.layers?.split( "," )
-      String[] styles = wmsRequest.styles?.split( "," )
+      String[] layerNames = wmsRequest.layers?.split( "," )
+      String[] styleNames = wmsRequest.styles?.split( "," )
 
-      for ( def index in 0..<layers.size() )
+      def styles = grailsApplication.config.wms.styles
+
+      for ( def index in 0..<layerNames.size() )
       {
         //println "${layers[index]}"
 
@@ -182,20 +188,20 @@ class WmsController extends OgcController implements InitializingBean
 
         try
         {
-          styleName = styles[index]
-          style = grailsApplication.config.wms.styles[styleName]
+          styleName = styleNames[index]
+          style =  styles[styleName]
         }
         catch ( Exception e )
         {
           styleName = "default"
-          style = grailsApplication.config.wms.styles[styleName]
+          style = styles[styleName]
         }
 
         //println "${styleName}: ${style}"
 
 
-        webMappingService.drawLayer(
-            layers[index], style,
+        drawService.drawLayer(
+            layerNames[index], style,
 
             params,
 
