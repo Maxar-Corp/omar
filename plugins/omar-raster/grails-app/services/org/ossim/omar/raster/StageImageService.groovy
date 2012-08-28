@@ -109,7 +109,7 @@ class StageImageService {
         {
             //println "STAGING................."
             def histoOption = "--create-histogram"
-            def img2rr = "ossim-img2rr ${histoOption} --compression-type ${compressionType} --compression-quality ${compressionQuality} ${file}"
+            def img2rr = "ossim-img2rr --entry ${entryId} ${histoOption} --compression-type ${compressionType} --compression-quality ${compressionQuality} ${file}"
             def proc = img2rr.execute()
             proc.waitFor()
 
