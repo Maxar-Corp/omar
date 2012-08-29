@@ -78,7 +78,7 @@ class DataManagerService implements ApplicationContextAware
       {
         log.error( e.message )
         httpStatusMessage.status = HttpStatus.EXPECTATION_FAILED
-        httpStatusMessage.message = "Error adding ${fileObject}"
+        httpStatusMessage.message = "Error adding OMS formatted XML"
       }
     }
   }
