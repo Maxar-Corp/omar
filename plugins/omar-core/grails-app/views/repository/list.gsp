@@ -4,6 +4,13 @@
   <meta name="layout" content="generatedViews"/>
   <title>OMAR: Repository List</title>
 </head>
+
+<style type="text/css">
+  #delete {
+    background: url(../images/skin/house.png) left no-repeat;
+  }
+</style>
+
 <body>
 <content tag="content">
   <div class="nav">
@@ -11,6 +18,7 @@
           <li class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></li>
           <sec:ifAllGranted roles="ROLE_ADMIN">
               <li class="menuButton"><g:link class="create" action="create">Create Repository</g:link></li>
+              <li class="menuButton"><g:link class="delete" action="clearCache">Clear Cache</g:link></li>
           </sec:ifAllGranted>
 
       </ul>
