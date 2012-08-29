@@ -152,6 +152,19 @@ class RepositoryController implements ApplicationContextAware
     }
   }
 
+  def clearCache()
+  {
+    def ant = new AntBuilder()
+
+    ant.sequential {
+      delete(dir:grailsApplication.config.thumbnail.cacheDir, failonerror:false)
+      mkdir(dir:grailsApplication.config.thumbnail.cacheDir)
+      flash.message = "OMAR Cache has been deleted."
+  }
+
+  redirect(action: 'list')
+  }
+
   void setApplicationContext( ApplicationContext applicationContext )
   {
     this.applicationContext = applicationContext
