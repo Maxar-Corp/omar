@@ -455,7 +455,7 @@ function init(mapWidth, mapHeight)
     map = new OpenLayers.Map("map", { controls:[],
                              theme: null,
                              maxExtent:bounds,
-                             resolutions:resolutions,
+                             resolutions:resolutions
                              //maxResolution: 16,
                              //numZoomLevels:numZoomLevels
                              });
