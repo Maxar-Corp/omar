@@ -29,18 +29,18 @@ class RasterEntrySearchService implements InitializingBean
   List<RasterEntryQuery> runQuery(def rasterEntryQuery, Map<String, String> params)
   {
     def max = null;
-    if ( params?.max != null ) max = (params.max as Integer);
+    if ( params?.max != null ) max = ( params.max as Integer );
     if ( max < 1 ) return null;
     def criteriaBuilder = RasterEntry.createCriteria();
     def x = {
-      createAlias("rasterDataSet", "rds")
+      createAlias( "rasterDataSet", "rds" )
       if ( max )
       {
-        setMaxResults(max)
+        setMaxResults( max )
       }
       if ( params?.offset )
       {
-        setFirstResult(params.offset as Integer)
+        setFirstResult( params.offset as Integer )
       }
       if ( params?.sort && params?.order )
       {
@@ -48,9 +48,9 @@ class RasterEntrySearchService implements InitializingBean
         {
           def sortColumn = params?.sort
           def order = params?.order
-          def ordering = (order == "asc") ? Order.asc(sortColumn) : Order.desc(sortColumn)
+          def ordering = ( order == "asc" ) ? Order.asc( sortColumn ) : Order.desc( sortColumn )
 
-          addOrder(ordering)
+          addOrder( ordering )
         }
 
         //setFetchMode("rasterEntry", FetchMode.JOIN)
@@ -58,11 +58,11 @@ class RasterEntrySearchService implements InitializingBean
       }
     }
 
-    def criteria = criteriaBuilder.buildCriteria(x)
+    def criteria = criteriaBuilder.buildCriteria( x )
     def clause = rasterEntryQuery?.createClause()
     if ( clause )
     {
-      criteria.add(clause)
+      criteria.add( clause )
     }
 
     def rasterEntries = criteria.list()
@@ -70,8 +70,8 @@ class RasterEntrySearchService implements InitializingBean
     if ( rasterEntries )
     {
       RasterFile.withCriteria {
-        eq("type", "main")
-        inList("rasterDataSet", rasterEntries.rasterDataSet)
+        eq( "type", "main" )
+        inList( "rasterDataSet", rasterEntries.rasterDataSet )
       }
     }
 
@@ -83,18 +83,18 @@ class RasterEntrySearchService implements InitializingBean
   List<Polygon> getGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params)
   {
     def max = null;
-    if ( params?.max != null ) max = (params.max as Integer);
+    if ( params?.max != null ) max = ( params.max as Integer );
     if ( max < 1 ) return null;
     def criteriaBuilder = RasterEntry.createCriteria();
     def x =
       {
-        projections { property("groundGeom") }
-        firstResult(params.offset as Integer)
-        maxResults(max)
-        cacheMode(CacheMode.GET)
+        projections { property( "groundGeom" ) }
+        firstResult( params.offset as Integer )
+        maxResults( max )
+        cacheMode( CacheMode.GET )
       }
-    def criteria = criteriaBuilder.buildCriteria(x)
-    criteria.add(rasterEntryQuery?.createClause())
+    def criteria = criteriaBuilder.buildCriteria( x )
+    criteria.add( rasterEntryQuery?.createClause() )
 
     return criteria.list()
     /*
@@ -124,37 +124,37 @@ class RasterEntrySearchService implements InitializingBean
   void scrollGeometries(RasterEntryQuery rasterEntryQuery, Map<String, String> params, Closure closure)
   {
     def max = null;
-    if ( params?.max ) max = (params.max as Integer);
+    if ( params?.max ) max = ( params.max as Integer );
     if ( max < 1 ) return;
     def criteriaBuilder = RasterEntry.createCriteria();
 
     def x = {
-      projections { property("groundGeom") }
+      projections { property( "groundGeom" ) }
 
       if ( max )
       {
-        maxResults(max)
+        maxResults( max )
       }
 
       if ( params?.offset )
       {
-        firstResult(params.offset as Integer)
+        firstResult( params.offset as Integer )
       }
-      cacheMode(CacheMode.GET)
+      cacheMode( CacheMode.GET )
     }
 
-    def criteria = criteriaBuilder.buildCriteria(x)
+    def criteria = criteriaBuilder.buildCriteria( x )
 
-    criteria.add(rasterEntryQuery?.createClause())
+    criteria.add( rasterEntryQuery?.createClause() )
 
     def results = criteria.scroll()
     def status = results.first()
 
     while ( status )
     {
-      def geom = results.get(0)
+      def geom = results.get( 0 )
 
-      closure.call(geom)
+      closure.call( geom )
 
       status = results.next()
     }
@@ -168,16 +168,16 @@ class RasterEntrySearchService implements InitializingBean
     def x = {
       projections { rowCount() }
     }
-    def criteria = criteriaBuilder.buildCriteria(x)
-    criteria.add(rasterEntryQuery?.createClause())
-    def totalCount = criteria.list().get(0) as int
+    def criteria = criteriaBuilder.buildCriteria( x )
+    criteria.add( rasterEntryQuery?.createClause() )
+    def totalCount = criteria.list().get( 0 ) as int
     return totalCount
   }
 
 
   def getWmsImageLayers(String[] layerNames)
   {
-    return findRasterEntries(layerNames)
+    return findRasterEntries( layerNames )
   }
 
 
@@ -192,10 +192,10 @@ class RasterEntrySearchService implements InitializingBean
       def password = grailsApplication.config.dataSource.password
       def database = grailsApplication.config.dataSource.url - 'jdbc:postgresql_postGIS:'
 
-      def workspace = new PostGIS([user: username, password: password], database)
-      def layerNames = workspace[layerName]?.getFeatures(new Filter(filterText))?.collect { it.id.split('\\.')[-1] }
+      def workspace = new PostGIS( [user: username, password: password], database )
+      def layerNames = workspace[layerName]?.getFeatures( new Filter( filterText ) )?.collect { it.id.split( '\\.' )[-1] }
 
-      layers = getWmsImageLayers(layerNames as String[])
+      layers = getWmsImageLayers( layerNames as String[] )
       workspace?.close()
     }
 
@@ -204,7 +204,7 @@ class RasterEntrySearchService implements InitializingBean
 
   def findRasterEntries(def rasterIdList)
   {
-    rasterIdList = rasterIdList.collect { it?.toString()}
+    rasterIdList = rasterIdList.collect { it?.toString() }
 
     def ids = rasterIdList?.findAll { it.isLong() }.collect() { it as Long }
 
@@ -212,10 +212,10 @@ class RasterEntrySearchService implements InitializingBean
       or {
         if ( ids )
         {
-          inList("id", ids)
+          inList( "id", ids )
         }
-        inList("indexId", rasterIdList)
-        inList("imageId", rasterIdList)
+        inList( "indexId", rasterIdList )
+        inList( "imageId", rasterIdList )
       }
     }
 
@@ -224,6 +224,6 @@ class RasterEntrySearchService implements InitializingBean
 
   void afterPropertiesSet()
   {
-    propertyNames = grailsApplication.getDomainClass("org.ossim.omar.raster.RasterEntry")?.properties.name
+    propertyNames = grailsApplication.getDomainClass( "org.ossim.omar.raster.RasterEntry" )?.properties.name
   }
 }

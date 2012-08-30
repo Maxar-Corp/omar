@@ -33,11 +33,6 @@ import org.ossim.omar.ogc.WMSCapabilities
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 
-
-import org.hibernate.CacheMode
-
-import org.ossim.omar.raster.RasterEntry
-
 class WebMappingService implements ApplicationContextAware
 {
   def grailsApplication
@@ -80,7 +75,7 @@ class WebMappingService implements ApplicationContextAware
   {
     def result = [image: null, errorMessage: null]
     def params = wmsRequest.toMap();
-    def bounds = wmsRequest.bounds//wmsRequest?.bbox?.split(',')
+    def bounds = wmsRequest.bounds
     def maxBands = 1
     def wmsQuery = layers ? null : setupQuery( wmsRequest );
     def stretchMode = wmsRequest?.stretch_mode ? wmsRequest?.stretch_mode.toLowerCase() : null

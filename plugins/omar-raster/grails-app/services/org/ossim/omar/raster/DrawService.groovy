@@ -1,11 +1,15 @@
 package org.ossim.omar.raster
 
+import java.awt.AlphaComposite
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Composite
 import java.awt.RenderingHints
 import java.awt.geom.AffineTransform
+import java.awt.image.BufferedImage
+import javax.imageio.ImageIO
 
+import org.springframework.beans.factory.InitializingBean
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationContext
 
@@ -14,13 +18,19 @@ import org.geotools.geometry.jts.LiteShape
 import com.vividsolutions.jts.geom.Polygon
 import com.vividsolutions.jts.geom.MultiPolygon
 
+import org.ossim.omar.core.ImageGenerator
+import org.ossim.omar.core.WMSRequest
 
-class DrawService implements ApplicationContextAware
+
+
+class DrawService implements ApplicationContextAware, InitializingBean
 {
   static transactional = false
 
   ApplicationContext applicationContext
   def grailsApplication
+  def styles
+
 
 
   def wmsToScreen(double minx, double miny, double maxx, double maxy, int imageWidth, int imageHeight)
@@ -43,17 +53,29 @@ class DrawService implements ApplicationContextAware
 
 
   def drawLayer(
-      def layer, def style,
+      def layerName, def styleName,
       def params,
       def startDate, def endDate,
       def minx, def miny, def maxx, def maxy,
       def width, def height,
       def g2d)
   {
-    layer = layer.replaceFirst( layer[0], layer[0].toLowerCase() )
+    layerName = layerName.replaceFirst( layerName[0], layerName[0].toLowerCase() )
 
-    def queryParams = applicationContext.getBean( "${ layer }QueryParam" )
-    def searchService = applicationContext.getBean( "${ layer }SearchService" )
+    def style = null
+
+    try
+    {
+      style = styles[styleName]
+    }
+    catch ( Exception e )
+    {
+      styleName = "default"
+      style = styles[styleName]
+    }
+
+    def queryParams = applicationContext.getBean( "${ layerName }QueryParam" )
+    def searchService = applicationContext.getBean( "${ layerName }SearchService" )
 
     queryParams.caseInsensitiveBind( params )
 
@@ -66,9 +88,6 @@ class DrawService implements ApplicationContextAware
 
     queryParams.startDate = startDate
     queryParams.endDate = endDate
-
-    //println "HERE"
-
 
     def affine = wmsToScreen( minx, miny, maxx, maxy, width, height )
 
@@ -107,4 +126,80 @@ class DrawService implements ApplicationContextAware
     searchService?.scrollGeometries( queryParams, pageParams, closure )
   }
 
+  byte[] drawLayers(def wmsRequest, def startDate, def endDate, def params)
+  {
+    def bytes = null
+    def g2d = null
+
+    try
+    {
+      def image = null
+      def bounds = wmsRequest.bounds
+
+      if ( wmsRequest.transparent )
+      {
+        image = new BufferedImage( bounds.width, bounds.height, BufferedImage.TYPE_INT_ARGB )
+      }
+      else
+      {
+        image = new BufferedImage( bounds.width, bounds.height, BufferedImage.TYPE_INT_RGB )
+      }
+
+      g2d = image.createGraphics()
+
+      if ( wmsRequest.bgcolor )
+      {
+        g2d.setPaint( wmsRequest.backgroundColor )
+        g2d.fillRect( 0, 0, bounds.width, bounds.height )
+      }
+
+      String[] layerNames = wmsRequest.layers?.split( "," )
+      String[] styleNames = wmsRequest.styles?.split( "," )
+
+      for ( def index in 0..<layerNames.size() )
+      {
+        drawLayer(
+            layerNames[index], styleNames[index],
+
+            params,
+
+            startDate, endDate,
+
+            bounds.minx, bounds.miny, bounds.maxx, bounds.maxy,
+            bounds.width, bounds.height,
+
+            g2d )
+      }
+
+      if ( ( wmsRequest.format == "image/gif" ) && wmsRequest.transparent )
+      {
+        image = ImageGenerator.convertRGBAToIndexed( image )
+      }
+
+      def formatName = wmsRequest.format?.split( "/" )[-1]
+      def ostream = new ByteArrayOutputStream()
+
+      ImageIO.write( image, formatName, ostream )
+
+      bytes = ostream.toByteArray()
+    }
+    catch ( Exception e )
+    {
+      log.error( "Exception OGC:FOOTPRINTS: ${ e.message }" )
+      e.printStackTrace()
+    }
+
+    if ( g2d )
+    {
+      g2d.dispose()
+    }
+
+    return bytes
+  }
+
+
+  void afterPropertiesSet()
+  {
+    styles = grailsApplication.config.wms.styles
+  }
 }
