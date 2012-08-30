@@ -556,37 +556,62 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 
       var w = this.containerDivRegion.width;
       var h = this.containerDivRegion.height;
-        var shiftW =0.0;
-        var shiftH =0.0;
-        var maxWH = Math.max(w,h);
+      var shiftW =0.0;
+      var shiftH =0.0;
+      var maxWH = Math.max(w,h);
+      var WH = Math.max(w,h);
+      var deltax = w*0.5-WH/2;
+      var deltay = h*0.5 -WH/2;
       var extraW = 0.0;//0.5*(maxWH -w);//w*0.5*(Math.sqrt(2)- 1.0);
       var extraH = 0.0;//0.5*(maxWH -h);//h*0.5*(Math.sqrt(2)- 1.0);
-      tempAffine.rotate = 45;//this.affineParams.rotate;
-      tempAffine.pivot  = new OmarPoint(w*0.5, h*0.5);
+      if((Math.abs(WH-w) > 10)||
+         (Math.abs(WH-h) > 10))
+      {
+          tempAffine.rotate = 10;//this.affineParams.rotate;
+      }
+      tempAffine.pivot  = new OmarPoint(WH*0.5, WH*0.5);
       if(!this.fillAreaFlag)//||(OpenLayers.BROWSER_NAME == "msie"))
       {
         extraW = 0.0;
         extraH = 0.0;
         tempAffine.rotate = 0;
       }
-      var p1 = new OmarPoint(-extraW, -extraH);
-      var p2 = new OmarPoint(w+extraW, -extraH);
-      var p3 = new OmarPoint(w+extraW, h+extraH);
-      var p4 = new OmarPoint(-extraW,h+extraH);
-      var m  = tempAffine.toMatrix();
-      p1  = m.transform(p1);
-      p2  = m.transform(p2);
-      p3  = m.transform(p3);
-      p4  = m.transform(p4);
-      var minX = Math.min(Math.min(Math.min(p1.x, p2.x), p3.x), p4.x);
-      var maxX = Math.max(Math.max(Math.max(p1.x, p2.x), p3.x), p4.x);
-      var minY = Math.min(Math.min(Math.min(p1.y, p2.y), p3.y), p4.y);
-      var maxY = Math.max(Math.max(Math.max(p1.y, p2.y), p3.y), p4.y);
-      var width    = Math.abs(Math.round(maxX-minX));
-      var height    = Math.abs(Math.round(maxY-minY));
-      var left = Math.round(minX);
-      var top  = Math.round(minY);
-    
+        var p1 = new OmarPoint(0, 0);
+        var p2 = new OmarPoint(WH,0);
+        var p3 = new OmarPoint(WH,WH);
+        var p4 = new OmarPoint(0,WH);
+        var m  = tempAffine.toMatrix();
+        p1  = m.transform(p1);
+        p2  = m.transform(p2);
+        p3  = m.transform(p3);
+        p4  = m.transform(p4);
+        var minX = Math.min(Math.min(Math.min(p1.x, p2.x), p3.x), p4.x);
+        var maxX = Math.max(Math.max(Math.max(p1.x, p2.x), p3.x), p4.x);
+        var minY = Math.min(Math.min(Math.min(p1.y, p2.y), p3.y), p4.y);
+        var maxY = Math.max(Math.max(Math.max(p1.y, p2.y), p3.y), p4.y);
+        var width    = Math.abs(Math.round(maxX-minX));
+        var height    = Math.abs(Math.round(maxY-minY));
+        var left = Math.round(minX+deltax);
+        var top  = Math.round(minY+deltay);
+        /*
+        var p1 = new OmarPoint(-extraW, -extraH);
+        var p2 = new OmarPoint(w+extraW, -extraH);
+        var p3 = new OmarPoint(w+extraW, h+extraH);
+        var p4 = new OmarPoint(-extraW,h+extraH);
+        var m  = tempAffine.toMatrix();
+        p1  = m.transform(p1);
+        p2  = m.transform(p2);
+        p3  = m.transform(p3);
+        p4  = m.transform(p4);
+        var minX = Math.min(Math.min(Math.min(p1.x, p2.x), p3.x), p4.x);
+        var maxX = Math.max(Math.max(Math.max(p1.x, p2.x), p3.x), p4.x);
+        var minY = Math.min(Math.min(Math.min(p1.y, p2.y), p3.y), p4.y);
+        var maxY = Math.max(Math.max(Math.max(p1.y, p2.y), p3.y), p4.y);
+        var width    = Math.abs(Math.round(maxX-minX));
+        var height    = Math.abs(Math.round(maxY-minY));
+        var left = Math.round(minX);
+        var top  = Math.round(minY);
+        */
       OpenLayers.Util.modifyDOMElement(div, null, {x:left,y:top}, {w:(width),h:(height)});
    },
   containerResized: function(initializing){
