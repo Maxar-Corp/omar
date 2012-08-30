@@ -21,11 +21,13 @@ class ImageSpaceService {
                           def rasterEntry,
                           def params)
     {
+       // println params
 //		def newParams = params.clone()
 //		newParams.image_cut = "${rect.x},${rect.y},${rect.width},${rect.height}"
 		def result = null
+        def idStart = 10000;
 		def maxBands = 0
-		def rasterChain             = imageChainService.createImageChain(rasterEntry, params).chain
+		def rasterChain       = imageChainService.createImageChain(rasterEntry, params).chain
 		def stretchMode       = params.stretch_mode?params.stretch_mode.toLowerCase():null
 		def stretchModeRegion = params.stretch_mode_region?params.stretch_mode_region.toLowerCase():null
 		//rasterChain.print()
@@ -34,44 +36,58 @@ class ImageSpaceService {
 			maxBands = rasterChain.getChainAsImageSource().getNumberOfOutputBands()
 			def objectPrefixIdx = 0
 			def kwlString = "type:ossimImageChain\n"
-			kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
-			kwlString += "object${objectPrefixIdx}.rect:(${rect.x},${rect.y},${rect.width},${rect.height},lh)\n"
-			kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
-			kwlString += "object${objectPrefixIdx}.id:10001\n"
-			++objectPrefixIdx
-			if(stretchModeRegion == "viewport")
+            if(stretchModeRegion == "viewport")
+            {
+                def x = rect.x + rect.width/2  - 128
+                def y = rect.y + rect.height/2 - 128
+                kwlString += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+                kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+                ++objectPrefixIdx
+                kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
+                kwlString += "object${objectPrefixIdx}.area_of_interest.rect:(${x},${y},256,256,LH)\n"
+                kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+                ++objectPrefixIdx
+                kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
+                kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+                kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
+                kwlString += "object${objectPrefixIdx}.input_connection1:${idStart-2}\n"
+                kwlString += "object${objectPrefixIdx}.input_connection2:${idStart-1}\n"
+                ++objectPrefixIdx
+            }
+            if(maxBands == 2)
 			{
-				kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
-				kwlString += "object${objectPrefixIdx}.id:10002\n"
-				++objectPrefixIdx
-				kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
-				kwlString += "object${objectPrefixIdx}.id:10003\n"
-				kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
-				kwlString += "object${objectPrefixIdx}.input_connection1:10001\n"
-				kwlString += "object${objectPrefixIdx}.input_connection2:10002\n"
-				++objectPrefixIdx
-			}
-			if(maxBands == 2)
-			{
-					kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-					kwlString += "object${objectPrefixIdx}.bands:(0)\n"
-					++objectPrefixIdx
+                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+                kwlString += "object${objectPrefixIdx}.bands:(0)\n"
+                kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+                ++objectPrefixIdx
 			}
 			else if(maxBands > 3)
 			{
-					kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-					kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
-					++objectPrefixIdx
-			}
+                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+                kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
+                kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+                ++objectPrefixIdx
+            }
+            else
+            {
+                ++idStart
+            }
 	        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
-			++objectPrefixIdx
-			//println kwlString
-			//println "*"*40
+            kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+            ++objectPrefixIdx
+            kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
+            kwlString += "object${objectPrefixIdx}.rect:(${rect.x},${rect.y},${rect.width},${rect.height},lh)\n"
+            kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
+            kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+            ++objectPrefixIdx
+            // println kwlString
+		//	println "*"*40
 			def chipChain = new joms.oms.Chain();
 			chipChain.loadChainKwlString(kwlString)
-			
-			//chipChain.print()
-			chipChain.connectMyInputTo(rasterChain)
+
+	//		chipChain.print()
+          //  println "-"*40
+            chipChain.connectMyInputTo(rasterChain)
 			result = imageChainService.grabOptimizedImageFromChain(chipChain, params)
 			chipChain.deleteChain();
 			rasterChain.deleteChain();
