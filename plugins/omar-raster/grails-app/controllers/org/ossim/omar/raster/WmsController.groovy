@@ -4,7 +4,6 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
 
 import org.springframework.beans.factory.InitializingBean
 
-import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 
 import java.util.zip.ZipOutputStream
@@ -14,7 +13,6 @@ import javax.imageio.ImageIO
 import groovy.xml.StreamingMarkupBuilder
 
 import org.ossim.omar.core.ImageGenerator
-import org.ossim.omar.core.Utility
 import org.ossim.omar.core.WMSRequest
 import org.ossim.omar.ogc.OgcController
 import org.ossim.omar.ogc.WmsCommand
@@ -96,14 +94,16 @@ class WmsController extends OgcController implements InitializingBean
   def footprints()
   {
 //    def start = System.currentTimeMillis()
-    Utility.removeEmptyParams( params )
+
     if ( params.max == null )
     {
       params.max = grailsApplication.config.wms.vector.maxcount
     }
     def wmsRequest = new WMSRequest()
 
-    Utility.simpleCaseInsensitiveBind( wmsRequest, params );
+    def newParams = new CaseInsensitiveMap( params )
+
+    bindData( wmsRequest, newParams )
 
     // default to geographic bounds
     if ( !wmsRequest.srs )
@@ -111,135 +111,37 @@ class WmsController extends OgcController implements InitializingBean
       wmsRequest.srs = "EPSG:4326"
     }
 
-    Graphics2D g2d = null
+    def dateRange = wmsRequest.dateRange
+    def startDate = null
+    def endDate = null
 
-    try
+    if ( dateRange )
     {
-      def image = null
-
-      def width = wmsRequest.width.toInteger()
-      def height = wmsRequest.height.toInteger()
-
-      def minx = -180.0
-      def maxx = 180.0
-      def miny = -90.0
-      def maxy = 90.0
-
-      if ( wmsRequest.bbox )
+      if ( dateRange.size() > 0 )
       {
-        def bounds = wmsRequest.bbox.split( ',' )
-        minx = bounds[0] as double
-        miny = bounds[1] as double
-        maxx = bounds[2] as double
-        maxy = bounds[3] as double
-      }
+        startDate = dateRange[0]
 
-      if ( wmsRequest.transparentFlag )
-      {
-        image = new BufferedImage( width, height, BufferedImage.TYPE_INT_ARGB )
-      }
-      else
-      {
-        image = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB )
-      }
-
-      g2d = image.createGraphics()
-
-      if ( wmsRequest.bgcolor )
-      {
-        g2d.setPaint( wmsRequest.backgroundColor )
-        g2d.fillRect( 0, 0, width, height )
-      }
-
-      def dateRange = wmsRequest.dateRange
-      def startDate = null
-      def endDate = null
-
-      if ( dateRange )
-      {
-        if ( dateRange.size() > 0 )
+        if ( dateRange.size() > 1 )
         {
-          startDate = dateRange[0]
-
-          if ( dateRange.size() > 1 )
-          {
-            endDate = dateRange[1]
-          }
+          endDate = dateRange[1]
         }
       }
-
-      if ( !startDate && !endDate )
-      {
-        startDate = DateUtil.initializeDate( "startDate", params )
-        endDate = DateUtil.initializeDate( "endDate", params )
-      }
-
-      String[] layerNames = wmsRequest.layers?.split( "," )
-      String[] styleNames = wmsRequest.styles?.split( "," )
-
-      def styles = grailsApplication.config.wms.styles
-
-      for ( def index in 0..<layerNames.size() )
-      {
-        //println "${layers[index]}"
-
-        def styleName = null
-        def style = null
-
-        try
-        {
-          styleName = styleNames[index]
-          style =  styles[styleName]
-        }
-        catch ( Exception e )
-        {
-          styleName = "default"
-          style = styles[styleName]
-        }
-
-        //println "${styleName}: ${style}"
-
-
-        drawService.drawLayer(
-            layerNames[index], style,
-
-            params,
-
-            startDate, endDate,
-
-            minx, miny, maxx, maxy,
-            width, height,
-
-            g2d )
-      }
-
-      if ( ( wmsRequest.format == "image/gif" ) && wmsRequest.transparentFlag )
-      {
-        image = ImageGenerator.convertRGBAToIndexed( image )
-      }
-
-      def formatName = wmsRequest.format?.split( "/" )[-1]
-      def ostream = new ByteArrayOutputStream()
-
-      ImageIO.write( image, formatName, ostream )
-
-      def bytes = ostream.toByteArray()
-
-      response.contentType = wmsRequest.format
-      response.contentLength = bytes.size()
-      response.outputStream << bytes
-
     }
-    catch ( java.lang.Exception e )
+
+    if ( !startDate && !endDate )
     {
-      log.error( "Exception OGC:FOOTPRINTS: ${ e.message }" )
+      startDate = DateUtil.initializeDate( "startDate", params )
+      endDate = DateUtil.initializeDate( "endDate", params )
     }
 
-    if ( g2d )
-    {
-      g2d.dispose()
-    }
-//    def stop = System.currentTimeMillis()
+
+    def bytes = drawService.drawLayers( wmsRequest, startDate, endDate, params )
+
+    response.contentType = wmsRequest.format
+    response.contentLength = bytes?.size()
+    response.outputStream << bytes
+
+    //    def stop = System.currentTimeMillis()
     //    println "${wmsRequest.bbox}: ${stop - start}ms"
 
     return null
@@ -253,8 +155,6 @@ class WmsController extends OgcController implements InitializingBean
     bindData( cmd, new CaseInsensitiveMap( params ) )
 
     //cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
-    //Utility.simpleCaseInsensitiveBind(cmd, params);
-
 
     if ( !cmd.validate( [
         'request',
@@ -290,8 +190,6 @@ class WmsController extends OgcController implements InitializingBean
 
     //cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
 
-    //Utility.simpleCaseInsensitiveBind(cmd, params);
-
     bindData( cmd, new CaseInsensitiveMap( params ) )
 
     if ( !cmd.validate( [/*'service', , 'version',*/ 'request'] ) )
@@ -319,8 +217,6 @@ class WmsController extends OgcController implements InitializingBean
     bindData( cmd, new CaseInsensitiveMap( params ) )
 
     //cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
-    //Utility.simpleCaseInsensitiveBind(cmd, params);
-
     if ( !cmd.validate( [
 //		'bands',
 //		'bbox',
@@ -446,8 +342,6 @@ class WmsController extends OgcController implements InitializingBean
 
 //    cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
 
-//    Utility.simpleCaseInsensitiveBind(cmd, params);
-
     if ( !cmd.validate() )// ['reqeust', 'layers', 'bbox', 'srs', 'width', 'height', 'format'] ) )
     {
       cmd.errors.each { println it }
@@ -570,8 +464,6 @@ class WmsController extends OgcController implements InitializingBean
   {
     def kmlbuilder = new StreamingMarkupBuilder()
     kmlbuilder.encoding = "UTF-8"
-
-    //Utility.simpleCaseInsensitiveBind(cmd, params);
 
     // will only support png or jpegs
     def format = cmd.format ?: "image/png"
