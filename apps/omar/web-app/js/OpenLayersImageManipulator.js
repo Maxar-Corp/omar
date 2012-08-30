@@ -550,7 +550,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
           {
           }
           */
-          return;
+         // return;
       }
       var tempAffine    = new OmarAffineParams();
 
@@ -559,8 +559,8 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         var shiftW =0.0;
         var shiftH =0.0;
         var maxWH = Math.max(w,h);
-      var extraW = 0.5*(maxWH -w);//w*0.5*(Math.sqrt(2)- 1.0);
-      var extraH = 0.5*(maxWH -h);//h*0.5*(Math.sqrt(2)- 1.0);
+      var extraW = 0.0;//0.5*(maxWH -w);//w*0.5*(Math.sqrt(2)- 1.0);
+      var extraH = 0.0;//0.5*(maxWH -h);//h*0.5*(Math.sqrt(2)- 1.0);
       tempAffine.rotate = 45;//this.affineParams.rotate;
       tempAffine.pivot  = new OmarPoint(w*0.5, h*0.5);
       if(!this.fillAreaFlag)//||(OpenLayers.BROWSER_NAME == "msie"))
