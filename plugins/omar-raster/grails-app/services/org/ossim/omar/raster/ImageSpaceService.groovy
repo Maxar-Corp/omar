@@ -12,6 +12,7 @@ import java.awt.image.ColorModel
 import org.ossim.oms.image.omsImageSource
 import org.ossim.omar.core.Utility
 import joms.oms.ImageModel
+import java.lang.StringBuilder
 
 class ImageSpaceService {
 	def imageChainService
@@ -35,58 +36,63 @@ class ImageSpaceService {
 		{
 			maxBands = rasterChain.getChainAsImageSource().getNumberOfOutputBands()
 			def objectPrefixIdx = 0
-			def kwlString = "type:ossimImageChain\n"
+            def kwlString
+            def kwlStringBuilder = new StringBuilder()
+            kwlStringBuilder << "type:ossimImageChain\n"
             if(stretchModeRegion == "viewport")
             {
                 def x = rect.x + rect.width/2  - 128
                 def y = rect.y + rect.height/2 - 128
-                kwlString += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
-                kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.id:${++idStart}\n"
                 ++objectPrefixIdx
-                kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
-                kwlString += "object${objectPrefixIdx}.area_of_interest.rect:(${x},${y},256,256,LH)\n"
-                kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.area_of_interest.rect:(${x},${y},256,256,LH)\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.id:${++idStart}\n"
                 ++objectPrefixIdx
-                kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
-                kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
-                kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
-                kwlString += "object${objectPrefixIdx}.input_connection1:${idStart-2}\n"
-                kwlString += "object${objectPrefixIdx}.input_connection2:${idStart-1}\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.id:${++idStart}\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.input_connection1:${idStart-2}\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.input_connection2:${idStart-1}\n"
                 ++objectPrefixIdx
             }
             if(maxBands == 2)
 			{
-                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-                kwlString += "object${objectPrefixIdx}.bands:(0)\n"
-                kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.type:ossimBandSelector\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.bands:(0)\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.id:${++idStart}\n"
                 ++objectPrefixIdx
 			}
 			else if(maxBands > 3)
 			{
-                kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-                kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
-                kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.type:ossimBandSelector\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.bands:(0,1,2)\n"
+                kwlStringBuilder << "object${objectPrefixIdx}.id:${++idStart}\n"
                 ++objectPrefixIdx
             }
             else
             {
                 ++idStart
             }
-	        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
-            kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+	        kwlStringBuilder << "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
+            kwlStringBuilder << "object${objectPrefixIdx}.id:${++idStart}\n"
             ++objectPrefixIdx
-            kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
-            kwlString += "object${objectPrefixIdx}.rect:(${rect.x},${rect.y},${rect.width},${rect.height},lh)\n"
-            kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
-            kwlString += "object${objectPrefixIdx}.id:${++idStart}\n"
+            kwlStringBuilder << "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
+            kwlStringBuilder << "object${objectPrefixIdx}.rect:(${rect.x},${rect.y},${rect.width},${rect.height},lh)\n"
+            kwlStringBuilder << "object${objectPrefixIdx}.cut_type:null_outside\n"
+            kwlStringBuilder << "object${objectPrefixIdx}.id:${++idStart}\n"
             ++objectPrefixIdx
-            // println kwlString
+
+            kwlString = kwlStringBuilder.toString();
+           // println kwlString
 		//	println "*"*40
+
 			def chipChain = new joms.oms.Chain();
 			chipChain.loadChainKwlString(kwlString)
 
-	//		chipChain.print()
-          //  println "-"*40
+			chipChain.print()
+            println "-"*40
             chipChain.connectMyInputTo(rasterChain)
 			result = imageChainService.grabOptimizedImageFromChain(chipChain, params)
 			chipChain.deleteChain();
