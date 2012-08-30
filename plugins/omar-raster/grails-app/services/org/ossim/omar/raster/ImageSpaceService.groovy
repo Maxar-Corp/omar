@@ -12,7 +12,6 @@ import java.awt.image.ColorModel
 import org.ossim.oms.image.omsImageSource
 import org.ossim.omar.core.Utility
 import joms.oms.ImageModel
-import java.lang.StringBuilder
 
 class ImageSpaceService {
 	def imageChainService
@@ -36,7 +35,7 @@ class ImageSpaceService {
 		{
 			maxBands = rasterChain.getChainAsImageSource().getNumberOfOutputBands()
 			def objectPrefixIdx = 0
-            def kwlString
+            def kwlString =""
             def kwlStringBuilder = new StringBuilder()
             kwlStringBuilder << "type:ossimImageChain\n"
             if(stretchModeRegion == "viewport")
@@ -84,15 +83,17 @@ class ImageSpaceService {
             kwlStringBuilder << "object${objectPrefixIdx}.id:${++idStart}\n"
             ++objectPrefixIdx
 
-            kwlString = kwlStringBuilder.toString();
+            kwlString = kwlStringBuilder.toString()
+            //kwlString = kwlStringBuilder.toString();
            // println kwlString
 		//	println "*"*40
+
 
 			def chipChain = new joms.oms.Chain();
 			chipChain.loadChainKwlString(kwlString)
 
-			chipChain.print()
-            println "-"*40
+			//chipChain.print()
+            //println "-"*40
             chipChain.connectMyInputTo(rasterChain)
 			result = imageChainService.grabOptimizedImageFromChain(chipChain, params)
 			chipChain.deleteChain();
