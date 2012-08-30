@@ -13,29 +13,7 @@
       <li class="yuimenubaritem first-of-type"><a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
 
         <div id="exportMenu" class="yuimenu">
-          <div class="bd">
-            <ul>
-              <li class="yuimenuitem">
-                <a class="yuimenuitemlabel"
-                   href="javascript:getCapabilities()"
-                   title="Show OGC WMS Capabilities">OGC WMS Capabilities</a>
-              </li>
-                <%--
-                <li class="yuimenuitem">
-                    <a class="yuimenuitemlabel"
-                       href="${createLink( controller: 'ogc', action: 'wms', params: [request:'GetCapabilities', layers: ( rasterEntries*.indexId ).join( ',' )] )}"
-                    title="Show OGC WMS Capabilities">OGC WMS Capabilities</a>
-                </li>
-                --%>
-                <li class="yuimenuitem">
-                <a class="yuimenuitemlabel" href="javascript:getKML('${( rasterEntries*.indexId ).join( ',' )}')"
-                   title="Export KML">KML</a>
-              </li>
-              <li class="yuimenuitem">
-                <a class="yuimenuitemlabel" href="javascript:getKmlSuperOverlay()"
-                   title="Export Image as Super Overlay">KML Super Overlay</a>
-              </li>
-            </ul>
+          <div class="bd"> 
             <ul>
               <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
@@ -78,6 +56,28 @@
 		<a class="yuimenuitemlabel" href="javascript:exportTemplate()" title="Template">Template</a>
 	      </li>
 	    </ul>
+            <ul>
+              <li class="yuimenuitem">
+                <a class="yuimenuitemlabel"
+                   href="javascript:getCapabilities()"
+                   title="Show OGC WMS Capabilities">OGC WMS Capabilities</a>
+              </li>
+                <%--
+                <li class="yuimenuitem">
+                    <a class="yuimenuitemlabel"
+                       href="${createLink( controller: 'ogc', action: 'wms', params: [request:'GetCapabilities', layers: ( rasterEntries*.indexId ).join( ',' )] )}"
+                    title="Show OGC WMS Capabilities">OGC WMS Capabilities</a>
+                </li>
+                --%>
+                <li class="yuimenuitem">
+                <a class="yuimenuitemlabel" href="javascript:getKML('${( rasterEntries*.indexId ).join( ',' )}')"
+                   title="Export KML">KML</a>
+              </li>
+              <li class="yuimenuitem">
+                <a class="yuimenuitemlabel" href="javascript:getKmlSuperOverlay()"
+                   title="Export Image as Super Overlay">KML Super Overlay</a>
+              </li>
+            </ul>
             <ul>
               <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"

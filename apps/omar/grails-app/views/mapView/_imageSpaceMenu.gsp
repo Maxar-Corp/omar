@@ -21,14 +21,6 @@
         <div id="exportMenu" class="yuimenu">
           <div class="bd">
               <ul>
-                  <li class="yuimenuitem">
-                      <a class="yuimenuitemlabel"
-                         href="javascript:getCapabilities()"
-                         title="Show OGC WMS Capabilities">OGC WMS Capabilities</a>
-                  </li>
-              </ul>
-
-              <ul>
               <li class="yuimenuitem">
                 <a class="yuimenuitemlabel" href="javascript: chipImage('jpeg')"
                    title="Export JPEG">JPEG</a>
@@ -47,6 +39,13 @@
                 <a class="yuimenuitemlabel" href="javascript:exportTemplate()" title="Template">Template</a>
               </li>
             </ul>
+              <ul>
+                  <li class="yuimenuitem">
+                      <a class="yuimenuitemlabel"
+                         href="javascript:getCapabilities()"
+                         title="Show OGC WMS Capabilities">OGC WMS Capabilities</a>
+                  </li>
+              </ul>
           </div>
         </div>
       </li>
