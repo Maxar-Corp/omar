@@ -46,8 +46,9 @@
                 ]
             } );
             innerLayout.render();
-            bodyOnResize();
             Dom.setStyle( document.body, 'visibility', 'visible' );
+            bodyOnResize();
+
         } );
         outerLayout.render();
         outerLayout.getUnitByPosition( "left" ).on( "collapse", function ()
@@ -68,10 +69,10 @@
         outerLayout.getUnitByPosition( "right" ).on( "expand", function ()
         {
             bodyOnResize();
-        } );
-       init();
+        });
 
-    } );
+    });
+
 })();
 
 var bodyOnResize = function ()
