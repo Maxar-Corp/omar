@@ -485,17 +485,6 @@ function init(mapWidth, mapHeight)
     //map.events.register('zoomend', null, theMapHasZoomed);
     //map.events.register("moveend", null, theMapHasMoved);
 
-    layer = new OpenLayers.Layer.TMS( "Image Space Viewer", url, options);
-    map.addLayer(layer);
-    //var loadingPanel = new OpenLayers.Control.LoadingPanel();
-    //map.addControl( loadingPanel );
-    //loadingPanel.maximizeControl();
-
-//map.addControl(new OpenLayers.Control.MouseDefaults());
-    //map.addControl(new OpenLayers.Control.KeyboardDefaults());
-    map.setBaseLayer(layer);
-    //changeMapSize(mapWidth, mapHeight);
-    map.zoomToMaxExtent();
 
 
     setupToolbar();
@@ -553,15 +542,17 @@ function init(mapWidth, mapHeight)
   rotateSlider.subscribe("change", function() { sliderRotate(this.getRealValue()); });
   //rotateSlider.subscribe("slideEnd", function() { OMAR.imageManipulator.containerResized() });
 
-  // set the initialization flag so the moveend and zoomend code can execute
-  initFlag = 0;
+    layer = new OpenLayers.Layer.TMS( "Image Space Viewer", url, options);
+    map.addLayer(layer);
+    map.setBaseLayer(layer);
+    map.zoomToMaxExtent();
+// set the initialization flag so the moveend and zoomend code can execute
+    initFlag = 0;
 
     var offsetX = width/2.0;
     var offsetY = height/2.0;
 
     map.setCenter(new  OpenLayers.LonLat(0.0,0.0), 0);
-
-
 
     <%--
 	<g:if test="${(params.latitude != null) && (params.longitude != null)}">
