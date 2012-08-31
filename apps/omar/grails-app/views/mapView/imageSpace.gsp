@@ -1108,10 +1108,6 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
                if (!this.active) {
                      return false;
                }
-
-
-               var overlay = document.getElementById("popDivId");
-               overlay.style.visibility = "hidden";
                var pointDropInfo = document.getElementById("mouseDisplayId");
                pointDropInfo.innerHTML = "";
 
@@ -1287,56 +1283,6 @@ tmpout.innerHTML = "<table><tr>" +
                  OMAR.imageManipulator.vectorLayer.addFeatures([smaAxis]);
                  OMAR.imageManipulator.vectorLayer.addFeatures([smiAxis]);
 
-             }
-
-             // Ellipse popup
-             drawEllipsePopup(xyPop, nEll);
-
-
-             function drawEllipsePopup(xyPop, nEll)
-             {
-                // Offset from ellipse center
-                var space = 20;
-
-                // Get popup dimensions
-                var overlay = document.getElementById("popDivId");
-                var owid = overlay.clientWidth;
-                var ohgt = overlay.clientHeight;
-
-                // Start by assuming lower right display
-                var offX = regionOffX - space;
-                var offY = regionOffY - space;
-
-                // Check for right side obscured
-                var rightExtent = xyPop.x - offX + owid;
-                if (rightExtent > regionRight)
-                    offX = regionOffX + space + owid;
-
-                // Check for bottom obscured
-                var bottomExtent = xyPop.y - offY + ohgt;
-                if (bottomExtent > regionBottom)
-                    offY = regionOffY + space + ohgt;
-
-                // Upper left popup corner
-                overlay.style.left = xyPop.x - offX;
-                overlay.style.top  = xyPop.y - offY;
-
-                // Left side PQE div
-                var pqeBox = document.getElementById("pqeDivId");
-
-                // Load content
-                if (nEll > 0)
-                {
-                    //overlay.innerHTML = createPointInfoForm();
-                    pqeBox.innerHTML = createPointInfoForm();
-                }
-                else
-                {
-                    //overlay.innerHTML = createNoInfoForm();
-                    pqeBox.innerHTML = createNoInfoForm();
-                }
-
-                overlay.style.visibility = "hidden";
              }
 
              function createPointInfoForm(){
