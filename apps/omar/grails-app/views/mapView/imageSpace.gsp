@@ -439,7 +439,7 @@ function init(mapWidth, mapHeight)
     rotateSlider = YAHOO.widget.Slider.getHorizSlider("slider-rotate-bg",  "slider-rotate-thumb", 0, 180, 1);
     rotationAngle = "${params.rotate ?: 0}";///${"rotateAngle"}.value;
     OpenLayers.ImgPath = "${resource(plugin: 'openlayers', dir: 'js/img')}/";
-    var defaultResolutions = [1.0,.5,.25,.125,.0625, ];
+    var defaultResolutions = [1.0,.5,.25,.125,.0625 ];
     var resolutions = [];
     var width  = parseFloat("${rasterEntry.width}");
     var height = parseFloat("${rasterEntry.height}");
