@@ -2,6 +2,7 @@ import grails.util.Environment
 
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
+
 //import org.ossim.omar.core.DbAppender
 
 grails.gorm.default.mapping = {
@@ -21,39 +22,39 @@ grails.config.locations = [
 //     "file:${userHome}/.grails/${appName}-config.groovy"
 ]
 
-if ( new File( "${userHome}/.grails/${appName}-config.groovy" ).exists() )
+if ( new File( "${ userHome }/.grails/${ appName }-config.groovy" ).exists() )
 {
-  grails.config.locations << "file:${userHome}/.grails/${appName}-config.groovy"
+  grails.config.locations << "file:${ userHome }/.grails/${ appName }-config.groovy"
 }
 if ( System.env.OMAR_CONFIG )
 {
-  grails.config.locations << "file:${System.env.OMAR_CONFIG}"
+  grails.config.locations << "file:${ System.env.OMAR_CONFIG }"
 }
 if ( System.env.QUARTZ_CONFIG )
 {
-    grails.config.locations << "file:${System.env.QUARTZ_CONFIG}"
+  grails.config.locations << "file:${ System.env.QUARTZ_CONFIG }"
 }
 // if(System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
 grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
-        xml: ['text/xml', 'application/xml'],
-        text: 'text-plain',
-        jpeg: 'image/jpeg',
-        jpg: 'image/jpeg',
-        png: 'image/png',
-        js: 'text/javascript',
-        rss: 'application/rss+xml',
-        atom: 'application/atom+xml',
-        css: 'text/css',
-        csv: 'text/csv',
-        all: '*/*',
-        json: ['application/json', 'text/json'],
-        form: 'application/x-www-form-urlencoded',
-        multipartForm: 'multipart/form-data',
-        kml: 'application/vnd.google+earth.kml+xml',
-        kmz: 'application/vnd.google-earth.kmz'
+    xml: ['text/xml', 'application/xml'],
+    text: 'text-plain',
+    jpeg: 'image/jpeg',
+    jpg: 'image/jpeg',
+    png: 'image/png',
+    js: 'text/javascript',
+    rss: 'application/rss+xml',
+    atom: 'application/atom+xml',
+    css: 'text/css',
+    csv: 'text/csv',
+    all: '*/*',
+    json: ['application/json', 'text/json'],
+    form: 'application/x-www-form-urlencoded',
+    multipartForm: 'multipart/form-data',
+    kml: 'application/vnd.google+earth.kml+xml',
+    kmz: 'application/vnd.google-earth.kmz'
 ]
 
 // The default codec used to encode data with ${}
@@ -66,7 +67,7 @@ grails.enable.native2ascii = true
 
 
 omar.serverIP = org.ossim.omar.app.NetUtil.ipAddress
-omar.serverURL = "http://${omar.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
+omar.serverURL = "http://${ omar.serverIP }:${ System.properties['server.port'] ?: '8080' }/${ appName }"
 
 //
 //// set per-environment serverURL stem for creating absolute links
@@ -106,13 +107,13 @@ log4j = {
 //            tableName: "wms_log"
 //    )
     appender new org.apache.log4j.DailyRollingFileAppender( name: "omarDataManagerAppender",
-            datePattern: "'.'yyyy-MM-dd",
-            file: "/tmp/logs/omarDataManagerAppender.log",
-            layout: pattern( conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n' ) )
+        datePattern: "'.'yyyy-MM-dd",
+        file: "/tmp/logs/omarDataManagerAppender.log",
+        layout: pattern( conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n' ) )
     appender new org.apache.log4j.DailyRollingFileAppender( name: "omarAppender",
-            datePattern: "'.'yyyy-MM-dd",
-            file: "/tmp/logs/omar.log",
-            layout: pattern( conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5}  %m%n' ) )
+        datePattern: "'.'yyyy-MM-dd",
+        file: "/tmp/logs/omar.log",
+        layout: pattern( conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5}  %m%n' ) )
   }
 
 //  info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: false
@@ -121,16 +122,16 @@ log4j = {
   info omarAppender: 'omar', additivity: false
 
   error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
-          'org.codehaus.groovy.grails.web.pages', //  GSP
-          'org.codehaus.groovy.grails.web.sitemesh', //  layouts
-          'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-          'org.codehaus.groovy.grails.web.mapping', // URL mapping
-          'org.codehaus.groovy.grails.commons', // core / classloading
-          'org.codehaus.groovy.grails.plugins', // plugins
-          'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
-          'org.springframework',
-          'org.hibernate',
-          'net.sf.ehcache.hibernate'
+      'org.codehaus.groovy.grails.web.pages', //  GSP
+      'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+      'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+      'org.codehaus.groovy.grails.web.mapping', // URL mapping
+      'org.codehaus.groovy.grails.commons', // core / classloading
+      'org.codehaus.groovy.grails.plugins', // plugins
+      'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+      'org.springframework',
+      'org.hibernate',
+      'net.sf.ehcache.hibernate'
 
   warn 'org.mortbay.log'
 
@@ -151,29 +152,29 @@ wms {
   mapServExt = ( System.properties['os.name'].startsWith( 'Windows' ) ) ? ".exe" : ""
   serverAddress = omar.serverIP
   useTileCache = false
-  mapFile = "${referenceDataDirectory}/bmng.map"
+  mapFile = "${ referenceDataDirectory }/bmng.map"
 
   base {
     defaultOptions = [isBaseLayer: true, buffer: 0, transitionEffect: "resize"]
     layers = [
-            [
-                    url: "http://hyperquad.ucsd.edu/cgi-bin/i-cubed",
-                    params: [layers: "icubed", format: "image/png", transparent: true, bgcolor: '#99B3CC'],
-                    name: "I-Cubed LandSat",
-                    options: defaultOptions
-            ],
-            [
-                    url: "http://hyperquad.ucsd.edu/cgi-bin/onearth",
-                    params: [layers: "OnEarth", format: "image/png", transparent: true, bgcolor: '#99B3CC'],
-                    name: "OnEarth LandSat",
-                    options: defaultOptions
-            ],
-            [
-                    url: ( useTileCache ) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
-                    params: [layers: ( useTileCache ) ? "omar" : "Reference", format: "image/jpeg"],
-                    name: "Reference Data",
-                    options: defaultOptions
-            ]
+//        [
+//            url: "http://hyperquad.ucsd.edu/cgi-bin/i-cubed",
+//            params: [layers: "icubed", format: "image/png", transparent: true, bgcolor: '#99B3CC'],
+//            name: "I-Cubed LandSat",
+//            options: defaultOptions
+//        ],
+//        [
+//            url: "http://hyperquad.ucsd.edu/cgi-bin/onearth",
+//            params: [layers: "OnEarth", format: "image/png", transparent: true, bgcolor: '#99B3CC'],
+//            name: "OnEarth LandSat",
+//            options: defaultOptions
+//        ],
+        [
+            url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://${ serverAddress }/cgi-bin/mapserv${ wms.mapServExt }?map=${ mapFile }",
+            params: [layers: ( useTileCache ) ? "omar" : "Reference", format: "image/jpeg"],
+            name: "Reference Data",
+            options: defaultOptions
+        ]
 
     ]
   }
@@ -186,50 +187,51 @@ wms {
     switch ( Environment.current.name.toUpperCase() )
     {
     case "DEVELOPMENT":
-      mapFile = "${referenceDataDirectory}/omar-2.0-dev.map"
+      mapFile = "${ referenceDataDirectory }/omar-2.0-dev.map"
       break
     case "PRODUCTION":
-      mapFile = "${referenceDataDirectory}/omar-2.0-prod.map"
+      mapFile = "${ referenceDataDirectory }/omar-2.0-prod.map"
       break
     case "TEST":
-      mapFile = "${referenceDataDirectory}/omar-2.0-test.map"
+      mapFile = "${ referenceDataDirectory }/omar-2.0-test.map"
       break
     }
 
     raster = [
-            url: "${omar.serverURL}/wms/footprints",
-            params: [layers: ( supportIE6 ) ? "Imagery" : "ImageData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
-            name: "OMAR Imagery Coverage",
-            options: [styles: "green", footprintLayers: "Imagery"]
+        url: "${ omar.serverURL }/wms/footprints",
+        params: [layers: ( supportIE6 ) ? "Imagery" : "ImageData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
+        name: "OMAR Imagery Coverage",
+        options: [styles: "byFileType", footprintLayers: "Imagery"]
     ]
 
     video = [
-            url: "${omar.serverURL}/wms/footprints",
-            params: [layers: ( supportIE6 ) ? "Videos" : "VideoData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
-            name: "OMAR Video Coverage",
-            options: [styles: "red", footprintLayers: "Videos"]
+        url: "${ omar.serverURL }/wms/footprints",
+        params: [layers: ( supportIE6 ) ? "Videos" : "VideoData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
+        name: "OMAR Video Coverage",
+        options: [styles: "red", footprintLayers: "Videos"]
     ]
   }
 
   // Note the colors are normalized floats
-  styles = [
-          default: [
-                  outlinecolor: [r: 0.0, g: 1.0, b: 0, a: 1.0],
-                  width: 1
-          ],
-          red: [
-                  outlinecolor: [r: 1.0, g: 0.0, b: 0.0, a: 1.0],
-                  width: 1
-          ],
-          green: [
-                  outlinecolor: [r: 0.0, g: 1.0, b: 0.0, a: 1.0],
-                  width: 1
-          ],
-          blue: [
-                  outlinecolor: [r: 0.0, g: 0.0, b: 1.0, a: 1.0],
-                  width: 1
-          ]
-  ]
+//  styles = [
+//      default: [
+//          outlinecolor: [r: 0.0, g: 1.0, b: 0, a: 1.0],
+//          width: 1
+//      ],
+//      red: [
+//          outlinecolor: [r: 1.0, g: 0.0, b: 0.0, a: 1.0],
+//          width: 1
+//      ],
+//      green: [
+//          outlinecolor: [r: 0.0, g: 1.0, b: 0.0, a: 1.0],
+//          width: 1
+//      ],
+//      blue: [
+//          outlinecolor: [r: 0.0, g: 0.0, b: 1.0, a: 1.0],
+//          width: 1
+//      ]
+//      byFileType: new PropertyStyle('fileType')
+//  ]
 
   vector {
     maxcount = 10000
@@ -238,7 +240,7 @@ wms {
 
 
 thumbnail {
-  cacheDir = ( System.properties["os.name"] == "Windows XP" ) ? "c:/temp" : "${wms.referenceDataDirectory}/omar-cache"
+  cacheDir = ( System.properties["os.name"] == "Windows XP" ) ? "c:/temp" : "${ wms.referenceDataDirectory }/omar-cache"
   defaultSize = 512
 }
 
@@ -253,7 +255,7 @@ security {
   level = "UNCLASS"
 }
 
-image.download.prefix = "http://${omar.serverIP}"
+image.download.prefix = "http://${ omar.serverIP }"
 
 /** ********************************* CONDITIONALS FOR VIEWS                           ***********************************************/
 // flags for different views
@@ -272,50 +274,50 @@ views {
 videoStreaming {
   flashDirRoot = "/Library/WebServer/Documents/videos"
   //flashDirRoot = "/var/www/html/videos"
-  flashUrlRoot = "http://${omar.serverIP}/videos"
+  flashUrlRoot = "http://${ omar.serverIP }/videos"
 }
 
 rasterEntry {
   tagHeaderList = [
-          "File Type",
-          "Class Name",
-          "Mission",
-          "Country",
-          "Target Id",
-          "BE",
-          "Sensor",
-          "Image Id"
+      "File Type",
+      "Class Name",
+      "Mission",
+      "Country",
+      "Target Id",
+      "BE",
+      "Sensor",
+      "Image Id"
   ]
 
 
   tagNameList = [
-          "fileType",
-          "className",
-          "missionId",
-          "countryCode",
-          "targetId",
-          "beNumber",
-          "sensorId",
-          "title"
+      "fileType",
+      "className",
+      "missionId",
+      "countryCode",
+      "targetId",
+      "beNumber",
+      "sensorId",
+      "title"
   ]
 
   searchTagData = [
-          [name: "fileType", description: "File Type"],
-          [name: "filename", description: "Filename"],
-          [name: "className", description: "Class Name"],
-          [name: "missionId", description: "Mission"],
-          [name: "countryCode", description: "Country"],
-          [name: "targetId", description: "Target Id"],
-          [name: "beNumber", description: "BE Number"],
-          [name: "sensorId", description: "Sensor"],
-          [name: "title", description: "Image Id"],
-          [name: "niirs", description: "niirs"]
+      [name: "fileType", description: "File Type"],
+      [name: "filename", description: "Filename"],
+      [name: "className", description: "Class Name"],
+      [name: "missionId", description: "Mission"],
+      [name: "countryCode", description: "Country"],
+      [name: "targetId", description: "Target Id"],
+      [name: "beNumber", description: "BE Number"],
+      [name: "sensorId", description: "Sensor"],
+      [name: "title", description: "Image Id"],
+      [name: "niirs", description: "niirs"]
   ]
 }
 
 videoDataSet {
   searchTagData = [
-          [name: "filename", description: "Feed"]
+      [name: "filename", description: "Feed"]
   ]
 }
 
@@ -369,7 +371,7 @@ grails.doc.images = new File( "web-app/images" )
 
 tomcat {
   servers = [
-          localhost: [url: "http://localhost:8080/manager", username: "tomcat", password: "s3cret"]
+      localhost: [url: "http://localhost:8080/manager", username: "tomcat", password: "s3cret"]
   ]
 }
 
@@ -387,116 +389,116 @@ export {
   }
   rasterEntry {
     fields = [
-            'acquisitionDate',
-            'azimuthAngle',
-            'beNumber',
-            'cloudCover',
-            'countryCode',
-            'description',
-            'entryId',
-            'fileType',
-            'filename',
-            'grazingAngle',
-            'groundGeom',
-            'gsdUnit',
-            'gsdX',
-            'gsdY',
-            'height',
-            'id',
-            'imageCategory',
-            'imageId',
-            'imageRepresentation',
-            'indexId',
-            'isorce',
-            'missionId',
-            'niirs',
-            'numberOfBands',
-            'numberOfResLevels',
-            'organization',
-            'productId',
-            'releaseId',
-            'securityClassification',
-            'securityCode',
-            'sensorId',
-            'sunAzimuth',
-            'sunElevation',
-            'targetId',
-            'title',
-            'validModel',
-            'wacCode',
-            'width'
+        'acquisitionDate',
+        'azimuthAngle',
+        'beNumber',
+        'cloudCover',
+        'countryCode',
+        'description',
+        'entryId',
+        'fileType',
+        'filename',
+        'grazingAngle',
+        'groundGeom',
+        'gsdUnit',
+        'gsdX',
+        'gsdY',
+        'height',
+        'id',
+        'imageCategory',
+        'imageId',
+        'imageRepresentation',
+        'indexId',
+        'isorce',
+        'missionId',
+        'niirs',
+        'numberOfBands',
+        'numberOfResLevels',
+        'organization',
+        'productId',
+        'releaseId',
+        'securityClassification',
+        'securityCode',
+        'sensorId',
+        'sunAzimuth',
+        'sunElevation',
+        'targetId',
+        'title',
+        'validModel',
+        'wacCode',
+        'width'
     ]
 
     labels = [
-            'Acquisition Date',
-            'Azimuth Angle',
-            'Be Number',
-            'Cloud Cover',
-            'Country Code',
-            'Description',
-            'Entry Id',
-            'File Type',
-            'Filename',
-            'Grazing Angle',
-            'Ground Geom',
-            'Gsd Unit',
-            'Gsd X',
-            'Gsd Y',
-            'Height',
-            'Id',
-            'Image Category',
-            'Image Id',
-            'Image Representation',
-            'Index Id',
-            'Isorce',
-            'Mission Id',
-            'Niirs',
-            'Number Of Bands',
-            'Number Of Res Levels',
-            'Organization',
-            'Product Id',
-            'Release Id',
-            'Security Classification',
-            'Security Code',
-            'Sensor Id',
-            'Sun Azimuth',
-            'Sun Elevation',
-            'Target Id',
-            'Title',
-            'Valid Model',
-            'Wac Code',
-            'Width'
+        'Acquisition Date',
+        'Azimuth Angle',
+        'Be Number',
+        'Cloud Cover',
+        'Country Code',
+        'Description',
+        'Entry Id',
+        'File Type',
+        'Filename',
+        'Grazing Angle',
+        'Ground Geom',
+        'Gsd Unit',
+        'Gsd X',
+        'Gsd Y',
+        'Height',
+        'Id',
+        'Image Category',
+        'Image Id',
+        'Image Representation',
+        'Index Id',
+        'Isorce',
+        'Mission Id',
+        'Niirs',
+        'Number Of Bands',
+        'Number Of Res Levels',
+        'Organization',
+        'Product Id',
+        'Release Id',
+        'Security Classification',
+        'Security Code',
+        'Sensor Id',
+        'Sun Azimuth',
+        'Sun Elevation',
+        'Target Id',
+        'Title',
+        'Valid Model',
+        'Wac Code',
+        'Width'
     ]
 
 
     formatters = [
-            groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' ) }
+        groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' ) }
     ]
   }
 
   videoDataSet {
     fields = [
-            'endDate',
-            'filename',
-            'groundGeom',
-            'height',
-            'id',
-            'indexId',
-            'startDate',
-            'width'
+        'endDate',
+        'filename',
+        'groundGeom',
+        'height',
+        'id',
+        'indexId',
+        'startDate',
+        'width'
     ]
     labels = [
-            'End Date',
-            'Filename',
-            'Ground Geom',
-            'Height',
-            'Id',
-            'Index Id',
-            'Start Date',
-            'Width'
+        'End Date',
+        'Filename',
+        'Ground Geom',
+        'Height',
+        'Id',
+        'Index Id',
+        'Start Date',
+        'Width'
     ]
     formatters = [
-            groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' ) }
+        groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' ) }
     ]
 
   }
@@ -617,33 +619,33 @@ If you did make the request, then click <a href="$url">here</a> to reset your pa
 rss {
   rasterEntry {
     properties = [
-            imageId: 'Image ID',
-            missionId: 'Mission ID',
-            securityClassification: 'Security Class',
-            niirs: 'NIIRS',
-            countryCode: 'Country Code',
-            beNumber: 'BE Number',
-            acquisitionDate: 'Acquisition Date',
-            width: 'Width',
-            height: 'Height',
+        imageId: 'Image ID',
+        missionId: 'Mission ID',
+        securityClassification: 'Security Class',
+        niirs: 'NIIRS',
+        countryCode: 'Country Code',
+        beNumber: 'BE Number',
+        acquisitionDate: 'Acquisition Date',
+        width: 'Width',
+        height: 'Height',
     ]
   }
 }
 
 thumbnail {
-  cacheDir = ( System.properties["os.name"] == "Windows XP" ) ? "c:/temp" : "${wms.referenceDataDirectory}/omar-cache"
+  cacheDir = ( System.properties["os.name"] == "Windows XP" ) ? "c:/temp" : "${ wms.referenceDataDirectory }/omar-cache"
   defaultSize = 512
 }
 
-stager{
-    queue{
-        threads = 4
-    }
-    histogramOptions = ""
-    overview{
-        compressionType = "JPEG"
-        compressionQuality = 75
-    }
-	onDemand = true
+stager {
+  queue {
+    threads = 4
+  }
+  histogramOptions = ""
+  overview {
+    compressionType = "JPEG"
+    compressionQuality = 75
+  }
+  onDemand = true
 }
 

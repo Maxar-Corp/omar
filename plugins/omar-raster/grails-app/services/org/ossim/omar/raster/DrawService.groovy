@@ -2,8 +2,7 @@ package org.ossim.omar.raster
 
 import java.awt.AlphaComposite
 import java.awt.BasicStroke
-import java.awt.Color
-import java.awt.Composite
+
 import java.awt.RenderingHints
 import java.awt.geom.AffineTransform
 import java.awt.image.BufferedImage
@@ -19,9 +18,7 @@ import com.vividsolutions.jts.geom.Polygon
 import com.vividsolutions.jts.geom.MultiPolygon
 
 import org.ossim.omar.core.ImageGenerator
-import org.ossim.omar.core.WMSRequest
-
-
+import java.awt.Color
 
 class DrawService implements ApplicationContextAware, InitializingBean
 {
@@ -29,8 +26,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
 
   ApplicationContext applicationContext
   def grailsApplication
-  def styles
-
+  //def styles
 
 
   def wmsToScreen(double minx, double miny, double maxx, double maxy, int imageWidth, int imageHeight)
@@ -66,13 +62,22 @@ class DrawService implements ApplicationContextAware, InitializingBean
 
     try
     {
-      style = styles[styleName]
+      style = applicationContext.getBean( styleName )
     }
     catch ( Exception e )
     {
-      styleName = "default"
-      style = styles[styleName]
+      style = new PropertyNameStyle( propertyName: 'id' )
     }
+
+//    try
+//    {
+//      style = styles[styleName]
+//    }
+//    catch ( Exception e )
+//    {
+//      styleName = "default"
+//      style = styles[styleName]
+//    }
 
     def queryParams = applicationContext.getBean( "${ layerName }QueryParam" )
     def searchService = applicationContext.getBean( "${ layerName }SearchService" )
@@ -91,39 +96,54 @@ class DrawService implements ApplicationContextAware, InitializingBean
 
     def affine = wmsToScreen( minx, miny, maxx, maxy, width, height )
 
+//    def closure = { geom ->
+//      LiteShape shp = new LiteShape( geom, affine, false )
+//
+//      def outlineColor = new Color( style.outlinecolor.r, style.outlinecolor.g, style.outlinecolor.b, style.outlinecolor.a )
+//      def fillColor = ( style.fillcolor ) ? new Color( style.fillcolor.r, style.fillcolor.g, style.fillcolor.b, style.fillcolor.a ) : null
+//
+//      if ( fillColor && ( geom instanceof Polygon || geom instanceof MultiPolygon ) )
+//      {
+//        g2d.color = fillColor
+//        g2d.composite = AlphaComposite.getInstance( AlphaComposite.SRC_OVER, new Float( 0.5 ).floatValue() )
+//        g2d.fill( shp )
+//      }
+//
+//      g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON )
+//      g2d.stroke = new BasicStroke( style.width )
+//      g2d.color = outlineColor
+//      g2d.draw( shp )
+//
+//    }
 
-    g2d.color = new Color(
-        style.outlinecolor.r as float,
-        style.outlinecolor.g as float,
-        style.outlinecolor.b as float,
-        style.outlinecolor.a as float
-    )
+    def closure = { feature ->
+      LiteShape shp = new LiteShape( feature.groundGeom, affine, false )
 
-    Composite c = g2d.composite
-    g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON )
-    g2d.stroke = new BasicStroke( style.width )
+      def outlineColor = style?.getOutlineColor( feature[style?.propertyName] )
+      def fillColor = style?.getFillColor( feature[style?.propertyName] )
 
-
-    def closure = { geom ->
-      LiteShape shp = new LiteShape( geom, affine, false )
-
-      if ( style.fillcolor && ( geom instanceof Polygon || geom instanceof MultiPolygon ) )
+      if ( fillColor && ( feature.groundGeom instanceof Polygon || feature.groundGeom instanceof MultiPolygon ) )
       {
-        g2d.color = new Color( style.fillcolor.r, style.fillcolor.g, style.fillcolor.b, style.fillcolor.a )
-        g2d.composite = AlphaComposite.getInstance( AlphaComposite.SRC_OVER, new Float( 0.5 ).floatValue() )
+        g2d.color = fillColor
+        g2d.composite = AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 1 )
         g2d.fill( shp )
       }
 
-      g2d.composite = c
-      g2d.color = new Color( style.outlinecolor.r, style.outlinecolor.g, style.outlinecolor.b, style.outlinecolor.a )
+      g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON )
+      g2d.stroke = new BasicStroke( 1, /*style.width*/ )
+      g2d.color = outlineColor
       g2d.draw( shp )
 
     }
 
+
     def pageParams = [
         max: grailsApplication.config.wms.vector.maxcount
     ]
-    searchService?.scrollGeometries( queryParams, pageParams, closure )
+
+    //searchService?.scrollGeometries( queryParams, pageParams, closure )
+    searchService?.scrollFeatures( queryParams, pageParams, closure )
+
   }
 
   byte[] drawLayers(def wmsRequest, def startDate, def endDate, def params)
@@ -200,6 +220,6 @@ class DrawService implements ApplicationContextAware, InitializingBean
 
   void afterPropertiesSet()
   {
-    styles = grailsApplication.config.wms.styles
+//    styles = grailsApplication.config.wms.styles
   }
 }

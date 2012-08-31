@@ -162,6 +162,53 @@ class RasterEntrySearchService implements InitializingBean
     results.close()
   }
 
+  void scrollFeatures(RasterEntryQuery rasterEntryQuery, Map<String, String> params, Closure closure)
+  {
+    def max = null;
+    if ( params?.max ) max = ( params.max as Integer );
+    if ( max < 1 ) return;
+    def criteriaBuilder = RasterEntry.createCriteria();
+
+    def x = {
+      projections {
+        property( "groundGeom" )
+        property( "fileType" )
+      }
+
+      if ( max )
+      {
+        maxResults( max )
+      }
+
+      if ( params?.offset )
+      {
+        firstResult( params.offset as Integer )
+      }
+      cacheMode( CacheMode.GET )
+    }
+
+    def criteria = criteriaBuilder.buildCriteria( x )
+
+    criteria.add( rasterEntryQuery?.createClause() )
+
+    def results = criteria.scroll()
+    def status = results.first()
+
+    while ( status )
+    {
+      def r = results.get()
+
+      closure.call( [
+          groundGeom: r[0],
+          fileType: r[1]
+      ] )
+      status = results.next()
+    }
+
+    results.close()
+  }
+
+
   int getCount(RasterEntryQuery rasterEntryQuery)
   {
     def criteriaBuilder = RasterEntry.createCriteria();
