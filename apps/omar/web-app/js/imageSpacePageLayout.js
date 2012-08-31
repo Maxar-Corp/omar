@@ -86,7 +86,7 @@ var bodyOnResize = function ()
     {
         init();
     }
-   // map.updateSize();
+    // map.updateSize();
 };
 
 function copyToClipboard(value)
