@@ -556,23 +556,25 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 
       var w = this.containerDivRegion.width;
       var h = this.containerDivRegion.height;
-        var shiftW =0.0;
-        var shiftH =0.0;
-       // var WH = Math.max(w,h);
-      var extraW = 0;//0.5*(WH -w);//w*0.5*(Math.sqrt(2)- 1.0);
-      var extraH = 0;//0.5*(WH -h);//h*0.5*(Math.sqrt(2)- 1.0);
-      tempAffine.rotate = 22;//this.affineParams.rotate;
+      var w2 = w*0.5;
+      var h2 = h*0.5;
+      var WH = Math.max(w,h);
+      var WH2 = WH*0.5;
+      //w2 = WH2;
+      //h2 = WH2;
+      tempAffine.rotate = 45;//this.affineParams.rotate;
       tempAffine.pivot  = new OmarPoint(w*0.5, h*0.5);
+      var center = tempAffine.pivot
       if(!this.fillAreaFlag)//||(OpenLayers.BROWSER_NAME == "msie"))
       {
         extraW = 0.0;
         extraH = 0.0;
         tempAffine.rotate = 0;
       }
-      var p1 = new OmarPoint(-extraW, -extraH);
-      var p2 = new OmarPoint(w+extraW, -extraH);
-      var p3 = new OmarPoint(w+extraW, h+extraH);
-      var p4 = new OmarPoint(-extraW,h+extraH);
+      var p1 = new OmarPoint(center.x-w2, center.y-h2);
+      var p2 = new OmarPoint(center.x + w2, center.y-h2);
+      var p3 = new OmarPoint(center.x+w2, center.y+h2);
+      var p4 = new OmarPoint(center.x-w2, center.y+h2);
       var m  = tempAffine.toMatrix();
       p1  = m.transform(p1);
       p2  = m.transform(p2);
@@ -586,6 +588,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       var height = Math.abs(Math.round(maxY-minY));
       var left   = Math.round(minX);
       var top    = Math.round(minY);
+
        //alert(left +", " + top + ", " + width + ", "+height + "\n" + w +","+h);
     
       OpenLayers.Util.modifyDOMElement(div, null, {x:left,y:top}, {w:(width),h:(height)});
