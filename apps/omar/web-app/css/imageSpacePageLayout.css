@@ -43,9 +43,13 @@ body {
     visibility:hidden;
 }
 
+/**
+* For some reason I have to set the map div to initial value of percent
+* the annotations on mapView image space were shifting.  No clue!!
+*/
 #map {
-    width: 1024px;
-    height: 512px;
+    width: 10%;
+    height: 10%;
     position:absolute;
     z-index:1;
    }
