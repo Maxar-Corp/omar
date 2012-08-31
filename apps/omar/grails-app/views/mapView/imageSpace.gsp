@@ -172,21 +172,6 @@ function changeHistoOpts()
     //updateImage(); ////////////////////
 }
 
-function changeMapSize( mapWidth, mapHeight )
-{
-   if(mapWidth && mapHeight)
-   {
-        var Dom = YAHOO.util.Dom;
-        var mapDiv = Dom.get( "map" );
-        if(mapDiv)
-        {
-            mapDiv.style.width  = mapWidth + "px";
-            mapDiv.style.height = mapHeight + "px";
-        }
-    }
-    if(map) map.updateSize();
-}
-
 function changeSharpenOpts()
 {
     var sharpen_mode = $("sharpen_mode").value;
@@ -545,7 +530,6 @@ function init(mapWidth, mapHeight)
     layer = new OpenLayers.Layer.TMS( "Image Space Viewer", url, options);
     map.addLayer(layer);
     map.setBaseLayer(layer);
-    map.zoomToMaxExtent();
 // set the initialization flag so the moveend and zoomend code can execute
     initFlag = 0;
 
@@ -576,7 +560,6 @@ function init(mapWidth, mapHeight)
 		bboxToPixel();
 	</g:if>
 --%>
-    map.zoomToMaxExtent();
     // map.zoomIn();
     // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
    //OMAR.imageManipulator.affineParams.rotate = parseFloat(${"rotateAngle"}.value);
@@ -591,7 +574,8 @@ function init(mapWidth, mapHeight)
    //OMAR.imageManipulator.applyRotate(${"rotateAngle"}.value);
    //OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
    //alert(map.getMaxExtents());
-   OMAR.imageManipulator.events.on({
+map.zoomToMaxExtent();
+OMAR.imageManipulator.events.on({
             "onFeatureDone": measureFinished,
             "onFeatureRemoved" : measureRemoved,
             "onToolModeChanged" : toolModeChanged,
@@ -619,8 +603,6 @@ function init(mapWidth, mapHeight)
     currProbLevel = 0.9;
 
     rotateSlider.setRealValue(rotationAngle);
-    //OMAR.imageManipulator.applyRotate(${"rotateAngle"}.value);
-    //setTimeout("applyRotationAfterInit()", 100);
     updateCenter();
     var lat = ${params.latitude?:"null"};
     var lon = ${params.longitude?:"null"};
