@@ -1,6 +1,7 @@
 import org.ossim.omar.raster.RasterEntrySearchService
 import org.ossim.omar.raster.RasterEntryQuery
 import org.ossim.omar.raster.RasterInfoParser
+import java.awt.Color
 
 class OmarRasterGrailsPlugin
 {
@@ -12,7 +13,7 @@ class OmarRasterGrailsPlugin
   def dependsOn = [:]
   // resources that are excluded from plugin packaging
   def pluginExcludes = [
-          "grails-app/views/error.gsp"
+      "grails-app/views/error.gsp"
   ]
 
   def loadAfter = ['omarCore']
@@ -33,20 +34,44 @@ OMAR Raster support
 
   def doWithSpring = {
     // TODO Implement runtime spring config (optional)
-    rasterInfoParser(RasterInfoParser)
+    rasterInfoParser( RasterInfoParser )
 
 //    imageDataQueryParam(org.ossim.omar.raster.RasterEntryQuery) { bean ->
     //      bean.singleton = false
     //    }
 
 
-    imageryQueryParam(RasterEntryQuery) { bean ->
+    imageryQueryParam( RasterEntryQuery ) { bean ->
       bean.singleton = false
     }
 
-    imagerySearchService(RasterEntrySearchService) {
-      grailsApplication = ref("grailsApplication")
+    imagerySearchService( RasterEntrySearchService ) {
+      grailsApplication = ref( "grailsApplication" )
     }
+
+    byFileType( org.ossim.omar.raster.PropertyNameStyle ) { bean ->
+      propertyName = 'fileType'
+      outlineLookupTable = [
+          //aaigrid: 4,
+          cadrg: new Color( 0, 255, 255, 255 ), // cyan
+          //ccf: 1,
+          //cib: 2,
+          //doqq: 2,
+          dted: new Color( 0, 255, 0, 255 ), // green
+          jpeg: new Color( 255, 255, 0, 255 ), // yellow
+          jpeg2000: new Color( 255, 255, 0, 255 ), // also yellow?
+          landsat7: new Color( 255, 0, 255, 255 ), // purple
+          nitf: new Color( 0, 0, 255, 255 ),  // blue
+          tiff: new Color( 255, 0, 0, 255 ),  // red
+          //unspecified: 14
+      ]
+    }
+
+    red( org.ossim.omar.raster.PropertyNameStyle ) { bean ->
+      propertyName = 'id'
+      defaultOutlineColor = new Color( 255, 0, 0, 255 )  // red
+    }
+
   }
 
   def doWithDynamicMethods = { ctx ->
@@ -54,8 +79,8 @@ OMAR Raster support
   }
 
   def doWithApplicationContext = { applicationContext ->
-    applicationContext.registerAlias("imageryQueryParam", "imageDataQueryParam")
-    applicationContext.registerAlias("imagerySearchService", "imageDataSearchService")
+    applicationContext.registerAlias( "imageryQueryParam", "imageDataQueryParam" )
+    applicationContext.registerAlias( "imagerySearchService", "imageDataSearchService" )
 
   }
 
