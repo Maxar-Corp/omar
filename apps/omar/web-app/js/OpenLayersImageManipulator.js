@@ -558,11 +558,18 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       var h = this.containerDivRegion.height;
       var w2 = w*0.5;
       var h2 = h*0.5;
-      var WH = Math.max(w,h);
+      var WH = Math.max(w,h);   // extend out by about 10 percent
+      var WHMin = Math.min(w,h);   // extend out by about 10 percent
+      var ratio = WH/WHMin
+      var multiplier = 1.0;
+      if(ratio < 2.0) multiplier = 2.0/ratio;
+
+      WH=WH*multiplier;
+
       var WH2 = WH*0.5;
-      //w2 = WH2;
-      //h2 = WH2;
-      tempAffine.rotate = 45;//this.affineParams.rotate;
+      w2 = WH2;
+      h2 = WH2;
+      tempAffine.rotate = 0;//this.affineParams.rotate;
       tempAffine.pivot  = new OmarPoint(w*0.5, h*0.5);
       var center = tempAffine.pivot
       if(!this.fillAreaFlag)//||(OpenLayers.BROWSER_NAME == "msie"))
