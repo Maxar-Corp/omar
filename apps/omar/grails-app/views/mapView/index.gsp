@@ -793,7 +793,7 @@ function exportTemplate()
 	var centerLongitude = mapWidget.getMap().getCenter().lon;
 	var dms = coordConvert.ddToDms(centerLatitude, centerLongitude);
 	var mgrs = coordConvert.ddToMgrs(centerLatitude, centerLongitude);
-	var centerGeo = dms + " " + mgrs;	
+	var centerGeo = "GEO: " + dms + " MGRS: " + mgrs;	
 	var northArrowAngle = 0;
 
 	var acquisitionDate = "${(rasterEntries.acquisitionDate).join(',')}";

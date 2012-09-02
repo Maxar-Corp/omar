@@ -1561,7 +1561,7 @@ function updateCenter()
 	var centerLongitude = currentCenterLatLon.lon;
 	var dms = OMAR.coordConvert.ddToDms(centerLatitude, centerLongitude);
 	var mgrs = OMAR.coordConvert.ddToMgrs(centerLatitude, centerLongitude);
-	var centerGeo = dms + " " + mgrs;
+	var centerGeo = "GEO: " + dms + " MGRS: " + mgrs;
 
 	var acquisitionDate = "${rasterEntry.acquisitionDate}";
 	var countryCode = "${rasterEntry.countryCode}";
