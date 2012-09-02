@@ -13,7 +13,7 @@
 								<b>Logo</b>
 							</td>
 							<td width = "55%">
-								<b>Header Text</b>
+								<b>Template Text</b>
 							</td>
 							<td>
 								<b>Country</b>
@@ -43,12 +43,38 @@
 								<img id = "logoImage" src = "${resource(dir: 'images/', plugin: 'omar-image-magick')}ciaLogoForWeb.png"/>
 							</td>
 							<td>
-								Line 1: <input id = "line1" name = "line1" value = "${imageId}" type = "text"/>
-								<br>
-								Line 2: <input id = "line2" name = "line2" value = "Acquisition Date: ${acquisitionDate}" type = "text">
-								<br>
-								Line 3: <input id = "line3" name = "line3" value = "GEO: ${centerGeo} Country: ${countryCode}" type = "text">
-								<br>	
+								<table width = "100%">
+									<tr>
+										<td align = "right">Title: &nbsp</td>
+										<td>
+											<input id = "title" name = "title" value = "${imageId}" type = "text"/>
+										</td>
+									</tr>
+									<tr>
+										<td align = "right">Description: &nbsp</td>
+										<td>
+											<input id = "description" name = "description" value = "Country: ${countryCode}" type = "text"/>
+										</td>
+									</tr>
+									<tr>
+										<td align = "right">Location: &nbsp</td>
+										<td>
+											<input id = "location" name = "location" value = "${centerGeo}" type = "text"/>
+										</td>
+									</tr>
+									<tr>
+										<td align = "right">Acquisition Date: &nbsp</td>
+										<td>
+											<input id = "acquisitionDate" name = "acquisitionDate" type = "text" value = "${acquisitionDate}"/>
+										</td>
+									</tr>
+									<tr>
+										<td align = "right">Security Classification: &nbsp</td>
+										<td>
+											<input id = "securityClassification" name = "securityClassification" type = "text" value = "${securityClassification}"/>
+										</td>
+									</tr>
+								</table>
 							</td>
 							<td>
 								<g:render template = "overviewMapSelectOptions"/>
@@ -59,12 +85,6 @@
 							</td>
 							<td>
 								<input id = "northArrowAngle" name = "northArrowAngle" size = "2" type = "text" value = "${northArrowAngle}"> deg
-							</td>
-						</tr>
-						<tr>
-							<td colspan = "4">
-								<b>Security Classification:</b>
-								<input id = "securityClassification" name = "securityClassification" type = "text" value = "${securityClassification}">
 							</td>
 						</tr>
 					</table>

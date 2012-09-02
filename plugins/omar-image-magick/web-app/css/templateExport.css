@@ -36,7 +36,7 @@ body
 	width: 100%;
 }
 
-#line1, #line2, #line3
+#acquisitionDate, #description, #location, #securityClassification, #title
 {
-	width: 80%;
+	width: 100%;
 }

@@ -11,7 +11,7 @@ class TemplateExportService
 	def grailsApplication
 
 	def command
-	def serviceMethod(def imageUrl, def logo, def line1, def line2, def line3, def includeOutlineMap, def includeOverviewMap, def country, def northAngle, def securityClassification)
+	def serviceMethod(def acquisitionDate, def country, def description, def imageUrl, def includeOverviewMap, def location, def logo, def northAngle, def securityClassification, def title)
 	{
 		def date = new Date().getTime()
 
@@ -23,6 +23,7 @@ class TemplateExportService
 		//############################################################ Image Download ##################################################
 		//##############################################################################################################################
 		if (DEBUG) { println "##### Image Download #####" }
+
 		//########## Image filename once it is downloaded
 		if (DEBUG) { println "Image filename once it is downloaded: " }
 		def imageFile = "${tempFilesLocation}${date}omarImage.png";
@@ -51,15 +52,13 @@ class TemplateExportService
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
-		command = "rm ${imageFile}"
-		executeCommand(command)
-
 		//################################################################################################################################
 		//############################################################ Image Dimensions ##################################################
 		//################################################################################################################################
 		if (DEBUG) { println "##### Image Dimensions #####" }
+
 		//########## Determine the width of the image
-		if (DEBUG) { println "Determine the width of the image: " }
+		if (DEBUG) { println "Determine the width of the image:" }
 		command = [
 				"identify", 
 				"-format", 
@@ -90,14 +89,14 @@ class TemplateExportService
 		//################################################## Header Adjustment ##################################################
 		//#######################################################################################################################
 		if (DEBUG) { println "##### Header Adjustment #####" }
+
 		//########## Generate blank header
 		if (DEBUG) { println "Determine the width of the header:" }
-		def headerWidth = 0.96 * imageWidth
-		headerWidth = headerWidth.toInteger()
+		def headerWidth = imageWidth
 		if (DEBUG) { println "${headerWidth} pixels" }
 		
 		if (DEBUG) { println "Determine the height of the header:" }
-		def headerHeight = 0.14 * imageHeight
+		def headerHeight = 0.1 * imageHeight
 		headerHeight = headerHeight.toInteger()
 		if (DEBUG) { println "${headerHeight} pixels" }
 
@@ -106,13 +105,7 @@ class TemplateExportService
 				"convert", 
 				"-size", 
 				"${headerWidth}x${headerHeight}", 
-				"xc:#00000000", 
-				"-transparent", 
-				"black", 
-				"-fill", 
-				"white", 
-				"-draw", 
-				"roundrectangle 0,0 ${headerWidth},${headerHeight} 10,10", 
+				"xc: #595454ff", 
 				"${tempFilesLocation}${date}header.png"
 		]
 		if (DEBUG) { println "${command}" }
@@ -122,15 +115,15 @@ class TemplateExportService
 		//################################################## Logo Icon ##################################################
 		//###############################################################################################################
 		if (DEBUG) { println "##### Logo Icon #####" }
+
 		//########## Scale the logo
 		if (DEBUG) { println "Determine the width of the logo:" }
-		def logoWidth = 0.75 * headerHeight
+		def logoWidth = 0.8 * headerHeight
 		logoWidth = logoWidth.toInteger()
 		if (DEBUG) { println "${logoWidth} pixels" }
 
 		if (DEBUG) { println "Determine the height of the logo:" }
 		def logoHeight = logoWidth
-		logoHeight = logoHeight.toInteger()
 		if (DEBUG) { println "${logoHeight} pixels" }
 
 		if (DEBUG) { println "Scale the logo:" }
@@ -148,7 +141,7 @@ class TemplateExportService
 		if (DEBUG) { println "Determine the offset of the logo:" }
 		def logoOffset = (headerHeight - logoHeight) / 2
 		logoOffset = logoOffset.toInteger()
-		if (DEBUG) { println "${logoOffset}" }
+		if (DEBUG) { println "${logoOffset} pixels" }
 
 		if (DEBUG) { println "Add the logo to the header:" }
 		command = [
@@ -164,99 +157,21 @@ class TemplateExportService
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
-		//########## Delete the scaled logo file
-		if (DEBUG) { println "Delete the scaled logo file:" }
-		command = "rm ${tempFilesLocation}${date}${logo}Scaled.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//#################################################################################################################
-		//################################################## Outline Map ##################################################
-		//#################################################################################################################
-		if (DEBUG) { println "##### Outline Map #####" }
-		def outlineMapWidth = 0
-		//########## Determine the height of the outline map
-		if (DEBUG) { println "Determine the height of the outline map:" }
-		def outlineMapHeight = 0.2 * imageHeight
-		outlineMapHeight = outlineMapHeight.toInteger()
-		if (DEBUG) { print "${outlineMapHeight} pixels" }
-
-		//##########
-		if (("${includeOutlineMap}".toString()).equals("on"))
-		{
-			//########## Scale the outline map
-			if (DEBUG) { println "Scale the outline map:" }
-			command = [
-					"convert", 
-					"${mapFilesLocation}${country}.gif", 
-					"-resize", 
-					"x${outlineMapHeight}", 
-					"${tempFilesLocation}${date}outlineMapScaled.png"
-			]
-			if (DEBUG) { println "${command}" }
-			executeCommand(command)
-
-			//########## Add a shadow to the outline map
-			if (DEBUG) { println "Generate a shadow image for the outline map:" }
-			command = [
-					"convert", 
-					"${tempFilesLocation}${date}outlineMapScaled.png",
-					"-background",
-					"black",
-					"-shadow",
-					"60x4+4+4",
-					"${tempFilesLocation}${date}outlineMapScaledShadow.png"
-			]
-			if (DEBUG) { println "${command}" }
-			executeCommand(command)		
-			
-			if (DEBUG) { println "Add the shadow image to the outline map:" }
-			command = [
-					"convert", 
-					"-page", 
-					"+4+4", 
-					"${tempFilesLocation}${date}outlineMapScaled.png", 
-					"-matte", 
-					"${tempFilesLocation}${date}outlineMapScaledShadow.png",
-					 "+swap", 
-					"-background", 
-					"none", 
-					"-mosaic", 
-					"${tempFilesLocation}${date}outlineMapScaled.png"
-			]
-			if (DEBUG) { println "${command}" }
-			executeCommand(command)
-
-			//########## Delete the outline map shadow image file
-			if (DEBUG) { println "Delete the outline map shadow image file:" }
-			command = "rm ${tempFilesLocation}${date}outlineMapScaledShadow.png"
-			if (DEBUG) { println "${command}" }
-			executeCommand(command)
-
-			//########## Determine the width of the outline map with a shadow
-			if (DEBUG) { print "Determine the width of the outline map with a shadow:" }
-			command  = [
-					"identify",
-					"-format",
-					"%w", 
-					"${tempFilesLocation}${date}outlineMapScaled.png"
-			]
-			outlineMapWidth = executeCommand(command)	
-			outlineMapWidth = outlineMapWidth.replaceAll("\n", "")
-			outlineMapWidth = outlineMapWidth.toInteger()
-			if (DEBUG) { println "${outlineMapWidth} pixels" }
-		}
-
 		//##################################################################################################################
 		//################################################## Overview Map ##################################################
 		//##################################################################################################################
 		if (DEBUG) { println "##### Overview Map #####" }
 		def overviewMapWidth = 0
-		def overviewMapHeight
+
 		if (("${includeOverviewMap}".toString()).equals("on"))
 		{
-        		//########## Scale the overview map
-        		overviewMapHeight = outlineMapHeight
+			//########## Determine the height of the overview map	
+			if (DEBUG) { println "Determine the height of the overview map:" }
+        		def overviewMapHeight = 0.2 * imageHeight
+			overviewMapHeight = overviewMapHeight.toInteger()
+			if (DEBUG) { print "${overviewMapHeight} pixels" }
+			
+			//########## Scale the overview map
 			if (DEBUG) { println "Scale the overview map:" }        
 			command = [
 					"convert",
@@ -299,12 +214,6 @@ class TemplateExportService
 			if (DEBUG) { println "${command}" }
 			executeCommand(command)
 
-			//########## Delete the outline map shadow image file
-			if (DEBUG) { println "Delete the overview map shadow image file:" }
-			command = "rm ${tempFilesLocation}${date}overviewMapScaledShadow.png"
-			if (DEBUG) { println "${command}" }
-			executeCommand(command)
-
 			//########## Determine the width of the overview map
 			if (DEBUG) { println "Determine the width of the overview map:" }       
 			command = [
@@ -323,105 +232,88 @@ class TemplateExportService
 		//################################################## Header Text ##################################################
 		//#################################################################################################################
 		if (DEBUG) { println "##### Header Text #####" }
+
 		//########## Determine the maximum width for each line of text
 		if (DEBUG) { println "Determine the maximum width for each line of text:" }
-		def textWidth = headerWidth - (2 * logoWidth) - (5 * logoOffset) - outlineMapWidth - overviewMapWidth
-		if (DEBUG) { println "${textWidth} pixels" }
+		def headerTextWidth = headerWidth - (2 * logoWidth) - (5 * logoOffset) - overviewMapWidth
+		if (DEBUG) { println "${headerTextWidth} pixels" }
 
-		//########## Generate 1st line of text
-		if (DEBUG) { println "Determine the height of the 1st line of text:" }
-		def line1Height = 0.41 * logoHeight
-		line1Height = line1Height.toInteger()
-		if (DEBUG) { println "${line1Height} pixels" }
-		if (DEBUG) { println "Generate 1st line of text:" }
+		//########## Generate the header security classification line of text
+		if (DEBUG) { println "Determine the height of the header security classification line of text:" }
+		def headerSecurityClassificationTextHeight = 0.25 * logoHeight
+		headerSecurityClassificationTextHeight = headerSecurityClassificationTextHeight.toInteger()
+		if (DEBUG) { println "${headerSecurityClassificationTextHeight} pixels" }
+		if (DEBUG) { println "Generate header security classification text:" }
 		command = [
 				"convert", 
 				"-background", 
-				"white", 
+				"#595454", 
 				"-fill", 
-				"black", 
+				"white", 
 				"-size", 
-				"${textWidth}x${line1Height}", 
+				"${headerTextWidth}x${headerSecurityClassificationTextHeight}", 
 				"-gravity", 
 				"West", 
-				"caption:${line1}", 
-				"${tempFilesLocation}${date}line1.png"
+				"caption:${securityClassification}", 
+				"${tempFilesLocation}${date}headerSecurityClassificationText.png"
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
-		//########## Generate 2nd line of text
-		if (DEBUG) { println "Determine the height of the 2nd line of text:" }
-		def line2Height = 0.33 * logoHeight
-		line2Height = line2Height.toInteger()
-		if (DEBUG) { println "${line2Height} pixels" }
-		if (DEBUG) { println "Generate 2nd line of text:" }
+		//########## Generate the header title line of text
+		if (DEBUG) { println "Determine the height of the header title line of text:" }
+		def headerTitleTextHeight = 0.43 * logoHeight
+		headerTitleTextHeight = headerTitleTextHeight.toInteger()
+		if (DEBUG) { println "${headerTitleTextHeight} pixels" }
+		if (DEBUG) { println "Generate the header title text:" }
 		command = [
 				"convert", 
 				"-background", 
-				"white", 
+				"#595454", 
 				"-fill", 
-				"black", 
+				"white", 
 				"-size", 
-				"${textWidth}x${line2Height}", 
+				"${headerTextWidth}x${headerTitleTextHeight}", 
 				"-gravity", 
 				"West", 
-				"caption:${line2}", 
-				"${tempFilesLocation}${date}line2.png"
+				"caption:${title}", 
+				"${tempFilesLocation}${date}headerTitleText.png"
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
-		//########## Generate 3rd line of text
-		if (DEBUG) { println "Determine the height of the 3rd line of text:" }
-		def line3Height = 0.28 * logoHeight
-		line3Height = line3Height.toInteger()
-		if (DEBUG) { println "${line3Height} pixels" }
-		if (DEBUG) { println "Generate 3rd line of text:" }
+		//########## Generate the header description line of text
+		if (DEBUG) { println "Determine the height of the header description line of text:" }
+		def headerDescriptionTextHeight = 0.32 * logoHeight
+		headerDescriptionTextHeight = headerDescriptionTextHeight.toInteger()
+		if (DEBUG) { println "${headerDescriptionTextHeight} pixels" }
+		if (DEBUG) { println "Generate the header description line of text:" }
 		command = [
 				"convert", 
 				"-background", 
-				"white", 
+				"#595454", 
 				"-fill", 
-				"black", 
+				"white", 
 				"-size", 
-				"${textWidth}x${line3Height}", 
+				"${headerTextWidth}x${headerDescriptionTextHeight}", 
 				"-gravity", 
 				"West", 
-				"caption:${line3}", 
-				"${tempFilesLocation}${date}line3.png"
+				"caption:${description}", 
+				"${tempFilesLocation}${date}headerDescriptionText.png"
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
-		//########## Combine all three lines of text
-		if (DEBUG) { println "Combine all three lines of text:" }
+		//########## Combine all lines of header text
+		if (DEBUG) { println "Combine all lines of header text:" }
 		command = [
 				"convert", 
-				"${tempFilesLocation}${date}line1.png", 
-				"${tempFilesLocation}${date}line2.png", 
-				"${tempFilesLocation}${date}line3.png", 
+				"${tempFilesLocation}${date}headerSecurityClassificationText.png", 
+				"${tempFilesLocation}${date}headerTitleText.png", 
+				"${tempFilesLocation}${date}headerDescriptionText.png", 
 				"-append", 
-				"${tempFilesLocation}${date}text.png"
+				"${tempFilesLocation}${date}headerText.png"
 		]
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the 1st line of text file
-		if (DEBUG) { println "Delete the 1st line of text file:" }
-		command = "rm ${tempFilesLocation}${date}line1.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the 2nd line of text file
-		if (DEBUG) { println "Delete the 2nd line of text file:" }
-		command = "rm ${tempFilesLocation}${date}line2.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the 3rd line of text file
-		if (DEBUG) { println "Delete the 3rd line of text file:" }
-		command = "rm ${tempFilesLocation}${date}line3.png"
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
@@ -429,41 +321,43 @@ class TemplateExportService
 		//################################################## Header Adjustment ##################################################
 		//#######################################################################################################################
 		if (DEBUG) { println "##### Header Adjustment #####" }
+
 		//########## Add the header text to the header
-		if (DEBUG) { println "Determine the text offset:" }
-		def textOffset = 2 * logoOffset + logoWidth
-		if (DEBUG) { println "${textOffset}" }
+		if (DEBUG) { println "Determine the header text offset:" }
+		def headerTextOffset = 2 * logoOffset + logoWidth
+		if (DEBUG) { println "${headerTextOffset} pixels" }
 		if (DEBUG) { println "Add the header text to the header:" }
 		command = [
 				"composite", 
-				"${tempFilesLocation}${date}text.png", 
+				"${tempFilesLocation}${date}headerText.png", 
 				"-gravity",
 				"West", 
 				"-geometry",
-				"+${textOffset}+0",
+				"+${headerTextOffset}+0",
 				"${tempFilesLocation}${date}header.png",
 				"${tempFilesLocation}${date}header.png"
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
-		//########## Delete the header text file
-		if (DEBUG) { println "Delete the header text file:" }
-		command = "rm ${tempFilesLocation}${date}text.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
 		//#################################################################################################################
 		//################################################## North Arrow ##################################################
 		//#################################################################################################################
-		if (DEBUG) { println "##### North Arrow #####" }
+		if (DEBUG) { println "##### North Arrow #####" }	
+	
+		//########## Determine the size of the north arrow
+		if (DEBUG) { println "Determine the size of the north arrow:" }
+		def northArrowWidth = logoWidth
+		def northArrowHeight = logoHeight
+		if (DEBUG) { println "${northArrowWidth}x${northArrowHeight} pixels" }
+
 		//########## Scale the north arrow
 		if (DEBUG) { println "Scale the north arrow:" }
 		command = [
 				"convert", 
 				"${logoFilesLocation}northArrow.png", 
 				"-resize", 
-				"${logoWidth}x${logoHeight}", 
+				"${northArrowWidth}x${northArrowHeight}", 
 				"${tempFilesLocation}${date}northArrowScaled.png"
 		]
 		if (DEBUG) { println "${command}" }
@@ -472,7 +366,11 @@ class TemplateExportService
 		//########## Rotate the north arrow
 		if (DEBUG) { println "Rotate the north arrow:" }
 		command = [
-				"convert", 
+				"convert",
+				"-alpha",
+				"set",
+				"-background",
+				"none",
 				"${tempFilesLocation}${date}northArrowScaled.png", 
 				"-rotate", 
 				"${northAngle}", 
@@ -481,40 +379,8 @@ class TemplateExportService
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
-		//########## Determine the width of the scaled north arrow
-		if (DEBUG) { print "Determine the width of the scaled north arrow:" }
-		command = [
-				"identify", 
-				"-format", 
-				"%w", 
-				"${tempFilesLocation}${date}northArrowScaled.png"
-		]
-		def northArrowWidth = executeCommand(command)
-		northArrowWidth = northArrowWidth.replaceAll("\n", "")
-		northArrowWidth = northArrowWidth.toInteger()
-		if (DEBUG) { println "${northArrowWidth}" }
-
-		//########## Determine the height of the scaled north arrow
-		if (DEBUG) { println "Determine the height of the scaled north arrow:" }
-		command = [
-				"identify", 
-				"-format", 
-				"%h", 
-				"${tempFilesLocation}${date}northArrowScaled.png"
-		]
-		def northArrowHeight = executeCommand(command)
-		northArrowHeight = northArrowHeight.replaceAll("\n", "")
-		northArrowHeight = northArrowHeight.toInteger()
-		if (DEBUG) { println "${northArrowHeight}" }
-
-		//########## Delete the scaled north arrow file
-		if (DEBUG) { println "Delete the scaled north arrow file:" }
-		command = "rm ${tempFilesLocation}${date}northArrowScaled.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Crop the north rotated north arrow
-		if (DEBUG) { println "Crop the north rotated north arrow:" }
+		//########## Crop the rotated north arrow
+		if (DEBUG) { println "Crop the rotated north arrow:" }
 		command = [
 				"convert",
 				"${tempFilesLocation}${date}northArrowRotated.png",
@@ -531,10 +397,12 @@ class TemplateExportService
 		//################################################## Header Adjustment ##################################################
 		//#######################################################################################################################
 		if (DEBUG) { println "##### Header Adjustment #####" }
+
 		//########## Add the north arrow to the header
 		if (DEBUG) { println "Determine the north arrow offset:" }
 		def northArrowOffset = logoOffset;
-		if (DEBUG) { println "${northArrowOffset}" }
+		if (DEBUG) { println "${northArrowOffset} pixels" }
+		
 		if (DEBUG) { println "Add the north arrow to the header:"  }
 		command = [
 				"composite", 
@@ -549,67 +417,18 @@ class TemplateExportService
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
-		//##########  Delete the north arrow rotated file
-		if (DEBUG) { println "Delete the north arrow rotated file:" }
-		command = "rm ${tempFilesLocation}${date}northArrowRotated.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
 		//#######################################################################################################################
 		//################################################## Header Adjustment ##################################################
 		//#######################################################################################################################
 		if (DEBUG) { println "##### Header Adjustment #####" }
-		//########## Add a shadow to the header
-		if (DEBUG) { println "Generate a shadow image for the header:" }
-		command = [
-				"convert", 
-				"${tempFilesLocation}${date}header.png", 
-				"-background", 
-				"black", 
-				"-shadow", 
-				"60x4+4+4", 
-				"${tempFilesLocation}${date}headerShadow.png"
-		]
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-		
-		if (DEBUG) { println "Add the shadow file to the header:" }
-		command = [
-				"convert", 
-				"-page", 
-				"+4+4", 
-				"${tempFilesLocation}${date}header.png", 
-				"-matte", 
-				"${tempFilesLocation}${date}headerShadow.png", 
-				"+swap", 
-				"-background", 
-				"none", 
-				"-mosaic", 
-				"${tempFilesLocation}${date}header.png"
-		]
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the shadow file for the header
-		if (DEBUG) { println "Delete the shadow file for the header:" }
-		command = "rm ${tempFilesLocation}${date}headerShadow.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
 
 		//########## Add the header to the image
-		if (DEBUG) { println "Determine the header offset:" }
-		def headerOffset = (imageWidth - 0.96 * imageWidth) / 4
-		headerOffset = headerOffset.toInteger()
-		if (DEBUG) { println "${headerOffset} pixels" }
 		if (DEBUG) { println "Add the header to the image:" }
 		command = [
-				"composite",
+				"convert",
 				"${tempFilesLocation}${date}header.png",
-				"-gravity",
-				"North",
-				"-geometry",
-				"+0+${headerOffset}",
 				"${tempFilesLocation}${date}omarImage.tif",
+				"-append",
 				"${tempFilesLocation}${date}finishedProduct.png"
 		]
 		if (DEBUG) { println "${command}" }
@@ -619,42 +438,10 @@ class TemplateExportService
 		//################################################## Report Adjustment ##################################################
 		//#######################################################################################################################
 		if (DEBUG) { println "##### Report Adjustment #####" }
-		if (DEBUG) { println "Determine the outline map offset:" }
-		def outlineMapOffset = (imageWidth - headerWidth) / 2 + northArrowWidth + 2 * northArrowOffset
-		outlineMapOffset = outlineMapOffset.toInteger()
-		if (DEBUG) { println "${outlineMapOffset} pixels" }
-
-		//########## Add the outline map to the finished product
-		if (("${includeOutlineMap}".toString()).equals("on"))
-		{
-			if (DEBUG) { println "Add the outline map to the finished product:" }
-			command = [
-					"composite",
-					"${tempFilesLocation}${date}outlineMapScaled.png",
-					"-gravity",
-					"NorthEast",
-					"-geometry",
-					"+${outlineMapOffset}+0",
-					"${tempFilesLocation}${date}finishedProduct.png",
-					"${tempFilesLocation}${date}finishedProduct.png"
-			]
-			if (DEBUG) { println "${command}" }
-			executeCommand(command)
-		}
-		else
-		{
-			if (DEBUG) { println "The outline map is not included" }
-		}
-
-		//#######################################################################################################################
-		//################################################## Report Adjustment ##################################################
-		//#######################################################################################################################
-		if (DEBUG) { println "##### Report Adjustment #####" }
 		//########## Add the overview map to the finished product
 		if (("${includeOverviewMap}".toString()).equals("on"))
 		{
-			
-			def overviewMapOffset = outlineMapOffset + outlineMapWidth
+			def overviewMapOffset = (imageWidth - headerWidth) / 2 + northArrowWidth + 2 * northArrowOffset
 			if (DEBUG) { println "Add the overview map to the finished product:" }			
 			command = [
 					"composite",
@@ -674,235 +461,143 @@ class TemplateExportService
 			if (DEBUG) { println "The overview map is not included" }
 		}
 
-		//#####################################################################################################################
-		//################################################## Security Banner ##################################################
-		//#####################################################################################################################
-		if (DEBUG) { print "##### Security Banner #####" }
-		//########## Generate security banner text
-		if (DEBUG) { println "Determine the security text height:" }
-		def securityTextHeight = 0.25 * headerHeight
-		securityTextHeight = securityTextHeight.toInteger()
-		if (DEBUG) { println "${securityTextHeight} pixels" }
-		if (DEBUG) { println "Generate security banner text:" }
+		//#################################################################################################################
+		//################################################## Info Banner ##################################################
+		//#################################################################################################################
+		if (DEBUG) { print "##### Info Banner #####" }
+
+		//########## Determine the info banner size
+		if (DEBUG) { println "Determine the info banner size:" }
+		def infoBannerWidth = imageWidth
+		infoBannerWidth = infoBannerWidth.toInteger()
+		def infoBannerHeight = 0.035 * imageHeight
+		infoBannerHeight = infoBannerHeight.toInteger()
+		if (DEBUG) { println "${infoBannerWidth}x${infoBannerHeight} pixels" }
+
+		//########## Generate the blank info banner
+		if (DEBUG) { println "Generate the blank info banner:" }
 		command = [
-				"convert", 
-				"-background",
-				"white",
-				"-fill",
-				"black",
-				"-size",
-				"x${securityTextHeight}",
-				"-gravity",
-				"West",
-				"label:${securityClassification}",
-				"${tempFilesLocation}${date}securityText.png"
-		]
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
+                                "convert",
+                                "-size",
+                                "${infoBannerWidth}x${infoBannerHeight}",
+                                "xc: #595454ff",
+                                "${tempFilesLocation}${date}infoBanner.png"
+                ]
+                if (DEBUG) { println "${command}" }
+                executeCommand(command)
 
-		//########## Determine the width of the security banner
-		if (DEBUG) { println "Determine the width of the security banner:" }
-		command =[
-				"identify",
-				"-format",
-				"%w",
-				"${tempFilesLocation}${date}securityText.png"
-		]
-		def securityBannerWidth = executeCommand(command)
-		securityBannerWidth = securityBannerWidth.toInteger()
-		securityBannerWidth = 1.1 * securityBannerWidth
-		securityBannerWidth = securityBannerWidth.toInteger()
-		if (DEBUG) { println "${securityBannerWidth} pixels" }
+		//########## Determine the info banner text size
+		if (DEBUG) { println "Determine the info banner text size:" }
+		def infoBannerTextWidth = infoBannerWidth / 3
+		infoBannerTextWidth = infoBannerTextWidth.toInteger()
+		def infoBannerTextHeight = infoBannerHeight
+		infoBannerTextHeight = infoBannerTextHeight.toInteger()
+		if (DEBUG) { println "${infoBannerTextWidth}x${infoBannerTextHeight} pixels" }
 
-		//########## Determine the height of the security banner
-		if (DEBUG) { println "Determine the height of the security banner:" }
+		//########## Generate the info banner security classification text
+		if (DEBUG) { println "Generate the info banner security classification text:" }
 		command = [
-				"identify",
-				"-format",
-				"%h",
-				"${tempFilesLocation}${date}securityText.png"
-		]
-		def securityBannerHeight = executeCommand(command)
-		securityBannerHeight = securityBannerHeight.toInteger()
-		securityBannerHeight = 1.1 * securityBannerHeight
-		securityBannerHeight = securityBannerHeight.toInteger()
+                                "convert",
+                                "-background",
+                                "#595454",
+                                "-fill",
+                                "white",
+                                "-size",
+                                "${infoBannerTextWidth}x${infoBannerTextHeight}",
+                                "-gravity",
+                                "West",
+                                "caption: ${securityClassification}",
+                                "${tempFilesLocation}${date}infoBannerSecurityClassificationText.png"
+                ]
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
 
-		//########## Generate security banner
-		if (DEBUG) { println "Generate security banner:" }
+		//########## Add the info banner security classification text to the info banner
+		if (DEBUG) { println "Add the info banner security classification text to the info banner:" }
 		command = [
-				"convert",
-				"-size",
-				"${securityBannerWidth}x${securityBannerHeight}",
-				"xc:#00000000",
-				"-transparent",
-				"black",
-				"-fill",
-				"white",
-				"-draw",
-				"roundrectangle 0,0 ${securityBannerWidth},${securityBannerHeight} 10,10",
-				"${tempFilesLocation}${date}securityBanner.png"
-		]
+                                "composite",
+                                "${tempFilesLocation}${date}infoBannerSecurityClassificationText.png",
+                                "-gravity",
+                                "West",
+                                "${tempFilesLocation}${date}infoBanner.png",
+                                "${tempFilesLocation}${date}infoBanner.png"
+                ]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
-		//########## Add text to the security banner
-		if (DEBUG) { println "Add text to security banner:" }		
+		//########## Generate the info banner location text
+		if (DEBUG) { println "Generate the info banner location text:" } 
 		command = [
-				"composite", 
-				"${tempFilesLocation}${date}securityText.png",
-				"-gravity",
-				"Center",
-				"-geometry",
-				"+0+0",
-				"${tempFilesLocation}${date}securityBanner.png",
-				"${tempFilesLocation}${date}securityBanner.png"
-		]
+                                "convert",
+                                "-background",
+                                "#595454",
+                                "-fill",
+                                "white",
+                                "-size",
+                                "${infoBannerTextWidth}x${infoBannerTextHeight}",
+                                "-gravity",
+                                "Center",
+                                "caption:${location}",
+                                "${tempFilesLocation}${date}infoBannerLocationText.png"
+                ]
 		if (DEBUG) { println "${command}" }
-		executeCommand(command)
+                executeCommand(command)
 
-		//########## Delete the security text file
-		if (DEBUG) { println "Delete the security text file:" }
-		command = "rm ${tempFilesLocation}${date}securityText.png"
+		//########## Add the info banner location text to the info banner
+                if (DEBUG) { println "Add the info banner location text to the info banner:" }
+                command = [
+                                "composite",
+                                "${tempFilesLocation}${date}infoBannerLocationText.png",
+                                "-gravity",
+                                "Center",
+                                "${tempFilesLocation}${date}infoBanner.png",
+                                "${tempFilesLocation}${date}infoBanner.png"
+                ]
 		if (DEBUG) { println "${command}" }
-		executeCommand(command)
+                executeCommand(command)
 
-		//########## Add a shadow to the security banner
-		if (DEBUG) { println "Generate a shadow image for the security banner:" }
+		//########## Generate the info banner acquisition date text
+                if (DEBUG) { println "Generate the info banner acquisition date text:" }
 		command = [
-				"convert",
-				"${tempFilesLocation}${date}securityBanner.png",
-				"-background",
-				"black",
-				"-shadow",
-				"60x4+4+4",
-				"${tempFilesLocation}${date}securityBannerShadow.png"
-		]
+                                "convert",
+                                "-background",
+                                "#595454",
+                                "-fill",
+                                "white",
+                                "-size",
+                                "${infoBannerTextWidth}x${infoBannerTextHeight}",
+                                "-gravity",
+                                "East",
+                                "caption:${acquisitionDate} ",
+                                "${tempFilesLocation}${date}infoBannerAcquisitionDateText.png"
+                ]
 		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-		
-		if (DEBUG) { println "Add the shadow file to security banner:" }
+                executeCommand(command)
+
+		//########## Add the info banner acquisition date text to the info banner
+		if (DEBUG) { println "Add the info banner acquisition date text to the info banner:" }
+                command = [
+                                "composite",
+                                "${tempFilesLocation}${date}infoBannerAcquisitionDateText.png",
+                                "-gravity",
+                                "East",
+                                "${tempFilesLocation}${date}infoBanner.png",
+                                "${tempFilesLocation}${date}infoBanner.png"
+                ]
+		if (DEBUG) { println "${command}" }
+                executeCommand(command)
+
+		//########## Add the info banner to the finished product
+		if (DEBUG) { println "Add the info banner to the finished product:" }
 		command = [
-				"convert",
-				"-page",
-				"+4+4",
-				"${tempFilesLocation}${date}securityBanner.png",
-				"-matte",
-				"${tempFilesLocation}${date}securityBannerShadow.png",
-				"+swap",
-				"-background",
-				"none",
-				"-mosaic",
-				"${tempFilesLocation}${date}securityBanner.png"
-		]
+                                "convert",
+                                "${tempFilesLocation}${date}finishedProduct.png",
+                                "${tempFilesLocation}${date}infoBanner.png",
+                                "-append",
+                                "${tempFilesLocation}${date}finishedProduct.png"
+                ]
 		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-		
-		//########## Delete the shadow file for the security banner
-		if (DEBUG) { println "Delete the shadow file for the security banner:" }
-		command = "rm ${tempFilesLocation}${date}securityBannerShadow.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Add security banner to finished product
-		def securityBannerOffsetX = (imageWidth - 0.96 * imageWidth) / 4
-		securityBannerOffsetX = securityBannerOffsetX.toInteger()
-		def securityBannerOffsetY = securityBannerOffsetX / 2
-		securityBannerOffsetY = securityBannerOffsetY.toInteger()
-		if (DEBUG) { println "Add security banner to finished product:" }
-		command = [
-				"composite",
-				"${tempFilesLocation}${date}securityBanner.png",
-				"-gravity",
-				"SouthWest",
-				"-geometry",
-				"+${securityBannerOffsetX}+${securityBannerOffsetY}",
-				"${tempFilesLocation}${date}finishedProduct.png",
-				"$tempFilesLocation${date}finishedProduct.png"
-		]
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//##########
-		outlineMapHeight = 0
-		overviewMapHeight = 0
-		if (("${includeOutlineMap}".toString()).equals("on"))
-		{
-			if (DEBUG) { println "Determine the height of the security banner offset:" }
-        		command = [
-					"identify",
-					"-format",
-					"%h",
-					"${tempFilesLocation}${date}outlineMapScaled.png"
-			]		
-			outlineMapHeight = executeCommand(command)
-			outlineMapHeight = outlineMapHeight.toInteger()
-        		securityBannerOffsetY = outlineMapHeight
-			if (DEBUG) { println "${securityBannerOffsetY}" }
-		}
-		else if (("${includeOverviewMap}".toString()).equals("on"))
-		{
-			if (DEBUG) { println "Determine the height of the security banner offset:" }
-			command = [
-					"identify",
-					"-format",
-					"%h",
-					"${tempFilesLocation}${date}overviewMapScaled.png"
-			]
-			overviewMapHeight = executeCommand(command)
-        		overviewMapHeight = overviewMapHeight.toInteger()
-        		securityBannerOffsetY = overviewMapHeight
-			if (DEBUG) { println "${securityBannerOffsetY}" }
-		}
-		else
-		{
-			if (DEBUG) { println "Determine the height of the security banner offset:" }
-			command = [
-					"identify",
-					"-format",
-					"%h",
-					"${tempFilesLocation}${date}header.png"
-			]
-			headerHeight = executeCommand(command)
-        		headerHeight = headerHeight.toInteger()
-        		securityBannerOffsetY = headerHeight + headerOffset
-			if (DEBUG) { println "${securityBannerOffsetY}" }
-		}
-
-		command = [
-				"composite",
-				"${tempFilesLocation}${date}securityBanner.png",
-				"-gravity",
-				"NorthEast",
-				"-geometry",
-				"+${securityBannerOffsetX}+${securityBannerOffsetY}",
-				"${tempFilesLocation}${date}finishedProduct.png",
-				"${tempFilesLocation}${date}finishedProduct.png"
-		]
-		executeCommand(command)
-
-		//########## Delete the header file
-		if (DEBUG) { println "Delete the header file:" }
-		command = "rm ${tempFilesLocation}${date}header.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the outline map file
-		if (DEBUG) { println "Delete the outline map file:" }
-		command = "rm ${tempFilesLocation}${date}outlineMapScaled.png"
-		if (DEBUG) { println "${command}" }		
-		executeCommand(command)
-	
-		//########## Delete the overview map file
-		if (DEBUG) { println "Delete the overview map file:" }
-		command = "rm ${tempFilesLocation}${date}overviewMapScaled.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the security banner file
-		if (DEBUG) { println "Delete the security banner file:" }
-		command = "rm ${tempFilesLocation}${date}securityBanner.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
+                executeCommand(command)
 
 		//####################################################################################################################
 		//################################################## Disclaimer Text #################################################
@@ -932,9 +627,103 @@ class TemplateExportService
 		if (DEBUG) { println "${command}" } 
 		executeCommand(command)
 
+		//#############################################################################################################################
+		//################################################## Temporary File Deletion ##################################################
+		//#############################################################################################################################
+
+		//########## Delete the header file
+		if (DEBUG) { println "Delete the header file:" }
+		command = "rm ${tempFilesLocation}${date}header.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		//########## Delete the header description text file
+		if (DEBUG) { println "Delete the description text file:" }
+		command = "rm ${tempFilesLocation}${date}headerDescriptionText.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		//########## Delete the header security classification text file
+		if (DEBUG) { println "Delete the header security classification text file:" }
+		command = "rm ${tempFilesLocation}${date}headerSecurityClassificationText.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		//########## Delete the header text file
+		if (DEBUG) { println "Delete the header text file:" }
+		command = "rm ${tempFilesLocation}${date}headerText.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		//########## Delete the header title text file
+		if (DEBUG) { println "Delete the header title text file:" }
+		command = "rm ${tempFilesLocation}${date}headerTitleText.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+                //########## Delete the info banner file
+                if (DEBUG) { println "Delete the info banner file:" }
+                command = "rm ${tempFilesLocation}${date}infoBanner.png"
+                if (DEBUG) { println "${command}" }
+                executeCommand(command)
+
+		//########## Delete the info banner acquisition date text file
+		if (DEBUG) { println "Delete the info banner acquisition date text file:" }
+		command = "rm ${tempFilesLocation}${date}infoBannerAcquisitionDateText.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		//########## Delete the info banner security classification text file
+		if (DEBUG) { println "Delete the info banner security classification text file:" }
+		command = "rm ${tempFilesLocation}${date}infoBannerSecurityClassificationText.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		//########## Delete the info banner location text file
+		if (DEBUG) { println "Delete the info banner location text file:" }
+		command = "rm ${tempFilesLocation}${date}infoBannerLocationText.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		//##########  Delete the north arrow rotated file
+		if (DEBUG) { println "Delete the north arrow rotated file:" }
+		command = "rm ${tempFilesLocation}${date}northArrowRotated.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		//########## Delete the scaled north arrow file
+		if (DEBUG) { println "Delete the scaled north arrow file:" }
+		command = "rm ${tempFilesLocation}${date}northArrowScaled.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
 		//########## Delete the image file
 		if (DEBUG) { println "Delete the image file:" }
 		command = "rm ${tempFilesLocation}${date}omarImage.tif"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		//########## Delete the overview map file
+		if (DEBUG) { println "Delete the overview map file:" }
+		command = "rm ${tempFilesLocation}${date}overviewMapScaled.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		//########## Delete the overview map shadow image file
+		if (DEBUG) { println "Delete the overview map shadow image file:" }
+		command = "rm ${tempFilesLocation}${date}overviewMapScaledShadow.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		//########## Delete the scaled logo file
+		if (DEBUG) { println "Delete the scaled logo file:" }
+		command = "rm ${tempFilesLocation}${date}${logo}Scaled.png"
+		if (DEBUG) { println "${command}" }
+		executeCommand(command)
+
+		//########## Delete the image file
+		if (DEBUG) { println "Delete the image file:" }
+		command = "rm ${imageFile}"
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
@@ -947,4 +736,178 @@ class TemplateExportService
 		script.waitFor()
 		return script.text
 	}
+
+	//North Arrow Creation
+	//def northArrowSize = 2000
+	//def strokeWidth = 0.035 * northArrowSize
+
+	//def northArrowCircleBaseCenterX = northArrowSize / 2
+	//northArrowCircleBaseCenterX = northArrowCircleBaseCenterX.toInteger()
+	//def northArrowCircleBaseCenterY = northArrowSize / 2
+	//northArrowCircleBaseCenterY = northArrowCircleBaseCenterY.toInteger()
+	//command = [
+	//		"convert",
+	//		"-size",
+	//		"${northArrowSize}x${northArrowSize}",
+	//		"xc: #00000000",
+	//		"-fill",
+	//		"black",
+	//		"-stroke",
+	//		"black",
+	//		"-draw",
+	//		"circle ${northArrowCircleBaseCenterX},${northArrowCircleBaseCenterY} ${northArrowCircleBaseCenterX},${northArrowSize}",
+	//		"${tempFilesLocation}${date}northArrow.png"			
+	//]
+	//executeCommand(command)
+
+	//def northArrowInnerCircleSize = 0.9 * northArrowSize
+	//northArrowInnerCircleSize = northArrowInnerCircleSize.toInteger()
+	//command = [
+	//		"convert",
+	//		"-size",
+	//		"${northArrowInnerCircleSize + strokeWidth}x${northArrowInnerCircleSize + strokeWidth}",
+	//		"xc: #00000000",
+	//		"${tempFilesLocation}${date}northArrowInnerCircle.png"
+	//]
+	//executeCommand(command)
+
+	//def northArrowCircleSize = 0.70 * northArrowSize
+	//northArrowCircleSize = northArrowCircleSize.toInteger()
+	//def northArrowCircleCenterX = northArrowCircleSize / 2
+	//northArrowCircleCenterX = northArrowCircleCenterX.toInteger()
+	//def northArrowCircleCenterY = northArrowCircleCenterX
+	//command = [
+        //		"convert",
+	//		"-size",
+	//		"${northArrowCircleSize}x${northArrowCircleSize}",
+	//		"xc: #00000000",
+	//		"-fill",
+	//		"black",
+	//		"-stroke",
+	//		"white",
+	//		"-strokewidth",
+	//		"${strokeWidth}",
+	//		"-draw",
+	//		"circle ${northArrowCircleCenterX},${northArrowCircleCenterY} ${northArrowCircleCenterX},${strokeWidth}",
+	//		"${tempFilesLocation}${date}northArrowCircle.png"
+        //]
+	//executeCommand(command)
+
+	//command = [
+	//		"composite",
+	//		"${tempFilesLocation}${date}northArrowCircle.png",
+	//		"-gravity",
+	//		"South",
+	//		"${tempFilesLocation}${date}northArrowInnerCircle.png",
+	//		"${tempFilesLocation}${date}northArrowInnerCircle.png"
+	//]
+	//executeCommand(command)
+
+	//def northArrowTriangleSize = 0.23 * northArrowSize
+	//northArrowTriangleSize = northArrowTriangleSize.toInteger()
+	//def northArrowTriangleMidPoint = northArrowTriangleSize / 2
+	//northArrowTriangleMidPoint = northArrowTriangleMidPoint.toInteger()
+	//command = [
+	//		"convert",
+	//		"-size",
+	//		"${northArrowTriangleSize}x${northArrowTriangleSize}",
+	//		"xc: #00000000",
+	//		"-fill",
+	//		"white",
+	//		"-draw",
+	//		"polygon 0,${northArrowTriangleSize} ${northArrowTriangleMidPoint},0 ${northArrowTriangleSize},${northArrowTriangleSize} 0,$northArrowTriangleSize}",
+	//		"${tempFilesLocation}${date}northArrowTriangle.png"
+	//]
+	//executeCommand(command)
+
+	//command = [
+	//		"composite",
+	//		"${tempFilesLocation}${date}northArrowTriangle.png",
+	//		"-gravity",
+	//		"North",
+	//		"${tempFilesLocation}${date}northArrowInnerCircle.png",
+	//		"${tempFilesLocation}${date}northArrowInnerCircle.png"
+	//]
+	//executeCommand(command)		
+
+	//def northArrowNHeight = 0.27 * northArrowSize
+	//northArrowNHeight = northArrowNHeight.toInteger()
+	//def northArrowNWidth = 0.75 * northArrowNHeight
+	//northArrowNWidth = northArrowNWidth.toInteger()
+
+	//def northArrowNHeightMidPoint = northArrowNHeight / 2
+	//northArrowNHeightMidPoint = northArrowNHeightMidPoint.toInteger()
+	//def northArrowNWidthMidPoint = northArrowNWidth / 2
+	//northArrowNWidthMidPoint = northArrowNWidthMidPoint.toInteger()
+	//command = [
+	//		"convert",
+	//		"-size",
+	//		"${northArrowNWidth + strokeWidth}x${northArrowNHeight}",
+	//		"xc: #00000000",
+	//		"-stroke",
+	//		"white",
+	//		"-strokewidth",
+	//		"${strokeWidth}",
+	//		"-draw",
+	//		"polyline ${strokeWidth},${northArrowNHeight} ${strokeWidth},0 ${northArrowNWidth},${northArrowNHeight} $northArrowNWidth},0",
+	//		"${tempFilesLocation}${date}northArrowN.png"
+	//]
+	//executeCommand(command)
+
+	//command = [
+	//		"composite",
+	//		"${tempFilesLocation}${date}northArrowN.png",
+	//		"-gravity",
+	//		"Center",
+	//		"-geometry",
+	//		"-${northArrowNWidthMidPoint - (strokeWidth / 2) + 1}+${northArrowNHeightMidPoint}",
+	//		"${tempFilesLocation}${date}northArrowInnerCircle.png",
+	//		"${tempFilesLocation}${date}northArrowInnerCircle.png"
+	//]
+	//executeCommand(command)
+
+	//def northArrowLineLength = 2 * northArrowNHeight
+	//command = [
+	//		"convert",
+	//		"-size",
+	//		"${strokeWidth + 1}x${northArrowLineLength}",
+	//		"xc: white",
+	//		"${tempFilesLocation}${date}northArrowLine.png"
+	//]
+	//executeCommand(command)
+
+	//command = [
+	//		"composite",
+	//		"${tempFilesLocation}${date}northArrowLine.png",
+	//		"-gravity",
+	//		"Center",
+	//		"${tempFilesLocation}${date}northArrowInnerCircle.png",
+	//		"${tempFilesLocation}${date}northArrowInnerCircle.png"
+	//]
+	//executeCommand(command)
+
+	//command = [
+	//		"composite",
+	//		"${tempFilesLocation}${date}northArrowInnerCircle.png",
+	//		"-gravity",
+	//		"Center",
+	//		"${tempFilesLocation}${date}northArrow.png",
+	//		"${tempFilesLocation}${date}northArrow.png"
+	//]
+	//executeCommand(command)
+
+	//command = "rm ${tempFilesLocation}${date}northArrowCircle.png"
+	//executeCommand(command)
+
+	//command = "rm ${tempFilesLocation}${date}northArrowInnerCircle.png"
+	//executeCommand(command)
+		
+	//command = "rm ${tempFilesLocation}${date}northArrowLine.png"
+	//executeCommand(command)
+
+	//command = "rm ${tempFilesLocation}${date}northArrowN.png"
+	//executeCommand(command)
+
+	//command = "rm ${tempFilesLocation}${date}northArrowTriangle.png"
+	//executeCommand(command)
 }
