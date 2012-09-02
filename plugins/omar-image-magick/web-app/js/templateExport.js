@@ -31,11 +31,12 @@ function exportPreview()
 	}
 		var logoId = dom.get("logo").options.selectedIndex;
 	previewUrl += "&logo=" + dom.get("logo").options[logoId].value;
-	previewUrl += "&line1=" + dom.get("line1").value;
-	previewUrl += "&line2=" + dom.get("line2").value;
-	previewUrl += "&line3=" + dom.get("line3").value;
-	previewUrl += "&northArrowAngle=" + dom.get("northArrowAngle").value;
+	previewUrl += "&title=" + dom.get("title").value;
+	previewUrl += "&description=" + dom.get("description").value;
+	previewUrl += "&location=" + dom.get("location").value;
+	previewUrl += "&acquisitionDate=" + dom.get("acquisitionDate").value;
 	previewUrl += "&securityClassification=" + dom.get("securityClassification").value;
+	previewUrl += "&northArrowAngle=" + dom.get("northArrowAngle").value;
 	dom.get("preview").onload = function() { exportPreviewCleanup(); }
 	dom.get("preview").src = previewUrl;
 }
