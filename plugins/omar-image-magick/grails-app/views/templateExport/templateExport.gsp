@@ -12,8 +12,11 @@
 							<td>
 								<b>Logo</b>
 							</td>
-							<td width = "55%">
-								<b>Template Text</b>
+							<td width = "45%">
+								<b>Text</b>
+							</td>
+							<td>
+								<b>Colors</b>
 							</td>
 							<td>
 								<b>Country</b>
@@ -45,34 +48,63 @@
 							<td>
 								<table width = "100%">
 									<tr>
-										<td align = "right">Title: &nbsp</td>
+										<td align = "right" width = "25%">Title:&nbsp;</td>
 										<td>
 											<input id = "title" name = "title" value = "${imageId}" type = "text"/>
 										</td>
 									</tr>
 									<tr>
-										<td align = "right">Description: &nbsp</td>
+										<td align = "right">Description:&nbsp;</td>
 										<td>
 											<input id = "description" name = "description" value = "Country: ${countryCode}" type = "text"/>
 										</td>
 									</tr>
 									<tr>
-										<td align = "right">Location: &nbsp</td>
+										<td align = "right">Location:&nbsp;</td>
 										<td>
 											<input id = "location" name = "location" value = "${centerGeo}" type = "text"/>
 										</td>
 									</tr>
 									<tr>
-										<td align = "right">Acquisition Date: &nbsp</td>
+										<td align = "right">Acquisition Date:&nbsp;</td>
 										<td>
 											<input id = "acquisitionDate" name = "acquisitionDate" type = "text" value = "${acquisitionDate}"/>
 										</td>
 									</tr>
 									<tr>
-										<td align = "right">Security Classification: &nbsp</td>
+										<td align = "right">Security Classification:&nbsp;</td>
 										<td>
 											<input id = "securityClassification" name = "securityClassification" type = "text" value = "${securityClassification}"/>
 										</td>
+									</tr>
+									<tr>
+										<td align = "right">Header/Footer Gradient:&nbsp;</td>
+										<td align = "right">
+											<div id = "headerFooterGradient"><div\>
+											<input class = "color" id = "gradientColorTop" name = "gradientColorTop" onChange = "gradientGenerator()" size = "5" value = "595454"/>
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td>
+								<table>
+									<tr>
+										<td><input class = "color" id = "titleTextColor" name = "titleTextColor" size = "5" value = "FFFF00"/></td>
+									</tr>
+									<tr>
+										<td><input class = "color" id = "descriptionTextColor" name = "descriptionTextColor" size = "5"/></td>
+									</tr>
+									<tr>
+										<td><input class = "color" id = "locationTextColor" name = "locationTextColor" size = "5" value = "ADD8E6"/></td>
+									</tr>
+									<tr>
+										<td><input class = "color" id = "acquisitionDateTextColor" name = "acquisitionDateTextColor" size = "5" value = "ADD8E6"/></td>
+									</tr>
+									<tr>
+										<td><input class = "color" id = "securityClassificationTextColor" name = "securityClassificationTextColor" size = "5" value = "ADD8E6"/></td>
+									</tr>
+									<tr>
+										<td><input class = "color" id = "gradientColorBottom" name = "gradientColorBottom" onChange = "gradientGenerator()" size = "5" value = "000000"/></td>
 									</tr>
 								</table>
 							</td>
@@ -104,6 +136,8 @@
 				<div id = "exportPreviewUrl">${createLink(action: 'exportPreview')}</div>
 				<div id = "imageResourceLocation">${resource(dir: 'images/', plugin: 'omar-image-magick')}</div>
 			</div>
+			<div id = "gradientGeneratorUrl">${createLink(action: 'gradientGenerator')}</div>
+			<div id = "jsColorImagesDirectory">${resource(dir: 'images/jsColor/', plugin: 'omar-image-magick')}</div>
 		</content>
 		<content tag = "bottom"></content>
 	</body>

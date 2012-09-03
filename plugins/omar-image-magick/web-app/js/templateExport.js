@@ -1,5 +1,10 @@
+var acquisitionDateTextColor;
 var countryMap;
+var descriptionTextColor;
 var dom = YAHOO.util.Dom;
+var locationTextColor;
+var securityClassificationTextColor;
+var titleTextColor;
 
 function changeLogo(logo)
 {
@@ -15,6 +20,7 @@ function changeCountry(country)
 function exportPreview()
 {
 	exportPreviewSetup();
+	getTextColors();
 	var previewUrl = dom.get("exportPreviewUrl").innerHTML;
 		var countryCode = dom.get("country").options.selectedIndex;
 	previewUrl += "?country=" + dom.get("country").options[countryCode].value;
@@ -32,11 +38,18 @@ function exportPreview()
 		var logoId = dom.get("logo").options.selectedIndex;
 	previewUrl += "&logo=" + dom.get("logo").options[logoId].value;
 	previewUrl += "&title=" + dom.get("title").value;
+	previewUrl += "&titleTextColor=" + titleTextColor;
 	previewUrl += "&description=" + dom.get("description").value;
+	previewUrl += "&descriptionTextColor=" + descriptionTextColor;
 	previewUrl += "&location=" + dom.get("location").value;
+	previewUrl += "&locationTextColor=" + locationTextColor;
 	previewUrl += "&acquisitionDate=" + dom.get("acquisitionDate").value;
+	previewUrl += "&acquisitionDateTextColor=" + acquisitionDateTextColor; 
 	previewUrl += "&securityClassification=" + dom.get("securityClassification").value;
+	previewUrl += "&securityClassificationTextColor=" + securityClassificationTextColor;
 	previewUrl += "&northArrowAngle=" + dom.get("northArrowAngle").value;
+	previewUrl += "&gradientColorTop=" + dom.get("gradientColorTop").value;
+	previewUrl += "&gradientColorBottom=" + dom.get("gradientColorBottom").value;
 	dom.get("preview").onload = function() { exportPreviewCleanup(); }
 	dom.get("preview").src = previewUrl;
 }
@@ -54,6 +67,25 @@ function exportPreviewSetup()
 	dom.get("loading").src = dom.get("imageResourceLocation").innerHTML + "imageLoading.gif";
 	dom.get("loading").style.display = "block";
 	dom.get("preview").style.display = "none";
+}
+
+function getTextColors()
+{
+	acquisitionDateTextColor = dom.get("acquisitionDateTextColor").value;
+	descriptionTextColor = dom.get("descriptionTextColor").value;
+	locationTextColor = dom.get("locationTextColor").value;
+	securityClassificationTextColor = dom.get("securityClassificationTextColor").value;
+	titleTextColor = dom.get("titleTextColor").value;
+}
+
+function gradientGenerator()
+{
+	var gradientGeneratorUrl = dom.get("gradientGeneratorUrl").innerHTML;
+	gradientGeneratorUrl += "?gradientColorTop=" + dom.get("gradientColorTop").value;
+	gradientGeneratorUrl += "&gradientColorBottom=" + dom.get("gradientColorBottom").value;
+	gradientGeneratorUrl += "&gradientHeight=" + dom.get("headerFooterGradient").offsetHeight;
+	dom.get("headerFooterGradient").style.backgroundImage = "url('" + gradientGeneratorUrl + "')";
+	 
 }
 
 function init()
@@ -110,4 +142,5 @@ function updateCountryMaps()
 		});
 		layout.render();
 	});
+	gradientGenerator();
 })();
