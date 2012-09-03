@@ -7,7 +7,9 @@ modules = {
 		resource url: [plugin: 'yui', dir: "js/yui/resize", file: "resize-min.js"]
 		resource url: [plugin: 'yui', dir: "js/yui/layout", file: "layout-min.js"]
 		resource url: [dir: 'css', file: 'loginPageLayout.css']
-   		resource url: [dir: 'css', file: 'templateExport.css', plugin: 'omar-image-magick']
+   		
+		resource url: [dir: 'css', file: 'templateExport.css', plugin: 'omar-image-magick']
+		resource url: [dir: 'js', file: 'jsColor.js']
 		resource url: [dir: 'js', file: 'templateExport.js', plugin: 'omar-image-magick']
 	}
 }

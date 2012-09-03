@@ -11,7 +11,7 @@ class TemplateExportService
 	def grailsApplication
 
 	def command
-	def serviceMethod(def acquisitionDate, def country, def description, def imageUrl, def includeOverviewMap, def location, def logo, def northAngle, def securityClassification, def title)
+	def serviceMethod(def acquisitionDate, def acquisitionDateTextColor, def country, def description, def descriptionTextColor, def gradientColorBottom, def gradientColorTop, def imageUrl, def includeOverviewMap, def location, def locationTextColor, def logo, def northAngle, def securityClassification, def securityClassificationTextColor, def title, def titleTextColor)
 	{
 		def date = new Date().getTime()
 
@@ -105,7 +105,7 @@ class TemplateExportService
 				"convert", 
 				"-size", 
 				"${headerWidth}x${headerHeight}", 
-				"xc: #595454ff", 
+				"gradient: #${gradientColorTop}-#${gradientColorBottom}", 
 				"${tempFilesLocation}${date}header.png"
 		]
 		if (DEBUG) { println "${command}" }
@@ -246,10 +246,12 @@ class TemplateExportService
 		if (DEBUG) { println "Generate header security classification text:" }
 		command = [
 				"convert", 
+				"-alpha",
+				"set",
 				"-background", 
-				"#595454", 
+				"none", 
 				"-fill", 
-				"white", 
+				"#${securityClassificationTextColor}", 
 				"-size", 
 				"${headerTextWidth}x${headerSecurityClassificationTextHeight}", 
 				"-gravity", 
@@ -268,10 +270,12 @@ class TemplateExportService
 		if (DEBUG) { println "Generate the header title text:" }
 		command = [
 				"convert", 
+				"-alpha",
+				"set",
 				"-background", 
-				"#595454", 
+				"none", 
 				"-fill", 
-				"white", 
+				"#${titleTextColor}", 
 				"-size", 
 				"${headerTextWidth}x${headerTitleTextHeight}", 
 				"-gravity", 
@@ -289,11 +293,13 @@ class TemplateExportService
 		if (DEBUG) { println "${headerDescriptionTextHeight} pixels" }
 		if (DEBUG) { println "Generate the header description line of text:" }
 		command = [
-				"convert", 
+				"convert",
+				"-alpha",
+				"set",
 				"-background", 
-				"#595454", 
+				"none", 
 				"-fill", 
-				"white", 
+				"#${descriptionTextColor}", 
 				"-size", 
 				"${headerTextWidth}x${headerDescriptionTextHeight}", 
 				"-gravity", 
@@ -315,7 +321,7 @@ class TemplateExportService
 				"${tempFilesLocation}${date}headerText.png"
 		]
 		if (DEBUG) { println "${command}" }
-		executeCommand(command)
+		//executeCommand(command)
 
 		//#######################################################################################################################
 		//################################################## Header Adjustment ##################################################
@@ -326,19 +332,51 @@ class TemplateExportService
 		if (DEBUG) { println "Determine the header text offset:" }
 		def headerTextOffset = 2 * logoOffset + logoWidth
 		if (DEBUG) { println "${headerTextOffset} pixels" }
-		if (DEBUG) { println "Add the header text to the header:" }
+		
+		if (DEBUG) { println "Add the security classification text to the header:" }
+		def headerSecurityClassificationTextOffset = logoOffset
 		command = [
-				"composite", 
-				"${tempFilesLocation}${date}headerText.png", 
-				"-gravity",
-				"West", 
-				"-geometry",
-				"+${headerTextOffset}+0",
-				"${tempFilesLocation}${date}header.png",
-				"${tempFilesLocation}${date}header.png"
-		]
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
+                                "composite",
+                                "${tempFilesLocation}${date}headerSecurityClassificationText.png",
+                                "-gravity",
+                                "NorthWest",
+                                "-geometry",
+                                "+${headerTextOffset}+${headerSecurityClassificationTextOffset}",
+                                "${tempFilesLocation}${date}header.png",
+                                "${tempFilesLocation}${date}header.png"
+                ]
+                if (DEBUG) { println "${command}" }
+                executeCommand(command)
+
+		if (DEBUG) { println "Add the title text to the header:" }
+		def headerTitleTextOffset = headerSecurityClassificationTextOffset + headerSecurityClassificationTextHeight
+		command = [
+                                "composite",
+                                "${tempFilesLocation}${date}headerTitleText.png",
+                                "-gravity",
+                                "NorthWest",
+                                "-geometry",
+                                "+${headerTextOffset}+${headerTitleTextOffset}",
+                                "${tempFilesLocation}${date}header.png",
+                                "${tempFilesLocation}${date}header.png"
+                ]
+                if (DEBUG) { println "${command}" }
+                executeCommand(command)
+
+		if (DEBUG) { println "Add the description text to the header:" }
+		def headerDescriptionTextOffset = logoOffset
+		command = [
+                                "composite",
+                                "${tempFilesLocation}${date}headerDescriptionText.png",
+                                "-gravity",
+                                "SouthWest",
+                                "-geometry",
+                                "+${headerTextOffset}+${headerDescriptionTextOffset}",
+                                "${tempFilesLocation}${date}header.png",
+                                "${tempFilesLocation}${date}header.png"
+                ]
+                if (DEBUG) { println "${command}" }
+                executeCommand(command)
 
 		//#################################################################################################################
 		//################################################## North Arrow ##################################################
@@ -480,7 +518,7 @@ class TemplateExportService
                                 "convert",
                                 "-size",
                                 "${infoBannerWidth}x${infoBannerHeight}",
-                                "xc: #595454ff",
+                                "gradient: #${gradientColorTop}-#${gradientColorBottom}",
                                 "${tempFilesLocation}${date}infoBanner.png"
                 ]
                 if (DEBUG) { println "${command}" }
@@ -498,10 +536,12 @@ class TemplateExportService
 		if (DEBUG) { println "Generate the info banner security classification text:" }
 		command = [
                                 "convert",
+				"-alpha",
+				"set",
                                 "-background",
-                                "#595454",
+                                "none",
                                 "-fill",
-                                "white",
+                                "#${securityClassificationTextColor}",
                                 "-size",
                                 "${infoBannerTextWidth}x${infoBannerTextHeight}",
                                 "-gravity",
@@ -529,10 +569,12 @@ class TemplateExportService
 		if (DEBUG) { println "Generate the info banner location text:" } 
 		command = [
                                 "convert",
+				"-alpha",
+				"set",
                                 "-background",
-                                "#595454",
+                                "none",
                                 "-fill",
-                                "white",
+                                "#${locationTextColor}",
                                 "-size",
                                 "${infoBannerTextWidth}x${infoBannerTextHeight}",
                                 "-gravity",
@@ -560,10 +602,12 @@ class TemplateExportService
                 if (DEBUG) { println "Generate the info banner acquisition date text:" }
 		command = [
                                 "convert",
+				"-alpha",
+				"set",
                                 "-background",
-                                "#595454",
+                                "none",
                                 "-fill",
-                                "white",
+                                "#${acquisitionDateTextColor}",
                                 "-size",
                                 "${infoBannerTextWidth}x${infoBannerTextHeight}",
                                 "-gravity",

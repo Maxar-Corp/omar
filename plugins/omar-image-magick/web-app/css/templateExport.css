@@ -1,3 +1,8 @@
+#acquisitionDate, #description, #location, #securityClassification, #title
+{
+	width: 100%;
+}
+
 body
 {
 	height: 100%;
@@ -16,7 +21,7 @@ body
 	width: 100%;
 }
 
-#countryCode, #exportPreviewUrl, #imageResourceLocation, #loading, #preview, #templateStatus
+#countryCode, #exportPreviewUrl, #gradientGeneratorUrl, #imageResourceLocation, #jsColorImagesDirectory, #loading, #preview, #templateStatus
 {
 	display: none;
 }
@@ -36,7 +41,7 @@ body
 	width: 100%;
 }
 
-#acquisitionDate, #description, #location, #securityClassification, #title
+#headerFooterGradient
 {
-	width: 100%;
+	background-repeat: repeat-x;
 }
