@@ -161,6 +161,9 @@ s
               <li>
                   <g:link plugin="omar-raster" controller="GetTileLog" action="list">View Image Space Log</g:link>
               </li>
+              <li>
+                  <g:link plugin="omar-ogc" controller="WmsLog" action="list">View WMS Log</g:link>
+              </li>
           </ol>
         </td>
       </tr>
