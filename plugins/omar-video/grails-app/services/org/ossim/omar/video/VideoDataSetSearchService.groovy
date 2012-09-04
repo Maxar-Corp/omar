@@ -215,6 +215,45 @@ class VideoDataSetSearchService implements InitializingBean
     results.close()
   }
 
+  void scrollFeatures(VideoDataSetQuery videoDataSetQuery, Map<String, String> params, Closure closure)
+  {
+    def criteriaBuilder = VideoDataSet.createCriteria();
+
+    def x = {
+      projections { property("groundGeom") }
+
+      if ( params?.max )
+      {
+        maxResults(params.max as Integer)
+      }
+
+      if ( params?.offset )
+      {
+        firstResult(params.offset as Integer)
+      }
+      cacheMode(CacheMode.GET)
+    }
+
+    def criteria = criteriaBuilder.buildCriteria(x)
+
+    criteria.add(videoDataSetQuery?.createClause())
+    criteria.setReadOnly(true)
+
+    def results = criteria.scroll(/*ScrollMode.FORWARD_ONLY*/)
+    def status = results.first()
+
+    while ( status )
+    {
+      def geom = results.get(0)
+
+      closure.call([groundGeom: geom])
+
+      status = results.next()
+    }
+
+    results.close()
+  }
+
 
   int getCount(VideoDataSetQuery videoDataSetQuery)
   {
