@@ -84,8 +84,7 @@ function gradientGenerator()
 	gradientGeneratorUrl += "?gradientColorTop=" + dom.get("gradientColorTop").value;
 	gradientGeneratorUrl += "&gradientColorBottom=" + dom.get("gradientColorBottom").value;
 	gradientGeneratorUrl += "&gradientHeight=" + dom.get("headerFooterGradient").offsetHeight;
-	dom.get("headerFooterGradient").style.backgroundImage = "url('" + gradientGeneratorUrl + "')";
-	 
+	dom.get("headerFooterGradient").style.backgroundImage = "url('" + gradientGeneratorUrl + "')"; 
 }
 
 function init()
@@ -102,6 +101,18 @@ function init()
 		}
 	}
 	updateCountryMaps();
+}
+
+function resetColors()
+{
+	dom.get("titleTextColor").color.fromString("FFFF00");
+	dom.get("descriptionTextColor").color.fromString("FFFFFF");
+	dom.get("locationTextColor").color.fromString("ADD8E6");
+	dom.get("acquisitionDateTextColor").color.fromString("ADD8E6");
+	dom.get("securityClassificationTextColor").color.fromString("ADD8E6");
+	dom.get("gradientColorBottom").color.fromString("000000");	
+	dom.get("gradientColorTop").color.fromString("595454");
+	gradientGenerator();
 }
 
 function submitTemplate()

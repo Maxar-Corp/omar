@@ -121,8 +121,9 @@
 						</tr>
 					</table>
 					<div align = "center">
-						<input onClick = "exportPreview()" type = "button" value = "Preview">
-						<input onClick = "submitTemplate()" type = "submit" value = "Download">
+						<input onClick = "exportPreview()" type = "button" value = "Preview"/>
+						<input onClick = "resetColors()" type = "button" value = "Reset"/>
+						<input onClick = "submitTemplate()" type = "submit" value = "Download"/>
 						<br><br>
 					</div>
 					<input id = "imageURL" name = "imageURL" style = "display: none", type = "text" value = "${imageURL}">
