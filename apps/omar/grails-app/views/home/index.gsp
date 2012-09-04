@@ -155,9 +155,12 @@ s
             <li>
               <g:link plugin="omar-core" controller="report" action="create">User Feedback</g:link>
             </li>
-            <li>
-              <g:link plugin="omar-core" controller="report" action="list">View Feedback</g:link>
-            </li>
+              <li>
+                  <g:link plugin="omar-core" controller="report" action="list">View Feedback</g:link>
+              </li>
+              <li>
+                  <g:link plugin="omar-raster" controller="GetTileLog" action="list">View Image Space Log</g:link>
+              </li>
           </ol>
         </td>
       </tr>
