@@ -50,7 +50,7 @@ class ImageSpaceController
         def y = 0
         def format = paramsIgnoreCase.format ?: "image/jpeg"
         def ext = ".jpg"
-
+        getTileLogParams.format = format
         def principal = springSecurityService?.principal
         def hasUserInformation = !( springSecurityService?.principal instanceof String )
         def secUser = hasUserInformation ? SecUser.findByUsername( principal.username ) : null
