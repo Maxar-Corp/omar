@@ -2,18 +2,18 @@
 <%@ page import="org.ossim.omar.raster.GetTileLog" %>
 <!doctype html>
 <html>
-	<head>
-		<meta name="layout" content="main">
-		<g:set var="entityName" value="${message(code: 'getTileLog.label', default: 'GetTileLog')}" />
-		<title><g:message code="default.show.label" args="[entityName]" /></title>
-	</head>
-	<body>
-		<a href="#show-getTileLog" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="layout" content="generatedViews"/>
+    <title>OMAR:Show Log</title>
+</head>
+ <body>
+ <content tag="content">
+    <a href="#show-getTileLog" class="skip" tabindex="-1"><g:message code="default.link.skip.label" default="Skip to content&hellip;"/></a>
 		<div class="nav" role="navigation">
 			<ul>
 				<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-				<li><g:link class="list" action="list"><g:message code="default.list.label" args="[entityName]" /></g:link></li>
-				<li><g:link class="create" action="create"><g:message code="default.new.label" args="[entityName]" /></g:link></li>
+				<li><g:link class="create" action="list">List</g:link></li>
 			</ul>
 		</div>
 		<div id="show-getTileLog" class="content scaffold-show" role="main">
@@ -22,7 +22,6 @@
 			<div class="message" role="status">${flash.message}</div>
 			</g:if>
 			<ol class="property-list getTileLog">
-			
 				<g:if test="${getTileLogInstance?.x}">
 				<li class="fieldcontain">
 					<span id="x-label" class="property-label"><g:message code="getTileLog.x.label" default="X" /></span>
@@ -162,10 +161,12 @@
 			<g:form>
 				<fieldset class="buttons">
 					<g:hiddenField name="id" value="${getTileLogInstance?.id}" />
-					<g:link class="edit" action="edit" id="${getTileLogInstance?.id}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
+					<%--<g:link class="edit" action="edit" id="${getTileLogInstance?.id}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
 					<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+                    --%>
 				</fieldset>
 			</g:form>
 		</div>
-	</body>
+ </content>
+ </body>
 </html>
