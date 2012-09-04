@@ -443,7 +443,7 @@ class WmsController extends OgcController implements InitializingBean
         wmsLogParams.ip = request.getRemoteAddr()
       }
 
-      def urlTemp = createLink( [controller: 'ogc', action: 'getMap', base: "${ grailsApplication.config.omar.serverURL }", absolute: true, params: params] )
+      def urlTemp = createLink( [controller: 'ogc', action: 'wms', base: "${ grailsApplication.config.omar.serverURL }", absolute: true, params: params] )
       wmsLogParams.with {
         endDate = new Date()
         internalTime = ( internaltime - starttime ) / 1000.0
