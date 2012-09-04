@@ -158,12 +158,14 @@ s
               <li>
                   <g:link plugin="omar-core" controller="report" action="list">View Feedback</g:link>
               </li>
-              <li>
-                  <g:link plugin="omar-raster" controller="GetTileLog" action="list">View Image Space Log</g:link>
-              </li>
-              <li>
-                  <g:link plugin="omar-ogc" controller="WmsLog" action="list">View WMS Log</g:link>
-              </li>
+              <sec:ifAllGranted roles="ROLE_ADMIN">
+                  <li>
+                      <g:link plugin="omar-raster" controller="GetTileLog" action="list">View Image Space Log</g:link>
+                  </li>
+                  <li>
+                      <g:link plugin="omar-ogc" controller="WmsLog" action="list">View WMS Log</g:link>
+                  </li>
+              </sec:ifAllGranted>
           </ol>
         </td>
       </tr>
