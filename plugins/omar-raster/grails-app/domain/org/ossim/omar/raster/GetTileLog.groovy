@@ -1,7 +1,6 @@
 package org.ossim.omar.raster
 
 class GetTileLog {
-    static scaffold = true
     Double x
     Double y
     Long   width
