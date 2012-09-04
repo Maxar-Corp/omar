@@ -51,6 +51,11 @@
       YAHOO.util.Dom.setStyle( document.body, 'visibility', 'visible' );
 
       layout.render();
+
+        if(init)
+        {
+            init();
+        }
     } );
   })();
 </r:script>
