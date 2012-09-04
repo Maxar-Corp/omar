@@ -35,7 +35,6 @@ class TemplateExportController
 	{
 		def acquisitionDate = params.acquisitionDate
 		def acquisitionDateTextColor = params.acquisitionDateTextColor
-		println "${acquisitionDateTextColor}"
 		def country = params.country
 		def description = params.description
 		def descriptionTextColor = params.descriptionTextColor
