@@ -21,7 +21,7 @@ class ImageSpaceController
 
     def getTile( )
     {
-
+        //  println params
 
         def paramsIgnoreCase = new CaseInsensitiveMap( params )
         def image = null
@@ -147,6 +147,10 @@ class ImageSpaceController
         try
         {
             Rectangle rect = new Rectangle( x, y, width, height )
+            getTileLogParams.x = x
+            getTileLogParams.y = y
+            getTileLogParams.width = width
+            getTileLogParams.height = height
             def rasterEntry = RasterEntry.findByIndexId( paramsIgnoreCase.id ) ?: RasterEntry.findByTitle( paramsIgnoreCase.id ) ?: RasterEntry.findById( paramsIgnoreCase.id )
             if ( rasterEntry == null )
             {
@@ -188,6 +192,8 @@ class ImageSpaceController
             log.error( e.message )
         }
         endtime = System.currentTimeMillis()
+        getTileLogParams.url = createLink( [controller: 'ImageSpace', action: 'getTile', base: "${ grailsApplication.config.omar.serverURL }", absolute: true, params: params] )
+
         getTileLogParams.internalTime = (internaltime-starttime)/1000.0;
         getTileLogParams.renderTime = (endtime-starttime)/1000.0;
         getTileLogParams.totalTime  = (getTileLogParams.internalTime + getTileLogParams.renderTime)
