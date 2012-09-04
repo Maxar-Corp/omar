@@ -18,7 +18,6 @@ class GetTileLogService {
         paramsSave
     }
     def logParams(def params) {
-        println 1
         try{
 
             def paramsSave = fixParamsForRouting(params)
