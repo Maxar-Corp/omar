@@ -146,36 +146,36 @@ class WMSRequest
     return result
   }
 
-  def getFormat()
-  {
-    switch ( format?.toLowerCase() )
-    {
-    case "jpeg":
-    case "jpg":
-    case "image/jpeg":
-    case "image/jpg":
-      if ( transparent?.equalsIgnoreCase( "true" ) )
-      {
-        format = "image/png"
-      }
-      else
-      {
-        format = "image/jpeg"
-      }
-      break
-    case "png":
-    case "image/png":
-      format = "image/png"
-      break
-    case "gif":
-    case "image/gif":
-      format = "image/gif"
-      break
-    default:
-      format = "image/png"
-      break
-    }
-
-    format
-  }
+//  def getFormat()
+//  {
+//    switch ( format?.toLowerCase() )
+//    {
+//    case "jpeg":
+//    case "jpg":
+//    case "image/jpeg":
+//    case "image/jpg":
+//      if ( transparent )
+//      {
+//        format = "image/png"
+//      }
+//      else
+//      {
+//        format = "image/jpeg"
+//      }
+//      break
+//    case "png":
+//    case "image/png":
+//      format = "image/png"
+//      break
+//    case "gif":
+//    case "image/gif":
+//      format = "image/gif"
+//      break
+//    default:
+//      format = "image/png"
+//      break
+//    }
+//
+//    format
+//  }
 }
