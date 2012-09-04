@@ -123,7 +123,14 @@
 	      </li>
             </ul>
             <ul>
-              <li class="yuimenuitem">
+                <sec:ifAllGranted roles="ROLE_ADMIN">
+                    <li class="yuimenuitem">
+                        <a class="yuimenuitemlabel"
+                           href="${createLink(controller: "WmsLog", action: "list")}"
+                        title="List WMS Logs">WMS Logs</a>
+                    </li>
+                </sec:ifAllGranted>
+                <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
                    href="${createLink( action: "index", params: [layers: ( rasterEntries*.indexId ).join( ',' )] )}"
                    title="Reset the view">Reset</a>

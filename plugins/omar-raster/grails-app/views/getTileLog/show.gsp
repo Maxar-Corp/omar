@@ -1,4 +1,3 @@
-
 <%@ page import="org.ossim.omar.raster.GetTileLog" %>
 <!doctype html>
 <html>
@@ -152,7 +151,9 @@
 				<li class="fieldcontain">
 					<span id="url-label" class="property-label"><g:message code="getTileLog.url.label" default="Url" /></span>
 					
-						<span class="property-value" aria-labelledby="url-label"><g:fieldValue bean="${getTileLogInstance}" field="url"/></span>
+						<span class="property-value" aria-labelledby="url-label">
+                            <a href="${fieldValue(bean: getTileLogInstance, field: "url")}">${fieldValue(bean: getTileLogInstance, field: "url")}</a>
+                        </span>
 					
 				</li>
 				</g:if>
@@ -161,8 +162,9 @@
 			<g:form>
 				<fieldset class="buttons">
 					<g:hiddenField name="id" value="${getTileLogInstance?.id}" />
-					<%--<g:link class="edit" action="edit" id="${getTileLogInstance?.id}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
-					<g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+                    <%--
+                    <g:actionSubmit class="delete" action="delete" value="${message(code: 'default.button.delete.label', default: 'Delete')}" onclick="return confirm('${message(code: 'default.button.delete.confirm.message', default: 'Are you sure?')}');" />
+                    <g:link class="edit" action="edit" id="${getTileLogInstance?.id}"><g:message code="default.button.edit.label" default="Edit" /></g:link>
                     --%>
 				</fieldset>
 			</g:form>
