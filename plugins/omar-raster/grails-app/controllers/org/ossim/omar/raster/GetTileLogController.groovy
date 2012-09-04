@@ -9,6 +9,7 @@ class GetTileLogController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
     def sql;
+    def sessionFactory
     def index() {
         redirect(action: "list", params: params)
     }
@@ -23,8 +24,10 @@ class GetTileLogController {
         }
 
         // we are executing a raw sql don't let hibernate read from cache
-        // force a reload
-        params.cache=false
+        // force a reload for this session
+        //
+        sessionFactory.evictQueries()
+
         redirect(action: "list", params: params)
         //render (view: "list",
         //        model:[getTileLogInstanceList: GetTileLog.list(params),
@@ -75,7 +78,7 @@ class GetTileLogController {
 		flash.message = message(code: 'default.created.message', args: [message(code: 'getTileLog.label', default: 'GetTileLog'), getTileLogInstance.id])
         redirect(action: "show", id: getTileLogInstance.id)
     }
-
+   */
     def show() {
         def getTileLogInstance = GetTileLog.get(params.id)
         if (!getTileLogInstance) {
@@ -86,7 +89,7 @@ class GetTileLogController {
 
         [getTileLogInstance: getTileLogInstance]
     }
-
+/*
     def edit() {
         def getTileLogInstance = GetTileLog.get(params.id)
         if (!getTileLogInstance) {
