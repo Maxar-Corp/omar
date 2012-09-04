@@ -15,6 +15,7 @@ import java.awt.Polygon
 
 import geoscript.workspace.PostGIS
 import geoscript.filter.Filter
+import org.hibernate.ScrollMode
 
 class RasterEntrySearchService implements InitializingBean
 {
@@ -190,8 +191,9 @@ class RasterEntrySearchService implements InitializingBean
     def criteria = criteriaBuilder.buildCriteria( x )
 
     criteria.add( rasterEntryQuery?.createClause() )
+    criteria.setReadOnly(true)
 
-    def results = criteria.scroll()
+    def results = criteria.scroll(/*ScrollMode.FORWARD_ONLY*/)
     def status = results.first()
 
     while ( status )
