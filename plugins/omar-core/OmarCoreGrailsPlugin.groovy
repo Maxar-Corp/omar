@@ -39,30 +39,50 @@ This plugin contains OMAR code that can be shared or accessed from other OMAR pl
     customEditorRegistrar( CustomEditorRegistrar )
     mapPropertyEditor( MapPropertyEditor )
 
-    wmsLoggingAppender( DbAppender ) {
-      tableMapping = [
-              width: ":width",
-              height: ":height",
-              layers: ":layers",
-              styles: ":styles",
-              format: ":format",
-              request: ":request",
-              bbox: ":bbox",
-              internal_time: ":internalTime",
-              render_time: ":renderTime",
-              total_time: ":totalTime",
-              start_date: ":startDate",
-              end_date: ":endDate",
-              user_name: ":userName",
-              ip: ":ip",
-              url: ":url",
-              mean_gsd: ":meanGsd",
-              geometry: "ST_GeomFromText(:geometry, 4326)"
-      ]
-      tableName = "wms_log"
-    }
+      wmsLoggingAppender( DbAppender ) {
+          tableMapping = [
+                  width: ":width",
+                  height: ":height",
+                  layers: ":layers",
+                  styles: ":styles",
+                  format: ":format",
+                  request: ":request",
+                  bbox: ":bbox",
+                  internal_time: ":internalTime",
+                  render_time: ":renderTime",
+                  total_time: ":totalTime",
+                  start_date: ":startDate",
+                  end_date: ":endDate",
+                  user_name: ":userName",
+                  ip: ":ip",
+                  url: ":url",
+                  mean_gsd: ":meanGsd",
+                  geometry: "ST_GeomFromText(:geometry, 4326)"
+          ]
+          tableName = "wms_log"
+      }
+      getTileLoggingAppender( DbAppender ) {
+          tableMapping = [
+                  x:":x",
+                  y:":y",
+                  width:":width",
+                  height:":height",
+                  format:":format",
+                  id:":id",
+                  scale:":scale",
+                  internalTime:":internalTime",
+                  renderTime:":renderTime",
+                  totalTime:":totalTime",
+                  startDate:":startDate",
+                  endDate:":endDate",
+                  userName:":userName",
+                  ip:":ip",
+                  url:":url"
+          ]
+          tableName = "get_tile_log"
+      }
 
-    parserPool( XmlParserPool, 32 )
+      parserPool( XmlParserPool, 32 )
   }
 
   def doWithDynamicMethods = { ctx ->
