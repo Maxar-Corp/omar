@@ -29,7 +29,7 @@
         outerLayout.on('resize', function(evt) {
             if(OMAR.imageManipulator)
             {
-                OMAR.imageManipulator.checkResize();
+                //OMAR.imageManipulator.checkResize();
             }
         });
         outerLayout.on( 'render', function ()

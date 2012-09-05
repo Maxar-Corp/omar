@@ -558,15 +558,15 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       var h = this.containerDivRegion.height;
       var w2 = w*0.5;
       var h2 = h*0.5;
-      //var WH = Math.max(w,h);   // extend out by about 10 percent
+      var WH = Math.max(w,h);   // extend out by about 10 percent
       var WHMin = Math.min(w,h);   // extend out by about 10 percent
-      //var ratio = WH/WHMin
-      //var multiplier = 1.0;
-      //if(ratio < 2.0) multiplier = 2.0/ratio;
+      var ratio = WH/WHMin
+      var multiplier = 1.0;
+      if(ratio < 2.0) multiplier = 2.0/ratio;
 
-      //WH=WH*multiplier;
+      WH=WH*multiplier;
 
-      WH = WHMin*2.0;
+      //WH = WHMin*2.0;
 
       var WH2 = WH*0.5;
       w2 = WH2;
