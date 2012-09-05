@@ -1,5 +1,5 @@
 def useP6Spy = false // use this to enable p6spy logging
-def appVersion = "1.8.12"
+def appVersion = "1.8.14"
 
 dataSource {
   pooled = true
