@@ -374,7 +374,18 @@ class RasterEntryController implements InitializingBean
       //                                                                      null)
 
 //      return [ogcFilterQueryFields:ogcFilterQueryFields, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS]
-      return [action: "results", session: session, queryParams: queryParams, baseWMS: baseWMS, dataWMS: dataWMS, sessionAction: "updateSession", sessionController: "session", rasterEntrySearchCurrentTab1: session.rasterEntrySearchCurrentTab1, rasterEntrySearchCurrentTab2: session.rasterEntrySearchCurrentTab2]
+      return [
+         action: "results",
+          session: session,
+          queryParams: queryParams,
+          baseWMS: baseWMS,
+          dataWMS: dataWMS,
+          sessionAction: "updateSession",
+          sessionController: "session",
+          rasterEntrySearchCurrentTab1: session.rasterEntrySearchCurrentTab1,
+          rasterEntrySearchCurrentTab2: session.rasterEntrySearchCurrentTab2,
+          footprintStyle: applicationContext.byFileType
+      ]
     }
   }
 

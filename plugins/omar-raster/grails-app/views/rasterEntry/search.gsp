@@ -32,6 +32,8 @@
   <content tag="right1">
     <g:render plugin="omar-core" template="/common/mensurationTemplate"/>
     <g:render plugin="omar-core" template="/common/olLayerSwitcherTemplate"/>
+    <g:render plugin="omar-core" template="/common/footprintLegendTemplate" model="${[style: footprintStyle]}"/>
+
   </content>
 
   <content tag="left1">
