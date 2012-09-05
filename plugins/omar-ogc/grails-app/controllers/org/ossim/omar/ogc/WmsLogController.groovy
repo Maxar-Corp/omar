@@ -1,13 +1,15 @@
 package org.ossim.omar.ogc
 
 import org.springframework.dao.DataIntegrityViolationException
-import org.hibernate.CacheMode
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import org.ossim.omar.security.SecUser
 
 class WmsLogController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
     def sql
     def sessionFactory
+    def springSecurityService
     def index() {
         redirect(action: "list", params: params)
     }
@@ -31,28 +33,50 @@ class WmsLogController {
         params.order = params.order?:"desc"
         params.sort = params.sort?:"startDate"
         params.offset = params.offset?:"0"
-        def wmsLogInstanceList = WmsLog.list(params)
-        def wmsLogInstanceTotal = WmsLog.count()
+        def wmsLogInstanceList
+        def wmsLogInstanceTotal
+        if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
+        {
+            wmsLogInstanceList = WmsLog.list( params )
+            wmsLogInstanceTotal = WmsLog.count()
+        }
+        else
+        {
+            wmsLogInstanceList = WmsLog.createCriteria().list( params ) {
+                eq( "userName", springSecurityService.principal.username )
+            }
+            wmsLogInstanceTotal = wmsLogInstanceList.totalCount
+        }
+
         if (!wmsLogInstanceTotal)
         {
             flash.message = "WMS log is empty"
         }
 
-        [wmsLogInstanceList: wmsLogInstanceList, wmsLogInstanceTotal:wmsLogInstanceTotal ]
+        [wmsLogInstanceList: wmsLogInstanceList,
+         wmsLogInstanceTotal:wmsLogInstanceTotal ]
     }
 
     def create() {
-        [wmsLogInstance: new WmsLog(params)]
+        if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
+        {
+            return [wmsLogInstance: new WmsLog(params)]
+        }
+
+        null
     }
 
     def save() {
-        def wmsLogInstance = new WmsLog(params)
-        if (!wmsLogInstance.save(flush: true)) {
-            render(view: "create", model: [wmsLogInstance: wmsLogInstance])
-            return
-        }
+        if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
+        {
+            def wmsLogInstance = new WmsLog(params)
+            if (!wmsLogInstance.save(flush: true)) {
+                render(view: "create", model: [wmsLogInstance: wmsLogInstance])
+                return
+            }
 
-		flash.message = message(code: 'default.created.message', args: [message(code: 'wmsLog.label', default: 'WmsLog'), wmsLogInstance.id])
+            flash.message = message(code: 'default.created.message', args: [message(code: 'wmsLog.label', default: 'WmsLog'), wmsLogInstance.id])
+        }
         redirect(action: "show", id: wmsLogInstance.id)
     }
 
@@ -68,6 +92,7 @@ class WmsLogController {
     }
 
     def edit() {
+
         def wmsLogInstance = WmsLog.get(params.id)
         if (!wmsLogInstance) {
             flash.message = message(code: 'default.not.found.message', args: [message(code: 'wmsLog.label', default: 'WmsLog'), params.id])
