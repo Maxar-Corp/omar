@@ -13,7 +13,9 @@
 		<div class="nav" role="navigation">
 			<ul>
 				<li><a class="home" href="${createLink(uri: '/')}">Home</a></li>
-                <li><g:link class="clear" action="clear">Clear Log</g:link></li>
+                <sec:ifAllGranted roles="ROLE_ADMIN">
+                    <li><g:link class="clear" action="clear">Clear Log</g:link></li>
+                </sec:ifAllGranted>
             </ul>
 		</div>
 		<div id="list-wmsLog" class="content scaffold-list" role="main">

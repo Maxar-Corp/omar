@@ -69,13 +69,11 @@
                         </li>
                     </ul>
                     <ul>
-                        <sec:ifAllGranted roles="ROLE_ADMIN">
                         <li class="yuimenuitem">
                             <a class="yuimenuitemlabel"
                                href="${createLink(controller: "GetTileLog", action: "list")}"
                             title="List Image space Chipping Logs">Chipping Logs</a>
                         </li>
-                        </sec:ifAllGranted>
                         <li class="yuimenuitem">
                             <a class="yuimenuitemlabel"
                                href="${createLink(action: "imageSpace", params: [layers: rasterEntry?.indexId])}"

@@ -4,29 +4,35 @@ import org.springframework.dao.DataIntegrityViolationException
 import groovy.sql.Sql
 import org.hibernate.criterion.Order
 import org.hibernate.criterion.Projections
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import org.ossim.omar.security.SecUser
 
 class GetTileLogController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
     def sql;
     def sessionFactory
+    def springSecurityService
     def index() {
         redirect(action: "list", params: params)
     }
 
     def clear(){
-        try{
-            sql.execute("delete from get_tile_log;");
-        }
-        catch(def e)
+        if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
         {
-            log.info(e)
-        }
+            try{
+                sql.execute("delete from get_tile_log;");
+            }
+            catch(def e)
+            {
+                log.info(e)
+            }
 
         // we are executing a raw sql don't let hibernate read from cache
         // force a reload for this session
         //
-        sessionFactory.evictQueries()
+            sessionFactory.evictQueries()
+        }
 
         redirect(action: "list", params: params)
         //render (view: "list",
@@ -39,8 +45,21 @@ class GetTileLogController {
         params.order = params.order?:"desc"
         params.sort = params.sort?:"startDate"
         params.offset = params.offset?:"0"
-        def getTileLogInstanceList =  GetTileLog.list(params)
-        def getTileLogInstanceTotal = GetTileLog.count()
+        def getTileLogInstanceList
+        def getTileLogInstanceTotal
+        if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
+        {
+
+            getTileLogInstanceList  = GetTileLog.list(params)
+            getTileLogInstanceTotal = GetTileLog.count()
+        }
+        else
+        {
+            getTileLogInstanceList = GetTileLog.createCriteria().list( params ) {
+                eq( "userName", springSecurityService.principal.username )
+            }
+            getTileLogInstanceTotal = getTileLogInstanceList.totalCount
+        }
 
         if (!getTileLogInstanceTotal)
         {
