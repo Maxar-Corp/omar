@@ -18,6 +18,7 @@ class TemplateExportService
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
 		def logoFilesLocation = grailsLinkGenerator.resource(absolute: true, dir: 'images', plugin: 'omar-image-magick') + "/"
 		def mapFilesLocation = logoFilesLocation + "overviewMaps/"
+		def font = "web-app/fonts/ArialBold.ttf"
 
 		//##############################################################################################################################
 		//############################################################ Image Download ##################################################
@@ -256,6 +257,8 @@ class TemplateExportService
 				"${headerTextWidth}x${headerSecurityClassificationTextHeight}", 
 				"-gravity", 
 				"West", 
+				"-font",
+				"${font}",
 				"caption:${securityClassification}", 
 				"${tempFilesLocation}${date}headerSecurityClassificationText.png"
 		]
@@ -279,7 +282,9 @@ class TemplateExportService
 				"-size", 
 				"${headerTextWidth}x${headerTitleTextHeight}", 
 				"-gravity", 
-				"West", 
+				"West",
+				"-font",
+				"${font}", 
 				"caption:${title}", 
 				"${tempFilesLocation}${date}headerTitleText.png"
 		]
@@ -304,6 +309,8 @@ class TemplateExportService
 				"${headerTextWidth}x${headerDescriptionTextHeight}", 
 				"-gravity", 
 				"West", 
+				"-font",
+				"${font}",
 				"caption:${description}", 
 				"${tempFilesLocation}${date}headerDescriptionText.png"
 		]
@@ -546,6 +553,8 @@ class TemplateExportService
                                 "${infoBannerTextWidth}x${infoBannerTextHeight}",
                                 "-gravity",
                                 "West",
+				"-font",
+				"${font}",
                                 "caption: ${securityClassification}",
                                 "${tempFilesLocation}${date}infoBannerSecurityClassificationText.png"
                 ]
@@ -579,6 +588,8 @@ class TemplateExportService
                                 "${infoBannerTextWidth}x${infoBannerTextHeight}",
                                 "-gravity",
                                 "Center",
+				"-font",
+				"${font}",
                                 "caption:${location}",
                                 "${tempFilesLocation}${date}infoBannerLocationText.png"
                 ]
@@ -612,6 +623,8 @@ class TemplateExportService
                                 "${infoBannerTextWidth}x${infoBannerTextHeight}",
                                 "-gravity",
                                 "East",
+				"-font",
+				"${font}",
                                 "caption:${acquisitionDate} ",
                                 "${tempFilesLocation}${date}infoBannerAcquisitionDateText.png"
                 ]
@@ -664,6 +677,8 @@ class TemplateExportService
 				"${disclaimerTextWidth}x${disclaimerTextHeight}", 
 				"-gravity", 
 				"center", 
+				"-font",
+				"${font}",
 				"label:${disclaimerText}", 
 				"-append", 
 				"${tempFilesLocation}${date}finishedProduct.png"
