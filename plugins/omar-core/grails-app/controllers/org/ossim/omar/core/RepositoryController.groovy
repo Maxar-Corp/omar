@@ -11,6 +11,9 @@ class RepositoryController implements ApplicationContextAware
   def index( )
   { redirect( action: 'list', params: params ) }
 
+  def scripts( )
+  { }
+
   def stagerService
 
   // the delete, save and update actions only accept POST requests
@@ -152,18 +155,7 @@ class RepositoryController implements ApplicationContextAware
     }
   }
 
-  def clearCache()
-  {
-    def ant = new AntBuilder()
-
-    ant.sequential {
-      delete(dir:grailsApplication.config.thumbnail.cacheDir, failonerror:false)
-      mkdir(dir:grailsApplication.config.thumbnail.cacheDir)
-      flash.message = "OMAR Cache has been deleted."
-  }
-
-  redirect(action: 'list')
-  }
+  
 
   void setApplicationContext( ApplicationContext applicationContext )
   {

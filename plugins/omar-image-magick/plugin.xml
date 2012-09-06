@@ -1,4 +1,4 @@
-<plugin name='omar-image-magick' version='0.1' grailsVersion='2.0 &gt; *'>
+<plugin name='omar-image-magick' version='0.1' grailsVersion='2.0.4 &gt; *'>
   <author>Your name</author>
   <title>Omar Image Magick Plugin</title>
   <description>Brief summary/description of the plugin.
@@ -8,6 +8,7 @@
   <resources>
     <resource>TemplateExportResources</resource>
     <resource>omar.image.magick.TemplateExportController</resource>
+    <resource>omar.image.magick.GradientGeneratorService</resource>
     <resource>omar.image.magick.TemplateExportService</resource>
   </resources>
   <repositories>
@@ -16,12 +17,27 @@
     <repository name='http://repo.grails.org/grails/core' url='http://repo.grails.org/grails/core/' />
     <repository name='grailsCore' url='http://svn.codehaus.org/grails/trunk/grails-plugins' />
     <repository name='mavenCentral' url='http://repo1.maven.org/maven2/' />
+    <repository name='http://download.java.net/maven/2/' url='http://download.java.net/maven/2/' />
+    <repository name='http://repo.grails.org/grails/libs-releases' url='http://repo.grails.org/grails/libs-releases/' />
+    <repository name='http://m2repo.spockframework.org/ext/' url='http://m2repo.spockframework.org/ext/' />
   </repositories>
-  <dependencies />
+  <dependencies>
+    <compile>
+      <dependency group='org.apache.ant' name='ant-launcher' version='1.8.2' />
+      <dependency group='org.apache.ant' name='ant' version='1.8.2' />
+    </compile>
+  </dependencies>
   <plugins>
+    <compile>
+      <plugin group='org.grails.plugins' name='filterpane' version='2.0.1.1' />
+    </compile>
     <runtime>
-      <plugin group='org.grails.plugins' name='resources' version='1.1.6' />
+      <plugin group='org.grails.plugins' name='p6spy' version='0.5' />
+      <plugin group='org.grails.plugins' name='hibernate' version='2.0.4' />
       <plugin group='org.grails.plugins' name='yui-minify-resources' version='0.1.5' />
+      <plugin group='org.grails.plugins' name='yui' version='2.8.2.1' />
+      <plugin group='org.grails.plugins' name='tomcat' version='2.0.4' />
+      <plugin group='org.grails.plugins' name='resources' version='1.1.6' />
     </runtime>
   </plugins>
   <runtimePluginRequirements />
