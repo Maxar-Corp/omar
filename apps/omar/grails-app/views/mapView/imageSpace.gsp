@@ -123,6 +123,7 @@ var rotationAngle;
 var zoomInButton;
 var selectedFeature;
 var customAoi;
+var onDemand = ("${onDemand}" == "true");
 var currentCenterLatLon = {lat:0.0,lon:0.0};
 var pqePoint = {x:0.0,y:0.0,lat:0.0,lon:0.0,hgt:0.0,hgtMsl:0.0,type:"",sInfo:"", displayUnit:"DD"}
 
@@ -574,8 +575,8 @@ function init(mapWidth, mapHeight)
    //OMAR.imageManipulator.applyRotate(${"rotateAngle"}.value);
    //OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
    //alert(map.getMaxExtents());
-map.zoomToMaxExtent();
-OMAR.imageManipulator.events.on({
+   map.zoomToMaxExtent();
+   OMAR.imageManipulator.events.on({
             "onFeatureDone": measureFinished,
             "onFeatureRemoved" : measureRemoved,
             "onToolModeChanged" : toolModeChanged,
@@ -642,6 +643,7 @@ OMAR.imageManipulator.events.on({
 }
 
 function setupOverviewCheck(){
+    if(!onDemand) return;
     if(numberOfResLevels <2)
     {
         var label = YAHOO.util.Dom.get("busyCursorLabel");
