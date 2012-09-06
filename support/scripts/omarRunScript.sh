@@ -16,10 +16,10 @@ environmentVariables =[
    OVERVIEW_OPTIONS:"--compression-type JPEG --compression-quality 75"
 ]
 
-
 import java.lang.management.ManagementFactory
 import groovy.io.FileType
 import groovy.sql.Sql
+
 
 if(!(environmentVariables.CLASSPATH as File).exists())
 {
@@ -78,17 +78,72 @@ To get help on any script please run:
    }
    def run(args)
    {
-      if(!args.length || (args[0] == "--help"))
+      def cli = new CliBuilder(usage: 'omarRunShript.sh -[h] [-cp] [-url] [-nthreads] [-omardb] [-pguser] [-pgpassword] [-omardb] <script> <scriptArgs>')
+      cli.stopAtNonOption = false
+      cli.with{
+         h longOpt: 'help', 'Show usage information'
+         nthreads args:1, argName:"nthreads", "nthreads"
+         omardb args:1, argName:"omardb", "omardb"
+         pguser args:1, argName:"postgres_user", "postgres username"
+         pgpassword args:1, argName:"postgres_password", "postgres password"
+         filefilter args:1, argName:"postgres_password", "postgres password"
+         url args:1, argName:"url", "URL to the OMAR server ex: http://<ip>/omar"
+         ovropt args:1, argName:"ovropt", "Overview options surrounded by quotes"
+         cp args:1, argName:"cp", "CLASSPATH for where the jar files are located"
+      }
+      def options = cli.parse(args)
+      if(options.h)
       {
-         outputUsage();
+         cli.usage()
          return 0;
       }
-      this.args = args
-      scriptToRun  = findScriptToRun(new File(args[0]))
+
+      if(options.nthreads)
+      {
+         env.NTHREADS = "${options.nthreads}" as Integer
+      }
+      if(options.omardb)
+         {
+            env.OMARDB = options.omardb
+         }
+      if(options.url)
+         {
+            env.OMAR_URL = options.url
+         }
+      if(options.filefilter)
+      {
+         env.STAGE_FILE_FILTER = "${options.filefilter}"
+      }
+      if(options.pguser)
+      {
+         env.POSTGRES_USER = "${options.pguser}"
+      }
+      if(options.pgpassword)
+      {
+         env.POSTGRES_PASSWORD= "${options.pgpassword}"
+      }
+      if(options.ovropt)
+      {
+         env.OVERVIEW_OPTIONS="${options.ovropt}"
+      }
+      if(options.cp)
+      {
+         env.CLASSPATH="${options.cp}"
+      }
+      println options.arguments()
+      println env
+      if(!args.length )
+      {
+         cli.usage()
+         return 0;
+      }
+      this.args = options.arguments()
+      println "===============${this.args}================="
+      scriptToRun  = findScriptToRun(new File(this.args[0]))
 
       if(!scriptToRun)
       {
-         outputLog("Unable to find script ${args[0]}")
+         outputLog("Unable to find script ${this.args[0]}")
          return 1;
       }
 
@@ -103,7 +158,7 @@ To get help on any script please run:
 
       def shell = new GroovyShell();
       this.scriptArgs = [];
-      if(args.length>1) (1..args.length-1).each{this.scriptArgs << args[it]}
+      if(this.args.size()>1) (1..this.args.size()-1).each{this.scriptArgs << this.args[it]}
       shell.setVariable("parent", this)
       return shell.evaluate(scriptToRun)
    }
