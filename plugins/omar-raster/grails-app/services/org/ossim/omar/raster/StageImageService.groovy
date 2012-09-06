@@ -11,17 +11,51 @@ import net.sf.ehcache.constructs.blocking.UpdatingCacheEntryFactory
 import org.quartz.Scheduler
 import org.ossim.omar.stager.StagerUtil
 
+class StageRunnable implements Runnable{
+    def stageImageService
+    def file;
+    def entryId;
+    def id;
+    def options
+    void run(){
+        try{
+            stageImageService.stageImage(file, entryId, id, options)
+        }
+        catch(def e)
+        {
+            println e
+        }
+    }
+}
+
 class StageImageService {
+    static transactional = true
     def grailsApplication
-    def quartzScheduler
+   // def quartzScheduler
     def dataInfoService
     def parserPool
+    def workerThreadPool
     def checkAndAddStageImageJob(def rasterEntries)
     {
+        if(!grailsApplication.config.stager.onDemand) return 0;
+
         def count = 0;
         for(rasterEntry in rasterEntries)
         {
+            if(StagerUtil.needsOvrs(rasterEntry.width, rasterEntry.height, rasterEntry.numberOfResLevels))
+            {
+                def runnable = new  StageRunnable(stageImageService:this,
+                        file:rasterEntry.mainFile.name as File,
+                        entryId:rasterEntry.entryId,
+                        id: rasterEntry.id,
+                        options: [compressionQuality: grailsApplication.config.stager.overview.compressionQuality,
+                                compressionType: grailsApplication.config.stager.overview.compressionType,
+                                histogramOptions: grailsApplication.config.stager.histogramOptions
+                        ])
+                workerThreadPool.submit(rasterEntry.mainFile.name+"_${rasterEntry.entryId}", runnable)
+            }
 
+            /*
             if (StagerUtil.needsOvrs(rasterEntry.width, rasterEntry.height, rasterEntry.numberOfResLevels))
             {
                 if(!quartzScheduler?.getTrigger(rasterEntry.mainFile.name, "STAGE"))
@@ -40,12 +74,13 @@ class StageImageService {
                 }
                 ++count
             }
+            */
         }
         count
     }
     def updateInfo(RasterEntry rasterEntry)
     {
-        def file = rasterEntry.rasterDataSet.getFileFromObjects("main");
+        def file = rasterEntry.rasterDataSet?.getFileFromObjects("main");
         if(rasterEntry&&file)
         {
             def dataInfo = null
@@ -112,19 +147,20 @@ class StageImageService {
             def img2rr = "ossim-img2rr --entry ${entryId} ${histoOption} --compression-type ${compressionType} --compression-quality ${compressionQuality} ${file}"
             def proc = img2rr.execute()
             proc.waitFor()
-
-            def rasterEntry = null
-            try{
-                if(id)
-                {
-                    rasterEntry = RasterEntry.findByIndexId(id)?:RasterEntry.findById(id as Integer)
+            RasterEntry.withTransaction{
+                def rasterEntry = null
+                try{
+                    if(id)
+                    {
+                        rasterEntry = RasterEntry.findByIndexId(id)?:RasterEntry.findById(id as Integer)
+                    }
                 }
+                catch (def e)
+                {
+                    rasterEntry = null
+                }
+                updateInfo(rasterEntry)
             }
-            catch (def e)
-            {
-               rasterEntry = null
-            }
-            updateInfo(rasterEntry)
             //def result = RasterDataSet.findWhere(name:"${file}")
             //println "DONE STAGING................."
         }

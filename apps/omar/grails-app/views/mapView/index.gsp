@@ -44,6 +44,10 @@
 
 <content tag="top2">
   <div id="toolBar" class="olControlPanel"></div>
+    <div id="busyCursor" style="position:absolute;top:-9999px;right:-9999px">
+        <label id="busyCursorLabel" onclick="" style="font-weight:bold;"></label>
+        <img id="busyCursorImage"  src="../images/spinner.gif"/>
+    </div>
 </content>
 
 <content tag="bottom2">
@@ -69,11 +73,12 @@ var wcsParams;
 var templateParams;
 
 //var fullResScale = parseFloat("${fullResScale}");
+var onDemand = ("${onDemand}" == "true");
 var minLon;
 var minLat;
 var maxLon;
 var maxLat;
-
+var numberOfResLevels = parseInt("${numberOfResLevels}");
 var largestScale;
 var smallestScale;
 var fullResScale;
@@ -289,6 +294,62 @@ function init(mapWidth, mapHeight)
         mapWidget.getMap().setCenter(mapCenter, zoom);
     }
     setMapCtrTxt();
+
+    setupOverviewCheck();
+}
+function setupOverviewCheck(){
+    if(!onDemand) return;
+    if(numberOfResLevels <2)
+    {
+        var label = YAHOO.util.Dom.get("busyCursorLabel");
+        YAHOO.util.Dom.setStyle("busyCursor", "top", "5px");
+        YAHOO.util.Dom.setStyle("busyCursor", "right", "12px");
+        YAHOO.util.Dom.setStyle("busyCursorImage", "display", "inline");
+
+        YAHOO.util.Dom.setStyle("busyCursor", "display", "inline");
+        YAHOO.util.Dom.setStyle("busyCursorLabel", "display", "inline");
+        YAHOO.util.Dom.setStyle("busyCursorImage", "display", "inline");
+        label.innerHTML = "Generating overviews...";
+        setTimeout(checkOverview, 5000);
+    }
+}
+
+function checkOverview(){
+    var url = "/omar/rasterEntryExport/export";
+
+    var request = OpenLayers.Request.POST({
+    url: url+"?id=${(rasterEntries.id).join(',')}&max=10&format=json&fields=numberOfResLevels&labels=rlevels",
+    callback: function (transport){
+        var temp = YAHOO.lang.JSON.parse(transport.responseText);
+        if(temp&&temp.length>0)
+        {
+            var ok = true;
+            var idx = 0;
+            for(idx=0; idx < temp.length;++idx)
+            {
+                if(parseInt(temp[idx].rlevels) < 2)
+                {
+                  ok = false
+                }
+            }
+            if(ok)
+            {
+                var label = YAHOO.util.Dom.get("busyCursorLabel");
+                if(label)
+                {
+                    YAHOO.util.Dom.setStyle("busyCursorImage", "display", "none");
+                    YAHOO.util.Dom.setStyle("busyCursorLabel", "text-decoration", "underline");
+                    label.innerHTML = "Click now to refresh";
+                    label.onclick=function(){window.location = window.location};
+                }
+            }
+            else
+            {
+                setTimeout(checkOverview, 5000);
+            }
+        } // endif
+    } // callback
+    });
 }
 
 function setMapCtrTxt()
