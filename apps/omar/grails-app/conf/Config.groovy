@@ -638,6 +638,10 @@ thumbnail {
 }
 
 stager {
+  worker{
+      threads = 3
+      maxQueueSize=1000
+  }
   queue {
     threads = 4
   }
