@@ -48,7 +48,10 @@ class MapViewController implements InitializingBean
       def entryId;
       def azimuth;
       def imageIds = ""
+      def numberOfResLevels = 9999
       rasterEntries.each { rasterEntry ->
+          stageImageService.checkAndAddStageImageJob(rasterEntry)
+        if(rasterEntry.numberOfResLevels < numberOfResLevels) numberOfResLevels = rasterEntry.numberOfResLevels
         mainFile=rasterEntry.mainFile.name;
         entryId = rasterEntry.entryId as Integer;
         //azimuth = rasterEntry.azimuthAngle;
@@ -84,9 +87,11 @@ class MapViewController implements InitializingBean
 
       model.rasterEntries = rasterEntries
     model.imageIds=imageIds
+      model.numberOfResLevels = numberOfResLevels
     model.kmlOverlays = kmlOverlays
     model.upIsUpAngle= imageSpaceService?.computeUpIsUp( mainFile, entryId)
     model.azimuthAngle=azimuth
+    model.onDemand="${grailsApplication.config.stager.onDemand}"
     model.putAll( webMappingService.computeScales( rasterEntries ) )
     model.putAll( webMappingService.computeBounds( rasterEntries ) )
 
@@ -180,6 +185,7 @@ class MapViewController implements InitializingBean
           nAdded = stageImageService.checkAndAddStageImageJob(entry)
       }
         def model = [
+              onDemand:"${grailsApplication.config.stager.onDemand}",
               rasterEntry: rasterEntry,
               stagingImagery: (nAdded > 0),
               imageIds: imageIds,

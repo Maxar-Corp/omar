@@ -1,10 +1,9 @@
 package org.ossim.omar.stager
 
 import org.quartz.JobDataMap
-import org.quartz.Job
 
 
-class StageImageJob{
+class StageImageJob {
     static triggers = {}
 
     def stageImageService
