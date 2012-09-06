@@ -34,4 +34,12 @@ class GetTileLog {
         ip(nullable:true)
         url(nullable:true)
     }
+    static mapping = {
+        version false
+        columns
+        {
+           url type:'text'
+           layers type: 'text'
+        }
+    }
 }
