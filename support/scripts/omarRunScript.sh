@@ -11,7 +11,7 @@ environmentVariables =[
    PID_FILE:"",
    CLASSPATH:"${System.env.OSSIM_DIST_ROOT}/tomcat/webapps/omar/WEB-INF/lib", 
    //STAGE_FILE_FILTER:"", 
-   STAGE_FILE_FILTER:"nitf,ntf",
+   STAGE_FILE_FILTER:"",
    HISTOGRAM_OPTIONS:"--create-histogram-fast",
    OVERVIEW_OPTIONS:"--compression-type JPEG --compression-quality 75"
 ]
@@ -78,18 +78,18 @@ To get help on any script please run:
    }
    def run(args)
    {
-      def cli = new CliBuilder(usage: 'omarRunShript.sh -[h] [-cp] [-url] [-nthreads] [-omardb] [-pguser] [-pgpassword] [-omardb] <script> <scriptArgs>')
-      cli.stopAtNonOption = false
+      def cli = new CliBuilder(usage: 'omarRunShript.sh [options] <script> <scriptArgs>')
+      cli.stopAtNonOption = true
       cli.with{
          h longOpt: 'help', 'Show usage information'
-         nthreads args:1, argName:"nthreads", "nthreads"
-         omardb args:1, argName:"omardb", "omardb"
-         pguser args:1, argName:"postgres_user", "postgres username"
-         pgpassword args:1, argName:"postgres_password", "postgres password"
-         filefilter args:1, argName:"postgres_password", "postgres password"
-         url args:1, argName:"url", "URL to the OMAR server ex: http://<ip>/omar"
-         ovropt args:1, argName:"ovropt", "Overview options surrounded by quotes"
-         cp args:1, argName:"cp", "CLASSPATH for where the jar files are located"
+         _ longOpt:"nthreads", args:1, argName:"nthreads", "nthreads"
+         _ longOpt:"omardb", args:1, argName:"omardb", "omardb"
+         _ longOpt:"dbuser", args:1, argName:"postgres_user", "postgres username"
+         _ longOpt:"dbpassword", args:1, argName:"postgres_password", "postgres password"
+         _ longOpt:"filefilter", args:1, argName:"filefilter", "specify a comma separated list of file extensions without spaces.  If empty will try all files supported"
+         _ longOpt:"url", args:1, argName:"url", "URL to the OMAR server ex: http://<ip>/omar"
+         _ longOpt:"ovropt", args:1, argName:"ovropt", "Overview options surrounded by quotes"
+         _ longOpt:"cp", args:1, argName:"cp", "CLASSPATH for where the jar files are located"
       }
       def options = cli.parse(args)
       if(options.h)
@@ -114,13 +114,13 @@ To get help on any script please run:
       {
          env.STAGE_FILE_FILTER = "${options.filefilter}"
       }
-      if(options.pguser)
+      if(options.dbuser)
       {
-         env.POSTGRES_USER = "${options.pguser}"
+         env.POSTGRES_USER = "${options.dbuser}"
       }
-      if(options.pgpassword)
+      if(options.dbpassword)
       {
-         env.POSTGRES_PASSWORD= "${options.pgpassword}"
+         env.POSTGRES_PASSWORD= "${options.dbpassword}"
       }
       if(options.ovropt)
       {
