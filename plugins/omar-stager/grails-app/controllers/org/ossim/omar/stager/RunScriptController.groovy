@@ -26,6 +26,16 @@ class RunScriptController implements ApplicationContextAware{
     def runScriptService
     def index() { redirect( action: 'scripts', params: params ) }
 
+    def kill()
+    {
+        if (params.name&&params.group)
+        {
+            //quartzScheduler.deleteJob(params.name, params.group);
+        }
+        null
+        //render("killed")
+    }
+
     def scripts( )
     {
         def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
@@ -44,9 +54,9 @@ class RunScriptController implements ApplicationContextAware{
         else if(!quartzScheduler?.getTrigger("indexFiles ${params.path}", "STAGER_SCRIPTS"))
         {
             def jobDataMap = new JobDataMap()
-            jobDataMap.commandLineScript = "${omarRunScript} indexFiles ${params.path}"
+            jobDataMap.commandLineScript = "${omarRunScript} --nthreads ${params.threads} indexFiles ${params.path}"
 
-            def trigger = new SimpleTrigger("indexFiles ${params.path} --nthreads ${params.threads}", "STAGER_SCRIPTS");
+            def trigger = new SimpleTrigger("indexFiles ${params.path}", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
@@ -93,9 +103,9 @@ class RunScriptController implements ApplicationContextAware{
         else if(!quartzScheduler?.getTrigger("stageRaster ${params.path}", "STAGER_SCRIPTS"))
         {
             def jobDataMap = new JobDataMap()
-            jobDataMap.commandLineScript = "${omarRunScript} stageRaster ${params.path}"
+            jobDataMap.commandLineScript = "${omarRunScript} --nthreads ${params.threads} stageRaster ${params.path}"
 
-            def trigger = new SimpleTrigger("stageRaster ${params.path} --nthreads ${params.threads}", "STAGER_SCRIPTS");
+            def trigger = new SimpleTrigger("stageRaster ${params.path}", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
