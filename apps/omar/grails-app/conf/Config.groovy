@@ -638,12 +638,34 @@ thumbnail {
 }
 
 stager {
+    /**
+     * Worker threads are currently for building on demand overviews and histograms
+     * This will specify how many simultaneous threads that can be active
+     *
+     */
   worker{
       threads = 3
       maxQueueSize=1000
   }
+
+    /**
+     * When files are being indexed into the system this specifies how
+     * many threads can be used to pop off the table queue in the database
+     *
+     * Currently this is used for indexing new data into the system
+     */
   queue {
     threads = 4
+  }
+
+    /**
+     * This is passed to external scripts that support threading.  You can specify
+     * the default value and the max thread count that is used in the UI for
+     * user input to the executing thread
+     */
+  scripts{
+      defaultThreadCount = 4
+      maxThreadCount = 8
   }
   histogramOptions = ""
   overview {
