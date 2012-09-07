@@ -12,6 +12,7 @@ import org.ossim.omar.stager.StagerUtil
 
 import static org.ossim.omar.stager.RunScriptJob.*
 import org.springframework.context.ApplicationContextAware
+import grails.converters.JSON
 
 class RunScriptController implements ApplicationContextAware{
 
@@ -27,12 +28,11 @@ class RunScriptController implements ApplicationContextAware{
 
     def scripts( )
     {
-        println "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS")}"
+        println "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
     }
 
     def indexFiles()
     {
-        println "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS")}"
         if (!params.path)
         {
             flash.message = "Must specify a directory to index."

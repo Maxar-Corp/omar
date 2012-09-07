@@ -1,5 +1,7 @@
 package org.ossim.omar.stager
 
+import org.quartz.SimpleTrigger
+
 class RunScriptService {
     def quartzScheduler
 
@@ -13,6 +15,7 @@ class RunScriptService {
             def info = [:]
 
             def trigger = quartzScheduler.getTrigger(names[j], group);
+            info.executing = trigger.timesTriggered?true:false
             info.startTime = trigger.startTime
             info.endTime = trigger.endTime
             info.name = trigger.name
