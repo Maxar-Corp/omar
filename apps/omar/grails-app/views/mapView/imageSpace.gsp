@@ -126,7 +126,7 @@ var customAoi;
 var onDemand = ("${onDemand}" == "true");
 var currentCenterLatLon = {lat:0.0,lon:0.0};
 var pqePoint = {x:0.0,y:0.0,lat:0.0,lon:0.0,hgt:0.0,hgtMsl:0.0,type:"",sInfo:"", displayUnit:"DD"}
-
+var finishedInit = false;
 function setImageId()
 {
     var imageIdFieldEl = YAHOO.util.Dom.get("imageIdField");
@@ -324,6 +324,7 @@ function moveToCenter()
 
 function getTileUrl (bounds)
 {
+    if(!finishedInit) return null
     var width  = parseFloat("${rasterEntry.width}");
     var height = parseFloat("${rasterEntry.height}");
     var res = this.map.getResolution();
@@ -399,8 +400,14 @@ function setCurrentPqeDisplayUnitSelection()
     }
 }
 
+function allocateControls()
+{
+}
+
 function init(mapWidth, mapHeight)
 {
+    //var mapDiv = YAHOO.util.Dom.get("map");
+    //mapDiv.style.display = "block";
     setImageId();
     OMAR.coordConvert = new CoordinateConversion();
     pqePoint.displayUnit = "${pqeDisplayUnit?:"DMS"}"
@@ -434,12 +441,14 @@ function init(mapWidth, mapHeight)
     var bounds = new OpenLayers.Bounds(0, 0, width, height);
     var idx = 0;
     var currentLevel = resLevels;
+
     for(idx = resLevels-1; idx > -8; --idx)
     {
         resolutions.push(Math.pow(2, idx));
     }
     map = new OpenLayers.Map("map", { controls:[],
                              theme: null,
+                             buffer:0,
                              maxExtent:bounds,
                              resolutions:resolutions
                              //maxResolution: 16,
@@ -448,6 +457,7 @@ function init(mapWidth, mapHeight)
     map.events.manipulator = OMAR.imageManipulator;
     var options = {
          controls: [],
+         buffer:0,
          maxExtent: bounds,
          getURL: getTileUrl,
          isBaseLayer: true,
@@ -466,7 +476,6 @@ function init(mapWidth, mapHeight)
           lazyload: true
       });
     oMenu.render();
-
 
     //map.events.register('zoomend', null, theMapHasZoomed);
     //map.events.register("moveend", null, theMapHasMoved);
@@ -561,7 +570,8 @@ function init(mapWidth, mapHeight)
 		bboxToPixel();
 	</g:if>
 --%>
-    // map.zoomIn();
+
+// map.zoomIn();
     // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
    //OMAR.imageManipulator.affineParams.rotate = parseFloat(${"rotateAngle"}.value);
    OMAR.imageManipulator.localImageBounds = new OpenLayers.Bounds(0, 0, width, height);
@@ -575,8 +585,8 @@ function init(mapWidth, mapHeight)
    //OMAR.imageManipulator.applyRotate(${"rotateAngle"}.value);
    //OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
    //alert(map.getMaxExtents());
-   map.zoomToMaxExtent();
-   OMAR.imageManipulator.events.on({
+//map.zoomToMaxExtent();
+OMAR.imageManipulator.events.on({
             "onFeatureDone": measureFinished,
             "onFeatureRemoved" : measureRemoved,
             "onToolModeChanged" : toolModeChanged,
@@ -635,11 +645,14 @@ function init(mapWidth, mapHeight)
                 var temp = YAHOO.lang.JSON.parse(transport.responseText);
                 var zoom = OMAR.imageManipulator.findZoomForMetersPerPixel(view.mpp);
                 OMAR.imageManipulator.setCenterGivenImagePoint(temp[0], zoom);
-		updateCenter();
+		        updateCenter();
             }
            });
     }
     setupOverviewCheck();
+   // mapDiv.style.display = "inline";
+    finishedInit = true;
+    map.zoomToMaxExtent();
 }
 
 function setupOverviewCheck(){
