@@ -324,7 +324,6 @@ function moveToCenter()
 
 function getTileUrl (bounds)
 {
-    if(!finishedInit) return null
     var width  = parseFloat("${rasterEntry.width}");
     var height = parseFloat("${rasterEntry.height}");
     var res = this.map.getResolution();
