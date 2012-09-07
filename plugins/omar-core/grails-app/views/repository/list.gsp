@@ -18,7 +18,7 @@
           <li class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></li>
           <sec:ifAllGranted roles="ROLE_ADMIN">
               <li class="menuButton"><g:link class="create" action="create">Create Repository</g:link></li>
-              <li class="menuButton"><g:link action="scripts">Scripts</g:link></li>
+              <li class="menuButton"><g:link controller="RunScript" action="scripts">Scripts</g:link></li>
           </sec:ifAllGranted>
 
       </ul>
