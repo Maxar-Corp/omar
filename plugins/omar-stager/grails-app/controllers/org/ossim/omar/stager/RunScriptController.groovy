@@ -10,106 +10,122 @@ import org.ossim.omar.stager.StageImageJob
 import org.quartz.Scheduler
 import org.ossim.omar.stager.StagerUtil
 
-class RunScriptController {
+import static org.ossim.omar.stager.RunScriptJob.*
+import org.springframework.context.ApplicationContextAware
 
-	def quartzScheduler
+class RunScriptController implements ApplicationContextAware{
+
+    def quartzScheduler
+    def grailsApplication
+    def omardb
+    def url
+    def username
+    def password
+    def omarRunScript
 
     def index() { }
 
     def indexFiles()
-  	{
-    	if(!quartzScheduler?.getTrigger("indexFiles ${params.path}", "STAGE"))
-    	{
-      		def jobDataMap = new JobDataMap()
-        	jobDataMap.commandLineScript = "omarRunScript.sh indexFiles ${params.path}"
+    {
+        if(!quartzScheduler?.getTrigger("indexFiles ${params.path}", "STAGE"))
+        {
+            def jobDataMap = new JobDataMap()
+            jobDataMap.commandLineScript = "${omarRunScript} indexFiles ${params.path}"
 
- 		     def trigger = new SimpleTrigger("indexFiles ${params.path}", "STAGE");
-    	    trigger.setJobDataMap(jobDataMap);
-        	RunScriptJob.schedule(trigger);
+            def trigger = new SimpleTrigger("indexFiles ${params.path}", "STAGE");
+            trigger.setJobDataMap(jobDataMap);
+            RunScriptJob.schedule(trigger);
 
-	        flash.message = "Job Submitted into Job Que."
-    	}
-    	else
-    	{
-        	flash.message = "Job already running."
-    	}
+            flash.message = "Job Submitted into Job Que."
+        }
+        else
+        {
+            flash.message = "Job already running."
+        }
+        redirect(controller: 'Repository', action: 'scripts')
+    }
 
-	    redirect(controller: 'Repository', action: 'scripts')
- 	 }
+    def removeRaster()
+    {
+        if(!quartzScheduler?.getTrigger("removeRaster ${params.path}%", "STAGE"))
+        {
+            def jobDataMap = new JobDataMap()
+            jobDataMap.commandLineScript = "${omarRunScript} removeRaster ${params.path}%"
 
- 	def removeRaster()
-  	{
-    	if(!quartzScheduler?.getTrigger("removeRaster ${params.path}%", "STAGE"))
-    	{
-      		def jobDataMap = new JobDataMap()
-        	jobDataMap.commandLineScript = "omarRunScript.sh removeRaster ${params.path}%"
+            def trigger = new SimpleTrigger("removeRaster ${params.path}%", "STAGE");
+            trigger.setJobDataMap(jobDataMap);
+            RunScriptJob.schedule(trigger);
 
- 		     def trigger = new SimpleTrigger("removeRaster ${params.path}%", "STAGE");
-    	    trigger.setJobDataMap(jobDataMap);
-        	RunScriptJob.schedule(trigger);
+            flash.message = "Job Submitted into Job Que."
+        }
+        else
+        {
+            flash.message = "Job already running."
+        }
 
-	        flash.message = "Job Submitted into Job Que."
-    	}
-    	else
-    	{
-        	flash.message = "Job already running."
-    	}
+        redirect(controller: 'Repository', action: 'scripts')
+    }
 
-	    redirect(controller: 'Repository', action: 'scripts')
- 	 }
+    def stageRaster()
+    {
+        if(!quartzScheduler?.getTrigger("stageRaster ${params.path}", "STAGE"))
+        {
+            def jobDataMap = new JobDataMap()
+            jobDataMap.commandLineScript = "${omarRunScript} stageRaster ${params.path}"
 
- 	def stageRaster()
-  	{
-    	if(!quartzScheduler?.getTrigger("stageRaster ${params.path}", "STAGE"))
-    	{
-      		def jobDataMap = new JobDataMap()
-        	jobDataMap.commandLineScript = "omarRunScript.sh stageRaster ${params.path}"
+            def trigger = new SimpleTrigger("stageRaster ${params.path}", "STAGE");
+            trigger.setJobDataMap(jobDataMap);
+            RunScriptJob.schedule(trigger);
 
- 		     def trigger = new SimpleTrigger("stageRaster ${params.path}", "STAGE");
-    	    trigger.setJobDataMap(jobDataMap);
-        	RunScriptJob.schedule(trigger);
+            flash.message = "Job Submitted into Job Que."
+        }
+        else
+        {
+            flash.message = "Job already running."
+        }
 
-	        flash.message = "Job Submitted into Job Que."
-    	}
-    	else
-    	{
-        	flash.message = "Job already running."
-    	}
+        redirect(controller: 'Repository', action: 'scripts')
+    }
 
-	    redirect(controller: 'Repository', action: 'scripts')
- 	 }
+    def synchFiles()
+    {
+        if(!quartzScheduler?.getTrigger("synchFiles", "STAGE"))
+        {
+            def jobDataMap = new JobDataMap()
+            jobDataMap.commandLineScript = "${omarRunScript} synchFiles"
 
- 	def synchFiles()
-  	{
-    	if(!quartzScheduler?.getTrigger("synchFiles", "STAGE"))
-    	{
-      		def jobDataMap = new JobDataMap()
-        	jobDataMap.commandLineScript = "omarRunScript.sh synchFiles"
+            def trigger = new SimpleTrigger("synchFiles", "STAGE");
+            trigger.setJobDataMap(jobDataMap);
+            RunScriptJob.schedule(trigger);
 
- 		     def trigger = new SimpleTrigger("synchFiles", "STAGE");
-    	    trigger.setJobDataMap(jobDataMap);
-        	RunScriptJob.schedule(trigger);
+            flash.message = "Job Submitted into Job Que."
+        }
+        else
+        {
+            flash.message = "Job already running."
+        }
 
-	        flash.message = "Job Submitted into Job Que."
-    	}
-    	else
-    	{
-        	flash.message = "Job already running."
-    	}
+        redirect(controller: 'Repository', action: 'scripts')
+    }
 
-	    redirect(controller: 'Repository', action: 'scripts')
- 	 }
+    def clearCache()
+    {
+        def ant = new AntBuilder()
 
- 	 def clearCache()
-  	{
-    	def ant = new AntBuilder()
+        ant.sequential {
+            delete(dir:grailsApplication.config.thumbnail.cacheDir, failonerror:false)
+            mkdir(dir:grailsApplication.config.thumbnail.cacheDir)
+            flash.message = "OMAR Cache has been deleted."
+        }
 
-	    ant.sequential {
-    	  delete(dir:grailsApplication.config.thumbnail.cacheDir, failonerror:false)
-    	  mkdir(dir:grailsApplication.config.thumbnail.cacheDir)
-    	  flash.message = "OMAR Cache has been deleted."
-  		}
-  
-  		redirect(controller: 'Repository', action: 'scripts')
-  	}
+        redirect(controller: 'Repository', action: 'scripts')
+    }
+    void setApplicationContext( org.springframework.context.ApplicationContext applicationContext )
+    {
+        omardb = grailsApplication.config.dataSource.url.split(":")[-1]
+        url = grailsApplication.config.omar.serverURL
+        username = grailsApplication.config.dataSource.username
+        password = grailsApplication.config.dataSource.password
+        omarRunScript = "omarRunScript.sh --dbuser ${username} --dbpassword ${password} --omardb ${omardb} --url ${url}"
+    }
 }
