@@ -1,7 +1,6 @@
 import java.util.concurrent.ThreadPoolExecutor
 import java.util.concurrent.TimeUnit
 import grails.spring.BeanBuilder
-import org.ossim.omar.stager.StagerWorkerThreadPool
 
 class OmarStagerGrailsPlugin
 {
