@@ -19,34 +19,90 @@
       <div class="message">${flash.message}</div>
     </g:if>
     
-    <g:form controller="RunScript" action="indexFiles" method="post">
-      omarRunScript.sh indexFiles <g:textField name="path" value="${myValue}" />  <span class="button"><input type="submit" value="Index Files" /></span>
-    </g:form>
+    <table border="1"  cellpadding="10">
+      <tr bgcolor="#666666">
+        <td><font color="#ffffff"><b>Script Name</b></font></td>
+        <td><font color="#ffffff"><b>Path to Data</b></font></td>
+        <td><font color="#ffffff"><b>Number of Threads</b></font></td>
+        <td><font color="#ffffff"><b>Run Script</b></font></td>
+      </tr>
 
-    <p>&nbsp;<p>
-    
-    <g:form controller="RunScript" action="removeRaster" method="post">
-      omarRunScript.sh removeRaster <g:textField name="path" value="${myValue}" />  <span class="button"><input type="submit" value="Remove Raster" /></span>
-    </g:form>
+      <g:form controller="RunScript" action="indexFiles" method="post">
+      <tr bgcolor="#cccccc">
+        <td>indexFiles</td>
+        <td><g:textField name="path" value="${myValue}" /></td>
+        <td><g:select name="threads" from="${1..grailsApplication.config.stager.scripts.maxThreadCount}" value="${grailsApplication.config.stager.scripts.defaultThreadCount}" /></td>
+        <td><span class="button"><input type="submit" value="Index Files" /></span></td>
+      </tr>   
+      </g:form>
 
-    <p>&nbsp;<p>
+      <tr bgcolor="#999999">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
 
-    <g:form controller="RunScript" action="stageRaster" method="post">
-      omarRunScript.sh stageRaster <g:textField name="path" value="${myValue}" />  <span class="button"><input type="submit" value="Stage Raster" /></span>
-    </g:form>
+      <g:form controller="RunScript" action="stageRaster" method="post">
+      <tr bgcolor="#cccccc">
+        <td>stageRaster</td>
+        <td><g:textField name="path" value="${myValue}" /></td>
+        <td><g:select name="threads" from="${1..grailsApplication.config.stager.scripts.maxThreadCount}" value="${grailsApplication.config.stager.scripts.defaultThreadCount}" /></td>
+        <td><span class="button"><input type="submit" value="Stage Raster" /></span></td>
+      </tr>   
+      </g:form>
 
-    <p>&nbsp;<p>
+      <tr bgcolor="#999999">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
 
-    <g:form controller="RunScript" action="synchFiles" method="post">
-      omarRunScript.sh synchFiles <span class="button"><input type="submit" value="Synch Files" /></span>
-    </g:form>
+      <g:form controller="RunScript" action="removeRaster" method="post">
+      <tr bgcolor="#cccccc">
+        <td>removeRaster</td>
+        <td><g:textField name="path" value="${myValue}" /></td>
+        <td></td>
+        <td><span class="button"><input type="submit" value="Remove Raster" /></span></td>
+      </tr>   
+      </g:form>
 
-    <p>&nbsp;<p>
-    
-    <g:form controller="RunScript" action="clearCache" method="post">
-      omarRunScript.sh clearCache <span class="button"><input type="submit" value="Clear Cache" /></span>
-    </g:form>
+      <tr bgcolor="#999999">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+
+      <g:form controller="RunScript" action="synchFiles" method="post">
+      <tr bgcolor="#cccccc">
+        <td>synchFiles</td>
+        <td></td>
+        <td></td>
+        <td><span class="button"><input type="submit" value="Synch Files" /></span></td>
+      </tr>   
+      </g:form>
+
+      <tr bgcolor="#999999">
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+        <td>&nbsp;</td>
+      </tr>
+
+      <g:form controller="RunScript" action="clearCache" method="post">
+      <tr bgcolor="#cccccc">
+        <td>clearCache</td>
+        <td></td>
+        <td></td>
+        <td><span class="button"><input type="submit" value="Clear Cache" /></span></td>
+      </tr>   
+      </g:form>
+    </table>
+
   </div>
 </content>
+
 </body>
 </html>
