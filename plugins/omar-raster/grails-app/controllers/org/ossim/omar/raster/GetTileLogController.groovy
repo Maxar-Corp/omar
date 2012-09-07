@@ -59,7 +59,7 @@ class GetTileLogController {
             if (username)
             {
                 getTileLogInstanceList = GetTileLog.createCriteria().list( params ) {
-                    eq( "userName",  )
+                    eq( "userName", username )
                 }
                 getTileLogInstanceTotal = getTileLogInstanceList.totalCount
             }
