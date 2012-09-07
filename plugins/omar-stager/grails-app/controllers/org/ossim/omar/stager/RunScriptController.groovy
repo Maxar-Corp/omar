@@ -28,7 +28,11 @@ class RunScriptController implements ApplicationContextAware{
 
     def scripts( )
     {
-        println "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
+        def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
+        println jobTriggers
+        render( view: 'scripts', model: [
+            jobTriggers: jobTriggers
+    ] )
     }
 
     def indexFiles()
@@ -42,7 +46,7 @@ class RunScriptController implements ApplicationContextAware{
             def jobDataMap = new JobDataMap()
             jobDataMap.commandLineScript = "${omarRunScript} indexFiles ${params.path}"
 
-            def trigger = new SimpleTrigger("indexFiles ${params.path}", "STAGER_SCRIPTS");
+            def trigger = new SimpleTrigger("indexFiles ${params.path} --nthreads ${params.threads}", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
@@ -91,7 +95,7 @@ class RunScriptController implements ApplicationContextAware{
             def jobDataMap = new JobDataMap()
             jobDataMap.commandLineScript = "${omarRunScript} stageRaster ${params.path}"
 
-            def trigger = new SimpleTrigger("stageRaster ${params.path}", "STAGER_SCRIPTS");
+            def trigger = new SimpleTrigger("stageRaster ${params.path} --nthreads ${params.threads}", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
