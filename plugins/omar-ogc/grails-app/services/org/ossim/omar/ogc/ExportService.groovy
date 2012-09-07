@@ -64,37 +64,40 @@ class ExportService
 
       break
       case ~/.*json.*/:
+          def outputString = new StringBuilder();
           if(fields.size()==labels.size())
           {
-              file = File.createTempFile(prefix, ".json", workDir as File)
+
+             // file = File.createTempFile(prefix, ".json", workDir as File)
               def outputFirstObject = false;
-              file <<"["
+              outputString <<"["
 
               for ( object in objects )
               {
-                  if(outputFirstObject) file <<","
-                  file <<"{"
+                  if(outputFirstObject) outputString <<","
+                  outputString <<"{"
                   def outputFirstField = false;
                   for (idx in 0..fields.size()-1)
                   {
                       if ( formatters[fields[idx]] )
                       {
-                          if(outputFirstField) file <<","
-                          file << "\"${labels[idx]}\":\"${formatters[fields[idx]].call(object[fields[idx]])}\""
+                          if(outputFirstField) outputString <<","
+                          outputString << "\"${labels[idx]}\":\"${formatters[fields[idx]].call(object[fields[idx]])}\""
                       }
                       else
                       {
-                          if(outputFirstField) file <<","
-                          file << "\"${labels[idx]}\":\"${object[fields[idx]]}\""
+                          if(outputFirstField) outputString <<","
+                          outputString << "\"${labels[idx]}\":\"${object[fields[idx]]}\""
                       }
                       outputFirstField = true;
                   }
-                  file<<"}"
+                  outputString<<"}"
                   outputFirstObject = true;
               }
-              file << "]"
+              outputString << "]"
           }
           mimeType = "application/json"
+          file = outputString.toString()
         break;
     }
 

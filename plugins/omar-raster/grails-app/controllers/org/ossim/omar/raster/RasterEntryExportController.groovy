@@ -14,7 +14,7 @@ class RasterEntryExportController
 
   def export( )
   {
-    def format = params.format
+      def format = params.format
     def queryParams = new RasterEntryQuery()
     bindData( queryParams, params )
 
@@ -61,9 +61,20 @@ class RasterEntryExportController
             [featureClass: RasterEntry.class]
     )
 
-    response.setHeader( "Content-disposition", "attachment; filename=${file.name}" );
-    response.contentType = mimeType
-    response.outputStream << file.newInputStream()
-    response.outputStream.flush()
+      if (file instanceof String)
+      {
+          //response.setHeader( "Content-disposition", "attachment; filename=" );
+          response.contentType = mimeType
+          response.outputStream << file
+          response.outputStream.flush()
+      }
+      else
+      {
+          response.setHeader( "Content-disposition", "attachment; filename=${file.name}" );
+          response.contentType = mimeType
+          response.outputStream << file.newInputStream()
+          response.outputStream.flush()
+          file.delete();
+      }
   }
 }
