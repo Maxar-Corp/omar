@@ -1270,6 +1270,9 @@ tmpout.innerHTML = "<table><tr>" +
                  OMAR.imageManipulator.vectorLayer.addFeatures([smaAxis]);
                  OMAR.imageManipulator.vectorLayer.addFeatures([smiAxis]);
 
+                 // Left side PQE div
+                 var pqeBox = document.getElementById("pqeDivId");
+                 pqeBox.innerHTML = createPointInfoForm();
              }
 
              function createPointInfoForm(){
