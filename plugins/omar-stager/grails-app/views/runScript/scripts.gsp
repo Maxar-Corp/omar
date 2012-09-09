@@ -134,7 +134,7 @@
         }
 
     }
-    function loadJobs(jobs)
+    function renderTable(jobs)
     {
         clearTable("jobTableId");
         if(jobs&&jobs.labels)
@@ -170,21 +170,21 @@
             tableDiv.appendChild(jobTable);
         }
     }
-    function renderTable()
+    function getJobs()
     {
         var link = "/omar/runScript/jobs";
         new Ajax.Request(link, {
             method: 'get',
             onSuccess: function(transport) {
-                 loadJobs(transport.responseText);
+                 renderTable(transport.responseText);
                  setTimeout(renderTable,5000);
             }
         });
     }
     function init()
     {
-       loadJobs(jobTriggers);
-       setTimeout(renderTable,5000);
+       renderTable(jobTriggers);
+       setTimeout(getJobs,5000);
 
     }
 </r:script>
