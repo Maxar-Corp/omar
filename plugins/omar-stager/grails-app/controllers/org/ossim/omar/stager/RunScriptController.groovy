@@ -35,23 +35,20 @@ class RunScriptController implements ApplicationContextAware{
         null
         //render("killed")
     }
-
+    def jobs()
+    {
+        def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
+        response.contentType = "application/json"
+        response.outputStream << jobTriggers
+        response.outputStream.flush()
+        null
+    }
     def scripts( )
     {
         def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
-        if (params.renderStream)
-        {
-            response.contentType = "application/json"
-            response.outputStream << jobTriggers
-            response.outputStream.flush()
-        }
-        else
-        {
-            render( view: 'scripts', model: [
-                    jobTriggers: jobTriggers
-            ] )
-        }
-        null
+        render( view: 'scripts', model: [
+                jobTriggers: jobTriggers
+        ] )
     }
 
     def indexFiles()
