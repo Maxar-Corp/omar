@@ -172,18 +172,14 @@
     }
     function renderTable()
     {
-        var url = "/omar/runScript/scripts";
+        var link = "${createLink(action: scripts, controller: runScriptController)}";
 
-        var request = OpenLayers.Request.POST({
-        url:url,
-        params: {renderStream: "true"},
-        callback: function (transport)
-        {
-            //var temp = YAHOO.lang.JSON.parse(transport.responseText);
-
-            loadJobs(transport.responseText);
-            setTimeout(renderTable,5000);
-        }
+        new Ajax.Request(link+"?renderStream=true", {
+            method: 'get',
+            onSuccess: function(transport) {
+                 loadJobs(transport.responseText);
+                 setTimeout(renderTable,5000);
+            }
         });
     }
     function init()
