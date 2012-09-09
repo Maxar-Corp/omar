@@ -22,7 +22,7 @@
     <table border="1"  cellpadding="10">
       <tr bgcolor="#666666">
         <td><font color="#ffffff"><b>Script Name</b></font></td>
-        <td><font color="#ffffff"><b>Path to Data</b></font></td>
+        <td><font color="#ffffff"><b>Arguments</b></font></td>
         <td><font color="#ffffff"><b>Number of Threads</b></font></td>
         <td><font color="#ffffff"><b>Run Script</b></font></td>
       </tr>
@@ -30,7 +30,7 @@
       <g:form controller="RunScript" action="indexFiles" method="post">
       <tr bgcolor="#cccccc">
         <td>indexFiles</td>
-        <td><g:textField name="path" value="${myValue}" /></td>
+        <td><g:textField  style="width:100%" name="path" value="${myValue}" /></td>
         <td><g:select name="threads" from="${1..grailsApplication.config.stager.scripts.maxThreadCount}" value="${grailsApplication.config.stager.scripts.defaultThreadCount}" /></td>
         <td><span class="button"><input type="submit" value="Index Files" /></span></td>
       </tr>   
@@ -46,7 +46,7 @@
       <g:form controller="RunScript" action="stageRaster" method="post">
       <tr bgcolor="#cccccc">
         <td>stageRaster</td>
-        <td><g:textField name="path" value="${myValue}" /></td>
+        <td><g:textField name="path" style="width:100%" value="${myValue}" /></td>
         <td><g:select name="threads" from="${1..grailsApplication.config.stager.scripts.maxThreadCount}" value="${grailsApplication.config.stager.scripts.defaultThreadCount}" /></td>
         <td><span class="button"><input type="submit" value="Stage Raster" /></span></td>
       </tr>   
@@ -62,7 +62,7 @@
       <g:form controller="RunScript" action="removeRaster" method="post">
       <tr bgcolor="#cccccc">
         <td>removeRaster</td>
-        <td><g:textField name="path" value="${myValue}" /></td>
+        <td><g:textField name="path" style="width:100%" value="${myValue}" /></td>
         <td></td>
         <td><span class="button"><input type="submit" value="Remove Raster" /></span></td>
       </tr>   
