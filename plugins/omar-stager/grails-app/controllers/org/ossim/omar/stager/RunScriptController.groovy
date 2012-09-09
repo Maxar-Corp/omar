@@ -39,10 +39,19 @@ class RunScriptController implements ApplicationContextAware{
     def scripts( )
     {
         def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
-        println jobTriggers
-        render( view: 'scripts', model: [
-            jobTriggers: jobTriggers
-    ] )
+        if (params.renderStream)
+        {
+            response.contentType = "application/json"
+            response.outputStream << jobTriggers
+            response.outputStream.flush()
+        }
+        else
+        {
+            render( view: 'scripts', model: [
+                    jobTriggers: jobTriggers
+            ] )
+        }
+        null
     }
 
     def indexFiles()
@@ -80,7 +89,7 @@ class RunScriptController implements ApplicationContextAware{
             def jobDataMap = new JobDataMap()
             jobDataMap.commandLineScript = "${omarRunScript} removeRaster ${params.path}%"
 
-            def trigger = new SimpleTrigger("removeRaster ${params.path}%", "STAGER_SCRIPTS");
+            def trigger = new SimpleTrigger("removeRaster", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
@@ -98,7 +107,7 @@ class RunScriptController implements ApplicationContextAware{
     {
         if (!params.path)
         {
-            flash.message = "Must specify a directory to do a complete stage and index on."
+            flash.message = "Must specify a directory to do a complete stage and index."
         }
         else if(!quartzScheduler?.getTrigger("stageRaster ${params.path}", "STAGER_SCRIPTS"))
         {
