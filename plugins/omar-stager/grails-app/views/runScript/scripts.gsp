@@ -1,8 +1,9 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <meta name="layout" content="generatedViews"/>
-  <title>OMAR: Scripts</title>
+    <meta name="layout" content="scriptsPageLayout"/>
+    <r:require modules="scriptsPageLayout"/>
+    <title>OMAR: Scripts</title>
 </head>
 <body>
 <content tag="content">
@@ -126,7 +127,7 @@
         var el = YAHOO.util.Dom.get(tableId);
         if(el)
         {
-            for(var i = el.rows.length; i > 0;i--)
+            for(var i = el.rows.length; i > 1;i--)
             {
                  el.deleteRow(i - 1);
             }
@@ -169,9 +170,27 @@
             tableDiv.appendChild(jobTable);
         }
     }
+    function renderTable()
+    {
+        var url = "/omar/runScript/scripts";
+
+        var request = OpenLayers.Request.POST({
+        url:url,
+        params: {renderStream: "true"},
+        callback: function (transport)
+        {
+            //var temp = YAHOO.lang.JSON.parse(transport.responseText);
+
+            loadJobs(transport.responseText);
+            setTimeout(renderTable,5000);
+        }
+        });
+    }
     function init()
     {
        loadJobs(jobTriggers);
+       setTimeout(renderTable,5000);
+
     }
 </r:script>
 </body>

@@ -13,7 +13,6 @@ modules = {
     resource url: [plugin: 'yui', dir: 'js/yui/element', file: 'element-min.js']
     resource url: [plugin: 'yui', dir: 'js/yui/tabview', file: 'tabview-min.js']
   }
-
   searchPageLayout {
 
     resource url: [dir: 'css', file: 'main.css']
@@ -164,9 +163,10 @@ modules = {
 
       resource url: [plugin: 'openlayers', dir: 'css', file: 'mapwidget2.css']
     resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
-    resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
+      resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
+      resource url: [plugin: 'openlayers', dir: 'js', file: 'LoadingPanel.js']
 
-    resource url: [dir: 'js', file: 'OMAR.js']
+      resource url: [dir: 'js', file: 'OMAR.js']
 
     resource url: [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js']
     resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
@@ -205,9 +205,10 @@ modules = {
     resource url: [plugin: 'openlayers', dir: 'css', file: 'mapwidget2.css']
     resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
     resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
+    resource url: [plugin: 'openlayers', dir: 'js', file: 'LoadingPanel.js']
 
 
-    resource url: [dir: 'js', file: 'OMAR.js']
+      resource url: [dir: 'js', file: 'OMAR.js']
     //resource url: [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js']
     resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
 
@@ -260,4 +261,9 @@ modules = {
     resource url: [dir: 'css', file: 'showVideoPageLayout.css']
     resource url: [dir: 'js', file: 'showVideoPageLayout.js']
   }
+
+  scriptsPageLayout {
+      resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
+  }
+
 }
