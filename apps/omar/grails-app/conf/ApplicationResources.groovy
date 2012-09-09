@@ -263,7 +263,7 @@ modules = {
   }
 
   scriptsPageLayout {
-      resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
+      resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
   }
 
 }
