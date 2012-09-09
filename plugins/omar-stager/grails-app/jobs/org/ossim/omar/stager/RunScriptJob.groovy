@@ -2,7 +2,8 @@ package org.ossim.omar.stager
 
 import org.quartz.JobDataMap
 
-class RunScriptJob {
+
+class RunScriptJob{
 
 	def concurrent = false
 
@@ -11,11 +12,11 @@ class RunScriptJob {
     def execute(org.quartz.JobExecutionContext context) {
         JobDataMap dataMap = context.getMergedJobDataMap();
   		
-  		println "Executing ${dataMap.commandLineScript}"
+  		//println "Executing ${dataMap.commandLineScript}"
   		def proc = dataMap.commandLineScript.execute();
 
   	 	proc?.waitFor()
   	 	
-  	 	println "Finished ${dataMap.commandLineScript}"
+  	 	//println "Finished ${dataMap.commandLineScript}"
     }
 }

@@ -1,12 +1,12 @@
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="layout" content="generatedViews"/>
+    <meta name="layout" content="generatedViews"/>
   <title>OMAR: Scripts</title>
 </head>
 <body>
 <content tag="content">
-  <div class="nav">
+    <div class="nav">
       <ul>
           <li class="menuButton"><g:link class="home" uri="/">OMAR™ Home</g:link></li>
           <li class="menuButton"><g:link controller="Repository" class="create" action="create">Create Repository</g:link></li>
@@ -101,8 +101,78 @@
       </g:form>
     </table>
 
-  </div>
-</content>
+      <div id="jobTableDivId">
 
+      </div>
+      <%--
+      <table id = "jobTableId" border="1"  cellpadding="10">
+          <tr bgcolor="#666666">
+              <td><font color="#ffffff"><b>Script Name</b></font></td>
+              <td><font color="#ffffff"><b>Arguments</b></font></td>
+              <td><font color="#ffffff"><b>Number of Threads</b></font></td>
+              <td><font color="#ffffff"><b>Run Script</b></font></td>
+          </tr>
+      </table>
+      --%>
+  </div>
+
+  </content>
+
+<r:script>
+    var jobTriggers = ${jobTriggers}
+
+    function clearTable(tableId)
+    {
+        var el = YAHOO.util.Dom.get(tableId);
+        if(el)
+        {
+            for(var i = el.rows.length; i > 0;i--)
+            {
+                 el.deleteRow(i - 1);
+            }
+        }
+
+    }
+    function loadJobs(jobs)
+    {
+        clearTable("jobTableId");
+        if(jobs&&jobs.labels)
+        {
+            var tableDiv = YAHOO.util.Dom.get(jobTableDivId);
+            var jobTable=document.createElement('table');
+            var jobTableBody=document.createElement('tbody');
+            var row, cell;
+
+            jobTable.id="jobTableId";
+            row=document.createElement('tr');
+            var idx = 0;
+            for(idx = 0; idx <jobs.labels.length;++idx)
+            {
+                cell=document.createElement('td');
+                cell.appendChild(document.createTextNode(jobs.labels[idx]));
+                row.appendChild(cell);
+            }
+            jobTableBody.appendChild(row);
+            for(idx = 0; idx <jobs.rows.length;++idx)
+            {
+                row=document.createElement('tr');
+                var cellIdx = 0;
+                for(cellIdx = 0; cellIdx <jobs.labels.length;++cellIdx)
+                {
+                    cell=document.createElement('td');
+                    cell.appendChild(document.createTextNode(jobs.rows[idx][cellIdx]));
+                    row.appendChild(cell);
+                    jobTableBody.appendChild(row);
+                }
+            }
+            jobTable.appendChild(jobTableBody);
+            tableDiv.appendChild(jobTable);
+        }
+    }
+    function init()
+    {
+       loadJobs(jobTriggers);
+    }
+</r:script>
 </body>
 </html>

@@ -7,23 +7,26 @@ class RunScriptService {
 
     def listJobTriggersByGroup(def group)
     {
-        def result = []
+        def table = [:]
         def names = quartzScheduler.getTriggerNames(group);
 
+        def rows = []
         for (int j = 0; j < names.length; j++)
         {
-            def info = [:]
             def trigger = quartzScheduler.getTrigger(names[j], group);
-            info.executing = trigger.timesTriggered?true:false
-            info.startTime = trigger.startTime
-            info.endTime   = trigger.endTime
-            info.name      = trigger.name
-            info.jobName   = trigger.jobName
-            info.jobGroup  = trigger.jobGroup
-            result << info
+            def data = []
+            data<< trigger.name
+            data<< trigger.jobName
+            data<< trigger.jobGroup
+            data<< trigger.timesTriggered?true:false
+            data<< trigger.startTime
+            rows << data
         }
 
-        result
+        table.labels = ["Name", "Job Name", "Group", "Executing", "Start Time"]
+        table.rows   = rows
+
+        table
     }
 
 }
