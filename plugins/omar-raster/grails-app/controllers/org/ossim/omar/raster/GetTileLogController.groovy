@@ -53,9 +53,9 @@ class GetTileLogController {
             getTileLogInstanceList  = GetTileLog.list(params)
             getTileLogInstanceTotal = GetTileLog.count()
         }
-        else
+        else if (springSecurityService?.principal?.username)
         {
-            def username = springSecurityService?.principal?.username?:""
+            def username = springSecurityService?.principal?.username
             if (username)
             {
                 getTileLogInstanceList = GetTileLog.createCriteria().list( params ) {
