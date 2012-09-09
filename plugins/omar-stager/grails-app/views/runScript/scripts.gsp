@@ -172,9 +172,8 @@
     }
     function renderTable()
     {
-        var link = "${createLink(action: scripts, controller: runScriptController)}";
-
-        new Ajax.Request(link+"?renderStream=true", {
+        var link = "/omar/runScript/jobs";
+        new Ajax.Request(link, {
             method: 'get',
             onSuccess: function(transport) {
                  loadJobs(transport.responseText);
