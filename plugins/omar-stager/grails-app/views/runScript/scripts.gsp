@@ -127,16 +127,25 @@
         var el = YAHOO.util.Dom.get(tableId);
         if(el)
         {
-            for(var i = el.rows.length; i > 1;i--)
-            {
-                 el.deleteRow(i - 1);
-            }
+             for(var i = el.rows.length; i > 0;i--)
+             {
+                  el.deleteRow(i - 1);
+             }
+        }
+    }
+    function deleteTable(tableId)
+    {
+        var el = YAHOO.util.Dom.get(tableId);
+
+        if(el)
+        {
+            el.parentNode.removeChild(el);
         }
 
     }
     function renderTable(jobs)
     {
-        clearTable("jobTableId");
+        deleteTable("jobTableId");
         if(jobs&&jobs.labels)
         {
             var tableDiv = YAHOO.util.Dom.get(jobTableDivId);
@@ -176,8 +185,8 @@
         new Ajax.Request(link, {
             method: 'get',
             onSuccess: function(transport) {
-                 renderTable(transport.responseText);
-                 setTimeout(renderTable,5000);
+                 renderTable(YAHOO.lang.JSON.parse(transport.responseText));
+                 setTimeout(getJobs,5000);
             }
         });
     }
