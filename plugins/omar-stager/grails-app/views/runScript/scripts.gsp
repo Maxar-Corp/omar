@@ -103,6 +103,7 @@
     </table>
 
       <div id="jobTableDivId">
+        <h1>Current Jobs (Updated every 5 seconds...)</h1>
 
       </div>
       <%--
@@ -132,6 +133,7 @@
                   el.deleteRow(i - 1);
              }
         }
+        return (el!=null);
     }
     function deleteTable(tableId)
     {
@@ -141,7 +143,7 @@
         {
             el.parentNode.removeChild(el);
         }
-
+        return (el!=null);
     }
     function renderTable(jobs)
     {

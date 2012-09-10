@@ -1,8 +1,8 @@
 package org.ossim.omar.stager
 
 import org.quartz.JobDataMap
-
-
+import groovy.util.logging.Log4j
+@Log4j
 class RunScriptJob{
 
 	def concurrent = false
@@ -14,8 +14,9 @@ class RunScriptJob{
   		
   		//println "Executing ${dataMap.commandLineScript}"
   		def proc = dataMap.commandLineScript.execute();
+        proc.in.eachLine { line -> log.info(line) }
 
-  	 	proc?.waitFor()
+        proc?.waitFor()
   	 	
   	 	//println "Finished ${dataMap.commandLineScript}"
     }

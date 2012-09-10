@@ -37,7 +37,8 @@ class RunScriptController implements ApplicationContextAware{
     }
     def jobs()
     {
-        def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
+        //def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
+        def jobTriggers = "${runScriptService.listJobTriggersByGroup("") as JSON}"
         response.contentType = "application/json"
         response.outputStream << jobTriggers
         response.outputStream.flush()
@@ -45,7 +46,8 @@ class RunScriptController implements ApplicationContextAware{
     }
     def scripts( )
     {
-        def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
+        //def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
+        def jobTriggers = "${runScriptService.listJobTriggersByGroup("") as JSON}"
         render( view: 'scripts', model: [
                 jobTriggers: jobTriggers
         ] )
@@ -66,11 +68,11 @@ class RunScriptController implements ApplicationContextAware{
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
-            flash.message = "Job Submitted into Job Queue."
+            flash.message = "indexFiles ${params.path} submitted into Job Queue."
         }
         else
         {
-            flash.message = "Job already running."
+            flash.message = "indexFiles Job already running."
         }
         redirect(action: 'scripts')
     }
@@ -90,11 +92,11 @@ class RunScriptController implements ApplicationContextAware{
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
-            flash.message = "Job Submitted into Job Queue."
+            flash.message = "removeRaster ${params.path} Submitted into Job Queue."
         }
         else
         {
-            flash.message = "Job already running."
+            flash.message = "removeRaster Job already running."
         }
 
         redirect(action: 'scripts')
@@ -115,7 +117,7 @@ class RunScriptController implements ApplicationContextAware{
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
-            flash.message = "Job Submitted into Job Queue."
+            flash.message = "stageRaster ${params.path} submitted into Job Queue."
         }
         else
         {
@@ -136,7 +138,7 @@ class RunScriptController implements ApplicationContextAware{
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
-            flash.message = "Job Submitted into Job Queue."
+            flash.message = "synchFiles submitted into Job Queue."
         }
         else
         {
