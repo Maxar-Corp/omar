@@ -20,18 +20,7 @@ class GetTileLogController {
     def clear(){
         if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
         {
-            try{
-                sql.execute("delete from get_tile_log;");
-            }
-            catch(def e)
-            {
-                log.info(e)
-            }
-
-        // we are executing a raw sql don't let hibernate read from cache
-        // force a reload for this session
-        //
-            sessionFactory.evictQueries()
+            GetTileLog.executeUpdate("DELETE FROM GetTileLog")
         }
 
         redirect(action: "list", params: params)
