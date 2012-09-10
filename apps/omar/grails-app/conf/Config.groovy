@@ -666,6 +666,39 @@ stager {
   scripts{
       defaultThreadCount = 4
       maxThreadCount = 8
+
+      /**
+       * This will force the scripts page on reload to always use the formatters
+       * listed.
+       */
+      forceUseFormatterOnReload = true
+      formatter = [
+              /**
+               * This formats the arguments to the indexFilesArgs on the scripts page
+               */
+              indexFilesArgs:{
+                  def date = new DateTime()
+                  "/data"
+//                  "/data/${date.toString('YYYY-MM-dd')}"
+                    },
+              /**
+               * This formats the arguments to the stageFilesArgs on the scripts page
+               */
+              stageFilesArgs:{
+                  def date = new DateTime()
+                  "/data"
+//                  "/data/${date.toString('YYYY-MM-dd')}"
+              },
+              /**
+               * This formats the arguments to the removeFilesArgs on the scripts page
+               */
+              removeFilesArgs:{
+                  def date = new DateTime()
+                  date = date.plusDays(-30);
+                  "/data"
+//                  "/data/${date.toString('YYYY-MM-dd')}"
+              }
+              ]
   }
   histogramOptions = ""
   overview {
@@ -674,4 +707,6 @@ stager {
   }
   onDemand = true
 }
+
+
 
