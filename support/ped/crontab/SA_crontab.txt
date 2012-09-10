@@ -1,0 +1,1 @@
+0 */1 * * * /opt/radiantblue/bin/omar-postgres-update > /dev/null
