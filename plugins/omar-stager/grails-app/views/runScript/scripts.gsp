@@ -22,80 +22,100 @@
     
     <table border="1"  cellpadding="10">
       <tr bgcolor="#666666">
-        <td><font color="#ffffff"><b>Script Name</b></font></td>
-        <td><font color="#ffffff"><b>Arguments</b></font></td>
-        <td><font color="#ffffff"><b>Number of Threads</b></font></td>
-        <td><font color="#ffffff"><b>Run Script</b></font></td>
+          <td><font color="#ffffff"><b>Run Script</b></font></td>
+          <td><font color="#ffffff"><b>Number of Threads</b></font></td>
+          <td><font color="#ffffff"><b>Run Script Args</b></font></td>
+          <td><font color="#ffffff"><b>Script</b></font></td>
+          <td><font color="#ffffff"><b>Script Args</b></font></td>
+          <td><font color="#ffffff"><b>Execute</b></font></td>
       </tr>
 
       <g:form controller="RunScript" action="indexFiles" method="post">
       <tr bgcolor="#cccccc">
-        <td>indexFiles</td>
-        <td><g:textField  style="width:100%" name="path" value="${myValue}" /></td>
-        <td><g:select name="threads" from="${1..grailsApplication.config.stager.scripts.maxThreadCount}" value="${grailsApplication.config.stager.scripts.defaultThreadCount}" /></td>
-        <td><span class="button"><input type="submit" value="Index Files" /></span></td>
+          <td>omarRunScript</td>
+          <td><g:select name="threads" from="${1..grailsApplication.config.stager.scripts.maxThreadCount}" value="${grailsApplication.config.stager.scripts.defaultThreadCount}" /></td>
+          <td><g:textField  style="width:100%" name="runScriptIndexFilesArgs" value="${runScriptIndexFilesArgs}" /></td>
+          <td>indexFiles</td>
+          <td><g:textField  style="width:100%" name="indexFilesArgs" value="${indexFilesArgs}" /></td>
+          <td><span class="button"><input type="submit" value="Index Files" /></span></td>
       </tr>   
       </g:form>
 
       <tr bgcolor="#999999">
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
         <td>&nbsp;</td>
         <td>&nbsp;</td>
       </tr>
 
       <g:form controller="RunScript" action="stageRaster" method="post">
       <tr bgcolor="#cccccc">
-        <td>stageRaster</td>
-        <td><g:textField name="path" style="width:100%" value="${myValue}" /></td>
-        <td><g:select name="threads" from="${1..grailsApplication.config.stager.scripts.maxThreadCount}" value="${grailsApplication.config.stager.scripts.defaultThreadCount}" /></td>
+          <td>omarRunScript</td>
+          <td><g:select name="threads" from="${1..grailsApplication.config.stager.scripts.maxThreadCount}" value="${grailsApplication.config.stager.scripts.defaultThreadCount}" /></td>
+          <td><g:textField  style="width:100%" name="runScriptStageRasterArgs" value="${runScriptStageRasterArgs}" /></td>
+          <td>stageRaster</td>
+        <td><g:textField name="stageRasterArgs" style="width:100%" value="${stageRasterArgs}" /></td>
         <td><span class="button"><input type="submit" value="Stage Raster" /></span></td>
       </tr>   
       </g:form>
 
       <tr bgcolor="#999999">
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
       </tr>
 
       <g:form controller="RunScript" action="removeRaster" method="post">
       <tr bgcolor="#cccccc">
-        <td>removeRaster</td>
-        <td><g:textField name="path" style="width:100%" value="${myValue}" /></td>
-        <td></td>
+          <td>omarRunScript</td>
+          <td></td>
+          <td><g:textField  style="width:100%" name="runScriptRemoveRasterArgs" value="${runScriptRemoveRasterArgs}" /></td>
+          <td>removeRaster</td>
+           <td><g:textField name="removeRasterArgs" style="width:100%" value="${removeRasterArgs}" /></td>
         <td><span class="button"><input type="submit" value="Remove Raster" /></span></td>
       </tr>   
       </g:form>
 
       <tr bgcolor="#999999">
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
       </tr>
 
       <g:form controller="RunScript" action="synchFiles" method="post">
       <tr bgcolor="#cccccc">
-        <td>synchFiles</td>
-        <td></td>
-        <td></td>
-        <td><span class="button"><input type="submit" value="Synch Files" /></span></td>
+          <td>omarRunScript</td>
+          <td></td>
+          <td><g:textField  style="width:100%" name="runScriptSynchFilesArgs" value="${runScriptSynchFilesArgs}" /></td>
+          <td>synchFiles</td>
+          <td></td>
+          <td><span class="button"><input type="submit" value="Synch Files" /></span></td>
       </tr>   
       </g:form>
 
       <tr bgcolor="#999999">
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
-        <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
       </tr>
 
       <g:form controller="RunScript" action="clearCache" method="post">
       <tr bgcolor="#cccccc">
-        <td>clearCache</td>
-        <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td>clearCache</td>
         <td></td>
         <td><span class="button"><input type="submit" value="Clear Cache" /></span></td>
       </tr>   
@@ -104,18 +124,7 @@
 
       <div id="jobTableDivId">
         <h1>Current Jobs (Updated every 5 seconds...)</h1>
-
       </div>
-      <%--
-      <table id = "jobTableId" border="1"  cellpadding="10">
-          <tr bgcolor="#666666">
-              <td><font color="#ffffff"><b>Script Name</b></font></td>
-              <td><font color="#ffffff"><b>Arguments</b></font></td>
-              <td><font color="#ffffff"><b>Number of Threads</b></font></td>
-              <td><font color="#ffffff"><b>Run Script</b></font></td>
-          </tr>
-      </table>
-      --%>
   </div>
 
   </content>

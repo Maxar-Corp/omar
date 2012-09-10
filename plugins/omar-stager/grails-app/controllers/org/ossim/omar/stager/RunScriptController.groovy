@@ -37,8 +37,8 @@ class RunScriptController implements ApplicationContextAware{
     }
     def jobs()
     {
-        //def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
-        def jobTriggers = "${runScriptService.listJobTriggersByGroup("") as JSON}"
+        def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
+        //def jobTriggers = "${runScriptService.listJobTriggersByGroup("") as JSON}"
         response.contentType = "application/json"
         response.outputStream << jobTriggers
         response.outputStream.flush()
@@ -46,93 +46,103 @@ class RunScriptController implements ApplicationContextAware{
     }
     def scripts( )
     {
-        //def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
-        def jobTriggers = "${runScriptService.listJobTriggersByGroup("") as JSON}"
-        render( view: 'scripts', model: [
-                jobTriggers: jobTriggers
-        ] )
+        def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
+        //def jobTriggers = "${runScriptService.listJobTriggersByGroup("") as JSON}"
+        def model = [jobTriggers: jobTriggers]
+        model << params
+
+       // println model
+        render( view: 'scripts', model:model )
+
     }
 
     def indexFiles()
     {
-        if (!params.path)
+        def runScriptArgs = params.runScriptIndexFilesArgs?:""
+        def indexFilesArgs = params.indexFilesArgs
+        if (!indexFilesArgs)
         {
             flash.message = "Must specify a directory to index."
         }
-        else if(!quartzScheduler?.getTrigger("indexFiles ${params.path}", "STAGER_SCRIPTS"))
+        else if(!quartzScheduler?.getTrigger("indexFiles ${indexFilesArgs}", "STAGER_SCRIPTS"))
         {
             def jobDataMap = new JobDataMap()
-            jobDataMap.commandLineScript = "${omarRunScript} --nthreads ${params.threads} indexFiles ${params.path}"
-
-            def trigger = new SimpleTrigger("indexFiles ${params.path}", "STAGER_SCRIPTS");
+            jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} --nthreads ${params.threads} indexFiles ${indexFilesArgs}"
+           // println jobDataMap.commandLineScript
+            def trigger = new SimpleTrigger("indexFiles ${indexFilesArgs}", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
-            flash.message = "indexFiles ${params.path} submitted into Job Queue."
+            flash.message = "indexFiles ${indexFilesArgs} submitted into Job Queue."
         }
         else
         {
             flash.message = "indexFiles Job already running."
         }
-        redirect(action: 'scripts')
+        redirect(action: 'scripts', params:params)
     }
 
     def removeRaster()
     {
-        if (!params.path)
+        def runScriptArgs = params.runScriptRemoveRasterArgs?:""
+        def removeRasterArgs = params?.removeRasterArgs?.split(" ").join("% ") + "%"
+        if (!params?.removeRasterArgs)
         {
             flash.message = "Must specify a value to search and remove from tables."
         }
-        else if(!quartzScheduler?.getTrigger("removeRaster ${params.path}%", "STAGER_SCRIPTS"))
+        else if(!quartzScheduler?.getTrigger("removeRaster ${removeRasterArgs}", "STAGER_SCRIPTS"))
         {
             def jobDataMap = new JobDataMap()
-            jobDataMap.commandLineScript = "${omarRunScript} removeRaster ${params.path}%"
+            jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} removeRaster ${removeRasterArgs}"
 
-            def trigger = new SimpleTrigger("removeRaster ${params.path}", "STAGER_SCRIPTS");
+            def trigger = new SimpleTrigger("removeRaster ${removeRasterArgs}", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
-            flash.message = "removeRaster ${params.path} Submitted into Job Queue."
+            flash.message = "removeRaster ${removeRasterArgs} Submitted into Job Queue."
         }
         else
         {
             flash.message = "removeRaster Job already running."
         }
 
-        redirect(action: 'scripts')
+        redirect(action: 'scripts', params:params)
     }
 
     def stageRaster()
     {
-        if (!params.path)
+        def runScriptArgs = params.runScriptStageRasterArgs?:""
+        def stageRasterArgs = params.stageRasterArgs
+        if (!stageRasterArgs)
         {
             flash.message = "Must specify a directory to do a complete stage and index."
         }
-        else if(!quartzScheduler?.getTrigger("stageRaster ${params.path}", "STAGER_SCRIPTS"))
+        else if(!quartzScheduler?.getTrigger("stageRaster ${stageRasterArgs}", "STAGER_SCRIPTS"))
         {
             def jobDataMap = new JobDataMap()
-            jobDataMap.commandLineScript = "${omarRunScript} --nthreads ${params.threads} stageRaster ${params.path}"
-
-            def trigger = new SimpleTrigger("stageRaster ${params.path}", "STAGER_SCRIPTS");
+            jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} --nthreads ${params.threads} stageRaster ${stageRasterArgs}"
+            def trigger = new SimpleTrigger("stageRaster ${stageRasterArgs}", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
-            flash.message = "stageRaster ${params.path} submitted into Job Queue."
+            flash.message = "stageRaster ${stageRasterArgs} submitted into Job Queue."
         }
         else
         {
             flash.message = "Job already running."
         }
 
-        redirect(action: 'scripts')
+        redirect(action: 'scripts', params:params)
     }
 
     def synchFiles()
     {
+        def runScriptArgs = params.runScriptSynchFilesArgs?:""
+
         if(!quartzScheduler?.getTrigger("synchFiles", "STAGER_SCRIPTS"))
         {
             def jobDataMap = new JobDataMap()
-            jobDataMap.commandLineScript = "${omarRunScript} synchFiles"
+            jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} synchFiles"
 
             def trigger = new SimpleTrigger("synchFiles", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
@@ -145,7 +155,7 @@ class RunScriptController implements ApplicationContextAware{
             flash.message = "Job already running."
         }
 
-        redirect(action: 'scripts')
+        redirect(action: 'scripts', params:params)
     }
 
     def clearCache()
@@ -158,7 +168,7 @@ class RunScriptController implements ApplicationContextAware{
             flash.message = "OMAR Cache has been deleted."
         }
 
-        redirect(action: 'scripts')
+        redirect(action: 'scripts', params:params)
     }
     void setApplicationContext( org.springframework.context.ApplicationContext applicationContext )
     {
