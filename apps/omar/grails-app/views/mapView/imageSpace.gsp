@@ -330,7 +330,6 @@ function getTileUrl (bounds)
     var scale = 1.0/res;
     var size = bounds.getSize();
 
-
     var x = bounds.left*scale;
     var y = (height-bounds.top)*scale;
 
@@ -545,9 +544,9 @@ function init(mapWidth, mapHeight)
     var offsetX = width/2.0;
     var offsetY = height/2.0;
 
-    map.setCenter(new  OpenLayers.LonLat(0.0,0.0), 0);
+//map.setCenter(new  OpenLayers.LonLat(0.0,0.0), 0);
 
-    <%--
+<%--
 	<g:if test="${(params.latitude != null) && (params.longitude != null)}">
 		var url = "/omar/imageSpace/groundToImage";
 		var request = OpenLayers.Request.POST({
@@ -570,7 +569,6 @@ function init(mapWidth, mapHeight)
 	</g:if>
 --%>
 
-// map.zoomIn();
     // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
    //OMAR.imageManipulator.affineParams.rotate = parseFloat(${"rotateAngle"}.value);
    OMAR.imageManipulator.localImageBounds = new OpenLayers.Bounds(0, 0, width, height);
@@ -584,7 +582,6 @@ function init(mapWidth, mapHeight)
    //OMAR.imageManipulator.applyRotate(${"rotateAngle"}.value);
    //OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
    //alert(map.getMaxExtents());
-//map.zoomToMaxExtent();
 OMAR.imageManipulator.events.on({
             "onFeatureDone": measureFinished,
             "onFeatureRemoved" : measureRemoved,
@@ -613,7 +610,7 @@ OMAR.imageManipulator.events.on({
     currProbLevel = 0.9;
 
     rotateSlider.setRealValue(rotationAngle);
-    updateCenter();
+//    updateCenter();
     var lat = ${params.latitude?:"null"};
     var lon = ${params.longitude?:"null"};
     var view = ${params.view?:"null"};
@@ -628,7 +625,6 @@ OMAR.imageManipulator.events.on({
         {
             rotateSlider.setRealValue(view.azimuth + OMAR.imageManipulator.northAngle);
         }
-
     }
     if(lat&&lon)
     {
@@ -650,8 +646,11 @@ OMAR.imageManipulator.events.on({
     }
     setupOverviewCheck();
    // mapDiv.style.display = "inline";
+
+    map.zoomToExtent(bounds,{closest:true});
     finishedInit = true;
-    map.zoomToMaxExtent();
+    updateCenter();
+
 }
 
 function setupOverviewCheck(){
