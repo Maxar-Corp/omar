@@ -46,6 +46,20 @@ class RunScriptController implements ApplicationContextAware{
     }
     def scripts( )
     {
+        if (grailsApplication.config.stager.scripts.forceUseFormatterOnReload)
+        {
+            params.removeRasterArgs = grailsApplication.config.stager.scripts.formatter.removeFilesArgs()
+            params.stageRasterArgs = grailsApplication.config.stager.scripts.formatter.stageFilesArgs()
+            params.indexFilesArgs = grailsApplication.config.stager.scripts.formatter.indexFilesArgs()
+        }
+        else
+        {
+            params.removeRasterArgs = params.removeRasterArgs?:grailsApplication.config.stager.scripts.formatter.removeFilesArgs()
+            params.stageRasterArgs = params.stageRasterArgs?:grailsApplication.config.stager.scripts.formatter.stageFilesArgs()
+            params.indexFilesArgs = params.indexFilesArgs?:grailsApplication.config.stager.scripts.formatter.indexFilesArgs()
+        }
+
+        //println grailsApplication.config.stager.scripts.formatter.indexFilesPrefix()
         def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
         //def jobTriggers = "${runScriptService.listJobTriggersByGroup("") as JSON}"
         def model = [jobTriggers: jobTriggers]
