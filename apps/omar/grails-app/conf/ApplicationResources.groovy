@@ -205,7 +205,7 @@ modules = {
     resource url: [plugin: 'openlayers', dir: 'css', file: 'mapwidget2.css']
     resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
     resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
-    resource url: [plugin: 'openlayers', dir: 'js', file: 'LoadingPanel.js']
+  //  resource url: [plugin: 'openlayers', dir: 'js', file: 'LoadingPanel.js']
 
 
       resource url: [dir: 'js', file: 'OMAR.js']
@@ -264,6 +264,7 @@ modules = {
 
   scriptsPageLayout {
       resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
+      resource url: [plugin: 'yui', dir: 'js/yui/json', file: 'json-min.js']
   }
 
 }
