@@ -28,13 +28,36 @@ def outputHelp()
     println "Help for indexFiles!!"
 }
 
-
-
-if(!parent.scriptArgs.size() ||parent.scriptArgs[0] == "--help")
+def setupCli()
 {
-  outputHelp()
-  return 0
+    def cli = new CliBuilder(usage: 'indexFiles [options] <scriptArgs>')
+    cli.stopAtNonOption = true
+    cli.with{
+        h longOpt: 'help', 'Show usage information'
+        _ longOpt: "filefilter", args:1, "Override the default file filter and specify a comma separated list of file extension to index"
+    }
+
+    cli
 }
+def cli = setupCli()
+def options = cli.parse(parent.scriptArgs)
+
+if(options.h)
+{
+    cli.usage()
+    return 0;
+}
+if(options.filefilter)
+{
+    parent.env.STAGE_FILE_FILTER = "${options.filefilter}"
+}
+
+parent.scriptArgs = options.arguments()
+//if(!parent.scriptArgs.size() ||parent.scriptArgs[0] == "--help")
+//{
+//  outputHelp()
+//  return 0
+//}
 
 enum Mode {SEQ, POOL}
 
