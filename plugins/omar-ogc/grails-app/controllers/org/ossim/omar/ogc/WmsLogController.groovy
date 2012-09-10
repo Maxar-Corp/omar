@@ -14,6 +14,8 @@ class WmsLogController {
         redirect(action: "list", params: params)
     }
     def clear(){
+         WmsLog.executeUpdate("DELETE FROM WmsLog")
+        /*
         try{
             sql.execute("delete from wms_log;");
         }
@@ -25,7 +27,7 @@ class WmsLogController {
         // force a reload for this session
         //
         sessionFactory.evictQueries()
-
+          */
         redirect(action: "list", params: params)
     }
     def list() {
