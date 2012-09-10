@@ -562,7 +562,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       var WHMin = Math.min(w,h);   // extend out by about 10 percent
       var ratio = WH/WHMin;
       var multiplier = 1.0;
-      if(ratio < 1.7) multiplier = 1.7/ratio;
+      if(ratio < 1.5) multiplier = 1.5/ratio;
 
       WH=WH*multiplier;
 
