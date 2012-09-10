@@ -1,0 +1,2 @@
+#!/bin/bash
+psql -U postgres -d omardb-1.8.12-prod -f /opt/radiantblue/ossim/omar/scripts/update_raster_SATURN_ARCH.sql 
