@@ -11,7 +11,7 @@ environmentVariables =[
    PID_FILE:"",
    CLASSPATH:"${System.env.OSSIM_DIST_ROOT}/tomcat/webapps/omar/WEB-INF/lib", 
    //STAGE_FILE_FILTER:"", 
-   STAGE_FILE_FILTER:"",
+   STAGE_FILE_FILTER:"hsi,hri,tiff,tif,ntf,nitf",
    HISTOGRAM_OPTIONS:"--create-histogram-fast",
    OVERVIEW_OPTIONS:"--compression-type JPEG --compression-quality 75"
 ]
@@ -38,10 +38,11 @@ class OmarRunScript{
    def scriptToRun
    def scriptArgs
    def args
-   def outputUsage()
+
+   def getRunnableScripts()
    {
       def runnableScripts = []
-    try{
+      try{
       def tempFile = runScriptDirectory as File
          tempFile.traverse( type:FileType.FILES, nameFilter:~/.*.groovy/ ) {
                  
@@ -57,28 +58,11 @@ class OmarRunScript{
          outputLog(e)
       }
 
-      println """Supported Scripts:
-${runnableScripts.join("\n")}
-
-To run any script please use the command: 
-   ${runScriptFile.name} <script>
-
-To bring up this usage: 
-   ${runScriptFile.name} --help
-
-To bring up help on any script please use the following format: 
-   ${runScriptFile.name} <script> --help
-
-The .groovy extension is not needed and will be appended when running a script file if the extension .groovy is not present.  
-To get help on any script please run:
-
-   ${runScriptFile.name} <script> --help
-   
-"""
+      runnableScripts
    }
-   def run(args)
+   def setupCli()
    {
-      def cli = new CliBuilder(usage: 'omarRunShript.sh [options] <script> <scriptArgs>')
+      def cli = new CliBuilder(usage: 'omarRunShript.sh [options] <script> [options] <scriptArgs>')
       cli.stopAtNonOption = true
       cli.with{
          h longOpt: 'help', 'Show usage information'
@@ -91,6 +75,15 @@ To get help on any script please run:
          _ longOpt:"ovropt", args:1, argName:"ovropt", "Overview options surrounded by quotes"
          _ longOpt:"cp", args:1, argName:"cp", "CLASSPATH for where the jar files are located"
       }
+
+      cli.footer = """Supported Scripts:
+      ${runnableScripts.join("\n")} """
+
+      cli
+   }
+   def run(args)
+   {
+      def cli = setupCli();
       def options = cli.parse(args)
       if(options.h)
       {
@@ -110,7 +103,7 @@ To get help on any script please run:
          {
             env.OMAR_URL = options.url
          }
-      if(options.filefilter)
+      if(options.filefilter != false)
       {
          env.STAGE_FILE_FILTER = "${options.filefilter}"
       }
@@ -130,15 +123,15 @@ To get help on any script please run:
       {
          env.CLASSPATH="${options.cp}"
       }
-      println options.arguments()
-      println env
+      //println options.arguments()
+      //println env
       if(!args.length )
       {
          cli.usage()
          return 0;
       }
       this.args = options.arguments()
-      println "===============${this.args}================="
+      //println "===============${this.args}================="
       scriptToRun  = findScriptToRun(new File(this.args[0]))
 
       if(!scriptToRun)
