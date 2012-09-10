@@ -637,6 +637,9 @@ thumbnail {
   defaultSize = 512
 }
 
+/**
+ * This is the settings for the stager threads and jobs in the OMAR system
+ */
 stager {
     /**
      * Worker threads are currently for building on demand overviews and histograms
