@@ -213,7 +213,8 @@ s
           </td>
           <td>
             <ol>
-              <g:each var="c" in="${editableControllers}">
+                <li><g:link controller="RunScript" action="scripts">Scripts</g:link></li>
+                <g:each var="c" in="${editableControllers}">
                 <li><g:link controller="${c.path}">${c.name}</g:link></li>
               </g:each>
             </ol>
