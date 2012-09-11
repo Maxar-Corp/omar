@@ -390,9 +390,9 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     OpenLayers.Event.observe(window,   "DOMMouseScroll", this.wheelListener);
     OpenLayers.Event.observe(window,   "mousewheel",     this.wheelListener);
     OpenLayers.Event.observe(document, "mousewheel",     this.wheelListener);
-    this.containerResized(true);
     this.mapEventsDiv = OpenLayers.Util.getElement(this.map.id + "_events");
-},
+    this.containerResized(true);
+  },
 //handleBrowserEvent: function(evt)
 //{
 
@@ -562,7 +562,8 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       var WHMin = Math.min(w,h);   // extend out by about 10 percent
       var ratio = WH/WHMin;
       var multiplier = 1.0;
-      if(ratio < 1.5) multiplier = 1.5/ratio;
+      if(ratio < 1.4){multiplier = 1.4/ratio;}
+
 
       WH=WH*multiplier;
 
@@ -613,7 +614,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
       this.updateTransform();
       this.map.updateSize(); // tell the map to adjust itself
       this.map.setCenter(center, this.map.getZoom());
-  },  
+  },
   checkResize: function(){
     var region = YAHOO.util.Region.getRegion(this.containerDiv);
     if(!this.regionsEqual(region,this.containerDivRegion))
