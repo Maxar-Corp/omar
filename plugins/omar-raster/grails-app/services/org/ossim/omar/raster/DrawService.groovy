@@ -137,12 +137,13 @@ class DrawService implements ApplicationContextAware, InitializingBean
     }
 
 
-    def pageParams = [
-        max: grailsApplication.config.wms.vector.maxcount
+    def options = [
+        max: grailsApplication.config.wms.vector.maxcount,
+        fieldName: style.propertyName
     ]
 
     //searchService?.scrollGeometries( queryParams, pageParams, closure )
-    searchService?.scrollFeatures( queryParams, pageParams, closure )
+    searchService?.scrollFeatures( queryParams, options, closure )
 
   }
 

@@ -384,7 +384,7 @@ class RasterEntryController implements InitializingBean
           sessionController: "session",
           rasterEntrySearchCurrentTab1: session.rasterEntrySearchCurrentTab1,
           rasterEntrySearchCurrentTab2: session.rasterEntrySearchCurrentTab2,
-          footprintStyle: applicationContext.byFileType
+          footprintStyle: applicationContext.getBean(dataWMS?.options?.styles)
       ]
     }
   }
