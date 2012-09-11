@@ -20,13 +20,13 @@ class PropertyNameStyle
   def outlineLookupTable = [:]
   def fillLookupTable = [:]
 
-  def getOutlineColor(def fileType)
+  def getOutlineColor(def propertyValue)
   {
-    outlineLookupTable[fileType] ?: defaultOutlineColor
+    outlineLookupTable[propertyValue] ?: defaultOutlineColor
   }
 
-  def getFillColor(def fileType)
+  def getFillColor(def propertyValue)
   {
-    fillLookupTable[fileType] ?: defaultFillColor
+    fillLookupTable[propertyValue] ?: defaultFillColor
   }
 }

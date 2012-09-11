@@ -67,6 +67,21 @@ OMAR Raster support
       ]
     }
 
+    bySensorId( org.ossim.omar.raster.PropertyNameStyle ) { bean ->
+      propertyName = 'sensorId'
+      outlineLookupTable = [
+          'ACES_YOGI-HRI1': new Color( 255, 0, 0, 255 ),
+          'ACES_YOGI-HRI2': new Color( 255, 0, 0, 255 ),
+          'ACES_YOGI-HRI3': new Color( 255, 0, 0, 255 ),
+          'ACES_YOGI-HSI': new Color( 255, 255, 0, 255 ),
+          ALPHA: new Color( 255, 0, 255, 255 ),
+          BRAVO: new Color( 0, 255, 0, 255 ),
+          CHARLIE: new Color( 0, 255, 255, 255 ),
+          DELTA: new Color( 0, 0, 255, 255 )
+      ]
+    }
+
+
     red( org.ossim.omar.raster.PropertyNameStyle ) { bean ->
       propertyName = 'id'
       defaultOutlineColor = new Color( 255, 0, 0, 255 )  // red

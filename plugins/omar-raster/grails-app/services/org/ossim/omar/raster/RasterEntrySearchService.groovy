@@ -173,7 +173,11 @@ class RasterEntrySearchService implements InitializingBean
     def x = {
       projections {
         property( "groundGeom" )
-        property( "fileType" )
+
+        if ( params?.fieldName )
+        {
+          property( params?.fieldName )
+        }
       }
 
       if ( max )
@@ -191,7 +195,7 @@ class RasterEntrySearchService implements InitializingBean
     def criteria = criteriaBuilder.buildCriteria( x )
 
     criteria.add( rasterEntryQuery?.createClause() )
-    criteria.setReadOnly(true)
+    criteria.setReadOnly( true )
 
     def results = criteria.scroll(/*ScrollMode.FORWARD_ONLY*/)
     def status = results.first()
@@ -200,10 +204,16 @@ class RasterEntrySearchService implements InitializingBean
     {
       def r = results.get()
 
-      closure.call( [
+      def d = [
           groundGeom: r[0],
-          fileType: r[1]
-      ] )
+      ]
+
+      if ( params?.fieldName )
+      {
+        d[params?.fieldName] = r[1]
+      }
+
+      closure.call( d )
       status = results.next()
     }
 
