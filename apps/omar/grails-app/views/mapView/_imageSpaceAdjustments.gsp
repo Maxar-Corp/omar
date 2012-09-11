@@ -106,8 +106,8 @@
           <g:select
               id="bands"
               name="bands"
-              value="${params.bands ?: '0'}"
-              from="${['0']}"
+              value="${params.bands ?: 'default'}"
+              from="${['default','0']}"
               onChange="changeBandsOpts()"/>
         </li>
       </g:if>
@@ -116,8 +116,8 @@
           <g:select
               id="bands"
               name="bands"
-              value="${params.bands ?: '0,1'}"
-              from="${['0,1', '1,0', '0', '1']}"
+              value="${params.bands ?: 'default'}"
+              from="${['default','0,1', '1,0', '0', '1']}"
               onChange="changeBandsOpts()"/>
         </li>
       </g:if>
@@ -126,8 +126,8 @@
           <g:select
               id="bands"
               name="bands"
-              value="${params.bands ?: '0,1,2'}"
-              from="${['0,1,2', '2,1,0', '1,0,2', '1,2,0', '2,0,1', '0,2,1', '0', '1', '2']}"
+              value="${params.bands ?: 'default'}"
+              from="${['default','0,1,2', '2,1,0', '1,0,2', '1,2,0', '2,0,1', '0,2,1', '0', '1', '2']}"
               onChange="changeBandsOpts()"/>
         </li>
       </g:if>

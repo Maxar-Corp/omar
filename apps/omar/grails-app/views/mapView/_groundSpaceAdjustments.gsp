@@ -94,19 +94,19 @@
 
       <g:if test="${rasterEntries[0]?.numberOfBands == 1}">
         <li>Band:</li>
-        <li><g:select id="bands" name="bands" value="${params.bands ?: '0'}" from="${['0']}"
+        <li><g:select id="bands" name="bands" value="${params.bands ?: 'default'}" from="${['default','0']}"
                       onChange="mergeNewParams()"/></li>
       </g:if>
       <g:if test="${rasterEntries[0]?.numberOfBands == 2}">
         <li>Bands:</li>
-        <li><g:select id="bands" name="bands" value="${params.bands ?: '0,1'}" from="${['0,1', '1,0', '0', '1']}"
+        <li><g:select id="bands" name="bands" value="${params.bands ?: 'default'}" from="${['default','0,1', '1,0', '0', '1']}"
                       onChange="mergeNewParams()"/></li>
       </g:if>
       <g:if test="${rasterEntries[0]?.numberOfBands >= 3}">
         <li>Bands:</li>
         <li>
-            <g:select id="bands" name="bands" value="${params.bands ?: '0,1,2'}"
-                      from="${['0,1,2', '2,1,0', '1,0,2', '1,2,0', '2,0,1', '0,2,1', '0', '1', '2']}" onChange="mergeNewParams()"/></li>
+            <g:select id="bands" name="bands" value="${params.bands ?: 'default'}"
+                      from="${['default','0,1,2', '2,1,0', '1,0,2', '1,2,0', '2,0,1', '0,2,1', '0', '1', '2']}" onChange="mergeNewParams()"/></li>
       </g:if>
 
       <li>Orthorectification:</li>
