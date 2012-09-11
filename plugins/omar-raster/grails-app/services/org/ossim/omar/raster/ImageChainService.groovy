@@ -31,6 +31,7 @@ class ImageChainService
   {
     def bandArray = []
     def validBands = true
+    if(bandSelection == "default") return validBands
     if ( bandSelection instanceof String )
     {
       bandArray = bandSelection.split( "," )
@@ -149,7 +150,10 @@ class ImageChainService
           // by parenthesis
           //
           kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-          kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
+            if(bands!="default")
+            {
+                kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
+            }
           ++objectPrefixIdx
         }
         else
@@ -170,7 +174,10 @@ class ImageChainService
           // by parenthesis
           //
           kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-          kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
+            if(bands!="default")
+            {
+                kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
+            }
           ++objectPrefixIdx
         }
       }
