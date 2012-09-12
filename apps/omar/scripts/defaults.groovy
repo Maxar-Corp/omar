@@ -93,6 +93,7 @@ searchableControllers.each {controller ->
 
 new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/rasterSearch/**").save()
 new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/session/**").save()
+new Requestmap(configAttribute: "ROLE_ADMIN", url: "/runscript/**").save()
 
 
 
