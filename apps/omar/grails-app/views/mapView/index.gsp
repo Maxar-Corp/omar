@@ -762,7 +762,6 @@ function getProjectedImage(params)
 
     var form = $("wcsForm");
     var url = link + "?" + wcsParams.toUrlParams();
-     alert(url);
     if(form)
     {
         form.action = url;
