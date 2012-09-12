@@ -197,14 +197,15 @@ function init(mapWidth, mapHeight)
         bands:$("bands").value,
         quicklook: "${params.quicklook ?: 'false'}"
     });
-    if(${rasterEntries?.numberOfBands.get( 0 ) >= 3})
-    {
-        wcsParams.setProperties({bands:"0,1,2"});
-    }
-    else
-    {
-        wcsParams.setProperties({bands:"0"});
-    }
+    wcsParams.setProperties({bands:"default"});
+   // if(${rasterEntries?.numberOfBands.get( 0 ) >= 3})
+   // {
+   //     wcsParams.setProperties({bands:"0,1,2"});
+   // }
+   // else
+   // {
+   //     wcsParams.setProperties({bands:"0"});
+   // }
 	brightnessSlider.animate = false;
 
     brightnessSlider.getRealValue = function() {
@@ -761,7 +762,7 @@ function getProjectedImage(params)
 
     var form = $("wcsForm");
     var url = link + "?" + wcsParams.toUrlParams();
-
+     alert(url);
     if(form)
     {
         form.action = url;
