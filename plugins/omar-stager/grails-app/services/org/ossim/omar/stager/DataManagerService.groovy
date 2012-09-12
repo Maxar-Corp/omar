@@ -56,7 +56,7 @@ class DataManagerService implements ApplicationContextAware
               def fileObject = dataSet.fileObjects.find { it.type == "main" }
               if ( dataSet.save() )
               {
-                log.info( "Saved ${fileObject.name}" )
+               // log.info( "Saved ${fileObject.name}" )
               }
               else
               {
