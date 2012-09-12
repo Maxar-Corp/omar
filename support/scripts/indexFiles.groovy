@@ -182,22 +182,26 @@ class indexFileQueue
         }
 
         def sql = sqlPool.borrowObject()
+        try{
+            sql.withBatch(batchSize, insertSQL) { stmt ->   
 
-        sql.withBatch(batchSize, insertSQL) { stmt ->   
-
-            for(def record in records) 
-            {
-                try 
+                for(def record in records) 
                 {
-                    stmt.addBatch(record)
-                } 
-                catch (e) 
-                {
-                    //e.printStackTrace()
-                }               
+                    try 
+                    {
+                        stmt.addBatch(record)
+                    } 
+                    catch (e) 
+                    {
+                        //e.printStackTrace()
+                    }               
+                }
             }
         }
-        
+        catch(e)
+        {
+            println e
+        }
         sqlPool.returnObject(sql)
 
         def batchStop = System.currentTimeMillis()
