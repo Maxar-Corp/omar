@@ -668,9 +668,13 @@ kmlLayer = new OpenLayers.Layer.Vector("${kmlOverlay.name}", {
 
 function onPopupClose(evt)
 {
-select.unselectAll();
+    select.unselectAll();
 }
 
+function getWmsLog()
+{
+    window.open('${createLink(controller: "WmsLog", action: "list")}');
+}
 
 function toUrlParamString(params)
 {
