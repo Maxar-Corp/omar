@@ -144,18 +144,22 @@ function getDetailedMetadata()
     window.open("${createLink( controller: 'rasterEntry', action: 'show', params: [id: rasterEntry?.id] )}");
 }
 
+function getTileLog()
+{
+    window.open('${createLink(controller: "GetTileLog", action: "list")}');
+}
 
 function resetRotate()
 {
-rotateSlider.setRealValue(0.0);
+    rotateSlider.setRealValue(0.0);
 }
 function rotateUpIsUp()
 {
-rotateSlider.setRealValue(OMAR.imageManipulator.upIsUpAngle);
+    rotateSlider.setRealValue(OMAR.imageManipulator.upIsUpAngle);
 }
 function rotateNorthUp()
 {
-rotateSlider.setRealValue(OMAR.imageManipulator.northAngle);
+    rotateSlider.setRealValue(OMAR.imageManipulator.northAngle);
 }
 function changeBandsOpts()
 {

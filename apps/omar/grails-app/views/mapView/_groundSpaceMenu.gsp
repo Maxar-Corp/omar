@@ -125,7 +125,7 @@
             <ul>
                     <li class="yuimenuitem">
                         <a class="yuimenuitemlabel"
-                           href="javascript:window.open('${createLink(controller: "WmsLog", action: "list")}')"
+                           href="javascript:getWmsLog()"
                         title="List WMS Logs">WMS Logs</a>
                     </li>
                 <li class="yuimenuitem">
