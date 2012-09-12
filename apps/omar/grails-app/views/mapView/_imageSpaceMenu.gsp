@@ -71,7 +71,7 @@
                     <ul>
                         <li class="yuimenuitem">
                             <a class="yuimenuitemlabel"
-                               href="${createLink(controller: "GetTileLog", action: "list")}"
+                               href="javascript:window.open('${createLink(controller: "GetTileLog", action: "list")}')"
                             title="List Image space Chipping Logs">Chipping Logs</a>
                         </li>
                         <li class="yuimenuitem">

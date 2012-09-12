@@ -680,7 +680,7 @@ stager {
                * This formats the arguments to the indexFilesArgs on the scripts page
                */
               indexFilesArgs:{
-                  def date = new DateTime()
+                  def date = new org.joda.time.DateTime()
                   "/data"
 //                  "/data/${date.toString('YYYY-MM-dd')}"
                     },
@@ -688,7 +688,7 @@ stager {
                * This formats the arguments to the stageFilesArgs on the scripts page
                */
               stageFilesArgs:{
-                  def date = new DateTime()
+                  def date = new org.joda.time.DateTime()
                   "/data"
 //                  "/data/${date.toString('YYYY-MM-dd')}"
               },
@@ -696,7 +696,7 @@ stager {
                * This formats the arguments to the removeFilesArgs on the scripts page
                */
               removeFilesArgs:{
-                  def date = new DateTime()
+                  def date = new org.joda.time.DateTime()
                   date = date.plusDays(-30);
                   "/data"
 //                  "/data/${date.toString('YYYY-MM-dd')}"
