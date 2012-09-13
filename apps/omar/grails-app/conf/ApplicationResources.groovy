@@ -143,7 +143,6 @@ modules = {
     resource url: [dir: 'css', file: 'main.css']
     resource url: [dir: 'css', file: 'omar-2.0.css']
       resource url: [plugin: 'omar-core', dir: 'js', file: 'spin-min.js']
-      resource url: [plugin: 'omar-core', dir: 'js', file: 'SpinControl.js']
 
 
       resource url: [plugin: 'yui', dir: "js/yui/reset-fonts-grids", file: "reset-fonts-grids.css"]
@@ -186,7 +185,6 @@ modules = {
     resource url: [dir: 'css', file: 'main.css']
     resource url: [dir: 'css', file: 'omar-2.0.css']
     resource url: [plugin: 'omar-core', dir: 'js', file: 'spin-min.js']
-    resource url: [plugin: 'omar-core', dir: 'js', file: 'SpinControl.js']
 
     resource url: [plugin: 'yui', dir: "js/yui/reset-fonts-grids", file: "reset-fonts-grids.css"]
     resource url: [plugin: 'yui', dir: "js/yui/assets/skins/sam", file: "skin.css"]
@@ -207,7 +205,7 @@ modules = {
 
     resource url: [plugin: 'openlayers', dir: 'css', file: 'mapwidget2.css']
     resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
-    resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
+      resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
 
 
       resource url: [dir: 'js', file: 'OMAR.js']
