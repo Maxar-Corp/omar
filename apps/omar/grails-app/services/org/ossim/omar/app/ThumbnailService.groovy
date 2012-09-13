@@ -228,7 +228,7 @@ class ThumbnailService
     //
     int smallestWidth = maxSize / (2 ** (resLevels + 2))
 
-    if ( size < smallestWidth )
+    if ( (size < smallestWidth)||(rasterEntry.getNumberOfResLevels()<2))
     {
       httpStatusMessage.status = HttpStatus.NOT_FOUND
       httpStatusMessage.message = "Not enough overviews to satisfy request for ${rasterFile.name}"
