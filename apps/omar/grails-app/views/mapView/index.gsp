@@ -64,6 +64,7 @@
 
 
 <r:script>
+
 var coordConvert;
 var mapWidget;
 var kmlLayers;
@@ -86,8 +87,8 @@ var brightnessSlider;
 var contrastSlider;
 var azimuthAngle = parseFloat("${azimuthAngle}");
 var upIsUpAngle  = parseFloat("${upIsUpAngle}");
-
-
+var counter = 0;
+var spinner = new SpinControl();
 function setImageId()
 {
     var imageIdFieldEl = YAHOO.util.Dom.get("imageIdField");
@@ -157,6 +158,10 @@ function resetMapCenter()
 
 function init(mapWidth, mapHeight)
 {
+    var target = document.getElementById('map');
+    spinner.initializeWithDiv(target);
+
+
     setImageId();
     OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
 
@@ -257,9 +262,10 @@ function init(mapWidth, mapHeight)
 	mapWidget.setFullResScale(parseFloat("${fullResScale}"));
     changeMapSize(mapWidth, mapHeight);
 
-
 	setupLayers();
-    mapWidget.setupAoiLayer();
+
+
+mapWidget.setupAoiLayer();
 	mapWidget.setupToolBar();
 
 	mapWidget.getMap().addControl(new OpenLayers.Control.LayerSwitcher());
@@ -268,7 +274,7 @@ function init(mapWidth, mapHeight)
 	mapWidget.getMap().addControl(new OpenLayers.Control.Scale());
 	mapWidget.getMap().addControl(new OpenLayers.Control.ScaleLine());
 
-	mapWidget.getMap().events.register('mousemove',map,setMouseMapCtrTxt);
+    mapWidget.getMap().events.register('mousemove',map,setMouseMapCtrTxt);
     mapWidget.getMap().events.register("mouseup", map, this.setMapCtrTxt);
 
     var viewParam = ${params.view?:"null"};
@@ -297,7 +303,18 @@ function init(mapWidth, mapHeight)
     setMapCtrTxt();
 
     setupOverviewCheck();
+    var target = document.getElementById('map');
+
+//    for (var i = 0; i < mapWidget.getMap().layers.length; i++) {
+//        var layer = mapWidget.getMap().layers[i];
+//        layer.events.register('loadstart', spinner, spinner.increaseCounter);
+//        layer.events.register('loadend', spinner, spinner.decreaseCounter);
+//    }
+
+
+
 }
+
 function setupOverviewCheck(){
     if(!onDemand) return;
     if(numberOfResLevels <2)
@@ -635,7 +652,15 @@ function setupLayers()
 	            singleTile: true, ratio: 1.0,
 	            quicklook: true, transitionEffect: "resize", displayOutsideMaxExtent:false})];
 
-	mapWidget.getMap().addLayers(rasterLayers);
+//for(var idx = 0; idx  < mapWidget.getMap().layers.length;++idx)
+for(var idx = 0; idx  < rasterLayers.length;++idx)
+{
+var layer = rasterLayers[idx];
+layer.events.register('loadstart', spinner, spinner.increaseCounter);
+layer.events.register('loadend', spinner, spinner.decreaseCounter);
+}
+
+mapWidget.getMap().addLayers(rasterLayers);
 
 <g:each in="${kmlOverlays}" var="kmlOverlay" status="i">
   if(!kmlLayers)
@@ -732,7 +757,7 @@ function getKmlSuperOverlay()
 
 function getProjectedImage(params)
 {
-	 var link   = "${createLink( action: "wcs", controller: "ogc" )}";
+	 var link   = "${createLink( action: "wcs", controller: "wcs" )}";
 	 var extent = mapWidget.getSelectedExtents();
 
 	 if(extent&&extent.left)
