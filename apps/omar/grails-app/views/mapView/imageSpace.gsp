@@ -127,12 +127,30 @@ var onDemand = ("${onDemand}" == "true");
 var currentCenterLatLon = {lat:0.0,lon:0.0};
 var pqePoint = {x:0.0,y:0.0,lat:0.0,lon:0.0,hgt:0.0,hgtMsl:0.0,type:"",sInfo:"", displayUnit:"DD"}
 var finishedInit = false;
-var spinner = new SpinControl();
+var spinControl;// = new SpinControl();
+var spinnerOpts = {
+                lines: 13, // The number of lines to draw
+                length: 8, // The length of each line
+                width: 4, // The line thickness
+                radius: 10, // The radius of the inner circle
+                corners: 1, // Corner roundness (0..1)
+                rotate: 0, // The rotation offset
+                color: '#FFFFFF', // #rgb or #rrggbb
+                speed: 1, // Rounds per second
+                trail: 60, // Afterglow percentage
+                shadow: true, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinnerControl', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: 'auto', // Top position relative to parent in px
+                left: 'auto' // Left position relative to parent in px
+            };
+var spinCount = 0;
+
 function setImageId()
 {
     var imageIdFieldEl = YAHOO.util.Dom.get("imageIdField");
     imageIdFieldEl.innerHTML = "<b>Image Id:</b> ${imageIds}";
-
 }
 
 function getCapabilities()
@@ -407,13 +425,40 @@ function allocateControls()
 {
 }
 
+function loadStart()
+{
+    spinCount = spinCount+1;
+    if(spinCount==1)
+    {
+        spin();
+    }
+    //spinControl.increaseCounter();
+}
+
+function loadEnd()
+{
+    spinCount=spinCount-1;
+    if((spinCount < 1)&&spinControl)
+    {
+        spinControl.stop();
+        spinCount = 0;
+    }
+}
+
+function spin(){
+    var targetDiv = YAHOO.util.Dom.get("hudDivId");
+    if(spinControl)
+    {
+        spinControl.spin(targetDiv);
+    }
+    else
+    {
+        spinControl = new Spinner(spinnerOpts).spin(targetDiv);
+    }
+}
 function init(mapWidth, mapHeight)
 {
-    var target = document.getElementById('map');
-    spinner.initializeWithDiv(target);
-
-//var mapDiv = YAHOO.util.Dom.get("map");
-    //mapDiv.style.display = "block";
+   //mapDiv.style.display = "block";
     setImageId();
     OMAR.coordConvert = new CoordinateConversion();
     pqePoint.displayUnit = "${pqeDisplayUnit?:"DMS"}"
@@ -460,7 +505,8 @@ function init(mapWidth, mapHeight)
                              //maxResolution: 16,
                              //numZoomLevels:numZoomLevels
                              });
-    map.events.manipulator = OMAR.imageManipulator;
+
+map.events.manipulator = OMAR.imageManipulator;
     var options = {
          controls: [],
          buffer:0,
@@ -471,8 +517,12 @@ function init(mapWidth, mapHeight)
          transitionEffect: "resize",
          units:'pixel',
          singleTile:true,
-         format: format
-     };
+         format: format,
+         eventListeners: {
+            loadstart: loadStart(),
+            loadend: loadEnd()
+         }
+      }
 
     var oMenu = new YAHOO.widget.MenuBar("rasterMenu",
     {
@@ -489,7 +539,9 @@ function init(mapWidth, mapHeight)
 
 
     setupToolbar();
-    /*
+
+
+/*
     var isiPad = navigator.userAgent.match( /iPad/i ) != null;
     if ( isiPad )
     {
@@ -543,10 +595,9 @@ function init(mapWidth, mapHeight)
   rotateSlider.subscribe("change", function() { sliderRotate(this.getRealValue()); });
   //rotateSlider.subscribe("slideEnd", function() { OMAR.imageManipulator.containerResized() });
 
-    layer = new OpenLayers.Layer.TMS( "Image Space Viewer", url, options);
-
-    layer.events.register('loadstart', spinner, spinner.increaseCounter);
-    layer.events.register('loadend', spinner, spinner.decreaseCounter);
+    layer = new OpenLayers.Layer.TMS( "Image Space Viewer",
+                                       url,
+                                       options);
 
     map.addLayer(layer);
     map.setBaseLayer(layer);
@@ -662,6 +713,11 @@ OMAR.imageManipulator.events.on({
     map.zoomToExtent(bounds,{closest:true});
     finishedInit = true;
     updateCenter();
+     layer.events.on({
+        loadstart:loadStart,
+        loadend:loadEnd
+    });
+
 
 }
 
