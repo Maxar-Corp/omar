@@ -59,9 +59,9 @@
 </content>
 
 <content tag="center2">
-  <%-- <div id="mapContainerDiv" style="width:100%;height:100%;"> --%>
+   <div id="mapContainerDivId" style="width:100%;height:100%;">
       <div id="map"></div>
-  <%--</div>--%>
+  </div>
 </content>
 
 
@@ -196,7 +196,7 @@ function loadEnd()
 }
 
 function spin(){
-    var targetDiv = YAHOO.util.Dom.get("map");
+    var targetDiv = YAHOO.util.Dom.get("mapContainerDivId");
     if(spinControl)
     {
         spinControl.spin(targetDiv);
