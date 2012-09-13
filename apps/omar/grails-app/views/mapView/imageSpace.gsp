@@ -127,6 +127,7 @@ var onDemand = ("${onDemand}" == "true");
 var currentCenterLatLon = {lat:0.0,lon:0.0};
 var pqePoint = {x:0.0,y:0.0,lat:0.0,lon:0.0,hgt:0.0,hgtMsl:0.0,type:"",sInfo:"", displayUnit:"DD"}
 var finishedInit = false;
+var spinner = new SpinControl();
 function setImageId()
 {
     var imageIdFieldEl = YAHOO.util.Dom.get("imageIdField");
@@ -408,7 +409,10 @@ function allocateControls()
 
 function init(mapWidth, mapHeight)
 {
-    //var mapDiv = YAHOO.util.Dom.get("map");
+    var target = document.getElementById('map');
+    spinner.initializeWithDiv(target);
+
+//var mapDiv = YAHOO.util.Dom.get("map");
     //mapDiv.style.display = "block";
     setImageId();
     OMAR.coordConvert = new CoordinateConversion();
@@ -540,6 +544,10 @@ function init(mapWidth, mapHeight)
   //rotateSlider.subscribe("slideEnd", function() { OMAR.imageManipulator.containerResized() });
 
     layer = new OpenLayers.Layer.TMS( "Image Space Viewer", url, options);
+
+    layer.events.register('loadstart', spinner, spinner.increaseCounter);
+    layer.events.register('loadend', spinner, spinner.decreaseCounter);
+
     map.addLayer(layer);
     map.setBaseLayer(layer);
 // set the initialization flag so the moveend and zoomend code can execute
@@ -928,8 +936,6 @@ function setupToolbar()
       });
 
     var zoomToMaxExtentButton = new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent.",id:"ZOOM_MAX_EXTENT", trigger:zoomMaxExtentClicked});
-var loadingpanel = new OpenLayers.Control.LoadingPanel();
-//map.addControl(loadingpanel);
 
 panel.addControls(
 [
@@ -948,7 +954,6 @@ measureAreaButton
 
 
 map.addControl(panel);
-map.addControl(loadingpanel);
 }
 
 function setMapCtrTxt()

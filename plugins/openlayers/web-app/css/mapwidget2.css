@@ -36,6 +36,8 @@ div.olControlOverviewMap {
     font-size: 12px;
     /*text-align: center;*/
     vertical-align: middle;
+    /*opacity: 0;*/
+    /*filter: alpha(opacity=0.25);*/
 }
 /*
 .sprite-bullseye{ background-position: 0 0; width: 24px; height: 24px; }
