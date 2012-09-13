@@ -928,6 +928,8 @@ function setupToolbar()
       });
 
     var zoomToMaxExtentButton = new OpenLayers.Control.ZoomToMaxExtent({title:"Click to zoom to the max extent.",id:"ZOOM_MAX_EXTENT", trigger:zoomMaxExtentClicked});
+var loadingpanel = new OpenLayers.Control.LoadingPanel();
+//map.addControl(loadingpanel);
 
 panel.addControls(
 [
@@ -943,7 +945,10 @@ pointButton,
 measurePathButton,
 measureAreaButton
 ]);
+
+
 map.addControl(panel);
+map.addControl(loadingpanel);
 }
 
 function setMapCtrTxt()
