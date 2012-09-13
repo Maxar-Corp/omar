@@ -432,7 +432,6 @@ function loadStart()
     {
         spin();
     }
-    //spinControl.increaseCounter();
 }
 
 function loadEnd()
@@ -517,11 +516,7 @@ map.events.manipulator = OMAR.imageManipulator;
          transitionEffect: "resize",
          units:'pixel',
          singleTile:true,
-         format: format,
-         eventListeners: {
-            loadstart: loadStart(),
-            loadend: loadEnd()
-         }
+         format: format
       }
 
     var oMenu = new YAHOO.widget.MenuBar("rasterMenu",
@@ -598,8 +593,12 @@ map.events.manipulator = OMAR.imageManipulator;
     layer = new OpenLayers.Layer.TMS( "Image Space Viewer",
                                        url,
                                        options);
+    layer.events.on({
+        loadstart:loadStart,
+        loadend:loadEnd
+    });
 
-    map.addLayer(layer);
+map.addLayer(layer);
     map.setBaseLayer(layer);
 // set the initialization flag so the moveend and zoomend code can execute
     initFlag = 0;
@@ -713,10 +712,6 @@ OMAR.imageManipulator.events.on({
     map.zoomToExtent(bounds,{closest:true});
     finishedInit = true;
     updateCenter();
-     layer.events.on({
-        loadstart:loadStart,
-        loadend:loadEnd
-    });
 
 
 }

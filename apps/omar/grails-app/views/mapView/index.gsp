@@ -59,7 +59,9 @@
 </content>
 
 <content tag="center2">
-  <div id="map"></div>
+  <%-- <div id="mapContainerDiv" style="width:100%;height:100%;"> --%>
+      <div id="map"></div>
+  <%--</div>--%>
 </content>
 
 
@@ -88,7 +90,25 @@ var contrastSlider;
 var azimuthAngle = parseFloat("${azimuthAngle}");
 var upIsUpAngle  = parseFloat("${upIsUpAngle}");
 var counter = 0;
-var spinner = new SpinControl();
+var spinControl;
+var spinnerOpts = {
+            lines: 13, // The number of lines to draw
+            length: 8, // The length of each line
+            width: 4, // The line thickness
+            radius: 10, // The radius of the inner circle
+            corners: 1, // Corner roundness (0..1)
+            rotate: 0, // The rotation offset
+            color: '#FFFFFF', // #rgb or #rrggbb
+            speed: 1, // Rounds per second
+            trail: 60, // Afterglow percentage
+            shadow: true, // Whether to render a shadow
+            hwaccel: false, // Whether to use hardware acceleration
+            className: 'spinnerControl', // The CSS class to assign to the spinner
+            zIndex: 2e9, // The z-index (defaults to 2000000000)
+            top: 'auto', // Top position relative to parent in px
+            left: 'auto' // Left position relative to parent in px
+        };
+var spinCount = 0;
 function setImageId()
 {
     var imageIdFieldEl = YAHOO.util.Dom.get("imageIdField");
@@ -156,12 +176,39 @@ function resetMapCenter()
 
 }
 
+function loadStart()
+{
+    spinCount = spinCount+1;
+    if((spinCount>0))
+    {
+        spin();
+    }
+}
+
+function loadEnd()
+{
+    spinCount=spinCount-1;
+    if((spinCount < 1)&&spinControl)
+    {
+        spinControl.stop();
+        spinCount = 0;
+    }
+}
+
+function spin(){
+    var targetDiv = YAHOO.util.Dom.get("map");
+    if(spinControl)
+    {
+        spinControl.spin(targetDiv);
+    }
+    else
+    {
+        spinControl = new Spinner(spinnerOpts).spin(targetDiv);
+    }
+}
+
 function init(mapWidth, mapHeight)
 {
-    var target = document.getElementById('map');
-    spinner.initializeWithDiv(target);
-
-
     setImageId();
     OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
 
@@ -304,15 +351,6 @@ mapWidget.setupAoiLayer();
 
     setupOverviewCheck();
     var target = document.getElementById('map');
-
-//    for (var i = 0; i < mapWidget.getMap().layers.length; i++) {
-//        var layer = mapWidget.getMap().layers[i];
-//        layer.events.register('loadstart', spinner, spinner.increaseCounter);
-//        layer.events.register('loadend', spinner, spinner.decreaseCounter);
-//    }
-
-
-
 }
 
 function setupOverviewCheck(){
@@ -637,28 +675,37 @@ function setupLayers()
 	var sharpen_mode = $("sharpen_mode").value;
 	var stretch_mode = $("stretch_mode").value;
 	var stretch_mode_region = $("stretch_mode_region").value;
-
 	rasterLayers = [
 	   new OpenLayers.Layer.WMS("Raster", "${createLink( controller: "ogc", action: "wms" )}",
                {layers: "${( rasterEntries*.indexId ).join( ',' )}",
                 format: format, sharpen_mode:sharpen_mode,
                 stretch_mode:stretch_mode, stretch_mode_region: stretch_mode_region, transparent:transparent,
-         brightness:brightnessSlider.getRealValue(),
-         contrast:contrastSlider.getRealValue(),
-         bands:$("bands").value,
-         interpolation:$("interpolation").value
+                brightness:brightnessSlider.getRealValue(),
+                contrast:contrastSlider.getRealValue(),
+                bands:$("bands").value,
+                interpolation:$("interpolation").value
                 },
 	           {isBaseLayer: true, buffer: 0,
 	            singleTile: true, ratio: 1.0,
-	            quicklook: true, transitionEffect: "resize", displayOutsideMaxExtent:false})];
+	            quicklook: true,
+                transitionEffect: "resize",
+                displayOutsideMaxExtent:false,
+                eventListeners:{
+                    loadstart: loadStart(),
+                    loadend: loadEnd()
+                    }
+                })];
 
 //for(var idx = 0; idx  < mapWidget.getMap().layers.length;++idx)
-for(var idx = 0; idx  < rasterLayers.length;++idx)
-{
-var layer = rasterLayers[idx];
-layer.events.register('loadstart', spinner, spinner.increaseCounter);
-layer.events.register('loadend', spinner, spinner.decreaseCounter);
-}
+    for(var idx = 0; idx  < rasterLayers.length;++idx)
+    {
+        var layer = rasterLayers[idx];
+        layer.events.on({
+            loadstart:loadStart,
+            loadend:loadEnd
+        });
+    }
+
 
 mapWidget.getMap().addLayers(rasterLayers);
 
