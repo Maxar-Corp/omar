@@ -708,8 +708,14 @@ OMAR.imageManipulator.events.on({
     }
     setupOverviewCheck();
    // mapDiv.style.display = "inline";
-
-    map.zoomToExtent(bounds,{closest:true});
+    if(numberOfResLevels <2)
+    {
+        map.zoomTo(.5);
+    }
+    else
+    {
+        map.zoomToExtent(bounds,{closest:true});
+    }
     finishedInit = true;
     updateCenter();
 
@@ -1202,8 +1208,8 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
             function zoomInFullRes()
             {
                 // we are image space so set to a 1:1 scale
-                var zoom = map.getZoomForResolution(1.0, true)
-                map.zoomTo(zoom)
+                var zoom = map.getZoomForResolution(1.0, true);
+                map.zoomTo(zoom);
 	            zoomInButton.displayClass = "olControlFoo";
 	            updateAOI();
             }
