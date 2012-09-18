@@ -512,7 +512,7 @@ map.events.manipulator = OMAR.imageManipulator;
          maxExtent: bounds,
          getURL: getTileUrl,
          isBaseLayer: true,
-         maxResolution: (width) / map.getTileSize().w,
+         maxResolution: (width > height) ? width / map.getTileSize().w : height / map.getTileSize().h,
          transitionEffect: "resize",
          units:'pixel',
          singleTile:true,
@@ -528,9 +528,8 @@ map.events.manipulator = OMAR.imageManipulator;
       });
     oMenu.render();
 
-    //map.events.register('zoomend', null, theMapHasZoomed);
+    //map.events.register('zoomend', null, mapZoom);
     //map.events.register("moveend", null, theMapHasMoved);
-
 
 
     setupToolbar();
