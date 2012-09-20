@@ -2,8 +2,10 @@ package omar.image.magick
 
 class TemplateExportController
 {
-	def gradientGeneratorService
+	def footerGradientGeneratorService
 	def grailsApplication
+	def headerGradientGeneratorService
+	def northArrowGeneratorService
 	def templateExportService
 
 	def index( )
@@ -31,31 +33,29 @@ class TemplateExportController
 		)
 	}
 
-	def export( )
+	def export()
 	{
-		def acquisitionDate = params.acquisitionDate
-		def acquisitionDateTextColor = params.acquisitionDateTextColor
 		def country = params.country
-		def description = params.description
-		def descriptionTextColor = params.descriptionTextColor
+		def footerAcquisitionDateText = params.footerAcquisitionDateText
+		def footerAcquisitionDateTextColor = params.footerAcquisitionDateTextColor
+		def footerLocationText = params.footerLocationText
+		def footerLocationTextColor = params.footerLocationTextColor
+		def footerSecurityClassificationText = params.footerSecurityClassificationText
+		def footerSecurityClassificationTextColor = params.footerSecurityClassificationTextColor
 		def gradientColorBottom = params.gradientColorBottom
 		def gradientColorTop = params.gradientColorTop
-		def imageFile = params.imageURL
+		def headerDescriptionText = params.headerDescriptionText
+		def headerDescriptionTextColor = params.headerDescriptionTextColor
+		def headerTitleText = params.headerTitleText
+		def headerTitleTextColor = params.headerTitleTextColor
+		def headerSecurityClassificationText = params.headerSecurityClassificationText
+		def headerSecurityClassificationTextColor = params.headerSecurityClassificationTextColor
+		def imageFile = params.imageUrl
 		def includeOverviewMap = params.includeOverviewMap
-		def location = params.location
-		def locationTextColor = params.locationTextColor
 		def logo = params.logo
     		def northAngle = params.northArrowAngle
-		def securityClassification = params.securityClassification
-		def securityClassificationTextColor = params.securityClassificationTextColor
-		if ("${securityClassification}" == "")
-		{                
-			securityClassification = "UNK"
-		}
-		def title = params.title
-		def titleTextColor = params.titleTextColor
 
-    		def fileName = templateExportService.serviceMethod( acquisitionDate, acquisitionDateTextColor, country, description, descriptionTextColor, gradientColorBottom, gradientColorTop, imageFile, includeOverviewMap, location, locationTextColor, logo, northAngle, securityClassification, securityClassificationTextColor, title, titleTextColor ) 
+    		def fileName = templateExportService.serviceMethod( country, footerAcquisitionDateText, footerAcquisitionDateTextColor, footerLocationText, footerLocationTextColor, footerSecurityClassificationText, footerSecurityClassificationTextColor, gradientColorBottom, gradientColorTop, headerDescriptionText, headerDescriptionTextColor, headerSecurityClassificationText, headerSecurityClassificationTextColor, headerTitleText, headerTitleTextColor, imageFile, includeOverviewMap, logo, northAngle ) 
 
 		def file = new File( "${fileName}" )
 		if ( file.exists() )
@@ -70,53 +70,13 @@ class TemplateExportController
 		}
 	}
 
-	def exportPreview( )
-	{
-		def acquisitionDate = params.acquisitionDate
-		def acquisitionDateTextColor = params.acquisitionDateTextColor
-		def country = params.country
-		def description = params.description
-		def descriptionTextColor = params.descriptionTextColor
-		def gradientColorBottom = params.gradientColorBottom
-		def gradientColorTop = params.gradientColorTop
-		def imageFile = params.imageURL
-		def includeOverviewMap = params.includeOverviewMap
-		def location = params.location
-		def locationTextColor = params.locationTextColor
-		def logo = params.logo
-		def northAngle = params.northArrowAngle
-		def securityClassification = params.securityClassification
-		def securityClassificationTextColor = params.securityClassificationTextColor
-		if ("${securityClassification}" == "")
-		{
-			securityClassification = "UNK"
-		}
-		def title = params.title
-		def titleTextColor = params.titleTextColor
-
-		def fileName = templateExportService.serviceMethod( acquisitionDate, acquisitionDateTextColor, country, description, descriptionTextColor, gradientColorBottom, gradientColorTop, imageFile, includeOverviewMap, location, locationTextColor, logo, northAngle, securityClassification, securityClassificationTextColor, title, titleTextColor )
-
-		def file = new File( "${fileName}" )
-		if ( file.exists() )
-		{
-			response.setHeader( "Content-length", "" + file.bytes.length )
-			response.contentType = "image/png"
-			response.outputStream << file.bytes
-			response.outputStream.flush()
-
-			def removeImageFile = "rm ${file}"
-			def removeImageFileProc = removeImageFile.execute()
-			removeImageFileProc.waitFor()
-		}
-	}
-
-	def gradientGenerator()
+	def footerGradientGenerator()
 	{
 		def gradientColorTop = params.gradientColorTop
 		def gradientColorBottom = params.gradientColorBottom
 		def gradientHeight = params.gradientHeight
 
-		def fileName = gradientGeneratorService.serviceMethod( gradientColorTop, gradientColorBottom, gradientHeight )
+		def fileName = footerGradientGeneratorService.serviceMethod( gradientColorTop, gradientColorBottom, gradientHeight )
 
 		def file = new File( "${fileName}" )
 		if ( file.exists() )
@@ -131,4 +91,48 @@ class TemplateExportController
 			removeImageFileProc.waitFor()
 		}
 	}
+
+	def headerGradientGenerator()
+	{
+                def gradientColorTop = params.gradientColorTop
+                def gradientColorBottom = params.gradientColorBottom
+                def gradientHeight = params.gradientHeight
+
+                def fileName = headerGradientGeneratorService.serviceMethod( gradientColorTop, gradientColorBottom, gradientHeight )
+
+                def file = new File( "${fileName}" )
+                if ( file.exists() )
+                {
+                        response.setHeader( "Content-length", "" + file.bytes.length )
+                        response.contentType = "image/png"
+                        response.outputStream << file.bytes
+                        response.outputStream.flush()
+
+                        def removeImageFile = "rm ${file}"
+                        def removeImageFileProc = removeImageFile.execute()
+                        removeImageFileProc.waitFor()
+                }
+        }
+
+	def northArrowGenerator()
+	{
+		def northArrowSize = params.northArrowSize
+		def northAngle = params.northAngle
+
+		def fileName = northArrowGeneratorService.serviceMethod( northArrowSize, northAngle )
+
+		def file = new File( "${fileName}" )
+		if ( file.exists() )
+		{
+			response.setHeader( "Content-length", "" + file.bytes.length )
+			response.contentType = "image/png"
+			response.outputStream << file.bytes
+			response.outputStream.flush()
+			
+			def removeImageFile = "rm ${file}"
+			def removeImageFileProc = removeImageFile.execute()
+			removeImageFileProc.waitFor()
+		}
+	}
+
 }

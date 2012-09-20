@@ -1,4 +1,4 @@
-<select id = "country" name = "country" onChange = "changeCountry(this.value)">
+<select id = "overviewMapCountry">
 	<option value ="aa">AA Aruba</option>
 	<option value ="ac">AC Antigua and Barbuda</option>
 	<option value ="ae">AE United Arab Emirates</option>
