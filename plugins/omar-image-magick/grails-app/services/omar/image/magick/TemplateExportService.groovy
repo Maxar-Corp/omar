@@ -11,7 +11,7 @@ class TemplateExportService
 	def grailsApplication
 
 	def command
-	def serviceMethod(def acquisitionDate, def acquisitionDateTextColor, def country, def description, def descriptionTextColor, def gradientColorBottom, def gradientColorTop, def imageUrl, def includeOverviewMap, def location, def locationTextColor, def logo, def northAngle, def securityClassification, def securityClassificationTextColor, def title, def titleTextColor)
+	def serviceMethod( def country, def footerAcquisitionDateText, def footerAcquisitionDateTextColor, def footerLocationText, def footerLocationTextColor, def footerSecurityClassificationText, def footerSecurityClassificationTextColor, def gradientColorBottom, def gradientColorTop, def headerDescriptionText, def headerDescriptionTextColor, def headerSecurityClassificationText, def headerSecurityClassificationTextColor, def headerTitleText, def headerTitleTextColor, def imageUrl, def includeOverviewMap, def logo, def northAngle )
 	{
 		def date = new Date().getTime()
 
@@ -164,7 +164,7 @@ class TemplateExportService
 		if (DEBUG) { println "##### Overview Map #####" }
 		def overviewMapWidth = 0
 
-		if (("${includeOverviewMap}".toString()).equals("on"))
+		if (("${includeOverviewMap}".toString()).equals("true"))
 		{
 			//########## Determine the height of the overview map	
 			if (DEBUG) { println "Determine the height of the overview map:" }
@@ -252,14 +252,14 @@ class TemplateExportService
 				"-background", 
 				"none", 
 				"-fill", 
-				"#${securityClassificationTextColor}", 
+				"#${headerSecurityClassificationTextColor}", 
 				"-size", 
 				"${headerTextWidth}x${headerSecurityClassificationTextHeight}", 
 				"-gravity", 
 				"West", 
 				"-font",
 				"${font}",
-				"caption:${securityClassification}", 
+				"caption:${headerSecurityClassificationText}", 
 				"${tempFilesLocation}${date}headerSecurityClassificationText.png"
 		]
 		if (DEBUG) { println "${command}" }
@@ -278,14 +278,14 @@ class TemplateExportService
 				"-background", 
 				"none", 
 				"-fill", 
-				"#${titleTextColor}", 
+				"#${headerTitleTextColor}", 
 				"-size", 
 				"${headerTextWidth}x${headerTitleTextHeight}", 
 				"-gravity", 
 				"West",
 				"-font",
 				"${font}", 
-				"caption:${title}", 
+				"caption:${headerTitleText}", 
 				"${tempFilesLocation}${date}headerTitleText.png"
 		]
 		if (DEBUG) { println "${command}" }
@@ -304,14 +304,14 @@ class TemplateExportService
 				"-background", 
 				"none", 
 				"-fill", 
-				"#${descriptionTextColor}", 
+				"#${headerDescriptionTextColor}", 
 				"-size", 
 				"${headerTextWidth}x${headerDescriptionTextHeight}", 
 				"-gravity", 
 				"West", 
 				"-font",
 				"${font}",
-				"caption:${description}", 
+				"caption:${headerDescriptionText}", 
 				"${tempFilesLocation}${date}headerDescriptionText.png"
 		]
 		if (DEBUG) { println "${command}" }
@@ -484,7 +484,7 @@ class TemplateExportService
 		//#######################################################################################################################
 		if (DEBUG) { println "##### Report Adjustment #####" }
 		//########## Add the overview map to the finished product
-		if (("${includeOverviewMap}".toString()).equals("on"))
+		if (("${includeOverviewMap}".toString()).equals("true"))
 		{
 			def overviewMapOffset = (imageWidth - headerWidth) / 2 + northArrowWidth + 2 * northArrowOffset
 			if (DEBUG) { println "Add the overview map to the finished product:" }			
@@ -506,41 +506,41 @@ class TemplateExportService
 			if (DEBUG) { println "The overview map is not included" }
 		}
 
-		//#################################################################################################################
-		//################################################## Info Banner ##################################################
-		//#################################################################################################################
-		if (DEBUG) { print "##### Info Banner #####" }
+		//######################################################################################################################
+		//################################################## FooterAdjustment ##################################################
+		//######################################################################################################################
+		if (DEBUG) { print "##### Footer Adjustment #####" }
 
-		//########## Determine the info banner size
-		if (DEBUG) { println "Determine the info banner size:" }
-		def infoBannerWidth = imageWidth
-		infoBannerWidth = infoBannerWidth.toInteger()
-		def infoBannerHeight = 0.035 * imageHeight
-		infoBannerHeight = infoBannerHeight.toInteger()
-		if (DEBUG) { println "${infoBannerWidth}x${infoBannerHeight} pixels" }
+		//########## Determine the footer size
+		if (DEBUG) { println "Determine the footer size:" }
+		def footerWidth = imageWidth
+		footerWidth = footerWidth.toInteger()
+		def footerHeight = 0.035 * imageHeight
+		footerHeight = footerHeight.toInteger()
+		if (DEBUG) { println "${footerWidth}x${footerHeight} pixels" }
 
-		//########## Generate the blank info banner
-		if (DEBUG) { println "Generate the blank info banner:" }
+		//########## Generate the blank footer
+		if (DEBUG) { println "Generate the blank footer:" }
 		command = [
                                 "convert",
                                 "-size",
-                                "${infoBannerWidth}x${infoBannerHeight}",
+                                "${footerWidth}x${footerHeight}",
                                 "gradient: #${gradientColorTop}-#${gradientColorBottom}",
-                                "${tempFilesLocation}${date}infoBanner.png"
+                                "${tempFilesLocation}${date}footer.png"
                 ]
                 if (DEBUG) { println "${command}" }
                 executeCommand(command)
 
-		//########## Determine the info banner text size
-		if (DEBUG) { println "Determine the info banner text size:" }
-		def infoBannerTextWidth = infoBannerWidth / 3
-		infoBannerTextWidth = infoBannerTextWidth.toInteger()
-		def infoBannerTextHeight = infoBannerHeight
-		infoBannerTextHeight = infoBannerTextHeight.toInteger()
-		if (DEBUG) { println "${infoBannerTextWidth}x${infoBannerTextHeight} pixels" }
+		//########## Determine the footer text size
+		if (DEBUG) { println "Determine the footer text size:" }
+		def footerTextWidth = footerWidth / 3
+		footerTextWidth = footerTextWidth.toInteger()
+		def footerTextHeight = footerHeight
+		footerTextHeight = footerTextHeight.toInteger()
+		if (DEBUG) { println "${footerTextWidth}x${footerTextHeight} pixels" }
 
-		//########## Generate the info banner security classification text
-		if (DEBUG) { println "Generate the info banner security classification text:" }
+		//########## Generate the footer security classification text
+		if (DEBUG) { println "Generate the footer security classification text:" }
 		command = [
                                 "convert",
 				"-alpha",
@@ -548,34 +548,34 @@ class TemplateExportService
                                 "-background",
                                 "none",
                                 "-fill",
-                                "#${securityClassificationTextColor}",
+                                "#${footerSecurityClassificationTextColor}",
                                 "-size",
-                                "${infoBannerTextWidth}x${infoBannerTextHeight}",
+                                "${footerTextWidth}x${footerTextHeight}",
                                 "-gravity",
                                 "West",
 				"-font",
 				"${font}",
-                                "caption: ${securityClassification}",
-                                "${tempFilesLocation}${date}infoBannerSecurityClassificationText.png"
+                                "caption: ${footerSecurityClassificationText}",
+                                "${tempFilesLocation}${date}footerSecurityClassificationText.png"
                 ]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
-		//########## Add the info banner security classification text to the info banner
-		if (DEBUG) { println "Add the info banner security classification text to the info banner:" }
+		//########## Add the footer security classification text to the info banner
+		if (DEBUG) { println "Add the footer security classification text to the footer:" }
 		command = [
                                 "composite",
-                                "${tempFilesLocation}${date}infoBannerSecurityClassificationText.png",
+                                "${tempFilesLocation}${date}footerSecurityClassificationText.png",
                                 "-gravity",
                                 "West",
-                                "${tempFilesLocation}${date}infoBanner.png",
-                                "${tempFilesLocation}${date}infoBanner.png"
+                                "${tempFilesLocation}${date}footer.png",
+                                "${tempFilesLocation}${date}footer.png"
                 ]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
-		//########## Generate the info banner location text
-		if (DEBUG) { println "Generate the info banner location text:" } 
+		//########## Generate the footer location text
+		if (DEBUG) { println "Generate the footer location text:" } 
 		command = [
                                 "convert",
 				"-alpha",
@@ -583,34 +583,34 @@ class TemplateExportService
                                 "-background",
                                 "none",
                                 "-fill",
-                                "#${locationTextColor}",
+                                "#${footerLocationTextColor}",
                                 "-size",
-                                "${infoBannerTextWidth}x${infoBannerTextHeight}",
+                                "${footerTextWidth}x${footerTextHeight}",
                                 "-gravity",
                                 "Center",
 				"-font",
 				"${font}",
-                                "caption:${location}",
-                                "${tempFilesLocation}${date}infoBannerLocationText.png"
+                                "caption:${footerLocationText}",
+                                "${tempFilesLocation}${date}footerLocationText.png"
                 ]
 		if (DEBUG) { println "${command}" }
                 executeCommand(command)
 
-		//########## Add the info banner location text to the info banner
-                if (DEBUG) { println "Add the info banner location text to the info banner:" }
+		//########## Add the footer location text to the footer
+                if (DEBUG) { println "Add the footer location text to the footer:" }
                 command = [
                                 "composite",
-                                "${tempFilesLocation}${date}infoBannerLocationText.png",
+                                "${tempFilesLocation}${date}footerLocationText.png",
                                 "-gravity",
                                 "Center",
-                                "${tempFilesLocation}${date}infoBanner.png",
-                                "${tempFilesLocation}${date}infoBanner.png"
+                                "${tempFilesLocation}${date}footer.png",
+                                "${tempFilesLocation}${date}footer.png"
                 ]
 		if (DEBUG) { println "${command}" }
                 executeCommand(command)
 
-		//########## Generate the info banner acquisition date text
-                if (DEBUG) { println "Generate the info banner acquisition date text:" }
+		//########## Generate the footer acquisition date text
+                if (DEBUG) { println "Generate the footer acquisition date text:" }
 		command = [
                                 "convert",
 				"-alpha",
@@ -618,38 +618,38 @@ class TemplateExportService
                                 "-background",
                                 "none",
                                 "-fill",
-                                "#${acquisitionDateTextColor}",
+                                "#${footerAcquisitionDateTextColor}",
                                 "-size",
-                                "${infoBannerTextWidth}x${infoBannerTextHeight}",
+                                "${footerTextWidth}x${footerTextHeight}",
                                 "-gravity",
                                 "East",
 				"-font",
 				"${font}",
-                                "caption:${acquisitionDate} ",
-                                "${tempFilesLocation}${date}infoBannerAcquisitionDateText.png"
+                                "caption:${footerAcquisitionDateText} ",
+                                "${tempFilesLocation}${date}footerAcquisitionDateText.png"
                 ]
 		if (DEBUG) { println "${command}" }
                 executeCommand(command)
 
-		//########## Add the info banner acquisition date text to the info banner
-		if (DEBUG) { println "Add the info banner acquisition date text to the info banner:" }
+		//########## Add the footer acquisition date text to the footer
+		if (DEBUG) { println "Add the footer banner acquisition date text to the footer:" }
                 command = [
                                 "composite",
-                                "${tempFilesLocation}${date}infoBannerAcquisitionDateText.png",
+                                "${tempFilesLocation}${date}footerAcquisitionDateText.png",
                                 "-gravity",
                                 "East",
-                                "${tempFilesLocation}${date}infoBanner.png",
-                                "${tempFilesLocation}${date}infoBanner.png"
+                                "${tempFilesLocation}${date}footer.png",
+                                "${tempFilesLocation}${date}footer.png"
                 ]
 		if (DEBUG) { println "${command}" }
                 executeCommand(command)
 
-		//########## Add the info banner to the finished product
-		if (DEBUG) { println "Add the info banner to the finished product:" }
+		//########## Add the footer to the finished product
+		if (DEBUG) { println "Add the footer to the finished product:" }
 		command = [
                                 "convert",
                                 "${tempFilesLocation}${date}finishedProduct.png",
-                                "${tempFilesLocation}${date}infoBanner.png",
+                                "${tempFilesLocation}${date}footer.png",
                                 "-append",
                                 "${tempFilesLocation}${date}finishedProduct.png"
                 ]
@@ -690,6 +690,30 @@ class TemplateExportService
 		//################################################## Temporary File Deletion ##################################################
 		//#############################################################################################################################
 
+                //########## Delete the footer file
+                if (DEBUG) { println "Delete the footer file:" }
+                command = "rm ${tempFilesLocation}${date}footer.png"
+                if (DEBUG) { println "${command}" }
+                executeCommand(command)
+
+                //########## Delete the footer acquisition date text file
+                if (DEBUG) { println "Delete the footer acquisition date text file:" }
+                command = "rm ${tempFilesLocation}${date}footerAcquisitionDateText.png"
+                if (DEBUG) { println "${command}" }
+                executeCommand(command)
+
+                //########## Delete the footer location text file
+                if (DEBUG) { println "Delete the footer location text file:" }
+                command = "rm ${tempFilesLocation}${date}footerLocationText.png"
+                if (DEBUG) { println "${command}" }
+                executeCommand(command)
+
+                //########## Delete the footer security classification text file
+                if (DEBUG) { println "Delete the footer security classification text file:" }
+                command = "rm ${tempFilesLocation}${date}footerSecurityClassificationText.png"
+                if (DEBUG) { println "${command}" }
+                executeCommand(command)
+
 		//########## Delete the header file
 		if (DEBUG) { println "Delete the header file:" }
 		command = "rm ${tempFilesLocation}${date}header.png"
@@ -717,30 +741,6 @@ class TemplateExportService
 		//########## Delete the header title text file
 		if (DEBUG) { println "Delete the header title text file:" }
 		command = "rm ${tempFilesLocation}${date}headerTitleText.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-                //########## Delete the info banner file
-                if (DEBUG) { println "Delete the info banner file:" }
-                command = "rm ${tempFilesLocation}${date}infoBanner.png"
-                if (DEBUG) { println "${command}" }
-                executeCommand(command)
-
-		//########## Delete the info banner acquisition date text file
-		if (DEBUG) { println "Delete the info banner acquisition date text file:" }
-		command = "rm ${tempFilesLocation}${date}infoBannerAcquisitionDateText.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the info banner security classification text file
-		if (DEBUG) { println "Delete the info banner security classification text file:" }
-		command = "rm ${tempFilesLocation}${date}infoBannerSecurityClassificationText.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the info banner location text file
-		if (DEBUG) { println "Delete the info banner location text file:" }
-		command = "rm ${tempFilesLocation}${date}infoBannerLocationText.png"
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 

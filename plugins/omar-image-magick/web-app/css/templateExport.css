@@ -1,47 +1,26 @@
-#acquisitionDate, #description, #location, #securityClassification, #title
-{
-	width: 100%;
+a 
+{ 
+	text-decoration: none; 
 }
 
 body
 {
-	height: 100%;
-	margin: 0;
-	overflow-y: hidden;
-	padding: 0;
-	width: 100%
+	font-family:"Arial";
 }
 
-#center
-{
-	height: 100%;
-	overflow-x: auto;
-	overflow-y: auto;
-	position: absolute;
-	width: 100%;
-}
-
-#countryCode, #exportPreviewUrl, #gradientGeneratorUrl, #imageResourceLocation, #jsColorImagesDirectory, #loading, #preview, #templateStatus
+#changeColorGradientPopup, #changeFooterAcquisitionDateTextPopup, #changeFooterLocationTextPopup, #changeFooterSecurityClassificationTextPopup, #changeHeaderDescriptionTextPopup, #changeHeaderSecurityClassificationTextPopup, #changeHeaderTitleTextPopup, #changeLogoPopup, #changeNorthArrowPopup, #changeOverviewMapPopup
 {
 	display: none;
 }
 
-#footer
+#countryCode, #downloadDialogPopup, #downloadForm, #fontSize, #formActionUrl, #footerGradientGeneratorUrl, #headerGradientGeneratorUrl, #jsColorImagesDirectory, #logoImagesDirectory, #northArrowGeneratorUrl, #overviewMapImagesDirectory
 {
-	bottom: 0;
-	height: 20px;
-	position: absolute;
-	width: 100%;
+	display: none;
 }
 
-#header
+#pageContainer
 {
-	position: relative;
-	top: 0;
+	height: 100%;
+	visibility: hidden;
 	width: 100%;
-}
-
-#headerFooterGradient
-{
-	background-repeat: repeat-x;
 }
