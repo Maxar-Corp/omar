@@ -937,7 +937,7 @@ function exportTemplate()
 	var countryCode = "${(rasterEntries.countryCode).join(',')}";
 	var imageId = "${(rasterEntries.title).join(',')}";
 	
-	var baseURL = "${createLink(absolute: true, action: "wms", controller: "ogc" )}";
+	var baseURL = "${createLink(absolute: true, action: "wms", base: grailsApplication.config.omar.serverURL, controller: "ogc" )}";
 	var extent = mapWidget.getViewportExtents();
 	var size = mapWidget.getSizeInPixelsFromExtents(extent);
 	
