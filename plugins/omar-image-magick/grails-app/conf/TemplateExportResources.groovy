@@ -8,18 +8,18 @@ modules = {
 		resource url: [plugin: 'yui', dir: "js/yui/layout", file: "layout-min.js"]
 		resource url: [dir: 'css', file: 'loginPageLayout.css']
    		
-		resource url: [dir: 'css/jQuery/smoothness', file: 'jQueryUi-1.8.23.custom.css']
+		resource url: [dir: 'css/jQuery/smoothness', file: 'jQueryUi-1.8.23.custom.css', plugin: 'omar-common-ui']
 
 		resource url: [dir: 'css', file: 'templateExport.css']
 		
 		resource url: [dir: 'js', file: 'OpenLayers.js', plugin: 'openlayers']
 		resource url: [dir: 'js', file: 'jsColor.js']
 
-		resource url: [dir: 'js/jQuery', file: 'jQuery-1.8.0.min.js']
-		resource url: [dir: 'js/jQuery', file: 'jQueryUi-1.8.23.min.js']
-		resource url: [dir: 'js/jQuery', file: 'jQueryOnMouseStop.js']
+		resource url: [dir: 'js/jQuery', file: 'jQuery-1.8.0.min.js', plugin: 'omar-core']
+		resource url: [dir: 'js/jQuery', file: 'jQueryUi-1.8.23.min.js', plugin: 'omar-common-ui']
+		resource url: [dir: 'js/jQuery', file: 'jQueryOnMouseStop.js', plugin: 'omar-common-ui']
 	
-		resource url: [dir: 'js', file: 'spin.js']
+		resource url: [dir: 'js', file: 'spin-min.js', plugin: 'omar-core']
 
 		resource url: [dir: 'js', file: 'templateExport.js', plugin: 'omar-image-magick']
 	}
