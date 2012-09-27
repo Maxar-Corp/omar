@@ -22,7 +22,8 @@
 				<div id = "footerLocationTextContainer" onClick = "changeFooterLocationText()"></div>
 				<div align = "right" id = "footerAcquisitionDateTextContainer" onClick = "changeFooterAcquisitionDateText()"></div>
 
-				<button id = "downloadButton">Download</button>
+					<button id = "downloadButton">Download</button>
+					<%--<button id = "upArrowButton">Up Arrow</button>--%>				
 
 				<div id = "countryCode">${countryCode}</div>
 				<div id = "formActionUrl">${createLink(action: 'export')}</div>
@@ -122,6 +123,14 @@
 						<tr>
 							<td><b>Angle From North:&nbsp;</b></td>
 							<td><input id = "northAngleInput" size = "3" type = "text" value = "${northArrowAngle}"/>deg</td>
+						</tr>
+						<tr>
+							<td><b>Arrow Color:&nbsp;</b></td>
+							<td><input class = "color" id = "northArrowColor" size = "6" type = "text" value = "FFFFFF"/></td>
+						</tr>
+						<tr>
+							<td><b>Background Color:&nbsp;</b></td>
+							<td><input class = "color" id = "northArrowBackgroundColor" size = "6" type = "text" value = "000000"/></td>
 						</tr>
 					</table>
 				</div>	

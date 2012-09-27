@@ -33,6 +33,20 @@ $(document).ready(
 	}
 );
 
+function addAnArrow(arrowType)
+{
+	$("#pageContainer").append('<div id = "arrowDiv" style = "border: .2em dotted #900"><img id = "arrowImage" src = ' + $("#logoImagesDirectory").get(0).innerHTML + 'annotationArrow.png height = "500"/></div>');
+	//$("#pageContainer").append('<div id = "arrow">Cheese</div>');
+	$("#arrowImage").resizable();
+	$("#arrowDiv").draggable();
+	$("#arrowDiv").position({
+		my: "left bottom",
+		at: "left bottom",
+		of: $("#previewImage")
+	});
+	
+}
+
 function changeColorGradient()
 {
 	$("#changeColorGradientPopup").dialog
@@ -230,8 +244,7 @@ function changeNorthArrow()
 			"OK": function()
 			{
 				$(this).dialog("close");
-				var northAngle = $("#northAngleInput").get(0).value;
-				$("#northArrowImage").get(0).src = $("#northArrowGeneratorUrl").get(0).innerHTML + "?northArrowSize=" + logoHeight + "&northAngle=" + northAngle;
+				generateNorthArrow();
 			},
 			Cancel: function()
 			{
@@ -275,7 +288,8 @@ function changeOverviewMap()
 
 function displayTemplateButtons()
 {
-	$("#downloadButton").fadeIn(500);
+	$("#downloadButton").add("#upArrowButton").fadeTo("fast", 1);
+	//$("#upArrowButton").fadeTo("fast", 1);
 }
 
 function downloadImage()
@@ -296,9 +310,14 @@ function downloadImage()
 	exportUrlParams += "&headerTitleText=" + $("#headerTitleTextInput").get(0).value;
 	exportUrlParams += "&headerTitleTextColor=" + $("#headerTitleTextColor").get(0).value;
 	exportUrlParams += "&imageUrl=" + $("#previewImage").get(0).src.replace(/&/g,"%26");
+	exportUrlParams += "&imageHeight=" + $("#previewImage").height();
+	exportUrlParams += "&imageWidth=" + $("#previewImage").width();
 	exportUrlParams += "&includeOverviewMap=" + $("#includeOverviewMapCheckbox").get(0).checked; 
 	exportUrlParams += "&logo=" + $("#logo").get(0).value;
 	exportUrlParams += "&northArrowAngle=" + $("#northAngleInput").get(0).value;
+	exportUrlParams += "&northArrowBackgroundColor=" + $("#northArrowBackgroundColor").get(0).value;
+	exportUrlParams += "&northArrowColor=" + $("#northArrowColor").get(0).value;
+	exportUrlParams += "&northArrowSize=" + $("#northArrowImage").height();
 	
 	$("#downloadForm").get(0).action = $("#formActionUrl").get(0).innerHTML + exportUrlParams;
 	$("#downloadForm").get(0).submit();
@@ -354,9 +373,9 @@ function generateFooter()
 	$("#footer").css("backgroundImage", "url('" + footerGradientUrlGenerator(gradientColorTop, gradientColorBottom, footerHeight) + "')");	
 
 	$("#footer").position({
-		of: $("#previewImage"),
 		my: "left top",
-		at: "left bottom"
+		at: "left bottom",
+		of: $("#previewImage")
 	});
 }
 
@@ -581,7 +600,15 @@ function generateNorthArrow()
 	$("#northArrowImage").css("height", northArrowHeight);
 	$("#northArrowImage").css("width", northArrowWidth);
 
-	$("#northArrowImage").get(0).src = $("#northArrowGeneratorUrl").get(0).innerHTML + "?northArrowSize=" + northArrowHeight + "&northAngle=" + $("#northAngleInput").get(0).value;
+	var northArrowColor = $("#northArrowColor").get(0).value;
+	var northArrowBackgroundColor = $("#northArrowBackgroundColor").get(0).value;
+
+	var northArrowUrl = $("#northArrowGeneratorUrl").get(0).innerHTML;
+	northArrowUrl += "?northArrowSize=" + northArrowHeight;
+	northArrowUrl += "&northAngle=" + $("#northAngleInput").get(0).value;
+	northArrowUrl += "&northArrowColor=" + northArrowColor;
+	northArrowUrl += "&northArrowBackgroundColor=" + northArrowBackgroundColor;
+	$("#northArrowImage").get(0).src =  northArrowUrl;
 }
 
 function generateOverviewMap()
@@ -625,13 +652,18 @@ function generateTemplateButtons()
 		offset: "5 5"
 	});
 
-	$("#includeOverviewMapButton").button
+	$("#upArrowButton").button
 	({
-		icons: { primary: "ui-icon-newwin" },
+		icons: { primary: "ui-icon-arrowthick-1-n" },
 		text: false
-	});
+		}).click(
+			function()
+			{
+				addAnArrow("up");
+			}
+	);
 
-	$("#includeOverviewMapButton").position
+	$("#upArrowButton").position
 	({
 		my: "left top",
 		at: "left bottom",
@@ -651,7 +683,8 @@ function headerGradientUrlGenerator(topColor, bottomColor, height)
 
 function hideTemplateButtons()
 {
-	$("#downloadButton").fadeOut(500);
+	$("#downloadButton").add("#upArrowButton").fadeTo("fast", 0);
+	//$("#upArrowButton").fadeTo("fast", 0);
 }
 
 function init()
@@ -680,22 +713,23 @@ function positionNorthArrow()
 
 	$("#northArrowImage").position
 	({
-		my: "left top",
-		at: "right top",
+		my: "right top",
+		at: "left top",
 		of: $("#overviewMapImage"),
-		offset: northArrowOffsetWidth + " " + northArrowOffsetHeight
+		offset: "-" + northArrowOffsetWidth + " 0"
 	});
 }
 
 function positionOverviewMapImage()
 {
-	var overviewMapImageOffsetWidth = logoOffset + logoWidth + logoOffset;
+	var overviewMapImageOffsetHeight = logoOffset;
+	var overviewMapImageOffsetWidth = 2 * logoOffset;
 	$("#overviewMapImage").position
 	({
 		my: "right top",
 		at: "right top",
 		of: $("#header"),
-		offset: "-" + overviewMapImageOffsetWidth + " 0"
+		offset: "-" + overviewMapImageOffsetWidth + " " + overviewMapImageOffsetHeight
 	});	
 }
 
@@ -708,6 +742,6 @@ function setupPreviewImageEvents()
 
 	$("#previewImage").mousestop
 	(
-		function () { hideTemplateButtons(); }
+		//function () { hideTemplateButtons(); }
 	);
 }
