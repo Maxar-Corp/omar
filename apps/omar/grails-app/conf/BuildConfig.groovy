@@ -78,3 +78,4 @@ grails.plugin.location.omarSuperoverlay = "../../plugins/omar-superoverlay"
 
 //grails.plugin.location.omarOgcCore="../../plugins/omar-ogc-core"
 grails.plugin.location.omarImageMagick = "../../plugins/omar-image-magick"
+grails.plugin.location.omarTimeLapse = "../../plugins/omar-time-lapse"
