@@ -15,7 +15,7 @@ modules = {
                 resource url: [dir: 'js', file: 'OpenLayers.js', plugin: 'openlayers']
                
 
-                resource url: [dir: 'js/jQuery', file: 'jQuery-1.8.0.min.js', plugin: 'omar-core']
+                resource url: [dir: 'js', file: 'jquery.js', plugin: 'omar-core']
                 resource url: [dir: 'js/jQuery', file: 'jQueryUi-1.8.23.min.js', plugin: 'omar-common-ui']
                 
 
