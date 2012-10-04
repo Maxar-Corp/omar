@@ -23,8 +23,35 @@ $(document).ready(
 				layout.render();
 			}
 		);
-
+		initialSetup();
 	}
 );
 
-
+function initialSetup()
+{
+	$("#fastForwardButton").button(
+	{
+		icons: {primary: "ui-icon-seek-next"},
+		text: false
+	});
+	$("#playForwardButton").button(
+	{
+		icons: {primary: "ui-icon-triangle-1-e"},
+		text: false
+	});
+	$("#playReverseButton").button(
+	{
+		icons: {primary: "ui-icon-triangle-1-w"},
+		text: false
+	});
+	$("#rewindButton").button(
+	{
+		icons: {primary: "ui-icon-seek-prev"},
+		text: false
+	});
+	$("#stopButton").button(
+	{
+		icons: {primary: "ui-icon-stop"},
+		text: false
+	});
+}
