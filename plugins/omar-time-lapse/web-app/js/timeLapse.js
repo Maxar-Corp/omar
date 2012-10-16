@@ -1,4 +1,5 @@
 var dom = YAHOO.util.Dom;
+var map;
 
 $(document).ready(
 	function () 
@@ -23,11 +24,23 @@ $(document).ready(
 				layout.render();
 			}
 		);
-		initialSetup();
+		mapSetup();
+		initializeButtons();
 	}
 );
 
-function initialSetup()
+function mapSetup()
+{
+	var mapHeight = 0.8 * $("#pageContainer").height();
+	$("#map").css("height", mapHeight);
+
+	var mapWidth = 0.8 * $("#pageContainer").width();
+	$("#map").css("width", mapWidth);
+
+	map = new OpenLayers.Map("map");
+}
+
+function initializeButtons()
 {
 	$("#fastForwardButton").button(
 	{
