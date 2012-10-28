@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 	<head>
 		<title>OMAR <g:meta name="app.version"/>: Template Export</title>
