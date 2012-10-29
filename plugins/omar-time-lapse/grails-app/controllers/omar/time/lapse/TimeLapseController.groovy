@@ -6,10 +6,18 @@ class TimeLapseController
 
 	def timeLapse() 
 	{ 
-		if (params.layers)
-		{
-			def rasterEntries = rasterEntrySearchService.findRasterEntries(params.layers?.split(","))
-			println "${rasterEntries.indexId}"
-		}
+	
+		def rasterEntries = rasterEntrySearchService.findRasterEntries(params.imageIds?.split(","))
+		def bbox = params.bbox
+		render(
+			view: "timeLapse.gsp",
+			model:
+			[
+				acquisitionDates: rasterEntries.acquisitionDate,
+				bbox: bbox,
+				imageIds: rasterEntries.title,
+				indexIds: rasterEntries.indexId
+			]	
+		)		
 	}
 }
