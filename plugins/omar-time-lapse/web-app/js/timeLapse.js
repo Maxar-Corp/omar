@@ -2,6 +2,8 @@ var currentLayer;
 var dom = YAHOO.util.Dom;
 var mapLayers = new Array();
 var map;
+var movieAdvance;
+var playDirection;
 
 $(document).ready(
 	function () 
@@ -42,6 +44,7 @@ function fastForward()
 		currentLayer = 0;
 	}
 	mapLayers[currentLayer].setVisibility(true);
+	updateProgressSlider();
 	updateText();
 }
 
@@ -84,6 +87,7 @@ function mapSetup()
 			}
 		);
 		map.addLayer(mapLayers[i]);
+		mapLayers[i].setVisibility(false);
 	}
 }
 
@@ -128,9 +132,69 @@ function pageSetup()
 		my: "middle top",
 		at: "middle bottom",
 		of: $("#map"),
-		offset: "0 0"
+		offset: "0 5"
 	});
-	$("#slider").slider();
+	$("#slider").slider
+	({
+		max: imageIds.length - 1,
+		min: 0,
+		slide: function(event, ui)
+		{
+			if (ui.value > currentLayer)
+			{
+				fastForward();
+			}
+			else 
+			{
+				rewind();
+			}
+		}
+	});
+
+	$("#rewindButton").button(
+	{
+		icons: {primary: "ui-icon-seek-prev"},
+		text: false
+		}).click(function()
+		{
+			rewind();
+		}
+	);
+
+	$("#playControls").buttonset();
+	$("#playReverseButton").button(
+	{
+		icons: {primary: "ui-icon-triangle-1-w"},
+		text: false
+		}).click(function()
+		{
+			playDirection = "reverse";
+			stopMovie();
+			playMovie();
+		}
+	);
+
+	$("#stopButton").button(
+	{
+		icons: {primary: "ui-icon-stop"},
+		text: false
+		}).click(function() 
+		{
+			stopMovie();
+		}
+	);
+
+	$("#playForwardButton").button(
+	{
+		icons: {primary: "ui-icon-triangle-1-e"},
+		text: false
+		}).click(function()
+		{
+			playDirection = "forward";
+			stopMovie();
+			playMovie();
+		}
+	);
 
 	$("#fastForwardButton").button(
 	{
@@ -141,26 +205,68 @@ function pageSetup()
 			fastForward();
 		}
 	);
-	$("#playForwardButton").button(
+
+	//$("#playControls").css("width", 9 * $("#stopButton").width());
+	//$("#playReverseButton").position
+	//({
+	//	my: "left top",
+	//	at: "right top",
+	//	of: $("#rewindButton"),
+	//	offset: "0 0"
+	//});
+	//$("#fastForwardButton").position
+	//({
+	//	my: "left top",
+	//	at: "right top",
+	//	of: $("#playForwardButton"),
+	//	offset: "0 0"
+	//});
+	//var movieControlsDivWidth = 3 * $("#rewindButton").width() + $("#playControls").width();
+	//movieControlsDivWidth += 2 * Math.abs($("#playReverseButton").position().left - $("#playControls").position().left - $("#rewindButton").width());
+	//$("#movieControlsDiv").css("width", movieControlsDivWidth);
+	//$("#movieControlsDiv").position
+	//({
+	//	my: "middle top",
+	//	at: "middle bottom",
+	//	of: $("#slider"),
+	//	offset: "0 5"
+	//});
+}
+
+function playMovie()
+{
+	if (playDirection == "forward")
 	{
-		icons: {primary: "ui-icon-triangle-1-e"},
-		text: false
-	});
-	$("#playReverseButton").button(
+		fastForward();
+	}
+	else
 	{
-		icons: {primary: "ui-icon-triangle-1-w"},
-		text: false
-	});
-	$("#rewindButton").button(
+		rewind();
+	}
+	movieAdvance = setTimeout("playMovie()", 1000);
+}
+
+function rewind()
+{
+	mapLayers[currentLayer].setVisibility(false);
+	currentLayer--;
+	if (currentLayer < 0)
 	{
-		icons: {primary: "ui-icon-seek-prev"},
-		text: false
-	});
-	$("#stopButton").button(
-	{
-		icons: {primary: "ui-icon-stop"},
-		text: false
-	});
+		currentLayer = imageIds.length - 1;;
+	}
+        mapLayers[currentLayer].setVisibility(true);
+	updateProgressSlider();
+        updateText();
+}
+
+function stopMovie()
+{
+	clearTimeout(movieAdvance);
+}
+
+function updateProgressSlider()
+{
+	$("#slider").slider("value", currentLayer);
 }
 
 function updateText()
