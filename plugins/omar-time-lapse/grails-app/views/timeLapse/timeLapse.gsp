@@ -9,11 +9,18 @@
 			<div id = "acquisitionDateText">Acquisition Date Text</div>
 			<div id = "map"></div>
 			<div id = "slider"></div>
-			<button id = "rewindButton">Rewind</button>
-			<button id = "playReverseButton">Play Reverse</button>
-			<button id = "stopButton">Stop</button>
-			<button id = "playForwardButton">Play Forward</button>
-			<button id = "fastForwardButton">Fast Forward</button>
+			<%--<div id = "movieControlsDiv">--%>
+				<button id = "rewindButton">Rewind</button>
+				<div id = "playControls">
+					<input id = "playReverseButton" name = "radio" type = "radio"/>
+						<label for = "playReverseButton">Play Reverse</label>
+					<input checked = "checked" id = "stopButton" name = "radio" type = "radio"/>
+						<label for = "stopButton">Stop</label>
+					<input id = "playForwardButton" name = "radio" type = "radio"/>
+						<label for = "playForwardButton">Play Forward</label>
+				</div>
+				<button id = "fastForwardButton">Fast Forward</button>
+			<%--</div>--%>
 			<div id = "wmsUrlBase">${createLink(action: "wms", controller: "ogc")}</div>
 		</content>
 		<content tag = "bottom"></content>
