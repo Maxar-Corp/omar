@@ -96,33 +96,33 @@ function pageSetup()
 	var mapHeight = 0.8 * $(window).height();
 	var mapWidth = 0.8 * $(window).width();
 
-	$("#imageIdHyperlink").css("width", mapWidth);
-	$("#imageIdHyperlink").css("text-align", "center");
-	$("#imageIdHyperlink").position
-	({
-		my: "middle top",
-		at: "middle top",
-		of: $(window),
-		offset: "0 25"
-	});
-
-	$("#acquisitionDateText").css("width", mapWidth);
-	$("#acquisitionDateText").css("text-align", "center");
-	$("#acquisitionDateText").position
-	({
-		my: "middle top",
-		at: "middle bottom",
-		of: $("#imageIdHyperlink"),
-		offset: "0 0"
-	});
-
-	$("#map").css("height", mapHeight);
+	 $("#map").css("height", mapHeight);
 	$("#map").css("width", mapWidth);
 	$("#map").position
 	({
 		my: "middle top",
-		at: "middle bottom",
-		of: $("#acquisitionDateText"),
+		at: "middle top",
+		of: $(window),
+		offset: "0 50"
+	});
+
+	$("#imageIdHyperlink").css("width", 0.5 * mapWidth);
+	$("#imageIdHyperlink").css("text-align", "left");
+	$("#imageIdHyperlink").position
+	({
+		my: "left bottom",
+		at: "left top",
+		of: $("#map"),
+		offset: "0 0"
+	});
+
+	$("#acquisitionDateText").css("width", 0.5 * mapWidth);
+	$("#acquisitionDateText").css("text-align", "right");
+	$("#acquisitionDateText").position
+	({
+		my: "right bottom",
+		at: "right top",
+		of: $("#map"),
 		offset: "0 0"
 	});
 	
@@ -132,7 +132,7 @@ function pageSetup()
 		my: "middle top",
 		at: "middle bottom",
 		of: $("#map"),
-		offset: "0 5"
+		offset: "0 10"
 	});
 	$("#slider").slider
 	({
@@ -206,31 +206,13 @@ function pageSetup()
 		}
 	);
 
-	//$("#playControls").css("width", 9 * $("#stopButton").width());
-	//$("#playReverseButton").position
-	//({
-	//	my: "left top",
-	//	at: "right top",
-	//	of: $("#rewindButton"),
-	//	offset: "0 0"
-	//});
-	//$("#fastForwardButton").position
-	//({
-	//	my: "left top",
-	//	at: "right top",
-	//	of: $("#playForwardButton"),
-	//	offset: "0 0"
-	//});
-	//var movieControlsDivWidth = 3 * $("#rewindButton").width() + $("#playControls").width();
-	//movieControlsDivWidth += 2 * Math.abs($("#playReverseButton").position().left - $("#playControls").position().left - $("#rewindButton").width());
-	//$("#movieControlsDiv").css("width", movieControlsDivWidth);
-	//$("#movieControlsDiv").position
-	//({
-	//	my: "middle top",
-	//	at: "middle bottom",
-	//	of: $("#slider"),
-	//	offset: "0 5"
-	//});
+	$("#movieControlsDiv").position
+	({
+		my: "middle top",
+		at: "middle bottom",
+		of: $("#slider"),
+		offset: "0 15"
+	});
 }
 
 function playMovie()
@@ -271,6 +253,11 @@ function updateProgressSlider()
 
 function updateText()
 {
-	$("#imageIdHyperlink").html(imageIds[currentLayer]);
+	var mapBounds = map.calculateBounds().toArray();
+	var mapCenterLatitude = map.center.lat;
+	var mapCenterLongitude = map.center.lon;
+	$("#imageIdHyperlink").html("<a href = '/omar/mapView/index?layers=" + indexIds[currentLayer] + 
+		"&latitude=" + mapCenterLatitude + "&longitude=" + mapCenterLongitude +
+		"&bbox=" + mapBounds + "' target = '_blank'>" + imageIds[currentLayer] + "</a>");
 	$("#acquisitionDateText").html(acquisitionDates[currentLayer]);
 }
