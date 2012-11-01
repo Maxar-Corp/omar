@@ -7,12 +7,12 @@ modules = {
                 resource url: [plugin: 'yui', dir: "js/yui/resize", file: "resize-min.js"]
                 resource url: [plugin: 'yui', dir: "js/yui/layout", file: "layout-min.js"]
                 resource url: [dir: 'css', file: 'loginPageLayout.css']
-                resource url: [dir: 'css/jQuery/smoothness', file: 'jQueryUi-1.8.23.custom.css', plugin: 'omar-common-ui']
+                resource url: [dir: 'css/jQuery/cupertino', file: 'jquery-ui.css', plugin: 'omar-common-ui']
 		resource url: [dir: 'css', file: 'timeLapse.css'] 
 
                 resource url: [dir: 'js', file: 'OpenLayers.js', plugin: 'openlayers']
                 resource url: [dir: 'js', file: 'jquery.js', plugin: 'omar-core']
-                resource url: [dir: 'js/jQuery', file: 'jQueryUi-1.8.23.min.js', plugin: 'omar-common-ui']
+                resource url: [dir: 'js/jQuery', file: 'jquery-ui.js', plugin: 'omar-common-ui']
                 resource url: [dir: 'js', file: 'spin-min.js', plugin: 'omar-core']
                 resource url: [dir: 'js', file: 'timeLapse.js']
 	}
