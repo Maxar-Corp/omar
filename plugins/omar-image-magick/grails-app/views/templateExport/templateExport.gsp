@@ -35,7 +35,7 @@
 				<div id = "overviewMapImagesDirectory">${resource(dir: 'images/overviewMaps/', plugin: 'omar-image-magick')}</div>
 				<form id = "downloadForm" method = "post"></form>
 
-				<div id = "changeColorGradientPopup" title = "Header/Footer Color Gradient">
+				<div align = "left" id = "changeColorGradientPopup" title = "Header/Footer Color Gradient">
 					<table>
 						<tr>
 							<td><b>Top Color:</b></td>
@@ -48,7 +48,7 @@
 					</table>
 				</div>
 
-				<div id = "changeLogoPopup" title = "Change Logo">
+				<div align = "left" id = "changeLogoPopup" title = "Change Logo">
 					<b>Logo:&nbsp;</b> <select id = "logo">
 						<option value = "ciaLogo">CIA</option>
 						<option value = "diaLogo">DIA</option>
@@ -66,7 +66,7 @@
 					</select>
 				</div>
 
-				<div id = "changeHeaderSecurityClassificationTextPopup" title = "Header Security Classification">
+				<div align = "left" id = "changeHeaderSecurityClassificationTextPopup" title = "Header Security Classification">
 					<table>
 						<tr>
 							<td><b>Text:&nbsp;</b></td>
@@ -79,7 +79,7 @@
 					</table>
 				</div>
 
-				<div id = "changeHeaderTitleTextPopup" title = "Title">
+				<div align = "left" id = "changeHeaderTitleTextPopup" title = "Title">
 					<table>
 						<tr>
 							<td><b>Text:&nbsp;</b></td>
@@ -92,7 +92,7 @@
 					</table>
 				</div>
 
-				<div id = "changeHeaderDescriptionTextPopup" title = "Description">
+				<div align = "left" id = "changeHeaderDescriptionTextPopup" title = "Description">
 					<table>
 						<tr>
 							<td><b>Text:&nbsp;</b></td>
@@ -105,7 +105,7 @@
 					</table>
 				</div>
 
-				<div id = "changeOverviewMapPopup" title = "Overview Map">
+				<div align = "left" id = "changeOverviewMapPopup" title = "Overview Map">
 					<table>
 						<tr>
 							<td><b>Include:&nbsp;</b></td>
@@ -118,7 +118,7 @@
 					</table>
 				</div>
 
-				<div id = "changeNorthArrowPopup" title = "North Arrow">
+				<div align = "left" id = "changeNorthArrowPopup" title = "North Arrow">
 					<table>
 						<tr>
 							<td><b>Angle From North:&nbsp;</b></td>
@@ -135,7 +135,7 @@
 					</table>
 				</div>	
 
-				<div id = "changeFooterSecurityClassificationTextPopup" title = "Footer Security Classification">
+				<div align = "left" id = "changeFooterSecurityClassificationTextPopup" title = "Footer Security Classification">
 					<table>
 						<tr>
 							<td><b>Text:&nbsp;</b></td>
@@ -148,7 +148,7 @@
 					</table>
 				</div>
 
-				<div id = "changeFooterLocationTextPopup" title = "Location">
+				<div align = "left" id = "changeFooterLocationTextPopup" title = "Location">
 					<table>
 						<tr>
 							<td><b>Text:&nbsp;</b></td>
@@ -161,7 +161,7 @@
 					</table>
 				</div>
 
-				<div id = "changeFooterAcquisitionDateTextPopup" title = "Acquisition Date">
+				<div align = "left" id = "changeFooterAcquisitionDateTextPopup" title = "Acquisition Date">
 					<table>
 						<tr>
 							<td><b>Text:&nbsp;</b></td>
