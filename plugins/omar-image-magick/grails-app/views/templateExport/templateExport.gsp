@@ -30,7 +30,7 @@
 				<div id = "footerGradientGeneratorUrl">${createLink(action: 'footerGradientGenerator')}</div>
 				<div id = "headerGradientGeneratorUrl">${createLink(action: 'headerGradientGenerator')}</div>
 				<div id = "jsColorImagesDirectory">${resource(dir: 'images/jsColor/', plugin: 'omar-image-magick')}</div>
-				<div id = "logoImagesDirectory">${resource(absolute: 'true', dir: 'images/', plugin: 'omar-image-magick')}</div>
+				<div id = "logoImagesDirectory">${resource(dir: 'images/', plugin: 'omar-image-magick')}</div>
 				<div id = "northArrowGeneratorUrl">${createLink(action: 'northArrowGenerator')}</div>
 				<div id = "overviewMapImagesDirectory">${resource(dir: 'images/overviewMaps/', plugin: 'omar-image-magick')}</div>
 				<form id = "downloadForm" method = "post"></form>
