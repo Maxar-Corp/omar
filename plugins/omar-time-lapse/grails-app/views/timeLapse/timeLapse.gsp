@@ -1,6 +1,7 @@
 <html>
 	<head>
 		<meta content = "timeLapseLayout" name = "layout">
+		<script src = "http://openlayers.org/dev/OpenLayers.js"></script>
 	</head>
 	<body>
 		<content tag = "top"></content>
