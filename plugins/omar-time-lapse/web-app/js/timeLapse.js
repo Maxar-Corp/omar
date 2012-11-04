@@ -1,9 +1,13 @@
+var cacheRead;
+var cacheWrite;
 var currentLayer; 
 var dom = YAHOO.util.Dom;
+var loadedLayers = new Array();
 var mapLayers = new Array();
 var map;
 var movieAdvance;
 var playDirection;
+var spinner;
 
 $(document).ready(
 	function () 
@@ -21,10 +25,7 @@ $(document).ready(
 						{ position:'center', body:'center1', scroll:true }
 					]
 				});
-				layout.on( 'render', function ()
-				{
-					dom.setStyle( document.body, 'visibility', 'visible' );
-				});
+				layout.on('render', function () { dom.setStyle(document.body, 'visibility', 'visible'); });
 				layout.render();
 			}
 		);
@@ -39,26 +40,33 @@ function fastForward()
 {
 	mapLayers[currentLayer].setVisibility(false);
 	currentLayer++;
-	if (currentLayer > imageIds.length - 1)
-	{
-		currentLayer = 0;
-	}
+	if (currentLayer > imageIds.length - 1) { currentLayer = 0; }
 	mapLayers[currentLayer].setVisibility(true);
+	generateSpinner();
 	updateProgressSlider();
 	updateText();
 }
 
+function generateSpinner()
+{
+	var target = document.getElementById("map");
+	if (spinner) { spinner.spin(target); }
+	else
+	{
+		var options = 
+		{
+			className: "spinner", color: "#000000", corners: 1, hwaccel: false, left: "auto", lines: 13,
+			radius: 10, rotate: 0, shadow: false, speed: 1, top: "auto", trail: 60, width: 4, zIndex: 2e9
+		};
+		spinner = new Spinner(options).spin(target);
+	}
+}
+
 function mapSetup()
 {
-	map = new OpenLayers.Map("map", 
-	{
-		numZoomLevels: 25
-	});
+	map = new OpenLayers.Map("map", {numZoomLevels: 25} );
 
-	var baseLayer = new OpenLayers.Layer("Empty",
-	{
-		isBaseLayer: true
-	});
+	var baseLayer = new OpenLayers.Layer("Empty", { isBaseLayer: true} );
 	map.addLayer(baseLayer);	
 
 	var center = bbox.getCenterLonLat();
@@ -75,6 +83,7 @@ function mapSetup()
 				bands: "default",
 				brightness: 0,
 				contrast: 1,
+				format: "image/jpeg",
 				interpolation: "bilinear",
 				layers: indexIds[i],
 				sharpen_mode: "none",
@@ -86,9 +95,33 @@ function mapSetup()
 				singleTile: true
 			}
 		);
+		mapLayers[i].id = i;
+		mapLayers[i].loadEnd = function()
+		{
+			loadedLayers[this.id] = 1;
+			if (spinner && this.id == currentLayer) { spinner.stop(); }
+		};
+		mapLayers[i].loadStart = function()
+		{
+			loadedLayers[this.id] = 0;
+			generateSpinner();
+		};
+		mapLayers[i].events.register("loadend", mapLayers[i], function() { this.loadEnd(); });
+		mapLayers[i].events.register("loadstart", mapLayers[i], function() { this.loadStart(); });
 		map.addLayer(mapLayers[i]);
 		mapLayers[i].setVisibility(false);
 	}
+
+	map.events.register("moveend", map, function() { theMapHasMoved(); });
+	map.events.register("zoomend", map, function() { theMapHasZoomed(); });
+
+	cacheWrite = new OpenLayers.Control.CacheWrite
+	({
+		autoActivate: true,
+		imageFormat: "image/jpeg"
+	});
+	cacheRead = new OpenLayers.Control.CacheRead();
+	map.addControls([cacheWrite, cacheRead]);
 }
 
 function pageSetup()
@@ -96,7 +129,7 @@ function pageSetup()
 	var mapHeight = 0.8 * $(window).height();
 	var mapWidth = 0.8 * $(window).width();
 
-	 $("#map").css("height", mapHeight);
+	$("#map").css("height", mapHeight);
 	$("#map").css("width", mapWidth);
 	$("#map").position
 	({
@@ -138,16 +171,12 @@ function pageSetup()
 	({
 		max: imageIds.length - 1,
 		min: 0,
+		range: "min",
 		slide: function(event, ui)
 		{
 			if (ui.value > currentLayer)
-			{
-				fastForward();
-			}
-			else 
-			{
-				rewind();
-			}
+			{ fastForward(); }
+			else { rewind(); }
 		}
 	});
 
@@ -155,10 +184,7 @@ function pageSetup()
 	{
 		icons: {primary: "ui-icon-seek-prev"},
 		text: false
-		}).click(function()
-		{
-			rewind();
-		}
+		}).click(function() { rewind(); }
 	);
 
 	$("#playControls").buttonset();
@@ -178,10 +204,7 @@ function pageSetup()
 	{
 		icons: {primary: "ui-icon-stop"},
 		text: false
-		}).click(function() 
-		{
-			stopMovie();
-		}
+		}).click(function() { stopMovie(); }
 	);
 
 	$("#playForwardButton").button(
@@ -200,10 +223,7 @@ function pageSetup()
 	{
 		icons: {primary: "ui-icon-seek-next"},
 		text: false
-		}).click( function()
-		{
-			fastForward();
-		}
+		}).click( function() { fastForward(); }
 	);
 
 	$("#movieControlsDiv").position
@@ -217,14 +237,8 @@ function pageSetup()
 
 function playMovie()
 {
-	if (playDirection == "forward")
-	{
-		fastForward();
-	}
-	else
-	{
-		rewind();
-	}
+	if (playDirection == "forward") { fastForward(); }
+	else { rewind(); }
 	movieAdvance = setTimeout("playMovie()", 1000);
 }
 
@@ -232,24 +246,26 @@ function rewind()
 {
 	mapLayers[currentLayer].setVisibility(false);
 	currentLayer--;
-	if (currentLayer < 0)
-	{
-		currentLayer = imageIds.length - 1;;
-	}
+	if (currentLayer < 0) { currentLayer = imageIds.length - 1; }
         mapLayers[currentLayer].setVisibility(true);
+	generateSpinner();
 	updateProgressSlider();
         updateText();
 }
 
-function stopMovie()
+function stopMovie() { clearTimeout(movieAdvance); }
+
+function theMapHasMoved()
 {
-	clearTimeout(movieAdvance);
+	for (var i = 0; i < imageIds.length; i++) { fastForward(); }
 }
 
-function updateProgressSlider()
+function theMapHasZoomed()
 {
-	$("#slider").slider("value", currentLayer);
+	for (var i = 0; i < imageIds.length; i++) { fastForward(); }
 }
+
+function updateProgressSlider() { $("#slider").slider("value", currentLayer); }
 
 function updateText()
 {
