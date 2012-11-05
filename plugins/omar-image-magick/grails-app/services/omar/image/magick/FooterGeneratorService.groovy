@@ -91,7 +91,7 @@ class FooterGeneratorService
                                 "-fill",
                                 "#${footerLocationTextColor}",
                                 "-size",
-                                "${footerTextWidth}x${footerTextHeight}",
+                                "${footerTextWidth * 1.5}x${footerTextHeight}",
                                 "-gravity",
                                 "Center",
 				"-font",

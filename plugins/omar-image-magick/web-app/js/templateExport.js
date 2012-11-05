@@ -13,8 +13,8 @@ $(document).ready(
 		Event.onDOMReady( 
 			function ()
 			{
-				var layout = new YAHOO.widget.Layout(
-				{
+				var layout = new YAHOO.widget.Layout
+				({
 					units:
 					[
 						{ position:'top', height:25, body:'top1' },
@@ -22,30 +22,13 @@ $(document).ready(
 						{ position:'center', body:'center1', scroll:true }
 					]
 				});
-				layout.on( 'render', function ()
-				{
-					dom.setStyle( document.body, 'visibility', 'visible' );
-				});
+				layout.on('render', function () { dom.setStyle(document.body, 'visibility', 'visible'); });
 				layout.render();
 			}
 		);
 		generateLoadingDialogPopup();
 	}
 );
-
-function addAnArrow(arrowType)
-{
-	$("#pageContainer").append('<div id = "arrowDiv" style = "border: .2em dotted #900"><img id = "arrowImage" src = ' + $("#logoImagesDirectory").get(0).innerHTML + 'annotationArrow.png height = "500"/></div>');
-	//$("#pageContainer").append('<div id = "arrow">Cheese</div>');
-	$("#arrowImage").resizable();
-	$("#arrowDiv").draggable();
-	$("#arrowDiv").position({
-		my: "left bottom",
-		at: "left bottom",
-		of: $("#previewImage")
-	});
-	
-}
 
 function changeColorGradient()
 {
@@ -59,10 +42,7 @@ function changeColorGradient()
 				generateHeader();
 				generateFooter();		
 			},
-			Cancel: function()
-			{
-				$(this).dialog("close");
-			}
+			Cancel: function() { $(this).dialog("close"); }
 		},
 		modal: true,
 		width: "auto"
@@ -71,8 +51,8 @@ function changeColorGradient()
 
 function changeFooterAcquisitionDateText()
 {
-	$("#changeFooterAcquisitionDateTextPopup").dialog(
-	{
+	$("#changeFooterAcquisitionDateTextPopup").dialog
+	({
 		buttons:
 		{
 			"OK": function()
@@ -83,10 +63,7 @@ function changeFooterAcquisitionDateText()
 				var color = $("#footerAcquisitionDateTextColor").get(0).value;
 				$("#footerAcquisitionDateTextContainer").css("color", "#" + color);
 			},
-			Cancel: function()
-			{
-				$(this).dialog("close");
-			}
+			Cancel: function() { $(this).dialog("close"); }
 		},
 		modal: true,
 		width: "auto"
@@ -95,22 +72,19 @@ function changeFooterAcquisitionDateText()
 
 function changeFooterLocationText()
 {
-	$("#changeFooterLocationTextPopup").dialog(
-	{
+	$("#changeFooterLocationTextPopup").dialog
+	({
 		buttons:
 		{
 			"OK": function()
 			{
 				$(this).dialog("close");
-				var text = $("#footerLocationTextInput").get(0).value;
+				var text = $("#footerLocationTextInput").val();
 				$("#footerLocationTextContainer").html(text);
-				var color = $("#footerLocationTextColor").get(0).value;
+				var color = $("#footerLocationTextColor").val();
 				$("#footerLocationTextContainer").css("color", "#" + color);
 			},
-			Cancel: function()
-			{
-				$(this).dialog("close");
-			}
+			Cancel: function() { $(this).dialog("close"); }
 		},
 		modal: true,
 		width: "auto"
@@ -119,22 +93,19 @@ function changeFooterLocationText()
 
 function changeFooterSecurityClassificationText()
 {
-	$("#changeFooterSecurityClassificationTextPopup").dialog(
-	{
+	$("#changeFooterSecurityClassificationTextPopup").dialog
+	({
 		buttons:
 		{
 			"OK": function()
 			{
 				$(this).dialog("close");
-				var text = $("#footerSecurityClassificationTextInput").get(0).value;
-				$("#footerSecurityClassificationTextContainer").get(0).innerHTML = text;
-				var color = $("#footerSecurityClassificationTextColor").get(0).value;
+				var text = $("#footerSecurityClassificationTextInput").val();
+				$("#footerSecurityClassificationTextContainer").html(text);
+				var color = $("#footerSecurityClassificationTextColor").val();
 				$("#footerSecurityClassificationTextContainer").css("color", "#" + color);
 			},
-			Cancel: function()
-			{
-				$(this).dialog("close");
-			}
+			Cancel: function() { $(this).dialog("close"); }
 		},
 		modal: true,
 		width: "auto"
@@ -143,22 +114,19 @@ function changeFooterSecurityClassificationText()
 
 function changeHeaderDescriptionText()
 {
-	$("#changeHeaderDescriptionTextPopup").dialog(
-	{
+	$("#changeHeaderDescriptionTextPopup").dialog
+	({
 		buttons:
 		{
 			"OK": function()
 			{
 				$(this).dialog("close");
-				var text = $("#headerDescriptionTextInput").get(0).value;
-				$("#headerDescriptionTextContainer").get(0).innerHTML = text;
-				var color = $("#headerDescriptionTextColor").get(0).value;
+				var text = $("#headerDescriptionTextInput").val();
+				$("#headerDescriptionTextContainer").html(text);
+				var color = $("#headerDescriptionTextColor").val();
 				$("#headerDescriptionTextContainer").css("color", "#" + color);
 			},
-			Cancel: function()
-			{
-				$(this).dialog("close");
-			}
+			Cancel: function() { $(this).dialog("close"); }
 		},
 		modal: true,
 		width: "auto"
@@ -167,22 +135,19 @@ function changeHeaderDescriptionText()
 
 function changeHeaderSecurityClassificationText()
 {
-	$("#changeHeaderSecurityClassificationTextPopup").dialog(
-	{
+	$("#changeHeaderSecurityClassificationTextPopup").dialog
+	({
 		buttons:
 		{
 			"OK": function()
 			{
 				$(this).dialog("close");
-				var text = $("#headerSecurityClassificationTextInput").get(0).value;
-				$("#headerSecurityClassificationTextContainer").get(0).innerHTML = text;
-				var color = $("#headerSecurityClassificationTextColor").get(0).value;
+				var text = $("#headerSecurityClassificationTextInput").val();
+				$("#headerSecurityClassificationTextContainer").html(text);
+				var color = $("#headerSecurityClassificationTextColor").val();
 				$("#headerSecurityClassificationTextContainer").css("color", "#" + color);				
 			},
-			Cancel: function()
-			{
-				$(this).dialog("close");
-			}
+			Cancel: function() { $(this).dialog("close"); }
 		},
 		modal: true,
 		width: "auto"
@@ -191,22 +156,19 @@ function changeHeaderSecurityClassificationText()
 
 function changeHeaderTitleText()
 {
-	$("#changeHeaderTitleTextPopup").dialog(
-	{
+	$("#changeHeaderTitleTextPopup").dialog
+	({
 		buttons:
 		{
 			"OK": function()
 			{
 				$(this).dialog("close");
-				var text = $("#headerTitleTextInput").get(0).value;
-				$("#headerTitleTextContainer").get(0).innerHTML = text;
-				var color = $("#headerTitleTextColor").get(0).value;
+				var text = $("#headerTitleTextInput").val();
+				$("#headerTitleTextContainer").html(text);
+				var color = $("#headerTitleTextColor").val();
 				$("#headerTitleTextContainer").css("color", "#" + color);
 			},
-			Cancel: function()
-			{
-				$(this).dialog("close");
-			}
+			Cancel: function() { $(this).dialog("close"); }
 		},
 		modal: true,
 		width: "auto"
@@ -215,20 +177,17 @@ function changeHeaderTitleText()
 
 function changeLogo()
 {
-	$( "#changeLogoPopup" ).dialog(
-	{
+	$( "#changeLogoPopup" ).dialog
+	({
 		buttons: 
 		{
 			"OK": function() 
 			{
 				$(this).dialog("close");
-				var logo = $("#logo").get(0).value;
-				$("#logoImage").get(0).src = $("#logoImagesDirectory").get(0).innerHTML + logo + "ForWeb.png";	
+				var logo = $("#logo").val();
+				$("#logoImage").attr("src", $("#logoImagesDirectory").html() + logo + "ForWeb.png");	
 			},
-			Cancel: function() 
-			{
-				$(this).dialog("close");
-			}
+			Cancel: function() { $(this).dialog("close"); }
 		},
 		modal: true,
 		width: "auto"
@@ -237,8 +196,8 @@ function changeLogo()
 
 function changeNorthArrow()
 {
-	$("#changeNorthArrowPopup").dialog(
-	{
+	$("#changeNorthArrowPopup").dialog
+	({
 		buttons:
 		{
 			"OK": function()
@@ -246,10 +205,7 @@ function changeNorthArrow()
 				$(this).dialog("close");
 				generateNorthArrow();
 			},
-			Cancel: function()
-			{
-				$(this).dialog("close");
-			}
+			Cancel: function() { $(this).dialog("close"); }
 		},
 		modal: true,
 		width: "auto"
@@ -258,28 +214,19 @@ function changeNorthArrow()
 
 function changeOverviewMap()
 {
-	$("#changeOverviewMapPopup").dialog(
-	{
+	$("#changeOverviewMapPopup").dialog
+	({
 		buttons:
 		{
 			"OK": function()
 			{
 				$(this).dialog("close");
 				var overviewMapCountry = $("#overviewMapCountry").val();
-				$("#overviewMapImage").get(0).src = $("#overviewMapImagesDirectory").get(0).innerHTML + overviewMapCountry + ".gif";
-				if ( $("#includeOverviewMapCheckbox").get(0).checked )
-				{
-					$("#overviewMapImage").fadeTo("fast", 1);
-				}
-				else
-				{
-					$("#overviewMapImage").fadeTo("fast", 0.5);
-				}
+				$("#overviewMapImage").attr("src", $("#overviewMapImagesDirectory").html() + overviewMapCountry + ".gif");
+				if ($("#includeOverviewMapCheckbox").get(0).checked) { $("#overviewMapImage").fadeTo("fast", 1); }
+				else { $("#overviewMapImage").fadeTo("fast", 0.5); }
 			},
-			Cancel: function()
-			{
-				$(this).dialog("close");
-			}
+			Cancel: function() { $(this).dialog("close"); }
 		},
 		modal: true,
 		width: "auto"
@@ -289,47 +236,43 @@ function changeOverviewMap()
 function displayTemplateButtons()
 {
 	$("#downloadButton").add("#upArrowButton").fadeTo("fast", 1);
-	//$("#upArrowButton").fadeTo("fast", 1);
 }
 
 function downloadImage()
 {
 	var exportUrlParams = "?country=" + $("#overviewMapCountry").val();
-	exportUrlParams += "&footerAcquisitionDateText=" + $("#footerAcquisitionDateTextInput").get(0).value;
-	exportUrlParams += "&footerAcquisitionDateTextColor=" + $("#footerAcquisitionDateTextColor").get(0).value;
-	exportUrlParams += "&footerLocationText=" + $("#footerLocationTextInput").get(0).value;
-	exportUrlParams += "&footerLocationTextColor=" + $("#footerLocationTextColor").get(0).value;
-	exportUrlParams += "&footerSecurityClassificationText=" + $("#footerSecurityClassificationTextInput").get(0).value;
-	exportUrlParams += "&footerSecurityClassificationTextColor=" + $("#footerSecurityClassificationTextColor").get(0).value;
-	exportUrlParams += "&gradientColorBottom=" + $("#gradientColorBottom").get(0).value;
-	exportUrlParams += "&gradientColorTop=" + $("#gradientColorTop").get(0).value;
-	exportUrlParams += "&headerDescriptionText=" + $("#headerDescriptionTextInput").get(0).value;
-	exportUrlParams += "&headerDescriptionTextColor=" + $("#headerDescriptionTextColor").get(0).value;
-	exportUrlParams += "&headerSecurityClassificationText=" + $("#headerSecurityClassificationTextInput").get(0).value;
-        exportUrlParams += "&headerSecurityClassificationTextColor=" + $("#headerSecurityClassificationTextColor").get(0).value;
-	exportUrlParams += "&headerTitleText=" + $("#headerTitleTextInput").get(0).value;
-	exportUrlParams += "&headerTitleTextColor=" + $("#headerTitleTextColor").get(0).value;
+	exportUrlParams += "&footerAcquisitionDateText=" + $("#footerAcquisitionDateTextInput").val();
+	exportUrlParams += "&footerAcquisitionDateTextColor=" + $("#footerAcquisitionDateTextColor").val();
+	exportUrlParams += "&footerLocationText=" + $("#footerLocationTextInput").val();
+	exportUrlParams += "&footerLocationTextColor=" + $("#footerLocationTextColor").val();
+	exportUrlParams += "&footerSecurityClassificationText=" + $("#footerSecurityClassificationTextInput").val();
+	exportUrlParams += "&footerSecurityClassificationTextColor=" + $("#footerSecurityClassificationTextColor").val();
+	exportUrlParams += "&gradientColorBottom=" + $("#gradientColorBottom").val();
+	exportUrlParams += "&gradientColorTop=" + $("#gradientColorTop").val();
+	exportUrlParams += "&headerDescriptionText=" + $("#headerDescriptionTextInput").val();
+	exportUrlParams += "&headerDescriptionTextColor=" + $("#headerDescriptionTextColor").val();
+	exportUrlParams += "&headerSecurityClassificationText=" + $("#headerSecurityClassificationTextInput").val();
+        exportUrlParams += "&headerSecurityClassificationTextColor=" + $("#headerSecurityClassificationTextColor").val();
+	exportUrlParams += "&headerTitleText=" + $("#headerTitleTextInput").val();
+	exportUrlParams += "&headerTitleTextColor=" + $("#headerTitleTextColor").val();
 	exportUrlParams += "&imageUrl=" + $("#previewImage").get(0).src.replace(/&/g,"%26");
 	exportUrlParams += "&imageHeight=" + $("#previewImage").height();
 	exportUrlParams += "&imageWidth=" + $("#previewImage").width();
 	exportUrlParams += "&includeOverviewMap=" + $("#includeOverviewMapCheckbox").get(0).checked; 
-	exportUrlParams += "&logo=" + $("#logo").get(0).value;
-	exportUrlParams += "&northArrowAngle=" + $("#northAngleInput").get(0).value;
-	exportUrlParams += "&northArrowBackgroundColor=" + $("#northArrowBackgroundColor").get(0).value;
-	exportUrlParams += "&northArrowColor=" + $("#northArrowColor").get(0).value;
+	exportUrlParams += "&logo=" + $("#logo").val();
+	exportUrlParams += "&northArrowAngle=" + $("#northAngleInput").val();
+	exportUrlParams += "&northArrowBackgroundColor=" + $("#northArrowBackgroundColor").val();
+	exportUrlParams += "&northArrowColor=" + $("#northArrowColor").val();
 	exportUrlParams += "&northArrowSize=" + $("#northArrowImage").height();
 	
 	$("#downloadForm").get(0).action = $("#formActionUrl").get(0).innerHTML + exportUrlParams;
 	$("#downloadForm").get(0).submit();
 
-	$("#downloadDialogPopup").dialog(
-	{
+	$("#downloadDialogPopup").dialog
+	({
                 buttons:
                 {
-                        "OK": function()
-                        {
-				$(this).dialog("close"); 
-			}
+                        "OK": function() { $(this).dialog("close"); }
 		},
 		modal: true,
 		width: "auto"
@@ -372,7 +315,8 @@ function generateFooter()
 	var gradientColorTop = $("#gradientColorTop").get(0).value;
 	$("#footer").css("backgroundImage", "url('" + footerGradientUrlGenerator(gradientColorTop, gradientColorBottom, footerHeight) + "')");	
 
-	$("#footer").position({
+	$("#footer").position
+	({
 		my: "left top",
 		at: "left bottom",
 		of: $("#previewImage")
@@ -387,13 +331,14 @@ function generateFooterAcquisitionDateText()
 	$("#footerAcquisitionDateTextContainer").css("height", footerAcquisitionDateTextHeight);
 	$("#footerAcquisitionDateTextContainer").css("width", footerAcquisitionDateTextWidth);
 	$("#footerAcquisitionDateTextContainer").css("color", "#" + $("#footerAcquisitionDateTextColor").get(0).value);
-	$("#footerAcquisitionDateTextContainer").get(0).innerHTML = $("#footerAcquisitionDateTextInput").get(0).value;
-	var textSize = fontSize($("#footerAcquisitionDateTextInput").get(0).value, footerAcquisitionDateTextHeight, footerAcquisitionDateTextWidth);
-	$("#footerAcquisitionDateTextContainer").get(0).style.fontSize = textSize;
+	$("#footerAcquisitionDateTextContainer").html($("#footerAcquisitionDateTextInput").val());
+	var textSize = fontSize($("#footerAcquisitionDateTextInput").val(), footerAcquisitionDateTextHeight, footerAcquisitionDateTextWidth);
+	$("#footerAcquisitionDateTextContainer").css("fontSize", textSize);
 	
 	var footerAcquisitionDateTextOffsetHeight = 0;
-	var footerAcquisitionDateTextOffsetWidth = 0;;
-	$("#footerAcquisitionDateTextContainer").position({
+	var footerAcquisitionDateTextOffsetWidth = 0;
+	$("#footerAcquisitionDateTextContainer").position
+	({
 		of: $("#footer"),
 		my: "right top",
 		at: "right top",
@@ -408,15 +353,16 @@ function generateFooterLocationText()
 
 	$("#footerLocationTextContainer").css("height", footerLocationTextHeight);
 	$("#footerLocationTextContainer").css("width", footerLocationTextWidth);
-	$("#footerLocationTextContainer").css("color", "#" + $("#footerLocationTextColor").get(0).value);
-	$("#footerLocationTextContainer").get(0).innerHTML = $("#footerLocationTextInput").get(0).value;
-	var textSize = fontSize($("#footerLocationTextInput").get(0).value, footerLocationTextHeight, footerLocationTextWidth);
+	$("#footerLocationTextContainer").css("color", "#" + $("#footerLocationTextColor").val());
+	$("#footerLocationTextContainer").html($("#footerLocationTextInput").val());
+	var textSize = fontSize($("#footerLocationTextInput").val(), footerLocationTextHeight, footerLocationTextWidth);
 	$("#footerLocationTextContainer").css("font-size", textSize);
 	$("#footerLocationTextContainer").css("textAlign", "center");
 
 	var footerLocationTextOffsetHeight = 0;
 	var footerLocationTextOffsetWidth = 0;
-	$("#footerLocationTextContainer").position({
+	$("#footerLocationTextContainer").position
+	({
 		of: $("#footer"),
 		my: "center top",
 		at: "center top",
@@ -432,13 +378,14 @@ function generateFooterSecurityClassificationText()
 	$("#footerSecurityClassificationTextContainer").css("height", footerSecurityClassificationTextHeight);
 	$("#footerSecurityClassificationTextContainer").css("width", footerSecurityClassificationTextWidth);
 	$("#footerSecurityClassificationTextContainer").css("color", "#" + $("#footerSecurityClassificationTextColor").get(0).value);
-        $("#footerSecurityClassificationTextContainer").get(0).innerHTML = $("#footerSecurityClassificationTextInput").get(0).value;
-	var textSize = fontSize($("#footerSecurityClassificationTextInput").get(0).value, footerSecurityClassificationTextHeight, footerSecurityClassificationTextWidth);
+        $("#footerSecurityClassificationTextContainer").html($("#footerSecurityClassificationTextInput").val());
+	var textSize = fontSize($("#footerSecurityClassificationTextInput").val(), footerSecurityClassificationTextHeight, footerSecurityClassificationTextWidth);
 	$("#footerSecurityClassificationTextContainer").css("font-size", textSize);
 
 	var footerSecurityClassificationTextOffsetHeight = 0;
 	var footerSecurityClassificationTextOffsetWidth = logoOffset;
-	$("#footerSecurityClassificationTextContainer").position({
+	$("#footerSecurityClassificationTextContainer").position
+	({
 		of: $("#footer"),
 		my: "left top",
 		at: "left top",
@@ -454,23 +401,23 @@ function generateHeader()
 	$("#header").css("height", headerHeight);
 	$("#header").css("width", headerWidth);
 
-	//var windowWidth = $(window).width();
-	//var headerOffsetWidth= (windowWidth - headerWidth) / 8;	
-
-	$("#header").position({
-		my: "center top",
-		at: "center top",
-		of: $("#pageContainer")
+	$("#header").position
+	({
+		my: "middle top",
+		at: "middle top",
+		of: $(window),
+		offset: "0 25"
 	});
 
-	$("#previewImage").position({
+	$("#previewImage").position
+	({
 		my: "left top",
 		at: "left bottom",
 		of: $("#header")
 	});
 
-	var gradientColorBottom = $("#gradientColorBottom").get(0).value;
-	var gradientColorTop = $("#gradientColorTop").get(0).value;
+	var gradientColorBottom = $("#gradientColorBottom").val();
+	var gradientColorTop = $("#gradientColorTop").val();
 	$("#header").css("backgroundImage", "url('" + headerGradientUrlGenerator(gradientColorTop, gradientColorBottom, headerHeight) + "')");
 }
 
@@ -482,13 +429,14 @@ function generateHeaderDescriptionText()
 	$("#headerDescriptionTextContainer").css("height", headerDescriptionTextHeight);
 	$("#headerDescriptionTextContainer").css("width", headerDescriptionTextWidth);
 	$("#headerDescriptionTextContainer").css("color", "#" + $("#headerDescriptionTextColor").get(0).value);
-	$("#headerDescriptionTextContainer").get(0).innerHTML = $("#headerDescriptionTextInput").get(0).value;
-	var textSize = fontSize($("#headerDescriptionTextInput").get(0).value, headerDescriptionTextHeight, headerDescriptionTextWidth);
-	$("#headerDescriptionTextContainer").get(0).style.fontSize = textSize;
+	$("#headerDescriptionTextContainer").html($("#headerDescriptionTextInput").val());
+	var textSize = fontSize($("#headerDescriptionTextInput").val(), headerDescriptionTextHeight, headerDescriptionTextWidth);
+	$("#headerDescriptionTextContainer").css("fontSize", textSize);
 
 	var headerDescriptionTextOffsetHeight = logoOffset + headerSecurityClassificationTextHeight + headerTitleTextHeight;
 	var headerDescriptionTextOffsetWidth = logoOffset + logoWidth + logoOffset;
-	$("#headerDescriptionTextContainer").position({
+	$("#headerDescriptionTextContainer").position
+	({
 		of: $("#header"),
 		my: "left top",
 		at: "left top",
@@ -505,13 +453,14 @@ function generateHeaderSecurityClassificationText()
 	$("#headerSecurityClassificationTextContainer").css("width", headerSecurityClassificationTextWidth);
 	$("#headerSecurityClassificationTextContainer").css("color", "#" + $("#headerSecurityClassificationTextColor").get(0).value);
 	
-	$("#headerSecurityClassificationTextContainer").get(0).innerHTML = $("#headerSecurityClassificationTextInput").get(0).value;
-	var textSize = fontSize($("#headerSecurityClassificationTextInput").get(0).value, headerSecurityClassificationTextHeight, headerSecurityClassificationTextWidth);
-	$("#headerSecurityClassificationTextContainer").get(0).style.fontSize = textSize;
+	$("#headerSecurityClassificationTextContainer").html($("#headerSecurityClassificationTextInput").val());
+	var textSize = fontSize($("#headerSecurityClassificationTextInput").val(), headerSecurityClassificationTextHeight, headerSecurityClassificationTextWidth);
+	$("#headerSecurityClassificationTextContainer").css("fontSize", textSize);
 
 	var headerSecurityClassificationTextOffsetHeight = logoOffset;
 	var headerSecurityClassificationTextOffsetWidth = logoOffset + logoWidth + logoOffset;
-	$("#headerSecurityClassificationTextContainer").position({
+	$("#headerSecurityClassificationTextContainer").position
+	({
 		of: $("#header"),
 		my: "left top",
 		at: "left top",
@@ -527,13 +476,15 @@ function generateHeaderTitleText()
 	$("#headerTitleTextContainer").css("height", headerTitleTextHeight);
         $("#headerTitleTextContainer").css("width", headerTitleTextWidth); 
 	$("#headerTitleTextContainer").css("color", "#" + $("#headerTitleTextColor").get(0).value);
-	$("#headerTitleTextContainer").get(0).innerHTML = $("#headerTitleTextInput").get(0).value;
-	var textSize = fontSize($("#headerTitleTextInput").get(0).value, headerTitleTextHeight, headerTitleTextWidth);
-	$("#headerTitleTextContainer").get(0).style.fontSize = textSize;
+	
+	$("#headerTitleTextContainer").html($("#headerTitleTextInput").val());
+	var textSize = fontSize($("#headerTitleTextInput").val(), headerTitleTextHeight, headerTitleTextWidth);
+	$("#headerTitleTextContainer").css("fontSize", textSize);
 
 	var headerTitleTextOffsetHeight = logoOffset + headerSecurityClassificationTextHeight;
 	var headerTitleTextOffsetWidth = logoOffset + logoWidth + logoOffset;
-	$("#headerTitleTextContainer").position({
+	$("#headerTitleTextContainer").position
+	({
 		my: "left top",
 		at: "left top",
 		of: $("#header"),
@@ -558,30 +509,30 @@ function generateLogo()
 		offset: logoOffset + " 0"
 	});
 
-	$("#logoImage").get(0).src = $("#logoImagesDirectory").get(0).innerHTML + "ciaLogoForWeb.png";
+	$("#logoImage").attr("src", $("#logoImagesDirectory").html() + "ciaLogoForWeb.png");
 }
 
 function generateLoadingDialogPopup()
 {
 	var spinnerOptions = 
 	{
-		lines: 13, // The number of lines to draw
-		length: 7, // The length of each line
-		width: 4, // The line thickness
-		radius: 10, // The radius of the inner circle
-		corners: 1, // Corner roundness (0..1)
-		rotate: 0, // The rotation offset
-		color: '#000', // #rgb or #rrggbb
-		speed: 1, // Rounds per second
-		trail: 60, // Afterglow percentage
-		shadow: false, // Whether to render a shadow
-		hwaccel: false, // Whether to use hardware acceleration
-		className: 'spinner', // The CSS class to assign to the spinner
-		zIndex: 2e9, // The z-index (defaults to 2000000000)
-		top: 'auto', // Top position relative to parent in px
-		left: 'auto' // Left position relative to parent in px
+		lines: 13,
+		length: 7,
+		width: 4, 
+		radius: 10, 
+		corners: 1,
+		rotate: 0,
+		color: '#000',
+		speed: 1,
+		trail: 60, 
+		shadow: false,
+		hwaccel: false, 
+		className: 'spinner', 
+		zIndex: 2e9,
+		top: 'auto',
+		left: 'auto'
 	};
-	var target = $("#spinner").get(0);
+	var target = document.getElementById("spinner");
 	var spinner = new Spinner(spinnerOptions).spin(target);
 
 	$("#loadingDialogPopup").dialog
@@ -600,21 +551,21 @@ function generateNorthArrow()
 	$("#northArrowImage").css("height", northArrowHeight);
 	$("#northArrowImage").css("width", northArrowWidth);
 
-	var northArrowColor = $("#northArrowColor").get(0).value;
-	var northArrowBackgroundColor = $("#northArrowBackgroundColor").get(0).value;
+	var northArrowColor = $("#northArrowColor").val();
+	var northArrowBackgroundColor = $("#northArrowBackgroundColor").val();
 
-	var northArrowUrl = $("#northArrowGeneratorUrl").get(0).innerHTML;
+	var northArrowUrl = $("#northArrowGeneratorUrl").html();
 	northArrowUrl += "?northArrowSize=" + northArrowHeight;
 	northArrowUrl += "&northAngle=" + $("#northAngleInput").get(0).value;
 	northArrowUrl += "&northArrowColor=" + northArrowColor;
 	northArrowUrl += "&northArrowBackgroundColor=" + northArrowBackgroundColor;
-	$("#northArrowImage").get(0).src =  northArrowUrl;
+	$("#northArrowImage").attr("src", northArrowUrl);
 }
 
 function generateOverviewMap()
 {
 	var overviewMapCountry = "yy";
-        var countryCode = $("#countryCode").get(0).innerHTML.toLowerCase();
+        var countryCode = $("#countryCode").html().toLowerCase();
 	for (var i = 0; i < $("#overviewMapCountry").get(0).options.length; i++)
 	{
 		if (countryCode == $("#overviewMapCountry").get(0).options[i].value)
@@ -628,7 +579,7 @@ function generateOverviewMap()
 	var overviewMapImageHeight = 0.2 * $("#previewImage").height();
 	$("#overviewMapImage").css("height", overviewMapImageHeight);
 
-	$("#overviewMapImage").get(0).src = $("#overviewMapImagesDirectory").get(0).innerHTML + overviewMapCountry + ".gif";
+	$("#overviewMapImage").attr("src", $("#overviewMapImagesDirectory").html() + overviewMapCountry + ".gif");
 }
 
 function generateTemplateButtons()
@@ -637,11 +588,7 @@ function generateTemplateButtons()
 	({
 		icons: { primary: "ui-icon-arrowthickstop-1-s" },	
 		text: false
-		}).click(
-			function() 
-			{
-				downloadImage();
-			}
+		}).click(function() { downloadImage(); }
 	);
 
 	$("#downloadButton").position
@@ -656,11 +603,7 @@ function generateTemplateButtons()
 	({
 		icons: { primary: "ui-icon-arrowthick-1-n" },
 		text: false
-		}).click(
-			function()
-			{
-				addAnArrow("up");
-			}
+		}).click(function() { addAnArrow("up"); }
 	);
 
 	$("#upArrowButton").position
@@ -701,9 +644,8 @@ function init()
 	generateFooterLocationText();
 	generateFooterAcquisitionDateText();
 	generateTemplateButtons();
-	setupPreviewImageEvents();
+	//setupPreviewImageEvents();
 	$("#loadingDialogPopup").dialog("close");
-	$("#pageContainer").css("visibility", "visible");
 }
 
 function positionNorthArrow()
@@ -738,10 +680,5 @@ function setupPreviewImageEvents()
 	$("#previewImage").mousemove
 	(
 		function () { displayTemplateButtons(); }
-	);
-
-	$("#previewImage").mousestop
-	(
-		//function () { hideTemplateButtons(); }
 	);
 }

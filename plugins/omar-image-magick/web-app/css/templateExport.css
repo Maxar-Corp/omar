@@ -17,10 +17,3 @@ body
 {
 	display: none;
 }
-
-#pageContainer
-{
-	height: 100%;
-	visibility: hidden;
-	width: 100%;
-}
