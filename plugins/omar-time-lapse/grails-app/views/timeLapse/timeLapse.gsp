@@ -23,6 +23,7 @@
 				</span>
 				<button id = "fastForwardButton">Fast Forward</button>
 			</span>
+			<button id = "deleteButton">Delete Image From Movie</button>
 			<div id = "wmsUrlBase">${createLink(action: "wms", controller: "ogc")}</div>
 		</content>
 		<content tag = "bottom"></content>
