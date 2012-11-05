@@ -106,7 +106,14 @@ function generateSpinner()
 
 function mapSetup()
 {
-	map = new OpenLayers.Map("map", {numZoomLevels: 25} );
+	map = new OpenLayers.Map
+	(
+		"map", 
+		{
+			numZoomLevels: 25,
+			theme: null
+		} 
+	);
 
 	var baseLayer = new OpenLayers.Layer("Empty", { isBaseLayer: true} );
 	map.addLayer(baseLayer);	
