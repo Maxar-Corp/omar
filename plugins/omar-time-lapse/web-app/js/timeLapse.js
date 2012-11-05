@@ -36,15 +36,57 @@ $(document).ready(
 	}
 );
 
+function deleteImageFromMovie()
+{
+	if (currentLayer == 0)
+	{
+		rewind();
+		acquisitionDates.splice(0,1);
+		imageIds.splice(0,1);
+		indexIds.splice(0,1);
+		loadedLayers.splice(0,1);
+		mapLayers.splice(0,1);
+		currentLayer--;
+	}
+	else
+	{
+		rewind();
+		acquisitionDates.splice(currentLayer + 1, 1);
+		imageIds.splice(currentLayer + 1, 1);
+		indexIds.splice(currentLayer + 1, 1);
+		loadedLayers.splice(currentLayer + 1, 1);
+		mapLayers.splice(currentLayer + 1, 1);
+	}
+	generateSlider();
+	for (var i = 0; i < imageIds.length; i++) { mapLayers[i].id = i; }
+	rewind();
+	fastForward();
+}
+
 function fastForward()
 {
 	mapLayers[currentLayer].setVisibility(false);
 	currentLayer++;
 	if (currentLayer > imageIds.length - 1) { currentLayer = 0; }
 	mapLayers[currentLayer].setVisibility(true);
-	generateSpinner();
+	if (loadedLayers[currentLayer] == 0) { generateSpinner(); }
 	updateProgressSlider();
 	updateText();
+}
+
+function generateSlider()
+{
+	$("#slider").slider
+	({
+		max: imageIds.length - 1,
+		min: 0,
+		range: "min",
+		slide: function(event, ui)
+		{
+			if (ui.value > currentLayer) { fastForward(); }
+			else { rewind(); }
+		}
+	});
 }
 
 function generateSpinner()
@@ -127,7 +169,7 @@ function mapSetup()
 function pageSetup()
 {
 	var mapHeight = 0.8 * $(window).height();
-	var mapWidth = 0.8 * $(window).width();
+	var mapWidth = 0.90 * $(window).width();
 
 	$("#map").css("height", mapHeight);
 	$("#map").css("width", mapWidth);
@@ -167,18 +209,7 @@ function pageSetup()
 		of: $("#map"),
 		offset: "0 10"
 	});
-	$("#slider").slider
-	({
-		max: imageIds.length - 1,
-		min: 0,
-		range: "min",
-		slide: function(event, ui)
-		{
-			if (ui.value > currentLayer)
-			{ fastForward(); }
-			else { rewind(); }
-		}
-	});
+	generateSlider();
 
 	$("#rewindButton").button(
 	{
@@ -233,6 +264,21 @@ function pageSetup()
 		of: $("#slider"),
 		offset: "0 15"
 	});
+	
+	$("#deleteButton").button(
+	{
+		icons: {primary: "ui-icon-trash"},
+		text: false
+		}).click(function() { deleteImageFromMovie(); }
+	);
+	$("#deleteButton").position
+	({
+		my: "left top",
+		at: "right top",
+		of: $("#fastForwardButton"),
+		offset: "30 0"
+	});
+	
 }
 
 function playMovie()
@@ -248,7 +294,7 @@ function rewind()
 	currentLayer--;
 	if (currentLayer < 0) { currentLayer = imageIds.length - 1; }
         mapLayers[currentLayer].setVisibility(true);
-	generateSpinner();
+	if (loadedLayers[currentLayer] == 0) { generateSpinner(); }
 	updateProgressSlider();
         updateText();
 }
