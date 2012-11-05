@@ -23,7 +23,8 @@
 				</span>
 				<button id = "fastForwardButton">Fast Forward</button>
 			</span>
-			<button id = "deleteButton">Delete Image From Movie</button>
+			<button id = "deleteImageFromTimeLapseButton">Delete Image From Time Lapse</button>
+			<button id = "reverseTimeLapseOrderButton">Reverse Time Lapse Order</button>
 			<div id = "wmsUrlBase">${createLink(action: "wms", controller: "ogc")}</div>
 		</content>
 		<content tag = "bottom"></content>
