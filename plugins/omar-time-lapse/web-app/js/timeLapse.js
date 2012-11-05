@@ -36,7 +36,7 @@ $(document).ready(
 	}
 );
 
-function deleteImageFromMovie()
+function deleteImageFromTimeLapse()
 {
 	if (currentLayer == 0)
 	{
@@ -265,18 +265,32 @@ function pageSetup()
 		offset: "0 15"
 	});
 	
-	$("#deleteButton").button(
+	$("#deleteImageFromTimeLapseButton").button(
 	{
 		icons: {primary: "ui-icon-trash"},
 		text: false
-		}).click(function() { deleteImageFromMovie(); }
+		}).click(function() { deleteImageFromTimeLapse(); }
 	);
-	$("#deleteButton").position
+	$("#deleteImageFromTimeLapseButton").position
 	({
 		my: "left top",
 		at: "right top",
 		of: $("#fastForwardButton"),
 		offset: "30 0"
+	});
+
+	$("#reverseTimeLapseOrderButton").button(
+	{
+		icons: {primary: "ui-icon-refresh"},
+		text: false
+		}).click(function() { reverseTimeLapseOrder(); }
+	);
+	$("#reverseTimeLapseOrderButton").position
+	({
+		my: "left top",
+		at: "right top",
+		of: $("#deleteImageFromTimeLapseButton"),
+		offset: "5 0"
 	});
 	
 }
@@ -286,6 +300,18 @@ function playMovie()
 	if (playDirection == "forward") { fastForward(); }
 	else { rewind(); }
 	movieAdvance = setTimeout("playMovie()", 1000);
+}
+
+function reverseTimeLapseOrder()
+{
+	acquisitionDates.reverse();
+	imageIds.reverse();
+	indexIds.reverse();
+	loadedLayers.reverse();
+	mapLayers.reverse();
+	for (var i = 0; i < imageIds.length; i++) { mapLayers[i].id = i; }
+	rewind();
+	fastForward();
 }
 
 function rewind()
