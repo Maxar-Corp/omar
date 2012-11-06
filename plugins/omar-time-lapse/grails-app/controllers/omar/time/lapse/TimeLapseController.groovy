@@ -15,6 +15,7 @@ class TimeLapseController
 			[
 				acquisitionDates: rasterEntries.acquisitionDate,
 				bbox: bbox,
+				countryCodes: rasterEntries.countryCode,
 				imageIds: rasterEntries.title,
 				indexIds: rasterEntries.indexId
 			]	

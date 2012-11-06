@@ -42,6 +42,7 @@ function deleteImageFromTimeLapse()
 	{
 		rewind();
 		acquisitionDates.splice(0,1);
+		countryCodes.splice(0,1);
 		imageIds.splice(0,1);
 		indexIds.splice(0,1);
 		loadedLayers.splice(0,1);
@@ -52,6 +53,7 @@ function deleteImageFromTimeLapse()
 	{
 		rewind();
 		acquisitionDates.splice(currentLayer + 1, 1);
+		countryCodes.splice(currentLayer + 1, 1);
 		imageIds.splice(currentLayer + 1, 1);
 		indexIds.splice(currentLayer + 1, 1);
 		loadedLayers.splice(currentLayer + 1, 1);
@@ -61,6 +63,42 @@ function deleteImageFromTimeLapse()
 	for (var i = 0; i < imageIds.length; i++) { mapLayers[i].id = i; }
 	rewind();
 	fastForward();
+}
+
+function exportImage()
+{
+	var exportImageUrl = exportImageUrlBase;
+	exportImageUrl += "?acquisitionDate=" + acquisitionDates[currentLayer];
+	exportImageUrl += "&countryCode=" + countryCodes[currentLayer];
+	exportImageUrl += "&imageId=" + imageIds[currentLayer];
+
+	var imageUrl = urlBase + map.layers[currentLayer + 1].getURL(map.getExtent());
+	imageUrl = imageUrl.replace(/&/g, "%26");
+	exportImageUrl += "&imageURL=" + imageUrl;
+	
+	var centerGeo = coordConvert.ddToDms(map.getCenter().lat, map.getCenter().lon);
+	var centerMgrs = coordConvert.ddToMgrs(map.getCenter().lat, map.getCenter().lon);
+	exportImageUrl += "&centerGeo=GEO: " + centerGeo + " MGRS: " + centerMgrs;
+	exportImageUrl += "&northArrowAngle=0";
+	window.open(exportImageUrl);
+}
+
+function exportLink()
+{
+	var exportLinkUrl = exportLinkUrlBase;
+	exportLinkUrl += "?imageIds=" + indexIds.join(",");
+	exportLinkUrl += "&bbox=" + map.calculateBounds().toArray();
+
+	$("#exportLinkDialog").html("Right-click the link below to copy:<br><br><a href='" + exportLinkUrl + "' target = '_blank'><b>OMAR Time Lapse Link</b></a>");
+	$("#exportLinkDialog").dialog
+	({
+		buttons:
+		{
+			"OK": function() { $(this).dialog("close"); }
+		},
+		modal: true,
+		width: "auto"
+	});
 }
 
 function fastForward()
@@ -141,6 +179,7 @@ function mapSetup()
 			},
 			{
 				isBaseLayer: false,
+				ratio: 1,
 				singleTile: true
 			}
 		);
@@ -271,7 +310,49 @@ function pageSetup()
 		of: $("#slider"),
 		offset: "0 15"
 	});
+
+	$("#exportLinkButton").button(
+	{
+		icons: {primary: "ui-icon-link"},
+		text: false,
+		}).click(function() { exportLink(); }
+	);
+	$("#exportLinkButton").position
+	({
+		my: "right top",
+		at: "left top",
+		of: $("#rewindButton"),
+		offset: "-30 0"
+	});
 	
+	$("#exportImageButton").button(
+	{
+		icons: {primary: "ui-icon-image"},
+		text: false
+		}).click(function () { exportImage(); }
+	);
+	$("#exportImageButton").position
+	({
+		my: "right top",
+		at: "left top",
+		of: $("#exportLinkButton"),
+		offset: "-5 0"
+	});
+
+	$("#exportTimeLapseButton").button(
+	{
+		icons: {primary: "ui-icon-video"},
+		text: false
+		}).click(function () { alert("This functionality is still being developed."); }
+	);
+	$("#exportTimeLapseButton").position
+	({
+		my: "right top",
+		at: "left top",
+ 		of: $("#exportImageButton"),
+		offset: "-5 0"
+	});
+
 	$("#deleteImageFromTimeLapseButton").button(
 	{
 		icons: {primary: "ui-icon-trash"},
@@ -299,7 +380,6 @@ function pageSetup()
 		of: $("#deleteImageFromTimeLapseButton"),
 		offset: "5 0"
 	});
-	
 }
 
 function playMovie()
@@ -312,6 +392,7 @@ function playMovie()
 function reverseTimeLapseOrder()
 {
 	acquisitionDates.reverse();
+	countryCodes.reverse();
 	imageIds.reverse();
 	indexIds.reverse();
 	loadedLayers.reverse();
