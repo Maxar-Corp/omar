@@ -23,17 +23,26 @@
 				</span>
 				<button id = "fastForwardButton">Fast Forward</button>
 			</span>
+			<button id = "exportLinkButton">Export Link</button>
+			<button id = "exportImageButton">Export Image</button>
+			<button id = "exportTimeLapseButton">Export Time Lapse</button>
 			<button id = "deleteImageFromTimeLapseButton">Delete Image From Time Lapse</button>
 			<button id = "reverseTimeLapseOrderButton">Reverse Time Lapse Order</button>
+			
+			<div id = "exportLinkDialog" title = "Export Link"></div>
 			<div id = "wmsUrlBase">${createLink(action: "wms", controller: "ogc")}</div>
 		</content>
 		<content tag = "bottom"></content>
 		<r:script>
 			var acquisitionDates = ["${(acquisitionDates).join("\",\"")}"];
 			var bbox = new OpenLayers.Bounds(${bbox});
+			var coordConvert = new CoordinateConversion();
+			var countryCodes = ["${(countryCodes).join("\",\"")}"];
+			var exportImageUrlBase = "${createLink(action: 'index', controller: 'templateExport')}";
+			var exportLinkUrlBase = "${createLink(absolute: 'true', action: 'timeLapse', base: grailsApplication.config.omar.serverURL)}";
 			var imageIds = ["${(imageIds).join("\",\"")}"];
 			var indexIds = ["${(indexIds).join("\",\"")}"];
-			OpenLayers.ImgPath = "${resource(plugin: 'openlayers', dir: 'js/img')}/";
+			var urlBase = "${grailsApplication.config.omar.serverBase}";
 		</r:script>
 	</body>
 </html>

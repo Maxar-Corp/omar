@@ -14,6 +14,7 @@ modules = {
                 resource url: [dir: 'js', file: 'OpenLayers_v2_12.js', plugin: 'openlayers']
                 resource url: [dir: 'js', file: 'jquery.js', plugin: 'omar-core']
                 resource url: [dir: 'js/jQuery', file: 'jquery-ui.js', plugin: 'omar-common-ui']
+		resource url: [dir: 'js', file: 'coord.js', plugin: 'omar-core']
                 resource url: [dir: 'js', file: 'spin-min.js', plugin: 'omar-core']
                 resource url: [dir: 'js', file: 'timeLapse.js']
 	}
