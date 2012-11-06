@@ -21,8 +21,7 @@
 			<div id = "footerLocationTextContainer" onClick = "changeFooterLocationText()"></div>
 			<div align = "right" id = "footerAcquisitionDateTextContainer" onClick = "changeFooterAcquisitionDateText()"></div>
 
-			<button id = "downloadButton">Download</button>
-			<%--<button id = "upArrowButton">Up Arrow</button>--%>				
+			<button id = "downloadButton">Download</button>	
 
 			<div id = "countryCode">${countryCode}</div>
 			<div id = "formActionUrl">${createLink(action: 'export')}</div>
