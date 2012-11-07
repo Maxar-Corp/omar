@@ -1,12 +1,6 @@
-a 
-{ 
-	text-decoration: none; 
-}
+a { text-decoration: none; }
 
-body
-{
-	font-family:"Arial";
-}
+body { font-family:"Arial"; }
 
 #changeColorGradientPopup, #changeFooterAcquisitionDateTextPopup, #changeFooterLocationTextPopup, #changeFooterSecurityClassificationTextPopup, #changeHeaderDescriptionTextPopup, #changeHeaderSecurityClassificationTextPopup, #changeHeaderTitleTextPopup, #changeLogoPopup, #changeNorthArrowPopup, #changeOverviewMapPopup
 {
