@@ -72,7 +72,7 @@ function exportImage()
 	exportImageUrl += "&countryCode=" + countryCodes[currentLayer];
 	exportImageUrl += "&imageId=" + imageIds[currentLayer];
 
-	var imageUrl = urlBase + map.layers[currentLayer + 1].getURL(map.getExtent());
+	var imageUrl = urlBase + mapLayers[currentLayer].getURL(map.getExtent());
 	imageUrl = imageUrl.replace(/&/g, "%26");
 	exportImageUrl += "&imageURL=" + imageUrl;
 	
@@ -90,15 +90,28 @@ function exportLink()
 	exportLinkUrl += "&bbox=" + map.calculateBounds().toArray();
 
 	$("#exportLinkDialog").html("Right-click the link below to copy:<br><br><a href='" + exportLinkUrl + "' target = '_blank'><b>OMAR Time Lapse Link</b></a>");
-	$("#exportLinkDialog").dialog
-	({
-		buttons:
-		{
-			"OK": function() { $(this).dialog("close"); }
-		},
-		modal: true,
-		width: "auto"
-	});
+	$("#exportLinkDialog").dialog({ width: "auto" });
+}
+
+function exportTimeLapse()
+{
+	var imageUrlsForPdf = new Array();
+	for (var i = 0; i < imageIds.length; i++) 
+	{ 
+		imageUrlsForPdf[i] = urlBase + mapLayers[i].getURL(map.getExtent()); 
+		imageUrlsForPdf[i] = imageUrlsForPdf[i].replace(/&/g, "%26");
+	}
+	var exportTimeLapseUrl = exportTimeLapseUrlBase;
+	exportTimeLapseUrl += "?imageUrls=" + imageUrlsForPdf.join(">");
+	$("#submitForm").get(0).action = exportTimeLapseUrl;
+	$("#submitForm").get(0).submit();
+}
+
+function exportTimeLapseSummary()
+{
+	$("#exportTimeLapseSummaryDialog").html(imageIds.join("<br>"));
+	$("#exportTimeLapseSummaryDialog").css("textAlign", "left");
+	$("#exportTimeLapseSummaryDialog").dialog({ width: "auto" });
 }
 
 function fastForward()
@@ -343,13 +356,27 @@ function pageSetup()
 	{
 		icons: {primary: "ui-icon-video"},
 		text: false
-		}).click(function () { alert("This functionality is still being developed."); }
+		}).click(function() { exportTimeLapse(); }
 	);
 	$("#exportTimeLapseButton").position
 	({
 		my: "right top",
 		at: "left top",
  		of: $("#exportImageButton"),
+		offset: "-5 0"
+	});
+
+	$("#exportTimeLapseSummaryButton").button(
+	{
+		icons: {primary: "ui-icon-script"},
+		text: false,
+		}).click(function() { exportTimeLapseSummary(); }
+	);
+	$("#exportTimeLapseSummaryButton").position
+	({
+		my: "right top",
+		at: "left top",
+		of: $("#exportTimeLapseButton"),
 		offset: "-5 0"
 	});
 
