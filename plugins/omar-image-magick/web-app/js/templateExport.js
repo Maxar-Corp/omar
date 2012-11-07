@@ -32,6 +32,7 @@ $(document).ready(
 
 function changeColorGradient()
 {
+	$("#changeColorGradientPopup").css("textAlign", "left");
 	$("#changeColorGradientPopup").dialog
 	({
 		buttons:
@@ -44,13 +45,14 @@ function changeColorGradient()
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
-		modal: true,
 		width: "auto"
 	});
+	$("#changeColorGradientPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
 function changeFooterAcquisitionDateText()
 {
+	$("#changeFooterAcquisitionDateTextPopup").css("textAlign", "left");
 	$("#changeFooterAcquisitionDateTextPopup").dialog
 	({
 		buttons:
@@ -65,13 +67,13 @@ function changeFooterAcquisitionDateText()
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
-		modal: true,
 		width: "auto"
 	});
-}
+}	$("#changeFooterAcquisitionDateTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 
 function changeFooterLocationText()
 {
+	$("#changeFooterLocationTextPopup").css("textAlign", "left");
 	$("#changeFooterLocationTextPopup").dialog
 	({
 		buttons:
@@ -86,13 +88,14 @@ function changeFooterLocationText()
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
-		modal: true,
 		width: "auto"
 	});
+	$("#changeFooterLocationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
 function changeFooterSecurityClassificationText()
 {
+	$("#changeFooterSecurityClassificationTextPopup").css("textAlign", "left");
 	$("#changeFooterSecurityClassificationTextPopup").dialog
 	({
 		buttons:
@@ -107,13 +110,14 @@ function changeFooterSecurityClassificationText()
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
-		modal: true,
 		width: "auto"
 	});
+	$("#changeFooterSecurityClassificationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
 function changeHeaderDescriptionText()
 {
+	$("#changeHeaderDescriptionTextPopup").css("textAlign", "left");
 	$("#changeHeaderDescriptionTextPopup").dialog
 	({
 		buttons:
@@ -128,13 +132,14 @@ function changeHeaderDescriptionText()
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
-		modal: true,
 		width: "auto"
 	});
+	$("#changeHeaderDescriptionTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
 function changeHeaderSecurityClassificationText()
 {
+	$("#changeHeaderSecurityClassificationTextPopup").css("textAlign", "left");
 	$("#changeHeaderSecurityClassificationTextPopup").dialog
 	({
 		buttons:
@@ -149,13 +154,14 @@ function changeHeaderSecurityClassificationText()
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
-		modal: true,
 		width: "auto"
 	});
+	$("#changeHeaderSecurityClassificationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
 function changeHeaderTitleText()
 {
+	$("#changeHeaderTitleTextPopup").css("textAlign", "left");
 	$("#changeHeaderTitleTextPopup").dialog
 	({
 		buttons:
@@ -170,14 +176,15 @@ function changeHeaderTitleText()
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
-		modal: true,
 		width: "auto"
 	});
+	$("#changeHeaderTitleTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
 function changeLogo()
 {
-	$( "#changeLogoPopup" ).dialog
+	$("#changeLogoPopup").css("textAlign", "left");
+	$("#changeLogoPopup").dialog
 	({
 		buttons: 
 		{
@@ -189,13 +196,14 @@ function changeLogo()
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
-		modal: true,
 		width: "auto"
 	});
+	$("#changeLogoPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
 function changeNorthArrow()
 {
+	$("#changeNorthArrowPopup").css("textAlign", "left");
 	$("#changeNorthArrowPopup").dialog
 	({
 		buttons:
@@ -207,13 +215,14 @@ function changeNorthArrow()
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
-		modal: true,
 		width: "auto"
 	});
+	$("#changeNorthArrowPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
 function changeOverviewMap()
 {
+	$("#changeOverviewMapPopup").css("textAlign", "left");
 	$("#changeOverviewMapPopup").dialog
 	({
 		buttons:
@@ -228,9 +237,9 @@ function changeOverviewMap()
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
-		modal: true,
 		width: "auto"
 	});	
+	$("#changeOverviewMapPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
 function displayTemplateButtons()
@@ -540,7 +549,6 @@ function generateLoadingDialogPopup()
                 modal: true,
                 width: "auto"
         });
-
 	$("#loadingDialogPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
