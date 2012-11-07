@@ -26,11 +26,15 @@
 			<button id = "exportLinkButton">Export Link</button>
 			<button id = "exportImageButton">Export Image</button>
 			<button id = "exportTimeLapseButton">Export Time Lapse</button>
+			<button id = "exportTimeLapseSummaryButton">Export Time Lapse Summary</button>
 			<button id = "deleteImageFromTimeLapseButton">Delete Image From Time Lapse</button>
 			<button id = "reverseTimeLapseOrderButton">Reverse Time Lapse Order</button>
 			
+			<div id = "exportTimeLapseSummaryDialog" title = "Time Lapse Summary"></div>
 			<div id = "exportLinkDialog" title = "Export Link"></div>
 			<div id = "wmsUrlBase">${createLink(action: "wms", controller: "ogc")}</div>
+
+			<form id = "submitForm" method = "post"></form>
 		</content>
 		<content tag = "bottom"></content>
 		<r:script>
@@ -40,6 +44,7 @@
 			var countryCodes = ["${(countryCodes).join("\",\"")}"];
 			var exportImageUrlBase = "${createLink(action: 'index', controller: 'templateExport')}";
 			var exportLinkUrlBase = "${createLink(absolute: 'true', action: 'timeLapse', base: grailsApplication.config.omar.serverURL)}";
+			var exportTimeLapseUrlBase = "${createLink(action: 'exportTimeLapse', controller: 'timeLapse')}";
 			var imageIds = ["${(imageIds).join("\",\"")}"];
 			var indexIds = ["${(indexIds).join("\",\"")}"];
 			var urlBase = "${grailsApplication.config.omar.serverBase}";
