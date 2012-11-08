@@ -30,21 +30,21 @@ import groovy.xml.StreamingMarkupBuilder
  * Time: 2:27 PM
  * To change this template use File | Settings | File Templates.
  */
-class WebFeatureService
+class WebFeatureServiceOLD
 {
   def dataSource
   def grailsApplication
 
 
   def featureTypes = [
-          [name: "raster_entry", title: "raster_entry", description: "Available Imagery", srs: "EPSG:4326", bbox: [minx: "-180", miny: "-90", maxx: "180", maxy: "90"]],
-          [name: "video_data_set", title: "video_data_set", description: "Available Videos", srs: "EPSG:4326", bbox: [minx: "-180", miny: "-90", maxx: "180", maxy: "90"]]
+      [name: "raster_entry", title: "raster_entry", description: "Available Imagery", srs: "EPSG:4326", bbox: [minx: "-180", miny: "-90", maxx: "180", maxy: "90"]],
+      [name: "video_data_set", title: "video_data_set", description: "Available Videos", srs: "EPSG:4326", bbox: [minx: "-180", miny: "-90", maxx: "180", maxy: "90"]]
   ]
 
-  def getCapabilities( )
+  def getCapabilities()
   {
     def workspace = createWorkspace()
-    def wfsURL = "${grailsApplication.config.omar.serverURL}/wfs"
+    def wfsURL = "${ grailsApplication.config.omar.serverURL }/wfs"
 
     def name = "OMAR WFS"
     def title = "OMAR Data"
@@ -64,7 +64,7 @@ class WebFeatureService
             Name( name )
             Title( title )
             OnlineResource {
-              mkp.yieldUnescaped( "<![CDATA[${wfsURL}]]>" )
+              mkp.yieldUnescaped( "<![CDATA[${ wfsURL }]]>" )
             }
           }
           Capability {
@@ -72,7 +72,7 @@ class WebFeatureService
               GetCapabilities {
                 DCPType {
                   HTTP {
-                    Get( onlineResource: wfsURL )
+                    Get( onlineResource: "${ wfsURL }?request=GetCapabilities" )
                   }
                 }
                 DCPType {
@@ -87,7 +87,7 @@ class WebFeatureService
                 }
                 DCPType {
                   HTTP {
-                    Get( onlineResource: wfsURL )
+                    Get( onlineResource: "${ wfsURL }?request=DescribeFeatureType" )
                   }
                 }
                 DCPType {
@@ -102,7 +102,7 @@ class WebFeatureService
                 }
                 DCPType {
                   HTTP {
-                    Get( onlineResource: wfsURL )
+                    Get( onlineResource: "${ wfsURL }?request=GetFeature" )
                   }
                 }
                 DCPType {
@@ -143,12 +143,11 @@ class WebFeatureService
               }
             }
             ogc.Scalar_Capabilities {
-              ogc.Logical_Operators {
-                ogc.Comparison_Operators {
-                  ogc.Simple_Comparisons()
-                  ogc.Like()
-                  ogc.Between()
-                }
+              ogc.Logical_Operators()
+              ogc.Comparison_Operators {
+                ogc.Simple_Comparisons()
+                ogc.Like()
+                ogc.Between()
               }
             }
           }
@@ -264,7 +263,7 @@ class WebFeatureService
 //    return records
 //  }
 
-  private def getRecords( def layer, def filter, def pagination )
+  private def getRecords(def layer, def filter, def pagination)
   {
     def records = []
 
@@ -281,32 +280,32 @@ class WebFeatureService
   }
 
 
-  private def outputRecord( def builder, def schema, def record )
+  private def outputRecord(def builder, def schema, def record)
   {
     def typeName = schema.name
 
-    builder.omar."${typeName}"( fid: record.id ) {
-      omar.id( record.id - "${typeName}." )
+    builder.omar."${ typeName }"( fid: record.id ) {
+      omar.id( record.id - "${ typeName }." )
 
       schema.fields.each { field ->
         switch ( field.typ.toUpperCase() )
         {
         case "POLYGON":
         case "MULTIPOLYGON":
-          omar."${field.name}" {
+          omar."${ field.name }" {
             String result = formatGML( record[field.name] )
 
             mkp.yieldUnescaped( result )
           }
           break
         default:
-          omar."${field.name}"( record[field.name] )
+          omar."${ field.name }"( record[field.name] )
         }
       }
     }
   }
 
-  private String formatGML( def groundGeom )
+  private String formatGML(def groundGeom)
   {
     def result = ""
 
@@ -352,7 +351,7 @@ class WebFeatureService
     return result
   }
 
-  def getFeature( def typeName, def filter, def pagination )
+  def getFeature(def typeName, def filter, def pagination)
   {
     def writer = new StringWriter()
     def xml = new StreamingMarkupBuilder( encoding: 'UTF-8' )
@@ -390,7 +389,7 @@ class WebFeatureService
     return writer.toString()
   }
 
-  def describeFeatureType( def typeName )
+  def describeFeatureType(def typeName)
   {
     def workspace = createWorkspace()
     def xml = null
@@ -416,7 +415,7 @@ class WebFeatureService
 
         xsd.schema( elementFormDefault: "qualified", targetNamespace: "http://omar.ossim.org" ) {
           xsd.import( namespace: "http://www.opengis.net/gml", schemaLocation: "http://schemas.opengis.net/gml/2.1.2/feature.xsd" )
-          xsd.complexType( name: "${typeName}Type" ) {
+          xsd.complexType( name: "${ typeName }Type" ) {
             xsd.complexContent {
               xsd.extension( base: "gml:AbstractFeatureType" ) {
                 xsd.sequence {
@@ -463,7 +462,7 @@ class WebFeatureService
             }
           }
 
-          xsd.element( name: typeName, substitutionGroup: "gml:_Feature", type: "omar:${typeName}Type" )
+          xsd.element( name: typeName, substitutionGroup: "gml:_Feature", type: "omar:${ typeName }Type" )
         }
       }
     }
@@ -475,7 +474,7 @@ class WebFeatureService
     return xml?.toString()
   }
 
-  def createWorkspace( def flag = true )
+  def createWorkspace(def flag = true)
   {
     def workspace = null
 
@@ -484,10 +483,10 @@ class WebFeatureService
       def jdbcParams = grailsApplication.config.dataSource
 
       def dbParams = [
-              dbtype: "postgis",           //must be postgis
-              user: jdbcParams.username,   //the user to connect with
-              passwd: jdbcParams.password, //the password of the user.
-              schema: "public"
+          dbtype: "postgis",           //must be postgis
+          user: jdbcParams.username,   //the user to connect with
+          passwd: jdbcParams.password, //the password of the user.
+          schema: "public"
       ]
 
 
@@ -519,12 +518,12 @@ class WebFeatureService
       }
 
       workspace = new PostGIS(
-              dbParams['database'],
-              dbParams['host'],
-              dbParams['port'],
-              dbParams['schema'],
-              dbParams['user'],
-              dbParams['passwd']
+          dbParams['database'],
+          dbParams['host'],
+          dbParams['port'],
+          dbParams['schema'],
+          dbParams['user'],
+          dbParams['passwd']
       )
     }
     else
