@@ -3,12 +3,14 @@ package org.ossim.omar.ogc
 import org.apache.commons.collections.map.CaseInsensitiveMap
 
 
-class WfsController
+class WfsControllerOLD
 {
   def webFeatureService
 
   def index( )
   {
+    println params
+
     def wfsParams = new CaseInsensitiveMap( params ).subMap( [
             'service', 'version', 'request',
             'typeName', 'filter',

@@ -1,7 +1,7 @@
 class OmarOgcGrailsPlugin
 {
   // the plugin version
-  def version = "0.1"
+  def version = "0.2"
   // the version or versions of Grails the plugin is designed for
   def grailsVersion = "1.3.5 > *"
   // the other plugins this plugin depends on
