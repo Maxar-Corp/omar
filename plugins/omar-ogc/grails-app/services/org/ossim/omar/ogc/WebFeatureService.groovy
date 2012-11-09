@@ -51,7 +51,7 @@ class WebFeatureService
           Title( "OMAR WFS" )
           Abstract()
           Keywords()
-          OnlineResource( grailsLinkGenerator.link( absolute: true, controller: 'wfs' ) )
+          OnlineResource( grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs' ) )
           Fees( "NONE" )
           AccessConstraints( "NONE" )
         }
@@ -60,7 +60,7 @@ class WebFeatureService
             GetCapabilities {
               DCPType {
                 HTTP {
-                  Get( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs', params: [request: 'GetCapabilities'] ) )
+                  Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'GetCapabilities'] ) )
                 }
               }
 /*
@@ -77,7 +77,7 @@ class WebFeatureService
               }
               DCPType {
                 HTTP {
-                  Get( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs', params: [request: 'DescribeFeatureType'] ) )
+                  Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'DescribeFeatureType'] ) )
                 }
               }
 /*
@@ -91,7 +91,7 @@ class WebFeatureService
             GetFeature {
               DCPType {
                 HTTP {
-                  Get( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs', params: [request: 'GetFeature'] ) )
+                  Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'GetFeature'] ) )
                 }
               }
 /*
@@ -400,7 +400,7 @@ class WebFeatureService
     def y = {
       def workspace = getWorkspace()
       def layer = workspace[wfsRequest?.typeName]
-      def cursor = layer.getCursor( wfsRequest?.filter ?: Filter.PASS)
+      def cursor = layer.getCursor( wfsRequest?.filter ?: Filter.PASS )
 
       mkp.xmlDeclaration()
       mkp.declareNamespace( '': "http://www.opengis.net/wfs" )
