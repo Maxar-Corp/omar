@@ -394,7 +394,7 @@ class WebFeatureService
   {
     def results
 
-    def describeFeatureTypeURL = grailsLinkGenerator.link( absolute: true, controller: 'wfs', params: [
+    def describeFeatureTypeURL = grailsLinkGenerator.link( grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [
         service: 'WFS', version: '1.0.0', request: 'DescribeFeatureType', typeName: "${ wfsRequest.typeName }"] )
 
     def y = {
