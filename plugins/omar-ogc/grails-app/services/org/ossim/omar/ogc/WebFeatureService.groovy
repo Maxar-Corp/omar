@@ -394,8 +394,9 @@ class WebFeatureService
   {
     def results
 
-    def describeFeatureTypeURL = grailsLinkGenerator.link( grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [
-        service: 'WFS', version: '1.0.0', request: 'DescribeFeatureType', typeName: "${ wfsRequest.typeName }"] )
+    def describeFeatureTypeURL = grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true,
+        controller: 'wfs', params: [service: 'WFS', version: '1.0.0', request: 'DescribeFeatureType',
+            typeName: "${ wfsRequest.typeName }"] )
 
     def y = {
       def workspace = getWorkspace()
