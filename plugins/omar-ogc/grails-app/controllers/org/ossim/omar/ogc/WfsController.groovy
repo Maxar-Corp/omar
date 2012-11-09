@@ -8,6 +8,8 @@ class WfsController
 
   def index()
   {
+    //println params
+
     def wfsParams = new CaseInsensitiveMap( params ).subMap(
         ['service', 'version', 'request', 'typeName', 'filter']
     )
@@ -15,7 +17,7 @@ class WfsController
 
     bindData( wfsCommand, wfsParams )
 
-    println wfsCommand
+    //println wfsCommand
 
     def results
 

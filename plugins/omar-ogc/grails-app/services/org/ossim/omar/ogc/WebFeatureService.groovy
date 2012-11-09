@@ -63,11 +63,13 @@ class WebFeatureService
                   Get( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs', params: [request: 'GetCapabilities'] ) )
                 }
               }
+/*
               DCPType {
                 HTTP {
                   Post( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs' ) )
                 }
               }
+*/
             }
             DescribeFeatureType {
               SchemaDescriptionLanguage {
@@ -78,11 +80,13 @@ class WebFeatureService
                   Get( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs', params: [request: 'DescribeFeatureType'] ) )
                 }
               }
+/*
               DCPType {
                 HTTP {
                   Post( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs' ) )
                 }
               }
+*/
             }
             GetFeature {
               DCPType {
@@ -90,11 +94,13 @@ class WebFeatureService
                   Get( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs', params: [request: 'GetFeature'] ) )
                 }
               }
+/*
               DCPType {
                 HTTP {
                   Post( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs' ) )
                 }
               }
+*/
             }
           }
         }
@@ -394,7 +400,7 @@ class WebFeatureService
     def y = {
       def workspace = getWorkspace()
       def layer = workspace[wfsRequest?.typeName]
-      def cursor = layer.getCursor( wfsRequest?.filter )
+      def cursor = layer.getCursor( wfsRequest?.filter ?: Filter.PASS)
 
       mkp.xmlDeclaration()
       mkp.declareNamespace( '': "http://www.opengis.net/wfs" )
