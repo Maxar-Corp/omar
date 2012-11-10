@@ -432,7 +432,7 @@ class WebFeatureService
 
               for ( def attribute in feature.attributes )
               {
-                if ( attribute.value )
+                if ( attribute?.value != null )
                 {
 
                   if ( attribute.key == "ground_geom" )
