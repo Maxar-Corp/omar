@@ -7,6 +7,7 @@ var mapLayers = new Array();
 var map;
 var movieAdvance;
 var playDirection;
+var playSpeed = 1000;
 var spinner;
 
 $(document).ready(
@@ -109,7 +110,34 @@ function exportTimeLapse()
 
 function exportTimeLapseSummary()
 {
-	$("#exportTimeLapseSummaryDialog").html(imageIds.join("<br>"));
+	var timeLapseSummaryTable = "";
+	timeLapseSummaryTable += "<table>" +
+		"<tr>" +
+			"<td><b>No.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>" + 
+			"<td><b>Image Id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>" +
+			"<td><b>Acquisition Date&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>" +
+			"<td><b>NIIRS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>" +
+			"<td><b>CC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>" +
+		"</tr>";
+	for (var i = 0; i < imageIds.length; i++)
+	{
+		timeLapseSummaryTable += 
+			"<tr>" + 
+				"<td>" + (i + 1) + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>" +
+				"<td>" + imageIds[i] + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>" +
+				"<td>" + acquisitionDates[i] + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>" +
+				"<td>" + niirsValues[i] + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>" +
+				"<td>" + countryCodes[i] + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>" +
+			"</tr>";
+	} 
+	timeLapseSummaryTable += "</table><br>";
+
+	timeLapseSummaryTable += "<b>Map Center:&nbsp;&nbsp;</b>" + 
+		map.getCenter().lat + ", " + map.getCenter().lon + " // " +
+		coordConvert.ddToDms(map.getCenter().lat, map.getCenter().lon) + " // " +
+		coordConvert.ddToMgrs(map.getCenter().lat, map.getCenter().lon);
+
+	$("#exportTimeLapseSummaryDialog").html(timeLapseSummaryTable);
 	$("#exportTimeLapseSummaryDialog").css("textAlign", "left");
 	$("#exportTimeLapseSummaryDialog").dialog({ width: "auto" });
 }
@@ -407,13 +435,42 @@ function pageSetup()
 		of: $("#deleteImageFromTimeLapseButton"),
 		offset: "5 0"
 	});
+
+	$("#slowDownButton").button(
+	{
+		icons: {primary: "ui-icon-circle-minus"},
+		text: false
+		}).click(function() { slowDown(); }
+	);
+	$("#slowDownButton").position
+	({
+		my: "left top",
+		at: "right top",
+		of: ("#reverseTimeLapseOrderButton"),
+		offset: "30 0"
+	});
+
+	$("#speedUpButton").button(
+	{
+		icons: {primary: "ui-icon-circle-plus"},
+		text: false
+		}).click(function() { speedUp(); }
+
+	);
+	$("#speedUpButton").position
+	({
+		my: "left top",
+		at: "right top",
+		of: ("#slowDownButton"),
+		offset: "5 0"
+	});
 }
 
 function playMovie()
 {
 	if (playDirection == "forward") { fastForward(); }
 	else { rewind(); }
-	movieAdvance = setTimeout("playMovie()", 1000);
+	movieAdvance = setTimeout("playMovie()", playSpeed);
 }
 
 function reverseTimeLapseOrder()
@@ -438,6 +495,16 @@ function rewind()
 	if (loadedLayers[currentLayer] == 0) { generateSpinner(); }
 	updateProgressSlider();
         updateText();
+}
+
+function slowDown()
+{
+	if (playSpeed < 2000) { playSpeed += 75; }
+}
+
+function speedUp()
+{
+	if (playSpeed > 250) { playSpeed -= 75; }
 }
 
 function stopMovie() { clearTimeout(movieAdvance); }

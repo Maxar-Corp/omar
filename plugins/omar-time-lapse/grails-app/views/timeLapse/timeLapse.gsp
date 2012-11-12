@@ -29,6 +29,8 @@
 			<button id = "exportTimeLapseSummaryButton">Export Time Lapse Summary</button>
 			<button id = "deleteImageFromTimeLapseButton">Delete Image From Time Lapse</button>
 			<button id = "reverseTimeLapseOrderButton">Reverse Time Lapse Order</button>
+			<button id = "slowDownButton">Slow Down</button>
+			<button id = "speedUpButton">Speed Up</button>
 			
 			<div id = "exportTimeLapseSummaryDialog" title = "Time Lapse Summary"></div>
 			<div id = "exportLinkDialog" title = "Export Link"></div>
@@ -47,6 +49,7 @@
 			var exportTimeLapseUrlBase = "${createLink(action: 'exportTimeLapse', controller: 'timeLapse')}";
 			var imageIds = ["${(imageIds).join("\",\"")}"];
 			var indexIds = ["${(indexIds).join("\",\"")}"];
+			var niirsValues = ["${(niirsValues).join("\",\"")}"];
 			var urlBase = "${grailsApplication.config.omar.serverBase}";
 		</r:script>
 	</body>

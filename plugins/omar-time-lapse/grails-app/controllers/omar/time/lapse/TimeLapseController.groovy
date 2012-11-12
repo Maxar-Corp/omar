@@ -18,7 +18,8 @@ class TimeLapseController
 				bbox: bbox,
 				countryCodes: rasterEntries.countryCode,
 				imageIds: rasterEntries.title,
-				indexIds: rasterEntries.indexId
+				indexIds: rasterEntries.indexId,
+				niirsValues: rasterEntries.niirs
 			]	
 		)		
 	}
