@@ -73,7 +73,7 @@ function exportImage()
 	exportImageUrl += "&countryCode=" + countryCodes[currentLayer];
 	exportImageUrl += "&imageId=" + imageIds[currentLayer];
 
-	var imageUrl = urlBase + mapLayers[currentLayer].getURL(map.getExtent());
+	var imageUrl = mapLayers[currentLayer].getURL(map.getExtent());
 	imageUrl = imageUrl.replace(/&/g, "%26");
 	exportImageUrl += "&imageURL=" + imageUrl;
 	
@@ -99,7 +99,7 @@ function exportTimeLapse()
 	var imageUrlsForPdf = new Array();
 	for (var i = 0; i < imageIds.length; i++) 
 	{ 
-		imageUrlsForPdf[i] = urlBase + mapLayers[i].getURL(map.getExtent()); 
+		imageUrlsForPdf[i] = mapLayers[i].getURL(map.getExtent()); 
 		imageUrlsForPdf[i] = imageUrlsForPdf[i].replace(/&/g, "%26");
 	}
 	var exportTimeLapseUrl = exportTimeLapseUrlBase;
@@ -206,7 +206,7 @@ function mapSetup()
 		mapLayers[i] = new OpenLayers.Layer.WMS
 		(
 			"Layer" + i,
-			$("#wmsUrlBase").html(),
+			imageUrlBase,
 			{	
 				bands: "default",
 				brightness: 0,
