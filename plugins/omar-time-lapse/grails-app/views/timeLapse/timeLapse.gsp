@@ -34,7 +34,6 @@
 			
 			<div id = "exportTimeLapseSummaryDialog" title = "Time Lapse Summary"></div>
 			<div id = "exportLinkDialog" title = "Export Link"></div>
-			<div id = "wmsUrlBase">${createLink(action: "wms", controller: "ogc")}</div>
 
 			<form id = "submitForm" method = "post"></form>
 		</content>
@@ -48,9 +47,10 @@
 			var exportLinkUrlBase = "${createLink(absolute: 'true', action: 'timeLapse', base: grailsApplication.config.omar.serverURL)}";
 			var exportTimeLapseUrlBase = "${createLink(action: 'exportTimeLapse', controller: 'timeLapse')}";
 			var imageIds = ["${(imageIds).join("\",\"")}"];
+			var imageUrlBase = "${createLink(absolute: true, action: "wms", base: grailsApplication.config.omar.serverURL, controller: "ogc" )}";
 			var indexIds = ["${(indexIds).join("\",\"")}"];
 			var niirsValues = ["${(niirsValues).join("\",\"")}"];
-			var urlBase = "${grailsApplication.config.omar.serverBase}";
+			var timeLapseUrlBase = "${createLink(absolute: true, action: "wms", base: grailsApplication.config.omar.serverURL, controller: "ogc" )}";
 		</r:script>
 	</body>
 </html>
