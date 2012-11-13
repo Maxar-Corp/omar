@@ -63,13 +63,11 @@ class WebFeatureService
                   Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'GetCapabilities'] ) )
                 }
               }
-/*
               DCPType {
                 HTTP {
                   Post( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs' ) )
                 }
               }
-*/
             }
             DescribeFeatureType {
               SchemaDescriptionLanguage {
@@ -80,13 +78,11 @@ class WebFeatureService
                   Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'DescribeFeatureType'] ) )
                 }
               }
-/*
               DCPType {
                 HTTP {
                   Post( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs' ) )
                 }
               }
-*/
             }
             GetFeature {
               DCPType {
@@ -94,13 +90,11 @@ class WebFeatureService
                   Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'GetFeature'] ) )
                 }
               }
-/*
               DCPType {
                 HTTP {
                   Post( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs' ) )
                 }
               }
-*/
             }
           }
         }
