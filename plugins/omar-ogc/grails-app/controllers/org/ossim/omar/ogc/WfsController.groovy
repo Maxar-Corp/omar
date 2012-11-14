@@ -11,14 +11,16 @@ class WfsController
 
   def index()
   {
-
-    //println params
-
     def wfsCommand = new WfsCommand()
+
+    //println request.method
 
     switch ( request.method.toUpperCase() )
     {
     case "POST":
+      def builder = new StreamingMarkupBuilder()
+
+      //println "POST: ${ builder.bind { mkp.yield request.XML } }"
 
       wfsCommand.service = request.XML.@service
       wfsCommand.version = request.XML.@version
@@ -31,11 +33,17 @@ class WfsController
       else if ( wfsCommand.request?.toUpperCase() == "GETFEATURE" )
       {
         wfsCommand.typeName = request.XML.Query.@typeName.text()
-        wfsCommand.filter = XmlUtil.serialize( request.XML.Query[0].Filter[0] )
+
+        if ( request.XML.Query[0].Filter )
+        {
+          wfsCommand.filter = builder.bind { mkp.yield request.XML.Query[0].Filter[0] }
+        }
       }
       break
 
     case "GET":
+      //println "GET: ${ params }"
+
       def wfsParams = new CaseInsensitiveMap( params ).subMap(
           ['service', 'version', 'request', 'typeName', 'filter']
       )
@@ -44,7 +52,6 @@ class WfsController
 
       break
     }
-
 
     //println wfsCommand
 
@@ -59,7 +66,9 @@ class WfsController
       results = webFeatureService.describeFeatureType( wfsCommand )
       break
     case "GETFEATURE":
+      //println wfsCommand
       results = webFeatureService.getFeature( wfsCommand )
+      //println results
       break
     default:
       println "ERROR"
