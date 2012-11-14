@@ -68,7 +68,7 @@ grails.enable.native2ascii = true
 
 omar.serverIP = org.ossim.omar.app.NetUtil.ipAddress
 omar.serverURL = "http://${ omar.serverIP }:${ System.properties['server.port'] ?: '8080' }/${ appName }"
-omar.serverBase = "http://${ omar.serverIP }:${ System.properties['server.port'] ?: '8080' }"
+
 //
 //// set per-environment serverURL stem for creating absolute links
 //environments {
