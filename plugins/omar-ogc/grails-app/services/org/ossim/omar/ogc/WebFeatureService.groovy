@@ -445,7 +445,11 @@ class WebFeatureService
                       }
                       */
 
-                      mkp.yieldUnescaped( feature.ground_geom.gml2 )
+                      def geom = new XmlSlurper( false, false ).parseText( feature.ground_geom.gml2 as String )
+
+                      geom.@srsName = 'http://www.opengis.net/gml/srs/epsg.xml#4326'
+
+                      mkp.yield( geom )
 
                     }
                   }
