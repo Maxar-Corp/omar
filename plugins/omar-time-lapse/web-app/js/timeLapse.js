@@ -30,6 +30,16 @@ $(document).ready(
 				layout.render();
 			}
 		);
+
+		var oMenu = new YAHOO.widget.MenuBar("timeLapseMenu", 
+		{
+			autosubmenudisplay: true,
+			hidedelay: 750,
+			showdelay: 0,
+			lazyload: true,
+			zIndex:9999});
+			oMenu.render();
+
 		pageSetup();
 		mapSetup();
 		currentLayer = imageIds.length - 1;
@@ -255,7 +265,7 @@ function mapSetup()
 
 function pageSetup()
 {
-	var mapHeight = 0.8 * $(window).height();
+	var mapHeight = 0.75 * $(window).height();
 	var mapWidth = 0.90 * $(window).width();
 
 	$("#map").css("height", mapHeight);
@@ -264,7 +274,7 @@ function pageSetup()
 	({
 		my: "middle top",
 		at: "middle top",
-		of: $(window),
+		of: $("#timeLapseMenu"),
 		offset: "0 50"
 	});
 
@@ -352,90 +362,6 @@ function pageSetup()
 		offset: "0 15"
 	});
 
-	$("#exportLinkButton").button(
-	{
-		icons: {primary: "ui-icon-link"},
-		text: false,
-		}).click(function() { exportLink(); }
-	);
-	$("#exportLinkButton").position
-	({
-		my: "right top",
-		at: "left top",
-		of: $("#rewindButton"),
-		offset: "-30 0"
-	});
-	
-	$("#exportImageButton").button(
-	{
-		icons: {primary: "ui-icon-image"},
-		text: false
-		}).click(function () { exportImage(); }
-	);
-	$("#exportImageButton").position
-	({
-		my: "right top",
-		at: "left top",
-		of: $("#exportLinkButton"),
-		offset: "-5 0"
-	});
-
-	$("#exportTimeLapseButton").button(
-	{
-		icons: {primary: "ui-icon-video"},
-		text: false
-		}).click(function() { exportTimeLapse(); }
-	);
-	$("#exportTimeLapseButton").position
-	({
-		my: "right top",
-		at: "left top",
- 		of: $("#exportImageButton"),
-		offset: "-5 0"
-	});
-
-	$("#exportTimeLapseSummaryButton").button(
-	{
-		icons: {primary: "ui-icon-script"},
-		text: false,
-		}).click(function() { exportTimeLapseSummary(); }
-	);
-	$("#exportTimeLapseSummaryButton").position
-	({
-		my: "right top",
-		at: "left top",
-		of: $("#exportTimeLapseButton"),
-		offset: "-5 0"
-	});
-
-	$("#deleteImageFromTimeLapseButton").button(
-	{
-		icons: {primary: "ui-icon-trash"},
-		text: false
-		}).click(function() { deleteImageFromTimeLapse(); }
-	);
-	$("#deleteImageFromTimeLapseButton").position
-	({
-		my: "left top",
-		at: "right top",
-		of: $("#fastForwardButton"),
-		offset: "30 0"
-	});
-
-	$("#reverseTimeLapseOrderButton").button(
-	{
-		icons: {primary: "ui-icon-refresh"},
-		text: false
-		}).click(function() { reverseTimeLapseOrder(); }
-	);
-	$("#reverseTimeLapseOrderButton").position
-	({
-		my: "left top",
-		at: "right top",
-		of: $("#deleteImageFromTimeLapseButton"),
-		offset: "5 0"
-	});
-
 	$("#slowDownButton").button(
 	{
 		icons: {primary: "ui-icon-circle-minus"},
@@ -446,7 +372,7 @@ function pageSetup()
 	({
 		my: "left top",
 		at: "right top",
-		of: ("#reverseTimeLapseOrderButton"),
+		of: ("#fastForwardButton"),
 		offset: "30 0"
 	});
 

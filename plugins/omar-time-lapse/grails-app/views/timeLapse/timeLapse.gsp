@@ -1,11 +1,12 @@
 <html>
 	<head>
 		<meta content = "timeLapseLayout" name = "layout">
-		<script src = "http://openlayers.org/dev/OpenLayers.js"></script>
+	
 	</head>
-	<body>
+	<body class = "yui-skin-sam">
 		<content tag = "top"></content>
 		<content tag = "center">
+			<g:render template="timeLapseMenu"/>
 			<div id = "map"></div>
 			<div id = "imageIdHyperlink">Image Id Hyperlink</div>
 			<div id = "acquisitionDateText">Acquisition Date Text</div>
@@ -23,12 +24,6 @@
 				</span>
 				<button id = "fastForwardButton">Fast Forward</button>
 			</span>
-			<button id = "exportLinkButton">Export Link</button>
-			<button id = "exportImageButton">Export Image</button>
-			<button id = "exportTimeLapseButton">Export Time Lapse</button>
-			<button id = "exportTimeLapseSummaryButton">Export Time Lapse Summary</button>
-			<button id = "deleteImageFromTimeLapseButton">Delete Image From Time Lapse</button>
-			<button id = "reverseTimeLapseOrderButton">Reverse Time Lapse Order</button>
 			<button id = "slowDownButton">Slow Down</button>
 			<button id = "speedUpButton">Speed Up</button>
 			
