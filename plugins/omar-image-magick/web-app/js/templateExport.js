@@ -508,8 +508,9 @@ function generateLogo()
 	$("#logoImage").css("height", logoHeight);
 	$("#logoImage").css("width", logoWidth);
 
-	logoOffset = ($("#header").height() - logoHeight) / 2;
+	$("#logoImage").attr("src", $("#logoImagesDirectory").html() + "ciaLogoForWeb.png");
 
+	logoOffset = ($("#header").height() - logoHeight) / 2;
 	$("#logoImage").position
 	({
 		my: "left center",
@@ -517,8 +518,6 @@ function generateLogo()
 		of: $("#header"),
 		offset: logoOffset + " 0"
 	});
-
-	$("#logoImage").attr("src", $("#logoImagesDirectory").html() + "ciaLogoForWeb.png");
 }
 
 function generateLoadingDialogPopup()
