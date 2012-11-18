@@ -5,10 +5,9 @@
 	<body>
 		<content tag = "top"></content>
 		<content tag = "center">
+			<g:render template="templateExportMenu"/>
 			<div id = "header" onClick = "changeColorGradient()"></div>
-
 			<img id = "previewImage" onLoad = "init()" src = "${imageURL}"/>	
-
 			<img id = "logoImage" onClick = "changeLogo()"/>
 			<div align = "left" id = "headerSecurityClassificationTextContainer" onClick = "changeHeaderSecurityClassificationText()"></div>
 			<div align = "left" id = "headerTitleTextContainer" onClick = "changeHeaderTitleText()"></div>
@@ -20,8 +19,6 @@
 			<div align = "left" id = "footerSecurityClassificationTextContainer" onClick = "changeFooterSecurityClassificationText()"></div>
 			<div id = "footerLocationTextContainer" onClick = "changeFooterLocationText()"></div>
 			<div align = "right" id = "footerAcquisitionDateTextContainer" onClick = "changeFooterAcquisitionDateText()"></div>
-
-			<button id = "downloadButton">Download</button>	
 
 			<div id = "countryCode">${countryCode}</div>
 			<div id = "formActionUrl">${createLink(action: 'export')}</div>
