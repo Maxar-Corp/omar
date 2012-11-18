@@ -27,6 +27,18 @@ $(document).ready(
 			}
 		);
 		generateLoadingDialogPopup();
+		var oMenu = new YAHOO.widget.MenuBar
+		(
+			"templateExportMenu",
+			{
+				autosubmenudisplay: true,
+				hidedelay: 750,
+				showdelay: 0,
+				lazyload: true,
+				zIndex:9999
+			}
+		);
+		oMenu.render();
 	}
 );
 
@@ -242,11 +254,6 @@ function changeOverviewMap()
 	$("#changeOverviewMapPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
-function displayTemplateButtons()
-{
-	$("#downloadButton").add("#upArrowButton").fadeTo("fast", 1);
-}
-
 function downloadImage()
 {
 	var exportUrlParams = "?country=" + $("#overviewMapCountry").val();
@@ -413,9 +420,9 @@ function generateHeader()
 	$("#header").position
 	({
 		my: "middle top",
-		at: "middle top",
-		of: $(window),
-		offset: "0 25"
+		at: "middle bottom",
+		of: $("#templateExportMenu"),
+		offset: "0 0"
 	});
 
 	$("#previewImage").position
@@ -589,39 +596,6 @@ function generateOverviewMap()
 	$("#overviewMapImage").attr("src", $("#overviewMapImagesDirectory").html() + overviewMapCountry + ".gif");
 }
 
-function generateTemplateButtons()
-{
-	$("#downloadButton").button
-	({
-		icons: { primary: "ui-icon-arrowthickstop-1-s" },	
-		text: false
-		}).click(function() { downloadImage(); }
-	);
-
-	$("#downloadButton").position
-	({
-		my: "left top",
-		at: "left top",
-		of: $("#previewImage"),
-		offset: "5 5"
-	});
-
-	$("#upArrowButton").button
-	({
-		icons: { primary: "ui-icon-arrowthick-1-n" },
-		text: false
-		}).click(function() { addAnArrow("up"); }
-	);
-
-	$("#upArrowButton").position
-	({
-		my: "left top",
-		at: "left bottom",
-		of: $("#downloadButton"),
-		offset: "0 5"
-	});
-}
-
 function headerGradientUrlGenerator(topColor, bottomColor, height)
 {
         var gradientGeneratorUrl = $("#headerGradientGeneratorUrl").html();
@@ -629,12 +603,6 @@ function headerGradientUrlGenerator(topColor, bottomColor, height)
         gradientGeneratorUrl += "&gradientColorBottom=" + bottomColor;
         gradientGeneratorUrl += "&gradientHeight=" + height;
         return gradientGeneratorUrl;
-}
-
-function hideTemplateButtons()
-{
-	$("#downloadButton").add("#upArrowButton").fadeTo("fast", 0);
-	//$("#upArrowButton").fadeTo("fast", 0);
 }
 
 function init()
@@ -650,8 +618,6 @@ function init()
 	generateFooterSecurityClassificationText();
 	generateFooterLocationText();
 	generateFooterAcquisitionDateText();
-	generateTemplateButtons();
-	//setupPreviewImageEvents();
 	$("#loadingDialogPopup").dialog("close");
 }
 
@@ -680,12 +646,4 @@ function positionOverviewMapImage()
 		of: $("#header"),
 		offset: "-" + overviewMapImageOffsetWidth + " " + overviewMapImageOffsetHeight
 	});	
-}
-
-function setupPreviewImageEvents()
-{
-	$("#previewImage").mousemove
-	(
-		function () { displayTemplateButtons(); }
-	);
 }
