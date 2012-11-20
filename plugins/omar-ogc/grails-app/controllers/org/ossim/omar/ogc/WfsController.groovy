@@ -3,7 +3,6 @@ package org.ossim.omar.ogc
 import org.apache.commons.collections.map.CaseInsensitiveMap
 
 import groovy.xml.StreamingMarkupBuilder
-import groovy.xml.XmlUtil
 
 class WfsController
 {
@@ -11,7 +10,7 @@ class WfsController
 
   def index()
   {
-    def results
+    def results, contentType
 
     try
     {
@@ -50,7 +49,7 @@ class WfsController
         //println "GET: ${ params }"
 
         def wfsParams = new CaseInsensitiveMap( params ).subMap(
-            ['service', 'version', 'request', 'typeName', 'filter']
+            ['service', 'version', 'request', 'typeName', 'filter', 'outputFormat']
         )
 
         bindData( wfsCommand, wfsParams )
@@ -63,18 +62,18 @@ class WfsController
       switch ( wfsCommand.request?.toUpperCase() )
       {
       case "GETCAPABILITIES":
-        results = webFeatureService.getCapabilities( wfsCommand )
+        (results, contentType) = webFeatureService.getCapabilities( wfsCommand )
         break
       case "DESCRIBEFEATURETYPE":
-        results = webFeatureService.describeFeatureType( wfsCommand )
+        (results, contentType) = webFeatureService.describeFeatureType( wfsCommand )
         break
       case "GETFEATURE":
         //println wfsCommand
-        results = webFeatureService.getFeature( wfsCommand )
+        (results, contentType) = webFeatureService.getFeature( wfsCommand )
         //println results
         break
       default:
-        throw new Exception( "Unsupported Operation: ${wfsCommand.request}" )
+        throw new Exception( "Unsupported Operation: ${ wfsCommand.request }" )
       }
     }
     catch ( Exception e )
@@ -87,10 +86,12 @@ class WfsController
           ServiceException( code: "GeneralException", e.message )
         }
       }.toString()
+      //contentType = 'application/vnd.ogc.se_xml'
+      contentType = 'application/xml'
     }
     finally
     {
-      render contentType: 'application/xml', text: results
+      render contentType: contentType, text: results
     }
   }
 }
