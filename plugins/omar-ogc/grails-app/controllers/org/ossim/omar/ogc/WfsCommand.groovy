@@ -17,7 +17,7 @@ class WfsCommand
   String typeName
   String filter
 
-
+  String outputFormat
 
   @Override
   String toString()

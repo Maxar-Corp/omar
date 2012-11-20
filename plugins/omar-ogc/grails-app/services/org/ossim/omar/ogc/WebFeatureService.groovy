@@ -7,6 +7,7 @@ import geoscript.workspace.Database
 import geoscript.workspace.PostGIS
 
 import org.geotools.data.postgis.PostgisNGDataStoreFactory
+import grails.web.JSONBuilder
 
 class WebFeatureService
 {
@@ -26,6 +27,7 @@ class WebFeatureService
       'Double': 'xsd:double',
       'String': 'xsd:string',
       'Integer': 'xsd:int',
+      'java.lang.Boolean': 'xsd:boolean',
       'java.math.BigDecimal': 'xsd:decimal',
       'Polygon': 'gml:PolygonPropertyType',
       'MultiPolygon': 'gml:MultiPolygonPropertyType',
@@ -33,7 +35,7 @@ class WebFeatureService
 
   def getCapabilities(def wfsRequest)
   {
-    def results
+    def results, contentType
 
     def y = {
       mkp.xmlDeclaration()
@@ -324,13 +326,14 @@ class WebFeatureService
     def z = new StreamingMarkupBuilder( encoding: 'UTF-8' ).bind( y )
 
     results = z?.toString()
+    contentType = 'application/xml'
 
-    return results
+    return [results, contentType]
   }
 
   def describeFeatureType(def wfsRequest)
   {
-    def results
+    def results, contentType
 
     //println wfsRequest
 
@@ -339,8 +342,9 @@ class WebFeatureService
 
     def y = {
       mkp.xmlDeclaration()
-      mkp.declareNamespace( xsd: "http://www.w3.org/2001/XMLSchema" )
+      mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
       mkp.declareNamespace( omar: "http://omar.ossim.org" )
+      mkp.declareNamespace( xsd: "http://www.w3.org/2001/XMLSchema" )
 
       xsd.schema(
           elementFormDefault: "qualified",
@@ -368,9 +372,7 @@ class WebFeatureService
             }
           }
         }
-        //xsd.element( name: layer.name, substitutionGroup: "gml:_Feature", type: "omar:${ layer.name }Type" )
-        xsd.element( name: layer.name, substitutionGroup: "gml:_Feature", type: "${ layer.name }Type" )
-
+        xsd.element( name: layer.name, substitutionGroup: "gml:_Feature", type: "omar:${ layer.name }Type" )
       }
     }
 
@@ -379,15 +381,37 @@ class WebFeatureService
     def z = new StreamingMarkupBuilder( encoding: 'UTF-8' ).bind( y )
 
     results = z?.toString()
+    contentType = 'application/xml'
 
-    return results
+    return [results, contentType]
 
   }
 
   def getFeature(def wfsRequest)
   {
-    def results
+    def results, contentType
 
+    switch ( wfsRequest?.outputFormat?.toUpperCase() ?: "" )
+    {
+    case "CSV":
+      results = outputCSV( wfsRequest )
+      contentType = 'text/csv'
+      break
+    case "JSON":
+      results = outputJSON( wfsRequest )
+      contentType = 'application/json'
+      break
+    default:
+      results = outputGML( wfsRequest )
+      contentType = 'text/xml; subtype=gml/2.1.2'
+    }
+
+    return [results, contentType]
+  }
+
+  private String outputGML(def wfsRequest)
+  {
+    def results
     def describeFeatureTypeURL = grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true,
         controller: 'wfs', params: [service: 'WFS', version: '1.0.0', request: 'DescribeFeatureType',
             typeName: "${ wfsRequest.typeName }"] )
@@ -495,6 +519,52 @@ class WebFeatureService
     return results
   }
 
+  private def outputCSV(def wfsRequest)
+  {
+
+  }
+
+  private def outputJSON(def wfsRequest)
+  {
+    def results
+
+    def y = {
+      def workspace = getWorkspace()
+      def layer = workspace[wfsRequest?.typeName]
+      def cursor = layer.getCursor( wfsRequest?.filter ?: Filter.PASS )
+
+      [
+          crs = {
+            properties = {
+              code = "4326"
+            }
+            type = "EPSG"
+          },
+          features = {
+            while ( cursor?.hasNext() )
+            {
+              def feature = cursor?.next()
+              for ( def attribute in feature.attributes )
+              {
+                println "${ attribute.name }: ${ attribute.value }"
+              }
+            }
+            cursor?.close()
+            workspace?.close()
+          },
+          type = "FeatureCollection"
+      ]
+    }
+
+    def z = new JSONBuilder()
+
+    results = z.build( y )?.toString()
+
+    return results
+
+  }
+
+
   private def getWorkspace(def flag = true)
   {
     def workspace = null
@@ -554,6 +624,8 @@ class WebFeatureService
 
       workspace = new Database( dataStore )
     }
+
+    return workspace
   }
 
 }
