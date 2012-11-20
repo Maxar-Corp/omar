@@ -22,15 +22,15 @@ class WebFeatureService
       'video_data_set'
   ]
   private def typeMappings = [
-      'Long': 'xsd:long',
-      'java.sql.Timestamp': 'xsd:dateTime',
       'Double': 'xsd:double',
-      'String': 'xsd:string',
       'Integer': 'xsd:int',
-      'java.lang.Boolean': 'xsd:boolean',
-      'java.math.BigDecimal': 'xsd:decimal',
+      'Long': 'xsd:long',
       'Polygon': 'gml:PolygonPropertyType',
       'MultiPolygon': 'gml:MultiPolygonPropertyType',
+      'String': 'xsd:string',
+      'java.lang.Boolean': 'xsd:boolean',
+      'java.math.BigDecimal': 'xsd:decimal',
+      'java.sql.Timestamp': 'xsd:dateTime',
   ]
 
   def getCapabilities(def wfsRequest)
@@ -422,13 +422,13 @@ class WebFeatureService
       def cursor = layer.getCursor( wfsRequest?.filter ?: Filter.PASS )
 
       mkp.xmlDeclaration()
-      mkp.declareNamespace( '': "http://www.opengis.net/wfs" )
       mkp.declareNamespace( wfs: "http://www.opengis.net/wfs" )
       mkp.declareNamespace( omar: "http://omar.ossim.org" )
       mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
       mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
 
       wfs.FeatureCollection(
+          xmlns: 'http://www.opengis.net/wfs',
           'xsi:schemaLocation': "http://omar.ossim.org ${ describeFeatureTypeURL } http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"
       ) {
         gml.boundedBy {
