@@ -13,7 +13,8 @@
 			<div align = "left" id = "headerTitleTextContainer" onClick = "changeHeaderTitleText()"></div>
 			<div align = "left" id = "headerDescriptionTextContainer" onClick = "changeHeaderDescriptionText()"></div>
 			<img id = "overviewMapImage" onClick = "changeOverviewMap()" onLoad = "positionOverviewMapImage(); positionNorthArrow()"/>
-			<img id = "northArrowImage" onClick = "changeNorthArrow()"/>
+			<img id = "northArrowImage" onClick = "changeNorthArrow()" onLoad = "removeNorthArrowSpinner()"/>
+			<div id = "northArrowSpinnerDiv"></div>
 
 			<div id = "footer"></div>
 			<div align = "left" id = "footerSecurityClassificationTextContainer" onClick = "changeFooterSecurityClassificationText()"></div>

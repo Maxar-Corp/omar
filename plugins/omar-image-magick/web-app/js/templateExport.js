@@ -5,6 +5,7 @@ var headerTitleTextHeight;
 var logoHeight;
 var logoOffset;
 var logoWidth;
+var northArrowSpinner;
 
 $(document).ready(
 	function () 
@@ -42,217 +43,16 @@ $(document).ready(
 	}
 );
 
-function changeColorGradient()
-{
-	$("#changeColorGradientPopup").css("textAlign", "left");
-	$("#changeColorGradientPopup").dialog
-	({
-		buttons:
-		{
-			"OK": function()
-			{
-				$(this).dialog("close");
-				generateHeader();
-				generateFooter();		
-			},
-			Cancel: function() { $(this).dialog("close"); }
-		},
-		width: "auto"
-	});
-	$("#changeColorGradientPopup").parent().find('a.ui-dialog-titlebar-close').remove();
-}
-
-function changeFooterAcquisitionDateText()
-{
-	$("#changeFooterAcquisitionDateTextPopup").css("textAlign", "left");
-	$("#changeFooterAcquisitionDateTextPopup").dialog
-	({
-		buttons:
-		{
-			"OK": function()
-			{
-				$(this).dialog("close");
-				var text = $("#footerAcquisitionDateTextInput").get(0).value;
-				$("#footerAcquisitionDateTextContainer").html(text);
-				var color = $("#footerAcquisitionDateTextColor").get(0).value;
-				$("#footerAcquisitionDateTextContainer").css("color", "#" + color);
-			},
-			Cancel: function() { $(this).dialog("close"); }
-		},
-		width: "auto"
-	});
-}	$("#changeFooterAcquisitionDateTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
-
-function changeFooterLocationText()
-{
-	$("#changeFooterLocationTextPopup").css("textAlign", "left");
-	$("#changeFooterLocationTextPopup").dialog
-	({
-		buttons:
-		{
-			"OK": function()
-			{
-				$(this).dialog("close");
-				var text = $("#footerLocationTextInput").val();
-				$("#footerLocationTextContainer").html(text);
-				var color = $("#footerLocationTextColor").val();
-				$("#footerLocationTextContainer").css("color", "#" + color);
-			},
-			Cancel: function() { $(this).dialog("close"); }
-		},
-		width: "auto"
-	});
-	$("#changeFooterLocationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
-}
-
-function changeFooterSecurityClassificationText()
-{
-	$("#changeFooterSecurityClassificationTextPopup").css("textAlign", "left");
-	$("#changeFooterSecurityClassificationTextPopup").dialog
-	({
-		buttons:
-		{
-			"OK": function()
-			{
-				$(this).dialog("close");
-				var text = $("#footerSecurityClassificationTextInput").val();
-				$("#footerSecurityClassificationTextContainer").html(text);
-				var color = $("#footerSecurityClassificationTextColor").val();
-				$("#footerSecurityClassificationTextContainer").css("color", "#" + color);
-			},
-			Cancel: function() { $(this).dialog("close"); }
-		},
-		width: "auto"
-	});
-	$("#changeFooterSecurityClassificationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
-}
-
-function changeHeaderDescriptionText()
-{
-	$("#changeHeaderDescriptionTextPopup").css("textAlign", "left");
-	$("#changeHeaderDescriptionTextPopup").dialog
-	({
-		buttons:
-		{
-			"OK": function()
-			{
-				$(this).dialog("close");
-				var text = $("#headerDescriptionTextInput").val();
-				$("#headerDescriptionTextContainer").html(text);
-				var color = $("#headerDescriptionTextColor").val();
-				$("#headerDescriptionTextContainer").css("color", "#" + color);
-			},
-			Cancel: function() { $(this).dialog("close"); }
-		},
-		width: "auto"
-	});
-	$("#changeHeaderDescriptionTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
-}
-
-function changeHeaderSecurityClassificationText()
-{
-	$("#changeHeaderSecurityClassificationTextPopup").css("textAlign", "left");
-	$("#changeHeaderSecurityClassificationTextPopup").dialog
-	({
-		buttons:
-		{
-			"OK": function()
-			{
-				$(this).dialog("close");
-				var text = $("#headerSecurityClassificationTextInput").val();
-				$("#headerSecurityClassificationTextContainer").html(text);
-				var color = $("#headerSecurityClassificationTextColor").val();
-				$("#headerSecurityClassificationTextContainer").css("color", "#" + color);				
-			},
-			Cancel: function() { $(this).dialog("close"); }
-		},
-		width: "auto"
-	});
-	$("#changeHeaderSecurityClassificationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
-}
-
-function changeHeaderTitleText()
-{
-	$("#changeHeaderTitleTextPopup").css("textAlign", "left");
-	$("#changeHeaderTitleTextPopup").dialog
-	({
-		buttons:
-		{
-			"OK": function()
-			{
-				$(this).dialog("close");
-				var text = $("#headerTitleTextInput").val();
-				$("#headerTitleTextContainer").html(text);
-				var color = $("#headerTitleTextColor").val();
-				$("#headerTitleTextContainer").css("color", "#" + color);
-			},
-			Cancel: function() { $(this).dialog("close"); }
-		},
-		width: "auto"
-	});
-	$("#changeHeaderTitleTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
-}
-
-function changeLogo()
-{
-	$("#changeLogoPopup").css("textAlign", "left");
-	$("#changeLogoPopup").dialog
-	({
-		buttons: 
-		{
-			"OK": function() 
-			{
-				$(this).dialog("close");
-				var logo = $("#logo").val();
-				$("#logoImage").attr("src", $("#logoImagesDirectory").html() + logo + "ForWeb.png");	
-			},
-			Cancel: function() { $(this).dialog("close"); }
-		},
-		width: "auto"
-	});
-	$("#changeLogoPopup").parent().find('a.ui-dialog-titlebar-close').remove();
-}
-
-function changeNorthArrow()
-{
-	$("#changeNorthArrowPopup").css("textAlign", "left");
-	$("#changeNorthArrowPopup").dialog
-	({
-		buttons:
-		{
-			"OK": function()
-			{
-				$(this).dialog("close");
-				generateNorthArrow();
-			},
-			Cancel: function() { $(this).dialog("close"); }
-		},
-		width: "auto"
-	});
-	$("#changeNorthArrowPopup").parent().find('a.ui-dialog-titlebar-close').remove();
-}
-
-function changeOverviewMap()
-{
-	$("#changeOverviewMapPopup").css("textAlign", "left");
-	$("#changeOverviewMapPopup").dialog
-	({
-		buttons:
-		{
-			"OK": function()
-			{
-				$(this).dialog("close");
-				var overviewMapCountry = $("#overviewMapCountry").val();
-				$("#overviewMapImage").attr("src", $("#overviewMapImagesDirectory").html() + overviewMapCountry + ".gif");
-				if ($("#includeOverviewMapCheckbox").get(0).checked) { $("#overviewMapImage").fadeTo("fast", 1); }
-				else { $("#overviewMapImage").fadeTo("fast", 0.5); }
-			},
-			Cancel: function() { $(this).dialog("close"); }
-		},
-		width: "auto"
-	});	
-	$("#changeOverviewMapPopup").parent().find('a.ui-dialog-titlebar-close').remove();
-}
+function changeColorGradient() { $("#changeColorGradientPopup").dialog("open"); }
+function changeFooterAcquisitionDateText() { $("#changeFooterAcquisitionDateTextPopup").dialog("open"); }
+function changeFooterLocationText() { $("#changeFooterLocationTextPopup").dialog("open"); }
+function changeFooterSecurityClassificationText() { $("#changeFooterSecurityClassificationTextPopup").dialog("open"); }
+function changeHeaderDescriptionText() { $("#changeHeaderDescriptionTextPopup").dialog("open"); }
+function changeHeaderSecurityClassificationText() { $("#changeHeaderSecurityClassificationTextPopup").dialog("open"); }
+function changeHeaderTitleText() { $("#changeHeaderTitleTextPopup").dialog("open"); }
+function changeLogo() { $("#changeLogoPopup").dialog("open"); }
+function changeNorthArrow() { $("#changeNorthArrowPopup").dialog("open"); }
+function changeOverviewMap() { $("#changeOverviewMapPopup").dialog("open"); }
 
 function downloadImage()
 {
@@ -552,9 +352,9 @@ function generateLoadingDialogPopup()
 
 	$("#loadingDialogPopup").dialog
 	({
-                modal: true,
-                width: "auto"
-        });
+		modal: true,
+		width: "auto"
+	});
 	$("#loadingDialogPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
@@ -574,6 +374,19 @@ function generateNorthArrow()
 	northArrowUrl += "&northArrowColor=" + northArrowColor;
 	northArrowUrl += "&northArrowBackgroundColor=" + northArrowBackgroundColor;
 	$("#northArrowImage").attr("src", northArrowUrl);
+
+	var target = document.getElementById("northArrowSpinnerDiv");
+
+	if (northArrowSpinner) { northArrowSpinner.spin(target); }
+	else
+	{
+		var options =
+		{
+			className: "spinner", color: "#ffffff", corners: 1, hwaccel: false, left: "auto", lines: 13,
+			radius: 10, rotate: 0, shadow: false, speed: 1, top: "auto", trail: 60, width: 4, zIndex: 2e9
+		};
+                northArrowSpinner = new Spinner(options).spin(target);
+        }
 }
 
 function generateOverviewMap()
@@ -618,6 +431,7 @@ function init()
 	generateFooterSecurityClassificationText();
 	generateFooterLocationText();
 	generateFooterAcquisitionDateText();
+	setupDialogs();
 	$("#loadingDialogPopup").dialog("close");
 }
 
@@ -633,6 +447,14 @@ function positionNorthArrow()
 		of: $("#overviewMapImage"),
 		offset: "-" + northArrowOffsetWidth + " 0"
 	});
+
+	$("#northArrowSpinnerDiv").position
+	({
+		my: "middle center",
+		at: "middle center",
+		of: $("#northArrowImage"),
+		offset: "0 0"
+	});
 }
 
 function positionOverviewMapImage()
@@ -646,4 +468,202 @@ function positionOverviewMapImage()
 		of: $("#header"),
 		offset: "-" + overviewMapImageOffsetWidth + " " + overviewMapImageOffsetHeight
 	});	
+}
+
+function removeNorthArrowSpinner() { northArrowSpinner.stop(); }
+
+function setupDialogs()
+{
+	$("#changeColorGradientPopup").css("textAlign", "left");
+	$("#changeColorGradientPopup").dialog
+	({
+        autoOpen: false,
+		buttons:
+		{
+			"OK": function()
+			{
+				$(this).dialog("close");
+				generateHeader();
+				generateFooter();		
+			},
+			Cancel: function() { $(this).dialog("close"); }
+		},
+		width: "auto"
+	});
+	$("#changeColorGradientPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+
+	$("#changeFooterAcquisitionDateTextPopup").css("textAlign", "left");
+	$("#changeFooterAcquisitionDateTextPopup").dialog
+	({
+        autoOpen: false,
+		buttons:
+		{
+			"OK": function()
+			{
+				$(this).dialog("close");
+				var text = $("#footerAcquisitionDateTextInput").get(0).value;
+				$("#footerAcquisitionDateTextContainer").html(text);
+				var color = $("#footerAcquisitionDateTextColor").get(0).value;
+				$("#footerAcquisitionDateTextContainer").css("color", "#" + color);
+			},
+			Cancel: function() { $(this).dialog("close"); }
+		},
+		width: "auto"
+	});
+	$("#changeFooterAcquisitionDateTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+
+	$("#changeFooterLocationTextPopup").css("textAlign", "left");
+	$("#changeFooterLocationTextPopup").dialog
+	({
+        autoOpen: false,
+		buttons:
+		{
+			"OK": function()
+			{
+				$(this).dialog("close");
+				var text = $("#footerLocationTextInput").val();
+				$("#footerLocationTextContainer").html(text);
+				var color = $("#footerLocationTextColor").val();
+				$("#footerLocationTextContainer").css("color", "#" + color);
+			},
+			Cancel: function() { $(this).dialog("close"); }
+		},
+		width: "auto"
+	});
+	$("#changeFooterLocationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+
+	$("#changeFooterSecurityClassificationTextPopup").css("textAlign", "left");
+	$("#changeFooterSecurityClassificationTextPopup").dialog
+	({
+        autoOpen: false,
+		buttons:
+		{
+			"OK": function()
+			{
+				$(this).dialog("close");
+				var text = $("#footerSecurityClassificationTextInput").val();
+				$("#footerSecurityClassificationTextContainer").html(text);
+				var color = $("#footerSecurityClassificationTextColor").val();
+				$("#footerSecurityClassificationTextContainer").css("color", "#" + color);
+			},
+			Cancel: function() { $(this).dialog("close"); }
+		},
+		width: "auto"
+	});
+	$("#changeFooterSecurityClassificationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+
+	$("#changeHeaderDescriptionTextPopup").css("textAlign", "left");
+	$("#changeHeaderDescriptionTextPopup").dialog
+	({
+        autoOpen: false,
+		buttons:
+		{
+			"OK": function()
+			{
+				$(this).dialog("close");
+				var text = $("#headerDescriptionTextInput").val();
+				$("#headerDescriptionTextContainer").html(text);
+				var color = $("#headerDescriptionTextColor").val();
+				$("#headerDescriptionTextContainer").css("color", "#" + color);
+			},
+			Cancel: function() { $(this).dialog("close"); }
+		},
+		width: "auto"
+	});
+	$("#changeHeaderDescriptionTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+
+	$("#changeHeaderSecurityClassificationTextPopup").css("textAlign", "left");
+	$("#changeHeaderSecurityClassificationTextPopup").dialog
+	({
+        autoOpen: false,
+		buttons:
+		{
+			"OK": function()
+			{
+				$(this).dialog("close");
+				var text = $("#headerSecurityClassificationTextInput").val();
+				$("#headerSecurityClassificationTextContainer").html(text);
+				var color = $("#headerSecurityClassificationTextColor").val();
+				$("#headerSecurityClassificationTextContainer").css("color", "#" + color);				
+			},
+			Cancel: function() { $(this).dialog("close"); }
+		},
+		width: "auto"
+	});
+	$("#changeHeaderSecurityClassificationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+
+	$("#changeHeaderTitleTextPopup").css("textAlign", "left");
+	$("#changeHeaderTitleTextPopup").dialog
+	({
+        autoOpen: false,
+		buttons:
+		{
+			"OK": function()
+			{
+				$(this).dialog("close");
+				var text = $("#headerTitleTextInput").val();
+				$("#headerTitleTextContainer").html(text);
+				var color = $("#headerTitleTextColor").val();
+				$("#headerTitleTextContainer").css("color", "#" + color);
+			},
+			Cancel: function() { $(this).dialog("close"); }
+		},
+		width: "auto"
+	});
+	$("#changeHeaderTitleTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+
+	$("#changeLogoPopup").css("textAlign", "left");
+	$("#changeLogoPopup").dialog
+	({
+        autoOpen: false,
+		buttons: 
+		{
+			"OK": function() 
+			{
+				$(this).dialog("close");
+				var logo = $("#logo").val();
+				$("#logoImage").attr("src", $("#logoImagesDirectory").html() + logo + "ForWeb.png");	
+			},
+			Cancel: function() { $(this).dialog("close"); }
+		},
+		width: "auto"
+	});
+	$("#changeLogoPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+
+	$("#changeNorthArrowPopup").css("textAlign", "left");
+	$("#changeNorthArrowPopup").dialog
+	({
+        autoOpen: false,
+		buttons:
+		{
+			"OK": function()
+			{
+				$(this).dialog("close");
+				generateNorthArrow();
+			},
+			Cancel: function() { $(this).dialog("close"); }
+		},
+		width: "auto"
+	});
+	$("#changeNorthArrowPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+
+	$("#changeOverviewMapPopup").css("textAlign", "left");
+	$("#changeOverviewMapPopup").dialog
+	({
+        autoOpen: false,
+		buttons:
+		{
+			"OK": function()
+			{
+				$(this).dialog("close");
+				var overviewMapCountry = $("#overviewMapCountry").val();
+				$("#overviewMapImage").attr("src", $("#overviewMapImagesDirectory").html() + overviewMapCountry + ".gif");
+				if ($("#includeOverviewMapCheckbox").get(0).checked) { $("#overviewMapImage").fadeTo("fast", 1); }
+				else { $("#overviewMapImage").fadeTo("fast", 0.5); }
+			},
+			Cancel: function() { $(this).dialog("close"); }
+		},
+		width: "auto"
+	});	
+	$("#changeOverviewMapPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
