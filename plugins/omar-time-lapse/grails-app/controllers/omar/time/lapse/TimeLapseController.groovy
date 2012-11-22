@@ -2,6 +2,7 @@ package omar.time.lapse
 
 class TimeLapseController 
 {
+	def exportTimeLapseGifService
 	def exportTimeLapsePdfService
 	def rasterEntrySearchService
 
@@ -24,10 +25,27 @@ class TimeLapseController
 		)		
 	}
 
-	def exportTimeLapse()
+	def exportTimeLapseGif()
 	{
 		def imageUrls = params.imageUrls.split(">")
-		def filename = exportTimeLapsePdfService.serviceMethod(imageUrls)
+		def filename = exportTimeLapseGifService.exportGif(imageUrls)
+		def file = new File( "${filename}" )
+		if ( file.exists() )
+		{
+			response.setContentType( "application/octet-stream" )
+			response.setHeader( "Content-disposition", "attachment; filename=${file.name}" )
+			response.outputStream << file.bytes
+
+			def removeImageFile = "rm ${file}"
+			def removeImageFileProc = removeImageFile.execute()
+			removeImageFileProc.waitFor()
+		}
+	}
+
+	def exportTimeLapsePdf()
+	{
+		def imageUrls = params.imageUrls.split(">")
+		def filename = exportTimeLapsePdfService.exportPdf(imageUrls)
 		def file = new File( "${filename}" )
 		if ( file.exists() )
 		{

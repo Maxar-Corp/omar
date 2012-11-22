@@ -104,7 +104,21 @@ function exportLink()
 	$("#exportLinkDialog").dialog({ width: "auto" });
 }
 
-function exportTimeLapse()
+function exportTimeLapseGif()
+{
+	var imageUrlsForGif = new Array();
+	for (var i = 0; i < imageIds.length; i++)
+	{
+		imageUrlsForGif[i] = mapLayers[i].getURL(map.getExtent());
+		imageUrlsForGif[i] = imageUrlsForGif[i].replace(/&/g, "%26");
+	}
+	var exportTimeLapseUrl = exportTimeLapseGifUrlBase;
+	exportTimeLapseUrl += "?imageUrls=" + imageUrlsForGif.join(">");
+	$("#submitForm").get(0).action = exportTimeLapseUrl;
+	$("#submitForm").get(0).submit();
+}
+
+function exportTimeLapsePdf()
 {
 	var imageUrlsForPdf = new Array();
 	for (var i = 0; i < imageIds.length; i++) 
@@ -112,7 +126,7 @@ function exportTimeLapse()
 		imageUrlsForPdf[i] = mapLayers[i].getURL(map.getExtent()); 
 		imageUrlsForPdf[i] = imageUrlsForPdf[i].replace(/&/g, "%26");
 	}
-	var exportTimeLapseUrl = exportTimeLapseUrlBase;
+	var exportTimeLapseUrl = exportTimeLapsePdfUrlBase;
 	exportTimeLapseUrl += "?imageUrls=" + imageUrlsForPdf.join(">");
 	$("#submitForm").get(0).action = exportTimeLapseUrl;
 	$("#submitForm").get(0).submit();
