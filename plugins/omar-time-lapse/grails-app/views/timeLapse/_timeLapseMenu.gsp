@@ -20,7 +20,10 @@
 						</ul>
 						<ul>
 							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = "javascript:exportTimeLapse()" title = "Export Time Lapse">Time Lapse</a>
+								<a class = "yuimenuitemlabel" href = "javascript:exportTimeLapseGif()" title = "Export As GIF">GIF</a>
+							</li>
+							<li class = "yuimenuitem">
+								<a class = "yuimenuitemlabel" href = "javascript:exportTimeLapsePdf()" title = "Export As PDF">PDF</a>
 							</li>
 						</ul>
 						<ul>

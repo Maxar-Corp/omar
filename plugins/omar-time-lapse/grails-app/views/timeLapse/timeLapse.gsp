@@ -40,9 +40,10 @@
 			var countryCodes = ["${(countryCodes).join("\",\"")}"];
 			var exportImageUrlBase = "${createLink(action: 'index', controller: 'templateExport')}";
 			var exportLinkUrlBase = "${createLink(absolute: 'true', action: 'timeLapse', base: grailsApplication.config.omar.serverURL)}";
-			var exportTimeLapseUrlBase = "${createLink(action: 'exportTimeLapse', controller: 'timeLapse')}";
+			var exportTimeLapseGifUrlBase = "${createLink(action: 'exportTimeLapseGif', controller: 'timeLapse')}";
+			var exportTimeLapsePdfUrlBase = "${createLink(action: 'exportTimeLapsePdf', controller: 'timeLapse')}";
 			var imageIds = ["${(imageIds).join("\",\"")}"];
-			var imageUrlBase = "${createLink(absolute: true, action: "wms", base: grailsApplication.config.omar.serverURL, controller: "ogc" )}";
+			var imageUrlBase = "${createLink(absolute: true, action: "wms", controller: "ogc" )}";
 			var indexIds = ["${(indexIds).join("\",\"")}"];
 			var niirsValues = ["${(niirsValues).join("\",\"")}"];
 			var timeLapseUrlBase = "${createLink(absolute: true, action: "wms", base: grailsApplication.config.omar.serverURL, controller: "ogc" )}";

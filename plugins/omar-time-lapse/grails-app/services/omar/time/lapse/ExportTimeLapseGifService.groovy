@@ -1,21 +1,23 @@
 package omar.time.lapse
 
-class ExportTimeLapsePdfService 
+class ExportTimeLapseGifService 
 {
 	def grailsApplication
 
-	def exportPdf(def imageUrls) 
+	def exportGif(def imageUrls)
 	{
 		def date = new Date().getTime()
-		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
+		def tempFilesLocation = grailsApplication.config.export.workDir + "/"	
 
 		def command = []
 		command[0] = "convert"
+		command += "-delay"
+		command += "100"
 		for (item in imageUrls) { command += item }
-		command += "${tempFilesLocation}${date}timeLapse.pdf"
-		
-		executeCommand(command)
-                return "${tempFilesLocation}${date}timeLapse.pdf"
+		command += "${tempFilesLocation}${date}timeLapse.gif"
+		executeCommand(command)	
+
+		return "${tempFilesLocation}${date}timeLapse.gif"
 	}
 
 	def executeCommand(def executableCommand)
