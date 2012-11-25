@@ -20,15 +20,8 @@
 			<div align = "left" id = "footerSecurityClassificationTextContainer" onClick = "changeFooterSecurityClassificationText()"></div>
 			<div id = "footerLocationTextContainer" onClick = "changeFooterLocationText()"></div>
 			<div align = "right" id = "footerAcquisitionDateTextContainer" onClick = "changeFooterAcquisitionDateText()"></div>
-
-			<div id = "countryCode">${countryCode}</div>
-			<div id = "formActionUrl">${createLink(action: 'export')}</div>
-			<div id = "footerGradientGeneratorUrl">${createLink(action: 'footerGradientGenerator')}</div>
-			<div id = "headerGradientGeneratorUrl">${createLink(action: 'headerGradientGenerator')}</div>
-			<div id = "jsColorImagesDirectory">${resource(dir: 'images/jsColor/', plugin: 'omar-image-magick')}</div>
-			<div id = "logoImagesDirectory">${resource(dir: 'images/', plugin: 'omar-image-magick')}</div>
-			<div id = "northArrowGeneratorUrl">${createLink(action: 'northArrowGenerator')}</div>
-			<div id = "overviewMapImagesDirectory">${resource(dir: 'images/overviewMaps/', plugin: 'omar-image-magick')}</div>
+			<div id = "markerDiv"></div>
+			
 			<form id = "downloadForm" method = "post"></form>
 
 			<div id = "changeColorGradientPopup" title = "Header/Footer Color Gradient">
@@ -176,7 +169,19 @@
 				
 			<div id = "downloadDialogPopup" title = "Downloading...">The download will start automatically once the template is complete.</div>
 			<div id = "fontSize"></div>
+			<div id = "jsColorImagesDirectory">${resource(dir: 'images/jsColor/', plugin: 'omar-image-magick')}</div>
 		</content>
 		<content tag = "bottom"></content>
+		<r:script>
+			var countryCode = "${countryCode.toLowerCase()}";
+                        var formActionUrl = "${createLink(action: 'export')}";
+                        var footerGradientGeneratorUrl = "${createLink(action: 'footerGradientGenerator')}";
+                        var headerGradientGeneratorUrl = "${createLink(action: 'headerGradientGenerator')}";
+                        var logoImagesDirectory = "${resource(dir: 'images/', plugin: 'omar-image-magick')}";
+			var markerIcon = "${resource(dir: 'js/img/', file: 'marker-blue.png', plugin: 'openlayers')}";
+			var markers = ["${markers.join("\",\"")}"];
+                        var northArrowGeneratorUrl = "${createLink(action: 'northArrowGenerator')}";
+                        var overviewMapImagesDirectory = "${resource(dir: 'images/overviewMaps/', plugin: 'omar-image-magick')}";
+		</r:script>
 	</body>
 </html>

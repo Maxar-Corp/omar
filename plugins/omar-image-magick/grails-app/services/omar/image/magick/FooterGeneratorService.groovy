@@ -39,7 +39,7 @@ class FooterGeneratorService
 
 		//########## Determine the footer text size
 		if (DEBUG) { println "Determine the footer text size:" }
-		def footerTextWidth = footerWidth / 3
+		def footerTextWidth = footerWidth / 2
 		footerTextWidth = footerTextWidth.toInteger()
 		def footerTextHeight = footerHeight
 		footerTextHeight = footerTextHeight.toInteger()

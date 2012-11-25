@@ -10,7 +10,8 @@ class TimeLapseController
 	{ 
 	
 		def rasterEntries = rasterEntrySearchService.findRasterEntries(params.imageIds?.split(","))
-		def bbox = params.bbox
+		def bbox = params.bbox ?: [-180,-90,180,90]
+		def markers = params.markers?.split(",") ?: ["null"]
 		render(
 			view: "timeLapse.gsp",
 			model:
@@ -20,6 +21,7 @@ class TimeLapseController
 				countryCodes: rasterEntries.countryCode,
 				imageIds: rasterEntries.title,
 				indexIds: rasterEntries.indexId,
+				markers: markers,
 				niirsValues: rasterEntries.niirs
 			]	
 		)		

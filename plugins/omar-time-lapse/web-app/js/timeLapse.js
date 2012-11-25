@@ -5,12 +5,15 @@ var dom = YAHOO.util.Dom;
 var loadedLayers = new Array();
 var mapLayers = new Array();
 var map;
+var markerLayer;
+var markerSize = new OpenLayers.Size(21,25);
 var movieAdvance;
 var playDirection;
 var playSpeed = 1000;
 var spinner;
 
-$(document).ready(
+$(document).ready
+(
 	function () 
 	{ 
 		Event = YAHOO.util.Event;
@@ -31,21 +34,28 @@ $(document).ready(
 			}
 		);
 
-		var oMenu = new YAHOO.widget.MenuBar("timeLapseMenu", 
-		{
-			autosubmenudisplay: true,
-			hidedelay: 750,
-			showdelay: 0,
-			lazyload: true,
-			zIndex:9999});
-			oMenu.render();
+		var oMenu = new YAHOO.widget.MenuBar
+		(
+			"timeLapseMenu", 
+			{ autosubmenudisplay: true, hidedelay: 750, showdelay: 0, lazyload: true, zIndex:9999}
+		); 
+		oMenu.render();
 
 		pageSetup();
 		mapSetup();
+		setupDialogs();
+		initializeMarkerLayer();
 		currentLayer = imageIds.length - 1;
 		fastForward();
 	}
 );
+
+function addMarkerDialog()
+{
+	$("#markerLatitudeInput").val(map.getCenter().lat);
+	$("#markerLongitudeInput").val(map.getCenter().lon);
+	$("#addMarkerDialog").dialog("open");
+}
 
 function deleteImageFromTimeLapse()
 {
@@ -76,6 +86,17 @@ function deleteImageFromTimeLapse()
 	fastForward();
 }
 
+function dropMarker()
+{
+	var markerLatitude = $("#markerLatitudeInput").val();
+	var markerLongitude = $("#markerLongitudeInput").val();
+	var markerPoint = new OpenLayers.Geometry.Point(markerLongitude,markerLatitude);
+	var marker = new OpenLayers.Feature.Vector(markerPoint);
+	markerLayer.addFeatures(marker);
+	marker.style.label = markerLatitude + ", " + markerLongitude;
+	markerLayer.redraw();
+} 
+
 function exportImage()
 {
 	var exportImageUrl = exportImageUrlBase;
@@ -91,6 +112,20 @@ function exportImage()
 	var centerMgrs = coordConvert.ddToMgrs(map.getCenter().lat, map.getCenter().lon);
 	exportImageUrl += "&centerGeo=GEO: " + centerGeo + " MGRS: " + centerMgrs;
 	exportImageUrl += "&northArrowAngle=0";
+	
+	if (markerLayer.features.length > 0)
+	{
+		exportImageUrl += "&markers=";
+		var markerLocationArray = new Array();
+		for (var i = 0; i < markerLayer.features.length; i++)
+		{
+			var markerGeometry = markerLayer.features[i].geometry;
+			var markerPoint = map.getPixelFromLonLat(new OpenLayers.LonLat(markerGeometry.x, markerGeometry.y));
+			markerLocationArray[2 * i] = markerPoint.x - (markerSize.w/2);
+			markerLocationArray[2 * i +1] = markerPoint.y - markerSize.h;
+		}
+		exportImageUrl += markerLocationArray.join(",");
+	}
 	window.open(exportImageUrl);
 }
 
@@ -101,7 +136,7 @@ function exportLink()
 	exportLinkUrl += "&bbox=" + map.calculateBounds().toArray();
 
 	$("#exportLinkDialog").html("Right-click the link below to copy:<br><br><a href='" + exportLinkUrl + "' target = '_blank'><b>OMAR Time Lapse Link</b></a>");
-	$("#exportLinkDialog").dialog({ width: "auto" });
+	$("#exportLinkDialog").dialog("open");
 }
 
 function exportTimeLapseGif()
@@ -163,7 +198,7 @@ function exportTimeLapseSummary()
 
 	$("#exportTimeLapseSummaryDialog").html(timeLapseSummaryTable);
 	$("#exportTimeLapseSummaryDialog").css("textAlign", "left");
-	$("#exportTimeLapseSummaryDialog").dialog({ width: "auto" });
+	$("#exportTimeLapseSummaryDialog").dialog("open");
 }
 
 function fastForward()
@@ -204,6 +239,53 @@ function generateSpinner()
 			radius: 10, rotate: 0, shadow: false, speed: 1, top: "auto", trail: 60, width: 4, zIndex: 2e9
 		};
 		spinner = new Spinner(options).spin(target);
+	}
+}
+
+function initializeMarkerLayer()
+{
+	markerLayer = new OpenLayers.Layer.Vector
+	(
+		"Vector Layer",
+		{
+			style:
+			{
+				externalGraphic: icon,
+				fontColor: "white",
+				fontFamily: "Courrier New, monospace",
+				fontSize: "14px",
+				fontWeight: "bold",
+				graphicHeight: markerSize.h,
+				graphicHWidth: markerSize.w,
+				graphicYOffset: -markerSize.h,
+				labelOutlineColor: "black",
+				labelOutlineWidth: 3,
+				labelYOffset: 1.25 * markerSize.h
+			}
+		}
+	);
+	map.addLayer(markerLayer);
+
+	var dragFeatureControl = new OpenLayers.Control.DragFeature
+	(
+		markerLayer, 
+		{
+			onComplete: function(marker) { updateMarkerPosition(marker); }
+		}
+	);
+	map.addControl(dragFeatureControl);
+	dragFeatureControl.activate();
+
+	// drop any marker locations passed through the url
+	if (markers.length > 1)
+	{
+		var numberOfMarkers = parseInt(markers.length / 2);
+		for (var i = 0; i < numberOfMarkers; i++)
+		{
+			$("#markerLatitudeInput").val(markers[2 * i]);
+			$("#markerLongitudeInput").val(markers[2 * i + 1]);
+			dropMarker();
+		}
 	}
 }
 
@@ -265,6 +347,7 @@ function mapSetup()
 		mapLayers[i].setVisibility(false);
 	}
 
+	map.events.register("mousemove", map, function(event) { updateMapCoordinates(event); });
 	map.events.register("moveend", map, function() { theMapHasMoved(); });
 	map.events.register("zoomend", map, function() { theMapHasZoomed(); });
 
@@ -312,13 +395,22 @@ function pageSetup()
 		offset: "0 0"
 	});
 	
+	$("#mapCoordinatesDiv").css("width", $("#map").width());
+	$("#mapCoordinatesDiv").position
+	({
+		my: "middle top",
+		at: "middle bottom",
+		of: $("#map"),
+		offset: "0 5"
+	});
+
 	$("#slider").css("width", $("#map").width());
 	$("#slider").position
 	({
 		my: "middle top",
 		at: "middle bottom",
-		of: $("#map"),
-		offset: "0 10"
+		of: $("#mapCoordinatesDiv"),
+		offset: "0 5"
 	});
 	generateSlider();
 
@@ -437,6 +529,36 @@ function rewind()
         updateText();
 }
 
+function setupDialogs()
+{
+	$("#exportTimeLapseSummaryDialog").dialog
+	({
+		autoOpen: false, 
+		width: "auto" 
+	});
+	
+	$("#exportLinkDialog").dialog
+	({ 
+		autoOpen: false,
+		width: "auto" 
+	});
+
+	$("#addMarkerDialog").dialog
+	({
+		autoOpen: false,
+		buttons:
+		{
+			"Drop": function()
+			{
+				$(this).dialog("close");
+				dropMarker();
+			},
+			Cancel: function() { $(this).dialog("close"); }
+		},
+		width: "auto"
+	});
+}
+
 function slowDown()
 {
 	if (playSpeed < 2000) { playSpeed += 75; }
@@ -457,6 +579,23 @@ function theMapHasMoved()
 function theMapHasZoomed()
 {
 	for (var i = 0; i < imageIds.length; i++) { fastForward(); }
+}
+
+function updateMapCoordinates(event)
+{
+	var mouseCoordinate = map.getLonLatFromPixel(event.xy);
+	$("#mapCoordinatesDiv").html
+	(
+		mouseCoordinate.lat.toFixed(7) + ", " + mouseCoordinate.lon.toFixed(7) + " // " +
+		coordConvert.ddToDms(mouseCoordinate.lat, mouseCoordinate.lon) + " // " +
+		coordConvert.ddToMgrs(mouseCoordinate.lat, mouseCoordinate.lon)
+	);
+}
+
+function updateMarkerPosition(marker)
+{
+	marker.style.label = marker.geometry.y + ", " + marker.geometry.x;
+	markerLayer.redraw();
 }
 
 function updateProgressSlider() { $("#slider").slider("value", currentLayer); }

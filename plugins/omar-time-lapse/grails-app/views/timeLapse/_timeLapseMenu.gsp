@@ -45,6 +45,9 @@
 							<li class = "yuimenuitem">
 								<a class = "yuimenuitemlabel" href = "javascript:reverseTimeLapseOrder()" title = "Reverse Order">Reverse Order</a>
 							</li>
+							<li class = "yuimenuitem">
+								<a class = "yuimenuitemlabel" href = "javascript:addMarkerDialog()" title = "Add Marker">Add Marker</a>
+							</li>
 						</ul>
 					</div>
 				</div>

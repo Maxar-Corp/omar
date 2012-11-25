@@ -1,5 +1,11 @@
 body { font-family: Arial; }
 
+#mapCoordinatesDiv 
+{
+	font-weight: bold;
+	text-align: center; 
+}
+
 #slider .ui-slider-handle
 {
 	background: #0b0bbe;
