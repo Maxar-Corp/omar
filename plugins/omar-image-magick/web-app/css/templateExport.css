@@ -2,12 +2,11 @@ a { text-decoration: none; }
 
 body { font-family:"Arial"; }
 
-#changeColorGradientPopup, #changeFooterAcquisitionDateTextPopup, #changeFooterLocationTextPopup, #changeFooterSecurityClassificationTextPopup, #changeHeaderDescriptionTextPopup, #changeHeaderSecurityClassificationTextPopup, #changeHeaderTitleTextPopup, #changeLogoPopup, #changeNorthArrowPopup, #changeOverviewMapPopup
+#changeColorGradientPopup, #changeFooterAcquisitionDateTextPopup, #changeFooterLocationTextPopup, #changeFooterSecurityClassificationTextPopup, #changeHeaderDescriptionTiextPopup, #changeHeaderSecurityClassificationTextPopup, #changeHeaderTitleTextPopup, #changeLogoPopup, #changeNorthArrowPopup, #changeOverviewMapPopup
 {
-	display: none;
+	text-align: left;
 }
 
-#countryCode, #downloadDialogPopup, #downloadForm, #fontSize, #formActionUrl, #footerGradientGeneratorUrl, #headerGradientGeneratorUrl, #jsColorImagesDirectory, #logoImagesDirectory, #northArrowGeneratorUrl, #overviewMapImagesDirectory
-{
-	display: none;
-}
+#fontSize, #jsColorImagesDirectory { display: none; }
+
+#footerAcquisitionDateTextContainer { text-align: right; }

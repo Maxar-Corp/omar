@@ -84,15 +84,7 @@ function downloadImage()
 	$("#downloadForm").get(0).action = formActionUrl + exportUrlParams;
 	$("#downloadForm").get(0).submit();
 
-	$("#downloadDialogPopup").dialog
-	({
-                buttons:
-                {
-                        "OK": function() { $(this).dialog("close"); }
-		},
-		modal: true,
-		width: "auto"
-	});   
+	$("#downloadDialogPopup").dialog("open");   
 }
 
 function fontSize(text, desiredSizeHeight, desiredSizeWidth)
@@ -474,7 +466,6 @@ function removeNorthArrowSpinner() { northArrowSpinner.stop(); }
 
 function setupDialogs()
 {
-	$("#changeColorGradientPopup").css("textAlign", "left");
 	$("#changeColorGradientPopup").dialog
 	({
         	autoOpen: false,
@@ -492,7 +483,6 @@ function setupDialogs()
 	});
 	$("#changeColorGradientPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 
-	$("#changeFooterAcquisitionDateTextPopup").css("textAlign", "left");
 	$("#changeFooterAcquisitionDateTextPopup").dialog
 	({
         	autoOpen: false,
@@ -512,7 +502,6 @@ function setupDialogs()
 	});
 	$("#changeFooterAcquisitionDateTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 
-	$("#changeFooterLocationTextPopup").css("textAlign", "left");
 	$("#changeFooterLocationTextPopup").dialog
 	({
         	autoOpen: false,
@@ -532,7 +521,6 @@ function setupDialogs()
 	});
 	$("#changeFooterLocationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 
-	$("#changeFooterSecurityClassificationTextPopup").css("textAlign", "left");
 	$("#changeFooterSecurityClassificationTextPopup").dialog
 	({
         	autoOpen: false,
@@ -552,7 +540,6 @@ function setupDialogs()
 	});
 	$("#changeFooterSecurityClassificationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 
-	$("#changeHeaderDescriptionTextPopup").css("textAlign", "left");
 	$("#changeHeaderDescriptionTextPopup").dialog
 	({
         	autoOpen: false,
@@ -572,7 +559,6 @@ function setupDialogs()
 	});
 	$("#changeHeaderDescriptionTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 
-	$("#changeHeaderSecurityClassificationTextPopup").css("textAlign", "left");
 	$("#changeHeaderSecurityClassificationTextPopup").dialog
 	({
         	autoOpen: false,
@@ -592,7 +578,6 @@ function setupDialogs()
 	});
 	$("#changeHeaderSecurityClassificationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 
-	$("#changeHeaderTitleTextPopup").css("textAlign", "left");
 	$("#changeHeaderTitleTextPopup").dialog
 	({
         	autoOpen: false,
@@ -612,7 +597,6 @@ function setupDialogs()
 	});
 	$("#changeHeaderTitleTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 
-	$("#changeLogoPopup").css("textAlign", "left");
 	$("#changeLogoPopup").dialog
 	({
         	autoOpen: false,
@@ -630,7 +614,6 @@ function setupDialogs()
 	});
 	$("#changeLogoPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 
-	$("#changeNorthArrowPopup").css("textAlign", "left");
 	$("#changeNorthArrowPopup").dialog
 	({
         	autoOpen: false,
@@ -647,7 +630,6 @@ function setupDialogs()
 	});
 	$("#changeNorthArrowPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 
-	$("#changeOverviewMapPopup").css("textAlign", "left");
 	$("#changeOverviewMapPopup").dialog
 	({
         	autoOpen: false,
@@ -666,6 +648,18 @@ function setupDialogs()
 		width: "auto"
 	});	
 	$("#changeOverviewMapPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+
+	$("#downloadDialogPopup").dialog
+	({
+		autoOpen: false,
+		buttons:
+		{
+			"OK": function() { $(this).dialog("close"); }
+		},
+		modal: true,
+		width: "auto"
+	});
+	$("#downloadDialogPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
 function setupMarkers()
