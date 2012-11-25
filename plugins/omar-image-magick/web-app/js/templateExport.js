@@ -7,7 +7,8 @@ var logoOffset;
 var logoWidth;
 var northArrowSpinner;
 
-$(document).ready(
+$(document).ready
+(
 	function () 
 	{ 
 		Event = YAHOO.util.Event;
@@ -31,13 +32,7 @@ $(document).ready(
 		var oMenu = new YAHOO.widget.MenuBar
 		(
 			"templateExportMenu",
-			{
-				autosubmenudisplay: true,
-				hidedelay: 750,
-				showdelay: 0,
-				lazyload: true,
-				zIndex:9999
-			}
+			{ autosubmenudisplay: true, hidedelay: 750, showdelay: 0, lazyload: true, zIndex:9999 }
 		);
 		oMenu.render();
 	}
@@ -81,7 +76,12 @@ function downloadImage()
 	exportUrlParams += "&northArrowColor=" + $("#northArrowColor").val();
 	exportUrlParams += "&northArrowSize=" + $("#northArrowImage").height();
 	
-	$("#downloadForm").get(0).action = $("#formActionUrl").get(0).innerHTML + exportUrlParams;
+	if (markers.length > 1)
+	{
+		exportUrlParams += "&markers=" + markers.join(",");
+	}
+
+	$("#downloadForm").get(0).action = formActionUrl + exportUrlParams;
 	$("#downloadForm").get(0).submit();
 
 	$("#downloadDialogPopup").dialog
@@ -113,7 +113,7 @@ function fontSize(text, desiredSizeHeight, desiredSizeWidth)
 
 function footerGradientUrlGenerator(topColor, bottomColor, height)
 {
-        var gradientGeneratorUrl = $("#footerGradientGeneratorUrl").get(0).innerHTML;
+        var gradientGeneratorUrl = footerGradientGeneratorUrl;
         gradientGeneratorUrl += "?gradientColorTop=" + topColor;
         gradientGeneratorUrl += "&gradientColorBottom=" + bottomColor;
         gradientGeneratorUrl += "&gradientHeight=" + height;
@@ -127,8 +127,8 @@ function generateFooter()
 	$("#footer").css("height", footerHeight);
 	$("#footer").css("width", footerWidth);
 
-	var gradientColorBottom = $("#gradientColorBottom").get(0).value;
-	var gradientColorTop = $("#gradientColorTop").get(0).value;
+	var gradientColorBottom = $("#gradientColorBottom").val();
+	var gradientColorTop = $("#gradientColorTop").val();
 	$("#footer").css("backgroundImage", "url('" + footerGradientUrlGenerator(gradientColorTop, gradientColorBottom, footerHeight) + "')");	
 
 	$("#footer").position
@@ -315,7 +315,7 @@ function generateLogo()
 	$("#logoImage").css("height", logoHeight);
 	$("#logoImage").css("width", logoWidth);
 
-	$("#logoImage").attr("src", $("#logoImagesDirectory").html() + "ciaLogoForWeb.png");
+	$("#logoImage").attr("src", logoImagesDirectory + "ciaLogoForWeb.png");
 
 	logoOffset = ($("#header").height() - logoHeight) / 2;
 	$("#logoImage").position
@@ -368,9 +368,9 @@ function generateNorthArrow()
 	var northArrowColor = $("#northArrowColor").val();
 	var northArrowBackgroundColor = $("#northArrowBackgroundColor").val();
 
-	var northArrowUrl = $("#northArrowGeneratorUrl").html();
+	var northArrowUrl = northArrowGeneratorUrl;
 	northArrowUrl += "?northArrowSize=" + northArrowHeight;
-	northArrowUrl += "&northAngle=" + $("#northAngleInput").get(0).value;
+	northArrowUrl += "&northAngle=" + $("#northAngleInput").val();
 	northArrowUrl += "&northArrowColor=" + northArrowColor;
 	northArrowUrl += "&northArrowBackgroundColor=" + northArrowBackgroundColor;
 	$("#northArrowImage").attr("src", northArrowUrl);
@@ -392,7 +392,6 @@ function generateNorthArrow()
 function generateOverviewMap()
 {
 	var overviewMapCountry = "yy";
-        var countryCode = $("#countryCode").html().toLowerCase();
 	for (var i = 0; i < $("#overviewMapCountry").get(0).options.length; i++)
 	{
 		if (countryCode == $("#overviewMapCountry").get(0).options[i].value)
@@ -406,12 +405,12 @@ function generateOverviewMap()
 	var overviewMapImageHeight = 0.2 * $("#previewImage").height();
 	$("#overviewMapImage").css("height", overviewMapImageHeight);
 
-	$("#overviewMapImage").attr("src", $("#overviewMapImagesDirectory").html() + overviewMapCountry + ".gif");
+	$("#overviewMapImage").attr("src", overviewMapImagesDirectory + overviewMapCountry + ".gif");
 }
 
 function headerGradientUrlGenerator(topColor, bottomColor, height)
 {
-        var gradientGeneratorUrl = $("#headerGradientGeneratorUrl").html();
+        var gradientGeneratorUrl = headerGradientGeneratorUrl;
         gradientGeneratorUrl += "?gradientColorTop=" + topColor;
         gradientGeneratorUrl += "&gradientColorBottom=" + bottomColor;
         gradientGeneratorUrl += "&gradientHeight=" + height;
@@ -432,6 +431,7 @@ function init()
 	generateFooterLocationText();
 	generateFooterAcquisitionDateText();
 	setupDialogs();
+	setupMarkers();
 	$("#loadingDialogPopup").dialog("close");
 }
 
@@ -477,7 +477,7 @@ function setupDialogs()
 	$("#changeColorGradientPopup").css("textAlign", "left");
 	$("#changeColorGradientPopup").dialog
 	({
-        autoOpen: false,
+        	autoOpen: false,
 		buttons:
 		{
 			"OK": function()
@@ -495,7 +495,7 @@ function setupDialogs()
 	$("#changeFooterAcquisitionDateTextPopup").css("textAlign", "left");
 	$("#changeFooterAcquisitionDateTextPopup").dialog
 	({
-        autoOpen: false,
+        	autoOpen: false,
 		buttons:
 		{
 			"OK": function()
@@ -515,7 +515,7 @@ function setupDialogs()
 	$("#changeFooterLocationTextPopup").css("textAlign", "left");
 	$("#changeFooterLocationTextPopup").dialog
 	({
-        autoOpen: false,
+        	autoOpen: false,
 		buttons:
 		{
 			"OK": function()
@@ -535,7 +535,7 @@ function setupDialogs()
 	$("#changeFooterSecurityClassificationTextPopup").css("textAlign", "left");
 	$("#changeFooterSecurityClassificationTextPopup").dialog
 	({
-        autoOpen: false,
+        	autoOpen: false,
 		buttons:
 		{
 			"OK": function()
@@ -555,7 +555,7 @@ function setupDialogs()
 	$("#changeHeaderDescriptionTextPopup").css("textAlign", "left");
 	$("#changeHeaderDescriptionTextPopup").dialog
 	({
-        autoOpen: false,
+        	autoOpen: false,
 		buttons:
 		{
 			"OK": function()
@@ -575,7 +575,7 @@ function setupDialogs()
 	$("#changeHeaderSecurityClassificationTextPopup").css("textAlign", "left");
 	$("#changeHeaderSecurityClassificationTextPopup").dialog
 	({
-        autoOpen: false,
+        	autoOpen: false,
 		buttons:
 		{
 			"OK": function()
@@ -595,7 +595,7 @@ function setupDialogs()
 	$("#changeHeaderTitleTextPopup").css("textAlign", "left");
 	$("#changeHeaderTitleTextPopup").dialog
 	({
-        autoOpen: false,
+        	autoOpen: false,
 		buttons:
 		{
 			"OK": function()
@@ -615,14 +615,14 @@ function setupDialogs()
 	$("#changeLogoPopup").css("textAlign", "left");
 	$("#changeLogoPopup").dialog
 	({
-        autoOpen: false,
+        	autoOpen: false,
 		buttons: 
 		{
 			"OK": function() 
 			{
 				$(this).dialog("close");
 				var logo = $("#logo").val();
-				$("#logoImage").attr("src", $("#logoImagesDirectory").html() + logo + "ForWeb.png");	
+				$("#logoImage").attr("src", logoImagesDirectory + logo + "ForWeb.png");	
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
@@ -633,7 +633,7 @@ function setupDialogs()
 	$("#changeNorthArrowPopup").css("textAlign", "left");
 	$("#changeNorthArrowPopup").dialog
 	({
-        autoOpen: false,
+        	autoOpen: false,
 		buttons:
 		{
 			"OK": function()
@@ -650,14 +650,14 @@ function setupDialogs()
 	$("#changeOverviewMapPopup").css("textAlign", "left");
 	$("#changeOverviewMapPopup").dialog
 	({
-        autoOpen: false,
+        	autoOpen: false,
 		buttons:
 		{
 			"OK": function()
 			{
 				$(this).dialog("close");
 				var overviewMapCountry = $("#overviewMapCountry").val();
-				$("#overviewMapImage").attr("src", $("#overviewMapImagesDirectory").html() + overviewMapCountry + ".gif");
+				$("#overviewMapImage").attr("src", overviewMapImagesDirectory + overviewMapCountry + ".gif");
 				if ($("#includeOverviewMapCheckbox").get(0).checked) { $("#overviewMapImage").fadeTo("fast", 1); }
 				else { $("#overviewMapImage").fadeTo("fast", 0.5); }
 			},
@@ -666,4 +666,23 @@ function setupDialogs()
 		width: "auto"
 	});	
 	$("#changeOverviewMapPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+}
+
+function setupMarkers()
+{
+	if (markers.length > 1)
+	{
+		var numberOfMarkers = parseInt(markers.length / 2);
+		for (var i = 0; i < numberOfMarkers; i++)
+		{
+			$("#markerDiv").append("<img id = 'marker" + i + "' src = '" + markerIcon + "'/>");
+			$("#" + "marker" + i).position
+			({
+				my: "left top",
+				at: "left top",
+				of: $("#previewImage"),
+				offset: markers[2 * i] + " " + markers[2 * i + 1]
+			});
+		}
+	}
 }

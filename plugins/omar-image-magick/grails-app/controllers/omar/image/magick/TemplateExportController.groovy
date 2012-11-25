@@ -21,6 +21,7 @@ class TemplateExportController
 		def countryCode = params.countryCode
 		def imageId = params.imageId
 		def imageUrl = params.imageURL
+		def markers = params.markers?.split(",") ?: ["null"]
 		def northArrowAngle = params.northArrowAngle
 		def securityClassification = grailsApplication.config.security[grailsApplication.config.security.level].description
 
@@ -33,6 +34,7 @@ class TemplateExportController
 				countryCode: countryCode,
 				imageId: imageId,
 				imageURL: imageUrl,
+				markers: markers,
 				northArrowAngle: northArrowAngle,
 				securityClassification: securityClassification
 			]
@@ -61,7 +63,8 @@ class TemplateExportController
 		def imageWidth = params.imageWidth
 		def includeOverviewMap = params.includeOverviewMap
 		def logo = params.logo
-    		def northAngle = params.northArrowAngle
+    		def markerLocations = params.markers?.split(",") ?: ["null"]
+		def northAngle = params.northArrowAngle
 		def northArrowColor = params.northArrowColor
 		def northArrowBackgroundColor = params.northArrowBackgroundColor
 		def northArrowSize = params.northArrowSize
@@ -71,24 +74,11 @@ class TemplateExportController
 		final def imageFilename = new DataflowVariable()
 		final def northArrowFilename = new DataflowVariable()
 
-		task 
-		{ 
-			imageFilename << imageDownloadService.serviceMethod(imageFile) 
-		}
+		task { imageFilename << imageDownloadService.serviceMethod(imageFile, markerLocations) }
+		task { northArrowFilename << northArrowGeneratorService.serviceMethod(northAngle, northArrowBackgroundColor, northArrowColor, northArrowSize) }
+		task { headerFilename << headerGeneratorService.serviceMethod(gradientColorBottom, gradientColorTop, headerDescriptionText, headerDescriptionTextColor, headerSecurityClassificationText, headerSecurityClassificationTextColor, headerTitleText, headerTitleTextColor, imageHeight, imageWidth, logo) }
+		task { footerFilename << footerGeneratorService.serviceMethod(footerAcquisitionDateText, footerAcquisitionDateTextColor, footerLocationText, footerLocationTextColor, footerSecurityClassificationText, footerSecurityClassificationTextColor, gradientColorBottom, gradientColorTop, imageHeight, imageWidth) }	
 		
-		task 
-		{ 
-			northArrowFilename << northArrowGeneratorService.serviceMethod(northAngle, northArrowBackgroundColor, northArrowColor, northArrowSize)
-		}
-		task 
-		{ 
-			headerFilename << headerGeneratorService.serviceMethod(gradientColorBottom, gradientColorTop, headerDescriptionText, headerDescriptionTextColor, headerSecurityClassificationText, headerSecurityClassificationTextColor, headerTitleText, headerTitleTextColor, imageHeight, imageWidth, logo) 
-		}
-		task 
-		{	
-			footerFilename << footerGeneratorService.serviceMethod(footerAcquisitionDateText, footerAcquisitionDateTextColor, footerLocationText, footerLocationTextColor, footerSecurityClassificationText, footerSecurityClassificationTextColor, gradientColorBottom, gradientColorTop, imageHeight, imageWidth) 
-		}	
-
 		def finishedProductFilename = templateExportService.serviceMethod(country, footerFilename.val, headerFilename.val, imageFilename.val, imageHeight, includeOverviewMap, northArrowFilename.val)
 		def file = new File( "${finishedProductFilename}" )
 		if ( file.exists() )

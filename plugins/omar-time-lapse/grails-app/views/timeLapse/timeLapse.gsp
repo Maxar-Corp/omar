@@ -8,6 +8,7 @@
 		<content tag = "center">
 			<g:render template="timeLapseMenu"/>
 			<div id = "map"></div>
+			<div id = "mapCoordinatesDiv">Map Coordinates</div>
 			<div id = "imageIdHyperlink">Image Id Hyperlink</div>
 			<div id = "acquisitionDateText">Acquisition Date Text</div>
 			
@@ -30,6 +31,12 @@
 			<div id = "exportTimeLapseSummaryDialog" title = "Time Lapse Summary"></div>
 			<div id = "exportLinkDialog" title = "Export Link"></div>
 
+			<div id = "addMarkerDialog" title = "Add Marker">
+				Latitude: <input id = "markerLatitudeInput" type = "text"/>
+				<br>
+				Longitude: <input id = "markerLongitudeInput" type = "text"/>
+			</div>
+
 			<form id = "submitForm" method = "post"></form>
 		</content>
 		<content tag = "bottom"></content>
@@ -42,10 +49,12 @@
 			var exportLinkUrlBase = "${createLink(absolute: 'true', action: 'timeLapse', base: grailsApplication.config.omar.serverURL)}";
 			var exportTimeLapseGifUrlBase = "${createLink(action: 'exportTimeLapseGif', controller: 'timeLapse')}";
 			var exportTimeLapsePdfUrlBase = "${createLink(action: 'exportTimeLapsePdf', controller: 'timeLapse')}";
+			var icon = "${resource(dir: 'js/img/', file: 'marker-blue.png', plugin: 'openlayers')}";
 			var imageIds = ["${(imageIds).join("\",\"")}"];
 			var imageUrlBase = "${createLink(absolute: true, action: "wms", controller: "ogc" )}";
 			var indexIds = ["${(indexIds).join("\",\"")}"];
 			var niirsValues = ["${(niirsValues).join("\",\"")}"];
+			var markers = [${(markers).join(",")}];
 			var timeLapseUrlBase = "${createLink(absolute: true, action: "wms", base: grailsApplication.config.omar.serverURL, controller: "ogc" )}";
 		</r:script>
 	</body>
