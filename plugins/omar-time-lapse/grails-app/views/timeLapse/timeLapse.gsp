@@ -51,11 +51,10 @@
 			var exportTimeLapsePdfUrlBase = "${createLink(action: 'exportTimeLapsePdf', controller: 'timeLapse')}";
 			var icon = "${resource(dir: 'js/img/', file: 'marker-blue.png', plugin: 'openlayers')}";
 			var imageIds = ["${(imageIds).join("\",\"")}"];
-			var imageUrlBase = "${createLink(absolute: true, action: "wms", controller: "ogc" )}";
+			var imageUrlBase = "${createLink(absolute: true, action: "wms", base: grailsApplication.config.omar.serverURL, controller: "ogc" )}";
 			var indexIds = ["${(indexIds).join("\",\"")}"];
 			var niirsValues = ["${(niirsValues).join("\",\"")}"];
 			var markers = [${(markers).join(",")}];
-			var timeLapseUrlBase = "${createLink(absolute: true, action: "wms", base: grailsApplication.config.omar.serverURL, controller: "ogc" )}";
 		</r:script>
 	</body>
 </html>

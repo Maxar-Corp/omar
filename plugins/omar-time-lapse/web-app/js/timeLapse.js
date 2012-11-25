@@ -170,6 +170,8 @@ function exportTimeLapsePdf()
 function exportTimeLapseSummary()
 {
 	var timeLapseSummaryTable = "";
+	
+	// list all images and metadata
 	timeLapseSummaryTable += "<table>" +
 		"<tr>" +
 			"<td><b>No.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>" + 
@@ -191,10 +193,25 @@ function exportTimeLapseSummary()
 	} 
 	timeLapseSummaryTable += "</table><br>";
 
+	// list the current map center
 	timeLapseSummaryTable += "<b>Map Center:&nbsp;&nbsp;</b>" + 
 		map.getCenter().lat + ", " + map.getCenter().lon + " // " +
 		coordConvert.ddToDms(map.getCenter().lat, map.getCenter().lon) + " // " +
 		coordConvert.ddToMgrs(map.getCenter().lat, map.getCenter().lon);
+
+	timeLapseSummaryTable += "<br>";
+
+	// list the current map dimensions in meters
+	var leftCenterPoint = new OpenLayers.Geometry.Point(map.getCenter().lon - map.calculateBounds().getWidth()/2, map.getCenter().lat);
+	var rightCenterPoint = new OpenLayers.Geometry.Point(map.getCenter().lon + map.calculateBounds().getWidth()/2, map.getCenter().lat);
+	var longitudeLine = new OpenLayers.Geometry.LineString([leftCenterPoint, rightCenterPoint]);
+	var longitudeDistance = parseInt(longitudeLine.getGeodesicLength(new OpenLayers.Projection("EPSG:4326")));
+
+	var topMiddlePoint = new OpenLayers.Geometry.Point(map.getCenter().lon, map.getCenter().lat + map.calculateBounds().getHeight()/2);
+	var bottomMiddlePoint = new OpenLayers.Geometry.Point(map.getCenter().lon, map.getCenter().lat - map.calculateBounds().getHeight()/2);
+	var latitudeLine = new OpenLayers.Geometry.LineString([topMiddlePoint, bottomMiddlePoint]);
+	var latitudeDistance = parseInt(latitudeLine.getGeodesicLength(new OpenLayers.Projection("EPSG:4326")));
+	timeLapseSummaryTable += "<b>Map Dimensions:&nbsp;&nbsp;</b>" + longitudeDistance + "m x " + latitudeDistance + "m (approx.)";
 
 	$("#exportTimeLapseSummaryDialog").html(timeLapseSummaryTable);
 	$("#exportTimeLapseSummaryDialog").css("textAlign", "left");
