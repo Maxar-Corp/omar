@@ -57,7 +57,8 @@ class ImageDownloadService
 		if (markerLocations[0] != "null")
 		{
 			if (DEBUG) { println "Define marker image file:" }
-			def markerImageFileLocation = grailsLinkGenerator.resource(absolute: true, dir: '/js/img', file: 'marker-blue.png', plugin: 'openlayers')
+			def markerImageFileLocation = grailsLinkGenerator.resource(absolute: true, base: grailsApplication.config.omar.serverURL, dir: '/js/img', file: 'marker-blue.png', plugin: 'openlayers')
+
 			if (DEBUG) { println "${markerImageFileLocation}" }
 			
 			if (DEBUG) { println "Determine the number of markers:" }
