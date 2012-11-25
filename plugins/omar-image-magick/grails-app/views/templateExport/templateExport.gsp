@@ -9,17 +9,17 @@
 			<div id = "header" onClick = "changeColorGradient()"></div>
 			<img id = "previewImage" onLoad = "init()" src = "${imageURL}"/>	
 			<img id = "logoImage" onClick = "changeLogo()"/>
-			<div align = "left" id = "headerSecurityClassificationTextContainer" onClick = "changeHeaderSecurityClassificationText()"></div>
-			<div align = "left" id = "headerTitleTextContainer" onClick = "changeHeaderTitleText()"></div>
-			<div align = "left" id = "headerDescriptionTextContainer" onClick = "changeHeaderDescriptionText()"></div>
+			<div id = "headerSecurityClassificationTextContainer" onClick = "changeHeaderSecurityClassificationText()"></div>
+			<div id = "headerTitleTextContainer" onClick = "changeHeaderTitleText()"></div>
+			<div id = "headerDescriptionTextContainer" onClick = "changeHeaderDescriptionText()"></div>
 			<img id = "overviewMapImage" onClick = "changeOverviewMap()" onLoad = "positionOverviewMapImage(); positionNorthArrow()"/>
 			<img id = "northArrowImage" onClick = "changeNorthArrow()" onLoad = "removeNorthArrowSpinner()"/>
 			<div id = "northArrowSpinnerDiv"></div>
 
 			<div id = "footer"></div>
-			<div align = "left" id = "footerSecurityClassificationTextContainer" onClick = "changeFooterSecurityClassificationText()"></div>
+			<div id = "footerSecurityClassificationTextContainer" onClick = "changeFooterSecurityClassificationText()"></div>
 			<div id = "footerLocationTextContainer" onClick = "changeFooterLocationText()"></div>
-			<div align = "right" id = "footerAcquisitionDateTextContainer" onClick = "changeFooterAcquisitionDateText()"></div>
+			<div id = "footerAcquisitionDateTextContainer" onClick = "changeFooterAcquisitionDateText()"></div>
 			<div id = "markerDiv"></div>
 			
 			<form id = "downloadForm" method = "post"></form>
