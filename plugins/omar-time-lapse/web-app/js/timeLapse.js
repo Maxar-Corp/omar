@@ -482,7 +482,8 @@ function pageSetup()
 		my: "middle top",
 		at: "middle bottom",
 		of: $("#slider"),
-		offset: "0 15"
+		offset: "0 15",
+		collision: "none"
 	});
 
 	$("#slowDownButton").button(
