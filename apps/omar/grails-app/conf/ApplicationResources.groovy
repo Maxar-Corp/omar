@@ -43,7 +43,7 @@ modules = {
 
     //resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
 
-    resource url: [dir: 'js', file: 'OMAR.js']
+    resource url: [plugin:'omar-common-ui', dir: 'js', file: 'OMAR.js']
     resource url: [dir: 'js', file: 'application.js']
     resource url: [dir: 'js', file: 'datechooser.js']
 
@@ -166,7 +166,7 @@ modules = {
     resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
     resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
 
-    resource url: [dir: 'js', file: 'OMAR.js']
+    resource url: [plugin:'omar-common-ui', dir: 'js', file: 'OMAR.js']
 
     resource url: [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js']
     resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
@@ -208,7 +208,7 @@ modules = {
       resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
 
 
-      resource url: [dir: 'js', file: 'OMAR.js']
+      resource url: [plugin:'omar-common-ui', dir: 'js', file: 'OMAR.js']
     //resource url: [plugin: 'omar-core', dir: 'js', file: 'mapwidget.js']
     resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
 
@@ -225,7 +225,6 @@ modules = {
 
     resource url: [dir: 'css', file: 'imageSpacePageLayout.css']
     resource url: [dir: 'js', file: 'imageSpacePageLayout.js']
-
   }
 
 
