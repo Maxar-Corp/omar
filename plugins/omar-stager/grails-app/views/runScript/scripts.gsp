@@ -192,7 +192,7 @@
     }
     function getJobs()
     {
-        var link = "/omar/runScript/jobs";
+        var link = "${createLink(action:'jobs', params: [time: new Date().time])}";
         new Ajax.Request(link, {
             method: 'get',
             onSuccess: function(transport) {
