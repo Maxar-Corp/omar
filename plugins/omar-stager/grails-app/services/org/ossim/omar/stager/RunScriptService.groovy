@@ -5,59 +5,67 @@ import org.quartz.SimpleTrigger
 class RunScriptService {
     def quartzScheduler
 
-    def listJobTriggersByGroup(def group)
+    def listScheduledJobs()
     {
         def table = [:]
         def rows = []
 
-        if(group)
-        {
-            def names = quartzScheduler.getTriggerNames(group);
-            names.length.times{j->
-                def trigger = quartzScheduler.getTrigger(names[j], group);
-                def data = []
-                data<< trigger.name
-                data<< trigger.jobName
-                data<< trigger.jobGroup
-                if(trigger.timesTriggered>0)
-                    data<<"Yes"
-                else
-                    data<<"No"
-                data<< trigger.startTime
-                rows << data
-            }
+        def jobList = quartzScheduler.getCurrentlyExecutingJobs();
+
+        def currentlyExecuting = []
+        jobList.each{jobExecutionContext->
+            def data = []
+            def jobDetail = jobExecutionContext.getJobDetail();
+            def strJobName = jobDetail.name;
+            def strDescription = jobDetail.description;
+
+            // Trigger Details
+            def trigger = jobExecutionContext.trigger;
+            def strTriggerName = trigger.name;
+            def strFireInstanceId = trigger.fireInstanceId;
+            int state = quartzScheduler.getTriggerState(strTriggerName,
+                                                        trigger.group);
+            data<< strTriggerName
+            data<< strJobName
+            data<< trigger.group
+            data<< "Yes"
+            data<< trigger.startTime
+            rows << data
+
+            currentlyExecuting << trigger.fullName
         }
-        else
-        {
-            def groupNames = quartzScheduler.triggerGroupNames
-            def groupSize = groupNames.length;
-            groupSize.times{idx->
-                def names = quartzScheduler.getTriggerNames(groupNames[idx]);
-                for (int j = 0; j < names.length; j++)
+        //foreach (def jobDetail in from jobGroupName in scheduler1.JobGroupNames
+        //        from jobName in scheduler1.GetJobNames(jobGroupName)
+        //        select scheduler1.GetJobDetail(jobName, jobGroupName))
+        //        {
+                    //Get props about job from jobDetail
+        //        }
+        quartzScheduler.triggerGroupNames.each{triggerGroupName->
+            def triggerNames = quartzScheduler.getTriggerNames(triggerGroupName)
+            triggerNames.each{triggerName->
+                def trigger = quartzScheduler.getTrigger(triggerName, triggerGroupName)
+                if(trigger.nextFireTime && !(trigger.fullName in currentlyExecuting) )
                 {
-                    def trigger = quartzScheduler.getTrigger(names[j], groupNames[j]);
-                    if(trigger)
-                    {
-                        def jobDetail = quartzScheduler.getJobDetail(trigger.jobName, trigger.jobGroup)
-                        def data = []
-                        data<< trigger.name
-                        data<< trigger.jobName
-                        data<< trigger.jobGroup
-                        if(trigger.timesTriggered>0)
-                            data<<"Yes"
-                        else
-                            data<<"No"
-                        data<< trigger.startTime
-                        rows << data
-                    }
+                    def data = []
+                    data << trigger.name
+                    data << trigger.name
+                    data << triggerGroupName
+                    data << "No"
+                    data << ""
+                    rows << data
                 }
             }
         }
+        //foreach (def triggerDetail in from triggerGroupName in scheduler1.TriggerGroupNames
+        //        from triggerName in scheduler1.GetTriggerNames(triggerGroupName)
+        //        select scheduler1.GetTrigger(triggerName, triggerGroupName))
+        //        {
+                    //Get props about trigger from triggerDetail
+        //        }
 
         table.labels = ["Name", "Job Name", "Group", "Executing", "Start Time"]
         table.rows   = rows
 
         table
     }
-
 }
