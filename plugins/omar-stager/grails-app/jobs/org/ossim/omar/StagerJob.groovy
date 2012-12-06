@@ -249,8 +249,8 @@ class StagerJob
 
     Repository.withTransaction {
       def repository = Repository.findByBaseDir( baseDir?.absolutePath )
-      repository.scanEndDate = new Date()
-      repository.save()
+      repository?.scanEndDate = new Date()
+      repository?.save()
     }
 
     filesLog.flush()
