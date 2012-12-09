@@ -420,13 +420,29 @@ class WebFeatureService
       def workspace = getWorkspace()
       def layer = workspace[wfsRequest?.typeName]
 
+      //println wfsRequest?.filter
 
-      def cursor = layer.getCursor(
-          wfsRequest?.filter ?: Filter.PASS,
-          null,
-          wfsRequest.maxFeatures ?: -1,
-          wfsRequest?.offset ?: -1
-      )
+
+      def filterParams = [
+          filter: wfsRequest?.filter ?: Filter.PASS,
+          max: wfsRequest.maxFeatures ?: -1,
+          offset: wfsRequest?.offset ?: -1
+      ]
+
+//      xxx.each { println it }
+
+      try
+      {
+//        println "BEFORE"
+        new Filter(filterParams.filter)
+//        println "AFTER"
+      }
+      catch ( e )
+      {
+        e.printStackTrace()
+      }
+
+      def cursor = layer.getCursor( filterParams )
 
       mkp.xmlDeclaration()
       mkp.declareNamespace( wfs: "http://www.opengis.net/wfs" )
