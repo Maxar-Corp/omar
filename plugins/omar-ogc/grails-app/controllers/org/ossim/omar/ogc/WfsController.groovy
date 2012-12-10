@@ -4,6 +4,8 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
 
 import groovy.xml.StreamingMarkupBuilder
 
+import geoscript.filter.Filter
+
 class WfsController
 {
   def webFeatureService
@@ -36,12 +38,28 @@ class WfsController
         }
         else if ( wfsCommand.request?.toUpperCase() == "GETFEATURE" )
         {
-          wfsCommand.typeName = request.XML.Query.@typeName.text()
+          def foo = new StreamingMarkupBuilder().bindNode( request.XML ).toString()
+          def x = new XmlSlurper().parseText( foo )
 
-          if ( request.XML.Query[0].Filter )
-          {
-            wfsCommand.filter = builder.bind { mkp.yield request.XML.Query[0].Filter[0] }
+          wfsCommand.with {
+            service = x.@service?.text() ?: "WFS"
+            version = x.@version?.text() ?: "1.0.0"
+            request = x.name() ?: request ?: "GetFeature"
+            typeName = x.Query.collect { it.@typeName.text() }?.first()
+            filter = x.Query.collect { new StreamingMarkupBuilder().bindNode( it.Filter ).toString().trim() }?.first()
+
+            maxFeatures = x.@maxFeatures?.text() ?: 1000
+            offset = x.@offset?.text() ?: 0
+            outputFormat = x.@maxFeatures?.text() ?: "GML2"
           }
+
+//          wfsCommand.service = "WFS"
+//          wfsCommand.version = "1.0.0"
+//          wfsCommand.request = "GetFeature"
+//          wfsCommand.typeName = "raster_entry"
+//          wfsCommand.filter = new Filter("file_type='ccf'").xml
+//          wfsCommand.maxFeatures = 10
+//          wfsCommand.offset = 0
         }
         break
 
@@ -49,7 +67,7 @@ class WfsController
         //println "GET: ${ params }"
 
         def wfsParams = new CaseInsensitiveMap( params ).subMap(
-            ['service', 'version', 'request', 'typeName', 'filter', 'outputFormat']
+            ['service', 'version', 'request', 'typeName', 'filter', 'outputFormat', 'maxFeatures', 'offset']
         )
 
         bindData( wfsCommand, wfsParams )
@@ -75,6 +93,12 @@ class WfsController
       default:
         throw new Exception( "Unsupported Operation: ${ wfsCommand.request }" )
       }
+
+      if ( !results )
+      {
+        throw new Exception( "Unknown Exception: ${ wfsCommand.request }" )
+      }
+
     }
     catch ( Exception e )
     {
