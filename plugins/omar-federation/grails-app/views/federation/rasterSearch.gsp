@@ -1,6 +1,3 @@
-
-<%@ page import="org.ossim.omar.Federation" %>
-<!DOCTYPE html>
 <html>
 	<head>
 		<r:require modules = "federationRasterSearch"/>
