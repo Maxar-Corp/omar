@@ -1,4 +1,4 @@
-OMAR.models.Bbox = Backbone.Model.extend(
+OMAR.models.BBOX = Backbone.Model.extend(
 {
     defaults:{
         "minx":-180.0,
@@ -34,13 +34,13 @@ OMAR.models.Bbox = Backbone.Model.extend(
 }
 );
 
-OMAR.views.BboxView = Backbone.Model.extend({
-    el:"#BboxId",
+OMAR.views.BBOX = Backbone.View.extend({
+    el:"#BBOXId",
     initialize: function(params)
     {
         // this should create a variable for us called this.$el
         this.setElement(this.el);
-        this.model = new OMAR.BBOX();
+        this.model = new OMAR.models.BBOX();
         this.lowerLeftBboxEl = $("#lowerLeftBbox");
         this.upperRightBboxEl = $("#upperRightBbox");
         this.model.on("error",
