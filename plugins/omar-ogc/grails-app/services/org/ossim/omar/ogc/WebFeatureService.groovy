@@ -449,6 +449,7 @@ class WebFeatureService
           def workspace = getWorkspace()
           def layer = workspace[wfsRequest?.typeName]
           def count = layer.count(filter);
+         // println "COUNT = ${count}";
           def timestamp = new DateTime(DateTimeZone.UTC);
           y = {
               mkp.xmlDeclaration()
@@ -587,31 +588,29 @@ class WebFeatureService
   private def outputJSON(def wfsRequest)
   {
     def results
-
     def y = {
       def workspace = getWorkspace()
       def layer = workspace[wfsRequest?.typeName]
       def cursor = layer.getCursor( wfsRequest?.filter ?: Filter.PASS )
-
       [
-          crs = {
-            properties = {
+          crs{
+            properties {
               code = "4326"
             }
             type = "EPSG"
           },
-          features = {
+          features{
             while ( cursor?.hasNext() )
             {
               def feature = cursor?.next()
               for ( def attribute in feature.attributes )
               {
-                println "${ attribute.name }: ${ attribute.value }"
+                  // println "${ attribute.key }:${ attribute.value }"
               }
             }
             cursor?.close()
             workspace?.close()
-          },
+            },
           type = "FeatureCollection"
       ]
     }
