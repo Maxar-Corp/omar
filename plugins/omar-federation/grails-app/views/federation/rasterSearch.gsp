@@ -149,13 +149,14 @@
 
 
 
-<div class="outer-center">
+<div class="outer-center" id="rasterSearchPage">
 
 	<div class="middle-center">
 
 		<div class="inner-center">Inner Center</div>
 		<div class="inner-west">
 			<g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/>
+            <button name="SearchRasterId" id="SearchRasterId">Search</button>
 		</div>
 		<!--<div class="inner-east">Inner East</div>-->
 		<div class="ui-layout-north">Inner North</div>
@@ -180,9 +181,8 @@
 		<script type="text/javascript">
 
 			function init() {
-				var searchPageController = new OMAR.pages.RasterSearch(jQuery);
-				searchPageController.start();
-
+				var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery);
+				searchPageController.render();
 			}
 
 		</script>
