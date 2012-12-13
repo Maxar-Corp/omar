@@ -10,7 +10,7 @@
 (function ()
 {
     var Dom = YAHOO.util.Dom,
-            Event = YAHOO.util.Event;
+    Event = YAHOO.util.Event;
 
     Event.onDOMReady( function ()
     {
@@ -29,6 +29,7 @@
         layout.render();
     } );
 })();
+
 function init()
 {
     YAHOO.util.Dom.get( 'j_username' ).focus();

@@ -20,6 +20,7 @@ class WfsCommand
   String outputFormat
   Integer maxFeatures
   Integer offset
+  String resultType
 
   @Override
   String toString()

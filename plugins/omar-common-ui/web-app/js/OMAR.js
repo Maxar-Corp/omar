@@ -33,3 +33,114 @@ OMAR.measure.units = { labels:["kilometers", "meters", "feet", "yards", "miles",
     precisionMapping:{"kilometers":10000,"meters":1000,"feet":100,"yards":100, "miles":10000, "nautical miles":10000},
     active:"meters"
 };
+
+
+
+OMAR.matchesCompletely = function(value, expression)
+{
+    var matches = value.match(expression)
+    if(matches&&matches.length>0){
+        if(matches[0].length == value.length)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+OMAR.isFloat = function(value)
+{
+    return OMAR.matchesCompletely(value, OMAR.regexp.float);
+}
+
+OMAR.isInteger = function(value)
+{
+    return OMAR.matchesCompletely(value, OMAR.regexp.integer);
+}
+
+OMAR.isIsoPeriod = function(value)
+{
+    return OMAR.matchesCompletely(value, OMAR.regexp.isoPeriod);
+}
+
+OMAR.isIsoDate = function(value)
+{
+    return OMAR.matchesCompletely(value, OMAR.regexp.isoDate);
+}
+
+OMAR.isIsoInterval = function(value)
+{
+    var typeEncoding = "";
+    if(value.length < 1) return false;
+    if(OMAR.isIsoDate(value)) return true;
+    if(OMAR.isIsoPeriod(value)) return true;
+
+    var splitValue = value.split("/");
+
+    if(splitValue.length>0)
+    {
+        if(splitValue[0] != "")
+        {
+            if(OMAR.isIsoDate(splitValue[0])) typeEncoding += "D";
+            else if(OMAR.isIsoPeriod(splitValue[0])) typeEncoding += "P";
+            else return false;
+        }
+        if(splitValue[1] != "")
+        {
+            if(OMAR.isIsoDate(splitValue[1])) typeEncoding += "D";
+            else if(OMAR.isIsoPeriod(splitValue[1])) typeEncoding += "P";
+            else return false;
+        }
+
+        return ((typeEncoding == "PD")||
+            (typeEncoding == "DP")||
+            (typeEncoding == "DD")||
+            (typeEncoding == "D")||
+            (typeEncoding == "P"));
+    }
+
+    return false;
+}
+
+OMAR.isIso8601 = function(value)
+{
+    var result = true;
+    if(value&&value.length>0)
+    {
+        var intervals = value.split(",");
+        var idx = 0;
+        for(idx = 0; idx < intervals.length;++idx)
+        {
+            if(!OMAR.isIsoInterval(intervals[idx]))
+            {
+                result = false;
+                break;
+            }
+        }
+    }
+    else
+    {
+        result = false;
+    }
+
+    return result;
+}
+
+
+OMAR.parseXml = null;
+
+if (typeof window.DOMParser != "undefined") {
+    OMAR.parseXml = function(xmlStr) {
+        return ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
+    };
+} else if (typeof window.ActiveXObject != "undefined" &&
+    new window.ActiveXObject("Microsoft.XMLDOM")) {
+    OMAR.parseXml = function(xmlStr) {
+        var xmlDoc = new window.ActiveXObject("Microsoft.XMLDOM");
+        xmlDoc.async = "false";
+        xmlDoc.loadXML(xmlStr);
+        return xmlDoc;
+    };
+} else {
+    throw new Error("No XML parser found");
+}
