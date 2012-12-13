@@ -31,6 +31,17 @@
 <div class="ui-layout-south"><omar:securityClassificationBanner/></div>
 
 <r:layoutResources/>
+<script type="text/javascript">
+function init(){
+
+    // application specific initialize that will need access to grails models
+    //
+    var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery);
+    searchPageController.render();
+
+}
+
+</script>
 
 </body>
 </html>

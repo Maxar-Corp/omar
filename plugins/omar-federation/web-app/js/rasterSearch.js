@@ -200,7 +200,5 @@ $(document).ready(function () {
         }
     });
 
-    var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery);
-    searchPageController.render();
-
+    init();
 });
