@@ -163,7 +163,7 @@
 </head>
 <body>
 
-<div class="outer-center">
+<div class="outer-center" id="rasterSearchPageId">
 
 	<div class="middle-center">
 
