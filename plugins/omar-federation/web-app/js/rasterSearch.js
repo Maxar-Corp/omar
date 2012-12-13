@@ -62,7 +62,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var cqlFilter = this.toCql();
        // alert(cqlFilter);
         wfs.set("filter",cqlFilter);
-        alert(wfs.toUrl());
+        //alert(wfs.toUrl());
         $.ajax({
             url: wfs.toUrl(),
             type: "GET",
