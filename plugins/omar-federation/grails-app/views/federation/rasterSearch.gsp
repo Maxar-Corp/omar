@@ -1,16 +1,18 @@
-<html>
-	<head>
-		<r:require modules = "federationRasterSearch"/>
-		<title>OMAR Federation Search <g:meta name="app.version"/></title>
-		<r:layoutResources/>
-
-
-
-
-
-<link type="text/css" rel="stylesheet" href="http://layout.jquery-dev.net/lib/css/layout-default-latest.css" />
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<r:require modules = "federationRasterSearch"/>
+	<title>Nested Layouts</title>
+	<r:layoutResources/>
 
 	<style type="text/css">
+	#ui-datepicker-div, .ui-datepicker{ font-size: 75%; }
+	
+	h1 {font-size:50%}
+	h2 {font-size:50%}
+	p {font-size:50%} 
+
 	/*
 	 *	NOTE: All CSS is purely cosmetic - it does not affect functionality
 	 */
@@ -91,6 +93,8 @@
 	<script type="text/javascript" src="http://layout.jquery-dev.net/lib/js/jquery-ui-latest.js"></script>
 	<script type="text/javascript" src="http://layout.jquery-dev.net/lib/js/jquery.layout-latest.js"></script>
 
+	<script type="text/javascript" src="${resource(dir: 'js', file: 'jquery-ui-timepicker-addon.js')}"></script>
+
 	<script type="text/javascript">
 
 	$(document).ready(function () {
@@ -106,8 +110,10 @@
 		,	spacing_closed:			12 // ALL panes
 		//,	north__spacing_open:	0
 		//,	south__spacing_open:	0
-		,	north__maxSize:			200
-		,	south__maxSize:			200
+		,	north__maxSize:			50
+		,   north__minSize:         50
+		,	south__maxSize:			50
+		,   south__minSize:         50
 
 			// MIDDLE-LAYOUT (child of outer-center-pane)
 		,	center__childOptions: {
@@ -124,7 +130,8 @@
 					center__paneSelector:	".inner-center"
 				,	west__paneSelector:		".inner-west"
 				,	east__paneSelector:		".inner-east"
-				,	west__size:				175
+				,	west__size:				225
+				,   west__minSize:          225
 				,	east__size:				75
 				,	spacing_open:			8  // ALL panes
 				,	spacing_closed:			8  // ALL panes
@@ -134,57 +141,59 @@
 			}
 		});
 
+		var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery);
+		searchPageController.render();
+
+		$('#startDateTime').datetimepicker({
+			dateFormat: "yy-mm-dd",
+			timeFormat: "HH:mm:ss:lz",
+			separator: 'T',
+			showSecond: true,
+			showMillisec: true
+		});
+
+		$('#endDateTime').datetimepicker({
+			dateFormat: "yy-mm-dd",
+			timeFormat: "HH:mm:ss:lz",
+			separator: 'T',
+			showSecond: true,
+			showMillisec: true
+		});
 	});
 
 	</script>
 
+</head>
+<body>
 
-
-
-
-
-
-	</head>
-	<body onload="javascript:init()">
-
-
-
-<div class="outer-center" id="rasterSearchPage">
+<div class="outer-center">
 
 	<div class="middle-center">
 
-		<div class="inner-center">Inner Center</div>
+		<div class="inner-center">Map</div>
 		<div class="inner-west">
 			<g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/>
-            <button name="SearchRasterId" id="SearchRasterId">Search</button>
+			<g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/>
+
+			<button name="SearchRasterId" id="SearchRasterId">Search</button>
 		</div>
 		<!--<div class="inner-east">Inner East</div>-->
-		<div class="ui-layout-north">Inner North</div>
-		<div class="ui-layout-south">Inner South</div>
+		<div class="ui-layout-north">Menu</div>
+		<div class="ui-layout-south">OMAR Server List</div>
 
 	</div>
-	<!--<div class="middle-west">Middle West</div>
-	<div class="middle-east">Middle East</div>-->
+	<!--<div class="middle-west">Middle West</div>-->
+	<!--<div class="middle-east">Middle East</div>-->
 
 </div>
 
-<!--<div class="outer-west">Outer West</div>
-<div class="outer-east">Outer East</div>-->
+<!--<div class="outer-west">Outer West</div>-->
+<!--<div class="outer-east">Outer East</div>-->
 
 <div class="ui-layout-north"><omar:securityClassificationBanner/></div>
 <div class="ui-layout-south"><omar:securityClassificationBanner/></div>
 
+<r:layoutResources/>
 
-
-		<r:layoutResources/>
-
-		<script type="text/javascript">
-
-			function init() {
-				var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery);
-				searchPageController.render();
-			}
-
-		</script>
-	</body>
+</body>
 </html>
