@@ -23,6 +23,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     initialize:function(params){
         this.bboxView = new OMAR.views.BBOX();
         this.bboxModel = this.bboxView.model;
+        this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
+        this.dateTimeRangeModel = this.dateTimeRangeView.model;
         this.setElement(this.el);
     },
     events: {
@@ -32,14 +34,35 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         if(this.bboxView)
         {
             this.bboxView.render();
+            this.dateTimeRangeView.render();
         }
+    },
+    toCql:function(){
+        var result = "";
+        var timeQueryCql = this.dateTimeRangeModel.toCql("acquisition_date");
+        var bboxQueryCql = this.bboxModel.toCql("ground_geom");
+        if(timeQueryCql&&bboxQueryCql)
+        {
+            result = "(("+bboxQueryCql+")AND(" +timeQueryCql+"))";
+        }
+        else if(bboxQueryCql)
+        {
+            result=bboxQueryCql;
+        }
+        else
+        {
+            result = timeQueryCql;
+        }
+
+        return result;
     },
     searchRaster:function(){
         var wfs = new OMAR.models.Wfs({"resultType":"hits"});
         //this.bboxModel.toCqlString("ground_geom");
-
-        wfs.set("filter","BBOX(ground_geom,"+this.bboxModel.toWmsString()+")");
-        //alert(wfs.toUrl());
+        var cqlFilter = this.toCql();
+       // alert(cqlFilter);
+        wfs.set("filter",cqlFilter);
+        alert(wfs.toUrl());
         $.ajax({
             url: wfs.toUrl(),
             type: "GET",
