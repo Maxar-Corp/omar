@@ -35,7 +35,6 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         }
     },
     searchRaster:function(){
-        alert("adflkhaldfkhlaksdf");
         var wfs = new OMAR.models.Wfs({"resultType":"hits"});
         //this.bboxModel.toCqlString("ground_geom");
 
