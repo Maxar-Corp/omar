@@ -19,6 +19,7 @@ modules = {
 
         resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery-ui-timepicker-addon.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'DateModelView.js']
+        resource url: [dir: 'css', file: 'rasterSearch.css']
         resource url: [dir: 'js', file: 'rasterSearch.js']
     }
 }
