@@ -9,5 +9,13 @@ modules = {
 
 
         resource url: [dir: 'js', file: 'rasterSearch.js']
+
+        // css resources for jquery
+		resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'layout-default-latest.css']
+		resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery/smoothness', file: 'jquery-ui-1.9.2.custom.css']
+		resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'jquery-ui-timepicker-addon.css']
+		
+ 
+ 
      }
 }
