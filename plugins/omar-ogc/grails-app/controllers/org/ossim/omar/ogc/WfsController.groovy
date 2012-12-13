@@ -41,6 +41,9 @@ class WfsController
           def foo = new StreamingMarkupBuilder().bindNode( request.XML ).toString()
           def x = new XmlSlurper().parseText( foo )
 
+          def max =  x.@maxFeatures.text()
+          def start =  x.@offset?.text()
+
           wfsCommand.with {
             service = x.@service?.text() ?: "WFS"
             version = x.@version?.text() ?: "1.0.0"
@@ -48,9 +51,9 @@ class WfsController
             typeName = x.Query.collect { it.@typeName.text() }?.first()
             filter = x.Query.collect { new StreamingMarkupBuilder().bindNode( it.Filter ).toString().trim() }?.first()
 
-            maxFeatures = x.@maxFeatures?.text() ?: 1000
-            offset = x.@offset?.text() ?: 0
-            outputFormat = x.@maxFeatures?.text() ?: "GML2"
+            maxFeatures = ( max ) ? max.toInteger() : 1000
+            offset = ( start ) ? start.toInteger() : 0
+            outputFormat = x.@outputFormat?.text() ?: "GML2"
           }
 
 //          wfsCommand.service = "WFS"
