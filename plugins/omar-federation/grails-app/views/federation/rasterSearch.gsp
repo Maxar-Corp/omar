@@ -91,10 +91,7 @@
 
 	<script type="text/javascript" src="http://layout.jquery-dev.net/lib/js/jquery-latest.js"></script>
 	<script type="text/javascript" src="http://layout.jquery-dev.net/lib/js/jquery-ui-latest.js"></script>
-	<script type="text/javascript" src="http://layout.jquery-dev.net/lib/js/jquery.layout-latest.js"></script>
-
-	<script type="text/javascript" src="${resource(dir: 'js', file: 'jquery-ui-timepicker-addon.js')}"></script>
-
+	
 	<script type="text/javascript">
 
 	$(document).ready(function () {
