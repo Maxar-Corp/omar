@@ -495,3 +495,105 @@ OMAR.models.ISO8601=Backbone.Model.extend(
     }
 );
 
+
+OMAR.models.SimpleDateRangeModel=Backbone.Model.extend({
+    defaults:{
+      startDate:"",
+      endDate:""
+    },
+    initialize:function(params)
+    {
+    },
+    validate:function(attrs){
+        if(attrs.startDate&&!OMAR.isIso8601(attrs.startDate))
+        {
+            return "Start date is not an ISO date standard format";
+        }
+        if(attrs.endDate&&!OMAR.isIso8601(attrs.endDate))
+        {
+            return "Start date is not an ISO date standard format";
+        }
+    },
+    toCql:function(columnName){
+        var result = "";
+        if(columnName)
+        {
+            var startDate = this.get("startDate");
+            var endDate = this.get("endDate");
+            if((startDate != "")&&(endDate!=""))
+            {
+                result +="((";
+                result +=(columnName +">='"+startDate+"'");
+                result +=")AND("
+                result +=(columnName +"<='"+endDate+"'");
+                result += "))";
+            }
+            else if(startDate!="")
+            {
+                result +="(";
+                result +=(columnName +">='"+startDate+"'");
+                result +=")";
+            }
+            else if(endDate!="")
+            {
+                result +="(";
+                result +=(columnName +"<='"+endDate+"'");
+                result +=")";
+            }
+        }
+        return result;
+    }
+});
+
+OMAR.views.SimpleDateRangeView=Backbone.View.extend({
+    el:"#dateTimeId",
+    initialize:function(params){
+        this.model = new OMAR.models.SimpleDateRangeModel();
+        this.setElement(this.el);
+        this.startDateTimeEl = $("#startDateTime");
+        this.endDateTimeEl = $("#endDateTime");
+        this.startDateTimeEl.datetimepicker({
+            dateFormat: "yy-mm-dd",
+            timeFormat: "HH:mm:ss.lz",
+            separator: 'T',
+            showSecond: true,
+            showMillisec: true
+        });
+
+        this.endDateTimeEl.datetimepicker({
+            dateFormat: "yy-mm-dd",
+            timeFormat: "HH:mm:ss.lz",
+            separator: 'T',
+            showSecond: true,
+            showMillisec: true
+        });
+    },
+    render:function(){
+    },
+    events:{
+        "change #startDateTime" : "startDateTimeChange",
+        "change #endDateTime"   : "endDateTimeChange"
+    },
+    startDateTimeChange:function(){
+        var v = this.startDateTimeEl.val();
+        if(!v ||(v==""))
+        {
+            this.model.set("startDate", "");
+        }
+        else if(OMAR.isIso8601(v))
+        {
+            this.model.set("startDate", v);
+        }
+    },
+    endDateTimeChange:function(){
+        var v = this.endDateTimeEl.val();
+        if(!v ||(v==""))
+        {
+            this.model.set("endDate", "");
+        }
+        else if(OMAR.isIso8601(v))
+        {
+            this.model.set("endDate", v);
+        }
+    }
+})

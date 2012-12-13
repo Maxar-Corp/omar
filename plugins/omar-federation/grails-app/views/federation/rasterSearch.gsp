@@ -174,21 +174,6 @@
         var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery);
         searchPageController.render();
 
-        $('#startDateTime').datetimepicker({
-            dateFormat: "yy-mm-dd",
-            timeFormat: "HH:mm:ss:lz",
-            separator: 'T',
-            showSecond: true,
-            showMillisec: true
-        });
-
-        $('#endDateTime').datetimepicker({
-            dateFormat: "yy-mm-dd",
-            timeFormat: "HH:mm:ss:lz",
-            separator: 'T',
-            showSecond: true,
-            showMillisec: true
-        });
     });
 
 </script>

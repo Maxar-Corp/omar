@@ -30,6 +30,17 @@ OMAR.models.BBOX = Backbone.Model.extend(
         }
 
         return this;
+    },
+    toCql:function(columnName)
+    {
+        var result = "";
+        var bad = this.validate(this.attributes);
+        if(!bad)
+        {
+            result = "BBOX("+columnName+","+this.toWmsString()+")";
+        }
+
+        return result;
     }
 }
 );
