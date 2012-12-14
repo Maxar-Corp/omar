@@ -15,21 +15,17 @@
 
         <div class="ui-layout-north">Menu</div>
         <div class="inner-west">
-            <div id="accordion-container">
-                <h2 class="accordion-header">Bounding Box Search</h2>
 
-                <div class="accordion-content">
-                    <g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/>
-                </div>
+            <!--<div id="accordion">-->
+                <h2>Bounding Box Search</h2>
+                <g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/>
+                <h2>Temporal Search</h2>
+                <g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/>
+            <!--</div> -->
 
-                <h2 class="accordion-header">Temporal Search</h2>
-                <div class="accordion-content">
-                    <g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/>
-                </div>
 
                 <button name="SearchRasterId" id="SearchRasterId">Search</button>
 
-             </div>
          </div>
         <div class="inner-center">Map</div>
 		<div class="ui-layout-south">OMAR Server List</div>
