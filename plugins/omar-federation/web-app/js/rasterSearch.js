@@ -25,8 +25,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.bboxModel = this.bboxView.model;
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
         this.dateTimeRangeModel = this.dateTimeRangeView.model;
-        this.accordionView = new OMAR.views.AccordionView();
         this.setElement(this.el);
+
+        //$( "#accordion" ).accordion();
     },
     events: {
         "click #SearchRasterId": "searchRaster"
