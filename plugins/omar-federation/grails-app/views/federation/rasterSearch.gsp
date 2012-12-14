@@ -13,14 +13,25 @@
 
     <div class="middle-center">
 
-		<div class="inner-center">Map</div>
-		<div class="inner-west">
-			<g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/>
-			<g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/>
+        <div class="ui-layout-north">Menu</div>
+        <div class="inner-west">
+            <div id="accordion-container">
+                <h2 class="accordion-header">Bounding Box Search</h2>
 
-			<button name="SearchRasterId" id="SearchRasterId">Search</button>
-		</div>
-		<div class="ui-layout-north">Menu</div>
+                <div class="accordion-content">
+                    <g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/>
+                </div>
+
+                <h2 class="accordion-header">Temporal Search</h2>
+                <div class="accordion-content">
+                    <g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/>
+                </div>
+
+                <button name="SearchRasterId" id="SearchRasterId">Search</button>
+
+             </div>
+         </div>
+        <div class="inner-center">Map</div>
 		<div class="ui-layout-south">OMAR Server List</div>
 
 	</div>

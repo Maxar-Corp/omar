@@ -77,3 +77,10 @@ p {font-size:50%}
     border-top:		1px solid #BBB;
     border-bottom:	1px solid #BBB;
 }
+.outer-center{
+    visibility: hidden;
+}
+
+/*.inner-west{
+    background-color:#F0F8FF;;
+} */
