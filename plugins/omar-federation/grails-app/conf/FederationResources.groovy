@@ -9,9 +9,6 @@ modules = {
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'backbone-min.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'BboxModelView.js']
         resource url: [plugin: 'omar-ogc', dir: 'js', file: 'WfsModel.js']
-
-
-
         // css resources for jquery
 		resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'layout-default-latest.css']
 		resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery/smoothness', file: 'jquery-ui-1.9.2.custom.css']
