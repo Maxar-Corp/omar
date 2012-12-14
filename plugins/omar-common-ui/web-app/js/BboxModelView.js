@@ -58,7 +58,6 @@ OMAR.views.BBOX = Backbone.View.extend({
             function(model,err) {
                 alert("BBOX Has errors: " + err);
             });
-
     },
     events:{
         "change #lowerLeftBbox" : "llOnChange"
