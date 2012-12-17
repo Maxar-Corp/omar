@@ -3,6 +3,8 @@ package org.ossim.omar.ogc
 import groovy.xml.StreamingMarkupBuilder
 
 import geoscript.filter.Filter
+import geoscript.layer.Layer
+import geoscript.layer.io.GeoJSONWriter
 import geoscript.workspace.Database
 import geoscript.workspace.PostGIS
 
@@ -393,27 +395,27 @@ class WebFeatureService
   {
     def results, contentType
 
-    if(wfsRequest.resultType?.toLowerCase() == "hits")
+    if ( wfsRequest.resultType?.toLowerCase() == "hits" )
     {
-        results = outputGML( wfsRequest )
-        contentType = 'text/xml; subtype=gml/2.1.2'
+      results = outputGML( wfsRequest )
+      contentType = 'text/xml; subtype=gml/2.1.2'
     }
     else
     {
-        switch ( wfsRequest?.outputFormat?.toUpperCase() ?: "" )
-        {
-            case "CSV":
-                results = outputCSV( wfsRequest )
-                contentType = 'text/csv'
-                break
-            case "JSON":
-                results = outputJSON( wfsRequest )
-                contentType = 'application/json'
-                break
-            default:
-                results = outputGML( wfsRequest )
-                contentType = 'text/xml; subtype=gml/2.1.2'
-        }
+      switch ( wfsRequest?.outputFormat?.toUpperCase() ?: "" )
+      {
+      case "CSV":
+        results = outputCSV( wfsRequest )
+        contentType = 'text/csv'
+        break
+      case "JSON":
+        results = outputJSON( wfsRequest )
+        contentType = 'application/json'
+        break
+      default:
+        results = outputGML( wfsRequest )
+        contentType = 'text/xml; subtype=gml/2.1.2'
+      }
     }
 
     return [results, contentType]
@@ -424,154 +426,152 @@ class WebFeatureService
     def results
     def describeFeatureTypeURL = grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true,
         controller: 'wfs', params: [service: 'WFS', version: '1.0.0', request: 'DescribeFeatureType',
-            typeName: "${ wfsRequest.typeName }"] )
+        typeName: "${ wfsRequest.typeName }"] )
 
-      def filterParams = [
-              filter: wfsRequest?.filter ?: Filter.PASS,
-              max: wfsRequest.maxFeatures ?: -1,
-              offset: wfsRequest?.offset ?: -1
-      ]
-      def filter
-      try
-      {
+    def filterParams = [
+        filter: wfsRequest?.filter ?: Filter.PASS,
+        max: wfsRequest.maxFeatures ?: -1,
+        offset: wfsRequest?.offset ?: -1
+    ]
+    def filter
+    try
+    {
 //        println "BEFORE"
-          filter = new Filter(filterParams.filter)
+      filter = new Filter( filterParams.filter )
 //        println "AFTER"
+    }
+    catch ( e )
+    {
+      e.printStackTrace()
+    }
+    def y
+
+    if ( wfsRequest.resultType?.toLowerCase() == "hits" )
+    {
+      def workspace = getWorkspace()
+      def layer = workspace[wfsRequest?.typeName]
+      def count = layer.count( filter );
+      // println "COUNT = ${count}";
+      def timestamp = new DateTime( DateTimeZone.UTC );
+      y = {
+        mkp.xmlDeclaration()
+        mkp.declareNamespace( wfs: "http://www.opengis.net/wfs" )
+        mkp.declareNamespace( omar: "http://omar.ossim.org" )
+        mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
+        mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
+
+        wfs.FeatureCollection(
+            xmlns: 'http://www.opengis.net/wfs',
+            'xsi:schemaLocation': "http://omar.ossim.org ${ describeFeatureTypeURL } http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd",
+            'numberOfFeatures': "${count}",
+            "timestamp": "${timestamp}"
+        )
       }
-      catch ( e )
-      {
-          e.printStackTrace()
-      }
-      def y
+    }
+    else
+    {
+      y = {
+        def workspace = getWorkspace()
+        def layer = workspace[wfsRequest?.typeName]
 
-      if(wfsRequest.resultType?.toLowerCase() == "hits")
-      {
-          def workspace = getWorkspace()
-          def layer = workspace[wfsRequest?.typeName]
-          def count = layer.count(filter);
-         // println "COUNT = ${count}";
-          def timestamp = new DateTime(DateTimeZone.UTC);
-          y = {
-              mkp.xmlDeclaration()
-              mkp.declareNamespace( wfs: "http://www.opengis.net/wfs" )
-              mkp.declareNamespace( omar: "http://omar.ossim.org" )
-              mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
-              mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
-
-              wfs.FeatureCollection(
-                      xmlns: 'http://www.opengis.net/wfs',
-                      'xsi:schemaLocation': "http://omar.ossim.org ${ describeFeatureTypeURL } http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd",
-                      'numberOfFeatures' : "${count}",
-                      "timestamp" : "${timestamp}"
-              )
-          }
-      }
-      else
-      {
-          y = {
-              def workspace = getWorkspace()
-              def layer = workspace[wfsRequest?.typeName]
-
-              //println wfsRequest?.filter
-
-
+        //println wfsRequest?.filter
 
 //      xxx.each { println it }
 
 
-              def cursor = layer.getCursor( filterParams )
+        def cursor = layer.getCursor( filterParams )
 
-              mkp.xmlDeclaration()
-              mkp.declareNamespace( wfs: "http://www.opengis.net/wfs" )
-              mkp.declareNamespace( omar: "http://omar.ossim.org" )
-              mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
-              mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
+        mkp.xmlDeclaration()
+        mkp.declareNamespace( wfs: "http://www.opengis.net/wfs" )
+        mkp.declareNamespace( omar: "http://omar.ossim.org" )
+        mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
+        mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
 
-              wfs.FeatureCollection(
-                      xmlns: 'http://www.opengis.net/wfs',
-                      'xsi:schemaLocation': "http://omar.ossim.org ${ describeFeatureTypeURL } http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"
-              ) {
-                  gml.boundedBy {
-                      gml.'null'( "unknown" )
-                  }
-
-                  while ( cursor?.hasNext() )
-                  {
-                      def feature = cursor.next()
-                      def featureId = feature.id
-                      def omarId = featureId?.split( '\\.' )[-1] as long
-
-                      //println feature
-
-                      gml.featureMember {
-                          omar."${ wfsRequest?.typeName }"( fid: featureId ) {
-
-                              omar.id( omarId )
-
-                              for ( def attribute in feature.attributes )
-                              {
-                                  if ( attribute?.value != null )
-                                  {
-
-                                      if ( attribute.key == "ground_geom" )
-                                      {
-                                          omar.ground_geom {
-
-                                              /*
-                                              gml.Polygon( srsName: "http://www.opengis.net/gml/srs/epsg.xml#4326" ) {
-                                                gml.outerBoundaryIs {
-                                                  gml.LinearRing {
-                                                    gml.coordinates( 'xmlns:gml': "http://www.opengis.net/gml", decimal: ".", cs: ",", ts: "", """
-                                                  -122.56492547,38.02596313 -122.1092658,38.02339409 -122.11359067,37.66295699
-                                                  -122.56703818,37.66549309 -122.56492547,38.02596313""" )
-                                                  }
-                                                }
-                                              }
-                                              */
-
-                                              def geom = new XmlSlurper( false, false ).parseText( feature.ground_geom.gml2 as String )
-
-                                              geom.@srsName = 'http://www.opengis.net/gml/srs/epsg.xml#4326'
-
-                                              mkp.yield( geom )
-
-                                          }
-                                      }
-                                      else
-                                      {
-                                          //println "${ attribute.key }: ${ typeMappings[feature.schema.field( attribute.key ).typ] }"
-
-                                          switch ( attribute.key )
-                                          {
-                                              case "other_tags_xml":
-                                              case "tie_point_set":
-                                                  omar."${ attribute.key }" {
-                                                      mkp.yieldUnescaped( "<![CDATA[${ attribute.value }]]>" )
-                                                  }
-                                                  break
-                                              default:
-                                                  switch ( typeMappings[feature.schema.field( attribute.key ).typ] )
-                                                  {
-                                                      case "xsd:dateTime":
-                                                          //println attribute.value?.format( "yyyy-MM-dd'T'hh:mm:ss.SSS" )
-                                                          omar."${ attribute.key }"( attribute.value?.format( "yyyy-MM-dd'T'hh:mm:ss.SSS" ) )
-                                                          break
-                                                      default:
-                                                          omar."${ attribute.key }"( attribute.value )
-                                                  }
-                                          }
-                                      }
-                                  }
-                              }
-                          }
-                      }
-                  }
-              }
-
-              cursor?.close()
-              workspace?.close()
+        wfs.FeatureCollection(
+            xmlns: 'http://www.opengis.net/wfs',
+            'xsi:schemaLocation': "http://omar.ossim.org ${ describeFeatureTypeURL } http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"
+        ) {
+          gml.boundedBy {
+            gml.'null'( "unknown" )
           }
+
+          while ( cursor?.hasNext() )
+          {
+            def feature = cursor.next()
+            def featureId = feature.id
+            def omarId = featureId?.split( '\\.' )[-1] as long
+
+            //println feature
+
+            gml.featureMember {
+              omar."${ wfsRequest?.typeName }"( fid: featureId ) {
+
+                omar.id( omarId )
+
+                for ( def attribute in feature.attributes )
+                {
+                  if ( attribute?.value != null )
+                  {
+
+                    if ( attribute.key == "ground_geom" )
+                    {
+                      omar.ground_geom {
+
+                        /*
+                        gml.Polygon( srsName: "http://www.opengis.net/gml/srs/epsg.xml#4326" ) {
+                          gml.outerBoundaryIs {
+                            gml.LinearRing {
+                              gml.coordinates( 'xmlns:gml': "http://www.opengis.net/gml", decimal: ".", cs: ",", ts: "", """
+                            -122.56492547,38.02596313 -122.1092658,38.02339409 -122.11359067,37.66295699
+                            -122.56703818,37.66549309 -122.56492547,38.02596313""" )
+                            }
+                          }
+                        }
+                        */
+
+                        def geom = new XmlSlurper( false, false ).parseText( feature.ground_geom.gml2 as String )
+
+                        geom.@srsName = 'http://www.opengis.net/gml/srs/epsg.xml#4326'
+
+                        mkp.yield( geom )
+
+                      }
+                    }
+                    else
+                    {
+                      //println "${ attribute.key }: ${ typeMappings[feature.schema.field( attribute.key ).typ] }"
+
+                      switch ( attribute.key )
+                      {
+                      case "other_tags_xml":
+                      case "tie_point_set":
+                        omar."${ attribute.key }" {
+                          mkp.yieldUnescaped( "<![CDATA[${ attribute.value }]]>" )
+                        }
+                        break
+                      default:
+                        switch ( typeMappings[feature.schema.field( attribute.key ).typ] )
+                        {
+                        case "xsd:dateTime":
+                          //println attribute.value?.format( "yyyy-MM-dd'T'hh:mm:ss.SSS" )
+                          omar."${ attribute.key }"( attribute.value?.format( "yyyy-MM-dd'T'hh:mm:ss.SSS" ) )
+                          break
+                        default:
+                          omar."${ attribute.key }"( attribute.value )
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        cursor?.close()
+        workspace?.close()
       }
+    }
 
     def z = new StreamingMarkupBuilder( encoding: 'UTF-8' ).bind( y )
 
@@ -588,39 +588,23 @@ class WebFeatureService
   private def outputJSON(def wfsRequest)
   {
     def results
-    def y = {
-      def workspace = getWorkspace()
-      def layer = workspace[wfsRequest?.typeName]
-      def cursor = layer.getCursor( wfsRequest?.filter ?: Filter.PASS )
-      [
-          crs{
-            properties {
-              code = "4326"
-            }
-            type = "EPSG"
-          },
-          features{
-            while ( cursor?.hasNext() )
-            {
-              def feature = cursor?.next()
-              for ( def attribute in feature.attributes )
-              {
-                  // println "${ attribute.key }:${ attribute.value }"
-              }
-            }
-            cursor?.close()
-            workspace?.close()
-            },
-          type = "FeatureCollection"
-      ]
-    }
+    def workspace = getWorkspace()
+    def layer = workspace[wfsRequest?.typeName]
+    def writer = new GeoJSONWriter()
 
-    def z = new JSONBuilder()
+    def cursor = layer.getCursor(
+        filter: wfsRequest?.filter ?: Filter.PASS,
+        max: wfsRequest.maxFeatures ?: -1,
+        offset: wfsRequest?.offset ?: -1
+    )
 
-    results = z.build( y )?.toString()
+    def newLayer = new Layer(cursor.col)
+
+    results = writer.write( newLayer )
+    cursor?.close()
+    workspace?.close()
 
     return results
-
   }
 
 
