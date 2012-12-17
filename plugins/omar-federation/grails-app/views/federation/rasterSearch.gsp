@@ -5,6 +5,28 @@
 	<r:require modules = "federationRasterSearch"/>
     <title>OMAR <g:meta name="app.version"/>: Federated Search</title>
     <r:layoutResources/>
+
+<link rel="stylesheet" href="http://openlayers.org/dev/theme/default/style.css" type="text/css">
+        <link rel="stylesheet" href="http://openlayers.org/dev/examples/style.css" type="text/css">
+        <style type="text/css">
+            html, body, #map {
+                margin: 0;
+                width: 100%;
+                height: 95%;
+            }
+
+            #text {
+                position: absolute;
+                bottom: 1em;
+                left: 1em;
+                width: 512px;
+                z-index: 20000;
+                background-color: white;
+                padding: 0 0.5em 0.5em 0.5em;
+            }
+        </style>
+        <script src="http://openlayers.org/dev/OpenLayers.js"></script>
+
 </head>
 <body>
 <div class="outer-center" id="rasterSearchPageId">
@@ -37,9 +59,10 @@
 
                 <button name="SearchRasterId" id="SearchRasterId">Search</button>
 
+
          </div>
         <div class="inner-center">
-            <div id="map" class="smallmap"></div>
+            <g:render plugin="omar-common-ui" template="/templates/mapTemplate"/>
         </div>
 		<div class="ui-layout-south">
             <div id="omarServerCollectionId">
@@ -64,12 +87,105 @@
 </script>
 
 <script type="text/javascript">
+var map;
+
+
 function init(){
     // application specific initialize that will need access to grails models
     //
     var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery);
     searchPageController.render();
+
+ 
+
+
+
+    var urls = [
+    "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
+    "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
+    "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
+];
+
+map = new OpenLayers.Map({
+    div: "map",
+    layers: [
+        new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                    {layers: 'basic'} )
+    ],
+    controls: [
+        new OpenLayers.Control.Navigation({
+            dragPanOptions: {
+                enableKinetic: true
+            }
+        }),
+        new OpenLayers.Control.PanZoom(),
+        new OpenLayers.Control.Attribution()
+    ],
+    center: [0, 0],
+    zoom: 3
+});
+
+map.addControl(new OpenLayers.Control.LayerSwitcher());
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////
+
+    map.events.register("mousemove", map, setMouse);
+
+    map.events.register("moveend", map, setExtent);
+    map.events.register("moveend", map, setCenter);
 }
+
+function setMouse(evt) {
+    var mouse = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
+    var ddMouse = document.getElementById("ddMouse");
+
+    if (mouse.lat < "90" && mouse.lat > "-90" && mouse.lon < "180" && mouse.lon > "-180") {
+        ddMouse.innerHTML = "<b>DD:</b> " + mouse.lat + ", " + mouse.lon;
+    }
+    else {
+        ddMouse.innerHTML = "<b>DD:</b> Outside of geographic extent.";
+    }
+}
+
+function setExtent() {
+    var extent = map.getExtent();
+   
+    // lower left
+    //alert(extent.bottom + "," + extent.left);
+
+    // upper right
+    //alert(extent.top + "," + extent.right);
+    //alert("test");
+}
+
+function setCenter() {
+    var center = map.getCenter();
+
+    //alert(center.lat + "," + center.lon);
+    //alert("test");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </script>
 
