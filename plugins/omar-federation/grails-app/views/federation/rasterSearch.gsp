@@ -28,7 +28,10 @@
 
          </div>
         <div class="inner-center">Map</div>
-		<div class="ui-layout-south">OMAR Server List</div>
+		<div class="ui-layout-south">
+            <div id="omarServerCollectionId">
+            </div>
+        </div>
 
 	</div>
     <div class="ui-layout-south"><omar:securityClassificationBanner/></div>
@@ -36,6 +39,17 @@
 </div>
 
 <r:layoutResources/>
+<script type="text/html" id="template-contact">
+    <div class="omar-server-container">
+        <div class="infoi">
+            <div class="omar-server-count">${'<%=count%>'}</div>
+            <!--<img src="http://icons.iconarchive.com/icons/visualpharm/hardware/256/server-icon.png" height="70" width="70"/> -->
+            <img style="padding-top:24px" src="${resource(dir:'images', file:'server.gif')}"/>
+        </div>
+        <a href="">${'<%=serverName%>'}</a>
+    </div>
+</script>
+
 <script type="text/javascript">
 function init(){
     // application specific initialize that will need access to grails models
