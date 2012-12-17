@@ -559,7 +559,7 @@ OMAR.views.SimpleDateRangeView=Backbone.View.extend({
             showSecond: true,
             showMillisec: true,
             showOn: "button",
-            buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+            buttonImage: "images/calendar.gif",
             buttonImageOnly: true
         });
 
@@ -570,7 +570,7 @@ OMAR.views.SimpleDateRangeView=Backbone.View.extend({
             showSecond: true,
             showMillisec: true,
             showOn: "button",
-            buttonImage: "http://jqueryui.com/resources/demos/datepicker/images/calendar.gif",
+            buttonImage: "images/calendar.gif",
             buttonImageOnly: true
         });
     },
