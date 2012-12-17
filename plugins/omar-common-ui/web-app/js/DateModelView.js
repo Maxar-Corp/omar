@@ -557,7 +557,10 @@ OMAR.views.SimpleDateRangeView=Backbone.View.extend({
             timeFormat: "HH:mm:ss.lz",
             separator: 'T',
             showSecond: true,
-            showMillisec: true
+            showMillisec: true,
+            showOn: "button",
+            buttonImage: "images/calendar.gif",
+            buttonImageOnly: true
         });
 
         this.endDateTimeEl.datetimepicker({
@@ -565,7 +568,10 @@ OMAR.views.SimpleDateRangeView=Backbone.View.extend({
             timeFormat: "HH:mm:ss.lz",
             separator: 'T',
             showSecond: true,
-            showMillisec: true
+            showMillisec: true,
+            showOn: "button",
+            buttonImage: "images/calendar.gif",
+            buttonImageOnly: true
         });
     },
     render:function(){
