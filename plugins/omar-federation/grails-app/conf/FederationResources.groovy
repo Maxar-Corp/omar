@@ -21,5 +21,7 @@ modules = {
         resource url: [dir: 'js', file: 'ServerListModelView.js']
         resource url: [dir: 'css', file: 'rasterSearch.css']
         resource url: [dir: 'js', file: 'rasterSearch.js']
+
+        resource url: [dir: 'images', file: 'calendar.gif']
     }
 }
