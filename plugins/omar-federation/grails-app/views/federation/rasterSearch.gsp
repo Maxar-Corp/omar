@@ -5,7 +5,6 @@
 	<r:require modules = "federationRasterSearch"/>
     <title>OMAR <g:meta name="app.version"/>: Federated Search</title>
     <r:layoutResources/>
-
 </head>
 <body>
 <div class="outer-center" id="rasterSearchPageId">
@@ -17,17 +16,31 @@
         <div class="inner-west">
 
             <!--<div id="accordion">-->
-                <h2>Bounding Box Search</h2>
+           
+<table width="100%"><tr><td bgcolor="dfdfdf">
+                <h2>Bounding Box Search:</h2>
                 <g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/>
-                <h2>Temporal Search</h2>
+</td></tr></table>           
+
+<table width="100%"><tr><td bgcolor="dfdfdf">
+                <h2>Point Radius Search:</h2>
+                <g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/>
+</td></tr></table>  
+
+
+<table width="100%"><tr><td bgcolor="dfdfdf">
+                <h2>Temporal Search:</h2>
                 <g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/>
+                </td></tr></table>  
             <!--</div> -->
 
 
                 <button name="SearchRasterId" id="SearchRasterId">Search</button>
 
          </div>
-        <div class="inner-center">Map</div>
+        <div class="inner-center">
+            <div id="map" class="smallmap"></div>
+        </div>
 		<div class="ui-layout-south">
             <div id="omarServerCollectionId">
             </div>
