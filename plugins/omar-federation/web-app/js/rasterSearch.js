@@ -25,6 +25,12 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.bboxModel = this.bboxView.model;
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
         this.dateTimeRangeModel = this.dateTimeRangeView.model;
+        this.omarServerCollectionView = new OMAR.views.OmarServerCollectionView(
+            {model:new OMAR.models.OmarServerCollection({models:[
+                    new OMAR.models.OmarServerModel({url:"http://localhost/omar"})
+                ]}
+            )}
+        )
         this.setElement(this.el);
 
         //$( "#accordion" ).accordion();
@@ -37,6 +43,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         {
             this.bboxView.render();
             this.dateTimeRangeView.render();
+            this.omarServerCollectionView.render();
         }
     },
     toCql:function(){
@@ -161,6 +168,8 @@ OMAR.pages.FederatedRasterSearch = (function($){
 $(document).ready(function () {
 
     // OUTER-LAYOUT
+
+
     $('body').layout({
         center__paneSelector:	".outer-center"
         ,	west__paneSelector:		".outer-west"
@@ -201,7 +210,6 @@ $(document).ready(function () {
             }
         }
     });
-
 
 
 
