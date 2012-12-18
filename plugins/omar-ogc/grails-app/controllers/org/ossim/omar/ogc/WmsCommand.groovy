@@ -26,8 +26,8 @@ class WmsCommand
   String transparent
   String bgcolor
   String time
-  String stretch_mode
-  String stretch_mode_region
+  String stretch_mode = "linear_auto_min_max"
+  String stretch_mode_region = "global"
   String sharpen_mode
   String sharpen_width
   String sharpen_sigma
