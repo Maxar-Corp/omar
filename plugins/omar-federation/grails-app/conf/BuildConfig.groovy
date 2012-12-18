@@ -38,3 +38,6 @@ grails.project.dependency.resolution = {
         runtime ":resources:1.1.6"
     }
 }
+
+grails.plugin.location.openlayers = "../../plugins/openlayers"
+grails.plugin.location.omarCommonUi = "../../plugins/omar-common-ui"
