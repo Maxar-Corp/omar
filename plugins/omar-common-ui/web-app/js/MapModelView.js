@@ -45,9 +45,9 @@ OMAR.views.Map = Backbone.View.extend({
                 });
 
             this.map.addControl(new OpenLayers.Control.LayerSwitcher());
-            this.map.events.register("mousemove", this.map, this.setMouse);
-            this.map.events.register("moveend", this.map, this.setExtent);
-            this.map.events.register("moveend", this.map, this.setCenter);
+            this.map.events.register("mousemove", this, this.setMouse);
+            this.map.events.register("moveend", this, this.setExtent);
+            this.map.events.register("moveend", this, this.setCenter);
             this.map.setCenter(this.map.getCenter());
             this.map.zoomToMaxExtent();
         }
@@ -57,10 +57,15 @@ OMAR.views.Map = Backbone.View.extend({
     },
     setExtent:function(evt)
     {
+        var extent = this.map.setExtent();
+
+
+        this.bboxModel.set({"minx":extent.left});
         //alert("setExtent");
     },
     setCenter:function(evt)
     {
+
         //alert("setCenter");
     },
     setBboxModel:function(bboxModel)
