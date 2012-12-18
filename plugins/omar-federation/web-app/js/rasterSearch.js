@@ -32,6 +32,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             )}
         );
         this.mapView = new OMAR.views.Map(params.map);
+        this.mapView.setBboxModel(this.bboxModel);
         this.setElement(this.el);
 
         //$( "#accordion" ).accordion();
