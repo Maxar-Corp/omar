@@ -37,7 +37,7 @@ class RunScriptController implements ApplicationContextAware{
     }
     def jobs()
     {
-        def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
+        def jobTriggers = "${runScriptService.listScheduledJobs() as JSON}"
         //def jobTriggers = "${runScriptService.listJobTriggersByGroup("") as JSON}"
         response.contentType = "application/json"
         response.outputStream << jobTriggers
@@ -60,7 +60,7 @@ class RunScriptController implements ApplicationContextAware{
         }
 
         //println grailsApplication.config.stager.scripts.formatter.indexFilesPrefix()
-        def jobTriggers = "${runScriptService.listJobTriggersByGroup("STAGER_SCRIPTS") as JSON}"
+        def jobTriggers = "${runScriptService.listScheduledJobs() as JSON}"
         //def jobTriggers = "${runScriptService.listJobTriggersByGroup("") as JSON}"
         def model = [jobTriggers: jobTriggers]
         model << params
