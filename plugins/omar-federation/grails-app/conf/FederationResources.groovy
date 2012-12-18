@@ -7,10 +7,10 @@ modules = {
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'json2.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js/underscore', file:'underscore-1.4.2.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'backbone-min.js']
-        resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
-        resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'BboxModelView.js']
         resource url: [plugin: 'omar-ogc', dir: 'js', file: 'WfsModel.js']
+        resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
+        resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
         // css resources for jquery
 		resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'layout-default-latest.css']
 		resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery/smoothness', file: 'jquery-ui-1.9.2.custom.css']
@@ -18,6 +18,7 @@ modules = {
 
         resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery-ui-timepicker-addon.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'DateModelView.js']
+
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'MapModelView.js']
         resource url: [plugin: 'yui', dir: "js/yui/yahoo-dom-event", file: "yahoo-dom-event.js"]
         resource url: [plugin: 'yui', dir: "js/yui/element", file: "element-min.js"]

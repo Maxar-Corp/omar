@@ -5,7 +5,14 @@ OMAR.views.Map = Backbone.View.extend({
     el:"#map",
      initialize:function(params){
         this.setElement(this.el);
-        //this.model = new OMAR.models.Map({"div":this.el});
+         if(params.theme)
+         {
+             this.theme = params.theme;
+         }
+         else
+         {
+             this.theme = null;
+         }
      },
     reset:function()
     {
@@ -17,30 +24,32 @@ OMAR.views.Map = Backbone.View.extend({
         if(this.el)
         {
                 this.map = new OpenLayers.Map({
-                div: "map",
-                theme:"/omar/plugins/openlayers-0.12/js/theme/default/style.css",
-                layers: [
-                    new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                        "http://vmap0.tiles.osgeo.org/wms/vmap0",
-                        {layers: 'basic'} )
-                ],
-                controls: [
-                    new OpenLayers.Control.Navigation({
-                        dragPanOptions: {
-                            enableKinetic: true
-                        }
-                    }),
-                    new OpenLayers.Control.PanZoom(),
-                    new OpenLayers.Control.Attribution()
-                ],
-                center: [0, 0],
-                zoom: 3
-            });
+                    div: this.el,
+                    theme:this.theme,
+                    layers: [
+                        new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                            "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                            {layers: 'basic'} )
+                    ],
+                    controls: [
+                        new OpenLayers.Control.Navigation({
+                            dragPanOptions: {
+                                enableKinetic: true
+                            }
+                        }),
+                        new OpenLayers.Control.PanZoom(),
+                        new OpenLayers.Control.Attribution()
+                    ],
+                    center: [0, 0],
+                    zoom: 3
+                });
 
             this.map.addControl(new OpenLayers.Control.LayerSwitcher());
             this.map.events.register("mousemove", this.map, this.setMouse);
             this.map.events.register("moveend", this.map, this.setExtent);
             this.map.events.register("moveend", this.map, this.setCenter);
+            this.map.setCenter(this.map.getCenter());
+            this.map.zoomToMaxExtent();
         }
     },
     setMouse:function(evt)
@@ -48,11 +57,11 @@ OMAR.views.Map = Backbone.View.extend({
     },
     setExtent:function(evt)
     {
-        alert("setExtent");
+        //alert("setExtent");
     },
     setCenter:function(evt)
     {
-        alert("setCenter");
+        //alert("setCenter");
     },
     setBboxModel:function(bboxModel)
     {
