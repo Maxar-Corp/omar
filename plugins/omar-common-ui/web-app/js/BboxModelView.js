@@ -62,7 +62,8 @@ OMAR.views.BBOX = Backbone.View.extend({
 
     },
     events:{
-        "change #lowerLeftBbox" : "llOnChange"
+        "change #lowerLeftBbox" : "llOnChange",
+        "change #upperRightBbox": "urOnChange"
     },
 
     bboxModelChange: function() {
@@ -70,23 +71,34 @@ OMAR.views.BBOX = Backbone.View.extend({
     },
 
     llOnChange: function(e){
+        alert("llonchange");
         var v = this.lowerLeftBboxEl.val();
         var values = v.split(",");
         if(values.length ==2)
         {
-            this.model.off("change", this.bboxModelChange)
-            this.model.set({minx:values[0],miny:values[1]});
-            this.model.on("change", this.bboxModelChange)
+            this.model.off("change", this.bboxModelChange, this);
+            this.model.set({minx:values[1],miny:values[0]});
+            this.model.on("change", this.bboxModelChange, this);
+        }
+    },
+    urOnChange: function(e){
+        var v = this.upperRightBboxEl.val();
+        var values = v.split(",");
+        if(values.length ==2)
+        {
+            this.model.off("change", this.bboxModelChange, this);
+            this.model.set({maxx:values[1],maxy:values[0]});
+            this.model.on("change", this.bboxModelChange, this);
         }
     },
     bboxError:function(model, err){
     },
     render:function()
     {
-        this.lowerLeftBboxEl.val(this.model.get("minx")+","
-            +this.model.get("miny"));
-        this.upperRightBboxEl.val(this.model.get("maxx")+","
-            +this.model.get("maxy"));
+        this.lowerLeftBboxEl.val(this.model.get("miny")+","
+            +this.model.get("minx"));
+        this.upperRightBboxEl.val(this.model.get("maxy")+","
+            +this.model.get("maxx"));
     }
 });
 
