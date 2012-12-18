@@ -1,2 +1,2 @@
-<div id="map"></div>
+<div id="map" class="smallmap"></div>
 <div id="ddMouse"></div>
