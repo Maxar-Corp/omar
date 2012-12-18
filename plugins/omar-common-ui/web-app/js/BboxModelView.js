@@ -71,7 +71,6 @@ OMAR.views.BBOX = Backbone.View.extend({
     },
 
     llOnChange: function(e){
-        alert("llonchange");
         var v = this.lowerLeftBboxEl.val();
         var values = v.split(",");
         if(values.length ==2)
