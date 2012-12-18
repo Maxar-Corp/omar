@@ -5,6 +5,7 @@
 	<r:require modules = "federationRasterSearch"/>
     <title>OMAR <g:meta name="app.version"/>: Federated Search</title>
     <r:layoutResources/>
+    <!--
 
 <link rel="stylesheet" href="http://openlayers.org/dev/theme/default/style.css" type="text/css">
         <link rel="stylesheet" href="http://openlayers.org/dev/examples/style.css" type="text/css">
@@ -25,8 +26,8 @@
                 padding: 0 0.5em 0.5em 0.5em;
             }
         </style>
-        <script src="http://openlayers.org/dev/OpenLayers.js"></script>
-
+            <script src="http://openlayers.org/dev/OpenLayers.js"></script>
+    -->
 </head>
 <body>
 <div class="outer-center" id="rasterSearchPageId">
@@ -74,6 +75,10 @@
 
 </div>
 
+<r:script>
+    OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
+    alert("${resource(plugin:'openlayers', dir:'js/theme/default')}/");
+</r:script>
 <r:layoutResources/>
 <script type="text/html" id="template-contact">
     <div class="omar-server-container">
@@ -95,9 +100,8 @@ function init(){
     //
     var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery);
     searchPageController.render();
-
+/*
  
-
 
 
     var urls = [
@@ -137,11 +141,11 @@ map.addControl(new OpenLayers.Control.LayerSwitcher());
 /////////////////////////////////////////////////////////////
 
     map.events.register("mousemove", map, setMouse);
-
     map.events.register("moveend", map, setExtent);
     map.events.register("moveend", map, setCenter);
+    */
 }
-
+ /*
 function setMouse(evt) {
     var mouse = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
     var ddMouse = document.getElementById("ddMouse");
@@ -175,7 +179,7 @@ function setCenter() {
 
 
 
-
+     */
 
 
 

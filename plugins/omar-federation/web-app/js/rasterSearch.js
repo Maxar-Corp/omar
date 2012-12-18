@@ -30,7 +30,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                     new OMAR.models.OmarServerModel({url:"http://localhost/omar"})
                 ]}
             )}
-        )
+        );
+        this.mapView = new OMAR.views.Map();
         this.setElement(this.el);
 
         //$( "#accordion" ).accordion();
@@ -42,8 +43,18 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         if(this.bboxView)
         {
             this.bboxView.render();
+        }
+        if(this.dateTimeRangeView)
+        {
             this.dateTimeRangeView.render();
+        }
+        if(this.omarServerCollectionView)
+        {
             this.omarServerCollectionView.render();
+        }
+        if(this.mapView)
+        {
+           this.mapView.render();
         }
     },
     toCql:function(){
