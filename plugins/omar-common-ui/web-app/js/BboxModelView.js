@@ -16,19 +16,19 @@ OMAR.models.BBOX = Backbone.Model.extend(
     },
     validate:function(attrs)
     {
-        if(attrs.minx&&(!OMAR.isFloat(attrs.minx)))
+        if(attrs.minx&&(!OMAR.isFloat(attrs.minx.toString())))
         {
             return ("Minx value is invalid: " + attrs.minx);
         }
-        if(attrs.miny&&(!OMAR.isFloat(attrs.miny)))
+        if(attrs.miny&&(!OMAR.isFloat(attrs.miny.toString())))
         {
             return ("Miny value is invalid: " + attrs.miny);
         }
-        if(attrs.maxx&&(!OMAR.isFloat(attrs.maxx)))
+        if(attrs.maxx&&(!OMAR.isFloat(attrs.maxx.toString())))
         {
             return ("Maxx value is invalid: " + attrs.maxx);
         }
-        if(attrs.maxy&&(!OMAR.isFloat(attrs.maxy)))
+        if(attrs.maxy&&(!OMAR.isFloat(attrs.maxy.toString())))
         {
             return ("Maxy value is invalid: " + attrs.maxy);
         }
