@@ -107,9 +107,9 @@ function init(){
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
 
-    map.events.register("mousemove", map, setMouse);
-    map.events.register("moveend", map, setExtent);
-    map.events.register("moveend", map, setCenter);
+   // map.events.register("mousemove", map, setMouse);
+   // map.events.register("moveend", map, setExtent);
+   // map.events.register("moveend", map, setCenter);
 }
  /*
 function setMouse(evt) {

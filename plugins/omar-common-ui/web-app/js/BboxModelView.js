@@ -54,21 +54,28 @@ OMAR.views.BBOX = Backbone.View.extend({
         this.model = new OMAR.models.BBOX();
         this.lowerLeftBboxEl = $("#lowerLeftBbox");
         this.upperRightBboxEl = $("#upperRightBbox");
-        this.model.on("change", function() {alert("here")});
         this.model.on("error",
             function(model,err) {
                 alert("BBOX Has errors: " + err);
             });
+        this.model.on("change", this.bboxModelChange)
     },
     events:{
         "change #lowerLeftBbox" : "llOnChange"
     },
+
+    bboxModelChange: function() {
+        this.render();
+    },
+
     llOnChange: function(e){
         var v = this.lowerLeftBboxEl.val();
         var values = v.split(",");
         if(values.length ==2)
         {
+            this.model.off("change", this.bboxModelChange)
             this.model.set({minx:values[0],miny:values[1]});
+            this.model.on("change", this.bboxModelChange)
         }
     },
     bboxError:function(model, err){
