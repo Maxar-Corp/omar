@@ -5,29 +5,6 @@
 	<r:require modules = "federationRasterSearch"/>
     <title>OMAR <g:meta name="app.version"/>: Federated Search</title>
     <r:layoutResources/>
-    <!--
-
-<link rel="stylesheet" href="http://openlayers.org/dev/theme/default/style.css" type="text/css">
-        <link rel="stylesheet" href="http://openlayers.org/dev/examples/style.css" type="text/css">
-        <style type="text/css">
-            html, body, #map {
-                margin: 0;
-                width: 100%;
-                height: 95%;
-            }
-
-            #text {
-                position: absolute;
-                bottom: 1em;
-                left: 1em;
-                width: 512px;
-                z-index: 20000;
-                background-color: white;
-                padding: 0 0.5em 0.5em 0.5em;
-            }
-        </style>
-            <script src="http://openlayers.org/dev/OpenLayers.js"></script>
-    -->
 </head>
 <body>
 <div class="outer-center" id="rasterSearchPageId">
@@ -103,60 +80,7 @@ function init(){
     };
     var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);
     searchPageController.render();
-
-/////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
-
-   // map.events.register("mousemove", map, setMouse);
-   // map.events.register("moveend", map, setExtent);
-   // map.events.register("moveend", map, setCenter);
 }
- /*
-function setMouse(evt) {
-    var mouse = map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
-    var ddMouse = document.getElementById("ddMouse");
-
-    if (mouse.lat < "90" && mouse.lat > "-90" && mouse.lon < "180" && mouse.lon > "-180") {
-        ddMouse.innerHTML = "<b>DD:</b> " + mouse.lat + ", " + mouse.lon;
-    }
-    else {
-        ddMouse.innerHTML = "<b>DD:</b> Outside of geographic extent.";
-    }
-}
-
-function setExtent() {
-    var extent = map.getExtent();
-   
-    // lower left
-    //alert(extent.bottom + "," + extent.left);
-
-    // upper right
-    //alert(extent.top + "," + extent.right);
-    //alert("test");
-}
-
-function setCenter() {
-    var center = map.getCenter();
-
-    //alert(center.lat + "," + center.lon);
-    //alert("test");
-}
-
-
-
-
-     */
-
-
-
-
-
-
-
-
-
-
-
 </script>
 
 </body>
