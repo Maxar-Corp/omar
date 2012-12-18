@@ -38,7 +38,7 @@ grails.project.dependency.resolution = {
       excludes "resources"
     }
     compile ":swfobject:2.2.1"
-    compile ":resources:1.1.6"
+    //runtime ":resources:1.1.6"
   }
 }
 
