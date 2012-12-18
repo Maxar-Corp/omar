@@ -75,10 +75,11 @@
 
 </div>
 
-<r:script>
-    OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
-    alert("${resource(plugin:'openlayers', dir:'js/theme/default')}/");
-</r:script>
+ <script>
+   //  OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
+     // alert("${resource(plugin:'openlayers', dir:'js/theme/default')}/");
+
+ </script>
 <r:layoutResources/>
 <script type="text/html" id="template-contact">
     <div class="omar-server-container">
@@ -92,50 +93,16 @@
 </script>
 
 <script type="text/javascript">
-var map;
-
 
 function init(){
     // application specific initialize that will need access to grails models
     //
-    var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery);
+    OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
+    var params = {
+        map:{theme:"${resource(plugin:'openlayers', dir:'js/theme/default')}/"}
+    };
+    var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);
     searchPageController.render();
-/*
- 
-
-
-    var urls = [
-    "http://a.tile.openstreetmap.org/${z}/${x}/${y}.png",
-    "http://b.tile.openstreetmap.org/${z}/${x}/${y}.png",
-    "http://c.tile.openstreetmap.org/${z}/${x}/${y}.png"
-];
-
-map = new OpenLayers.Map({
-    div: "map",
-    layers: [
-        new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                    "http://vmap0.tiles.osgeo.org/wms/vmap0",
-                    {layers: 'basic'} )
-    ],
-    controls: [
-        new OpenLayers.Control.Navigation({
-            dragPanOptions: {
-                enableKinetic: true
-            }
-        }),
-        new OpenLayers.Control.PanZoom(),
-        new OpenLayers.Control.Attribution()
-    ],
-    center: [0, 0],
-    zoom: 3
-});
-
-map.addControl(new OpenLayers.Control.LayerSwitcher());
-
-
-
-
-
 
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
@@ -143,7 +110,6 @@ map.addControl(new OpenLayers.Control.LayerSwitcher());
     map.events.register("mousemove", map, setMouse);
     map.events.register("moveend", map, setExtent);
     map.events.register("moveend", map, setCenter);
-    */
 }
  /*
 function setMouse(evt) {
