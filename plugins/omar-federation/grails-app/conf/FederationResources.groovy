@@ -22,7 +22,7 @@ modules = {
         resource url: [plugin: 'yui', dir: "js/yui/yahoo-dom-event", file: "yahoo-dom-event.js"]
         resource url: [plugin: 'yui', dir: "js/yui/element", file: "element-min.js"]
         resource url: [dir: 'js', file: 'ServerListModelView.js']
-        resource url: [dir: 'images', file: 'calendar.gif']
+        resource url: [plugin: 'omar-common-ui', dir: 'images', file: 'calendar.gif']
         resource url: [dir: 'css', file: 'rasterSearch.css']
         resource url: [dir: 'js', file: 'rasterSearch.js']
 
