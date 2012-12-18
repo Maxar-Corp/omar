@@ -84,7 +84,7 @@ OMAR.views.Map = Backbone.View.extend({
         if(this.bboxModel)
         {
             // may want to unregister change listener of old model
-            this.bboxModel.off("change", this.bboxMapChanged);
+            this.bboxModel.off("change", this.bboxMapChanged,this);
         }
         this.bboxModel = bboxModel;
         if(this.bboxModel)
