@@ -89,9 +89,10 @@ class WfsController
         (results, contentType) = webFeatureService.describeFeatureType( wfsCommand )
         break
       case "GETFEATURE":
-        //println wfsCommand
-        (results, contentType) = webFeatureService.getFeature( wfsCommand )
-        //println results
+        (results, contentType) = webFeatureService.getFeature( wfsCommand );
+          if (params.callback){
+              results="${params.callback}(${results});";
+          }
         break
       default:
         throw new Exception( "Unsupported Operation: ${ wfsCommand.request }" )
