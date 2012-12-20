@@ -12,6 +12,7 @@ import org.geotools.data.postgis.PostgisNGDataStoreFactory
 import grails.web.JSONBuilder
 import org.joda.time.DateTimeZone
 import org.joda.time.DateTime
+import grails.converters.JSON
 
 class WebFeatureService
 {
@@ -395,13 +396,13 @@ class WebFeatureService
   {
     def results, contentType
 
-    if ( wfsRequest.resultType?.toLowerCase() == "hits" )
-    {
-      results = outputGML( wfsRequest )
-      contentType = 'text/xml; subtype=gml/2.1.2'
-    }
-    else
-    {
+    //if ( wfsRequest.resultType?.toLowerCase() == "hits" )
+    //{
+    //  results = outputGML( wfsRequest )
+    //  contentType = 'text/xml; subtype=gml/2.1.2'
+    //}
+    //else
+    //{
       switch ( wfsRequest?.outputFormat?.toUpperCase() ?: "" )
       {
       case "CSV":
@@ -416,7 +417,7 @@ class WebFeatureService
         results = outputGML( wfsRequest )
         contentType = 'text/xml; subtype=gml/2.1.2'
       }
-    }
+    //}
 
     return [results, contentType]
   }
@@ -590,21 +591,39 @@ class WebFeatureService
     def results
     def workspace = getWorkspace()
     def layer = workspace[wfsRequest?.typeName]
-    def writer = new GeoJSONWriter()
+    def filter
+      def filterParams = [
+              filter: wfsRequest?.filter ?: Filter.PASS,
+              max: wfsRequest.maxFeatures ?: -1,
+              offset: wfsRequest?.offset ?: -1
+      ]
+      try
+      {
+          filter = new Filter( filterParams.filter )
+      }
+      catch ( e )
+      {
+          e.printStackTrace()
+      }
 
-    def cursor = layer.getCursor(
-        filter: wfsRequest?.filter ?: Filter.PASS,
-        max: wfsRequest.maxFeatures ?: -1,
-        offset: wfsRequest?.offset ?: -1
-    )
+      if ( wfsRequest.resultType?.toLowerCase() == "hits" )
+      {
+          def count = layer.count( filter );
+          def timestamp = new DateTime( DateTimeZone.UTC );
+          results = "${[numberOfFeatures:count,timestamp:timestamp] as JSON}"
+      }
+      else
+      {
+          def writer = new GeoJSONWriter()
+          def cursor = layer.getCursor(filterParams);
 
-    def newLayer = new Layer(cursor.col)
+          def newLayer = new Layer(cursor.col)
 
-    results = writer.write( newLayer )
-    cursor?.close()
-    workspace?.close()
-
-    return results
+          results = writer.write( newLayer )
+          cursor?.close()
+      }
+      workspace?.close()
+      return results
   }
 
 
