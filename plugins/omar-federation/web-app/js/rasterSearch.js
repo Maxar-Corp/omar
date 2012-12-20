@@ -1,22 +1,3 @@
-/*
-var DataUtilities = (function() {
-    //Privileged variables and methods
-    var self = {
-        "processXML": function(xml) {
-            if (!jQuery.support.htmlSerialize) {
-                //If IE 6+
-                var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-                xmlDoc.loadXML(xml);
-                xml = xmlDoc;
-            }
-            return xml;
-        }
-    };
-    return self;
-})();
-  */
-
-
 OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     el:"#rasterSearchPageId",
     bboxView:null,
@@ -79,35 +60,45 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     searchRaster:function(){
         var wfs = new OMAR.models.Wfs({"resultType":"hits"});
-        //this.bboxModel.toCqlString("ground_geom");
         var cqlFilter = this.toCql();
-       // alert(cqlFilter);
         wfs.set("filter",cqlFilter);
-        //alert(wfs.toUrl());
-        $.ajax({
-            url: wfs.toUrl(),
-            type: "GET",
-            dataType: "text",
-            timeout: 20000,
-            success: function(response) {
-                var xml = OMAR.parseXml(response);
-                if(xml.documentElement)
-                {
-                    alert(xml.documentElement.getAttribute("numberOfFeatures"));
+
+        for(var idx = 0; idx <this.omarServerCollectionView.model.size();++idx )
+        {
+             var model = this.omarServerCollectionView.model.at(idx);
+             this.omarServerCollectionView.setBusy(idx, true);
+             wfs.set("url",model.get("url")+"/omar/wfs");
+             $.ajax({
+                url: wfs.toUrl()+"&callback=?",
+                cache:false,
+                type: "GET",
+                crossDomain:true,
+                dataType: "json",
+                timeout: 60000,
+                idx:idx,
+                scopePtr:this,
+                success: function(response) {
+                    if(response.numberOfFeatures!=null)
+                    {
+                        var numberOfFeatures = response.numberOfFeatures;
+                        this.scopePtr.omarServerCollectionView.setBusy(this.idx, false);
+                        this.scopePtr.omarServerCollectionView.model.at(this.idx).set({"count":numberOfFeatures});
+                    }
+                },
+                error: function(x, t, m) {
+                    var count = "Error";
+                    if(t==="timeout") {
+                        count = "Timeout"
+                    } else {
+                        //alert(JSON.stringify(x)+ " " +t + " " + m);
+                    }
+                    this.scopePtr.omarServerCollectionView.setBusy(this.idx, false);
+                    this.scopePtr.omarServerCollectionView.model.at(this.idx).set({"count":count});
                 }
-            },
-            error: function(x, t, m) {
-                if(t==="timeout") {
-                    alert("got timeout");
-                } else {
-                    alert(t);
-                }
-            }
-        });
+            });
+        }
     }
 });
-
-
 
 OMAR.pages.FederatedRasterSearch = (function($, params){
     var result = new OMAR.views.FederatedRasterSearch(params);
@@ -117,7 +108,6 @@ OMAR.pages.FederatedRasterSearch = (function($, params){
 $(document).ready(function () {
 
     // OUTER-LAYOUT
-
 
     $('body').layout({
         center__paneSelector:	".outer-center"
