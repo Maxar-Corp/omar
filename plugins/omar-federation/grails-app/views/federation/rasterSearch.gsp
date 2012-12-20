@@ -32,6 +32,13 @@
                 
                 <g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/>
                 </td></tr></table>  
+
+
+<table width="100%"><tr><td bgcolor="dfdfdf">
+                
+                <g:render plugin="omar-common-ui" template="/templates/cqlTemplate"/>
+</td></tr></table>  
+
             <!--</div> -->
 
 
