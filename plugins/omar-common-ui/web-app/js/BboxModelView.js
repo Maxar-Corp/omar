@@ -63,7 +63,7 @@ OMAR.models.BBOX = Backbone.Model.extend(
 );
 
 OMAR.views.BBOX = Backbone.View.extend({
-    el:"#BBOXId",
+    el:"#bBoxId",
     initialize: function(params)
     {
         // this should create a variable for us called this.$el
