@@ -58,14 +58,13 @@
 
  </script>
 <r:layoutResources/>
-<script type="text/html" id="template-contact">
-    <div class="omar-server-container">
-        <div class="infoi">
-            <div class="omar-server-count">${'<%=count%>'}</div>
-            <!--<img src="http://icons.iconarchive.com/icons/visualpharm/hardware/256/server-icon.png" height="70" width="70"/> -->
+<script type="text/html" id="omar-server-template">
+    <div class="omar-server-container" id="${'<%=id%>'}">
+        <div class="omar-server-info">
+            <div id="omar-server-count" class="omar-server-count">${'<%=count%>'}</div>
             <img style="padding-top:24px" src="${resource(dir:'images', file:'server.gif')}"/>
         </div>
-        <a href="">${'<%=serverName%>'}</a>
+        <a href="${'<%=url%>'}" id="omar-server-url">${'<%=name%>'}</a>
     </div>
 </script>
 
@@ -76,7 +75,7 @@ function init(){
     //
     OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
     var params = {
-        map:{theme:"${resource(plugin:'openlayers', dir:'js/theme/default')}/"}
+        map:{theme:"${resource(plugin:'openlayers', dir:'js/theme/default', file:'style.css')}"}
     };
     var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);
     searchPageController.render();

@@ -6,7 +6,7 @@ OMAR.models.Wfs = Backbone.Model.extend({
         "request":"getFeature",
         "typeName":"raster_entry",
         "filter":"",
-        "outputFormat":"xml",
+        "outputFormat":"JSON",
         "maxFeatures":"",
         "offset":"",
         "resultType":""

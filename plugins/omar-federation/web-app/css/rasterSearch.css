@@ -114,14 +114,14 @@ p {font-size:50%}
     border-radius:50px;font-size:15px;line-height:25px;text-align:center;
 }
 
-.infoi {
+.omar-server-info {
     height: auto;
     width: auto;
     position: relative;
     /*background-color:red;*/
 }
 
-.infoi {
+.omar-server-info  {
     z-index: -1;
 }
 
@@ -139,7 +139,8 @@ p {font-size:50%}
 }
 
 #omarServerCollectionId{
-    height:100px;
+    height:100%;
+    min-height: 100px;
     width:auto;
     overflow-x:scroll;
     /*overflow-y:scroll;*/
