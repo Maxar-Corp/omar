@@ -10,17 +10,17 @@ import org.opengis.coverage.grid.GridCoverageReader
 import org.geotools.coverage.grid.io.AbstractGridFormat
 import org.geotools.coverage.processing.DefaultProcessor
 import geoscript.layer.Layer
-import org.geotools.process.raster.ContourProcess
+import org.geotools.process.raster.gs.ContourProcess
 import geoscript.workspace.Memory
 import geoscript.feature.Schema
-import org.geotools.process.raster.PolygonExtractionProcess
-import org.geotools.process.raster.RasterAsPointCollectionProcess
-import org.geotools.process.raster.AddCoveragesProcess
-import org.geotools.process.raster.MultiplyCoveragesProcess
+import org.geotools.process.raster.gs.PolygonExtractionProcess
+import org.geotools.process.raster.gs.RasterAsPointCollectionProcess
+import org.geotools.process.raster.gs.AddCoveragesProcess
+import org.geotools.process.raster.gs.MultiplyCoveragesProcess
 import org.jaitools.numeric.Range
-import org.geotools.process.raster.ScaleCoverage
+import org.geotools.process.raster.gs.ScaleCoverage
 import org.geotools.coverage.grid.GridCoverageFactory
-import org.geotools.process.raster.RasterZonalStatistics
+import org.geotools.process.raster.gs.RasterZonalStatistics
 
 /**
  * The Raster base class
