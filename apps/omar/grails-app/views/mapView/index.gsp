@@ -138,8 +138,6 @@ function changeToImageSpace(azimuth)
         wmsParams = new OmarWmsParams();
         wmsParams.setProperties(wcsParams);
         wmsParams.layers = "${( rasterEntries*.indexId ).join( ',' )}";
-        wmsParams.latitude = mapWidget.getMap().getCenter().lat;
-        wmsParams.longitude = mapWidget.getMap().getCenter().lon;
         // need to calculate an azimuth if we go to other projectors
         // for now just hard code to 0.0
         //  if we ever to UTM grids we need to modify this

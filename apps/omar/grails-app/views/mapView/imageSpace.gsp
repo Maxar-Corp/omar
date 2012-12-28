@@ -607,29 +607,6 @@ map.addLayer(layer);
 
 //map.setCenter(new  OpenLayers.LonLat(0.0,0.0), 0);
 
-<%--
-	<g:if test="${(params.latitude != null) && (params.longitude != null)}">
-		var url = "/omar/imageSpace/groundToImage";
-		var request = OpenLayers.Request.POST({
-			url:url,
-			data: YAHOO.lang.JSON.stringify({
-				id:${rasterEntry.id},
-				groundPoints:[{"lat":${params.latitude}, "lon":${params.longitude}}]
-				}),
-			callback: function (transport)
-			{
-				 var temp = YAHOO.lang.JSON.parse(transport.responseText);
-				 OMAR.imageManipulator.setCenterGivenImagePoint(temp[0]);
-			}
-		});
-	</g:if>
-    --%>
-<%--
-	<g:if test="${params.bbox != null}">
-		bboxToPixel();
-	</g:if>
---%>
-
     // initialize the zoom level variable used to determine zoom in and out in the MapHasZoomed ////////////////////
    //OMAR.imageManipulator.affineParams.rotate = parseFloat(${"rotateAngle"}.value);
    OMAR.imageManipulator.localImageBounds = new OpenLayers.Bounds(0, 0, width, height);
