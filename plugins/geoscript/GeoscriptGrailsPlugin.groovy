@@ -20,7 +20,7 @@ class GeoscriptGrailsPlugin
   // TODO Fill in these fields
   def author = "Scott Bortman"
   def authorEmail = "sbortman@radiantblue.com"
-  def title = "Adds Groovy Geoscript 0.98 support + WMS/WFS and Raster support"
+  def title = "Adds Groovy Geoscript 1.0 support + WMS/WFS and Raster support"
   def description = '''\\
 Brief description of the plugin.
 '''

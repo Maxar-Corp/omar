@@ -8,6 +8,7 @@ grails.project.dependency.resolution = {
     // uncomment to disable ehcache
     // excludes 'ehcache'
   }
+  legacyResolve true // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
   log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
   repositories {
     grailsPlugins()
@@ -30,10 +31,12 @@ grails.project.dependency.resolution = {
   }
   plugins {
     compile ":csv:0.3.1"
-    compile ':filterpane:2.0.1.1'
+    //compile ':filterpane:2.0.1.1'
   }
 }
 
 grails.plugin.location.postgis = '../../plugins/postgis'
 grails.plugin.location.openlayers = '../../plugins/openlayers'
 grails.plugin.location.geoscript = '../../plugins/geoscript'
+
+grails.plugin.location.filterpane = "../../plugins/filterpane"

@@ -11,21 +11,12 @@ grails.project.dependency.resolution = {
     // uncomment to disable ehcache
     // excludes 'ehcache'
   }
+  legacyResolve true // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
   log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
   repositories {
     grailsPlugins()
     grailsHome()
     grailsCentral()
-
-//    def localPlugins = new FileSystemResolver(name: 'my-local-repo')
-//    localPlugins.with {
-//      addArtifactPattern("${System.env['OMAR_HOME']}/plugins/grails-[artifact]-[revision].[ext]")
-//      settings = ivySettings
-//      latestStrategy = new LatestTimeStrategy()
-//      changingPattern = ".*SNAPSHOT"
-//      setCheckmodified(true)
-//    }
-//    resolver(localPlugins)
 
     // uncomment the below to enable remote dependency resolution
     // from public Maven repositories
@@ -42,7 +33,7 @@ grails.project.dependency.resolution = {
     compile ':spring-security-ldap:1.0.6'
     compile ':mail:1.0'
     compile ':csv:0.3.1'
-    compile ':filterpane:2.0.1.1'
+    //compile ':filterpane:2.0.1.1'
 
   }
 
@@ -55,3 +46,4 @@ grails.project.dependency.resolution = {
 }
 
 grails.plugin.location.omarCommonUi = '../../plugins/omar-common-ui'
+grails.plugin.location.filterpane = "../../plugins/filterpane"
