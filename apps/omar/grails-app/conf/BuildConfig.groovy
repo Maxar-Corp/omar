@@ -11,6 +11,7 @@ grails.project.dependency.resolution = {
     // uncomment to disable ehcache
     // excludes 'ehcache'
   }
+  legacyResolve true // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
   log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
   repositories {
     grailsPlugins()
@@ -50,7 +51,7 @@ grails.project.dependency.resolution = {
     runtime ":resources:1.1.6"
     //   runtime ":zipped-resources:1.0"
     runtime ":yui-minify-resources:0.1.5"
-    compile ":filterpane:2.0.1.1"
+    //compile ":filterpane:2.0.1.1"
   }
 }
 
@@ -78,3 +79,5 @@ grails.plugin.location.omarSuperoverlay = "../../plugins/omar-superoverlay"
 //grails.plugin.location.omarOgcCore="../../plugins/omar-ogc-core"
 grails.plugin.location.omarImageMagick = "../../plugins/omar-image-magick"
 grails.plugin.location.omarTimeLapse = "../../plugins/omar-time-lapse"
+
+grails.plugin.location.filterpane = "../../plugins/filterpane"
