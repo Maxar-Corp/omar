@@ -28,13 +28,16 @@ $(document).ready
 				layout.render();
 			}
 		);
+
 		generateLoadingDialogPopup();
+		setupDialogs();
 		var oMenu = new YAHOO.widget.MenuBar
 		(
 			"templateExportMenu",
 			{ autosubmenudisplay: true, hidedelay: 750, showdelay: 0, lazyload: true, zIndex:9999 }
 		);
 		oMenu.render();
+		$(window).resize(function() { windowResize(); });
 	}
 );
 
@@ -122,13 +125,6 @@ function generateFooter()
 	var gradientColorBottom = $("#gradientColorBottom").val();
 	var gradientColorTop = $("#gradientColorTop").val();
 	$("#footer").css("backgroundImage", "url('" + footerGradientUrlGenerator(gradientColorTop, gradientColorBottom, footerHeight) + "')");	
-
-	$("#footer").position
-	({
-		my: "left top",
-		at: "left bottom",
-		of: $("#previewImage")
-	});
 }
 
 function generateFooterAcquisitionDateText()
@@ -142,16 +138,6 @@ function generateFooterAcquisitionDateText()
 	$("#footerAcquisitionDateTextContainer").html($("#footerAcquisitionDateTextInput").val());
 	var textSize = fontSize($("#footerAcquisitionDateTextInput").val(), footerAcquisitionDateTextHeight, footerAcquisitionDateTextWidth);
 	$("#footerAcquisitionDateTextContainer").css("fontSize", textSize);
-	
-	var footerAcquisitionDateTextOffsetHeight = 0;
-	var footerAcquisitionDateTextOffsetWidth = 0;
-	$("#footerAcquisitionDateTextContainer").position
-	({
-		of: $("#footer"),
-		my: "right top",
-		at: "right top",
-		offset: footerAcquisitionDateTextOffsetWidth + " " + footerAcquisitionDateTextOffsetHeight
-	});
 }
 
 function generateFooterLocationText()
@@ -166,16 +152,6 @@ function generateFooterLocationText()
 	var textSize = fontSize($("#footerLocationTextInput").val(), footerLocationTextHeight, footerLocationTextWidth);
 	$("#footerLocationTextContainer").css("font-size", textSize);
 	$("#footerLocationTextContainer").css("textAlign", "center");
-
-	var footerLocationTextOffsetHeight = 0;
-	var footerLocationTextOffsetWidth = 0;
-	$("#footerLocationTextContainer").position
-	({
-		of: $("#footer"),
-		my: "center top",
-		at: "center top",
-		offset: footerLocationTextOffsetWidth + " " + footerLocationTextOffsetHeight
-	});
 }
 
 function generateFooterSecurityClassificationText()
@@ -189,16 +165,6 @@ function generateFooterSecurityClassificationText()
         $("#footerSecurityClassificationTextContainer").html($("#footerSecurityClassificationTextInput").val());
 	var textSize = fontSize($("#footerSecurityClassificationTextInput").val(), footerSecurityClassificationTextHeight, footerSecurityClassificationTextWidth);
 	$("#footerSecurityClassificationTextContainer").css("font-size", textSize);
-
-	var footerSecurityClassificationTextOffsetHeight = 0;
-	var footerSecurityClassificationTextOffsetWidth = logoOffset;
-	$("#footerSecurityClassificationTextContainer").position
-	({
-		of: $("#footer"),
-		my: "left top",
-		at: "left top",
-		offset: footerSecurityClassificationTextOffsetWidth + " " + footerSecurityClassificationTextOffsetHeight
-	});
 }
 
 function generateHeader()
@@ -208,21 +174,6 @@ function generateHeader()
 
 	$("#header").css("height", headerHeight);
 	$("#header").css("width", headerWidth);
-
-	$("#header").position
-	({
-		my: "middle top",
-		at: "middle bottom",
-		of: $("#templateExportMenu"),
-		offset: "0 0"
-	});
-
-	$("#previewImage").position
-	({
-		my: "left top",
-		at: "left bottom",
-		of: $("#header")
-	});
 
 	var gradientColorBottom = $("#gradientColorBottom").val();
 	var gradientColorTop = $("#gradientColorTop").val();
@@ -240,16 +191,6 @@ function generateHeaderDescriptionText()
 	$("#headerDescriptionTextContainer").html($("#headerDescriptionTextInput").val());
 	var textSize = fontSize($("#headerDescriptionTextInput").val(), headerDescriptionTextHeight, headerDescriptionTextWidth);
 	$("#headerDescriptionTextContainer").css("fontSize", textSize);
-
-	var headerDescriptionTextOffsetHeight = logoOffset + headerSecurityClassificationTextHeight + headerTitleTextHeight;
-	var headerDescriptionTextOffsetWidth = logoOffset + logoWidth + logoOffset;
-	$("#headerDescriptionTextContainer").position
-	({
-		of: $("#header"),
-		my: "left top",
-		at: "left top",
-		offset: headerDescriptionTextOffsetWidth + " " + headerDescriptionTextOffsetHeight
-	});
 }
 
 function generateHeaderSecurityClassificationText()
@@ -264,16 +205,6 @@ function generateHeaderSecurityClassificationText()
 	$("#headerSecurityClassificationTextContainer").html($("#headerSecurityClassificationTextInput").val());
 	var textSize = fontSize($("#headerSecurityClassificationTextInput").val(), headerSecurityClassificationTextHeight, headerSecurityClassificationTextWidth);
 	$("#headerSecurityClassificationTextContainer").css("fontSize", textSize);
-
-	var headerSecurityClassificationTextOffsetHeight = logoOffset;
-	var headerSecurityClassificationTextOffsetWidth = logoOffset + logoWidth + logoOffset;
-	$("#headerSecurityClassificationTextContainer").position
-	({
-		of: $("#header"),
-		my: "left top",
-		at: "left top",
-		offset: headerSecurityClassificationTextOffsetWidth + " " + headerSecurityClassificationTextOffsetHeight
-	});
 }
 
 function generateHeaderTitleText()
@@ -288,16 +219,6 @@ function generateHeaderTitleText()
 	$("#headerTitleTextContainer").html($("#headerTitleTextInput").val());
 	var textSize = fontSize($("#headerTitleTextInput").val(), headerTitleTextHeight, headerTitleTextWidth);
 	$("#headerTitleTextContainer").css("fontSize", textSize);
-
-	var headerTitleTextOffsetHeight = logoOffset + headerSecurityClassificationTextHeight;
-	var headerTitleTextOffsetWidth = logoOffset + logoWidth + logoOffset;
-	$("#headerTitleTextContainer").position
-	({
-		my: "left top",
-		at: "left top",
-		of: $("#header"),
-		offset: headerTitleTextOffsetWidth + " " + headerTitleTextOffsetHeight
-	});
 }
 
 function generateLogo()
@@ -310,13 +231,6 @@ function generateLogo()
 	$("#logoImage").attr("src", logoImagesDirectory + "ciaLogoForWeb.png");
 
 	logoOffset = ($("#header").height() - logoHeight) / 2;
-	$("#logoImage").position
-	({
-		my: "left center",
-		at: "left center",
-		of: $("#header"),
-		offset: logoOffset + " 0"
-	});
 }
 
 function generateLoadingDialogPopup()
@@ -422,8 +336,8 @@ function init()
 	generateFooterSecurityClassificationText();
 	generateFooterLocationText();
 	generateFooterAcquisitionDateText();
-	setupDialogs();
 	setupMarkers();
+	windowResize();
 	$("#loadingDialogPopup").dialog("close");
 }
 
@@ -437,7 +351,8 @@ function positionNorthArrow()
 		my: "right top",
 		at: "left top",
 		of: $("#overviewMapImage"),
-		offset: "-" + northArrowOffsetWidth + " 0"
+		offset: "-" + logoOffset + " 0",
+		collision: "none"
 	});
 
 	$("#northArrowSpinnerDiv").position
@@ -445,7 +360,8 @@ function positionNorthArrow()
 		my: "middle center",
 		at: "middle center",
 		of: $("#northArrowImage"),
-		offset: "0 0"
+		offset: "0 0",
+		collision: "none"
 	});
 }
 
@@ -458,7 +374,8 @@ function positionOverviewMapImage()
 		my: "right top",
 		at: "right top",
 		of: $("#header"),
-		offset: "-" + overviewMapImageOffsetWidth + " " + overviewMapImageOffsetHeight
+		offset: "-" + overviewMapImageOffsetWidth + " " + overviewMapImageOffsetHeight,
+		collision: "none"
 	});	
 }
 
@@ -675,8 +592,142 @@ function setupMarkers()
 				my: "left top",
 				at: "left top",
 				of: $("#previewImage"),
-				offset: markers[2 * i] + " " + markers[2 * i + 1]
+				offset: markers[2 * i] + " " + markers[2 * i + 1],
+				collision: "none"
 			});
 		}
 	}
+}
+
+function windowResize()
+{
+	var headerPositionHorizontal;
+	if ($("#header").width() > $(window).width()) { headerPositionHorizontal = "left";}
+	else { headerPositionHorizontal = "middle"; }
+	$("#header").position
+	({
+		my: headerPositionHorizontal + " top",
+		at: headerPositionHorizontal + " bottom",
+		of: $("#templateExportMenu"),
+		offset: "0 0",
+		collision: "none"
+	});
+
+	$("#previewImage").position
+	({
+		my: "left top",
+		at: "left bottom",
+		of: $("#header"),
+		offset: "0 0",
+		collision: "none"
+	});
+
+	$("#logoImage").position
+	({
+		my: "left center",
+		at: "left center",
+		of: $("#header"),
+		offset: logoOffset + " 0",
+		collision: "none"
+	});
+
+	var headerSecurityClassificationTextOffsetHeight = logoOffset;
+	var headerSecurityClassificationTextOffsetWidth = logoOffset + logoWidth + logoOffset;
+	$("#headerSecurityClassificationTextContainer").position
+	({
+		my: "left top",
+		at: "left top",	
+		of: $("#header"),
+		offset: headerSecurityClassificationTextOffsetWidth + " " + headerSecurityClassificationTextOffsetHeight,
+		collision: "none"
+	});
+
+	var headerTitleTextOffsetHeight = logoOffset + headerSecurityClassificationTextHeight;
+	var headerTitleTextOffsetWidth = logoOffset + logoWidth + logoOffset;
+	$("#headerTitleTextContainer").position
+	({
+		my: "left top",
+		at: "left top",
+		of: $("#header"),
+		offset: headerTitleTextOffsetWidth + " " + headerTitleTextOffsetHeight,
+		collision: "none"
+        });
+
+	var headerDescriptionTextOffsetHeight = logoOffset + headerSecurityClassificationTextHeight + headerTitleTextHeight;
+	var headerDescriptionTextOffsetWidth = logoOffset + logoWidth + logoOffset;
+	$("#headerDescriptionTextContainer").position
+	({
+		of: $("#header"),
+		my: "left top",
+		at: "left top",
+		offset: headerDescriptionTextOffsetWidth + " " + headerDescriptionTextOffsetHeight,
+		collision: "none"
+	});
+
+	$("#northArrowImage").position
+	({
+		my: "right top",
+		at: "left top",
+		of: $("#overviewMapImage"),
+		offset: "-" + logoOffset + " 0",
+		collision: "none"
+	});
+	$("#northArrowSpinnerDiv").position
+	({
+		my: "middle center",
+		at: "middle center",
+		of: $("#northArrowImage"),
+		offset: "0 0",
+		collision: "none"
+	});
+
+	var overviewMapImageOffsetHeight = logoOffset;
+	var overviewMapImageOffsetWidth = 2 * logoOffset;
+	$("#overviewMapImage").position
+	({
+		my: "right top",
+		at: "right top",
+		of: $("#header"),
+		offset: "-" + overviewMapImageOffsetWidth + " " + overviewMapImageOffsetHeight,
+		collision: "none"
+	});
+
+
+	$("#footer").position
+	({
+		my: "left top",
+		at: "left bottom",
+		of: $("#previewImage"),
+		offset: "0 0",
+		collision: "none"
+	});
+
+	var footerSecurityClassificationTextOffsetHeight = 0;
+	var footerSecurityClassificationTextOffsetWidth = logoOffset;
+	$("#footerSecurityClassificationTextContainer").position
+	({
+		my: "left top",
+		at: "left top",
+		of: $("#footer"),
+		offset: footerSecurityClassificationTextOffsetWidth + " " + footerSecurityClassificationTextOffsetHeight,
+		collision: "none"
+	});
+
+	$("#footerLocationTextContainer").position
+	({
+		my: "center top",
+		at: "center top",
+		of: $("#footer"),
+		offset: "0 0",
+		collision: "none"
+	});
+
+	$("#footerAcquisitionDateTextContainer").position
+	({
+		my: "right top",
+		at: "right top",
+		of: $("#footer"),
+		offset: "0 0",
+		collision: "none"
+	});
 }
