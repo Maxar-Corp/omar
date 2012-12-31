@@ -106,6 +106,8 @@
       omarSearchResults.setProperties(document);
 
       updatePageOffset();
+	updateLinks();
+
     }
 
     function exportAs(format)
@@ -215,6 +217,36 @@
   function handleClickTab(e) {
     updateCurrentTab("rasterEntryResultCurrentTab", tabView.get('activeIndex'));
   }
+
+function updateLinks()
+{
+	if ("${params.searchMethod ?: false}" == "BBOX" && ${params.aoiMinLon ?: false} && ${params.aoiMinLat ?: false} 
+		&& ${params.aoiMaxLon ?: false} && ${params.aoiMaxLat ?: false})
+	{
+		for (var i = 0; i < ${rasterEntries.id}.length; i++)
+		{
+			var centerLongitude = (${params.aoiMinLon ?: 0} + ${params.aoiMaxLon ?: 0}) / 2;
+			var centerLatitude = (${params.aoiMinLat ?: 0} + ${params.aoiMinLat ?: 0}) / 2;
+			var bbox = [${params.aoiMinLon ?: 0}, ${params.aoiMinLat ?: 0}, ${params.aoiMaxLon ?: 0}, ${params.aoiMaxLat ?: 0}];
+			document.getElementById("imageTabOrthoHref" + i).href += "&longitude=" + centerLongitude + "&latitude=" + centerLatitude + "&bbox=" + bbox.join(",");
+			document.getElementById("metadataTabOrthoHref" + i).href += "&longitude=" + centerLongitude + "&latitude=" + centerLatitude + "&bbox=" + bbox.join(",");
+			document.getElementById("fileTabOrthoHref" + i).href += "&longitude=" + centerLongitude + "&latitude=" + centerLatitude + "&bbox=" + bbox.join(",");
+			document.getElementById("linksTabOrthoHref" + i).href += "&longitude=" + centerLongitude + "&latitude=" + centerLatitude + "&bbox=" + bbox.join(",");
+		}	
+	}
+	else if ("${params.searchMethod ?: false}" == "RADIUS" && ${params.centerLon ?: false} && ${params.centerLat ?: false} && ${params.aoiRadius ?: false})
+	{
+		for (var i = 0; i < ${rasterEntries.id}.length; i++)
+		{
+			var centerLongitude = ${params.centerLon ?: 0};
+			var centerLatitude = ${params.centerLat ?: 0};
+			document.getElementById("imageTabOrthoHref" + i).href += "&longitude=" + centerLongitude + "&latitude=" + centerLatitude;
+			document.getElementById("metadataTabOrthoHref" + i).href += "&longitude=" + centerLongitude + "&latitude=" + centerLatitude;
+			document.getElementById("fileTabOrthoHref" + i).href += "&longitude=" + centerLongitude + "&latitude=" + centerLatitude;
+			document.getElementById("linksTabOrthoHref" + i).href += "&longitude=" + centerLongitude + "&latitude=" + centerLatitude;
+		}
+	}
+}
 </r:script>
 </body>
 </html>
