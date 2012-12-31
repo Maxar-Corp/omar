@@ -334,8 +334,13 @@ mapWidget.setupAoiLayer();
     }
     else
     {
-        var mapBBOX = new OpenLayers.Bounds(${params.bbox ?: "bounds.left, bounds.bottom, bounds.right, bounds.top"});
-        var zoom = mapWidget.getMap().getZoomForExtent(mapBBOX, true);
+        var mapBbox = new OpenLayers.Bounds(${params.bbox ?: "bounds.left, bounds.bottom, bounds.right, bounds.top"});
+        var zoomBbox = mapWidget.getMap().getZoomForExtent(mapBbox, true);
+	var zoomMax = mapWidget.getMap().getZoomForExtent(bounds, true);
+
+	var zoom;
+	if (zoomBbox < zoomMax) { zoom = zoomMax; }
+	else { zoom = zoomBbox }; 
 
         var mapCenterLatitude = bounds.getCenterLonLat().lat;
         mapCenterLatitude = ${params.latitude ?: "mapCenterLatitude"};
@@ -349,16 +354,6 @@ mapWidget.setupAoiLayer();
 
     setupOverviewCheck();
     var target = document.getElementById('map');
-
-	if ( ${params.marker?:"null"} )
-	{
-		var markers = new OpenLayers.Layer.Markers("Markers");
-		mapWidget.getMap().addLayer(markers);	
-		var size = new OpenLayers.Size(21,25);
-		var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-		var icon = new OpenLayers.Icon("${resource(dir: 'js/img/', file: 'marker-blue.png', plugin: 'openlayers')}",size,offset);
-		markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(${params.marker}),icon));
-	}
 }
 
 function setupOverviewCheck(){
