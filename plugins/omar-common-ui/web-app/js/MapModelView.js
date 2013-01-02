@@ -4,17 +4,17 @@ OMAR.models.Map = Backbone.Model.extend({
 
 OMAR.views.Map = Backbone.View.extend({
     el:"#map",
-     initialize:function(params){
+    initialize:function(params){
         this.setElement(this.el);
-         if(params.theme)
-         {
-             this.theme = params.theme;
-         }
-         else
-         {
-             this.theme = null;
-         }
-     },
+        if(params.theme)
+        {
+            this.theme = params.theme;
+        }
+        else
+        {
+            this.theme = null;
+        }
+    },
     reset:function()
     {
         if(this.map)
@@ -39,7 +39,27 @@ OMAR.views.Map = Backbone.View.extend({
                         }
                     }),
                     new OpenLayers.Control.PanZoom(),
-                    new OpenLayers.Control.Attribution()
+                    new OpenLayers.Control.Attribution(),
+                    new OpenLayers.Control.Scale(),
+                    new OpenLayers.Control.ScaleLine(),
+                    new OpenLayers.Control.Graticule({
+                        visible:false,
+                        numPoints:2,
+                        layerName:"DD Graticule",
+                        labelled:true,
+                        labelFormat:"dd",
+                        lineSymbolizer:{strokeColor:"#4169E1", strokeOpacity:"0.7", strokeWidth:"1"},
+                        labelSymbolizer:{fontColor:"#4169E1", fontOpacity:"0.7"}
+                    }),
+                    new OpenLayers.Control.Graticule({
+                        visible:false,
+                        numPoints:2,
+                        layerName:"DMS Graticule",
+                        labelled:true,
+                        labelFormat:"dms",
+                        lineSymbolizer:{strokeColor:"#4169E1", strokeOpacity:"0.7", strokeWidth:"1"},
+                        labelSymbolizer:{fontColor:"#4169E1", fontOpacity:"0.7"}
+                    })
                 ],
                 center: [0, 0],
                 zoom: 3
@@ -56,8 +76,15 @@ OMAR.views.Map = Backbone.View.extend({
     },
     setCenter:function()
     {
+        if(this.pointModel)
+        {
+            this.pointModel.off("change", this.pointModelChanged, this);
+            var center = this.map.getCenter();
+            this.pointModel.set({"lat":center.lat, "lon":center.lon});
+            this.pointModel.on("change", this.pointModelChanged, this);
+        }
 
-        //alert("setCenter");
+        
     },
     setExtent:function()
     {
@@ -72,8 +99,19 @@ OMAR.views.Map = Backbone.View.extend({
     },
     setMouse:function(evt)
     {
+        var mouse = this.map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
 
+        var ddMouse = document.getElementById("ddMouse");
+        if (mouse.lat < "90" && mouse.lat > "-90" && mouse.lon < "180" && mouse.lon > "-180")
+        {
+            ddMouse.innerHTML = "<b>DD:</b> " + mouse.lat + ", " + mouse.lon;
+        }
+        else
+        {
+            ddMouse.innerHTML = "<b>DD:</b> Outside of geographic extent.";
+        }
     },
+
     setBboxModel:function(bboxModel)
     {
         if(this.bboxModel)
