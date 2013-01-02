@@ -26,6 +26,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         {
             this.bboxView.render();
         }
+        if(this.pointView)
+        {
+            this.pointView.render();
+        }
         if(this.dateTimeRangeView)
         {
             this.dateTimeRangeView.render();

@@ -2,7 +2,8 @@ OMAR.models.POINT = Backbone.Model.extend(
 {
     defaults:{
         "lat":0.0,
-        "lon":0.0
+        "lon":0.0,
+        "radius":0
     },
     initialize:function(options)
     {
