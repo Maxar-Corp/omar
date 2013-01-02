@@ -9,6 +9,7 @@ modules = {
         resource url: [plugin: 'omar-common-ui', dir: 'js/underscore', file:'underscore-1.4.2.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'backbone-min.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'BboxModelView.js']
+        resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'PointModelView.js']
         resource url: [plugin: 'omar-ogc', dir: 'js', file: 'WfsModel.js']
         resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
         resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
