@@ -106,12 +106,16 @@ p {font-size:50%}
     top: 0;
     left: 50;
     /*background-color: rgba(255, 0, 0, 0.4);*/
-    background-color:red;
-    /*background: rgba(255, 0, 0, 0.4);*/
-    /*filter:alpha(apacity=40);*/
+    /*background-color:red;*/
+    background: rgba(255, 0, 0, 0.4);
+    filter:alpha(apacity=40);
     /*opacity:0.4;*/
     /*background-color:red;*/
-    border-radius:50px;font-size:15px;line-height:25px;text-align:center;
+    border-radius:50px;
+    /*outline-style:solid;*/
+    font-size:15px;
+    line-height:25px;
+    text-align:center;
 }
 
 .omar-server-info {
