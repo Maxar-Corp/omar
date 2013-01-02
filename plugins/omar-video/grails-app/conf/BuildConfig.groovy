@@ -7,16 +7,16 @@ grails.project.test.reports.dir = "target/test-reports"
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 grails.project.dependency.resolution = {
   // inherit Grails' default dependencies
-  inherits("global") {
+  inherits( "global" ) {
     // uncomment to disable ehcache
     // excludes 'ehcache'
   }
+  legacyResolve true // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
   log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
   repositories {
     grailsPlugins()
     grailsHome()
     grailsCentral()
-
 
     // uncomment the below to enable remote dependency resolution
     // from public Maven repositories
@@ -34,11 +34,11 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    compile (":flash-player:1.4") {
+    compile( ":flash-player:1.4" ) {
       excludes "resources"
     }
     compile ":swfobject:2.2.1"
-    //runtime ":resources:1.1.6"
+    runtime ":resources:1.1.6"
   }
 }
 

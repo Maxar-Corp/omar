@@ -138,8 +138,6 @@ function changeToImageSpace(azimuth)
         wmsParams = new OmarWmsParams();
         wmsParams.setProperties(wcsParams);
         wmsParams.layers = "${( rasterEntries*.indexId ).join( ',' )}";
-        wmsParams.latitude = mapWidget.getMap().getCenter().lat;
-        wmsParams.longitude = mapWidget.getMap().getCenter().lon;
         // need to calculate an azimuth if we go to other projectors
         // for now just hard code to 0.0
         //  if we ever to UTM grids we need to modify this
@@ -336,8 +334,13 @@ mapWidget.setupAoiLayer();
     }
     else
     {
-        var mapBBOX = new OpenLayers.Bounds(${params.bbox ?: "bounds.left, bounds.bottom, bounds.right, bounds.top"});
-        var zoom = mapWidget.getMap().getZoomForExtent(mapBBOX, true);
+        var mapBbox = new OpenLayers.Bounds(${params.bbox ?: "bounds.left, bounds.bottom, bounds.right, bounds.top"});
+        var zoomBbox = mapWidget.getMap().getZoomForExtent(mapBbox, true);
+	var zoomMax = mapWidget.getMap().getZoomForExtent(bounds, true);
+
+	var zoom;
+	if (zoomBbox < zoomMax) { zoom = zoomMax; }
+	else { zoom = zoomBbox }; 
 
         var mapCenterLatitude = bounds.getCenterLonLat().lat;
         mapCenterLatitude = ${params.latitude ?: "mapCenterLatitude"};
@@ -351,16 +354,6 @@ mapWidget.setupAoiLayer();
 
     setupOverviewCheck();
     var target = document.getElementById('map');
-
-	if ( ${params.marker?:"null"} )
-	{
-		var markers = new OpenLayers.Layer.Markers("Markers");
-		mapWidget.getMap().addLayer(markers);	
-		var size = new OpenLayers.Size(21,25);
-		var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-		var icon = new OpenLayers.Icon("${resource(dir: 'js/img/', file: 'marker-blue.png', plugin: 'openlayers')}",size,offset);
-		markers.addMarker(new OpenLayers.Marker(new OpenLayers.LonLat(${params.marker}),icon));
-	}
 }
 
 function setupOverviewCheck(){

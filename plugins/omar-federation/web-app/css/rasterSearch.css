@@ -107,7 +107,7 @@ p {font-size:50%}
     left: 50;
     /*background-color: rgba(255, 0, 0, 0.4);*/
     /*background-color:red;*/
-    background: rgba(255, 0, 0, 0.4);
+    /*background: rgba(255, 0, 0, 0.4);*/
     filter:alpha(apacity=40);
     /*opacity:0.4;*/
     /*background-color:red;*/
@@ -116,6 +116,15 @@ p {font-size:50%}
     font-size:15px;
     line-height:25px;
     text-align:center;
+    background-color:#F08080;
+    /*background: rgba(255, 0, 0, 0.4);*/
+    /*filter:alpha(apacity=40);*/
+    /*opacity:0.4;*/
+    /*background-color:red;*/
+    border-radius:50px;font-size:15px;line-height:25px;text-align:center;
+
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .omar-server-info {

@@ -9,6 +9,7 @@ grails.project.dependency.resolution = {
     // excludes 'ehcache'
   }
   log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+  legacyResolve true // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
   repositories {
     grailsPlugins()
     grailsHome()
@@ -29,7 +30,7 @@ grails.project.dependency.resolution = {
     // runtime 'mysql:mysql-connector-java:5.1.13'
   }
   plugins {
-    compile ":filterpane:2.0.1.1"
+    //compile ":filterpane:2.0.1.1"
     runtime ":yui:2.8.2.1"
   }
 }
@@ -41,3 +42,5 @@ grails.plugin.location.openlayers = '../../plugins/openlayers'
 grails.plugin.location.geodata = '../../plugins/geodata'
 //grails.plugin.location.omarSecuritySpring = '../../plugins/omar-security-spring'
 grails.plugin.location.icodeAis = "${System.env['HOME']}/projects/icode-mda/OMAR/icode-ais"
+
+grails.plugin.location.filterpane="../../plugins/filterpane"

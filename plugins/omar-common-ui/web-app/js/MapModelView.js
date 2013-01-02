@@ -1,4 +1,5 @@
 OMAR.models.Map = Backbone.Model.extend({
+
 });
 
 OMAR.views.Map = Backbone.View.extend({
@@ -45,39 +46,33 @@ OMAR.views.Map = Backbone.View.extend({
             });
 
             this.map.addControl(new OpenLayers.Control.LayerSwitcher());
-            //this.map.events.on({
-            //    "mousemove": this.setMouse,
-            //    "moveend":this.setExtent,
-            //        "moveend":this.setCenter,
-             //       scope:this
-             //   }
-
-            //);
-            this.map.events.register("mousemove", this, this.setMouse);
-            this.map.events.register("moveend", this, this.setExtent);
+            
             this.map.events.register("moveend", this, this.setCenter);
-            this.map.setCenter(this.map.getCenter());
+            this.map.events.register("moveend", this, this.setExtent);
+            this.map.events.register("mousemove", this, this.setMouse);
+            
             this.map.zoomToMaxExtent();
         }
     },
-    setMouse:function(evt)
+    setCenter:function()
     {
+
+        //alert("setCenter");
     },
-    setExtent:function(evt)
+    setExtent:function()
     {
         if(this.bboxModel)
         {
-            this.bboxModel.off("change", this.bboxMapChanged);
+            this.bboxModel.off("change", this.bboxMapChanged, this);
             var extent = this.map.getExtent();
             this.bboxModel.set({"minx":extent.left, "miny":extent.bottom,
                                 "maxx":extent.right, "maxy":extent.top});
             this.bboxModel.on("change", this.bboxMapChanged, this);
         }
     },
-    setCenter:function(evt)
+    setMouse:function(evt)
     {
 
-        //alert("setCenter");
     },
     setBboxModel:function(bboxModel)
     {
@@ -92,10 +87,14 @@ OMAR.views.Map = Backbone.View.extend({
             this.bboxModel.on("change", this.bboxMapChanged, this);
         }
     },
+    
     bboxMapChanged:function()
     {
+        alert(this.bboxModel.get("minx"));
 
-        //alert("CHANGED!!!");
+
+
+
     },
     render:function()
     {

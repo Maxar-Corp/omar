@@ -1,3 +1,5 @@
+import java.util.concurrent.TimeUnit
+
 class OmarFederationGrailsPlugin {
     // the plugin version
     def version = "0.1"
@@ -51,6 +53,20 @@ Brief summary/description of the plugin.
     }
 
     def doWithApplicationContext = { applicationContext ->
+        def nThreads = 1
+        def maxQueueSize = 1
+        // TODO Implement post initialization spring config (optional)
+        def beans = beans {
+//            federatedServerPingThreadPool(org.ossim.omar.stager.StagerThreadPoolExecutor,//java.util.concurrent.ThreadPoolExecutor,
+//                    nThreads,
+//                    nThreads,
+//                    50,
+//                    TimeUnit.MILLISECONDS,
+//                    new java.util.concurrent.LinkedBlockingQueue(maxQueueSize))
+        }
+    //    applicationContext.registerBeanDefinition("federatedServerPingThreadPool",
+    //            beans.getBeanDefinition("federatedServerPingThreadPool"))
+        //application.config
         // TODO Implement post initialization spring config (optional)
     }
 

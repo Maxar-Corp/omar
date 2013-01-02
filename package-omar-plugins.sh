@@ -5,20 +5,21 @@ rm -rf ~/.grails/ivy-cache
 rm -rf ~/.m2/repository
 
 # Setup ivy cache
-mkdir -p ~/.grails
-cd ~/.grails
-tar xvfz $OMAR_HOME/plugins/ivyCache.tgz
+#mkdir -p ~/.grails
+#cd ~/.grails
+#tar xvfz $OMAR_HOME/plugins/ivyCache.tgz
 
 # Setup maven cache
-mkdir -p ~/.m2
-cd ~/.m2
-tar xvfz $OMAR_HOME/plugins/m2Repository.tgz
+#mkdir -p ~/.m2
+#cd ~/.m2
+#tar xvfz $OMAR_HOME/plugins/m2Repository.tgz
 
 # Package OMAR plugins
 cd $OMAR_DEV_HOME/plugins
-for x in postgis geoscript openlayers omar-oms  omar-common-ui omar-security-spring omar-core omar-federation omar-ogc omar-stager omar-video omar-raster omar-superoverlay omar-image-magick omar-rss; do
+for x in postgis geoscript openlayers omar-oms  omar-common-ui omar-security-spring omar-core omar-ogc omar-stager omar-video omar-raster omar-superoverlay omar-image-magick omar-rss omar-federation; do
 	cd $x
 	grails clean
+	grails upgrade
 	grails package-plugin 
 	cd ..
 done
