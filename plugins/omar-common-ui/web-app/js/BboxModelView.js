@@ -1,34 +1,34 @@
 OMAR.models.BBOX = Backbone.Model.extend(
 {
     defaults:{
-        "minx":-180.0,
-        "miny":-90.0,
-        "maxx":180.0,
-        "maxy":90.0
+        "minx": -180.0,
+        "miny": -90.0,
+        "maxx": 180.0,
+        "maxy": 90.0
     },
     initialize:function(options)
     {
     },
     toWmsString:function()
     {
-        return (this.get("minx")+","+this.get("miny")+","+
-                this.get("maxx")+","+this.get("maxy"));
+        return (this.get("minx") + "," + this.get("miny") + "," +
+                this.get("maxx") + "," + this.get("maxy"));
     },
     validate:function(attrs)
     {
-        if(attrs.minx&&(!OMAR.isFloat(attrs.minx.toString())))
+        if(attrs.minx && (!OMAR.isFloat(attrs.minx.toString())))
         {
             return ("Minx value is invalid: " + attrs.minx);
         }
-        if(attrs.miny&&(!OMAR.isFloat(attrs.miny.toString())))
+        if(attrs.miny && (!OMAR.isFloat(attrs.miny.toString())))
         {
             return ("Miny value is invalid: " + attrs.miny);
         }
-        if(attrs.maxx&&(!OMAR.isFloat(attrs.maxx.toString())))
+        if(attrs.maxx && (!OMAR.isFloat(attrs.maxx.toString())))
         {
             return ("Maxx value is invalid: " + attrs.maxx);
         }
-        if(attrs.maxy&&(!OMAR.isFloat(attrs.maxy.toString())))
+        if(attrs.maxy && (!OMAR.isFloat(attrs.maxy.toString())))
         {
             return ("Maxy value is invalid: " + attrs.maxy);
         }
@@ -52,7 +52,7 @@ OMAR.models.BBOX = Backbone.Model.extend(
         var bad = this.validate(this.attributes);
         if(!bad)
         {
-            result = "BBOX("+columnName+","+this.toWmsString()+")";
+            result = "BBOX(" + columnName + "," + this.toWmsString() + ")";
         }
         return result;
     }
@@ -74,7 +74,7 @@ OMAR.views.BBOX = Backbone.View.extend({
         this.model.on('change', this.bboxModelChange, this);
     },
     events:{
-        "change #lowerLeftBbox" : "llOnChange",
+        "change #lowerLeftBbox": "llOnChange",
         "change #upperRightBbox": "urOnChange"
     },
     bboxModelChange: function() {
@@ -106,9 +106,9 @@ OMAR.views.BBOX = Backbone.View.extend({
     },
     render:function()
     {
-        this.lowerLeftBboxEl.val(this.model.get("miny")+","
-            +this.model.get("minx"));
-        this.upperRightBboxEl.val(this.model.get("maxy")+","
-            +this.model.get("maxx"));
+        this.lowerLeftBboxEl.val(this.model.get("miny") + ","
+            + this.model.get("minx"));
+        this.upperRightBboxEl.val(this.model.get("maxy") + ","
+            + this.model.get("maxx"));
     }
 });
