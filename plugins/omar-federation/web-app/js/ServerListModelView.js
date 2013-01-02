@@ -70,21 +70,20 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                         id:1,
                         url:"http://10.0.10.23",
                         name:"Potts"
-                    })//,
-                /*
+                    }),
+
                 new OMAR.models.OmarServerModel(
                     {
                         id:0,
                         url:"http://10.0.10.31",
                         name:"Scottie"
-                    })//,
+                    }),
                 new OMAR.models.OmarServerModel(
                     {
                         id:2,
                         url:"http://10.0.10.37",
                         name:"Dave L."
                     })
-                  */
                 //,
                 //new OMAR.models.OmarServerModel(
                 //    {

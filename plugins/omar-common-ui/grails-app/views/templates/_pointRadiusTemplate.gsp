@@ -1,10 +1,9 @@
 <div id='pointRadiusId'>
-<!--<p><b>Point Radius Search:</b></p>-->
+<h2>Point Radius Search:</h2>
 
-<p>Center:</p>
-<p><g:textField id='center' name="lowerLeftBbox" size="17" value="" /></p>
+<p>Map Center Lat/Lon:</p>
+<p><g:textField id='mapCenter' name='mapCenter' size='26' value='' /></p>
 
-<p>Radius:</p>
-<p><g:textField id='center' name="lowerLeftBbox" size="17" value="" /> <g:select name="book.category" from="${['M', 'KM']}"
-          valueMessagePrefix="book.category" />
-</p>
+<p>Center Radius in Meters:</p>
+<p><g:textField id='centerRadius' name='centerRadius' size='13' value='' /></p>
+</div>

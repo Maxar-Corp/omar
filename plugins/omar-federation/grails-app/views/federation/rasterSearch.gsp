@@ -18,20 +18,27 @@
             <!--<div id="accordion">-->
            
 <table width="100%"><tr><td bgcolor="dfdfdf">
-                <h2>Bounding Box Search:</h2>
+                
                 <g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/>
 </td></tr></table>           
 
 <table width="100%"><tr><td bgcolor="dfdfdf">
-                <h2>Point Radius Search:</h2>
+                
                 <g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/>
 </td></tr></table>  
 
 
 <table width="100%"><tr><td bgcolor="dfdfdf">
-                <h2>Temporal Search:</h2>
+                
                 <g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/>
                 </td></tr></table>  
+
+
+<table width="100%"><tr><td bgcolor="dfdfdf">
+                
+                <g:render plugin="omar-common-ui" template="/templates/cqlTemplate"/>
+</td></tr></table>  
+
             <!--</div> -->
 
 
