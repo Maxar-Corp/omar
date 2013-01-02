@@ -83,8 +83,6 @@ OMAR.views.Map = Backbone.View.extend({
             this.pointModel.set({"lat":center.lat, "lon":center.lon});
             this.pointModel.on("change", this.pointModelChanged, this);
         }
-
-        
     },
     setExtent:function()
     {
