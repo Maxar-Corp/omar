@@ -39,13 +39,11 @@ OMAR.models.BBOX = Backbone.Model.extend(
         var splitBounds = s.split(",");
         if(splitBounds.length == 4)
         {
-            this.minx =parseFloat(splitBounds[0]);
-            this.miny =parseFloat(splitBounds[1]);
-            this.maxx =parseFloat(splitBounds[2]);
-            this.maxy =parseFloat(splitBounds[3]);
-
+            this.minx = parseFloat(splitBounds[0]);
+            this.miny = parseFloat(splitBounds[1]);
+            this.maxx = parseFloat(splitBounds[2]);
+            this.maxy = parseFloat(splitBounds[3]);
         }
-
         return this;
     },
     toCql:function(columnName)
@@ -56,7 +54,6 @@ OMAR.models.BBOX = Backbone.Model.extend(
         {
             result = "BBOX("+columnName+","+this.toWmsString()+")";
         }
-
         return result;
     }
 }
@@ -66,7 +63,6 @@ OMAR.views.BBOX = Backbone.View.extend({
     el:"#bBoxId",
     initialize: function(params)
     {
-        // this should create a variable for us called this.$el
         this.setElement(this.el);
         this.model = new OMAR.models.BBOX();
         this.lowerLeftBboxEl = $("#lowerLeftBbox");
@@ -76,17 +72,14 @@ OMAR.views.BBOX = Backbone.View.extend({
                 alert("BBOX Has errors: " + err);
             });
         this.model.on('change', this.bboxModelChange, this);
-
     },
     events:{
         "change #lowerLeftBbox" : "llOnChange",
         "change #upperRightBbox": "urOnChange"
     },
-
     bboxModelChange: function() {
         this.render();
     },
-
     llOnChange: function(e){
         var v = this.lowerLeftBboxEl.val();
         var values = v.split(",");
@@ -119,4 +112,3 @@ OMAR.views.BBOX = Backbone.View.extend({
             +this.model.get("maxx"));
     }
 });
-
