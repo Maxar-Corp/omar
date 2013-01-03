@@ -5,6 +5,25 @@
 	<r:require modules = "federationRasterSearch"/>
     <title>OMAR <g:meta name="app.version"/>: Federated Search</title>
     <r:layoutResources/>
+
+    <style>
+  .box
+{
+margin: 0 0 0px; 
+padding: 0 0 0px; 
+
+border: 1px solid #d8d8d8; 
+background: #f9f9f9;
+ 
+-moz-border-radius: 4px; 
+-webkit-border-radius: 4px; 
+border-radius: 4px; 
+-moz-box-shadow: inset 0 0 0 1px #fff;
+-webkit-box-shadow: inset 0 0 0 1px #fff;
+box-shadow: inset 0 0 0 1px #fff; 
+ }
+    </style>
+
 </head>
 <body>
 <div class="outer-center" id="rasterSearchPageId">
@@ -15,34 +34,57 @@
         <div class="ui-layout-north">Menu</div>
         <div class="inner-west">
 
-            <!--<div id="accordion">-->
-           
-<table width="100%"><tr><td bgcolor="dfdfdf">
-                
-                <g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/>
-</td></tr></table>           
-
-<table width="100%"><tr><td bgcolor="dfdfdf">
-                
-                <g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/>
-</td></tr></table>  
+            <font size=1>
+            
 
 
-<table width="100%"><tr><td bgcolor="dfdfdf">
-                
-                <g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/>
-                </td></tr></table>  
 
 
-<table width="100%"><tr><td bgcolor="dfdfdf">
-                
-                <g:render plugin="omar-common-ui" template="/templates/cqlTemplate"/>
-</td></tr></table>  
-
-            <!--</div> -->
 
 
-                <button name="SearchRasterId" id="SearchRasterId">Search</button>
+
+            <div id="accordion">
+                <h3>Spatial</h3>
+                <div>
+                    <p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>
+
+                    <p><g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/></p>
+                </div>
+
+                <h3>Temporal</h3>
+                <div><p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p></div>
+
+                <h3>Metadata</h3>
+                <div>
+                    <p><g:render plugin="omar-common-ui" template="/templates/cqlTemplate"/></p>
+                </div>
+            </div>
+
+             <center><button name="SearchRasterId" id="SearchRasterId">Search</button></center>
+
+
+
+
+
+
+
+
+
+
+
+
+
+        </font>
+
+            
+        
+
+        
+
+
+
+
+               
 
 
          </div>
@@ -86,6 +128,9 @@ function init(){
     };
     var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);
     searchPageController.render();
+
+    $( "#accordion" ).accordion();
+    $( document ).tooltip();
 }
 </script>
 

@@ -60,7 +60,7 @@ OMAR.models.BBOX = Backbone.Model.extend(
 );
 
 OMAR.views.BBOX = Backbone.View.extend({
-    el:"#bBoxId",
+    el:"#boundBoxId",
     initialize: function(params)
     {
         this.setElement(this.el);

@@ -143,8 +143,8 @@ $(document).ready(function () {
                 center__paneSelector:	".inner-center"
                 ,	west__paneSelector:		".inner-west"
                 ,	east__paneSelector:		".inner-east"
-                ,	west__size:				225
-                ,   west__minSize:          225
+                ,	west__size:				250
+                ,   west__minSize:          250
                 ,	east__size:				75
                 ,	spacing_open:			8  // ALL panes
                 ,	spacing_closed:			8  // ALL panes
