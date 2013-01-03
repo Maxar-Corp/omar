@@ -2,6 +2,7 @@ OMAR.models.Map = Backbone.Model.extend({
 
 });
 
+var convert = new CoordinateConversion();
 OMAR.views.Map = Backbone.View.extend({
     el:"#map",
     initialize:function(params){
@@ -100,16 +101,23 @@ OMAR.views.Map = Backbone.View.extend({
         var mouse = this.map.getLonLatFromViewPortPx(new OpenLayers.Pixel(evt.xy.x, evt.xy.y));
 
         var ddMouse = document.getElementById("ddMouse");
+        var dmsMouse = document.getElementById("dmsMouse");
+        var mgrsMouse = document.getElementById("mgrsMouse");
+        
         if (mouse.lat < "90" && mouse.lat > "-90" && mouse.lon < "180" && mouse.lon > "-180")
         {
             ddMouse.innerHTML = "<b>DD:</b> " + mouse.lat + ", " + mouse.lon;
+            dmsMouse.innerHTML = "<b>DMS:</b> " + convert.ddToDms(mouse.lat, mouse.lon);
+            mgrsMouse.innerHTML = "<b>MGRS:</b> " + convert.ddToMgrs(mouse.lat, mouse.lon);
+          
         }
         else
         {
             ddMouse.innerHTML = "<b>DD:</b> Outside of geographic extent.";
+            dmsMouse.innerHTML = "<b>DMS:</b> Outside of geographic extent.";
+            mgrsMouse.innerHTML = "<b>MGRS:</b> Outside of geographic extent.";
         }
     },
-
     setBboxModel:function(bboxModel)
     {
         if(this.bboxModel)
