@@ -112,12 +112,11 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         this.model.bind("change", this.collectionChanged, this);
         this.model.bind("reset", this.collectionReset, this);
     },
-    collectionAdd:function(){
-       // alert("ADDED");
-        this.render();
+    collectionAdd:function(params){
+        //this.render();
+        this.collectionReset(params);
     },
     collectionChanged:function(params){
-        //alert("CHANGED");
         var scope = this;
        $(params).each(function(idx, obj){
              scope.updateServerView(obj);
@@ -129,6 +128,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         var children = $(this.el).children();
         var scope = this;
         var childrenToDelete = [];
+
         $(children).each(function(idx, el)
         {
             if(!scope.model.get(el.id))
@@ -154,6 +154,10 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                                                     count:model.get("count"),
                                                     name:model.get("nickname")}));
             }
+            else
+            {
+               this.updateServerView(model);
+            }
         }
     },
     updateServerView:function(model)
@@ -166,6 +170,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     {
         return _.template($('#omar-server-template').html(), attr);
     },
+
     setAllBusy:function(flag)
     {
         var children = $(this.el).children();
