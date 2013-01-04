@@ -36,24 +36,23 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         }
         if(this.omarServerCollectionView)
         {
-            this.omarServerCollectionView.model.fetch();/*{
-                    scopePtr:this,
-                    update: true,
-                    remove: false,
-                    date:{cache:false},
-                    error: function () {
-                        alert("error!!");
-                    },
-                    success: function () {
-                        alert("no error");
-                    }
-                }
-            ).complete(alert(this.omarServerCollectionView.render()));   */
+            var collection =  this.omarServerCollectionView;
+
+            collection.model.fetch({success:function(){collection.render()},
+                                    update: true, remove: false,date:{cache:false}});
+            window.setTimeout(this.updateServers.bind(this),5000);
         }
+
         if(this.mapView)
         {
            this.mapView.render();
         }
+    },
+    updateServers:function(){
+        var collection =  this.omarServerCollectionView;
+        collection.model.fetch({success:function(){},
+                                update: true, remove: false,date:{cache:false}});
+        window.setTimeout(this.updateServers.bind(this),5000);
     },
     toCql:function(){
         var result = "";
@@ -82,7 +81,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         for(var idx = 0; idx <this.omarServerCollectionView.model.size();++idx )
         {
              var model = this.omarServerCollectionView.model.at(idx);
-             this.omarServerCollectionView.setBusy(idx, true);
+             this.omarServerCollectionView.setBusy(model.id, true);
              wfs.set("url",model.get("url")+"/wfs");
              $.ajax({
                 url: wfs.toUrl()+"&callback=?",
@@ -91,13 +90,13 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                 crossDomain:true,
                 dataType: "json",
                 timeout: 60000,
-                idx:idx,
+                modelId:model.id,
                 scopePtr:this,
                 success: function(response) {
                     if(response.numberOfFeatures!=null)
                     {
                         var numberOfFeatures = response.numberOfFeatures;
-                        this.scopePtr.omarServerCollectionView.setBusy(this.idx, false);
+                        this.scopePtr.omarServerCollectionView.setBusy(this.modelId, false);
                         this.scopePtr.omarServerCollectionView.model.at(this.idx).set({"count":numberOfFeatures});
                     }
                 },
@@ -108,8 +107,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                     } else {
                         //alert(JSON.stringify(x)+ " " +t + " " + m);
                     }
-                    this.scopePtr.omarServerCollectionView.setBusy(this.idx, false);
-                    this.scopePtr.omarServerCollectionView.model.at(this.idx).set({"count":count});
+                    this.scopePtr.omarServerCollectionView.setBusy(this.modelId, false);
+                    this.scopePtr.omarServerCollectionView.model.at(this.modelId).set({"count":count});
                 }
             });
         }
@@ -169,4 +168,5 @@ $(document).ready(function () {
 
 
     init();
+
 });
