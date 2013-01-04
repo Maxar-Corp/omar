@@ -711,5 +711,23 @@ stager {
   onDemand = true
 }
 
-
+federation{
+    vcard{
+        fields=[
+                firstName: "",
+                lastName : "",
+                nickName:"Potts"
+               ]
+    }
+    server{
+        ip=       "omar.ngaiost.org"
+        port=     5222
+        username= "admin"
+        password= "abc123!@#"
+    }
+    chatRoom{
+        id       = "omar@conference.omar.ngaiost.org"
+        password = "abc123!@#"
+    }
+}
 
