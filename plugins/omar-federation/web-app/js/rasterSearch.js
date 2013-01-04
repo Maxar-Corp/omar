@@ -36,7 +36,19 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         }
         if(this.omarServerCollectionView)
         {
-            this.omarServerCollectionView.render();
+            this.omarServerCollectionView.model.fetch();/*{
+                    scopePtr:this,
+                    update: true,
+                    remove: false,
+                    date:{cache:false},
+                    error: function () {
+                        alert("error!!");
+                    },
+                    success: function () {
+                        alert("no error");
+                    }
+                }
+            ).complete(alert(this.omarServerCollectionView.render()));   */
         }
         if(this.mapView)
         {
@@ -71,7 +83,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         {
              var model = this.omarServerCollectionView.model.at(idx);
              this.omarServerCollectionView.setBusy(idx, true);
-             wfs.set("url",model.get("url")+"/omar/wfs");
+             wfs.set("url",model.get("url")+"/wfs");
              $.ajax({
                 url: wfs.toUrl()+"&callback=?",
                 cache:false,
