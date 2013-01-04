@@ -1,5 +1,4 @@
 import org.ossim.omar.federation.FederatedServer
-import org.ossim.omar.federation.Server
 
 import java.util.concurrent.TimeUnit
 import org.jivesoftware.smackx.provider.VCardProvider
