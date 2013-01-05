@@ -17,10 +17,10 @@ class JabberParticipantListener implements PacketListener {
         try{
 
             def from = packet.from.split("/")[-1]
-            println from
             switch("${packet}")
             {
                 case "available":
+                case "chat":
                     federatedServerService.makeAvailable(from)
                     break
                 default:
