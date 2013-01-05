@@ -1,4 +1,5 @@
 OMAR.models.OmarServerModel=Backbone.Model.extend({
+    idAttribute:"id",
     defaults:{
         id:"",
         ip:"",
@@ -54,19 +55,26 @@ OMAR.models.OmarServerCollection=Backbone.Collection.extend({
     defaults:{
         model:OMAR.models.OmarServerModel
     },
-   /* parse:function(response){
-        var result = [];
+   parse:function(response){
+        var result = new Array();
         var size = response.size();
         for(var idx=0;idx<size;++idx)
         {
             var model = new OMAR.models.OmarServerModel(response[idx]);
+            var tempM = this.get(model.id);
+            // make sure we copy any existing spinners or counts to
+            // the copy of the model.
+            //
+            if(tempM)
+            {
+                model.spinner = tempM.spinner;
+                model.attributes.count = tempM.attributes.count;
+            }
             result.push(model);
-            //this.add(model);
         }
         return result;
     },
-    */
-
+/*
 fetch:function(){
         this.reset()
         $.ajax({
@@ -91,7 +99,7 @@ fetch:function(){
             }
         });
     },
-
+    */
     initialize:function(params){
     }
 });
@@ -99,7 +107,6 @@ fetch:function(){
 OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     el:"#omarServerCollectionId",
     initialize:function(params){
-        //this.setElement(this.el);
         this.omarServerView = new OMAR.views.OmarServerView();
         if(params.models)
         {
@@ -111,13 +118,11 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         }
         this.model.bind('add', this.collectionAdd, this)
         this.model.bind("change", this.collectionChanged, this);
-        //this.model.on("add", this.collectionChanged, this);
+        this.model.bind("reset", this.collectionReset, this);
     },
-    modelChanged:function(params){
-        this.updateServerView(params);
-    },
-    collectionAdd:function(){
-        this.render();
+    collectionAdd:function(params){
+        //this.render();
+        this.collectionReset(params);
     },
     collectionChanged:function(params){
         var scope = this;
@@ -125,16 +130,57 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
              scope.updateServerView(obj);
        })
     },
+    collectionReset:function(params){
+        // remove any elements that don't belong
+        //
+        var children = $(this.el).children();
+        var scope = this;
+        var childrenToDelete = [];
+
+        $(children).each(function(idx, el)
+        {
+            if(!scope.model.get(el.id))
+            {
+                childrenToDelete.push(el);
+            }
+        });
+
+        var idx = 0;
+        for(idx = 0;idx<childrenToDelete.size();++idx)
+        {
+            $(childrenToDelete[idx]).remove();
+        }
+
+        for(idx = 0; idx < this.model.size();++idx)
+        {
+            var model = this.model.at(idx);
+            var el = $(this.el).find("#"+model.id);
+            if(el.size()==0)
+            {
+                $(this.el).append(this.makeServer({id:model.id,
+                                                    url:model.get("url"),// this needs to be the models search params later
+                                                    count:model.get("count"),
+                                                    name:model.get("nickname")}));
+            }
+            else
+            {
+                var countElement = $(el).find("#omar-server-count").get();
+                $(countElement).text(model.get("count"));
+               //this.updateServerView(model);
+            }
+        }
+    },
     updateServerView:function(model)
     {
-        var el = $(this.el).find("#"+model.get("id"));
+        var el = $(this.el).find("#"+model.id);
         var countElement = $(el).find("#omar-server-count").get();
         $(countElement).text(model.get("count"));
      },
-    makeServer:function(model)
+    makeServer:function(attr)
     {
-        return _.template($('#omar-server-template').html(), model);
+        return _.template($('#omar-server-template').html(), attr);
     },
+
     setAllBusy:function(flag)
     {
         var children = $(this.el).children();
@@ -152,18 +198,19 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                 model.spinner.stop();
             }
         });
-       // var el = $(this.el).children("#"+idx.toString())[0];
-       // var spinner = new Spinner(this.spinnerOptions).spin(el);
     },
-    setBusy:function(idx, flag)
+    setBusy:function(id, flag)
     {
-        if((idx!=null)&&this.model)
+        if(id&&this.model)
         {
-            var model = this.model.at(idx);
+
+            var model = this.model.get(id);
+            if(!model) return;
             if(flag)
             {
+                if(model.spinner) model.spinner.stop();
                 model.createSpinner();
-                var el = $(this.el).children("#"+model.get("id"))[0];
+                var el = $(this.el).children("#"+model.id)[0];
                 if(el)
                 {
                     model.spinner.spin(el);
@@ -187,8 +234,9 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             $(this.el).html("");
             for(var idx = 0; idx < this.model.size(); ++idx)
             {
+
                 var model = this.model.at(idx);
-                $(this.el).append(this.makeServer({id:model.get("id"),
+                $(this.el).append(this.makeServer({id:model.id,
                                                    url:model.get("url"),// this needs to be the models search params later
                                                    count:model.get("count"),
                                                    name:model.get("nickname")}));
