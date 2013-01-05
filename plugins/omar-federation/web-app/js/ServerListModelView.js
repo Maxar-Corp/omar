@@ -61,11 +61,19 @@ OMAR.models.OmarServerCollection=Backbone.Collection.extend({
         for(var idx=0;idx<size;++idx)
         {
             var model = new OMAR.models.OmarServerModel(response[idx]);
+            var tempM = this.get(model.id);
+            // make sure we copy any existing spinners or counts to
+            // the copy of the model.
+            //
+            if(tempM)
+            {
+                model.spinner = tempM.spinner;
+                model.attributes.count = tempM.attributes.count;
+            }
             result.push(model);
         }
         return result;
     },
-
 /*
 fetch:function(){
         this.reset()
@@ -156,7 +164,9 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             }
             else
             {
-               this.updateServerView(model);
+                var countElement = $(el).find("#omar-server-count").get();
+                $(countElement).text(model.get("count"));
+               //this.updateServerView(model);
             }
         }
     },
