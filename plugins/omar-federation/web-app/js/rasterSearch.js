@@ -97,7 +97,11 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                     {
                         var numberOfFeatures = response.numberOfFeatures;
                         this.scopePtr.omarServerCollectionView.setBusy(this.modelId, false);
-                        this.scopePtr.omarServerCollectionView.model.get(this.modelId).set({"count":numberOfFeatures});
+                        var tempModel = this.scopePtr.omarServerCollectionView.model.get(this.modelId);
+                        if(tempModel)
+                        {
+                            tempModel.set({"count":numberOfFeatures});
+                        }
                     }
                 },
                 error: function(x, t, m) {
@@ -107,8 +111,12 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                     } else {
                         //alert(JSON.stringify(x)+ " " +t + " " + m);
                     }
+                    var tempModel = this.scopePtr.omarServerCollectionView.model.get(this.modelId);
                     this.scopePtr.omarServerCollectionView.setBusy(this.modelId, false);
-                    this.scopePtr.omarServerCollectionView.model.get(this.modelId).set({"count":count});
+                    if(tempModel)
+                    {
+                        tempModel.get(this.modelId).set({"count":count});
+                    }
                 }
             });
         }
