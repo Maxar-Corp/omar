@@ -716,7 +716,7 @@ federation{
         fields=[
                 firstName: "",
                 lastName : "",
-                nickName:"Potts"
+                nickName:"${System.properties['user.name']}"
                ]
     }
     server{
