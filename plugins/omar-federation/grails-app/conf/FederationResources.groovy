@@ -2,6 +2,7 @@ modules = {
     federationRasterSearch{
         resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
         resource url: [plugin: 'omar-common-ui', dir: 'js', file:'OMAR.js']
+        resource url: [plugin: 'omar-common-ui', dir: 'js', file:'hashmap.js']
         resource url: [plugin: 'omar-core', dir: 'js', file: 'jquery.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery-ui.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery.layout-latest.js']

@@ -7,16 +7,13 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
         this.dateTimeRangeModel = this.dateTimeRangeView.model;
         this.omarServerCollectionView = new OMAR.views.OmarServerCollectionView(
-            {model:new OMAR.models.OmarServerCollection({models:[
-                    new OMAR.models.OmarServerModel({url:"http://localhost/omar"})
-                ]}
-            )}
+            {model:new OMAR.models.OmarServerCollection()}
         );
         this.mapView = new OMAR.views.Map(params.map);
         this.mapView.setBboxModel(this.bboxModel);
+        this.mapView.setServerCollection(this.omarServerCollectionView.model);
         this.setElement(this.el);
 
-        //$( "#accordion" ).accordion();
     },
     events: {
         "click #SearchRasterId": "searchRaster"
@@ -167,8 +164,8 @@ $(document).ready(function () {
                 ,	east__size:				75
                 ,	spacing_open:			8  // ALL panes
                 ,	spacing_closed:			8  // ALL panes
-                ,	west__spacing_closed:	12
-                ,	east__spacing_closed:	12
+                ,	west__spacing_closed:	8
+                ,	east__spacing_closed:	8
             }
         }
     });
