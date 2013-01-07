@@ -17,6 +17,7 @@ OMAR.views.Map = Backbone.View.extend({
         }
         this.mapEl = $(this.el).find("#map")[0];
         this.toolBar = $(this.el).find("#mapToolBar")[0];
+        this.layers = new HashMap();
     },
     reset:function()
     {
@@ -151,7 +152,81 @@ OMAR.views.Map = Backbone.View.extend({
             this.bboxModel.on("change", this.bboxMapChanged, this);
         }
     },
-    
+    setServerCollection:function(serverCollection){
+        if(this.serverCollection)
+        {
+            this.serverCollection.off("change", this.serverCollectionChanged, this);
+            this.serverCollection.off("reset",  this.serverCollectionReset,   this);
+        }
+         this.serverCollection = serverCollection
+        if(this.serverCollection)
+        {
+            this.serverCollection.on("reset", this.serverCollectionReset, this)
+        }
+    },
+    newLayer:function(model)
+    {
+        return new OpenLayers.Layer.WMS( model.get("nickname"),
+                                         model.get("url")+"/wms/footprints",
+                                         {layers: 'Imagery', format:"image/gif",
+                                          styles: "byFileType", transparent:true});
+    },
+    serverCollectionReset:function()
+    {
+
+        // add new layers needed
+        var mapLayers = [];
+        if(this.layers.count() < 1)
+        {
+            for(var idx = 0; idx < this.serverCollection.size();++idx)
+            {
+                var model = this.serverCollection.at(idx);
+                var layer = this.newLayer(model);
+                mapLayers.push(layer);
+                this.layers.set(model.id, layer);
+            }
+        }
+        else
+        {
+
+            // remove layers not needed
+            var layersToRemove = []
+            var scope = this;
+            this.layers.forEach(function(value, key) {
+                if(!scope.serverCollection.get(key))
+                {
+                    layersToRemove.push(key);
+                }
+            });
+
+            for(var idx1 = 0; idx1 < layersToRemove.size();++idx1)
+            {
+                this.map.removeLayer(this.layers.get(layersToRemove[idx1]));
+                this.layers.remove(layersToRemove[idx1]);
+            }
+
+            // now add new layers
+            for(var idx2 = 0; idx2 < this.serverCollection.size();++idx2)
+            {
+                var model = this.serverCollection.at(idx2);
+
+                if(!this.layers.get(model.id))
+                {
+                    var layer = this.newLayer(model);
+
+                    mapLayers.push(layer);
+                    this.layers.set(model.id, layer);
+                }
+            }
+        }
+        if(mapLayers.size()>0)
+        {
+            this.map.addLayers(mapLayers);
+        }
+    },
+    serverCollectionChanged:function(){
+        alert("CHANGED");
+    },
     bboxMapChanged:function()
     {
         alert(this.bboxModel.get("minx"));
