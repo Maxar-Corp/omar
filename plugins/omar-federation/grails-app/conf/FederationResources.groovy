@@ -1,5 +1,8 @@
 modules = {
 	federationRasterSearch{
+resource url: [dir: 'css', file: 'main.css']
+resource url: [dir: 'css', file: 'omar-2.0.css']
+
         resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
         resource url: [plugin: 'omar-common-ui', dir: 'js', file:'OMAR.js']
         resource url: [plugin: 'omar-core', dir: 'js', file: 'jquery.js']
@@ -11,6 +14,9 @@ modules = {
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'BboxModelView.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'PointModelView.js']
         resource url: [plugin: 'omar-ogc', dir: 'js', file: 'WfsModel.js']
+
+    resource url: [plugin: 'openlayers', dir: 'css', file: 'mapwidget2.css']
+      
         resource url: [plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css']
         resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
         resource url: [dir: 'js', file: 'spin-min.js', plugin: 'omar-core']
@@ -23,8 +29,7 @@ modules = {
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'DateModelView.js']
 
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'MapModelView.js']
-        resource url: [plugin: 'yui', dir: "js/yui/yahoo-dom-event", file: "yahoo-dom-event.js"]
-        resource url: [plugin: 'yui', dir: "js/yui/element", file: "element-min.js"]
+        
         resource url: [dir: 'js', file: 'ServerListModelView.js']
         resource url: [plugin: 'omar-common-ui', dir: 'images', file: 'calendar.gif']
         resource url: [dir: 'css', file: 'rasterSearch.css']
