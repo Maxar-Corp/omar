@@ -1,6 +1,7 @@
 package org.ossim.omar.federation
 
 import grails.converters.JSON
+import org.apache.commons.collections.map.CaseInsensitiveMap
 
 class FederationController {
     def jabberFederatedServerService
@@ -8,10 +9,25 @@ class FederationController {
     def rasterSearch() {
     }
     def serverList(){
-       render  (jabberFederatedServerService.getServerList() as JSON)
+        def tempParam = new CaseInsensitiveMap(params);
+        def result = jabberFederatedServerService.serverList as JSON
+        def callback = ""
+        if (tempParam.callback) callback = tempParam.callback
+        else if (tempParam.jsonCallback) callback = tempParam.jsonCallback
+        if (callback){
+            result = "${callback}(${result})"// added for cross domain support
+        }
+       render  (result)
     }
     def resetConnection(){
         jabberFederatedServerService.reconnect();
-        render ([connected:jabberFederatedServerService.isConnected()] as JSON)
+        def tempParam = new CaseInsensitiveMap(params);
+        def result = [connected:jabberFederatedServerService.isConnected()] as JSON
+        def callback = ""
+        if (tempParam.callback) callback = tempParam.callback
+        if (callback){
+            result = "${callback}(${result})"// added for cross domain support
+        }
+        render (result)
     }
 }
