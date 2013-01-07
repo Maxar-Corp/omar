@@ -39,7 +39,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             var collection =  this.omarServerCollectionView;
 
             collection.model.fetch({success:function(){collection.render()},
-                                    update: true, remove: false,date:{cache:false}});
+                                    update: true, remove: false,cache:false});
             window.setTimeout(this.updateServers.bind(this),5000);
         }
 
@@ -51,7 +51,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     updateServers:function(){
         var collection =  this.omarServerCollectionView;
         collection.model.fetch({success:function(){},
-                                update: true, remove: false,date:{cache:false}});
+                                update: true, remove: false,
+                                cache:false});
         window.setTimeout(this.updateServers.bind(this),5000);
     },
     toCql:function(){
@@ -169,6 +170,7 @@ $(document).ready(function () {
                 ,	spacing_closed:			8  // ALL panes
                 ,	west__spacing_closed:	12
                 ,	east__spacing_closed:	12
+                /*, onresize:function(){alert($("#map").width())} */
             }
         }
     });
@@ -177,4 +179,5 @@ $(document).ready(function () {
 
     init();
 
+    $("#map").resize(function(){alert("resized");});
 });
