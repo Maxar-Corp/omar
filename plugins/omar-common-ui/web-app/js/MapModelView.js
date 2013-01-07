@@ -4,7 +4,7 @@ OMAR.models.Map = Backbone.Model.extend({
 
 var convert = new CoordinateConversion();
 OMAR.views.Map = Backbone.View.extend({
-    el:"#map",
+    el:"#mapContainer",
     initialize:function(params){
         this.setElement(this.el);
         if(params.theme)
@@ -15,6 +15,8 @@ OMAR.views.Map = Backbone.View.extend({
         {
             this.theme = null;
         }
+        this.mapEl = $(this.el).find("#map")[0];
+        this.toolBar = $(this.el).find("#mapToolBar")[0];
     },
     reset:function()
     {
@@ -23,10 +25,10 @@ OMAR.views.Map = Backbone.View.extend({
             this.map.destroy();
             this.map = null;
         }
-        if(this.el)
+        if(this.mapEl)
         {
             this.map = new OpenLayers.Map({
-                div: this.el,
+                div: this.mapEl,
                 theme:this.theme,
                 layers: [
                     new OpenLayers.Layer.WMS( "OpenLayers WMS",
@@ -79,11 +81,9 @@ OMAR.views.Map = Backbone.View.extend({
     },
     setupToolbar:function()
     {
-       // alert("set toolbar start");
         var panButton = new OpenLayers.Control.MouseDefaults( {title:"Pan Button"} );
-
         var panel = new OpenLayers.Control.Panel( {
-            div:$( "toolBar" ),
+            div:this.toolBar,
             defaultControl:panButton,
             displayClass:"olControlPanel"
         } );
@@ -93,7 +93,6 @@ OMAR.views.Map = Backbone.View.extend({
         ] );
 
         this.map.addControl( panel );
-       // alert("set toolbar end");
 
     },
     setCenter:function()
