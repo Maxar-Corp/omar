@@ -34,7 +34,7 @@ OMAR.views.Map = Backbone.View.extend({
                         {layers: 'basic'} )
                 ],
                 controls: [
-                    new OpenLayers.Control.Navigation({
+                   /* new OpenLayers.Control.Navigation({
                         dragPanOptions: {
                             enableKinetic: true
                         }
@@ -60,7 +60,7 @@ OMAR.views.Map = Backbone.View.extend({
                         labelFormat:"dms",
                         lineSymbolizer:{strokeColor:"#4169E1", strokeOpacity:"0.7", strokeWidth:"1"},
                         labelSymbolizer:{fontColor:"#4169E1", fontOpacity:"0.7"}
-                    })
+                    })*/
                 ],
                 center: [0, 0],
                 zoom: 3
@@ -73,7 +73,28 @@ OMAR.views.Map = Backbone.View.extend({
             this.map.events.register("mousemove", this, this.setMouse);
             
             this.map.zoomToMaxExtent();
+
+            this.setupToolbar();
         }
+    },
+    setupToolbar:function()
+    {
+        alert("set toolbar start");
+        var panButton = new OpenLayers.Control.MouseDefaults( {title:"Pan Button"} );
+
+        var panel = new OpenLayers.Control.Panel( {
+            div:$( "toolBar" ),
+            defaultControl:panButton,
+            displayClass:"olControlPanel"
+        } );
+
+        panel.addControls( [
+            panButton
+        ] );
+
+        this.map.addControl( panel );
+        alert("set toolbar end");
+
     },
     setCenter:function()
     {
