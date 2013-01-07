@@ -11,7 +11,8 @@ OMAR.models.OmarServerModel=Backbone.Model.extend({
         organization:"",
         alive:true,
         enabled:true,
-        count:"0"
+        count:"0"  // This as an attribute so we can get callback notification
+                   // on changes
     },
     initialize:function(params)
     {
@@ -74,32 +75,7 @@ OMAR.models.OmarServerCollection=Backbone.Collection.extend({
         }
         return result;
     },
-/*
-fetch:function(){
-        this.reset()
-        $.ajax({
-            url: this.url,
-            cache:false,
-            type: "GET",
-            dataType: "json",
-            timeout: 60000,
-            scopePtr:this,
-            success: function(response) {
-                if(response)
-                {
-                    var size = response.size();
-                    for(var idx=0;idx<size;++idx)
-                    {
-                        var model = new OMAR.models.OmarServerModel(response[idx]);
-                        this.scopePtr.add(model);
-                    }
-                }
-            },
-            error: function(x, t, m) {
-            }
-        });
-    },
-    */
+
     initialize:function(params){
     }
 });
@@ -166,7 +142,6 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             {
                 var countElement = $(el).find("#omar-server-count").get();
                 $(countElement).text(model.get("count"));
-               //this.updateServerView(model);
             }
         }
     },
