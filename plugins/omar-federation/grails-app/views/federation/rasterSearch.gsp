@@ -130,7 +130,6 @@ function init(){
     searchPageController.render();
 
     $( "#accordion" ).accordion();
-    $( document ).tooltip();
 }
 </script>
 

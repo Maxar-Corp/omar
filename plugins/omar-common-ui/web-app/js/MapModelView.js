@@ -2,6 +2,11 @@ OMAR.models.Map = Backbone.Model.extend({
 
 });
 
+var zoomInButton;
+var zoomFullResScale;
+var aoiLayer;
+var bounds;
+
 var convert = new CoordinateConversion();
 OMAR.views.Map = Backbone.View.extend({
     el:"#mapContainer",
@@ -36,7 +41,7 @@ OMAR.views.Map = Backbone.View.extend({
                         {layers: 'basic'} )
                 ],
                 controls: [
-                   /* new OpenLayers.Control.Navigation({
+                    new OpenLayers.Control.Navigation({
                         dragPanOptions: {
                             enableKinetic: true
                         }
@@ -62,7 +67,7 @@ OMAR.views.Map = Backbone.View.extend({
                         labelFormat:"dms",
                         lineSymbolizer:{strokeColor:"#4169E1", strokeOpacity:"0.7", strokeWidth:"1"},
                         labelSymbolizer:{fontColor:"#4169E1", fontOpacity:"0.7"}
-                    })*/
+                    })
                 ],
                 center: [0, 0],
                 zoom: 3
@@ -76,25 +81,167 @@ OMAR.views.Map = Backbone.View.extend({
             
             this.map.zoomToMaxExtent();
 
+            this.setupAoiLayer();
             this.setupToolbar();
+
         }
     },
+
+    setupAoiLayer:function()
+    {
+        aoiLayer = new OpenLayers.Layer.Vector( "Bound Box" );
+        aoiLayer.events.register( "featureadded", aoiLayer, this.setAoiLayer );
+
+        var boundBox = new OpenLayers.Control.DrawFeature( aoiLayer, OpenLayers.Handler.RegularPolygon,
+                {handlerOptions:{sides:4, irregular:true}} );
+
+        this.map.addLayer( aoiLayer );
+        this.map.addControl( boundBox );
+    },
+    setAoiLayer:function ( e )
+    {
+        var geom = e.feature.geometry;
+        bounds = geom.getBounds();
+        var feature = new OpenLayers.Feature.Vector( geom );
+
+       
+            alert(bounds.bottom + ", " + bounds.left);
+            alert(bounds.top + ", " + bounds.right);
+     
+        
+
+        aoiLayer.destroyFeatures();
+        aoiLayer.addFeatures( feature, {silent:true} );
+    },
+   
     setupToolbar:function()
     {
-        var panButton = new OpenLayers.Control.MouseDefaults( {title:"Pan Button"} );
-        var panel = new OpenLayers.Control.Panel( {
-            div:this.toolBar,
-            defaultControl:panButton,
-            displayClass:"olControlPanel"
-        } );
+        var panButton = new OpenLayers.Control.MouseDefaults(
+            {
+                title: 'Click button to activate. Once activated, drag the mouse to pan.'
+            }
+        );
+        var zoomBoxButton =  new OpenLayers.Control.ZoomBox(
+            {
+                alwaysZoom: true
+            }
+        );
+        zoomInButton = new OpenLayers.Control.ZoomIn(
+            {
+                title: 'Click button to zoom in.',
+                trigger: this.zoomIn
+            }
+        );
+        var zoomOutButton = new OpenLayers.Control.ZoomOut(
+            {
+                title: 'Click button to zoom out.',
+                trigger: this.zoomOut
+            }
+        );
+        var zoomInFullResButton = new OpenLayers.Control.Button(
+            {
+                title: 'Click button to zoom to full resolution.',
+                displayClass: 'olControlZoomToLayer',
+                trigger: this.zoomInFullRes
+            }
+        );
+        var zoomMaxExtentButton = new OpenLayers.Control.ZoomToMaxExtent(
+            {
+                title: 'Click button to zoom to the max extent of the map.',
+                trigger: this.zoomMaxExtent
+            }
+        );
+        var boundBoxButton = new OpenLayers.Control.DrawFeature(aoiLayer, OpenLayers.Handler.RegularPolygon,
+            {
+                handlerOptions: {sides: 4, irregular: true},
+                title: 'Click button to activate. Once activated, drag the mouse to define a bound box.'
+            }
+        );
+        var clearAoiButton = new OpenLayers.Control.Button(
+            {
+                title: 'Click button to clear the bound box.',
+                displayClass: 'olControlClearAreaOfInterest',
+                trigger: this.clearBoundBox
+            }
+        );
 
-        panel.addControls( [
-            panButton
-        ] );
+        var pathMeasurementButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, 
+            {
+                title: 'Click button to activate. Once acitivated, click points on the map to create a path that you wish to measure. When you are done creating your path, double click to end.',
+                displayClass: 'olControlMeasureDistance',
+                displaySystem: 'metric',
+                geodesic: true,
+                persist: true,
+                eventListeners:{
+                    measure:function (evt)
+                    {
+                        alert(evt.measure);
+                    }
+            }} );
 
-        this.map.addControl( panel );
+        var polygonMeasurementButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, 
+            {
+                title: 'Click button to activate. Once acitivated, click points on the map to create a polygon that you wish to measure. When you are done creating your polygon, double click to end.',
+                displayClass: 'olControlMeasureArea',
+                displaySystem: 'metric',
+                geodesic: true,
+                persist: true,
+                eventListeners:{
+                    measure:function (evt)
+                    {
+                        alert(evt.measure);
+                    }
+            }} );
+        
+        var panel = new OpenLayers.Control.Panel(
+            {
+                div: this.toolBar,
+                defaultControl: panButton,
+                displayClass: 'olControlPanel'
+            }
+        );
 
+        panel.addControls(
+            [
+                panButton,
+                zoomBoxButton,
+                zoomInButton,
+                zoomOutButton,
+                zoomInFullResButton,
+                zoomMaxExtentButton,
+                boundBoxButton,
+                clearAoiButton,
+                pathMeasurementButton,
+                polygonMeasurementButton
+            ]
+        );
+
+        this.map.addControl(panel);
     },
+
+    zoomIn:function()
+    {
+        this.map.zoomIn();
+    },
+    zoomOut:function()
+    {
+        this.map.zoomOut();
+    },
+    zoomInFullRes:function()
+    {
+        var fullRes = this.map.getZoomForResolution(zoomFullResScale, true);
+
+        this.map.zoomTo(fullRes);
+    },
+    zoomMaxExtent:function()
+    {
+        this.map.zoomToMaxExtent();
+    },
+    clearBoundBox:function()
+    {
+        alert("clear the model here.");
+    },
+
     setCenter:function()
     {
         if(this.pointModel)
