@@ -79,7 +79,7 @@ OMAR.views.Map = Backbone.View.extend({
     },
     setupToolbar:function()
     {
-        alert("set toolbar start");
+       // alert("set toolbar start");
         var panButton = new OpenLayers.Control.MouseDefaults( {title:"Pan Button"} );
 
         var panel = new OpenLayers.Control.Panel( {
@@ -93,7 +93,7 @@ OMAR.views.Map = Backbone.View.extend({
         ] );
 
         this.map.addControl( panel );
-        alert("set toolbar end");
+       // alert("set toolbar end");
 
     },
     setCenter:function()
