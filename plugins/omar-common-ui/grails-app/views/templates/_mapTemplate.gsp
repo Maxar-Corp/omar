@@ -1,5 +1,7 @@
-<div id="map" class="smallmap"></div>
+<div id="toolBar" class="olControlPanel"></div>
 
+ <div id="map"></div>
+ 
   <p><div class="box">
             
   	<table width=100%><tr>
