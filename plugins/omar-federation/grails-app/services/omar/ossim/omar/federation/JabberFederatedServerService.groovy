@@ -103,6 +103,7 @@ class JabberFederatedServerService implements InitializingBean{
     def makeUnavailable(def userName)
     {
         def fullUser = userName + "@" + jabberDomain
+        fullUser =fullUser.replaceAll(~/\@|\.|\ |\&/, "")
         FederatedServer.withTransaction{
             FederatedServer.where{serverId==fullUser}.deleteAll()
         }
