@@ -19,7 +19,7 @@ class FederationController {
         }
        render  (result)
     }
-    def resetConnection(){
+    def reconnect(){
         jabberFederatedServerService.reconnect();
         def tempParam = new CaseInsensitiveMap(params);
         def result = [connected:jabberFederatedServerService.isConnected()] as JSON
@@ -29,5 +29,8 @@ class FederationController {
             result = "${callback}(${result})"// added for cross domain support
         }
         render (result)
+    }
+    def admin(){
+
     }
 }
