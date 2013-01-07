@@ -104,7 +104,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         var scope = this;
        $(params).each(function(idx, obj){
              scope.updateServerView(obj);
-       })
+       });
     },
     collectionReset:function(params){
         // remove any elements that don't belong
