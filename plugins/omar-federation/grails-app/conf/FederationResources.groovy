@@ -32,4 +32,7 @@ modules = {
         resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
 
     }
+    federationAdmin{
+
+    }
 }
