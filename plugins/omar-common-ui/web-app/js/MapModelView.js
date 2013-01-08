@@ -324,6 +324,11 @@ OMAR.views.Map = Backbone.View.extend({
                                          {layers: 'Imagery', format:"image/gif",
                                           styles: "byFileType", transparent:true});
     },
+    setCqlFilterToFootprintLayers:function(cqlFilterString){
+        this.layers.forEach(function(value, key) {
+            value.mergeNewParams({filter:cqlFilterString});
+        });
+    },
     serverCollectionReset:function()
     {
         // add new layers needed
