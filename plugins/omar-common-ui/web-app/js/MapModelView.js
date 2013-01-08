@@ -90,7 +90,7 @@ OMAR.views.Map = Backbone.View.extend({
     setupAoiLayer:function()
     {
         aoiLayer = new OpenLayers.Layer.Vector( "Bound Box" );
-        aoiLayer.events.register( "featureadded", aoiLayer, this.setAoiLayer );
+        aoiLayer.events.register( "featureadded", this, this.setAoiLayer );
 
         var boundBox = new OpenLayers.Control.DrawFeature( aoiLayer, OpenLayers.Handler.RegularPolygon,
                 {handlerOptions:{sides:4, irregular:true}} );
@@ -103,12 +103,15 @@ OMAR.views.Map = Backbone.View.extend({
         var geom = e.feature.geometry;
         bounds = geom.getBounds();
         var feature = new OpenLayers.Feature.Vector( geom );
-
-       
-            alert(bounds.bottom + ", " + bounds.left);
-            alert(bounds.top + ", " + bounds.right);
      
-        
+        if(this.bboxModel)
+        {
+            this.bboxModel.off("change", this.bboxMapChanged, this);
+            
+            this.bboxModel.set({"minx":bounds.left, "miny":bounds.bottom,
+                                "maxx":bounds.right, "maxy":bounds.top});
+            this.bboxModel.on("change", this.bboxMapChanged, this);
+        }
 
         aoiLayer.destroyFeatures();
         aoiLayer.addFeatures( feature, {silent:true} );
@@ -161,7 +164,7 @@ OMAR.views.Map = Backbone.View.extend({
             {
                 title: 'Click button to clear the bound box.',
                 displayClass: 'olControlClearAreaOfInterest',
-                trigger: this.clearBoundBox
+                trigger: this.clearBoundBox.bind(this)
             }
         );
 
@@ -239,7 +242,8 @@ OMAR.views.Map = Backbone.View.extend({
     },
     clearBoundBox:function()
     {
-        alert("clear the model here.");
+        aoiLayer.destroyFeatures();
+        this.setExtent();
     },
 
     setCenter:function()
