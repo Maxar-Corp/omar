@@ -20,9 +20,11 @@ OMAR.views.Map = Backbone.View.extend({
         {
             this.theme = null;
         }
+
         this.mapEl = $(this.el).find("#map")[0];
         this.toolBar = $(this.el).find("#mapToolBar")[0];
         this.layers = new OMAR.HashMap();
+        this.baseLayers = params.baseLayers
     },
     reset:function()
     {
@@ -33,14 +35,34 @@ OMAR.views.Map = Backbone.View.extend({
         }
         if(this.mapEl)
         {
+            var layers = [];
+
+            if(this.baseLayers)
+            {
+                for(var idx = 0; idx < this.baseLayers.size();++idx)
+                {
+                    var layer =   new OpenLayers.Layer.WMS( this.baseLayers[idx].name,
+                                                            this.baseLayers[idx].url,
+                                                            this.baseLayers[idx].params,
+                                                            this.baseLayers[idx].options
+                                                          );
+                    layers.push(layer);
+
+                }
+            }
+           // var osm = new OpenLayers.Layer.OSM();
+           // alert(osm.projection);
+
+            //layers.push(osm);
             this.map = new OpenLayers.Map({
                 div: this.mapEl,
                 theme:this.theme,
-                layers: [
-                    new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                        "http://vmap0.tiles.osgeo.org/wms/vmap0",
-                        {layers: 'basic'} )
-                ],
+                //layers: [
+                //    new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                //        "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                //        {layers: 'basic'} )
+                //],
+                layers: layers,
                 controls: [
                     new OpenLayers.Control.Navigation({
                         dragPanOptions: {
