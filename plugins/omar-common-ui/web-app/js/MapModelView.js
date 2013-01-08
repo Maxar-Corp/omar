@@ -22,7 +22,7 @@ OMAR.views.Map = Backbone.View.extend({
         }
         this.mapEl = $(this.el).find("#map")[0];
         this.toolBar = $(this.el).find("#mapToolBar")[0];
-        this.layers = new HashMap();
+        this.layers = new OMAR.HashMap();
     },
     reset:function()
     {
@@ -47,7 +47,7 @@ OMAR.views.Map = Backbone.View.extend({
                             enableKinetic: true
                         }
                     }),
-                    new OpenLayers.Control.PanZoom(),
+                    //new OpenLayers.Control.PanZoom(),
                     new OpenLayers.Control.Attribution(),
                     new OpenLayers.Control.Scale(),
                     new OpenLayers.Control.ScaleLine(),
@@ -73,13 +73,12 @@ OMAR.views.Map = Backbone.View.extend({
                 center: [0, 0],
                 zoom: 3
             });
-
             this.map.addControl(new OpenLayers.Control.LayerSwitcher());
             
             this.map.events.register("moveend", this, this.setCenter);
             this.map.events.register("moveend", this, this.setExtent);
             this.map.events.register("mousemove", this, this.setMouse);
-            
+
             this.map.zoomToMaxExtent();
 
             this.setupAoiLayer();
@@ -320,7 +319,6 @@ OMAR.views.Map = Backbone.View.extend({
     },
     serverCollectionReset:function()
     {
-
         // add new layers needed
         var mapLayers = [];
         if(this.layers.count() < 1)
@@ -331,6 +329,7 @@ OMAR.views.Map = Backbone.View.extend({
                 var layer = this.newLayer(model);
                 mapLayers.push(layer);
                 this.layers.set(model.id, layer);
+
             }
         }
         else
@@ -377,10 +376,6 @@ OMAR.views.Map = Backbone.View.extend({
     bboxMapChanged:function()
     {
         alert(this.bboxModel.get("minx"));
-
-
-
-
     },
     render:function()
     {
