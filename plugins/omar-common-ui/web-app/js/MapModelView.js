@@ -289,6 +289,9 @@ OMAR.views.Map = Backbone.View.extend({
             mgrsMouse.innerHTML = "<b>MGRS:</b> Outside of geographic extent.";
         }
     },
+    mapResize:function(){
+        this.map.updateSize();
+    },
     setBboxModel:function(bboxModel)
     {
         if(this.bboxModel)

@@ -73,6 +73,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         return result;
     },
+    centerResize:function(){
+        this.mapView.mapResize();
+    },
     searchRaster:function(){
         var wfs = new OMAR.models.Wfs({"resultType":"hits"});
         var cqlFilter = this.toCql();
@@ -123,9 +126,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     }
 });
 
+OMAR.federatedRasterSearch = null;
 OMAR.pages.FederatedRasterSearch = (function($, params){
-    var result = new OMAR.views.FederatedRasterSearch(params);
-    return result;
+    OMAR.federatedRasterSearch = new OMAR.views.FederatedRasterSearch(params);
+    return OMAR.federatedRasterSearch;
 });
 
 $(document).ready(function () {
@@ -169,11 +173,10 @@ $(document).ready(function () {
                 ,	spacing_closed:			8  // ALL panes
                 ,	west__spacing_closed:	8
                 ,	east__spacing_closed:	8
+                ,onresize_end:function(){OMAR.federatedRasterSearch.centerResize();}
             }
         }
     });
-
-
 
     init();
 
