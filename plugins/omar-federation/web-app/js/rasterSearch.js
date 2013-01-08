@@ -31,6 +31,14 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         {
             this.dateTimeRangeView.render();
         }
+
+        if(this.mapView)
+        {
+            this.mapView.render();
+        }
+        // lets make sure that that the map object exists
+        // before we start the AJAX calls for fetching the server lists
+        //
         if(this.omarServerCollectionView)
         {
             var collection =  this.omarServerCollectionView;
@@ -38,11 +46,6 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             collection.model.fetch({success:function(){collection.render()},
                 update: true, remove: false,date:{cache:false}});
             window.setTimeout(this.updateServers.bind(this),5000);
-        }
-
-        if(this.mapView)
-        {
-            this.mapView.render();
         }
     },
     updateServers:function(){
