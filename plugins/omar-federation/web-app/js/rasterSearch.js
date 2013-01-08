@@ -154,8 +154,8 @@ $(document).ready(function () {
             ,	east__paneSelector:		".middle-east"
             ,	west__size:				100
             ,	east__size:				100
-            ,	spacing_open:			8  // ALL panes
-            ,	spacing_closed:			12 // ALL panes
+            ,	spacing_open:			0  // ALL panes
+            ,	spacing_closed:			0 // ALL panes
 
             // INNER-LAYOUT (child of middle-center-pane)
             ,	center__childOptions: {
