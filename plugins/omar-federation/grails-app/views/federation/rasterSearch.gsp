@@ -100,13 +100,15 @@ box-shadow: inset 0 0 0 1px #fff;
 </script>
 
 <script type="text/javascript">
-
 function init(){
-    // application specific initialize that will need access to grails models
+    var wmsConfig = ${wmsBaseLayers}
+        // application specific initialize that will need access to grails models
     //
     OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
     var params = {
-        map:{theme:"${resource(plugin:'openlayers', dir:'js/theme/default', file:'style.css')}"}
+        map:{theme:"${resource(plugin:'openlayers', dir:'js/theme/default', file:'style.css')}",
+             baseLayers:wmsConfig.base.layers
+        }
     };
     var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);
     searchPageController.render();
