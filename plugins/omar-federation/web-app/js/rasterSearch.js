@@ -14,6 +14,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.mapView.setServerCollection(this.omarServerCollectionView.model);
         this.setElement(this.el);
 
+        this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this)
     },
     events: {
         "click #SearchRasterId": "searchRaster"
@@ -47,6 +48,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                 update: true, remove: false,date:{cache:false}});
             window.setTimeout(this.updateServers.bind(this),5000);
         }
+        this.mapView.setCqlFilterToFootprintLayers(this.toFootprintCql());
+    },
+    updateFootprintCql:function(){
+        this.mapView.setCqlFilterToFootprintLayers(this.toFootprintCql());
     },
     updateServers:function(){
         var collection =  this.omarServerCollectionView;
@@ -75,6 +80,16 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     centerResize:function(){
         this.mapView.mapResize();
+    },
+    toFootprintCql:function(){
+        var result = "";
+        var timeQueryCql = this.dateTimeRangeModel.toCql("acquisition_date");
+
+        // add all criteria here later.   Fo now we will just do time
+        //
+        result = timeQueryCql;
+
+        return result;
     },
     searchRaster:function(){
         var wfs = new OMAR.models.Wfs({"resultType":"hits"});
