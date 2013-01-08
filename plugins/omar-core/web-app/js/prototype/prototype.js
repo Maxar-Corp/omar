@@ -4615,9 +4615,9 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
     event.eventName = eventName;
     event.memo = memo || { };
 
-    if (document.createEvent)
+    if (document.createEvent&&element&&element.dispatchEvent)
       element.dispatchEvent(event);
-    else
+    else if(element&&element.fireEvent)
       element.fireEvent(event.eventType, event);
 
     return Event.extend(event);
