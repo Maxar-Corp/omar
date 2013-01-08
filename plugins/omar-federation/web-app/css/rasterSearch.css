@@ -166,20 +166,38 @@ p {font-size:50%}
     width:100%;
     height:100%;
 }
+
+
+/*
+ * Added float:left because of firefox not
+ * positioning the divs properly
+*/
 #mapToolBar{
     margin:0;
     width:100%;
     height:32px;
+    float:left;
 }
+
+/*
+ * Added float:left because of firefox not
+ * positioning the divs properly
+*/
 #map {
     margin: 0;
     width: 100%;
     height: 90%;
+    float:left;
 }
 
+/*
+ * Added float:left because of firefox not
+ * positioning the divs properly
+*/
 #mapReadouts{
     margin:0;
     height:24;
+    float:left;
 }
 /*
 #text {
@@ -191,4 +209,4 @@ p {font-size:50%}
     background-color: white;
     padding: 0 0.5em 0.5em 0.5em;
 }
-*/
+  */
