@@ -37,33 +37,17 @@ box-shadow: inset 0 0 0 1px #fff;
         <div class="ui-layout-north">Menu</div>
         <div class="inner-west">
 
-            <font size=1>
-            
 
 
+<p>Display Unit: <g:select name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></p>
 
+<p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>
 
+<p><g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/></p>
 
+<p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p>
 
-
-            <div id="accordion">
-                <h3>Spatial</h3>
-                <div>
-                    <p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>
-
-                    <p><g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/></p>
-                </div>
-
-                <h3>Temporal</h3>
-                <div><p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p></div>
-
-                <h3>Metadata</h3>
-                <div>
-                    <p><g:render plugin="omar-common-ui" template="/templates/cqlTemplate"/></p>
-                </div>
-            </div>
-
-             <center><button name="SearchRasterId" id="SearchRasterId">Search</button></center>
+<center><button name="SearchRasterId" id="SearchRasterId">Search</button></center>
 
 
 
@@ -76,11 +60,6 @@ box-shadow: inset 0 0 0 1px #fff;
 
 
 
-
-        </font>
-
-            
-        
 
         
 
