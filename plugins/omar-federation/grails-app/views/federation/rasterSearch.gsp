@@ -22,6 +22,9 @@ border-radius: 4px;
 -webkit-box-shadow: inset 0 0 0 1px #fff;
 box-shadow: inset 0 0 0 1px #fff; 
  }
+ .ui-layout-pane {
+  padding: 0px !important;
+}
     </style>
 
 </head>
