@@ -79,7 +79,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         return result;
     },
     centerResize:function(){
-        var tabHeight = $(".ui-tabs-nav").height()*2;
+        var tabHeight = $(".ui-tabs-nav").height()*1.5;
         var tabWidth = 0;//$("#tabView ul:first li").width();
         var innerHeight = $(".inner-center").height();
         var innerWidth = $(".inner-center").width();
@@ -220,7 +220,7 @@ $(document).ready(function () {
 
     init();
     OMAR.federatedRasterSearch.centerResize();
-    //$( "#accordion" ).accordion();
+    $( "#accordion" ).accordion();
 });
 
 
