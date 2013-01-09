@@ -194,13 +194,16 @@ function init(){
     var wmsConfig = ${wmsBaseLayers}
         // application specific initialize that will need access to grails models
     //
+    OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
     var params = {
         map:{theme:"${resource(plugin:'openlayers', dir:'js/theme/default', file:'style.css')}",
              baseLayers:wmsConfig.base.layers
         }
     };
     var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);
-    searchPageController.render();   
+    searchPageController.render();
+
+    
 }
 </script>
 
