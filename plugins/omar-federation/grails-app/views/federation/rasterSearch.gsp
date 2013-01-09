@@ -46,7 +46,8 @@ li:hover a { background: #3b3b3b; }
 li:hover li a:hover {
     background: #1e7c9a;
 }
-
+#header, .ui-layout-north { z-index: 3 !important; } 
+#header, .ui-layout-north { overflow: visible !important; } 
 </style>
     <style>
   .box
@@ -119,39 +120,30 @@ box-shadow: inset 0 0 0 1px #fff;
 </head>
 <body>
 <div class="outer-center" id="rasterSearchPageId">
-    <div class="ui-layout-north"><omar:securityClassificationBanner/>
 
-
-    </div>
+    <div class="ui-layout-north"><omar:securityClassificationBanner/></div>
 
     <div class="middle-center">
 
         <div class="ui-layout-north">
 
-<div style="position:relative">
 <ul id="navbar">
     <li><a href="#">OMAR™</a><ul>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Home</a></li>
-        <li><a href="#">Log Out</a></li></ul>
+        <li><a href="${createLink(controller: 'login', action: 'about')}">About</a></li>
+        <li><a href="${createLink(controller: 'home', action: 'index')}">Home</a></li>
+        <li><a href="${createLink(controller: 'logout')}">Log Out</a></li></ul>
     </li>
 
-
- <li><a href="#">Export</a><ul>
-        <li><a href="#">Kml Query</a></li></ul>
+    <li><a href="#">Export</a><ul>
+        <li><a href="javaScript:generateKmlQuery()">Kml Query</a></li></ul>
     </li>
 
-
-    
- <li><a href="#">View</a><ul>
-        <li><a href="#">Refresh Footprints</a></li>
-        <li><a href="#">Search</a></li></ul>
+    <li><a href="#">View</a><ul>
+        <li><a href="javaScript:refreshFootprints()">Refresh Footprints</a></li>
+        <li><a href="javaScript:search()">Search</a></li></ul>
     </li>
-    
-  
 </ul>
  
-</div>
         </div>
         
 
