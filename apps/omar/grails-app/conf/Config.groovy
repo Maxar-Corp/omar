@@ -165,7 +165,7 @@ wms {
 //        ],
 //        [
 //            url: "http://hyperquad.ucsd.edu/cgi-bin/onearth",
-//            params: [layers: "OnEarth", format: "image/png", transparent: true, bgcolor: '#99B3CC'],
+ //           params: [layers: "OnEarth", format: "image/png", transparent: true, bgcolor: '#99B3CC'],
 //            name: "OnEarth LandSat",
 //            options: defaultOptions
 //        ],
