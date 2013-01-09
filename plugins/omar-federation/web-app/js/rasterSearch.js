@@ -220,10 +220,10 @@ $(document).ready(function () {
 
     init();
     OMAR.federatedRasterSearch.centerResize();
+    //$( "#accordion" ).accordion();
 });
 
 
-$( "#accordion" ).accordion();
 
 function generateKmlQuery() {
     alert("kml query code goes here.")

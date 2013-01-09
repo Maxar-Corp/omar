@@ -88,7 +88,7 @@ li:hover li a:hover {
             <center><button name="SearchRasterId" id="SearchRasterId">Search</button></center>
         </div>
         <div class="inner-center">
-            <g:render plugin="omar-common-ui" template="/templates/mapTemplate"/>
+            <g:render plugin="omar-federation" template="/templates/searchTabView"/>
         </div>
         <div class="ui-layout-south">
             <div id="omarServerCollectionId">
@@ -135,12 +135,8 @@ li:hover li a:hover {
         var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);
         searchPageController.render();
 
-        //$( "#accordion" ).accordion();
-        $( "#tabView" ).tabs();
+        $( "#tabView" ).tabs({active:1});
 
-        //$("#map").height($(".inner-center").height()-200);
-        //$(".ui-tabs-panel").height($(".inner-center").height()-200);
-        //searchPageController.mapView.map.updateSize();
     }
 </script>
 
