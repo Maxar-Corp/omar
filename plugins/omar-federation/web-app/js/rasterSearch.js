@@ -197,6 +197,8 @@ $(document).ready(function () {
 
 });
 
+$( "#accordion" ).accordion();
+
 function generateKmlQuery() {
     alert("kml query code goes here.")
 }
@@ -206,5 +208,9 @@ function refreshFootprints() {
 }
 
 function search() {
+    alert("search code goes here.")
+}
+
+function foo() {
     alert("search code goes here.")
 }

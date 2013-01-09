@@ -5,6 +5,10 @@
 	<r:require modules = "federationRasterSearch"/>
     <title>OMAR <g:meta name="app.version"/>: Federated Search</title>
     <r:layoutResources/>
+
+
+
+
 <style type="text/css">
 ul {
     font-family: Arial, Verdana;
@@ -49,6 +53,14 @@ li:hover li a:hover {
 #header, .ui-layout-north { z-index: 3 !important; } 
 #header, .ui-layout-north { overflow: visible !important; } 
 </style>
+
+
+
+
+
+
+
+
     <style>
   .box
 {
@@ -126,130 +138,46 @@ box-shadow: inset 0 0 0 1px #fff;
     <div class="middle-center">
 
         <div class="ui-layout-north">
+            <p><g:render plugin="omar-common-ui" template="/templates/federatedSearchMenu"/></p>
+        </div>
+    
+        <div class="inner-west">
+            <p>Display Unit: <g:select name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></p>
 
-<ul id="navbar">
-    <li><a href="#">OMAR™</a><ul>
-        <li><a href="${createLink(controller: 'login', action: 'about')}">About</a></li>
-        <li><a href="${createLink(controller: 'home', action: 'index')}">Home</a></li>
-        <li><a href="${createLink(controller: 'logout')}">Log Out</a></li></ul>
-    </li>
-
-    <li><a href="#">Export</a><ul>
-        <li><a href="javaScript:generateKmlQuery()">Kml Query</a></li></ul>
-    </li>
-
-    <li><a href="#">View</a><ul>
-        <li><a href="javaScript:refreshFootprints()">Refresh Footprints</a></li>
-        <li><a href="javaScript:search()">Search</a></li></ul>
-    </li>
-</ul>
+            <div id="accordion">
+                <h3>Spatial</h3>
+                <div>
+                    <p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>
+                    <p><g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/></p>
+                </div>
  
+                <h3>Tempotral</h3>
+                <div>
+                    <p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p>
+                </div>
+                <h3>Metadata</h3>
+                <div>
+                    <p><g:render plugin="omar-common-ui" template="/templates/cqlTemplate"/></p>
+                </div>
+            </div>
+
+            <center><button name="SearchRasterId" id="SearchRasterId">Search</button></center>
         </div>
         
-
-
-
-
-
-
-
-
-        <div class="inner-west">
-
-
-
-<p>Display Unit: <g:select name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></p>
-
-
-
-<div id="accordion">
-  <h3>Spatial</h3>
-  <div>
-   <p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>
-   <p><g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/></p>
-  </div>
- 
-  <h3>Tempotral</h3>
-  <div>
-   <p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p>
-
-  </div>
-  <h3>Metadata</h3>
-  <div>
-   
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<center><button name="SearchRasterId" id="SearchRasterId">Search</button></center>
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-               
-
-
-         </div>
         <div class="inner-center">
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             <g:render plugin="omar-common-ui" template="/templates/mapTemplate"/>
         </div>
+
 		<div class="ui-layout-south">
-            <div id="omarServerCollectionId">
-            </div>
+            <div id="omarServerCollectionId"></div>
         </div>
 
 	</div>
+    
     <div class="ui-layout-south"><omar:securityClassificationBanner/></div>
 
 </div>
 
- <script>
-   //  OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
-     // alert("${resource(plugin:'openlayers', dir:'js/theme/default')}/");
-
- </script>
 <r:layoutResources/>
 <script type="text/html" id="omar-server-template">
     <div class="omar-server-container" id="${'<%=id%>'}">
@@ -266,17 +194,13 @@ function init(){
     var wmsConfig = ${wmsBaseLayers}
         // application specific initialize that will need access to grails models
     //
-    OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
     var params = {
         map:{theme:"${resource(plugin:'openlayers', dir:'js/theme/default', file:'style.css')}",
              baseLayers:wmsConfig.base.layers
         }
     };
     var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);
-    searchPageController.render();
-
-    $( "#accordion" ).accordion();
-
+    searchPageController.render();   
 }
 </script>
 
