@@ -61,28 +61,7 @@ li:hover li a:hover {
         <div class="ui-layout-north">
 
             <div style="position:relative">
-                <ul id="navbar">
-                    <li><a href="#">OMAR™</a><ul>
-                        <li><a href="#">About</a></li>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">Log Out</a></li></ul>
-                    </li>
-
-
-                    <li><a href="#">Export</a><ul>
-                        <li><a href="#">Kml Query</a></li></ul>
-                    </li>
-
-
-
-                    <li><a href="#">View</a><ul>
-                        <li><a href="#">Refresh Footprints</a></li>
-                        <li><a href="#">Search</a></li></ul>
-                    </li>
-
-
-                </ul>
-
+                <p><g:render plugin="omar-common-ui" template="/templates/federatedSearchMenu"/></p>
             </div>
         </div>
 
