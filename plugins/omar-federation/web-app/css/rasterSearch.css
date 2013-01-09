@@ -210,6 +210,34 @@ p {font-size:50%}
     float:left ;
 }
 
+
+
+.ui-widget-content { border: none; padding:0 0}
+/*
+ * Added float:left because of firefox not
+ * positioning the divs properly
+*/
+#mapReadouts{
+    margin:0;
+    width:100%;
+    float:left;
+   /* height:24;*/
+}
+#MapView{
+    width:100%;
+    height:100%;
+}
+#text {
+    position: absolute;
+    bottom: 1em;
+    left: 1em;
+    width: 512px;
+    z-index: 20000;
+    background-color: white;
+    padding: 0 0.5em 0.5em 0.5em;
+}
+
+
 /*
  * Handle tabs
  *
@@ -226,25 +254,24 @@ p {font-size:50%}
     background: none;
 }
 
-
-.ui-widget-content { border: none; padding:0 0}
-/*
- * Added float:left because of firefox not
- * positioning the divs properly
-*/
-#mapReadouts{
-    margin:0;
-    width:100%;
-    float:left;
-   /* height:24;*/
+#tabView .ui-state-default a {
+    color: white;
+    background-color: #a9a9a9;
+}
+#tabView .ui-state-active a {
+    color: white;
+    background-color: blue;
 }
 
-#text {
-    position: absolute;
-    bottom: 1em;
-    left: 1em;
-    width: 512px;
-    z-index: 20000;
-    background-color: white;
-    padding: 0 0.5em 0.5em 0.5em;
+#tabView {
+    padding: 0px;
 }
+
+#tabView .ui-tabs-nav {
+    background: transparent;
+    border-width: 0px 0px 0px 0px;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+}
+
