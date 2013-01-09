@@ -221,3 +221,22 @@ $(document).ready(function () {
     init();
     OMAR.federatedRasterSearch.centerResize();
 });
+
+
+$( "#accordion" ).accordion();
+
+function generateKmlQuery() {
+    alert("kml query code goes here.")
+}
+
+function refreshFootprints() {
+    alert("refresh footprints code goes here.")
+}
+
+function search() {
+    alert("search code goes here.")
+}
+
+function foo() {
+    alert("search code goes here.")
+}
