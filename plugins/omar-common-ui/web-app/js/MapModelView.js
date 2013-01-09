@@ -312,7 +312,7 @@ OMAR.views.Map = Backbone.View.extend({
         }
     },
     mapResize:function(){
-        this.map.updateSize();
+        this.map.updateSize(new OpenLayers.Size(512,512));
     },
     setBboxModel:function(bboxModel)
     {

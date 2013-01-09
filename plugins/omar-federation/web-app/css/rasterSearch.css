@@ -99,12 +99,24 @@ p {font-size:50%}
     padding-top:25px;
 }
 
-.omar-server-count {
-    height: auto;
-    width: auto;
+#omar-server-count-container{
     position: absolute;
     top: 0;
-    left: 50;
+    z-index: 50;
+    /*left: 50;*/
+}
+
+#omar-server-enabled{
+    height:auto;
+    width:auto;
+    float:left;
+    z-index: 10;
+}
+
+#omar-server-count {
+    float:  left;
+    height: auto;
+    width:  auto;
     /*background-color: rgba(255, 0, 0, 0.4);*/
     /*background-color:red;*/
     /*background: rgba(255, 0, 0, 0.4);*/
@@ -123,8 +135,9 @@ p {font-size:50%}
     /*background-color:red;*/
     border-radius:50px;font-size:15px;line-height:25px;text-align:center;
 
-    padding-left: 10px;
+/*    padding-left: 10px;
     padding-right: 10px;
+*/
 }
 
 .omar-server-info {
@@ -135,9 +148,10 @@ p {font-size:50%}
 }
 
 .omar-server-info  {
-    z-index: -1;
 }
-
+#omar-server-url{
+    z-index:10;
+}
 .omar-server-container{
     position:relative;
     /*background-color:blue;*/
@@ -162,12 +176,12 @@ p {font-size:50%}
 }
 
 #mapContainer{
+    postion:absolute;
     margin:0;
+    border:0;
     width:100%;
     height:100%;
 }
-
-
 /*
  * Added float:left because of firefox not
  * positioning the divs properly
@@ -175,21 +189,45 @@ p {font-size:50%}
 #mapToolBar{
     margin:0;
     width:100%;
-    height:32px;
     float:left;
+}
+
+#tabView{
+    margin:0;
+    border:0;
+    width:100%;
+    height:90%;
+}
+
+#map{
+    margin:0;
+    border:0;
+   /* width:100%;
+    height:100%;
+    */
+    width:100%;
+    height:100%;
+    float:left ;
 }
 
 /*
- * Added float:left because of firefox not
- * positioning the divs properly
+ * Handle tabs
+ *
 */
-#map {
-    margin: 0;
-    width: 100%;
-    height: 90%;
-    float:left;
+.ui-tabs .ui-tabs-nav li a {
+    padding: 0 0;
+}
+.ui-tabs .ui-tabs-nav li {
+    padding: 0 0;
 }
 
+.ui-tabs .ui-tabs-panel {
+    padding: 0 0;
+    background: none;
+}
+
+
+.ui-widget-content { border: none; padding:0 0}
 /*
  * Added float:left because of firefox not
  * positioning the divs properly
@@ -197,10 +235,10 @@ p {font-size:50%}
 #mapReadouts{
     margin:0;
     width:100%;
-   /* height:24;*/
     float:left;
+   /* height:24;*/
 }
-/*
+
 #text {
     position: absolute;
     bottom: 1em;
@@ -210,4 +248,3 @@ p {font-size:50%}
     background-color: white;
     padding: 0 0.5em 0.5em 0.5em;
 }
-  */

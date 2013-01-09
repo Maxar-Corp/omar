@@ -133,10 +133,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             var el = $(this.el).find("#"+model.id);
             if(el.size()==0)
             {
-                $(this.el).append(this.makeServer({id:model.id,
-                                                    url:model.get("url"),// this needs to be the models search params later
-                                                    count:model.get("count"),
-                                                    name:model.get("nickname")}));
+                $(this.el).append(this.makeServer(model));
             }
             else
             {
@@ -144,6 +141,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                 $(countElement).text(model.get("count"));
             }
         }
+
     },
     updateServerView:function(model)
     {
@@ -151,9 +149,25 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         var countElement = $(el).find("#omar-server-count").get();
         $(countElement).text(model.get("count"));
      },
-    makeServer:function(attr)
+    makeServer:function(model)
     {
-        return _.template($('#omar-server-template').html(), attr);
+        var attr = {id:model.id,
+                          enabled:model.get("enabled"),
+                          url:model.get("url"),// this needs to be the models search params later
+                          count:model.get("count"),
+                          name:model.get("nickname")}
+
+        var result = _.template($('#omar-server-template').html(), attr);
+
+        var checkChild = $(result).find("#omar-server-enabled-checkbox");
+        if(checkChild.size()>0)
+        {
+            if(attr&&(attr.id!=null))
+            {
+                $(checkChild).value = attr.id;
+            }
+        }
+        return result;
     },
 
     setAllBusy:function(flag)
@@ -211,10 +225,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             {
 
                 var model = this.model.at(idx);
-                $(this.el).append(this.makeServer({id:model.id,
-                                                   url:model.get("url"),// this needs to be the models search params later
-                                                   count:model.get("count"),
-                                                   name:model.get("nickname")}));
+                $(this.el).append(this.makeServer(model));
             }
         }
     }
