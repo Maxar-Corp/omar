@@ -16,7 +16,8 @@ OMAR.models.OmarServerModel=Backbone.Model.extend({
     },
     initialize:function(params)
     {
-        this.spinnerOptions =
+        this.userDefinedData = {}
+        this.userDefinedData.spinnerOptions =
         {
             lines: 13,
             length: 7,
@@ -36,11 +37,11 @@ OMAR.models.OmarServerModel=Backbone.Model.extend({
         };
     },
     createSpinner:function(){
-      if(!this.spinner)
+      if(!this.userDefinedData.spinner)
       {
-        this.spinner = new Spinner(this.spinnerOptions);
+        this.userDefinedData.spinner = new Spinner(this.userDefinedData.spinnerOptions);
       }
-      return this.spinner;
+      return this.userDefinedData.spinner;
     }
 });
 
@@ -63,12 +64,12 @@ OMAR.models.OmarServerCollection=Backbone.Collection.extend({
         {
             var model = new OMAR.models.OmarServerModel(response[idx]);
             var tempM = this.get(model.id);
-            // make sure we copy any existing spinners or counts to
+            // make sure we copy any existing user defined data or counts to
             // the copy of the model.
             //
             if(tempM)
             {
-                model.spinner = tempM.spinner;
+                model.userDefinedData = tempM.userDefinedData;
                 model.attributes.count = tempM.attributes.count;
             }
             result.push(model);
@@ -197,21 +198,21 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             if(!model) return;
             if(flag)
             {
-                if(model.spinner) model.spinner.stop();
+                if(model.userDefinedData.spinner) model.userDefinedData.spinner.stop();
                 model.createSpinner();
                 var el = $(this.el).children("#"+model.id)[0];
                 if(el)
                 {
-                    model.spinner.spin(el);
+                    model.userDefinedData.spinner.spin(el);
                 }
                 else
                 {
-                    model.spinner.stop();
+                    model.userDefinedData.spinner.stop();
                 }
             }
-            else if(model.spinner)
+            else if(model.userDefinedData.spinner)
             {
-                model.spinner.stop();
+                model.userDefinedData.spinner.stop();
             }
         }
     },
