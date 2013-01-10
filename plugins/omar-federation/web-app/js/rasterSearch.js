@@ -15,6 +15,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.setElement(this.el);
 
         this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this)
+        this.rasterEntryDataModelView = new OMAR.views.RasterEntryDataModelView();
+
     },
     events: {
         "click #SearchRasterId": "searchRaster"
@@ -37,6 +39,11 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         {
             this.mapView.render();
         }
+
+        if(this.rasterEntryDataModelView)
+        {
+            this.rasterEntryDataModelView.render();
+        }
         // lets make sure that that the map object exists
         // before we start the AJAX calls for fetching the server lists
         //
@@ -48,6 +55,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                 update: true, remove: false,date:{cache:false}});
             window.setTimeout(this.updateServers.bind(this),5000);
         }
+
         this.mapView.setCqlFilterToFootprintLayers(this.toFootprintCql());
     },
     updateFootprintCql:function(){
@@ -117,9 +125,16 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             var model = this.omarServerCollectionView.model.at(idx);
             if(model.get("enabled"))
             {
+
                 this.omarServerCollectionView.setBusy(model.id, true);
                 wfs.set("url",model.get("url")+"/wfs");
-                $.ajax({
+
+                if(model.userDefinedData.ajaxCountQuery && model.userDefinedData.ajaxCountQuery.readyState != 4){
+                    model.userDefinedData.ajaxCountQuery.abort();
+                    model.userDefinedData.ajaxCountQuery = null;
+                    this.omarServerCollectionView.setBusy(model.id, false);
+                }
+                model.userDefinedData.ajaxCountQuery = $.ajax({
                     url: wfs.toUrl()+"&callback=?",
                     cache:false,
                     type: "GET",
@@ -151,7 +166,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                         this.scopePtr.omarServerCollectionView.setBusy(this.modelId, false);
                         if(tempModel)
                         {
-                            tempModel.get(this.modelId).set({"count":count});
+                            tempModel.set({"count":count});
                         }
                     }
                 });

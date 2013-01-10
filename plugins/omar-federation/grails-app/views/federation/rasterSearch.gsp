@@ -60,7 +60,7 @@ li:hover li a:hover {
 
         <div class="ui-layout-north">
 
-            <div style="position:relative">
+            <div style="position:relative;float:left">
                 <p><g:render plugin="omar-common-ui" template="/templates/federatedSearchMenu"/></p>
             </div>
         </div>
@@ -136,7 +136,6 @@ li:hover li a:hover {
         searchPageController.render();
 
         $( "#tabView" ).tabs({active:1});
-
     }
 </script>
 
