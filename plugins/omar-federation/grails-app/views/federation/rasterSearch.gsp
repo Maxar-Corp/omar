@@ -55,9 +55,9 @@
                 <div id="omar-server-enabled"><input id="omar-server-enabled-checkbox" type="checkbox" checked=${'<%=enabled%>'}></input></div>
                 <div id="omar-server-count" class="omar-server-count">${'<%=count%>'}</div>
             </div>
-            <img style="padding-top:24px" src="${resource(dir:'images', file:'server.gif')}"/>
+            <img id="omar-server-image" style="padding-top:24px" src="${resource(dir:'images', file:'server.gif')}"/>
         </div>
-        <a href="${'<%=url%>'}" id="omar-server-url">${'<%=name%>'}</a>
+        <label  class="link_cursor" id="omar-server-url">${'<%=name%>'}</label>
     </div>
 </script>
 

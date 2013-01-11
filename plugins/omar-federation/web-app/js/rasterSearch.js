@@ -17,6 +17,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this)
         this.rasterEntryDataModelView = new OMAR.views.RasterEntryDataModelView();
+        this.omarServerCollectionView.bind('onModelClicked', this.serverClicked, this);
     },
     events: {
         "click #SearchRasterId": "searchRaster"
@@ -33,6 +34,20 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         {
             this.rasterEntryDataModelView.resizeView();
         }
+    },
+    serverClicked:function(id){
+        var cqlFilter = this.toCql();
+
+        var model = this.omarServerCollectionView.getLastClickedModel();
+        if(model)
+        {
+            this.rasterEntryDataModelView.wfsModel.set(
+                {"url":model.get("url")+"/wfs",
+                    "filter":cqlFilter}
+            );
+        }
+
+        //alert("MODEL CLICKED HERE!!!!" + id);
     },
     render:function(){
         if(this.bboxView)
@@ -114,76 +129,19 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         return result;
     },
     searchRaster:function(){
-        var wfs = new OMAR.models.Wfs({"resultType":"hits"});
         var cqlFilter = this.toCql();
-        wfs.set("filter",cqlFilter);
-        if(this.omarServerCollectionView.model.size()>0)
+
+        this.omarServerCollectionView.wfsServerCount.set({"filter":cqlFilter});
+
+        var model = this.omarServerCollectionView.getLastClickedModel();
+        if(model)
         {
-            var model = this.omarServerCollectionView.model.at(0);
-            this.rasterEntryDataModelView.wfsModel.set({"url":model.get("url")+"/wfs",
-                                                        "filter":cqlFilter});
-            //wfsDataTable.set("url",
-            //    this.omarServerCollectionView.model.at(0).get("url") + "/wfs");
-            //this.rasterEntryDataModelView.model.url = wfsDataTable.toUrl()+"&callback=?"
-            //this.rasterEntryDataModelView.model.fetch();
+            this.rasterEntryDataModelView.wfsModel.set(
+                {"url":model.get("url")+"/wfs",
+                 "filter":cqlFilter}
+            );
         }
-        for(var idx = 0; idx <this.omarServerCollectionView.model.size();++idx )
-        {
-            var model = this.omarServerCollectionView.model.at(idx);
-            if(model.get("enabled"))
-            {
-
-                this.omarServerCollectionView.setBusy(model.id, true);
-                wfs.set("url",model.get("url")+"/wfs");
-
-                if(model.userDefinedData.ajaxCountQuery && model.userDefinedData.ajaxCountQuery.readyState != 4){
-                    model.userDefinedData.ajaxCountQuery.abort();
-                    model.userDefinedData.ajaxCountQuery = null;
-                    this.omarServerCollectionView.setBusy(model.id, false);
-                }
-                model.userDefinedData.ajaxCountQuery = $.ajax({
-                    url: wfs.toUrl()+"&callback=?",
-                    cache:false,
-                    type: "GET",
-                    crossDomain:true,
-                    dataType: "json",
-                    timeout: 60000,
-                    modelId:model.id,
-                    scopePtr:this,
-                    success: function(response) {
-                        if(response.numberOfFeatures!=null)
-                        {
-                            var numberOfFeatures = response.numberOfFeatures;
-                            this.scopePtr.omarServerCollectionView.setBusy(this.modelId, false);
-                            var tempModel = this.scopePtr.omarServerCollectionView.model.get(this.modelId);
-                            if(tempModel)
-                            {
-                                tempModel.set({"count":numberOfFeatures});
-                            }
-                        }
-                    },
-                    error: function(x, t, m) {
-                        var count = "Error";
-                        if(t==="timeout") {
-                            count = "Timeout"
-                        } else {
-                            //alert(JSON.stringify(x)+ " " +t + " " + m);
-                        }
-                        var tempModel = this.scopePtr.omarServerCollectionView.model.get(this.modelId);
-                        this.scopePtr.omarServerCollectionView.setBusy(this.modelId, false);
-                        if(tempModel)
-                        {
-                            tempModel.set({"count":count});
-                        }
-                    }
-                });
-            }
-            else
-            {
-
-            }
-        }
-    }
+     }
 });
 
 OMAR.federatedRasterSearch = null;

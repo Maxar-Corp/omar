@@ -3,6 +3,13 @@ body {
     font-size: 75%;
 }
 
+.link_cursor
+{
+    cursor: pointer;
+    color:blue;
+    text-decoration:underline;
+}
+
 #ui-datepicker-div, .ui-datepicker{
     font-size: 75%;
 }
