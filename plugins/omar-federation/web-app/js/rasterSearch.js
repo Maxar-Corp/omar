@@ -2,6 +2,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     el:"#rasterSearchPageId",
     bboxView:null,
     initialize:function(params){
+
         this.bboxView = new OMAR.views.BBOX();
         this.bboxModel = this.bboxView.model;
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
@@ -16,10 +17,22 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this)
         this.rasterEntryDataModelView = new OMAR.views.RasterEntryDataModelView();
-
     },
     events: {
         "click #SearchRasterId": "searchRaster"
+    },
+    showTab:function(event, ui){
+        if(ui.index == 0)
+        {
+        }
+        else if(ui.index == 1)
+        {
+            this.centerResize();
+        }
+        if(ui.index == 2)
+        {
+            this.rasterEntryDataModelView.resizeView();
+        }
     },
     render:function(){
         if(this.bboxView)
@@ -87,23 +100,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         return result;
     },
     centerResize:function(){
-        var tabHeight = $(".ui-tabs-nav").height()*1.5;
-        var tabWidth = 0;//$("#tabView ul:first li").width();
-        var innerHeight = $(".inner-center").height();
-        var innerWidth = $(".inner-center").width();
-        var toolBarHeight = $("#mapToolBar").height();
-        var mapReadoutsHeight = $("#mapReadouts").height();
-        var mapContainerWidth = innerWidth;
-        var mapHeight = innerHeight - (toolBarHeight+
-                                       mapReadoutsHeight+
-                                        tabHeight);
-        var mapContainerHeight = mapHeight + toolBarHeight+mapReadoutsHeight;
-        $("#map").height(mapHeight);
-        $("#map").width(innerWidth-4);
-        $("#mapContainer").height(mapContainerHeight);
-        $("#mapContainer").width(mapContainerWidth-4);
-
-        this.mapView.mapResize();
+        this.rasterEntryDataModelView.resizeView();
+        this.mapView.resizeView();
     },
     toFootprintCql:function(){
         var result = "";
@@ -119,7 +117,16 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var wfs = new OMAR.models.Wfs({"resultType":"hits"});
         var cqlFilter = this.toCql();
         wfs.set("filter",cqlFilter);
-
+        if(this.omarServerCollectionView.model.size()>0)
+        {
+            var model = this.omarServerCollectionView.model.at(0);
+            this.rasterEntryDataModelView.wfsModel.set({"url":model.get("url")+"/wfs",
+                                                        "filter":cqlFilter});
+            //wfsDataTable.set("url",
+            //    this.omarServerCollectionView.model.at(0).get("url") + "/wfs");
+            //this.rasterEntryDataModelView.model.url = wfsDataTable.toUrl()+"&callback=?"
+            //this.rasterEntryDataModelView.model.fetch();
+        }
         for(var idx = 0; idx <this.omarServerCollectionView.model.size();++idx )
         {
             var model = this.omarServerCollectionView.model.at(idx);
