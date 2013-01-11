@@ -311,8 +311,18 @@ OMAR.views.Map = Backbone.View.extend({
             mgrsMouse.innerHTML = "<b>MGRS:</b> Outside of geographic extent.";
         }
     },
+    resizeView:function(){
+        var tabHeight = $(".ui-tabs-nav").height();
+        var innerHeight = $(".inner-center").height();
+
+        var mapHeight = innerHeight-($("#mapToolBar").height()+
+                                             $("#mapReadouts").height());
+        $("#map").height(mapHeight);
+
+        this.mapResize();
+    },
     mapResize:function(){
-        this.map.updateSize(new OpenLayers.Size(512,512));
+        this.map.updateSize();
     },
     setBboxModel:function(bboxModel)
     {
