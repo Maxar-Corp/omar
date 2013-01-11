@@ -9,7 +9,7 @@
         <g:render plugin="omar-common-ui" template="/templates/mapTemplate"/>
     </div>
     <div id="Results">
-        <table id="DataTable">
+        <table id="DataTable" style="height:100%">
         </table>
     </div>
 
