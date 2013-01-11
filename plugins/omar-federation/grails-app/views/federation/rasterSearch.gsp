@@ -5,102 +5,42 @@
     <r:require modules = "federationRasterSearch"/>
     <title>OMAR <g:meta name="app.version"/>: Federated Search</title>
     <r:layoutResources/>
-
-<style type="text/css">
-ul {
-    font-family: Arial, Verdana;
-    font-size: 14px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-ul li {
-    display: block;
-    position: relative;
-    float: left;
-}
-li ul {
-    display: none;
-}
-ul li a {
-    display: block;
-    text-decoration: none;
-    color: #ffffff;
-    border-top: 1px solid #ffffff;
-    padding: 5px 15px 5px 15px;
-    background: #1e7c9a;
-    margin-left: 1px;
-    white-space: nowrap;
-}
-ul li a:hover {
-background: #3b3b3b;
-}
-li:hover ul {
-    display: block;
-    position: absolute;
-}
-li:hover li {
-    float: none;
-    font-size: 11px;
-}
-li:hover a { background: #3b3b3b; }
-li:hover li a:hover {
-    background: #1e7c9a;
-}
-#header, .ui-layout-north { z-index: 3 !important; } 
-#header, .ui-layout-north { overflow: visible !important; } 
-</style>
 </head>
 <body>
-<div class="outer-center" id="rasterSearchPageId">
-
-    <div class="ui-layout-north"><omar:securityClassificationBanner/></div>
-
-    <div class="middle-center">
+    <div class="outer-center" id="rasterSearchPageId">
 
         <div class="ui-layout-north">
+            <omar:securityClassificationBanner/>
+            <g:render plugin="omar-common-ui" template="/templates/federatedSearchMenu"/>
+        </div>
 
-            <div style="position:relative;float:left">
-                <p><g:render plugin="omar-common-ui" template="/templates/federatedSearchMenu"/></p>
+        <div class="middle-center">
+
+            <div class="inner-west">
+                <p><center>Show Coordinates in <g:select name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></center></p>
+
+                <p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>
+
+                <p><g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/></p>
+
+                <p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p>
+
+                <center><button name="SearchRasterId" id="SearchRasterId">Search OMAR™</button></center>
+            </div>
+
+            <div class="inner-center">
+                <g:render plugin="omar-federation" template="/templates/searchTabView"/>
+            </div>
+
+            <div class="ui-layout-south">
+                <div id="omarServerCollectionId"></div>
             </div>
         </div>
 
-        <div class="inner-west">
-            <p>Display Unit: <g:select name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></p>
 
-            <div id="accordion">
-                <h3>Spatial</h3>
-                <div>
-                    <p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>
-                    <p><g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/></p>
-                </div>
-
-                <h3>Temporal</h3>
-                <div>
-                    <p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p>
-
-                </div>
-                <h3>Metadata</h3>
-                <div>
-
-                </div>
-            </div>
-            <center><button name="SearchRasterId" id="SearchRasterId">Search</button></center>
-        </div>
-        <div class="inner-center">
-            <g:render plugin="omar-federation" template="/templates/searchTabView"/>
-        </div>
         <div class="ui-layout-south">
-            <div id="omarServerCollectionId">
-            </div>
+            <omar:securityClassificationBanner/></div>
         </div>
-
-    </div>
-
-
-    <div class="ui-layout-south"><omar:securityClassificationBanner/></div>
-
-</div>
 
 <script>
     //  OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";

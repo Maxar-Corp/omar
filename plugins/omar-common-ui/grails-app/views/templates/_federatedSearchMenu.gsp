@@ -1,16 +1,43 @@
-<ul id="FederatedSearchMenu" class="ui-menu">
-    <li><a href="#">OMAR™</a><ul>
-        <li><a href="${createLink(controller: 'login', action: 'about')}">About</a></li>
-        <li><a href="${createLink(controller: 'home', action: 'index')}">Home</a></li>
-        <li><a href="${createLink(controller: 'logout')}">Log Out</a></li></ul>
-    </li>
+<ul id="jMenu">
 
-    <li><a href="#">Export</a><ul>
-        <li><a href="javaScript:generateKmlQuery()">Kml Query</a></li></ul>
-    </li>
+  <li><a class="fNiv">OMAR™</a><!-- Do not forget the "fNiv" class for the first level links !! -->
+    <ul>
+      <li class="arrow"></li>
+      <li><a href="${createLink(controller: 'login', action: 'about')}">About</a></li>
+      <li><a href="${createLink(controller: 'home', action: 'index')}">Home</a></li>
+      <li><a href="${createLink(controller: 'logout')}">Logoout</a></li>
+    </ul>
+  </li>
+  
+  <li><a class="fNiv">Export</a>
+    <ul>
+      <li class="arrow"></li>
+      <li><a href="javascript:generateKmlQuery()">KML Query</a></li>
+    </ul>
+  </li>
+  
+  <li><a class="fNiv">Search</a>
+    <ul>
+      <li class="arrow"></li>
+      <li><a href="javascript:refreshFootprints()">Update Footprints</a></li>
+      <li><a href="javascript:search()">Search</a></li>
+    </ul>
+  </li>
 
-    <li><a href="#">View</a><ul>
-        <li><a href="javaScript:refreshFootprints()">Refresh Footprints</a></li>
-        <li><a href="javaScript:search()">Search</a></li></ul>
-    </li>
+   <li><a class="fNiv">Map Tools</a>
+    <ul>
+      <li class="arrow"></li>
+      <li><a>Set Measurement Unit Type</a>
+        <ul>
+          <li><a>Kilometers</a></li>
+          <li><a>Meters</a></li>
+          <li><a>Feet</a></li>
+          <li><a>Miles</a></li>
+          <li><a>Yards</a></li>
+          <li><a>Nautical Miles</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  
 </ul>

@@ -197,52 +197,67 @@ $(document).ready(function () {
     // OUTER-LAYOUT
 
     $('body').layout({
-        center__paneSelector:	".outer-center"
-        ,	west__paneSelector:		".outer-west"
-        ,	east__paneSelector:		".outer-east"
-        ,	west__size:				125
-        ,	east__size:				125
-        ,	spacing_open:			8  // ALL panes
-        ,	spacing_closed:			12 // ALL panes
-        //,	north__spacing_open:	0
-        //,	south__spacing_open:	0
-        ,	north__maxSize:			50
-        ,   north__minSize:         50
-        ,	south__maxSize:			50
-        ,   south__minSize:         50
+            center__paneSelector:   ".outer-center"
+        ,   west__paneSelector:     ".outer-west"
+        ,   east__paneSelector:     ".outer-east"
+        ,   west__size:             125
+        ,   east__size:             125
+        ,   spacing_open:           8  // ALL panes
+        ,   spacing_closed:         12 // ALL panes
+        //, north__spacing_open:    0
+        //, south__spacing_open:    0
+        ,   north__maxSize:         200
+        ,   south__maxSize:         200
 
-        // MIDDLE-LAYOUT (child of outer-center-pane)
-        ,	center__childOptions: {
-            center__paneSelector:	".middle-center"
-            ,	west__paneSelector:		".middle-west"
-            ,	east__paneSelector:		".middle-east"
-            ,	west__size:				100
-            ,	east__size:				100
-            ,	spacing_open:			0  // ALL panes
-            ,	spacing_closed:			0 // ALL panes
+            // MIDDLE-LAYOUT (child of outer-center-pane)
+        ,   center__childOptions: {
+                center__paneSelector:   ".middle-center"
+            ,   west__paneSelector:     ".middle-west"
+            ,   east__paneSelector:     ".middle-east"
+            ,   west__size:             100
+            ,   east__size:             100
+            ,   spacing_open:           0  // ALL panes
+            ,   spacing_closed:         0 // ALL panes
 
-            // INNER-LAYOUT (child of middle-center-pane)
-            ,	center__childOptions: {
-                center__paneSelector:	".inner-center"
-                ,	west__paneSelector:		".inner-west"
-                ,	east__paneSelector:		".inner-east"
-                ,	west__size:				250
-                ,   west__minSize:          250
-                ,	east__size:				75
-                ,	spacing_open:			8  // ALL panes
-                ,	spacing_closed:			8  // ALL panes
-                ,	west__spacing_closed:	8
-                ,	east__spacing_closed:	8
-                ,onresize_end:function(){
-                    OMAR.federatedRasterSearch.centerResize();
+                // INNER-LAYOUT (child of middle-center-pane)
+            ,   center__childOptions: {
+                    center__paneSelector:   ".inner-center"
+                ,   west__paneSelector:     ".inner-west"
+                ,   east__paneSelector:     ".inner-east"
+                ,   west__size:             225
+                ,   west__minSize:          225
+                ,   east__size:             75
+                ,   spacing_open:           8  // ALL panes
+                ,   spacing_closed:         8  // ALL panes
+                ,   west__spacing_closed:   12
+                ,   east__spacing_closed:   12
                 }
             }
-        }
-    });
+        });
 
     init();
     OMAR.federatedRasterSearch.centerResize();
     $( "#accordion" ).accordion();
+
+    $("#jMenu").jMenu({
+                  openClick : false,
+                  ulWidth : 100,
+                  effects : {
+                    effectSpeedOpen : 200,
+                    effectSpeedClose : 200,
+                    effectTypeOpen : 'slide',
+                    effectTypeClose : 'hide',
+                    effectOpen : 'linear',
+                    effectClose : 'linear'
+                  },
+                  TimeBeforeOpening : 100,
+                  TimeBeforeClosing : 100,
+                  animatedText : true,
+                  paddingLeft: 10
+                });
+  
+
+
 });
 
 

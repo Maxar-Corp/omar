@@ -1,8 +1,11 @@
-#ui-datepicker-div, .ui-datepicker{ font-size: 75%; }
+body {
+    font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+    font-size: 75%;
+}
 
-h1 {font-size:50%}
-h2 {font-size:50%}
-p {font-size:50%}
+#ui-datepicker-div, .ui-datepicker{
+    font-size: 75%;
+}
 
 /*
      *	NOTE: All CSS is purely cosmetic - it does not affect functionality
@@ -14,17 +17,37 @@ p {font-size:50%}
     border-top:		1px solid #BBB;
     border-bottom:	1px solid #BBB;
 }
-.ui-layout-pane-north ,
+.ui-layout-pane-north {
+    height:          57px !important;
+    overflow:        visible;
+    z-index: 99 !important;
+    padding-left: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+}
 .ui-layout-pane-south {
     border:			1px solid #BBB;
     overflow:		hidden;
+    padding-left: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
 }
 .ui-layout-pane-west ,
 .ui-layout-pane-east {
+    padding-left: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
 }
 .ui-layout-pane-center	{
     border-left:	0;
     border-right:	0;
+     padding-left: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
 }
 .inner-center {
     border:		1px solid #BBB;
@@ -89,7 +112,7 @@ p {font-size:50%}
     background-image:url("../images/server.gif");
     /* background-color:#cccccc;*/
     background-repeat:no-repeat;
-    height:64px;
+    height:32px;
     width:64px;
     float:left;
     padding-left:10px;
@@ -160,6 +183,9 @@ p {font-size:50%}
     height:100px;
     width:100px;
     float:left;
+
+
+    display: inline-block;
     position:relative;
     padding-left: 10px;
     padding-right:10px;
@@ -169,7 +195,6 @@ p {font-size:50%}
     height:100%;
     min-height: 100px;
     width:auto;
-    overflow-x:scroll;
     /*overflow-y:scroll;*/
     /*display: inline-block;*/
     white-space: nowrap
@@ -259,11 +284,15 @@ p {font-size:50%}
 
 #tabView .ui-state-default a {
     color: white;
-    background-color: #a9a9a9;
+    background-color: #252326;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-right: 10px;
+    padding-bottom: 5px;
 }
 #tabView .ui-state-active a {
     color: white;
-    background-color: blue;
+    background-color: #003366;
 }
 
 #tabView {
@@ -375,4 +404,24 @@ p {font-size:50%}
 }
 
 
+
+div.niceBox {
+  margin-top: 3px;
+  margin-bottom: 8px;
+  background-color: #F0F8FF;
+  border: 1px solid #000000;
+}
+
+div.niceBoxHeader{
+  font-size: 87%;
+  font-weight: bold;
+  padding: 2px;
+  color: white;
+  background-color: #252326;
+}
+
+div.niceBoxBody {
+  font-size: 87%;
+  padding: 3px;
+}
 
