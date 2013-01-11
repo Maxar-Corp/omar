@@ -47,6 +47,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             );
         }
 
+        this.tabView.tabs("select", 2);
+        $(this.tabView).find("#ResultsLabelId").text(model.get("nickname"));
         //alert("MODEL CLICKED HERE!!!!" + id);
     },
     render:function(){
@@ -85,6 +87,11 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         }
 
         this.mapView.setCqlFilterToFootprintLayers(this.toFootprintCql());
+        this.tabView = $( "#tabView" ).tabs(
+            {   "active":1,
+                "show": $.proxy(this.showTab, this)
+            });
+
     },
     updateFootprintCql:function(){
         this.mapView.setCqlFilterToFootprintLayers(this.toFootprintCql());
@@ -131,8 +138,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     searchRaster:function(){
         var cqlFilter = this.toCql();
 
-        this.omarServerCollectionView.wfsServerCount.set({"filter":cqlFilter});
-
+        this.omarServerCollectionView.wfsServerCount.attributes.filter = cqlFilter;
+        this.omarServerCollectionView.wfsServerCount.trigger("change");
         var model = this.omarServerCollectionView.getLastClickedModel();
         if(model)
         {
