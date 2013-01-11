@@ -312,11 +312,12 @@ OMAR.views.Map = Backbone.View.extend({
         }
     },
     resizeView:function(){
-        var tabHeight = $(".ui-tabs-nav").height();
         var innerHeight = $(".inner-center").height();
-
+        var tabHeight   = innerHeight - $("#tabView").height();
+        //alert(tabHeight + ", " + $("#tabView").height() +"," + innerHeight+","+$("#map").height()+","+$("#mapReadouts").height()+","+$("#mapToolBar").height());
         var mapHeight = innerHeight-($("#mapToolBar").height()+
-                                             $("#mapReadouts").height());
+                                     $("#mapReadouts").height()+
+                                      tabHeight);
         $("#map").height(mapHeight);
 
         this.mapResize();
