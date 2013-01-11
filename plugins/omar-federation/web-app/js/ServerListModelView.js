@@ -83,6 +83,9 @@ OMAR.models.OmarServerCollection=Backbone.Collection.extend({
 
 OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     el:"#omarServerCollectionId",
+    dummy:function(){
+
+    },
     initialize:function(params){
         this.omarServerView = new OMAR.views.OmarServerView();
         if(params.models)
@@ -96,6 +99,10 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         this.model.bind('add', this.collectionAdd, this)
         this.model.bind("change", this.collectionChanged, this);
         this.model.bind("reset", this.collectionReset, this);
+        this.wfsServerCount = new OMAR.models.Wfs({"resultType":"hits"});
+        this.lastClickedServerId = "";
+
+        this.wfsServerCount.bind("change", this.refreshServerCounts, this);
     },
     collectionAdd:function(params){
         //this.render();
@@ -106,6 +113,64 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
        $(params).each(function(idx, obj){
              scope.updateServerView(obj);
        });
+    },
+    refreshServerCounts:function(){
+        for(var idx = 0; idx <this.model.size();++idx )
+        {
+            var model = this.model.at(idx);
+            if(model.get("enabled"))
+            {
+                this.setBusy(model.id, true);
+                this.wfsServerCount.attributes.url = model.get("url")+"/wfs";
+                //wfs.set("url",model.get("url")+"/wfs");
+
+                if(model.userDefinedData.ajaxCountQuery && model.userDefinedData.ajaxCountQuery.readyState != 4){
+                    model.userDefinedData.ajaxCountQuery.abort();
+                    model.userDefinedData.ajaxCountQuery = null;
+                    this.omarServerCollectionView.setBusy(model.id, false);
+                }
+                model.userDefinedData.ajaxCountQuery = $.ajax({
+                    url: this.wfsServerCount.toUrl()+"&callback=?",
+                    cache:false,
+                    type: "GET",
+                    crossDomain:true,
+                    dataType: "json",
+                    timeout: 60000,
+                    modelId:model.id,
+                    scopePtr:this,
+                    success: function(response) {
+                        if(response.numberOfFeatures!=null)
+                        {
+                            var numberOfFeatures = response.numberOfFeatures;
+                            this.scopePtr.setBusy(this.modelId, false);
+                            var tempModel = this.scopePtr.model.get(this.modelId);
+                            if(tempModel)
+                            {
+                                tempModel.set({"count":numberOfFeatures});
+                            }
+                        }
+                    },
+                    error: function(x, t, m) {
+                        var count = "Error";
+                        if(t==="timeout") {
+                            count = "Timeout"
+                        } else {
+                            //alert(JSON.stringify(x)+ " " +t + " " + m);
+                        }
+                        var tempModel = this.scopePtr.model.get(this.modelId);
+                        this.scopePtr.setBusy(this.modelId, false);
+                        if(tempModel)
+                        {
+                            tempModel.set({"count":count});
+                        }
+                    }
+                });
+            }
+            else
+            {
+
+            }
+        }
     },
     collectionReset:function(params){
         // remove any elements that don't belong
@@ -144,6 +209,9 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         }
 
     },
+    getCount : function(modelId){
+
+    },
     updateServerView:function(model)
     {
         var el = $(this.el).find("#"+model.id);
@@ -153,10 +221,11 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     makeServer:function(model)
     {
         var attr = {id:model.id,
-                          enabled:model.get("enabled"),
-                          url:model.get("url"),// this needs to be the models search params later
-                          count:model.get("count"),
-                          name:model.get("nickname")}
+            enabled:model.get("enabled"),
+            //url:model.get("url"),// this needs to be the models search params later
+            count:model.get("count"),
+            name:model.get("nickname")}
+
 
         var result = _.template($('#omar-server-template').html(), attr);
 
@@ -165,12 +234,20 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         {
             if(attr&&(attr.id!=null))
             {
-                $(checkChild).value = attr.id;
+                $(checkChild).value = attr.enabled;
             }
         }
         return result;
     },
-
+    modelClicked:function(id)
+    {
+        this.lastClickedServerId = id;
+        this.trigger("onModelClicked", id);
+        //alert(id);
+    },
+    getLastClickedModel:function(){
+      return this.model.get(this.lastClickedServerId);
+    },
     setAllBusy:function(flag)
     {
         var children = $(this.el).children();
@@ -226,7 +303,10 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             {
 
                 var model = this.model.at(idx);
-                $(this.el).append(this.makeServer(model));
+                var server = this.makeServer(model);
+                var serverResult = $(server).appendTo(this.el);
+                var modelId = model.id;
+                var url = $(serverResult).find("#omar-server-url").click($.proxy(this.modelClicked, this, modelId));
             }
         }
     }
