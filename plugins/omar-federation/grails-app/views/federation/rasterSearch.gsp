@@ -74,10 +74,6 @@
         };
         var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);
         searchPageController.render();
-        $( "#tabView" ).tabs(
-            {
-                "show": $.proxy(searchPageController.showTab, searchPageController)
-            });
 
     }
 </script>
