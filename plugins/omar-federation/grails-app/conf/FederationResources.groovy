@@ -1,5 +1,7 @@
 modules = {
     federationRasterSearch{
+
+        
         resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
         resource url: [plugin: 'omar-common-ui', dir: 'js', file:'OMAR.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file:'hashmap.js']
@@ -19,11 +21,15 @@ modules = {
         resource url: [plugin: 'openlayers', dir: 'js', file: 'OpenLayers.js']
         resource url: [dir: 'js', file: 'spin-min.js', plugin: 'omar-core']
         // css resources for jquery
+
+
+        resource url: [plugin: 'omar-common-ui', dir: 'css', file: 'jMenu.jquery.css']
         resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'layout-default-latest.css']
         resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery/smoothness', file: 'jquery-ui-1.9.2.custom.css']
         resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'jquery-ui-timepicker-addon.css']
 
         resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery-ui-timepicker-addon.js']
+        resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'jMenu.jquery.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'DateModelView.js']
 
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'MapModelView.js']
