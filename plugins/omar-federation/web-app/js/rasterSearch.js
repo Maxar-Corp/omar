@@ -231,7 +231,7 @@ $(document).ready(function () {
                 ,   spacing_closed:         8  // ALL panes
                 ,   west__spacing_closed:   12
                 ,   east__spacing_closed:   12
-                , onresize_end:function(){if(OMAR.federatedRasterSearch) OMAR.federatedRasterSearch.resizeView();}
+                , onresize_end:function(){if(OMAR.federatedRasterSearch) OMAR.federatedRasterSearch.centerResize();}
                 }
             }
         });
