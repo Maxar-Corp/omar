@@ -71,7 +71,7 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
             for(var idx=0;idx<size;++idx)
             {
                 var feature = response.features[idx];
-               // alert(feature.id);
+                // alert(feature.id);
                 var model = new OMAR.models.RasterEntryDataModel(feature.properties)
                 model.set("ground_geom",JSON.stringify(feature.geometry));
                 result.push(model);
@@ -103,9 +103,12 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
                 "sScrollX": "100%",
                 "bScrollCollapse": true,
                 "bPaginate": true,
+                "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bDeferRender": true,
-                "bJQueryUI": false//,
+                "bJQueryUI": false,//,
+                "bServerSide":true,
+                "fnServerData": $.proxy(this.getServerData,this)
                 //"aoColumnDefs": [
                 //    { "sWidth": "10%", "aTargets": [ -1 ] }
                 //]
@@ -125,28 +128,70 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
         this.dataTable.fnSettings().oScroll.sY = innerHeight;
         this.dataTable.fnAdjustColumnSizing();
     },
-    resetTable:function()
-    {
-        if(this.dataTable)
+    getServerData:function( sUrl, aoData, fnCallback, oSettings ) {
+        var result = {
+            "aaData":{},
+            "iTotalRecords":0,
+            "iTotalDisplayRecords":0
+        }
+        if(sUrl&&this.model)
         {
-            this.dataTable.fnClearTable();
-            var idx = 0;
-            for(idx = 0; idx < this.model.size();++idx)
-            {
-                var row = this.model.at(idx);
-                this.dataTable.fnAddData(row.toJSON());
-            }
-            this.dataTable.fnAdjustColumnSizing();
+            var oColumn = oSettings.aoColumns[ oSettings.aaSorting[0][0] ];
+            this.wfsModel.attributes.offset = oSettings._iDisplayStart;
+            this.wfsModel.attributes.sort = "[['"+oColumn.mDataProp.toUpperCase()+"','"+oSettings.aaSorting[0][1].toUpperCase()+"']]";
+            this.model.url = this.wfsModel.toUrl()+"&callback=?";
+            //alert(this.model.url);
+            var model = this.model;
+            this.model.reset();
+            //alert("sorting by " + oColumn.mDataProp + " "+oSettings.aaSorting[0][1]);
+            model.fetch({dataType: "jsonp",
+                update: false,
+                remove: true,
+                date:{cache:false},
+                "success":function(){
+                    result.aaData = model.toJSON();
+                    if(model.size())
+                    {
+                        result.iTotalRecords = model.size();
+                        result.iTotalDisplayRecords=100000;
+                    }
+                    fnCallback(result);
+                }
+            });
+        }
+        else
+        {
+            fnCallback(result);
         }
     },
+    resetTable:function()
+    {
+        /*
+         if(this.dataTable)
+         {
+         this.dataTable.fnClearTable();
+         var idx = 0;
+         for(idx = 0; idx < this.model.size();++idx)
+         {
+         var row = this.model.at(idx);
+         this.dataTable.fnAddData(row.toJSON());
+         }
+         this.dataTable.fnAdjustColumnSizing();
+         }
+         this.dataTable.fnReloadAjax();
+         */
+    },
     wfsUrlChanged :function(params){
-       this.model.reset();
-       this.wfsModel.attributes.maxFeatures = 10;
-       this.wfsModel.attributes.offset = 0;
-       this.model.url = this.wfsModel.toUrl().toString() + "&callback=?";
-      // alert(this.model.url);
-       this.model.fetch({dataType: "jsonp",
-            update: false, remove: true,date:{cache:false}});
+
+        this.model.reset();
+        this.wfsModel.attributes.maxFeatures = 10;
+        this.wfsModel.attributes.offset = 0;
+        //this.model.url = this.wfsModel.toUrl().toString() + "&callback=?";
+        this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
+
+        // alert(this.model.url);
+        //this.model.fetch({dataType: "jsonp",
+        //     update: false, remove: true,date:{cache:false}});
     },
     render:function(){
         if(this.dataTable)
