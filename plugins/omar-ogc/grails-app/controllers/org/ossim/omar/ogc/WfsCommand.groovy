@@ -21,7 +21,7 @@ class WfsCommand
   Integer maxFeatures
   Integer offset
   String resultType
-
+  String sort
   @Override
   String toString()
   {

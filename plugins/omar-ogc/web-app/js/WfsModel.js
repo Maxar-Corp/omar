@@ -9,7 +9,8 @@ OMAR.models.Wfs = Backbone.Model.extend({
         "outputFormat":"JSON",
         "maxFeatures":"",
         "offset":"",
-        "resultType":""
+        "resultType":"",
+        "sort":""// json formatted array of arrays
     },
     initialize:function(params){
     },
