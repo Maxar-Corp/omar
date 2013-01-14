@@ -138,7 +138,7 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
         {
             var oColumn = oSettings.aoColumns[ oSettings.aaSorting[0][0] ];
             this.wfsModel.attributes.offset = oSettings._iDisplayStart;
-            this.wfsModel.attributes.sort = "[['"+oColumn.mDataProp.toUpperCase()+"','"+oSettings.aaSorting[0][1].toUpperCase()+"']]";
+            this.wfsModel.attributes.sort = "[['"+oColumn.mDataProp.toLowerCase()+"','"+oSettings.aaSorting[0][1].toUpperCase()+"']]";
             this.model.url = this.wfsModel.toUrl()+"&callback=?";
             //alert(this.model.url);
             var model = this.model;
