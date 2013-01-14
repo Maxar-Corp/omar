@@ -1,5 +1,5 @@
 OMAR.models.RasterEntryDataModel = Backbone.Model.extend({
-    idAttribute:"index_id",
+    idAttribute:"id",
     defaults:{
         "id":""
         ,"raster_data_set_id":""
@@ -71,7 +71,6 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
             for(var idx=0;idx<size;++idx)
             {
                 var feature = response.features[idx];
-                // alert(feature.id);
                 var model = new OMAR.models.RasterEntryDataModel(feature.properties)
                 model.set("ground_geom",JSON.stringify(feature.geometry));
                 result.push(model);
@@ -88,7 +87,7 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
         if(this.el){
             this.dataTable = $(this.el).dataTable({
                 "aoColumns": [
-                    { "sTitle": "ID",   "mDataProp": "raster_data_set_id" }
+                    { "sTitle": "ID",   "mDataProp": "id" }
                     ,{ "sTitle": "IMAGE_ID",   "mDataProp": "title" }
                     ,{ "sTitle": "ORGANIZATION",   "mDataProp": "organization" }
                     ,{ "sTitle": "AZIMUTH",   "mDataProp": "azimuth_angle" }

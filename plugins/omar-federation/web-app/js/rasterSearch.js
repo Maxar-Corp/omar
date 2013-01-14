@@ -55,7 +55,6 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         this.tabView.tabs("select", 2);
         $(this.tabView).find("#ResultsLabelId").text(model.get("nickname"));
-        //alert("MODEL CLICKED HERE!!!!" + id);
     },
     render:function(){
         if(this.bboxView)
