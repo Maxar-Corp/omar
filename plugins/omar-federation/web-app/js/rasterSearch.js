@@ -117,10 +117,12 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             if( $('input[name=spatialSearchType]:checked').val() == "bbox" )
             {
                 spatialQueryCql = this.bboxModel.toCql("ground_geom");
+                //alert("bbox");
             }
             else if( $('input[name=spatialSearchType]:checked').val() == "point" )
-            {
+            { 
                 spatialQueryCql = this.pointModel.toCql("ground_geom");
+                //alert("point");
             }
         }
 
