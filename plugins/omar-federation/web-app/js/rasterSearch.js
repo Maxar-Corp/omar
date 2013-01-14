@@ -110,8 +110,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     toCql:function(){
         var result = "";
         var timeQueryCql = this.dateTimeRangeModel.toCql("acquisition_date");
-      // var spatialQueryCql = this.bboxModel.toCql("ground_geom");
-          var spatialQueryCql = this.pointModel.toCql("ground_geom");
+       var spatialQueryCql = this.bboxModel.toCql("ground_geom");
+      //    var spatialQueryCql = this.pointModel.toCql("ground_geom");
         if(timeQueryCql&&spatialQueryCql)
         {
             result = "(("+spatialQueryCql+")AND(" +timeQueryCql+"))";
