@@ -7,6 +7,7 @@ OMAR.models.PointModel = Backbone.Model.extend(
     },
     initialize:function(options)
     {
+        this.ellipsoidModel = new OMAR.models.EllipsoidModel();
     },
 
     validate:function(attrs)
@@ -32,7 +33,8 @@ OMAR.models.PointModel = Backbone.Model.extend(
         var bad = this.validate(this.attributes);
         if(!bad)
         {
-            result = "DWITHIN(geom, POINT(" + y + " " + x +"), " + radius + ", meters)";
+            var newRadius = this.ellipsoidModel.getDegreesPerMeter(0.0).y * this.get("radius");
+            result = "DWITHIN("+ columnName + ",POINT(" + this.get("y") + " " + this.get("x") +")," + newRadius + ", meters)";
         }
         return result;
     }

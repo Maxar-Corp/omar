@@ -187,7 +187,7 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
         this.wfsModel.attributes.offset = 0;
         //this.model.url = this.wfsModel.toUrl().toString() + "&callback=?";
         this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
-
+        alert(this.wfsModel.toUrl().toString());
         // alert(this.model.url);
         //this.model.fetch({dataType: "jsonp",
         //     update: false, remove: true,date:{cache:false}});
