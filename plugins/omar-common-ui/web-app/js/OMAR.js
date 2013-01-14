@@ -144,3 +144,4 @@ if (typeof window.DOMParser != "undefined") {
 } else {
     throw new Error("No XML parser found");
 }
+
