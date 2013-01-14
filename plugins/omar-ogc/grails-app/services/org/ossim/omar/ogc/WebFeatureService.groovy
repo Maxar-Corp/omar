@@ -599,12 +599,11 @@ class WebFeatureService
                 filter: wfsRequest?.filter ?: Filter.PASS,
                 max: wfsRequest.maxFeatures ?: -1,
                 start: wfsRequest?.offset ?: -1,
-                //sort:null
-                //sort: ""// [["<COLUMN NAME>","ASC|DESC"]]
+                //sort: [["<COLUMN NAME>","ASC|DESC"]]
         ]
         if(wfsRequest.sort){
            // filterParams.sort =null//[["TITLE".toUpperCase(),"DESC"]]
-            //filterParams.sort = JSON.parse(wfsRequest.sort);
+            filterParams.sort = JSON.parse(wfsRequest.sort);
             //println filterParams
         }
         try
@@ -625,8 +624,7 @@ class WebFeatureService
         else
         {
             def writer = new GeoJSONWriter()
-            def cursor = layer.getCursor(filterParams);//, [["bit_depth","asc"],2,0]);
-
+            def cursor = layer.getCursor(filterParams);
             def newLayer = new Layer(cursor.col)
 
             results = writer.write( newLayer )
