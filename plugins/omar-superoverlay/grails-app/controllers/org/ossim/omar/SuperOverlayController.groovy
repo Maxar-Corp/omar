@@ -18,19 +18,17 @@ class SuperOverlayController implements InitializingBean
   def superOverlayService
   def outputKmz = false
 
-  def index( )
-  { render ""}
+  def index()
+  { render "" }
 
-  def createKml( )
+  def createKml()
   {
     def rasterEntry = null
     try
     {
       if ( params.id )
       {
-        rasterEntry = RasterEntry.findByIndexId( params.id ) ?:
-          RasterEntry.findByTitle( params.id ) ?:
-            RasterEntry.findById( params.id )
+        rasterEntry = RasterEntry.compositeId( params.id ).findWhere()
       }
     }
     catch ( Exception e )
@@ -68,15 +66,15 @@ class SuperOverlayController implements InitializingBean
           // response.addHeader("Cache-Control", "max-age=120")
           //   response.setHeader("max-age", "120");
           render( contentType: "application/vnd.google-earth.kml+xml", text: kmlString,
-                  encoding: "UTF-8" )
+              encoding: "UTF-8" )
         }
         else
         {
           def kmlString = superOverlayService.createRootKml( rasterEntry, params )
           response.setHeader( "Content-disposition", "attachment; filename=doc.kml" )
           render( contentType: "application/vnd.google-earth.kml+xml",
-                  text: kmlString,
-                  encoding: "UTF-8" )
+              text: kmlString,
+              encoding: "UTF-8" )
         }
       }
       else
@@ -114,15 +112,15 @@ class SuperOverlayController implements InitializingBean
           def kmlString = superOverlayService.createRootKml( rasterEntry, params )
           response.setHeader( "Content-disposition", "attachment; filename=doc.kml" )
           render( contentType: "application/vnd.google-earth.kml+xml",
-                  text: kmlString,
-                  encoding: "UTF-8" )
+              text: kmlString,
+              encoding: "UTF-8" )
         }
       }
     }
     null
   }
 
-  public void afterPropertiesSet( )
+  public void afterPropertiesSet()
   {
     baseDir = grailsApplication.config.export?.superoverlay?.baseDir
     outputKmz = grailsApplication.config.export?.superoverlay?.outputKmz

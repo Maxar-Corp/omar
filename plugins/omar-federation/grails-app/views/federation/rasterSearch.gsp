@@ -19,6 +19,8 @@
             <div class="inner-west">
                 <p><center>Show Coordinates in <g:select name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></center></p>
 
+                <p><g:checkBox name="spatialSearch" value="" /> Use Spatial</p>
+
                 <form>
                     <p><input type="radio" id="bbox" name="spatialSearchType" value="bbox" checked="checked">Use Bound Box</p>
                     <p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>

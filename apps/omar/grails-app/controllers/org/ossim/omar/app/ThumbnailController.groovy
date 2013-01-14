@@ -18,7 +18,7 @@ class ThumbnailController implements InitializingBean
   def nullImage = new BufferedImage( 128, 128, BufferedImage.TYPE_INT_RGB );
 
 
-  def list( )
+  def list()
   {
     try
     {
@@ -31,13 +31,13 @@ class ThumbnailController implements InitializingBean
     }
   }
 
-  def show( )
+  def show()
   {
     try
     {
-        def httpStatusMessage = new HttpStatusMessage()
+      def httpStatusMessage = new HttpStatusMessage()
       httpStatusMessage.status = HttpStatus.OK
-      def rasterEntry = RasterEntry.findByIndexId( params.id ) ?: RasterEntry.get( params.id );
+      def rasterEntry = RasterEntry.compositeId( params.id ).findWhere()
       def image = null
       def mimeType = "image/jpeg"
       File outputFile
@@ -51,53 +51,53 @@ class ThumbnailController implements InitializingBean
       }
       else
       {
-          //params.mimeType = mimeType
+        //params.mimeType = mimeType
         outputFile = thumbnailService.getRasterEntryThumbnailFile( httpStatusMessage, rasterEntry, params )
-       // if ( ( httpStatusMessage.status == HttpStatus.OK ) &&
-       //         outputFile?.exists() &&
-       //         ( outputFile.length() > 0 ) )
-       // {
-       //   image = ImageIO.read( outputFile )
+        // if ( ( httpStatusMessage.status == HttpStatus.OK ) &&
+        //         outputFile?.exists() &&
+        //         ( outputFile.length() > 0 ) )
+        // {
+        //   image = ImageIO.read( outputFile )
         //}
-       // if ( !image )
-        if (httpStatusMessage.status != HttpStatus.OK)
+        // if ( !image )
+        if ( httpStatusMessage.status != HttpStatus.OK )
         {
-            image = ImageGenerator.createErrorImage( 128, 128, "\nUnable to\n produce\n thumbnail.\n\nNo overviews\npresent.\n");
+          image = ImageGenerator.createErrorImage( 128, 128, "\nUnable to\n produce\n thumbnail.\n\nNo overviews\npresent.\n" );
 
         }
       }
 
       httpStatusMessage.initializeResponse( response )
 
-      if (outputFile?.exists())
+      if ( outputFile?.exists() )
       {
-          def tempFile = outputFile as String
-          def ext = tempFile.substring(0, tempFile.lastIndexOf('.'))
-          ext = ext.toLowerCase()
-          switch(ext)
-          {
-              case 'jpeg':
-                  mimeType = "image/jpeg"
-                  break;
-              default:
-                  mimeType = "image/${ext}"
-                  break;
-          }
-          def bytes = outputFile.bytes
-          response.contentType = mimeType
-          response.contentLength = bytes.size()
-          response.outputStream << bytes
+        def tempFile = outputFile as String
+        def ext = tempFile.substring( 0, tempFile.lastIndexOf( '.' ) )
+        ext = ext.toLowerCase()
+        switch ( ext )
+        {
+        case 'jpeg':
+          mimeType = "image/jpeg"
+          break;
+        default:
+          mimeType = "image/${ext}"
+          break;
+        }
+        def bytes = outputFile.bytes
+        response.contentType = mimeType
+        response.contentLength = bytes.size()
+        response.outputStream << bytes
       }
-      else if (image)
+      else if ( image )
       {
-          response.contentType = "image/jpeg"
-          ImageIO.write(image, "jpeg", response.outputStream)
+        response.contentType = "image/jpeg"
+        ImageIO.write( image, "jpeg", response.outputStream )
       }
 
     }
     catch ( Exception e )
     {
-        println(e.message)
+      println( e.message )
       log.error( "exception ${e.message}" )
     }
 
@@ -105,7 +105,7 @@ class ThumbnailController implements InitializingBean
   }
 
 
-  def frame( )
+  def frame()
   {
     try
     {
@@ -152,12 +152,14 @@ class ThumbnailController implements InitializingBean
     }
   }
 
-  def asHTML( )
+  def asHTML()
   {
     def size = params.size
 
     if ( !size )
+    {
       grailsApplication.config.thumbnail.defaultSize
+    }
 
     render( contentType: "text/html" ) {
       html {
@@ -168,7 +170,7 @@ class ThumbnailController implements InitializingBean
     }
   }
 
-  def proxy( )
+  def proxy()
   {
 
     def url = "${params.url}"
@@ -186,7 +188,7 @@ class ThumbnailController implements InitializingBean
     render( contentType: "text/xml", text: text )
   }
 
-  public void afterPropertiesSet( )
+  public void afterPropertiesSet()
   {
     //To change body of implemented methods use File | Settings | File Templates.
   }
