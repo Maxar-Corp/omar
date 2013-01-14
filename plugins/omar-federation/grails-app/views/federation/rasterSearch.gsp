@@ -19,8 +19,12 @@
             <div class="inner-west">
                 <p><center>Show Coordinates in <g:select name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></center></p>
 
-                <p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>
+                <form>
+                    <p><input type="radio" id="bbox" name="spatialSearchType" value="bbox" checked="checked">Use Bound Box</p>
+                    <p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>
 
+                    <p><input type="radio" id="point" name="spatialSearchType" value="point">Use Point Radius</p>
+                </form>
                 <p><g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/></p>
 
                 <p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p>
