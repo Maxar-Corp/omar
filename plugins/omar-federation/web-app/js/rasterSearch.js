@@ -124,7 +124,6 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         {
             result = timeQueryCql;
         }
-        alert(result);
         return result;
     },
     centerResize:function(){
