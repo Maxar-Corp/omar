@@ -256,7 +256,7 @@ class ImageSpaceController
     {
       jsonPoints = JSON.parse( paramsIgnoreCase.imagePoints )
     }
-    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id ).findWhere()
+    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id as String).findWhere()
 
     if ( rasterEntry )
     {
