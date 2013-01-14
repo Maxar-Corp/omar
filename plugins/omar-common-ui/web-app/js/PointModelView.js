@@ -32,7 +32,7 @@ OMAR.models.PointModel = Backbone.Model.extend(
         var bad = this.validate(this.attributes);
         if(!bad)
         {
-            result = "DWITHIN(geom, POINT(" + y + "," + x +"), " + radius + ", meters)";
+            result = "DWITHIN(geom, POINT(" + y + " " + x +"), " + radius + ", meters)";
         }
         return result;
     }
