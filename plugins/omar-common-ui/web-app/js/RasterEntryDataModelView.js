@@ -46,7 +46,7 @@ OMAR.models.RasterEntryDataModel = Backbone.Model.extend({
         ,"valid_model":""
         ,"access_date":""
         ,"ingest_date":""
-        ,"recieve_date":""
+        ,"receive_date":""
         ,"release_id":""
         ,"file_type":""
         ,"class_name":""
@@ -88,16 +88,50 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
             this.dataTable = $(this.el).dataTable({
                 "aoColumns": [
                     { "sTitle": "ID",   "mDataProp": "id" }
-                    ,{ "sTitle": "IMAGE_ID",   "mDataProp": "title" }
+                    ,{ "sTitle": "IID",   "mDataProp": "title" }
+                    ,{ "sTitle": "IID2",   "mDataProp": "image_id" }
+                    ,{ "sTitle": "NIIRS",   "mDataProp": "niirs" }
                     ,{ "sTitle": "ORGANIZATION",   "mDataProp": "organization" }
                     ,{ "sTitle": "AZIMUTH",   "mDataProp": "azimuth_angle" }
                     ,{ "sTitle": "GRAZING",   "mDataProp": "grazing_angle" }
-                    ,{ "sTitle": "CLASS",   "mDataProp": "security_classification" }
-                    ,{ "sTitle": "GEOM",   "mDataProp": "ground_geom" }
+                    ,{ "sTitle": "SECURITY CLASS",   "mDataProp": "security_classification" }
+                    ,{ "sTitle": "SECURITY_CODE",   "mDataProp": "security_code" }
+                    ,{ "sTitle": "GEOM",   "mDataProp": "ground_geom", "asSorting": [] }
                     ,{ "sTitle": "WIDTH",   "mDataProp": "width" }
                     ,{ "sTitle": "HEIGHT",   "mDataProp": "height" }
-                    ,{ "sTitle": "ENTRY",   "mDataProp": "entry_id" }
+                    ,{ "sTitle": "BANDS",   "mDataProp": "number_of_bands" }
+                    ,{ "sTitle": "RLEVELS",   "mDataProp": "number_of_res_levels" }
+                    ,{ "sTitle": "GSD UNIT",   "mDataProp": "gsd_unit" }
+                    ,{ "sTitle": "GSD X",   "mDataProp": "gsdx" }
+                    ,{ "sTitle": "GSD Y",   "mDataProp": "gsdy" }
+                    ,{ "sTitle": "BIT DEPTH",   "mDataProp": "bit_depth" }
+                    ,{ "sTitle": "DATA TYPE",   "mDataProp": "data_type" }
+                    ,{ "sTitle": "INDEX_ID",   "mDataProp": "index_id" }
                     ,{ "sTitle": "FILE",   "mDataProp": "filename" }
+                    ,{ "sTitle": "TARGET ID",   "mDataProp": "target_id" }
+                    ,{ "sTitle": "PRODUCT ID",   "mDataProp": "product_id" }
+                    ,{ "sTitle": "SENSOR ID",   "mDataProp": "sensor_id" }
+                    ,{ "sTitle": "MISSION",   "mDataProp": "mission_id" }
+                    ,{ "sTitle": "ICAT",   "mDataProp": "image_category" }
+                    ,{ "sTitle": "IREP",   "mDataProp": "image_representation" }
+                    ,{ "sTitle": "ISORCE",   "mDataProp": "isorce" }
+                    ,{ "sTitle": "DESCRIPTION",   "mDataProp": "description" }
+                    ,{ "sTitle": "COUNTRY",   "mDataProp": "country_code" }
+                    ,{ "sTitle": "BE",   "mDataProp": "be_number" }
+                    ,{ "sTitle": "WAC",   "mDataProp": "wac_code" }
+                    ,{ "sTitle": "SUN ELEVATION",   "mDataProp": "sun_elevation" }
+                    ,{ "sTitle": "SUN AZIMUTH",   "mDataProp": "sun_azimuth" }
+                    ,{ "sTitle": "CLOUD COVER",   "mDataProp": "cloud_cover" }
+                    ,{ "sTitle": "KEEP FOREVER",   "mDataProp": "keep_forever" }
+                    ,{ "sTitle": "VALID MODEL",   "mDataProp": "valid_model" }
+                    ,{ "sTitle": "ENTRY",   "mDataProp": "entry_id" }
+                    ,{ "sTitle": "ACQUISITION",   "mDataProp": "acquisition_date" }
+                    ,{ "sTitle": "ACCESS",   "mDataProp": "access_date" }
+                    ,{ "sTitle": "INGEST",   "mDataProp": "ingest_date" }
+                    ,{ "sTitle": "RECEIVE",   "mDataProp": "receive_date" }
+                    ,{ "sTitle": "RELEASE ID",   "mDataProp": "release_id" }
+                    ,{ "sTitle": "FILE TYPE",   "mDataProp": "file_type" }
+                    ,{ "sTitle": "CLASS NAME",   "mDataProp": "class_name" }
                 ],
                 "sScrollX": "100%",
                 "bScrollCollapse": true,
@@ -136,6 +170,7 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
         if(sUrl&&this.model)
         {
             var oColumn = oSettings.aoColumns[ oSettings.aaSorting[0][0] ];
+            this.wfsModel.attributes.maxFeatures = oSettings._iDisplayLength
             this.wfsModel.attributes.offset = oSettings._iDisplayStart;
             this.wfsModel.attributes.sort = "[['"+oColumn.mDataProp.toLowerCase()+"','"+oSettings.aaSorting[0][1].toUpperCase()+"']]";
             this.model.url = this.wfsModel.toUrl()+"&callback=?";
