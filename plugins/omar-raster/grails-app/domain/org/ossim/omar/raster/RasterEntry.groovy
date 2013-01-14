@@ -82,6 +82,19 @@ class RasterEntry
   static hasMany = [fileObjects: RasterEntryFile]
   Collection fileObjects
 
+  static namedQueries = {
+    compositeId { compositeId ->
+      or {
+        if ( compositeId ==~ /\d+/ )
+        {
+          eq( 'id', compositeId as Long )
+        }
+        eq( 'indexId', compositeId )
+        eq( 'title', compositeId )
+      }
+    }
+  }
+
   static mapping = {
     columns {
       tiePointSet type: 'text'
@@ -114,6 +127,9 @@ class RasterEntry
       releaseId index: 'raster_entry_release_id_idx'
 
       groundGeom type: org.hibernatespatial.GeometryUserType
+
+//      fileObjects cascade: "all-delete-orphan"
+
     }
   }
 
@@ -190,7 +206,7 @@ class RasterEntry
     }
   }
 
-  def adjustAccessTimeIfNeeded( def everyNHours = 24 )
+  def adjustAccessTimeIfNeeded(def everyNHours = 24)
   {
     if ( !accessDate )
     {
@@ -210,18 +226,18 @@ class RasterEntry
     }
   }
 
-  def getFileFromObjects( def type )
+  def getFileFromObjects(def type)
   {
     return fileObjects?.find { it.type == type }
   }
 
-  def getMetersPerPixel( )
+  def getMetersPerPixel()
   {
     // need to check unit type but for mow assume meters
     return gsdY; // use Y since X may decrease along lat.
   }
 
-  def getMainFile( )
+  def getMainFile()
   {
     def mainFile = null//rasterDataSet?.fileObjects?.find { it.type == 'main' }
 
@@ -239,17 +255,19 @@ class RasterEntry
 
     return mainFile
   }
+
   def getAssociationType(def type)
   {
-      def tempFile = RasterEntryFile.createCriteria().get {
-          eq( "type", "${type}" )
-          createAlias( "rasterEntry", "r" )
-          eq( "rasterEntry", this )
-      }
+    def tempFile = RasterEntryFile.createCriteria().get {
+      eq( "type", "${type}" )
+      createAlias( "rasterEntry", "r" )
+      eq( "rasterEntry", this )
+    }
 
-      tempFile;
+    tempFile;
   }
-  def getHistogramFile( )
+
+  def getHistogramFile()
   {
     def result = getFileFromObjects( "histogram" )?.name
     if ( !result )
@@ -288,7 +306,7 @@ class RasterEntry
     result
   }
 
-  static RasterEntry initRasterEntry( def rasterEntryNode, RasterEntry rasterEntry = null )
+  static RasterEntry initRasterEntry(def rasterEntryNode, RasterEntry rasterEntry = null)
   {
     rasterEntry = rasterEntry ?: new RasterEntry()
 
@@ -340,15 +358,15 @@ class RasterEntry
     }
     for ( def rasterEntryFileNode in rasterEntryNode.fileObjects?.RasterEntryFile )
     {
-        def obj = rasterEntry?.fileObjects?.find { it.name == rasterEntryFileNode?.name?.text() }
-        if(!obj)
+      def obj = rasterEntry?.fileObjects?.find { it.name == rasterEntryFileNode?.name?.text() }
+      if ( !obj )
+      {
+        RasterEntryFile rasterEntryFile = RasterEntryFile.initRasterEntryFile( rasterEntryFileNode )
+        if ( rasterEntryFile )
         {
-            RasterEntryFile rasterEntryFile = RasterEntryFile.initRasterEntryFile( rasterEntryFileNode )
-            if(rasterEntryFile)
-            {
-                rasterEntry.addToFileObjects( rasterEntryFile )
-            }
+          rasterEntry.addToFileObjects( rasterEntryFile )
         }
+      }
     }
     def metadataNode = rasterEntryNode.metadata
 
@@ -372,7 +390,7 @@ class RasterEntry
     return rasterEntry
   }
 
-  static Geometry initGroundGeom( def groundGeomNode )
+  static Geometry initGroundGeom(def groundGeomNode)
   {
     def wkt = groundGeomNode?.text().trim()
     def srs = groundGeomNode?.@srs?.text().trim()
@@ -400,7 +418,7 @@ class RasterEntry
     return groundGeom
   }
 
-  static initRasterEntryMetadata( def metadataNode, def rasterEntry )
+  static initRasterEntryMetadata(def metadataNode, def rasterEntry)
   {
 //    if ( !rasterEntry.metadata )
 //    {
@@ -485,9 +503,9 @@ class RasterEntry
               rasterEntry.beNumber = value;
             }
             break;
-           case "sensorid":
-           case "sensor_id":
-           case "sensor_type":
+          case "sensorid":
+          case "sensor_id":
+          case "sensor_type":
             if ( value && !rasterEntry.sensorId )
             {
               rasterEntry.sensorId = value
@@ -614,7 +632,7 @@ class RasterEntry
 
   }
 
-  static initRasterEntryOtherTagsXml( RasterEntry rasterEntry )
+  static initRasterEntryOtherTagsXml(RasterEntry rasterEntry)
   {
     if ( rasterEntry )
     {
@@ -631,7 +649,7 @@ class RasterEntry
     }
   }
 
-  static Date initAcquisitionDate( rasterEntryNode )
+  static Date initAcquisitionDate(rasterEntryNode)
   {
     def when = rasterEntryNode?.TimeStamp?.when
 
@@ -640,6 +658,6 @@ class RasterEntry
 
   static update(def file, def entryId)
   {
-    def rasterFile = RasterFile.findWhere(name:file)
+    def rasterFile = RasterFile.findWhere( name: file )
   }
 }

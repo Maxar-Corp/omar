@@ -15,7 +15,7 @@ class SuperoverlayJob
 
   static triggers = {}
 
-  def execute( )
+  def execute()
   {
     def record = null
 
@@ -33,7 +33,10 @@ class SuperoverlayJob
       if ( chain.loadChainKwlString( record.kwl ) )
       {
         def outputDir = new File( record.baseDir, record.indexId );
-        if ( !outputDir.exists() ) outputDir.mkdirs()
+        if ( !outputDir.exists() )
+        {
+          outputDir.mkdirs()
+        }
         def outputFile = new File( outputDir.toString(), "${record.indexId}.tif" )
         def kwlString = "type:ossimImageChain\n"
         kwlString += "object0.type:ossimTiffWriter\n"
@@ -57,13 +60,13 @@ class SuperoverlayJob
       //return
 
 
-      def rasterEntry = RasterEntry.findByIndexId( record.indexId )
+      def rasterEntry = RasterEntry.compositeId( record.indexId ).findWhere()
 
       if ( rasterEntry )
       {
         def parser = parserPool.borrowObject()
-        def tiepoints = new XmlSlurper(parser).parseText( rasterEntry?.tiePointSet )
-        parserPool.returnObject(parser)
+        def tiepoints = new XmlSlurper( parser ).parseText( rasterEntry?.tiePointSet )
+        parserPool.returnObject( parser )
         def imageCoordinates = tiepoints.Image.toString().trim()
         def groundCoordinates = tiepoints.Ground.toString().trim()
         def splitImageCoordinates = imageCoordinates.split( " " );
@@ -118,7 +121,7 @@ class SuperoverlayJob
           def timeStamp = System.currentTimeMillis()
           def currentTime = timeStamp
           def deltaTime = 0
-          gdal2tilesProc.in.each {c ->
+          gdal2tilesProc.in.each { c ->
             messageBuffer << (char)c
             deltaTime = ( ( currentTime - timeStamp ) / 1000.0 )
             if ( deltaTime > 5 )
@@ -157,7 +160,7 @@ class SuperoverlayJob
     }
   }
 
-  def cleanUpGorm( )
+  def cleanUpGorm()
   {
     def session = sessionFactory.currentSession
     session.flush()
