@@ -5,6 +5,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         this.bboxView = new OMAR.views.BBOX();
         this.bboxModel = this.bboxView.model;
+
+        this.pointView = new OMAR.views.PointView();
+        this.pointModel = this.pointView.model;
+
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
         this.dateTimeRangeModel = this.dateTimeRangeView.model;
         this.omarServerCollectionView = new OMAR.views.OmarServerCollectionView(
@@ -12,6 +16,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         );
         this.mapView = new OMAR.views.Map(params.map);
         this.mapView.setBboxModel(this.bboxModel);
+        this.mapView.setPointModel(this.pointModel);
+
         this.mapView.setServerCollection(this.omarServerCollectionView.model);
         this.setElement(this.el);
 
@@ -49,7 +55,6 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         this.tabView.tabs("select", 2);
         $(this.tabView).find("#ResultsLabelId").text(model.get("nickname"));
-        //alert("MODEL CLICKED HERE!!!!" + id);
     },
     render:function(){
         if(this.bboxView)
@@ -57,7 +62,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.bboxView.render();
         }
         if(this.pointView)
-        {
+        { 
             this.pointView.render();
         }
         if(this.dateTimeRangeView)
@@ -105,20 +110,30 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     toCql:function(){
         var result = "";
         var timeQueryCql = this.dateTimeRangeModel.toCql("acquisition_date");
-        var bboxQueryCql = this.bboxModel.toCql("ground_geom");
-        if(timeQueryCql&&bboxQueryCql)
+
+        var spatialQueryCql;
+
+        if( $('input[name=spatialSearchType]:checked').val() == "bbox" )
         {
-            result = "(("+bboxQueryCql+")AND(" +timeQueryCql+"))";
+            spatialQueryCql = this.bboxModel.toCql("ground_geom");
         }
-        else if(bboxQueryCql)
+        else if( $('input[name=spatialSearchType]:checked').val() == "point" )
         {
-            result=bboxQueryCql;
+            spatialQueryCql = this.pointModel.toCql("ground_geom");
+        }
+
+        if(timeQueryCql&&spatialQueryCql)
+        {
+            result = "(("+spatialQueryCql+")AND(" +timeQueryCql+"))";
+        }
+        else if(spatialQueryCql)
+        {
+            result=spatialQueryCql;
         }
         else
         {
             result = timeQueryCql;
         }
-
         return result;
     },
     centerResize:function(){
