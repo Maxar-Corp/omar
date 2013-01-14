@@ -625,7 +625,7 @@ class WebFeatureService
         else
         {
             def writer = new GeoJSONWriter()
-            def cursor = layer.getCursor(filterParams);
+            def cursor = layer.getCursor(filterParams);//, [["bit_depth","asc"],2,0]);
 
             def newLayer = new Layer(cursor.col)
 
