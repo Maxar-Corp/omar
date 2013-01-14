@@ -274,7 +274,7 @@ OMAR.views.Map = Backbone.View.extend({
         {
             this.pointModel.off("change", this.pointModelChanged, this);
             var center = this.map.getCenter();
-            this.pointModel.set({"lat":center.lat, "lon":center.lon});
+            this.pointModel.set({"y":center.lat, "x":center.lon});
             this.pointModel.on("change", this.pointModelChanged, this);
         }
     },
@@ -338,6 +338,21 @@ OMAR.views.Map = Backbone.View.extend({
             this.bboxModel.on("change", this.bboxMapChanged, this);
         }
     },
+
+    setPointModel:function(pointModel)
+    {
+        if(this.pointModel)
+        {
+            // may want to unregister change listener of old model
+            this.pointModel.off("change", this.pointMapChanged,this);
+        }
+        this.pointModel = pointModel;
+        if(this.pointModel)
+        {
+            this.pointModel.on("change", this.pointMapChanged, this);
+        }
+    },
+
     setServerCollection:function(serverCollection){
         if(this.serverCollection)
         {
@@ -422,6 +437,12 @@ OMAR.views.Map = Backbone.View.extend({
     {
         alert(this.bboxModel.get("minx"));
     },
+
+    pointMapChanged:function()
+    {
+        alert(this.pointModel.get("x"));
+    },
+
     render:function()
     {
        this.reset();

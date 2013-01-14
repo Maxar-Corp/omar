@@ -5,6 +5,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         this.bboxView = new OMAR.views.BBOX();
         this.bboxModel = this.bboxView.model;
+
+        this.pointView = new OMAR.views.PointView();
+        this.pointModel = this.pointView.model;
+
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
         this.dateTimeRangeModel = this.dateTimeRangeView.model;
         this.omarServerCollectionView = new OMAR.views.OmarServerCollectionView(
@@ -12,6 +16,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         );
         this.mapView = new OMAR.views.Map(params.map);
         this.mapView.setBboxModel(this.bboxModel);
+        this.mapView.setPointModel(this.pointModel);
+
         this.mapView.setServerCollection(this.omarServerCollectionView.model);
         this.setElement(this.el);
 
@@ -57,7 +63,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.bboxView.render();
         }
         if(this.pointView)
-        {
+        { 
             this.pointView.render();
         }
         if(this.dateTimeRangeView)
