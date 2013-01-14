@@ -33,8 +33,18 @@ OMAR.models.PointModel = Backbone.Model.extend(
         var bad = this.validate(this.attributes);
         if(!bad)
         {
-            var newRadius = this.ellipsoidModel.getDegreesPerMeter(0.0).y * this.get("radius");
-            result = "DWITHIN("+ columnName + ",POINT(" + this.get("y") + " " + this.get("x") +")," + newRadius + ", meters)";
+            var radius = this.get("radius");
+
+            if(radius == 0.0)
+            {
+                result = "CONTAINS("+columnName+","+"POINT("+this.get("x") +" "+this.get("y")+"))";
+            }
+            else
+            {
+                var newRadius = this.ellipsoidModel.getDegreesPerMeter(0.0).y * this.get("radius");
+                result = "DWITHIN("+ columnName + ",POINT(" + this.get("x") + " "
+                    + this.get("y") +")," + newRadius + ",meters)";
+            }
         }
         return result;
     }
