@@ -148,7 +148,7 @@ log4j = {
 
 /** *********************************************************************************************************/
 wms {
-  referenceDataDirectory = "/data/"
+  referenceDataDirectory = "/data/omar"
   mapServExt = ( System.properties['os.name'].startsWith( 'Windows' ) ) ? ".exe" : ""
   serverAddress = omar.serverIP
   useTileCache = false
@@ -272,7 +272,7 @@ views {
 /** *********************************************************************************************************/
 
 videoStreaming {
-  flashDirRoot = "/Library/WebServer/Documents/videos"
+  flashDirRoot = "/opt/local/apache2/htdocs/videos"
   //flashDirRoot = "/var/www/html/videos"
   flashUrlRoot = "http://${ omar.serverIP }/videos"
 }
