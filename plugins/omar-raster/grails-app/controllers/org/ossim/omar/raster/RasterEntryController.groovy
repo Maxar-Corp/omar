@@ -179,7 +179,7 @@ class RasterEntryController implements InitializingBean
   def show()
   {
 
-    def rasterEntry = RasterEntry.compositeId( params.id ).findWhere()
+    def rasterEntry = RasterEntry.compositeId( params.id as String ).findWhere()
 
 
     if ( !rasterEntry )
@@ -195,7 +195,7 @@ class RasterEntryController implements InitializingBean
 
   def delete()
   {
-    def rasterEntry = RasterEntry.compositeId( params.id ).findWhere()
+    def rasterEntry = RasterEntry.compositeId( params.id  as String).findWhere()
     if ( rasterEntry )
     {
       rasterEntry.delete()
@@ -211,7 +211,7 @@ class RasterEntryController implements InitializingBean
 
   def edit()
   {
-    def rasterEntry = RasterEntry.compositeId( params.id ).findWhere()
+    def rasterEntry = RasterEntry.compositeId( params.id as String ).findWhere()
 
     if ( !rasterEntry )
     {
@@ -226,7 +226,7 @@ class RasterEntryController implements InitializingBean
 
   def update()
   {
-    def rasterEntry = RasterEntry.compositeId( params.id ).findWhere()
+    def rasterEntry = RasterEntry.compositeId( params.id as String ).findWhere()
     if ( rasterEntry )
     {
       rasterEntry.properties = params

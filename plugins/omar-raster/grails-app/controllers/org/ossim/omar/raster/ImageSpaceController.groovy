@@ -33,7 +33,7 @@ class ImageSpaceController
         width: paramsIgnoreCase.width,
         height: paramsIgnoreCase.height,
         format: paramsIgnoreCase.format,
-        layers: paramsIgnoreCase.id,
+        layers: paramsIgnoreCase.id as String,
         scale: paramsIgnoreCase.scale,
         internalTime: 0.0,
         renderTime: 0.0,
@@ -157,7 +157,7 @@ class ImageSpaceController
       getTileLogParams.y = y
       getTileLogParams.width = width
       getTileLogParams.height = height
-      def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id ).findWhere()
+      def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id as String).findWhere()
       if ( rasterEntry == null )
       {
         image = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB )
@@ -246,7 +246,7 @@ class ImageSpaceController
     }
     if ( !paramsIgnoreCase.id )
     {
-      paramsIgnoreCase.id = jsonData?.id
+      paramsIgnoreCase.id = jsonData?.id as String
     }
     if ( !paramsIgnoreCase.imagePoints )
     {
@@ -317,7 +317,7 @@ class ImageSpaceController
     }
     if ( !paramsIgnoreCase.id )
     {
-      paramsIgnoreCase.id = jsonData?.id
+      paramsIgnoreCase.id = jsonData?.id  as String
     }
     if ( !paramsIgnoreCase.imagePoints )
     {
@@ -327,7 +327,7 @@ class ImageSpaceController
     {
       jsonPoints = JSON.parse( paramsIgnoreCase.imagePoints )
     }
-    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id ).findWhere()
+    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id as String ).findWhere()
 
     if ( rasterEntry )
     {
@@ -411,7 +411,7 @@ class ImageSpaceController
     {
       jsonPoints = JSON.parse( paramsIgnoreCase.groundPoints ).groundPoints
     }
-    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id ).findWhere()
+    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id  as String).findWhere()
 
     if ( rasterEntry )
     {
@@ -448,7 +448,7 @@ class ImageSpaceController
     }
     if ( !paramsIgnoreCase.id )
     {
-      paramsIgnoreCase.id = jsonData?.id
+      paramsIgnoreCase.id = jsonData?.id as String
     }
     if ( !params.feature )
     {
@@ -460,7 +460,7 @@ class ImageSpaceController
     }
 
     def result = [:]
-    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id ).findWhere()
+    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id  as String).findWhere()
     if ( rasterEntry )
     {
       String inputFile = rasterEntry?.mainFile.name;
