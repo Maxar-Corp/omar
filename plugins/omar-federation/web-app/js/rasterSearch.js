@@ -265,34 +265,4 @@ function search() {
 
 
 
-function changeMeasureUnit(measureUnit) {
-    if ( measureUnit == "kilometers" )
-        {
-            pathMeasurement.innerHTML = getMeasureUnit()[0];
-        }
-        else if ( measureUnit == "meters" )
-        {
-            pathMeasurement.innerHTML = getMeasureUnit()[1];
-        }
-        else if ( measureUnit == "feet" )
-        {
-            pathMeasurement.innerHTML = getMeasureUnit()[2];
-        }
-        else if ( measureUnit == "miles" )
-        {
-            pathMeasurement.innerHTML = getMeasureUnit()[3];
-        }
-        else if ( measureUnit == "yards" )
-        {
-            pathMeasurement.innerHTML = getMeasureUnit()[4];
-        }
-        else if ( measureUnit == "nautical miles" )
-        {
-            pathMeasurement.innerHTML = getMeasureUnit()[5];
-        }
-}
-
-function getMeasureUnit() {
-    return measureUnit;
-}
 
