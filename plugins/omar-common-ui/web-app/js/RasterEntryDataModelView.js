@@ -227,6 +227,7 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
                             result.iTotalDisplayRecords = model.size();
                             wfsModel.fetchCount();
                         }
+                        thisPtr.dataTable.fnAdjustColumnSizing();
                      }
                 });
             }
