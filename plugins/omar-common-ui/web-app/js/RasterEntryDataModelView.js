@@ -272,6 +272,7 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
 
         this.model.reset();
         this.wfsModel.dirty = true;
+        this.wfsModel.attributes.numberOfFeatures = 0;
         //this.model.url = this.wfsModel.toUrl().toString() + "&callback=?";
         this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
 
