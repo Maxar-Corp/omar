@@ -389,6 +389,44 @@ OMAR.views.Map = Backbone.View.extend({
 
 
 
+
+changeMeasureUnit:function(measureUnit) { alert("FO");
+    if ( measureUnit == "kilometers" )
+        {
+            pathMeasurement.innerHTML = this.getMeasureUnit()[0];
+        }
+        else if ( measureUnit == "meters" )
+        {
+            pathMeasurement.innerHTML = getMeasureUnit()[1];
+        }
+        else if ( measureUnit == "feet" )
+        {
+            pathMeasurement.innerHTML = getMeasureUnit()[2];
+        }
+        else if ( measureUnit == "miles" )
+        {
+            pathMeasurement.innerHTML = getMeasureUnit()[3];
+        }
+        else if ( measureUnit == "yards" )
+        {
+            pathMeasurement.innerHTML = getMeasureUnit()[4];
+        }
+        else if ( measureUnit == "nautical miles" )
+        {
+            pathMeasurement.innerHTML = getMeasureUnit()[5];
+        }
+},
+
+getMeasureUnit:function() { alert("get measurement");
+    return measureUnit;
+},
+
+
+
+
+
+
+
     zoomIn:function()
     {
         this.map.zoomIn();
