@@ -210,7 +210,7 @@ $(document).ready(function () {
                 ,   east__paneSelector:     ".inner-east"
                 ,   west__size:             225
                 ,   west__minSize:          225
-                ,   east__size:             75
+                ,   east__size:             175
                 ,   spacing_open:           8  // ALL panes
                 ,   spacing_closed:         8  // ALL panes
                 ,   west__spacing_closed:   12
@@ -259,6 +259,40 @@ function search() {
     alert("search code goes here.")
 }
 
-function foo() {
-    alert("search code goes here.")
+
+
+
+
+
+
+function changeMeasureUnit(measureUnit) {
+    if ( measureUnit == "kilometers" )
+        {
+            pathMeasurement.innerHTML = getMeasureUnit()[0];
+        }
+        else if ( measureUnit == "meters" )
+        {
+            pathMeasurement.innerHTML = getMeasureUnit()[1];
+        }
+        else if ( measureUnit == "feet" )
+        {
+            pathMeasurement.innerHTML = getMeasureUnit()[2];
+        }
+        else if ( measureUnit == "miles" )
+        {
+            pathMeasurement.innerHTML = getMeasureUnit()[3];
+        }
+        else if ( measureUnit == "yards" )
+        {
+            pathMeasurement.innerHTML = getMeasureUnit()[4];
+        }
+        else if ( measureUnit == "nautical miles" )
+        {
+            pathMeasurement.innerHTML = getMeasureUnit()[5];
+        }
 }
+
+function getMeasureUnit() {
+    return measureUnit;
+}
+

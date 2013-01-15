@@ -7,6 +7,8 @@ var zoomFullResScale;
 var aoiLayer;
 var bounds;
 
+var measureUnit = new Array();
+    measureUnit = ["", "", "", "", "", ""];
 var convert = new CoordinateConversion();
 OMAR.views.Map = Backbone.View.extend({
     el:"#mapContainer",
@@ -190,34 +192,173 @@ OMAR.views.Map = Backbone.View.extend({
             }
         );
 
-        var pathMeasurementButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Path, 
-            {
-                title: 'Click button to activate. Once acitivated, click points on the map to create a path that you wish to measure. When you are done creating your path, double click to end.',
-                displayClass: 'olControlMeasureDistance',
-                displaySystem: 'metric',
-                geodesic: true,
-                persist: true,
-                eventListeners:{
-                    measure:function (evt)
+        var pathMeasurement = document.getElementById( "pathMeasurement" );
+        var pathMeasurementButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Path, {title:"Click button to activate. Once acitivated, click points on the map to create a path that you wish to measure. When you are done creating your path, double click to end.",
+            displayClass:"olControlMeasureDistance",
+            geodesic:true,
+            persist:true,
+            eventListeners:{
+                measure:function ( evt )
+                {
+                    if ( evt.units == "km" )
                     {
-                        alert(evt.measure);
+                        measureUnit[0] = evt.measure + " km";
+                        measureUnit[1] = evt.measure * 1000 + " m";
+                        measureUnit[2] = evt.measure * 3280.839895 + " ft";
+                        measureUnit[3] = evt.measure * 0.62137119224 + " mi";
+                        measureUnit[4] = evt.measure * 1093.6132983 + " yd";
+                        measureUnit[5] = evt.measure * 0.539956803 + " nmi";
+
+                        var selectVal = $('#measurementUnits :selected').val();
+
+                        if ( selectVal == "kilometers" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[0];
+                        }
+                        else if ( selectVal == "meters" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[1];
+                        }
+                        else if ( selectVal == "feet" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[2];
+                        }
+                        else if ( selectVal == "miles" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[3];
+                        }
+                        else if ( selectVal == "yards" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[4];
+                        }
+                        else if ( selectVal == "nautical miles" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[5];
+                        }
                     }
+                    else if ( evt.units == "m" )
+                    {
+                        measureUnit[0] = evt.measure * 0.001 + " km";
+                        measureUnit[1] = evt.measure + " m";
+                        measureUnit[2] = evt.measure * 3.280839895 + " ft";
+                        measureUnit[3] = evt.measure * 0.00062137119224 + " mi";
+                        measureUnit[4] = evt.measure * 1.0936132983 + " yd";
+                        measureUnit[5] = evt.measure * 0.000539956803 + " nmi";
+
+                        var selectVal = $('#measurementUnits :selected').val();
+
+                        if ( selectVal == "kilometers" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[0];
+                        }
+                        else if ( selectVal == "meters" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[1];
+                        }
+                        else if ( selectVal == "feet" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[2];
+                        }
+                        else if ( selectVal == "miles" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[3];
+                        }
+                        else if ( selectVal == "yards" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[4];
+                        }
+                        else if ( selectVal == "nautical miles" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[5];
+                        }
+                    }
+                }
             }} );
 
-        var polygonMeasurementButton = new OpenLayers.Control.Measure(OpenLayers.Handler.Polygon, 
-            {
-                title: 'Click button to activate. Once acitivated, click points on the map to create a polygon that you wish to measure. When you are done creating your polygon, double click to end.',
-                displayClass: 'olControlMeasureArea',
-                displaySystem: 'metric',
-                geodesic: true,
-                persist: true,
-                eventListeners:{
-                    measure:function (evt)
+        var polygonMeasurement = document.getElementById( "polygonMeasurement" );
+        var polygonMeasurementButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Polygon, {title:"Click button to activate. Once acitivated, click points on the map to create a polygon that you wish to measure. When you are done creating your polygon, double click to end.",
+            displayClass:"olControlMeasureArea",
+            displaySystem:"metric",
+            geodesic:true,
+            persist:true,
+            eventListeners:{
+                measure:function ( evt )
+                {
+                    if ( evt.units == "km" )
                     {
-                        alert(evt.measure);
+                        measureUnit[0] = evt.measure + " km^2";
+                        measureUnit[1] = evt.measure * 1000000 + " m^2";
+                        measureUnit[2] = evt.measure * 10763910.417 + " ft^2";
+                        measureUnit[3] = evt.measure * 0.38610215855  + " mi^2";
+                        measureUnit[4] = evt.measure * 1195990.0463 + " yd^2";
+                        measureUnit[5] = evt.measure * 0.2915533496  + " nmi^2";
+
+                        var selectVal = $('#measurementUnits :selected').val();
+
+                        if ( selectVal == "kilometers" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[0];
+                        }
+                        else if ( selectVal == "meters" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[1];
+                        }
+                        else if ( selectVal == "feet" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[2];
+                        }
+                        else if ( selectVal == "miles" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[3];
+                        }
+                        else if ( selectVal == "yards" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[4];
+                        }
+                        else if ( selectVal == "nautical miles" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[5];
+                        }
                     }
+                    else if ( evt.units == "m" )
+                    {
+                        measureUnit[0] = evt.measure * 0.000001 + " km^2";
+                        measureUnit[1] = evt.measure + " m^2";
+                        measureUnit[2] = evt.measure * 10.763910417 + " ft^2";
+                        measureUnit[3] = evt.measure * 3.8610215855 + " mi^2";
+                        measureUnit[4] = evt.measure * 1.1959900463 + " yd^2";
+                        measureUnit[5] = evt.measure * 2.915533496 + " nmi^2";
+
+                        var selectVal = $('#measurementUnits :selected').val();
+
+                        if ( selectVal == "kilometers" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[0];
+                        }
+                        else if ( selectVal == "meters" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[1];
+                        }
+                        else if ( selectVal == "feet" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[2];
+                        }
+                        else if ( selectVal == "miles" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[3];
+                        }
+                        else if ( selectVal == "yards" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[4];
+                        }
+                        else if ( selectVal == "nautical miles" )
+                        {
+                            pathMeasurement.innerHTML = measureUnit[5];
+                        }
+                    }
+                }
             }} );
-        
+
         var panel = new OpenLayers.Control.Panel(
             {
                 div: this.toolBar,
@@ -243,6 +384,10 @@ OMAR.views.Map = Backbone.View.extend({
 
         this.map.addControl(panel);
     },
+
+
+
+
 
     zoomIn:function()
     {
