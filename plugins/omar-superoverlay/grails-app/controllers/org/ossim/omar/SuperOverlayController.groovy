@@ -28,7 +28,7 @@ class SuperOverlayController implements InitializingBean
     {
       if ( params.id )
       {
-        rasterEntry = RasterEntry.compositeId( params.id ).findWhere()
+        rasterEntry = RasterEntry.compositeId( params.id as String ).findWhere()
       }
     }
     catch ( Exception e )
