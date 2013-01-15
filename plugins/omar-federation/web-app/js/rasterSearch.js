@@ -17,7 +17,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.measurementUnitView = new OMAR.views.UnitModelView({el:"#measurementUnitViewId"});
         this.measurementUnitModel = this.measurementUnitView.model;
 
-        this.mapView = new OMAR.views.Map(params.map);
+        var mapParams = params.map;
+        mapParams.unitModelView = this.measurementUnitView;
+        this.mapView = new OMAR.views.Map(mapParams);
         this.mapView.setBboxModel(this.bboxModel);
         this.mapView.setPointModel(this.pointModel);
 
@@ -31,7 +33,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         //this.unitModelView = new OMAR.views.UnitModelView({el:"#measurementUnitViewId"});
 
         this.measurementUnitModel.set("unit", "meters");
-        this.mapView.setUnitModel(this.measurementUnitModel);
+        this.mapView.setUnitModelView(this.measurementUnitView);
     },
     events: {
         "click #SearchRasterId": "searchRaster"

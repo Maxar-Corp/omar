@@ -22,7 +22,7 @@ OMAR.views.Map = Backbone.View.extend({
         {
             this.theme = null;
         }
-
+        this.unitModelView = params.unitModelView?params.unitModelView:null;
         this.mapEl = $(this.el).find("#map")[0];
         this.toolBar = $(this.el).find("#mapToolBar")[0];
         this.layers = new OMAR.HashMap();
@@ -107,24 +107,24 @@ OMAR.views.Map = Backbone.View.extend({
 
             this.setupAoiLayer();
             this.setupToolbar();
-
         }
     },
-    setUnitModel:function(unitModel)
+    setUnitModelView:function(unitModelView)
     {
-        if(this.unitModel)
+        var unitModel = unitModelView.model;
+        if(this.unitModelView)
         {
-            this.unitModel.off("change", this.unitModelChanged, this);
+            this.unitModelView.model.off("change", this.unitModelChanged, this);
         }
-        this.unitModel = unitModel;
-        if(this.unitModel)
+        this.unitModelView = unitModelView;
+        if(unitModel)
         {
-            this.unitModel.on("change", this.unitModelChanged, this);
+            unitModel.on("change", this.unitModelChanged, this);
         }
     },
     unitModelChanged:function()
     {
-        this.changeMeasureUnit(this.unitModel.get("unit"));
+        this.changeMeasureUnit(this.unitModelView.model.get("unit"));
     }
     ,setupAoiLayer:function()
     {
@@ -206,7 +206,8 @@ OMAR.views.Map = Backbone.View.extend({
                 trigger: this.clearBoundBox.bind(this)
             }
         );
-        var pathMeasurement = document.getElementById( "pathMeasurement" );
+
+        var unitModelView = this.unitModelView;
         var pathMeasurementButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Path, {title:"Click button to activate. Once acitivated, click points on the map to create a path that you wish to measure. When you are done creating your path, double click to end.",
             displayClass:"olControlMeasureDistance",
             geodesic:true,
@@ -214,6 +215,8 @@ OMAR.views.Map = Backbone.View.extend({
             eventListeners:{
                 measure:function ( evt )
                 {
+                    var pathMeasurement = $(unitModelView.el).find("#pathMeasurement")[0];//document.getElementById( "pathMeasurement" );
+
                     if ( evt.units == "km" )
                     {
                         measureUnit[0] = evt.measure + " km";
@@ -289,7 +292,7 @@ OMAR.views.Map = Backbone.View.extend({
                 }
             }} );
 
-        var polygonMeasurement = document.getElementById( "polygonMeasurement" );
+        var polygonMeasurement = $(this.unitModelView.el).find("#polygonMeasurement")[0];
         var polygonMeasurementButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Polygon, {title:"Click button to activate. Once acitivated, click points on the map to create a polygon that you wish to measure. When you are done creating your polygon, double click to end.",
             displayClass:"olControlMeasureArea",
             displaySystem:"metric",
@@ -298,6 +301,7 @@ OMAR.views.Map = Backbone.View.extend({
             eventListeners:{
                 measure:function ( evt )
                 {
+                    var pathMeasurement = $(unitModelView.el).find("#pathMeasurement")[0];//document.getElementById( "pathMeasurement" );
                     if ( evt.units == "km" )
                     {
                         measureUnit[0] = evt.measure + " km^2";
@@ -399,7 +403,9 @@ OMAR.views.Map = Backbone.View.extend({
         this.map.addControl(panel);
     },
     changeMeasureUnit:function(measureUnit) {
-    if ( measureUnit == "kilometers" )
+        var pathMeasurement = $(this.unitModelView.el).find("#pathMeasurement")[0];
+
+        if ( measureUnit == "kilometers" )
         {
             pathMeasurement.innerHTML = this.getMeasureUnit()[0];
         }
