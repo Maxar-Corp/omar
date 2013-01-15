@@ -219,6 +219,7 @@ $(document).ready(function () {
                 }
             }
         });
+    // initialize one time the html parsing for datatable
 
     init();
     OMAR.federatedRasterSearch.centerResize();
