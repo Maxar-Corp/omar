@@ -76,12 +76,18 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                 var model = new OMAR.models.RasterEntryDataModel(feature.properties)
                 var modelId = model.id;
                 var omarUrl = this.url.substr(0,this.url.indexOf("omar")+4);
-                var rawUrl = "<a href='"+omarUrl+"/mapView/imageSpace?layers="+modelId+"'>Raw</a>";
-                var orthoUrl = "<a href='"+omarUrl+"/mapView/index?layers="+modelId+"'>Ortho</a>";
+                var omarUrlRaw = this.url.substr(0,this.url.indexOf("omar")+4)+"/mapView/imageSpace?layers="+modelId;
+                var omarUrlOrtho = this.url.substr(0,this.url.indexOf("omar")+4)+"/mapView/index?layers="+modelId;
+                //var omarUrlRawButton ="<button onclick=\"javascript:window.open(\'"+omarUrlRaw+"\')\">Raw</button>";
+                var omarUrlRawButton ="<button onclick=\"javascript:window.open(\'"+omarUrlRaw+"\')\">Raw</button>";
+                var omarUrlOrthoButton ="<button onclick=\"javascript:window.open(\'"+omarUrlOrtho+"\')\">Ortho</button>";
                 model.set({
                     "ground_geom":JSON.stringify(feature.geometry)
                     ,"thumbnail":"<img src='"+omarUrl+"/thumbnail/show/"+modelId+"?size=128'></img>"
-                    ,"view":"<ul><li>"+rawUrl+"</li><li>"+orthoUrl+"</li></ul>"
+                    ,"view": "<ul>"+omarUrlRawButton + omarUrlOrthoButton+"</ul>"
+
+                        /*"<ul><button onclick=\"javascript:window.open(\'"+omarUrlRaw +
+                        +"\')>Raw</button><button>Ortho</button></ul>"  */
                 });
                 result.push(model);
             }
