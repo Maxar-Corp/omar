@@ -272,7 +272,7 @@ views {
 /** *********************************************************************************************************/
 
 videoStreaming {
-  flashDirRoot = "/Library/WebServer/Documents/videos"
+  flashDirRoot = "/opt/local/apache2/htdocs/videos"
   //flashDirRoot = "/var/www/html/videos"
   flashUrlRoot = "http://${ omar.serverIP }/videos"
 }
