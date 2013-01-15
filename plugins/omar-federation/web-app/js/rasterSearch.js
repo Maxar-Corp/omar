@@ -210,7 +210,7 @@ $(document).ready(function () {
                 ,   east__paneSelector:     ".inner-east"
                 ,   west__size:             225
                 ,   west__minSize:          225
-                ,   east__size:             75
+                ,   east__size:             175
                 ,   spacing_open:           8  // ALL panes
                 ,   spacing_closed:         8  // ALL panes
                 ,   west__spacing_closed:   12
@@ -260,6 +260,10 @@ function search() {
     alert("search code goes here.")
 }
 
-function foo() {
-    alert("search code goes here.")
-}
+
+
+
+
+
+
+
