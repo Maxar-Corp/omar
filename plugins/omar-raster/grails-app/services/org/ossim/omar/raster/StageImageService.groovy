@@ -164,7 +164,7 @@ class StageImageService
         {
           if ( id )
           {
-            rasterEntry = RasterEntry.compositeId( id ).findWhere()
+            rasterEntry = RasterEntry.compositeId( id as String ).findWhere()
           }
         }
         catch ( def e )
