@@ -23,21 +23,5 @@
       <li><a href="javascript:search()">Search</a></li>
     </ul>
   </li>
-
-   <li><a class="fNiv">Map Tools</a>
-    <ul>
-      <li class="arrow"></li>
-      <li><a>Set Measurement Unit Type</a>
-        <ul>
-          <li><a>Kilometers</a></li>
-          <li><a>Meters</a></li>
-          <li><a>Feet</a></li>
-          <li><a>Miles</a></li>
-          <li><a>Yards</a></li>
-          <li><a>Nautical Miles</a></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
   
 </ul>

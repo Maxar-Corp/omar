@@ -38,6 +38,10 @@
                 <g:render plugin="omar-federation" template="/templates/searchTabView"/>
             </div>
 
+            <div class="inner-east">
+                <g:render plugin="omar-federation" template="/templates/measurementTemplate"/>
+            </div>
+
             <div class="ui-layout-south">
                 <div id="omarServerCollectionId"></div>
             </div>
