@@ -1,27 +1,33 @@
-<div class="niceBox">
-  <div class="niceBoxHeader">
-    <b>Map Measurement Tool:</b>
-   </div>
+<div id="measurementUnitViewId">
 
-   <div class="niceBoxBody">
-        
-<p>Measurement Units:</p>
+    <div class="niceBox">
+        <div class="niceBoxHeader">
+            <b>Map Measurement Tool:</b>
+        </div>
 
-    <p>Not certified for targeting.</p>
+        <div class="niceBoxBody">
 
-    <p>
-      <g:select name="measurementUnits" from="${['kilometers', 'meters', 'feet', 'miles', 'yards', 'nautical miles']}"
-                title="Select a unit of measurement and use the path and polygon measurment tools in the map toolbar."
-                onChange="this.mapView.changeMeasurement(this.value)"/>
-    </p>
+            <p>Measurement Units:</p>
 
-    <p><div id="pathMeasurement"></div></p>
+            <p>Not certified for targeting.</p>
 
-    <p><div id="polygonMeasurement"></div></p>
+            <p>
+                <g:select id="selectUnitsId"
+                          name="selectUnitsId"
+                          from="${['kilometers', 'meters', 'feet', 'miles', 'yards', 'nautical miles']}"
+                          title="Select a unit of measurement and use the path and polygon measurment tools in the map toolbar."
+                        />
+            </p>
+
+            <p><div id="pathMeasurement"></div></p>
+
+            <p><div id="polygonMeasurement"></div></p>
 
 
 
+        </div>
     </div>
-  </div>
- 
-<input type="hidden" id="units" name="units"/>
+
+    <input type="hidden" id="units" name="units"/>
+
+</div>

@@ -110,8 +110,23 @@ OMAR.views.Map = Backbone.View.extend({
 
         }
     },
-
-    setupAoiLayer:function()
+    setUnitModel:function(unitModel)
+    {
+        if(this.unitModel)
+        {
+            this.unitModel.off("change", this.unitModelChanged, this);
+        }
+        this.unitModel = unitModel;
+        if(this.unitModel)
+        {
+            this.unitModel.on("change", this.unitModelChanged, this);
+        }
+    },
+    unitModelChanged:function()
+    {
+        this.changeMeasureUnit(this.unitModel.get("unit"));
+    }
+    ,setupAoiLayer:function()
     {
         aoiLayer = new OpenLayers.Layer.Vector( "Bound Box" );
         aoiLayer.events.register( "featureadded", this, this.setAoiLayer );
@@ -191,7 +206,6 @@ OMAR.views.Map = Backbone.View.extend({
                 trigger: this.clearBoundBox.bind(this)
             }
         );
-
         var pathMeasurement = document.getElementById( "pathMeasurement" );
         var pathMeasurementButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Path, {title:"Click button to activate. Once acitivated, click points on the map to create a path that you wish to measure. When you are done creating your path, double click to end.",
             displayClass:"olControlMeasureDistance",
@@ -209,7 +223,7 @@ OMAR.views.Map = Backbone.View.extend({
                         measureUnit[4] = evt.measure * 1093.6132983 + " yd";
                         measureUnit[5] = evt.measure * 0.539956803 + " nmi";
 
-                        var selectVal = $('#measurementUnits :selected').val();
+                        var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
 
                         if ( selectVal == "kilometers" )
                         {
@@ -245,7 +259,7 @@ OMAR.views.Map = Backbone.View.extend({
                         measureUnit[4] = evt.measure * 1.0936132983 + " yd";
                         measureUnit[5] = evt.measure * 0.000539956803 + " nmi";
 
-                        var selectVal = $('#measurementUnits :selected').val();
+                        var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
 
                         if ( selectVal == "kilometers" )
                         {
@@ -293,7 +307,7 @@ OMAR.views.Map = Backbone.View.extend({
                         measureUnit[4] = evt.measure * 1195990.0463 + " yd^2";
                         measureUnit[5] = evt.measure * 0.2915533496  + " nmi^2";
 
-                        var selectVal = $('#measurementUnits :selected').val();
+                        var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
 
                         if ( selectVal == "kilometers" )
                         {
@@ -329,8 +343,8 @@ OMAR.views.Map = Backbone.View.extend({
                         measureUnit[4] = evt.measure * 1.1959900463 + " yd^2";
                         measureUnit[5] = evt.measure * 2.915533496 + " nmi^2";
 
-                        var selectVal = $('#measurementUnits :selected').val();
 
+                        var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
                         if ( selectVal == "kilometers" )
                         {
                             pathMeasurement.innerHTML = measureUnit[0];
@@ -384,40 +398,34 @@ OMAR.views.Map = Backbone.View.extend({
 
         this.map.addControl(panel);
     },
-
-
-
-
-
-
-changeMeasureUnit:function(measureUnit) { alert("FO");
+    changeMeasureUnit:function(measureUnit) {
     if ( measureUnit == "kilometers" )
         {
             pathMeasurement.innerHTML = this.getMeasureUnit()[0];
         }
         else if ( measureUnit == "meters" )
         {
-            pathMeasurement.innerHTML = getMeasureUnit()[1];
+            pathMeasurement.innerHTML = this.getMeasureUnit()[1];
         }
         else if ( measureUnit == "feet" )
         {
-            pathMeasurement.innerHTML = getMeasureUnit()[2];
+            pathMeasurement.innerHTML = this.getMeasureUnit()[2];
         }
         else if ( measureUnit == "miles" )
         {
-            pathMeasurement.innerHTML = getMeasureUnit()[3];
+            pathMeasurement.innerHTML = this.getMeasureUnit()[3];
         }
         else if ( measureUnit == "yards" )
         {
-            pathMeasurement.innerHTML = getMeasureUnit()[4];
+            pathMeasurement.innerHTML = this.getMeasureUnit()[4];
         }
         else if ( measureUnit == "nautical miles" )
         {
-            pathMeasurement.innerHTML = getMeasureUnit()[5];
+            pathMeasurement.innerHTML = this.getMeasureUnit()[5];
         }
 },
 
-getMeasureUnit:function() { alert("get measurement");
+getMeasureUnit:function() {
     return measureUnit;
 },
 

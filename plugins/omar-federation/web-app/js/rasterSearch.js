@@ -14,6 +14,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.omarServerCollectionView = new OMAR.views.OmarServerCollectionView(
             {model:new OMAR.models.OmarServerCollection()}
         );
+        this.measurementUnitView = new OMAR.views.UnitModelView({el:"#measurementUnitViewId"});
+        this.measurementUnitModel = this.measurementUnitView.model;
+
         this.mapView = new OMAR.views.Map(params.map);
         this.mapView.setBboxModel(this.bboxModel);
         this.mapView.setPointModel(this.pointModel);
@@ -24,6 +27,11 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this)
         this.rasterEntryDataModelView = new OMAR.views.RasterEntryDataModelView();
         this.omarServerCollectionView.bind('onModelClicked', this.serverClicked, this);
+
+        //this.unitModelView = new OMAR.views.UnitModelView({el:"#measurementUnitViewId"});
+
+        this.measurementUnitModel.set("unit", "meters");
+        this.mapView.setUnitModel(this.measurementUnitModel);
     },
     events: {
         "click #SearchRasterId": "searchRaster"
@@ -78,6 +86,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         if(this.rasterEntryDataModelView)
         {
             this.rasterEntryDataModelView.render();
+        }
+        if(this.measurementUnitView)
+        {
+            this.measurementUnitView.render();
         }
         // lets make sure that that the map object exists
         // before we start the AJAX calls for fetching the server lists
