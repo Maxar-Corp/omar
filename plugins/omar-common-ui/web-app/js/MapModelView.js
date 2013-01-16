@@ -509,13 +509,16 @@ getMeasureUnit:function() {
         }
     },
     resizeView:function(){
+        /*
         var innerHeight = $(".inner-center").height();
         var tabHeight   = innerHeight - $("#tabView").height();
         //alert(tabHeight + ", " + $("#tabView").height() +"," + innerHeight+","+$("#map").height()+","+$("#mapReadouts").height()+","+$("#mapToolBar").height());
         var mapHeight = innerHeight-($("#mapToolBar").height()+
                                      $("#mapReadouts").height()+
                                       tabHeight);
-        $("#map").height(mapHeight);
+        */
+        //var mapHeight = $(this.el).height();//$('.inner-center').height()-100;
+        //$("#map").height(mapHeight);
 
         this.mapResize();
     },

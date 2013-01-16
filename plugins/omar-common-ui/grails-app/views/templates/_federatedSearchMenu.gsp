@@ -1,11 +1,13 @@
-<ul id="jMenu">
+<ul id="federatedSearchMenuId" class="jMenu">
 
-  <li><a class="fNiv">OMAR™</a><!-- Do not forget the "fNiv" class for the first level links !! -->
+
+
+  <li><a class="fNiv">OMAR™</a>
     <ul>
       <li class="arrow"></li>
       <li><a href="${createLink(controller: 'login', action: 'about')}">About</a></li>
       <li><a href="${createLink(controller: 'home', action: 'index')}">Home</a></li>
-      <li><a href="${createLink(controller: 'logout')}">Logoout</a></li>
+      <li><a href="${createLink(controller: 'logout')}">Logout</a></li>
     </ul>
   </li>
   
@@ -23,5 +25,4 @@
       <li><a href="javascript:search()">Search</a></li>
     </ul>
   </li>
-  
 </ul>

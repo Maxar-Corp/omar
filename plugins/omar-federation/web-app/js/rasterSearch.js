@@ -155,6 +155,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         return result;
     },
     centerResize:function(){
+
+        //alert($("#tabView").height() + ", " + $(".inner-center").height()+","+$(".tabViewContainer").height());
+        var h = $(".inner-center").height();
+        $("#tabView").height(h-110);
         this.rasterEntryDataModelView.resizeView();
         this.mapView.resizeView();
     },
@@ -237,9 +241,9 @@ $(document).ready(function () {
 
     init();
     OMAR.federatedRasterSearch.centerResize();
-    $( "#accordion" ).accordion();
+    //$( "#accordion" ).accordion();
 
-    $("#jMenu").jMenu({
+    $("#federatedSearchMenuId").jMenu({
                   openClick : false,
                   ulWidth : 100,
                   effects : {
