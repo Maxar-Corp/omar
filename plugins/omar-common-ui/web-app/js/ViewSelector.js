@@ -15,6 +15,8 @@ OMAR.views.ViewSelector = Backbone.View.extend({
 
         var thisPtr = this;
 
+        //alert($(this.selector() + " :radio")[0]);
+
         $(this.selector() + " :radio").click(function(){
             //alert($(this).attr("value")); // this refers to current clicked radio button
            // $(this).removeClass('class_name').addClass('class_name');
@@ -24,8 +26,13 @@ OMAR.views.ViewSelector = Backbone.View.extend({
     click:function(idx)
     {
         this.hideAll();
-        var children = $(this.el).children(":input");
-        $(children[idx]).click();
+        var children = $(this.el).children(":radio");
+        //alert($(children).size());
+        //var children = $(this.el).children(":input");
+        //$(children[idx]).click();
+        //$(children[idx]).prop('checked', true);
+        //$(this.selector() + " :radio").prop('checked', true);
+        $(children[idx]).attr('checked','checked').button("refresh");
         this.show(idx);
     },
     selector:function(){
