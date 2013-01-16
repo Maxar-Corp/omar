@@ -15,16 +15,14 @@ class VideoFile
   }
 
   static mapping = {
-    columns {
       name index: 'video_file_name_idx'
-      type index: 'video_file_type_idx,video_file_vds_type'
+      type index: 'video_file_type_idx'
       format index: 'video_file_format_idx'
-      videoDataSet index: 'video_file_vds_type'
-    }
+      videoDataSet index: 'video_file_video_data_set_idx'
   }
 
 
-  static VideoFile initVideoFile( def videoFileNode )
+  static VideoFile initVideoFile(def videoFileNode)
   {
     def videoFile = new VideoFile()
 

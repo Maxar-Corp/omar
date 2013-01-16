@@ -40,14 +40,13 @@ class VideoDataSet
   BigInteger styleId
 
   static mapping = {
-    columns {
-      indexId index: 'video_data_set_index_id_idx'
-      filename index: 'video_data_set_filename_idx'
-      otherTagsXml type: 'text'//, index: 'video_data_set_metadata_other_tags_idx'
-      startDate column: 'start_date', type: 'timestamp', index: 'video_data_set_start_date_idx,video_data_set_time_idx'
-      endDate column: 'end_date', type: 'timestamp', index: 'video_data_set_end_date_idx,video_data_set_time_idx'
-      groundGeom type: org.hibernatespatial.GeometryUserType
-    }
+    indexId index: 'video_data_set_index_id_idx'
+    filename index: 'video_data_set_filename_idx'
+    otherTagsXml type: 'text'//, index: 'video_data_set_metadata_other_tags_idx'
+    startDate column: 'start_date', type: 'timestamp', index: 'video_data_set_start_date_idx,video_data_set_time_idx'
+    endDate column: 'end_date', type: 'timestamp', index: 'video_data_set_end_date_idx,video_data_set_time_idx'
+    groundGeom type: org.hibernatespatial.GeometryUserType
+    repository index: 'video_data_set_repository_idx'
   }
 
   static constraints = {
@@ -63,7 +62,7 @@ class VideoDataSet
 //    metadata(nullable: true)
   }
 
-  def getMainFile( )
+  def getMainFile()
   {
     def mainFile = null
 
@@ -82,12 +81,12 @@ class VideoDataSet
     return mainFile
   }
 
-  def getFileFromObjects( def type = "main" )
+  def getFileFromObjects(def type = "main")
   {
     return fileObjects?.find { it.type == type }
   }
 
-  static VideoDataSet initVideoDataSet( def videoDataSetNode, VideoDataSet videoDataSet = null )
+  static VideoDataSet initVideoDataSet(def videoDataSetNode, VideoDataSet videoDataSet = null)
   {
     if ( !videoDataSet )
     {
@@ -197,7 +196,7 @@ class VideoDataSet
     return videoDataSet
   }
 
-  static def initVideoDataSetOtherTagsXml( VideoDataSet videoDataSet )
+  static def initVideoDataSetOtherTagsXml(VideoDataSet videoDataSet)
   {
     if ( videoDataSet )
     {
@@ -214,9 +213,12 @@ class VideoDataSet
     }
   }
 
-  static void initVideoDataSetMetadata( def node, VideoDataSet videoDataSet )
+  static void initVideoDataSetMetadata(def node, VideoDataSet videoDataSet)
   {
-    if ( !videoDataSet ) return;
+    if ( !videoDataSet )
+    {
+      return
+    };
 
     for ( def tagNode in node.children() )
     {
@@ -251,7 +253,7 @@ class VideoDataSet
     }
   }
 
-  static MultiPolygon initGroundGeom( def groundGeomNode )
+  static MultiPolygon initGroundGeom(def groundGeomNode)
   {
     def wkt = groundGeomNode?.toString().trim()
     def srs = groundGeomNode?.@srs?.toString().trim()
@@ -284,12 +286,12 @@ class VideoDataSet
     return groundGeom
   }
 
-  static MultiPolygon convertPolyToMultiPoly( Polygon poly )
+  static MultiPolygon convertPolyToMultiPoly(Polygon poly)
   {
     return new MultiPolygon(
-            [poly] as Polygon[],
-            new PrecisionModel( PrecisionModel.FLOATING ),
-            poly.getSRID() )
+        [poly] as Polygon[],
+        new PrecisionModel( PrecisionModel.FLOATING ),
+        poly.getSRID() )
 
   }
 }

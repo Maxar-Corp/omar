@@ -127,9 +127,7 @@ class RasterEntry
       releaseId index: 'raster_entry_release_id_idx'
 
       groundGeom type: org.hibernatespatial.GeometryUserType
-
-//      fileObjects cascade: "all-delete-orphan"
-
+      rasterDataSet index: 'raster_entry_raster_data_set_idx'
     }
   }
 
