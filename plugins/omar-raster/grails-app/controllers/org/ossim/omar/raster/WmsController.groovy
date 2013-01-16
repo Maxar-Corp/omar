@@ -267,7 +267,7 @@ class WmsController extends OgcController implements InitializingBean
       if ( rasterEntries?.size > 0 )
       {
         def tempMap = new CaseInsensitiveMap( params )
-        def file = ( rasterEntries[0].mainFile.name as File ).name
+        def file = ( rasterEntries[0].filename as File ).name
 
         filename = "${ file }.kml"
         kml = rasterKmlService.createImagesKml( rasterEntries, cmd.toMap(), tempMap )
@@ -413,7 +413,7 @@ class WmsController extends OgcController implements InitializingBean
           response.outputStream << bytes
         }
         catch ( Exception e )
-        { }
+        {}
       }
       endtime = System.currentTimeMillis()
 
