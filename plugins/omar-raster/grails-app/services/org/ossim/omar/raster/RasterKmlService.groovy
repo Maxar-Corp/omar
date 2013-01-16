@@ -30,7 +30,7 @@ class RasterKmlService extends KmlService
     def mpp = rasterEntry.getMetersPerPixel()
     def fieldMap = [
             Thumbnail: "<img src='${thumbnailUrl}'/>",
-            File: "<a href='${imageUrl}'>${( rasterEntry.mainFile.name as File ).name}</a>",
+            File: "<a href='${imageUrl}'>${( rasterEntry.filename as File ).name}</a>",
             'Entry Id': rasterEntry.entryId ?: "",
             'Image Id': rasterEntry.imageId ?: "",
             'Title': rasterEntry.title ?: "",

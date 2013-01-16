@@ -54,30 +54,30 @@ class StageImageService
       if ( StagerUtil.needsOvrs( rasterEntry.width, rasterEntry.height, rasterEntry.numberOfResLevels ) )
       {
         def runnable = new StageRunnable( stageImageService: this,
-            file: rasterEntry.mainFile.name as File,
+            file: rasterEntry.filename as File,
             entryId: rasterEntry.entryId,
             id: rasterEntry.id,
             options: [compressionQuality: grailsApplication.config.stager.overview.compressionQuality,
                 compressionType: grailsApplication.config.stager.overview.compressionType,
                 histogramOptions: grailsApplication.config.stager.histogramOptions
             ] )
-        workerThreadPool.submit( rasterEntry.mainFile.name + "_${rasterEntry.entryId}", runnable )
+        workerThreadPool.submit( rasterEntry.filename + "_${rasterEntry.entryId}", runnable )
       }
 
       /*
       if (StagerUtil.needsOvrs(rasterEntry.width, rasterEntry.height, rasterEntry.numberOfResLevels))
       {
-          if(!quartzScheduler?.getTrigger(rasterEntry.mainFile.name, "STAGE"))
+          if(!quartzScheduler?.getTrigger(rasterEntry.filename, "STAGE"))
           {
               def jobDataMap = new JobDataMap()
-              jobDataMap.file = rasterEntry.mainFile.name
+              jobDataMap.file = rasterEntry.filename
               jobDataMap.entryId = rasterEntry.entryId
               jobDataMap.id      = rasterEntry.id
               jobDataMap.options = [compressionQuality: grailsApplication.config.stager.overview.compressionQuality,
                       compressionType: grailsApplication.config.stager.overview.compressionType,
                       histogramOptions: grailsApplication.config.stager.histogramOptions
               ]
-              def trigger = new SimpleTrigger(rasterEntry.mainFile.name, "STAGE");
+              def trigger = new SimpleTrigger(rasterEntry.filename, "STAGE");
               trigger.setJobDataMap(jobDataMap);
               StageImageJob.schedule(trigger);
           }

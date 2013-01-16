@@ -597,8 +597,9 @@ map.events.manipulator = OMAR.imageManipulator;
         loadend:loadEnd
     });
 
-map.addLayer(layer);
-    map.setBaseLayer(layer);
+    map.addLayer(layer);
+    //map.setBaseLayer(layer);
+
 // set the initialization flag so the moveend and zoomend code can execute
     initFlag = 0;
 

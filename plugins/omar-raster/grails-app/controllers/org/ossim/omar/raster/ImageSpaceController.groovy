@@ -157,14 +157,14 @@ class ImageSpaceController
       getTileLogParams.y = y
       getTileLogParams.width = width
       getTileLogParams.height = height
-      def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id as String).findWhere()
+      def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id as String ).findWhere()
       if ( rasterEntry == null )
       {
         image = new BufferedImage( width, height, BufferedImage.TYPE_INT_RGB )
       }
       else
       {
-        String inputFile = rasterEntry?.mainFile.name
+        String inputFile = rasterEntry?.filename
 
         width = rasterEntry?.width
         height = rasterEntry?.height
@@ -256,11 +256,11 @@ class ImageSpaceController
     {
       jsonPoints = JSON.parse( paramsIgnoreCase.imagePoints )
     }
-    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id as String).findWhere()
+    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id as String ).findWhere()
 
     if ( rasterEntry )
     {
-      String inputFile = rasterEntry?.mainFile.name
+      String inputFile = rasterEntry?.filename
       if ( paramsIgnoreCase.x && paramsIgnoreCase.y )
       {
         result = projectionService.imageSpaceToGroundSpace( inputFile,
@@ -317,7 +317,7 @@ class ImageSpaceController
     }
     if ( !paramsIgnoreCase.id )
     {
-      paramsIgnoreCase.id = jsonData?.id  as String
+      paramsIgnoreCase.id = jsonData?.id as String
     }
     if ( !paramsIgnoreCase.imagePoints )
     {
@@ -331,7 +331,7 @@ class ImageSpaceController
 
     if ( rasterEntry )
     {
-      String inputFile = rasterEntry?.mainFile.name
+      String inputFile = rasterEntry?.filename
       if ( paramsIgnoreCase.x && paramsIgnoreCase.y )
       {
         result = projectionService.imageSpaceToGroundSpace( inputFile,
@@ -411,11 +411,11 @@ class ImageSpaceController
     {
       jsonPoints = JSON.parse( paramsIgnoreCase.groundPoints ).groundPoints
     }
-    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id  as String).findWhere()
+    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id as String ).findWhere()
 
     if ( rasterEntry )
     {
-      String inputFile = rasterEntry?.mainFile.name
+      String inputFile = rasterEntry?.filename
       def hgt = paramsIgnoreCase.hgt ?: 0.0
       if ( paramsIgnoreCase.lat && paramsIgnoreCase.lon )
       {
@@ -460,10 +460,10 @@ class ImageSpaceController
     }
 
     def result = [:]
-    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id  as String).findWhere()
+    def rasterEntry = RasterEntry.compositeId( paramsIgnoreCase.id as String ).findWhere()
     if ( rasterEntry )
     {
-      String inputFile = rasterEntry?.mainFile.name;
+      String inputFile = rasterEntry?.filename;
       result = projectionService.imageSpaceWKTMeasure( [filename: inputFile,
           wkt: jsonFeature.wkt,
           entryId: rasterEntry.entryId as Integer] );
