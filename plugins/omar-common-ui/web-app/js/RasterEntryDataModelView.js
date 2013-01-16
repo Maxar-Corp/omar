@@ -98,7 +98,7 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
 
 OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
     url: '/omar/federation/serverList',
-    el:"#Results",
+    el:"#ResultsView",
     initialize:function(params){
         this.dataTableEl = $(this.el).find("#DataTable")[0];
 
@@ -181,13 +181,11 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
     },
     resizeView:function()
     {
-        var wrapperHeight = $("#Results").height();
-        var tabHeight     = ($(".inner-center").height() - wrapperHeight);
-        var innerHeight =  wrapperHeight-(tabHeight);
-       // this.dataTable.fnSettings().oScroll.sY = innerHeight-32;
-        //alert(tabHeight + ","+
-        //    $(".dataTables_wrapper").height() +"," + wrapperHeight +","+$(".inner-center").height());
-        this.dataTable.fnSettings().oScroll.sY =$(this.el).height();//$('.inner-center').height()-118;
+        var wrapperHeight = $(this.el).height();
+        var innerHeight =  $(".inner-center").height();
+        $(".dataTables_scrollBody").height(wrapperHeight-125);
+        this.dataTable.fnSettings().oScroll.sY =wrapperHeight-118;//-($(".dataTables_paginate").height() +
+                                                            // $(".dataTables_info").height());//$('.inner-center').height()-118;
         this.dataTable.fnAdjustColumnSizing();
     },
     getServerData:function( sUrl, aoData, fnCallback, oSettings ) {

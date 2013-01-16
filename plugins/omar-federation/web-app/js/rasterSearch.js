@@ -22,31 +22,33 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.mapView = new OMAR.views.Map(mapParams);
         this.mapView.setBboxModel(this.bboxModel);
         this.mapView.setPointModel(this.pointModel);
+        this.measurementUnitModel.set("unit", "meters");
+        this.mapView.setUnitModelView(this.measurementUnitView);
 
         this.mapView.setServerCollection(this.omarServerCollectionView.model);
         this.setElement(this.el);
-
-        this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this)
         this.rasterEntryDataModelView = new OMAR.views.RasterEntryDataModelView();
+        this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this)
         this.omarServerCollectionView.bind('onModelClicked', this.serverClicked, this);
 
-        //this.unitModelView = new OMAR.views.UnitModelView({el:"#measurementUnitViewId"});
-
-        this.measurementUnitModel.set("unit", "meters");
-        this.mapView.setUnitModelView(this.measurementUnitView);
+        this.viewSelector = new OMAR.views.ViewSelector({el:"#tabView",
+                                                         views:["#CustomQueryView",
+                                                                "#MapView",
+                                                                "#ResultsView"]});
+        this.viewSelector.bind("show", this.showTab, this);
     },
     events: {
         "click #SearchRasterId": "searchRaster"
     },
-    showTab:function(event, ui){
-        if(ui.index == 0)
+    showTab:function(idx){
+        if(idx == 0)
         {
         }
-        else if(ui.index == 1)
+        else if(idx == 1)
         {
             this.centerResize();
         }
-        if(ui.index == 2)
+        if(idx == 2)
         {
             this.rasterEntryDataModelView.resizeView();
         }
@@ -63,8 +65,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             );
         }
 
-        this.tabView.tabs("select", 2);
-        $(this.tabView).find("#ResultsLabelId").text(model.get("nickname"));
+        this.viewSelector.click(2);
+        this.viewSelector.setText(2, model.get("nickname"));
+        //this.tabView.tabs("select", 2);
+        //$(this.tabView).find("#ResultsLabelId").text(model.get("nickname"));
     },
     render:function(){
         if(this.bboxView)
@@ -105,15 +109,19 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             window.setTimeout(this.updateServers.bind(this),5000);
         }
 
-        this.mapView.setCqlFilterToFootprintLayers(this.toFootprintCql());
-        this.tabView = $( "#tabView" ).tabs(
+        if(this.mapView) this.mapView.setCqlFilterToFootprintLayers(this.toFootprintCql());
+
+/*        this.tabView = $( "#tabView" ).tabs(
             {   "active":1,
                 "show": $.proxy(this.showTab, this)
             });
-
+*/
+        // we must render everything first and fully initialize before we set a selected view
+        //
+        this.viewSelector.click(1);
     },
     updateFootprintCql:function(){
-        this.mapView.setCqlFilterToFootprintLayers(this.toFootprintCql());
+        if(this.mapView) this.mapView.setCqlFilterToFootprintLayers(this.toFootprintCql());
     },
     updateServers:function(){
         var collection =  this.omarServerCollectionView;
@@ -158,9 +166,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         //alert($("#tabView").height() + ", " + $(".inner-center").height()+","+$(".tabViewContainer").height());
         var h = $(".inner-center").height();
-        $("#tabView").height(h-110);
-        this.rasterEntryDataModelView.resizeView();
-        this.mapView.resizeView();
+        //$("#tabView").height(h-110);
+
+        if(this.rasterEntryDataModelView) this.rasterEntryDataModelView.resizeView();
+        if(this.mapView) this.mapView.resizeView();
     },
     toFootprintCql:function(){
         var result = "";

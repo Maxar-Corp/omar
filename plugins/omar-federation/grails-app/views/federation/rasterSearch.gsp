@@ -11,6 +11,7 @@
 
         <div class="ui-layout-north">
             <omar:securityClassificationBanner/>
+            <g:render plugin="omar-federation" template="/templates/searchTabView"/>
             <g:render plugin="omar-common-ui" template="/templates/federatedSearchMenu"/>
         </div>
 
@@ -36,8 +37,14 @@
 
             <div class="inner-center">
 
-                <g:render plugin="omar-federation" template="/templates/searchTabView"/>
-
+                <div id="CustomQueryView">Custom Query</div>
+                <div id="MapView">
+                    <g:render plugin="omar-common-ui" template="/templates/mapTemplate"/>
+                </div>
+                <div id="ResultsView">
+                    <table id="DataTable" cellspacing="0px" width="100%">
+                    </table>
+                </div>
             </div>
 
             <div class="inner-east">

@@ -11,7 +11,7 @@ var measureUnit = new Array();
     measureUnit = ["", "", "", "", "", ""];
 var convert = new CoordinateConversion();
 OMAR.views.Map = Backbone.View.extend({
-    el:"#mapContainer",
+    el:"#MapContainer",
     initialize:function(params){
         this.setElement(this.el);
         if(params.theme)
@@ -509,16 +509,13 @@ getMeasureUnit:function() {
         }
     },
     resizeView:function(){
-        /*
         var innerHeight = $(".inner-center").height();
-        var tabHeight   = innerHeight - $("#tabView").height();
-        //alert(tabHeight + ", " + $("#tabView").height() +"," + innerHeight+","+$("#map").height()+","+$("#mapReadouts").height()+","+$("#mapToolBar").height());
         var mapHeight = innerHeight-($("#mapToolBar").height()+
-                                     $("#mapReadouts").height()+
-                                      tabHeight);
-        */
+                                     $("#mapReadouts").height()
+                                      );
+        $("#MapContainer").height(innerHeight);
         //var mapHeight = $(this.el).height();//$('.inner-center').height()-100;
-        //$("#map").height(mapHeight);
+        $("#map").height(mapHeight);
 
         this.mapResize();
     },

@@ -8,7 +8,7 @@ class FederationController  {
     def grailsApplication
 
     def index(){
-        render view: 'rasterSearch'
+        forward controller: "federation", action: "rasterSearch"
     }
     def rasterSearch() {
         def wmsBaseLayers = (grailsApplication.config.wms as JSON).toString()

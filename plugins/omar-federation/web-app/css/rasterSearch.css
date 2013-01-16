@@ -206,14 +206,6 @@ body {
     /*display: inline-block;*/
     white-space: nowrap
 }
-
-#mapContainer{
-    postion:absolute;
-    margin:0;
-    border:0;
-    width:100%;
-    height:100%;
-}
 /*
  * Added float:left because of firefox not
  * positioning the divs properly
@@ -228,8 +220,13 @@ body {
     margin:0;
     border:0;
     width:100%;
-    height:100%;
-    float:left;
+   /*height:100%;*/
+    display: inline;
+    position: absolute;
+    text-align: center;
+    background: transparent;
+
+    z-index: -1;
 }
 
 #map{
@@ -243,10 +240,6 @@ body {
     float:left ;
 }
 
-#Results{
-    width:100%;
-    height: 100%;
-}
 
 .ui-widget-content { border: none; padding:0 0}
 /*
@@ -259,10 +252,36 @@ body {
     float:left;
    /* height:24;*/
 }
-#MapView{
+
+#MapContainer{
+    margin:0;
+    border:0;
     width:100%;
     height:100%;
 }
+
+#MapView{
+    width:100%;
+    height:100%;
+   /* display:none;*/
+}
+
+#ResultsView{
+    width:100%;
+    height: 100%;
+   /* display:none;*/
+    position:absolute;
+    float:left;
+}
+
+#CustomQueryView{
+    width:100%;
+    height:100%;
+/*    display:none;*/
+    position:absolute;
+    float:left;
+}
+
 #text {
     position: absolute;
     bottom: 1em;
@@ -290,6 +309,8 @@ body {
     background: none;
 }
 
+
+ /*
 #tabView .ui-state-default a {
     color: white;
     background-color: #252326;
@@ -301,10 +322,7 @@ body {
 #tabView .ui-state-active a {
     color: white;
     background-color: #003366;
-}
 
-#tabView {
-    padding: 0px;
 }
 
 #tabView .ui-tabs-nav {
@@ -314,8 +332,7 @@ body {
     -webkit-border-radius: 0px;
     border-radius: 0px;
 }
-
-
+   */
 .dataTables_wrapper {
     position: relative;
     clear: both;
