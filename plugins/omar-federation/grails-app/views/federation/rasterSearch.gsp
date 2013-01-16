@@ -49,6 +49,13 @@
 
             <div class="inner-east">
                 <g:render plugin="omar-federation" template="/templates/measurementTemplate"/>
+
+                <p><div class="niceBox">
+                    <div class="niceBoxHeader">Layer Switcher:</div>
+                    <div class="niceBoxBody">
+                        <div id="layerSwitcher" class="layerSwitcher"></div>
+                    </div>
+                </div></p>
             </div>
 
             <div class="ui-layout-south">

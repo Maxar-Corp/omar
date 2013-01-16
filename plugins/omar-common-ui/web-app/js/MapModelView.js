@@ -97,8 +97,10 @@ OMAR.views.Map = Backbone.View.extend({
                 center: [0, 0],
                 zoom: 3
             });
-            this.map.addControl(new OpenLayers.Control.LayerSwitcher());
-            
+            this.map.addControl(new OpenLayers.Control.LayerSwitcher({
+                    div:OpenLayers.Util.getElement("layerSwitcher" ), roundedCorner:false
+                }));
+        
             this.map.events.register("moveend", this, this.setCenter);
             this.map.events.register("moveend", this, this.setExtent);
             this.map.events.register("mousemove", this, this.setMouse);
