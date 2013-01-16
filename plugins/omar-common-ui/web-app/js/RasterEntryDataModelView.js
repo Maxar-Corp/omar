@@ -183,8 +183,8 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
     {
         var wrapperHeight = $(this.el).height();
         var innerHeight =  $(".inner-center").height();
-        $(".dataTables_scrollBody").height(wrapperHeight-125);
-        this.dataTable.fnSettings().oScroll.sY =wrapperHeight-118;//-($(".dataTables_paginate").height() +
+        $(".dataTables_scrollBody").height(wrapperHeight-90);
+        this.dataTable.fnSettings().oScroll.sY =wrapperHeight-90;//-($(".dataTables_paginate").height() +
                                                             // $(".dataTables_info").height());//$('.inner-center').height()-118;
         this.dataTable.fnAdjustColumnSizing();
     },
