@@ -1,4 +1,4 @@
-<div id="mapContainer">
+<div id="MapContainer">
     <div id="mapToolBar" class="olControlPanel"></div>
     <div id="map"></div>
     <div id="mapReadouts" class="box">

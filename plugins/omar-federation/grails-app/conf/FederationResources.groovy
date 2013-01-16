@@ -36,6 +36,7 @@ modules = {
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'DateModelView.js']
 
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'MapModelView.js']
+        resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'ViewSelector.js']
         resource url: [dir: 'js', file: 'ServerListModelView.js']
         resource url: [dir: 'js', file: 'RasterEntryDataModelView.js']
       //  resource url: [plugin: 'omar-common-ui', dir: 'images', file: 'calendar.gif']
