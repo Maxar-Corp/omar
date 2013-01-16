@@ -13,13 +13,12 @@ class RasterEntryFile
   }
 
   static mapping = {
-    columns {
-      name index: 'raster_entry_file_name_idx'
-      type index: 'raster_entry_file_type_idx'
-    }
+    name index: 'raster_entry_file_name_idx'
+    type index: 'raster_entry_file_type_idx'
+    rasterEntry index: 'raster_entry_file_raster_entry_idx'
   }
 
-  static RasterEntryFile initRasterEntryFile( def rasterEntryFileNode )
+  static RasterEntryFile initRasterEntryFile(def rasterEntryFileNode)
   {
     def rasterEntryFile = new RasterEntryFile()
 

@@ -14,9 +14,10 @@ class RasterDataSet
     repository( nullable: true )
   }
   static mapping = {
+    repository index: 'raster_data_set_repository_idx'
   }
 
-  static RasterDataSet initRasterDataSet( rasterDataSetNode, rasterDataSet = null )
+  static RasterDataSet initRasterDataSet(rasterDataSetNode, rasterDataSet = null)
   {
     rasterDataSet = rasterDataSet ?: new RasterDataSet()
 
@@ -41,7 +42,7 @@ class RasterDataSet
     return rasterDataSet
   }
 
-  def getFileFromObjects( def type = "main" )
+  def getFileFromObjects(def type = "main")
   {
     return fileObjects?.find { it.type == type }
   }
