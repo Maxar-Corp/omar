@@ -25,7 +25,7 @@ class MapViewController implements InitializingBean
     }
   }
 
-  def index( )
+  def index()
   {
     WMSQuery query = new WMSQuery();
     def rasterEntries = []
@@ -45,32 +45,38 @@ class MapViewController implements InitializingBean
     def kmlOverlays = []
 
     def mainFile;
-      def entryId;
-      def azimuth;
-      def imageIds = ""
-      def numberOfResLevels = 9999
-      rasterEntries.each { rasterEntry ->
-          stageImageService.checkAndAddStageImageJob(rasterEntry)
-        if(rasterEntry.numberOfResLevels < numberOfResLevels) numberOfResLevels = rasterEntry.numberOfResLevels
-        mainFile=rasterEntry.mainFile.name;
-        entryId = rasterEntry.entryId as Integer;
-        //azimuth = rasterEntry.azimuthAngle;
-          if(rasterEntry.azimuthAngle) azimuth=rasterEntry.azimuthAngle;
-          if(rasterEntry.title)
-          {
-              imageIds = imageIds?"${imageIds}, ${rasterEntry.title}": rasterEntry.title
-          }
-          else if(rasterEntry.filename)
-          {
-              imageIds = imageIds?"${imageIds}, ${(rasterEntry.filename as File).name}": (rasterEntry.filename as File).name
-          }
+    def entryId;
+    def azimuth;
+    def imageIds = ""
+    def numberOfResLevels = 9999
+    rasterEntries.each { rasterEntry ->
+      stageImageService.checkAndAddStageImageJob( rasterEntry )
+      if ( rasterEntry.numberOfResLevels < numberOfResLevels )
+      {
+        numberOfResLevels = rasterEntry.numberOfResLevels
+      }
+      mainFile = rasterEntry.filename;
+      entryId = rasterEntry.entryId as Integer;
+      //azimuth = rasterEntry.azimuthAngle;
+      if ( rasterEntry.azimuthAngle )
+      {
+        azimuth = rasterEntry.azimuthAngle
+      };
+      if ( rasterEntry.title )
+      {
+        imageIds = imageIds ? "${imageIds}, ${rasterEntry.title}" : rasterEntry.title
+      }
+      else if ( rasterEntry.filename )
+      {
+        imageIds = imageIds ? "${imageIds}, ${( rasterEntry.filename as File ).name}" : ( rasterEntry.filename as File ).name
+      }
       if ( ( rasterEntry.validModel != null ) &&
-           ( rasterEntry.validModel < 1 ) )
+          ( rasterEntry.validModel < 1 ) )
       {
         flash.message = "Valid rigorous model is not supported defaulting to a simple model."
       }
-          def overlays = RasterEntryFile.findAllByTypeAndRasterEntry( "kml", rasterEntry )
-         overlays?.each {overlay ->
+      def overlays = RasterEntryFile.findAllByTypeAndRasterEntry( "kml", rasterEntry )
+      overlays?.each { overlay ->
 
         def kmlOverlay = [:]
 
@@ -85,20 +91,20 @@ class MapViewController implements InitializingBean
     def model = [:]
 
 
-      model.rasterEntries = rasterEntries
-    model.imageIds=imageIds
-      model.numberOfResLevels = numberOfResLevels
+    model.rasterEntries = rasterEntries
+    model.imageIds = imageIds
+    model.numberOfResLevels = numberOfResLevels
     model.kmlOverlays = kmlOverlays
-    model.upIsUpAngle= imageSpaceService?.computeUpIsUp( mainFile, entryId)
-    model.azimuthAngle=azimuth
-    model.onDemand="${grailsApplication.config.stager.onDemand}"
+    model.upIsUpAngle = imageSpaceService?.computeUpIsUp( mainFile, entryId )
+    model.azimuthAngle = azimuth
+    model.onDemand = "${grailsApplication.config.stager.onDemand}"
     model.putAll( webMappingService.computeScales( rasterEntries ) )
     model.putAll( webMappingService.computeBounds( rasterEntries ) )
 
     return model
   }
 
-  def getKML( )
+  def getKML()
   {
 
     def kmlFile = RasterEntryFile.get( params.id )
@@ -127,7 +133,7 @@ class MapViewController implements InitializingBean
     }
   }
 
-  def multiLayer( )
+  def multiLayer()
   {
     WMSQuery query = new WMSQuery();
     def rasterEntries = []
@@ -147,7 +153,7 @@ class MapViewController implements InitializingBean
 
     rasterEntries.each { rasterEntry ->
 
-      RasterEntryFile.findAllByTypeAndRasterEntry( "kml", rasterEntry )?.each {kmlFile ->
+      RasterEntryFile.findAllByTypeAndRasterEntry( "kml", rasterEntry )?.each { kmlFile ->
         kmlOverlays << kmlFile
       }
     }
@@ -163,12 +169,12 @@ class MapViewController implements InitializingBean
     return model
   }
 
-  def test( )
+  def test()
   {
     [baseWMS: baseWMS, dataWMS: dataWMS]
   }
 
-  def imageSpace( )
+  def imageSpace()
   {
 
     def layers = params?.layers?.split( ',' )
@@ -178,18 +184,21 @@ class MapViewController implements InitializingBean
     if ( rasterEntries )
     {
       def rasterEntry = rasterEntries?.first()
-      def imageIds = rasterEntry.title?:(rasterEntry.filename as File).name
-       def nAdded = 0
-        for (entry in rasterEntries)
+      def imageIds = rasterEntry.title ?: ( rasterEntry.filename as File ).name
+      def nAdded = 0
+
+      for ( entry in rasterEntries )
       {
-          nAdded = stageImageService.checkAndAddStageImageJob(entry)
+        nAdded = stageImageService.checkAndAddStageImageJob( entry )
       }
-        def model = [
-              onDemand:"${grailsApplication.config.stager.onDemand}",
-              rasterEntry: rasterEntry,
-              stagingImagery: (nAdded > 0),
-              imageIds: imageIds,
-              upIsUpRotation: imageSpaceService?.computeUpIsUp( rasterEntry.mainFile.name, rasterEntry.entryId as Integer )
+
+      def model = [
+          onDemand: "${grailsApplication.config.stager.onDemand}",
+          rasterEntry: rasterEntry,
+          stagingImagery: ( nAdded > 0 ),
+          imageIds: imageIds,
+          upIsUpRotation: imageSpaceService?.computeUpIsUp( rasterEntry.filename, rasterEntry.entryId as Integer )
+
       ]
       return model
     }
@@ -199,18 +208,18 @@ class MapViewController implements InitializingBean
     }
   }
 
-  public void afterPropertiesSet( )
+  public void afterPropertiesSet()
   {
     baseWMS = grailsApplication.config.wms.base.layers
     dataWMS = grailsApplication.config.wms.data.raster
     format = grailsApplication.config.wms.supportIE6 ? "image/gif" : "image/png"
   }
 
-  def iview( )
+  def iview()
   {
     def rasterEntry = RasterEntry.get( params.id )
 
-    def inputFile = rasterEntry.mainFile.name
+    def inputFile = rasterEntry.filename
     def width
     def height
 
@@ -247,7 +256,7 @@ class MapViewController implements InitializingBean
 
   }
 
-  def shareLink( )
+  def shareLink()
   {
     render( view: 'imageLink' )
   }

@@ -27,11 +27,14 @@ class ImageChainService
    * @param bandSelection
    * @return true if the bandSelection list is valid or false otherwise
    */
-  static def validBandSelection( def numberOfInputBands, def bandSelection )
+  static def validBandSelection(def numberOfInputBands, def bandSelection)
   {
     def bandArray = []
     def validBands = true
-    if(bandSelection == "default") return validBands
+    if ( bandSelection == "default" )
+    {
+      return validBands
+    }
     if ( bandSelection instanceof String )
     {
       bandArray = bandSelection.split( "," )
@@ -65,7 +68,7 @@ class ImageChainService
    * @param params
    * @return a map that allocates a chain if specified and the keywordlist string representing the parameters
    */
-  def createImageChain( def entry, def params, def allocateChain = true )
+  def createImageChain(def entry, def params, def allocateChain = true)
   {
     def quickLookFlagString = params?.quicklook ?: "false"
     def interpolation = params.interpolation ? params.interpolation : "bilinear"
@@ -128,7 +131,7 @@ class ImageChainService
       //
       kwlString += "object${objectPrefixIdx}.type:${entry.className ? entry.className : 'ossimImageHandler'}\n"
       kwlString += "object${objectPrefixIdx}.entry:${entry.entryId}\n"
-      kwlString += "object${objectPrefixIdx}.filename:${entry.mainFile.name}\n"
+      kwlString += "object${objectPrefixIdx}.filename:${entry.filename}\n"
       kwlString += "object${objectPrefixIdx}.width:${entry.width}\n"
       kwlString += "object${objectPrefixIdx}.height:${entry.height}\n"
       if ( overviewFile.exists() )
@@ -150,10 +153,10 @@ class ImageChainService
           // by parenthesis
           //
           kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-            if(bands!="default")
-            {
-                kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
-            }
+          if ( bands != "default" )
+          {
+            kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
+          }
           ++objectPrefixIdx
         }
         else
@@ -174,10 +177,10 @@ class ImageChainService
           // by parenthesis
           //
           kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-            if(bands!="default")
-            {
-                kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
-            }
+          if ( bands != "default" )
+          {
+            kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
+          }
           ++objectPrefixIdx
         }
       }
@@ -350,7 +353,7 @@ class ImageChainService
    * @param params
    * @return A Map that contains the content-type and the chain object
    */
-  def createWriterChain( def params, def prefix = "" )
+  def createWriterChain(def params, def prefix = "")
   {
     def requestFormat = params?.format?.toLowerCase()
     def temporaryDirectory = params?.temporaryDirectory
@@ -406,7 +409,7 @@ class ImageChainService
     return [chain: writer, contentType: contentType, file: tempFile, ext: ext]
   }
 
-  def createModelFromTiePointSet( def entry )
+  def createModelFromTiePointSet(def entry)
   {
     def gptArray = new ossimGptVector();
     def dptArray = new ossimDptVector();
@@ -424,7 +427,7 @@ class ImageChainService
         if ( point.size() >= 2 )
         {
           dptArray.add( new ossimDpt( Double.parseDouble( point.getAt( 0 ) ),
-                  Double.parseDouble( point.getAt( 1 ) ) ) )
+              Double.parseDouble( point.getAt( 1 ) ) ) )
         }
       }
       splitGroundCoordinates.each {
@@ -432,7 +435,7 @@ class ImageChainService
         if ( point.size() >= 2 )
         {
           gptArray.add( new ossimGpt( Double.parseDouble( point.getAt( 1 ) ),
-                  Double.parseDouble( point.getAt( 0 ) ) ) )
+              Double.parseDouble( point.getAt( 0 ) ) ) )
         }
       }
     }
@@ -460,7 +463,7 @@ class ImageChainService
     return Util.createBilinearModel( dptArray, gptArray )
   }
 
-  def grabOptimizedImageFromChain( def inputChain, def params )
+  def grabOptimizedImageFromChain(def inputChain, def params)
   {
     def imageSource = new omsImageSource( inputChain.getChainAsImageSource() )
     def renderedImage = new omsRenderedImage( imageSource )
@@ -476,17 +479,17 @@ class ImageChainService
     if ( image.numBands == 1 )
     {
       result = Utility.convertToColorIndexModel( image.dataBuffer,
-              image.width,
-              image.height,
-              transparentFlag )
+          image.width,
+          image.height,
+          transparentFlag )
     }
     else
     {
       result = new BufferedImage(
-              colorModel,
-              image,
-              isRasterPremultiplied,
-              properties
+          colorModel,
+          image,
+          isRasterPremultiplied,
+          properties
       )
       if ( image.numBands == 3 )
       {

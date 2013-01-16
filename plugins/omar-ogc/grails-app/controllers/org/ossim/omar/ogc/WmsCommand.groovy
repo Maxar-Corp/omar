@@ -50,11 +50,11 @@ class WmsCommand
 
 
   static constraints = {
-    bbox(nullable: true,validator: {val, obj ->
+    bbox( nullable: true, validator: { val, obj ->
       def message = true
-      def requestLowerCase =  obj.request?.toLowerCase()
-      if ( (requestLowerCase == "getmap") ||
-           (requestLowerCase == "getfeatureinfo" ))
+      def requestLowerCase = obj.request?.toLowerCase()
+      if ( ( requestLowerCase == "getmap" ) ||
+          ( requestLowerCase == "getfeatureinfo" ) )
       {
         if ( !val )
         {
@@ -62,7 +62,7 @@ class WmsCommand
         }
         else
         {
-          def box = val.split(",");
+          def box = val.split( "," );
           if ( box.length != 4 )
           {
             message = "BBOX parameter invalid.  Must be formatted with 4 parameters separated by commas and matching the form minx,miny,maxx,maxy in \n"
@@ -72,12 +72,12 @@ class WmsCommand
           {
             try
             {
-              Double.parseDouble(box[0])
-              Double.parseDouble(box[1])
-              Double.parseDouble(box[2])
-              Double.parseDouble(box[3])
+              Double.parseDouble( box[0] )
+              Double.parseDouble( box[1] )
+              Double.parseDouble( box[2] )
+              Double.parseDouble( box[3] )
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
               message = "BBOX parameter invalid. 1 or more of the paramters is an invalid decimal number."
             }
@@ -91,10 +91,10 @@ class WmsCommand
       message
     }
     )
-    width(nullable: true,validator: {val, obj ->
+    width( nullable: true, validator: { val, obj ->
       def message = true
       def tempRequest = obj.request?.toLowerCase()
-      if ( tempRequest == "getmap")
+      if ( tempRequest == "getmap" )
       {
         if ( !val )
         {
@@ -104,24 +104,24 @@ class WmsCommand
         {
           try
           {
-            def test = Integer.parseInt(val)
+            def test = Integer.parseInt( val )
             if ( test < 1 )
             {
               message = "WIDTH parameter invalid.  WIDTH is smaller than 1"
             }
           }
-          catch (Exception e)
+          catch ( Exception e )
           {
             message = "WIDTH parameter invalid.  The tested value is not a number or exceeds the range of an integer."
           }
         }
       }
       message
-    })
-    height(nullable: true,validator: {val, obj ->
+    } )
+    height( nullable: true, validator: { val, obj ->
       def message = true
       def tempRequest = obj.request?.toLowerCase()
-      if (tempRequest == "getmap")
+      if ( tempRequest == "getmap" )
       {
         if ( !val )
         {
@@ -131,21 +131,21 @@ class WmsCommand
         {
           try
           {
-            def test = Integer.parseInt(val)
+            def test = Integer.parseInt( val )
             if ( test < 1 )
             {
               message = "HEIGHT parameter invalid.  HEIGHT is smaller than 1"
             }
           }
-          catch (Exception e)
+          catch ( Exception e )
           {
             message = "HEIGHT parameter invalid.  The tested value is not a number or exceeds the range of an integer."
           }
         }
       }
       message
-    })
-    format(nullable: true,validator: {val, obj ->
+    } )
+    format( nullable: true, validator: { val, obj ->
       def message = true
       if ( obj.request?.toLowerCase() == "getmap" )
       {
@@ -156,17 +156,17 @@ class WmsCommand
         else
         {
           def formatTemp = val.toLowerCase()
-          if ( !(formatTemp == "image/png" ||
-                  formatTemp == "image/jpeg" ||
-                  formatTemp == "image/gif") )
+          if ( !( formatTemp == "image/png" ||
+              formatTemp == "image/jpeg" ||
+              formatTemp == "image/gif" ) )
           {
             message = "FORMAT parameter invalid.  Values can only be image/jpeg, image/png, or image/gif"
           }
         }
       }
       message
-    })
-    layers(nullable: true,validator: {val, obj ->
+    } )
+    layers( nullable: true, validator: { val, obj ->
       def message = true
       if ( obj.request?.toLowerCase() == "getmap" )
       {
@@ -176,19 +176,19 @@ class WmsCommand
         }
       }
       message
-    })
-    styles(nullable: true)//,validator: {val, obj ->
-      //def message = true
-      //if ( val == null )
-      //{
-      //  message = "STYLES parameter not found.  This is a required parameter."
-      //}
-      //message
+    } )
+    styles( nullable: true )//,validator: {val, obj ->
+    //def message = true
+    //if ( val == null )
+    //{
+    //  message = "STYLES parameter not found.  This is a required parameter."
+    //}
+    //message
     //})
-    srs(nullable: true,validator: {val, obj ->
+    srs( nullable: true, validator: { val, obj ->
       def message = true
-      if ( (obj.request?.toLowerCase() == "getmap") ||
-           (obj.request?.toLowerCase() == "getfeatureinfo" ))
+      if ( ( obj.request?.toLowerCase() == "getmap" ) ||
+          ( obj.request?.toLowerCase() == "getfeatureinfo" ) )
       {
         if ( !val )
         {
@@ -203,156 +203,156 @@ class WmsCommand
         }
       }
       message
-    })
-    service(nullable: true, validator: {val, obj ->
+    } )
+    service( nullable: true, validator: { val, obj ->
       true
-    })
-    version(nullable: true,validator: {val, obj ->
+    } )
+    version( nullable: true, validator: { val, obj ->
       true
-    })
-    request(validator: {val, obj ->
+    } )
+    request( validator: { val, obj ->
       def message = true
       if ( !val )
       {
         message = "REQUEST parameter not found.  Values can be getmap, getcapabilities"
       }
-      else if ( !(val.toLowerCase() in ["getmap", "getfeatureinfo", "getcapabilities", "getkml", "getkmz"]) )
+      else if ( !( val.toLowerCase() in ["getmap", "getfeatureinfo", "getcapabilities", "getkml", "getkmz"] ) )
       {
         message = "REQUEST parameter ${val} is not valid, value can only be GetMap, GetFeatureInfo, GetCapabilities or GetKml."
       }
       message
-    })
-    transparent(nullable: true)
-    bgcolor(nullable: true,
-      validator: {val, obj ->
-      def message = true
-      if ( val )
-      {
-        if ( obj.request?.toLowerCase() == "getmap" )
-        {
-          if ( !val.startsWith("0x") )
+    } )
+    transparent( nullable: true )
+    bgcolor( nullable: true,
+        validator: { val, obj ->
+          def message = true
+          if ( val )
           {
-            message = "BGCOLOR parameter invalid.  Value must start with 0x"
-          }
-          else if ( val.size() != 8 )
-          {
-            message = "BGCOLOR parameter invalid.  Value must be 8 characters long: example 0xFFFFFF is a white background"
-          }
-          else
-          {
-            try
+            if ( obj.request?.toLowerCase() == "getmap" )
             {
-              Integer.decode("0x" + val[2] + val[3])
-              Integer.decode("0x" + val[4] + val[5])
-              Integer.decode("0x" + val[6] + val[7])
+              if ( !val.startsWith( "0x" ) )
+              {
+                message = "BGCOLOR parameter invalid.  Value must start with 0x"
+              }
+              else if ( val.size() != 8 )
+              {
+                message = "BGCOLOR parameter invalid.  Value must be 8 characters long: example 0xFFFFFF is a white background"
+              }
+              else
+              {
+                try
+                {
+                  Integer.decode( "0x" + val[2] + val[3] )
+                  Integer.decode( "0x" + val[4] + val[5] )
+                  Integer.decode( "0x" + val[6] + val[7] )
+                }
+                catch ( Exception e )
+                {
+                  message = "BGCOLOR parameter invalid.  Individual values are not valid hex range of 00-FF"
+                }
+              }
             }
-            catch (Exception e)
+          }
+          message
+        } )
+    time( nullable: true,
+        validator: { val, obj ->
+          def message = true
+          if ( val )
+          {
+
+          }
+          message
+        } )
+    stretch_mode( nullable: true,
+        validator: { val, obj ->
+          def message = true
+          if ( val )
+          {
+          }
+          message
+        } )
+    stretch_mode_region( nullable: true,
+        validator: { val, obj ->
+          def message = true
+          if ( obj.request?.toLowerCase() == "getmap" )
+          {
+            if ( val )
             {
-              message = "BGCOLOR parameter invalid.  Individual values are not valid hex range of 00-FF"
+              if ( !( val.toLowerCase() in ["global", "viewport"] ) )
+              {
+                message = "STRETCH_MODE_REGION parameter invalid.  Values can be global or viewport"
+              }
             }
           }
-        }
-      }
-      message
-    })
-    time(nullable: true,
-      validator: {val, obj ->
-      def message = true
-      if ( val )
-      {
-
-      }
-      message
-    })
-    stretch_mode(nullable: true,
-            validator: {val, obj ->
-      def message = true
-      if ( val )
-      {
-      }
-      message
-    })
-    stretch_mode_region(nullable: true,
-            validator: {val, obj ->
-      def message = true
-      if ( obj.request?.toLowerCase() == "getmap" )
-      {
-        if ( val )
-        {
-          if ( !(val.toLowerCase() in ["global", "viewport"]) )
+          message
+        } )
+    rotate( nullable: true,
+        validator: { val, obj ->
+          def message = true
+          if ( obj.request?.toLowerCase() == "getmap" )
           {
-            message = "STRETCH_MODE_REGION parameter invalid.  Values can be global or viewport"
+            if ( val )
+            {
+              try
+              {
+                Double.parseDouble( val )
+              }
+              catch ( Exception e )
+              {
+                message = "ROTATE parameter invalid.  Value does not appear to be a valid floating number."
+              }
+            }
           }
-        }
-      }
-      message
-    })
-    rotate(nullable: true,
-           validator: {val, obj ->
+          message
+        } )
+    quicklook( nullable: true )
+    null_flip( nullable: true )
+    exceptions( nullable: true )
+    bands( nullable: true )
+    filter( nullable: true )
+    brightness( nullable: true )
+    contrast( nullable: true )
+    interpolation( nullable: true )
+    x( nullable: true, validator: { val, obj ->
       def message = true
-      if ( obj.request?.toLowerCase() == "getmap" )
+      if ( obj.request?.toLowerCase() == "getfeatureinfo" )
       {
-        if ( val )
-        {
-          try
-          {
-            Double.parseDouble(val)
-          }
-          catch (Exception e)
-          {
-            message = "ROTATE parameter invalid.  Value does not appear to be a valid floating number."
-          }
-        }
       }
+
       message
-    })
-    quicklook(nullable:  true)
-    null_flip(nullable:  true)
-    exceptions(nullable:  true)
-    bands(nullable:  true)
-    filter(nullable:  true)
-    brightness(nullable:  true)
-    contrast(nullable:  true)
-    interpolation(nullable:  true)
-    x(nullable:  true, validator: { val, obj->
-        def message = true
-        if ( obj.request?.toLowerCase() == "getfeatureinfo" )
-        {
-        }
+    } )
+    y( nullable: true )
+    query_layers( nullable: true,
+        validator: { val, obj ->
+          def message = true
 
-        message
-     })
-    y(nullable:  true)
-    query_layers(nullable: true,
-            validator:  {val, obj ->
-        def message = true
+          if ( obj.request?.toLowerCase() == "getfeatureinfo" )
+          {
+          }
 
-        if ( obj.request?.toLowerCase() == "getfeatureinfo" )
-        {
-        }
-
-        message
-    })
-    info_format(nullable: true)
-    feature_count(nullable: true)
+          message
+        } )
+    info_format( nullable: true )
+    feature_count( nullable: true )
   }
 
   def toMap()
   {
     return [bbox: bbox, width: width, height: height, format: format, layers: layers, srs: srs, service: service,
-            version: version, request: request, transparent: transparent, bgcolor: bgcolor, styles: styles,
-            stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
-            sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, rotate: rotate,
-            time: time, null_flip: null_flip, bands: bands, exceptions: exceptions, filter: filter,
-            quicklook: quicklook, brightness: brightness, contrast: contrast, interpolation: interpolation].sort { it.key }
+        version: version, request: request, transparent: transparent, bgcolor: bgcolor, styles: styles,
+        stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
+        sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, rotate: rotate,
+        time: time, null_flip: null_flip, bands: bands, exceptions: exceptions, filter: filter,
+        quicklook: quicklook, brightness: brightness, contrast: contrast, interpolation: interpolation].sort { it.key }
   }
 
   def customParametersToMap()
   {
     [bands: bands, stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, sharpen_mode: sharpen_mode,
-            sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, rotate: rotate,
-            time: time, null_flip: null_flip, exceptions: exceptions, filter: filter, quicklook: quicklook,
-            brightness: brightness, contrast: contrast, interpolation: interpolation].sort() {it.key}
+        sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, rotate: rotate,
+        time: time, null_flip: null_flip, exceptions: exceptions, filter: filter, quicklook: quicklook,
+        brightness: brightness, contrast: contrast, interpolation: interpolation].sort() { it.key }
   }
 
   public String toString()
@@ -362,7 +362,7 @@ class WmsCommand
 
   String[] getDates()
   {
-    return (time) ? time.split(",") : []
+    return ( time ) ? time.split( "," ) : []
   }
 
   def getBounds()
@@ -370,7 +370,7 @@ class WmsCommand
     def result = null
     if ( bbox )
     {
-      def splitBbox = bbox.split(",")
+      def splitBbox = bbox.split( "," )
       try
       {
         def minx = splitBbox[0] as Double
@@ -380,13 +380,13 @@ class WmsCommand
         def w = width
         def h = height
         result = [minx: minx,
-                miny: miny,
-                maxx: maxx,
-                maxy: maxy,
-                width: w as Integer,
-                height: h as Integer]
+            miny: miny,
+            maxx: maxx,
+            maxy: maxy,
+            width: w as Integer,
+            height: h as Integer]
       }
-      catch (Exception e)
+      catch ( Exception e )
       {
         result = null
       }
@@ -401,15 +401,15 @@ class WmsCommand
 
     if ( dates )
     {
-      (0..<dates.size()).each {
-        def range = ISO8601DateParser.getDateRange(dates[it])
+      ( 0..<dates.size() ).each {
+        def range = ISO8601DateParser.getDateRange( dates[it] )
 
         if ( range.size() > 0 )
         {
-          result.add(range[0])
+          result.add( range[0] )
           if ( range.size() > 1 )
           {
-            result.add(range[1])
+            result.add( range[1] )
           }
         }
       }
@@ -420,15 +420,15 @@ class WmsCommand
 
   def getBackgroundColor()
   {
-    def result = new Color(0, 0, 0)
+    def result = new Color( 0, 0, 0 )
     if ( bgcolor )
     {
       if ( bgcolor.size() == 8 )
       {
         // skip 0x
-        result = new Color(Integer.decode("0x" + bgcolor[2] + bgcolor[3]),
-                Integer.decode("0x" + bgcolor[4] + bgcolor[5]),
-                Integer.decode("0x" + bgcolor[6] + bgcolor[7]))
+        result = new Color( Integer.decode( "0x" + bgcolor[2] + bgcolor[3] ),
+            Integer.decode( "0x" + bgcolor[4] + bgcolor[5] ),
+            Integer.decode( "0x" + bgcolor[6] + bgcolor[7] ) )
       }
     }
 
@@ -440,7 +440,7 @@ class WmsCommand
     def result = false;
     if ( transparent )
     {
-      result = Boolean.toBoolean(transparent)
+      result = Boolean.toBoolean( transparent )
     }
     return result
   }
@@ -448,9 +448,9 @@ class WmsCommand
   def createErrorPairs()
   {
     def result = [[:]]
-    errors?.each {err ->
+    errors?.each { err ->
       def field = "${err.fieldError.arguments[0]}"
-      def code = err.getFieldError(field)?.code
+      def code = err.getFieldError( field )?.code
       result << [field: field, code: code]
     }
     result
@@ -460,10 +460,10 @@ class WmsCommand
   {
     def errorString = ""
     def errorPairs = createErrorPairs()
-    errorPairs.each {pair ->
+    errorPairs.each { pair ->
       if ( pair.code )
       {
-          errorString +=  ("${pair.field}: ${pair.code}\n")
+        errorString += ( "${pair.field}: ${pair.code}\n" )
       }
     }
 
