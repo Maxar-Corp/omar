@@ -27,7 +27,7 @@ body {
 .ui-layout-pane-north {
     height:          57px !important;
     overflow:        visible;
-    z-index: 99 !important;
+    z-index: 999 !important;
     padding-left: 0px;
     padding-top: 0px;
     padding-right: 0px;
@@ -199,7 +199,7 @@ body {
 }
 
 #omarServerCollectionId{
-    height:100%;
+    height:100px;
     min-height: 100px;
     width:auto;
     /*overflow-y:scroll;*/
@@ -228,7 +228,8 @@ body {
     margin:0;
     border:0;
     width:100%;
-    height:90%;
+    height:100%;
+    float:left;
 }
 
 #map{
@@ -364,7 +365,7 @@ body {
     height: 19px;
     float: left;
     cursor: pointer;
-    *cursor: hand;
+    /*cursor: hand;*/
     color: #111 !important;
 }
 .paginate_disabled_previous:hover, .paginate_enabled_previous:hover,
@@ -432,3 +433,23 @@ div.niceBoxBody {
   padding: 3px;
 }
 
+
+
+
+.jMenu{
+    list-style: none;
+    margin: 0px 0px 0px 0px;
+    padding: 0;
+    text-align:left;
+    height: 32;
+    max-height: 32;
+
+}
+.jMenu ul{
+    list-style: none;
+}
+.jMenu li {
+    display: inline;
+    float:left;
+
+}

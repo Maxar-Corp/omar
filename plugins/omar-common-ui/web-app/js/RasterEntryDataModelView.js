@@ -82,7 +82,7 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                 var omarUrlRawButton ="<button onclick=\"javascript:window.open(\'"+omarUrlRaw+"\')\">Raw</button>";
                 var omarUrlOrthoButton ="<button onclick=\"javascript:window.open(\'"+omarUrlOrtho+"\')\">Ortho</button>";
                 model.set({
-                    "ground_geom":JSON.stringify(feature.geometry)
+                    "ground_geom":""//JSON.stringify(feature.geometry)
                     ,"thumbnail":"<img src='"+omarUrl+"/thumbnail/show/"+modelId+"?size=128'></img>"
                     ,"view": "<ul>"+omarUrlRawButton + omarUrlOrthoButton+"</ul>"
 
@@ -98,20 +98,22 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
 
 OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
     url: '/omar/federation/serverList',
-    el:"#DataTable",
+    el:"#Results",
     initialize:function(params){
-        if(this.el){
-            this.dataTable = $(this.el).dataTable({
+        this.dataTableEl = $(this.el).find("#DataTable")[0];
+
+        if(this.dataTableEl){
+            this.dataTable = $(this.dataTableEl).dataTable({
                 "aoColumnDefs": [
-                    { "aTargets":[0], "sTitle": "ID",   "mDataProp": "id" }
-                    ,{ "aTargets":[1], "sTitle": "thumbnail", "mDataProp": "thumbnail","sWidth":"150", "bSearchable": false, "asSorting": [] }
-                    ,{ "aTargets":[2], "sTitle": "View", "mDataProp": "view", "bSearchable": false, "asSorting": [] }
-                    ,{ "aTargets":[3], "sTitle": "IID",   "mDataProp": "title" }
-                    ,{ "aTargets":[4], "sTitle": "IID2",   "mDataProp": "image_id" }
-                    ,{ "aTargets":[5], "sTitle": "NIIRS",   "mDataProp": "niirs" }
-                    ,{ "aTargets":[6], "sTitle": "ORGANIZATION",   "mDataProp": "organization" }
-                    ,{ "aTargets":[7], "sTitle": "AZIMUTH",   "mDataProp": "azimuth_angle" }
-                    ,{ "aTargets":[8], "sTitle": "GRAZING",   "mDataProp": "grazing_angle" }
+                    { "aTargets":[0], "sTitle": "ID", "sType":"string",  "mDataProp": "id", bSearchable:true}
+                    ,{ "aTargets":[1], "sTitle": "THUMBNAIL", "mDataProp": "thumbnail","sWidth":"150", "bSearchable": false, "asSorting": [] }
+                    ,{ "aTargets":[2], "sTitle": "VIEW", "mDataProp": "view", "bSearchable": false, "asSorting": [] }
+                    ,{ "aTargets":[3], "sTitle": "IID",   "sType":"string","mDataProp": "title" }
+                    ,{ "aTargets":[4], "sTitle": "IID2",   "sType":"string","mDataProp": "image_id" }
+                    ,{ "aTargets":[5], "sTitle": "NIIRS",   "sType":"string","mDataProp": "niirs" }
+                    ,{ "aTargets":[6], "sTitle": "ORGANIZATION",   "sType":"string","mDataProp": "organization" }
+                    ,{ "aTargets":[7], "sTitle": "AZIMUTH","sType":"string",   "mDataProp": "azimuth_angle" }
+                    ,{ "aTargets":[8], "sTitle": "GRAZING","sType":"string",   "mDataProp": "grazing_angle" }
                     ,{ "aTargets":[9], "sTitle": "SECURITY CLASS",   "mDataProp": "security_classification" }
                     ,{ "aTargets":[10], "sTitle": "SECURITY_CODE",   "mDataProp": "security_code" }
                     ,{ "aTargets":[11], "sTitle": "GEOM",   "mDataProp": "ground_geom", "bSearchable": false, "asSorting": [] }
@@ -151,17 +153,20 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
                     ,{ "aTargets":[45], "sTitle": "FILE TYPE",   "mDataProp": "file_type" }
                     ,{ "aTargets":[46], "sTitle": "CLASS NAME",   "mDataProp": "class_name" }
                 ],
+                "sDom": '<"top"flp>rt<"bottom"i><"clear">',
                 "sScrollX": "100%",
+                "sScrollY":1,
                 "bScrollCollapse": true,
                 "bPaginate": true,
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
-                "bDeferRender": true,
+                "bDeferRender": false,
                 "bJQueryUI": false,//,
                 "bServerSide":true,
+                'bFilter': false,
+                "aLengthMenu": [1,10,25,50,100,200],
                 "fnServerData": $.proxy(this.getServerData,this)
             });
-
 
         }
         this.model = new OMAR.models.RasterEntryDataCollection();
@@ -178,8 +183,11 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
     {
         var wrapperHeight = $("#Results").height();
         var tabHeight     = ($(".inner-center").height() - wrapperHeight);
-        var innerHeight =  wrapperHeight-(tabHeight*2);
-        this.dataTable.fnSettings().oScroll.sY = innerHeight;
+        var innerHeight =  wrapperHeight-(tabHeight);
+       // this.dataTable.fnSettings().oScroll.sY = innerHeight-32;
+        //alert(tabHeight + ","+
+        //    $(".dataTables_wrapper").height() +"," + wrapperHeight +","+$(".inner-center").height());
+        this.dataTable.fnSettings().oScroll.sY =$(this.el).height();//$('.inner-center').height()-118;
         this.dataTable.fnAdjustColumnSizing();
     },
     getServerData:function( sUrl, aoData, fnCallback, oSettings ) {
@@ -192,9 +200,10 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
         if(sUrl&&this.model&&wfsModel)
         {
             result.iTotalRecords = wfsModel.get("numberOfFeatures");
-            var searchable = oSettings.aoColumns[oSettings.aaSorting[0][0]].bSearchable;
+            //var searchable = oSettings.aoColumns[oSettings.aaSorting[0][0]].bSearchable;
             var oColumn = oSettings.aoColumns[ oSettings.aaSorting[0][0] ];
-            var sort = searchable?"[['"+oColumn.mDataProp.toLowerCase()+"','"+oSettings.aaSorting[0][1].toUpperCase()+"']]":"";
+            var sortDirection = oSettings.aaSorting[0][1];
+            var sort = sortDirection?"[['"+oColumn.mDataProp.toLowerCase()+"','"+oSettings.aaSorting[0][1].toUpperCase()+"']]":"";
             if((wfsModel.attributes.maxFeatures != oSettings._iDisplayLength)||
                 (wfsModel.attributes.offset != oSettings._iDisplayStart)||
                 (wfsModel.attributes.sort != sort)
@@ -209,7 +218,7 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
             model.url = this.wfsModel.toUrl()+"&callback=?";
             //alert(this.model.url);
             //alert("sorting by " + oColumn.mDataProp + " "+oSettings.aaSorting[0][1]);
-            if(wfsModel.dirty&&searchable)
+            if(wfsModel.dirty&&sort)
             {
                 this.model.reset();
                 var thisPtr = this;
@@ -222,10 +231,6 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
                         result.aaData = model.toJSON();
                         result.iTotalRecords =   wfsModel.get("numberOfFeatures");
                         result.iTotalDisplayRecords =   wfsModel.get("numberOfFeatures");
-                       // if(model.size())
-                       // {
-                       //     result.iTotalRecords = model.size();
-                       // }
                         fnCallback(result);
                         if((wfsModel.get("numberOfFeatures") < 1)&&(model.size()>0))
                         {
@@ -233,7 +238,7 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
                             result.iTotalDisplayRecords = model.size();
                             wfsModel.fetchCount();
                         }
-                        thisPtr.dataTable.fnAdjustColumnSizing();
+                        thisPtr.resizeView();
                      }
                 });
             }
@@ -246,34 +251,15 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
                     result.aaData = model.toJSON();
                 }
                 fnCallback(result);
-                //this.dataTable.fnAdjustColumnSizing();
             }
         }
         else
         {
             fnCallback(result);
         }
- //       setTimeout( function () {
-//            dataTable.fnAdjustColumnSizing();
-//        }, 10 );
-
-    },
+     },
     resetTable:function()
     {
-        /*
-         if(this.dataTable)
-         {
-         this.dataTable.fnClearTable();
-         var idx = 0;
-         for(idx = 0; idx < this.model.size();++idx)
-         {
-         var row = this.model.at(idx);
-         this.dataTable.fnAddData(row.toJSON());
-         }
-         this.dataTable.fnAdjustColumnSizing();
-         }
-         this.dataTable.fnReloadAjax();
-         */
     },
     wfsUrlChanged :function(params){
 
@@ -297,10 +283,8 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
     }
 });
 
-
 jQuery.fn.dataTableExt.aTypes.push(
     function ( sData ) {
         return 'html';
     }
 );
-

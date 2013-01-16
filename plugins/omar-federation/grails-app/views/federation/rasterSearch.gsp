@@ -17,7 +17,7 @@
         <div class="middle-center">
 
             <div class="inner-west">
-                <p><center>Show Coordinates in <g:select name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></center></p>
+                <p><center>Show Coordinates in <g:select styles="z-index:-1" name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></center></p>
 
                 <p><g:checkBox name="spatialSearch" value="" checked="true"/> Use Spatial</p>
 
@@ -35,7 +35,9 @@
             </div>
 
             <div class="inner-center">
+
                 <g:render plugin="omar-federation" template="/templates/searchTabView"/>
+
             </div>
 
             <div class="inner-east">
