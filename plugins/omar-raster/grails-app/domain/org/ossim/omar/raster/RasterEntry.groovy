@@ -1,7 +1,5 @@
 package org.ossim.omar.raster
 
-//import org.ossim.postgis.Geometry
-
 import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.Polygon
 import com.vividsolutions.jts.io.WKTReader
@@ -52,9 +50,7 @@ class RasterEntry
   Double cloudCover
   BigInteger styleId
   Boolean keepForever
-  //Geometry groundGeom
   Polygon groundGeom
-  //DateTime acquisitionDate
   Date acquisitionDate
   Integer validModel
 
@@ -63,7 +59,7 @@ class RasterEntry
   DateTime receiveDate
 
   BigInteger releaseId
-  // Just for testing...
+
   String fileType
   String className
 
@@ -75,11 +71,10 @@ class RasterEntry
 
   /** **************** END ADDING TAGS FROM MetaData to here  ******************/
 
-//  static hasOne = [metadata: RasterEntryMetadata]
-
   static belongsTo = [rasterDataSet: RasterDataSet]
 
   static hasMany = [fileObjects: RasterEntryFile]
+
   Collection fileObjects
 
   static namedQueries = {
@@ -96,38 +91,35 @@ class RasterEntry
   }
 
   static mapping = {
-      tiePointSet type: 'text'
-
-      indexId index: 'raster_entry_index_id_idx'
-      filename index: 'raster_entry_filename_idx'
-      imageId index: 'raster_entry_image_id_idx'
-      targetId index: 'raster_entry_target_id_idx'
-      productId index: 'raster_entry_product_id_idx'
-      sensorId index: 'raster_entry_sensor_id_idx'
-      missionId index: 'raster_entry_mission_id_idx'
-      imageCategory index: 'raster_entry_image_category_idx'
-      imageRepresentation index: 'raster_entry_image_representation_idx'
-      securityClassification index: 'raster_entry_security_classification_idx'
-      securityCode index: 'raster_entry_security_code_idx'
-      title index: 'raster_entry_title_idx'
-      countryCode index: 'raster_entry_country_code_idx'
-      beNumber index: 'raster_entry_be_number_idx'
-      validModel index: 'raster_entry_valid_model_idx'
-
-      // Just for testing
-      fileType index: 'raster_entry_filetype_idx'
-      className index: 'raster_entry_class_name_idx'
-
-      otherTagsXml type: 'text'//, index: 'raster_entry_metadata_other_tags_idx'
-
-      acquisitionDate index: 'raster_entry_acquisition_date_idx'
-      accessDate index: 'raster_entry_access_date_idx'
-      ingestDate index: 'raster_entry_ingest_date_idx'
-      receiveDate index: 'raster_entry_receive_date_idx'
-      releaseId index: 'raster_entry_release_id_idx'
-
-      groundGeom type: org.hibernatespatial.GeometryUserType
-      rasterDataSet index: 'raster_entry_raster_data_set_idx'
+    accessDate index: 'raster_entry_access_date_idx'
+    acquisitionDate index: 'raster_entry_acquisition_date_idx'
+    beNumber index: 'raster_entry_be_number_idx'
+    className index: 'raster_entry_class_name_idx'
+    countryCode index: 'raster_entry_country_code_idx'
+    entryId index: 'raster_entry_entry_id_idx'
+    fileType index: 'raster_entry_filetype_idx'
+    filename index: 'raster_entry_filename_idx'
+    groundGeom type: org.hibernatespatial.GeometryUserType
+    imageCategory index: 'raster_entry_image_category_idx'
+    imageId index: 'raster_entry_image_id_idx'
+    imageRepresentation index: 'raster_entry_image_representation_idx'
+    indexId index: 'raster_entry_index_id_idx'
+    ingestDate index: 'raster_entry_ingest_date_idx'
+    missionId index: 'raster_entry_mission_id_idx'
+    niirs index: 'raster_entry_niirs_idx'
+    otherTagsXml type: 'text'//, index: 'raster_entry_metadata_other_tags_idx'
+    productId index: 'raster_entry_product_id_idx'
+    rasterDataSet index: 'raster_entry_raster_data_set_idx'
+    receiveDate index: 'raster_entry_receive_date_idx'
+    releaseId index: 'raster_entry_release_id_idx'
+    securityClassification index: 'raster_entry_security_classification_idx'
+    securityCode index: 'raster_entry_security_code_idx'
+    sensorId index: 'raster_entry_sensor_id_idx'
+    targetId index: 'raster_entry_target_id_idx'
+    tiePointSet type: 'text'
+    title index: 'raster_entry_title_idx'
+    title wacCode: 'raster_entry_wac_code_idx'
+    validModel index: 'raster_entry_valid_model_idx'
   }
 
   static constraints = {
@@ -177,7 +169,7 @@ class RasterEntry
     styleId( nullable: true )
     keepForever( nullable: true )
     validModel( nullable: true )
-    // Just for testing
+
     fileType( nullable: true )
     className( nullable: true )
 
