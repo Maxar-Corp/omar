@@ -96,7 +96,6 @@ class RasterEntry
   }
 
   static mapping = {
-    columns {
       tiePointSet type: 'text'
 
       indexId index: 'raster_entry_index_id_idx'
@@ -110,6 +109,7 @@ class RasterEntry
       imageRepresentation index: 'raster_entry_image_representation_idx'
       securityClassification index: 'raster_entry_security_classification_idx'
       securityCode index: 'raster_entry_security_code_idx'
+      title index: 'raster_entry_title_idx'
       countryCode index: 'raster_entry_country_code_idx'
       beNumber index: 'raster_entry_be_number_idx'
       validModel index: 'raster_entry_valid_model_idx'
@@ -128,7 +128,6 @@ class RasterEntry
 
       groundGeom type: org.hibernatespatial.GeometryUserType
       rasterDataSet index: 'raster_entry_raster_data_set_idx'
-    }
   }
 
   static constraints = {
