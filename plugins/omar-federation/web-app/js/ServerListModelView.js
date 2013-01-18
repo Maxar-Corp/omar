@@ -200,14 +200,18 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         {
             $(childrenToDelete[idx]).remove();
         }
-
         for(idx = 0; idx < this.model.size();++idx)
         {
             var model = this.model.at(idx);
             var el = $(this.el).find("#"+model.id);
             if(el.size()==0)
             {
-                $(this.el).append(this.makeServer(model));
+                var server =this.makeServer(model);
+                var serverResult = $(server).appendTo(this.el);
+                var modelId = model.id;
+                $(this.el).delegate("#omar-server-url-"+model.id, "click", $.proxy(this.modelClicked,
+                    this, model.id));
+
             }
             else
             {
@@ -217,6 +221,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         }
 
     },
+
     getCount : function(modelId){
 
     },
@@ -251,7 +256,6 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     {
         this.lastClickedServerId = id;
         this.trigger("onModelClicked", id);
-        //alert(id);
     },
     getLastClickedModel:function(){
       return this.model.get(this.lastClickedServerId);
@@ -301,7 +305,6 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             }
         }
     },
-
     render:function()
     {
         if(this.el)
@@ -314,7 +317,8 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                 var server = this.makeServer(model);
                 var serverResult = $(server).appendTo(this.el);
                 var modelId = model.id;
-                var url = $(serverResult).find("#omar-server-url").click($.proxy(this.modelClicked, this, modelId));
+                $(this.el).delegate("#omar-server-url-"+modelId, "click", $.proxy(this.modelClicked,
+                    this, modelId));
             }
         }
     }
