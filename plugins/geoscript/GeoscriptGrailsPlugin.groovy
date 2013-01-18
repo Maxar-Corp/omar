@@ -1,4 +1,4 @@
-import geoscript.render.Map as GeoscriptMap
+//import geoscript.render.Map as GeoscriptMap
 import geoscript.geom.Bounds
 import org.geotools.map.FeatureLayer
 
@@ -39,7 +39,7 @@ Brief description of the plugin.
   def doWithDynamicMethods = { ctx ->
     // TODO Implement registering dynamic methods to classes (optional)
     Hints.putSystemDefault( Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE )
-
+/*
     GeoscriptMap.metaClass.setUpRendering = {->
 
       // Add Layers
@@ -104,15 +104,17 @@ Brief description of the plugin.
       }
       setBounds(b)
     }
-
+*/
+/*
     GeoscriptMap.metaClass.addLayer = { org.geotools.map.FeatureLayer mapLayer ->
       layers.add(mapLayer)
     }
-
+*/
+/*
     GeoscriptMap.metaClass.addLayer = { geoscript.wms.WMSLayer wmsLayer ->
       layers.add(wmsLayer)
     }
-
+*/
   }
 
   def doWithApplicationContext = { applicationContext ->
