@@ -1,62 +1,89 @@
 OMAR.models.BBOX = Backbone.Model.extend(
-{
-    defaults:{
-        "minx": -180.0,
-        "miny": -90.0,
-        "maxx": 180.0,
-        "maxy": 90.0
-    },
-    initialize:function(options)
     {
-    },
-    toWmsString:function()
-    {
-        return (this.get("minx") + "," + this.get("miny") + "," +
+        defaults:{
+            "minx": -180.0,
+            "miny": -90.0,
+            "maxx": 180.0,
+            "maxy": 90.0
+        },
+        initialize:function(options)
+        {
+        },
+        toWmsString:function()
+        {
+            return (this.get("minx") + "," + this.get("miny") + "," +
                 this.get("maxx") + "," + this.get("maxy"));
-    },
-    validate:function(attrs)
-    {
-        if(attrs.minx && (!OMAR.isFloat(attrs.minx.toString())))
+        },
+        setFromWfsFeatureGeom:function(geom)
         {
-            return ("Minx value is invalid: " + attrs.minx);
-        }
-        if(attrs.miny && (!OMAR.isFloat(attrs.miny.toString())))
+            var minx = 9e20;
+            var maxx = -9e20;
+            var miny = 9e20;
+            var maxy = -9e20;
+            $(geom.coordinates[0]).each(function(idx,v){
+                    if(v[0] < minx) minx = v[0];
+                    if(v[0] > maxx) maxx = v[0];
+                    if(v[1] < miny) miny = v[1];
+                    if(v[1] > maxy) maxy = v[1];
+                }
+            );
+
+            this.set({"minx":minx
+                ,"maxx":maxx
+                ,"miny":miny
+                ,"maxy":maxy
+            });
+        },
+        getCenter: function(){
+            var result = {
+                x:(this.get("minx")+this.get("maxx"))*0.5,
+                y:(this.get("miny")+this.get("maxy"))*0.5
+            };
+            return result;
+        },
+        validate:function(attrs)
         {
-            return ("Miny value is invalid: " + attrs.miny);
-        }
-        if(attrs.maxx && (!OMAR.isFloat(attrs.maxx.toString())))
+            if(attrs.minx && (!OMAR.isFloat(attrs.minx.toString())))
+            {
+                return ("Minx value is invalid: " + attrs.minx);
+            }
+            if(attrs.miny && (!OMAR.isFloat(attrs.miny.toString())))
+            {
+                return ("Miny value is invalid: " + attrs.miny);
+            }
+            if(attrs.maxx && (!OMAR.isFloat(attrs.maxx.toString())))
+            {
+                return ("Maxx value is invalid: " + attrs.maxx);
+            }
+            if(attrs.maxy && (!OMAR.isFloat(attrs.maxy.toString())))
+            {
+                return ("Maxy value is invalid: " + attrs.maxy);
+            }
+            return null;
+        },
+        setFromWmsString:function(s)
         {
-            return ("Maxx value is invalid: " + attrs.maxx);
-        }
-        if(attrs.maxy && (!OMAR.isFloat(attrs.maxy.toString())))
+            var splitBounds = s.split(",");
+            if(splitBounds.length == 4)
+            {
+                this.minx = parseFloat(splitBounds[0]);
+                this.miny = parseFloat(splitBounds[1]);
+                this.maxx = parseFloat(splitBounds[2]);
+                this.maxy = parseFloat(splitBounds[3]);
+            }
+            return this;
+        },
+        toCql:function(columnName)
         {
-            return ("Maxy value is invalid: " + attrs.maxy);
+            var result = "";
+            var bad = this.validate(this.attributes);
+            if(!bad)
+            {
+                result = "BBOX(" + columnName + "," + this.toWmsString() + ")";
+            }
+            return result;
         }
-        return null;
-    },
-    setFromWmsString:function(s)
-    {
-        var splitBounds = s.split(",");
-        if(splitBounds.length == 4)
-        {
-            this.minx = parseFloat(splitBounds[0]);
-            this.miny = parseFloat(splitBounds[1]);
-            this.maxx = parseFloat(splitBounds[2]);
-            this.maxy = parseFloat(splitBounds[3]);
-        }
-        return this;
-    },
-    toCql:function(columnName)
-    {
-        var result = "";
-        var bad = this.validate(this.attributes);
-        if(!bad)
-        {
-            result = "BBOX(" + columnName + "," + this.toWmsString() + ")";
-        }
-        return result;
     }
-}
 );
 
 OMAR.views.BBOX = Backbone.View.extend({

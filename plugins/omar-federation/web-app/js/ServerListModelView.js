@@ -114,61 +114,69 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
              scope.updateServerView(obj);
        });
     },
+    fetchAndSetCount:function(id){
+        var model = this.model.get(id);
+        if(model.get("enabled"))
+        {
+            this.setBusy(model.id, true);
+            this.wfsServerCount.attributes.url = model.get("url")+"/wfs";
+            //wfs.set("url",model.get("url")+"/wfs");
+
+            if((model.userDefinedData.ajaxCountQuery) &&
+               (model.userDefinedData.ajaxCountQuery.readyState != 4)){
+                model.userDefinedData.ajaxCountQuery.abort();
+                model.userDefinedData.ajaxCountQuery = null;
+                this.omarServerCollectionView.setBusy(model.id, false);
+            }
+            model.userDefinedData.ajaxCountQuery = $.ajax({
+                url: this.wfsServerCount.toUrl()+"&callback=?",
+                cache:false,
+                type: "GET",
+                crossDomain:true,
+                dataType: "json",
+                timeout: 60000,
+                modelId:model.id,
+                scopePtr:this,
+                success: function(response) {
+                    if(response.numberOfFeatures!=null)
+                    {
+                        var numberOfFeatures = response.numberOfFeatures;
+                        this.scopePtr.setBusy(this.modelId, false);
+                        var tempModel = this.scopePtr.model.get(this.modelId);
+                        if(tempModel)
+                        {
+                            tempModel.set({"count":numberOfFeatures});
+                        }
+                    }
+                },
+                error: function(x, t, m) {
+                    var count = "Error";
+                    if(t==="timeout") {
+                        count = "Timeout"
+                    } else {
+                        //alert(JSON.stringify(x)+ " " +t + " " + m);
+                    }
+                    var tempModel = this.scopePtr.model.get(this.modelId);
+                    this.scopePtr.setBusy(this.modelId, false);
+                    if(tempModel)
+                    {
+                        tempModel.set({"count":count});
+                    }
+                }
+            });
+        }
+        else
+        {
+
+        }
+    },
     refreshServerCounts:function(){
         for(var idx = 0; idx <this.model.size();++idx )
         {
             var model = this.model.at(idx);
             if(model.get("enabled"))
             {
-                this.setBusy(model.id, true);
-                this.wfsServerCount.attributes.url = model.get("url")+"/wfs";
-                //wfs.set("url",model.get("url")+"/wfs");
-
-                if(model.userDefinedData.ajaxCountQuery && model.userDefinedData.ajaxCountQuery.readyState != 4){
-                    model.userDefinedData.ajaxCountQuery.abort();
-                    model.userDefinedData.ajaxCountQuery = null;
-                    this.omarServerCollectionView.setBusy(model.id, false);
-                }
-                model.userDefinedData.ajaxCountQuery = $.ajax({
-                    url: this.wfsServerCount.toUrl()+"&callback=?",
-                    cache:false,
-                    type: "GET",
-                    crossDomain:true,
-                    dataType: "json",
-                    timeout: 60000,
-                    modelId:model.id,
-                    scopePtr:this,
-                    success: function(response) {
-                        if(response.numberOfFeatures!=null)
-                        {
-                            var numberOfFeatures = response.numberOfFeatures;
-                            this.scopePtr.setBusy(this.modelId, false);
-                            var tempModel = this.scopePtr.model.get(this.modelId);
-                            if(tempModel)
-                            {
-                                tempModel.set({"count":numberOfFeatures});
-                            }
-                        }
-                    },
-                    error: function(x, t, m) {
-                        var count = "Error";
-                        if(t==="timeout") {
-                            count = "Timeout"
-                        } else {
-                            //alert(JSON.stringify(x)+ " " +t + " " + m);
-                        }
-                        var tempModel = this.scopePtr.model.get(this.modelId);
-                        this.scopePtr.setBusy(this.modelId, false);
-                        if(tempModel)
-                        {
-                            tempModel.set({"count":count});
-                        }
-                    }
-                });
-            }
-            else
-            {
-
+                this.fetchAndSetCount(model.id);
             }
         }
     },
