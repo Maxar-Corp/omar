@@ -41,7 +41,7 @@
                 <div id="MapView">
                     <g:render plugin="omar-common-ui" template="/templates/mapTemplate"/>
                 </div>
-                <div id="ResultsView">
+                <div id="ResultsView" >
                     <table id="DataTable" cellspacing="0px" width="100%">
                     </table>
                 </div>
