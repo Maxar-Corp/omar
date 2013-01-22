@@ -562,14 +562,17 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
                         result.aaData = model.toJSON();
                         result.iTotalRecords =   wfsModel.get("numberOfFeatures");
                         result.iTotalDisplayRecords =   wfsModel.get("numberOfFeatures");
-                        fnCallback(result);
                         if((wfsModel.get("numberOfFeatures") < 1)&&(model.size()>0))
                         {
                             result.iTotalRecords =        model.size();
                             result.iTotalDisplayRecords = model.size();
                             wfsModel.fetchCount();
                         }
+                        if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
+                        if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
+                        fnCallback(result);
                         thisPtr.dataTable.fnAdjustColumnSizing();
+
                         //thisPtr.blockGetServerData = true;
                         //thisPtr.dataTable.fnAdjustColumnSizing();
                         //thisPtr.blockGetServerData = false;
@@ -584,6 +587,8 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
                     result.iTotalDisplayRecords =   wfsModel.get("numberOfFeatures");
                     result.aaData = model.toJSON();
                 }
+                if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
+                if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
                 fnCallback(result);
                 //thisPtr.blockGetServerData = true;
                 //thisPtr.dataTable.fnAdjustColumnSizing();
