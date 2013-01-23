@@ -206,7 +206,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             var el = $(this.el).find("#"+model.id);
             if(el.size()==0)
             {
-                var server =this.makeServer(model);
+                var server = this.makeServer(model);
                 var serverResult = $(server).appendTo(this.el);
                 var modelId = model.id;
                 $(this.el).delegate("#omar-server-name-"+model.id, "click", $.proxy(this.modelClicked,
