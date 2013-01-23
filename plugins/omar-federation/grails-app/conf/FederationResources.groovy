@@ -5,6 +5,7 @@ modules = {
         resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
         resource url: [plugin: 'omar-common-ui', dir: 'js', file:'OMAR.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file:'hashmap.js']
+        resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
         resource url: [plugin: 'omar-core', dir: 'js', file: 'jquery.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery-ui.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery.layout-latest.js']
@@ -43,10 +44,24 @@ modules = {
       //  resource url: [plugin: 'omar-common-ui', dir: 'images', file: 'calendar.gif']
         resource url: [dir: 'css', file: 'rasterSearch.css']
         resource url: [dir: 'js', file: 'rasterSearch.js']
-        resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
 
     }
     federationAdmin{
-
+        resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
+        resource url: [plugin: 'omar-common-ui', dir: 'js', file:'OMAR.js']
+        resource url: [plugin: 'omar-core', dir: 'js', file: 'jquery.js']
+        resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery-ui.js']
+        resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery.layout-latest.js']
+        resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'json2.js']
+        resource url: [plugin: 'omar-common-ui', dir: 'js/underscore', file:'underscore-1.4.2.js']
+        resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'backbone-min.js']
+        resource url: [plugin: 'omar-common-ui', dir: 'css', file: 'jMenu.jquery.css']
+        resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'layout-default-latest.css']
+        resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'layout-default-latest.css']
+        resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery/smoothness', file: 'jquery-ui-1.9.2.custom.css']
+        resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'jquery-ui-timepicker-addon.css']
+        resource url: [dir: 'js', file: 'spin-min.js', plugin: 'omar-core']
+        resource url: [dir: 'css', file: 'admin.css']
+        resource url: [dir: 'js', file: 'admin.js']
     }
 }

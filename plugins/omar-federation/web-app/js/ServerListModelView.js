@@ -209,7 +209,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                 var server =this.makeServer(model);
                 var serverResult = $(server).appendTo(this.el);
                 var modelId = model.id;
-                $(this.el).delegate("#omar-server-url-"+model.id, "click", $.proxy(this.modelClicked,
+                $(this.el).delegate("#omar-server-name-"+model.id, "click", $.proxy(this.modelClicked,
                     this, model.id));
 
             }
@@ -217,6 +217,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             {
                 var countElement = $(el).find("#omar-server-count").get();
                 $(countElement).text(model.get("count"));
+                $("#omar-server-name-"+model.id).text(model.get("nickname"));
             }
         }
 
@@ -317,7 +318,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                 var server = this.makeServer(model);
                 var serverResult = $(server).appendTo(this.el);
                 var modelId = model.id;
-                $(this.el).delegate("#omar-server-url-"+modelId, "click", $.proxy(this.modelClicked,
+                $(this.el).delegate("#omar-server-name-"+modelId, "click", $.proxy(this.modelClicked,
                     this, modelId));
             }
         }

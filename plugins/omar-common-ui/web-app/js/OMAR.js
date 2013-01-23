@@ -16,6 +16,23 @@ OMAR.regexp.isoDate= /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0
 OMAR.regexp.isoPeriod=/^P(?:\d+Y|Y)?(?:\d+M|M)?(?:\d+D|D)?(?:T(?:\d+H|H)?(?:\d+M|M)?(?:\d+(?:\.\d{1,2})?S|S)?)?$/
 
 
+OMAR.defaultSpinnerOptions = {
+    lines: 13,
+    length: 7,
+    width: 4,
+    radius: 10,
+    corners: 1,
+    rotate: 0,
+    color: '#000',
+    speed: 1,
+    trail: 60,
+    shadow: false,
+    hwaccel: false,
+    className: 'spinner',
+    zIndex: 2e9,
+    top: 'auto',
+    left: 'auto'
+}
 
 /****
  * If you want a higher precision in OpenLayers inches per unit for meters then

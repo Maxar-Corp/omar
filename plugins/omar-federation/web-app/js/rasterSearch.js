@@ -55,18 +55,15 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     serverClicked:function(id){
         var cqlFilter = this.toCql();
-
         this.omarServerCollectionView.wfsServerCount.set("filter", cqlFilter);
 
         var model = this.omarServerCollectionView.getLastClickedModel();
+        var settings = {"url":model.get("url")+"/wfs",
+                        "filter":cqlFilter}
         if(model)
         {
-            this.rasterEntryDataModelView.wfsModel.set(
-                {"url":model.get("url")+"/wfs",
-                    "filter":cqlFilter}
-            );
+            this.rasterEntryDataModelView.wfsModel.set(settings)
         }
-
 
         this.viewSelector.click(2);
         this.viewSelector.setText(2, model.get("nickname"));

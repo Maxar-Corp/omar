@@ -1,5 +1,7 @@
 package omar.ossim.omar.federation
 
+import grails.converters.JSON
+import org.apache.xerces.util.ParserConfigurationSettings
 import org.jivesoftware.smack.ConnectionConfiguration
 import org.jivesoftware.smack.XMPPConnection
 import org.jivesoftware.smackx.muc.MultiUserChat
@@ -8,9 +10,12 @@ import org.jivesoftware.smackx.provider.VCardProvider
 import org.ossim.omar.federation.FederatedServer
 import org.ossim.omar.federation.JabberParticipantListener
 import org.springframework.beans.factory.InitializingBean
+import org.ossim.omar.core.ConfigSettings
+import groovy.json.JsonBuilder
 
 class JabberFederatedServerService implements InitializingBean{
     def grailsApplication
+    def federationConfigSettingsService
     def vCard
     def jabberDomain
     def jabberPort
@@ -20,7 +25,36 @@ class JabberFederatedServerService implements InitializingBean{
     def jabberChatRoomPassword
     def jabber
     def participantListener
+    def enabled
+    void loadFromTable(){
+        def record = federationConfigSettingsService.getSettingsRecord()
+        if(record)
+        {
+            def settings = JSON.parse(record.settings);
+            if(settings)
+            {
+                vCard = new VCard()
+                vCard.setNickName(settings?.vcard?.nickName);
+                vCard.setFirstName(settings?.vcard?.firstName);
+                vCard.setLastName(settings?.vcard?.lastName);
 
+                vCard.setField("IP", settings.vcard.IP)
+                vCard.setField("URL", settings.vcard.URL)
+
+                jabberDomain              = settings?.server?.ip
+                jabberPort                = Integer.parseInt(settings?.server?.port)
+                jabberAdminUser           = settings?.server?.username
+                jabberAdminPassword       = settings?.server?.password
+                jabberChatRoomId          = settings?.chatRoom?.id
+                jabberChatRoomPassword    = settings?.chatRoom?.password
+                enabled = settings?.chatRoom?.enabled
+                vCard.setJabberId("${settings.vcard.IP}@${jabberDomain}")//"${config?.omar?.serverIP}@${jabberDomain}")
+            }
+           // println vCard.toString()
+           // println "${jabberDomain}, ${jabberPort}, ${jabberAdminUser}, ${jabberAdminPassword}, ${jabberChatRoomId}, ${jabberChatRoomPassword}"
+        }
+    }
+    /*
     def loadFromConfig(def config)
     {
         vCard = new VCard()
@@ -57,6 +91,7 @@ class JabberFederatedServerService implements InitializingBean{
         jabberChatRoomPassword    = federation?.chatRoom?.password
         vCard.setJabberId("${config?.omar?.serverIP}@${jabberDomain}")
     }
+    */
     def isConnected()
     {
         jabber?.connection?.isConnected()
@@ -90,8 +125,8 @@ class JabberFederatedServerService implements InitializingBean{
                 fullUser =fullUser.replaceAll(~/\@|\.|\ |\&/, "")
                 FederatedServer.withTransaction{
                     def federatedServer = new FederatedServer([serverId:fullUser,
-                                                               available: true,
-                                                               vcard: tempCard.toString()])
+                            available: true,
+                            vcard: tempCard.toString()])
                     federatedServer.save()
                 }
             }
@@ -126,7 +161,19 @@ class JabberFederatedServerService implements InitializingBean{
                 ]
             }
         }
+        /*
+        if (!result)
+        {
+            def fullUser = grailsApplication.config?.omar?.serverIP;
 
+           result << [id: fullUser.replaceAll(~/\@|\.|\ |\&/, ""),
+                      firstName: grailsApplication.config?.omar?.serverIP,
+                      ip:grailsApplication.config?.omar?.serverIP,
+                      url:grailsApplication.config?.omar?.serverURL,
+                      nickname:"${System.properties['user.name']}"
+                     ]
+        } */
+        // println result
         result
     }
     def reconnect()
@@ -135,6 +182,8 @@ class JabberFederatedServerService implements InitializingBean{
         {
             disconnect()
         }
+        loadFromTable()
+
         connect()
     }
     def disconnect()
@@ -160,15 +209,23 @@ class JabberFederatedServerService implements InitializingBean{
             return jabber
         }
         jabber = [:]
-        jabber.config     =  new ConnectionConfiguration(jabberDomain,
-                                                         jabberPort);
-        jabber.connection = new XMPPConnection(jabber.config);
+        if (!enabled)
+        {
+            refreshServerTable()
+
+            return jabber
+        }
         try{
+            jabber.config     =  new ConnectionConfiguration(jabberDomain,
+                                                             jabberPort);
+            jabber.connection = new XMPPConnection(jabber.config);
             jabber.connection.connect();
             jabber.connection.login(vCard.getField("IP"), "abc123!@#")
         }
         catch(def e)
         {
+            println e
+            if (!jabber.connection) return [:]
             try{
                 jabber.connection.disconnect()
                 jabber.connection.connect()
@@ -183,6 +240,7 @@ class JabberFederatedServerService implements InitializingBean{
             catch(def e2)
             {
                 println e2
+                return [:]
             }
         }
         if (jabber.connection.isAuthenticated())
@@ -200,7 +258,8 @@ class JabberFederatedServerService implements InitializingBean{
             }
             catch(def e)
             {
-
+                println e
+                return [:]
             }
         }
         refreshServerTable()
@@ -209,12 +268,12 @@ class JabberFederatedServerService implements InitializingBean{
     def createAdminConnection()
     {
         def result = [connection:null,
-                      config: null,
-                      chatRoom: null]
+                config: null,
+                chatRoom: null]
         try{
 
             def config     =  new ConnectionConfiguration(jabberDomain,
-                                                          jabberPort);
+                    jabberPort);
             def connection = new XMPPConnection(config);
             connection.connect();
             connection.login(jabberAdminUser, jabberAdminPassword);
@@ -254,8 +313,11 @@ class JabberFederatedServerService implements InitializingBean{
         vCards
     }
 
+
     void afterPropertiesSet() throws Exception {
-        loadFromConfig(grailsApplication.config)
-        connect()
+        loadFromTable()
+        // connect()
+        //loadFromConfig(grailsApplication.config)
+        //connect()
     }
 }

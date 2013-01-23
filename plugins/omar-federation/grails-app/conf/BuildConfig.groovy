@@ -43,4 +43,5 @@ grails.project.dependency.resolution = {
 }
 
 grails.plugin.location.openlayers = "../../plugins/openlayers"
+grails.plugin.location.omarCore = "../../plugins/omar-core"
 grails.plugin.location.omarCommonUi = "../../plugins/omar-common-ui"

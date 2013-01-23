@@ -710,7 +710,7 @@ stager {
   }
   onDemand = true
 }
-
+/*
 federation{
     vcard{
         fields=[
@@ -731,3 +731,4 @@ federation{
     }
 }
 
+*/
