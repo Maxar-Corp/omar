@@ -1,25 +1,4 @@
 <div id="FederationAdminId">
-    <!--
-federation{
-    vcard{
-        fields=[
-                firstName: "",
-                lastName : "",
-                nickName:"${System.properties['user.name']}"
-               ]
-    }
-    server{
-        ip=       "omar.ngaiost.org"
-        port=     5222
-        username= "admin"
-        password= "abc123!@#"
-    }
-    chatRoom{
-        id       = "omar@conference.omar.ngaiost.org"
-        password = "abc123!@#"
-    }
-}
-    -->
     <div>
         <div class="niceBox">
             <div  class="niceBoxHeader" ><h2>V-Card Profile</h2></div>
