@@ -50,8 +50,8 @@ class JabberFederatedServerService implements InitializingBean{
                 enabled = settings?.chatRoom?.enabled
                 vCard.setJabberId("${settings.vcard.IP}@${jabberDomain}")//"${config?.omar?.serverIP}@${jabberDomain}")
             }
-           // println vCard.toString()
-           // println "${jabberDomain}, ${jabberPort}, ${jabberAdminUser}, ${jabberAdminPassword}, ${jabberChatRoomId}, ${jabberChatRoomPassword}"
+           //println vCard.toString()
+           //println "${jabberDomain}, ${jabberPort}, ${jabberAdminUser}, ${jabberAdminPassword}, ${jabberChatRoomId}, ${jabberChatRoomPassword}"
         }
     }
     /*
@@ -102,7 +102,12 @@ class JabberFederatedServerService implements InitializingBean{
 
         FederatedServer.withTransaction {
             FederatedServer.executeUpdate('delete from FederatedServer')
-            makeAvailable(vCard.getField("IP"))
+
+            def fullUserId = makeFullUserNameAndId(vCard.getField("IP"));
+                def federatedServer = new FederatedServer([serverId:fullUserId.id,
+                        available: true,
+                        vcard: vCard.toString()])
+                federatedServer.save()
 
             vcardList.each{vcard->
                 def ip = vcard.getField("IP")
@@ -113,18 +118,23 @@ class JabberFederatedServerService implements InitializingBean{
             }
         }
     }
+    def makeFullUserNameAndId(def userName)
+    {
+        def full = userName + "@" + jabberDomain
+        def fullId = full.replaceAll(~/\@|\.|\ |\&/, "")
+        return [user:full, id:fullId]
+    }
     def makeAvailable(def userName)
     {
-        def fullUser = userName + "@" + jabberDomain
+        def fullUserId = makeFullUserNameAndId(userName)//userName + "@" + jabberDomain
         def tempCard = new VCard();
         try{
-            tempCard.load(jabber.connection, fullUser);
+            tempCard.load(jabber.connection, fullUserId.user);
             def ip =  tempCard.getField("IP");
             if(ip)
             {
-                fullUser =fullUser.replaceAll(~/\@|\.|\ |\&/, "")
                 FederatedServer.withTransaction{
-                    def federatedServer = new FederatedServer([serverId:fullUser,
+                    def federatedServer = new FederatedServer([serverId:fullUserId.id,
                             available: true,
                             vcard: tempCard.toString()])
                     federatedServer.save()
@@ -206,6 +216,7 @@ class JabberFederatedServerService implements InitializingBean{
     {
         if (isConnected())
         {
+            refreshServerTable()
             return jabber
         }
         jabber = [:]
@@ -224,8 +235,11 @@ class JabberFederatedServerService implements InitializingBean{
         }
         catch(def e)
         {
-            println e
-            if (!jabber.connection) return [:]
+            //log.error(e)
+            if (!jabber.connection){
+                refreshServerTable()
+                return [:]
+            }
             try{
                 jabber.connection.disconnect()
                 jabber.connection.connect()
@@ -239,7 +253,8 @@ class JabberFederatedServerService implements InitializingBean{
             }
             catch(def e2)
             {
-                println e2
+                refreshServerTable()
+                //log.error(e2)
                 return [:]
             }
         }
@@ -258,7 +273,8 @@ class JabberFederatedServerService implements InitializingBean{
             }
             catch(def e)
             {
-                println e
+                //println e
+                refreshServerTable()
                 return [:]
             }
         }
@@ -316,7 +332,7 @@ class JabberFederatedServerService implements InitializingBean{
 
     void afterPropertiesSet() throws Exception {
         loadFromTable()
-        // connect()
+        connect()
         //loadFromConfig(grailsApplication.config)
         //connect()
     }

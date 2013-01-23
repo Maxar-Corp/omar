@@ -12,7 +12,7 @@ OMAR.models.OmarServerModel=Backbone.Model.extend({
         alive:true,
         enabled:true,
         count:"0"  // This as an attribute so we can get callback notification
-                   // on changes
+        // on changes
     },
     initialize:function(params)
     {
@@ -37,11 +37,11 @@ OMAR.models.OmarServerModel=Backbone.Model.extend({
         };
     },
     createSpinner:function(){
-      if(!this.userDefinedData.spinner)
-      {
-        this.userDefinedData.spinner = new Spinner(this.userDefinedData.spinnerOptions);
-      }
-      return this.userDefinedData.spinner;
+        if(!this.userDefinedData.spinner)
+        {
+            this.userDefinedData.spinner = new Spinner(this.userDefinedData.spinnerOptions);
+        }
+        return this.userDefinedData.spinner;
     }
 });
 
@@ -57,7 +57,7 @@ OMAR.models.OmarServerCollection=Backbone.Collection.extend({
     defaults:{
         model:OMAR.models.OmarServerModel
     },
-   parse:function(response){
+    parse:function(response){
         var result = new Array();
         var size = response.size();
         for(var idx=0;idx<size;++idx)
@@ -110,9 +110,9 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     },
     collectionChanged:function(params){
         var scope = this;
-       $(params).each(function(idx, obj){
-             scope.updateServerView(obj);
-       });
+        $(params).each(function(idx, obj){
+            scope.updateServerView(obj);
+        });
     },
     fetchAndSetCount:function(id){
         var model = this.model.get(id);
@@ -123,7 +123,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             //wfs.set("url",model.get("url")+"/wfs");
 
             if((model.userDefinedData.ajaxCountQuery) &&
-               (model.userDefinedData.ajaxCountQuery.readyState != 4)){
+                (model.userDefinedData.ajaxCountQuery.readyState != 4)){
                 model.userDefinedData.ajaxCountQuery.abort();
                 model.userDefinedData.ajaxCountQuery = null;
                 this.omarServerCollectionView.setBusy(model.id, false);
@@ -207,10 +207,11 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             if(el.size()==0)
             {
                 var server = this.makeServer(model);
-                var serverResult = $(server).appendTo(this.el);
+                $(server).appendTo(this.el);
                 var modelId = model.id;
-                $(this.el).delegate("#omar-server-name-"+model.id, "click", $.proxy(this.modelClicked,
-                    this, model.id));
+                $(this.el).delegate("#omar-server-name-"+modelId,
+                    "click",
+                    $.proxy(this.modelClicked,this, model.id));
 
             }
             else
@@ -222,16 +223,12 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         }
 
     },
-
-    getCount : function(modelId){
-
-    },
     updateServerView:function(model)
     {
         var el = $(this.el).find("#"+model.id);
         var countElement = $(el).find("#omar-server-count").get();
         $(countElement).text(model.get("count"));
-     },
+    },
     makeServer:function(model)
     {
         var attr = {id:model.id,
@@ -259,7 +256,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         this.trigger("onModelClicked", id);
     },
     getLastClickedModel:function(){
-      return this.model.get(this.lastClickedServerId);
+        return this.model.get(this.lastClickedServerId);
     },
     setAllBusy:function(flag)
     {
