@@ -1,0 +1,21 @@
+div.niceBox {
+    margin-top: 3px;
+    margin-bottom: 8px;
+    background-color: #dbdcff;
+    border: 1px solid #000000;
+}
+
+div.niceBoxHeader{
+    font-size: 87%;
+    font-weight: bold;
+    padding: 2px;
+    color: white;
+    background-color: #252326;
+}
+
+div.niceBoxBody {
+    font-size: 87%;
+    padding: 3px;
+}
+
+

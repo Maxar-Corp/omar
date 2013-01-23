@@ -56,7 +56,12 @@ Brief summary/description of the plugin.
     }
 
     def doWithApplicationContext = { applicationContext ->
+        // initialize settings record
+        applicationContext.federationConfigSettingsService.getSettingsRecord()
+
+        // now initialize server service
         applicationContext.jabberFederatedServerService
+
         // TODO Implement post initialization spring config (optional)
     }
 

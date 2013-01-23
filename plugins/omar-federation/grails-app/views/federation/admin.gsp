@@ -7,7 +7,18 @@
     <r:layoutResources/>
 </head>
 <body>
+<div class="outer-center" id="federatedAdminPageId">
+        <g:render plugin="omar-federation" template="/templates/federationAdmin"/>
+</div>
+<r:layoutResources/>
 
-    <label></label><input type='password'></input>
+<script type="text/javascript">
+    function init(){
+        var params = {};
+        var federationAdmin = OMAR.pages.FederationAdmin(jQuery, params);
+        federationAdmin.render();
+    }
+</script>
+
 </body>
 </html>

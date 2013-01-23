@@ -83,7 +83,7 @@
             </div>
             <img id="omar-server-image" style="padding-top:24px" src="${resource(dir:'images', file:'server.gif')}"/>
         </div>
-        <label  class="link_cursor" id="omar-server-url-${'<%=id%>'}">${'<%=name%>'}</label>
+        <label  class="link_cursor" id="omar-server-name-${'<%=id%>'}">${'<%=name%>'}</label>
     </div>
 </script>
 
