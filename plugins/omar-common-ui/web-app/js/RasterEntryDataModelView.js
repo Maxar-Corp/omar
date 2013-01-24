@@ -632,7 +632,7 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
         }
         var wfsModel = this.wfsModel;
         var thisPtr = this;
-        alert(wfsModel.toUrl());
+        //alert(wfsModel.toUrl());
         if(!this.blockGetServerData&&sUrl&&this.model&&wfsModel)
         {
             result.iTotalRecords = wfsModel.get("numberOfFeatures");
