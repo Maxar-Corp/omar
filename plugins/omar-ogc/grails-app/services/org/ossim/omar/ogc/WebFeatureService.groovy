@@ -404,6 +404,9 @@ class WebFeatureService
     //{
     switch ( wfsRequest?.outputFormat?.toUpperCase() ?: "" )
     {
+//    case "SHP":
+//        contentType = "application/octet-stream"
+//        break;
     case "CSV":
       results = outputCSV( wfsRequest )
       contentType = 'text/csv'
