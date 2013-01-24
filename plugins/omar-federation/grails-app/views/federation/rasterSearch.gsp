@@ -81,7 +81,7 @@
                 <div id="omar-server-enabled"><input id="omar-server-enabled-checkbox" type="checkbox" checked=${'<%=enabled%>'}></input></div>
                 <div id="omar-server-count" class="omar-server-count">${'<%=count%>'}</div>
             </div>
-            <img id="omar-server-image" style="padding-top:24px" src="${resource(dir:'images', file:'server.gif')}"/>
+            <img class="omar-server-image" id="omar-server-image" style="padding-top:24px" src="${resource(dir:'images', file:'server.gif')}"/>
         </div>
         <label  class="link_cursor" id="omar-server-name-${'<%=id%>'}">${'<%=name%>'}</label>
     </div>
