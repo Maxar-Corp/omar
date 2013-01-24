@@ -472,7 +472,14 @@ export {
 
 
     formatters = [
-        groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' ) }
+        groundGeom: {
+            def convertValue = it;
+           // if(it instanceof String)
+           // {
+           //     convertValue = geoscript.geom.Geometry.fromWKT(it);
+           // }
+            def bounds = convertValue.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' )
+        }
     ]
   }
 
