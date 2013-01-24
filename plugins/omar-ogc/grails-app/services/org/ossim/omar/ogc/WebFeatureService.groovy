@@ -411,14 +411,19 @@ class WebFeatureService
     //{
     switch ( wfsRequest?.outputFormat?.toUpperCase() ?: "" )
     {
-//    case "SHP":
-//        contentType = "application/octet-stream"
-//        break;
+    case "SHP":
+        contentType = "application/octet-stream"
+        break;
+    case "GML2":
+      results = outputGML( wfsRequest )
+      contentType = 'text/xml; subtype=gml/2.1.2'
+      break
     case "CSV":
       results = outputCSV( wfsRequest )
       contentType = 'text/csv'
       break
     case "JSON":
+    case "GEOJSON":
       results = outputJSON( wfsRequest )
       contentType = 'application/json'
       break
