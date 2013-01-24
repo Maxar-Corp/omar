@@ -92,6 +92,13 @@ class WebFeatureService
               }
             }
             GetFeature {
+              ResultFormat {
+                GML2()
+                //GML3()
+                //'SHAPE-ZIP'()
+                GEOJSON()
+                CSV()
+              }
               DCPType {
                 HTTP {
                   Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'GetFeature'] ) )
@@ -578,68 +585,68 @@ class WebFeatureService
 
   private def outputCSV(def wfsRequest)
   {
-      def fields
-      def labels
-      def formatters
-      def typeName =wfsRequest?.typeName.toLowerCase();
-      if (typeName == "raster_entry")
+    def fields
+    def labels
+    def formatters
+    def typeName = wfsRequest?.typeName.toLowerCase();
+    if ( typeName == "raster_entry" )
+    {
+      fields = grailsApplication.config.export.rasterEntry.fields
+      labels = grailsApplication.config.export.rasterEntry.labels
+      formatters = grailsApplication.config.export.rasterEntry.formatters
+    }
+    else if ( typeName == "video_data_set" )
+    {
+      fields = grailsApplication.config.export.videoDataSet.fields
+      labels = grailsApplication.config.export.videoDataSet.labels
+      formatters = grailsApplication.config.export.videoDataSet.formatters
+    }
+
+    def workspace = getWorkspace()
+    def layer = workspace[wfsRequest?.typeName]
+    def filter = [
+        filter: wfsRequest?.filter ?: Filter.PASS,
+        //sort: ""// [["<COLUMN NAME>","ASC|DESC"]]
+    ]
+    def filterParams = [
+        filter: wfsRequest?.filter ?: Filter.PASS,
+        max: wfsRequest.maxFeatures ?: -1,
+        start: wfsRequest?.offset ?: -1,
+        //sort: [["<COLUMN NAME>","ASC|DESC"]]
+    ]
+    def stringBuffer = new StringWriter()
+    def csvWriter = new CSVWriter( stringBuffer )
+
+    // write headers!!
+    csvWriter.writeNext( labels as String[] )
+
+    def cursor = layer.getCursor( filterParams )
+    while ( cursor?.hasNext() )
+    {
+      def feature = cursor.next();
+      def data = []
+      for ( field in fields )
       {
-          fields = grailsApplication.config.export.rasterEntry.fields
-          labels = grailsApplication.config.export.rasterEntry.labels
-          formatters = grailsApplication.config.export.rasterEntry.formatters
+        def adjustedField = field.replaceAll( "[a-z][A-Z]", { v -> "${v[0]}_${v[1].toLowerCase()}" } )
+
+        if ( formatters && formatters[field] )
+        {
+          data << formatters[field].call( feature[adjustedField] )
+        }
+        else
+        {
+          data << feature[adjustedField]
+        }
       }
-      else if ( typeName == "video_data_set")
-      {
-          fields = grailsApplication.config.export.videoDataSet.fields
-          labels = grailsApplication.config.export.videoDataSet.labels
-          formatters = grailsApplication.config.export.videoDataSet.formatters
-      }
 
-      def workspace = getWorkspace()
-      def layer = workspace[wfsRequest?.typeName]
-      def filter = [
-              filter: wfsRequest?.filter ?: Filter.PASS,
-              //sort: ""// [["<COLUMN NAME>","ASC|DESC"]]
-      ]
-      def filterParams = [
-              filter: wfsRequest?.filter ?: Filter.PASS,
-              max: wfsRequest.maxFeatures ?: -1,
-              start: wfsRequest?.offset ?: -1,
-              //sort: [["<COLUMN NAME>","ASC|DESC"]]
-      ]
-      def stringBuffer = new StringWriter()
-      def csvWriter = new CSVWriter(stringBuffer)
+      csvWriter.writeNext( data as String[] )
 
-      // write headers!!
-      csvWriter.writeNext(labels as String[])
+    }
+    csvWriter.close()
+    cursor?.close()
+    workspace?.close()
 
-      def cursor = layer.getCursor( filterParams )
-      while ( cursor?.hasNext() )
-      {
-          def feature = cursor.next();
-          def data = []
-          for ( field in fields )
-          {
-              def adjustedField = field.replaceAll( "[a-z][A-Z]", {v -> "${v[0]}_${v[1].toLowerCase()}"} )
-
-              if ( formatters&&formatters[field] )
-              {
-                  data << formatters[field].call(feature[adjustedField])
-              }
-              else
-              {
-                  data << feature[adjustedField]
-              }
-          }
-
-          csvWriter.writeNext(data as String[])
-
-      }
-      csvWriter.close()
-      cursor?.close()
-      workspace?.close()
-
-      return stringBuffer.toString();
+    return stringBuffer.toString();
   }
 
   private def outputJSON(def wfsRequest)
