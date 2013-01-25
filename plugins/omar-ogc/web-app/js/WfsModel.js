@@ -1,4 +1,4 @@
-OMAR.models.Wfs = Backbone.Model.extend({
+OMAR.models.WfsModel = Backbone.Model.extend({
     defaults:{
         "url":"/omar/wfs",
         "service":"WFS",

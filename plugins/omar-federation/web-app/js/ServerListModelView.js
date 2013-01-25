@@ -17,24 +17,8 @@ OMAR.models.OmarServerModel=Backbone.Model.extend({
     initialize:function(params)
     {
         this.userDefinedData = {}
-        this.userDefinedData.spinnerOptions =
-        {
-            lines: 13,
-            length: 7,
-            width: 4,
-            radius: 10,
-            corners: 1,
-            rotate: 0,
-            color: '#000',
-            speed: 1,
-            trail: 60,
-            shadow: false,
-            hwaccel: false,
-            className: 'spinner',
-            zIndex: 2e9,
-            top: 'auto',
-            left: 'auto'
-        };
+        this.userDefinedData.spinnerOptions = OMAR.defaultSpinnerOptions;
+
     },
     createSpinner:function(){
         if(!this.userDefinedData.spinner)
@@ -88,21 +72,47 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     },
     initialize:function(params){
         this.omarServerView = new OMAR.views.OmarServerView();
-        if(params.models)
+        var wfsServerCount
+        if(params)
         {
-            this.model = new OMAR.models.OmarServerCollection(params.models);
+            if(params.models)
+            {
+                this.model = new OMAR.models.OmarServerCollection(params.models);
+            }
+            if(params.wfsServerCount)
+            {
+                wfsServerCount = params.wfsServerCount;
+            }
         }
-        else
+        if(!this.model)
         {
             this.model = new OMAR.models.OmarServerCollection();
         }
-        this.model.bind('add', this.collectionAdd, this)
+        this.model.bind('add',    this.collectionAdd,     this)
         this.model.bind("change", this.collectionChanged, this);
-        this.model.bind("reset", this.collectionReset, this);
-        this.wfsServerCount = new OMAR.models.Wfs({"resultType":"hits"});
+        this.model.bind("reset",  this.collectionReset,   this);
         this.lastClickedServerId = "";
+        if(!wfsServerCount)
+        {
+            this.setWfsServerCount(new OMAR.models.WfsModel({"resultType":"hits"}));
+        }
+        else
+        {
+            this.setWfsServerCount(wfsServerCount);
+        }
 
-        this.wfsServerCount.bind("change", this.refreshServerCounts, this);
+    },
+    setWfsServerCount:function(wfsServerCount)
+    {
+        if(this.wfsServerCount)
+        {
+            this.wfsServerCount.unbind("change", this.refreshServerCounts, this);
+        }
+        this.wfsServerCount = wfsServerCount;
+        if(this.wfsServerCount)
+        {
+            this.wfsServerCount.bind("change", this.refreshServerCounts, this);
+        }
     },
     collectionAdd:function(params){
         //this.render();
@@ -116,17 +126,21 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     },
     fetchAndSetCount:function(id){
         var model = this.model.get(id);
-        if(model.get("enabled"))
+        if(model&&model.get("enabled"))
         {
             this.setBusy(model.id, true);
             this.wfsServerCount.attributes.url = model.get("url")+"/wfs";
             //wfs.set("url",model.get("url")+"/wfs");
 
-            if((model.userDefinedData.ajaxCountQuery) &&
-                (model.userDefinedData.ajaxCountQuery.readyState != 4)){
+            if(model.userDefinedData.ajaxCountQuery &&
+                (model.userDefinedData.ajaxCountQuery.readyState != 4))
+            {
                 model.userDefinedData.ajaxCountQuery.abort();
                 model.userDefinedData.ajaxCountQuery = null;
-                this.omarServerCollectionView.setBusy(model.id, false);
+                if(this.omarServerCollectionView)
+                {
+                    this.omarServerCollectionView.setBusy(model.id, false);
+                }
             }
             model.userDefinedData.ajaxCountQuery = $.ajax({
                 url: this.wfsServerCount.toUrl()+"&callback=?",

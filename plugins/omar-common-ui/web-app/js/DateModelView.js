@@ -514,30 +514,54 @@ OMAR.models.SimpleDateRangeModel=Backbone.Model.extend({
             return "Start date is not an ISO date standard format";
         }
     },
-    toCql:function(columnName){
+    toCql:function(columnNameStartDate, columnNameEndDate){
         var result = "";
-        if(columnName)
+        var startDate = this.get("startDate");
+        var endDate = this.get("endDate");
+
+        if(columnNameStartDate&&columnNameEndDate)
         {
-            var startDate = this.get("startDate");
-            var endDate = this.get("endDate");
-            if((startDate != "")&&(endDate!=""))
+            if(startDate&&endDate)
             {
-                result +="((";
-                result +=(columnName +">='"+startDate+"'");
-                result +=")AND("
-                result +=(columnName +"<='"+endDate+"'");
+                result += "((";
+                result += ("'"+startDate+"'<=" +columnNameEndDate);
+                result += ")AND(";
+                result += (columnNameStartDate +"<=" +"'"+endDate+"'");
                 result += "))";
             }
             else if(startDate!="")
             {
                 result +="(";
-                result +=(columnName +">='"+startDate+"'");
+                result +=(columnNameStartDate +">='"+startDate+"'");
                 result +=")";
             }
             else if(endDate!="")
             {
                 result +="(";
-                result +=(columnName +"<='"+endDate+"'");
+                result +=(columnNameStartDate +"<='"+endDate+"'");
+                result +=")";
+            }
+        }
+        else if(columnNameStartDate)
+        {
+            if((startDate != "")&&(endDate!=""))
+            {
+                result +="((";
+                result +=(columnNameStartDate +">='"+startDate+"'");
+                result +=")AND(";
+                result +=(columnNameStartDate +"<='"+endDate+"'");
+                result += "))";
+            }
+            else if(startDate!="")
+            {
+                result +="(";
+                result +=(columnNameStartDate +">='"+startDate+"'");
+                result +=")";
+            }
+            else if(endDate!="")
+            {
+                result +="(";
+                result +=(columnNameStartDate +"<='"+endDate+"'");
                 result +=")";
             }
         }

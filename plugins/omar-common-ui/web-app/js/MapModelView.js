@@ -551,7 +551,29 @@ getMeasureUnit:function() {
             this.pointModel.on("change", this.pointMapChanged, this);
         }
     },
-
+    setSearchType:function(searchType){
+      if(this.searchType)
+      {
+        this.searchType.off("change", this.searchTypeChanged, this);
+      }
+      this.searchType = searchType;
+      if(this.searchType)
+      {
+          this.searchType.on("change", this.searchTypeChanged, this);
+      }
+    },
+    searchTypeChanged:function(){
+        //alert("Map View: searchTypeChanged");
+        //this.serverCollectionReset();
+        var tempLayers =  "Imagery";
+        if(this.searchType.get("typeName") == "video_data_set")
+        {
+            tempLayers = "Videos";
+        }
+         this.layers.forEach(function(value, key) {
+            value.mergeNewParams({layers:tempLayers});
+        });
+    },
     setServerCollection:function(serverCollection){
         if(this.serverCollection)
         {
@@ -566,9 +588,17 @@ getMeasureUnit:function() {
     },
     newLayer:function(model)
     {
+        var tempLayers = "Imagery";
+        if(this.searchType)
+        {
+            if(this.searchType.get("typeName") == "video_data_set")
+            {
+                tempLayers = "Video";
+            }
+        }
         return new OpenLayers.Layer.WMS( model.get("nickname"),
                                          model.get("url")+"/wms/footprints",
-                                         {layers: 'Imagery', format:"image/gif",
+                                         {layers: tempLayers, format:"image/gif",
                                           styles: "byFileType", transparent:true});
     },
     setCqlFilterToFootprintLayers:function(cqlFilterString){
@@ -588,12 +618,10 @@ getMeasureUnit:function() {
                 var layer = this.newLayer(model);
                 mapLayers.push(layer);
                 this.layers.set(model.id, layer);
-
             }
         }
         else
         {
-
             // remove layers not needed
             var layersToRemove = []
             var scope = this;
@@ -601,6 +629,24 @@ getMeasureUnit:function() {
                 if(!scope.serverCollection.get(key))
                 {
                     layersToRemove.push(key);
+                }
+                else
+                {
+                    if(scope.searchType)
+                    {
+                        var layer = scope.map.getLayer(scope.layers.get(key));
+                        if(layer)
+                        {
+                            if(scope.searchType.get("typeName") == "video_data_set")
+                            {
+                                layer.setOptions({layers:"Video"});
+                            }
+                            else
+                            {
+                                layer.setOptions({layers:"Imagery"});
+                            }
+                        }
+                    }
                 }
             });
 
