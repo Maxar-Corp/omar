@@ -63,6 +63,7 @@ OMAR Raster support
           landsat7: new Color( 255, 0, 255, 255 ), // purple
           nitf: new Color( 0, 0, 255, 255 ),  // blue
           tiff: new Color( 255, 0, 0, 255 ),  // red
+          mpeg: new Color(255,0,0,255)
           //unspecified: 14
       ]
     }

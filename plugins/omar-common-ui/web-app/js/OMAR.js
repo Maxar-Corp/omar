@@ -146,6 +146,7 @@ OMAR.isIso8601 = function(value)
 
 OMAR.parseXml = null;
 
+/*
 if (typeof window.DOMParser != "undefined") {
     OMAR.parseXml = function(xmlStr) {
         return ( new window.DOMParser() ).parseFromString(xmlStr, "text/xml");
@@ -161,4 +162,4 @@ if (typeof window.DOMParser != "undefined") {
 } else {
     throw new Error("No XML parser found");
 }
-
+  */

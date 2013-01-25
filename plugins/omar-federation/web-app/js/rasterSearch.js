@@ -1,7 +1,93 @@
+
+OMAR.models.CqlModel = Backbone.Model.extend({
+    idAttribute:"id",
+    defaults:{
+        id:"",
+        name:"",
+        cql:"",
+        cqlState:""
+    }
+});
+
+OMAR.models.CqlCollectionModel = Backbone.Collection.extend({
+    url:"",
+    model:OMAR.models.CqlModel,
+    initialize:function(params){
+    }
+});
+
+OMAR.models.WfsTypeNameModel = Backbone.Model.extend({
+    idAttribute:"typeName",
+    defaults:{
+        typeName:"raster_entry"
+    },
+    initialize:function(params)
+    {
+    }
+});
+
+OMAR.views.WfsTypeNameView = Backbone.View.extend({
+    el:"#SearchTypeNameId",
+    initialize:function(params){
+        this.setElement(this.el);
+        if(params)
+        {
+            if(params.model)
+            {
+                this.model = params.model;
+            }
+        }
+        if(!this.model)
+        {
+            this.model = OMAR.models.WfsTypeNameModel();
+        }
+        this.model.bind("change", this.modelChanged, this);
+    },
+    modelChanged:function(){
+        this.render();
+    },
+    render:function(){
+        $(this.el).html("<label>Search For:</label><input name='WfsTypeNameGroup' id='WfsTypeNameRasterEntryId' type='radio' value='raster_entry' >Raster</input> \
+                         <input name='WfsTypeNameGroup' type='radio' id='WfsTypeNameVideoDataSetId' value='video_data_set' >Video</input>");
+
+
+        this.wfsTypeNameVideoDataSetEl = $(this.el).find("#WfsTypeNameVideoDataSetId")[0];
+        this.wfsTypeNameRasterEntryEl  = $(this.el).find("#WfsTypeNameRasterEntryId")[0];
+
+        if(this.model)
+        {
+            if(this.model.get("typeName") == "raster_entry")
+            {
+                $(this.wfsTypeNameRasterEntryEl).click();
+            }
+            else
+            {
+                $(this.wfsTypeNameVideoDataSetEl).click();
+            }
+        }
+
+        $(this.el).delegate("#WfsTypeNameVideoDataSetId", "click", this.videoDataSetClicked.bind(this));
+        $(this.el).delegate("#WfsTypeNameRasterEntryId", "click", this.rasterEntryClicked.bind(this));
+
+    },
+    videoDataSetClicked:function(){
+        this.model.unbind("change", this.modelChanged, this);
+        this.model.set({typeName:"video_data_set"});
+        this.model.bind("change", this.modelChanged, this);
+    },
+    rasterEntryClicked:function(){
+        this.model.unbind("change", this.modelChanged, this);
+        this.model.set({typeName:"raster_entry"});
+        this.model.bind("change", this.modelChanged, this);
+    }
+})
+
 OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     el:"#rasterSearchPageId",
     bboxView:null,
     initialize:function(params){
+        this.wfsTypeNameModel = new OMAR.models.WfsTypeNameModel();
+        this.wfsTypeNameView = new OMAR.views.WfsTypeNameView({model:this.wfsTypeNameModel});
 
         this.bboxView = new OMAR.views.BBOX();
         this.bboxModel = this.bboxView.model;
@@ -11,8 +97,11 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
         this.dateTimeRangeModel = this.dateTimeRangeView.model;
+        this.wfsServerCountModel = new OMAR.models.WfsModel({"resultType":"hits"});
+
         this.omarServerCollectionView = new OMAR.views.OmarServerCollectionView(
-            {model:new OMAR.models.OmarServerCollection()}
+            {"model":new OMAR.models.OmarServerCollection(),
+             "wfsServerCount":this.wfsServerCountModel}
         );
         this.measurementUnitView = new OMAR.views.UnitModelView({el:"#measurementUnitViewId"});
         this.measurementUnitModel = this.measurementUnitView.model;
@@ -20,6 +109,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var mapParams = params.map;
         mapParams.unitModelView = this.measurementUnitView;
         this.mapView = new OMAR.views.Map(mapParams);
+        this.mapView.setSearchType(this.wfsTypeNameModel);
         this.mapView.setBboxModel(this.bboxModel);
         this.mapView.setPointModel(this.pointModel);
         this.measurementUnitModel.set("unit", "meters");
@@ -27,8 +117,13 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         this.mapView.setServerCollection(this.omarServerCollectionView.model);
         this.setElement(this.el);
-        this.rasterEntryDataModelView = new OMAR.views.RasterEntryDataModelView();
-        this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this)
+
+        // construct with a shared wfsTypeName model
+        this.dataModelView = new OMAR.views.DataModelView({wfsTypeNameModel:this.wfsTypeNameModel});
+
+        this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this);
+        this.bboxModel.bind('change', this.updateFootprintCql, this);
+
         this.omarServerCollectionView.bind('onModelClicked', this.serverClicked, this);
 
         this.viewSelector = new OMAR.views.ViewSelector({el:"#tabView",
@@ -36,6 +131,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                                                                 "#MapView",
                                                                 "#ResultsView"]});
         this.viewSelector.bind("show", this.showTab, this);
+        this.wfsTypeNameModel.bind("change", this.wfsTypeNameChanged, this);
     },
     events: {
         "click #SearchRasterId": "searchRaster"
@@ -50,19 +146,21 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         }
         if(idx == 2)
         {
-            this.rasterEntryDataModelView.resizeView();
+            this.dataModelView.resizeView();
         }
     },
     serverClicked:function(id){
         var cqlFilter = this.toCql();
-        this.omarServerCollectionView.wfsServerCount.set("filter", cqlFilter);
+        this.omarServerCollectionView.wfsServerCount.set({"filter":cqlFilter,
+                                                          "typeName":this.wfsTypeNameModel.get("typeName")});
 
         var model = this.omarServerCollectionView.getLastClickedModel();
         var settings = {"url":model.get("url")+"/wfs",
-                        "filter":cqlFilter}
+                        "filter":cqlFilter,
+                        "typeName":this.wfsTypeNameModel.get("typeName")};
         if(model)
         {
-            this.rasterEntryDataModelView.wfsModel.set(settings)
+            this.dataModelView.wfsModel.set(settings);
         }
 
         this.viewSelector.click(2);
@@ -70,7 +168,15 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         //this.tabView.tabs("select", 2);
         //$(this.tabView).find("#ResultsLabelId").text(model.get("nickname"));
     },
+    wfsTypeNameChanged:function()
+    {
+        this.searchRaster();
+    },
     render:function(){
+        if(this.wfsTypeNameView)
+        {
+            this.wfsTypeNameView.render();
+        }
         if(this.bboxView)
         {
             this.bboxView.render();
@@ -89,9 +195,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.mapView.render();
         }
 
-        if(this.rasterEntryDataModelView)
+        if(this.dataModelView)
         {
-            this.rasterEntryDataModelView.render();
+            this.dataModelView.render();
         }
         if(this.measurementUnitView)
         {
@@ -109,7 +215,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             window.setTimeout(this.updateServers.bind(this),5000);
         }
 
-        if(this.mapView) this.mapView.setCqlFilterToFootprintLayers(this.toFootprintCql());
+        if(this.mapView) this.mapView.setCqlFilterToFootprintLayers(this.toCql());//this.toFootprintCql());
 
 /*        this.tabView = $( "#tabView" ).tabs(
             {   "active":1,
@@ -121,7 +227,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.viewSelector.click(1);
     },
     updateFootprintCql:function(){
-        if(this.mapView) this.mapView.setCqlFilterToFootprintLayers(this.toFootprintCql());
+        if(this.mapView) this.mapView.setCqlFilterToFootprintLayers(this.toCql());//this.toFootprintCql());
     },
     updateServers:function(){
         var collection =  this.omarServerCollectionView;
@@ -131,20 +237,26 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     toCql:function(){
         var result = "";
-        var timeQueryCql = this.dateTimeRangeModel.toCql("acquisition_date");
-
+        var timeQueryCql = null;
+        var wfsTypeName = this.wfsTypeNameModel.get("typeName")
+        if(wfsTypeName == "raster_entry")
+        {
+            timeQueryCql = this.dateTimeRangeModel.toCql("acquisition_date");
+        }
+        else if(wfsTypeName == "video_data_set")
+        {
+            timeQueryCql = this.dateTimeRangeModel.toCql("start_date", "end_date");
+        }
         var spatialQueryCql;
 
         if ($('#spatialSearch').is(':checked')) {
             if( $('input[name=spatialSearchType]:checked').val() == "bbox" )
             {
                 spatialQueryCql = this.bboxModel.toCql("ground_geom");
-                //alert("bbox");
             }
             else if( $('input[name=spatialSearchType]:checked').val() == "point" )
             { 
                 spatialQueryCql = this.pointModel.toCql("ground_geom");
-                //alert("point");
             }
         }
 
@@ -163,13 +275,12 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         return result;
     },
     centerResize:function(){
-
         //alert($("#tabView").height() + ", " + $(".inner-center").height()+","+$(".tabViewContainer").height());
-        var h = $(".inner-center").height();
+        //var h = $(".inner-center").height();
         //$("#tabView").height(h-110);
 
-        if(this.rasterEntryDataModelView) this.rasterEntryDataModelView.resizeView();
-        if(this.mapView) this.mapView.resizeView();
+        if(this.dataModelView) this.dataModelView.resizeView();
+        if(this.mapView)       this.mapView.resizeView();
     },
     toFootprintCql:function(){
         var result = "";
@@ -183,15 +294,18 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     searchRaster:function(){
         var cqlFilter = this.toCql();
-
-        this.omarServerCollectionView.wfsServerCount.attributes.filter = cqlFilter;
-        this.omarServerCollectionView.wfsServerCount.trigger("change");
+        this.wfsServerCountModel.set({
+            typeName:this.wfsTypeNameModel.get("typeName"),
+            filter:cqlFilter
+        })
+        //this.wfsServerCount.trigger("change");
         var model = this.omarServerCollectionView.getLastClickedModel();
         if(model)
         {
-            this.rasterEntryDataModelView.wfsModel.set(
+            this.dataModelView.wfsModel.set(
                 {"url":model.get("url")+"/wfs",
-                 "filter":cqlFilter}
+                 "filter":cqlFilter,
+                 "typeName":this.wfsTypeNameModel.get("typeName")}
             );
         }
      }

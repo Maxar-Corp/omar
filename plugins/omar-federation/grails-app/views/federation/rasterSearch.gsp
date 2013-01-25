@@ -18,8 +18,8 @@
         <div class="middle-center">
 
             <div class="inner-west">
-                <p><center>Show Coordinates in <g:select styles="z-index:-1" name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></center></p>
-
+                <p>Units<g:select styles="z-index:-1" name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></p>
+                <div id=SearchTypeNameId></div>
                 <p><g:checkBox name="spatialSearch" value="" checked="true"/> Use Spatial</p>
 
                 <form>

@@ -1,8 +1,8 @@
 OMAR.models.Selection = Backbone.Model.extend({
     idAttribute:"id",
     defaults:{
-        id:"",
-        description:""
+        id:""
+        ,description:""
     },
     initialize:function(params){
 
@@ -16,10 +16,155 @@ OMAR.models.SelectedCollection = Backbone.Collection.extend({
     }
 });
 
+OMAR.models.ColumnGroup=Backbone.Model.extend({
+    defaults:{
+        name:""
+        ,id:""
+        ,mDataProperties:[]
+        ,comparator:"in"
+    },
+    initialize:function(params){
+
+    }
+});
+
+OMAR.models.VideoDatasetDataModel = Backbone.Model.extend({
+    idAttribute:"id",
+    defaults:{
+        checked:"false"
+        ,id:""
+        ,thumbnail:""
+        ,width:""
+        ,height:""
+        ,start_date:""
+        ,end_date:""
+        ,ground_geom:""
+        ,filename:""
+        ,index_id:""
+        ,style_id:""
+    }
+});
+
+OMAR.models.VideoDatasetCollection=Backbone.Collection.extend({
+    url:"",
+    model:OMAR.models.VideoDatasetDataModel,
+    initialize:function(params){
+    },
+    parse:function(response){
+        var result = new Array();
+
+        if(response.features)
+        {   var size = response.features.size();
+            for(var idx=0;idx<size;++idx)
+            {
+                var feature = response.features[idx];
+                var model = new OMAR.models.RasterEntryDataModel(feature.properties)
+                result.push(model);
+            }
+        }
+
+        return result;
+    }
+});
+
+OMAR.models.VideoDatasetColumnGroups=Backbone.Collection.extend({
+    model:OMAR.models.ColumnGroup,
+    idAttribute:"id",
+    initialize:function(params){
+        this.add([
+            {name:"All",
+                id:"VideoDatasetAllGroupId",
+                mDataProperties:[],
+                comparator:"out",
+                selected:true
+            }
+            ,{name:"File",
+                id:"VideoDatasetFileGroupId",
+                mDataProperties:["checked","thumbnail","id","filename"],
+                selected:false
+            }
+            ,{name:"Links",
+                id:"VideoDatasetLinksGroupId",
+                mDataProperties:["checked","thumbnail","id"],
+                selected:false
+            }
+        ]);
+    },
+    clearSelection:function(){
+        this.each(function(obj){
+            obj.set("selected",false);
+        });
+    }
+});
+OMAR.models.VideoDatasetColumnDef=Backbone.Model.extend({
+    defaults:{
+        aTargets:[],
+        sTitle:"",
+        sType:"string",
+        sClass:null,
+        mDataProp:"",
+        bSearchable:true,
+        asSorting:["asc","desc"],
+       // sWidth:"50px",
+        sSortDataType:null,
+        sName:"",
+        bVisible:true
+    },
+    initialize:function(params){
+        if(!this.get("sClass"))
+        {
+            this.set("sClass", this.get("mDataProp"));
+        }
+    }
+});
+
+
+OMAR.models.VideoDatasetsColumnDefs=Backbone.Collection.extend({
+    model:OMAR.models.VideoDatasetColumnDef
+    ,idAttribute:"mDataProp"
+    ,initialize:function(params)
+    {
+        if(this.size()<1){
+            this.add([
+                { "aTargets":[],"sTitle": "<input id='columnSelectId' type='checkbox' class ='columnSelect'></input>",
+                    sClass:"rowSelect", sType:"html", asSorting: [], "sName":"", mDataProp: "checked", bSearchable:false}
+                ,{ "aTargets":[],"sTitle": "ID","sClass":"id", "sType":"string", "sName":"id", "mDataProp": "id", bSearchable:false}
+                ,{ "aTargets":[], "sTitle": "THUMBNAIL", "sClass":"thumbnail", sType:"html", "mDataProp": "thumbnail", "bSearchable": false, "asSorting": [] }
+                ,{ "aTargets":[], "sTitle": "WIDTH", "sClass":"video-width", sType:"string", "mDataProp": "width" }
+                ,{ "aTargets":[], "sTitle": "HEIGHT", "sClass":"video-height", sType:"string", "mDataProp": "height" }
+                ,{ "aTargets":[], "sTitle": "START_DATE", "sClass":"video-start-date", sType:"string", "mDataProp": "start_date" }
+                ,{ "aTargets":[], "sTitle": "END_DATE", "sClass":"video-start-date", sType:"string", "mDataProp": "end_date" }
+                ,{ "aTargets":[], "sTitle": "FILENAME", "sClass":"video-filename", sType:"string", "mDataProp": "filename" }
+            ]);
+
+        }
+        // add loop to verify aTarget and default to index
+        var thisPtr = this;
+        this.forEach(function(obj,idx){
+
+            var obj2 = thisPtr.at(idx);
+            if(obj2)
+            {
+                var aTargets = obj2.get("aTargets");
+                if(aTargets){
+                    if(aTargets.size() < 1)
+                    {
+                        obj2.set("aTargets", [idx]);
+                    }
+                }
+                else
+                {
+                    obj2.set("aTargets", [idx]);
+                }
+            }
+        });
+    }
+});
+
 OMAR.models.RasterEntryDataModel = Backbone.Model.extend({
     idAttribute:"id",
     defaults:{
-        "selected":"false"
+        "checked":"false"
         ,"id":""
         ,"thumbnail":""
         ,"view":""
@@ -78,9 +223,6 @@ OMAR.models.RasterEntryDataModel = Backbone.Model.extend({
         ,"center_lat_lon":""
 
     },
-    getBbox:function(){
-
-    },
     initialize:function(params){
     }
 
@@ -89,8 +231,8 @@ OMAR.models.RasterEntryDataModel = Backbone.Model.extend({
 
 OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
     url:"",
+    model:OMAR.models.RasterEntryDataModel,
     initialize:function(params){
-
     },
     parse:function(response){
         var result = new Array();
@@ -191,7 +333,7 @@ OMAR.models.RasterEntryColumnDef=Backbone.Model.extend({
         mDataProp:"",
         bSearchable:true,
         asSorting:["asc","desc"],
-        sWidth:"50px",
+       // sWidth:"50px",
         sSortDataType:null,
         sName:"",
         bVisible:true
@@ -204,20 +346,9 @@ OMAR.models.RasterEntryColumnDef=Backbone.Model.extend({
     }
 });
 
-OMAR.models.RasterEntryColumnGroup=Backbone.Model.extend({
-    defaults:{
-        name:""
-        ,id:""
-        ,mDataProperties:[]
-        ,comparator:"in"
-    },
-    initialize:function(params){
-
-    }
-});
 
 OMAR.models.RasterEntryColumnGroups=Backbone.Collection.extend({
-    model:OMAR.models.RasterEntryColumnGroup,
+    model:OMAR.models.ColumnGroup,
     idAttribute:"id",
     initialize:function(params){
         this.add([
@@ -264,28 +395,41 @@ OMAR.models.RasterEntryColumnGroups=Backbone.Collection.extend({
     }
 });
 
-OMAR.views.RasterEntryColumnGroupsView = Backbone.View.extend({
+OMAR.views.ColumnGroupsView = Backbone.View.extend({
     el:"div.groupViewSelection",
     initialize:function(params){
-        if(!this.model){
-            this.model=new OMAR.models.RasterEntryColumnGroups();
+        if(params.model)
+        {
+            this.model = params.model;
         }
+        if(!this.model)
+        {
+            this.model = new OMAR.models.RasterEntryColumnGroups();
+        }
+        this.render();
+    },
+    setModel:function(model){
+        this.model = model;
+        this.render();
     },
     toHtml:function(){
         var result = "";
-        this.model.each(function(obj){
-            var radio = '<input type="radio" id="';
-              radio += (obj.get("id")+'" name="RasterEntryColumnGroupsView" ');
-            if(obj.get("selected")){
-              radio+=  ('checked="'+ obj.get("selected")+'">'+obj.get("name") +'</input>');
-            }
-            else
-            {
-                radio += ('>'+obj.get("name") +'</input>');
-            }
-            result += radio;
+        if(this.model)
+        {
+            this.model.each(function(obj){
+                var radio = '<input type="radio" id="';
+                radio += (obj.get("id")+'" name="ColumnGroupsView" ');
+                if(obj.get("selected")){
+                    radio+=  ('checked="'+ obj.get("selected")+'">'+obj.get("name") +'</input>');
+                }
+                else
+                {
+                    radio += ('>'+obj.get("name") +'</input>');
+                }
+                result += radio;
 
-        });
+            });
+        }
         return result;
     },
 
@@ -294,15 +438,18 @@ OMAR.views.RasterEntryColumnGroupsView = Backbone.View.extend({
         $(this.el).html(this.toHtml());
         var thisPtr = this;
 
-        // setup click listeners
-        this.model.each(function(obj){
-            var selector = "#"+obj.get("id");
-            $(selector).click(function(){
-                thisPtr.model.clearSelection();
-                obj.set("selected", true);
-                thisPtr.trigger("groupClicked", obj);
+        if(this.model)
+        {
+            // setup click listeners
+            this.model.each(function(obj){
+                var selector = "#"+obj.get("id");
+                $(selector).click(function(){
+                    thisPtr.model.clearSelection();
+                    obj.set("selected", true);
+                    thisPtr.trigger("groupClicked", obj);
+                });
             });
-        });
+        }
     }
 });
 
@@ -313,7 +460,7 @@ OMAR.models.RasterEntryColumnDefs=Backbone.Collection.extend({
     {
         if(this.size()<1){
             this.add([
-                { "aTargets":[],"sTitle": "<input id='columnSelectId' type='checkbox' class ='columnSelect'></input>",sClass:"rowSelect", sType:"html", asSorting: [], "sName":"", mDataProp: "selected", bSearchable:false}
+                { "aTargets":[],"sTitle": "<input id='columnSelectId' type='checkbox' class ='columnSelect'></input>",sClass:"rowSelect", sType:"html", asSorting: [], "sName":"", mDataProp: "checked", bSearchable:false}
                 ,{ "aTargets":[],"sTitle": "ID","sClass":"id", "sType":"string", "sName":"id", "mDataProp": "id", bSearchable:false}
                 ,{ "aTargets":[], "sTitle": "THUMBNAIL", "sClass":"thumbnail", sType:"html", "mDataProp": "thumbnail", "bSearchable": false, "asSorting": [] }
                 ,{ "aTargets":[], "sTitle": "VIEW", "sClass":"view", sType:"html", "mDataProp": "view", "bSearchable": false, "asSorting": [] }
@@ -389,27 +536,58 @@ OMAR.models.RasterEntryColumnDefs=Backbone.Collection.extend({
     }
 });
 
-OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
-    url: '/omar/federation/serverList',
+OMAR.views.DataModelView = Backbone.View.extend({
+    url: '',
     el:"#ResultsView",
     initialize:function(params){
         this.dataTableEl = $(this.el).find("#DataTable")[0];
+        this.dataTableElClone =  $(this.dataTableEl).clone();
         this.selectedCollection = new OMAR.models.SelectedCollection();
-        if(params&&params.columnDefs)
+        if(params)
         {
-            this.columnDefs = params.columnDefs;
+            if(params.columnDefs)
+            {
+                this.columnDefs = params.columnDefs;
+            }
+            if(params.wfsModel)
+            {
+                this.wfsModel = params.wfsModel;
+            }
+            if(params.groupedViews)
+            {
+                this.groupedViews = params.groupedViews;
+            }
+
+            if(params.model)
+            {
+                this.model = params.model;
+            }
+            if(params.wfsTypeNameModel)
+            {
+                this.setWfsTypeNameModel(params.wfsTypeNameModel);
+            }
         }
-        else
+        if(!this.columnDefs)
         {
             this.columnDefs = new OMAR.models.RasterEntryColumnDefs();
         }
-        if(params&&params.wfsModel)
+
+        if(!this.wfsModel)
         {
-            this.wfsModel = params.wfsModel;
+            this.wfsModel = new OMAR.models.WfsModel({"resultType":"json"});
         }
-        else
+
+        if(!this.groupedViews)
         {
-            this.wfsModel = new OMAR.models.Wfs({"resultType":"json"});
+            this.groupedViews = new OMAR.views.ColumnGroupsView({
+                el:"div.groupViewSelection",
+                model:new OMAR.models.RasterEntryColumnGroups()
+            });
+        }
+        if(this.groupedViews)
+        {
+            this.groupedViews.unbind("groupClicked", this.groupedViewClicked, this);
+            this.groupedViews.bind("groupClicked", this.groupedViewClicked, this);
         }
         this.wfsModel.dirty = true;
         this.wfsModel.countDirty = true;
@@ -417,14 +595,11 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
         this.wfsModel.bind("change", this.wfsUrlChanged, this);
         this.wfsModel.bind("onNumberOfFeaturesChange",
             this.onNumberOfFeaturesChange, this);
-        if(params&&params.model)
-        {
-            this.model = params.model;
-        }
-        else
+        if(!this.model)
         {
             this.model = new OMAR.models.RasterEntryDataCollection();
         }
+        this.model.unbind("reset", this.resetTable, this);
         this.model.bind("reset", this.resetTable, this);
 
         // now setup table
@@ -432,25 +607,85 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
             this.reinitializeTable();
         }
     },
-    reinitializeTable:function(){
-        this.selectedCollection.reset();
+    setSelectectedCollectionModel:function(){
+
+    },
+    setWfsTypeNameModel:function(wfsTypeNameModel)
+    {
+        if(this.wfsTypeNameModel)
+        {
+            this.wfsTypeNameModel.unbind("change", this.wfsTypeNameModelChanged, this);
+        }
+        this.wfsTypeNameModel = wfsTypeNameModel;
+        if(this.wfsTypeNameModel)
+        {
+            this.wfsTypeNameModel.bind("change", this.wfsTypeNameModelChanged, this);
+        }
+
+    },
+    destroyTable:function(){
         if(this.dataTable)
         {
             this.dataTable.fnDestroy();
             this.dataTable = null;
+            $(this.el).html("");//<table id='DataTable' cellspacing='0px' width='100%'></table>");
+            $(this.dataTableElClone).clone().appendTo(this.el);
+            this.dataTableEl = $(this.el).find("#DataTable")[0];
+        }
+    },
+    wfsTypeNameModelChanged:function(){
+        this.destroyTable();
+        if(this.model)
+        {
+            this.model.unbind("reset", this.resetTable, this);
+        }
+        if(this.groupedViews)
+        {
+            this.groupedViews.unbind("groupClicked", this.groupedViewClicked, this);
+        }
+        if(this.wfsTypeNameModel.get("typeName") == "raster_entry")
+        {
+            this.columnDefs = new OMAR.models.RasterEntryColumnDefs();
+            this.groupedViews = new OMAR.views.ColumnGroupsView({
+                el:"div.groupViewSelection",
+                model:new OMAR.models.RasterEntryColumnGroups()
+            });
+            this.model = new OMAR.models.RasterEntryDataCollection();
         }
         else
         {
-            this.groupedViews = new OMAR.views.RasterEntryColumnGroupsView({el:"div.groupViewSelection"});
-            this.groupedViews.bind("groupClicked", this.groupedViewClicked, this);
+            this.columnDefs = new OMAR.models.VideoDatasetsColumnDefs();
+            this.groupedViews = new OMAR.views.ColumnGroupsView({
+                el:"div.groupViewSelection",
+                model:new OMAR.models.VideoDatasetColumnGroups()
+            });
+            this.model = new OMAR.models.VideoDatasetCollection();
         }
-        //var omarUrl = this.wfsModel.get("url");
-        //alert(omarUrl);
-                           // alert(JSON.stringify(this.columnDefs));
 
+
+        this.groupedViews.bind("groupClicked", this.groupedViewClicked, this);
+        this.model.bind("reset", this.resetTable, this);
+
+        this.reinitializeTable();
+
+     //   this.columnDefs = params.columnDefs;
+        // this.groupedViews.unbind("groupClicked", this.groupedViewClicked, this);
+     //   this.groupedViews
+       // this.groupedViews.bind("groupClicked", this.groupedViewClicked, this);
+        //this.model
+        //this.model.bind("reset", this.resetTable, this);
+    },
+    reinitializeTable:function(){
+        this.selectedCollection.reset();
+        if(this.dataTable)
+        {
+            this.destroyTable();
+        }
+
+        // first two column are always checkbox and record ID
+        //
         this.columnDefs.at(0).set("mRender",$.proxy(this.renderCheckbox,this,0));// this.renderColumn.bind(this));
         this.columnDefs.at(1).set("mRender",$.proxy(this.renderColumn,this,1));// this.renderColumn.bind(this));
-
             //function ( data, type, full ) {
             //if(data!=null)
             //    return "<a href='"+ omarUrl+"'>"+data +"</a";//moment(oObj.aData[1], "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY hh:mm:ss a");
@@ -490,11 +725,11 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
 //                                             "sHeightMatch" :"auto"});
 
         this.resizeView();
-
     },
     renderCheckbox:function(column, data, type, full)
     {
-        var attributes =  "value='"+full.id+"' id='rowCheckbox_"+full.id+"'"
+        var checkboxId ="rowCheckbox_"+full.id
+        var attributes =  "value='"+full.id+"' id='"+checkboxId+"'"
         if(this.selectedCollection.get(full.id.toString()))
         {
             attributes += " checked=true"
@@ -608,11 +843,12 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
 
         if(modified)
         {
-            this.resizeView();
+            this.dataTable.fnAdjustColumnSizing();
         }
     },
     resizeView:function()
     {
+        if(!this.dataTable) return;
         var innerHeight =  $(".inner-center").height();
         var innerWidth =  $(".inner-center").width();
         var innerHeightAdjusted = innerHeight - 95;
@@ -713,12 +949,15 @@ OMAR.views.RasterEntryDataModelView = Backbone.View.extend({
         this.wfsModel.dirty = true;
         this.wfsModel.attributes.numberOfFeatures = 0;
         //this.model.url = this.wfsModel.toUrl().toString() + "&callback=?";
+        //alert(this.wfsModel.toUrl().toString() );
         this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
 
         //this.model.fetch({dataType: "jsonp",
         //     update: false, remove: true,date:{cache:false}});
     },
     onNumberOfFeaturesChange:function(){
+        if(!this.dataTable) return;
+
         this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
     },
     render:function(){
