@@ -1,8 +1,14 @@
 OMAR.models.FederationReconnectModel = Backbone.Model.extend({
    url:"/omar/federation/reconnect",
+    idAttribute:"id",
     defaults:{
+        id:"",
         connected:"false"
     }
+//    parse:function(jsonResponse){
+//        alert("HERE WE ARE: " + JSON.stringify(jsonResponse));
+//        return jsonResponse;
+//    }
 });
 
 OMAR.models.FederationSettingsModel = Backbone.Model.extend({
@@ -92,58 +98,90 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
         var settings = this.model.get("settings");
         //alert("DOING NICK CHANGE " + JSON.stringify(settings));
         settings.vcard.nickName = $(this.omarFederationVcardNickName).val();
-        this.model.set("settings", settings);
+
+        //set is not working in IE maybe because of the nested settings so
+        // lets force change
+        //this.model.set("settings", settings);
+        this.model.trigger("change");
     },
     firstNameChanged:function(){
         var settings = this.model.get("settings");
 
         settings.vcard.firstName = $(this.omarFederationVcardFirstName).val();
-        this.model.set("settings", settings);
+        //set is not working in IE maybe because of the nested settings so
+        // lets force change
+        //this.model.set("settings", settings);
+        this.model.trigger("change");
     },
     lastNameChanged:function(){
         var settings = this.model.get("settings");
 
         settings.vcard.lastName = $(this.omarFederationVcardLastName).val();
-        this.model.set("settings", settings);
+        //set is not working in IE maybe because of the nested settings so
+        // lets force change
+        //this.model.set("settings", settings);
+        this.model.trigger("change");
     },
     serverIpChanged:function(){
         var settings = this.model.get("settings");
         settings.server.ip = $(this.omarFederationServerIp).val();
-        this.model.set("settings", settings);
+        //set is not working in IE maybe because of the nested settings so
+        // lets force change
+        //this.model.set("settings", settings);
+        this.model.trigger("change");
     },
     serverPortChanged:function(){
         var settings = this.model.get("settings");
         settings.server.port = $(this.omarFederationServerPort).val();
-        this.model.set("settings", settings);
+        //set is not working in IE maybe because of the nested settings so
+        // lets force change
+        //this.model.set("settings", settings);
+        this.model.trigger("change");
     },
     serverUsernameChanged:function(){
         var settings = this.model.get("settings");
         settings.server.username = $(this.omarFederationServerAdminUsername).val();
-        this.model.set("settings", settings);
+        //set is not working in IE maybe because of the nested settings so
+        // lets force change
+        //this.model.set("settings", settings);
+        this.model.trigger("change");
     },
     serverPasswordChanged:function(){
         var settings = this.model.get("settings");
         settings.server.password = $(this.omarFederationServerAdminPassword).val();
-        this.model.set("settings", settings);
+        //set is not working in IE maybe because of the nested settings so
+        // lets force change
+        //this.model.set("settings", settings);
+        this.model.trigger("change");
     },
     chatRoomIdChanged:function(){
         var settings = this.model.get("settings");
         settings.chatRoom.id = $(this.omarFederationChatRoomId).val();
-        this.model.set("settings", settings);
+        //set is not working in IE maybe because of the nested settings so
+        // lets force change
+        //this.model.set("settings", settings);
+        this.model.trigger("change");
     },
     chatRoomPasswordChanged:function(){
         var settings = this.model.get("settings");
         settings.chatRoom.password = $(this.omarFederationChatRoomPassword).val();
-        this.model.set("settings", settings);
+        //set is not working in IE maybe because of the nested settings so
+        // lets force change
+        //this.model.set("settings", settings);
+        this.model.trigger("change");
     },
     chatRoomEnabledChanged:function(){
         var checked = $(this.omarFederationChatRoomEnabled).attr("checked")=="checked";
         var settings = this.model.get("settings");
         settings.chatRoom.enabled = checked;
-        this.model.set("settings", settings);
+        //set is not working in IE maybe because of the nested settings so
+        // lets force change
+        //this.model.set("settings", settings);
+        this.model.trigger("change");
     },
     reloadClicked:function(){
-        this.model.fetch({success:function(){},
+        var model = this.model;
+        this.model.fetch({success:function(){model.trigger("change")},
             update: true, remove: false,date:{cache:false}});
         //alert("reloadClicked");
     },
@@ -151,11 +189,11 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
         if(this.dirty)
         {
             var spinner = new Spinner(OMAR.defaultSpinnerOptions);
-
             spinner.spin($(this.el)[0]);
             this.model.save(this.model.attributes,
                 {
                     success:function(){
+
                         federationReconnectModel = new OMAR.models.FederationReconnectModel();
 
                         federationReconnectModel.fetch({
