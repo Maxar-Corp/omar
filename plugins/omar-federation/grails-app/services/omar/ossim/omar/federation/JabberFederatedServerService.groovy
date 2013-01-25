@@ -94,7 +94,7 @@ class JabberFederatedServerService implements InitializingBean{
     */
     def isConnected()
     {
-        jabber?.connection?.isConnected()
+        jabber?.connection?.isConnected()?true:false;
     }
     def refreshServerTable()
     {

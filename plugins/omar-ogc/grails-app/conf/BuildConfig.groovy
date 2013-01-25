@@ -34,6 +34,7 @@ grails.project.dependency.resolution = {
   }
   plugins {
     compile ":csv:0.3.1"
+      runtime ":yui-minify-resources:0.1.5"
   }
 }
 

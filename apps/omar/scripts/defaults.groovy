@@ -24,16 +24,16 @@ def userData = [
 ]
 
 userData.each {
-  def user = new SecUser(it).save()
+    def user = new SecUser(it).save()
 
-  if ( user )
-  {
-    SecUserSecRole.create(user, userRole)
-  }
-  else
-  {
-    println "User for ${it.username} is null!"
-  }
+    if ( user )
+    {
+        SecUserSecRole.create(user, userRole)
+    }
+    else
+    {
+        println "User for ${it.username} is null!"
+    }
 }
 
 SecUserSecRole.create(SecUser.findByUsername("admin"), adminRole)
@@ -41,12 +41,12 @@ SecUserSecRole.create(SecUser.findByUsername("admin"), adminRole)
 
 if ( !Requestmap.findByUrl("/home/**") )
 {
-  new Requestmap(configAttribute: "ROLE_USER", url: "/home/**").save()
+    new Requestmap(configAttribute: "ROLE_USER", url: "/home/**").save()
 }
 
 if ( !Requestmap.findByUrl("/userPreferences/**") )
 {
-  new Requestmap(configAttribute: "ROLE_USER", url: "/userPreferences/**").save()
+    new Requestmap(configAttribute: "ROLE_USER", url: "/userPreferences/**").save()
 }
 
 
@@ -55,39 +55,39 @@ def adminControllers = [
 ]
 
 adminControllers.each {adminController ->
-  adminController = adminController.toLowerCase()
+    adminController = adminController.toLowerCase()
 
-  if ( !Requestmap.findByUrl("/${adminController}/**") )
-  {
-    new Requestmap(configAttribute: "ROLE_ADMIN", url: "/${adminController}/**").save()
-  }
+    if ( !Requestmap.findByUrl("/${adminController}/**") )
+    {
+        new Requestmap(configAttribute: "ROLE_ADMIN", url: "/${adminController}/**").save()
+    }
 }
 
 def domainControllers = (((grailsApplication.domainClasses)*.logicalPropertyName).sort()) - ["authUser", "dataSet", "role", "requestmap", "report", "search_mobile", "results_mobile", 'list_mobile', 'show_mobile', 'secUser', 'secRole']
 
 domainControllers.each {domainController ->
-  domainController = domainController.toLowerCase()
+    domainController = domainController.toLowerCase()
 
-  if ( !Requestmap.findByUrl("/${domainController}/**") )
-  {
-    new Requestmap(configAttribute: "ROLE_ADMIN", url: "/${domainController}/**").save()
-    new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/${domainController}/index/**").save()
-    new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/${domainController}/list/**").save()
-    new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/${domainController}/show/**").save()
-  }
+    if ( !Requestmap.findByUrl("/${domainController}/**") )
+    {
+        new Requestmap(configAttribute: "ROLE_ADMIN", url: "/${domainController}/**").save()
+        new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/${domainController}/index/**").save()
+        new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/${domainController}/list/**").save()
+        new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/${domainController}/show/**").save()
+    }
 }
 
 def searchableControllers = ["rasterEntry", "videoDataSet"]
 
 searchableControllers.each {controller ->
-  controller = controller.toLowerCase()
+    controller = controller.toLowerCase()
 
-  if ( !Requestmap.findByUrl("/${controller}/search/**") )
-  {
-    new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/${controller}/search/**").save()
-    new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/${controller}/results/**").save()
-    new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/${controller}/kmlnetworklink/**").save()
-  }
+    if ( !Requestmap.findByUrl("/${controller}/search/**") )
+    {
+        new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/${controller}/search/**").save()
+        new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/${controller}/results/**").save()
+        new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/${controller}/kmlnetworklink/**").save()
+    }
 
 }
 
@@ -95,6 +95,9 @@ new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/rasterSearch/**")
 new Requestmap(configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/session/**").save()
 new Requestmap(configAttribute: "ROLE_ADMIN", url: "/runscript/**").save()
 
+new Requestmap(configAttribute: "ROLE_ADMIN", url: "/configSettings/**").save()
+new Requestmap(configAttribute: "ROLE_ADMIN", url: "/federation/admin/**").save()
+new Requestmap(configAttribute: "ROLE_ADMIN", url: "/federation/reconnect/**").save()
 
 
 
@@ -102,67 +105,67 @@ new Requestmap(configAttribute: "ROLE_ADMIN", url: "/runscript/**").save()
 def searchTagData = grailsApplication.config.rasterEntry.searchTagData
 
 searchTagData.each {
-  def searchTag = RasterEntrySearchTag.findByName(it.name)
+    def searchTag = RasterEntrySearchTag.findByName(it.name)
 
-  if ( !searchTag )
-  {
-    searchTag = new RasterEntrySearchTag(name: it.name, description: it.description)
-    searchTag.save()
-  }
+    if ( !searchTag )
+    {
+        searchTag = new RasterEntrySearchTag(name: it.name, description: it.description)
+        searchTag.save()
+    }
 }
 
 searchTagData = grailsApplication.config.videoDataSet.searchTagData
 
 searchTagData.each {
-  def searchTag = VideoDataSetSearchTag.findByName(it.name)
+    def searchTag = VideoDataSetSearchTag.findByName(it.name)
 
-  if ( !searchTag )
-  {
-    searchTag = new VideoDataSetSearchTag(name: it.name, description: it.description)
-    searchTag.save()
-  }
+    if ( !searchTag )
+    {
+        searchTag = new VideoDataSetSearchTag(name: it.name, description: it.description)
+        searchTag.save()
+    }
 }
 
 
 if ( GrailsUtil.isDevelopmentEnv() )
 {
-  def baseDirs = ["/", "/data/uav", "/Volumes/Iomega_HDD/data"]
-  baseDirs.each {baseDir ->
-    def repository = Repository.findByBaseDir(baseDir)
+    def baseDirs = ["/", "/data/uav", "/Volumes/Iomega_HDD/data"]
+    baseDirs.each {baseDir ->
+        def repository = Repository.findByBaseDir(baseDir)
 
-    if ( !repository )
-    {
-      new Repository(baseDir: baseDir).save()
+        if ( !repository )
+        {
+            new Repository(baseDir: baseDir).save()
+        }
     }
-  }
 
 
-  def chips = ["Large 4X3", "800", "600", "Temporary"]
-  def chipFmt = ChipFormat.findByLabel(chips[0])
-  if ( !chipFmt )
-  {
-    new ChipFormat(label:chips[0],width:chips[1],height:chips[2],comment:chips[3]).save()
-  }
-  chips = ["PowerPoint 1", "976", "780", "NGA analyst recommended"]
-  chipFmt = ChipFormat.findByLabel(chips[0])
-  if ( !chipFmt )
-  {
-    new ChipFormat(label:chips[0],width:chips[1],height:chips[2],comment:chips[3]).save()
-  }
+    def chips = ["Large 4X3", "800", "600", "Temporary"]
+    def chipFmt = ChipFormat.findByLabel(chips[0])
+    if ( !chipFmt )
+    {
+        new ChipFormat(label:chips[0],width:chips[1],height:chips[2],comment:chips[3]).save()
+    }
+    chips = ["PowerPoint 1", "976", "780", "NGA analyst recommended"]
+    chipFmt = ChipFormat.findByLabel(chips[0])
+    if ( !chipFmt )
+    {
+        new ChipFormat(label:chips[0],width:chips[1],height:chips[2],comment:chips[3]).save()
+    }
 
 }
 else
 {
-  def baseDirs = ["/"]
+    def baseDirs = ["/"]
 
-  baseDirs.each {baseDir ->
-    def repository = Repository.findByBaseDir(baseDir)
+    baseDirs.each {baseDir ->
+        def repository = Repository.findByBaseDir(baseDir)
 
-    if ( !repository )
-    {
-      new Repository(baseDir: baseDir).save()
+        if ( !repository )
+        {
+            new Repository(baseDir: baseDir).save()
 
+        }
     }
-  }
 
 }

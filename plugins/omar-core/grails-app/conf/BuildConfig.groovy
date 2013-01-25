@@ -38,6 +38,7 @@ grails.project.dependency.resolution = {
 
   plugins {
     compile ":joda-time:1.4"
+    runtime ":yui-minify-resources:0.1.5"
   }
 
 }
