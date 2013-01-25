@@ -5,10 +5,7 @@ dataSource {
   driverClassName = ( useP6Spy ) ? "com.p6spy.engine.spy.P6SpyDriver" : "org.postgis.DriverWrapper"
   username = "postgres"
   password = "postgres"
-//  dialect = "org.ossim.postgis.PostGISDialectNG"
-  dialect = org.hibernatespatial.postgis.PostgisDialect
-
-//  loggingSql = true
+  dialect = org.ossim.omar.postgis.PostGISDialect
 }
 hibernate {
   cache.use_second_level_cache = true
@@ -28,7 +25,6 @@ environments {
   test {
     dataSource {
       dbCreate = "update"
-      //url = "jdbc:postgresql_postGIS:omardb-2.0-test"
       url = "jdbc:postgresql_postGIS:omardb-${appVersion}-test"
     }
   }
