@@ -298,7 +298,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             typeName:this.wfsTypeNameModel.get("typeName"),
             filter:cqlFilter
         })
-        //this.wfsServerCount.trigger("change");
+        this.wfsServerCountModel.trigger("change");
         var model = this.omarServerCollectionView.getLastClickedModel();
         if(model)
         {

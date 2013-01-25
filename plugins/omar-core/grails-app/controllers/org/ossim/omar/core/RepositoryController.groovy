@@ -95,7 +95,7 @@ class RepositoryController implements ApplicationContextAware
       if ( !repository.hasErrors() && repository.save() )
       {
         flash.message = "Repository ${params.id} updated"
-        redirect( action: show, id: repository.id )
+        redirect( action: "show", id: repository.id )
       }
       else
       {

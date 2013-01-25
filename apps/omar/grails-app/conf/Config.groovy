@@ -240,8 +240,8 @@ wms {
 
 
 thumbnail {
-  cacheDir = ( System.properties["os.name"] == "Windows XP" ) ? "c:/temp" : "${ wms.referenceDataDirectory }/omar-cache"
-  defaultSize = 512
+    cacheDir = ( System.properties["os.name"].contains("Windows") ) ? "c:/temp" : "${ wms.referenceDataDirectory }/omar-cache"
+    defaultSize = 512
 }
 
 security {
