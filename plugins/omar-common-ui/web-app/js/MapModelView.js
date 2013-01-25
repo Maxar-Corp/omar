@@ -543,12 +543,12 @@ getMeasureUnit:function() {
         if(this.pointModel)
         {
             // may want to unregister change listener of old model
-            this.pointModel.off("change", this.pointMapChanged,this);
+            this.pointModel.off("change", this.pointModelChanged,this);
         }
         this.pointModel = pointModel;
         if(this.pointModel)
         {
-            this.pointModel.on("change", this.pointMapChanged, this);
+            this.pointModel.on("change", this.pointModelChanged, this);
         }
     },
     setSearchType:function(searchType){
@@ -683,9 +683,11 @@ getMeasureUnit:function() {
         alert(this.bboxModel.get("minx"));
     },
 
-    pointMapChanged:function()
+    pointModelChanged:function()
     {
-        alert(this.pointModel.get("x"));
+        var lonLat = new OpenLayers.LonLat(this.pointModel.get("x"),
+                                           this.pointModel.get("y"));
+        this.map.setCenter(lonLat)
     },
 
     render:function()
