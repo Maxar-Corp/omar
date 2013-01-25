@@ -9,17 +9,18 @@ class ConfigSettingsController {
     }
 
     def action(){
+        //println params
         def result =[:]
         def method = request?.method?.toUpperCase()
 
         def configService = grailsApplication.mainContext.getBean("${params.settingsName}ConfigSettingsService")
-
+        response.contentType = "application/json"
         switch(method)
         {
             case "GET":
                 def record = configService.getSettingsRecord();
                 result = [name: record.name, settings: record.settings];
-                render (result as JSON)
+                render text:(result as JSON).toString()
                 break;
 
             case "PUT":
@@ -33,7 +34,7 @@ class ConfigSettingsController {
                 {
                     result = [name: record.name, settings: record.settings];
                 }
-                render (result as JSON)
+                render text:(result as JSON).toString()
                 break;
         }
         null
