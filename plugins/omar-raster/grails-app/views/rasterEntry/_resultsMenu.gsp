@@ -40,11 +40,14 @@
           <div class="bd">
             <ul>
               <li class="yuimenuitem">
-                <a class="yuimenuitemlabel" href="javascript:exportAs('csv')" title="Export Csv">Csv File</a>
+                <a class="yuimenuitemlabel" href="javascript:exportAs('csv')" title="Export CSV">CSV File</a>
               </li>
-              <li class="yuimenuitem">
-                <a class="yuimenuitemlabel" href="javascript:exportAs('shp')" title="Export Shape">Shape File</a>
-              </li>
+                <li class="yuimenuitem">
+                    <a class="yuimenuitemlabel" href="javascript:exportAs('shp')" title="Export Shapefile">Shapefile</a>
+                </li>
+                <li class="yuimenuitem">
+                    <a class="yuimenuitemlabel" href="javascript:exportAs('geocell')" title="Export GeoCell Project">GeoCell Project Package</a>
+                </li>
             </ul>
           </div>
         </div>
