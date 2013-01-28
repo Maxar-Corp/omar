@@ -163,7 +163,7 @@ class ExportService
 
                 // Check for NavData sub-directory
                 dir.eachFile {
-                    if (it.isDirectory()){
+                    if (it.isDirectory()) {
                         if (it.name == "NavData") {
                             it.eachFile {files.add(it.parent+"/"+it.name)}
                         }
@@ -173,7 +173,7 @@ class ExportService
                 // Check for NavData parallel directory
                 def dirPar = new File(dir.parent)
                 dirPar.eachFile {
-                    if (it.isDirectory()){
+                    if (it.isDirectory()) {
                         if (it.name == "NavData") {
                             it.eachFile {files.add(it.parent+"/"+it.name)}
                         }
@@ -182,7 +182,7 @@ class ExportService
 
                 // Check for NavData sub-directory
                 dir.eachFile {
-                    if (it.isDirectory()){
+                    if (it.isDirectory()) {
                         if (it.name == "NavData") {
                             it.eachFile {files.add(it.parent+"/"+it.name)}
                         }
@@ -190,17 +190,6 @@ class ExportService
                 }
 
                 associatedFiles = files.unique()
-
-//                dir.eachFile{
-//                    if(it.isFile()){
-//                        println "FILE: ${it}"
-//                    }else if(it.isDirectory()){
-//                        println "DIR:  ${it}"
-//                        it.eachFileMatch(~/${baseName}.*/) {println it}
-//                    }else{
-//                        println "Uh, I'm not sure what it is..."
-//                    }
-//                }
 
                 def downloadedFilename = preface + fileName.substring(1, fileName.size())
 
