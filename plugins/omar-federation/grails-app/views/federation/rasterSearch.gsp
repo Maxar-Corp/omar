@@ -57,8 +57,7 @@
             </div>
         </div></p>
 
-        <p><g:render plugin="omar-federation" template="/templates/footprintLegendTemplate"/></p>
-
+            <g:render plugin="omar-common-ui" template="/templates/footprintLegendTemplate" model="${[style: footprintStyle]}"/>
         </div>
 
         <div class="ui-layout-south">

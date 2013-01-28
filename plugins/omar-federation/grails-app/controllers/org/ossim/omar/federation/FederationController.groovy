@@ -12,7 +12,10 @@ class FederationController  {
     }
     def rasterSearch() {
         def wmsBaseLayers = (grailsApplication.config.wms as JSON).toString()
-        render view: 'rasterSearch', model:[wmsBaseLayers:wmsBaseLayers]
+
+        render view: 'rasterSearch', model:[wmsBaseLayers:wmsBaseLayers,
+                                           footprintStyle: grailsApplication.mainContext.getBean( grailsApplication.config?.wms?.data?.raster?.options?.styles)
+        ]
     }
     def serverList(){
         def tempParam = new CaseInsensitiveMap(params);
