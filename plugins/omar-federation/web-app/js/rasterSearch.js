@@ -103,6 +103,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         // construct with a shared wfsTypeName model
         this.dataModelView = new OMAR.views.DataModelView({wfsTypeNameModel:this.wfsTypeNameModel});
 
+        this.cqlView = new OMAR.views.CqlView();
+
         this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this);
         this.bboxModel.bind('change', this.updateFootprintCql, this);
 
@@ -181,7 +183,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         {
             this.mapView.render();
         }
-
+        if(this.cqlView)
+        {
+            this.cqlView.render();
+        }
         if(this.dataModelView)
         {
             this.dataModelView.render();
@@ -357,25 +362,6 @@ $(document).ready(function () {
 
 
 });
-
-
-$(document).ready(function () {
-            $('#btnCondition').click(function () {
-                var query = {};
-                query = getCondition('.query > table');
-                //var l = JSON.stringify(query,null,4);
-                var l = JSON.stringify(query);
-                alert(l);
-            });
-
-            $('#btnQuery').click(function () {
-                var con = getCondition('.query >table');
-                var k = getQuery(con);
-                alert(k);
-            });
-            addqueryroot('.query', true);
-
-        });
 
 
 function generateKmlQuery() {

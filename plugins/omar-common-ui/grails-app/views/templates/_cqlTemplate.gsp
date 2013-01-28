@@ -1,21 +1,8 @@
 <div id='cqlId'>
-	
-
-
-<span>Query Starts after this</span>
-    <div class="query">
+    <div class="cqlQuery">
     </div>
-    <button id="btnCondition">
+    <button id="cqlBtnCondition">
         Get Condition</button>
-
-    <button id="btnQuery">
+    <button id="cqlBtnQuery">
         Get Query</button>
-
-
-
-
-
-
-
-	
 </div>
