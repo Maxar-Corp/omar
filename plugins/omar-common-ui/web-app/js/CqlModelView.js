@@ -57,21 +57,6 @@ OMAR.views.CqlView = Backbone.View.extend({
         this.rootCondition += '</td></tr></table>';
 
         this.statement = '<div><img src="../images/res/remove.gif" alt="Remove" class="remove" />'
-/*
-        this.rasterStatment = '<select class="col">';
-        this.rasterStatment += '<option value="filename">Filename</option>';
-        this.rasterStatment += '<option value="image_id">IID</option>';
-        this.rasterStatment += '<option value="be_number">BE</option>';
-        this.rasterStatment += '<option value="target_id">Target ID</option>';
-        this.rasterStatment += '<option value="product_id">Product ID</option>';
-        this.rasterStatment += '<option value="sensor_id">Sensor</option>';
-        this.rasterStatment += '<option value="mission_id">Mission</option>';
-        this.rasterStatment += '</select>';
-        this.rasterStatment += '<select class="op">';
-        this.rasterStatment += '</select>'
-        this.rasterStatment += '<input type="text" /></div>';
-*/
-//        this.statement += this.rasterStatment;
     },
     getStatement:function(colId, opId){
         var idx    = 0;
@@ -86,7 +71,7 @@ OMAR.views.CqlView = Backbone.View.extend({
         }
         result+="</select>";
         result+= "<select class='op' id='"+opId+"'>";
-        result+= "<option value='<' >Less Than</option>";
+ //       result+= "<option value='<' >Less Than</option>";
         result+= "</select>";
         return (this.statement+result+"<input type='text'/>");
     },
@@ -139,6 +124,11 @@ OMAR.views.CqlView = Backbone.View.extend({
         var elen = condition.expressions.length;
         for (var i = 0; i < elen; i++) {
             var expr = condition.expressions[i];
+
+            alert("WE CAN FORMAT AND VALIDATE HERE!" + this.columnDefs.get(expr.colval));
+            // add tests for ops HERE!!
+            //
+
             e.push(expr.colval + " " + expr.opval + " " + expr.val);
         }
 
@@ -187,11 +177,6 @@ OMAR.views.CqlView = Backbone.View.extend({
         // Add the default staement segment to the root condition
         var appendedStatement = elem.find('td >.querystmts').append(this.getStatement(colId, opId));
         $(appendedStatement).find("#"+colId).change($.proxy(thisPtr.columnSelectorChanged, thisPtr, colId, opId)) ;
-//       var op =   $(appendedStatement).find(".op");
- //       var col =   $(appendedStatement).find(".col");
-//        $(op).attr("id", opId);
-//        $(col).attr("id", colId);
-//        $(col).change($.proxy(thisPtr.clearSelector, this, colId, opId)) ;
         // Add the head class to the first statement
         elem.find('td >.querystmts div >.remove').addClass('head');
 
@@ -204,18 +189,6 @@ OMAR.views.CqlView = Backbone.View.extend({
             var appendedStatement = $(this).parent().siblings('.querystmts').append(thisPtr.getStatement(colId2, opId2));
             var colEl = $(appendedStatement).find("#"+colId2);
             $(colEl).change($.proxy(thisPtr.columnSelectorChanged, thisPtr, colId2, opId2)) ;
-            /*
-            var op      = $(appendedStatement).find(".op");
-            var col     = $(appendedStatement).find(".col");
-            var colSize = $(col).size();
-            var opSize  = $(op).size();
-            var colEl = $(col)[colSize-1];
-            var opEl = $(op)[opSize-1];
-            $(opEl).attr("id", opId2);
-            $(colEl).attr("id", colId2);
-
-            $(colEl).change($.proxy(thisPtr.clearSelector, thisPtr, colId2, opId2)) ;
-              */
 
             var stmts = $(this).parent().siblings('.querystmts').find('div >.remove').filter(':not(.head)');
             stmts.unbind('click');
