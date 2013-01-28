@@ -23,19 +23,36 @@ import org.ossim.omar.core.Utility
 class ExportUtils
 {
 
-  static def createZipFileSet(newFile)
-  {
-    def srcDir = newFile.parentFile
-    def prefix = FilenameUtils.getBaseName(newFile.name)
-    def zipfile = new File(srcDir.parentFile, "${prefix}.zip")
-    def filenames = srcDir.listFiles()?.absolutePath
-    def archFilenames = filenames.collect { "${prefix}${it - srcDir.absolutePath}" }
+    static def createZipFileFromList(newFile, files)
+    {
+        def srcDir = newFile.parentFile
+        def prefix = FilenameUtils.getBaseName(newFile.name)
+        def zipfile = new File(srcDir.parentFile, "${prefix}.zip")
+        def filenames = srcDir.listFiles()?.absolutePath
 
-    ZipUtil.zip(zipfile.absolutePath, filenames as String[], archFilenames as String[])
-    FileUtils.deleteDirectory(newFile.parentFile)
+        filenames += files
 
-    return zipfile
-  }
+        def archFilenames = filenames.collect { "${prefix}${it - srcDir.absolutePath}" }
+
+        ZipUtil.zip(zipfile.absolutePath, filenames as String[], archFilenames as String[])
+        FileUtils.deleteDirectory(newFile.parentFile)
+
+        return zipfile
+    }
+
+    static def createZipFileSet(newFile)
+    {
+        def srcDir = newFile.parentFile
+        def prefix = FilenameUtils.getBaseName(newFile.name)
+        def zipfile = new File(srcDir.parentFile, "${prefix}.zip")
+        def filenames = srcDir.listFiles()?.absolutePath
+        def archFilenames = filenames.collect { "${prefix}${it - srcDir.absolutePath}" }
+
+        ZipUtil.zip(zipfile.absolutePath, filenames as String[], archFilenames as String[])
+        FileUtils.deleteDirectory(newFile.parentFile)
+
+        return zipfile
+    }
 
   static def createTempDir(def prefix, def suffix, def directory)
   {
