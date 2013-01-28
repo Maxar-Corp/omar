@@ -56,6 +56,9 @@
                 <div id="layerSwitcher" class="layerSwitcher"></div>
             </div>
         </div></p>
+
+        <p><g:render plugin="omar-federation" template="/templates/footprintLegendTemplate"/></p>
+
         </div>
 
         <div class="ui-layout-south">
