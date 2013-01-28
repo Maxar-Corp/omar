@@ -1,17 +1,17 @@
-OMAR.models.CqlColumnType = Backbone.Model.extend({
+OMAR.models.CqlColumnDef = Backbone.Model.extend({
+    idAttribute:"name",
     defaults:{
         name:"",
         label:"",
-        type:"" // string, date, numeric
+        type:"" // string, date, numeric, geom
     },
     initialize:function(params){
 
     }
 });
 
-OMAR.models.CqlRasterColumnTypeCollection = Backbone.Collection.extend({
-    idAttribute:"name",
-    model:OMAR.models.CqlColumnType,
+OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
+    model:OMAR.models.CqlColumnDef,
     initialize:function(params){
         this.add([
             {name:"filename", label:"Filename", type:"string"}
@@ -47,7 +47,7 @@ OMAR.views.CqlView = Backbone.View.extend({
         this.idIncrement = 0;
         this.cqlBtnConditionEl = $(this.el).find("#cqlBtnCondition");
         this.cqlBtnQueryEl = $(this.el).find("#cqlBtnQuery");
-        this.columnDefs = new OMAR.models.CqlRasterColumnTypeCollection();
+        this.columnDefs = new OMAR.models.CqlRasterColumnDefCollection();
 
         $(this.cqlBtnConditionEl).click(this.cqlBtnConditionClicked.bind(this));
         $(this.cqlBtnQueryEl).click(this.cqlBtnQueryClicked.bind(this));
@@ -85,7 +85,7 @@ OMAR.views.CqlView = Backbone.View.extend({
             result += html;
         }
         result+="</select>";
-        result+= "<select class='op'>";
+        result+= "<select class='op' id='"+opId+"'>";
         result+= "<option value='<' >Less Than</option>";
         result+= "</select>";
         return (this.statement+result+"<input type='text'/>");
@@ -186,7 +186,8 @@ OMAR.views.CqlView = Backbone.View.extend({
 
         // Add the default staement segment to the root condition
         var appendedStatement = elem.find('td >.querystmts').append(this.getStatement(colId, opId));
- //       var op =   $(appendedStatement).find(".op");
+        $(appendedStatement).find("#"+colId).change($.proxy(thisPtr.columnSelectorChanged, thisPtr, colId, opId)) ;
+//       var op =   $(appendedStatement).find(".op");
  //       var col =   $(appendedStatement).find(".col");
 //        $(op).attr("id", opId);
 //        $(col).attr("id", colId);
@@ -201,8 +202,8 @@ OMAR.views.CqlView = Backbone.View.extend({
             var opId2    = "op"+thisPtr.idIncrement;
             var colId2   = "col"+thisPtr.idIncrement;
             var appendedStatement = $(this).parent().siblings('.querystmts').append(thisPtr.getStatement(colId2, opId2));
-
-
+            var colEl = $(appendedStatement).find("#"+colId2);
+            $(colEl).change($.proxy(thisPtr.columnSelectorChanged, thisPtr, colId2, opId2)) ;
             /*
             var op      = $(appendedStatement).find(".op");
             var col     = $(appendedStatement).find(".col");
@@ -228,9 +229,32 @@ OMAR.views.CqlView = Backbone.View.extend({
             thisPtr.addQueryRoot($(this).parent(), false);
         });
     },
-    clearSelector:function(col, op){
-        var op = $(this.el).find("#"+op);
-        $(op).empty();
+    columnSelectorChanged:function(col, op){
+       //alert($("#"+col)[0]);
+        var columnName = $("#"+col).val();
+        var op = $("#"+op);
+        var row = this.columnDefs.get(columnName);
+        if(row)
+        {
+            switch(row.get("type"))
+            {
+                case "string":
+                    $(op).empty();
+                    $(op).append("<option value='<' >Less Than</option>");
+                    $(op).append("<option value='>' >Greater Than</option>");
+                    $(op).append("<option value='=' >Equal</option>");
+                    $(op).append("<option value='like' >Like</option>");
+                    break;
+                case "numeric":
+                    $(op).empty();
+                    $(op).append("<option value='<' >Less Than</option>");
+                    $(op).append("<option value='>' >Greater Than</option>");
+                    $(op).append("<option value='=' >Equal</option>");
+                    break;
+            }
+        }
+//        var op = $(this.el).find("#"+op);
+//        $(op).empty();
     },
     cqlBtnConditionClicked:function(){
         var query = {};
