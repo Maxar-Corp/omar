@@ -44,11 +44,11 @@ OMAR.models.OmarServerCollection=Backbone.Collection.extend({
     parse:function(response){
         var result = new Array();
         var size = response.size();
-        for(var idx=0;idx<20;++idx)
+        for(var idx=0;idx<size;++idx)
         {
 
-            var model = new OMAR.models.OmarServerModel(response[0]);
-            model.id = model.id+idx;
+            var model = new OMAR.models.OmarServerModel(response[idx]);
+            model.id = model.id;
             var tempM = this.get(model.id);
             // make sure we copy any existing user defined data or counts to
             // the copy of the model.
