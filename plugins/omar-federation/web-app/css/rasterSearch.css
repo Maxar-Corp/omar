@@ -3,12 +3,6 @@ body {
     font-size: 75%;
 }
 
-.link_cursor
-{
-    cursor: pointer;
-    color:blue;
-    text-decoration:underline;
-}
 
 #ui-datepicker-div, .ui-datepicker{
     font-size: 75%;
@@ -111,100 +105,81 @@ body {
     visibility: hidden;
 }
 
+.omar-server{
+    padding-left:5px;
+    padding-right:5px;
+    position:relative;
+    float:left;
+}
+.omar-server-selected{
+    /*border:2px solid #000000;*/
+    background-color: #add8e6;
+    padding-left:5px;
+    padding-right:5px;
+    float:left;
+}
+
 /*.inner-west{
     background-color:#F0F8FF;;
 } */
-
-.omar-server{
-    background-image:url("../images/server.gif");
-    /* background-color:#cccccc;*/
-    background-repeat:no-repeat;
-    height:32px;
-    width:64px;
-    float:left;
-    padding-left:10px;
-    padding-right:10px;
-    color:#FF0000;
-    font-size:10px;
-    padding-top:25px;
-}
-
 #omar-server-count-container{
-    position: absolute;
-    top: 0;
     z-index: 50;
-    /*left: 50;*/
 }
 
-#omar-server-enabled{
-    height:auto;
-    width:auto;
-    float:left;
+.omar-server-enabled{
     z-index: 10;
 }
 
-#omar-server-count {
-    float:  left;
-    height: auto;
-    width:  auto;
+.omar-server-image{
+    background-repeat:no-repeat;
+    cursor:pointer;
+}
+.omar-server-link-cursor
+{
+    cursor: pointer;
+    color:blue;
+    text-decoration:underline;
+}
+
+
+
+.link_cursor
+{
+    cursor: pointer;
+    color:blue;
+    text-decoration:underline;
+}
+
+
+
+.omar-server-count {
+   /* height: 100%;*/
+    width:  100%;
     /*background-color: rgba(255, 0, 0, 0.4);*/
     /*background-color:red;*/
     /*background: rgba(255, 0, 0, 0.4);*/
     filter:alpha(apacity=40);
     /*opacity:0.4;*/
     /*background-color:red;*/
-    border-radius:50px;
+    /*border-radius:50px;*/
     /*outline-style:solid;*/
     font-size:15px;
     line-height:25px;
     text-align:center;
     background-color:#F08080;
-    /*background: rgba(255, 0, 0, 0.4);*/
-    /*filter:alpha(apacity=40);*/
-    /*opacity:0.4;*/
     /*background-color:red;*/
-    border-radius:50px;font-size:15px;line-height:25px;text-align:center;
-
-    /*    padding-left: 10px;
-        padding-right: 10px;
-    */
+  /*  border-radius:50px;font-size:15px;line-height:25px;text-align:center;
+   */
 }
 
-.omar-server-info {
-    height: auto;
-    width: auto;
-    position: relative;
-    /*background-color:red;*/
-}
-
-.omar-server-info  {
-}
-#omar-server-url{
-    z-index:10;
-}
-.omar-server-container{
-    position:relative;
-    /*background-color:blue;*/
-    max-height: 100px;
-    max-width: 100px;
-    height:100px;
-    width:100px;
-    float:left;
-
-
-    display: inline-block;
-    position:relative;
-    padding-left: 10px;
-    padding-right:10px;
-}
-
-#omarServerCollectionId{
-    height:100px;
+.omar-server-collection{
+    height:100%;
     min-height: 100px;
-    width:auto;
-    /*overflow-y:scroll;*/
-    /*display: inline-block;*/
-    white-space: nowrap
+    width:100%;
+    overflow: auto;
+    /*padding: 5px 5px 5px 5px;*/
+    display: inline-block;
+    /*white-space: nowrap;*/
 }
 /*
  * Added float:left because of firefox not
@@ -289,7 +264,7 @@ body {
     width: 512px;
     z-index: 20000;
     background-color: white;
-    padding: 0 0.5em 0.5em 0.5em;
+   padding: 0 0.5em 0.5em 0.5em;
 }
 
 

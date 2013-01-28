@@ -360,7 +360,7 @@ OMAR.models.RasterEntryColumnGroups=Backbone.Collection.extend({
             },
             {name:"Image",
                 id:"RasterEntryImageGroupId",
-                mDataProperties:["selected","thumbnail","id","view","entry_id","width"
+                mDataProperties:["checked","thumbnail","id","view","entry_id","width"
                     ,"height","number_of_bands","number_of_res_levels"
                     ,"bit_depth", "gsdx", "gsdy", "min_lat_lon"
                     , "max_lat_lon", "center_lat_lon"
@@ -370,7 +370,7 @@ OMAR.models.RasterEntryColumnGroups=Backbone.Collection.extend({
             ,{name:"Metadata",
                 id:"RasterEntryMetadataGroupId",
                 mDataProperties:[
-                    "selected","thumbnail","id", ,"view", "acquisition_date","file_type"
+                    "checked","thumbnail","id", ,"view", "acquisition_date","file_type"
                     ,"class_name","mission_id","country_code","target_id"
                     ,"be_number","sensor_id","title"
                 ],
@@ -378,12 +378,12 @@ OMAR.models.RasterEntryColumnGroups=Backbone.Collection.extend({
             }
             ,{name:"File",
                 id:"RasterEntryFileGroupId",
-                mDataProperties:["selected","thumbnail","id","view","filename"],
+                mDataProperties:["checked","thumbnail","id","view","filename"],
                 selected:false
             }
             ,{name:"Links",
                 id:"RasterEntryLinksGroupId",
-                mDataProperties:["selected","thumbnail","id","view", "links"],
+                mDataProperties:["checked","thumbnail","id","view", "links"],
                 selected:false
             }
         ]);

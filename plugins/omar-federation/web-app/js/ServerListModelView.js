@@ -44,9 +44,11 @@ OMAR.models.OmarServerCollection=Backbone.Collection.extend({
     parse:function(response){
         var result = new Array();
         var size = response.size();
-        for(var idx=0;idx<size;++idx)
+        for(var idx=0;idx<20;++idx)
         {
-            var model = new OMAR.models.OmarServerModel(response[idx]);
+
+            var model = new OMAR.models.OmarServerModel(response[0]);
+            model.id = model.id+idx;
             var tempM = this.get(model.id);
             // make sure we copy any existing user defined data or counts to
             // the copy of the model.
@@ -72,16 +74,20 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     },
     initialize:function(params){
         this.omarServerView = new OMAR.views.OmarServerView();
-        var wfsServerCount
+        var wfsServerCountModel;
         if(params)
         {
             if(params.models)
             {
                 this.model = new OMAR.models.OmarServerCollection(params.models);
             }
-            if(params.wfsServerCount)
+            if(params.wfsServerCountModel)
             {
-                wfsServerCount = params.wfsServerCount;
+                wfsServerCountModel = params.wfsServerCountModel;
+            }
+            if(params.wfsTypeNameModel)
+            {
+                this.setWfsTypeNameModel(params.wfsTypeNameModel);
             }
         }
         if(!this.model)
@@ -91,27 +97,48 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         this.model.bind('add',    this.collectionAdd,     this)
         this.model.bind("change", this.collectionChanged, this);
         this.model.bind("reset",  this.collectionReset,   this);
-        this.lastClickedServerId = "";
-        if(!wfsServerCount)
+        if(this.wfsTypeName)
         {
-            this.setWfsServerCount(new OMAR.models.WfsModel({"resultType":"hits"}));
+            this.model.bind("change", this.wfsTypeNameChange, this);
+        }
+        this.lastClickedServerId = "";
+        if(!wfsServerCountModel)
+        {
+            this.setWfsServerCountModel(new OMAR.models.WfsModel({"resultType":"hits"}));
         }
         else
         {
-            this.setWfsServerCount(wfsServerCount);
+            this.setWfsServerCountModel(wfsServerCountModel);
         }
-
     },
-    setWfsServerCount:function(wfsServerCount)
+    setWfsTypeNameModel:function(wfsTypeNameModel)
     {
-        if(this.wfsServerCount)
+        if(this.wfsTypeNameModel)
         {
-            this.wfsServerCount.unbind("change", this.refreshServerCounts, this);
+            this.wfsTypeNameModel.unbind("change", this.wfsTypeNameModelChange, this);
         }
-        this.wfsServerCount = wfsServerCount;
-        if(this.wfsServerCount)
+        this.wfsTypeNameModel = wfsTypeNameModel;
+        if(this.wfsTypeNameModel)
         {
-            this.wfsServerCount.bind("change", this.refreshServerCounts, this);
+            this.wfsTypeNameModel.bind("change", this.wfsTypeNameModelChange, this);
+        }
+    },
+    wfsTypeNameModelChange:function(){
+      if(this.wfsTypeNameModel)
+      {
+          this.wfsServerCountModel.set({typeName:this.wfsTypeNameModel.get("typeName")});
+      }
+    },
+    setWfsServerCountModel:function(wfsServerCountModel)
+    {
+        if(this.wfsServerCountModel)
+        {
+            this.wfsServerCountModel.unbind("change", this.refreshServerCounts, this);
+        }
+        this.wfsServerCountModel = wfsServerCountModel;
+        if(this.wfsServerCountModel)
+        {
+            this.wfsServerCountModel.bind("change", this.refreshServerCounts, this);
         }
     },
     collectionAdd:function(params){
@@ -129,7 +156,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         if(model&&model.get("enabled"))
         {
             this.setBusy(model.id, true);
-            this.wfsServerCount.attributes.url = model.get("url")+"/wfs";
+            this.wfsServerCountModel.attributes.url = model.get("url")+"/wfs";
             //wfs.set("url",model.get("url")+"/wfs");
 
             if(model.userDefinedData.ajaxCountQuery &&
@@ -143,7 +170,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                 }
             }
             model.userDefinedData.ajaxCountQuery = $.ajax({
-                url: this.wfsServerCount.toUrl()+"&callback=?",
+                url: this.wfsServerCountModel.toUrl()+"&callback=?",
                 cache:false,
                 type: "GET",
                 crossDomain:true,
@@ -152,7 +179,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                 modelId:model.id,
                 scopePtr:this,
                 success: function(response) {
-                    if(response.numberOfFeatures!=null)
+                    if(response&&(response.numberOfFeatures!=null))
                     {
                         var numberOfFeatures = response.numberOfFeatures;
                         this.scopePtr.setBusy(this.modelId, false);
@@ -226,7 +253,9 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                 $(this.el).delegate("#omar-server-name-"+modelId,
                     "click",
                     $.proxy(this.modelClicked,this, model.id));
-
+                $(this.el).delegate("#omar-server-image-"+modelId,
+                    "click",
+                    $.proxy(this.modelClicked,this, model.id));
             }
             else
             {
@@ -249,8 +278,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             enabled:model.get("enabled"),
             //url:model.get("url"),// this needs to be the models search params later
             count:model.get("count"),
-            name:model.get("nickname")}
-
+            name:model.get("nickname")};
 
         var result = _.template($('#omar-server-template').html(), attr);
 
@@ -267,6 +295,14 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     modelClicked:function(id)
     {
         this.lastClickedServerId = id;
+        var selectedServer = $(this.el).find(".omar-server-selected");
+        if(selectedServer.size()>0)
+        {
+            $(selectedServer).attr("class","omar-server");
+        }
+
+        $($(this.el).find("#"+id)).attr("class","omar-server-selected");//.class(".omar-server-selected");
+
         this.trigger("onModelClicked", id);
     },
     getLastClickedModel:function(){

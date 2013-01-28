@@ -1,4 +1,3 @@
-
 OMAR.models.CqlModel = Backbone.Model.extend({
     idAttribute:"id",
     defaults:{
@@ -27,7 +26,7 @@ OMAR.models.WfsTypeNameModel = Backbone.Model.extend({
 });
 
 OMAR.views.WfsTypeNameView = Backbone.View.extend({
-    el:"#SearchTypeNameId",
+    el:"#wfsTypeNameId",
     initialize:function(params){
         this.setElement(this.el);
         if(params)
@@ -39,7 +38,7 @@ OMAR.views.WfsTypeNameView = Backbone.View.extend({
         }
         if(!this.model)
         {
-            this.model = OMAR.models.WfsTypeNameModel();
+            this.model = new OMAR.models.WfsTypeNameModel();
         }
         this.model.bind("change", this.modelChanged, this);
     },
@@ -47,9 +46,6 @@ OMAR.views.WfsTypeNameView = Backbone.View.extend({
         this.render();
     },
     render:function(){
-        $(this.el).html("<label>Search For:</label><input name='WfsTypeNameGroup' id='WfsTypeNameRasterEntryId' type='radio' value='raster_entry' >Raster</input> \
-                         <input name='WfsTypeNameGroup' type='radio' id='WfsTypeNameVideoDataSetId' value='video_data_set' >Video</input>");
-
 
         this.wfsTypeNameVideoDataSetEl = $(this.el).find("#WfsTypeNameVideoDataSetId")[0];
         this.wfsTypeNameRasterEntryEl  = $(this.el).find("#WfsTypeNameRasterEntryId")[0];
@@ -86,6 +82,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     el:"#rasterSearchPageId",
     bboxView:null,
     initialize:function(params){
+        this.cqlModel = new OMAR.models.CqlModel();
         this.wfsTypeNameModel = new OMAR.models.WfsTypeNameModel();
         this.wfsTypeNameView = new OMAR.views.WfsTypeNameView({model:this.wfsTypeNameModel});
 
@@ -101,7 +98,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         this.omarServerCollectionView = new OMAR.views.OmarServerCollectionView(
             {"model":new OMAR.models.OmarServerCollection(),
-             "wfsServerCount":this.wfsServerCountModel}
+             "wfsServerCountModel":this.wfsServerCountModel,
+             "wfsTypeNameModel":this.wfsTypeNameModel
+            }
         );
         this.measurementUnitView = new OMAR.views.UnitModelView({el:"#measurementUnitViewId"});
         this.measurementUnitModel = this.measurementUnitView.model;
@@ -132,6 +131,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                                                                 "#ResultsView"]});
         this.viewSelector.bind("show", this.showTab, this);
         this.wfsTypeNameModel.bind("change", this.wfsTypeNameChanged, this);
+        this.cqlModel.bind("change", this.cqlModelChanged, this);
     },
     events: {
         "click #SearchRasterId": "searchRaster"
@@ -151,7 +151,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     serverClicked:function(id){
         var cqlFilter = this.toCql();
-        this.omarServerCollectionView.wfsServerCount.set({"filter":cqlFilter,
+        this.omarServerCollectionView.wfsServerCountModel.set({"filter":cqlFilter,
                                                           "typeName":this.wfsTypeNameModel.get("typeName")});
 
         var model = this.omarServerCollectionView.getLastClickedModel();
@@ -169,6 +169,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         //$(this.tabView).find("#ResultsLabelId").text(model.get("nickname"));
     },
     wfsTypeNameChanged:function()
+    {
+        this.searchRaster();
+    },
+    cqlModelChanged:function()
     {
         this.searchRaster();
     },
@@ -217,11 +221,6 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         if(this.mapView) this.mapView.setCqlFilterToFootprintLayers(this.toCql());//this.toFootprintCql());
 
-/*        this.tabView = $( "#tabView" ).tabs(
-            {   "active":1,
-                "show": $.proxy(this.showTab, this)
-            });
-*/
         // we must render everything first and fully initialize before we set a selected view
         //
         this.viewSelector.click(1);
@@ -282,22 +281,11 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         if(this.dataModelView) this.dataModelView.resizeView();
         if(this.mapView)       this.mapView.resizeView();
     },
-    toFootprintCql:function(){
-        var result = "";
-        var timeQueryCql = this.dateTimeRangeModel.toCql("acquisition_date");
-
-        // add all criteria here later.   Fo now we will just do time
-        //
-        result = timeQueryCql;
-
-        return result;
-    },
     searchRaster:function(){
         var cqlFilter = this.toCql();
         this.wfsServerCountModel.set({
-            typeName:this.wfsTypeNameModel.get("typeName"),
             filter:cqlFilter
-        })
+        });
         this.wfsServerCountModel.trigger("change");
         var model = this.omarServerCollectionView.getLastClickedModel();
         if(model)
