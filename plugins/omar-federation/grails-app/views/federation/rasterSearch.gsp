@@ -7,66 +7,66 @@
     <r:layoutResources/>
 </head>
 <body>
-    <div class="outer-center" id="rasterSearchPageId">
+<div class="outer-center" id="rasterSearchPageId">
 
-        <div class="ui-layout-north">
-            <omar:securityClassificationBanner/>
-            <g:render plugin="omar-federation" template="/templates/searchTabView"/>
-            <g:render plugin="omar-common-ui" template="/templates/federatedSearchMenu"/>
+    <div class="ui-layout-north">
+        <omar:securityClassificationBanner/>
+        <g:render plugin="omar-federation" template="/templates/searchTabView"/>
+        <g:render plugin="omar-common-ui" template="/templates/federatedSearchMenu"/>
+    </div>
+
+    <div class="middle-center">
+
+        <div class="inner-west">
+            <p>Units<g:select styles="z-index:-1" name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></p>
+            <g:render plugin="omar-common-ui" template="/templates/wfsTypeNameTemplate"></g:render>
+            <p><g:checkBox name="spatialSearch" value="" checked="true"/> Use Spatial</p>
+
+            <form>
+                <p><input type="radio" id="bbox" name="spatialSearchType" value="bbox" checked="checked">Use Bound Box</p>
+                <p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>
+
+                <p><input type="radio" id="point" name="spatialSearchType" value="point">Use Point Radius</p>
+            </form>
+            <p><g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/></p>
+
+            <p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p>
+
+            <center><button name="SearchRasterId" id="SearchRasterId">Search OMAR™</button></center>
         </div>
 
-        <div class="middle-center">
+        <div class="inner-center">
 
-            <div class="inner-west">
-                <p>Units<g:select styles="z-index:-1" name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></p>
-                <div id=SearchTypeNameId></div>
-                <p><g:checkBox name="spatialSearch" value="" checked="true"/> Use Spatial</p>
-
-                <form>
-                    <p><input type="radio" id="bbox" name="spatialSearchType" value="bbox" checked="checked">Use Bound Box</p>
-                    <p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>
-
-                    <p><input type="radio" id="point" name="spatialSearchType" value="point">Use Point Radius</p>
-                </form>
-                <p><g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/></p>
-
-                <p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p>
-
-                <center><button name="SearchRasterId" id="SearchRasterId">Search OMAR™</button></center>
+            <div id="CustomQueryView">Custom Query</div>
+            <div id="MapView">
+                <g:render plugin="omar-common-ui" template="/templates/mapTemplate"/>
             </div>
-
-            <div class="inner-center">
-
-                <div id="CustomQueryView">Custom Query</div>
-                <div id="MapView">
-                    <g:render plugin="omar-common-ui" template="/templates/mapTemplate"/>
-                </div>
-                <div id="ResultsView" >
-                    <table id="DataTable" cellspacing="0px" width="100%">
-                    </table>
-                </div>
-            </div>
-
-            <div class="inner-east">
-                <g:render plugin="omar-federation" template="/templates/measurementTemplate"/>
-
-                <p><div class="niceBox">
-                    <div class="niceBoxHeader">Layer Switcher:</div>
-                    <div class="niceBoxBody">
-                        <div id="layerSwitcher" class="layerSwitcher"></div>
-                    </div>
-                </div></p>
-            </div>
-
-            <div class="ui-layout-south">
-                <div id="omarServerCollectionId"></div>
+            <div id="ResultsView" >
+                <table id="DataTable" cellspacing="0px" width="100%">
+                </table>
             </div>
         </div>
 
+        <div class="inner-east">
+            <g:render plugin="omar-federation" template="/templates/measurementTemplate"/>
+
+            <p><div class="niceBox">
+            <div class="niceBoxHeader">Layer Switcher:</div>
+            <div class="niceBoxBody">
+                <div id="layerSwitcher" class="layerSwitcher"></div>
+            </div>
+        </div></p>
+        </div>
 
         <div class="ui-layout-south">
-            <omar:securityClassificationBanner/></div>
+            <div id="omarServerCollectionId" class="omar-server-collection"></div>
         </div>
+    </div>
+
+
+    <div class="ui-layout-south">
+        <omar:securityClassificationBanner/></div>
+</div>
 
 <script>
     //  OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
@@ -75,15 +75,24 @@
 </script>
 <r:layoutResources/>
 <script type="text/html" id="omar-server-template">
-    <div class="omar-server-container" id="${'<%=id%>'}">
-        <div class="omar-server-info">
-            <div id="omar-server-count-container">
-                <div id="omar-server-enabled"><input id="omar-server-enabled-checkbox" type="checkbox" checked=${'<%=enabled%>'}></input></div>
-                <div id="omar-server-count" class="omar-server-count">${'<%=count%>'}</div>
-            </div>
-            <img class="omar-server-image" id="omar-server-image" style="padding-top:24px" src="${resource(dir:'images', file:'server.gif')}"/>
-        </div>
-        <label  class="link_cursor" id="omar-server-name-${'<%=id%>'}">${'<%=name%>'}</label>
+    <div class="omar-server" id="${'<%=id%>'}">
+        <table>
+           <tr><td>
+               <div id="omar-server-enabled" class="omar-server-enabled">
+               <input id="omar-server-enabled-checkbox"
+                      type="checkbox" class="omar-server-enabled-checkbox1"
+                      checked=${'<%=enabled%>'}>
+               </input>
+               <label id="omar-server-count" class="omar-server-count">${'<%=count%>'}
+               </label>
+           </div>
+           </td>
+           </tr>
+            <tr><td><img class="omar-server-image" id="omar-server-image-${'<%=id%>'}" src="${resource(dir:'images', file:'server.gif')}"/></td></tr>
+            <tr><td><label class="omar-server-link-cursor" id="omar-server-name-${'<%=id%>'}">${'<%=name%>'}</label></td></tr>
+        </table>
+
+
     </div>
 </script>
 
