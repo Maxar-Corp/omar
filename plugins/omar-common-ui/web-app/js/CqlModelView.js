@@ -20,6 +20,7 @@ OMAR.views.CqlView = Backbone.View.extend({
     el:"#cqlId",
     initialize:function(params){
         this.setElement(this.el);
+        this.idIncrement = 0;
         this.cqlBtnConditionEl = $(this.el).find("#cqlBtnCondition");
         this.cqlBtnQueryEl = $(this.el).find("#cqlBtnQuery");
 
@@ -138,15 +139,40 @@ OMAR.views.CqlView = Backbone.View.extend({
         }
 
         // Add the default staement segment to the root condition
-        elem.find('td >.querystmts').append(this.statement);
-
+        var appendedStatement = elem.find('td >.querystmts').append(this.statement);
+        var op =   $(appendedStatement).find(".op");
+        var col =   $(appendedStatement).find(".col");
+        ++thisPtr.idIncrement;
+        var opId = "op"+thisPtr.idIncrement;
+        var colId = "col"+thisPtr.idIncrement;
+        $(op).attr("id", opId);
+        $(col).attr("id", colId);
+        $(col).change($.proxy(thisPtr.clearSelector, this, colId, opId)) ;
         // Add the head class to the first statement
         elem.find('td >.querystmts div >.remove').addClass('head');
 
         // Handle click for adding new statement segment
         // When a new statement is added add a condition to handle remove click.
         elem.find('td div >.add').click(function () {
-            $(this).parent().siblings('.querystmts').append(thisPtr.statement);
+            var appendedStatement = $(this).parent().siblings('.querystmts').append(thisPtr.statement);
+
+            ++thisPtr.idIncrement;
+            // ad id's for fun
+
+            var op      = $(appendedStatement).find(".op");
+            var col     = $(appendedStatement).find(".col");
+            var colSize = $(col).size();
+            var opSize  = $(op).size();
+            var opId2    = "op"+thisPtr.idIncrement;
+            var colId2   = "col"+thisPtr.idIncrement;
+            var colEl = $(col)[colSize-1];
+            var opEl = $(op)[opSize-1];
+            $(opEl).attr("id", opId2);
+            $(colEl).attr("id", colId2);
+
+            $(colEl).change($.proxy(thisPtr.clearSelector, thisPtr, colId2, opId2)) ;
+
+
             var stmts = $(this).parent().siblings('.querystmts').find('div >.remove').filter(':not(.head)');
             stmts.unbind('click');
             stmts.click(function () {
@@ -158,6 +184,10 @@ OMAR.views.CqlView = Backbone.View.extend({
         elem.find('td div > .addroot').click(function () {
             thisPtr.addQueryRoot($(this).parent(), false);
         });
+    },
+    clearSelector:function(col, op){
+        var op = $(this.el).find("#"+op);
+        $(op).empty();
     },
     cqlBtnConditionClicked:function(){
         var query = {};
