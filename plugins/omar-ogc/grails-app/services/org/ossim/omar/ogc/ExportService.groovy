@@ -114,7 +114,7 @@ class ExportService
             // TEMPORARY
 
             List files = new ArrayList()
-
+            def associatedFiles
 
             for ( index in 0..objects.size()-1 )
             {
@@ -158,7 +158,49 @@ class ExportService
                 // Get associated file names & add to list
                 def baseName = fileName.substring(fileName.lastIndexOf('/')+1, fileName.lastIndexOf('.'))
                 def directory = fileName.substring(0, fileName.lastIndexOf('/')+1)
-                new File(directory).eachFileMatch(~/${baseName}.*/) {files.add(directory+it.name)}
+                def dir = new File(directory)
+                dir.eachFileMatch(~/${baseName}.*/) {files.add(it.parent+"/"+it.name)}
+
+                // Check for NavData sub-directory
+                dir.eachFile {
+                    if (it.isDirectory()){
+                        if (it.name == "NavData") {
+                            it.eachFile {files.add(it.parent+"/"+it.name)}
+                        }
+                    }
+                }
+
+                // Check for NavData parallel directory
+                def dirPar = new File(dir.parent)
+                dirPar.eachFile {
+                    if (it.isDirectory()){
+                        if (it.name == "NavData") {
+                            it.eachFile {files.add(it.parent+"/"+it.name)}
+                        }
+                    }
+                }
+
+                // Check for NavData sub-directory
+                dir.eachFile {
+                    if (it.isDirectory()){
+                        if (it.name == "NavData") {
+                            it.eachFile {files.add(it.parent+"/"+it.name)}
+                        }
+                    }
+                }
+
+                associatedFiles = files.unique()
+
+//                dir.eachFile{
+//                    if(it.isFile()){
+//                        println "FILE: ${it}"
+//                    }else if(it.isDirectory()){
+//                        println "DIR:  ${it}"
+//                        it.eachFileMatch(~/${baseName}.*/) {println it}
+//                    }else{
+//                        println "Uh, I'm not sure what it is..."
+//                    }
+//                }
 
                 def downloadedFilename = preface + fileName.substring(1, fileName.size())
 
@@ -185,7 +227,7 @@ class ExportService
             geocellProjFile.write(outputString as String)
 
             mimeType = "application/octet-stream"
-            file = ExportUtils.createZipFileFromList(geocellProjFile, files)
+            file = ExportUtils.createZipFileFromList(geocellProjFile, associatedFiles)
 
             break
     }
