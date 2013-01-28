@@ -1,3 +1,27 @@
+OMAR.models.CqlColumnType = Backbone.Model.extend({
+    defaults:{
+        name:"",
+        label:"",
+        type:"" // string, date, numeric
+    },
+    initialize:function(params){
+
+    }
+});
+
+OMAR.models.CqlRasterColumnTypeCollection = Backbone.Collection.extend({
+    idAttribute:"name",
+    model:OMAR.models.CqlColumnType,
+    initialize:function(params){
+        this.add([
+            {name:"filename", label:"Filename", type:"string"}
+            ,{name:"image_id", label:"Image ID", type:"string"}
+            ,{name:"be_number", label:"BE Number", type:"string"}
+            ,{name:"niirs", label:"NIIRS", type:"numeric"}]
+        );
+    }
+});
+
 OMAR.models.CqlModel = Backbone.Model.extend({
     idAttribute:"id",
     defaults:{
@@ -23,6 +47,7 @@ OMAR.views.CqlView = Backbone.View.extend({
         this.idIncrement = 0;
         this.cqlBtnConditionEl = $(this.el).find("#cqlBtnCondition");
         this.cqlBtnQueryEl = $(this.el).find("#cqlBtnQuery");
+        this.columnDefs = new OMAR.models.CqlRasterColumnTypeCollection();
 
         $(this.cqlBtnConditionEl).click(this.cqlBtnConditionClicked.bind(this));
         $(this.cqlBtnQueryEl).click(this.cqlBtnQueryClicked.bind(this));
@@ -32,7 +57,7 @@ OMAR.views.CqlView = Backbone.View.extend({
         this.rootCondition += '</td></tr></table>';
 
         this.statement = '<div><img src="../images/res/remove.gif" alt="Remove" class="remove" />'
-
+/*
         this.rasterStatment = '<select class="col">';
         this.rasterStatment += '<option value="filename">Filename</option>';
         this.rasterStatment += '<option value="image_id">IID</option>';
@@ -43,12 +68,30 @@ OMAR.views.CqlView = Backbone.View.extend({
         this.rasterStatment += '<option value="mission_id">Mission</option>';
         this.rasterStatment += '</select>';
         this.rasterStatment += '<select class="op">';
-        this.rasterStatment += '<option value="contains">contains</option>';
-        this.rasterStatment += '<option value="g8">differs from field</option>';
         this.rasterStatment += '</select>'
         this.rasterStatment += '<input type="text" /></div>';
+*/
+//        this.statement += this.rasterStatment;
+    },
+    getStatement:function(colId, opId){
+        var idx    = 0;
+        var result = "<select id='"+colId+"' class='col'>";
 
-        this.statement += this.rasterStatment;
+        for(idx = 0; idx < this.columnDefs.size();++idx)
+        {
+            var name  = this.columnDefs.at(idx).get("name");
+            var label = this.columnDefs.at(idx).get("label");
+            var html = "<option value='"+name+"'>"+label+"</option>";
+            result += html;
+        }
+        result+="</select>";
+        result+= "<select class='op'>";
+        result+= "<option value='<' >Less Than</option>";
+        result+= "</select>";
+        return (this.statement+result+"<input type='text'/>");
+    },
+    getTypesForColumn : function(col){
+
     },
     getCondition: function (rootsel) {
         //Get the columns from table (to find a clean way to do it later) //tbody>tr>td
@@ -137,41 +180,41 @@ OMAR.views.CqlView = Backbone.View.extend({
                 $(this).parent().parent().parent().parent().detach();
             });
         }
-
-        // Add the default staement segment to the root condition
-        var appendedStatement = elem.find('td >.querystmts').append(this.statement);
-        var op =   $(appendedStatement).find(".op");
-        var col =   $(appendedStatement).find(".col");
         ++thisPtr.idIncrement;
         var opId = "op"+thisPtr.idIncrement;
         var colId = "col"+thisPtr.idIncrement;
-        $(op).attr("id", opId);
-        $(col).attr("id", colId);
-        $(col).change($.proxy(thisPtr.clearSelector, this, colId, opId)) ;
+
+        // Add the default staement segment to the root condition
+        var appendedStatement = elem.find('td >.querystmts').append(this.getStatement(colId, opId));
+ //       var op =   $(appendedStatement).find(".op");
+ //       var col =   $(appendedStatement).find(".col");
+//        $(op).attr("id", opId);
+//        $(col).attr("id", colId);
+//        $(col).change($.proxy(thisPtr.clearSelector, this, colId, opId)) ;
         // Add the head class to the first statement
         elem.find('td >.querystmts div >.remove').addClass('head');
 
         // Handle click for adding new statement segment
         // When a new statement is added add a condition to handle remove click.
         elem.find('td div >.add').click(function () {
-            var appendedStatement = $(this).parent().siblings('.querystmts').append(thisPtr.statement);
-
             ++thisPtr.idIncrement;
-            // ad id's for fun
+            var opId2    = "op"+thisPtr.idIncrement;
+            var colId2   = "col"+thisPtr.idIncrement;
+            var appendedStatement = $(this).parent().siblings('.querystmts').append(thisPtr.getStatement(colId2, opId2));
 
+
+            /*
             var op      = $(appendedStatement).find(".op");
             var col     = $(appendedStatement).find(".col");
             var colSize = $(col).size();
             var opSize  = $(op).size();
-            var opId2    = "op"+thisPtr.idIncrement;
-            var colId2   = "col"+thisPtr.idIncrement;
             var colEl = $(col)[colSize-1];
             var opEl = $(op)[opSize-1];
             $(opEl).attr("id", opId2);
             $(colEl).attr("id", colId2);
 
             $(colEl).change($.proxy(thisPtr.clearSelector, thisPtr, colId2, opId2)) ;
-
+              */
 
             var stmts = $(this).parent().siblings('.querystmts').find('div >.remove').filter(':not(.head)');
             stmts.unbind('click');
