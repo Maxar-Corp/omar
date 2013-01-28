@@ -41,6 +41,7 @@ modules = {
       //  resource url: [plugin: 'omar-common-ui', dir: 'images', file: 'calendar.gif']
         resource url: [dir: 'css', file: 'rasterSearch.css']
         resource url: [dir: 'js', file: 'rasterSearch.js']
+        resource url: [dir: 'js', file: 'condition-builder.js']
 
     }
     federationAdmin{

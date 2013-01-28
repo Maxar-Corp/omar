@@ -1,8 +1,21 @@
 <div id='cqlId'>
-	<div class='box'>
-		<p><h2>Common Query Language:</h2></p>
+	
 
-		<p>CQL String:</p>
-		<p><g:textArea id='filter' name='filter' width='26' title='CQL string.' value='' /></p>
-	</div>
+
+<span>Query Starts after this</span>
+    <div class="query">
+    </div>
+    <button id="btnCondition">
+        Get Condition</button>
+
+    <button id="btnQuery">
+        Get Query</button>
+
+
+
+
+
+
+
+	
 </div>

@@ -376,6 +376,24 @@ $(document).ready(function () {
 });
 
 
+$(document).ready(function () {
+            $('#btnCondition').click(function () {
+                var query = {};
+                query = getCondition('.query > table');
+                //var l = JSON.stringify(query,null,4);
+                var l = JSON.stringify(query);
+                alert(l);
+            });
+
+            $('#btnQuery').click(function () {
+                var con = getCondition('.query >table');
+                var k = getQuery(con);
+                alert(k);
+            });
+            addqueryroot('.query', true);
+
+        });
+
 
 function generateKmlQuery() {
     alert("kml query code goes here.")

@@ -37,7 +37,9 @@
 
         <div class="inner-center">
 
-            <div id="CustomQueryView">Custom Query</div>
+            <div id="CustomQueryView">
+                <g:render plugin="omar-common-ui" template="/templates/cqlTemplate"/>
+            </div>
             <div id="MapView">
                 <g:render plugin="omar-common-ui" template="/templates/mapTemplate"/>
             </div>
