@@ -142,6 +142,10 @@ body {
 }
 
 
+.seperator
+{
+    border-right: 2px solid brown;
+}
 
 .link_cursor
 {
