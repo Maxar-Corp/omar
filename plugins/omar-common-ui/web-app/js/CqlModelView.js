@@ -188,6 +188,7 @@ OMAR.views.CqlView = Backbone.View.extend({
             //alert(expr.colval + ", " + expr.opval);
 
             var val = expr.val;
+            var opval = expr.opval;
             if(!error)
             {
                 var colDef = this.columnDefs.get(expr.colval);
@@ -196,7 +197,24 @@ OMAR.views.CqlView = Backbone.View.extend({
                     switch(colDef.get("type"))
                     {
                     case "string":
-                        val = "'"+val+"'";
+                        switch(expr.opval)
+                        {
+                            case "contains":
+                                opval = "like";
+                                val = "'%"+val+"%'";
+                                break;
+                            case "startswith":
+                                opval = "like";
+                                val = "'"+val+"%'";
+                                break;
+                            case "endswith":
+                                opval = "like";
+                                val = "'%"+val+"'";
+                                break;
+                            default:
+                                val = "'"+val+"'";
+                                break;
+                        }
                         break;
                     case "numeric":
                         if(!OMAR.isFloat(val))
@@ -212,7 +230,7 @@ OMAR.views.CqlView = Backbone.View.extend({
             }
             if(!error)
             {
-                e.push(expr.colval + " " + expr.opval + " " + val);
+                e.push(expr.colval + " " + opval + " " + val);
 
             }
             else
@@ -320,6 +338,9 @@ OMAR.views.CqlView = Backbone.View.extend({
                     $(opEl).append("<option id='"+baseOpId+"1' value='>' >Greater Than</option>");
                     $(opEl).append("<option id='"+baseOpId+"2' value='=' >Equal</option>");
                     $(opEl).append("<option id='"+baseOpId+"3' value='like' >Like</option>");
+                    $(opEl).append("<option id='"+baseOpId+"3' value='contains' >Contains</option>");
+                    $(opEl).append("<option id='"+baseOpId+"3' value='startswith' >Starts With</option>");
+                    $(opEl).append("<option id='"+baseOpId+"3' value='endswith' >Ends With</option>");
                     break;
                 case "numeric":
                     $(opEl).empty();
