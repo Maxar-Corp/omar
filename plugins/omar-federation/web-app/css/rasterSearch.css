@@ -446,7 +446,9 @@ table.dataTable tr.even { background-color: #f4f4f4; }
 table.dataTable tr.odd td.sorting_1 { background-color: #D3D6FF; }
 table.dataTable tr.odd td.sorting_2 { background-color: #DADCFF; }
 table.dataTable tr.odd td.sorting_3 { background-color: #E0E2FF; }
-
+table.dataTable td {
+    border-right: 1px solid black;
+}
 #map{
     background-color: black;
 }
