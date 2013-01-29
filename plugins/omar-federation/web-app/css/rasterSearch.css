@@ -101,6 +101,8 @@ body {
     border-top:		1px solid #BBB;
     border-bottom:	1px solid #BBB;
 }
+
+
 .outer-center{
     visibility: hidden;
 }
@@ -113,7 +115,7 @@ body {
 }
 .omar-server-selected{
     /*border:2px solid #000000;*/
-    background-color: #add8e6;
+    background-color: #dfe5f3;
     padding-left:5px;
     padding-right:5px;
     float:left;
@@ -393,7 +395,7 @@ table.dataTable td {
 div.niceBox {
     margin-top: 3px;
     margin-bottom: 8px;
-    background-color: #dbdcff;
+    background-color: #dfe5f3;
     border: 1px solid #000000;
 }
 
@@ -433,4 +435,18 @@ div.niceBoxBody {
     max-height:128px;
     height:128px;
     width:128px;
+}
+
+
+.inner-west,.inner-east,.ui-layout-south,.ui-layout-north,.inner-center{
+  background-color: #f4f4f4;
+}
+table.dataTable tr.odd { background-color: #dfe5f3; }
+table.dataTable tr.even { background-color: #f4f4f4; }
+table.dataTable tr.odd td.sorting_1 { background-color: #D3D6FF; }
+table.dataTable tr.odd td.sorting_2 { background-color: #DADCFF; }
+table.dataTable tr.odd td.sorting_3 { background-color: #E0E2FF; }
+
+#map{
+    background-color: black;
 }

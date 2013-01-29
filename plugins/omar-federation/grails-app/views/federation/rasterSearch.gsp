@@ -6,7 +6,7 @@
     <title>OMAR <g:meta name="app.version"/>: Federated Search</title>
     <r:layoutResources/>
 </head>
-<body>
+<body class="body">
 <div class="outer-center" id="rasterSearchPageId">
 
     <div class="ui-layout-north">
