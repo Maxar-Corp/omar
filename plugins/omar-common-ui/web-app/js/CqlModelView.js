@@ -62,7 +62,6 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
            ,{name:"ingest_date", label:"Ingest Date", type:"string"}
            ,{name:"receive_date", label:"Recieve Date", type:"string"}
            ,{name:"file_type", label:"File Type", type:"string"}
-           ,{name:"other_tags_xml", label:"Other Tags XML", type:"string"}
         ]);
     }
 });
@@ -105,20 +104,22 @@ OMAR.views.CqlView = Backbone.View.extend({
     },
     getStatement:function(colId, opId){
         var idx    = 0;
+        var baseOpId = colId+opId+"COLOPTION_";
         var result = "<select id='"+colId+"' class='col'>";
 
         for(idx = 0; idx < this.columnDefs.size();++idx)
         {
             var name  = this.columnDefs.at(idx).get("name");
             var label = this.columnDefs.at(idx).get("label");
-            var html = "<option value='"+name+"'>"+label+"</option>";
+            var html = "<option id='"+baseOpId+idx+"' value='"+name+"'>"+label+"</option>";
             result += html;
         }
         result+="</select>";
         result+= "<select class='op' id='"+opId+"'>";
  //       result+= "<option value='<' >Less Than</option>";
         result+= "</select>";
-        return (this.statement+result+"<input type='text'/>");
+        var textField = "<input id='"+ colId+opId+"TEXTFIELD' type='text'/>";
+        return (this.statement+result+textField);
     },
     getTypesForColumn : function(col){
 
@@ -138,14 +139,19 @@ OMAR.views.CqlView = Backbone.View.extend({
         // Get all the expressions in a condition
         var expressionelem = $(elem[1]).find('> .querystmts div');
         for (var i = 0; i < expressionelem.length; i++) {
-            expressions[i] = {};
             var col = $(expressionelem[i]).find('.col :selected');
             var op = $(expressionelem[i]).find('.op :selected');
-            expressions[i].colval = col.val();
-            expressions[i].coldisp = col.text();
-            expressions[i].opval = op.val();
-            expressions[i].opdisp = op.text();
-            expressions[i].val = $(expressionelem[i]).find(':text').val();
+            var textInput = $(expressionelem[i]).find(':text');
+            expressions[i] =  {
+                "colval": col.val()
+                ,"colid" : $(col).attr('id')
+                ,"coldisp" : col.text()
+                ,"opval" : op.val()
+                ,"opid" : $(op).attr("id")
+                ,"opdisp" : op.text()
+                ,"val" : textInput.val()
+                ,"valId" : $(textInput).attr("id")
+            };
         }
         q.expressions = expressions;
 
@@ -167,22 +173,67 @@ OMAR.views.CqlView = Backbone.View.extend({
 
         var e = [];
         var elen = condition.expressions.length;
-        for (var i = 0; i < elen; i++) {
+        var error = false;
+        for (var i = 0; ((i < elen)&&(!error)); i++) {
             var expr = condition.expressions[i];
 
            // alert("WE CAN FORMAT AND VALIDATE HERE!" + this.columnDefs.get(expr.colval));
             // add tests for ops HERE!!
             //
-            if(!expr.val) alert("NO VALUE");
-            e.push(expr.colval + " " + expr.opval + " " + expr.val);
+            if(!expr.val){
+               alert("No value present, please input value");
+               $("#"+expr.valId).focus();
+                error = true;
+            }
+            //alert(expr.colval + ", " + expr.opval);
+
+            var val = expr.val;
+            if(!error)
+            {
+                var colDef = this.columnDefs.get(expr.colval);
+                if(colDef)
+                {
+                    switch(colDef.get("type"))
+                    {
+                    case "string":
+                        val = "'"+val+"'";
+                        break;
+                    case "numeric":
+                        if(!OMAR.isFloat(val))
+                        {
+                            alert("Value is not a number, please fix the value");
+                            $("#"+expr.valId).focus();
+                            $("#"+expr.valId).select();
+                            error = true;
+                        }
+                        break;
+                    }
+                }
+            }
+            if(!error)
+            {
+                e.push(expr.colval + " " + expr.opval + " " + val);
+
+            }
+            else
+            {
+                e = [];
+            }
         }
 
         var n = [];
         var nlen = condition.nestedexpressions.length;
-        for (var k = 0; k < nlen; k++) {
+        for (var k = 0; ((k < nlen)&&!error); k++) {
             var nestexpr = condition.nestedexpressions[k];
             var result = this.getQuery(nestexpr);
-            n.push(result);
+            if(result)
+            {
+                n.push(result);
+            }
+            else
+            {
+                error = true;
+            }
         }
 
         var q = [];
@@ -191,6 +242,10 @@ OMAR.views.CqlView = Backbone.View.extend({
         if (n.length > 0)
             q.push(n.join(op));
 
+        if(error)
+        {
+            return false;
+        }
         return ['(', q.join(op), ')'].join(' ');
     },
     addQueryRoot:function (sel, isroot)
@@ -252,24 +307,25 @@ OMAR.views.CqlView = Backbone.View.extend({
     columnSelectorChanged:function(col, op){
        //alert($("#"+col)[0]);
         var columnName = $("#"+col).val();
-        var op = $("#"+op);
+        var opEl = $("#"+op);
         var row = this.columnDefs.get(columnName);
         if(row)
         {
+            var baseOpId = col+op+"OPOPTION_";
             switch(row.get("type"))
             {
                 case "string":
-                    $(op).empty();
-                    $(op).append("<option value='<' >Less Than</option>");
-                    $(op).append("<option value='>' >Greater Than</option>");
-                    $(op).append("<option value='=' >Equal</option>");
-                    $(op).append("<option value='like' >Like</option>");
+                    $(opEl).empty();
+                    $(opEl).append("<option id='"+baseOpId+"0' value='<' >Less Than</option>");
+                    $(opEl).append("<option id='"+baseOpId+"1' value='>' >Greater Than</option>");
+                    $(opEl).append("<option id='"+baseOpId+"2' value='=' >Equal</option>");
+                    $(opEl).append("<option id='"+baseOpId+"3' value='like' >Like</option>");
                     break;
                 case "numeric":
-                    $(op).empty();
-                    $(op).append("<option value='<' >Less Than</option>");
-                    $(op).append("<option value='>' >Greater Than</option>");
-                    $(op).append("<option value='=' >Equal</option>");
+                    $(opEl).empty();
+                    $(opEl).append("<option id='"+baseOpId+"0' value='<' >Less Than</option>");
+                    $(opEl).append("<option id='"+baseOpId+"1' value='>' >Greater Than</option>");
+                    $(opEl).append("<option id='"+baseOpId+"2' value='=' >Equal</option>");
                     break;
             }
         }
@@ -287,7 +343,10 @@ OMAR.views.CqlView = Backbone.View.extend({
     cqlBtnQueryClicked:function(){
         var con = this.getCondition('.cqlQuery >table');
         var k = this.getQuery(con);
-        alert(k);
+        if(k)
+        {
+            alert(k);
+        }
     },
     render:function(){
         this.addQueryRoot('.cqlQuery', true);
