@@ -173,7 +173,7 @@ OMAR.views.CqlView = Backbone.View.extend({
            // alert("WE CAN FORMAT AND VALIDATE HERE!" + this.columnDefs.get(expr.colval));
             // add tests for ops HERE!!
             //
-
+            if(!expr.val) alert("NO VALUE");
             e.push(expr.colval + " " + expr.opval + " " + expr.val);
         }
 
@@ -234,7 +234,7 @@ OMAR.views.CqlView = Backbone.View.extend({
             var colId2   = "col"+thisPtr.idIncrement;
             var appendedStatement = $(this).parent().siblings('.querystmts').append(thisPtr.getStatement(colId2, opId2));
             var colEl = $(appendedStatement).find("#"+colId2);
-            this.columnSelectorChanged(colId2, opId2);
+            thisPtr.columnSelectorChanged(colId2, opId2);
             $(colEl).change($.proxy(thisPtr.columnSelectorChanged, thisPtr, colId2, opId2)) ;
 
             var stmts = $(this).parent().siblings('.querystmts').find('div >.remove').filter(':not(.head)');
