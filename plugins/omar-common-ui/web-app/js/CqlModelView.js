@@ -170,7 +170,7 @@ OMAR.views.CqlView = Backbone.View.extend({
         for (var i = 0; i < elen; i++) {
             var expr = condition.expressions[i];
 
-            alert("WE CAN FORMAT AND VALIDATE HERE!" + this.columnDefs.get(expr.colval));
+           // alert("WE CAN FORMAT AND VALIDATE HERE!" + this.columnDefs.get(expr.colval));
             // add tests for ops HERE!!
             //
 
@@ -223,6 +223,7 @@ OMAR.views.CqlView = Backbone.View.extend({
         var appendedStatement = elem.find('td >.querystmts').append(this.getStatement(colId, opId));
         $(appendedStatement).find("#"+colId).change($.proxy(thisPtr.columnSelectorChanged, thisPtr, colId, opId)) ;
         // Add the head class to the first statement
+        this.columnSelectorChanged(colId, opId);
         elem.find('td >.querystmts div >.remove').addClass('head');
 
         // Handle click for adding new statement segment
@@ -233,6 +234,7 @@ OMAR.views.CqlView = Backbone.View.extend({
             var colId2   = "col"+thisPtr.idIncrement;
             var appendedStatement = $(this).parent().siblings('.querystmts').append(thisPtr.getStatement(colId2, opId2));
             var colEl = $(appendedStatement).find("#"+colId2);
+            this.columnSelectorChanged(colId2, opId2);
             $(colEl).change($.proxy(thisPtr.columnSelectorChanged, thisPtr, colId2, opId2)) ;
 
             var stmts = $(this).parent().siblings('.querystmts').find('div >.remove').filter(':not(.head)');
