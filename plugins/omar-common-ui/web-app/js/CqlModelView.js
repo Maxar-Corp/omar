@@ -14,11 +14,56 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
     model:OMAR.models.CqlColumnDef,
     initialize:function(params){
         this.add([
-            {name:"filename", label:"Filename", type:"string"}
-            ,{name:"image_id", label:"Image ID", type:"string"}
-            ,{name:"be_number", label:"BE Number", type:"string"}
-            ,{name:"niirs", label:"NIIRS", type:"numeric"}]
-        );
+            {name:"be_number", label:"BE Number", type:"string"}
+           ,{name:"class_name", label:"Class Name", type:"string"}
+           ,{name:"country_code", label:"Country Code", type:"string"}
+           ,{name:"file_type", label:"Class Name", type:"string"}
+           ,{name:"filename", label:"Filename", type:"string"}
+           ,{name:"image_id", label:"Image Id", type:"string"}
+           ,{name:"mission", label:"Mission", type:"string"}
+           ,{name:"niirs", label:"NIIRS", type:"numeric"}
+           ,{name:"sensor_id", label:"Sensor Id", type:"string"}
+           ,{name:"target_id", label:"Target Id", type:"string"}
+           ,{name:"entry_id", label:"Entry Id", type:"string"}
+           ,{name:"exclude_policy", label:"Exclude Policy", type:"string"}
+           ,{name:"width", label:"Width", type:"numeric"}
+           ,{name:"height", label:"Height", type:"numeric"}
+           ,{name:"number_of_bands", label:"Number of Bands", type:"numeric"}
+           ,{name:"number_of_res_levels", label:"Number of Res Levels", type:"numeric"}
+           ,{name:"gsd_unit", label:"GSD Unit", type:"numeric"}
+           ,{name:"gsd_x", label:"GSD X", type:"numeric"}
+           ,{name:"gsd_y", label:"GSD Y", type:"numeric"}
+           ,{name:"bit_depth", label:"Bit Depth", type:"numeric"}
+           ,{name:"data_type", label:"Data Type", type:"string"}
+           ,{name:"index_id", label:"Index Id", type:"string"}
+           ,{name:"height", label:"Height", type:"numeric"}
+           ,{name:"product_id", label:"Product Id", type:"string"}
+           ,{name:"image_category", label:"Image Category", type:"string"}
+           ,{name:"image_representation", label:"Image Representation", type:"string"}
+           ,{name:"azimuth_angle", label:"Azimuth Angle", type:"numeric"}
+           ,{name:"grazing_angle", label:"Grazing Angle", type:"numeric"}
+           ,{name:"security_classification", label:"Security Classification", type:"string"}
+           ,{name:"security_code", label:"Security Code", type:"string"}
+           ,{name:"title", label:"Title", type:"string"}
+           ,{name:"isorce", label:"Isource", type:"string"}
+           ,{name:"organization", label:"Organization", type:"string"}
+           ,{name:"description", label:"Description", type:"string"}
+           ,{name:"organization", label:"Organization", type:"string"}
+           ,{name:"wac_code", label:"Wac Code", type:"string"}
+           ,{name:"sun_elevation", label:"Sun Elevation", type:"numeric"}
+           ,{name:"sun_azimuth", label:"Sun Azimuth", type:"numeric"}
+           ,{name:"cloud_cover", label:"Cloud Cover", type:"numeric"}
+           ,{name:"style_id", label:"Style Id", type:"numeric"}
+           ,{name:"keep_forever", label:"Keep Forever", type:"numeric"}
+           ,{name:"ground_geom", label:"Ground Geom", type:"string"}
+           ,{name:"acquisition_date", label:"Acquisition Date", type:"string"}
+           ,{name:"valid_model", label:"Valid Model", type:"string"}
+           ,{name:"access_date", label:"Access Date", type:"string"}
+           ,{name:"ingest_date", label:"Ingest Date", type:"string"}
+           ,{name:"receive_date", label:"Recieve Date", type:"string"}
+           ,{name:"file_type", label:"File Type", type:"string"}
+           ,{name:"other_tags_xml", label:"Other Tags XML", type:"string"}
+        ]);
     }
 });
 
