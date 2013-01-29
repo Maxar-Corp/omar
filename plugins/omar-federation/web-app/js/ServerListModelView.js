@@ -48,7 +48,7 @@ OMAR.models.OmarServerCollection=Backbone.Collection.extend({
         {
 
             var model = new OMAR.models.OmarServerModel(response[idx]);
-            model.id = model.id;
+            model.id = model.id+idx;
             var tempM = this.get(model.id);
             // make sure we copy any existing user defined data or counts to
             // the copy of the model.
@@ -151,7 +151,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             scope.updateServerView(obj);
         });
     },
-    fetchAndSetCount:function(id){
+    fetchAndSetCount:function(id, callback){
         var model = this.model.get(id);
         if(model&&model.get("enabled"))
         {
@@ -189,6 +189,10 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                             tempModel.set({"count":numberOfFeatures});
                         }
                     }
+                    if(callback)
+                    {
+                        callback(id);
+                    }
                 },
                 error: function(x, t, m) {
                     var count = "Error";
@@ -203,6 +207,11 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                     {
                         tempModel.set({"count":count});
                     }
+                    if(callback)
+                    {
+                        callback(id);
+                    }
+
                 }
             });
         }
@@ -211,16 +220,44 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
 
         }
     },
+    /**
+     * refreshServerCounts:
+     *
+     *  We will do this as an asynchronous loop
+     *  so we do not flood the browsers with hundreds
+     *  of background threads
+     */
     refreshServerCounts:function(){
-        for(var idx = 0; idx <this.model.size();++idx )
-        {
-            var model = this.model.at(idx);
-            if(model.get("enabled"))
+        this.refreshServerList = [];
+        var idx = 0;
+        var thisPtr = this;
+        function nextServer (id){
+            if(thisPtr.refreshServerList.size()>0)
             {
-                this.fetchAndSetCount(model.id);
+                var modelId = thisPtr.refreshServerList.pop();
+                thisPtr.fetchAndSetCount(modelId, nextServer);
             }
         }
-    },
+        var n = this.model.size();
+        if(n>0)
+        {
+            for(idx = n-1; idx >= 0;+--idx)
+            {
+                var model = this.model.at(idx);
+                if(model&&model.get("enabled"))
+                {
+                    this.refreshServerList.push(this.model.at(idx));
+                }
+            }
+        }
+        // we will only do about 5 at a time so
+        // we don't flood the browser
+        var maxCount = this.refreshServerList.size()>5?5:this.refreshServerList.size();
+        for(idx = 0; idx < maxCount; ++idx)
+        {
+            nextServer();
+        }
+     },
     collectionReset:function(params){
         // remove any elements that don't belong
         //
