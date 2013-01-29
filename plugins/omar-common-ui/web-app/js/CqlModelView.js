@@ -96,11 +96,11 @@ OMAR.views.CqlView = Backbone.View.extend({
         $(this.cqlBtnConditionEl).click(this.cqlBtnConditionClicked.bind(this));
         $(this.cqlBtnQueryEl).click(this.cqlBtnQueryClicked.bind(this));
 
-        this.rootCondition = '<table><tr><td class="seperator" ><img src="../images/res/remove.gif" alt="Remove" class="remove" /><select><option value="and">And</option><option value="or">Or</option></select></td>';
-        this.rootCondition += '<td><div class="querystmts"></div><div><img class="add" src="../images/res/add.gif" alt="Add" /> <button class="addroot">+()</button></div>';
+        this.rootCondition = '<table><tr><td class="seperator" ><img src="images/res/remove.gif" alt="Remove" class="remove" /><select><option value="and">And</option><option value="or">Or</option></select></td>';
+        this.rootCondition += '<td><div class="querystmts"></div><div><img class="add" src="images/res/add.gif" alt="Add" /> <button class="addroot">+()</button></div>';
         this.rootCondition += '</td></tr></table>';
 
-        this.statement = '<div><img src="../images/res/remove.gif" alt="Remove" class="remove" />'
+        this.statement = '<div><img src="images/res/remove.gif" alt="Remove" class="remove" />'
     },
     getStatement:function(colId, opId){
         var idx    = 0;
