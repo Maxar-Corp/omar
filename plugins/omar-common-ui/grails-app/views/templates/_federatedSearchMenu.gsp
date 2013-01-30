@@ -1,7 +1,4 @@
 <ul id="federatedSearchMenuId" class="jMenu">
-
-
-
   <li><a class="fNiv">OMAR™</a>
     <ul>
       <li class="arrow"></li>
@@ -15,6 +12,9 @@
     <ul>
       <li class="arrow"></li>
       <li><a href="javascript:generateKmlQuery()">KML Query</a></li>
+      <li><a href="javascript:generateKmlQuery()">GeoJSON</a></li>
+      <li><a href="javascript:generateKmlQuery()">GML2</a></li>
+      <li><a href="javascript:generateKmlQuery()">CSV</a></li>
     </ul>
   </li>
   
@@ -22,7 +22,7 @@
     <ul>
       <li class="arrow"></li>
       <li><a href="javascript:refreshFootprints()">Update Footprints</a></li>
-      <li><a href="javascript:search()">Search</a></li>
+      <li><a href="javascript:mapView.menuView.search()">Search</a></li>
     </ul>
   </li>
 </ul>
