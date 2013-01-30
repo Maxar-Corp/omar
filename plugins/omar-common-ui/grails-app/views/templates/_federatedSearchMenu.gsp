@@ -11,18 +11,17 @@
   <li><a class="fNiv">Export</a>
     <ul>
       <li class="arrow"></li>
-      <li><a href="javascript:generateKmlQuery()">KML Query</a></li>
-      <li><a href="javascript:generateKmlQuery()">GeoJSON</a></li>
-      <li><a href="javascript:generateKmlQuery()">GML2</a></li>
-      <li><a href="javascript:generateKmlQuery()">CSV</a></li>
+      <li id="ExportKmlQueryId"><a>KML Query</a></li>
+      <li id="ExportGeoJsonId"><a>GeoJSON</a></li>
+      <li id="ExportGml2Id"><a>GML2</a></li>
+      <li id="ExportCsvId"><a>CSV</a></li>
     </ul>
   </li>
   
   <li><a class="fNiv">Search</a>
     <ul>
       <li class="arrow"></li>
-      <li><a href="javascript:refreshFootprints()">Update Footprints</a></li>
-      <li><a href="javascript:mapView.menuView.search()">Search</a></li>
+      <li id="SearchRasterId"><a>Search</a></li>
     </ul>
   </li>
 </ul>
