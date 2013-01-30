@@ -109,6 +109,11 @@
         var params = {
             map:{theme:"${resource(plugin:'openlayers', dir:'js/theme/default', file:'style.css')}",
                 baseLayers:wmsConfig.base.layers
+            },
+            cql:{resourceImages:
+                    {remove:"${resource(plugin:'omar-common-ui', dir:'images', file:'remove.gif')}",
+                     add:"${resource(plugin:'omar-common-ui', dir:'images', file:'add.gif')}"
+                    }
             }
         };
         var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);

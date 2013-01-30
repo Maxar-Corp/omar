@@ -56,11 +56,11 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
            ,{name:"style_id", label:"Style Id", type:"numeric"}
            ,{name:"keep_forever", label:"Keep Forever", type:"numeric"}
            ,{name:"ground_geom", label:"Ground Geom", type:"string"}
-           ,{name:"acquisition_date", label:"Acquisition Date", type:"string"}
+           ,{name:"acquisition_date", label:"Acquisition Date", type:"datetime"}
            ,{name:"valid_model", label:"Valid Model", type:"string"}
-           ,{name:"access_date", label:"Access Date", type:"string"}
-           ,{name:"ingest_date", label:"Ingest Date", type:"string"}
-           ,{name:"receive_date", label:"Recieve Date", type:"string"}
+           ,{name:"access_date", label:"Access Date", type:"datetime"}
+           ,{name:"ingest_date", label:"Ingest Date", type:"datetime"}
+           ,{name:"receive_date", label:"Recieve Date", type:"datetime"}
            ,{name:"file_type", label:"File Type", type:"string"}
         ]);
     }
@@ -72,7 +72,149 @@ OMAR.models.CqlModel = Backbone.Model.extend({
         id:"",
         name:"",
         cql:"",
-        cqlState:""
+        conditions:""
+    },
+    initialize:function(params){
+        if(params)
+        {
+            if(!params.cql&&params.conditions)
+            {
+                this.attributes.cql = this.toCql();
+            }
+        }
+    },
+    toCql:function (errors)
+    {
+        function getQuery(condition, errors)
+        {
+            var op = [' ', condition.operator, ' '].join('');
+
+            var e = [];
+            var elen = condition.expressions.length;
+            var error = false;
+            for (var i = 0; ((i < elen)&&(!error)); i++) {
+                var expr = condition.expressions[i];
+
+                //
+                //alert(expr.colval + ", " + expr.opval);
+
+                var val = expr.val;
+                var opval = expr.opval;
+                var fullExpression = "";
+                if(!error)
+                {
+                    var colType = expr.coltype;
+                    //var colDef = this.columnDefs.get(expr.colval);
+                    switch(colType)
+                    {
+                        case "string":
+                            if(!expr.val){
+                                errors.push({expression:expr,
+                                             message:"No value present, please input value"});
+                                //alert("No value present, please input value");
+                               // $("#"+expr.valId).focus();
+                            }
+                            switch(expr.opval)
+                            {
+                                case "contains":
+                                    opval = "like";
+                                    val = "'%"+val+"%'";
+                                    break;
+                                case "startswith":
+                                    opval = "like";
+                                    val = "'"+val+"%'";
+                                    break;
+                                case "endswith":
+                                    opval = "like";
+                                    val = "'%"+val+"'";
+                                    break;
+                                default:
+                                    val = "'"+val+"'";
+                                    break;
+                            }
+                            fullExpression = expr.colval + " " + opval + " " + val;
+                            break;
+                        case "numeric":
+                            if(!expr.val){
+                               // alert("No value present, please input value");
+                               // $("#"+expr.valId).focus();
+                                errors.push({expression:expr,
+                                    message:"No value present, please input value"});
+                            }
+                            if(!OMAR.isFloat(val))
+                            {
+                                errors.push({expression:expr,
+                                    message:"Value is not a number, please fix the value"});
+                            }
+                            fullExpression = expr.colval + " " + opval + " " + val;
+                            break;
+                        case "datetime":
+                            switch(expr.opval)
+                            {
+                                case "today":
+                                    var startDate = new OMAR.models.Date();
+                                    startDate.clearTime();
+                                    var endDate   =  new OMAR.models.Date({date:startDate.date});
+                                    endDate.add(new OMAR.models.Duration("P24H"));
+                                    fullExpression = expr.colval + " >= '" +
+                                        startDate.toISOString()+"' AND " + expr.colval + " < '" +
+                                        endDate.toISOString()+"'";
+                                    break;
+                                default:
+                                    if(!expr.val){
+                                        errors.push({expression:expr,
+                                            message:"No value present, please input value"});
+                                    }
+                                    fullExpression = expr.colval + " " + opval + " " + val;
+                                    break;
+                            }
+                            break;
+                    }
+                }
+                if(!errors.size())
+                {
+                    //e.push(expr.colval + " " + opval + " " + val);
+                    e.push(fullExpression);
+                }
+                else
+                {
+                    e = [];
+                }
+            }
+
+            var n = [];
+            var nlen = condition.nestedexpressions.length;
+            for (var k = 0; ((k < nlen)&&!error); k++) {
+                var nestexpr = condition.nestedexpressions[k];
+                var result = this.getQuery(nestexpr);
+                if(result)
+                {
+                    n.push(result);
+                }
+                else
+                {
+                    error = true;
+                }
+            }
+
+            var q = [];
+            if (e.length > 0)
+                q.push(e.join(op));
+            if (n.length > 0)
+                q.push(n.join(op));
+
+            if(error)
+            {
+                return "";
+            }
+            return ['(', q.join(op), ')'].join('');
+        }
+
+        if(!errors)
+        {
+            errors = [];
+        }
+        return getQuery(this.get("conditions"), errors);
     }
 });
 
@@ -88,19 +230,27 @@ OMAR.views.CqlView = Backbone.View.extend({
     el:"#cqlId",
     initialize:function(params){
         this.setElement(this.el);
+        this.model = new OMAR.models.CqlModel();
         this.idIncrement = 0;
-        this.cqlBtnConditionEl = $(this.el).find("#cqlBtnCondition");
+        this.cqlEnabledCheckboxEl = $(this.el).find("#cqlEnabledCheckbox");
+        this.cqlBtnResetEl = $(this.el).find("#cqlBtnReset");
         this.cqlBtnQueryEl = $(this.el).find("#cqlBtnQuery");
+        this.cqlBtnValidateEl = $(this.el).find("#cqlBtnValidate");
+        this.cqlSelectNamedQueriesEl = $(this.el).find("#cqlSelectNamedQueries");
         this.columnDefs = new OMAR.models.CqlRasterColumnDefCollection();
 
-        $(this.cqlBtnConditionEl).click(this.cqlBtnConditionClicked.bind(this));
+        $(this.cqlBtnResetEl).click(this.cqlBtnResetClicked.bind(this));
         $(this.cqlBtnQueryEl).click(this.cqlBtnQueryClicked.bind(this));
-
-        this.rootCondition = '<table><tr><td class="seperator" ><img src="images/res/remove.gif" alt="Remove" class="remove" /><select><option value="and">And</option><option value="or">Or</option></select></td>';
-        this.rootCondition += '<td><div class="querystmts"></div><div><img class="add" src="images/res/add.gif" alt="Add" /> <button class="addroot">+()</button></div>';
+        $(this.cqlBtnValidateEl).click(this.cqlBtnValidateClicked.bind(this));
+        $(this.cqlEnabledCheckboxEl).click(this.cqlEnabledCheckboxClicked.bind(this));
+        this.rootCondition = '<table><tr><td class="seperator" ><img class="remove" src="'+params.resourceImages.remove +'" alt="Remove" /><select><option value="and">And</option><option value="or">Or</option></select></td>';
+        this.rootCondition += '<td><div class="querystmts"></div><div><img class="add" src="'+params.resourceImages.add +'" alt="Add" /> <button class="addroot">+()</button></div>';
         this.rootCondition += '</td></tr></table>';
+        this.statement = '<div><img class="remove" src="'+params.resourceImages.remove +'" alt="Remove" />'
 
-        this.statement = '<div><img src="images/res/remove.gif" alt="Remove" class="remove" />'
+        $(this.cqlSelectNamedQueriesEl).append("<option value=''></option>");
+        $(this.cqlSelectNamedQueriesEl).append("<option value='today'>Today</option>");
+        $(this.cqlSelectNamedQueriesEl).change(this.cqlSelectNamedQueriesChanged.bind(this));
     },
     getStatement:function(colId, opId){
         var idx    = 0;
@@ -120,6 +270,17 @@ OMAR.views.CqlView = Backbone.View.extend({
         result+= "</select>";
         var textField = "<input id='"+ colId+opId+"TEXTFIELD' type='text'/>";
         return (this.statement+result+textField);
+    },
+    cqlSelectNamedQueriesChanged:function(){
+        alert($(cqlSelectNamedQueries).val());
+        this.clearQuery(false);
+    },
+    clearQuery:function(conditions){
+        $('.cqlQuery').html("");
+        if(!conditions)
+        {
+            this.addQueryRoot('.cqlQuery', true)
+        }
     },
     getTypesForColumn : function(col){
 
@@ -143,7 +304,8 @@ OMAR.views.CqlView = Backbone.View.extend({
             var op = $(expressionelem[i]).find('.op :selected');
             var textInput = $(expressionelem[i]).find(':text');
             expressions[i] =  {
-                "colval": col.val()
+                "coltype":this.columnDefs.get(col.val()).get("type")
+                ,"colval": col.val()
                 ,"colid" : $(col).attr('id')
                 ,"coldisp" : col.text()
                 ,"opval" : op.val()
@@ -166,105 +328,6 @@ OMAR.views.CqlView = Backbone.View.extend({
         q.nestedexpressions = nestedexpressions;
 
         return q;
-    },
-    getQuery:function (condition)
-    {
-        var op = [' ', condition.operator, ' '].join('');
-
-        var e = [];
-        var elen = condition.expressions.length;
-        var error = false;
-        for (var i = 0; ((i < elen)&&(!error)); i++) {
-            var expr = condition.expressions[i];
-
-           // alert("WE CAN FORMAT AND VALIDATE HERE!" + this.columnDefs.get(expr.colval));
-            // add tests for ops HERE!!
-            //
-            if(!expr.val){
-               alert("No value present, please input value");
-               $("#"+expr.valId).focus();
-                error = true;
-            }
-            //alert(expr.colval + ", " + expr.opval);
-
-            var val = expr.val;
-            var opval = expr.opval;
-            if(!error)
-            {
-                var colDef = this.columnDefs.get(expr.colval);
-                if(colDef)
-                {
-                    switch(colDef.get("type"))
-                    {
-                    case "string":
-                        switch(expr.opval)
-                        {
-                            case "contains":
-                                opval = "like";
-                                val = "'%"+val+"%'";
-                                break;
-                            case "startswith":
-                                opval = "like";
-                                val = "'"+val+"%'";
-                                break;
-                            case "endswith":
-                                opval = "like";
-                                val = "'%"+val+"'";
-                                break;
-                            default:
-                                val = "'"+val+"'";
-                                break;
-                        }
-                        break;
-                    case "numeric":
-                        if(!OMAR.isFloat(val))
-                        {
-                            alert("Value is not a number, please fix the value");
-                            $("#"+expr.valId).focus();
-                            $("#"+expr.valId).select();
-                            error = true;
-                        }
-                        break;
-                    }
-                }
-            }
-            if(!error)
-            {
-                e.push(expr.colval + " " + opval + " " + val);
-
-            }
-            else
-            {
-                e = [];
-            }
-        }
-
-        var n = [];
-        var nlen = condition.nestedexpressions.length;
-        for (var k = 0; ((k < nlen)&&!error); k++) {
-            var nestexpr = condition.nestedexpressions[k];
-            var result = this.getQuery(nestexpr);
-            if(result)
-            {
-                n.push(result);
-            }
-            else
-            {
-                error = true;
-            }
-        }
-
-        var q = [];
-        if (e.length > 0)
-            q.push(e.join(op));
-        if (n.length > 0)
-            q.push(n.join(op));
-
-        if(error)
-        {
-            return false;
-        }
-        return ['(', q.join(op), ')'].join(' ');
     },
     addQueryRoot:function (sel, isroot)
     {
@@ -334,40 +397,91 @@ OMAR.views.CqlView = Backbone.View.extend({
             {
                 case "string":
                     $(opEl).empty();
-                    $(opEl).append("<option id='"+baseOpId+"0' value='<' >Less Than</option>");
+                   /* $(opEl).append("<option id='"+baseOpId+"0' value='<' >Less Than</option>");
                     $(opEl).append("<option id='"+baseOpId+"1' value='>' >Greater Than</option>");
-                    $(opEl).append("<option id='"+baseOpId+"2' value='=' >Equal</option>");
                     $(opEl).append("<option id='"+baseOpId+"3' value='like' >Like</option>");
-                    $(opEl).append("<option id='"+baseOpId+"3' value='contains' >Contains</option>");
-                    $(opEl).append("<option id='"+baseOpId+"3' value='startswith' >Starts With</option>");
+                    */
+                    $(opEl).append("<option id='"+baseOpId+"0' value='contains' >Contains</option>");
+                    $(opEl).append("<option id='"+baseOpId+"1' value='=' >Equal</option>");
+                    $(opEl).append("<option id='"+baseOpId+"2' value='startswith' >Starts With</option>");
                     $(opEl).append("<option id='"+baseOpId+"3' value='endswith' >Ends With</option>");
                     break;
                 case "numeric":
                     $(opEl).empty();
                     $(opEl).append("<option id='"+baseOpId+"0' value='<' >Less Than</option>");
-                    $(opEl).append("<option id='"+baseOpId+"1' value='>' >Greater Than</option>");
-                    $(opEl).append("<option id='"+baseOpId+"2' value='=' >Equal</option>");
+                    $(opEl).append("<option id='"+baseOpId+"1' value='<=' >Less Than Equal</option>");
+                    $(opEl).append("<option id='"+baseOpId+"2' value='>' >Greater Than</option>");
+                    $(opEl).append("<option id='"+baseOpId+"3' value='>=' >Greater Than Equal</option>");
+                    $(opEl).append("<option id='"+baseOpId+"4' value='=' >Equal</option>");
+                    break;
+                case "datetime":
+                    $(opEl).empty();
+                    $(opEl).append("<option id='"+baseOpId+"0' value='today' >Today</option>");
+                    $(opEl).append("<option id='"+baseOpId+"1' value='<' >Less Than</option>");
+                    $(opEl).append("<option id='"+baseOpId+"2' value='<=' >Less Than Equal</option>");
+                    $(opEl).append("<option id='"+baseOpId+"3' value='>' >Greater Than</option>");
+                    $(opEl).append("<option id='"+baseOpId+"4' value='>=' >Greater Than Equal</option>");
+                    $(opEl).append("<option id='"+baseOpId+"5' value='=' >Equal</option>");
                     break;
             }
         }
 //        var op = $(this.el).find("#"+op);
 //        $(op).empty();
     },
-    cqlBtnConditionClicked:function(){
-        var query = {};
-        query = this.getCondition('.cqlQuery > table');
-        //var l = JSON.stringify(query,null,4);
-        var l = JSON.stringify(query);
-        alert(l);
-
+    cqlBtnValidateClicked:function(){
+        var con = this.getCondition('.cqlQuery >table');
+        var errors = [];
+        this.model.set({conditions:con});
+        var k = this.model.toCql(errors);
+        if(errors.size())
+        {
+            alert("Number of errors: " + errors.size() + ".  First error:\n"+ errors[0].message);
+            $("#"+errors[0].expression.valId).focus();
+        }
+        else
+        {
+            alert("Cql is valid!");
+        }
+    },
+    cqlBtnResetClicked:function(){
+      this.clearQuery();
     },
     cqlBtnQueryClicked:function(){
         var con = this.getCondition('.cqlQuery >table');
-        var k = this.getQuery(con);
+        this.model.set({conditions:con});
+        var errors = [];
+        var k = this.model.toCql(errors);
+        if(errors.size())
+        {
+            alert(errors[0].message);
+            $("#"+errors[0].expression.valId).focus();
+        }
         if(k)
         {
             alert(k);
         }
+    },
+    cqlEnabledCheckboxClicked:function(){
+    },
+    toCondition:function(){
+        var con = this.getCondition('.cqlQuery >table');
+        if(con)
+        {
+            alert(con);
+        }
+    },
+    toCql:function(){
+        if($(this.cqlEnabledCheckboxEl).attr("checked") != "checked")
+        {
+            return "";
+        }
+        var con = this.getCondition('.cqlQuery >table');
+        this.model.set({conditions:con});
+        var k = this.model.toCql();
+
+        if(!k) return "";
+
+        return k;
     },
     render:function(){
         this.addQueryRoot('.cqlQuery', true);

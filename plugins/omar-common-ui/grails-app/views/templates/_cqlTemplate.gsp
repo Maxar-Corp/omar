@@ -1,8 +1,14 @@
 <div id='cqlId'>
+    <label>Named Queries</label><select id="cqlSelectNamedQueries">Named Queries</select>
     <div class="cqlQuery">
     </div>
-    <button id="cqlBtnCondition">
-        Get Condition</button>
+    <input type="checkbox" id="cqlEnabledCheckbox">Enabled</input>
+  <!--  <button id="cqlBtnCondition">
+        Get Condition</button> -->
+    <button id="cqlBtnReset">
+        Reset</button>
+    <button id="cqlBtnValidate">
+        Validate</button>
     <button id="cqlBtnQuery">
-        Get Query</button>
+        Show</button>
 </div>
