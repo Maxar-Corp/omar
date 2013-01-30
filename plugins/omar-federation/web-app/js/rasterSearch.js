@@ -103,7 +103,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         // construct with a shared wfsTypeName model
         this.dataModelView = new OMAR.views.DataModelView({wfsTypeNameModel:this.wfsTypeNameModel});
 
-        this.cqlView = new OMAR.views.CqlView();
+        this.cqlView = new OMAR.views.CqlView(params.cql);
 
         this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this);
         this.bboxModel.bind('change', this.updateFootprintCql, this);
@@ -225,7 +225,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     toCql:function(){
         var result = "";
         var timeQueryCql = null;
-        var wfsTypeName = this.wfsTypeNameModel.get("typeName")
+        var wfsTypeName = this.wfsTypeNameModel.get("typeName");
+        var customQueryFilter = this.cqlView.toCql();
+
         if(wfsTypeName == "raster_entry")
         {
             timeQueryCql = this.dateTimeRangeModel.toCql("acquisition_date");
@@ -258,6 +260,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         else
         {
             result = timeQueryCql;
+        }
+        if(customQueryFilter!="")
+        {
+            result += "AND"+customQueryFilter;
         }
         return result;
     },
