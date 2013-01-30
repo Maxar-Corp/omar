@@ -75,6 +75,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.pointView = new OMAR.views.PointView();
         this.pointModel = this.pointView.model;
 
+        this.menuView = new OMAR.views.MenuView();
+        this.menuModel = this.menuView.model;
+
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
         this.dateTimeRangeModel = this.dateTimeRangeView.model;
         this.wfsServerCountModel = new OMAR.models.WfsModel({"resultType":"hits"});
@@ -174,6 +177,12 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         { 
             this.pointView.render();
         }
+
+        if(this.menuView)
+        { 
+            this.menuView.render();
+        }
+
         if(this.dateTimeRangeView)
         {
             this.dateTimeRangeView.render();
@@ -342,22 +351,7 @@ $(document).ready(function () {
     OMAR.federatedRasterSearch.centerResize();
     //$( "#accordion" ).accordion();
 
-    $("#federatedSearchMenuId").jMenu({
-                  openClick : false,
-                  ulWidth : 100,
-                  effects : {
-                    effectSpeedOpen : 200,
-                    effectSpeedClose : 200,
-                    effectTypeOpen : 'slide',
-                    effectTypeClose : 'hide',
-                    effectOpen : 'linear',
-                    effectClose : 'linear'
-                  },
-                  TimeBeforeOpening : 100,
-                  TimeBeforeClosing : 100,
-                  animatedText : true,
-                  paddingLeft: 10
-                });
+  
   
 
 
