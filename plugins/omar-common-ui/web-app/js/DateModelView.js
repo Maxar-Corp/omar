@@ -27,6 +27,12 @@ OMAR.models.Date = Backbone.Model.extend(
                 }
             }
         },
+        clearTime:function(){
+            this.date.setUTCHours(0);
+            this.date.setUTCMinutes(0);
+            this.date.setUTCSeconds(0);
+            this.date.setUTCMilliseconds(0);
+        },
         toISOString:function(){
             function pad(n, w){
                 if(w == null || w == 2)
