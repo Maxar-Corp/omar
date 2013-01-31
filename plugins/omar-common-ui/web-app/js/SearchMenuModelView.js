@@ -14,7 +14,7 @@ OMAR.views.MenuView = Backbone.View.extend({
         "click #ExportKmlQueryId": "exportKmlQuery",
         "click #ExportGeoJsonId": "exportGeoJson",
         "click #ExportGml2Id": "exportGml2",
-        "click #ExportCsvId": "exportCsv",
+        "click #ExportCsvId": "exportCsv"
     },
     exportKmlQuery:function() {
         alert("export kml query");
