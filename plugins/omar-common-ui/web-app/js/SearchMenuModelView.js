@@ -1,6 +1,6 @@
 OMAR.models.MenuModel = Backbone.Model.extend(
 {
-    
+
 }
 );
 
@@ -27,6 +27,7 @@ OMAR.views.MenuView = Backbone.View.extend({
     },
     exportCsv:function() {
         alert("export csv");
+        //wfs call goes here...
     },
     render:function()
     {
