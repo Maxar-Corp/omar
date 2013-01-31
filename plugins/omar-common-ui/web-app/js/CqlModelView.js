@@ -427,12 +427,19 @@ OMAR.views.CqlView = Backbone.View.extend({
         return (this.statement+result+textField);
     },
     cqlSelectNamedQueriesChanged:function(){
-       // alert($(cqlSelectNamedQueries).val());
-       // var testCondition = '{"operator":"or","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "<", "opid": "col1op1OPOPTION_0", "opdisp":"Today", "val": "now", "valId": "col1op1_TEXTFIELD"}],"nestedexpressions":"[]"}';
-        var testConditionNested = '{"operator":"and","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "today", "opid": "col1op1OPOPTION_0", "opdisp": "Today", "val": "now", "valId": "col1op1_TEXTFIELD"}, {"coltype": "numeric", "colval": "bit_depth", "colid": "col3op3_COLOPTION_19", "coldisp": "Bit Depth", "opval": "<", "opid": "col3op3OPOPTION_0", "opdisp": "Less Than", "val": "16", "valId": "col3op3_TEXTFIELD"}],"nestedexpressions":[{"operator": "and", "expressions": [{"coltype": "datetime", "colval": "ingest_date", "colid": "col2op2_COLOPTION_43", "coldisp": "Ingest Date", "opval": "today", "opid": "col2op2OPOPTION_0", "opdisp": "Today", "val": "", "valId": "col2op2_TEXTFIELD"}, {"coltype": "numeric", "colval": "grazing_angle", "colid": "col4op4_COLOPTION_26", "coldisp": "Grazing Angle", "opval": ">", "opid": "col4op4OPOPTION_2", "opdisp": "Greater Than", "val": "45", "valId": "col4op4_TEXTFIELD"}], "nestedexpressions": []}]}';
+        if(!$(cqlSelectNamedQueries).val())
+        {
+            this.clearQuery();
+        }
+        else
+        {
+            // alert($(cqlSelectNamedQueries).val());
+            // var testCondition = '{"operator":"or","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "<", "opid": "col1op1OPOPTION_0", "opdisp":"Today", "val": "now", "valId": "col1op1_TEXTFIELD"}],"nestedexpressions":"[]"}';
+            var testConditionNested = '{"operator":"and","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "today", "opid": "col1op1OPOPTION_0", "opdisp": "Today", "val": "now", "valId": "col1op1_TEXTFIELD"}, {"coltype": "numeric", "colval": "bit_depth", "colid": "col3op3_COLOPTION_19", "coldisp": "Bit Depth", "opval": "<", "opid": "col3op3OPOPTION_0", "opdisp": "Less Than", "val": "16", "valId": "col3op3_TEXTFIELD"}],"nestedexpressions":[{"operator": "and", "expressions": [{"coltype": "datetime", "colval": "ingest_date", "colid": "col2op2_COLOPTION_43", "coldisp": "Ingest Date", "opval": "today", "opid": "col2op2OPOPTION_0", "opdisp": "Today", "val": "", "valId": "col2op2_TEXTFIELD"}, {"coltype": "numeric", "colval": "grazing_angle", "colid": "col4op4_COLOPTION_26", "coldisp": "Grazing Angle", "opval": ">", "opid": "col4op4OPOPTION_2", "opdisp": "Greater Than", "val": "45", "valId": "col4op4_TEXTFIELD"}], "nestedexpressions": []}]}';
 
 
-        this.clearQuery(JSON.parse(testConditionNested));
+            this.clearQuery(JSON.parse(testConditionNested));
+        }
     },
     clearQuery:function(conditions){
         $('.cqlQuery').html("");
@@ -714,15 +721,22 @@ OMAR.views.CqlView = Backbone.View.extend({
     },
     opSelectorChanged:function(colId, opId){
         var opName = $("#"+opId).val();
+        var textEl = $("#"+opId).parent().find(":text");
         switch(opName.toLowerCase())
         {
             case "today":
             case "is null":
             case "is not null":
-                $("#"+opId).parent().find(":text").hide();
+                $(textEl).hide();
+                break;
+            case "bbox":
+                $(textEl).val("<minx>,<miny>,<maxx>,<maxy>");
+                $(textEl).show();
+                $(textEl).select();
+
                 break;
             default:
-                $("#"+opId).parent().find(":text").show();
+                $(textEl).show();
                 break;
         }
     },
@@ -735,7 +749,8 @@ OMAR.views.CqlView = Backbone.View.extend({
         if(errors.size())
         {
             alert("Number of errors: " + errors.size() + ".  First error:\n"+ errors[0].message);
-            $("#"+errors[0].expression.valId).focus();
+            var el = $("#"+errors[0].expression.valId);
+            $(el).select();
         }
         else
         {
