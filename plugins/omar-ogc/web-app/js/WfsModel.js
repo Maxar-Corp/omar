@@ -24,25 +24,31 @@ OMAR.models.WfsModel = Backbone.Model.extend({
         if(!includeNullPropertiesFlag) includeNullPropertiesFlag = false
         for(var propertyName in this.attributes)
         {
-            if(propertyName!="url")
+            switch(propertyName)
             {
-                var value = this.get(propertyName);
-                if(value == null)
-                {
-                    value = "";
-                }
-                if(((value==="")&&includeNullPropertiesFlag) || !(value===""))
-                {
+                case "url":
+                case "numberOfFeatures":
+                case "getFeatureResult":
+                    break;
+                default:
+                    var value = this.get(propertyName);
+                    if(value == null)
+                    {
+                        value = "";
+                    }
+                    if(((value==="")&&includeNullPropertiesFlag) || !(value===""))
+                    {
 
-                    if(result)
-                    {
-                        result = result +"&"+propertyName + "=" + escape(value);
+                        if(result)
+                        {
+                            result = result +"&"+propertyName + "=" + escape(value);
+                        }
+                        else
+                        {
+                            result = propertyName + "=" + escape(value);
+                        }
                     }
-                    else
-                    {
-                        result = propertyName + "=" + escape(value);
-                    }
-                }
+                    break;
             }
         }
         return result;
