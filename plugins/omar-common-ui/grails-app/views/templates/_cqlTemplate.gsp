@@ -7,7 +7,7 @@
     <button id="cqlBtnReset">
         Reset</button>
     <button id="cqlBtnValidate">
-        Validate</button>
+        Apply and Validate</button>
     <button id="cqlBtnQuery">
         Show</button>
 </div>
