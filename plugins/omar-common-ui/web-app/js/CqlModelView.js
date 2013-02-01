@@ -11,12 +11,28 @@ OMAR.models.CqlColumnDef = Backbone.Model.extend({
     }
 });
 
+
+OMAR.models.CqlVideoColumnDefCollection = Backbone.Collection.extend({
+    model:OMAR.models.CqlColumnDef,
+    initialize:function(params){
+        this.add([
+            {name:"id", label:"Record id", type:"id"}
+            ,{name:"filename", label:"Filename", type:"string"}
+            ,{name:"width", label:"Width", type:"numeric"}
+            ,{name:"height", label:"Height", type:"numeric"}
+            ,{name:"ground_geom", label:"Ground Geom", type:"geometry"}
+            ,{name:"start_date", label:"Start Date", type:"datetime"}
+            ,{name:"end_date", label:"End Date", type:"datetime"}
+            ,{name:"index_id", label:"Index Id", type:"string"}
+            ]);
+    }
+});
+
 OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
     model:OMAR.models.CqlColumnDef,
     initialize:function(params){
         this.add([
-            {name:"raw_cql", label:"Raw CQL", type:"raw_cql"}
-            ,{name:"id", label:"Record id", type:"id"}
+            {name:"id", label:"Record id", type:"id"}
             ,{name:"be_number", label:"BE Number", type:"string"}
             ,{name:"title", label:"Image ID", type:"string"}
             ,{name:"class_name", label:"Class Name", type:"string"}
@@ -102,12 +118,12 @@ OMAR.models.CqlModel = Backbone.Model.extend({
                 //
                 //alert(expr.colval + ", " + expr.opval);
 
-                var val = expr.val;
-                var opval = expr.opval;
+                var val   = expr.val;
+                var opval = expr.opval?expr.opval.toUpperCase():expr.opval;
                 var fullExpression = "";
                 var colType = expr.coltype;
 
-                if(opval == "is null" || opval == "is not null")
+                if(opval == "IS NULL" || opval == "IS NOT NULL")
                 {
                     fullExpression = expr.colval + " " + opval;
                 }
@@ -182,28 +198,33 @@ OMAR.models.CqlModel = Backbone.Model.extend({
                                 // we will add this type of syntax later
                                 //
                                 case "contains":
-                                    opval = "like";
+                                    opval = "LIKE";
                                     val = " '%"+val+"%'";
                                     break;
                                 case "icontains":
-                                    opval = "ilike";
+                                    opval = "ILIKE";
                                     val = " '%"+val+"%'";
                                     break;
                                 case "startswith":
-                                    opval = "like";
+                                    opval = "LIKE";
                                     val = " '"+val+"%'";
                                     break;
                                 case "istartswith":
-                                    opval = "ilike";
+                                    opval = "ILIKE";
                                     val = " '"+val+"%'";
                                     break;
                                 case "endswith":
-                                    opval = "like";
+                                    opval = "LIKE";
                                     val = " '%"+val+"'";
                                     break;
                                 case "iendswith":
-                                    opval = "ilike";
+                                    opval = "ILIKE";
                                     val = " '%"+val+"'";
+                                    break;
+                                case "in":
+                                    var splitVal = val.split(",");
+                                    val = "('"+splitVal.join("','") + "')";
+
                                     break;
                                 default:
                                     val = "'"+val+"'";
@@ -216,12 +237,30 @@ OMAR.models.CqlModel = Backbone.Model.extend({
                                 errorMessage.message =  "No value present, please input value";
                                 errors.push(errorMessage);
                             }
-                            if(!OMAR.isFloat(val))
+                            switch(expr.opval.toLowerCase())
                             {
-                                errorMessage.message = "Value is not a number, please fix the value";
-                                errors.push(errorMessage);
+                                case "in":
+                                    var valSplit = val.split(",");
+                                    if(OMAR.isFloatArray(valSplit))
+                                    {
+                                        fullExpression = expr.colval + " " + opval + "(" + valSplit.join(",")+")";
+                                    }
+                                    else
+                                    {
+                                        errorMessage.message = "Should have a list of numeric values separated";
+                                        errorMessage.message += "\nby commas. example: 1,3,4";
+                                        errors.push(errorMessage);
+                                    }
+                                    break;
+                                default:
+                                    if(!OMAR.isFloat(val))
+                                    {
+                                        errorMessage.message = "Value is not a number, please fix the value";
+                                        errors.push(errorMessage);
+                                    }
+                                    fullExpression = expr.colval + " " + opval + " " + val;
+                                    break;
                             }
-                            fullExpression = expr.colval + " " + opval + " " + val;
                             break;
                         case "datetime":
                             switch(expr.opval)
@@ -234,6 +273,16 @@ OMAR.models.CqlModel = Backbone.Model.extend({
                                     fullExpression = expr.colval + " >= '" +
                                         startDate.toISOString()+"' AND " + expr.colval + " < '" +
                                         endDate.toISOString()+"'";
+                                    break;
+                                case "before":
+                                case "after":
+                                case "during":
+                                    if(!OMAR.isIso8601(val))
+                                    {
+                                        errorMessage.message = "Value is not formatted for an ISO8601 date time and or period";
+                                        errors.push(errorMessage);
+                                    }
+                                    fullExpression = expr.colval + " " + opval + " " + val;
                                     break;
                                 default:
                                     if(!expr.val){
@@ -315,7 +364,12 @@ OMAR.models.CqlModel = Backbone.Model.extend({
         {
             errors = [];
         }
-        return getQuery(this.get("conditions"), errors);
+        var result = getQuery(this.get("conditions"), errors);
+        if(result == "()")
+        {
+            result = "";
+        }
+        return result;
     }
 });
 
@@ -345,6 +399,10 @@ OMAR.models.ExpressionModel = Backbone.Model.extend({
 OMAR.views.CqlView = Backbone.View.extend({
     el:"#cqlId",
     initialize:function(params){
+        if(params)
+        {
+            this.wfsTypeNameModel = params.wfsTypeNameModel;
+        }
         this.setElement(this.el);
         this.model = new OMAR.models.CqlModel();
         this.idIncrement = 0;
@@ -364,8 +422,25 @@ OMAR.views.CqlView = Backbone.View.extend({
         this.statement = '<div><img class="remove" src="'+params.resourceImages.remove +'" alt="Remove" />'
 
         $(this.cqlSelectNamedQueriesEl).append("<option value=''></option>");
-        $(this.cqlSelectNamedQueriesEl).append("<option value='today'>Today</option>");
+       // $(this.cqlSelectNamedQueriesEl).append("<option value='today'>Today</option>");
+
         $(this.cqlSelectNamedQueriesEl).change(this.cqlSelectNamedQueriesChanged.bind(this));
+
+        this.wfsTypeNameModel.bind("change", this.wfsTypeNameModelChanged, this);
+    },
+    wfsTypeNameModelChanged:function(){
+        var typeName = this.wfsTypeNameModel.get("typeName");
+
+        if(typeName == "raster_entry")
+        {
+            this.columnDefs = new OMAR.models.CqlRasterColumnDefCollection();
+        }
+        else if(typeName == "video_data_set")
+        {
+            this.columnDefs = new OMAR.models.CqlVideoColumnDefCollection();
+        }
+
+        this.clearQuery();
     },
     getRootCondition:function(condition){
         var result = "";
@@ -404,11 +479,15 @@ OMAR.views.CqlView = Backbone.View.extend({
         var result = "";
         result =  "<select id='"+colId+"' class='col'>";
 
+        var rawCql = {name:"raw_cql", label:"Raw CQL", type:"raw_cql"};
+        var html = "<option id='"+baseOpId+idx+"' value='"+rawCql.name+"'>"+rawCql.label+"</option>";
+        result += html;
+
         for(idx = 0; idx < this.columnDefs.size();++idx)
         {
             var name  = this.columnDefs.at(idx).get("name");
             var label = this.columnDefs.at(idx).get("label");
-            var html = "<option id='"+baseOpId+idx+"' value='"+name+"'>"+label+"</option>";
+            html = "<option id='"+baseOpId+idx+"' value='"+name+"'>"+label+"</option>";
             result += html;
         }
         result+="</select>";
@@ -433,12 +512,13 @@ OMAR.views.CqlView = Backbone.View.extend({
         }
         else
         {
+            this.clearQuery();
             // alert($(cqlSelectNamedQueries).val());
             // var testCondition = '{"operator":"or","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "<", "opid": "col1op1OPOPTION_0", "opdisp":"Today", "val": "now", "valId": "col1op1_TEXTFIELD"}],"nestedexpressions":"[]"}';
-            var testConditionNested = '{"operator":"and","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "today", "opid": "col1op1OPOPTION_0", "opdisp": "Today", "val": "now", "valId": "col1op1_TEXTFIELD"}, {"coltype": "numeric", "colval": "bit_depth", "colid": "col3op3_COLOPTION_19", "coldisp": "Bit Depth", "opval": "<", "opid": "col3op3OPOPTION_0", "opdisp": "Less Than", "val": "16", "valId": "col3op3_TEXTFIELD"}],"nestedexpressions":[{"operator": "and", "expressions": [{"coltype": "datetime", "colval": "ingest_date", "colid": "col2op2_COLOPTION_43", "coldisp": "Ingest Date", "opval": "today", "opid": "col2op2OPOPTION_0", "opdisp": "Today", "val": "", "valId": "col2op2_TEXTFIELD"}, {"coltype": "numeric", "colval": "grazing_angle", "colid": "col4op4_COLOPTION_26", "coldisp": "Grazing Angle", "opval": ">", "opid": "col4op4OPOPTION_2", "opdisp": "Greater Than", "val": "45", "valId": "col4op4_TEXTFIELD"}], "nestedexpressions": []}]}';
+          //  var testConditionNested = '{"operator":"and","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "today", "opid": "col1op1OPOPTION_0", "opdisp": "Today", "val": "now", "valId": "col1op1_TEXTFIELD"}, {"coltype": "numeric", "colval": "bit_depth", "colid": "col3op3_COLOPTION_19", "coldisp": "Bit Depth", "opval": "<", "opid": "col3op3OPOPTION_0", "opdisp": "Less Than", "val": "16", "valId": "col3op3_TEXTFIELD"}],"nestedexpressions":[{"operator": "and", "expressions": [{"coltype": "datetime", "colval": "ingest_date", "colid": "col2op2_COLOPTION_43", "coldisp": "Ingest Date", "opval": "today", "opid": "col2op2OPOPTION_0", "opdisp": "Today", "val": "", "valId": "col2op2_TEXTFIELD"}, {"coltype": "numeric", "colval": "grazing_angle", "colid": "col4op4_COLOPTION_26", "coldisp": "Grazing Angle", "opval": ">", "opid": "col4op4OPOPTION_2", "opdisp": "Greater Than", "val": "45", "valId": "col4op4_TEXTFIELD"}], "nestedexpressions": []}]}';
 
 
-            this.clearQuery(JSON.parse(testConditionNested));
+          //  this.clearQuery(JSON.parse(testConditionNested));
         }
     },
     clearQuery:function(conditions){
@@ -483,7 +563,7 @@ OMAR.views.CqlView = Backbone.View.extend({
             var op = $(expressionelem[i]).find('.op :selected');
             var textInput = $(expressionelem[i]).find(':text');
             var expressionModel = {
-                coltype:this.columnDefs.get(col.val()).get("type")
+                coltype:col.val()=="raw_cql"?"raw_cql":this.columnDefs.get(col.val()).get("type")
                 ,colval: $(col).val()
                 ,colid : $(col).attr("id")
                 ,coldisp : $(col).text()
@@ -493,10 +573,7 @@ OMAR.views.CqlView = Backbone.View.extend({
                 ,val : $(textInput).val()
                 ,valId : $(textInput).attr("id")
             };
-            //alert(JSON.stringify(expressionModel.toJSON()));
             expressions[i] = expressionModel;
-            //alert(this.columnDefs.get(col.val()).get("type")) ;
-           // expressions[i].coltype =this.columnDefs.get(col.val()).get("type");
         }
         q.expressions = expressions;
 
@@ -542,13 +619,16 @@ OMAR.views.CqlView = Backbone.View.extend({
             });
         }
 
-
         if(cond)
         {
             elem.find('td div > .addroot').click(function () {
                 thisPtr.addQueryRoot($(this).parent(), false);
             });
-            elem.find('td >.querystmts div >.remove').addClass('head');
+
+            // lets comment this out for now.  without, it allows deleting
+            // of all statments
+            //
+            //elem.find('td >.querystmts div >.remove').addClass('head');
             elem.find('td div >.add').click(function () {
                 ++thisPtr.idIncrement;
                 var opId2    = "op"+thisPtr.idIncrement;
@@ -581,10 +661,10 @@ OMAR.views.CqlView = Backbone.View.extend({
                 $(appendedStatement).find("#"+colId).change($.proxy(thisPtr.columnSelectorChanged, thisPtr, colId, opId)) ;
                 $(appendedStatement).find("#"+opId).change($.proxy(thisPtr.opSelectorChanged, thisPtr, colId, opId)) ;
 
-                if(idx == 0)
-                {
-                    elem.find('td >.querystmts div >.remove').addClass('head');
-                }
+               // if(idx == 0)
+               //{
+                   // elem.find('td >.querystmts div >.remove').addClass('head');
+               // }
                 var colEl = $(appendedStatement).find("#"+colId);
                 var opEl = $(appendedStatement).find("#"+opId);
                 $(colEl).change($.proxy(thisPtr.columnSelectorChanged, thisPtr, colId, opId)) ;
@@ -600,7 +680,7 @@ OMAR.views.CqlView = Backbone.View.extend({
                 var stmts = $(elem.find('td div >.add')).parent().siblings('.querystmts').find('div >.remove').filter(':not(.head)');
                 stmts.unbind('click');
                 stmts.click(function () {
-                    $(this).parent().detach();
+                        $(this).parent().detach();
                 });
 
             }
@@ -617,8 +697,8 @@ OMAR.views.CqlView = Backbone.View.extend({
         else
         {
             ++thisPtr.idIncrement;
-            var opId = "op"+thisPtr.idIncrement;
-            var colId = "col"+thisPtr.idIncrement;
+            var opId  = "op" + thisPtr.idIncrement;
+            var colId = "col"+ thisPtr.idIncrement;
 
             // Add the default statement segment to the root condition
             var appendedStatement = elem.find('td >.querystmts').append(this.getStatement(colId, opId));
@@ -626,7 +706,12 @@ OMAR.views.CqlView = Backbone.View.extend({
             $(appendedStatement).find("#"+opId).change($.proxy(thisPtr.opSelectorChanged, thisPtr, colId, opId)) ;
             // Add the head class to the first statement
             this.columnSelectorChanged(colId, opId);
-            elem.find('td >.querystmts div >.remove').addClass('head');
+            //elem.find('td >.querystmts div >.remove').addClass('head');
+            var stmts = $(elem.find('td div >.add')).parent().siblings('.querystmts').find('div >.remove').filter(':not(.head)');
+            stmts.unbind('click');
+            stmts.click(function () {
+                $(this).parent().detach();
+            });
 
             // Handle click for adding new statement segment
             // When a new statement is added add a condition to handle remove click.
@@ -672,6 +757,7 @@ OMAR.views.CqlView = Backbone.View.extend({
                 result+="<option id='"+baseOpId+"6' value='is null' >IS Null</option>";
                 result+="<option id='"+baseOpId+"7' value='is not null' >IS NOT Null</option>";
                 result+="<option id='"+baseOpId+"8' value='=' >Equal</option>";
+                result+="<option id='"+baseOpId+"9' value='in' >In</option>";
                 break;
             case "numeric":
                 result+="<option id='"+baseOpId+"0' value='<' >Less Than</option>";
@@ -681,9 +767,13 @@ OMAR.views.CqlView = Backbone.View.extend({
                 result+="<option id='"+baseOpId+"4' value='=' >Equal</option>";
                 result+="<option id='"+baseOpId+"5' value='is null' >IS Null</option>";
                 result+="<option id='"+baseOpId+"6' value='is not null' >IS NOT Null</option>";
+                result+="<option id='"+baseOpId+"6' value='in' >In</option>";
                 break;
             case "datetime":
                 result+="<option id='"+baseOpId+"0' value='today' >Today</option>";
+                result+="<option id='"+baseOpId+"0' value='after' >After</option>";
+                result+="<option id='"+baseOpId+"0' value='before' >Before</option>";
+                result+="<option id='"+baseOpId+"0' value='during' >During</option>";
                 result+="<option id='"+baseOpId+"1' value='<' >Less Than</option>";
                 result+="<option id='"+baseOpId+"2' value='<=' >Less Than Equal</option>";
                 result+="<option id='"+baseOpId+"3' value='>' >Greater Than</option>";
@@ -710,34 +800,43 @@ OMAR.views.CqlView = Backbone.View.extend({
         var opEl = $("#"+opId);
         var row = this.columnDefs.get(columnName);
         var textEl = $("#"+colId+opId+"_TEXTFIELD");
-
+        $(opEl).empty();
         if(row)
         {
-            $(opEl).empty();
             $(opEl).append(this.getOptionElements(row.get("type"), colId, opId));
+            $(opEl).show();
+            $(textEl).val("");
+            this.opSelectorChanged(colId, opId);
         }
-        $(textEl).val("");
-        this.opSelectorChanged(colId, opId);
+        else if(columnName == "raw_cql")
+        {
+            $(textEl).show();
+            $(opEl).hide();
+            $(textEl).val("");
+        }
     },
     opSelectorChanged:function(colId, opId){
         var opName = $("#"+opId).val();
         var textEl = $("#"+opId).parent().find(":text");
-        switch(opName.toLowerCase())
+        if(opName)
         {
-            case "today":
-            case "is null":
-            case "is not null":
-                $(textEl).hide();
-                break;
-            case "bbox":
-                $(textEl).val("<minx>,<miny>,<maxx>,<maxy>");
-                $(textEl).show();
-                $(textEl).select();
+            switch(opName.toLowerCase())
+            {
+                case "today":
+                case "is null":
+                case "is not null":
+                    $(textEl).hide();
+                    break;
+                case "bbox":
+                    $(textEl).val("<minx>,<miny>,<maxx>,<maxy>");
+                    $(textEl).show();
+                    $(textEl).select();
 
-                break;
-            default:
-                $(textEl).show();
-                break;
+                    break;
+                default:
+                    $(textEl).show();
+                    break;
+            }
         }
     },
 

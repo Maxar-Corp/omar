@@ -58,7 +58,21 @@ OMAR.models.VideoDatasetCollection=Backbone.Collection.extend({
             for(var idx=0;idx<size;++idx)
             {
                 var feature = response.features[idx];
-                var model = new OMAR.models.RasterEntryDataModel(feature.properties)
+                var model = new OMAR.models.RasterEntryDataModel(feature.properties);
+                var modelId = model.id;
+                var omarUrl = this.url.substr(0,this.url.indexOf("omar")+4);
+
+                model.set({
+                    "thumbnail":"<img class='thumbnail-img' src='"+omarUrl+"/thumbnail/frame/"+modelId+"?size=128'></img>"
+                    //min_lat_lon:bboxModel.get("miny")+","+bboxModel.get("minx")
+                    //,max_lat_lon:bboxModel.get("maxy")+","+bboxModel.get("maxx")
+                    //,center_lat_lon:centerPoint.y+","+centerPoint.x
+                    //,"ground_geom":JSON.stringify(feature.geometry)
+                    //,"view": "<ul>"+omarUrlRawButton + omarUrlOrthoButton+"</ul>"
+                    //,"links": "<ul>"+omarUrlCapabilitiesLink+omarUrlGetMapLink+omarUrlGetKMLLink+omarUrlSuperOverlayLink+"</ul>"
+                    /*"<ul><button onclick=\"javascript:window.open(\'"+omarUrlRaw +
+                     +"\')>Raw</button><button>Ortho</button></ul>"  */
+                });
                 result.push(model);
             }
         }
@@ -869,8 +883,9 @@ OMAR.views.DataModelView = Backbone.View.extend({
         var wfsModel = this.wfsModel;
         var thisPtr = this;
        // alert(sUrl);
-        if(!this.blockGetServerData&&sUrl&&this.model&&wfsModel)
+        if(sUrl&&this.model&&wfsModel)
         {
+            //thisPtr.blockGetServerData = true;
             result.iTotalRecords = wfsModel.get("numberOfFeatures");
             //var searchable = oSettings.aoColumns[oSettings.aaSorting[0][0]].bSearchable;
             var oColumn = oSettings.aoColumns[ oSettings.aaSorting[0][0] ];
@@ -890,8 +905,9 @@ OMAR.views.DataModelView = Backbone.View.extend({
             model.url = this.wfsModel.toUrl()+"&callback=?";
             //alert(this.model.url);
             //alert("sorting by " + oColumn.mDataProp + " "+oSettings.aaSorting[0][1]);
-            if(wfsModel.dirty&&sort)
+            if(wfsModel.dirty&&sort&&!this.blockGetServerData)
             {
+                thisPtr.blockGetServerData = true;
                 this.model.reset();
                 model.fetch({dataType: "jsonp",
                     update: false,
@@ -912,6 +928,10 @@ OMAR.views.DataModelView = Backbone.View.extend({
                         if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
                         fnCallback(result);
                         thisPtr.dataTable.fnAdjustColumnSizing();
+                        thisPtr.blockGetServerData = false;
+                    },
+                    "error":function(){
+                        thisPtr.blockGetServerData = false;
                     }
                 });
             }
@@ -926,9 +946,6 @@ OMAR.views.DataModelView = Backbone.View.extend({
                 if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
                 if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
                 fnCallback(result);
-                //thisPtr.blockGetServerData = true;
-                //thisPtr.dataTable.fnAdjustColumnSizing();
-                //thisPtr.blockGetServerData = false;
             }
         }
         else if(this.model&&wfsModel&&this.model.size())
