@@ -113,7 +113,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this);
         this.bboxModel.bind('change', this.updateFootprintCql, this);
         this.currentCqlModel.bind('change', this.updateFootprintCql, this);
-        this.omarServerCollectionView.bind('onModelClicked', this.serverClicked, this);
+
+        this.omarServerCollectionView.bind("onModelClicked", this.serverClicked, this);
+        this.omarServerCollectionView.activeServerModel.bind("change", this.serverClicked, this);
 
         this.viewSelector = new OMAR.views.ViewSelector({el:"#tabView",
                                                          views:["#CustomQueryView",
@@ -139,24 +141,20 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.dataModelView.resizeView();
         }
     },
-    serverClicked:function(id){
+    serverClicked:function(){
         var cqlFilter = this.toCql();
+        var model =  this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
         this.omarServerCollectionView.wfsServerCountModel.set({"filter":cqlFilter,
                                                           "typeName":this.wfsTypeNameModel.get("typeName")});
-
-        var model = this.omarServerCollectionView.getLastClickedModel();
-        var settings = {"url":model.get("url")+"/wfs",
-                        "filter":cqlFilter,
-                        "typeName":this.wfsTypeNameModel.get("typeName")};
         if(model)
         {
+            var settings = {"url":model.get("url")+"/wfs",
+                "filter":cqlFilter,
+                "typeName":this.wfsTypeNameModel.get("typeName")};
             this.dataModelView.wfsModel.set(settings);
+            this.viewSelector.click(2);
+            this.viewSelector.setText(2, model.get("nickname"));
         }
-
-        this.viewSelector.click(2);
-        this.viewSelector.setText(2, model.get("nickname"));
-        //this.tabView.tabs("select", 2);
-        //$(this.tabView).find("#ResultsLabelId").text(model.get("nickname"));
     },
     wfsTypeNameChanged:function()
     {
@@ -289,11 +287,12 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     searchRaster:function(){
         var cqlFilter = this.toCql();
+       // alert(cqlFilter);
         this.wfsServerCountModel.set({
             filter:cqlFilter
         });
         this.wfsServerCountModel.trigger("change");
-        var model = this.omarServerCollectionView.getLastClickedModel();
+        var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
         if(model)
         {
             this.dataModelView.wfsModel.set(
