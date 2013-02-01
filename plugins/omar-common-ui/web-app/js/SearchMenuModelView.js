@@ -1,6 +1,6 @@
 OMAR.models.MenuModel = Backbone.Model.extend(
 {
-    
+
 }
 );
 
@@ -14,7 +14,7 @@ OMAR.views.MenuView = Backbone.View.extend({
         "click #ExportKmlQueryId": "exportKmlQuery",
         "click #ExportGeoJsonId": "exportGeoJson",
         "click #ExportGml2Id": "exportGml2",
-        "click #ExportCsvId": "exportCsv",
+        "click #ExportCsvId": "exportCsv"
     },
     exportKmlQuery:function() {
         alert("export kml query");
@@ -27,6 +27,7 @@ OMAR.views.MenuView = Backbone.View.extend({
     },
     exportCsv:function() {
         alert("export csv");
+        //wfs call goes here...
     },
     render:function()
     {
