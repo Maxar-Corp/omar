@@ -272,7 +272,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         }
         if(customQueryFilter!="")
         {
-            result += "AND"+customQueryFilter;
+            if(result) result += "AND";
+            result += customQueryFilter;
         }
         return result;
     },

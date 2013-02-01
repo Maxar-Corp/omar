@@ -163,3 +163,15 @@ if (typeof window.DOMParser != "undefined") {
     throw new Error("No XML parser found");
 }
   */
+
+
+//Browser JSON seems to mess things up with export.  I seem to get
+// quoted arrays.  We will delete the toJSON prototypes so it doesn't
+// get overriden by stringify
+//
+if(window.Prototype) {
+    delete Object.prototype.toJSON;
+    delete Array.prototype.toJSON;
+    delete Hash.prototype.toJSON;
+    delete String.prototype.toJSON;
+}
