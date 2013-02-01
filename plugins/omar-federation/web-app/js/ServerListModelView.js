@@ -1,3 +1,13 @@
+OMAR.models.OmarActiveServerModel=Backbone.Model.extend({
+    idAttribute:"id",
+    defaults:{
+        id:""
+    }
+    ,initialize:function(params){
+
+    }
+});
+
 OMAR.models.OmarServerModel=Backbone.Model.extend({
     idAttribute:"id",
     defaults:{
@@ -48,7 +58,7 @@ OMAR.models.OmarServerCollection=Backbone.Collection.extend({
         {
 
             var model = new OMAR.models.OmarServerModel(response[idx]);
-            model.id = model.id+idx;
+            model.id = model.id;
             var tempM = this.get(model.id);
             // make sure we copy any existing user defined data or counts to
             // the copy of the model.
@@ -94,6 +104,8 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         {
             this.model = new OMAR.models.OmarServerCollection();
         }
+        this.activeServerModel = new OMAR.models.OmarActiveServerModel();
+        this.activeServerModel.bind("change",  this.activeServerModelChanged, this);
         this.model.bind('add',    this.collectionAdd,     this)
         this.model.bind("change", this.collectionChanged, this);
         this.model.bind("reset",  this.collectionReset,   this);
@@ -101,7 +113,6 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         {
             this.model.bind("change", this.wfsTypeNameChange, this);
         }
-        this.lastClickedServerId = "";
         if(!wfsServerCountModel)
         {
             this.setWfsServerCountModel(new OMAR.models.WfsModel({"resultType":"hits"}));
@@ -155,8 +166,13 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         var model = this.model.get(id);
         if(model&&model.get("enabled"))
         {
+            var modelId = model.id;
+            var thisPtr = this;;
             this.setBusy(model.id, true);
-            this.wfsServerCountModel.attributes.url = model.get("url")+"/wfs";
+
+            var cloneWfsServerCountModel = this.wfsServerCountModel.clone();
+            cloneWfsServerCountModel.attributes.url = model.get("url")+"/wfs";
+           // this.wfsServerCountModel.attributes.url = model.get("url")+"/wfs";
             //wfs.set("url",model.get("url")+"/wfs");
 
             if(model.userDefinedData.ajaxCountQuery &&
@@ -170,20 +186,18 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                 }
             }
             model.userDefinedData.ajaxCountQuery = $.ajax({
-                url: this.wfsServerCountModel.toUrl()+"&callback=?",
+                url: cloneWfsServerCountModel.toUrl()+"&callback=?",
                 cache:false,
                 type: "GET",
                 crossDomain:true,
                 dataType: "json",
                 timeout: 60000,
-                modelId:model.id,
-                scopePtr:this,
                 success: function(response) {
                     if(response&&(response.numberOfFeatures!=null))
                     {
                         var numberOfFeatures = response.numberOfFeatures;
-                        this.scopePtr.setBusy(this.modelId, false);
-                        var tempModel = this.scopePtr.model.get(this.modelId);
+                        thisPtr.setBusy(modelId, false);
+                        var tempModel = thisPtr.model.get(modelId);
                         if(tempModel)
                         {
                             tempModel.set({"count":numberOfFeatures});
@@ -201,8 +215,8 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                     } else {
                         //alert(JSON.stringify(x)+ " " +t + " " + m);
                     }
-                    var tempModel = this.scopePtr.model.get(this.modelId);
-                    this.scopePtr.setBusy(this.modelId, false);
+                    var tempModel = thisPtr.model.get(thisPtr.modelId);
+                    thisPtr.setBusy(thisPtr.modelId, false);
                     if(tempModel)
                     {
                         tempModel.set({"count":count});
@@ -331,7 +345,12 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     },
     modelClicked:function(id)
     {
-        this.lastClickedServerId = id;
+        this.activeServerModel.set("id", id);
+        this.trigger("onModelClicked", id);
+    },
+    activeServerModelChanged:function()
+    {
+        var id = this.activeServerModel.get("id");
         var selectedServer = $(this.el).find(".omar-server-selected");
         if(selectedServer.size()>0)
         {
@@ -340,10 +359,6 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
 
         $($(this.el).find("#"+id)).attr("class","omar-server-selected");//.class(".omar-server-selected");
 
-        this.trigger("onModelClicked", id);
-    },
-    getLastClickedModel:function(){
-        return this.model.get(this.lastClickedServerId);
     },
     setAllBusy:function(flag)
     {
@@ -397,13 +412,18 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             $(this.el).html("");
             for(var idx = 0; idx < this.model.size(); ++idx)
             {
-
                 var model = this.model.at(idx);
                 var server = this.makeServer(model);
                 var serverResult = $(server).appendTo(this.el);
                 var modelId = model.id;
                 $(this.el).delegate("#omar-server-name-"+modelId, "click", $.proxy(this.modelClicked,
                     this, modelId));
+            }
+            var selectedServer = $(this.el).find(".omar-server-selected");
+            if(this.model&&(selectedServer.size()<1) &&(this.model.size()>0))
+            {
+                var modelId = this.model.at(0).get("id");
+                this.activeServerModel.set("id", modelId);
             }
         }
     }
