@@ -20,13 +20,34 @@ OMAR.models.BBOX = Backbone.Model.extend(
             var maxx = -9e20;
             var miny = 9e20;
             var maxy = -9e20;
-            $(geom.coordinates[0]).each(function(idx,v){
-                    if(v[0] < minx) minx = v[0];
-                    if(v[0] > maxx) maxx = v[0];
-                    if(v[1] < miny) miny = v[1];
-                    if(v[1] > maxy) maxy = v[1];
-                }
-            );
+
+            switch(geom.type.toLowerCase())
+            {
+                case "polygon":
+                    $(geom.coordinates).each(function(idx,v){
+                        $(v).each(function(idx, v){
+                            if(v[0] < minx) minx = v[0];
+                            if(v[0] > maxx) maxx = v[0];
+                            if(v[1] < miny) miny = v[1];
+                            if(v[1] > maxy) maxy = v[1];
+                            });
+                    });
+                    break;
+                case "multipolygon":
+                    $(geom.coordinates).each(function(idx,v){
+                           $(v).each(function(idx, v)
+                           {
+                                $(v).each(function(idx, v){
+                                    if(v[0] < minx) minx = v[0];
+                                    if(v[0] > maxx) maxx = v[0];
+                                    if(v[1] < miny) miny = v[1];
+                                    if(v[1] > maxy) maxy = v[1];
+                                })
+                            })
+                        }
+                    );
+                    break;
+            }
 
             this.set({"minx":minx
                 ,"maxx":maxx

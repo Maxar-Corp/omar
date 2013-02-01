@@ -42,6 +42,9 @@ OMAR.models.VideoDatasetDataModel = Backbone.Model.extend({
         ,filename:""
         ,index_id:""
         ,style_id:""
+        ,"min_lat_lon":""
+        ,"max_lat_lon":""
+        ,"center_lat_lon":""
     }
 });
 
@@ -61,12 +64,20 @@ OMAR.models.VideoDatasetCollection=Backbone.Collection.extend({
                 var model = new OMAR.models.RasterEntryDataModel(feature.properties);
                 var modelId = model.id;
                 var omarUrl = this.url.substr(0,this.url.indexOf("omar")+4);
-
+                if(feature.geometry.type.toLowerCase() == "multipolygon")
+                {
+                    feature.geometry.coordinates[0][0][0];
+                }
+                var bboxModel = new OMAR.models.BBOX();
+                bboxModel.setFromWfsFeatureGeom(feature.geometry);
+                var centerPoint = bboxModel.getCenter();
+                var bbox = bboxModel.toWmsString();
+                //alert(bbox);
                 model.set({
-                    "thumbnail":"<img class='thumbnail-img' src='"+omarUrl+"/thumbnail/frame/"+modelId+"?size=128'></img>"
-                    //min_lat_lon:bboxModel.get("miny")+","+bboxModel.get("minx")
-                    //,max_lat_lon:bboxModel.get("maxy")+","+bboxModel.get("maxx")
-                    //,center_lat_lon:centerPoint.y+","+centerPoint.x
+                    thumbnail:"<img class='thumbnail-img' src='"+omarUrl+"/thumbnail/frame/"+modelId+"?size=128'></img>"
+                    ,min_lat_lon:bboxModel.get("miny")+","+bboxModel.get("minx")
+                    ,max_lat_lon:bboxModel.get("maxy")+","+bboxModel.get("maxx")
+                    ,center_lat_lon:centerPoint.y+","+centerPoint.x
                     //,"ground_geom":JSON.stringify(feature.geometry)
                     //,"view": "<ul>"+omarUrlRawButton + omarUrlOrthoButton+"</ul>"
                     //,"links": "<ul>"+omarUrlCapabilitiesLink+omarUrlGetMapLink+omarUrlGetKMLLink+omarUrlSuperOverlayLink+"</ul>"
@@ -146,9 +157,13 @@ OMAR.models.VideoDatasetsColumnDefs=Backbone.Collection.extend({
                 ,{ "aTargets":[], "sTitle": "THUMBNAIL", "sClass":"thumbnail", sType:"html", "mDataProp": "thumbnail", "bSearchable": false, "asSorting": [] }
                 ,{ "aTargets":[], "sTitle": "WIDTH", "sClass":"video-width", sType:"string", "mDataProp": "width" }
                 ,{ "aTargets":[], "sTitle": "HEIGHT", "sClass":"video-height", sType:"string", "mDataProp": "height" }
+             //   ,{ "aTargets":[], "sTitle": "GEOM", "sClass":"video-ground-geom", sType:"string", "mDataProp": "ground_geom" }
                 ,{ "aTargets":[], "sTitle": "START_DATE", "sClass":"video-start-date", sType:"string", "mDataProp": "start_date" }
                 ,{ "aTargets":[], "sTitle": "END_DATE", "sClass":"video-start-date", sType:"string", "mDataProp": "end_date" }
                 ,{ "aTargets":[], "sTitle": "FILENAME", "sClass":"video-filename", sType:"string", "mDataProp": "filename" }
+                ,{ "aTargets":[], "sTitle": "MIN LAT LON",  "sType":"string","mDataProp": "min_lat_lon","asSorting": [] }
+                ,{ "aTargets":[], "sTitle": "MAX LAT LON",  "sType":"string","mDataProp": "max_lat_lon","asSorting": [] }
+                ,{ "aTargets":[], "sTitle": "CENTER LAT LON",  "sType":"string","mDataProp": "center_lat_lon","asSorting": [] }
             ]);
 
         }
