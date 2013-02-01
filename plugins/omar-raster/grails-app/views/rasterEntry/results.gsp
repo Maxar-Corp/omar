@@ -119,10 +119,10 @@
 
         exportURL += "&format=" + format;
 
-        //alert(exportURL);
-
         form.action = exportURL;
         form.submit();
+
+        alert("Project export initiated - this may take awhile.\nWait for download prompt...");
       }
     }
 
