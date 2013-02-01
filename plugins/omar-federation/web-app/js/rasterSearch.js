@@ -106,7 +106,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         // construct with a shared wfsTypeName model
         this.dataModelView = new OMAR.views.DataModelView({wfsTypeNameModel:this.wfsTypeNameModel});
 
-        this.cqlView = new OMAR.views.CqlView(params.cql);
+        var cqlViewParams = params.cql;
+        cqlViewParams.wfsTypeNameModel = this.wfsTypeNameModel;
+        this.cqlView = new OMAR.views.CqlView(cqlViewParams);
 
         this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this);
         this.bboxModel.bind('change', this.updateFootprintCql, this);

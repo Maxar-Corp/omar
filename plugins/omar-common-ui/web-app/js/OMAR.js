@@ -65,6 +65,21 @@ OMAR.matchesCompletely = function(value, expression)
 
     return false;
 }
+
+OMAR.testArray = function(values, comparator)
+{
+    var idx = 0;
+    for(idx = 0;idx < values.size();++idx)
+    {
+        if(!comparator(values[idx]))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 OMAR.isFloat = function(value)
 {
     return OMAR.matchesCompletely(value, OMAR.regexp.float);
@@ -73,6 +88,17 @@ OMAR.isFloat = function(value)
 OMAR.isInteger = function(value)
 {
     return OMAR.matchesCompletely(value, OMAR.regexp.integer);
+}
+
+
+OMAR.isIntegerArray = function(values)
+{
+    return OMAR.testArray(values, OMAR.isInteger);
+}
+
+OMAR.isFloatArray = function(values)
+{
+    return OMAR.testArray(values, OMAR.isFloat);
 }
 
 OMAR.isIsoPeriod = function(value)
