@@ -364,10 +364,15 @@ OMAR.models.CqlModel = Backbone.Model.extend({
         {
             errors = [];
         }
-        var result = getQuery(this.get("conditions"), errors);
-        if(result == "()")
+        var result = ""
+        var condition = this.get("conditions");
+        if(condition)
         {
-            result = "";
+            result = getQuery(condition, errors);
+            if(result == "()")
+            {
+                result = "";
+            }
         }
         return result;
     }
@@ -531,26 +536,20 @@ OMAR.views.CqlView = Backbone.View.extend({
         {
            this.setCondition(conditions, '.cqlQuery');
         }
+        this.model.set("conditions", this.getCondition())
     },
     getTypesForColumn : function(col){
 
     },
-    getconditionAsJSON:function(rootsel)
-    {
-        var result = "{";
-        var operator = $(elem[0]).find(':selected').val();
-
-        result += 'operator:"' + operator + '"';
-
-        result += "}";
-    },
-    getCondition: function (rootsel) {
+    getCondition: function (sel) {
+        var rootsel = sel;
+        if(!sel) rootsel = '.cqlQuery >table';
         //Get the columns from table (to find a clean way to do it later) //tbody>tr>td
         var elem = $(rootsel).children().children().children();
         //elem 0 is for operator, elem 1 is for expressions
 
-        var q = new Object();
-        var expressions = new Array();
+        var q                 = new Object();
+        var expressions       = new Array();
         var nestedexpressions = new Array();
 
         var operator = $(elem[0]).find(':selected').val();
