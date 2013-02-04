@@ -933,9 +933,9 @@ OMAR.views.CqlView = Backbone.View.extend({
                 break;
             case "datetime":
                 result+="<option id='"+baseOpId+"0' value='today' >Today</option>";
-                result+="<option id='"+baseOpId+"0' value='after' >After</option>";
-                result+="<option id='"+baseOpId+"0' value='before' >Before</option>";
-                result+="<option id='"+baseOpId+"0' value='during' >During</option>";
+//                result+="<option id='"+baseOpId+"0' value='after' >After</option>";
+//                result+="<option id='"+baseOpId+"0' value='before' >Before</option>";
+//                result+="<option id='"+baseOpId+"0' value='during' >During</option>";
                 result+="<option id='"+baseOpId+"1' value='<' >Less Than</option>";
                 result+="<option id='"+baseOpId+"2' value='<=' >Less Than Equal</option>";
                 result+="<option id='"+baseOpId+"3' value='>' >Greater Than</option>";
