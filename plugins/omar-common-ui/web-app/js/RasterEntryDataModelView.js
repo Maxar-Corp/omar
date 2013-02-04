@@ -24,7 +24,7 @@ OMAR.models.SelectedCollection = Backbone.Collection.extend({
     },
     toStringOfIds:function(seperator){
         if(!seperator) {
-           seprator = ","; 
+           seperator = ",";
         }
         
         return this.toArrayOfIds().join(seperator);
