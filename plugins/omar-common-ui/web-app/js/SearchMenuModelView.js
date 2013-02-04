@@ -17,17 +17,17 @@ OMAR.views.MenuView = Backbone.View.extend({
         "click #ExportCsvId": "exportCsv"
     },
     exportKmlQuery:function() {
-        alert("export kml query");
+        //OMAR.federatedRasterSearch.setupExports("kmlQuery");
+        this.trigger("onKmlQueryClicked");
     },
     exportGeoJson:function() {
-        alert("export geo json");
+        this.trigger("onGeoJsonClicked")
     },
     exportGml2:function() {
-        alert("export gml2");
+        this.trigger("onGml2Clicked")
     },
     exportCsv:function() {
-        alert("export csv");
-        //wfs call goes here...
+        this.trigger("onCsvClicked")
     },
     render:function()
     {
