@@ -172,7 +172,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var currentSelection = this.dataModelView.getCurrentSelection();
         wfsModel.set({
             outputFormat:"json"
-            ,resultType:"json"
+            ,resultType:""
         });
         if(currentSelection.size() > 0) {
             var idCql = "(id in (" + currentSelection.toStringOfIds() + "))";
@@ -195,32 +195,64 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         window.open(wfsModel.toUrl(),"myWindow");
     },
     gml2Clicked:function(){
-       var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
-        var serverUrl = model.get("url");
+        var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
+        var wfsModel = this.dataModelView.wfsModel.clone();
+        var cqlFilter = wfsModel.get("filter");
+        
+        var currentSelection = this.dataModelView.getCurrentSelection();
+        wfsModel.set({
+            outputFormat:"gml2"
+            ,resultType:""
+        });
+        if(currentSelection.size() > 0) {
+            var idCql = "(id in (" + currentSelection.toStringOfIds() + "))";
 
-        // get cql filter
-        var cqlFilter = this.toCql();
-   
-        // build up WFS calls
-        // var kmlQuery = ...;
-        var gml2 = serverUrl + "/wfs?service=WFS&version=1.1.0&request=getFeature&typeName=raster_entry&filter=id in (1)&" + cqlFilter + "&outputFormat=GML2&resultType=gml2";
-       
-        alert(gml2);
-        window.open(gml2,"myWindow");
+            if(!cqlFilter) {
+                cqlFilter = idCql;
+            }
+            else {
+                cqlFilter = idCql + " AND " + cqlFilter;
+            }
+            // clear out offset if there is a selection
+            wfsModel.set({
+                maxFeatures:""
+                ,offset:""
+                ,filter:cqlFilter
+            });
+
+        }
+
+        window.open(wfsModel.toUrl(),"myWindow");
     },
     csvClicked:function(){
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
-        var serverUrl = model.get("url");
+        var wfsModel = this.dataModelView.wfsModel.clone();
+        var cqlFilter = wfsModel.get("filter");
+        
+        var currentSelection = this.dataModelView.getCurrentSelection();
+        wfsModel.set({
+            outputFormat:"csv"
+            ,resultType:""
+        });
+        if(currentSelection.size() > 0) {
+            var idCql = "(id in (" + currentSelection.toStringOfIds() + "))";
 
-        // get cql filter
-        var cqlFilter = this.toCql();
-   
-        // build up WFS calls
-        // var kmlQuery = ...;
-        var csv = serverUrl + "/wfs?service=WFS&version=1.1.0&request=getFeature&typeName=raster_entry&filter=id in (1)&" + cqlFilter + "&outputFormat=CSV&resultType=csv";
-    
-        alert(csv);
-        window.open(csv,"myWindow");
+            if(!cqlFilter) {
+                cqlFilter = idCql;
+            }
+            else {
+                cqlFilter = idCql + " AND " + cqlFilter;
+            }
+            // clear out offset if there is a selection
+            wfsModel.set({
+                maxFeatures:""
+                ,offset:""
+                ,filter:cqlFilter
+            });
+
+        }
+
+        window.open(wfsModel.toUrl(),"myWindow");
     },
     wfsTypeNameChanged:function()
     {
