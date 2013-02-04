@@ -1,3 +1,107 @@
+OMAR.models.HelpMessage = Backbone.Model.extend({
+    idAttribute:"id",
+    defaults:{
+        id:"",
+        message:""
+    }
+});
+
+OMAR.models.CqlHelpMessages = Backbone.Collection.extend({
+   model:OMAR.models.HelpMessage,
+    initialize:function(params)
+    {
+        this.add([
+            {id:"stringcontains",message:"Will do a case sensitive comparison and match all records that " +
+                "contain the substring entered."}
+            ,{id:"stringicontains",message:"Will do a case insensitive comparison and match all records that " +
+                "contain the substring entered."}
+            ,{id:"stringstartswith",message:"Will do a case sensitive comparison and match all records that " +
+                "that starts with entered value."}
+            ,{id:"stringistartswith",message:"Will do a case insensitive comparison and match all records that " +
+                "that starts with entered value."}
+            ,{id:"stringendswith",message:"Will do a case sensitive comparison and match all records that " +
+                "that ends with entered value."}
+            ,{id:"stringiendswith",message:"Will do a case insensitive comparison and match all records that " +
+                "that ends with entered value."}
+            ,{id:"string=",  message:"Will do an equality comparison with the entered value."}
+            ,{id:"stringin", message:"This is a comma seperated list of string values and " +
+                "will select records corresponding to the values in the list."}
+            ,{id:"numeric<", message:"Will do a comparison and select only the records less than " +
+                "to the numerical value entered."}
+            ,{id:"numeric<=",message:"Will do a comparison and select only the records less than or equal " +
+                "to the numerical value entered."}
+            ,{id:"numeric>", message:"Will do a comparison and select only the records greater than " +
+                "to the numerical value entered."}
+            ,{id:"numeric>=",message:"Will do a comparison and select only the records greater than or equal " +
+                "to the numerical value entered."}
+            ,{id:"numeric=", message:"Will do a comparison and select only the records equal " +
+                "to the numerical value entered."}
+            ,{id:"numericin",message:"This is a comma seperated list of numerical values and " +
+                "will select records corresponding to the values in the list.  Example: " +
+                "1,3,4 will select only values corresponding to either 1 or 3 or 4."}
+            ,{id:"datetimeafter", message:"The date value entered must be a fully qualified " +
+                "iso8601 date format of the form:  YYYY-MM-DDThh:mm:ssZ or YYYY-MM-DDThh:mm:ss.sssZ.  " +
+                "At this time we do not have specific validator for full format just a general iso8601" +
+                "validator."}
+            ,{id:"datetimebefore",message:"The date value entered must be a fully qualified " +
+                "iso8601 date format of the form:  YYYY-MM-DDThh:mm:ssZ or YYYY-MM-DDThh:mm:ss.sssZ.  " +
+                "At this time we do not have specific validator for full format just a general iso8601" +
+                "validator."}
+            ,{id:"datetimeduring",message:"The date value entered must be a fully qualified " +
+                "iso8601 like in the after and before options but this takes a range in iso8601 form:" +
+                "YYYY-MM-DDThh:mm:ssZ/YYYY-MM-DDThh:mm:ssZ.  Exmaple 1:" +
+                "1700-01-01T00:00:00Z/2011-01-01T00:00:00Z will only include all date within the range" +
+                "specified. Example 2: 2011-01-01T00:00:00Z/P2Y will give you all images starting at " +
+                "2011-01-01T00:00:00Z and 2013-01-01T00:00:00Z."}
+            ,{id:"datetime<",message:"The date value entered must be an ISO8601 " +
+                "with minimal input of the form: YYYY-MM-DD.  You can add Time by" +
+                "adding input values: YYYY-MM-DDThh:mm:ss.sssZ.  Note the - and : are " +
+                "required.  We do not have validation at this time for a specific " +
+                "Date format. Examples: 2006-01-22 or 2006-01-22T00:45:4.222Z."}
+            ,{id:"datetime<=",message:"The date value entered must be an ISO8601 " +
+                "with minimal input of the form: YYYY-MM-DD.  You can add Time by" +
+                "adding input values: YYYY-MM-DDThh:mm:ss.sssZ.  Note the - and : are " +
+                "required.  We do not have validation at this time for a specific " +
+                "Date format. Examples: 2006-01-22 or 2006-01-22T00:45:4.222Z."}
+            ,{id:"datetime>",message:"The date value entered must be an ISO8601 " +
+                "with minimal input of the form: YYYY-MM-DD.  You can add Time by" +
+                "adding input values: YYYY-MM-DDThh:mm:ss.sssZ.  Note the - and : are " +
+                "required.  We do not have validation at this time for a specific " +
+                "Date format. Examples: 2006-01-22 or 2006-01-22T00:45:4.222Z."}
+            ,{id:"datetime>=",message:"The date value entered must be an ISO8601 " +
+                "with minimal input of the form: YYYY-MM-DD.  You can add Time by" +
+                "adding input values: YYYY-MM-DDThh:mm:ss.sssZ.  Note the - and : are " +
+                "required.  We do not have validation at this time for a specific " +
+                "Date format. Examples: 2006-01-22 or 2006-01-22T00:45:4.222Z."}
+            ,{id:"datetime=",message:"The date value entered must be an ISO8601 " +
+                "with minimal input of the form: YYYY-MM-DD.  You can add Time by" +
+                "adding input values: YYYY-MM-DDThh:mm:ss.sssZ.  Note the - and : are " +
+                "required.  We do not have validation at this time for a specific " +
+                "Date format. Examples: 2006-01-22 or 2006-01-22T00:45:4.222Z."}
+            ,{id:"geometrybbox",message:"This is a comma separated list of values" +
+                " in the format of a WMS style BBOX: <minLon><minLat><maxLon><maxLat>."}
+            ,{id:"geometrydwithin",message:"This is a comma seperated list" +
+                "of values of the form <latitude>,<longitude>,<distance>,<unit>." +
+                "  The unit can be m (meters), km (kilometers) or dd (decimal degrees)." +
+                "  The distance internally will be converted to a decimal degree measure"}
+            ,{id:"raw_cql",message:"You can enter Raw CQL and bypass the builder functionality." +
+                "  There is no error checking for this field."}
+        ]);
+    },
+    getMessage:function(id)
+    {
+        var result = "";
+
+        var row = this.get(id);
+        if(row)
+        {
+            result = row.get("message");
+        }
+
+        return result;
+    }
+});
+
 
 OMAR.models.CqlColumnDef = Backbone.Model.extend({
     idAttribute:"name",
@@ -466,6 +570,7 @@ OMAR.views.CqlView = Backbone.View.extend({
         }
         this.setElement(this.el);
         this.model = new OMAR.models.CqlModel();
+        this.cqlHelpMessages = new OMAR.models.CqlHelpMessages();
         this.idIncrement = 0;
         this.cqlBtnResetEl = $(this.el).find("#cqlBtnReset");
         this.cqlBtnShowEl = $(this.el).find("#cqlBtnQuery");
@@ -866,9 +971,11 @@ OMAR.views.CqlView = Backbone.View.extend({
         }
         else if(columnName == "raw_cql")
         {
+            var helpString = this.cqlHelpMessages.getMessage(columnName);
             $(textEl).show();
             $(opEl).hide();
             $(textEl).val("");
+            $(textEl).attr("title", helpString);
         }
 
     },
@@ -878,6 +985,9 @@ OMAR.views.CqlView = Backbone.View.extend({
         var opName = $("#"+opId).val().toLowerCase();
         var textEl = $("#"+opId).parent().find(":text");
         var title = "";
+
+        var helpString = this.cqlHelpMessages.getMessage(row.get("type")+opName);
+        $(textEl).attr("title", helpString);
         if(opName)
         {
             switch(opName)
@@ -890,19 +1000,42 @@ OMAR.views.CqlView = Backbone.View.extend({
                 case "bbox":
                     $(textEl).val("<minLon>,<minLat>,<maxLon>,<maxLat>");
                     $(textEl).show();
-                    $(textEl).select();
                     //$(textEl).attr("title", "This is a formatted WMS style query string");
                     break;
                 case "dwithin":
                     $(textEl).val("<lat>,<lon>,<distance>,m");
                     //$(textEl).attr("title", "This is a string of the form center lat lon followed by distance then unit (m,km, or dd)");
                     break;
+                    break;
                 default:
                     $(textEl).show();
                     //$(textEl).attr("title", "");
                     break;
             }
+            switch(row.get("type").toLowerCase())
+            {
+
+                case "datetime":
+                    switch(opName)
+                    {
+                        case "after":
+                        case "during":
+                        case "before":
+                        case "<":
+                        case ">":
+                        case "<=":
+                        case ">=":
+                            $(textEl).val("YYYY-MM-DDThh:mm:ss.sssZ");
+                            break;
+                    }
+                    break;
+                default:
+                    $(textEl).val("");
+                    break;
+            }
         }
+        $(textEl).select();
+
     },
 
     cqlBtnValidateClicked:function(){
