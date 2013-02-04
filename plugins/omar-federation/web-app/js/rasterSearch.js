@@ -78,6 +78,11 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.menuView = new OMAR.views.MenuView();
         this.menuModel = this.menuView.model;
 
+        this.menuView.bind("onKmlQueryClicked", this.kmlQueryClicked, this);
+        this.menuView.bind("onGeoJsonClicked", this.geoJsonClicked, this);
+        this.menuView.bind("onGml2Clicked", this.gml2Clicked, this);
+        this.menuView.bind("onCsvClicked", this.csvClicked, this);
+
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
         this.dateTimeRangeModel = this.dateTimeRangeView.model;
         this.wfsServerCountModel = new OMAR.models.WfsModel({"resultType":"hits"});
@@ -155,6 +160,51 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.viewSelector.click(2);
             this.viewSelector.setText(2, model.get("nickname"));
         }
+    },
+    kmlQueryClicked:function(){
+        alert("kml query code goes here...");
+    },
+    geoJsonClicked:function(){
+        var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
+        var serverUrl = model.get("url");
+
+        // get cql filter
+        var cqlFilter = this.toCql();
+   
+        // build up WFS calls
+        // var kmlQuery = ...;
+        var geoJson = serverUrl + "/wfs?service=WFS&version=1.1.0&request=getFeature&typeName=raster_entry&filter=id in (1)&" + cqlFilter + "&outputFormat=JSON&resultType=json";
+   
+        alert(geoJson);
+        window.open(geoJson,"myWindow");
+    },
+    gml2Clicked:function(){
+       var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
+        var serverUrl = model.get("url");
+
+        // get cql filter
+        var cqlFilter = this.toCql();
+   
+        // build up WFS calls
+        // var kmlQuery = ...;
+        var gml2 = serverUrl + "/wfs?service=WFS&version=1.1.0&request=getFeature&typeName=raster_entry&filter=id in (1)&" + cqlFilter + "&outputFormat=GML2&resultType=gml2";
+       
+        alert(gml2);
+        window.open(gml2,"myWindow");
+    },
+    csvClicked:function(){
+        var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
+        var serverUrl = model.get("url");
+
+        // get cql filter
+        var cqlFilter = this.toCql();
+   
+        // build up WFS calls
+        // var kmlQuery = ...;
+        var csv = serverUrl + "/wfs?service=WFS&version=1.1.0&request=getFeature&typeName=raster_entry&filter=id in (1)&" + cqlFilter + "&outputFormat=CSV&resultType=csv";
+    
+        alert(csv);
+        window.open(csv,"myWindow");
     },
     wfsTypeNameChanged:function()
     {
