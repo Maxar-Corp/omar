@@ -170,12 +170,26 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         // get cql filter
         var cqlFilter = this.toCql();
-   
+        
+        var currentSelection = this.dataModelView.getCurrentSelection();
+        //alert(currentSelection);
+
+        if(currentSelection.size() > 0) {
+            var idCql = "(id in (" + currentSelection.toStringOfIds() + "))";
+
+            if(!cqlFilter) {
+                cqlFilter = idCql;
+            }
+            else {
+                cqlFilter = idCql + " AND " + cqlFilter;
+            }
+        }
+
         // build up WFS calls
         // var kmlQuery = ...;
-        var geoJson = serverUrl + "/wfs?service=WFS&version=1.1.0&request=getFeature&typeName=raster_entry&filter=id in (1)&" + cqlFilter + "&outputFormat=JSON&resultType=json";
+        var geoJson = serverUrl + "/wfs?service=WFS&version=1.1.0&request=getFeature&typeName=raster_entry&filter=" + cqlFilter + "&outputFormat=JSON&resultType=json";
    
-        alert(geoJson);
+       alert(geoJson);
         window.open(geoJson,"myWindow");
     },
     gml2Clicked:function(){
