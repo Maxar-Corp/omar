@@ -166,14 +166,14 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     geoJsonClicked:function(){
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
-        var serverUrl = model.get("url");
-
-        // get cql filter
-        var cqlFilter = this.toCql();
+        var wfsModel = this.dataModelView.wfsModel.clone();
+        var cqlFilter = wfsModel.get("filter");
         
         var currentSelection = this.dataModelView.getCurrentSelection();
-        //alert(currentSelection);
-
+        wfsModel.set({
+            outputFormat:"json"
+            ,resultType:"json"
+        });
         if(currentSelection.size() > 0) {
             var idCql = "(id in (" + currentSelection.toStringOfIds() + "))";
 
@@ -183,14 +183,16 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             else {
                 cqlFilter = idCql + " AND " + cqlFilter;
             }
+            // clear out offset if there is a selection
+            wfsModel.set({
+                maxFeatures:""
+                ,offset:""
+                ,filter:cqlFilter
+            });
+
         }
 
-        // build up WFS calls
-        // var kmlQuery = ...;
-        var geoJson = serverUrl + "/wfs?service=WFS&version=1.1.0&request=getFeature&typeName=raster_entry&filter=" + cqlFilter + "&outputFormat=JSON&resultType=json";
-   
-       alert(geoJson);
-        window.open(geoJson,"myWindow");
+        window.open(wfsModel.toUrl(),"myWindow");
     },
     gml2Clicked:function(){
        var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
