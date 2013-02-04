@@ -48,6 +48,7 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
             ,{name:"azimuth_angle", label:"Azimuth Angle", type:"numeric"}
             ,{name:"grazing_angle", label:"Grazing Angle", type:"numeric"}
             ,{name:"acquisition_date", label:"Acquisition Date", type:"datetime"}
+            ,{name:"ground_geom", label:"Ground Geom", type:"geometry"}
             ,{name:"entry_id", label:"Entry Id", type:"string"}
             ,{name:"exclude_policy", label:"Exclude Policy", type:"string"}
             ,{name:"width", label:"Width", type:"numeric"}
@@ -73,10 +74,9 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
             ,{name:"sun_elevation", label:"Sun Elevation", type:"numeric"}
             ,{name:"sun_azimuth", label:"Sun Azimuth", type:"numeric"}
             ,{name:"cloud_cover", label:"Cloud Cover", type:"numeric"}
-            ,{name:"style_id", label:"Style Id", type:"numeric"}
-            ,{name:"keep_forever", label:"Keep Forever", type:"numeric"}
-            ,{name:"ground_geom", label:"Ground Geom", type:"geometry"}
-            ,{name:"valid_model", label:"Valid Model", type:"string"}
+           // ,{name:"style_id", label:"Style Id", type:"numeric"}
+            //,{name:"keep_forever", label:"Keep Forever", type:"numeric"}
+           // ,{name:"valid_model", label:"Valid Model", type:"string"}
             ,{name:"access_date", label:"Access Date", type:"datetime"}
             ,{name:"ingest_date", label:"Ingest Date", type:"datetime"}
             ,{name:"receive_date", label:"Recieve Date", type:"datetime"}
@@ -176,13 +176,69 @@ OMAR.models.CqlModel = Backbone.Model.extend({
                             switch(expr.opval.toLowerCase())
                             {
                                 case "bbox":
-
-                                    if(expr.val.split(",").size() != 4)
+                                    var splitVal = expr.val.split(",");
+                                    if(splitVal.size() != 4)
                                     {
                                         errorMessage.message =  "Must have 4 values separated by commas in WMS BBOX format";
                                         errors.push(errorMessage);
                                     }
+                                    var minLon = splitVal[0].trim();
+                                    var minLat = splitVal[1].trim();
+                                    var maxLon = splitVal[2].trim();
+                                    var maxLat = splitVal[3].trim();
+                                    if(!OMAR.isFloat(minLon)||!OMAR.isFloat(minLat)||
+                                        !OMAR.isFloat(maxLon)||!OMAR.isFloat(maxLat))
+                                    {
+                                        errorMessage.message = "Please enter a numeric value. A non numeric value was detected";
+                                        errors.push(errorMessage);
+                                    }
                                     fullExpression = "BBOX("+expr.colval + "," + val+")";
+                                    break;
+                                case "dwithin":
+                                    var splitVal = expr.val.split(",");
+
+                                    if(splitVal.size() != 4)
+                                    {
+                                        errorMessage.message =  "Must have 4 values separated by commas in DWITHIN statement.\n";
+                                        errorMessage.message += "Example: <lat>,<lon>,<distance>,<units>, where <units> can be m (meters) or km (kilometers)</units>"
+                                        errors.push(errorMessage);
+                                    }
+                                    var lat = splitVal[0].trim();
+                                    var lon = splitVal[1].trim();
+                                    var distance = splitVal[2].trim();
+                                    var unit = splitVal[3].trim().toLowerCase();
+                                    switch(unit)
+                                    {
+                                        case "m":
+                                        case "km":
+                                        case "dd":
+                                            break;
+                                        default:
+                                            errorMessage.message = "Unit must be either m (meters), km (Kilometers) or dd (decimal degrees)";
+                                            break;
+                                    }
+                                    if(!OMAR.isFloat(lat)||!OMAR.isFloat(lon)||!OMAR.isFloat(distance))
+                                    {
+                                        errorMessage.message = "Please enter a numeric value for lat, lon, and distance. A non numeric value was detected";
+                                        errors.push(errorMessage);
+                                    }
+                                    // until geottols fixes support for unit conversion they use the units of the
+                                    // column for distance.  Leave a bogus meters as unit argument and convert
+                                    // passed in units to degrees for now
+                                    //
+                                    var degrees = 0;
+                                    if(unit == "dd")
+                                    {
+                                        degrees = distance;
+                                    }
+                                    else
+                                    {
+                                        var inchesPerUnit = OpenLayers.INCHES_PER_UNIT[unit];
+                                        var inches = inchesPerUnit*distance;
+                                        degrees = inches*(1.0/OpenLayers.INCHES_PER_UNIT["degrees"]);
+                                    }
+                                    fullExpression = "DWITHIN("+expr.colval + ",POINT(" +lon +" " +
+                                                     lat+")," + degrees + "," + "meters)";
                                     break;
                             }
                             break;
@@ -783,6 +839,7 @@ OMAR.views.CqlView = Backbone.View.extend({
                 break;
             case "geometry":
                 result+="<option id='"+baseOpId+"0' value='BBOX' >BBOX</option>";
+                result+="<option id='"+baseOpId+"0' value='DWITHIN' >Within</option>";
                 result+="<option id='"+baseOpId+"1' value='is null' >IS Null</option>";
                 result+="<option id='"+baseOpId+"2' value='is not null' >IS NOT Null</option>";
                 break;
@@ -813,13 +870,17 @@ OMAR.views.CqlView = Backbone.View.extend({
             $(opEl).hide();
             $(textEl).val("");
         }
+
     },
     opSelectorChanged:function(colId, opId){
-        var opName = $("#"+opId).val();
+        var columnName = $("#"+colId).val();
+        var row = this.columnDefs.get(columnName);
+        var opName = $("#"+opId).val().toLowerCase();
         var textEl = $("#"+opId).parent().find(":text");
+        var title = "";
         if(opName)
         {
-            switch(opName.toLowerCase())
+            switch(opName)
             {
                 case "today":
                 case "is null":
@@ -827,13 +888,18 @@ OMAR.views.CqlView = Backbone.View.extend({
                     $(textEl).hide();
                     break;
                 case "bbox":
-                    $(textEl).val("<minx>,<miny>,<maxx>,<maxy>");
+                    $(textEl).val("<minLon>,<minLat>,<maxLon>,<maxLat>");
                     $(textEl).show();
                     $(textEl).select();
-
+                    //$(textEl).attr("title", "This is a formatted WMS style query string");
+                    break;
+                case "dwithin":
+                    $(textEl).val("<lat>,<lon>,<distance>,m");
+                    //$(textEl).attr("title", "This is a string of the form center lat lon followed by distance then unit (m,km, or dd)");
                     break;
                 default:
                     $(textEl).show();
+                    //$(textEl).attr("title", "");
                     break;
             }
         }
