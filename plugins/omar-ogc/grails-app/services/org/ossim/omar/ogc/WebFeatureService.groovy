@@ -448,6 +448,10 @@ class WebFeatureService
         max: wfsRequest.maxFeatures ?: -1,
         start: wfsRequest?.offset ?: -1
     ]
+    if ( wfsRequest.sort )
+    {
+      filterParams.sort = JSON.parse( wfsRequest.sort );
+    }
     def filter
     try
     {
@@ -622,6 +626,14 @@ class WebFeatureService
         start: wfsRequest?.offset ?: -1,
         //sort: [["<COLUMN NAME>","ASC|DESC"]]
     ]
+    if ( wfsRequest.sort )
+    {
+      // filterParams.sort =null//[["TITLE".toUpperCase(),"DESC"]]
+      filterParams.sort = JSON.parse( wfsRequest.sort );
+      //println filterParams
+    }
+
+
     def stringBuffer = new StringWriter()
     def csvWriter = new CSVWriter( stringBuffer )
 
