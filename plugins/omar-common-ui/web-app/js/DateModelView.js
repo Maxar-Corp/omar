@@ -33,7 +33,7 @@ OMAR.models.Date = Backbone.Model.extend(
             this.date.setUTCSeconds(0);
             this.date.setUTCMilliseconds(0);
         },
-        toISOString:function(){
+        toISOString:function(includeMillis){
             function pad(n, w){
                 if(w == null || w == 2)
                 {
@@ -54,19 +54,24 @@ OMAR.models.Date = Backbone.Model.extend(
 
                 return ""+n;
             }
+            var millisFlag = includeMillis==null?true:includeMillis;
             var milliFractionString = (this.date.getUTCMilliseconds()/1000).toString();
             if(milliFractionString.charAt(1) == '.')
             {
                 milliFractionString = milliFractionString.substring(1, milliFractionString.length);
             }
-            return (this.date.getUTCFullYear()+'-'
+            var result = (this.date.getUTCFullYear()+'-'
                 + pad(this.date.getUTCMonth()+1)+'-'
                 + pad(this.date.getUTCDate())+'T'
                 + pad(this.date.getUTCHours())+':'
                 + pad(this.date.getUTCMinutes())+':'
-                + pad(this.date.getUTCSeconds())
-                + milliFractionString
-                + 'Z');
+                + pad(this.date.getUTCSeconds()));
+            if(millisFlag)
+            {
+                result += milliFractionString;
+            }
+            result += "Z";
+            return result;
         },
         setISO8601:function(dString)
         {

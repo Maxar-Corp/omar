@@ -40,13 +40,15 @@ OMAR.models.CqlHelpMessages = Backbone.Collection.extend({
                 "will select records corresponding to the values in the list.  Example: " +
                 "1,3,4 will select only values corresponding to either 1 or 3 or 4."}
             ,{id:"datetimeafter", message:"The date value entered must be a fully qualified " +
-                "iso8601 date format of the form:  YYYY-MM-DDThh:mm:ssZ or YYYY-MM-DDThh:mm:ss.sssZ.  " +
+                "iso8601 date format of the form:  YYYY-MM-DDThh:mm:ssZ.  " +
                 "At this time we do not have specific validator for full format just a general iso8601" +
-                "validator."}
+                "validator. The BEFORE option dos not allow milliseconds precision.  Use < or <= for" +
+                "full precision."}
             ,{id:"datetimebefore",message:"The date value entered must be a fully qualified " +
-                "iso8601 date format of the form:  YYYY-MM-DDThh:mm:ssZ or YYYY-MM-DDThh:mm:ss.sssZ.  " +
+                "iso8601 date format of the form:  YYYY-MM-DDThh:mm:ssZ.  " +
                 "At this time we do not have specific validator for full format just a general iso8601" +
-                "validator."}
+                " validator.  The BEFORE option dos not allow milliseconds precision.  Use < or <= for" +
+                "full precision."}
             ,{id:"datetimeduring",message:"The date value entered must be a fully qualified " +
                 "iso8601 like in the after and before options but this takes a range in iso8601 form:" +
                 "YYYY-MM-DDThh:mm:ssZ/YYYY-MM-DDThh:mm:ssZ.  Exmaple 1:" +
@@ -1018,12 +1020,19 @@ OMAR.views.CqlView = Backbone.View.extend({
                 case "datetime":
                     switch(opName)
                     {
-                        case "after":
-                        case "during":
-                        case "before":
                         case "<":
-                        case ">":
                         case "<=":
+                        case "before":
+                            val = (new OMAR.models.Date()).toISOString(false);
+                            $(textEl).val(val);
+                            break;
+                        case "after":
+                            $(textEl).val("YYYY-MM-DDThh:mm:ssZ");
+                            break;
+                        case "during":
+                            $(textEl).val("YYYY-MM-DDThh:mm:ssZ/YYYY-MM-DDThh:mm:ssZ");
+                            break;
+                        case ">":
                         case ">=":
                             $(textEl).val("YYYY-MM-DDThh:mm:ss.sssZ");
                             break;
