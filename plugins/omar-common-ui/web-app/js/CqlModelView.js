@@ -146,7 +146,7 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
             ,{name:"file_type", label:"Class Name", type:"string"}
             ,{name:"filename", label:"Filename", type:"string"}
             ,{name:"image_id", label:"IID", type:"string"}
-            ,{name:"mission", label:"Mission", type:"string"}
+            ,{name:"mission_id", label:"Mission", type:"string"}
             ,{name:"niirs", label:"NIIRS", type:"numeric"}
             ,{name:"sensor_id", label:"Sensor", type:"string"}
             ,{name:"target_id", label:"Target Id", type:"string"}
