@@ -682,6 +682,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
 
     },
     destroyTable:function(){
+        this.stopRequests();
         if(this.dataTable)
         {
             this.dataTable.fnDestroy();
@@ -744,12 +745,6 @@ OMAR.views.DataModelView = Backbone.View.extend({
         //
         this.columnDefs.at(0).set("mRender",$.proxy(this.renderCheckbox,this,0));// this.renderColumn.bind(this));
         this.columnDefs.at(1).set("mRender",$.proxy(this.renderColumn,this,1));// this.renderColumn.bind(this));
-            //function ( data, type, full ) {
-            //if(data!=null)
-            //    return "<a href='"+ omarUrl+"'>"+data +"</a";//moment(oObj.aData[1], "YYYY-MM-DD HH:mm:ss").format("DD/MM/YYYY hh:mm:ss a");
-            //else
-            //    return null;
-        //});
         this.dataTable = $(this.dataTableEl).dataTable({
             "aoColumns": this.columnDefs.toJSON(),
             "sDom": '<"top"l><"groupViewSelection">frtip', //'<"top"flp>rt<"bottom"i><"clear">',
@@ -918,6 +913,16 @@ OMAR.views.DataModelView = Backbone.View.extend({
         this.dataTable.fnAdjustColumnSizing();
        // this.fixedColumns.fnRedrawLayout();
     },
+    stopRequests:function(){
+        if(this.modelRequest)
+        {
+            this.modelRequest.abort();
+        }
+        if(this.currentWfsCountRequest)
+        {
+            this.currentWfsCountRequest.abort();
+        }
+    },
     getServerData:function( sUrl, aoData, fnCallback, oSettings ) {
         var result = {
             "aaData":{},
@@ -951,9 +956,10 @@ OMAR.views.DataModelView = Backbone.View.extend({
             //alert("sorting by " + oColumn.mDataProp + " "+oSettings.aaSorting[0][1]);
             if(wfsModel.dirty&&sort&&!this.blockGetServerData)
             {
+                this.stopRequests();
                 thisPtr.blockGetServerData = true;
                 this.model.reset();
-                model.fetch({dataType: "jsonp",
+                this.modelRequest = model.fetch({dataType: "jsonp",
                     update: false,
                     remove: true,
                     date:{cache:false},
@@ -966,7 +972,11 @@ OMAR.views.DataModelView = Backbone.View.extend({
                         {
                             result.iTotalRecords =        model.size();
                             result.iTotalDisplayRecords = model.size();
-                            wfsModel.fetchCount();
+                            if(this.currentWfsCountRequest)
+                            {
+                                this.currentWfsCountRequest.abort();
+                            }
+                            this.currentWfsCountRequest = wfsModel.fetchCount();
                         }
                         if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
                         if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
@@ -1011,6 +1021,13 @@ OMAR.views.DataModelView = Backbone.View.extend({
         this.wfsModel.attributes.numberOfFeatures = 0;
         //this.model.url = this.wfsModel.toUrl().toString() + "&callback=?";
         //alert(this.wfsModel.toUrl().toString() );
+
+        // lets call wfsTypeNameModelChanged for i resets the entire table
+        //
+        this.wfsTypeNameModelChanged();
+
+        // now set the URL to load
+        //
         this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
 
         //this.model.fetch({dataType: "jsonp",
