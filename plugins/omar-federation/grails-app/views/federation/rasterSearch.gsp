@@ -50,7 +50,7 @@
         </div>
 
         <div class="inner-east">
-            <g:render plugin="omar-federation" template="/templates/measurementTemplate"/>
+            <g:render plugin="omar-common-ui" template="/templates/measurementTemplate"/>
 
             <p><div class="niceBox">
             <div class="niceBoxHeader">Layer Switcher:</div>
