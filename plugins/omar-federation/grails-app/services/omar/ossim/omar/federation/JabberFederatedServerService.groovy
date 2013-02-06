@@ -62,7 +62,6 @@ class JabberFederatedServerService implements InitializingBean{
     }
     def refreshServerTable()
     {
-        println "DOING THIS HERE!!!";
         def vcardList = getAllVCards()
         FederatedServer.withTransaction {
             FederatedServer.executeUpdate('delete from FederatedServer')
