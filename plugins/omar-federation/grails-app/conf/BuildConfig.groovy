@@ -26,8 +26,8 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
         // runtime 'mysql:mysql-connector-java:5.1.5'
-        compile 'org.igniterealtime.smack:smack:3.2.1'
-        compile 'org.igniterealtime.smack:smackx:3.2.1'
+        compile 'org.igniterealtime.smack:smack:3.2.2'
+        compile 'org.igniterealtime.smack:smackx:3.2.2'
     }
 
     plugins {
