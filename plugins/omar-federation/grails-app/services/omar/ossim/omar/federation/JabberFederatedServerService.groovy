@@ -39,8 +39,8 @@ class JabberFederatedServerService implements InitializingBean{
                 vCard.setFirstName(settings?.vcard?.firstName);
                 vCard.setLastName(settings?.vcard?.lastName);
 
-                vCard.setField("IP", settings.vcard.IP)
-                vCard.setField("URL", settings.vcard.URL)
+                vCard.setField("IP", settings?.vcard?.IP)
+                vCard.setField("URL", settings?.vcard?.URL)
 
                 jabberDomain              = settings?.server?.ip
                 jabberPort                = Integer.parseInt(settings?.server?.port)
@@ -49,7 +49,7 @@ class JabberFederatedServerService implements InitializingBean{
                 jabberChatRoomId          = settings?.chatRoom?.id
                 jabberChatRoomPassword    = settings?.chatRoom?.password
                 enabled = settings?.chatRoom?.enabled
-                vCard.setJabberId("${settings.vcard.IP}@${jabberDomain}")//"${config?.omar?.serverIP}@${jabberDomain}")
+                vCard.setJabberId("${settings?.vcard?.IP}@${jabberDomain}")//"${config?.omar?.serverIP}@${jabberDomain}")
             }
            //println vCard.toString()
            //println "${jabberDomain}, ${jabberPort}, ${jabberAdminUser}, ${jabberAdminPassword}, ${jabberChatRoomId}, ${jabberChatRoomPassword}"
@@ -62,6 +62,7 @@ class JabberFederatedServerService implements InitializingBean{
     }
     def refreshServerTable()
     {
+        println "DOING THIS HERE!!!";
         def vcardList = getAllVCards()
         FederatedServer.withTransaction {
             FederatedServer.executeUpdate('delete from FederatedServer')
@@ -134,6 +135,7 @@ class JabberFederatedServerService implements InitializingBean{
                 ]
             }
         }
+
         result
     }
     def reconnect()
@@ -169,8 +171,8 @@ class JabberFederatedServerService implements InitializingBean{
             if (isConnected())
             {
                 disconnect()
-                refreshServerTable()
             }
+            refreshServerTable()
             return jabber
         }
         if (isConnected())
