@@ -137,13 +137,16 @@ OMAR.models.CqlVideoColumnDefCollection = Backbone.Collection.extend({
 OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
     model:OMAR.models.CqlColumnDef,
     initialize:function(params){
+
+
         this.add([
+
             {name:"id", label:"Record id", type:"id"}
             ,{name:"be_number", label:"BE Number", type:"string"}
             ,{name:"title", label:"Image ID", type:"string"}
             ,{name:"class_name", label:"Class Name", type:"string"}
             ,{name:"country_code", label:"Country", type:"string"}
-            ,{name:"file_type", label:"Class Name", type:"string"}
+            ,{name:"file_type", label:"File Type", type:"string"}
             ,{name:"filename", label:"Filename", type:"string"}
             ,{name:"image_id", label:"IID", type:"string"}
             ,{name:"mission_id", label:"Mission", type:"string"}
@@ -186,7 +189,6 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
             ,{name:"access_date", label:"Access Date", type:"datetime"}
             ,{name:"ingest_date", label:"Ingest Date", type:"datetime"}
             ,{name:"receive_date", label:"Recieve Date", type:"datetime"}
-            ,{name:"file_type", label:"File Type", type:"string"}
         ]);
     }
 });

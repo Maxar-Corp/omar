@@ -1,7 +1,5 @@
 modules = {
     federationRasterSearch{
-
-
         resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
         resource url: [plugin: 'omar-common-ui', dir: 'js', file:'OMAR.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file:'hashmap.js']
@@ -47,7 +45,6 @@ modules = {
        resource url: [dir: 'css', file: 'rasterSearch.css']
        resource url: [dir: 'js', file: 'rasterSearch.js']
        resource url: [dir: 'js', file: 'condition-builder.js']
-
     }
     federationAdmin{
         resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
