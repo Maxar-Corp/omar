@@ -1022,10 +1022,10 @@ OMAR.views.DataModelView = Backbone.View.extend({
         //this.model.url = this.wfsModel.toUrl().toString() + "&callback=?";
         //alert(this.wfsModel.toUrl().toString() );
 
-        //this.wfsTypeNameModelChanged();
+        this.wfsTypeNameModelChanged();
 
-        this.stopRequests();
-        this.dataTable.fnClearTable();
+        //this.stopRequests();
+        //this.dataTable.fnClearTable();
         // now set the URL to load
         //
         this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
