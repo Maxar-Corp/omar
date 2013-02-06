@@ -226,6 +226,7 @@ class JabberFederatedServerService implements InitializingBean{
             }
             catch(def e)
             {
+                //println e
                 jabber.chatRoom = null
                 jabber.connection.disconnect()
                 jabber.connection = null
@@ -286,7 +287,7 @@ class JabberFederatedServerService implements InitializingBean{
         def adminConnection = createAdminConnection()
         def vCards = []
 
-        if (adminConnection.connection?.isConnected()&&adminConneciton.chatRoom)
+        if (adminConnection.connection?.isConnected()&&adminConnection.chatRoom)
         {
             def occupants = adminConnection.chatRoom?.participants
             occupants.each{
