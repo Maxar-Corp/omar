@@ -152,7 +152,7 @@ class JabberFederatedServerService implements InitializingBean{
 
             if(isConnected())
             {
-                jabber.chatRoom.removeParticipantListener(participantListener)
+                jabber.chatRoom.removeParticipantStatusListener(participantListener)
                 jabber?.connection.disconnect()
             }
         }
@@ -228,7 +228,7 @@ class JabberFederatedServerService implements InitializingBean{
             {
                 //println e
                 jabber.chatRoom = null
-                jabber.connection.disconnect()
+                disconnect();
                 jabber.connection = null
                 //println e
                // refreshServerTable()
