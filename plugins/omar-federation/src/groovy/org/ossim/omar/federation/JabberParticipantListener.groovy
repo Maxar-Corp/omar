@@ -21,18 +21,33 @@ class JabberParticipantListener extends DefaultParticipantStatusListener {
     }
     void joined(String participant)
     {
+        //println "JOINED: ${getUser(participant)}"
+
         federatedServerService.makeAvailable(getUser(participant));
+    }
+    void membershipGranted(String participant)
+    {
+        //println "membershipGranted: ${getUser(participant)}"
+        federatedServerService.makeAvailable(getUser(participant));
+    }
+    void membershipRevoked(String participant)
+    {
+        //println "membershipRevoked: ${getUser(participant)}"
+        federatedServerService.makeUnavailable(getUser(participant));
     }
     void kicked(String participant, String actor, String reason)
     {
+        //println "KICKED: ${getUser(participant)}"
         federatedServerService.makeUnavailable(getUser(participant));
     }
     void left(String participant)
     {
+        //println "LEFT: ${getUser(participant)}"
         federatedServerService.makeUnavailable(getUser(participant));
     }
     void banned(String participant, String actor, String reason)
     {
+        //println "BANNED: ${getUser(participant)}"
         federatedServerService.makeUnavailable(getUser(participant));
     }
 }
