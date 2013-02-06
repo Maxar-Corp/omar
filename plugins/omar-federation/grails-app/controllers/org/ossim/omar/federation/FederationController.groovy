@@ -29,7 +29,7 @@ class FederationController  {
         render contentType: 'application/json', text: result.toString()
     }
     def reconnect(){
-       // println "*"*30;
+       //println "*"*30;
         jabberFederatedServerService.reconnect();
         def tempParam = new CaseInsensitiveMap(params);
         def result = [id:"${jabberFederatedServerService.makeFullUserNameAndId(jabberFederatedServerService.vCard.getField("IP"));}", connected:jabberFederatedServerService.isConnected()] as JSON
