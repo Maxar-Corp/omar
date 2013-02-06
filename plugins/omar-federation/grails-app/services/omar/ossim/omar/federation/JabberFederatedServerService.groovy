@@ -110,10 +110,9 @@ class JabberFederatedServerService implements InitializingBean{
     }
     def makeUnavailable(def userName)
     {
-        def fullUser = makeFullUserNameAndId(userName)// + "@" + jabberDomain
-        //fullUser =fullUser.replaceAll(~/\@|\.|\ |\&/, "")
+        def fullUser = makeFullUserNameAndId(userName)
         FederatedServer.withTransaction{
-            FederatedServer.where{serverId==fullUser}.deleteAll()
+            FederatedServer.where{serverId==fullUser.id}.deleteAll()
         }
     }
     def getServerList()
@@ -223,7 +222,7 @@ class JabberFederatedServerService implements InitializingBean{
                         "${jabberChatRoomPassword}")
 
                 participantListener = new JabberParticipantListener([federatedServerService:this])
-                jabber.chatRoom.addParticipantListener(participantListener)
+                jabber.chatRoom.addParticipantStatusListener(participantListener)
             }
             catch(def e)
             {

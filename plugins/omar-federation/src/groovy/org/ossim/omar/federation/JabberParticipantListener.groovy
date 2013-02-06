@@ -3,6 +3,8 @@ package org.ossim.omar.federation
 import org.jivesoftware.smack.PacketListener
 import org.jivesoftware.smack.packet.Packet
 
+import org.jivesoftware.smackx.muc.DefaultParticipantStatusListener
+
 /**
  * Created with IntelliJ IDEA.
  * User: gpotts
@@ -10,27 +12,27 @@ import org.jivesoftware.smack.packet.Packet
  * Time: 1:30 PM
  * To change this template use File | Settings | File Templates.
  */
-class JabberParticipantListener implements PacketListener {
+class JabberParticipantListener extends DefaultParticipantStatusListener {
     def federatedServerService
-    void processPacket(Packet packet)
-    {
-        try{
 
-            def from = packet.from.split("/")[-1]
-            switch("${packet}")
-            {
-                case "available":
-                case "chat":
-                    federatedServerService.makeAvailable(from)
-                    break
-                default:
-                    federatedServerService.makeUnavailable(from)
-                    break
-            }
-        }
-        catch(def e)
-        {
-            println e
-        }
+    def getUser(def participant)
+    {
+       return participant.split("/")[-1]
+    }
+    void joined(String participant)
+    {
+        federatedServerService.makeAvailable(getUser(participant));
+    }
+    void kicked(String participant, String actor, String reason)
+    {
+        federatedServerService.makeUnavailable(getUser(participant));
+    }
+    void left(String participant)
+    {
+        federatedServerService.makeUnavailable(getUser(participant));
+    }
+    void banned(String participant, String actor, String reason)
+    {
+        federatedServerService.makeUnavailable(getUser(participant));
     }
 }
