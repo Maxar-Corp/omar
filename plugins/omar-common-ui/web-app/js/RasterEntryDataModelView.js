@@ -978,7 +978,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
                 {
                     this.spinner.stop();
                 }
-                this.spinner.spin(this.el);
+                this.spinner.spin($(".inner-center")[0]);
                 this.modelRequest = model.fetch({dataType: "jsonp",
                     update: false,
                     remove: true,
