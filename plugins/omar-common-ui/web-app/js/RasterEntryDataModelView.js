@@ -943,7 +943,17 @@ OMAR.views.DataModelView = Backbone.View.extend({
             //var searchable = oSettings.aoColumns[oSettings.aaSorting[0][0]].bSearchable;
             var oColumn = oSettings.aoColumns[ oSettings.aaSorting[0][0] ];
             var sortDirection = oSettings.aaSorting[0][1];
-            var sort = sortDirection?"[['"+oColumn.mDataProp.toLowerCase()+"','"+oSettings.aaSorting[0][1].toUpperCase()+"']]":"";
+            var sort = ""//sortDirection?"[['"+oColumn.mDataProp.toLowerCase()+"','"+oSettings.aaSorting[0][1].toUpperCase()+"']]":"";
+            sort += oColumn.mDataProp.toLowerCase();
+            if(oSettings.aaSorting[0][1].toUpperCase() == "ASC")
+            {
+                sort += "+A";
+            }
+            else
+            {
+                sort += "+D";
+
+            }
             if((wfsModel.attributes.maxFeatures != oSettings._iDisplayLength)||
                 (wfsModel.attributes.offset != oSettings._iDisplayStart)||
                 (wfsModel.attributes.sort != sort)
@@ -953,11 +963,9 @@ OMAR.views.DataModelView = Backbone.View.extend({
             }
             wfsModel.attributes.maxFeatures = oSettings._iDisplayLength
             wfsModel.attributes.offset = oSettings._iDisplayStart;
-            wfsModel.attributes.sort = sort;
+            wfsModel.attributes.sortBy = sort;
             var model = this.model;
             model.url = this.wfsModel.toUrl()+"&callback=?";
-            //alert(this.model.url);
-            //alert("sorting by " + oColumn.mDataProp + " "+oSettings.aaSorting[0][1]);
             if(wfsModel.dirty&&sort&&!this.blockGetServerData)
             {
                 this.stopRequests();

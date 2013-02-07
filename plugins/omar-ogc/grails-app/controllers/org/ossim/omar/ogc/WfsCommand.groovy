@@ -11,38 +11,66 @@ import org.apache.commons.lang.builder.ToStringBuilder
  */
 class WfsCommand
 {
-  String service
-  String version
-  String request
-  String typeName
-  String filter
+    String service
+    String version
+    String request
+    String typeName
+    String filter
 
-  String outputFormat
-  Integer maxFeatures
-  Integer offset
-  String resultType
-  String sort
-  @Override
-  String toString()
-  {
-    return ToStringBuilder.reflectionToString( this )
-  }
-
-  def toQuery()
-  {
-    def wfsParams = ( this.metaClass.properties.name - ['class', 'metaClass'] ).inject( [:] ) { a, b ->
-      if ( this[b] )
-      {
-        a[b] = this[b]
-      }
-      return a
+    String outputFormat
+    Integer maxFeatures
+    Integer offset
+    String resultType
+    String sortBy
+    @Override
+    String toString()
+    {
+        return ToStringBuilder.reflectionToString( this )
     }
 
-    def query = wfsParams?.collect { k, v -> "${ k }=${ URLEncoder.encode( v as String, 'UTF-8' ) }" }.join( '&' )
+    def toQuery()
+    {
+        def wfsParams = ( this.metaClass.properties.name - ['class', 'metaClass'] ).inject( [:] ) { a, b ->
+            if ( this[b] )
+            {
+                a[b] = this[b]
+            }
+            return a
+        }
 
-    //println query
+        def query = wfsParams?.collect { k, v -> "${ k }=${ URLEncoder.encode( v as String, 'UTF-8' ) }" }.join( '&' )
 
-    return query
-  }
+        //println query
+
+        return query
+    }
+    def convertSortByToArray()
+    {
+        def result = [];
+
+
+        if(!sortBy) return null;
+        def arrayOfValues = sortBy.split(",")
+        def idx = 0;
+        arrayOfValues.each{element->
+            def splitParam = element.split("\\+");
+            if (splitParam.length == 1)
+            {
+                result << [splitParam]
+            }
+            else
+            {
+                if (splitParam[1].toLowerCase() == "a")
+                {
+                    result << [splitParam[0], "ASC"]
+                }
+                else
+                {
+                    result << [splitParam[0], "DESC"]
+                }
+            }
+        }
+        result;
+    }
 
 }
