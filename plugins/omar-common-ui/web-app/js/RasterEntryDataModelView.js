@@ -756,7 +756,6 @@ OMAR.views.DataModelView = Backbone.View.extend({
             "sPaginationType": "full_numbers",
             "bProcessing": false,
             "bAutoWidth" : true,
-           // "rowHeight": '200px',
             "bDeferRender": true,
             "bJQueryUI": false,//,
             "bServerSide": true,
@@ -963,7 +962,6 @@ OMAR.views.DataModelView = Backbone.View.extend({
             {
                 this.stopRequests();
                 thisPtr.blockGetServerData = true;
-                this.model.reset();
                 if(!this.spinner)
                 {
                     this.spinner = new Spinner(OMAR.defaultSpinnerOptions);
@@ -1025,7 +1023,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
                 }
                 if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
                 if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
-                //fnCallback(result);
+                fnCallback(result);
             }
         }
         else if(this.model&&wfsModel&&this.model.size())
@@ -1033,12 +1031,11 @@ OMAR.views.DataModelView = Backbone.View.extend({
             result.iTotalRecords =   wfsModel.get("numberOfFeatures");
             result.iTotalDisplayRecords =   wfsModel.get("numberOfFeatures");
             result.aaData = this.model.toJSON();
-            fnCallback(result);
+            //fnCallback(result);
         }
         //fnCallback(result);
     },
     wfsUrlChanged :function(params){
-        this.model.reset();
         this.wfsModel.dirty = true;
         this.wfsModel.attributes.numberOfFeatures = 0;
         //this.model.url = this.wfsModel.toUrl().toString() + "&callback=?";
@@ -1058,12 +1055,17 @@ OMAR.views.DataModelView = Backbone.View.extend({
     onNumberOfFeaturesChange:function(){
         if(!this.dataTable) return;
 
-        this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
+       this.dataTable.fnSettings()._iRecordsTotal        = this.wfsModel.get("numberOfFeatures");
+        this.dataTable.fnSettings()._iTotalDisplayRecords = this.wfsModel.get("numberOfFeatures");
+        //this.dataTable.oSettings().iTotalDisplayRecords = this.wfsModel.get("numberOfFeatures");
+        //this.dataTable.oSettings().iTotalRecords = this.wfsModel.get("numberOfFeatures");
+        this.dataTable.fnDraw();
+        //this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
     },
     render:function(){
         if(this.dataTable)
         {
-            this.dataTable.fnDraw();
+            this.dataTable.fnDraw(false);
         }
     }
 });
