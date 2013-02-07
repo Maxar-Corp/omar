@@ -10,7 +10,7 @@ OMAR.models.WfsModel = Backbone.Model.extend({
         "maxFeatures":"",
         "offset":"",
         "resultType":"",
-        "sort":"",// json formatted array of arrays
+        "sortBy":"",// json formatted array of arrays
 
         /* These attributes will be set after the fetch */
         "numberOfFeatures":0,
@@ -41,11 +41,11 @@ OMAR.models.WfsModel = Backbone.Model.extend({
 
                         if(result)
                         {
-                            result = result +"&"+propertyName + "=" + escape(value);
+                            result = result +"&"+propertyName + "=" + encodeURIComponent(value);//escape(value);
                         }
                         else
                         {
-                            result = propertyName + "=" + escape(value);
+                            result = propertyName + "=" + encodeURIComponent(value);//escape(value);
                         }
                     }
                     break;

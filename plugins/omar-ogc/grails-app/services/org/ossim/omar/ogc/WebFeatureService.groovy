@@ -448,9 +448,9 @@ class WebFeatureService
         max: wfsRequest.maxFeatures ?: -1,
         start: wfsRequest?.offset ?: -1
     ]
-    if ( wfsRequest.sort )
+    if ( wfsRequest.sortBy )
     {
-      filterParams.sort = JSON.parse( wfsRequest.sort );
+        filterParams.sort = wfsRequest.convertSortByToArray();
     }
     def filter
     try
@@ -626,10 +626,10 @@ class WebFeatureService
         start: wfsRequest?.offset ?: -1,
         //sort: [["<COLUMN NAME>","ASC|DESC"]]
     ]
-    if ( wfsRequest.sort )
+    if ( wfsRequest.sortBy )
     {
       // filterParams.sort =null//[["TITLE".toUpperCase(),"DESC"]]
-      filterParams.sort = JSON.parse( wfsRequest.sort );
+        filterParams.sort = wfsRequest.convertSortByToArray();
       //println filterParams
     }
 
@@ -684,10 +684,12 @@ class WebFeatureService
         start: wfsRequest?.offset ?: -1,
         //sort: [["<COLUMN NAME>","ASC|DESC"]]
     ]
-    if ( wfsRequest.sort )
+    if ( wfsRequest.sortBy )
     {
+
       // filterParams.sort =null//[["TITLE".toUpperCase(),"DESC"]]
-      filterParams.sort = JSON.parse( wfsRequest.sort );
+      filterParams.sort = wfsRequest.convertSortByToArray();//wfsRequest.sortBy.substring()//JSON.parse( wfsRequest.sort );
+
       //println filterParams
     }
     try

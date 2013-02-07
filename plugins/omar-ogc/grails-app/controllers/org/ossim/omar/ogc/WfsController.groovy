@@ -69,7 +69,7 @@ class WfsController
         //println "GET: ${ params }"
 
         def wfsParams = new CaseInsensitiveMap( params ).subMap(
-            ['service', 'version', 'request', 'resultType', 'typeName', 'filter', 'outputFormat', 'maxFeatures', 'offset','sort']
+            ['service', 'version', 'request', 'resultType', 'typeName', 'filter', 'outputFormat', 'maxFeatures', 'offset','sortBy']
         )
 
         bindData( wfsCommand, wfsParams )
