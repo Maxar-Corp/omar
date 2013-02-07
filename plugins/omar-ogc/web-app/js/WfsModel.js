@@ -79,7 +79,7 @@ OMAR.models.WfsModel = Backbone.Model.extend({
         return result;
     },
     fetchCount:function(){
-        if(this.fetchCountAjax&&this.fetchCountAjax.abort)
+        if(this.fetchCountAjax&&(this.fetchCountAjax.readState !=4))
         {
             this.fetchCountAjax.abort();
         }
@@ -87,10 +87,10 @@ OMAR.models.WfsModel = Backbone.Model.extend({
 
         var countClone = this.clone();
         countClone.attributes.numberOfFeatures = 0;
-        countClone.attributes.getFeatureResult = ""
+        countClone.attributes.getFeatureResult = "";
         countClone.attributes.resultType = "hits";
         countClone.url = countClone.toUrl()+"&callback=?";
-        this.fetchCounAjax = countClone.fetch(
+        this.fetchCountAjax = countClone.fetch(
             {cache:false,
                 "success":function(){
                     thisPtr.attributes.numberOfFeatures = countClone.attributes.numberOfFeatures;
@@ -98,6 +98,7 @@ OMAR.models.WfsModel = Backbone.Model.extend({
                     thisPtr.fetchCounAjax = null;
                 }
             });
+        return this.fetchCountAjax;
     },
     fetchGetFeatureResult:function(){
         if(this.fetchGetFeatureAjax&&this.fetchGetFeatureAjax.abort)

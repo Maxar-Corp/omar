@@ -754,7 +754,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
             "iDisplayLength":10,
             "bPaginate": true,
             "sPaginationType": "full_numbers",
-            "bProcessing": true,
+            "bProcessing": false,
             "bAutoWidth" : true,
            // "rowHeight": '200px',
             "bDeferRender": true,
@@ -793,7 +793,6 @@ OMAR.views.DataModelView = Backbone.View.extend({
         return "<input type='checkbox' class='rowCheckbox' " + attributes+"></input>"
     },
     renderColumn:function(column,data, type, full){
-        //alert(JSON.stringify(column));
         var url = this.wfsModel.toUrl();
         var omarUrl = url.substr(0,url.indexOf("omar")+4);
         var urlLink = omarUrl + "/rasterEntry/show/" +data;
@@ -905,6 +904,8 @@ OMAR.views.DataModelView = Backbone.View.extend({
         var innerHeight =  $(".inner-center").height();
         var innerWidth =  $(".inner-center").width();
         var innerHeightAdjusted = innerHeight - 95;
+        //$(this.el).find(".dataTable").height(innerHeightAdjusted);
+        //$("data.dataTable").height(innerHeightAdjusted);
        // $(".dataTables_wrapper").css("min-height", innerHeightAdjusted+"px");
        // $(".dataTables_wrapper").css("height", innerHeightAdjusted+"px");
        // $(".dataTables_scrollBody").css("height", innerHeightAdjusted+"px");
@@ -921,6 +922,10 @@ OMAR.views.DataModelView = Backbone.View.extend({
         if(this.currentWfsCountRequest)
         {
             this.currentWfsCountRequest.abort();
+        }
+        if(this.spinner)
+        {
+            this.spinner.stop();
         }
     },
     getServerData:function( sUrl, aoData, fnCallback, oSettings ) {
@@ -959,24 +964,35 @@ OMAR.views.DataModelView = Backbone.View.extend({
                 this.stopRequests();
                 thisPtr.blockGetServerData = true;
                 this.model.reset();
+                if(!this.spinner)
+                {
+                    this.spinner = new Spinner(OMAR.defaultSpinnerOptions);
+                }
+                else
+                {
+                    this.spinner.stop();
+                }
+                this.spinner.spin(this.el);
                 this.modelRequest = model.fetch({dataType: "jsonp",
                     update: false,
                     remove: true,
                     date:{cache:false},
                     "success":function(){
-                        wfsModel.dirty = false;
-                        result.aaData = model.toJSON();
-                        result.iTotalRecords =   wfsModel.get("numberOfFeatures");
-                        result.iTotalDisplayRecords =   wfsModel.get("numberOfFeatures");
+                        thisPtr.spinner.stop();
+                        wfsModel.dirty              = false;
+                        result.aaData               = model.toJSON();
+                        result.iTotalRecords        = wfsModel.get("numberOfFeatures");
+                        result.iTotalDisplayRecords = wfsModel.get("numberOfFeatures");
                         if((wfsModel.get("numberOfFeatures") < 1)&&(model.size()>0))
                         {
                             result.iTotalRecords =        model.size();
                             result.iTotalDisplayRecords = model.size();
-                            if(this.currentWfsCountRequest)
+
+                            if(thisPtr.currentWfsCountRequest&&(thisPtr.currentWfsCountRequest.readState !=4))
                             {
-                                this.currentWfsCountRequest.abort();
+                                thisPtr.currentWfsCountRequest.abort();
                             }
-                            this.currentWfsCountRequest = wfsModel.fetchCount();
+                            thisPtr.currentWfsCountRequest = wfsModel.fetchCount();
                         }
                         if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
                         if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
@@ -985,7 +1001,17 @@ OMAR.views.DataModelView = Backbone.View.extend({
                         thisPtr.blockGetServerData = false;
                     },
                     "error":function(){
+                        thisPtr.spinner.stop();
                         thisPtr.blockGetServerData = false;
+                        if(model.size())
+                        {
+                            result.iTotalRecords =   wfsModel.get("numberOfFeatures");
+                            result.iTotalDisplayRecords =   wfsModel.get("numberOfFeatures");
+                            result.aaData = model.toJSON();
+                        }
+                        if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
+                        if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
+                        fnCallback(result);
                     }
                 });
             }
@@ -999,7 +1025,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
                 }
                 if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
                 if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
-                fnCallback(result);
+                //fnCallback(result);
             }
         }
         else if(this.model&&wfsModel&&this.model.size())
@@ -1009,22 +1035,18 @@ OMAR.views.DataModelView = Backbone.View.extend({
             result.aaData = this.model.toJSON();
             fnCallback(result);
         }
-        else
-        {
-            fnCallback(result);
-        }
+        //fnCallback(result);
     },
     wfsUrlChanged :function(params){
-
         this.model.reset();
         this.wfsModel.dirty = true;
         this.wfsModel.attributes.numberOfFeatures = 0;
         //this.model.url = this.wfsModel.toUrl().toString() + "&callback=?";
         //alert(this.wfsModel.toUrl().toString() );
 
-        this.wfsTypeNameModelChanged();
+       // this.wfsTypeNameModelChanged();
 
-        //this.stopRequests();
+        this.stopRequests();
         //this.dataTable.fnClearTable();
         // now set the URL to load
         //
