@@ -1,36 +1,3 @@
-OMAR.models.Selection = Backbone.Model.extend({
-    idAttribute:"id",
-    defaults:{
-        id:""
-        ,description:""
-    },
-    initialize:function(params){
-
-    }
-});
-
-OMAR.models.SelectedCollection = Backbone.Collection.extend({
-    url:"",
-    model:OMAR.models.Selection,
-    initialize:function(){
-    },
-    toArrayOfIds:function(){
-        var selectedItem = [];
-        for(var idx=0; idx < this.size(); idx++){
-            var item = this.at(idx);
-            selectedItem.push(item.id);
-        }
-        return selectedItem;
-    },
-    toStringOfIds:function(seperator){
-        if(!seperator) {
-           seperator = ",";
-        }
-        
-        return this.toArrayOfIds().join(seperator);
-    }
-});
-
 OMAR.models.ColumnGroup=Backbone.Model.extend({
     defaults:{
         name:""
