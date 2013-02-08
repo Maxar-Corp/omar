@@ -151,6 +151,7 @@ $.fn.dataTableExt.oPagination.input = {
                 if(this.value != iPages)
                 {
                     this.value++;
+                    adjustPage(this.value);
                 }
             }
             else if ( (e.which == 37 || e.which == 40) && this.value > 1 )
@@ -158,14 +159,17 @@ $.fn.dataTableExt.oPagination.input = {
                 if(this.value >1)
                 {
                     this.value--;
+                    adjustPage(this.value);
                 }
             }
-
+            if(this.value == 13)
+            {
+                adjustPage(this.value);
+            }
             if ( this.value == "" || this.value.match(/[^0-9]/) )
             {
                 return;
             }
-            adjustPage(this.value);
 
         } );
 
