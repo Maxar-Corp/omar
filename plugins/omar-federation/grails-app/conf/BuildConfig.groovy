@@ -31,14 +31,8 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-       // build(":tomcat:$grailsVersion",
-       //       ":release:1.0.0") {
-       //     export = false
-       //     exclude 'svn'
-       // }
         runtime ":hibernate:$grailsVersion"
         runtime ":resources:1.1.6"
-        runtime ":yui-minify-resources:0.1.5"
     }
 }
 
