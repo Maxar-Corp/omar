@@ -156,7 +156,11 @@ body {
     text-decoration:underline;
 }
 
-
+div.groupViewSelection{
+    width:100%;
+    text-align: center;
+   /* position:absolute;*/
+}
 
 .omar-server-count {
    /* height: 100%;*/
@@ -334,10 +338,15 @@ table.dataTable td {
     float: left;
 }
 
-.dataTables_paginate {
-    float: right;
-    text-align: right;
+#DataTable_paginate {
+    float:right;
+    position: absolute;
+    right: 0;
+    /*position:absolute;*/
+    /*width:100%;*/
+    /*text-align: center;*/
 }
+
 
 /* Pagination nested */
 .paginate_disabled_previous, .paginate_enabled_previous,

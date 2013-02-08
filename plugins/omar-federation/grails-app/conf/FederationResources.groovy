@@ -9,6 +9,7 @@ modules = {
         resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery.layout-latest.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery/DataTables-1.9.4', file: 'jquery.dataTables.min.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery/DataTables-1.9.4', file: 'jquery.datatables-ext.js']
+        resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery/DataTables-1.9.4', file: 'jquery.pagination.js']
         resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'jquery.dataTables.css']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'json2.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js/underscore', file:'underscore-1.4.2.js']
