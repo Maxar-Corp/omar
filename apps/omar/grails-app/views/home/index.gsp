@@ -24,17 +24,23 @@
     <table>
       <tr>
         <td width="120px">
-          <img src="${resource( dir: 'images', file: 'discover.gif' )}" alt="">
+            <a href="${createLink(controller:'federation', action:'search')}">
+                <img src="${resource( dir: 'images', file: 'discover.gif' )}" alt="">
+            </a>
         </td>
+
         <td>
           <ol>
-            <li><g:link controller="rasterEntry" action="search">Imagery</g:link></li>
+            <!--  <li><g:link plugin="omar-federation" controller="federation" action="search">Search</g:link></li> -->
+           <!-- <li><g:link controller="rasterEntry" action="search">Imagery</g:link></li>
             <li><g:link controller="videoDataSet" action="search">Video</g:link></li>
+          -->
           </ol>
         </td>
       </tr>
     </table>
   </div>
+  <!--
   <g:if test="${grailsApplication.config.views?.home?.browseEnabled}">
     <div>
       <h1 style="font-size:150%" align="left">Browse:</h1>
@@ -53,7 +59,7 @@
       </table>
     </div>
   </g:if>
-
+   -->
   <div>
     <h1 style="font-size:150%" align="left">KML Network Links:</h1>
     <table>
@@ -204,7 +210,7 @@
     </div>
 
     <div>
-      <h1 style="font-size:150%" align="left">Edit Tables:</h1>
+      <h1 style="font-size:150%" align="left">Admin:</h1>
       <table>
         <tr>
           <td width="120px">
@@ -212,10 +218,16 @@
           </td>
           <td>
             <ol>
+                <li><g:link controller="Federation" action="admin">Federation</g:link></li>
                 <li><g:link controller="RunScript" action="scripts">Scripts</g:link></li>
+                <li><g:link controller="ChipFormat" action="list">Chip Formats</g:link></li>
+
+                <br/>
                 <g:each var="c" in="${editableControllers}">
-                <li><g:link controller="${c.path}">${c.name}</g:link></li>
-              </g:each>
+                     <g:if test="${!c.name.equals('ConfigSettings')&&!c.name.equals('ChipFormat')}">
+                         <li><g:link controller="${c.path}">${c.name}</g:link></li>
+                    </g:if>
+                </g:each>
             </ol>
           </td>
         </tr>

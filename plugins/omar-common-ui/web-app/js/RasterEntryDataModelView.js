@@ -1019,10 +1019,6 @@ OMAR.views.DataModelView = Backbone.View.extend({
     wfsUrlChanged :function(params){
         this.wfsModel.dirty = true;
         this.wfsModel.attributes.numberOfFeatures = 0;
-        //this.model.url = this.wfsModel.toUrl().toString() + "&callback=?";
-        //alert(this.wfsModel.toUrl().toString() );
-
-       // this.wfsTypeNameModelChanged();
 
         this.stopRequests();
         //this.dataTable.fnClearTable();
@@ -1030,18 +1026,14 @@ OMAR.views.DataModelView = Backbone.View.extend({
         //
         this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
 
-        //this.model.fetch({dataType: "jsonp",
-        //     update: false, remove: true,date:{cache:false}});
     },
     onNumberOfFeaturesChange:function(){
         if(!this.dataTable) return;
 
-       this.dataTable.fnSettings()._iRecordsTotal        = this.wfsModel.get("numberOfFeatures");
+        this.dataTable.fnSettings()._iRecordsTotal        = this.wfsModel.get("numberOfFeatures");
         this.dataTable.fnSettings()._iTotalDisplayRecords = this.wfsModel.get("numberOfFeatures");
-        //this.dataTable.oSettings().iTotalDisplayRecords = this.wfsModel.get("numberOfFeatures");
-        //this.dataTable.oSettings().iTotalRecords = this.wfsModel.get("numberOfFeatures");
+
         this.dataTable.fnDraw();
-        //this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
     },
     render:function(){
         if(this.dataTable)

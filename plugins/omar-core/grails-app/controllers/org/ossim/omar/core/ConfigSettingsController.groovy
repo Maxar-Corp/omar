@@ -13,7 +13,17 @@ class ConfigSettingsController {
         def result =[:]
         def method = request?.method?.toUpperCase()
 
-        def configService = grailsApplication.mainContext.getBean("${params.settingsName}ConfigSettingsService")
+        def configService
+
+        try{
+            configService = grailsApplication.mainContext.getBean("${params.settingsName}ConfigSettingsService")
+        }
+        catch(def e)
+        {
+            render ""
+            return null
+        }
+
         response.contentType = "application/json"
         switch(method)
         {
