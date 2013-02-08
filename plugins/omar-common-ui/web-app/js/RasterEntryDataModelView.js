@@ -1,3 +1,5 @@
+
+
 OMAR.models.ColumnGroup=Backbone.Model.extend({
     defaults:{
         name:""
@@ -714,13 +716,15 @@ OMAR.views.DataModelView = Backbone.View.extend({
         this.columnDefs.at(1).set("mRender",$.proxy(this.renderColumn,this,1));// this.renderColumn.bind(this));
         this.dataTable = $(this.dataTableEl).dataTable({
             "aoColumns": this.columnDefs.toJSON(),
-            "sDom": '<"top"l><"groupViewSelection">frtip', //'<"top"flp>rt<"bottom"i><"clear">',
+            //"sDom": '<"top"><"groupViewSelection">frtip', //'<"top"flp>rt<"bottom"i><"clear">',
+            "sDom": '<"top"><"groupViewSelection">rt<"bottom"ifp>', //'<"top"flp>rt<"bottom"i><"clear">',
             "sScrollX": "100%",
             "sScrollY": "100%",
             "bScrollCollapse": true,
             "iDisplayLength":10,
             "bPaginate": true,
-            "sPaginationType": "full_numbers",
+            "sPaginationType": "input",
+           // "sPaginationType": "full_numbers",
             "bProcessing": false,
             "bAutoWidth" : true,
             "bDeferRender": true,
