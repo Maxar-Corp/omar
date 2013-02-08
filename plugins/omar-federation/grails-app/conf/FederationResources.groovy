@@ -1,7 +1,7 @@
 modules = {
     federationRasterSearch{
         resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
-        resource url: [plugin: 'omar-common-ui', dir: 'js', file:'OMAR.js'], include:'yuijsminify'
+        resource url: [plugin: 'omar-common-ui', dir: 'js', file:'OMAR.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file:'hashmap.js']
         resource url: [plugin: 'omar-core', dir: 'js', file: 'coord.js']
         resource url: [plugin: 'omar-core', dir: 'js', file: 'jquery.js']

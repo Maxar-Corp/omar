@@ -103,6 +103,28 @@ div.olControlOverviewMap {
     */
     background-position: 0 -250px;
 }
+.olControlPanel .olControlPanZoomItemActive {
+    width: 24px;
+    height: 24px;
+    background-color: orange;
+    /*
+    background-image: url('../images/themes/gis/mActionPan.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    */
+    background-position: 0 -250px;
+}
+
+.olControlPanel .olControlPanZoomItemInactive {
+    width: 24px;
+    height: 24px; /*background-color: blue;*/
+    /*
+    background-image: url('../images/themes/gis/mActionPan.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    */
+    background-position: 0 -250px;
+}
 
 .olControlPanel .olControlDragPanItemActive{
     width: 24px;

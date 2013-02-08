@@ -160,9 +160,10 @@ OMAR.views.Map = Backbone.View.extend({
    
     setupToolbar:function()
     {
-        var panButton = new OpenLayers.Control.MouseDefaults(
+        var panButton = new OpenLayers.Control.Button(
             {
                 title: 'Click button to activate. Once activated, drag the mouse to pan.'
+                ,displayClass: 'olControlPanZoom'
             }
         );
         var zoomBoxButton =  new OpenLayers.Control.ZoomBox(

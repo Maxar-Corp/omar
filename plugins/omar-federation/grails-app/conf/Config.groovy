@@ -25,7 +25,7 @@ log4j = {
 grails.views.default.codec="none" // none, html, base64
 grails.views.gsp.encoding="UTF-8"
 
-grails.resources.mappers.yuicssminify.includes = ['**/*.css']
-grails.resources.mappers.yuijsminify.includes = ['**/*.js']
+grails.resources.mappers.yuicssminify.excludes = ['**/*.css']
+grails.resources.mappers.yuijsminify.excludes = ['**/*.js']
 grails.resources.mappers.yuicssminify.excludes = ['**/*.min.css']
 grails.resources.mappers.yuijsminify.excludes = ['**/*.min.js']
