@@ -143,7 +143,7 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
 
             {name:"id", label:"Record id", type:"id"}
             ,{name:"be_number", label:"BE Number", type:"string"}
-            ,{name:"title", label:"Image ID", type:"string"}
+            ,{name:"title", label:"IID2", type:"string"}
             ,{name:"class_name", label:"Class Name", type:"string"}
             ,{name:"country_code", label:"Country", type:"string"}
             ,{name:"file_type", label:"File Type", type:"string"}
@@ -157,9 +157,11 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
             ,{name:"azimuth_angle", label:"Azimuth Angle", type:"numeric"}
             ,{name:"grazing_angle", label:"Grazing Angle", type:"numeric"}
             ,{name:"acquisition_date", label:"Acquisition Date", type:"datetime"}
+            ,{name:"access_date", label:"Access Date", type:"datetime"}
+            ,{name:"ingest_date", label:"Ingest Date", type:"datetime"}
+            ,{name:"receive_date", label:"Recieve Date", type:"datetime"}
             ,{name:"ground_geom", label:"Ground Geom", type:"geometry"}
             ,{name:"entry_id", label:"Entry Id", type:"string"}
-            ,{name:"exclude_policy", label:"Exclude Policy", type:"string"}
             ,{name:"width", label:"Width", type:"numeric"}
             ,{name:"height", label:"Height", type:"numeric"}
             ,{name:"number_of_bands", label:"Number of Bands", type:"numeric"}
@@ -172,7 +174,7 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
             ,{name:"index_id", label:"Index Id", type:"string"}
             ,{name:"height", label:"Height", type:"numeric"}
             ,{name:"product_id", label:"Product Id", type:"string"}
-            ,{name:"image_category", label:"Image Category", type:"string"}
+            ,{name:"image_category", label:"ICAT", type:"string"}
             ,{name:"security_classification", label:"Security Classification", type:"string"}
             ,{name:"security_code", label:"Security Code", type:"string"}
             ,{name:"isorce", label:"Isource", type:"string"}
@@ -183,12 +185,10 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
             ,{name:"sun_elevation", label:"Sun Elevation", type:"numeric"}
             ,{name:"sun_azimuth", label:"Sun Azimuth", type:"numeric"}
             ,{name:"cloud_cover", label:"Cloud Cover", type:"numeric"}
-           // ,{name:"style_id", label:"Style Id", type:"numeric"}
+            ,{name:"exclude_policy", label:"Exclude Policy", type:"string"}
+            // ,{name:"style_id", label:"Style Id", type:"numeric"}
             //,{name:"keep_forever", label:"Keep Forever", type:"numeric"}
            // ,{name:"valid_model", label:"Valid Model", type:"string"}
-            ,{name:"access_date", label:"Access Date", type:"datetime"}
-            ,{name:"ingest_date", label:"Ingest Date", type:"datetime"}
-            ,{name:"receive_date", label:"Recieve Date", type:"datetime"}
         ]);
     }
 });
@@ -675,22 +675,6 @@ OMAR.views.CqlView = Backbone.View.extend({
         var textField = "<input id='"+ colId+opId+"_TEXTFIELD' type='text'/>";
         return (this.statement+result+textField);
     },
-    cqlSelectNamedQueriesChanged:function(){
-        if(!$(cqlSelectNamedQueries).val())
-        {
-            this.clearQuery();
-        }
-        else
-        {
-            this.clearQuery();
-            // alert($(cqlSelectNamedQueries).val());
-            // var testCondition = '{"operator":"or","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "<", "opid": "col1op1OPOPTION_0", "opdisp":"Today", "val": "now", "valId": "col1op1_TEXTFIELD"}],"nestedexpressions":"[]"}';
-          //  var testConditionNested = '{"operator":"and","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "today", "opid": "col1op1OPOPTION_0", "opdisp": "Today", "val": "now", "valId": "col1op1_TEXTFIELD"}, {"coltype": "numeric", "colval": "bit_depth", "colid": "col3op3_COLOPTION_19", "coldisp": "Bit Depth", "opval": "<", "opid": "col3op3OPOPTION_0", "opdisp": "Less Than", "val": "16", "valId": "col3op3_TEXTFIELD"}],"nestedexpressions":[{"operator": "and", "expressions": [{"coltype": "datetime", "colval": "ingest_date", "colid": "col2op2_COLOPTION_43", "coldisp": "Ingest Date", "opval": "today", "opid": "col2op2OPOPTION_0", "opdisp": "Today", "val": "", "valId": "col2op2_TEXTFIELD"}, {"coltype": "numeric", "colval": "grazing_angle", "colid": "col4op4_COLOPTION_26", "coldisp": "Grazing Angle", "opval": ">", "opid": "col4op4OPOPTION_2", "opdisp": "Greater Than", "val": "45", "valId": "col4op4_TEXTFIELD"}], "nestedexpressions": []}]}';
-
-
-          //  this.clearQuery(JSON.parse(testConditionNested));
-        }
-    },
     clearQuery:function(conditions){
         $('.cqlQuery').html("");
         if(!conditions)
@@ -1049,6 +1033,22 @@ OMAR.views.CqlView = Backbone.View.extend({
 
     },
 
+    cqlSelectNamedQueriesChanged:function(){
+        if(!$(cqlSelectNamedQueries).val())
+        {
+            this.clearQuery();
+        }
+        else
+        {
+            this.clearQuery();
+            // alert($(cqlSelectNamedQueries).val());
+            // var testCondition = '{"operator":"or","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "<", "opid": "col1op1OPOPTION_0", "opdisp":"Today", "val": "now", "valId": "col1op1_TEXTFIELD"}],"nestedexpressions":"[]"}';
+            //  var testConditionNested = '{"operator":"and","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "today", "opid": "col1op1OPOPTION_0", "opdisp": "Today", "val": "now", "valId": "col1op1_TEXTFIELD"}, {"coltype": "numeric", "colval": "bit_depth", "colid": "col3op3_COLOPTION_19", "coldisp": "Bit Depth", "opval": "<", "opid": "col3op3OPOPTION_0", "opdisp": "Less Than", "val": "16", "valId": "col3op3_TEXTFIELD"}],"nestedexpressions":[{"operator": "and", "expressions": [{"coltype": "datetime", "colval": "ingest_date", "colid": "col2op2_COLOPTION_43", "coldisp": "Ingest Date", "opval": "today", "opid": "col2op2OPOPTION_0", "opdisp": "Today", "val": "", "valId": "col2op2_TEXTFIELD"}, {"coltype": "numeric", "colval": "grazing_angle", "colid": "col4op4_COLOPTION_26", "coldisp": "Grazing Angle", "opval": ">", "opid": "col4op4OPOPTION_2", "opdisp": "Greater Than", "val": "45", "valId": "col4op4_TEXTFIELD"}], "nestedexpressions": []}]}';
+
+
+            //  this.clearQuery(JSON.parse(testConditionNested));
+        }
+    },
     cqlBtnValidateClicked:function(){
         var con = this.getCondition('.cqlQuery >table');
         var errors = [];
@@ -1062,7 +1062,8 @@ OMAR.views.CqlView = Backbone.View.extend({
         }
         else
         {
-            alert("Cql is valid!");
+            //alert("Cql is valid!");
+            this.trigger("onCqlChanged");
         }
        // var jsonCond = JSON.stringify(con);
        // if (window.console) window.console.log(jsonCond);
@@ -1071,6 +1072,7 @@ OMAR.views.CqlView = Backbone.View.extend({
     },
     cqlBtnResetClicked:function(){
         this.clearQuery();
+        this.trigger("onCqlChanged");
     },
     cqlBtnShowClicked:function(){
         var con = this.getCondition('.cqlQuery >table');
