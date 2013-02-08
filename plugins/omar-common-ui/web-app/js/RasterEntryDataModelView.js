@@ -29,6 +29,11 @@ OMAR.models.VideoDatasetDataModel = Backbone.Model.extend({
         ,"min_lat_lon":""
         ,"max_lat_lon":""
         ,"center_lat_lon":""
+    },
+    toBboxModel:function(){
+        var bboxModel = new OMAR.models.BBOX();
+        bboxModel.setFromWfsFeatureGeom(this.ground_geom);
+        return bboxModel;
     }
 });
 
@@ -53,13 +58,13 @@ OMAR.models.VideoDatasetCollection=Backbone.Collection.extend({
                     feature.geometry.coordinates[0][0][0];
                 }
                 var showVideo = omarUrl +"/videoStreaming/show/" + model.get("index_id");
-                var bboxModel = new OMAR.models.BBOX();
-                bboxModel.setFromWfsFeatureGeom(feature.geometry);
-                var centerPoint = bboxModel.getCenter();
-                var bbox = bboxModel.toWmsString();
                 var showVideoJavascript = "javascript:" + "window.open(\"" + showVideo + "\")";
                 var omarUrlGetKML = omarUrl + "/videoStreaming/getKML/" + model.id;
                 var omarUrlGetKMLLink ="<li><a href='"+omarUrlGetKML +"'>Get KML</a></li>"
+
+                var bboxModel = new OMAR.models.BBOX();
+                bboxModel.setFromWfsFeatureGeom(feature.geometry);
+                var bbox = bboxModel.toWmsString();
 
                 //alert(showVideoJavascript);
                 //alert(bbox);
@@ -70,11 +75,8 @@ OMAR.models.VideoDatasetCollection=Backbone.Collection.extend({
                     ,min_lat_lon:bboxModel.get("miny")+","+bboxModel.get("minx")
                     ,max_lat_lon:bboxModel.get("maxy")+","+bboxModel.get("maxx")
                     ,center_lat_lon:centerPoint.y+","+centerPoint.x
-                    //,"ground_geom":JSON.stringify(feature.geometry)
-                    //,"view": "<ul>"+omarUrlRawButton + omarUrlOrthoButton+"</ul>"
+                    ,"ground_geom":JSON.stringify(feature.geometry)
                     ,"links": "<ul>"+omarUrlGetKMLLink+"</ul>"
-                    /*"<ul><button onclick=\"javascript:window.open(\'"+omarUrlRaw +
-                     +"\')>Raw</button><button>Ortho</button></ul>"  */
                 });
                 result.push(model);
             }

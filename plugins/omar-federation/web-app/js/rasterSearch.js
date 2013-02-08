@@ -114,6 +114,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var cqlViewParams = params.cql;
         cqlViewParams.wfsTypeNameModel = this.wfsTypeNameModel;
         this.cqlView = new OMAR.views.CqlView(cqlViewParams);
+        this.cqlView.bind("onCqlChanged",this.cqlCustomQueryChanged, this);
         this.currentCqlModel = this.cqlView.model;
         this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this);
         this.bboxModel.bind('change', this.updateFootprintCql, this);
@@ -132,6 +133,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     events: {
         "click #SearchRasterId": "searchRaster"
+    },
+    cqlCustomQueryChanged:function(){
+        this.updateFootprintCql();
+        this.searchRaster();
     },
     showTab:function(idx){
         if(idx == 0)

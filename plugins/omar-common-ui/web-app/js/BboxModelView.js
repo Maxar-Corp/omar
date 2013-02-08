@@ -14,13 +14,22 @@ OMAR.models.BBOX = Backbone.Model.extend(
             return (this.get("minx") + "," + this.get("miny") + "," +
                 this.get("maxx") + "," + this.get("maxy"));
         },
-        setFromWfsFeatureGeom:function(geom)
+        setFromWfsFeatureGeom:function(tempGeom)
         {
+            var geom = null
             var minx = 9e20;
             var maxx = -9e20;
             var miny = 9e20;
             var maxy = -9e20;
 
+            if(typeof tempGeom == "string")
+            {
+                geom = JSON.parse(tempGeom);
+            }
+            else
+            {
+                geom = tempGeom;
+            }
             switch(geom.type.toLowerCase())
             {
                 case "polygon":
