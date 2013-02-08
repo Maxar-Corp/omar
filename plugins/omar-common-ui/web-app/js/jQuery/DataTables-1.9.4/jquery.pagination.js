@@ -16,7 +16,7 @@ $.fn.dataTableExt.oPagination.input = {
         var nInput = document.createElement( 'input' );
         var nPage = document.createElement( 'span' );
         var nOf = document.createElement( 'span' );
-        var nDropDownId = ""
+        var nDropDownId = "";
         var nFirstId = "";
         var nPagingId = "";
         var nPreviousId = "";
@@ -195,7 +195,7 @@ $.fn.dataTableExt.oPagination.input = {
         {
             var spans = an[i].getElementsByTagName('span');
             var inputs = an[i].getElementsByTagName('input');
-            spans[1].innerHTML = " of "+iPages
+            spans[1].innerHTML = " of "+iPages;
             inputs[0].value = iCurrentPage;
         }
         var nFirstId    = "#"+oSettings.sTableId+'_first';
