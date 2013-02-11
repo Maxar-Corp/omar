@@ -2,13 +2,12 @@ OMAR.models.Map = Backbone.Model.extend({
 
 });
 
-var zoomInButton;
-var zoomFullResScale;
-var aoiLayer;
-var bounds;
+//var zoomInButton;
+//var zoomFullResScale;
+//var bounds;
 
-var measureUnit = new Array();
-    measureUnit = ["", "", "", "", "", ""];
+//var measureUnit = new Array();
+//    measureUnit = ["", "", "", "", "", ""];
 var convert = new CoordinateConversion();
 OMAR.views.Map = Backbone.View.extend({
     el:"#MapContainer",
@@ -26,7 +25,12 @@ OMAR.views.Map = Backbone.View.extend({
         this.mapEl = $(this.el).find("#map")[0];
         this.toolBar = $(this.el).find("#mapToolBar")[0];
         this.layers = new OMAR.HashMap();
-        this.baseLayers = params.baseLayers
+        this.baseLayers = params.baseLayers;
+        this.zoomInButton = null;
+        this.zoomFullResScale = null;
+        this.bounds = null;
+        this.measureUnit = ["", "", "", "", "", ""];
+        this.convert = new CoordinateConversion();
     },
     reset:function()
     {
@@ -44,16 +48,16 @@ OMAR.views.Map = Backbone.View.extend({
                 for(var idx = 0; idx < this.baseLayers.size();++idx)
                 {
                     var layer =   new OpenLayers.Layer.WMS( this.baseLayers[idx].name,
-                                                            this.baseLayers[idx].url,
-                                                            this.baseLayers[idx].params,
-                                                            this.baseLayers[idx].options
-                                                          );
+                        this.baseLayers[idx].url,
+                        this.baseLayers[idx].params,
+                        this.baseLayers[idx].options
+                    );
                     layers.push(layer);
 
                 }
             }
-           // var osm = new OpenLayers.Layer.OSM();
-           // alert(osm.projection);
+            // var osm = new OpenLayers.Layer.OSM();
+            // alert(osm.projection);
 
             //layers.push(osm);
             this.map = new OpenLayers.Map({
@@ -98,9 +102,9 @@ OMAR.views.Map = Backbone.View.extend({
                 zoom: 3
             });
             this.map.addControl(new OpenLayers.Control.LayerSwitcher({
-                    div:OpenLayers.Util.getElement("layerSwitcher" ), roundedCorner:false
-                }));
-        
+                div:OpenLayers.Util.getElement("layerSwitcher" ), roundedCorner:false
+            }));
+
             this.map.events.register("moveend", this, this.setCenter);
             this.map.events.register("moveend", this, this.setExtent);
             this.map.events.register("mousemove", this, this.setMouse);
@@ -127,39 +131,50 @@ OMAR.views.Map = Backbone.View.extend({
     unitModelChanged:function()
     {
         this.changeMeasureUnit(this.unitModelView.model.get("unit"));
-    }
-    ,setupAoiLayer:function()
+    },
+    hasBBOXSelection:function(){
+        var result = false;
+
+        if(this.aoiLayer&&(this.aoiLayer.features.size()>0))
+        {
+            result = true;
+        }
+
+        return result;
+    },
+    setupAoiLayer:function()
     {
-        aoiLayer = new OpenLayers.Layer.Vector( "Bound Box" );
-        aoiLayer.events.register( "featureadded", this, this.setAoiLayer );
+        this.aoiLayer = new OpenLayers.Layer.Vector( "Bound Box" );
+        this.aoiLayer.events.register( "featureadded", this, this.setAoiLayer );
 
-        var boundBox = new OpenLayers.Control.DrawFeature( aoiLayer, OpenLayers.Handler.RegularPolygon,
-                {handlerOptions:{sides:4, irregular:true}} );
+        var boundBox = new OpenLayers.Control.DrawFeature( this.aoiLayer, OpenLayers.Handler.RegularPolygon,
+            {handlerOptions:{sides:4, irregular:true}} );
 
-        this.map.addLayer( aoiLayer );
+        this.map.addLayer( this.aoiLayer );
         this.map.addControl( boundBox );
     },
     setAoiLayer:function ( e )
     {
         var geom = e.feature.geometry;
-        bounds = geom.getBounds();
+        this.bounds = geom.getBounds();
         var feature = new OpenLayers.Feature.Vector( geom );
-     
+
         if(this.bboxModel)
         {
             this.bboxModel.off("change", this.bboxMapChanged, this);
-            
-            this.bboxModel.set({"minx":bounds.left, "miny":bounds.bottom,
-                                "maxx":bounds.right, "maxy":bounds.top});
+
+            this.bboxModel.set({"minx":this.bounds.left, "miny":this.bounds.bottom,
+                "maxx":this.bounds.right, "maxy":this.bounds.top});
             this.bboxModel.on("change", this.bboxMapChanged, this);
         }
 
-        aoiLayer.destroyFeatures();
-        aoiLayer.addFeatures( feature, {silent:true} );
+        this.aoiLayer.destroyFeatures();
+        this.aoiLayer.addFeatures( feature, {silent:true} );
     },
-   
+
     setupToolbar:function()
     {
+        var thisPtr = this;
         var panButton = new OpenLayers.Control.Button(
             {
                 title: 'Click button to activate. Once activated, drag the mouse to pan.'
@@ -171,7 +186,7 @@ OMAR.views.Map = Backbone.View.extend({
                 alwaysZoom: true
             }
         );
-        zoomInButton = new OpenLayers.Control.ZoomIn(
+        this.zoomInButton = new OpenLayers.Control.ZoomIn(
             {
                 title: 'Click button to zoom in.',
                 trigger: this.zoomIn
@@ -196,7 +211,7 @@ OMAR.views.Map = Backbone.View.extend({
                 trigger: this.zoomMaxExtent
             }
         );
-        var boundBoxButton = new OpenLayers.Control.DrawFeature(aoiLayer, OpenLayers.Handler.RegularPolygon,
+        var boundBoxButton = new OpenLayers.Control.DrawFeature(this.aoiLayer, OpenLayers.Handler.RegularPolygon,
             {
                 handlerOptions: {sides: 4, irregular: true},
                 title: 'Click button to activate. Once activated, drag the mouse to define a bound box.'
@@ -222,74 +237,74 @@ OMAR.views.Map = Backbone.View.extend({
 
                     if ( evt.units == "km" )
                     {
-                        measureUnit[0] = evt.measure + " km";
-                        measureUnit[1] = evt.measure * 1000 + " m";
-                        measureUnit[2] = evt.measure * 3280.839895 + " ft";
-                        measureUnit[3] = evt.measure * 0.62137119224 + " mi";
-                        measureUnit[4] = evt.measure * 1093.6132983 + " yd";
-                        measureUnit[5] = evt.measure * 0.539956803 + " nmi";
+                        thisPtr.measureUnit[0] = evt.measure + " km";
+                        thisPtr.measureUnit[1] = evt.measure * 1000 + " m";
+                        thisPtr.measureUnit[2] = evt.measure * 3280.839895 + " ft";
+                        thisPtr.measureUnit[3] = evt.measure * 0.62137119224 + " mi";
+                        thisPtr.measureUnit[4] = evt.measure * 1093.6132983 + " yd";
+                        thisPtr.measureUnit[5] = evt.measure * 0.539956803 + " nmi";
 
                         var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
 
                         if ( selectVal == "kilometers" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[0];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[0];
                         }
                         else if ( selectVal == "meters" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[1];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[1];
                         }
                         else if ( selectVal == "feet" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[2];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[2];
                         }
                         else if ( selectVal == "miles" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[3];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[3];
                         }
                         else if ( selectVal == "yards" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[4];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[4];
                         }
                         else if ( selectVal == "nautical miles" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[5];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[5];
                         }
                     }
                     else if ( evt.units == "m" )
                     {
-                        measureUnit[0] = evt.measure * 0.001 + " km";
-                        measureUnit[1] = evt.measure + " m";
-                        measureUnit[2] = evt.measure * 3.280839895 + " ft";
-                        measureUnit[3] = evt.measure * 0.00062137119224 + " mi";
-                        measureUnit[4] = evt.measure * 1.0936132983 + " yd";
-                        measureUnit[5] = evt.measure * 0.000539956803 + " nmi";
+                        thisPtr.measureUnit[0] = evt.measure * 0.001 + " km";
+                        thisPtr.measureUnit[1] = evt.measure + " m";
+                        thisPtr.measureUnit[2] = evt.measure * 3.280839895 + " ft";
+                        thisPtr.measureUnit[3] = evt.measure * 0.00062137119224 + " mi";
+                        thisPtr.measureUnit[4] = evt.measure * 1.0936132983 + " yd";
+                        thisPtr.measureUnit[5] = evt.measure * 0.000539956803 + " nmi";
 
                         var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
 
                         if ( selectVal == "kilometers" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[0];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[0];
                         }
                         else if ( selectVal == "meters" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[1];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[1];
                         }
                         else if ( selectVal == "feet" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[2];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[2];
                         }
                         else if ( selectVal == "miles" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[3];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[3];
                         }
                         else if ( selectVal == "yards" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[4];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[4];
                         }
                         else if ( selectVal == "nautical miles" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[5];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[5];
                         }
                     }
                 }
@@ -307,74 +322,74 @@ OMAR.views.Map = Backbone.View.extend({
                     var pathMeasurement = $(unitModelView.el).find("#pathMeasurement")[0];//document.getElementById( "pathMeasurement" );
                     if ( evt.units == "km" )
                     {
-                        measureUnit[0] = evt.measure + " km^2";
-                        measureUnit[1] = evt.measure * 1000000 + " m^2";
-                        measureUnit[2] = evt.measure * 10763910.417 + " ft^2";
-                        measureUnit[3] = evt.measure * 0.38610215855  + " mi^2";
-                        measureUnit[4] = evt.measure * 1195990.0463 + " yd^2";
-                        measureUnit[5] = evt.measure * 0.2915533496  + " nmi^2";
+                        thisPtr.measureUnit[0] = evt.measure + " km^2";
+                        thisPtr.measureUnit[1] = evt.measure * 1000000 + " m^2";
+                        thisPtr.measureUnit[2] = evt.measure * 10763910.417 + " ft^2";
+                        thisPtr.measureUnit[3] = evt.measure * 0.38610215855  + " mi^2";
+                        thisPtr.measureUnit[4] = evt.measure * 1195990.0463 + " yd^2";
+                        thisPtr.measureUnit[5] = evt.measure * 0.2915533496  + " nmi^2";
 
                         var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
 
                         if ( selectVal == "kilometers" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[0];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[0];
                         }
                         else if ( selectVal == "meters" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[1];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[1];
                         }
                         else if ( selectVal == "feet" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[2];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[2];
                         }
                         else if ( selectVal == "miles" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[3];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[3];
                         }
                         else if ( selectVal == "yards" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[4];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[4];
                         }
                         else if ( selectVal == "nautical miles" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[5];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[5];
                         }
                     }
                     else if ( evt.units == "m" )
                     {
-                        measureUnit[0] = evt.measure * 0.000001 + " km^2";
-                        measureUnit[1] = evt.measure + " m^2";
-                        measureUnit[2] = evt.measure * 10.763910417 + " ft^2";
-                        measureUnit[3] = evt.measure * 3.8610215855 + " mi^2";
-                        measureUnit[4] = evt.measure * 1.1959900463 + " yd^2";
-                        measureUnit[5] = evt.measure * 2.915533496 + " nmi^2";
+                        thisPtr.measureUnit[0] = evt.measure * 0.000001 + " km^2";
+                        thisPtr.measureUnit[1] = evt.measure + " m^2";
+                        thisPtr.measureUnit[2] = evt.measure * 10.763910417 + " ft^2";
+                        thisPtr.measureUnit[3] = evt.measure * 3.8610215855 + " mi^2";
+                        thisPtr.measureUnit[4] = evt.measure * 1.1959900463 + " yd^2";
+                        thisPtr.measureUnit[5] = evt.measure * 2.915533496 + " nmi^2";
 
 
                         var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
                         if ( selectVal == "kilometers" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[0];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[0];
                         }
                         else if ( selectVal == "meters" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[1];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[1];
                         }
                         else if ( selectVal == "feet" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[2];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[2];
                         }
                         else if ( selectVal == "miles" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[3];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[3];
                         }
                         else if ( selectVal == "yards" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[4];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[4];
                         }
                         else if ( selectVal == "nautical miles" )
                         {
-                            pathMeasurement.innerHTML = measureUnit[5];
+                            pathMeasurement.innerHTML = thisPtr.measureUnit[5];
                         }
                     }
                 }
@@ -392,7 +407,7 @@ OMAR.views.Map = Backbone.View.extend({
             [
                 panButton,
                 zoomBoxButton,
-                zoomInButton,
+                this.zoomInButton,
                 zoomOutButton,
                 zoomInFullResButton,
                 zoomMaxExtentButton,
@@ -432,11 +447,11 @@ OMAR.views.Map = Backbone.View.extend({
         {
             pathMeasurement.innerHTML = this.getMeasureUnit()[5];
         }
-},
+    },
 
-getMeasureUnit:function() {
-    return measureUnit;
-},
+    getMeasureUnit:function() {
+        return this.measureUnit;
+    },
 
 
 
@@ -454,7 +469,7 @@ getMeasureUnit:function() {
     },
     zoomInFullRes:function()
     {
-        var fullRes = this.map.getZoomForResolution(zoomFullResScale, true);
+        var fullRes = this.map.getZoomForResolution(this.zoomFullResScale, true);
 
         this.map.zoomTo(fullRes);
     },
@@ -464,7 +479,7 @@ getMeasureUnit:function() {
     },
     clearBoundBox:function()
     {
-        aoiLayer.destroyFeatures();
+        this.aoiLayer.destroyFeatures();
         this.setExtent();
     },
 
@@ -485,7 +500,7 @@ getMeasureUnit:function() {
             this.bboxModel.off("change", this.bboxMapChanged, this);
             var extent = this.map.getExtent();
             this.bboxModel.set({"minx":extent.left, "miny":extent.bottom,
-                                "maxx":extent.right, "maxy":extent.top});
+                "maxx":extent.right, "maxy":extent.top});
             this.bboxModel.on("change", this.bboxMapChanged, this);
         }
     },
@@ -496,13 +511,13 @@ getMeasureUnit:function() {
         var ddMouse = document.getElementById("ddMouse");
         var dmsMouse = document.getElementById("dmsMouse");
         var mgrsMouse = document.getElementById("mgrsMouse");
-        
+
         if (mouse.lat < "90" && mouse.lat > "-90" && mouse.lon < "180" && mouse.lon > "-180")
         {
             ddMouse.innerHTML = "<b>DD:</b> " + mouse.lat + ", " + mouse.lon;
             dmsMouse.innerHTML = "<b>DMS:</b> " + convert.ddToDms(mouse.lat, mouse.lon);
             mgrsMouse.innerHTML = "<b>MGRS:</b> " + convert.ddToMgrs(mouse.lat, mouse.lon);
-          
+
         }
         else
         {
@@ -514,8 +529,8 @@ getMeasureUnit:function() {
     resizeView:function(){
         var innerHeight = $(".inner-center").height();
         var mapHeight = innerHeight-($("#mapToolBar").height()+
-                                     $("#mapReadouts").height()
-                                      );
+            $("#mapReadouts").height()
+            );
         $("#MapContainer").height(innerHeight);
         //var mapHeight = $(this.el).height();//$('.inner-center').height()-100;
         $("#map").height(mapHeight);
@@ -553,15 +568,15 @@ getMeasureUnit:function() {
         }
     },
     setSearchType:function(searchType){
-      if(this.searchType)
-      {
-        this.searchType.off("change", this.searchTypeChanged, this);
-      }
-      this.searchType = searchType;
-      if(this.searchType)
-      {
-          this.searchType.on("change", this.searchTypeChanged, this);
-      }
+        if(this.searchType)
+        {
+            this.searchType.off("change", this.searchTypeChanged, this);
+        }
+        this.searchType = searchType;
+        if(this.searchType)
+        {
+            this.searchType.on("change", this.searchTypeChanged, this);
+        }
     },
     searchTypeChanged:function(){
         //alert("Map View: searchTypeChanged");
@@ -571,7 +586,7 @@ getMeasureUnit:function() {
         {
             tempLayers = "Videos";
         }
-         this.layers.forEach(function(value, key) {
+        this.layers.forEach(function(value, key) {
             value.mergeNewParams({layers:tempLayers});
         });
     },
@@ -581,7 +596,7 @@ getMeasureUnit:function() {
             this.serverCollection.off("change", this.serverCollectionChanged, this);
             this.serverCollection.off("reset",  this.serverCollectionReset,   this);
         }
-         this.serverCollection = serverCollection
+        this.serverCollection = serverCollection
         if(this.serverCollection)
         {
             this.serverCollection.on("reset", this.serverCollectionReset, this)
@@ -598,9 +613,9 @@ getMeasureUnit:function() {
             }
         }
         return new OpenLayers.Layer.WMS( model.get("nickname"),
-                                         model.get("url")+"/wms/footprints",
-                                         {layers: tempLayers, format:"image/gif",
-                                          styles: "byFileType", transparent:true});
+            model.get("url")+"/wms/footprints",
+            {layers: tempLayers, format:"image/gif",
+                styles: "byFileType", transparent:true});
     },
     setCqlFilterToFootprintLayers:function(cqlFilterString){
         this.layers.forEach(function(value, key) {
@@ -687,13 +702,13 @@ getMeasureUnit:function() {
     pointModelChanged:function()
     {
         var lonLat = new OpenLayers.LonLat(this.pointModel.get("x"),
-                                           this.pointModel.get("y"));
+            this.pointModel.get("y"));
         this.map.setCenter(lonLat)
     },
 
     render:function()
     {
-       this.reset();
+        this.reset();
     }
 });
 

@@ -20,7 +20,7 @@
         <div class="inner-west">
             <p>Units<g:select styles="z-index:-1" name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></p>
             <g:render plugin="omar-common-ui" template="/templates/wfsTypeNameTemplate"></g:render>
-            <p><g:checkBox name="spatialSearch" value="" checked="true"/> Use Spatial</p>
+            <p><g:checkBox id="spatialSearchFlag" value="" checked="true"/> Use Spatial</p>
 
             <form>
                 <p><input type="radio" id="bbox" name="spatialSearchType" value="bbox" checked="checked">Use Bound Box</p>

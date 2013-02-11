@@ -55,6 +55,7 @@ class GeoQueryUtil
   static def createClauseFromGeotoolsFilter(def fieldTypeMap, def filter, def caseInsensitiveFlag = true)
   {
     def result = null
+
     if ( filter instanceof org.geotools.filter.LogicFilter )
     {
       if ( filter instanceof org.geotools.filter.AndImpl )
@@ -114,7 +115,7 @@ class GeoQueryUtil
         geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
-                geom,
+                //geom,
                 SpatialRelation.EQUALS)
       }
       else if ( filter instanceof org.geotools.filter.spatial.WithinImpl )
@@ -126,7 +127,7 @@ class GeoQueryUtil
         geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
-                geom,
+               // geom,
                 SpatialRelation.WITHIN)
       }
       else if ( filter instanceof org.geotools.filter.spatial.ContainsImpl )
@@ -137,7 +138,6 @@ class GeoQueryUtil
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
         geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
-                geom,
                 geom,
                 SpatialRelation.CONTAINS)
       }
@@ -150,7 +150,7 @@ class GeoQueryUtil
         geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
-                geom,
+               // geom,
                 SpatialRelation.CROSSES)
       }
       else if ( filter instanceof org.geotools.filter.spatial.DisjointImpl )
