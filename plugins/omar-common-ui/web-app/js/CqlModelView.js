@@ -198,6 +198,7 @@ OMAR.models.CqlModel = Backbone.Model.extend({
     defaults:{
         id:"",
         name:"",
+        table:"",
         cql:"",
         conditions:""
     },

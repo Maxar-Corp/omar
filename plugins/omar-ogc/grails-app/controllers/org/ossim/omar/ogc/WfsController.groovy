@@ -118,6 +118,7 @@ class WfsController
     }
     finally
     {
+       // println "contentType: ${contentType}, text: ${results}"
       render contentType: contentType, text: results
     }
   }

@@ -11,10 +11,11 @@
   <li><a class="fNiv">Export</a>
     <ul>
       <li class="arrow"></li>
-      <li id="ExportKmlQueryId"><a>KML Query</a></li>
-      <li id="ExportGeoJsonId"><a>GeoJSON</a></li>
-      <li id="ExportGml2Id"><a>GML2</a></li>
-      <li id="ExportCsvId"><a>CSV</a></li>
+        <li id="ExportKmlQueryId"><a>KML Query</a></li>
+        <li id="ExportKmlId"><a>KML</a></li>
+        <li id="ExportGeoJsonId"><a>GeoJSON</a></li>
+        <li id="ExportGml2Id"><a>GML2</a></li>
+        <li id="ExportCsvId"><a>CSV</a></li>
     </ul>
   </li>
   

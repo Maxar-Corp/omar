@@ -65,6 +65,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     el:"#rasterSearchPageId",
     bboxView:null,
     initialize:function(params){
+        var thisPtr = this;
         this.cqlModel = new OMAR.models.CqlModel();
         this.wfsTypeNameModel = new OMAR.models.WfsTypeNameModel();
         this.wfsTypeNameView = new OMAR.views.WfsTypeNameView({model:this.wfsTypeNameModel});
@@ -79,6 +80,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.menuModel = this.menuView.model;
 
         this.menuView.bind("onKmlQueryClicked", this.kmlQueryClicked, this);
+        this.menuView.bind("onKmlClicked", this.kmlClicked, this);
         this.menuView.bind("onGeoJsonClicked", this.geoJsonClicked, this);
         this.menuView.bind("onGml2Clicked", this.gml2Clicked, this);
         this.menuView.bind("onCsvClicked", this.csvClicked, this);
@@ -130,6 +132,11 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.viewSelector.bind("show", this.showTab, this);
         this.wfsTypeNameModel.bind("change", this.wfsTypeNameChanged, this);
         this.cqlModel.bind("change", this.cqlModelChanged, this);
+        this.useSpatialFlag = $('#spatialSearchFlag').is(":checked");
+        $('#spatialSearchFlag').click(function() {
+            thisPtr.useSpatialFlag = $(this).is(':checked');
+            thisPtr.updateFootprintCql();
+        });
     },
     events: {
         "click #SearchRasterId": "searchRaster"
@@ -167,8 +174,77 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         }
     },
     kmlQueryClicked:function(){
-        alert("kml query code goes here...");
+
+        // alert(this.mapView.hasBBOXSelection());
+        var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
+        var wfsModel = this.dataModelView.wfsModel.clone();
+        var cqlFilter = wfsModel.get("filter");
+
+        var currentSelection = this.dataModelView.getCurrentSelection();
+
+        wfsModel.set({
+            outputFormat:"kmlquery"
+            ,resultType:""
+        });
+        //var saveSpatial = this.useSpatialFlag;
+        //this.useSpatialFlag = this.mapView.hasBBOXSelection();
+        //cqlFilter = this.toCql();
+        //this.useSpatialFlag = saveSpatial;
+
+        if(currentSelection.size() > 0) {
+            var idCql = "(id in (" + currentSelection.toStringOfIds() + "))";
+
+            if(!cqlFilter) {
+                cqlFilter = idCql;
+            }
+            else {
+                cqlFilter = idCql + " AND " + cqlFilter;
+            }
+            // clear out offset if there is a selection
+            wfsModel.set({
+                maxFeatures:""
+                ,offset:""
+                ,filter:cqlFilter
+            });
+        }
+        else
+        {
+            wfsModel.set({
+                filter:cqlFilter
+            });
+
+        }
+        window.open(wfsModel.toUrl(),"myWindow");
     },
+    kmlClicked:function(){
+        var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
+        var wfsModel = this.dataModelView.wfsModel.clone();
+        var cqlFilter = wfsModel.get("filter");
+        var currentSelection = this.dataModelView.getCurrentSelection();
+        wfsModel.set({
+            outputFormat:"kml"
+            ,resultType:""
+        });
+        if(currentSelection.size() > 0) {
+            var idCql = "(id in (" + currentSelection.toStringOfIds() + "))";
+
+            if(!cqlFilter) {
+                cqlFilter = idCql;
+            }
+            else {
+                cqlFilter = idCql + " AND " + cqlFilter;
+            }
+            // clear out offset if there is a selection
+            wfsModel.set({
+                maxFeatures:""
+                ,offset:""
+                ,filter:cqlFilter
+            });
+        }
+
+        window.open(wfsModel.toUrl(),"myWindow");
+    },
+
     geoJsonClicked:function(){
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
         var wfsModel = this.dataModelView.wfsModel.clone();
@@ -350,7 +426,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         }
         var spatialQueryCql;
 
-        if ($('#spatialSearch').is(':checked')) {
+        //if ($('#spatialSearchFlag').is(':checked')) {
+        if (this.useSpatialFlag) {
             if( $('input[name=spatialSearchType]:checked').val() == "bbox" )
             {
                 spatialQueryCql = this.bboxModel.toCql("ground_geom");
@@ -467,21 +544,6 @@ $(document).ready(function () {
 
 
 });
-
-
-function generateKmlQuery() {
-    alert("kml query code goes here.")
-}
-
-function refreshFootprints() {
-    alert("refresh footprints code goes here.")
-}
-
-function search() {
-    alert("search code goes here.")
-}
-
-
 
 
 
