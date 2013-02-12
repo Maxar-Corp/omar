@@ -181,6 +181,7 @@ OMAR.views.Map = Backbone.View.extend({
                 ,displayClass: 'olControlPanZoom'
             }
         );
+        panButton.draw = function(){}
         var zoomBoxButton =  new OpenLayers.Control.ZoomBox(
             {
                 alwaysZoom: true
