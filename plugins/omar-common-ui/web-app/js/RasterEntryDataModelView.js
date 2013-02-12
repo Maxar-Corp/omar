@@ -636,9 +636,6 @@ OMAR.views.DataModelView = Backbone.View.extend({
     getCurrentSelection:function(){
         return this.selectedCollection;
     },
-    setSelectectedCollectionModel:function(){
-
-    },
     setWfsTypeNameModel:function(wfsTypeNameModel)
     {
         if(this.wfsTypeNameModel)
@@ -734,7 +731,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
             "bServerSide": true,
             'bFilter': false,
             "aaSorting": [[ 1, 'desc' ]],
-            "aLengthMenu": [1,10,25,50,100],
+            "aLengthMenu": [5,10,25,50,100],
             "fnDrawCallback":$.proxy(this.drawCallback,this),
             "fnServerData": $.proxy(this.getServerData,this)
         });
@@ -743,11 +740,6 @@ OMAR.views.DataModelView = Backbone.View.extend({
 
         this.groupedViews.setElement($("div.groupViewSelection"));
         this.groupedViews.render();
-
-//        this.fixedColumns = new FixedColumns(this.dataTable,
-//                                            {"iLeftColumns" :1,
-//                                             "iLeftWidth" :32,
-//                                             "sHeightMatch" :"auto"});
 
         this.resizeView();
     },
@@ -788,8 +780,6 @@ OMAR.views.DataModelView = Backbone.View.extend({
                 thisPtr.selectedCollection.remove({id:recordId});
             }
 
-            //alert(thisPtr.selectedCollection.size());
-            //    alert("CLICKED");
             thisPtr.checkAllRowsChecked();
         });
         $("#columnSelectId").bind("click",function(){
@@ -927,9 +917,9 @@ OMAR.views.DataModelView = Backbone.View.extend({
                 sort += "+D";
 
             }
-            if((wfsModel.attributes.maxFeatures != oSettings._iDisplayLength)||
-                (wfsModel.attributes.offset != oSettings._iDisplayStart)||
-                (wfsModel.attributes.sort != sort)
+            if((wfsModel.get("maxFeatures") != oSettings._iDisplayLength)||
+                (wfsModel.get("offset") != oSettings._iDisplayStart)||
+                (wfsModel.get("sortBy") != sort)
                 )
             {
                 wfsModel.dirty = true;
@@ -951,7 +941,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
                 {
                     this.spinner.stop();
                 }
-                this.spinner.spin($(".inner-center")[0]);
+                this.spinner.spin($(this.el)[0]);//$(".inner-center")[0]);
                 this.modelRequest = model.fetch({dataType: "jsonp",
                     update: false,
                     remove: true,

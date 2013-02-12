@@ -188,7 +188,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         });
         //var saveSpatial = this.useSpatialFlag;
         //this.useSpatialFlag = this.mapView.hasBBOXSelection();
-        //cqlFilter = this.toCql();
+        cqlFilter = this.toCql();
         //this.useSpatialFlag = saveSpatial;
 
         if(currentSelection.size() > 0) {

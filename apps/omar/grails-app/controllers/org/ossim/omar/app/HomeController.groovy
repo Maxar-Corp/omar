@@ -9,7 +9,7 @@ class HomeController
     {
       if ( modelAndView.viewName == "/home/index" )
       {
-        modelAndView.viewName = modelAndView.viewName + "_mobile"
+       // modelAndView.viewName = modelAndView.viewName + "_mobile"
       }
     }
   }

@@ -19,7 +19,9 @@ OpenLayers.Handler.Multitouch = OpenLayers.Class(OpenLayers.Handler, {
 	last: null,
 
 	dragging: false,
-
+    initialize: function(options){
+        alert("HERE!!!!");
+    },
 	touchstart: function(e) {
 		if (this.last) {
 			// if new finger being added, finish current move sequence first
