@@ -1,7 +1,7 @@
 import geodata.City
 import geodata.CityData
 import gov.spawar.icode.Ais
-import gov.spawar.icode.AisData
+import gov.spawar.icode.DataLoader
 
 class BootStrap
 {
@@ -15,7 +15,7 @@ class BootStrap
     
     if (Ais.count() == 0)
     {
-      def aisData = new AisData(sessionFactory: sessionFactory)
+      def aisData = new DataLoader(sessionFactory: sessionFactory)
 
       aisData.loadAisCSV('SanDiego.csv')
       aisData.loadAisCSV('Chile2.csv')
