@@ -11,12 +11,12 @@
   <li><a class="fNiv">Export</a>
     <ul>
       <li class="arrow"></li>
-        <li id="ExportKmlQueryId" title="Will take a default action.  Fixes the BBOX query if use spatial is true and floats the bbox if not"><a>KML Query</a></li>
-        <li id="ExportKmlQueryFloatBboxId" title="Bbox is not fixed even if you provide one"><a>KML Query Float Bbox</a></li>
-        <li id="ExportKmlId" title="Outputs the currently selected items on the results or if none are selected it will do the currently listed items in the results page"><a>KML</a></li>
-        <li id="ExportGeoJsonId"><a>GeoJSON</a></li>
-        <li id="ExportGml2Id"><a>GML2</a></li>
-        <li id="ExportCsvId"><a>CSV</a></li>
+        <li id="ExportKmlQueryId" title="Will take a default action.  Fixes the BBOX query to your spatial BBOX defintion.  If use spatial is unselected and no BBOX is present then the BBOX constraint will float with the google viewport."><a>KML Query</a></li>
+        <li id="ExportKmlQueryFloatBboxId" title="Forces spatial contraint for BBOX to change with the google earth viewport."><a>KML Query Float Bbox</a></li>
+        <li id="ExportKmlId" title="The current selection or if no selection the current page of results will be output as KML"><a>KML</a></li>
+        <li id="ExportGeoJsonId" title="The current selection or if no selection the current page of results will be output as GeoJSON"><a>GeoJSON</a></li>
+        <li id="ExportGml2Id" title="The current selection or if no selection the current page of results will be output as GML2"><a>GML2</a></li>
+        <li id="ExportCsvId" title="The current selection or if no selection the current page of results will be output as CSV"><a>CSV</a></li>
     </ul>
   </li>
   

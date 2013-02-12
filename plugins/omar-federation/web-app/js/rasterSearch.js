@@ -79,7 +79,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.menuView = new OMAR.views.MenuView();
         this.menuModel = this.menuView.model;
 
-        this.menuView.bind("onKmlQueryClicked", this.kmlQueryClicked, this);
+        this.menuView.bind("onKmlQueryClicked", $.proxy(this.kmlQueryClicked, this, false));
+        this.menuView.bind("onKmlQueryFloatBboxClicked", $.proxy(this.kmlQueryClicked, this, true));//this.kmlQueryFloatBboxClicked, this);
         this.menuView.bind("onKmlClicked", this.kmlClicked, this);
         this.menuView.bind("onGeoJsonClicked", this.geoJsonClicked, this);
         this.menuView.bind("onGml2Clicked", this.gml2Clicked, this);
@@ -173,7 +174,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.viewSelector.setText(2, model.get("nickname"));
         }
     },
-    kmlQueryClicked:function(){
+
+    kmlQueryClicked:function(forceFloatBbox){
 
         // alert(this.mapView.hasBBOXSelection());
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
@@ -186,10 +188,17 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             outputFormat:"kmlquery"
             ,resultType:""
         });
-        //var saveSpatial = this.useSpatialFlag;
-        //this.useSpatialFlag = this.mapView.hasBBOXSelection();
-        cqlFilter = this.toCql();
-        //this.useSpatialFlag = saveSpatial;
+        if(forceFloatBbox)
+        {
+            var saveSpatial = this.useSpatialFlag;
+            this.useSpatialFlag = false;
+            cqlFilter = this.toCql();
+            this.useSpatialFlag = saveSpatial;
+        }
+        else
+        {
+            cqlFilter = this.toCql();
+        }
 
         if(currentSelection.size() > 0) {
             var idCql = "(id in (" + currentSelection.toStringOfIds() + "))";
@@ -214,7 +223,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             });
 
         }
-        window.open(wfsModel.toUrl(),"myWindow");
+
+        window.open(wfsModel.toUrl(),"_parent");
     },
     kmlClicked:function(){
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
@@ -242,7 +252,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             });
         }
 
-        window.open(wfsModel.toUrl(),"myWindow");
+        window.open(wfsModel.toUrl(),"_parent");
     },
 
     geoJsonClicked:function(){
@@ -273,7 +283,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         }
 
-        window.open(wfsModel.toUrl(),"myWindow");
+        window.open(wfsModel.toUrl(),"_parent");
     },
     gml2Clicked:function(){
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
@@ -303,7 +313,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         }
 
-        window.open(wfsModel.toUrl(),"myWindow");
+        window.open(wfsModel.toUrl(),"_parent");
     },
     csvClicked:function(){
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
@@ -333,7 +343,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         }
 
-        window.open(wfsModel.toUrl(),"myWindow");
+        window.open(wfsModel.toUrl(),"_parent");
     },
     wfsTypeNameChanged:function()
     {
