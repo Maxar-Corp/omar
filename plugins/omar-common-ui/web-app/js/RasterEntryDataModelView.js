@@ -65,7 +65,7 @@ OMAR.models.VideoDatasetCollection=Backbone.Collection.extend({
                 var bboxModel = new OMAR.models.BBOX();
                 bboxModel.setFromWfsFeatureGeom(feature.geometry);
                 var bbox = bboxModel.toWmsString();
-
+                var centerPoint = bboxModel.getCenter();
                 //alert(showVideoJavascript);
                 //alert(bbox);
                 model.set({
