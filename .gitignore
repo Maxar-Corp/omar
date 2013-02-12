@@ -4,6 +4,7 @@ apps/omar/*.iml
 apps/omar/*.ipr
 apps/omar/*.iws
 apps/omar/.settings/*.iml
+apps/omar/target/
 apps/omar/grails-app/*.iml
 apps/omar/grails-app/conf/*.iml
 apps/omar/grails-app/conf/hibernate/*.iml
@@ -531,3 +532,9 @@ plugins/postgis/web-app/images/*.iml
 plugins/postgis/web-app/images/skin/*.iml
 plugins/postgis/web-app/js/*.iml
 plugins/postgis/web-app/js/prototype/*.iml
+
+apps/geodata-test/ddl.sql
+
+apps/geodata-test/grails-app/conf/spy.properties
+
+apps/geodata-test/target/stacktrace.log
