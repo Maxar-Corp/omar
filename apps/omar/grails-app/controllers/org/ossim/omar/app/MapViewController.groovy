@@ -21,7 +21,7 @@ class MapViewController implements InitializingBean
   def afterInterceptor = { model, modelAndView ->
     if ( request['isMobile'] )
     {
-      modelAndView.viewName = modelAndView.viewName + "_mobile"
+     // modelAndView.viewName = modelAndView.viewName + "_mobile"
     }
   }
 
