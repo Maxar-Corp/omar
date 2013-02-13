@@ -9,6 +9,7 @@ import geoscript.workspace.Database
 import geoscript.geom.Geometry
 import geoscript.workspace.PostGIS
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.apache.commons.io.FilenameUtils
 
 import java.text.SimpleDateFormat
 
@@ -617,6 +618,8 @@ class WebFeatureService
     private String createKmlDescription( def wfsRequest,
                                          def feature)
     {
+        def flashDirRoot = grailsApplication.config.videoStreaming.flashDirRoot
+        def flashUrlRoot = grailsApplication.config.videoStreaming.flashUrlRoot
         def fields
         def labels
         def formatters
@@ -624,16 +627,20 @@ class WebFeatureService
         def thumbnail
         def url
         def tagLibBean = getTagLib();
-
+        def omarServerUrl = grailsApplication.config.omar.serverURL
+       // def flvUrl
+       // def flashPlayerUrl = tagLibBean.createLinkTo(dir: "js", file: "player.swf", base: "${grailsApplication.config.omar.serverURL}", absolute: true)
+        def mpegFile = feature["filename"] as File
+        def flvFile = "${flashDirRoot}/${mpegFile.name}.flv" as File
         if ( typeName == "raster_entry" )
         {
             fields = grailsApplication.config.export.rasterEntry.fields
             labels = grailsApplication.config.export.rasterEntry.labels
             formatters = grailsApplication.config.export.rasterEntry.formatters
-            url = tagLibBean.createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+            url = tagLibBean.createLink( absolute: true, base: omarServerUrl,
                     controller: "mapView", params: [layers: feature["index_id"]] )
 
-            thumbnail = tagLibBean.createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+            thumbnail = tagLibBean.createLink( absolute: true, base: omarServerUrl,
                     controller: "thumbnail", action: "show", id: feature["id"],
                     params: [size: 128, projectionType: 'imagespace'] )
         }
@@ -642,12 +649,23 @@ class WebFeatureService
             fields     = grailsApplication.config.export.videoDataSet.fields
             labels     = grailsApplication.config.export.videoDataSet.labels
             formatters = grailsApplication.config.export.videoDataSet.formatters
+            url = tagLibBean.createLink(absolute: true, base: omarServerUrl,
+                    controller: "videoStreaming",
+                    action: "show",
+                    id: feature['index_id'])
+            thumbnail = tagLibBean.createLink(absolute: true,
+                                              base: omarServerUrl,
+                                              controller: "thumbnail",
+                                              action: "frame",
+                                              id: feature['id'],
+                                              params: [size: 128])
+           // flvUrl = new URL("${flashUrlRoot}/${flvFile.name}")
         }
         def description = new StringWriter()
         description << "<table border='1'>"
         description << "<tr>"
         description << "<th align='right'>Thumbnail:</th>"
-        description << "<td><img src='${thumbnail}'/></td></tr>"
+        description << "<td><a href='\${url}'><img src='${thumbnail}'/></a></td></tr>"
 
 
         (0..fields.size()-1).each{idx->
@@ -679,6 +697,11 @@ class WebFeatureService
                 description << "<td>${value}</td></tr>"
             }
         }
+        def searchUrl = tagLibBean.createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}",controller: "federation", action: "search")
+        description << "<tr>"
+        description << "<th align='right'>Search:</th>"
+        description << "<td><a href='${searchUrl}'>Find More Data</a></td></tr>"
+
         def logoUrl = "${grailsApplication.config.omar.serverURL}/images/omarLogo.png"
                description << "<tfoot><tr><td colspan='2'><a href='${grailsApplication.config.omar.serverURL}'><img src='${logoUrl}'/></a></td></tr></tfoot>"
         description << "</table>"
@@ -687,8 +710,12 @@ class WebFeatureService
     }
     private String outputKML(def wfsRequest)
     {
+        def tagLibBean = getTagLib()
         def wmsParams = [:]
         def caseInsensitiveParams = new CaseInsensitiveMap( wfsRequest.properties )
+        def pushPin = tagLibBean.resource(absolute: true, base: "${grailsApplication.config.omar.serverURL}", plugin: "omar-common-ui", dir: "images/google", file: "red-pushpin.png")
+        SimpleDateFormat isdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        SimpleDateFormat osdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
         caseInsensitiveParams.format = "image/png"
         caseInsensitiveParams.version = "1.1.0"
         caseInsensitiveParams.transparent = "TRUE"
@@ -709,7 +736,6 @@ class WebFeatureService
         wmsParams.remove( "action" )
         wmsParams.remove( "controller" )
 
-        def tagLibBean = grailsApplication.mainContext.getBean("org.codehaus.groovy.grails.plugins.web.taglib.ApplicationTagLib")
         def workspace = getWorkspace()
         def layer = workspace[wfsRequest?.typeName]
         def filterParams = [
@@ -727,59 +753,183 @@ class WebFeatureService
         def kmlBuilder = new StreamingMarkupBuilder();
         def kmlwriter = new StringWriter()
         kmlwriter << """<?xml version='1.0'?><kml xmlns='http://earth.google.com/kml/2.1'>"""
-        kmlwriter << "<Document><name>OMAR WMS</name>"
+        kmlwriter << "<Document>"
 
         def cursor = layer.getCursor( filterParams )
         while ( cursor?.hasNext() )
         {
             def feature = cursor.next();
             def description = createKmlDescription(wfsRequest, feature);
-            def acquisition = ( feature["acquisition_date"] ) ? sdf.format( feature["acquisition_date"] ) : null
             def bounds = feature["ground_geom"].bounds
             def groundCenterLon = ( bounds?.minX + bounds?.maxX ) * 0.5;
             def groundCenterLat = ( bounds?.minY + bounds?.maxY ) * 0.5;
-            // wmsParams?.layers = feature["index_id"]
-
             def renderedHtml = description
-            def mpp = feature["gsdy"]//rasterEntry.getMetersPerPixel()
-            // calculate a crude metric for putting an image that almost fits within the google viewport
-            //
-            def defaultRange = mpp * Math.sqrt( ( feature["width"] ** 2 ) + ( feature["height"] ** 2 ) );
-            if ( defaultRange < 1 )
+
+            if(wfsRequest?.typeName?.toLowerCase() == "raster_entry")
             {
-                defaultRange = 15000
-            }
+                kmlwriter << "<name>OMAR Rasters</name>"
 
-            kmlwriter << "<GroundOverlay><name>${feature['title']?:(feature['filename'] as File).name}</name><Snippet/><description><![CDATA[${renderedHtml}]]>}</description>"
-            kmlwriter << "<LookAt><longitude>${groundCenterLon}</longitude><latitude>${groundCenterLat}</latitude><altitude>0.0</altitude><heading>0.0</heading><tilt>0.0</tilt><range>${defaultRange}</range><altitudeMode>clampToGround</altitudeMode></LookAt>"
-            kmlwriter << "<open>1</open>"
-            kmlwriter << "<visibility>1</visibility>"
-            wmsParams.layers=feature['index_id']
-            def wmsURL = tagLibBean.createLink(
-                    absolute: true, base: "${grailsApplication.config.omar.serverURL}",
-                    controller: "ogc", action: "wms", params: wmsParams
-            )
-            kmlwriter << "<Icon><href><![CDATA[${wmsURL}]]></href>" <<
-                    "<viewRefreshMode>onStop</viewRefreshMode><viewRefreshTime>1</viewRefreshTime>" <<
-                    "<viewBoundScale>0.85</viewBoundScale>" <<
-                    "<viewFormat><![CDATA[BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&width=[horizPixels]&height=[vertPixels]]]></viewFormat></Icon>"
+                def acquisition = ( feature["acquisition_date"] ) ? sdf.format( feature["acquisition_date"] ) : null
+                // wmsParams?.layers = feature["index_id"]
+                def mpp = feature["gsdy"]//rasterEntry.getMetersPerPixel()
+                // calculate a crude metric for putting an image that almost fits within the google viewport
+                //
+                def defaultRange = mpp * Math.sqrt( ( feature["width"] ** 2 ) + ( feature["height"] ** 2 ) );
+                if ( defaultRange < 1 )
+                {
+                    defaultRange = 15000
+                }
 
-            kmlwriter <<"<LatLonBox>"
-          //  if (bbox)
-          //  {
-          //
-          //  }
-          //  else
-          //  {
+                kmlwriter << "<GroundOverlay><name>${feature['title']?:(feature['filename'] as File).name}</name><Snippet/><description><![CDATA[${renderedHtml}]]>}</description>"
+                kmlwriter << "<LookAt><longitude>${groundCenterLon}</longitude><latitude>${groundCenterLat}</latitude><altitude>0.0</altitude><heading>0.0</heading><tilt>0.0</tilt><range>${defaultRange}</range><altitudeMode>clampToGround</altitudeMode></LookAt>"
+                kmlwriter << "<open>1</open>"
+                kmlwriter << "<visibility>1</visibility>"
+                wmsParams.layers=feature['index_id']
+                def wmsURL = tagLibBean.createLink(
+                        absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+                        controller: "ogc", action: "wms", params: wmsParams
+                )
+                kmlwriter << "<Icon><href><![CDATA[${wmsURL}]]></href>" <<
+                        "<viewRefreshMode>onStop</viewRefreshMode><viewRefreshTime>1</viewRefreshTime>" <<
+                        "<viewBoundScale>0.85</viewBoundScale>" <<
+                        "<viewFormat><![CDATA[BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&width=[horizPixels]&height=[vertPixels]]]></viewFormat></Icon>"
+
+                kmlwriter <<"<LatLonBox>"
+                //  if (bbox)
+                //  {
+                //
+                //  }
+                //  else
+                //  {
                 kmlwriter << "<north>${bounds?.maxY}</north><south>${bounds?.minY}</south>"
                 kmlwriter << "<east>${bounds?.maxX}</east><west>${bounds?.minX}</west>"
-          //  }
-            kmlwriter <<"</LatLonBox>"
-            if ( acquisition )
-            {
-                kmlwriter << "<TimeStamp><when>${acquisition}</when></TimeStamp>"
+                //  }
+                kmlwriter <<"</LatLonBox>"
+                if ( acquisition )
+                {
+                    kmlwriter << "<TimeStamp><when>${acquisition}</when></TimeStamp>"
+                }
+                kmlwriter << "</GroundOverlay>"
             }
-            kmlwriter << "</GroundOverlay>"
+            else
+            {
+                def flashbasename = "${FilenameUtils.getBaseName(feature['filename'])}.flv"
+                def createFlvUrl = tagLibBean.createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}",controller: "videoStreaming", action: "show", id: feature['index_id'])
+              //  def descriptionText = ""
+              //  def logoUrl = "${grailsApplication.config.omar.serverURL}/images/omarLogo.png"
+              //  def thumbnailUrl = tagLibBean.createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "thumbnail", action: "frame", id: feature['id'], params: [size: 128])
+                kmlwriter << "<name>OMAR Videos</name>"
+                def styleBuilder = new StreamingMarkupBuilder().bind{
+                    Style("id": "sh_red") {
+                        LineStyle() {
+                            color("ffOOOOff")
+                        }
+                        PolyStyle {
+                            color("7f00005f")
+                        }
+                        IconStyle {
+                            color("ff00007f")
+                            scale("1.0")
+                            Icon() {
+                               href("${pushPin}")
+                            }
+                            hotspot("x": "20", "y": "2", "xunits": "pixels", "yunits": "pixels")
+                        }
+                    }
+                    Style("id": "sn_red") {
+                        LineStyle() {
+                            color("ff00007f")
+                        }
+                        PolyStyle {
+                            color("3f00001f")
+                        }
+                        IconStyle {
+                            color("ff00007f")
+                            scale("1.0")
+                            Icon() {
+                                href("${pushPin}")
+                            }
+                            hotspot("x": "20", "y": "2", "xunits": "pixels", "yunits": "pixels")
+                        }
+                    }
+                    StyleMap("id": "red") {
+                        Pair() {
+                            key("normal")
+                            styleUrl("#sn_red")
+                        }
+                        Pair() {
+                            key("highlight")
+                            styleUrl("#sh_red")
+                        }
+                    }
+                }
+                def point = null
+                def polygons = []
+                def kmlPoly = ""
+                feature['ground_geom'].each() {geom ->
+                    // for now until we have a utility to get access to all polgons we will assume multi
+                    // geom and each is a poly
+                    //
+                    (0..geom.getNumGeometries() - 1).each() {geomIdx ->
+                        def poly = geom.getGeometryN(geomIdx) as geoscript.geom.Polygon
+                        if ( poly )
+                        {
+                            kmlPoly = ""
+                            def ring = poly.getExteriorRing();
+                            def coordinates = ring.getCoordinates();
+                            if ( coordinates.size() > 0 )
+                            {
+                                (0..coordinates.size() - 1).each() {coordIdx ->
+                                    kmlPoly = "${kmlPoly} ${coordinates[coordIdx].x},${coordinates[coordIdx].y}"
+                                    if ( !point )
+                                    {
+                                        point = "${coordinates[coordIdx].x},${coordinates[coordIdx].y}"
+                                    }
+                                }
+                            }
+                            polygons.add(kmlPoly)
+                        }
+                    }
+                }
+                def multiGeometryBuilder = new StreamingMarkupBuilder().bind{
+                    MultiGeometry() {
+                        polygons.each { polygon ->
+                            Polygon() {
+                                tessellate("1")
+                               // altitudeMode("relativeToGround")
+                                altitudeMode("clampToGround")
+                                outerBoundaryIs() {
+                                    LinearRing() {
+                                        coordinates("${polygon}")
+                                    }
+                                }
+                            }
+                        }
+                        Point() {
+                            altitudeMode("clampToGround")
+
+                            //altitudeMode("relativeToGround")
+                            coordinates("${point}")
+                        }
+                    } // END MultiGeometry()
+                }
+                kmlwriter << styleBuilder.toString()
+
+                kmlwriter << "<Placemark><styleUrl>#red</styleUrl>"
+                kmlwriter << "<name>${flashbasename}</name>"
+                kmlwriter << "<description><![CDATA[${description}]]></description>"
+                kmlwriter << "<Snippet><![CDATA[<a href='${createFlvUrl}'>CLICK TO PLAY</a>]]></Snippet>"
+                kmlwriter << multiGeometryBuilder.toString()
+
+                if ( feature['start_date'] )
+                {
+                    kmlwriter << "<Timestamp>"
+                    kmlwriter << "<when>${osdf.format(new Date(isdf.parse(feature['start_date'] as String) as String))}</when>"
+                    kmlwriter << "</Timestamp>"
+                }
+
+                kmlwriter << "</Placemark>"
+            }
         }
         kmlwriter << "</Document></kml>"
         cursor?.close()
@@ -793,7 +943,6 @@ class WebFeatureService
         wfsRequest.properties.each { caseInsensitiveParams.put( it.key.toLowerCase(),it.value)}
         def filter = caseInsensitiveParams.filter?:""
         def bbox
-        //println "--------------${filter}"
         if (!filter.contains("BBOX("))
         {
             if (!filter)
@@ -882,7 +1031,6 @@ class WebFeatureService
                 "<viewRefreshMode>onRequest</viewRefreshMode>"
         kmlwriter << "</Link></NetworkLink></kml>"
         String kmlText = kmlwriter.buffer
-        //println kmlText
         return kmlText
     }
 

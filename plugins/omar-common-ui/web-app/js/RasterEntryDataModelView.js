@@ -59,7 +59,9 @@ OMAR.models.VideoDatasetCollection=Backbone.Collection.extend({
                 }
                 var showVideo = omarUrl +"/videoStreaming/show/" + model.get("index_id");
                 var showVideoJavascript = "javascript:" + "window.open(\"" + showVideo + "\")";
-                var omarUrlGetKML = omarUrl + "/videoStreaming/getKML/" + model.id;
+               // var omarUrlGetKML = omarUrl + "/videoStreaming/getKML/" + model.id;
+                var tempWfsValue =  "filter=id in(" + model.get("id")+")";
+                var omarUrlGetKML = omarUrl + "/wfs?service=WFS&version=1.1.0&request=GetFeature&outputFormat=kml&typeName=video_data_set&"+tempWfsValue;
                 var omarUrlGetKMLLink ="<li><a href='"+omarUrlGetKML +"'>Get KML</a></li>"
 
                 var bboxModel = new OMAR.models.BBOX();
@@ -303,7 +305,10 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                 var omarUrlCapabilitiesLink ="<li><label class='link_cursor' onclick='javascript:window.open(\""+omarUrlCapabilities+"\");'>WMS Capabilities</label></li>"
                 var omarUrlGetMap = omarUrl + '/ogc/wms?request=GetMap&layers=' + model.id+"&bbox="+bbox+"&srs=EPSG:4326&width="+chipWidth+"&height="+chipHeight+"&format=image/jpeg";
                 var omarUrlGetMapLink ="<li><label class='link_cursor' onclick='javascript:window.open(\""+omarUrlGetMap+"\");'>WMS GetMap</label></li>"
-                var omarUrlGetKML = omarUrl + '/ogc/wms?request=GetKML&layers=' + model.id+"&format=image/png&transparent=true";
+                var tempWfsValue =  "filter=id in(" + model.get("id")+")";
+                var omarUrlGetKML = omarUrl + "/wfs?service=WFS&version=1.1.0&request=GetFeature&outputFormat=kml&typeName=raster_entry&"+tempWfsValue;
+
+               // var omarUrlGetKML = omarUrl + '/ogc/wms?request=GetKML&layers=' + model.id+"&format=image/png&transparent=true";
 
                 if(model.get("bit_depth") > 8)
                 {
@@ -898,7 +903,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
         }
         var wfsModel = this.wfsModel;
         var thisPtr = this;
-       // alert(sUrl);
+       //alert(sUrl);
         if(sUrl&&this.model&&wfsModel)
         {
             //thisPtr.blockGetServerData = true;
