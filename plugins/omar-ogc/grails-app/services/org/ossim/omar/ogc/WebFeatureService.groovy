@@ -665,7 +665,7 @@ class WebFeatureService
         description << "<table border='1'>"
         description << "<tr>"
         description << "<th align='right'>Thumbnail:</th>"
-        description << "<td><a href='\${url}'><img src='${thumbnail}'/></a></td></tr>"
+        description << "<td><a href='${url}'><img src='${thumbnail}'/></a></td></tr>"
 
 
         (0..fields.size()-1).each{idx->
