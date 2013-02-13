@@ -13,11 +13,9 @@ class WfsController
   def index()
   {
     def results, contentType
+    def wfsCommand = new WfsCommand()
     try
     {
-
-      def wfsCommand = new WfsCommand()
-
       //println request.method
 
       switch ( request.method.toUpperCase() )
