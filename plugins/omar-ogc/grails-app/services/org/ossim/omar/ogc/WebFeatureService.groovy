@@ -369,6 +369,16 @@ class WebFeatureService
         {
             layers = layerNames
         }
+        def outputFormat = wfsRequest.outputFormat?wfsRequest.outputFormat:""
+        outputFormat = outputFormat.toLowerCase()
+        if (outputFormat)
+        {
+            if (!outputFormat.contains("xml")&&
+                !outputFormat.contains("gml"))
+            {
+                throw new Exception("WFS describeFeatureType, outputFormat not supported ${wfsRequest?.outputFormat} only xml gml supported")
+            }
+        }
         def y = {
             mkp.xmlDeclaration()
             mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
@@ -384,25 +394,32 @@ class WebFeatureService
                 for(def layerName in layers)
                 {
                     def layer = workspace[layerName]
-                    xsd.complexType( name: "${ layer.name }Type" ) {
-                        xsd.complexContent {
-                            xsd.extension( base: "gml:AbstractFeatureType" ) {
-                                xsd.sequence {
-                                    for ( def field in layer.schema.fields )
-                                    {
-                                        def descr = layer.schema.featureType.getDescriptor( field.name )
-                                        xsd.element(
-                                                maxOccurs: "${ descr.maxOccurs }",
-                                                minOccurs: "${ descr.minOccurs }",
-                                                name: "${ field.name }",
-                                                nillable: "${ descr.nillable }",
-                                                type: "${ typeMappings.get( field.typ, field.typ ) }" )
+                    if(layer)
+                    {
+                        xsd.complexType( name: "${ layer.name }Type" ) {
+                            xsd.complexContent {
+                                xsd.extension( base: "gml:AbstractFeatureType" ) {
+                                    xsd.sequence {
+                                        for ( def field in layer.schema.fields )
+                                        {
+                                            def descr = layer.schema.featureType.getDescriptor( field.name )
+                                            xsd.element(
+                                                    maxOccurs: "${ descr.maxOccurs }",
+                                                    minOccurs: "${ descr.minOccurs }",
+                                                    name: "${ field.name }",
+                                                    nillable: "${ descr.nillable }",
+                                                    type: "${ typeMappings.get( field.typ, field.typ ) }" )
+                                        }
                                     }
                                 }
                             }
                         }
+                        xsd.element( name: layer.name, substitutionGroup: "gml:_Feature", type: "omar:${ layer.name }Type" )
                     }
-                    xsd.element( name: layer.name, substitutionGroup: "gml:_Feature", type: "omar:${ layer.name }Type" )
+                    else
+                    {
+                        throw new Exception("Layer name not found ${layerName}")
+                    }
                 }
             }
         }
@@ -456,8 +473,8 @@ class WebFeatureService
                 contentType = 'application/json'
                 break
             default:
-                results = outputGML( wfsRequest )
-                contentType = 'text/xml; subtype=gml/2.1.2'
+                    results = outputGML( wfsRequest )
+                    contentType = 'text/xml; subtype=gml/2.1.2'
         }
         //}
 
