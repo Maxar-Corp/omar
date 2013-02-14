@@ -75,7 +75,7 @@ class WebFeatureService
                         GetCapabilities {
                             DCPType {
                                 HTTP {
-                                    Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'GetCapabilities'] ) )
+                                    Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs'/*, params: [request: 'GetCapabilities']*/ ) )
                                 }
                             }
                             DCPType {
@@ -90,7 +90,7 @@ class WebFeatureService
                             }
                             DCPType {
                                 HTTP {
-                                    Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'DescribeFeatureType'] ) )
+                                    Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs'/*, params: [request: 'DescribeFeatureType']*/ ) )
                                 }
                             }
                             DCPType {
@@ -111,7 +111,7 @@ class WebFeatureService
                             }
                             DCPType {
                                 HTTP {
-                                    Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'GetFeature'] ) )
+                                    Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs'/*, params: [request: 'GetFeature']*/ ) )
                                 }
                             }
                             DCPType {
