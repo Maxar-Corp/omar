@@ -357,11 +357,18 @@ class WebFeatureService
     {
         def results, contentType
 
-        //println wfsRequest
 
         def workspace = getWorkspace()
-        def layer = workspace[wfsRequest?.typeName]
 
+        def layers
+        if (wfsRequest.typeName)
+        {
+            layers = [wfsRequest.typeName]
+        }
+        else
+        {
+            layers = layerNames
+        }
         def y = {
             mkp.xmlDeclaration()
             mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
@@ -374,35 +381,38 @@ class WebFeatureService
             ) {
                 xsd.'import'( namespace: "http://www.opengis.net/gml",
                         schemaLocation: "http://schemas.opengis.net/gml/2.1.2/feature.xsd" )
-
-                xsd.complexType( name: "${ layer.name }Type" ) {
-                    xsd.complexContent {
-                        xsd.extension( base: "gml:AbstractFeatureType" ) {
-                            xsd.sequence {
-                                for ( def field in layer.schema.fields )
-                                {
-                                    def descr = layer.schema.featureType.getDescriptor( field.name )
-                                    xsd.element(
-                                            maxOccurs: "${ descr.maxOccurs }",
-                                            minOccurs: "${ descr.minOccurs }",
-                                            name: "${ field.name }",
-                                            nillable: "${ descr.nillable }",
-                                            type: "${ typeMappings.get( field.typ, field.typ ) }" )
+                for(def layerName in layers)
+                {
+                    def layer = workspace[layerName]
+                    xsd.complexType( name: "${ layer.name }Type" ) {
+                        xsd.complexContent {
+                            xsd.extension( base: "gml:AbstractFeatureType" ) {
+                                xsd.sequence {
+                                    for ( def field in layer.schema.fields )
+                                    {
+                                        def descr = layer.schema.featureType.getDescriptor( field.name )
+                                        xsd.element(
+                                                maxOccurs: "${ descr.maxOccurs }",
+                                                minOccurs: "${ descr.minOccurs }",
+                                                name: "${ field.name }",
+                                                nillable: "${ descr.nillable }",
+                                                type: "${ typeMappings.get( field.typ, field.typ ) }" )
+                                    }
                                 }
                             }
                         }
                     }
+                    xsd.element( name: layer.name, substitutionGroup: "gml:_Feature", type: "omar:${ layer.name }Type" )
                 }
-                xsd.element( name: layer.name, substitutionGroup: "gml:_Feature", type: "omar:${ layer.name }Type" )
             }
         }
 
-        workspace.close()
-
+        //def z = y
         def z = new StreamingMarkupBuilder( encoding: 'UTF-8' ).bind( y )
 
         results = z?.toString()
         contentType = 'application/xml'
+        workspace.close()
 
         return [results, contentType]
 
