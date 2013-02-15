@@ -49,7 +49,7 @@ class JabberFederatedServerService implements InitializingBean{
                 jabberChatRoomId          = settings?.chatRoom?.id
                 jabberChatRoomPassword    = settings?.chatRoom?.password
                 enabled = settings?.chatRoom?.enabled
-                vCard.setJabberId("${settings?.vcard?.IP}@${jabberDomain}")//"${config?.omar?.serverIP}@${jabberDomain}")
+                vCard.setJabberId("${jabberUser}@${jabberDomain}")//"${config?.omar?.serverIP}@${jabberDomain}")
             }
            //println vCard.toString()
            //println "${jabberDomain}, ${jabberPort}, ${jabberUser}, ${jabberPassword}, ${jabberChatRoomId}, ${jabberChatRoomPassword}"
@@ -65,54 +65,78 @@ class JabberFederatedServerService implements InitializingBean{
         def vcardList = getAllVCards()
         FederatedServer.withTransaction {
             FederatedServer.executeUpdate('delete from FederatedServer')
-
-            def fullUserId = makeFullUserNameAndId(vCard.getField("IP"));
-                def federatedServer = new FederatedServer([serverId:fullUserId.id,
-                        available: true,
-                        vcard: vCard.toString()])
-            federatedServer.save()
-
+            makeAvailable(jabberUser);
             vcardList.each{vcard->
-                def ip = vcard.getField("IP")
-                if (ip)
+                try{
+                    def user = vcard.jabberId.split("@")[0];
+                     println user
+                    makeAvailable(user)
+                }
+                catch(def e)
                 {
-                    makeAvailable(vcard.getField("IP"))
+
                 }
             }
         }
+    }
+    private replaceSpecialCharacters(def value)
+    {
+       return value.replaceAll(~/\@|\.|\ |\&/, "")
     }
     def makeFullUserNameAndId(def userName)
     {
         def full = userName + "@" + jabberDomain
-        def fullId = full.replaceAll(~/\@|\.|\ |\&/, "")
+        def fullId = replaceSpecialCharacters(full)
         return [user:full, id:fullId]
     }
     def makeAvailable(def userName)
     {
-        def fullUserId = makeFullUserNameAndId(userName)//userName + "@" + jabberDomain
-        def tempCard = new VCard();
         try{
-            tempCard.load(jabber.connection, fullUserId.user);
-            def ip =  tempCard.getField("IP");
-            if(ip)
+            def fullUserId = makeFullUserNameAndId(userName)//userName + "@" + jabberDomain
+            def id = fullUserId.id
+            def vcard
+            if (userName.equals(jabberUser))
             {
-                FederatedServer.withTransaction{
-                    def federatedServer = new FederatedServer([serverId:fullUserId.id,
-                            available: true,
-                            vcard: tempCard.toString()])
-                    federatedServer.save()
+                vcard = vCard
+            }
+            else
+            {
+                vcard = new VCard();
+                vcard.load(jabber.connection, fullUserId.user);
+            }
+            if (vcard)
+            {
+                def ip =  vcard.getField("IP");
+                if(ip)
+                {
+                    FederatedServer.withTransaction{
+                        def federatedServer = new FederatedServer([serverId:id,
+                                available: true,
+                                vcard: vcard.toString()])
+                        federatedServer.save()
+                    }
                 }
             }
+
         }
         catch(def e)
         {
+
         }
     }
     def makeUnavailable(def userName)
     {
-        def fullUser = makeFullUserNameAndId(userName)
-        FederatedServer.withTransaction{
-            FederatedServer.where{serverId==fullUser.id}.deleteAll()
+        def fullUserId = makeFullUserNameAndId(userName)//userName + "@" + jabberDomain
+        def tempCard = new VCard();
+        try{
+            def fullUser = makeFullUserNameAndId(userName)
+            FederatedServer.withTransaction{
+                FederatedServer.where{serverId==fullUser.id}.deleteAll()
+            }
+        }
+        catch(def e)
+        {
+
         }
     }
     def getServerList()
