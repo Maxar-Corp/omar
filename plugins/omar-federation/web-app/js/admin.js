@@ -62,8 +62,8 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
         this.omarFederationVcardLastName       = $(this.el).find("#OmarFederationVcardLastName");
         this.omarFederationServerIp            = $(this.el).find("#OmarFederationServerIp");
         this.omarFederationServerPort          = $(this.el).find("#OmarFederationServerPort");
-        this.omarFederationServerAdminUsername = $(this.el).find("#OmarFederationServerAdminUsername");
-        this.omarFederationServerAdminPassword = $(this.el).find("#OmarFederationServerAdminPassword");
+        this.omarFederationServerUsername = $(this.el).find("#OmarFederationServerUsername");
+        this.omarFederationServerPassword = $(this.el).find("#OmarFederationServerPassword");
         this.omarFederationChatRoomId          = $(this.el).find("#OmarFederationChatRoomId");
         this.omarFederationChatRoomPassword    = $(this.el).find("#OmarFederationChatRoomPassword");
         this.omarFederationChatRoomEnabled     = $(this.el).find("#OmarFederationChatRoomEnabled");
@@ -80,8 +80,8 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
 
         $(this.omarFederationServerIp).change(this.serverIpChanged.bind(this));
         $(this.omarFederationServerPort).change(this.serverPortChanged.bind(this));
-        $(this.omarFederationServerAdminUsername).change(this.serverUsernameChanged.bind(this));
-        $(this.omarFederationServerAdminPassword).change(this.serverPasswordChanged.bind(this));
+        $(this.omarFederationServerUsername).change(this.serverUsernameChanged.bind(this));
+        $(this.omarFederationServerPassword).change(this.serverPasswordChanged.bind(this));
 
         $(this.omarFederationChatRoomId).change(this.chatRoomIdChanged.bind(this));
         $(this.omarFederationChatRoomPassword).change(this.chatRoomPasswordChanged.bind(this));
@@ -140,7 +140,7 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
     },
     serverUsernameChanged:function(){
         var settings = this.model.get("settings");
-        settings.server.username = $(this.omarFederationServerAdminUsername).val();
+        settings.server.username = $(this.omarFederationServerUsername).val();
         //set is not working in IE maybe because of the nested settings so
         // lets force change
         //this.model.set("settings", settings);
@@ -148,7 +148,7 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
     },
     serverPasswordChanged:function(){
         var settings = this.model.get("settings");
-        settings.server.password = $(this.omarFederationServerAdminPassword).val();
+        settings.server.password = $(this.omarFederationServerPassword).val();
         //set is not working in IE maybe because of the nested settings so
         // lets force change
         //this.model.set("settings", settings);
@@ -241,8 +241,8 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
         $(this.omarFederationVcardLastName).val(settings.vcard.lastName);
         $(this.omarFederationServerIp).val(settings.server.ip);
         $(this.omarFederationServerPort).val(settings.server.port);
-        $(this.omarFederationServerAdminUsername).val(settings.server.username);
-        $(this.omarFederationServerAdminPassword).val(settings.server.password);
+        $(this.omarFederationServerUsername).val(settings.server.username);
+        $(this.omarFederationServerPassword).val(settings.server.password);
         $(this.omarFederationChatRoomId).val(settings.chatRoom.id);
         $(this.omarFederationChatRoomPassword).val(settings.chatRoom.password);
 

@@ -29,12 +29,12 @@
                     <td><input id="OmarFederationServerPort" type="text" value="5222"></input></td>
                 </tr>
                 <tr>
-                    <td>Admin Username</td>
-                    <td><input id="OmarFederationServerAdminUsername" type="text"></input></td>
+                    <td>Username</td>
+                    <td><input id="OmarFederationServerUsername" type="text"></input></td>
                 </tr>
                 <tr>
-                    <td>Admin Password</td>
-                    <td><input id="OmarFederationServerAdminPassword" type="password"></input></td>
+                    <td>Password</td>
+                    <td><input id="OmarFederationServerPassword" type="password"></input></td>
                 </tr>
             </table>
         </div>
