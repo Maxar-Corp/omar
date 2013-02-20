@@ -873,10 +873,10 @@ OMAR.views.DataModelView = Backbone.View.extend({
         var innerHeightAdjusted = innerHeight - 95;
         //$(this.el).find(".dataTable").height(innerHeightAdjusted);
         //$("data.dataTable").height(innerHeightAdjusted);
-       // $(".dataTables_wrapper").css("min-height", innerHeightAdjusted+"px");
-       // $(".dataTables_wrapper").css("height", innerHeightAdjusted+"px");
-       // $(".dataTables_scrollBody").css("height", innerHeightAdjusted+"px");
-       // $(".dataTables_scrollBody").css("min-height", innerHeightAdjusted+"px");
+        //$(".dataTables_wrapper").css("min-height", innerHeightAdjusted+"px");
+        //$(".dataTables_wrapper").css("height", innerHeightAdjusted+"px");
+        $(".dataTables_scrollBody").css("height", innerHeightAdjusted-20+"px");
+        $(".dataTables_scrollBody").css("min-height", innerHeightAdjusted-20+"px");
         this.dataTable.fnSettings().oScroll.sY = innerHeightAdjusted;
         this.dataTable.fnAdjustColumnSizing();
        // this.fixedColumns.fnRedrawLayout();

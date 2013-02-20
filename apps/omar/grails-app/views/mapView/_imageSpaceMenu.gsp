@@ -16,7 +16,7 @@
            title="OMAR™ Home">&nbsp;&nbsp;&nbsp;&nbsp;OMAR™ Home</a>
       </li>
 	<li class = "yuimenuitem first-of-type">
-		<a class="yuimenuitemlabel" href="${createLink(action: 'search', controller: 'rasterEntry')}" title="New Search">New Search</a>
+		<a class="yuimenuitemlabel" href="${createLink(action: 'search', controller: 'federation')}" title="New Search">New Search</a>
 	</li>
        <li class="yuimenubaritem first-of-type">
         <a class="yuimenubaritemlabel" href="#exportMenu">Export</a>
