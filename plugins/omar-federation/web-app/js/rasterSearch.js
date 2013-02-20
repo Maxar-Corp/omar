@@ -223,7 +223,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             });
 
         }
-
+        alert(wfsModel.toUrl());
         window.open(wfsModel.toUrl(),"_parent");
     },
     kmlClicked:function(){
