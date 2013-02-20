@@ -741,6 +741,7 @@ class WebFeatureService
         def wmsParams = [:]
         def caseInsensitiveParams = new CaseInsensitiveMap( wfsRequest.properties )
         def pushPin = tagLibBean.resource(absolute: true, base: "${grailsApplication.config.omar.serverURL}", plugin: "omar-common-ui", dir: "images/google", file: "red-pushpin.png")
+
         SimpleDateFormat isdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         SimpleDateFormat osdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
         caseInsensitiveParams.format = "image/png"
@@ -762,12 +763,11 @@ class WebFeatureService
         wmsParams?.remove( "height" )
         wmsParams.remove( "action" )
         wmsParams.remove( "controller" )
-
         def workspace = getWorkspace()
         def layer = workspace[wfsRequest?.typeName]
         def filterParams = [
                 filter: wfsRequest?.filter ?: Filter.PASS,
-                max: wfsRequest.maxFeatures ?: -1,
+                max: wfsRequest?.maxFeatures ?: -1,
                 start: wfsRequest?.offset ?: -1,
         ]
         if ( wfsRequest.sortBy )
@@ -970,6 +970,7 @@ class WebFeatureService
         wfsRequest.properties.each { caseInsensitiveParams.put( it.key.toLowerCase(),it.value)}
         def filter = caseInsensitiveParams.filter?:""
         def bbox
+
         if (!filter.contains("BBOX("))
         {
             if (!filter)
@@ -1033,13 +1034,16 @@ class WebFeatureService
         */
         caseInsensitiveParams.remove("filter");
         caseInsensitiveParams.remove("class");
+        filter = filter.encodeAsURL()
         def tagLibBean = getTagLib()
         caseInsensitiveParams.outputFormat = "kml"
+       // caseInsensitiveParams.each{k,v->
+       //     caseInsensitiveParams."${k}" = v.encodeAsURL()
+       // }
 
         def kmlQueryUrl = tagLibBean.createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
                 controller: "wfs", action: "index", params: caseInsensitiveParams )
         def kmlwriter = new StringWriter()
-
         kmlwriter << """<?xml version='1.0'?><kml xmlns='http://earth.google.com/kml/2.1'>"""
        // kmlwriter << "<open>1</open>"
        // if (bbox)
@@ -1058,6 +1062,7 @@ class WebFeatureService
                 "<viewRefreshMode>onRequest</viewRefreshMode>"
         kmlwriter << "</Link></NetworkLink></kml>"
         String kmlText = kmlwriter.buffer
+
         return kmlText
     }
 

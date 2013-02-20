@@ -28,7 +28,7 @@
                 </li>
                 <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
-                   href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: (rasterEntries*.id).join(',')])}"
+                   href="${createLink(controller: 'ogc', action: 'wms', params: [request: 'GetKML', layers: (rasterEntries*.id).join(',')])}"
                    title="Export KML">KML</a>
               </li>
             </ul>
