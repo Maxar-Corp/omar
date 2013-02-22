@@ -802,8 +802,10 @@ class WebFeatureService
         kmlwriter << "<Document>"
 
         def cursor = layer.getCursor( filterParams )
+        def idx = 1000;
         while ( cursor?.hasNext() )
         {
+            --idx
             def feature = cursor.next();
             def description = createKmlDescription(wfsRequest, feature);
             def bounds = feature["ground_geom"].bounds
@@ -827,6 +829,7 @@ class WebFeatureService
                 }
 
                 kmlwriter << "<GroundOverlay><name>${feature['title']?:(feature['filename'] as File).name}</name><Snippet/><description><![CDATA[${renderedHtml}]]>}</description>"
+                kmlwriter << "<drawOrder>${idx}</drawOrder>"
                 kmlwriter << "<LookAt><longitude>${groundCenterLon}</longitude><latitude>${groundCenterLat}</latitude><altitude>0.0</altitude><heading>0.0</heading><tilt>0.0</tilt><range>${defaultRange}</range><altitudeMode>clampToGround</altitudeMode></LookAt>"
                 kmlwriter << "<open>1</open>"
                 kmlwriter << "<visibility>1</visibility>"
