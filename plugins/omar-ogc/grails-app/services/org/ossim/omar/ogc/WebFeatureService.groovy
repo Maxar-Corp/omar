@@ -11,12 +11,13 @@ import org.apache.commons.io.FilenameUtils
 import org.geotools.factory.CommonFactoryFinder
 
 import java.text.SimpleDateFormat
-
 import org.joda.time.DateTimeZone
 import org.joda.time.DateTime
 import grails.converters.JSON
 
-class WebFeatureService
+import org.springframework.beans.factory.InitializingBean
+
+class WebFeatureService implements InitializingBean
 {
   static transactional = false
 
@@ -24,16 +25,16 @@ class WebFeatureService
   def grailsApplication
   def dataSourceUnproxied
 
+  // Initialized in afterPropertiesSet
+  private def serverAddress
+  private def wfsConfig
+
   private def wmsPersistParams = ["stretch_mode",
       "stretch_mode_region", "sharpen_width", "sharpen_sigma",
       "sharpen_mode", "width", "height", "format", "srs",
       "service", "version", "request", "quicklook", "bands",
       "transparent", "bgcolor", "styles", "null_flip", "bbox"]
 
-  private def layerNames = [
-      'raster_entry',
-      'video_data_set'
-  ]
   private def typeMappings = [
       'Double': 'xsd:double',
       'Integer': 'xsd:int',
@@ -48,75 +49,62 @@ class WebFeatureService
 
   def getCapabilities(def wfsRequest)
   {
-    def results, contentType
-
-    def y = {
+    def x = {
       mkp.xmlDeclaration()
-      mkp.declareNamespace( '': "http://www.opengis.net/wfs" )
-      mkp.declareNamespace( ogc: "http://www.opengis.net/ogc" )
-      mkp.declareNamespace( omar: "http://omar.ossim.org" )
-      mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
 
+      // OGC Namespaces
+      mkp.declareNamespace( '': "http://www.opengis.net/wfs" )
+      mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
+      mkp.declareNamespace( ogc: "http://www.opengis.net/ogc" )
+
+      // Feature namespaces:
+      wfsConfig.featureNamespaces.each { k, v ->
+        mkp.declareNamespace( "${k}": v )
+      }
+
+      // WFS GetCapabilities Document
       WFS_Capabilities(
           version: '1.0.0',
           'xsi:schemaLocation': "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"
       ) {
+        def service = wfsConfig.service
         Service {
-          Name( "OMAR WFS" )
-          Title( "OMAR Web Feature Service" )
-          Abstract( "This is the WFS implementation for OMAR" )
-          Keywords( "WFS, OMAR" )
-          OnlineResource( grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs' ) )
-          Fees( "NONE" )
-          AccessConstraints( "NONE" )
+          Name( service.name )
+          Title( service.title )
+          Abstract( service.abstract )
+          Keywords( service.keywords )
+          OnlineResource( service.onlineResource )
+          Fees( service.fees )
+          AccessConstraints( service.accessContraints )
         }
         Capability {
           Request {
-            GetCapabilities {
-              DCPType {
-                HTTP {
-                  Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'GetCapabilities'] ) )
+            wfsConfig.requestTypes.each { requestType ->
+              "${requestType.name}" {
+                switch ( requestType.name )
+                {
+                case "DescribeFeatureType":
+                  SchemaDescriptionLanguage {
+                    wfsConfig.schemaDescriptionLanguages.each { descLang ->
+                      "${descLang}"()
+                    }
+                  }
+                  break
+                case "GetFeature":
+                case "GetFeatureWithLock":
+                  ResultFormat {
+                    wfsConfig.resultFormats[requestType.name].each { format ->
+                      "${format}"()
+                    }
+                  }
+                  break
                 }
-              }
-              DCPType {
-                HTTP {
-                  Post( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs' ) )
-                }
-              }
-            }
-            DescribeFeatureType {
-              SchemaDescriptionLanguage {
-                XMLSCHEMA()
-              }
-              DCPType {
-                HTTP {
-                  Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'DescribeFeatureType'] ) )
-                }
-              }
-              DCPType {
-                HTTP {
-                  Post( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs' ) )
-                }
-              }
-            }
-            GetFeature {
-              ResultFormat {
-                GML2()
-                //GML3()
-                //'SHAPE-ZIP'()
-                GEOJSON()
-                CSV()
-                KML()
-                KMLQUERY()
-              }
-              DCPType {
-                HTTP {
-                  Get( onlineResource: grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true, controller: 'wfs', params: [request: 'GetFeature'] ) )
-                }
-              }
-              DCPType {
-                HTTP {
-                  Post( onlineResource: grailsLinkGenerator.link( absolute: true, controller: 'wfs' ) )
+                ['Get', 'Post'].each { method ->
+                  DCPType {
+                    HTTP {
+                      "${method}"( onlineResource: requestType.onlineResource[method] )
+                    }
+                  }
                 }
               }
             }
@@ -124,61 +112,46 @@ class WebFeatureService
         }
         FeatureTypeList {
           Operations {
-            Query()
+            wfsConfig.featureTypeOperations.each { op -> "${op}"() }
           }
-          def workspace = getWorkspace()
-          for ( def layerName in layerNames )
-          {
-            def layer = workspace[layerName]
-            def bounds = layer.bounds
+          wfsConfig.featureTypes.each { featureType ->
             FeatureType {
-              Name( layerName )
-              Title()
-              Abstract()
-              Keywords()
-              SRS( layer?.proj?.id )
-              LatLongBoundingBox( minx: "${ bounds?.minX }", miny: "${ bounds?.minY }",
-                  maxx: "${ bounds?.maxX }", maxy: "${ bounds?.maxY }" )
+              Name( featureType.name )
+              Title( featureType.title )
+              Abstract( featureType.abstract )
+              Keywords( featureType.keywords )
+              SRS( featureType.srs )
+              LatLongBoundingBox(
+                  minx: featureType.bbox.minX,
+                  miny: featureType.bbox.minY,
+                  maxx: featureType.bbox.maxX,
+                  maxy: featureType.bbox.maxY
+              )
             }
           }
-          workspace?.close()
         }
         ogc.Filter_Capabilities {
           ogc.Spatial_Capabilities {
             ogc.Spatial_Operators {
-              ogc.Disjoint()
-              ogc.Equals()
-              ogc.DWithin()
-              ogc.Beyond()
-              ogc.Intersect()
-              ogc.Touches()
-              ogc.Crosses()
-              ogc.Within()
-              ogc.Contains()
-              ogc.Overlaps()
-              ogc.BBOX()
+              wfsConfig.spatialOperators.each { op ->
+                ogc."${op}"()
+              }
             }
           }
           ogc.Scalar_Capabilities {
             ogc.Logical_Operators()
             ogc.Comparison_Operators {
-              ogc.Simple_Comparisons()
-              ogc.Between()
-              ogc.Like()
-              ogc.NullCheck()
+              wfsConfig.comparisonOperators.each { op ->
+                ogc."${op}"()
+              }
             }
             ogc.Arithmetic_Operators {
               ogc.Simple_Arithmetic()
               ogc.Functions {
                 ogc.Function_Names {
-                  def functionNames = CommonFactoryFinder.getFunctionFactories().collect {
-                    it.functionNames
-                  }.flatten().sort {
-                    it.name.toLowerCase()
-                  }.groupBy { it.name }.collect { k, v ->
-                    [name: k, nArgs: v[0].argumentCount]
+                  wfsConfig.functionNames.each { func ->
+                    ogc.Function_Name( nArgs: func.nArgs, func.name )
                   }
-                  functionNames.each { ogc.Function_Name( nArgs: it.nArgs, it.name ) }
                 }
               }
             }
@@ -187,12 +160,8 @@ class WebFeatureService
       }
     }
 
-    def z = new StreamingMarkupBuilder( encoding: 'UTF-8' ).bind( y )
-
-    results = z?.toString()
-    contentType = 'application/xml'
-
-    return [results, contentType]
+    def buffer = new StreamingMarkupBuilder( encoding: 'UTF-8' ).bind( x ).toString()
+    [buffer, 'application/xml']
   }
 
 
@@ -293,17 +262,9 @@ class WebFeatureService
   private String outputGML(def wfsRequest)
   {
     def results
-    def describeFeatureTypeURL = grailsLinkGenerator.link(
-        base: grailsApplication.config.omar.serverURL,
-        absolute: true,
-        controller: 'wfs',
-        params: [
-            service: 'WFS',
-            version: '1.0.0',
-            request: 'DescribeFeatureType',
-            typeName: wfsRequest.typeName
-        ]
-    )
+    def describeFeatureTypeURL = grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true,
+        controller: 'wfs', params: [service: 'WFS', version: '1.0.0', request: 'DescribeFeatureType',
+        typeName: "${ wfsRequest.typeName }"] )
 
     def filterParams = [
         filter: wfsRequest?.filter ?: Filter.PASS,
@@ -330,7 +291,7 @@ class WebFeatureService
     if ( wfsRequest.resultType?.toLowerCase() == "hits" )
     {
       def workspace = getWorkspace()
-      def layer = workspace[wfsRequest?.typeName.split( ':' )[-1]]
+      def layer = workspace[wfsRequest?.typeName?.split(':')[-1]]
       def count = layer.count( filter );
       // println "COUNT = ${count}";
       def timestamp = new DateTime( DateTimeZone.UTC );
@@ -353,7 +314,7 @@ class WebFeatureService
     {
       y = {
         def workspace = getWorkspace()
-        def layer = workspace[wfsRequest?.typeName.split( ':' )[-1]]
+        def layer = workspace[wfsRequest?.typeName?.split(':')[-1]]
 
         //println wfsRequest?.filter
 
@@ -383,7 +344,7 @@ class WebFeatureService
             //println feature
 
             gml.featureMember {
-              omar."${ wfsRequest?.typeName.split( ':' )[-1] }"( fid: featureId ) {
+              omar."${ wfsRequest?.typeName }"( fid: featureId ) {
 
                 for ( def attribute in feature.attributes )
                 {
@@ -465,7 +426,7 @@ class WebFeatureService
     def fields
     def labels
     def formatters
-    def typeName = wfsRequest?.typeName.split( ':' )[-1].toLowerCase();
+    def typeName = wfsRequest?.typeName.toLowerCase();
     def thumbnail
     def url
     def tagLibBean = getTagLib();
@@ -572,6 +533,15 @@ class WebFeatureService
 
     caseInsensitiveParams.each { wmsParams.put( it.key.toLowerCase(), it.value ) }
     wmsParams = wmsParams.subMap( wmsPersistParams )
+    def filter = caseInsensitiveParams.filter
+    def bbox = caseInsensitiveParams.bbox
+    // We will only pass BBOX if needed
+    //
+    if ( bbox && filter && filter.toLowerCase().contains( "bbox" ) )
+    {
+      caseInsensitiveParams.remove( "bbox" );
+      bbox = null
+    }
     wmsParams.remove( "elevation" )
     wmsParams.remove( "time" )
     wmsParams?.remove( "bbox" )
@@ -580,9 +550,20 @@ class WebFeatureService
     wmsParams.remove( "action" )
     wmsParams.remove( "controller" )
     def workspace = getWorkspace()
-    def layer = workspace[wfsRequest?.typeName.split( ':' )[-1]]
+    def layer = workspace[wfsRequest?.typeName]
+    if ( bbox )
+    {
+      if ( filter )
+      {
+        filter += " AND BBOX(ground_geom,${bbox})"
+      }
+      else
+      {
+        filter = "BBOX(ground_geom,${bbox})"
+      }
+    }
     def filterParams = [
-        filter: wfsRequest?.filter ?: Filter.PASS,
+        filter: filter ?: Filter.PASS,
         max: wfsRequest?.maxFeatures ?: -1,
         start: wfsRequest?.offset ?: -1,
     ]
@@ -590,7 +571,6 @@ class WebFeatureService
     {
       filterParams.sort = wfsRequest.convertSortByToArray();
     }
-    def bbox
     def sdf = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" )
     // def cursor = layer.getCursor( filterParams )
     def kmlBuilder = new StreamingMarkupBuilder();
@@ -599,8 +579,10 @@ class WebFeatureService
     kmlwriter << "<Document>"
 
     def cursor = layer.getCursor( filterParams )
+    def idx = 1000;
     while ( cursor?.hasNext() )
     {
+      --idx
       def feature = cursor.next();
       def description = createKmlDescription( wfsRequest, feature );
       def bounds = feature["ground_geom"].bounds
@@ -608,7 +590,7 @@ class WebFeatureService
       def groundCenterLat = ( bounds?.minY + bounds?.maxY ) * 0.5;
       def renderedHtml = description
 
-      if ( wfsRequest?.typeName.split( ':' )[-1]?.toLowerCase() == "raster_entry" )
+      if ( wfsRequest?.typeName?.toLowerCase() == "raster_entry" )
       {
         kmlwriter << "<name>OMAR Rasters</name>"
 
@@ -624,6 +606,7 @@ class WebFeatureService
         }
 
         kmlwriter << "<GroundOverlay><name>${feature['title'] ?: ( feature['filename'] as File ).name}</name><Snippet/><description><![CDATA[${renderedHtml}]]>}</description>"
+        kmlwriter << "<drawOrder>${idx}</drawOrder>"
         kmlwriter << "<LookAt><longitude>${groundCenterLon}</longitude><latitude>${groundCenterLat}</latitude><altitude>0.0</altitude><heading>0.0</heading><tilt>0.0</tilt><range>${defaultRange}</range><altitudeMode>clampToGround</altitudeMode></LookAt>"
         kmlwriter << "<open>1</open>"
         kmlwriter << "<visibility>1</visibility>"
@@ -786,45 +769,47 @@ class WebFeatureService
     def caseInsensitiveParams = new CaseInsensitiveMap();
     wfsRequest.properties.each { caseInsensitiveParams.put( it.key.toLowerCase(), it.value ) }
     def filter = caseInsensitiveParams.filter ?: ""
-    def bbox
+    //def bbox = caseInsensitiveParams.bbox
 
-    if ( !filter.contains( "BBOX(" ) )
+    /*
+    if (!filter.contains("BBOX("))
     {
-      if ( !filter )
-      {
-        filter = "BBOX(ground_geom,[bboxWest],[bboxSouth],[bboxEast],[bboxNorth])"
-      }
-      else
-      {
-        if ( filter.endsWith( ")" ) )
+        if (!filter)
         {
-          filter = "${filter}AND(BBOX(ground_geom,[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]))"
+            filter = "BBOX(ground_geom,[bboxWest],[bboxSouth],[bboxEast],[bboxNorth])"
         }
         else
         {
-          filter = "(${filter})AND(BBOX(ground_geom,[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]))"
+            if (filter.endsWith(")"))
+            {
+                filter = "${filter}AND(BBOX(ground_geom,[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]))"
+            }
+            else
+            {
+                filter = "(${filter})AND(BBOX(ground_geom,[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]))"
+            }
         }
-      }
     }
     else
     {
-      def bboxString = filter.find( "BBOX\\(.*\\)" );
-      if ( bboxString )
-      {
-        def splitBbox = bboxString.split( "," );
-        if ( splitBbox.size() == 5 )
+        def bboxString = filter.find("BBOX\\(.*\\)");
+        if (bboxString)
         {
-          def stripEnding = splitBbox[4].trim()
-          stripEnding = stripEnding.substring( 0, stripEnding.indexOf( ')' ) - 1 )
-          bbox = [minx: splitBbox[1].toDouble(),
-              miny: splitBbox[2].toDouble(),
-              maxx: splitBbox[3].toDouble(),
-              maxy: stripEnding.toDouble()
-          ]
+            def splitBbox = bboxString.split(",");
+            if (splitBbox.size() == 5)
+            {
+                def stripEnding = splitBbox[4].trim()
+                stripEnding = stripEnding.substring(0, stripEnding.indexOf(')')-1)
+                bbox = [minx: splitBbox[1].toDouble(),
+                        miny: splitBbox[2].toDouble(),
+                        maxx: splitBbox[3].toDouble(),
+                        maxy: stripEnding.toDouble()
+                     ]
+            }
         }
-      }
     }
-    //println filter
+    */
+    //println "___________________________${filter}"
     /*
     if (filter.contains("BBOX("))
     {
@@ -849,7 +834,7 @@ class WebFeatureService
         }
     }
     */
-    caseInsensitiveParams.remove( "filter" );
+    // caseInsensitiveParams.remove("filter");
     caseInsensitiveParams.remove( "class" );
     filter = filter.encodeAsURL()
     def tagLibBean = getTagLib()
@@ -857,7 +842,7 @@ class WebFeatureService
     // caseInsensitiveParams.each{k,v->
     //     caseInsensitiveParams."${k}" = v.encodeAsURL()
     // }
-
+    caseInsensitiveParams.remove( "bbox" );
     def kmlQueryUrl = tagLibBean.createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
         controller: "wfs", action: "index", params: caseInsensitiveParams )
     def kmlwriter = new StringWriter()
@@ -875,7 +860,6 @@ class WebFeatureService
     kmlwriter << "<Link>" <<
         "<href><![CDATA[${kmlQueryUrl}]]></href>" <<
         "<httpQuery>googleClientVersion=[clientVersion]</httpQuery>" <<
-        "<viewFormat>filter=${filter}</viewFormat>" <<
         "<viewRefreshMode>onRequest</viewRefreshMode>"
     kmlwriter << "</Link></NetworkLink></kml>"
     String kmlText = kmlwriter.buffer
@@ -888,7 +872,7 @@ class WebFeatureService
     def fields
     def labels
     def formatters
-    def typeName = wfsRequest?.typeName.split( ':' )[-1].toLowerCase();
+    def typeName = wfsRequest?.typeName.toLowerCase();
     if ( typeName == "raster_entry" )
     {
       fields = grailsApplication.config.export.rasterEntry.fields
@@ -957,7 +941,7 @@ class WebFeatureService
   {
     def results
     def workspace = getWorkspace()
-    def layer = workspace[wfsRequest?.typeName.split( ':' )[-1]]
+    def layer = workspace[wfsRequest?.typeName]
     def filter = [
         filter: wfsRequest?.filter ?: Filter.PASS,
         //sort: ""// [["<COLUMN NAME>","ASC|DESC"]]
@@ -1005,17 +989,87 @@ class WebFeatureService
   }
 
 
-  private def getWorkspace(def workspaceName = 'omar')
+  private Workspace getWorkspace(def workspaceName)
   {
+
+    def url = grailsApplication.config.dataSource.url
+
     def workspace = new Workspace(
         dbtype: 'postgis',
-        host: 'localhost',
+
+        // All these can be blank (except for port for some reason)
+        // The dataSource is provided by Hibernate.
+        database: '',
+        host: '',
         port: 5432,
-        user: 'postgres',
-        database: 'omardb-1.8.16-prod',
+        user: '',
+        password: '',
+
+        'Data Source': dataSourceUnproxied,
         'Expose primary keys': true,
         namespace: 'http://omar.ossim.org'
     )
+
     workspace
+  }
+
+  void afterPropertiesSet() throws Exception
+  {
+    serverAddress = "http://localhost:8080/omar"
+    wfsConfig = [
+        service: [
+            name: 'OMAR WFS',
+            title: 'OMAR Web Feature Service',
+            abstract: 'This is the WFS implementation for OMAR',
+            keywords: 'WFS, OMAR',
+            onlineResource: "${serverAddress}/wfs",
+            fees: 'NONE',
+            accessContraints: 'NONE'
+        ],
+        featureTypeOperations: ['Query'/*, 'Insert', 'Update', 'Delete', 'Lock'*/],
+        spatialOperators: [
+            'Disjoint',
+            'Equals',
+            'DWithin',
+            'Beyond',
+            'Intersect',
+            'Touches',
+            'Crosses',
+            'Within',
+            'Contains',
+            'Overlaps',
+            'BBOX'
+        ],
+        comparisonOperators: ['Simple_Comparisons', 'Between', 'Like', 'NullCheck'],
+        functionNames: CommonFactoryFinder.getFunctionFactories().collect {
+          it.functionNames
+        }.flatten().sort {
+          it.name.toLowerCase()
+        }.groupBy { it.name }.collect { k, v ->
+          [name: k, nArgs: v[0].argumentCount]
+        },
+        featureTypes: [
+            [name: 'omar:raster_entry', title: 'raster_entry', abstract: '', keywords: 'raster_entry, features', srs: 'EPSG:4326',
+                bbox: [minX: -180.0, minY: -90.0, maxX: 180.0, maxY: 90.0]],
+            [name: 'omar:video_data_set', title: 'video_data_set', abstract: '', keywords: 'video_data_set, features', srs: 'EPSG:4326',
+                bbox: [minX: -180.0, minY: -90.0, maxX: 180.0, maxY: 90.0]]
+        ],
+        requestTypes: [
+            [name: 'GetCapabilities', onlineResource: [
+                Get: "${serverAddress}/wfs?request=GetCapabilities",
+                Post: "${serverAddress}/wfs"]],
+            [name: 'DescribeFeatureType', onlineResource: [
+                Get: "${serverAddress}/wfs?request=DescribeFeatureType",
+                Post: "${serverAddress}/wfs"]],
+            [name: 'GetFeature', onlineResource: [
+                Get: "${serverAddress}/wfs?request=GetFeature",
+                Post: '${serverAddress}/wfs']]
+        ],
+        schemaDescriptionLanguages: ['XMLSCHEMA'],
+        resultFormats: [
+            GetFeature: ['GML2'/*, 'GML3', 'SHAPE-ZIP'*/, 'GEOJSON', 'CSV', 'KML', 'KMLQUERY']
+        ],
+        featureNamespaces: [omar: 'http://omar.ossim.org']
+    ]
   }
 }
