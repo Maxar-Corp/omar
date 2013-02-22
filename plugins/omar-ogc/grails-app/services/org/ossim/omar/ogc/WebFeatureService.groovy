@@ -756,6 +756,15 @@ class WebFeatureService
 
         caseInsensitiveParams.each { wmsParams.put( it.key.toLowerCase(), it.value )}
         wmsParams = wmsParams.subMap( wmsPersistParams )
+        def filter = caseInsensitiveParams.filter
+        def bbox = caseInsensitiveParams.bbox
+        // We will only pass BBOX if needed
+        //
+        if (bbox&&filter&&filter.toLowerCase().contains("bbox"))
+        {
+            caseInsensitiveParams.remove("bbox");
+            bbox = null
+        }
         wmsParams.remove( "elevation" )
         wmsParams.remove( "time" )
         wmsParams?.remove( "bbox" )
@@ -765,8 +774,19 @@ class WebFeatureService
         wmsParams.remove( "controller" )
         def workspace = getWorkspace()
         def layer = workspace[wfsRequest?.typeName]
+        if (bbox)
+        {
+            if (filter)
+            {
+                filter += " AND BBOX(ground_geom,${bbox})"
+            }
+            else
+            {
+                filter = "BBOX(ground_geom,${bbox})"
+            }
+        }
         def filterParams = [
-                filter: wfsRequest?.filter ?: Filter.PASS,
+                filter: filter ?: Filter.PASS,
                 max: wfsRequest?.maxFeatures ?: -1,
                 start: wfsRequest?.offset ?: -1,
         ]
@@ -774,7 +794,6 @@ class WebFeatureService
         {
             filterParams.sort = wfsRequest.convertSortByToArray();
         }
-        def bbox
         def sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
         // def cursor = layer.getCursor( filterParams )
         def kmlBuilder = new StreamingMarkupBuilder();
@@ -969,8 +988,10 @@ class WebFeatureService
         def caseInsensitiveParams = new CaseInsensitiveMap();
         wfsRequest.properties.each { caseInsensitiveParams.put( it.key.toLowerCase(),it.value)}
         def filter = caseInsensitiveParams.filter?:""
-        def bbox
+        //def bbox = caseInsensitiveParams.bbox
 
+
+        /*
         if (!filter.contains("BBOX("))
         {
             if (!filter)
@@ -1007,7 +1028,8 @@ class WebFeatureService
                 }
             }
         }
-        //println filter
+        */
+        //println "___________________________${filter}"
         /*
         if (filter.contains("BBOX("))
         {
@@ -1032,7 +1054,7 @@ class WebFeatureService
             }
         }
         */
-        caseInsensitiveParams.remove("filter");
+       // caseInsensitiveParams.remove("filter");
         caseInsensitiveParams.remove("class");
         filter = filter.encodeAsURL()
         def tagLibBean = getTagLib()
@@ -1040,7 +1062,7 @@ class WebFeatureService
        // caseInsensitiveParams.each{k,v->
        //     caseInsensitiveParams."${k}" = v.encodeAsURL()
        // }
-
+        caseInsensitiveParams.remove("bbox");
         def kmlQueryUrl = tagLibBean.createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
                 controller: "wfs", action: "index", params: caseInsensitiveParams )
         def kmlwriter = new StringWriter()
@@ -1056,10 +1078,9 @@ class WebFeatureService
         kmlwriter <<"<NetworkLink>"
         kmlwriter <<"<name>KML Query</name>"
         kmlwriter << "<Link>" <<
-                "<href><![CDATA[${kmlQueryUrl}]]></href>" <<
-                "<httpQuery>googleClientVersion=[clientVersion]</httpQuery>"<<
-                "<viewFormat>filter=${filter}</viewFormat>"<<
-                "<viewRefreshMode>onRequest</viewRefreshMode>"
+                     "<href><![CDATA[${kmlQueryUrl}]]></href>" <<
+                     "<httpQuery>googleClientVersion=[clientVersion]</httpQuery>"<<
+                     "<viewRefreshMode>onRequest</viewRefreshMode>"
         kmlwriter << "</Link></NetworkLink></kml>"
         String kmlText = kmlwriter.buffer
 
