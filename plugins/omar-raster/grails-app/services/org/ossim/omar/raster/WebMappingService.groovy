@@ -178,7 +178,7 @@ class WebMappingService implements ApplicationContextAware
         ++objectPrefixIdx
         // and make it either 1 band or 3 band output
         //
-        if ( maxBands == 2 )
+        if ( maxBands <= 2 )
         {
           kwlString += "object${ objectPrefixIdx }.type:ossimBandSelector\n"
           kwlString += "object${ objectPrefixIdx }.bands:(0)\n"
@@ -219,9 +219,10 @@ class WebMappingService implements ApplicationContextAware
         kwlString = "type:ossimMemoryImageSource\n"
         if ( params.width && params.height )
         {
-          kwlString += "rect:(0,0,${ bounds.width },${ bounds.height },lh)\n"
-          kwlString += "scalar_type:ossim_uint8\n"
-          kwlString += "number_bands:1\n"
+          kwlString += "image.type:ossimImageData\n"
+          kwlString += "image.rect:(0,0,${ bounds.width },${ bounds.height },lh)\n"
+          kwlString += "image.scalar_type:ossim_uint8\n"
+          kwlString += "image.number_bands:1\n"
         }
       }
       def mosaic = new joms.oms.Chain();
