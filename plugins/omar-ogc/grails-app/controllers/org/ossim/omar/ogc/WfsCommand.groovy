@@ -22,6 +22,14 @@ class WfsCommand
     Integer offset
     String resultType
     String sortBy
+
+    /**
+     * Google earth is not replacing their variables as described by the
+     * SPEC so I can't add a replacement variable in the filter to adhere
+     * to the WFS SPEC.  We have to support floating BBOX for now when doing
+     * KML Network Links
+     */
+    String bbox
     @Override
     String toString()
     {
