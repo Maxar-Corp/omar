@@ -64,15 +64,13 @@ class WfsController
         break
 
       case "GET":
-        //println "GET: ${ params }"
+          def tempParams = new CaseInsensitiveMap( params )
 
-        def wfsParams = new CaseInsensitiveMap( params ).subMap(
-            ['service', 'version', 'request', 'resultType', 'typeName', 'filter', 'outputFormat', 'maxFeatures', 'offset','sortBy']
-        )
-
-        bindData( wfsCommand, wfsParams )
-
-        break
+          def wfsParams = tempParams.subMap(
+                  ['service', 'version', 'request', 'resultType', 'typeName', 'filter', 'outputFormat', 'bbox', 'maxFeatures', 'offset','sortBy']
+          )
+          bindData( wfsCommand, wfsParams )
+          break
       }
 
       //println wfsCommand
