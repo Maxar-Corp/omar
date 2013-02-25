@@ -6,11 +6,11 @@ class OmarOgcGrailsPlugin
   def grailsVersion = "1.3.5 > *"
   // the other plugins this plugin depends on
   def dependsOn = [
-     csv: "0.3 > *"
-   ]
+      csv: "0.3 > *"
+  ]
   // resources that are excluded from plugin packaging
   def pluginExcludes = [
-          "grails-app/views/error.gsp"
+      "grails-app/views/error.gsp"
   ]
 
   // TODO Fill in these fields
@@ -29,7 +29,28 @@ Adds OGC functionality to OMAR
   }
 
   def doWithSpring = {
-    // TODO Implement runtime spring config (optional)
+    csvResultFormat( org.ossim.omar.ogc.wfs.CsvResultFormat ) {
+      grailsApplication = ref( 'grailsApplication' )
+    }
+
+    gml2ResultFormat( org.ossim.omar.ogc.wfs.Gml2ResultFormat ) {
+      grailsApplication = ref( 'grailsApplication' )
+      grailsLinkGenerator = ref( 'grailsLinkGenerator' )
+    }
+
+    shpResultFormat( org.ossim.omar.ogc.wfs.ShpResultFormat )
+
+    kmlResultFormat( org.ossim.omar.ogc.wfs.KmlResultFormat ) {
+      grailsApplication = ref( 'grailsApplication' )
+      grailsLinkGenerator = ref( 'grailsLinkGenerator' )
+    }
+
+    kmlQueryResultFormat( org.ossim.omar.ogc.wfs.KmlQueryResultFormat ) {
+      grailsApplication = ref( 'grailsApplication' )
+      grailsLinkGenerator = ref( 'grailsLinkGenerator' )
+    }
+
+    geoJsonResultFormat( org.ossim.omar.ogc.wfs.GeoJsonResultFormat )
   }
 
   def doWithDynamicMethods = { ctx ->
