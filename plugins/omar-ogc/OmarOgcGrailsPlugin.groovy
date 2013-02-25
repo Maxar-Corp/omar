@@ -45,12 +45,14 @@ Adds OGC functionality to OMAR
       grailsLinkGenerator = ref( 'grailsLinkGenerator' )
     }
 
-    kmlQueryResultFormat( org.ossim.omar.ogc.wfs.KmlQueryResultFormat ) {
+    kmlqueryResultFormat( org.ossim.omar.ogc.wfs.KmlQueryResultFormat ) {
       grailsApplication = ref( 'grailsApplication' )
       grailsLinkGenerator = ref( 'grailsLinkGenerator' )
     }
 
-    geoJsonResultFormat( org.ossim.omar.ogc.wfs.GeoJsonResultFormat )
+    geojsonResultFormat( org.ossim.omar.ogc.wfs.GeoJsonResultFormat )
+    jsonResultFormat( org.ossim.omar.ogc.wfs.GeoJsonResultFormat )
+
   }
 
   def doWithDynamicMethods = { ctx ->

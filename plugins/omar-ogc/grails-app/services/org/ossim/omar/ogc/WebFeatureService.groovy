@@ -207,7 +207,8 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
     //}
     //else
     //{
-    switch ( wfsRequest?.outputFormat?.toUpperCase() ?: "" )
+    def prefix = wfsRequest?.outputFormat ?: "gml2"
+    switch ( prefix?.toUpperCase() )
     {
     case "SHP":
       contentType = "application/octet-stream"
@@ -233,9 +234,9 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
     }
     //}
 
-    def resultFormat = applicationContext.getBean( "${wfsRequest?.outputFormat?.toLowerCase()}ResultForamt" )
+    def resultFormat = applicationContext.getBean( "${prefix?.toLowerCase()}ResultFormat" )
 
-    results = resultFormat.getFeature( wfsRequest, getWorkspace('omar') )
+    results = resultFormat.getFeature( wfsRequest, getWorkspace( 'omar' ) )
 
     return [results, contentType]
   }
@@ -266,7 +267,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
   void afterPropertiesSet() throws Exception
   {
-    serverAddress = "http://localhost:8080/omar"
+    serverAddress = grailsApplication.config.omarServerURL
     wfsConfig = [
         service: [
             name: 'OMAR WFS',
