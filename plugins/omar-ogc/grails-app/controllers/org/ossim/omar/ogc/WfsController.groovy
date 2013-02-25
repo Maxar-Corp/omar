@@ -72,7 +72,7 @@ class WfsController
           bindData( wfsCommand, wfsParams )
           if((!wfsCommand.maxFeatures)||(wfsCommand.maxFeatures.toInteger() > 1000))
           {
-              wfsCommand.maxFeatures = "1000"
+              wfsCommand.maxFeatures = 1000
           }
 
           break
