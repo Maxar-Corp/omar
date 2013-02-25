@@ -9,5 +9,7 @@ package org.ossim.omar.ogc.wfs
  */
 interface ResultFormat
 {
-  def getFeature(def WfsRequest, def workspace)
+  def getContentType()
+  def getName()
+  def getFeature(def wfsRequest, def workspace)
 }

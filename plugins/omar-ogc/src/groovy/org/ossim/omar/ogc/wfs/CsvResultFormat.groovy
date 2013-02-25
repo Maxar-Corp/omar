@@ -14,6 +14,10 @@ class CsvResultFormat implements ResultFormat
 {
   def grailsApplication
 
+  def name = "CSV"
+  def contentType = 'text/csv'
+
+
   def getFeature(def wfsRequest, def workspace)
   {
     def fields
@@ -81,6 +85,6 @@ class CsvResultFormat implements ResultFormat
     cursor?.close()
     workspace?.close()
 
-    return stringBuffer.toString();
+    return [stringBuffer.toString(), contentType];
   }
 }

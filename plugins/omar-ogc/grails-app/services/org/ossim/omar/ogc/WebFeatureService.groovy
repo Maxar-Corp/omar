@@ -5,7 +5,7 @@ import geoscript.workspace.Workspace
 import groovy.xml.StreamingMarkupBuilder
 
 import org.geotools.factory.CommonFactoryFinder
-
+import org.ossim.omar.ogc.wfs.ResultFormat
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
@@ -21,6 +21,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
   // Initialized in afterPropertiesSet
   private def serverAddress
   private def wfsConfig
+  private def resultFormats
 
   ApplicationContext applicationContext
 
@@ -199,44 +200,28 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
   def getFeature(def wfsRequest)
   {
     def results, contentType
+    def name = ( wfsRequest['outputFormat']?.toUpperCase() ?: "GML2" )?.toUpperCase()
+    def resultFormat = resultFormats[name]?.first()
 
-    //if ( wfsRequest.resultType?.toLowerCase() == "hits" )
-    //{
-    //  results = outputGML( wfsRequest )
-    //  contentType = 'text/xml; subtype=gml/2.1.2'
-    //}
-    //else
-    //{
-    def prefix = wfsRequest?.outputFormat ?: "gml2"
-    switch ( prefix?.toUpperCase() )
+    if ( resultFormat )
     {
-    case "SHP":
-      contentType = "application/octet-stream"
-      break;
-    case "GML2":
-      contentType = 'text/xml; subtype=gml/2.1.2'
-      break
-    case "CSV":
-      contentType = 'text/csv'
-      break
-    case "KML":
-      contentType = 'application/vnd.google-earth.kml+xml'
-      break
-    case "KMLQUERY":
-      contentType = 'application/vnd.google-earth.kml+xml'
-      break
-    case "JSON":
-    case "GEOJSON":
-      contentType = 'application/json'
-      break
-    default:
-      contentType = 'text/xml; subtype=gml/2.1.2'
+      (results, contentType) = resultFormat.getFeature( wfsRequest, getWorkspace( 'omar' ) )
     }
-    //}
+    else
+    {
+      results = new StreamingMarkupBuilder().bind() {
+        mkp.xmlDeclaration()
+        mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
+        ServiceExceptionReport( version: "1.2.0", xmlns: "http://www.opengis.net/ogc",
+            'xsi:schemaLocation': "http://www.opengis.net/ogc http://schemas.opengis.net/wfs/1.0.0/OGC-exception.xsd" ) {
+          ServiceException( code: "GeneralException", "Uknown outputFormat: ${wfsRequest.outputFormat}" )
+        }
+      }.toString()
 
-    def resultFormat = applicationContext.getBean( "${prefix?.toLowerCase()}ResultFormat" )
+      println results
 
-    results = resultFormat.getFeature( wfsRequest, getWorkspace( 'omar' ) )
+      contentType = 'application/xml'
+    }
 
     return [results, contentType]
   }
@@ -268,6 +253,8 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
   void afterPropertiesSet() throws Exception
   {
     serverAddress = grailsApplication.config.omarServerURL
+    resultFormats = applicationContext.getBeansOfType( ResultFormat ).values().groupBy { it.name }
+
     wfsConfig = [
         service: [
             name: 'OMAR WFS',

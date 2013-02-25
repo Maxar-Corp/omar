@@ -51,7 +51,10 @@ Adds OGC functionality to OMAR
     }
 
     geojsonResultFormat( org.ossim.omar.ogc.wfs.GeoJsonResultFormat )
-    jsonResultFormat( org.ossim.omar.ogc.wfs.GeoJsonResultFormat )
+
+    jsonResultFormat( org.ossim.omar.ogc.wfs.GeoJsonResultFormat ) {
+      name = "JSON"
+    }
 
   }
 
