@@ -14,6 +14,9 @@ import org.joda.time.DateTimeZone
  */
 class Gml2ResultFormat implements ResultFormat
 {
+  def name = "GML2"
+  def contentType = 'text/xml; subtype=gml/2.1.2'
+
   def grailsApplication
   def grailsLinkGenerator
 
@@ -185,6 +188,6 @@ class Gml2ResultFormat implements ResultFormat
 
     results = z?.toString()
 
-    return results
+    return [results, contentType]
   }
 }

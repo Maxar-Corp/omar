@@ -9,8 +9,11 @@ package org.ossim.omar.ogc.wfs
  */
 class ShpResultFormat implements ResultFormat
 {
+  def name = "SHAPE-ZIP"
+  def contentType = "application/octet-stream"
+
   def getFeature(def wfsRequest, def workspace)
   {
-
+    ['', contentType]
   }
 }

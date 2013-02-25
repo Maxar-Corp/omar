@@ -16,6 +16,9 @@ import org.joda.time.DateTimeZone
  */
 class GeoJsonResultFormat implements ResultFormat
 {
+  def name = "GEOJSON"
+  def contentType = 'application/json'
+
   def getFeature(def wfsRequest, def workspace)
   {
     def results
@@ -63,7 +66,7 @@ class GeoJsonResultFormat implements ResultFormat
       cursor?.close()
     }
     workspace?.close()
-    return results
+    return [results, contentType]
   }
 
 }

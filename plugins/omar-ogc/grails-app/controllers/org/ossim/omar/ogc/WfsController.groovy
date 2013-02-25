@@ -52,14 +52,6 @@ class WfsController
             offset = ( start ) ? start.toInteger() : 0
             outputFormat = x.@outputFormat?.text() ?: "GML2"
           }
-
-//          wfsCommand.service = "WFS"
-//          wfsCommand.version = "1.0.0"
-//          wfsCommand.request = "GetFeature"
-//          wfsCommand.typeName = "raster_entry"
-//          wfsCommand.filter = new Filter("file_type='ccf'").xml
-//          wfsCommand.maxFeatures = 10
-//          wfsCommand.offset = 0
         }
         break
 

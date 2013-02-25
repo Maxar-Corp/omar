@@ -11,6 +11,9 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
  */
 class KmlQueryResultFormat implements ResultFormat
 {
+  def name = "KMLQUERY"
+  def contentType = 'application/vnd.google-earth.kml+xml'
+
   def grailsApplication
   def grailsLinkGenerator
 
@@ -114,6 +117,6 @@ class KmlQueryResultFormat implements ResultFormat
     kmlwriter << "</Link></NetworkLink></kml>"
     String kmlText = kmlwriter.buffer
 
-    return kmlText
+    return [kmlText, contentType]
   }
 }

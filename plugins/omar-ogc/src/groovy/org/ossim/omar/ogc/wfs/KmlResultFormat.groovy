@@ -16,6 +16,9 @@ import java.text.SimpleDateFormat
  */
 class KmlResultFormat implements ResultFormat
 {
+  def name = "KML"
+  def contentType = 'application/vnd.google-earth.kml+xml'
+
   def grailsApplication
   def grailsLinkGenerator
 
@@ -273,7 +276,7 @@ class KmlResultFormat implements ResultFormat
     cursor?.close()
     workspace?.close()
 
-    kmlwriter.buffer.toString()
+    [kmlwriter.buffer.toString(), contentType]
   }
 
   private String createKmlDescription(def wfsRequest,
