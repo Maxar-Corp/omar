@@ -70,6 +70,11 @@ class WfsController
                   ['service', 'version', 'request', 'resultType', 'typeName', 'filter', 'outputFormat', 'bbox', 'maxFeatures', 'offset','sortBy']
           )
           bindData( wfsCommand, wfsParams )
+          if((!wfsCommand.maxFeatures)||(wfsCommand.maxFeatures.toInteger() > 1000))
+          {
+              wfsCommand.maxFeatures = "1000"
+          }
+
           break
       }
 
