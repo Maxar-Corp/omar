@@ -2,9 +2,9 @@ OMAR.models.WfsModel = Backbone.Model.extend({
     defaults:{
         "url":"/omar/wfs",
         "service":"WFS",
-        "version":"1.1.0",
+        "version":"1.0.0",
         "request":"getFeature",
-        "typeName":"raster_entry",
+        "typeName":"omar:raster_entry",
         "filter":"",
         "outputFormat":"JSON",
         "maxFeatures":"",
