@@ -302,7 +302,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
                 Post: "${serverAddress}/wfs"]],
             [name: 'GetFeature', onlineResource: [
                 Get: "${serverAddress}/wfs?request=GetFeature",
-                Post: '${serverAddress}/wfs']]
+                Post: "${serverAddress}/wfs"]]
         ],
         schemaDescriptionLanguages: ['XMLSCHEMA'],
         resultFormats: [
