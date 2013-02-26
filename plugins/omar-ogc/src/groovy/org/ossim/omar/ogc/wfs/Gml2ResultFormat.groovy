@@ -117,7 +117,7 @@ class Gml2ResultFormat implements ResultFormat
             //println feature
 
             gml.featureMember {
-              omar."${ wfsRequest?.typeName }"( fid: featureId ) {
+              "${ wfsRequest?.typeName }"( fid: featureId ) {
 
                 for ( def attribute in feature.attributes )
                 {
