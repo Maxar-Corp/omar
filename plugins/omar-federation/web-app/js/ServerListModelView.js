@@ -174,7 +174,6 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             cloneWfsServerCountModel.attributes.url = model.get("url")+"/wfs";
            // this.wfsServerCountModel.attributes.url = model.get("url")+"/wfs";
             //wfs.set("url",model.get("url")+"/wfs");
-
             if(model.userDefinedData.ajaxCountQuery &&
                 (model.userDefinedData.ajaxCountQuery.readyState != 4))
             {

@@ -602,11 +602,11 @@ OMAR.views.CqlView = Backbone.View.extend({
     wfsTypeNameModelChanged:function(){
         var typeName = this.wfsTypeNameModel.get("typeName");
 
-        if(typeName == "raster_entry")
+        if(typeName.search("raster_entry")>-1)
         {
             this.columnDefs = new OMAR.models.CqlRasterColumnDefCollection();
         }
-        else if(typeName == "video_data_set")
+        else if(typeName.search("video_data_set")>-1)
         {
             this.columnDefs = new OMAR.models.CqlVideoColumnDefCollection();
         }

@@ -584,7 +584,7 @@ OMAR.views.Map = Backbone.View.extend({
         //alert("Map View: searchTypeChanged");
         //this.serverCollectionReset();
         var tempLayers =  "Imagery";
-        if(this.searchType.get("typeName") == "video_data_set")
+        if(this.searchType.get("typeName").search("video_data_set")>-1)
         {
             tempLayers = "Videos";
         }
@@ -609,7 +609,7 @@ OMAR.views.Map = Backbone.View.extend({
         var tempLayers = "Imagery";
         if(this.searchType)
         {
-            if(this.searchType.get("typeName") == "video_data_set")
+            if(this.searchType.get("typeName").search("video_data_set")>-1)
             {
                 tempLayers = "Video";
             }
@@ -655,7 +655,7 @@ OMAR.views.Map = Backbone.View.extend({
                         var layer = scope.map.getLayer(scope.layers.get(key));
                         if(layer)
                         {
-                            if(scope.searchType.get("typeName") == "video_data_set")
+                            if(scope.searchType.get("typeName").search("video_data_set")>-1)
                             {
                                 layer.setOptions({layers:"Video"});
                             }

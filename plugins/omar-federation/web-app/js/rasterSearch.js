@@ -1,7 +1,7 @@
 OMAR.models.WfsTypeNameModel = Backbone.Model.extend({
     idAttribute:"typeName",
     defaults:{
-        typeName:"raster_entry"
+        typeName:"omar:raster_entry"
     },
     initialize:function(params)
     {
@@ -35,7 +35,7 @@ OMAR.views.WfsTypeNameView = Backbone.View.extend({
 
         if(this.model)
         {
-            if(this.model.get("typeName") == "raster_entry")
+            if(this.model.get("typeName").search("raster_entry") > -1)
             {
                 $(this.wfsTypeNameRasterEntryEl).click();
             }
@@ -51,12 +51,12 @@ OMAR.views.WfsTypeNameView = Backbone.View.extend({
     },
     videoDataSetClicked:function(){
         this.model.unbind("change", this.modelChanged, this);
-        this.model.set({typeName:"video_data_set"});
+        this.model.set({typeName:"omar:video_data_set"});
         this.model.bind("change", this.modelChanged, this);
     },
     rasterEntryClicked:function(){
         this.model.unbind("change", this.modelChanged, this);
-        this.model.set({typeName:"raster_entry"});
+        this.model.set({typeName:"omar:raster_entry"});
         this.model.bind("change", this.modelChanged, this);
     }
 })
@@ -313,6 +313,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         }
 
+        alert(wfsModel.toUrl());
         window.open(wfsModel.toUrl(),"_parent");
     },
     csvClicked:function(){
@@ -426,11 +427,11 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var wfsTypeName = this.wfsTypeNameModel.get("typeName");
         var customQueryFilter = this.currentCqlModel.toCql();
 
-        if(wfsTypeName == "raster_entry")
+        if(wfsTypeName.search("raster_entry") > -1)
         {
             timeQueryCql = this.dateTimeRangeModel.toCql("acquisition_date");
         }
-        else if(wfsTypeName == "video_data_set")
+        else if(wfsTypeName.search("video_data_set")>-1)
         {
             timeQueryCql = this.dateTimeRangeModel.toCql("start_date", "end_date");
         }
