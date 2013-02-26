@@ -21,8 +21,12 @@ class GeoJsonResultFormat implements ResultFormat
 
   def getFeature(def wfsRequest, def workspace)
   {
+
+//    println wfsRequest
+
     def results
-    def layer = workspace[wfsRequest?.typeName]
+    def layerName = wfsRequest?.typeName?.split(':')[-1]
+    def layer = workspace[layerName]
     def filter = [
         filter: wfsRequest?.filter ?: Filter.PASS,
         //sort: ""// [["<COLUMN NAME>","ASC|DESC"]]
@@ -66,6 +70,7 @@ class GeoJsonResultFormat implements ResultFormat
       cursor?.close()
     }
     workspace?.close()
+
     return [results, contentType]
   }
 
