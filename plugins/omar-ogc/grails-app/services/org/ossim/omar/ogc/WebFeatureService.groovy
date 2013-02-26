@@ -252,7 +252,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
   void afterPropertiesSet() throws Exception
   {
-    serverAddress = grailsApplication.config.omarServerURL
+    serverAddress = grailsApplication.config.omar.serverURL
     resultFormats = applicationContext.getBeansOfType( ResultFormat ).values().groupBy { it.name }
 
     wfsConfig = [
