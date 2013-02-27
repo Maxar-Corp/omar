@@ -99,6 +99,7 @@ class WfsCommand
         service: xml.@service.text(),
         version: xml.@version.text(),
         request: xml.name(),
+        maxFeatures: xml.@maxFeatures.text()?.toInteger() ?: 1000
     ]
 
     switch ( params.request )

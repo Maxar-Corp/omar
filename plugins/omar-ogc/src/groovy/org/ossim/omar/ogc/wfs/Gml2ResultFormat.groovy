@@ -1,9 +1,14 @@
 package org.ossim.omar.ogc.wfs
 
+import geoscript.feature.Schema
 import geoscript.filter.Filter
+import geoscript.layer.io.GmlWriter
+import geoscript.workspace.Memory
+import geoscript.workspace.Workspace
 import groovy.xml.StreamingMarkupBuilder
 import org.joda.time.DateTime
 import org.joda.time.DateTimeZone
+import org.ossim.omar.ogc.WfsCommand
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,6 +38,96 @@ class Gml2ResultFormat implements ResultFormat
       'java.sql.Timestamp': 'xsd:dateTime',
   ]
 
+  def getFeatureNEW(def cmd, def inputWorkspace)
+  {
+    def (workspaceName, layerName) = cmd?.typeName?.split( ':' )
+    //def inputWorkspace = getWorkspace( workspaceName )
+    def inputLayer = inputWorkspace[layerName]
+
+    def outputWorkspace = new Memory()
+    def outputSchema = new Schema( inputLayer.name, inputLayer.schema.fields, inputLayer.schema.uri )
+    def outputLayer = outputWorkspace.create( outputSchema )
+
+    def filterParams = [
+        filter: cmd?.filter ?: Filter.PASS,
+        max: cmd.maxFeatures ?: -1,
+        start: cmd?.offset ?: -1
+    ]
+
+    if ( cmd.sortBy )
+    {
+      filterParams.sort = cmd.convertSortByToArray();
+    }
+
+    try
+    {
+      filterParams.filter = new Filter( filterParams.filter )
+    }
+    catch ( e )
+    {
+      e.printStackTrace()
+    }
+
+    def cursor = inputLayer.getCursor( filterParams )
+
+    while ( cursor.hasNext() )
+    {
+      def inputFeature = cursor.next()
+
+      outputLayer.add( inputFeature )
+    }
+
+    cursor.close()
+    inputWorkspace.close()
+
+    def writer = new GmlWriter()
+    def xml = writer.write( outputLayer, 2, true, false, true, workspaceName as String )
+    def wfs = new XmlSlurper().parseText( xml )
+
+    def describeFeatureTypeURL = grailsLinkGenerator.link(
+        params: [
+            service: 'WFS',
+            version: '1.0.0',
+            request: 'DescribeFeatureType',
+            typeName: cmd.typeName,
+            controller: 'wfs',
+            action: 'index'
+        ],
+        absolute: true
+    )
+
+    wfs.@xmlns = "http://www.opengis.net/wfs"
+    wfs.@'xsi:schemaLocation' = "${outputLayer.schema.uri} ${ describeFeatureTypeURL } http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"
+
+
+    wfs.featureMember."${outputLayer.name}".each {
+      it.@fid = "${it.name()}.${it.id.text()}"
+    }
+
+    def geomName = outputLayer.schema.geom.name
+
+    wfs.featureMember."${outputLayer.name}"."${geomName}".each {
+      it.children()[0].@srsName = 'http://www.opengis.net/gml/srs/epsg.xml#4326'
+    }
+
+
+    def x = {
+      mkp.xmlDeclaration()
+      mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
+      mkp.declareNamespace( wfs: "http://www.opengis.net/wfs" )
+      mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
+      mkp.declareNamespace( "${workspaceName}": outputLayer.schema.uri )
+      mkp.yield wfs
+    }
+
+    outputWorkspace.close()
+
+    def buffer = new StreamingMarkupBuilder( encoding: 'UTF-8' ).bind( x ).toString()
+
+    [buffer, contentType]
+  }
+
+
 
   def getFeature(def wfsRequest, def workspace)
   {
@@ -53,9 +148,7 @@ class Gml2ResultFormat implements ResultFormat
     def filter
     try
     {
-//        println "BEFORE"
       filter = new Filter( filterParams.filter )
-//        println "AFTER"
     }
     catch ( e )
     {
