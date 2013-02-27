@@ -12,6 +12,7 @@ var convert = new CoordinateConversion();
 OMAR.views.Map = Backbone.View.extend({
     el:"#MapContainer",
     initialize:function(params){
+        this.baseZIndex = 100;
         this.setElement(this.el);
         if(params.theme)
         {
@@ -58,7 +59,24 @@ OMAR.views.Map = Backbone.View.extend({
             }
             // var osm = new OpenLayers.Layer.OSM();
             // alert(osm.projection);
-
+             this.ddGraticule = new OpenLayers.Control.Graticule({
+                 visible:false,
+                 numPoints:2,
+                 layerName:"DD Graticule",
+                 labelled:true,
+                 labelFormat:"dd",
+                 lineSymbolizer:{strokeColor:"#4169E1", strokeOpacity:"0.7", strokeWidth:"1"},
+                 labelSymbolizer:{fontColor:"#4169E1", fontOpacity:"0.7"}
+             });
+            this.dmsGraticule = new OpenLayers.Control.Graticule({
+                visible:false,
+                numPoints:2,
+                layerName:"DMS Graticule",
+                labelled:true,
+                labelFormat:"dms",
+                lineSymbolizer:{strokeColor:"#4169E1", strokeOpacity:"0.7", strokeWidth:"1"},
+                labelSymbolizer:{fontColor:"#4169E1", fontOpacity:"0.7"}
+            });
             //layers.push(osm);
             this.map = new OpenLayers.Map({
                 div: this.mapEl,
@@ -79,24 +97,8 @@ OMAR.views.Map = Backbone.View.extend({
                     new OpenLayers.Control.Attribution(),
                     new OpenLayers.Control.Scale(),
                     new OpenLayers.Control.ScaleLine(),
-                    new OpenLayers.Control.Graticule({
-                        visible:false,
-                        numPoints:2,
-                        layerName:"DD Graticule",
-                        labelled:true,
-                        labelFormat:"dd",
-                        lineSymbolizer:{strokeColor:"#4169E1", strokeOpacity:"0.7", strokeWidth:"1"},
-                        labelSymbolizer:{fontColor:"#4169E1", fontOpacity:"0.7"}
-                    }),
-                    new OpenLayers.Control.Graticule({
-                        visible:false,
-                        numPoints:2,
-                        layerName:"DMS Graticule",
-                        labelled:true,
-                        labelFormat:"dms",
-                        lineSymbolizer:{strokeColor:"#4169E1", strokeOpacity:"0.7", strokeWidth:"1"},
-                        labelSymbolizer:{fontColor:"#4169E1", fontOpacity:"0.7"}
-                    })
+                    this.ddGraticule,
+                    this.dmsGraticule
                 ],
                 center: [0, 0],
                 zoom: 3
@@ -113,6 +115,10 @@ OMAR.views.Map = Backbone.View.extend({
 
             this.setupAoiLayer();
             this.setupToolbar();
+
+            this.map.setLayerZIndex(this.aoiLayer, this.baseZIndex);
+            this.map.setLayerZIndex(this.ddGraticule.gratLayer, this.baseZIndex+1);
+            this.map.setLayerZIndex(this.dmsGraticule.gratLayer, this.baseZIndex+2);
         }
     },
     setUnitModelView:function(unitModelView)

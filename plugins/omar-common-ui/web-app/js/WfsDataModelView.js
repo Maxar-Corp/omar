@@ -569,6 +569,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
     url: '',
     el:"#ResultsView",
     initialize:function(params){
+        this.maxCount = 100000;
         this.dataTableEl = $(this.el).find("#DataTable")[0];
         this.dataTableElClone =  $(this.dataTableEl).clone();
         this.selectedCollection = new OMAR.models.SelectedCollection();
@@ -967,8 +968,8 @@ OMAR.views.DataModelView = Backbone.View.extend({
                             thisPtr.currentWfsCountRequest.abort();
                         }
                         thisPtr.currentWfsCountRequest = wfsModel.fetchCount();
-                        //if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
-                        //if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
+                        if(result.iTotalRecords > this.maxCount)  result.iTotalRecords = this.maxCount;
+                        if(result.iTotalDisplayRecords > this.maxCount)  result.iTotalDisplayRecords = this.maxCount;
                         fnCallback(result);
                         thisPtr.dataTable.fnAdjustColumnSizing();
                         thisPtr.blockGetServerData = false;
@@ -982,8 +983,8 @@ OMAR.views.DataModelView = Backbone.View.extend({
                             result.iTotalDisplayRecords = wfsModel.get("numberOfFeatures");
                             result.aaData = model.toJSON();
                         }
-                        //if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
-                        //if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
+                        if(result.iTotalRecords > this.maxCount)  result.iTotalRecords = this.maxCount;
+                        if(result.iTotalDisplayRecords > this.maxCount)  result.iTotalDisplayRecords = this.maxCount;
                         fnCallback(result);
                     }
                 });
@@ -996,8 +997,8 @@ OMAR.views.DataModelView = Backbone.View.extend({
                     result.iTotalDisplayRecords = wfsModel.get("numberOfFeatures");
                     result.aaData = model.toJSON();
                 }
-                //if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
-                //if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
+                if(result.iTotalRecords > this.maxCount)  result.iTotalRecords = this.maxCount;
+                if(result.iTotalDisplayRecords > this.maxCount)  result.iTotalDisplayRecords = this.maxCount;
                 fnCallback(result);
             }
         }
