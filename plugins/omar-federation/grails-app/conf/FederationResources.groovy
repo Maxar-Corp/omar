@@ -42,10 +42,10 @@ modules = {
        resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'ViewSelector.js']
 
        resource url: [dir: 'js', file: 'ServerListModelView.js']
-       resource url: [dir: 'js', file: 'RasterEntryDataModelView.js']
+       resource url: [dir: 'js', file: 'WfsDataModelView.js']
 
-       resource url: [dir: 'css', file: 'rasterSearch.css']
-       resource url: [dir: 'js', file: 'rasterSearch.js']
+       resource url: [dir: 'css', file: 'search.css']
+       resource url: [dir: 'js', file: 'search.js']
        resource url: [dir: 'js', file: 'condition-builder.js']
     }
     federationAdmin{

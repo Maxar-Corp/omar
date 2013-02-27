@@ -140,11 +140,11 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         });
     },
     events: {
-        "click #SearchRasterId": "searchRaster"
+        "click #SearchId": "search"
     },
     cqlCustomQueryChanged:function(){
         this.updateFootprintCql();
-        this.searchRaster();
+        this.search();
     },
     showTab:function(idx){
         if(idx == 0)
@@ -348,11 +348,11 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     wfsTypeNameChanged:function()
     {
-        this.searchRaster();
+        this.search();
     },
     cqlModelChanged:function()
     {
-        this.searchRaster();
+        this.search();
     },
     render:function(){
         if(this.wfsTypeNameView)
@@ -476,21 +476,23 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         if(this.dataModelView) this.dataModelView.resizeView();
         if(this.mapView)       this.mapView.resizeView();
     },
-    searchRaster:function(){
+    search:function(){
         var cqlFilter = this.toCql();
        // alert(cqlFilter);
-        this.wfsServerCountModel.set({
-            filter:cqlFilter
-        });
+        this.wfsServerCountModel.attributes.filter = cqlFilter;
         this.wfsServerCountModel.trigger("change");
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
         if(model)
         {
-            this.dataModelView.wfsModel.set(
-                {"url":model.get("url")+"/wfs",
-                 "filter":cqlFilter,
-                 "typeName":this.wfsTypeNameModel.get("typeName")}
-            );
+            this.dataModelView.wfsModel.attributes.url      = model.get("url")+"/wfs";
+            this.dataModelView.wfsModel.attributes.filter   = cqlFilter;
+            this.dataModelView.wfsModel.attributes.typeName = this.wfsTypeNameModel.get("typeName");
+          //      this.dataModelView.wfsModel.set(
+          //      {"url":model.get("url")+"/wfs",
+          //       "filter":cqlFilter,
+          //       "typeName":this.wfsTypeNameModel.get("typeName")}
+          //  );
+            this.dataModelView.wfsModel.trigger("change");
         }
      }
 });

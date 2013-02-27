@@ -1,5 +1,3 @@
-
-
 OMAR.models.ColumnGroup=Backbone.Model.extend({
     defaults:{
         name:""
@@ -901,6 +899,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
             "iTotalRecords":0,
             "iTotalDisplayRecords":0
         }
+        if(this.displayStart) oSettings._iDisplayStart = this.displayStart;
         var wfsModel = this.wfsModel;
         var thisPtr = this;
        //alert(sUrl);
@@ -955,21 +954,21 @@ OMAR.views.DataModelView = Backbone.View.extend({
                         thisPtr.spinner.stop();
                         wfsModel.dirty              = false;
                         result.aaData               = model.toJSON();
-                        result.iTotalRecords        = wfsModel.get("numberOfFeatures");
-                        result.iTotalDisplayRecords = wfsModel.get("numberOfFeatures");
-                        if((wfsModel.get("numberOfFeatures") < 1)&&(model.size()>0))
+                        result.iTotalRecords        = model.size();
+                        result.iTotalDisplayRecords = model.size();
+                        if((wfsModel.get("numberOfFeatures") < 1))
                         {
-                            result.iTotalRecords =        model.size();
-                            result.iTotalDisplayRecords = model.size();
-
-                            if(thisPtr.currentWfsCountRequest&&(thisPtr.currentWfsCountRequest.readState !=4))
-                            {
-                                thisPtr.currentWfsCountRequest.abort();
-                            }
-                            thisPtr.currentWfsCountRequest = wfsModel.fetchCount();
+                            result.iTotalRecords        = wfsModel.get("numberOfFeatures");
+                            result.iTotalDisplayRecords = result.iTotalRecords;
                         }
-                        if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
-                        if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
+                        // refetch count
+                        if(thisPtr.currentWfsCountRequest&&(thisPtr.currentWfsCountRequest.readState !=4))
+                        {
+                            thisPtr.currentWfsCountRequest.abort();
+                        }
+                        thisPtr.currentWfsCountRequest = wfsModel.fetchCount();
+                        //if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
+                        //if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
                         fnCallback(result);
                         thisPtr.dataTable.fnAdjustColumnSizing();
                         thisPtr.blockGetServerData = false;
@@ -979,12 +978,12 @@ OMAR.views.DataModelView = Backbone.View.extend({
                         thisPtr.blockGetServerData = false;
                         if(model.size())
                         {
-                            result.iTotalRecords =   wfsModel.get("numberOfFeatures");
-                            result.iTotalDisplayRecords =   wfsModel.get("numberOfFeatures");
+                            result.iTotalRecords        = wfsModel.get("numberOfFeatures");
+                            result.iTotalDisplayRecords = wfsModel.get("numberOfFeatures");
                             result.aaData = model.toJSON();
                         }
-                        if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
-                        if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
+                        //if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
+                        //if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
                         fnCallback(result);
                     }
                 });
@@ -993,12 +992,12 @@ OMAR.views.DataModelView = Backbone.View.extend({
             {
                 if(model.size())
                 {
-                    result.iTotalRecords =   wfsModel.get("numberOfFeatures");
-                    result.iTotalDisplayRecords =   wfsModel.get("numberOfFeatures");
+                    result.iTotalRecords        = wfsModel.get("numberOfFeatures");
+                    result.iTotalDisplayRecords = wfsModel.get("numberOfFeatures");
                     result.aaData = model.toJSON();
                 }
-                if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
-                if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
+                //if(result.iTotalRecords > 100000)  result.iTotalRecords = 100000;
+                //if(result.iTotalDisplayRecords > 100000)  result.iTotalDisplayRecords = 100000;
                 fnCallback(result);
             }
         }
@@ -1013,7 +1012,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
     },
     wfsUrlChanged :function(params){
         this.wfsModel.dirty = true;
-        this.wfsModel.attributes.numberOfFeatures = 0;
+       // this.wfsModel.attributes.numberOfFeatures = 0;
 
         this.stopRequests();
         //this.dataTable.fnClearTable();
@@ -1025,10 +1024,12 @@ OMAR.views.DataModelView = Backbone.View.extend({
     onNumberOfFeaturesChange:function(){
         if(!this.dataTable) return;
 
+        this.displayStart = this.dataTable.fnSettings()._iDisplayStart;
         this.dataTable.fnSettings()._iRecordsTotal        = this.wfsModel.get("numberOfFeatures");
         this.dataTable.fnSettings()._iTotalDisplayRecords = this.wfsModel.get("numberOfFeatures");
 
-        this.dataTable.fnDraw();
+        this.dataTable.fnDraw(false);
+        this.displayStart = 0;
     },
     render:function(){
         if(this.dataTable)
