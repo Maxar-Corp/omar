@@ -119,9 +119,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.cqlView = new OMAR.views.CqlView(cqlViewParams);
         this.cqlView.bind("onCqlChanged",this.cqlCustomQueryChanged, this);
         this.currentCqlModel = this.cqlView.model;
-        this.dateTimeRangeModel.bind('change', this.search, this);
-        this.bboxModel.bind('change', this.search, this);
-        this.currentCqlModel.bind('change', this.search, this);
+        this.dateTimeRangeModel.bind('change',this.updateFootprintCql, this);
+        this.bboxModel.bind('change', this.updateFootprintCql, this);
+        this.currentCqlModel.bind('change', this.updateFootprintCql, this);
 
         this.omarServerCollectionView.bind("onModelClicked", this.serverClicked, this);
         this.omarServerCollectionView.activeServerModel.bind("change", this.serverClicked, this);
@@ -413,6 +413,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.viewSelector.click(1);
     },
     updateFootprintCql:function(){
+        this.updateCounts();
         if(this.mapView) this.mapView.setCqlFilterToFootprintLayers(this.toCql());//this.toFootprintCql());
     },
     updateServers:function(){
@@ -481,7 +482,6 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.wfsServerCountModel.trigger("change");
     },
     search:function(){
-        this.updateFootprintCql();
         this.updateCounts();
         var cqlFilter = this.toCql();
        // alert(cqlFilter);
