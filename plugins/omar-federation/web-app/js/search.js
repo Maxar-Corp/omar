@@ -119,9 +119,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.cqlView = new OMAR.views.CqlView(cqlViewParams);
         this.cqlView.bind("onCqlChanged",this.cqlCustomQueryChanged, this);
         this.currentCqlModel = this.cqlView.model;
-        this.dateTimeRangeModel.bind('change', this.updateFootprintCql, this);
-        this.bboxModel.bind('change', this.updateFootprintCql, this);
-        this.currentCqlModel.bind('change', this.updateFootprintCql, this);
+        this.dateTimeRangeModel.bind('change', this.search, this);
+        this.bboxModel.bind('change', this.search, this);
+        this.currentCqlModel.bind('change', this.search, this);
 
         this.omarServerCollectionView.bind("onModelClicked", this.serverClicked, this);
         this.omarServerCollectionView.activeServerModel.bind("change", this.serverClicked, this);
@@ -136,14 +136,14 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.useSpatialFlag = $('#spatialSearchFlag').is(":checked");
         $('#spatialSearchFlag').click(function() {
             thisPtr.useSpatialFlag = $(this).is(':checked');
-            thisPtr.updateFootprintCql();
+            thisPtr.search();
         });
     },
     events: {
         "click #SearchId": "search"
     },
     cqlCustomQueryChanged:function(){
-        this.updateFootprintCql();
+        //this.updateFootprintCql();
         this.search();
     },
     showTab:function(idx){
@@ -472,15 +472,19 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         //alert($("#tabView").height() + ", " + $(".inner-center").height()+","+$(".tabViewContainer").height());
         //var h = $(".inner-center").height();
         //$("#tabView").height(h-110);
-
         if(this.dataModelView) this.dataModelView.resizeView();
         if(this.mapView)       this.mapView.resizeView();
     },
-    search:function(){
+    updateCounts:function(){
         var cqlFilter = this.toCql();
-       // alert(cqlFilter);
         this.wfsServerCountModel.attributes.filter = cqlFilter;
         this.wfsServerCountModel.trigger("change");
+    },
+    search:function(){
+        this.updateFootprintCql();
+        this.updateCounts();
+        var cqlFilter = this.toCql();
+       // alert(cqlFilter);
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
         if(model)
         {
@@ -494,7 +498,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
           //  );
             this.dataModelView.wfsModel.trigger("change");
         }
-     }
+        //;
+    }
 });
 
 OMAR.federatedRasterSearch = null;
