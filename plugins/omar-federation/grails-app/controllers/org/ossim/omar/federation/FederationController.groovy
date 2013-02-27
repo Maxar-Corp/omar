@@ -13,7 +13,7 @@ class FederationController  {
     def search() {
         def wmsBaseLayers = (grailsApplication.config.wms as JSON).toString()
 
-        render view: 'rasterSearch', model:[wmsBaseLayers:wmsBaseLayers,
+        render view: 'search', model:[wmsBaseLayers:wmsBaseLayers,
                                            footprintStyle: grailsApplication.mainContext.getBean( grailsApplication.config?.wms?.data?.raster?.options?.styles)
         ]
     }

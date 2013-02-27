@@ -87,6 +87,7 @@ $.fn.dataTableExt.oPagination.input = {
                 }
 
                 oSettings._iDisplayStart = iNewStart;
+                oSettings._iDisplayEnd = iNewStart + oSettings._iDisplayLength;
                 fnCallbackDraw( oSettings );
             }
         }
@@ -97,7 +98,7 @@ $.fn.dataTableExt.oPagination.input = {
         $(nDropDown).val(oSettings._iDisplayLength);
 
         $(nDropDown).change(function(){
-            oSettings._iDisplayLength = $(this).val();
+            oSettings._iDisplayLength = parseInt($(this).val());
             fnCallbackDraw( oSettings );
         });
         $(nFirst).click( function () {

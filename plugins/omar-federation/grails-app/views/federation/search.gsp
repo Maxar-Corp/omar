@@ -32,7 +32,7 @@
 
             <p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p>
 
-            <center><button name="SearchRasterId" id="SearchRasterId">Search OMAR™</button></center>
+            <center><button name="SearchId" id="SearchId">Search OMAR™</button></center>
         </div>
 
         <div class="inner-center">
