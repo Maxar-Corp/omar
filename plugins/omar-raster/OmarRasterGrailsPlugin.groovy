@@ -54,16 +54,17 @@ OMAR Raster support
       outlineLookupTable = [
           //aaigrid: 4,
           cadrg: new Color( 0, 255, 255, 255 ), // cyan
-          //ccf: 1,
+          ccf: new Color( 128, 100, 255, 255 ), // cyan
+          adrg: new Color( 50, 111, 111, 255 ), // cyan
           //cib: 2,
           //doqq: 2,
           dted: new Color( 0, 255, 0, 255 ), // green
           jpeg: new Color( 255, 255, 0, 255 ), // yellow
-          jpeg2000: new Color( 255, 255, 0, 255 ), // also yellow?
+          jpeg2000: new Color( 255, 200, 0, 255 ), //
           landsat7: new Color( 255, 0, 255, 255 ), // purple
           nitf: new Color( 0, 0, 255, 255 ),  // blue
           tiff: new Color( 255, 0, 0, 255 ),  // red
-          mpeg: new Color(255,0,0,255)
+          mpeg: new Color(164,254,255,255)
           //unspecified: 14
       ]
     }
