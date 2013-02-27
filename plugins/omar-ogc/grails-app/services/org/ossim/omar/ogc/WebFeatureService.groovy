@@ -306,7 +306,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
         ],
         schemaDescriptionLanguages: ['XMLSCHEMA'],
         resultFormats: [
-            GetFeature: ['GML2'/*, 'GML3', 'SHAPE-ZIP'*/, 'GEOJSON', 'CSV', 'KML', 'KMLQUERY']
+            GetFeature: resultFormats.keySet().sort()
         ],
         featureNamespaces: [omar: 'http://omar.ossim.org']
     ]
