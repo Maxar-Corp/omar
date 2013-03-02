@@ -41,6 +41,7 @@ class WfsCommand
 
   def toQuery()
   {
+    /*
     def wfsParams = ( this.metaClass.properties.name - ['class', 'metaClass'] ).inject( [:] ) { a, b ->
       if ( this[b] )
       {
@@ -54,6 +55,10 @@ class WfsCommand
     //println query
 
     return query
+    */
+    this.properties.grep { !( it.key in ['class', 'errors'] ) && it.value != null }.collect {
+      "${it.key}=${URLEncoder.encode( it.value as String, 'UTF-8' )}"
+    }.join( '&' )
   }
 
   def convertSortByToArray()
