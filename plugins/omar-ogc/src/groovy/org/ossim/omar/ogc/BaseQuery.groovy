@@ -1,4 +1,4 @@
-package org.ossim.omar.core
+package org.ossim.omar.ogc
 
 import com.vividsolutions.jts.geom.Coordinate
 import com.vividsolutions.jts.geom.Geometry
@@ -7,6 +7,9 @@ import com.vividsolutions.jts.geom.PrecisionModel
 import com.vividsolutions.jts.io.WKTReader
 import org.hibernate.criterion.Criterion
 import org.hibernatespatial.criterion.SpatialFilter
+import org.ossim.omar.core.DateUtil
+import org.ossim.omar.core.ISO8601DateParser
+
 import java.text.SimpleDateFormat
 import org.apache.commons.collections.map.CaseInsensitiveMap
 

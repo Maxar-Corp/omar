@@ -9,9 +9,8 @@ package org.ossim.omar.video
 
 import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
-import org.ossim.omar.core.BaseQuery
+import org.ossim.omar.ogc.BaseQuery
 import org.ossim.omar.core.Utility
-import org.ossim.omar.video.VideoDataSet
 
 class VideoDataSetQuery extends BaseQuery
 {

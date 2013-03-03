@@ -1,4 +1,7 @@
-package org.ossim.omar.core
+package org.ossim.omar.ogc
+
+import org.ossim.omar.core.ISO8601DateParser
+
 /**
  * Created by IntelliJ IDEA.
  * User: sbortman
