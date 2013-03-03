@@ -1,6 +1,3 @@
-import org.apache.ivy.plugins.latest.LatestTimeStrategy
-import org.apache.ivy.plugins.resolver.FileSystemResolver
-
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -31,19 +28,18 @@ grails.project.dependency.resolution = {
   plugins {
     compile ':spring-security-core:1.2.7.3'
     compile ':spring-security-ldap:1.0.6'
-    compile ':mail:1.0'
     compile ':csv:0.3.1'
     //compile ':filterpane:2.0.1.1'
-
+    runtime ':mail:1.0.1'
   }
 
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
     // runtime 'mysql:mysql-connector-java:5.1.13'
-    runtime "hsqldb:hsqldb:1.8.0.10"
+//    runtime "hsqldb:hsqldb:1.8.0.10"
   }
 }
 
-grails.plugin.location.omarCommonUi = '../../plugins/omar-common-ui'
-grails.plugin.location.filterpane = "../../plugins/filterpane"
+//grails.plugin.location.omarCommonUi = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-common-ui"
+grails.plugin.location.filterpane = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/filterpane"

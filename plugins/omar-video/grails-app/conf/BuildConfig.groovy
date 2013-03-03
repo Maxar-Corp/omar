@@ -1,6 +1,3 @@
-import org.apache.ivy.plugins.latest.LatestTimeStrategy
-import org.apache.ivy.plugins.resolver.FileSystemResolver
-
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -42,11 +39,12 @@ grails.project.dependency.resolution = {
   }
 }
 
-grails.plugin.location.postgis = "../../plugins/postgis"
-grails.plugin.location.openlayers = "../../plugins/openlayers"
-grails.plugin.location.geoscript = "../../plugins/geoscript"
-grails.plugin.location.omarOms = "../../plugins/omar-oms"
-grails.plugin.location.omarSecuritySpring = "../../plugins/omar-security-spring"
-grails.plugin.location.omarCore = "../../plugins/omar-core"
-grails.plugin.location.omarStager = "../../plugins/omar-stager"
-grails.plugin.location.omarOgc = "../../plugins/omar-ogc"
+grails.plugin.location.omarOgc = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-ogc"
+grails.plugin.location.omarStager = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-stager"
+
+//grails.plugin.location.postgis = "../../plugins/postgis"
+//grails.plugin.location.openlayers = "../../plugins/openlayers"
+//grails.plugin.location.geoscript = "../../plugins/geoscript"
+//grails.plugin.location.omarOms = "../../plugins/omar-oms"
+//grails.plugin.location.omarSecuritySpring = "../../plugins/omar-security-spring"
+//grails.plugin.location.omarCore = "../../plugins/omar-core"

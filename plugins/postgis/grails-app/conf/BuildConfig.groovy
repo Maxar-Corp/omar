@@ -1,6 +1,3 @@
-import org.apache.ivy.plugins.latest.LatestTimeStrategy
-import org.apache.ivy.plugins.resolver.FileSystemResolver
-
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -31,7 +28,6 @@ grails.project.dependency.resolution = {
   }
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-
     // runtime 'mysql:mysql-connector-java:5.1.5'
 
     compile(
@@ -45,6 +41,5 @@ grails.project.dependency.resolution = {
       transitive = false
     }
   }
-
 }
 

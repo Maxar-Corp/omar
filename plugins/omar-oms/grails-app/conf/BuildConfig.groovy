@@ -1,13 +1,10 @@
-import org.apache.ivy.plugins.latest.LatestTimeStrategy
-import org.apache.ivy.plugins.resolver.FileSystemResolver
-
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 grails.project.dependency.resolution = {
   // inherit Grails' default dependencies
-  inherits("global") {
+  inherits( "global" ) {
     // uncomment to disable ehcache
     // excludes 'ehcache'
   }
@@ -34,4 +31,4 @@ grails.project.dependency.resolution = {
   }
 }
 
-grails.plugin.location.geoscript = '../../plugins/geoscript'
+grails.plugin.location.geoscript = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/geoscript"

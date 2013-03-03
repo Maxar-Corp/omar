@@ -31,8 +31,8 @@ grails.project.dependency.resolution = {
   }
 }
 
-grails.plugin.location.geoscript = "../../plugins/geoscript"
-grails.plugin.location.postgis = "../../plugins/postgis"
-grails.plugin.location.omarSecuritySpring = "../../plugins/omar-security-spring"
-grails.plugin.location.omarCore = "../../plugins/omar-core"
-grails.plugin.location.omarOms = "../../plugins/omar-oms"
+//grails.plugin.location.geoscript = "../../plugins/geoscript"
+//grails.plugin.location.postgis = "../../plugins/postgis"
+//grails.plugin.location.omarSecuritySpring = "../../plugins/omar-security-spring"
+//grails.plugin.location.omarCore = "../../plugins/omar-core"
+//grails.plugin.location.omarOms = "../../plugins/omar-oms"

@@ -8,13 +8,12 @@ class OmarSecuritySpringGrailsPlugin
   def grailsVersion = "1.3.7 > *"
   // the other plugins this plugin depends on
   def dependsOn = [
-          'springSecurityCore': '1.1.3 > *',
-          'springSecurityLdap': '1.0.5 > *',
-          'mail': '1.0-SNAPSHOT'
+      'springSecurityCore': '1.1.3 > *',
+      'springSecurityLdap': '1.0.5 > *',
   ]
   // resources that are excluded from plugin packaging
   def pluginExcludes = [
-          "grails-app/views/error.gsp"
+      "grails-app/views/error.gsp"
   ]
 
   def loadAfter = ['spring-security-ldap']
@@ -37,10 +36,10 @@ Adds support for Spring Security to OMAR
   def doWithSpring = {
     // TODO Implement runtime spring config (optional)
 
-    userDetailsService(CustomUserDetailsService)
+    userDetailsService( CustomUserDetailsService )
 
-    ldapUserDetailsMapper(org.ossim.omar.CustomLdapUserDetailsMapper) {
-      springSecurityService = ref("springSecurityService")
+    ldapUserDetailsMapper( org.ossim.omar.CustomLdapUserDetailsMapper ) {
+      springSecurityService = ref( "springSecurityService" )
     }
 
   }
