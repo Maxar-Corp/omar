@@ -31,11 +31,11 @@ grails.project.dependency.resolution = {
     }
 }
 
-grails.plugin.location.postgis="../../plugins/postgis"
-grails.plugin.location.geoscript="../../plugins/geoscript"
-grails.plugin.location.omarOms="../../plugins/omar-oms"
-grails.plugin.location.omarCore="../../plugins/omar-core"
-grails.plugin.location.omarStager="../../plugins/omar-stager"
-grails.plugin.location.omarVideo="../../plugins/omar-video"
-grails.plugin.location.omarRaster="../../plugins/omar-raster"
+grails.plugin.location.postgis="${System.getenv('OMAR_DEV_HOME')}/plugins/postgis"
+grails.plugin.location.geoscript="${System.getenv('OMAR_DEV_HOME')}/plugins/geoscript"
+grails.plugin.location.omarOms="${System.getenv('OMAR_DEV_HOME')}/plugins/omar-oms"
+grails.plugin.location.omarCore="${System.getenv('OMAR_DEV_HOME')}/plugins/omar-core"
+grails.plugin.location.omarStager="${System.getenv('OMAR_DEV_HOME')}/plugins/omar-stager"
+grails.plugin.location.omarVideo="${System.getenv('OMAR_DEV_HOME')}/plugins/omar-video"
+grails.plugin.location.omarRaster="${System.getenv('OMAR_DEV_HOME')}/plugins/omar-raster"
 
