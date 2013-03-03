@@ -4,7 +4,7 @@ import org.hibernate.criterion.Restrictions
 import org.hibernate.criterion.Criterion
 import org.ossim.omar.core.Utility
 import org.ossim.omar.core.ISO8601DateParser
-import org.ossim.omar.core.BaseQuery
+import org.ossim.omar.ogc.BaseQuery
 
 /**
  * Created by IntelliJ IDEA.

@@ -41,7 +41,7 @@ grails.project.dependency.resolution = {
 }
 
 grails.plugin.location.geoscript = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/geoscript"
-grails.plugin.location.postgis = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/postgis"
+//grails.plugin.location.postgis = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/postgis"
 grails.plugin.location.omarOms = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-oms"
 grails.plugin.location.omarSecuritySpring = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-security-spring"
 

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.InitializingBean
 import groovy.xml.StreamingMarkupBuilder
 
 import org.ossim.omar.core.DateUtil
-import org.ossim.omar.core.WMSRequest
+import org.ossim.omar.ogc.WMSRequest
 
 class RasterEntryController implements InitializingBean
 {

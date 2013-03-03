@@ -1,6 +1,8 @@
-package org.ossim.omar.core
+package org.ossim.omar.ogc
 
 import org.hibernatespatial.SpatialRelation
+import org.ossim.omar.core.Utility
+
 /**
  * Created by IntelliJ IDEA.
  * User: gpotts

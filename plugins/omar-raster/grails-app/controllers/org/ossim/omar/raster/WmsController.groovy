@@ -4,16 +4,12 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
 
 import org.springframework.beans.factory.InitializingBean
 
-import java.awt.image.BufferedImage
-
 import java.util.zip.ZipOutputStream
 import java.util.zip.ZipEntry
 import javax.imageio.ImageIO
 
 import groovy.xml.StreamingMarkupBuilder
-
-import org.ossim.omar.core.ImageGenerator
-import org.ossim.omar.core.WMSRequest
+import org.ossim.omar.ogc.WMSRequest
 import org.ossim.omar.ogc.OgcController
 import org.ossim.omar.ogc.WmsCommand
 import org.ossim.omar.security.SecUser
