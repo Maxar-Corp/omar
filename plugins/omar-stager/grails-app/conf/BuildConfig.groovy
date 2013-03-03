@@ -1,6 +1,3 @@
-import org.apache.ivy.plugins.latest.LatestTimeStrategy
-import org.apache.ivy.plugins.resolver.FileSystemResolver
-
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -31,7 +28,7 @@ grails.project.dependency.resolution = {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
     // runtime 'mysql:mysql-connector-java:5.1.5'
-    compile "org.codehaus.gpars:gpars:0.12"
+    compile "org.codehaus.gpars:gpars:1.0.0"
   }
 
   plugins {
@@ -40,8 +37,9 @@ grails.project.dependency.resolution = {
 
 }
 
-grails.plugin.location.postgis = "../../plugins/postgis"
-grails.plugin.location.geoscript = "../../plugins/geoscript"
-grails.plugin.location.omarSecuritySpring = "../../plugins/omar-security-spring"
-grails.plugin.location.omarCore = "../../plugins/omar-core"
-grails.plugin.location.omarOms = "../../plugins/omar-oms"
+grails.plugin.location.omarCore = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-core"
+
+//grails.plugin.location.postgis = "../../plugins/postgis"
+//grails.plugin.location.geoscript = "../../plugins/geoscript"
+//grails.plugin.location.omarSecuritySpring = "../../plugins/omar-security-spring"
+//grails.plugin.location.omarOms = "../../plugins/omar-oms"

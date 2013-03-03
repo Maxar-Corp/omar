@@ -1,6 +1,3 @@
-import org.apache.ivy.plugins.latest.LatestTimeStrategy
-import org.apache.ivy.plugins.resolver.FileSystemResolver
-
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -38,13 +35,13 @@ grails.project.dependency.resolution = {
 
   plugins {
     compile ":joda-time:1.4"
-    runtime ":yui-minify-resources:0.1.5"
+//    runtime ":yui-minify-resources:0.1.5"
   }
 
 }
 
-grails.plugin.location.geoscript = "../../plugins/geoscript"
-grails.plugin.location.postgis = "../../plugins/postgis"
-grails.plugin.location.omarOms = "../../plugins/omar-oms"
-grails.plugin.location.omarSecuritySpring = "../../plugins/omar-security-spring"
+grails.plugin.location.geoscript = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/geoscript"
+grails.plugin.location.postgis = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/postgis"
+grails.plugin.location.omarOms = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-oms"
+grails.plugin.location.omarSecuritySpring = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-security-spring"
 
