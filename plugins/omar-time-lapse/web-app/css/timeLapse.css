@@ -1,5 +1,7 @@
 body { font-family: Arial; }
 
+#map { border: solid 2px; }
+
 #mapCoordinatesDiv 
 {
 	font-weight: bold;
