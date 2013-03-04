@@ -85,6 +85,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.menuView.bind("onGeoJsonClicked", this.geoJsonClicked, this);
         this.menuView.bind("onGml2Clicked", this.gml2Clicked, this);
         this.menuView.bind("onCsvClicked", this.csvClicked, this);
+        this.menuView.bind("onTimeLapseClicked", this.timeLapseClicked, this);
 
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
         this.dateTimeRangeModel = this.dateTimeRangeView.model;
@@ -174,7 +175,62 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.viewSelector.setText(2, model.get("nickname"));
         }
     },
+    timeLapseClicked:function(){
+        var currentSelection = this.dataModelView.getCurrentSelection();
+        var wfsModel = this.dataModelView.wfsModel.clone();
+        var location = wfsModel.attributes.url;
+        // for now let's just use the wfs model and get URL and
+        // replace the wfs path
+        //
+        if(location)
+        {
+            location = location.replace("/wfs","");
+        }
+        var bbox = null;
+        if(currentSelection.size() > 1) {
+            var layerList = null;
+            for(var idx=0; idx < currentSelection.size(); idx++){
+                var item = currentSelection.at(idx);
+                var modelRecord = this.dataModelView.model.get(item.id);
+                if(modelRecord)
+                {
+                    var minLatLon = modelRecord.get("min_lat_lon");
+                    var maxLatLon = modelRecord.get("max_lat_lon");
+                    var minLatLonArray = minLatLon.split(",");
+                    var maxLatLonArray = maxLatLon.split(",");
+                    var tempBbox = new OMAR.models.BBOX({minx:parseFloat(minLatLonArray[1]),
+                        miny:parseFloat(minLatLonArray[0]),
+                        maxx:parseFloat(maxLatLonArray[1]),
+                        maxy:parseFloat(maxLatLonArray[0])
+                    });
+                    if(!layerList) layerList = item.id;
+                    else layerList += (","+item.id);
+                    if(!bbox)
+                    {
+                        bbox = tempBbox;
 
+                    }
+                    else if(bbox.intersect(tempBbox))
+                    {
+                        bbox = tempBbox.intersect(bbox);
+                    }
+                    else
+                    {
+                        alert("Unable to perform request.  Not all images selected intersect");
+                        return;
+                    }
+                }
+                //alert(modelRecord.id);
+            }
+            var urlTemp = location +"/timeLapse/timeLapse?layer=" + layerList + "&bbox="+bbox.toWmsString();
+
+            window.open(urlTemp, "");
+        }
+        else
+        {
+            alert("Please select at least 2 images in the results for timeLapse output");
+        }
+    },
     kmlQueryClicked:function(forceFloatBbox){
 
         // alert(this.mapView.hasBBOXSelection());

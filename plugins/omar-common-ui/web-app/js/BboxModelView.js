@@ -9,6 +9,35 @@ OMAR.models.BBOX = Backbone.Model.extend(
         initialize:function(options)
         {
         },
+        intersects:function(bbox)
+        {
+            var maxOfMinx = Math.max(this.attributes.minx, bbox.attributes.minx);
+            var minOfMaxx = Math.min(this.attributes.maxx, bbox.attributes.maxx);
+            var minOfMaxy = Math.min(this.attributes.maxy, bbox.attributes.maxy);
+            var maxOfMiny = Math.max(this.attributes.miny, bbox.attributes.miny);
+            return ((maxOfMinx <= minOfMaxx)&&
+                    (minOfMaxy >= maxOfMiny));
+        },
+        intersect:function(bbox)
+        {
+            var result = null;
+
+            var maxOfMinx = Math.max(this.attributes.minx, bbox.attributes.minx);
+            var minOfMaxy = Math.min(this.attributes.maxy, bbox.attributes.maxy);
+            var minOfMaxx = Math.min(this.attributes.maxx, bbox.attributes.maxx);
+            var maxOfMiny = Math.max(this.attributes.miny, bbox.attributes.miny);
+
+            if( minOfMaxx < maxOfMinx || maxOfMiny > minOfMaxy )
+            {
+                return null;
+            }
+
+            return new OMAR.models.BBOX({minx: maxOfMinx
+                                         ,miny: maxOfMiny
+                                         ,maxx: minOfMaxx
+                                         ,maxy: minOfMaxy
+                                         });
+        },
         toWmsString:function()
         {
             return (this.get("minx") + "," + this.get("miny") + "," +
