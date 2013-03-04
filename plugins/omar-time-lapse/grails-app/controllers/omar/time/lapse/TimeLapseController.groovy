@@ -9,8 +9,31 @@ class TimeLapseController
 	def timeLapse() 
 	{ 
 	
-		def rasterEntries = rasterEntrySearchService.findRasterEntries(params.imageIds?.split(","))
+		def rasterEntries = rasterEntrySearchService.findRasterEntries(params.layer?.split(","))
 		def bbox = params.bbox ?: [-180,-90,180,90]
+		def timeLapseJson = '\n' + 
+			'{\n' + 
+			'	"bbox" : [' + bbox +'],\n' +
+			'	"layers" : \n' +
+			'	[\n'
+
+		rasterEntries.eachWithIndex 
+		{ 
+			obj, i -> timeLapseJson += 
+			'		{\n' + 
+			'			"acquisitionDate" : "' + obj.acquisitionDate + '",\n' +
+			'			"indexId" : "' + obj.indexId + '",\n' +
+			'			"imageId" : "' + obj.title + '"\n' +
+			'		}'
+
+			if (i != rasterEntries.size() - 1) { timeLapseJson += ',\n' }
+			else { timeLapseJson += '\n' }
+		}			
+
+		timeLapseJson +=
+			'	]\n' +
+			'}'
+	
 		def markers = params.markers?.split(",") ?: ["null"]
 		render(
 			view: "timeLapse.gsp",
@@ -19,10 +42,12 @@ class TimeLapseController
 				acquisitionDates: rasterEntries.acquisitionDate,
 				bbox: bbox,
 				countryCodes: rasterEntries.countryCode,
+				entryIds: rasterEntries.id,
 				imageIds: rasterEntries.title,
 				indexIds: rasterEntries.indexId,
 				markers: markers,
-				niirsValues: rasterEntries.niirs
+				niirsValues: rasterEntries.niirs,
+				timeLapseObject: timeLapseJson
 			]	
 		)		
 	}
