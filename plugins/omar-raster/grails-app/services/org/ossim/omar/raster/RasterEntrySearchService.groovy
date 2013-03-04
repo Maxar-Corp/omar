@@ -267,16 +267,16 @@ class RasterEntrySearchService implements InitializingBean
 
     def ids = rasterIdList?.findAll { it.isLong() }.collect() { it as Long }
 
-    def rasterEntries = RasterEntry.createCriteria().list() {
+    def rasterEntries = RasterEntry.createCriteria().list({
       or {
         if ( ids )
         {
           inList( "id", ids )
         }
        	inList( "indexId", rasterIdList )
-        inList( "imageId", rasterIdList )
+        inList( "title", rasterIdList )
       }
-    }
+    })
 
     return rasterEntries
   }
