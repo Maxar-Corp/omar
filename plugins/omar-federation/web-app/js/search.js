@@ -313,7 +313,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         }
 
-        alert(wfsModel.toUrl());
+        //alert(wfsModel.toUrl());
         window.open(wfsModel.toUrl(),"_parent");
     },
     csvClicked:function(){

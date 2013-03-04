@@ -4,8 +4,6 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
 
 import groovy.xml.StreamingMarkupBuilder
 
-import geoscript.filter.Filter
-
 class WfsController
 {
   def webFeatureService
@@ -80,14 +78,38 @@ class WfsController
           ServiceException( code: "GeneralException", e.message )
         }
       }.toString()
-      //contentType = 'application/vnd.ogc.se_xml'
-      contentType = 'application/xml'
+      contentType = 'application/vnd.ogc.se_xml'
+      //contentType = 'application/xml'
     }
     finally
     {
-      def attachment = "WFS-${wfsCommand.outputFormat}"
-      response.setHeader( "Content-disposition", "attachment; ${attachment}" )
+      def ext = ""
+
+      //println contentType
+
+      switch ( contentType )
+      {
+      case 'text/csv':
+        ext = '.csv'
+        break
+      case 'application/xml':
+      case 'text/xml; subtype=gml/2.1.2':
+      case 'application/vnd.ogc.se_xml':
+        ext = '.xml'
+        break
+      case 'application/vnd.google-earth.kml+xml':
+        ext = '.kml'
+        break
+      case 'application/json':
+        ext = '.js'
+        break
+      }
+
+      def attachment = "WFS-${wfsCommand.outputFormat}${ext}"
+
+      response.setHeader( "Content-disposition", "attachment; filename=${attachment}" )
       // println "contentType: ${contentType}, text: ${results}"
+
       render contentType: contentType, text: results
     }
   }
