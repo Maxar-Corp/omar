@@ -23,22 +23,22 @@ class CsvResultFormat implements ResultFormat
     def fields
     def labels
     def formatters
-    def typeName = wfsRequest?.typeName.toLowerCase();
+    def layerName = wfsRequest?.typeName?.split( ':' )[-1].toLowerCase();
 
-    if ( typeName == "raster_entry" )
+    if ( layerName == "raster_entry" )
     {
       fields = grailsApplication.config.export.rasterEntry.fields
       labels = grailsApplication.config.export.rasterEntry.labels
       formatters = grailsApplication.config.export.rasterEntry.formatters
     }
-    else if ( typeName == "video_data_set" )
+    else if ( layerName == "video_data_set" )
     {
       fields = grailsApplication.config.export.videoDataSet.fields
       labels = grailsApplication.config.export.videoDataSet.labels
       formatters = grailsApplication.config.export.videoDataSet.formatters
     }
 
-    def layer = workspace[wfsRequest?.typeName]
+    def layer = workspace[layerName]
     def filter = [
         filter: wfsRequest?.filter ?: Filter.PASS,
         //sort: ""// [["<COLUMN NAME>","ASC|DESC"]]

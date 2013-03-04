@@ -65,7 +65,8 @@ class KmlResultFormat implements ResultFormat
     wmsParams?.remove( "height" )
     wmsParams.remove( "action" )
     wmsParams.remove( "controller" )
-    def layer = workspace[wfsRequest?.typeName]
+    def layerName = wfsRequest?.typeName?.split( ':' )[-1]?.toLowerCase()
+    def layer = workspace[layerName]
     if ( bbox )
     {
       if ( filter )
@@ -105,7 +106,7 @@ class KmlResultFormat implements ResultFormat
       def groundCenterLat = ( bounds?.minY + bounds?.maxY ) * 0.5;
       def renderedHtml = description
 
-      if ( wfsRequest?.typeName?.toLowerCase() == "raster_entry" )
+      if ( layerName == "raster_entry" )
       {
         kmlwriter << "<name>OMAR Rasters</name>"
 
@@ -287,7 +288,7 @@ class KmlResultFormat implements ResultFormat
     def fields
     def labels
     def formatters
-    def typeName = wfsRequest?.typeName.toLowerCase();
+    def layerName = wfsRequest?.typeName?.split( ':' )[-1]?.toLowerCase();
     def thumbnail
     def url
 
@@ -296,7 +297,9 @@ class KmlResultFormat implements ResultFormat
     // def flashPlayerUrl = tagLibBean.linkTo(dir: "js", file: "player.swf", base: "${grailsApplication.config.omar.serverURL}", absolute: true)
     def mpegFile = feature["filename"] as File
     def flvFile = "${flashDirRoot}/${mpegFile.name}.flv" as File
-    if ( typeName == "raster_entry" )
+
+
+    if ( layerName == "raster_entry" )
     {
       fields = grailsApplication.config.export.rasterEntry.fields
       labels = grailsApplication.config.export.rasterEntry.labels
@@ -309,7 +312,7 @@ class KmlResultFormat implements ResultFormat
           controller: "thumbnail", action: "show", id: feature["id"],
           params: [size: 128, projectionType: 'imagespace'] )
     }
-    else if ( typeName == "video_data_set" )
+    else if ( layerName == "video_data_set" )
     {
       fields = grailsApplication.config.export.videoDataSet.fields
       labels = grailsApplication.config.export.videoDataSet.labels
