@@ -15,7 +15,10 @@
 						</ul>
 						<ul>
 							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = "javascript:exportImage()" title = "Export Image">Image</a>
+								<a class = "yuimenuitemlabel" href = "javascript:exportImage()" title = "Export Image (Ortho)">Image (Ortho)</a>
+							</li>
+							<li class = "yuimenuitem">
+								<a class = "yuimenuitemlabel" href = "javascript:getUpIsUpImageChipUrl()" title = "Export Image (Up Is Up)">Image (Up Is Up)</a>
 							</li>
 						</ul>
 						<ul>
@@ -24,11 +27,6 @@
 							</li>
 							<li class = "yuimenuitem">
 								<a class = "yuimenuitemlabel" href = "javascript:exportTimeLapsePdf()" title = "Export As PDF">PDF</a>
-							</li>
-						</ul>
-						<ul>
-							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = "javascript:exportTimeLapseSummary()" title = "Export Summary">Summary</a>
 							</li>
 						</ul>
 					</div>
@@ -44,9 +42,6 @@
 							</li>
 							<li class = "yuimenuitem">
 								<a class = "yuimenuitemlabel" href = "javascript:reverseTimeLapseOrder()" title = "Reverse Order">Reverse Order</a>
-							</li>
-							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = "javascript:addMarkerDialog()" title = "Add Marker">Add Marker</a>
 							</li>
 						</ul>
 					</div>
