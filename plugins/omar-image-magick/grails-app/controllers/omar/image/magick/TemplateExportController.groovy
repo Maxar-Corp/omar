@@ -16,27 +16,31 @@ class TemplateExportController
 
 	def index()
 	{
-		def acquisitionDate = params.acquisitionDate
-		def centerGeo = params.centerGeo
 		def countryCode = params.countryCode
-		def imageId = params.imageId
-		def imageUrl = params.imageURL
-		def markers = params.markers?.split(",") ?: ["null"]
-		def northArrowAngle = params.northArrowAngle
+		def footerAcquisitionDateTextArray = params.footerAcquisitionDateText.split(",")
+		def footerLocationTextArray = params.footerLocationText.split(",")
+		def footerSecurityClassificationTextArray = params.footerSecurityClassificationText.split(",")
+		def headerDescriptionTextArray = params.headerDescriptionText.split(",")
+		def headerSecurityClassificationTextArray = params.headerSecurityClassificationText.split(",")
+		def headerTitleTextArray = params.headerTitleText.split(",")
+		def imageUrlArray = params.imageUrl.split(">")
+		def northAngleArray = params.northAngle.split(",")
 		def securityClassification = grailsApplication.config.security[grailsApplication.config.security.level].description
+
 
 		render(
 			view: "templateExport.gsp",
 			model:
 			[
-				acquisitionDate: acquisitionDate,
-				centerGeo: centerGeo,
 				countryCode: countryCode,
-				imageId: imageId,
-				imageURL: imageUrl,
-				markers: markers,
-				northArrowAngle: northArrowAngle,
-				securityClassification: securityClassification
+				footerAcquisitionDateTextArray: footerAcquisitionDateTextArray,
+				footerLocationTextArray: footerLocationTextArray,
+				footerSecurityClassificationTextArray: footerSecurityClassificationTextArray,
+				headerDescriptionTextArray: headerDescriptionTextArray,
+				headerSecurityClassificationTextArray: headerSecurityClassificationTextArray,
+				headerTitleTextArray: headerTitleTextArray,
+				imageUrlArray: imageUrlArray,
+				northAngleArray: northAngleArray
 			]
 		)
 	}
@@ -45,6 +49,7 @@ class TemplateExportController
 	{
 		def country = params.country
 		def footerAcquisitionDateText = params.footerAcquisitionDateText
+		
 		def footerAcquisitionDateTextColor = params.footerAcquisitionDateTextColor
 		def footerLocationText = params.footerLocationText
 		def footerLocationTextColor = params.footerLocationTextColor
@@ -63,7 +68,6 @@ class TemplateExportController
 		def imageWidth = params.imageWidth
 		def includeOverviewMap = params.includeOverviewMap
 		def logo = params.logo
-    		def markerLocations = params.markers?.split(",") ?: ["null"]
 		def northAngle = params.northArrowAngle
 		def northArrowColor = params.northArrowColor
 		def northArrowBackgroundColor = params.northArrowBackgroundColor

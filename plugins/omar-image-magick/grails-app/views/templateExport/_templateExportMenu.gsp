@@ -10,7 +10,7 @@
 					<div class = "bd">
 						<ul>
 							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = "javascript:downloadImage()" title = "Download Template">Download</a>
+								<a class = "yuimenuitemlabel" href = "javascript:download()" title = "Download Template">Download</a>
 							</li>
 						</ul>
 					</div>

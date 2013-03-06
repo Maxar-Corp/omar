@@ -6,10 +6,10 @@ class TimeLapseController
 	def exportTimeLapsePdfService
 	def rasterEntrySearchService
 
-	def timeLapse() 
+	def viewer() 
 	{ 
 	
-		def rasterEntries = rasterEntrySearchService.findRasterEntries(params.layer?.split(","))
+		def rasterEntries = rasterEntrySearchService.findRasterEntries(params.layers?.split(","))
 		def bbox = params.bbox ?: [-180,-90,180,90]
 		def timeLapseJson = '\n' + 
 			'{\n' + 

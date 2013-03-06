@@ -222,7 +222,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                 }
                 //alert(modelRecord.id);
             }
-            var urlTemp = location +"/timeLapse/timeLapse?layer=" + layerList + "&bbox="+bbox.toWmsString();
+            var urlTemp = location +"/timeLapse/viewer?layers=" + layerList + "&bbox="+bbox.toWmsString();
 
             window.open(urlTemp, "");
         }
