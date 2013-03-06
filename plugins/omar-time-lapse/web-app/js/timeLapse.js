@@ -44,6 +44,7 @@ $(document).ready
 		setupMap();
 		currentLayer = timeLapseObject.layers.length - 1;
 		fastForward();
+		setupKeyboardShortcuts();
 	}
 );
 
@@ -58,37 +59,15 @@ function deleteImageFromTimeLapse()
 	fastForward();
 }
 
-//function exportImage()
-//{
-//	var exportImageUrl = exportImageUrlBase;
-//	exportImageUrl += "?acquisitionDate=" + acquisitionDates[currentLayer];
-//	exportImageUrl += "&countryCode=" + countryCodes[currentLayer];
-//	exportImageUrl += "&imageId=" + imageIds[currentLayer];
+function exportImage()
+{
+	var fileType = $("#exportImageDialogFileTypeSpinner").val();
+	var layerIndexArray = [currentLayer];
+	var viewType = $("#exportImageDialogViewTypeSpinner").val();
 
-//	var imageUrl = mapLayers[currentLayer].getURL(map.getExtent());
-//	imageUrl = imageUrl.replace(/&/g, "%26");
-//	exportImageUrl += "&imageURL=" + imageUrl;
-	
-//	var centerGeo = coordConvert.ddToDms(map.getCenter().lat, map.getCenter().lon);
-//	var centerMgrs = coordConvert.ddToMgrs(map.getCenter().lat, map.getCenter().lon);
-//	exportImageUrl += "&centerGeo=GEO: " + centerGeo + " MGRS: " + centerMgrs;
-//	exportImageUrl += "&northArrowAngle=0";
-	
-//	if (markerLayer.features.length > 0)
-//	{
-//		exportImageUrl += "&markers=";
-//		var markerLocationArray = new Array();
-//		for (var i = 0; i < markerLayer.features.length; i++)
-//		{
-//			var markerGeometry = markerLayer.features[i].geometry;
-//			var markerPoint = map.getPixelFromLonLat(new OpenLayers.LonLat(markerGeometry.x, markerGeometry.y));
-//			markerLocationArray[2 * i] = markerPoint.x - (markerSize.w/2);
-//			markerLocationArray[2 * i +1] = markerPoint.y - markerSize.h;
-//		}
-//		exportImageUrl += markerLocationArray.join(",");
-//	}
-//	window.open(exportImageUrl);
-//}
+	if (viewType == "ortho") { prepareExportOrtho(layerIndexArray, fileType); }	
+	else if (viewType == "up") { prepareExportUp(layerIndexArray, fileType); }
+}
 
 //function exportLink()
 //{
@@ -154,6 +133,14 @@ function generateMapSpinner()
 	}
 }
 
+function getOrthoChipUrl(layerIndex)
+{
+	var imageChipUrl = timeLapseObject.layers[layerIndex].mapLayer.getURL(map.getExtent());
+	imageChipUrl = imageChipUrl.replace(/&/g, "%26");
+
+	return imageChipUrl;
+}
+
 //function getUpIsUpImageChipUrl()
 //{
 //	var currentMapBounds = map.calculateBounds().toArray();
@@ -205,7 +192,7 @@ function generateMapSpinner()
 //	alert(upIsUpImageChipUrl);
 //}
 
-function highlightTableRow(row) { row.style.backgroundColor = "#add8e6"; }
+function highlightTableRow(row) { row.style.backgroundColor = "yellow"; }
 
 function positionElementsOnPage()
 {
@@ -247,6 +234,47 @@ function playMovie()
 	movieAdvance = setTimeout("playMovie()", playSpeed);
 }
 
+function prepareExportOrtho(layerIndexArray, format)
+{
+	var footerAcquisitionDateTextArray = []; 
+	var footerLocationTextArray = [];
+	var footerSecurityClassificationTextArray = [];
+	var headerDescriptionTextArray = [];
+	var headerSecurityClassificationTextArray = [];
+	var headerTitleTextArray = [];
+	var imageUrlArray = [];
+	var northAngleArray = [];
+
+	$.each
+	(
+		layerIndexArray,
+		function(i, x) 
+		{
+			footerAcquisitionDateTextArray[i] = timeLapseObject.layers[x].acquisitionDate;
+			footerLocationTextArray[i] = "GEO: " + coordConvert.ddToDms(map.getCenter().lat, map.getCenter().lon) +
+				" MGRS: " + coordConvert.ddToMgrs(map.getCenter().lat, map.getCenter().lon);
+			footerSecurityClassificationTextArray[i] = "UNCLASS";
+			headerDescriptionTextArray[i] = "Country: " + timeLapseObject.layers[i].countryCode;
+			headerSecurityClassificationTextArray[i] = "UNCLASS";
+			headerTitleTextArray[i] = timeLapseObject.layers[i].imageId;
+			imageUrlArray[i] = getOrthoChipUrl(x);
+			northAngleArray[x] = 0;
+		}
+	);
+
+	$("#countryCodeFormInput").val(timeLapseObject.layers[0].countryCode);
+	$("#footerAcquisitionDateTextFormInput").val(footerAcquisitionDateTextArray.join(","));
+	$("#footerLocationTextFormInput").val(footerLocationTextArray.join(","));
+	$("#footerSecurityClassificationTextFormInput").val(footerSecurityClassificationTextArray.join(","));
+	$("#headerDescriptionTextFormInput").val(headerDescriptionTextArray.join(","));
+	$("#headerSecurityClassificationTextFormInput").val(headerSecurityClassificationTextArray.join(","));
+	$("#headerTitleTextFormInput").val(headerTitleTextArray.join(","));
+	$("#imageUrlFormInput").val(imageUrlArray.join(","));
+	$("#northAngleFormInput").val(northAngleArray.join(","));
+
+	$("#exportForm")[0].submit();	
+}	
+
 function reverseTimeLapseOrder()
 {
 	timeLapseObject.layers.reverse();
@@ -268,24 +296,33 @@ function rewind()
 
 function setupDialogs()
 {	
-	$("#addMarkerDialog").dialog
-	({
-		autoOpen: false,
+	$("#exportImageDialog").dialog
+	({ 
+		autoOpen: false, 
 		buttons:
 		{
-			"Drop": function()
-			{
-				$(this).dialog("close");
-				dropMarker();
-			},
-			Cancel: function() { $(this).dialog("close"); }
+			"Submit" : function() { $(this).dialog("close"); exportImage(); },
+			"Cancel" : function() { $(this).dialog("close"); }
 		},
-		width: "auto"
+		width: "auto" 
 	});
 
 	$("#exportLinkDialog").dialog({ autoOpen: false, width: "auto" });
 
 	$("#timeLapseSummaryDialog").dialog({ autoOpen: false, width: "auto" });
+}
+
+function setupKeyboardShortcuts()
+{
+	$(document).keydown
+	(
+		function(event)
+		{
+			if (event.keyCode == 37) { rewind(); }
+			else if (event.keyCode == 39) { fastForward(); }
+		}	
+	);
+	return false;
 }
 
 function setupMap()
@@ -318,8 +355,8 @@ function setupMap()
 				imageUrlBase,
 				{	
 					bands: "default",
-					brightness: 0,
-					contrast: 1,
+					brightness: "0",
+					contrast: "1",
 					format: "image/jpeg",
 					interpolation: "bilinear",
 					layers: x.indexId,
@@ -329,7 +366,7 @@ function setupMap()
 				},
 				{
 					isBaseLayer: false,
-					ratio: 1,
+					ratio: "1",
 					singleTile: true,
 					transitionEffect: "resize"
 				}
@@ -338,7 +375,6 @@ function setupMap()
 			x.mapLayer.id = i;
 			x.mapLayer.loadEnd = function()
 			{
-				console.dir(this);
 				x.layerLoaded = 1;
 				if (mapSpinner && this.id == currentLayer) { mapSpinner.stop(); }
 			};
@@ -359,13 +395,13 @@ function setupMap()
 //	map.events.register("moveend", map, function() { theMapHasMoved(); });
 //	map.events.register("zoomend", map, function() { theMapHasZoomed(); });
 
-	cacheWrite = new OpenLayers.Control.CacheWrite
-	({
-		autoActivate: true,
-		imageFormat: "image/jpeg"
-	});
-	cacheRead = new OpenLayers.Control.CacheRead();
-	map.addControls([cacheWrite, cacheRead]);
+	//cacheWrite = new OpenLayers.Control.CacheWrite
+	//({
+	//	autoActivate: true,
+	//	imageFormat: "image/jpeg"
+	//});
+	//cacheRead = new OpenLayers.Control.CacheRead();
+	//map.addControls([cacheWrite, cacheRead]);
 }
 
 function setupTimeLapseButtons()
@@ -512,6 +548,7 @@ function timeLapseSummary()
 
 	$("#timeLapseSummaryDialog").css("textAlign", "left");
 	$("#timeLapseSummaryDialog").dialog("open");
+	$("#timeLapseSummaryDialog").find("a").first().blur();
 }
 
 function unhighlightTableRow(row) { row.style.backgroundColor = "#ffffff"; }
@@ -555,4 +592,30 @@ function updateText()
 		"&bbox=" + bbox + "' target = '_blank'>" + timeLapseObject.layers[currentLayer].imageId + "</a>");
 
 	$("#acquisitionDateTextDiv").html(timeLapseObject.layers[currentLayer].acquisitionDate);
+
+	if ($("#timeLapseSummaryDialog").dialog("isOpen")) { updateTimeLapseSummary();  }
+}
+
+function updateTimeLapseSummary()
+{
+	var row;
+	$.each
+	(
+		timeLapseObject.layers,
+		function(i, x)
+		{
+			row = $("#timeLapseSummaryTable")[0].rows[i + 1];
+			row.onclick = function() { skipToImage(i); };
+			row.onmouseover = function() { highlightTableRow(this); };
+			row.onmouseout = function() { unhighlightTableRow(this); };
+			row.style.backgroundColor = "transparent";
+		}
+	);
+	
+	row = $("#timeLapseSummaryTable")[0].rows[currentLayer + 1];
+	row.onclick = function() {};
+	row.onmouseover = function() {};
+	row.onmouseout = function() {};
+	row.style.backgroundColor = "#add8e6";
+	console.dir(row);
 }

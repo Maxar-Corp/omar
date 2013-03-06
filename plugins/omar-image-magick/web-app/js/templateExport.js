@@ -1,4 +1,7 @@
+var currentLayer = 0;
 var dom = YAHOO.util.Dom;
+var flipBookChipsArray = [];
+var flipBookChipReadinessArray = [];
 var headerHeight;
 var headerSecurityClassificationTextHeight;
 var headerTitleTextHeight;
@@ -29,65 +32,57 @@ $(document).ready
 			}
 		);
 
-		generateLoadingDialogPopup();
+		$.ajax({ cache: false });
 		setupDialogs();
+
+		generateLoadingDialog();
+		$("#previewImage").attr("src", imageUrlArray[0].replace(/%26/g, "&"));
 		var oMenu = new YAHOO.widget.MenuBar
 		(
 			"templateExportMenu",
 			{ autosubmenudisplay: true, hidedelay: 750, showdelay: 0, lazyload: true, zIndex:9999 }
 		);
 		oMenu.render();
-		$(window).resize(function() { windowResize(); });
+
+		$("#headerSecurityClassificationTextInput").val(headerSecurityClassificationTextArray[0]);
+		$("#headerTitleTextInput").val(headerTitleTextArray[0]);
+		$("#headerDescriptionTextInput").val(headerDescriptionTextArray[0]);
+		$("#northAngleInput").val(northAngleArray[0]);
+		$("#footerSecurityClassificationTextInput").val(footerSecurityClassificationTextArray[0]);
+		$("#footerLocationTextInput").val(footerLocationTextArray[0]);
+		$("#footerAcquisitionDateTextInput").val(footerAcquisitionDateTextArray[0]);
+				
+		//$(window).resize(function() { windowResize(); });
 	}
 );
 
-function changeColorGradient() { $("#changeColorGradientPopup").dialog("open"); }
-function changeFooterAcquisitionDateText() { $("#changeFooterAcquisitionDateTextPopup").dialog("open"); }
-function changeFooterLocationText() { $("#changeFooterLocationTextPopup").dialog("open"); }
-function changeFooterSecurityClassificationText() { $("#changeFooterSecurityClassificationTextPopup").dialog("open"); }
-function changeHeaderDescriptionText() { $("#changeHeaderDescriptionTextPopup").dialog("open"); }
-function changeHeaderSecurityClassificationText() { $("#changeHeaderSecurityClassificationTextPopup").dialog("open"); }
-function changeHeaderTitleText() { $("#changeHeaderTitleTextPopup").dialog("open"); }
-function changeLogo() { $("#changeLogoPopup").dialog("open"); }
-function changeNorthArrow() { $("#changeNorthArrowPopup").dialog("open"); }
-function changeOverviewMap() { $("#changeOverviewMapPopup").dialog("open"); }
+function changeColorGradient() { $("#changeColorGradientDialog").dialog("open"); $(".ui-dialog: input").blur(); }
+function changeFooterAcquisitionDateText() { $("#changeFooterAcquisitionDateTextDialog").dialog("open"); }
+function changeFooterLocationText() { $("#changeFooterLocationTextDialog").dialog("open"); }
+function changeFooterSecurityClassificationText() { $("#changeFooterSecurityClassificationTextDialog").dialog("open"); }
+function changeHeaderDescriptionText() { $("#changeHeaderDescriptionTextDialog").dialog("open"); }
+function changeHeaderSecurityClassificationText() { $("#changeHeaderSecurityClassificationTextDialog").dialog("open"); }
+function changeHeaderTitleText() { $("#changeHeaderTitleTextDialog").dialog("open"); }
+function changeLogo() { $("#changeLogoDialog").dialog("open"); }
+function changeNorthArrow() { $("#changeNorthArrowDialog").dialog("open"); }
+function changeOverviewMap() { $("#changeOverviewMapDialog").dialog("open"); }
 
-function downloadImage()
+function download()
 {
-	var exportUrlParams = "?country=" + $("#overviewMapCountry").val();
-	exportUrlParams += "&footerAcquisitionDateText=" + $("#footerAcquisitionDateTextInput").val();
-	exportUrlParams += "&footerAcquisitionDateTextColor=" + $("#footerAcquisitionDateTextColor").val();
-	exportUrlParams += "&footerLocationText=" + $("#footerLocationTextInput").val();
-	exportUrlParams += "&footerLocationTextColor=" + $("#footerLocationTextColor").val();
-	exportUrlParams += "&footerSecurityClassificationText=" + $("#footerSecurityClassificationTextInput").val();
-	exportUrlParams += "&footerSecurityClassificationTextColor=" + $("#footerSecurityClassificationTextColor").val();
-	exportUrlParams += "&gradientColorBottom=" + $("#gradientColorBottom").val();
-	exportUrlParams += "&gradientColorTop=" + $("#gradientColorTop").val();
-	exportUrlParams += "&headerDescriptionText=" + $("#headerDescriptionTextInput").val();
-	exportUrlParams += "&headerDescriptionTextColor=" + $("#headerDescriptionTextColor").val();
-	exportUrlParams += "&headerSecurityClassificationText=" + $("#headerSecurityClassificationTextInput").val();
-        exportUrlParams += "&headerSecurityClassificationTextColor=" + $("#headerSecurityClassificationTextColor").val();
-	exportUrlParams += "&headerTitleText=" + $("#headerTitleTextInput").val();
-	exportUrlParams += "&headerTitleTextColor=" + $("#headerTitleTextColor").val();
-	exportUrlParams += "&imageUrl=" + $("#previewImage").get(0).src.replace(/&/g,"%26");
-	exportUrlParams += "&imageHeight=" + $("#previewImage").height();
-	exportUrlParams += "&imageWidth=" + $("#previewImage").width();
-	exportUrlParams += "&includeOverviewMap=" + $("#includeOverviewMapCheckbox").get(0).checked; 
-	exportUrlParams += "&logo=" + $("#logo").val();
-	exportUrlParams += "&northArrowAngle=" + $("#northAngleInput").val();
-	exportUrlParams += "&northArrowBackgroundColor=" + $("#northArrowBackgroundColor").val();
-	exportUrlParams += "&northArrowColor=" + $("#northArrowColor").val();
-	exportUrlParams += "&northArrowSize=" + $("#northArrowImage").height();
-	
-	if (markers.length > 1)
+	if (imageUrlArray.length == 1)
 	{
-		exportUrlParams += "&markers=" + markers.join(",");
+		$.ajax
+		({
+			async: true,
+			data: getExportUrlParams(currentLayer),
+			dataType: "text",
+			success: function(data) { console.dir(data); },
+			type: "POST",
+			url: exportFormUrl
+		});
 	}
 
-	$("#downloadForm").get(0).action = formActionUrl + exportUrlParams;
-	$("#downloadForm").get(0).submit();
-
-	$("#downloadDialogPopup").dialog("open");   
+	$("#downloadDialogPopup").dialog("open"); 
 }
 
 function fontSize(text, desiredSizeHeight, desiredSizeWidth)
@@ -119,12 +114,12 @@ function generateFooter()
 {
 	var footerHeight = 0.035 * $("#previewImage").height();
 	var footerWidth = $("#previewImage").width();
-	$("#footer").css("height", footerHeight);
-	$("#footer").css("width", footerWidth);
+	$("#footerDiv").css("height", footerHeight);
+	$("#footerDiv").css("width", footerWidth);
 
-	var gradientColorBottom = $("#gradientColorBottom").val();
-	var gradientColorTop = $("#gradientColorTop").val();
-	$("#footer").css("backgroundImage", "url('" + footerGradientUrlGenerator(gradientColorTop, gradientColorBottom, footerHeight) + "')");	
+	var gradientColorBottom = $("#gradientColorBottomInput").val();
+	var gradientColorTop = $("#gradientColorTopInput").val();
+	$("#footerDiv").css("backgroundImage", "url('" + footerGradientUrlGenerator(gradientColorTop, gradientColorBottom, footerHeight) + "')");	
 }
 
 function generateFooterAcquisitionDateText()
@@ -132,12 +127,13 @@ function generateFooterAcquisitionDateText()
 	var footerAcquisitionDateTextHeight = 0.035 * $("#previewImage").height();
 	var footerAcquisitionDateTextWidth = $("#previewImage").width() / 3;
 
-	$("#footerAcquisitionDateTextContainer").css("height", footerAcquisitionDateTextHeight);
-	$("#footerAcquisitionDateTextContainer").css("width", footerAcquisitionDateTextWidth);
-	$("#footerAcquisitionDateTextContainer").css("color", "#" + $("#footerAcquisitionDateTextColor").get(0).value);
-	$("#footerAcquisitionDateTextContainer").html($("#footerAcquisitionDateTextInput").val());
+	$("#footerAcquisitionDateTextDiv").css("height", footerAcquisitionDateTextHeight);
+	$("#footerAcquisitionDateTextDiv").css("width", footerAcquisitionDateTextWidth);
+	$("#footerAcquisitionDateTextDiv").css("color", "#" + $("#footerAcquisitionDateTextColorInput").val());
+	$("#footerAcquisitionDateTextDiv").html($("#footerAcquisitionDateTextInput").val());
 	var textSize = fontSize($("#footerAcquisitionDateTextInput").val(), footerAcquisitionDateTextHeight, footerAcquisitionDateTextWidth);
-	$("#footerAcquisitionDateTextContainer").css("fontSize", textSize);
+	$("#footerAcquisitionDateTextDiv").css("fontSize", textSize);
+	$("#footerAcquisitionDateTextDiv").css("textAlign", "right");
 }
 
 function generateFooterLocationText()
@@ -145,13 +141,13 @@ function generateFooterLocationText()
 	var footerLocationTextHeight = 0.035 * $("#previewImage").height();
 	var footerLocationTextWidth = $("#previewImage").width() / 2;
 
-	$("#footerLocationTextContainer").css("height", footerLocationTextHeight);
-	$("#footerLocationTextContainer").css("width", footerLocationTextWidth);
-	$("#footerLocationTextContainer").css("color", "#" + $("#footerLocationTextColor").val());
-	$("#footerLocationTextContainer").html($("#footerLocationTextInput").val());
+	$("#footerLocationTextDiv").css("height", footerLocationTextHeight);
+	$("#footerLocationTextDiv").css("width", footerLocationTextWidth);
+	$("#footerLocationTextDiv").css("color", "#" + $("#footerLocationTextColorInput").val());
+	$("#footerLocationTextDiv").html($("#footerLocationTextInput").val());
 	var textSize = fontSize($("#footerLocationTextInput").val(), footerLocationTextHeight, footerLocationTextWidth);
-	$("#footerLocationTextContainer").css("font-size", textSize);
-	$("#footerLocationTextContainer").css("textAlign", "center");
+	$("#footerLocationTextDiv").css("font-size", textSize);
+	$("#footerLocationTextDiv").css("textAlign", "center");
 }
 
 function generateFooterSecurityClassificationText()
@@ -159,12 +155,12 @@ function generateFooterSecurityClassificationText()
 	var footerSecurityClassificationTextHeight = 0.035 * $("#previewImage").height();
 	var footerSecurityClassificationTextWidth = $("#previewImage").width() / 3;
 
-	$("#footerSecurityClassificationTextContainer").css("height", footerSecurityClassificationTextHeight);
-	$("#footerSecurityClassificationTextContainer").css("width", footerSecurityClassificationTextWidth);
-	$("#footerSecurityClassificationTextContainer").css("color", "#" + $("#footerSecurityClassificationTextColor").get(0).value);
-        $("#footerSecurityClassificationTextContainer").html($("#footerSecurityClassificationTextInput").val());
+	$("#footerSecurityClassificationTextDiv").css("height", footerSecurityClassificationTextHeight);
+	$("#footerSecurityClassificationTextDiv").css("width", footerSecurityClassificationTextWidth);
+	$("#footerSecurityClassificationTextDiv").css("color", "#" + $("#footerSecurityClassificationTextColorInput").val());
+        $("#footerSecurityClassificationTextDiv").html($("#footerSecurityClassificationTextInput").val());
 	var textSize = fontSize($("#footerSecurityClassificationTextInput").val(), footerSecurityClassificationTextHeight, footerSecurityClassificationTextWidth);
-	$("#footerSecurityClassificationTextContainer").css("font-size", textSize);
+	$("#footerSecurityClassificationTextDiv").css("font-size", textSize);
 }
 
 function generateHeader()
@@ -172,12 +168,12 @@ function generateHeader()
 	headerHeight = 0.1 * $("#previewImage").height();
 	var headerWidth = $("#previewImage").width();
 
-	$("#header").css("height", headerHeight);
-	$("#header").css("width", headerWidth);
+	$("#headerDiv").css("height", headerHeight);
+	$("#headerDiv").css("width", headerWidth);
 
-	var gradientColorBottom = $("#gradientColorBottom").val();
-	var gradientColorTop = $("#gradientColorTop").val();
-	$("#header").css("backgroundImage", "url('" + headerGradientUrlGenerator(gradientColorTop, gradientColorBottom, headerHeight) + "')");
+	var gradientColorBottom = $("#gradientColorBottomInput").val();
+	var gradientColorTop = $("#gradientColorTopInput").val();
+	$("#headerDiv").css("backgroundImage", "url('" + headerGradientUrlGenerator(gradientColorTop, gradientColorBottom, headerHeight) + "')");
 }
 
 function generateHeaderDescriptionText()
@@ -185,12 +181,12 @@ function generateHeaderDescriptionText()
 	var headerDescriptionTextHeight = 0.32 * logoHeight;
 	var headerDescriptionTextWidth = $("#previewImage").width();
 
-	$("#headerDescriptionTextContainer").css("height", headerDescriptionTextHeight);
-	$("#headerDescriptionTextContainer").css("width", headerDescriptionTextWidth);
-	$("#headerDescriptionTextContainer").css("color", "#" + $("#headerDescriptionTextColor").get(0).value);
-	$("#headerDescriptionTextContainer").html($("#headerDescriptionTextInput").val());
+	$("#headerDescriptionTextDiv").css("height", headerDescriptionTextHeight);
+	$("#headerDescriptionTextDiv").css("width", headerDescriptionTextWidth);
+	$("#headerDescriptionTextDiv").css("color", "#" + $("#headerDescriptionTextColorInput").val());
+	$("#headerDescriptionTextDiv").html($("#headerDescriptionTextInput").val());
 	var textSize = fontSize($("#headerDescriptionTextInput").val(), headerDescriptionTextHeight, headerDescriptionTextWidth);
-	$("#headerDescriptionTextContainer").css("fontSize", textSize);
+	$("#headerDescriptionTextDiv").css("fontSize", textSize);
 }
 
 function generateHeaderSecurityClassificationText()
@@ -198,13 +194,13 @@ function generateHeaderSecurityClassificationText()
 	headerSecurityClassificationTextHeight = 0.25 * logoHeight;
 	var headerSecurityClassificationTextWidth = $("#previewImage").width();
 	
-	$("#headerSecurityClassificationTextContainer").css("height", headerSecurityClassificationTextHeight);
-	$("#headerSecurityClassificationTextContainer").css("width", headerSecurityClassificationTextWidth);
-	$("#headerSecurityClassificationTextContainer").css("color", "#" + $("#headerSecurityClassificationTextColor").get(0).value);
+	$("#headerSecurityClassificationTextDiv").css("height", headerSecurityClassificationTextHeight);
+	$("#headerSecurityClassificationTextDiv").css("width", headerSecurityClassificationTextWidth);
+	$("#headerSecurityClassificationTextDiv").css("color", "#" + $("#headerSecurityClassificationTextColorInput").val());
 	
-	$("#headerSecurityClassificationTextContainer").html($("#headerSecurityClassificationTextInput").val());
+	$("#headerSecurityClassificationTextDiv").html($("#headerSecurityClassificationTextInput").val());
 	var textSize = fontSize($("#headerSecurityClassificationTextInput").val(), headerSecurityClassificationTextHeight, headerSecurityClassificationTextWidth);
-	$("#headerSecurityClassificationTextContainer").css("fontSize", textSize);
+	$("#headerSecurityClassificationTextDiv").css("fontSize", textSize);
 }
 
 function generateHeaderTitleText()
@@ -212,56 +208,37 @@ function generateHeaderTitleText()
 	headerTitleTextHeight = 0.43 * logoHeight;
 	var headerTitleTextWidth = $("#previewImage").width();
 	
-	$("#headerTitleTextContainer").css("height", headerTitleTextHeight);
-        $("#headerTitleTextContainer").css("width", headerTitleTextWidth); 
-	$("#headerTitleTextContainer").css("color", "#" + $("#headerTitleTextColor").get(0).value);
+	$("#headerTitleTextDiv").css("height", headerTitleTextHeight);
+        $("#headerTitleTextDiv").css("width", headerTitleTextWidth); 
+	$("#headerTitleTextDiv").css("color", "#" + $("#headerTitleTextColorInput").val());
 	
-	$("#headerTitleTextContainer").html($("#headerTitleTextInput").val());
+	$("#headerTitleTextDiv").html($("#headerTitleTextInput").val());
 	var textSize = fontSize($("#headerTitleTextInput").val(), headerTitleTextHeight, headerTitleTextWidth);
-	$("#headerTitleTextContainer").css("fontSize", textSize);
+	$("#headerTitleTextDiv").css("fontSize", textSize);
 }
 
 function generateLogo()
 {
-	logoHeight = 0.8 * $("#header").height();
+	logoHeight = 0.8 * $("#headerDiv").height();
 	logoWidth = logoHeight;
+
 	$("#logoImage").css("height", logoHeight);
 	$("#logoImage").css("width", logoWidth);
 
-	$("#logoImage").attr("src", logoImagesDirectory + "ciaLogoForWeb.png");
+	$("#logoImage").attr("src", logoImagesDirectory + "ngaLogoForWeb.png");
 
-	logoOffset = ($("#header").height() - logoHeight) / 2;
+	logoOffset = ($("#headerDiv").height() - logoHeight) / 2;
 }
 
-function generateLoadingDialogPopup()
+function generateLoadingDialog()
 {
 	var spinnerOptions = 
 	{
-		lines: 13,
-		length: 7,
-		width: 4, 
-		radius: 10, 
-		corners: 1,
-		rotate: 0,
-		color: '#000',
-		speed: 1,
-		trail: 60, 
-		shadow: false,
-		hwaccel: false, 
-		className: 'spinner', 
-		zIndex: 2e9,
-		top: 'auto',
-		left: 'auto'
+		lines: 13, length: 7, width: 4, radius: 10, corners: 1, rotate: 0,color: '#000', speed: 1, 
+		trail: 60, shadow: false, hwaccel: false, className: 'spinner', zIndex: 2e9, top: 'auto', left: 'auto'
 	};
 	var target = document.getElementById("spinner");
 	var spinner = new Spinner(spinnerOptions).spin(target);
-
-	$("#loadingDialogPopup").dialog
-	({
-		modal: true,
-		width: "auto"
-	});
-	$("#loadingDialogPopup").parent().find('a.ui-dialog-titlebar-close').remove();
 }
 
 function generateNorthArrow()
@@ -271,12 +248,12 @@ function generateNorthArrow()
 	$("#northArrowImage").css("height", northArrowHeight);
 	$("#northArrowImage").css("width", northArrowWidth);
 
-	var northArrowColor = $("#northArrowColor").val();
-	var northArrowBackgroundColor = $("#northArrowBackgroundColor").val();
+	var northArrowColor = $("#northArrowColorInput").val();
+	var northArrowBackgroundColor = $("#northArrowBackgroundColorInput").val();
 
 	var northArrowUrl = northArrowGeneratorUrl;
 	northArrowUrl += "?northArrowSize=" + northArrowHeight;
-	northArrowUrl += "&northAngle=" + $("#northAngleInput").val();
+	northArrowUrl += "&northAngle=" + $("#northAngleInput").val();;
 	northArrowUrl += "&northArrowColor=" + northArrowColor;
 	northArrowUrl += "&northArrowBackgroundColor=" + northArrowBackgroundColor;
 	$("#northArrowImage").attr("src", northArrowUrl);
@@ -291,27 +268,59 @@ function generateNorthArrow()
 			className: "spinner", color: "#ffffff", corners: 1, hwaccel: false, left: "auto", lines: 13,
 			radius: 10, rotate: 0, shadow: false, speed: 1, top: "auto", trail: 60, width: 4, zIndex: 2e9
 		};
-                northArrowSpinner = new Spinner(options).spin(target);
+		northArrowSpinner = new Spinner(options).spin(target);
         }
 }
 
 function generateOverviewMap()
 {
 	var overviewMapCountry = "yy";
-	for (var i = 0; i < $("#overviewMapCountry").get(0).options.length; i++)
+	$("#overviewMapCountry option[value='yy']").attr("selected", true);
+	for (var i = 0; i < $("#overviewMapCountry")[0].options.length; i++)
 	{
-		if (countryCode == $("#overviewMapCountry").get(0).options[i].value)
+		if (countryCode == $("#overviewMapCountry")[0].options[i].value)
 		{
-			$("#overviewMapCountry").get(0).options.selectedIndex = i;
-			overviewMapCountry = $("#overviewMapCountry").get(0).options[i].value;
-			$("#includeOverviewMapCheckbox").get(0).checked = true;
+			$("#overviewMapCountry")[0].options.selectedIndex = i;
+			overviewMapCountry = $("#overviewMapCountry")[0].options[i].value;
+			$("#includeOverviewMapCheckbox").prop("checked", true);
 		}
 	}
 
 	var overviewMapImageHeight = 0.2 * $("#previewImage").height();
 	$("#overviewMapImage").css("height", overviewMapImageHeight);
-
 	$("#overviewMapImage").attr("src", overviewMapImagesDirectory + overviewMapCountry + ".gif");
+	if (!$("#includeOverviewMapCheckbox").prop("checked")) { $("#overviewMapImage").fadeTo("fast", 0.5); }
+}
+
+function getExportUrlParams(layerIndex)
+{
+	var exportUrlParams = "";
+	exportUrlParams += "?country=" + $("#overviewMapCountry").val();
+        exportUrlParams += "&footerAcquisitionDateText=" + footerAcquisitionDateTextArray[layerIndex];
+        exportUrlParams += "&footerAcquisitionDateTextColor=" + $("#footerAcquisitionDateTextColorInput").val();
+        exportUrlParams += "&footerLocationText=" + footerLocationTextArray[layerIndex];
+        exportUrlParams += "&footerLocationTextColor=" + $("#footerLocationTextColorInput").val();
+        exportUrlParams += "&footerSecurityClassificationText=" + footerSecurityClassificationTextArray[layerIndex];
+        exportUrlParams += "&footerSecurityClassificationTextColor=" + $("#footerSecurityClassificationTextColorInput").val();
+        exportUrlParams += "&gradientColorBottom=" + $("#gradientColorBottomInput").val();
+        exportUrlParams += "&gradientColorTop=" + $("#gradientColorTopInput").val();
+        exportUrlParams += "&headerDescriptionText=" + headerDescriptionTextArray[layerIndex];
+        exportUrlParams += "&headerDescriptionTextColor=" + $("#headerDescriptionTextColorInput").val();
+        exportUrlParams += "&headerSecurityClassificationText=" + headerSecurityClassificationTextArray[layerIndex];
+        exportUrlParams += "&headerSecurityClassificationTextColor=" + $("#headerSecurityClassificationTextColorInput").val();
+        exportUrlParams += "&headerTitleText=" + headerTitleTextArray[layerIndex];
+        exportUrlParams += "&headerTitleTextColor=" + $("#headerTitleTextColorInput").val();
+        exportUrlParams += "&imageUrl=" + imageUrlArray[layerIndex];
+        exportUrlParams += "&imageHeight=" + $("#previewImage").height();
+        exportUrlParams += "&imageWidth=" + $("#previewImage").width();
+        exportUrlParams += "&includeOverviewMap=" + $("#includeOverviewMapCheckbox")[0].checked;
+        exportUrlParams += "&logo=" + $("#logo").val();
+        exportUrlParams += "&northArrowAngle=" + northAngleArray[layerIndex];
+        exportUrlParams += "&northArrowBackgroundColor=" + $("#northArrowBackgroundColorInput").val();
+        exportUrlParams += "&northArrowColor=" + $("#northArrowColorInput").val();
+        exportUrlParams += "&northArrowSize=" + $("#northArrowImage").height();
+
+	return exportUrlParams;
 }
 
 function headerGradientUrlGenerator(topColor, bottomColor, height)
@@ -336,9 +345,8 @@ function init()
 	generateFooterSecurityClassificationText();
 	generateFooterLocationText();
 	generateFooterAcquisitionDateText();
-	setupMarkers();
 	windowResize();
-	$("#loadingDialogPopup").dialog("close");
+	$("#loadingDialog").dialog("close");
 }
 
 function positionNorthArrow()
@@ -346,44 +354,23 @@ function positionNorthArrow()
 	var northArrowOffsetHeight = logoOffset;
 	var northArrowOffsetWidth = logoOffset;
 
-	$("#northArrowImage").position
-	({
-		my: "right top",
-		at: "left top",
-		of: $("#overviewMapImage"),
-		offset: "-" + logoOffset + " 0",
-		collision: "none"
-	});
+	$("#northArrowImage").position({ my: "right top", at: "left top", of: $("#overviewMapImage"), offset: "-" + logoOffset + " 0", collision: "none" });
 
-	$("#northArrowSpinnerDiv").position
-	({
-		my: "middle center",
-		at: "middle center",
-		of: $("#northArrowImage"),
-		offset: "0 0",
-		collision: "none"
-	});
+	$("#northArrowSpinnerDiv").position({ my: "middle center", at: "middle center", of: $("#northArrowImage"), offset: "0 0", collision: "none" });
 }
 
 function positionOverviewMapImage()
 {
 	var overviewMapImageOffsetHeight = logoOffset;
 	var overviewMapImageOffsetWidth = 2 * logoOffset;
-	$("#overviewMapImage").position
-	({
-		my: "right top",
-		at: "right top",
-		of: $("#header"),
-		offset: "-" + overviewMapImageOffsetWidth + " " + overviewMapImageOffsetHeight,
-		collision: "none"
-	});	
+	$("#overviewMapImage").position({ my: "right top", at: "right top", of: $("#headerDiv"), offset: "-" + overviewMapImageOffsetWidth + " " + overviewMapImageOffsetHeight, collision: "none" });	
 }
 
 function removeNorthArrowSpinner() { northArrowSpinner.stop(); }
 
 function setupDialogs()
 {
-	$("#changeColorGradientPopup").dialog
+	$("#changeColorGradientDialog").dialog
 	({
         	autoOpen: false,
 		buttons:
@@ -398,9 +385,10 @@ function setupDialogs()
 		},
 		width: "auto"
 	});
-	$("#changeColorGradientPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeColorGradientDialog").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeColorGradientDialog").css("textAlign", "left");
 
-	$("#changeFooterAcquisitionDateTextPopup").dialog
+	$("#changeFooterAcquisitionDateTextDialog").dialog
 	({
         	autoOpen: false,
 		buttons:
@@ -408,18 +396,21 @@ function setupDialogs()
 			"OK": function()
 			{
 				$(this).dialog("close");
-				var text = $("#footerAcquisitionDateTextInput").get(0).value;
-				$("#footerAcquisitionDateTextContainer").html(text);
-				var color = $("#footerAcquisitionDateTextColor").get(0).value;
-				$("#footerAcquisitionDateTextContainer").css("color", "#" + color);
+				var text = $("#footerAcquisitionDateTextInput").val();
+				$("#footerAcquisitionDateTextDiv").html(text);
+				footerAcquisitionDateTextArray[currentLayer] = text;
+
+				var color = $("#footerAcquisitionDateTextColorInput").val();
+				$("#footerAcquisitionDateTextDiv").css("color", "#" + color);
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
 		width: "auto"
 	});
-	$("#changeFooterAcquisitionDateTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeFooterAcquisitionDateTextDialog").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeFooterAcquisitionDateTextDialog").css("textAlign", "left");
 
-	$("#changeFooterLocationTextPopup").dialog
+	$("#changeFooterLocationTextDialog").dialog
 	({
         	autoOpen: false,
 		buttons:
@@ -428,17 +419,20 @@ function setupDialogs()
 			{
 				$(this).dialog("close");
 				var text = $("#footerLocationTextInput").val();
-				$("#footerLocationTextContainer").html(text);
-				var color = $("#footerLocationTextColor").val();
-				$("#footerLocationTextContainer").css("color", "#" + color);
+				$("#footerLocationTextDiv").html(text);
+				footerLocationTextArray[currentLayer] = text;
+
+				var color = $("#footerLocationTextColorInput").val();
+				$("#footerLocationTextDiv").css("color", "#" + color);
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
 		width: "auto"
 	});
-	$("#changeFooterLocationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeFooterLocationTextDialog").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeFooterLocationTextDialog").css("textAlign", "left");
 
-	$("#changeFooterSecurityClassificationTextPopup").dialog
+	$("#changeFooterSecurityClassificationTextDialog").dialog
 	({
         	autoOpen: false,
 		buttons:
@@ -447,17 +441,20 @@ function setupDialogs()
 			{
 				$(this).dialog("close");
 				var text = $("#footerSecurityClassificationTextInput").val();
-				$("#footerSecurityClassificationTextContainer").html(text);
-				var color = $("#footerSecurityClassificationTextColor").val();
-				$("#footerSecurityClassificationTextContainer").css("color", "#" + color);
+				$("#footerSecurityClassificationTextDiv").html(text);
+				footerSecurityClassificationTextArray[currentLayer] = text;
+
+				var color = $("#footerSecurityClassificationTextColorInput").val();
+				$("#footerSecurityClassificationTextDiv").css("color", "#" + color);
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
 		width: "auto"
 	});
-	$("#changeFooterSecurityClassificationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeFooterSecurityClassificationTextDialog").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeFooterSecurityClassificationTextDialog").css("textAlign", "left");
 
-	$("#changeHeaderDescriptionTextPopup").dialog
+	$("#changeHeaderDescriptionTextDialog").dialog
 	({
         	autoOpen: false,
 		buttons:
@@ -466,17 +463,20 @@ function setupDialogs()
 			{
 				$(this).dialog("close");
 				var text = $("#headerDescriptionTextInput").val();
-				$("#headerDescriptionTextContainer").html(text);
-				var color = $("#headerDescriptionTextColor").val();
-				$("#headerDescriptionTextContainer").css("color", "#" + color);
+				$("#headerDescriptionTextDiv").html(text);
+				headerDescriptionTextArray[currentLayer] = text;
+
+				var color = $("#headerDescriptionTextColorInput").val();
+				$("#headerDescriptionTextDiv").css("color", "#" + color);
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
 		width: "auto"
 	});
-	$("#changeHeaderDescriptionTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeHeaderDescriptionTextDialog").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeHeaderDescriptionTextDialog").css("textAlign", "left");
 
-	$("#changeHeaderSecurityClassificationTextPopup").dialog
+	$("#changeHeaderSecurityClassificationTextDialog").dialog
 	({
         	autoOpen: false,
 		buttons:
@@ -485,17 +485,20 @@ function setupDialogs()
 			{
 				$(this).dialog("close");
 				var text = $("#headerSecurityClassificationTextInput").val();
-				$("#headerSecurityClassificationTextContainer").html(text);
-				var color = $("#headerSecurityClassificationTextColor").val();
-				$("#headerSecurityClassificationTextContainer").css("color", "#" + color);				
+				$("#headerSecurityClassificationTextDiv").html(text);
+				headerSecurityClassificationTextArray[currentLayer] = text;
+
+				var color = $("#headerSecurityClassificationTextColorInput").val();
+				$("#headerSecurityClassificationTextDiv").css("color", "#" + color);				
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
 		width: "auto"
 	});
-	$("#changeHeaderSecurityClassificationTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeHeaderSecurityClassificationTextDialog").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeHeaderSecurityClassificationTextDialog").css("textAlign", "left");
 
-	$("#changeHeaderTitleTextPopup").dialog
+	$("#changeHeaderTitleTextDialog").dialog
 	({
         	autoOpen: false,
 		buttons:
@@ -504,17 +507,20 @@ function setupDialogs()
 			{
 				$(this).dialog("close");
 				var text = $("#headerTitleTextInput").val();
-				$("#headerTitleTextContainer").html(text);
-				var color = $("#headerTitleTextColor").val();
-				$("#headerTitleTextContainer").css("color", "#" + color);
+				$("#headerTitleTextDiv").html(text);
+				headerTitleTextArray[currentLayer] = text;
+
+				var color = $("#headerTitleTextColorInput").val();
+				$("#headerTitleTextDiv").css("color", "#" + color);
 			},
 			Cancel: function() { $(this).dialog("close"); }
 		},
 		width: "auto"
 	});
-	$("#changeHeaderTitleTextPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeHeaderTitleTextDialog").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeHeaderTitleTextDialog").css("textAlign", "left");
 
-	$("#changeLogoPopup").dialog
+	$("#changeLogoDialog").dialog
 	({
         	autoOpen: false,
 		buttons: 
@@ -529,9 +535,10 @@ function setupDialogs()
 		},
 		width: "auto"
 	});
-	$("#changeLogoPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeLogoDialog").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeLogoDialog").css("textAlign", "left");
 
-	$("#changeNorthArrowPopup").dialog
+	$("#changeNorthArrowDialog").dialog
 	({
         	autoOpen: false,
 		buttons:
@@ -545,9 +552,10 @@ function setupDialogs()
 		},
 		width: "auto"
 	});
-	$("#changeNorthArrowPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeNorthArrowDialog").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeNorthArrowDialog").css("textAlign", "left");
 
-	$("#changeOverviewMapPopup").dialog
+	$("#changeOverviewMapDialog").dialog
 	({
         	autoOpen: false,
 		buttons:
@@ -564,9 +572,10 @@ function setupDialogs()
 		},
 		width: "auto"
 	});	
-	$("#changeOverviewMapPopup").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeOverviewMapDialog").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#changeOverviewMapDialog").css("textAlign", "left");
 
-	$("#downloadDialogPopup").dialog
+	$("#downloadDialog").dialog
 	({
 		autoOpen: false,
 		buttons:
@@ -576,158 +585,52 @@ function setupDialogs()
 		modal: true,
 		width: "auto"
 	});
-	$("#downloadDialogPopup").parent().find('a.ui-dialog-titlebar-close').remove();
-}
+	$("#downloadDialog").parent().find('a.ui-dialog-titlebar-close').remove();
+	$("#downloadDialog").css("textAlign", "left");
 
-function setupMarkers()
-{
-	if (markers.length > 1)
-	{
-		var numberOfMarkers = parseInt(markers.length / 2);
-		for (var i = 0; i < numberOfMarkers; i++)
-		{
-			$("#markerDiv").append("<img id = 'marker" + i + "' src = '" + markerIcon + "'/>");
-			$("#" + "marker" + i).position
-			({
-				my: "left top",
-				at: "left top",
-				of: $("#previewImage"),
-				offset: markers[2 * i] + " " + markers[2 * i + 1],
-				collision: "none"
-			});
-		}
-	}
+	$("#loadingDialog").dialog({draggable: false, modal: true, resizable: false, width: "auto"});
+        $("#loadingDialog").parent().find("a.ui-dialog-titlebar-close").remove();
+
 }
 
 function windowResize()
 {
 	var headerPositionHorizontal;
-	if ($("#header").width() > $(window).width()) { headerPositionHorizontal = "left";}
+	if ($("#headerDiv").width() > $(window).width()) { headerPositionHorizontal = "left"; }
 	else { headerPositionHorizontal = "middle"; }
-	$("#header").position
-	({
-		my: headerPositionHorizontal + " top",
-		at: headerPositionHorizontal + " bottom",
-		of: $("#templateExportMenu"),
-		offset: "0 0",
-		collision: "none"
-	});
+	$("#headerDiv").position({ my: headerPositionHorizontal + " top", at: headerPositionHorizontal + " bottom", of: $("#templateExportMenu"), offset: "0 0", collision: "none" });
 
-	$("#previewImage").position
-	({
-		my: "left top",
-		at: "left bottom",
-		of: $("#header"),
-		offset: "0 0",
-		collision: "none"
-	});
+	$("#previewImage").position({ my: "left top", at: "left bottom", of: $("#headerDiv"), offset: "0 0", collision: "none" });
 
-	$("#logoImage").position
-	({
-		my: "left center",
-		at: "left center",
-		of: $("#header"),
-		offset: logoOffset + " 0",
-		collision: "none"
-	});
+	$("#logoImage").position({ my: "left center", at: "left center", of: $("#headerDiv"), offset: logoOffset + " 0", collision: "none" });
 
 	var headerSecurityClassificationTextOffsetHeight = logoOffset;
 	var headerSecurityClassificationTextOffsetWidth = logoOffset + logoWidth + logoOffset;
-	$("#headerSecurityClassificationTextContainer").position
-	({
-		my: "left top",
-		at: "left top",	
-		of: $("#header"),
-		offset: headerSecurityClassificationTextOffsetWidth + " " + headerSecurityClassificationTextOffsetHeight,
-		collision: "none"
-	});
+	$("#headerSecurityClassificationTextDiv").position({ my: "left top", at: "left top", of: $("#headerDiv"), offset: headerSecurityClassificationTextOffsetWidth + " " + headerSecurityClassificationTextOffsetHeight, collision: "none" });
 
 	var headerTitleTextOffsetHeight = logoOffset + headerSecurityClassificationTextHeight;
 	var headerTitleTextOffsetWidth = logoOffset + logoWidth + logoOffset;
-	$("#headerTitleTextContainer").position
-	({
-		my: "left top",
-		at: "left top",
-		of: $("#header"),
-		offset: headerTitleTextOffsetWidth + " " + headerTitleTextOffsetHeight,
-		collision: "none"
-        });
+	$("#headerTitleTextDiv").position({ my: "left top", at: "left top", of: $("#headerDiv"), offset: headerTitleTextOffsetWidth + " " + headerTitleTextOffsetHeight, collision: "none" });
 
 	var headerDescriptionTextOffsetHeight = logoOffset + headerSecurityClassificationTextHeight + headerTitleTextHeight;
 	var headerDescriptionTextOffsetWidth = logoOffset + logoWidth + logoOffset;
-	$("#headerDescriptionTextContainer").position
-	({
-		of: $("#header"),
-		my: "left top",
-		at: "left top",
-		offset: headerDescriptionTextOffsetWidth + " " + headerDescriptionTextOffsetHeight,
-		collision: "none"
-	});
+	$("#headerDescriptionTextDiv").position({ my: "left top", at: "left top", of: $("#headerDiv"), offset: headerDescriptionTextOffsetWidth + " " + headerDescriptionTextOffsetHeight, collision: "none" });
 
-	$("#northArrowImage").position
-	({
-		my: "right top",
-		at: "left top",
-		of: $("#overviewMapImage"),
-		offset: "-" + logoOffset + " 0",
-		collision: "none"
-	});
-	$("#northArrowSpinnerDiv").position
-	({
-		my: "middle center",
-		at: "middle center",
-		of: $("#northArrowImage"),
-		offset: "0 0",
-		collision: "none"
-	});
+	$("#northArrowImage").position({ my: "right top", at: "left top", of: $("#overviewMapImage"), offset: "-" + logoOffset + " 0", collision: "none" });
+
+	$("#northArrowSpinnerDiv").position({ my: "middle center", at: "middle center", of: $("#northArrowImage"), offset: "0 0", collision: "none" });
 
 	var overviewMapImageOffsetHeight = logoOffset;
 	var overviewMapImageOffsetWidth = 2 * logoOffset;
-	$("#overviewMapImage").position
-	({
-		my: "right top",
-		at: "right top",
-		of: $("#header"),
-		offset: "-" + overviewMapImageOffsetWidth + " " + overviewMapImageOffsetHeight,
-		collision: "none"
-	});
+	$("#overviewMapImage").position({ my: "right top", at: "right top", of: $("#headerDiv"), offset: "-" + overviewMapImageOffsetWidth + " " + overviewMapImageOffsetHeight, collision: "none" });
 
-
-	$("#footer").position
-	({
-		my: "left top",
-		at: "left bottom",
-		of: $("#previewImage"),
-		offset: "0 0",
-		collision: "none"
-	});
+	$("#footerDiv").position({ my: "left top", at: "left bottom", of: $("#previewImage"), offset: "0 0", collision: "none" });
 
 	var footerSecurityClassificationTextOffsetHeight = 0;
 	var footerSecurityClassificationTextOffsetWidth = logoOffset;
-	$("#footerSecurityClassificationTextContainer").position
-	({
-		my: "left top",
-		at: "left top",
-		of: $("#footer"),
-		offset: footerSecurityClassificationTextOffsetWidth + " " + footerSecurityClassificationTextOffsetHeight,
-		collision: "none"
-	});
+	$("#footerSecurityClassificationTextDiv").position({ my: "left top", at: "left top", of: $("#footerDiv"), offset: footerSecurityClassificationTextOffsetWidth + " " + footerSecurityClassificationTextOffsetHeight, collision: "none" });
 
-	$("#footerLocationTextContainer").position
-	({
-		my: "center top",
-		at: "center top",
-		of: $("#footer"),
-		offset: "0 0",
-		collision: "none"
-	});
+	$("#footerLocationTextDiv").position({ my: "center top", at: "center top", of: $("#footerDiv"),voffset: "0 0", collision: "none" });
 
-	$("#footerAcquisitionDateTextContainer").position
-	({
-		my: "right top",
-		at: "right top",
-		of: $("#footer"),
-		offset: "0 0",
-		collision: "none"
-	});
+	$("#footerAcquisitionDateTextDiv").position({ my: "right top", at: "right top", of: $("#footerDiv"), offset: "0 0", collision: "none" });
 }

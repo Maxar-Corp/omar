@@ -13,6 +13,8 @@
 			<div id = "mapCoordinatesDiv">Map Coordinates</div>
 			<div id = "timeLapseSlider"></div>
 			
+			<button id = "timeLapseSummaryButton">Time Lapse Summary</button>
+
 			<span id = "timeLapsePlayControlsSpan">
 				<input id = "playReverseButton" name = "radio" type = "radio"/>
 					<label for = "playReverseButton">Play Reverse</label>
@@ -24,15 +26,50 @@
 					<label for = "playForwardButton">Play Forward</label>
 			</span>
 
-			<button id = "timeLapseSummaryButton">Time Lapse Summary</button>
 			<button id = "slowDownButton">Slow Down</button>
 			<button id = "speedUpButton">Speed Up</button>
+
+			<div id = "exportImageDialog" title = "Export Image">
+				<table>
+					<tr>
+						<td><b>View</b>&nbsp;&nbsp;&nbsp;</td>
+						<td>
+							<select id = "exportImageDialogViewTypeSpinner">
+								<option value = "ortho">ORTHO</option>
+								<option value = "up">UP</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td><b>File Type:</b>&nbsp;&nbsp;&nbsp;</td>
+						<td>
+							<select id = "exportImageDialogFileTypeSpinner">
+								<option value = "gif">GIF</option>
+								<option value = "jpeg">JPEG</option>
+								<option value = "pdf">PDF</option>      
+								<option value = "png">PNG</option>
+								<option value = "tiff">TIFF</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+			</div>
 		
 			<div id = "exportLinkDialog" title = "Export Link"></div>
 			
 			<div id = "timeLapseSummaryDialog" title = "Time Lapse Summary"></div>
 
-			<form id = "submitForm" method = "post"></form>
+			<form id = "exportForm" action = "${createLink(action: 'index', controller: 'templateExport')}" method = "post" target = "_blank">
+				<input id = "countryCodeFormInput" name = "countryCode" type = "hidden"/>
+				<input id = "footerAcquisitionDateTextFormInput" name = "footerAcquisitionDateText" type = "hidden"/>
+				<input id = "footerLocationTextFormInput" name = "footerLocationText" type = "hidden"/>
+				<input id = "footerSecurityClassificationTextFormInput" name = "footerSecurityClassificationText" type = "hidden"/>
+				<input id = "headerDescriptionTextFormInput" name = "headerDescriptionText" type = "hidden"/>
+				<input id = "headerSecurityClassificationTextFormInput" name = "headerSecurityClassificationText" type = "hidden"/>
+				<input id = "headerTitleTextFormInput" name = "headerTitleText" type = "hidden"/>
+				<input id = "imageUrlFormInput" name = "imageUrl" type = "hidden"/>
+				<input id = "northAngleFormInput" name = "northAngle" type = "hidden"/>
+			</form>
 		</content>
 		<content tag = "bottom"></content>
 		<r:script>
