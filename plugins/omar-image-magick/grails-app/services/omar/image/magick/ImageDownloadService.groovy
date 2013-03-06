@@ -4,14 +4,13 @@ import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 
 class ImageDownloadService 
 {
-	LinkGenerator grailsLinkGenerator
-
 	def DEBUG = false
+
 	def grailsApplication
 
 	def command
-	def serviceMethod( def imageUrl, def markerLocations )
-	{
+	def serviceMethod(def imageUrl)
+	{ 
 		def date = new Date().getTime()
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
 
@@ -49,44 +48,6 @@ class ImageDownloadService
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
-
-		//######################################################################################################################
-		//################################################## Marker Placement ##################################################
-		//######################################################################################################################
-		if (DEBUG) { println "##### Marker Placement #####" }
-		if (markerLocations[0] != "null")
-		{
-			if (DEBUG) { println "Define marker image file:" }
-			def markerImageFileLocation = grailsLinkGenerator.resource(absolute: true, base: grailsApplication.config.omar.serverURL, dir: '/js/img', file: 'marker-blue.png', plugin: 'openlayers')
-
-			if (DEBUG) { println "${markerImageFileLocation}" }
-			
-			if (DEBUG) { println "Determine the number of markers:" }
-			def numberOfMarkers = (markerLocations.length / 2) - 1
-			if (DEBUG) { println "${numberOfMarkers + 1}" }
-
-			if (DEBUG) { println "Add markers to the image file:" }
-			for (i in 0..numberOfMarkers)
-			{
-				command = 
-				[
-					"composite",
-					markerImageFileLocation,
-					"-gravity",
-					"NorthWest",
-					"-geometry",
-					"+${markerLocations[2 * i]}+${markerLocations[2 * i + 1]}",
-					"${tempFilesLocation}${date}omarImage.tif",
-					"${tempFilesLocation}${date}omarImage.tif"
-				]
-				if (DEBUG) { println "${command}" }
-				executeCommand(command)
-			}
-		}
-		else 
-		{
-			if (DEBUG) { println "No markers to place." } 
-		}
 
 		//#############################################################################################################################
 		//################################################## Temporary File Deletion ##################################################

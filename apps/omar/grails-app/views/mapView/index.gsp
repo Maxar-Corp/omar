@@ -65,6 +65,18 @@
 </content>
 
 
+<form id = "exportForm" action = "${createLink(action: 'index',  controller: 'templateExport', plugin: 'omar-image-magick')}" target = "_blank">
+	<input id = "countryCodeFormInput" name = "countryCode" type = "hidden"/>
+	<input id = "footerAcquisitionDateTextFormInput" name = "footerAcquisitionDateText" type = "hidden"/>
+	<input id = "footerLocationTextFormInput" name = "footerLocationText" type = "hidden"/>
+	<input id = "footerSecurityClassificationTextFormInput" name = "footerSecurityClassificationText" type = "hidden"/>
+	<input id = "headerDescriptionTextFormInput" name = "headerDescriptionText" type = "hidden"/>
+	<input id = "headerSecurityClassificationTextFormInput" name = "headerSecurityClassificationText" type = "hidden"/>
+	<input id = "headerTitleTextFormInput" name = "headerTitleText" type = "hidden"/>
+	<input id = "imageUrlFormInput" name = "imageUrl" type = "hidden"/>
+	<input id = "northAngleFormInput" name = "northAngle" type = "hidden"/>
+</form> 
+
 <r:script>
 
 var coordConvert;
@@ -934,7 +946,6 @@ function exportTemplate()
 	var dms = coordConvert.ddToDms(centerLatitude, centerLongitude);
 	var mgrs = coordConvert.ddToMgrs(centerLatitude, centerLongitude);
 	var centerGeo = "GEO: " + dms + " MGRS: " + mgrs;	
-	var northArrowAngle = 0;
 
 	var acquisitionDate = "${(rasterEntries.acquisitionDate).join(',')}";
 	var countryCode = "${(rasterEntries.countryCode).join(',')}";
@@ -966,10 +977,20 @@ function exportTemplate()
 	}
 	templateParams = new OmarWmsParams();
     	templateParams.setProperties(wmsProperties);
-	var imageURL = baseURL + "?" + templateParams.toUrlParams();
-	imageURL = imageURL.replace(/&/g,"%26");
-	var templateURL = "${createLink(action: 'index',  controller: 'templateExport', plugin: 'omar-image-magick')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&centerGeo=" + centerGeo + "&northArrowAngle=" + northArrowAngle;
-	window.open(templateURL);
+	var imageUrl = baseURL + "?" + templateParams.toUrlParams();
+	imageUrl = imageUrl.replace(/&/g, "%26");
+	
+	document.getElementById("countryCodeFormInput").value = countryCode;
+	document.getElementById("footerAcquisitionDateTextFormInput").value = acquisitionDate;
+	document.getElementById("footerLocationTextFormInput").value = centerGeo;
+	document.getElementById("footerSecurityClassificationTextFormInput").value = "UNCLASS";
+	document.getElementById("headerDescriptionTextFormInput").value = "Country: " + countryCode;
+	document.getElementById("headerSecurityClassificationTextFormInput").value = "";
+	document.getElementById("headerTitleTextFormInput").value = imageId;
+	document.getElementById("imageUrlFormInput").value = imageUrl;
+	document.getElementById("northAngleFormInput").value = 0;
+
+	document.getElementById("exportForm").submit();
 }
 </r:script>
 

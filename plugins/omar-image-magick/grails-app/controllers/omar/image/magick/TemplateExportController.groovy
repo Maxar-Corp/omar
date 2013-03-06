@@ -16,17 +16,29 @@ class TemplateExportController
 
 	def index()
 	{
+		def securityClassification = grailsApplication.config.security[grailsApplication.config.security.level].description
+
 		def countryCode = params.countryCode
 		def footerAcquisitionDateTextArray = params.footerAcquisitionDateText.split(",")
 		def footerLocationTextArray = params.footerLocationText.split(",")
-		def footerSecurityClassificationTextArray = params.footerSecurityClassificationText.split(",")
+
+		def footerSecurityClassificationTextArray = []
+		footerLocationTextArray.eachWithIndex
+		{
+			obj, i -> footerSecurityClassificationTextArray[i] = securityClassification
+		}
+	
 		def headerDescriptionTextArray = params.headerDescriptionText.split(",")
-		def headerSecurityClassificationTextArray = params.headerSecurityClassificationText.split(",")
+	
+		def headerSecurityClassificationTextArray = []
+		headerDescriptionTextArray.eachWithIndex 
+		{
+			obj, i -> headerSecurityClassificationTextArray[i] = securityClassification
+		}
+
 		def headerTitleTextArray = params.headerTitleText.split(",")
 		def imageUrlArray = params.imageUrl.split(">")
 		def northAngleArray = params.northAngle.split(",")
-		def securityClassification = grailsApplication.config.security[grailsApplication.config.security.level].description
-
 
 		render(
 			view: "templateExport.gsp",
@@ -78,23 +90,24 @@ class TemplateExportController
 		final def imageFilename = new DataflowVariable()
 		final def northArrowFilename = new DataflowVariable()
 
-		task { imageFilename << imageDownloadService.serviceMethod(imageFile, markerLocations) }
+		task { imageFilename << imageDownloadService.serviceMethod(imageFile) }
 		task { northArrowFilename << northArrowGeneratorService.serviceMethod(northAngle, northArrowBackgroundColor, northArrowColor, northArrowSize) }
 		task { headerFilename << headerGeneratorService.serviceMethod(gradientColorBottom, gradientColorTop, headerDescriptionText, headerDescriptionTextColor, headerSecurityClassificationText, headerSecurityClassificationTextColor, headerTitleText, headerTitleTextColor, imageHeight, imageWidth, logo) }
 		task { footerFilename << footerGeneratorService.serviceMethod(footerAcquisitionDateText, footerAcquisitionDateTextColor, footerLocationText, footerLocationTextColor, footerSecurityClassificationText, footerSecurityClassificationTextColor, gradientColorBottom, gradientColorTop, imageHeight, imageWidth) }	
 		
 		def finishedProductFilename = templateExportService.serviceMethod(country, footerFilename.val, headerFilename.val, imageFilename.val, imageHeight, includeOverviewMap, northArrowFilename.val)
-		def file = new File( "${finishedProductFilename}" )
-		if ( file.exists() )
-		{
-			response.setContentType( "application/octet-stream" )
-			response.setHeader( "Content-disposition", "attachment; filename=${file.name}" )
-			response.outputStream << file.bytes
+		render finishedProductFilename
+		//def file = new File( "${finishedProductFilename}" )
+		//if ( file.exists() )
+		//{
+		//	response.setContentType( "application/octet-stream" )
+		//	response.setHeader( "Content-disposition", "attachment; filename=${file.name}" )
+		//	response.outputStream << file.bytes
 
-			def removeImageFile = "rm ${file}"
-			def removeImageFileProc = removeImageFile.execute()
-			removeImageFileProc.waitFor()
-		}
+		//	def removeImageFile = "rm ${file}"
+		//	def removeImageFileProc = removeImageFile.execute()
+		//	removeImageFileProc.waitFor()
+		//}
 	}
 
 	def footerGradientGenerator()
@@ -158,6 +171,22 @@ class TemplateExportController
 			response.outputStream << file.bytes
 			response.outputStream.flush()
 			
+			def removeImageFile = "rm ${file}"
+			def removeImageFileProc = removeImageFile.execute()
+			removeImageFileProc.waitFor()
+		}
+	}
+
+	def viewProduct()
+	{
+		def fileName = params.fileName
+		def file = new File( "${fileName}" )
+		if ( file.exists() )
+		{
+			response.setContentType( "application/octet-stream" )
+			response.setHeader( "Content-disposition", "attachment; filename=${file.name}" )
+			response.outputStream << file.bytes
+
 			def removeImageFile = "rm ${file}"
 			def removeImageFileProc = removeImageFile.execute()
 			removeImageFileProc.waitFor()

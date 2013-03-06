@@ -166,7 +166,20 @@
 			<div id = "loadingDialog" title = "Generating Template...">
 				<br><br><br><div align = "center" id = "spinner" valign = "bottom"></div>
 			</div>
-				
+			
+			<div align = "left" id = "productGenerationProgressDialog" title = "Generating Product...">
+				<table>
+					<tr>
+						<td><b>Current Progress:</b>&nbsp;&nbsp;&nbsp;</td>
+						<td><div id = "currentProductProgressDiv">0%</div></td>
+					</tr>
+					<tr>
+						<td><b>Product Link:</b>&nbsp;&nbsp;&nbsp;</td>
+						<td><div id = "productLinkDiv">...</div></td>
+					</tr>
+				</table>
+			</div>
+	
 			<div id = "downloadDialog" title = "Downloading...">The download will start automatically once the template is complete.</div>
 			<div id = "fontSize"></div>
 			<div id = "jsColorImagesDirectory">${resource(dir: 'images/jsColor/', plugin: 'omar-image-magick')}</div>
@@ -189,6 +202,7 @@
                         var logoImagesDirectory = "${resource(dir: 'images/', plugin: 'omar-image-magick')}";
                         var northArrowGeneratorUrl = "${createLink(action: 'northArrowGenerator')}";
                         var overviewMapImagesDirectory = "${resource(dir: 'images/overviewMaps/', plugin: 'omar-image-magick')}";
+			var viewProductUrl = "${createLink(action: 'viewProduct')}";
 		</r:script>
 	</body>
 </html>
