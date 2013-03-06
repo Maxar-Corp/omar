@@ -76,13 +76,24 @@ function download()
 			async: true,
 			data: getExportUrlParams(currentLayer),
 			dataType: "text",
-			success: function(data) { console.dir(data); },
+			success: function(data) 
+			{ 
+				$("#currentProductProgressDiv").html("100%");
+				$("#productLinkDiv").html
+				( 
+					"<a " + 
+						"href = '" + viewProductUrl + "?fileName=" + data + "' " + 
+						"onclick = 'javascript:$(\"#productGenerationStatusDialog\").dialog(\"close\")' " +
+						"style = 'color: blue'" +
+						"target = '_blank'><u>Link</u>" +
+					"</a>"
+				);
+			},
 			type: "POST",
 			url: exportFormUrl
 		});
 	}
-
-	$("#downloadDialogPopup").dialog("open"); 
+	$("#productGenerationProgressDialog").dialog("open");
 }
 
 function fontSize(text, desiredSizeHeight, desiredSizeWidth)
@@ -590,7 +601,9 @@ function setupDialogs()
 
 	$("#loadingDialog").dialog({draggable: false, modal: true, resizable: false, width: "auto"});
         $("#loadingDialog").parent().find("a.ui-dialog-titlebar-close").remove();
-
+	
+	$("#productGenerationProgressDialog").dialog({ autoOpen: false, draggable: false, modal: true, resizable: false, width: "auto" });
+	$("#productGenerationProgressDialog").parent().find("a.ui-dialog-titlebar-close").remove();
 }
 
 function windowResize()

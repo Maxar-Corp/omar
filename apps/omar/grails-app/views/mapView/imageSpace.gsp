@@ -101,6 +101,18 @@
     <div id="map"></div>
 </content>
 
+<form id = "exportForm" action = "${createLink(action: 'index',  controller: 'templateExport', plugin: 'omar-image-magick')}" target = "_blank">
+	<input id = "countryCodeFormInput" name = "countryCode" type = "hidden"/>
+	<input id = "footerAcquisitionDateTextFormInput" name = "footerAcquisitionDateText" type = "hidden"/>
+	<input id = "footerLocationTextFormInput" name = "footerLocationText" type = "hidden"/>
+	<input id = "footerSecurityClassificationTextFormInput" name = "footerSecurityClassificationText" type = "hidden"/>
+	<input id = "headerDescriptionTextFormInput" name = "headerDescriptionText" type = "hidden"/>
+	<input id = "headerSecurityClassificationTextFormInput" name = "headerSecurityClassificationText" type = "hidden"/>
+	<input id = "headerTitleTextFormInput" name = "headerTitleText" type = "hidden"/>
+	<input id = "imageUrlFormInput" name = "imageUrl" type = "hidden"/>
+	<input id = "northAngleFormInput" name = "northAngle" type = "hidden"/>
+</form>
+
 <r:script>
  
 //var hudChildDivId = document.getElementById("hudChildDivId")
@@ -1659,10 +1671,20 @@ function updateCenter()
 		'pivot' : pivot
 	});
 
-	var imageURL  = "${createLink(absolute: 'true', base: grailsApplication.config.omar.serverURL, controller: 'imageSpace', action: 'getTile')}" + "?" + params.toUrlParams();
-	imageURL = imageURL.replace(/&/g,"%26");
-	var templateURL = "${createLink( controller: 'templateExport', action: 'index', plugin: 'omar-image-magick')}" + "?acquisitionDate=" + acquisitionDate + "&countryCode=" + countryCode + "&imageId=" + imageId + "&imageURL=" + imageURL + "&centerGeo=" + centerGeo + "&northArrowAngle=" + northArrowAngle;
-	window.open(templateURL);		
+	var imageUrl = "${createLink(absolute: 'true', base: grailsApplication.config.omar.serverURL, controller: 'imageSpace', action: 'getTile')}" + "?" + params.toUrlParams();
+	imageUrl = imageUrl.replace(/&/g,"%26");
+	
+	document.getElementById("countryCodeFormInput").value = countryCode;
+	document.getElementById("footerAcquisitionDateTextFormInput").value = acquisitionDate;
+	document.getElementById("footerLocationTextFormInput").value = centerGeo;
+	document.getElementById("footerSecurityClassificationTextFormInput").value = "";
+	document.getElementById("headerDescriptionTextFormInput").value = "Country: " + countryCode;
+	document.getElementById("headerSecurityClassificationTextFormInput").value = "UNCLASS";
+	document.getElementById("headerTitleTextFormInput").value = imageId;
+	document.getElementById("imageUrlFormInput").value = imageUrl;
+	document.getElementById("northAngleFormInput").value = 0;
+
+	document.getElementById("exportForm").submit();	
     }
 
 </r:script>
