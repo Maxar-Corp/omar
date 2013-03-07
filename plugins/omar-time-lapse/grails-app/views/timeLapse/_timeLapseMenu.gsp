@@ -16,7 +16,7 @@
 								<a class = "yuimenuitemlabel" href = 'javascript:$("#exportImageDialog").dialog("open")' title = "Export Image">Image</a>
 							</li>
 							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = "javascript:getUpIsUpImageChipUrl()" title = "Export Animation">Animation</a>
+								<a class = "yuimenuitemlabel" href = 'javascript:$("#exportAnimationDialog").dialog("open")' title = "Export Animation">Animation</a>
 							</li>
 						</ul>
 					</div>

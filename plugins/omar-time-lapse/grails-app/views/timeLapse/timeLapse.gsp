@@ -29,12 +29,12 @@
 			<button id = "slowDownButton">Slow Down</button>
 			<button id = "speedUpButton">Speed Up</button>
 
-			<div id = "exportImageDialog" title = "Export Image">
+			<div id = "exportAnimationDialog" title = "Export Animation">
 				<table>
 					<tr>
 						<td><b>View</b>&nbsp;&nbsp;&nbsp;</td>
 						<td>
-							<select id = "exportImageDialogViewTypeSpinner">
+							<select id = "exportAnimationDialogViewTypeSpinner">
 								<option value = "ortho">ORTHO</option>
 								<option value = "up">UP</option>
 							</select>
@@ -43,19 +43,28 @@
 					<tr>
 						<td><b>File Type:</b>&nbsp;&nbsp;&nbsp;</td>
 						<td>
-							<select id = "exportImageDialogFileTypeSpinner">
+							<select id = "exportAnimationDialogFileTypeSpinner">
 								<option value = "gif">GIF</option>
-								<option value = "jpeg">JPEG</option>
-								<option value = "pdf">PDF</option>      
-								<option value = "png">PNG</option>
-								<option value = "tiff">TIFF</option>
+								<option selected value = "pdf">PDF</option>      
 							</select>
 						</td>
 					</tr>
 				</table>
 			</div>
 		
-			<div id = "exportLinkDialog" title = "Export Link"></div>
+			<div id = "exportImageDialog" title = "Export Image">
+				<b>View:</b>&nbsp;&nbsp;&nbsp;
+				<select id = "exportImageDialogViewTypeSpinner">
+					<option value = "ortho">ORTHO</option>
+					<option value = "up">UP</option>
+				</select>
+			</div>
+
+			<div id = "exportLinkDialog" title = "Export Link">
+				<div>Right-click the link below to copy:</div>
+				<br>
+				<div id = "exportLinkDialogLinkDiv"></div>
+			</div>
 			
 			<div id = "timeLapseSummaryDialog" title = "Time Lapse Summary"></div>
 
@@ -64,6 +73,7 @@
 				<input id = "footerAcquisitionDateTextFormInput" name = "footerAcquisitionDateText" type = "hidden"/>
 				<input id = "footerLocationTextFormInput" name = "footerLocationText" type = "hidden"/>
 				<input id = "footerSecurityClassificationTextFormInput" name = "footerSecurityClassificationText" type = "hidden"/>
+				<input id = "formatFormInput" name = "format" type = "hidden"/>
 				<input id = "headerDescriptionTextFormInput" name = "headerDescriptionText" type = "hidden"/>
 				<input id = "headerSecurityClassificationTextFormInput" name = "headerSecurityClassificationText" type = "hidden"/>
 				<input id = "headerTitleTextFormInput" name = "headerTitleText" type = "hidden"/>
@@ -75,9 +85,7 @@
 		<r:script>
 			var coordConvert = new CoordinateConversion();
 			var exportImageUrlBase = "${createLink(action: 'index', controller: 'templateExport')}";
-			var exportLinkUrlBase = "${createLink(absolute: 'true', action: 'timeLapse', base: grailsApplication.config.omar.serverURL)}";
-			var exportTimeLapseGifUrlBase = "${createLink(action: 'exportTimeLapseGif', controller: 'timeLapse')}";
-			var exportTimeLapsePdfUrlBase = "${createLink(action: 'exportTimeLapsePdf', controller: 'timeLapse')}";
+			var exportLinkUrlBase = "${createLink(absolute: 'true', action: 'viewer', base: grailsApplication.config.omar.serverURL)}";
 			var groundSpaceUrl = "${createLink(action: 'index', controller: 'mapView')}";
 			var groundToImageUrl = "${createLink(action: 'groundToImage', controller: 'imageSpace')}";
 			var icon = "${resource(dir: 'js/img/', file: 'marker-blue.png', plugin: 'openlayers')}";

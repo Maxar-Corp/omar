@@ -59,9 +59,19 @@ function deleteImageFromTimeLapse()
 	fastForward();
 }
 
+function exportAnimation()
+{
+	var fileType = $("#exportAnimationDialogFileTypeSpinner").val();
+	var layerIndexArray = []; for (var i = 0; i < timeLapseObject.layers.length; i++) { layerIndexArray[i] = i; }
+	var viewType = $("#exportAnimationDialogViewTypeSpinner").val();
+
+	if (viewType == "ortho") { prepareExportOrtho(layerIndexArray, fileType); }
+	else if (viewType == "up") { prepareExportUp(layerIndexArray, fileType); }
+}
+
 function exportImage()
 {
-	var fileType = $("#exportImageDialogFileTypeSpinner").val();
+	var fileType = "png";
 	var layerIndexArray = [currentLayer];
 	var viewType = $("#exportImageDialogViewTypeSpinner").val();
 
@@ -69,43 +79,27 @@ function exportImage()
 	else if (viewType == "up") { prepareExportUp(layerIndexArray, fileType); }
 }
 
-//function exportLink()
-//{
-//	var exportLinkUrl = exportLinkUrlBase;
-//	exportLinkUrl += "?imageIds=" + indexIds.join(",");
-//	exportLinkUrl += "&bbox=" + map.calculateBounds().toArray();
-//
-//	$("#exportLinkDialog").html("Right-click the link below to copy:<br><br><a href='" + exportLinkUrl + "' target = '_blank'><b>OMAR Time Lapse Link</b></a>");
-//	$("#exportLinkDialog").dialog("open");
-//}
-//
-//function exportTimeLapseGif()
-//{
-//	var imageUrlsForGif = new Array();
-//	for (var i = 0; i < imageIds.length; i++)
-//	{
-//		imageUrlsForGif[i] = mapLayers[i].getURL(map.getExtent());
-//		imageUrlsForGif[i] = imageUrlsForGif[i].replace(/&/g, "%26");
-//	}
-//	var exportTimeLapseUrl = exportTimeLapseGifUrlBase;
-//	exportTimeLapseUrl += "?imageUrls=" + imageUrlsForGif.join(">");
-//	$("#submitForm").get(0).action = exportTimeLapseUrl;
-//	$("#submitForm").get(0).submit();
-//}
+function exportLink()
+{
+	var exportLinkUrl = exportLinkUrlBase;
 
-//function exportTimeLapsePdf()
-//{
-//	var imageUrlsForPdf = new Array();
-//	for (var i = 0; i < imageIds.length; i++) 
-//	{ 
-//		imageUrlsForPdf[i] = mapLayers[i].getURL(map.getExtent()); 
-//		imageUrlsForPdf[i] = imageUrlsForPdf[i].replace(/&/g, "%26");
-//	}
-//	var exportTimeLapseUrl = exportTimeLapsePdfUrlBase;
-//	exportTimeLapseUrl += "?imageUrls=" + imageUrlsForPdf.join(">");
-//	$("#submitForm").get(0).action = exportTimeLapseUrl;
-//	$("#submitForm").get(0).submit();
-//}
+	exportLinkUrl += "?layer=";
+	var idArray = [];
+	for (var i = 0; i < timeLapseObject.layers.length; i++) { idArray.push(timeLapseObject.layers[i].id); }
+	exportLinkUrl += idArray.join(",");
+
+	exportLinkUrl += "&bbox=" + map.calculateBounds().toArray();
+
+	$("#exportLinkDialogLinkDiv").html
+	(
+		"<a " + 
+			"href='" + exportLinkUrl + "' " + 
+			"style = 'color: blue' " +
+			"target = '_blank'><b>OMAR Time Lapse Link</b>" + 
+		"</a>"
+	);
+	$("#exportLinkDialog").dialog("open");
+}
 
 function fastForward()
 {
@@ -141,31 +135,31 @@ function getOrthoChipUrl(layerIndex)
 	return imageChipUrl;
 }
 
-//function getUpIsUpImageChipUrl()
-//{
-//	var currentMapBounds = map.calculateBounds().toArray();
-//	var mapCornersInOrder = new Object();
-//	mapCornersInOrder.latitude = [currentMapBounds[3], currentMapBounds[3], currentMapBounds[1], currentMapBounds[1]];
-//	mapCornersInOrder.longitude = [currentMapBounds[0], currentMapBounds[2], currentMapBounds[0], currentMapBounds[2]];
+function getUpChipUrl(layerIndex)
+{
+	var bbox = map.calculateBounds().toArray();
+	var mapCornersInOrder = new Object();
+	mapCornersInOrder.latitude = [bbox[3], bbox[3], bbox[1], bbox[1]];
+	mapCornersInOrder.longitude = [bbox[0], bbox[2], bbox[0], bbox[2]];
 
-//	var mapBoundsInPixelPositions = new Object();
-//	mapBoundsInPixelPositions.latitude = new Array();
-//	mapBoundsInPixelPositions.longitude = new Array();
-//	for (var i = 0; i < 3; i++)
-//	{
-//		var request = OpenLayers.Request.POST
-//		({
-//			async: false, 
-//			url: groundToImageUrl,
-//			data: '{"id":' + entryIds[currentLayer] + ',"groundPoints":[{"lat":' + mapCornersInOrder.latitude[i] + ',"lon":' + mapCornersInOrder.longitude[i] + '}]}',
-//			callback: function (data)
-//			{
-//				var dataJson = $.parseJSON(data.responseText);
-//				mapBoundsInPixelPositions.latitude[i] = dataJson[0].y;
-//				mapBoundsInPixelPositions.longitude[i] = dataJson[0].x;
-//			}
-//		});	
-//	}
+	var mapBoundsInPixelPositions = new Object();
+	mapBoundsInPixelPositions.latitude = new Array();
+	mapBoundsInPixelPositions.longitude = new Array();
+	for (var i = 0; i < 3; i++)
+	{
+		var request = OpenLayers.Request.POST
+		({
+			async: false, 
+			url: groundToImageUrl,
+			data: '{"id":' + entryIds[currentLayer] + ',"groundPoints":[{"lat":' + mapCornersInOrder.latitude[i] + ',"lon":' + mapCornersInOrder.longitude[i] + '}]}',
+			callback: function (data)
+			{
+				var dataJson = $.parseJSON(data.responseText);
+				mapBoundsInPixelPositions.latitude[i] = dataJson[0].y;
+				mapBoundsInPixelPositions.longitude[i] = dataJson[0].x;
+			}
+		});	
+	}
 
 //	var request = OpenLayers.Request.POST
 //	({
@@ -190,7 +184,7 @@ function getOrthoChipUrl(layerIndex)
 //	var y = yCenter - map.getSize().h / 2;
 //	var upIsUpImageChipUrl = imageSpaceChipUrl + "?height=" + map.getSize().h + "&scale=" + scale + "&width=" + map.getSize().w + "&x=" + x + "&y=" + y + "&id=" + entryIds[currentLayer] + "&sharpen_mode=none&interpolation=bilinear&brightness=0&contrast=1&stretch_mode=linear_auto_min_max&stretch_mode_region=global&bands=default";
 //	alert(upIsUpImageChipUrl);
-//}
+}
 
 function highlightTableRow(row) { row.style.backgroundColor = "yellow"; }
 
@@ -258,7 +252,7 @@ function prepareExportOrtho(layerIndexArray, format)
 			headerSecurityClassificationTextArray[i] = "UNCLASS";
 			headerTitleTextArray[i] = timeLapseObject.layers[i].imageId;
 			imageUrlArray[i] = getOrthoChipUrl(x);
-			northAngleArray[x] = 0;
+			northAngleArray[i] = 0;
 		}
 	);
 
@@ -266,10 +260,12 @@ function prepareExportOrtho(layerIndexArray, format)
 	$("#footerAcquisitionDateTextFormInput").val(footerAcquisitionDateTextArray.join(","));
 	$("#footerLocationTextFormInput").val(footerLocationTextArray.join(","));
 	$("#footerSecurityClassificationTextFormInput").val(footerSecurityClassificationTextArray.join(","));
+	$("#formatFormInput").val(format);
+	console.dir($("#formatFormInput").val());
 	$("#headerDescriptionTextFormInput").val(headerDescriptionTextArray.join(","));
 	$("#headerSecurityClassificationTextFormInput").val(headerSecurityClassificationTextArray.join(","));
 	$("#headerTitleTextFormInput").val(headerTitleTextArray.join(","));
-	$("#imageUrlFormInput").val(imageUrlArray.join(","));
+	$("#imageUrlFormInput").val(imageUrlArray.join(">"));
 	$("#northAngleFormInput").val(northAngleArray.join(","));
 
 	$("#exportForm")[0].submit();	
@@ -295,7 +291,19 @@ function rewind()
 }
 
 function setupDialogs()
-{	
+{
+	$("#exportAnimationDialog").dialog
+	({
+		autoOpen: false,
+		buttons:
+		{
+			"Submit" : function() { $(this).dialog("close"); exportAnimation(); },
+			"Cancel" : function() { $(this).dialog("close"); }
+		},
+		height: "auto",
+		width: "auto"
+	});
+	
 	$("#exportImageDialog").dialog
 	({ 
 		autoOpen: false, 
@@ -348,7 +356,7 @@ function setupMap()
 	(
 		timeLapseObject.layers,
 		function(i, x)
-		{			
+		{	
 			x.mapLayer = new OpenLayers.Layer.WMS
 			(
 				"Layer" + i,
@@ -430,9 +438,9 @@ function setupTimeLapseButtons()
 
 	$("#speedUpButton").button({ icons: {primary: "ui-icon-circle-plus"}, text: false }).click(function() { speedUp(); });
 
-        $("#stepBackButton").button({ icons: {primary: "ui-icon-seek-prev"}, text: false }).click(function() { rewind(); });
+        $("#stepBackButton").button({ icons: {primary: "ui-icon-arrowthickstop-1-w"}, text: false }).click(function() { rewind(); });
 
-        $("#stepForwardButton").button({ icons: {primary: "ui-icon-seek-next"}, text: false }).click(function() { fastForward(); });
+        $("#stepForwardButton").button({ icons: {primary: "ui-icon-arrowthickstop-1-e"}, text: false }).click(function() { fastForward(); });
 
 	$("#stopButton").button({ icons: {primary: "ui-icon-stop"}, text: false }).click(function() { stopMovie(); });
 
@@ -486,6 +494,12 @@ function timeLapseSummary()
 	cell = row.insertCell(4);
 	$(cell).append("<b>CC</b>&nbsp;&nbsp;&nbsp;");
 
+	cell = row.insertCell(5);
+	$(cell).append("<b>Azimuth</b>&nbsp;&nbsp;&nbsp;");
+
+	cell = row.insertCell(6);
+	$(cell).append("<b>Graze</b>&nbsp;&nbsp;&nbsp;");
+
 	var bbox = map.calculateBounds().toArray();
 	var center = map.getCenter();
 	$.each
@@ -520,6 +534,12 @@ function timeLapseSummary()
 
 			cell = row.insertCell(4);
 			$(cell).append(x.countryCode + "&nbsp;&nbsp;&nbsp;");
+
+			cell = row.insertCell(5);
+			$(cell).append(parseFloat(x.azimuth).toFixed(2) + "&nbsp;&nbsp;&nbsp;");			
+
+			cell = row.insertCell(6);
+			$(cell).append(x.graze + "&nbsp;&nbsp;&nbsp;");
 		}
 	);
 
@@ -617,5 +637,4 @@ function updateTimeLapseSummary()
 	row.onmouseover = function() {};
 	row.onmouseout = function() {};
 	row.style.backgroundColor = "#add8e6";
-	console.dir(row);
 }
