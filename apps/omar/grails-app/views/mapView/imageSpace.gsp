@@ -101,7 +101,7 @@
     <div id="map"></div>
 </content>
 
-<form id = "exportForm" action = "${createLink(action: 'index',  controller: 'templateExport', plugin: 'omar-image-magick')}" target = "_blank">
+<form id = "exportForm" action = "${createLink(action: 'index',  controller: 'templateExport', plugin: 'omar-image-magick')}" method = "post" target = "_blank">
 	<input id = "countryCodeFormInput" name = "countryCode" type = "hidden"/>
 	<input id = "footerAcquisitionDateTextFormInput" name = "footerAcquisitionDateText" type = "hidden"/>
 	<input id = "footerLocationTextFormInput" name = "footerLocationText" type = "hidden"/>

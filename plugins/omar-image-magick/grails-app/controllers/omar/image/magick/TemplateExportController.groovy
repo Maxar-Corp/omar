@@ -5,6 +5,7 @@ import groovyx.gpars.dataflow.DataflowVariable
 
 class TemplateExportController
 {
+	def exportAnimationService
 	def footerGeneratorService
 	def footerGradientGeneratorService
 	def grailsApplication
@@ -27,7 +28,8 @@ class TemplateExportController
 		{
 			obj, i -> footerSecurityClassificationTextArray[i] = securityClassification
 		}
-	
+
+		def format = params.format
 		def headerDescriptionTextArray = params.headerDescriptionText.split(",")
 	
 		def headerSecurityClassificationTextArray = []
@@ -48,6 +50,7 @@ class TemplateExportController
 				footerAcquisitionDateTextArray: footerAcquisitionDateTextArray,
 				footerLocationTextArray: footerLocationTextArray,
 				footerSecurityClassificationTextArray: footerSecurityClassificationTextArray,
+				format: format,
 				headerDescriptionTextArray: headerDescriptionTextArray,
 				headerSecurityClassificationTextArray: headerSecurityClassificationTextArray,
 				headerTitleTextArray: headerTitleTextArray,
@@ -95,20 +98,18 @@ class TemplateExportController
 		task { headerFilename << headerGeneratorService.serviceMethod(gradientColorBottom, gradientColorTop, headerDescriptionText, headerDescriptionTextColor, headerSecurityClassificationText, headerSecurityClassificationTextColor, headerTitleText, headerTitleTextColor, imageHeight, imageWidth, logo) }
 		task { footerFilename << footerGeneratorService.serviceMethod(footerAcquisitionDateText, footerAcquisitionDateTextColor, footerLocationText, footerLocationTextColor, footerSecurityClassificationText, footerSecurityClassificationTextColor, gradientColorBottom, gradientColorTop, imageHeight, imageWidth) }	
 		
-		def finishedProductFilename = templateExportService.serviceMethod(country, footerFilename.val, headerFilename.val, imageFilename.val, imageHeight, includeOverviewMap, northArrowFilename.val)
-		render finishedProductFilename
-		//def file = new File( "${finishedProductFilename}" )
-		//if ( file.exists() )
-		//{
-		//	response.setContentType( "application/octet-stream" )
-		//	response.setHeader( "Content-disposition", "attachment; filename=${file.name}" )
-		//	response.outputStream << file.bytes
-
-		//	def removeImageFile = "rm ${file}"
-		//	def removeImageFileProc = removeImageFile.execute()
-		//	removeImageFileProc.waitFor()
-		//}
+		def finishedProductFileName = templateExportService.serviceMethod(country, footerFilename.val, headerFilename.val, imageFilename.val, imageHeight, includeOverviewMap, northArrowFilename.val)
+		render finishedProductFileName
 	}
+
+	def flipBookGenerator()
+	{
+		def format = params.format
+		def imageFileNameArray = params.fileNames.split(">")
+                
+		def finishedProductFileName = exportAnimationService.export(imageFileNameArray, format)
+		render finishedProductFileName
+        }
 
 	def footerGradientGenerator()
 	{

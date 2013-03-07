@@ -7,7 +7,7 @@
 		<content tag = "center">
 			<g:render template="templateExportMenu"/>
 			<div id = "headerDiv" onclick = "changeColorGradient()"></div>
-			<img id = "previewImage" onLoad = "init()"/>	
+			<div id = "previewImageDiv"></div>
 			<img id = "logoImage" onClick = "changeLogo()"/>
 			<div id = "headerSecurityClassificationTextDiv" onClick = "changeHeaderSecurityClassificationText()"></div>
 			<div id = "headerTitleTextDiv" onClick = "changeHeaderTitleText()"></div>
@@ -44,7 +44,7 @@
 					<option value = "dhsLogo">DHS</option>
 					<option value = "dodLogo">DOD</option>
 					<option value = "dosLogo">DOS</option>
-					<option value = "ngaLogo">NGA</option>
+					<option selected value = "ngaLogo">NGA</option>
 					<option value = "nroLogo">NRO</option>
 					<option value = "nsaLogo">NSA</option>
 					<option value = "airForceLogo">Air Force</option>
@@ -190,13 +190,15 @@
 			var footerAcquisitionDateTextArray = ["${footerAcquisitionDateTextArray.join("\",\"")}"];
 			var footerLocationTextArray = ["${footerLocationTextArray.join("\",\"")}"];
 			var footerSecurityClassificationTextArray = ["${footerSecurityClassificationTextArray.join("\",\"")}"];
+			var format = "${format}";
 			var headerDescriptionTextArray = ["${headerDescriptionTextArray.join("\",\"")}"];
 			var headerSecurityClassificationTextArray = ["${headerSecurityClassificationTextArray.join("\",\"")}"];
 			var headerTitleTextArray = ["${headerTitleTextArray.join("\",\"")}"];
 			var imageUrlArray = ["${imageUrlArray.join("\",\"")}"];
 			var northAngleArray = ["${northAngleArray.join("\",\"")}"];
 			
-                        var exportFormUrl = "${createLink(action: 'export')}";
+                        var exportImageFormUrl = "${createLink(action: 'export')}";
+			var exportAnimationFormUrl = "${createLink(action: 'flipBookGenerator')}";
                         var footerGradientGeneratorUrl = "${createLink(action: 'footerGradientGenerator')}";
                         var headerGradientGeneratorUrl = "${createLink(action: 'headerGradientGenerator')}";
                         var logoImagesDirectory = "${resource(dir: 'images/', plugin: 'omar-image-magick')}";

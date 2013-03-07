@@ -1,7 +1,7 @@
 var currentLayer = 0;
 var dom = YAHOO.util.Dom;
-var flipBookChipsArray = [];
-var flipBookChipReadinessArray = [];
+var flipBookChipFileNameArray = [];
+var flipBookChipReadinessArray = ["Not Ready"];
 var headerHeight;
 var headerSecurityClassificationTextHeight;
 var headerTitleTextHeight;
@@ -9,6 +9,8 @@ var logoHeight;
 var logoOffset;
 var logoWidth;
 var northArrowSpinner;
+var previewImageHeight;
+var previewImageWidth;
 
 $(document).ready
 (
@@ -34,9 +36,28 @@ $(document).ready
 
 		$.ajax({ cache: false });
 		setupDialogs();
-
 		generateLoadingDialog();
-		$("#previewImage").attr("src", imageUrlArray[0].replace(/%26/g, "&"));
+
+		$("#previewImageDiv").append("<img id = 'previewImage0' src = '" + imageUrlArray[0].replace(/%26/g, "&") + "'/>");
+		$("#previewImage0").load
+		(
+			function() 
+			{ 
+				previewImageHeight = $("#previewImage0").height();
+				previewImageWidth = $("#previewImage0").width();
+				$("#previewImageDiv").css("height", previewImageHeight);
+				$("#previewImageDiv").css("width", previewImageWidth);	
+
+				for (var i = 1; i < imageUrlArray.length; i++)
+				{
+					$("#previewImageDiv").append("<img id = 'previewImage" + i + "' src = '" + imageUrlArray[i].replace(/%26/g, "&") + "'/>");
+					$("#previewImage" + i).hide();
+					flipBookChipReadinessArray[i] = "Not Ready";
+				}
+				init(); 
+			}
+		);
+		
 		var oMenu = new YAHOO.widget.MenuBar
 		(
 			"templateExportMenu",
@@ -53,6 +74,10 @@ $(document).ready
 		$("#footerAcquisitionDateTextInput").val(footerAcquisitionDateTextArray[0]);
 				
 		//$(window).resize(function() { windowResize(); });
+		$("#previousImageButton").attr("disabled", true);
+		$("#previousImageButton").css("opacity", 0.3);
+		$("#nextImageButton").attr("disabled", true);
+		$("#nextImageButton").css("opacity", 0.3);
 	}
 );
 
@@ -90,8 +115,31 @@ function download()
 				);
 			},
 			type: "POST",
-			url: exportFormUrl
+			url: exportImageFormUrl
 		});
+	}
+	else if (imageUrlArray.length > 1)
+	{
+		for (var i = 0; i < flipBookChipReadinessArray.length; i++)
+		{
+			if (flipBookChipReadinessArray[i] != "Ready")
+			{
+				$.ajax
+				({
+					async: true,
+					data: getExportUrlParams(i),
+					dataType: "text",
+					success: function(data) 
+					{
+						flipBookChipReadinessArray[i] = "Ready";
+						flipBookChipFileNameArray[i] = data;
+						isTheFlipBookFinished();
+					},
+					url: exportImageFormUrl
+				});
+				break;
+			}
+		}
 	}
 	$("#productGenerationProgressDialog").dialog("open");
 }
@@ -123,8 +171,8 @@ function footerGradientUrlGenerator(topColor, bottomColor, height)
 
 function generateFooter()
 {
-	var footerHeight = 0.035 * $("#previewImage").height();
-	var footerWidth = $("#previewImage").width();
+	var footerHeight = 0.035 * previewImageHeight;
+	var footerWidth = previewImageWidth;
 	$("#footerDiv").css("height", footerHeight);
 	$("#footerDiv").css("width", footerWidth);
 
@@ -135,8 +183,8 @@ function generateFooter()
 
 function generateFooterAcquisitionDateText()
 {
-	var footerAcquisitionDateTextHeight = 0.035 * $("#previewImage").height();
-	var footerAcquisitionDateTextWidth = $("#previewImage").width() / 3;
+	var footerAcquisitionDateTextHeight = 0.035 * previewImageHeight;
+	var footerAcquisitionDateTextWidth = previewImageWidth / 3;
 
 	$("#footerAcquisitionDateTextDiv").css("height", footerAcquisitionDateTextHeight);
 	$("#footerAcquisitionDateTextDiv").css("width", footerAcquisitionDateTextWidth);
@@ -149,8 +197,8 @@ function generateFooterAcquisitionDateText()
 
 function generateFooterLocationText()
 {
-	var footerLocationTextHeight = 0.035 * $("#previewImage").height();
-	var footerLocationTextWidth = $("#previewImage").width() / 2;
+	var footerLocationTextHeight = 0.035 * previewImageHeight;
+	var footerLocationTextWidth = previewImageWidth / 2;
 
 	$("#footerLocationTextDiv").css("height", footerLocationTextHeight);
 	$("#footerLocationTextDiv").css("width", footerLocationTextWidth);
@@ -163,8 +211,8 @@ function generateFooterLocationText()
 
 function generateFooterSecurityClassificationText()
 {
-	var footerSecurityClassificationTextHeight = 0.035 * $("#previewImage").height();
-	var footerSecurityClassificationTextWidth = $("#previewImage").width() / 3;
+	var footerSecurityClassificationTextHeight = 0.035 * previewImageHeight;
+	var footerSecurityClassificationTextWidth = previewImageWidth / 3;
 
 	$("#footerSecurityClassificationTextDiv").css("height", footerSecurityClassificationTextHeight);
 	$("#footerSecurityClassificationTextDiv").css("width", footerSecurityClassificationTextWidth);
@@ -176,8 +224,8 @@ function generateFooterSecurityClassificationText()
 
 function generateHeader()
 {
-	headerHeight = 0.1 * $("#previewImage").height();
-	var headerWidth = $("#previewImage").width();
+	headerHeight = 0.1 * previewImageHeight;
+	var headerWidth = previewImageWidth;
 
 	$("#headerDiv").css("height", headerHeight);
 	$("#headerDiv").css("width", headerWidth);
@@ -190,7 +238,7 @@ function generateHeader()
 function generateHeaderDescriptionText()
 {
 	var headerDescriptionTextHeight = 0.32 * logoHeight;
-	var headerDescriptionTextWidth = $("#previewImage").width();
+	var headerDescriptionTextWidth = previewImageWidth;
 
 	$("#headerDescriptionTextDiv").css("height", headerDescriptionTextHeight);
 	$("#headerDescriptionTextDiv").css("width", headerDescriptionTextWidth);
@@ -203,7 +251,7 @@ function generateHeaderDescriptionText()
 function generateHeaderSecurityClassificationText()
 {
 	headerSecurityClassificationTextHeight = 0.25 * logoHeight;
-	var headerSecurityClassificationTextWidth = $("#previewImage").width();
+	var headerSecurityClassificationTextWidth = previewImageWidth;
 	
 	$("#headerSecurityClassificationTextDiv").css("height", headerSecurityClassificationTextHeight);
 	$("#headerSecurityClassificationTextDiv").css("width", headerSecurityClassificationTextWidth);
@@ -217,7 +265,7 @@ function generateHeaderSecurityClassificationText()
 function generateHeaderTitleText()
 {
 	headerTitleTextHeight = 0.43 * logoHeight;
-	var headerTitleTextWidth = $("#previewImage").width();
+	var headerTitleTextWidth = previewImageWidth;
 	
 	$("#headerTitleTextDiv").css("height", headerTitleTextHeight);
         $("#headerTitleTextDiv").css("width", headerTitleTextWidth); 
@@ -297,7 +345,7 @@ function generateOverviewMap()
 		}
 	}
 
-	var overviewMapImageHeight = 0.2 * $("#previewImage").height();
+	var overviewMapImageHeight = 0.2 * previewImageHeight;
 	$("#overviewMapImage").css("height", overviewMapImageHeight);
 	$("#overviewMapImage").attr("src", overviewMapImagesDirectory + overviewMapCountry + ".gif");
 	if (!$("#includeOverviewMapCheckbox").prop("checked")) { $("#overviewMapImage").fadeTo("fast", 0.5); }
@@ -306,14 +354,15 @@ function generateOverviewMap()
 function getExportUrlParams(layerIndex)
 {
 	var exportUrlParams = "";
-	exportUrlParams += "?country=" + $("#overviewMapCountry").val();
+	exportUrlParams += "country=" + $("#overviewMapCountry").val();
         exportUrlParams += "&footerAcquisitionDateText=" + footerAcquisitionDateTextArray[layerIndex];
         exportUrlParams += "&footerAcquisitionDateTextColor=" + $("#footerAcquisitionDateTextColorInput").val();
         exportUrlParams += "&footerLocationText=" + footerLocationTextArray[layerIndex];
         exportUrlParams += "&footerLocationTextColor=" + $("#footerLocationTextColorInput").val();
         exportUrlParams += "&footerSecurityClassificationText=" + footerSecurityClassificationTextArray[layerIndex];
         exportUrlParams += "&footerSecurityClassificationTextColor=" + $("#footerSecurityClassificationTextColorInput").val();
-        exportUrlParams += "&gradientColorBottom=" + $("#gradientColorBottomInput").val();
+        exportUrlParams += "&format=" + format;
+	exportUrlParams += "&gradientColorBottom=" + $("#gradientColorBottomInput").val();
         exportUrlParams += "&gradientColorTop=" + $("#gradientColorTopInput").val();
         exportUrlParams += "&headerDescriptionText=" + headerDescriptionTextArray[layerIndex];
         exportUrlParams += "&headerDescriptionTextColor=" + $("#headerDescriptionTextColorInput").val();
@@ -322,8 +371,8 @@ function getExportUrlParams(layerIndex)
         exportUrlParams += "&headerTitleText=" + headerTitleTextArray[layerIndex];
         exportUrlParams += "&headerTitleTextColor=" + $("#headerTitleTextColorInput").val();
         exportUrlParams += "&imageUrl=" + imageUrlArray[layerIndex];
-        exportUrlParams += "&imageHeight=" + $("#previewImage").height();
-        exportUrlParams += "&imageWidth=" + $("#previewImage").width();
+        exportUrlParams += "&imageHeight=" + previewImageHeight;
+        exportUrlParams += "&imageWidth=" + previewImageWidth;
         exportUrlParams += "&includeOverviewMap=" + $("#includeOverviewMapCheckbox")[0].checked;
         exportUrlParams += "&logo=" + $("#logo").val();
         exportUrlParams += "&northArrowAngle=" + northAngleArray[layerIndex];
@@ -332,6 +381,42 @@ function getExportUrlParams(layerIndex)
         exportUrlParams += "&northArrowSize=" + $("#northArrowImage").height();
 
 	return exportUrlParams;
+}
+
+function goToNextImage()
+{
+	currentLayer++;
+	if (currentLayer >= imageUrlArray.length - 1)
+	{
+		currentLayer = imageUrlArray.length - 1;
+		$("#nextImageButton").attr("disabled", true);
+		$("#nextImageButton").fadeTo("fast", 0.3);
+	}
+	$("#previousImageButton").attr("disabled", false);
+	$("#previousImageButton").fadeTo("fast", 1);
+
+	$("#previewImage" + (currentLayer - 1)).hide();
+	$("#previewImage" + currentLayer).show();
+
+	updateTemplate();
+}
+
+function goToPreviousImage()
+{
+	currentLayer--;
+	if (currentLayer <= 0)
+	{
+		currentLayer = 0;
+		$("#previousImageButton").attr("disabled", true);
+		$("#previousImageButton").fadeTo("fast", 0.3);
+	}
+	$("#nextImageButton").attr("disabled", false);
+	$("#nextImageButton").fadeTo("fast", 1);
+
+	$("#previewImage" + (currentLayer + 1)).hide();
+	$("#previewImage" + currentLayer).show();
+
+	updateTemplate();
 }
 
 function headerGradientUrlGenerator(topColor, bottomColor, height)
@@ -347,6 +432,7 @@ function init()
 {
 	generateHeader();
 	generateLogo();
+	updateTemplate();
 	generateHeaderSecurityClassificationText();
 	generateHeaderTitleText();
 	generateHeaderDescriptionText();
@@ -358,6 +444,43 @@ function init()
 	generateFooterAcquisitionDateText();
 	windowResize();
 	$("#loadingDialog").dialog("close");
+
+	if (imageUrlArray.length > 1) { $("#nextImageButton").attr("disabled", false); $("#nextImageButton").fadeTo("fast", 1); }
+}
+
+function isTheFlipBookFinished()
+{
+	var howManyFlipBookChipsHaveBeenMade = 0;
+	$.each(flipBookChipReadinessArray, function(i, x) { if (x == "Ready") { howManyFlipBookChipsHaveBeenMade++; } });
+
+	if (howManyFlipBookChipsHaveBeenMade == flipBookChipReadinessArray.length)
+	{
+		$.ajax
+		({
+			async: true,
+			data: "fileNames=" + flipBookChipFileNameArray.join(">") + "&format=" + format,
+			dataType: "text",
+			success: function(data)
+			{
+				$("#currentProductProgressDiv").html("100%");
+				$("#productLinkDiv").html
+				(
+					"<a " +
+						"href = '" + viewProductUrl + "?fileName=" + data + "' " +
+						"onclick = 'javascript:$(\"#productGenerationStatusDialog\").dialog(\"close\")' " +
+						"style = 'color: blue'" +
+						"target = '_blank'><u>Link</u>" +
+					"</a>"
+				);
+			},
+			url: exportAnimationFormUrl
+		});	
+	}
+	else 
+	{ 
+		$("#currentProductProgressDiv").html(parseInt(howManyFlipBookChipsHaveBeenMade / (flipBookChipReadinessArray.length + 1) * 100) + "%"); 
+		download();
+	}
 }
 
 function positionNorthArrow()
@@ -606,6 +729,27 @@ function setupDialogs()
 	$("#productGenerationProgressDialog").parent().find("a.ui-dialog-titlebar-close").remove();
 }
 
+function updateTemplate()
+{
+	$("#footerAcquisitionDateTextInput").val(footerAcquisitionDateTextArray[currentLayer]);
+	generateFooterAcquisitionDateText();
+
+	$("#footerLocationTextArrayInput").val(footerLocationTextArray[currentLayer]);
+	generateFooterLocationText();
+
+	$("#footerSecurityClassificationTextArrayInput").val(footerSecurityClassificationTextArray[currentLayer]);
+	generateFooterSecurityClassificationText();
+
+	$("#headerDescriptionTextArrayInput").val(headerDescriptionTextArray[currentLayer]);
+	generateHeaderDescriptionText();
+
+	$("#headerSecurityClassificationTextInput").val(headerDescriptionTextArray[currentLayer]);
+	generateHeaderSecurityClassificationText();
+
+	$("#headerTitleTextInput").val(headerTitleTextArray[currentLayer]);
+	generateHeaderTitleText();
+}
+
 function windowResize()
 {
 	var headerPositionHorizontal;
@@ -613,7 +757,7 @@ function windowResize()
 	else { headerPositionHorizontal = "middle"; }
 	$("#headerDiv").position({ my: headerPositionHorizontal + " top", at: headerPositionHorizontal + " bottom", of: $("#templateExportMenu"), offset: "0 0", collision: "none" });
 
-	$("#previewImage").position({ my: "left top", at: "left bottom", of: $("#headerDiv"), offset: "0 0", collision: "none" });
+	$("#previewImageDiv").position({ my: "left top", at: "left bottom", of: $("#headerDiv"), offset: "0 0", collision: "none" });
 
 	$("#logoImage").position({ my: "left center", at: "left center", of: $("#headerDiv"), offset: logoOffset + " 0", collision: "none" });
 
@@ -637,7 +781,7 @@ function windowResize()
 	var overviewMapImageOffsetWidth = 2 * logoOffset;
 	$("#overviewMapImage").position({ my: "right top", at: "right top", of: $("#headerDiv"), offset: "-" + overviewMapImageOffsetWidth + " " + overviewMapImageOffsetHeight, collision: "none" });
 
-	$("#footerDiv").position({ my: "left top", at: "left bottom", of: $("#previewImage"), offset: "0 0", collision: "none" });
+	$("#footerDiv").position({ my: "left top", at: "left bottom", of: $("#previewImageDiv"), offset: "0 0", collision: "none" });
 
 	var footerSecurityClassificationTextOffsetHeight = 0;
 	var footerSecurityClassificationTextOffsetWidth = logoOffset;

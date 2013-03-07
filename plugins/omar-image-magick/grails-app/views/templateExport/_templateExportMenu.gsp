@@ -16,6 +16,12 @@
 					</div>
 				</div>
 			</li>
+			<li class = "yuimenubaritem first-of-type">
+				<a class = "yuimenubaritemlabel" href = "javascript:goToPreviousImage()" id = "previousImageButton" title="Previous">Previous Image</a>
+			</li>
+			<li class = "yuimenubaritem first-of-type">
+				<a class = "yuimenubaritemlabel" href = "javascript:goToNextImage()" id = "nextImageButton" title="Next">Next Image</a>
+			</li>
 		</ul>
 	</div>
 </div>
