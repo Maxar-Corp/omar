@@ -1682,7 +1682,7 @@ function updateCenter()
 	document.getElementById("headerSecurityClassificationTextFormInput").value = "UNCLASS";
 	document.getElementById("headerTitleTextFormInput").value = imageId;
 	document.getElementById("imageUrlFormInput").value = imageUrl;
-	document.getElementById("northAngleFormInput").value = 0;
+	document.getElementById("northAngleFormInput").value = northArrowAngle;
 
 	document.getElementById("exportForm").submit();	
     }

@@ -2,6 +2,7 @@ package omar.time.lapse
 
 class TimeLapseController 
 {
+	def imageSpaceService
 	def rasterEntrySearchService
 
 	def viewer() 
@@ -9,6 +10,8 @@ class TimeLapseController
 	
 		def rasterEntries = rasterEntrySearchService.findRasterEntries(params.layer?.split(","))
 		def bbox = params.bbox ?: [-180,-90,180,90]
+		def upAngle
+
 		def timeLapseJson = '\n' + 
 			'{\n' + 
 			'	"bbox" : [' + bbox +'],\n' +
@@ -17,7 +20,9 @@ class TimeLapseController
 
 		rasterEntries.eachWithIndex 
 		{ 
-			obj, i -> timeLapseJson += 
+			obj, i -> 
+			upAngle = imageSpaceService.computeUpIsUp(obj.filename, obj.entryId.toInteger())
+			timeLapseJson += 
 			'		{\n' + 
 			'			"acquisitionDate" : "' + obj.acquisitionDate + '",\n' +
 			'			"azimuth" : "' + obj.azimuthAngle + '",\n' +
@@ -25,7 +30,8 @@ class TimeLapseController
 			'			"graze" : "' + 'obj.graze' + '",\n' +
 			'			"id" : "' + obj.id + '",\n' +
 			'			"indexId" : "' + obj.indexId + '",\n' +
-			'			"imageId" : "' + obj.title + '"\n' +
+			'			"imageId" : "' + obj.title + '",\n' +
+			'			"upAngle" : "' + upAngle + '"\n' +
 			'		}'
 
 			if (i != rasterEntries.size() - 1) { timeLapseJson += ',\n' }
