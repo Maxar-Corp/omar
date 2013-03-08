@@ -14,17 +14,15 @@
 			<div id = "timeLapseSlider"></div>
 			
 			<button id = "timeLapseSummaryButton">Time Lapse Summary</button>
-
-			<span id = "timeLapsePlayControlsSpan">
-				<input id = "playReverseButton" name = "radio" type = "radio"/>
-					<label for = "playReverseButton">Play Reverse</label>
-				<button id = "stepBackButton">Step Back</button>
-				<input checked = "checked" id = "stopButton" name = "radio" type = "radio"/>
-					<label for = "stopButton">Stop</label>
-				<button id = "stepForwardButton">Step Forward</button>
-				<input id = "playForwardButton" name = "radio" type = "radio"/>
-					<label for = "playForwardButton">Play Forward</label>
-			</span>
+		
+			<input id = "playReverseButton" name = "radio" type = "radio"/>
+				<label for = "playReverseButton" id = "playReverseButtonLabel">Play Reverse</label>
+			<button id = "stepBackButton">Step Back</button>
+			<input checked = "checked" id = "stopButton" name = "radio" type = "radio"/>
+				<label for = "stopButton" id = "stopButtonLabel">Stop</label>
+			<button id = "stepForwardButton">Step Forward</button>
+			<input id = "playForwardButton" name = "radio" type = "radio"/>
+				<label for = "playForwardButton" id = "playForwardButtonLabel">Play Forward</label>
 
 			<button id = "slowDownButton">Slow Down</button>
 			<button id = "speedUpButton">Speed Up</button>

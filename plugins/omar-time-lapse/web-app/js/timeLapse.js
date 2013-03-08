@@ -45,18 +45,29 @@ $(document).ready
 		currentLayer = timeLapseObject.layers.length - 1;
 		fastForward();
 		setupKeyboardShortcuts();
+
+		$(window).resize(function() { positionElementsOnPage(); });
 	}
 );
 
 function deleteImageFromTimeLapse()
 {
-	rewind();
-	if (currentLayer == 0) { timeLapseObject.layers.splice(0, 1); currentLayer--; }
-	else { timeLapseObject.layers.splice(currentLayer + 1, 1); }
+	if (currentLayer == 0) 
+	{
+		rewind(); 
+		timeLapseObject.layers.splice(0, 1); currentLayer--; 
+	}
+	else 
+	{ 
+		rewind();
+		timeLapseObject.layers.splice(currentLayer + 1, 1); 
+	}
 	updateMapSlider();
-	for (var i = 0; i < timeLapseObject.layers.length; i++) { timeLapseObject.layers[i].id = i; }
+	for (var i = 0; i < timeLapseObject.layers.length; i++) { timeLapseObject.layers[i].mapLayer.id = i; }
 	rewind();
 	fastForward();
+
+	 if ($("#timeLapseSummaryDialog").dialog("isOpen")) { timeLapseSummary(); }
 }
 
 function exportAnimation()
@@ -65,8 +76,7 @@ function exportAnimation()
 	var layerIndexArray = []; for (var i = 0; i < timeLapseObject.layers.length; i++) { layerIndexArray[i] = i; }
 	var viewType = $("#exportAnimationDialogViewTypeSpinner").val();
 
-	if (viewType == "ortho") { prepareExportOrtho(layerIndexArray, fileType); }
-	else if (viewType == "up") { prepareExportUp(layerIndexArray, fileType); }
+	prepareExportArray(layerIndexArray, fileType, viewType);
 }
 
 function exportImage()
@@ -75,8 +85,7 @@ function exportImage()
 	var layerIndexArray = [currentLayer];
 	var viewType = $("#exportImageDialogViewTypeSpinner").val();
 
-	if (viewType == "ortho") { prepareExportOrtho(layerIndexArray, fileType); }	
-	else if (viewType == "up") { prepareExportUp(layerIndexArray, fileType); }
+	prepareExportArray(layerIndexArray, fileType, viewType);
 }
 
 function exportLink()
@@ -120,8 +129,8 @@ function generateMapSpinner()
 	{
 		var options = 
 		{
-			className: "spinner", color: "#000000", corners: 1, hwaccel: false, left: "auto", lines: 13,
-			radius: 10, rotate: 0, shadow: false, speed: 1, top: "auto", trail: 60, width: 4, zIndex: 2e9
+			className: "spinner", color: "#ffffff", corners: 1, hwaccel: false, left: "auto", lines: 13,
+			radius: 10, rotate: 0, shadow: true, speed: 1, top: "auto", trail: 60, width: 4, zIndex: 2e9
 		};
 		mapSpinner = new Spinner(options).spin(target);
 	}
@@ -138,52 +147,56 @@ function getOrthoChipUrl(layerIndex)
 function getUpChipUrl(layerIndex)
 {
 	var bbox = map.calculateBounds().toArray();
-	var mapCornersInOrder = new Object();
-	mapCornersInOrder.latitude = [bbox[3], bbox[3], bbox[1], bbox[1]];
-	mapCornersInOrder.longitude = [bbox[0], bbox[2], bbox[0], bbox[2]];
+	var mapCoordinatesInOrder = {};
+	mapCoordinatesInOrder.latitude = [bbox[3], bbox[3], bbox[1], bbox[1], map.getCenter().lat];
+	mapCoordinatesInOrder.longitude = [bbox[0], bbox[2], bbox[0], bbox[2], map.getCenter().lon];
 
-	var mapBoundsInPixelPositions = new Object();
-	mapBoundsInPixelPositions.latitude = new Array();
-	mapBoundsInPixelPositions.longitude = new Array();
-	for (var i = 0; i < 3; i++)
+	var mapCoordinatesInPixelPositions = {};
+	mapCoordinatesInPixelPositions.latitude = [];
+	mapCoordinatesInPixelPositions.longitude = [];
+	for (var i = 0; i < 5; i++)
 	{
 		var request = OpenLayers.Request.POST
 		({
 			async: false, 
 			url: groundToImageUrl,
-			data: '{"id":' + entryIds[currentLayer] + ',"groundPoints":[{"lat":' + mapCornersInOrder.latitude[i] + ',"lon":' + mapCornersInOrder.longitude[i] + '}]}',
+			data: '{"id":' + timeLapseObject.layers[layerIndex].id + 
+				',"groundPoints":[{"lat":' + mapCoordinatesInOrder.latitude[i] + 
+				',"lon":' + mapCoordinatesInOrder.longitude[i] + '}]}',
 			callback: function (data)
 			{
 				var dataJson = $.parseJSON(data.responseText);
-				mapBoundsInPixelPositions.latitude[i] = dataJson[0].y;
-				mapBoundsInPixelPositions.longitude[i] = dataJson[0].x;
+				mapCoordinatesInPixelPositions.latitude[i] = dataJson[0].y;
+				mapCoordinatesInPixelPositions.longitude[i] = dataJson[0].x;
 			}
 		});	
 	}
 
-//	var request = OpenLayers.Request.POST
-//	({
-//		async: false,
-//		url: groundToImageUrl,
-//		data: '{"id":' + entryIds[currentLayer] + ',"groundPoints":[{"lat":' + map.getCenter().lat + ', "lon":' + map.getCenter().lon + '}]}',
-//		callback: function (data)
-//		{
-//			var dataJson = $.parseJSON(data.responseText);
-//			mapBoundsInPixelPositions.latitude[4] = dataJson[0].y;
-//			mapBoundsInPixelPositions.longitude[4] = dataJson[0].x;
-//		}
-//	});
+	var deltaX1 = mapCoordinatesInPixelPositions.longitude[0] - mapCoordinatesInPixelPositions.longitude[1];
+	var deltaY1 = mapCoordinatesInPixelPositions.latitude[0] - mapCoordinatesInPixelPositions.latitude[1];
+	var resolutionX = Math.sqrt(Math.pow(deltaX1,2) + Math.pow(deltaY1,2)) / map.getSize().w;
 
-//	var resolutionX = Math.sqrt(Math.pow((mapBoundsInPixelPositions.longitude[0] - mapBoundsInPixelPositions.longitude[1]),2) + Math.pow((mapBoundsInPixelPositions.latitude[0] - mapBoundsInPixelPositions.latitude[1]),2)) / map.getSize().w;
-//	var resolutionY = Math.sqrt(Math.pow((mapBoundsInPixelPositions.longitude[0] - mapBoundsInPixelPositions.longitude[2]),2) + Math.pow((mapBoundsInPixelPositions.latitude[0] - mapBoundsInPixelPositions.latitude[2]),2)) / map.getSize().h;
-//	var resolution = Math.max(resolutionX, resolutionY);
-//	var scale = 1 / (resolution);
-//	var xCenter = scale * mapBoundsInPixelPositions.longitude[4];
-//	var x = xCenter - map.getSize().w / 2;
-//	var yCenter = scale * mapBoundsInPixelPositions.latitude[4];
-//	var y = yCenter - map.getSize().h / 2;
-//	var upIsUpImageChipUrl = imageSpaceChipUrl + "?height=" + map.getSize().h + "&scale=" + scale + "&width=" + map.getSize().w + "&x=" + x + "&y=" + y + "&id=" + entryIds[currentLayer] + "&sharpen_mode=none&interpolation=bilinear&brightness=0&contrast=1&stretch_mode=linear_auto_min_max&stretch_mode_region=global&bands=default";
-//	alert(upIsUpImageChipUrl);
+	var deltaX2 = mapCoordinatesInPixelPositions.longitude[0] - mapCoordinatesInPixelPositions.longitude[2];
+	var deltaY2 = mapCoordinatesInPixelPositions.latitude[0] - mapCoordinatesInPixelPositions.latitude[2]
+	var resolutionY = Math.sqrt(Math.pow(deltaX2,2) + Math.pow(deltaY2,2)) / map.getSize().h;
+	
+	var resolution = Math.max(resolutionX, resolutionY);
+	var scale = 1 / (resolution);
+	
+	var xCenter = scale * mapCoordinatesInPixelPositions.longitude[4];
+	var x = xCenter - map.getSize().w / 2;
+	
+	var yCenter = scale * mapCoordinatesInPixelPositions.latitude[4];
+	var y = yCenter - map.getSize().h / 2;
+
+	var upIsUpImageChipUrl = imageSpaceChipUrl + "?height=" + map.getSize().h + "&scale=" + scale + "&width=" + map.getSize().w + 
+		"&x=" + x + "&y=" + y + "&rotate=-" + timeLapseObject.layers[layerIndex].upAngle + 
+		"&pivot=" + mapCoordinatesInPixelPositions.longitude[4] + "," + mapCoordinatesInPixelPositions.latitude[4] +
+		"&id=" + timeLapseObject.layers[layerIndex].id + "&sharpen_mode=none&interpolation=bilinear&brightness=0" + 
+		"&contrast=1&stretch_mode=linear_auto_min_max&stretch_mode_region=viewport&bands=default";
+
+	upIsUpImageChipUrl = upIsUpImageChipUrl.replace(/&/g, "%26");
+	return upIsUpImageChipUrl;
 }
 
 function highlightTableRow(row) { row.style.backgroundColor = "yellow"; }
@@ -212,13 +225,21 @@ function positionElementsOnPage()
 	$("#timeLapseSlider").position({ my: "center top", at: "center bottom", of: $("#mapCoordinatesDiv"), offset: "0 5", collision: "none" });
 	updateMapSlider();
 
-	$("#timeLapsePlayControlsSpan").position({ my: "center top", at: "center bottom", of: $("#timeLapseSlider"), offset: "0 20", collision: "none" });
+	$("#stopButtonLabel").position({ my: "center top", at: "center bottom", of: $("#timeLapseSlider"), offset: "0 10", collision: "none" });
 
-	$("#timeLapseSummaryButton").position({ my: "right top", at: "left top", of: $("#playReverseButton"), offset: "-30 0", collision: "none" });
+	$("#stepBackButton").position({ my: "right top", at: "left top", of: $("#stopButtonLabel"), offset: "-5 0", collision: "none" });
 
-	$("#slowDownButton").position({ my: "left top", at: "right top", of: ("#playForwardButton"), offset: "30 0" });
+	$("#playReverseButtonLabel").position({ my: "right top", at: "left top", of: $("#stepBackButton"), offset: "-5 0", collision: "none" });
 
-	$("#speedUpButton").position({ my: "left top", at: "right top", of: ("#slowDownButton"), offset: "5 0" });
+	$("#timeLapseSummaryButton").position({ my: "right top", at: "left top", of: $("#playReverseButtonLabel"), offset: "-30 0", collision: "none" });
+
+	$("#stepForwardButton").position({ my: "left top", at: "right top", of: $("#stopButtonLabel"), offset: "5 0", collision: "none" });
+
+	$("#playForwardButtonLabel").position({ my: "left top", at: "right top", of: $("#stepForwardButton"), offset: "5 0", collision: "none" });
+
+	$("#slowDownButton").position({ my: "left top", at: "right top", of: $("#playForwardButtonLabel"), offset: "30 0" });
+
+	$("#speedUpButton").position({ my: "left top", at: "right top", of: $("#slowDownButton"), offset: "5 0" });
 }
 
 function playMovie()
@@ -228,7 +249,7 @@ function playMovie()
 	movieAdvance = setTimeout("playMovie()", playSpeed);
 }
 
-function prepareExportOrtho(layerIndexArray, format)
+function prepareExportArray(layerIndexArray, format, view)
 {
 	var footerAcquisitionDateTextArray = []; 
 	var footerLocationTextArray = [];
@@ -251,8 +272,17 @@ function prepareExportOrtho(layerIndexArray, format)
 			headerDescriptionTextArray[i] = "Country: " + timeLapseObject.layers[i].countryCode;
 			headerSecurityClassificationTextArray[i] = "UNCLASS";
 			headerTitleTextArray[i] = timeLapseObject.layers[i].imageId;
-			imageUrlArray[i] = getOrthoChipUrl(x);
-			northAngleArray[i] = 0;
+			
+			if (view == "ortho") 
+			{ 
+				imageUrlArray[i] = getOrthoChipUrl(x);
+				northAngleArray[i] = 0; 
+			}
+			else if (view == "up") 
+			{ 
+				imageUrlArray[i] = getUpChipUrl(x); 
+				northAngleArray[i] = timeLapseObject.layers[x].upAngle;
+			}	
 		}
 	);
 
@@ -261,7 +291,6 @@ function prepareExportOrtho(layerIndexArray, format)
 	$("#footerLocationTextFormInput").val(footerLocationTextArray.join(","));
 	$("#footerSecurityClassificationTextFormInput").val(footerSecurityClassificationTextArray.join(","));
 	$("#formatFormInput").val(format);
-	console.dir($("#formatFormInput").val());
 	$("#headerDescriptionTextFormInput").val(headerDescriptionTextArray.join(","));
 	$("#headerSecurityClassificationTextFormInput").val(headerSecurityClassificationTextArray.join(","));
 	$("#headerTitleTextFormInput").val(headerTitleTextArray.join(","));
@@ -277,6 +306,8 @@ function reverseTimeLapseOrder()
 	for (var i = 0; i < timeLapseObject.layers.length; i++) { timeLapseObject.layers[i].id = i; }
 	rewind();
 	fastForward();
+
+	 if ($("#timeLapseSummaryDialog").dialog("isOpen")) { timeLapseSummary(); }
 }
 
 function rewind()
@@ -444,7 +475,7 @@ function setupTimeLapseButtons()
 
 	$("#stopButton").button({ icons: {primary: "ui-icon-stop"}, text: false }).click(function() { stopMovie(); });
 
-       $("#timeLapseSummaryButton").button({ icons: {primary: "ui-icon-script"}, text: false }).click(function() { timeLapseSummary(); });
+	$("#timeLapseSummaryButton").button({ icons: {primary: "ui-icon-script"}, text: false }).click(function() { timeLapseSummary(); });
 }
 
 function skipToImage(layerIndex)
@@ -457,6 +488,19 @@ function skipToImage(layerIndex)
 }
 
 function slowDown() { if (playSpeed < 4000) { playSpeed *= 2; } }
+
+function sortLayers(sortingIndex)
+{
+	switch(sortingIndex)
+	{
+		case "Azimuth" : timeLapseObject.layers.sort(function(a, b)  { return a.azimuth - b.azimuth; });
+	}
+	
+	if ($("#timeLapseSummaryDialog").dialog("isOpen")) { timeLapseSummary(); }
+	for (var i = 0; i < timeLapseObject.layers.length; i++) { timeLapseObject.layers[i].mapLayer.id = i; }
+	rewind();
+	fastForward();
+}
 
 function speedUp() { if (playSpeed > 500) { playSpeed /= 2; } }
 
@@ -496,6 +540,8 @@ function timeLapseSummary()
 
 	cell = row.insertCell(5);
 	$(cell).append("<b>Azimuth</b>&nbsp;&nbsp;&nbsp;");
+	$(cell).css("cursor", "pointer");
+	$(cell).click(function() { sortLayers("Azimuth"); });
 
 	cell = row.insertCell(6);
 	$(cell).append("<b>Graze</b>&nbsp;&nbsp;&nbsp;");
@@ -508,9 +554,13 @@ function timeLapseSummary()
 		function(i, x)
 		{
 			row = table.insertRow(i + 1);
-			row.onclick = function() { skipToImage(i); };
-			row.onmouseover = function() { highlightTableRow(this); };
-			row.onmouseout = function() { unhighlightTableRow(this); };
+			if (i == currentLayer) { row.style.backgroundColor = "#add8e6"; }
+			else 
+			{
+				row.onclick = function() { skipToImage(i); };
+				row.onmouseover = function() { highlightTableRow(this); };
+				row.onmouseout = function() { unhighlightTableRow(this); };
+			}
 
 			cell = row.insertCell(0);
 			$(cell).append((i + 1) + "&nbsp;&nbsp;&nbsp;");
@@ -613,7 +663,7 @@ function updateText()
 
 	$("#acquisitionDateTextDiv").html(timeLapseObject.layers[currentLayer].acquisitionDate);
 
-	if ($("#timeLapseSummaryDialog").dialog("isOpen")) { updateTimeLapseSummary();  }
+	if ($("#timeLapseSummaryDialog").dialog("isOpen")) { updateTimeLapseSummary(); }
 }
 
 function updateTimeLapseSummary()
