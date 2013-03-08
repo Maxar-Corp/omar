@@ -743,7 +743,7 @@ function updateTemplate()
 	$("#headerDescriptionTextArrayInput").val(headerDescriptionTextArray[currentLayer]);
 	generateHeaderDescriptionText();
 
-	$("#headerSecurityClassificationTextInput").val(headerDescriptionTextArray[currentLayer]);
+	$("#headerSecurityClassificationTextInput").val(headerSecurityClassificationTextArray[currentLayer]);
 	generateHeaderSecurityClassificationText();
 
 	$("#headerTitleTextInput").val(headerTitleTextArray[currentLayer]);
