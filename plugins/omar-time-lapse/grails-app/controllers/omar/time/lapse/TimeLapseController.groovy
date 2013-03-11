@@ -27,7 +27,7 @@ class TimeLapseController
 			'			"acquisitionDate" : "' + obj.acquisitionDate + '",\n' +
 			'			"azimuth" : "' + obj.azimuthAngle + '",\n' +
 			'			"countryCode" : "' + obj.countryCode + '",\n' +
-			'			"graze" : "' + 'obj.graze' + '",\n' +
+			'			"graze" : "' + obj.grazingAngle + '",\n' +
 			'			"id" : "' + obj.id + '",\n' +
 			'			"indexId" : "' + obj.indexId + '",\n' +
 			'			"imageId" : "' + obj.title + '",\n' +
