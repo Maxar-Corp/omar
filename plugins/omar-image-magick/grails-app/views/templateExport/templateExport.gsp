@@ -187,15 +187,15 @@
 		<content tag = "bottom"></content>
 		<r:script>
 			var countryCode = "${countryCode}";
-			var footerAcquisitionDateTextArray = ["${footerAcquisitionDateTextArray.join("\",\"")}"];
-			var footerLocationTextArray = ["${footerLocationTextArray.join("\",\"")}"];
-			var footerSecurityClassificationTextArray = ["${footerSecurityClassificationTextArray.join("\",\"")}"];
+			var footerAcquisitionDateTextArray = ["${footerAcquisitionDateTextArray?.join("\",\"")}"];
+			var footerLocationTextArray = ["${footerLocationTextArray?.join("\",\"")}"];
+			var footerSecurityClassificationTextArray = ["${footerSecurityClassificationTextArray?.join("\",\"")}"];
 			var format = "${format}";
-			var headerDescriptionTextArray = ["${headerDescriptionTextArray.join("\",\"")}"];
-			var headerSecurityClassificationTextArray = ["${headerSecurityClassificationTextArray.join("\",\"")}"];
-			var headerTitleTextArray = ["${headerTitleTextArray.join("\",\"")}"];
-			var imageUrlArray = ["${imageUrlArray.join("\",\"")}"];
-			var northAngleArray = ["${northAngleArray.join("\",\"")}"];
+			var headerDescriptionTextArray = ["${headerDescriptionTextArray?.join("\",\"")}"];
+			var headerSecurityClassificationTextArray = ["${headerSecurityClassificationTextArray?.join("\",\"")}"];
+			var headerTitleTextArray = ["${headerTitleTextArray?.join("\",\"")}"];
+			var imageUrlArray = ["${imageUrlArray?.join("\",\"")}"];
+			var northAngleArray = ["${northAngleArray?.join("\",\"")}"];
 			
                         var exportImageFormUrl = "${createLink(action: 'export')}";
 			var exportAnimationFormUrl = "${createLink(action: 'flipBookGenerator')}";
