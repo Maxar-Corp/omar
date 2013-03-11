@@ -20,8 +20,8 @@ class TemplateExportController
 		def securityClassification = grailsApplication.config.security[grailsApplication.config.security.level].description
 
 		def countryCode = params.countryCode
-		def footerAcquisitionDateTextArray = params.footerAcquisitionDateText.split(",")
-		def footerLocationTextArray = params.footerLocationText.split(",")
+		def footerAcquisitionDateTextArray = params.footerAcquisitionDateText?.split(",")
+		def footerLocationTextArray = params.footerLocationText?.split(",")
 
 		def footerSecurityClassificationTextArray = []
 		footerLocationTextArray.eachWithIndex
@@ -30,7 +30,7 @@ class TemplateExportController
 		}
 
 		def format = params.format
-		def headerDescriptionTextArray = params.headerDescriptionText.split(",")
+		def headerDescriptionTextArray = params.headerDescriptionText?.split(",")
 	
 		def headerSecurityClassificationTextArray = []
 		headerDescriptionTextArray.eachWithIndex 
@@ -38,9 +38,9 @@ class TemplateExportController
 			obj, i -> headerSecurityClassificationTextArray[i] = securityClassification
 		}
 
-		def headerTitleTextArray = params.headerTitleText.split(",")
-		def imageUrlArray = params.imageUrl.split(">")
-		def northAngleArray = params.northAngle.split(",")
+		def headerTitleTextArray = params.headerTitleText?.split(",")
+		def imageUrlArray = params.imageUrl?.split(">")
+		def northAngleArray = params.northAngle?.split(",")
 
 		render(
 			view: "templateExport.gsp",
@@ -105,7 +105,7 @@ class TemplateExportController
 	def flipBookGenerator()
 	{
 		def format = params.format
-		def imageFileNameArray = params.fileNames.split(">")
+		def imageFileNameArray = params.fileNames?.split(">")
                 
 		def finishedProductFileName = exportAnimationService.export(imageFileNameArray, format)
 		render finishedProductFileName
