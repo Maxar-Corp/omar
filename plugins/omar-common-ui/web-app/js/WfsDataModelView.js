@@ -296,6 +296,7 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                         chipWidth=Math.round(chipWidth*ratio);
                     }
                 }
+
                 var bboxModel = new OMAR.models.BBOX();
                 bboxModel.setFromWfsFeatureGeom(feature.geometry);
                 var bbox = bboxModel.toWmsString();
@@ -335,6 +336,11 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                 var omarUrlSuperOverlayLink ="<li><a href='"+omarUrlSuperOverlay +"'>Super Overlay</a></li>"
                 // "<li><label class='link_cursor' onclick='javascript:window.open(\""+omarUrlSuperOverlay+"\");'>Super Overlay</label></li>"
                 var centerPoint = bboxModel.getCenter();
+                var acquisition_date = new OMAR.models.Date({date:model.get("acquisition_date")}).toISOString(true);
+                var ingest_date = new OMAR.models.Date({date:model.get("ingest_date")}).toISOString(true);
+                var access_date = new OMAR.models.Date({date:model.get("access_date")}).toISOString(true);
+                var receive_date = new OMAR.models.Date({date:model.get("receive_date")}).toISOString(true);
+
                 model.set({
                     min_lat_lon:bboxModel.get("miny")+","+bboxModel.get("minx")
                     ,max_lat_lon:bboxModel.get("maxy")+","+bboxModel.get("maxx")
@@ -344,6 +350,10 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                         "<img class='thumbnail-img' src='"+omarUrl+"/thumbnail/show/"+modelId+"?size=128'></img></a>"
                     ,"view": "<ul>"+omarUrlRawButton + omarUrlOrthoButton+"</ul>"
                     ,"links": "<ul>"+omarUrlCapabilitiesLink+omarUrlGetMapLink+omarUrlGetKMLLink+omarUrlSuperOverlayLink+"</ul>"
+                    ,"acquisition_date":acquisition_date
+                    ,"ingest_date":ingest_date
+                    ,"access_date":access_date
+                    ,"receive_date":receive_date
                     /*"<ul><button onclick=\"javascript:window.open(\'"+omarUrlRaw +
                      +"\')>Raw</button><button>Ortho</button></ul>"  */
                 });
