@@ -18,6 +18,7 @@
         <li id="ExportGml2Id" title="The current selection or if no selection the current page of results will be output as GML2"><a>GML2</a></li>
         <li id="ExportCsvId" title="The current selection or if no selection the current page of results will be output as CSV"><a>CSV</a></li>
         <li id="TimeLapseId" title="The current selection is used for time lapse output"><a>Timelapse</a></li>
+        <li id="ExportGeoCellId" title="The current selection will be output as GCL"><a>GeoCell Project Package</a></li>
     </ul>
   </li>
   
