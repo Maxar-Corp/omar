@@ -10,11 +10,17 @@
 					<div class = "bd">
 						<ul>
 							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = "javascript:downloadImage()" title = "Download Template">Download</a>
+								<a class = "yuimenuitemlabel" href = "javascript:download()" title = "Download Template">Download</a>
 							</li>
 						</ul>
 					</div>
 				</div>
+			</li>
+			<li class = "yuimenubaritem first-of-type">
+				<a class = "yuimenubaritemlabel" href = "javascript:goToPreviousImage()" id = "previousImageButton" title="Previous">Previous Image</a>
+			</li>
+			<li class = "yuimenubaritem first-of-type">
+				<a class = "yuimenubaritemlabel" href = "javascript:goToNextImage()" id = "nextImageButton" title="Next">Next Image</a>
 			</li>
 		</ul>
 	</div>
