@@ -153,6 +153,7 @@ OMAR.views.BBOX = Backbone.View.extend({
         this.model = new OMAR.models.BBOX();
         this.lowerLeftBboxEl = $("#lowerLeftBbox");
         this.upperRightBboxEl = $("#upperRightBbox");
+
         this.model.on("error",
             function(model,err) {
                 alert("BBOX Has errors: " + err);
