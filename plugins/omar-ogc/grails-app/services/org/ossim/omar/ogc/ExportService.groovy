@@ -225,4 +225,84 @@ class ExportService
 
     }
 
-  }
+    def exportGcl(def fNames, def cNames)
+    {
+        def prefix = grailsApplication.config.export.prefix ?: "omar-export-"
+        def workDir = grailsApplication.config.export.workDir ?: "/tmp"
+
+        def tempDir = ExportUtils.createTempDir(prefix, "", workDir as File)
+        def geocellProjFile = new File(tempDir, FilenameUtils.getBaseName(tempDir.name) + ".gcl")
+        def outputString = new StringBuilder();
+        def baseString = "dataManager.objectList.object"
+
+        // TEMPORARY
+        String preface = ""
+        // TEMPORARY
+
+        List files = new ArrayList()
+        def associatedFiles
+
+        for ( index in 0..fNames.size()-1 )
+        {
+            def objString = baseString + "${index}"
+            def fileName = fNames[index]
+            def type = cNames[index]
+
+            // Get associated file names & add to list
+            def baseName = fileName.substring(fileName.lastIndexOf('/')+1, fileName.lastIndexOf('.'))
+            def directory = fileName.substring(0, fileName.lastIndexOf('/')+1)
+            def dir = new File(directory)
+            dir.eachFileMatch(~/${baseName}.*/) {files.add(it.parent+"/"+it.name)}
+
+            // Check for NavData sub-directory
+            dir.eachFile {
+                if (it.isDirectory()) {
+                    if (it.name == "NavData") {
+                        it.eachFile {files.add(it.parent+"/"+it.name)}
+                    }
+                }
+            }
+
+            // Check for NavData parallel directory
+            def dirPar = new File(dir.parent)
+            dirPar.eachFile {
+                if (it.isDirectory()) {
+                    if (it.name == "NavData") {
+                        it.eachFile {files.add(it.parent+"/"+it.name)}
+                    }
+                }
+            }
+
+            associatedFiles = files.unique()
+
+            def downloadedFilename = preface + fileName.substring(1, fileName.size())
+
+            // Fill project file entries
+            outputString << objString + /.description:/ + "\n"
+            outputString << objString + /.filename: / + downloadedFilename + "\n"
+            outputString << objString + /.enable_cache:  0/ + "\n"
+            outputString << objString + /.enabled:  1/ + "\n"
+            outputString << objString + /.entry:  0/ + "\n"
+            outputString << objString + /.image_id:/ + "\n"
+            outputString << objString + /.open_overview_flag:  1/ + "\n"
+            outputString << objString + /.input_list_fixed:  1/ + "\n"
+            outputString << objString + /.name:  """ Entry 0: / + downloadedFilename + /"""/ + "\n"
+            outputString << objString + /.number_inputs:  0/ + "\n"
+            outputString << objString + /.number_outputs:  0/ + "\n"
+            outputString << objString + /.output_list_fixed:  0/ + "\n"
+            outputString << objString + /.overview_file: / + downloadedFilename.substring(0, downloadedFilename.lastIndexOf('.')) + ".ovr" + "\n"
+            outputString << objString + /.start_res_level:  0/ + "\n"
+            outputString << objString + /.supplementary_directory:/ + "\n"
+            outputString << objString + /.type: / + type +  "\n"
+            outputString << /dataManager.type:  DataManager/ + "\n"
+        }
+
+        geocellProjFile.write(outputString as String)
+
+        def mimeType = "application/octet-stream"
+        def file = ExportUtils.createZipFileFromList(geocellProjFile, associatedFiles)
+
+        return [file, mimeType]
+    }
+
+}
