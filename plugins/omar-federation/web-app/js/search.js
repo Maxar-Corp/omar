@@ -86,6 +86,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.menuView.bind("onGml2Clicked", this.gml2Clicked, this);
         this.menuView.bind("onCsvClicked", this.csvClicked, this);
         this.menuView.bind("onTimeLapseClicked", this.timeLapseClicked, this);
+        this.menuView.bind("onGeoCellClicked", this.gclClicked, this);
 
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
         this.dateTimeRangeModel = this.dateTimeRangeView.model;
@@ -376,7 +377,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
         var wfsModel = this.dataModelView.wfsModel.clone();
         var cqlFilter = wfsModel.get("filter");
-        
+
         var currentSelection = this.dataModelView.getCurrentSelection();
         wfsModel.set({
             outputFormat:"csv"
@@ -401,6 +402,39 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         }
 
         window.open(wfsModel.toUrl(),"_parent");
+    },
+    gclClicked:function(){
+        var fileNames = "";
+        var classNames = "";
+
+        var currentSelection = this.dataModelView.getCurrentSelection();
+        if(currentSelection.size() > 0) {
+
+            // Build file name and type parameter strings
+            for(var idx=0; idx < currentSelection.size(); idx++){
+                var item = currentSelection.at(idx);
+                var modelRecord = this.dataModelView.model.get(item.id);
+                if(modelRecord)
+                {
+                    fileNames += modelRecord.get("filename") + ",";
+                    classNames += modelRecord.get("class_name") + ",";
+                }
+            }
+
+            // Initialize with controller string
+            exportURL = "/omar/rasterEntryExport/exportGclProject";
+
+            // Add image file name and type parameters
+            exportURL += "?filenames=" + fileNames + "&classnames=" + classNames;
+
+            alert("Project export initiated - this may take awhile.\nClick OK and wait for download prompt...");
+
+            window.open(exportURL, "_parent");
+        }
+
+        else {
+            alert("No images were selected for project export...");
+        }
     },
     wfsTypeNameChanged:function()
     {
