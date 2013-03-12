@@ -8,10 +8,10 @@ body { font-family: Arial; }
 	text-align: center; 
 }
 
-#slider .ui-slider-handle
+#timeLapseSlider .ui-slider-handle
 {
 	background: #0b0bbe;
 	border-color: #0b0b65;
 }
 
-#slider .ui-slider-range { background: #0b0b65; }
+#timeLapseSlider .ui-slider-range { background: #add8e6; }

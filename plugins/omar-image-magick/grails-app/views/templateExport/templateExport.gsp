@@ -6,45 +6,45 @@
 		<content tag = "top"></content>
 		<content tag = "center">
 			<g:render template="templateExportMenu"/>
-			<div id = "header" onClick = "changeColorGradient()"></div>
-			<img id = "previewImage" onLoad = "init()" src = "${imageURL}"/>	
+			<div id = "headerDiv" onclick = "changeColorGradient()"></div>
+			<div id = "previewImageDiv"></div>
 			<img id = "logoImage" onClick = "changeLogo()"/>
-			<div id = "headerSecurityClassificationTextContainer" onClick = "changeHeaderSecurityClassificationText()"></div>
-			<div id = "headerTitleTextContainer" onClick = "changeHeaderTitleText()"></div>
-			<div id = "headerDescriptionTextContainer" onClick = "changeHeaderDescriptionText()"></div>
+			<div id = "headerSecurityClassificationTextDiv" onClick = "changeHeaderSecurityClassificationText()"></div>
+			<div id = "headerTitleTextDiv" onClick = "changeHeaderTitleText()"></div>
+			<div id = "headerDescriptionTextDiv" onClick = "changeHeaderDescriptionText()"></div>
 			<img id = "overviewMapImage" onClick = "changeOverviewMap()" onLoad = "positionOverviewMapImage(); positionNorthArrow()"/>
 			<img id = "northArrowImage" onClick = "changeNorthArrow()" onLoad = "removeNorthArrowSpinner()"/>
 			<div id = "northArrowSpinnerDiv"></div>
 
-			<div id = "footer"></div>
-			<div id = "footerSecurityClassificationTextContainer" onClick = "changeFooterSecurityClassificationText()"></div>
-			<div id = "footerLocationTextContainer" onClick = "changeFooterLocationText()"></div>
-			<div id = "footerAcquisitionDateTextContainer" onClick = "changeFooterAcquisitionDateText()"></div>
+			<div id = "footerDiv"></div>
+			<div id = "footerSecurityClassificationTextDiv" onClick = "changeFooterSecurityClassificationText()"></div>
+			<div id = "footerLocationTextDiv" onClick = "changeFooterLocationText()"></div>
+			<div id = "footerAcquisitionDateTextDiv" onClick = "changeFooterAcquisitionDateText()"></div>
 			<div id = "markerDiv"></div>
 			
 			<form id = "downloadForm" method = "post"></form>
 
-			<div id = "changeColorGradientPopup" title = "Header/Footer Color Gradient">
+			<div id = "changeColorGradientDialog" title = "Header/Footer Color Gradient">
 				<table>
 					<tr>
-						<td><b>Top Color:</b></td>
-						<td><input class = "color" id = "gradientColorTop" size = "6" value = "595454"/></td>
+						<td><b>Top Color:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input class = "color" id = "gradientColorTopInput" size = "6" value = "595454"/></td>
 					</tr>
 					<tr>
-						<td><b>Bottom Color:</b></td>
-						<td><input class = "color" id = "gradientColorBottom" size = "6" value = "000000"/></td>
+						<td><b>Bottom Color:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input class = "color" id = "gradientColorBottomInput" size = "6" value = "000000"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id = "changeLogoPopup" title = "Change Logo">
+			<div id = "changeLogoDialog" title = "Change Logo">
 				<b>Logo:&nbsp;</b> <select id = "logo">
 					<option value = "ciaLogo">CIA</option>
 					<option value = "diaLogo">DIA</option>
 					<option value = "dhsLogo">DHS</option>
 					<option value = "dodLogo">DOD</option>
 					<option value = "dosLogo">DOS</option>
-					<option value = "ngaLogo">NGA</option>
+					<option selected value = "ngaLogo">NGA</option>
 					<option value = "nroLogo">NRO</option>
 					<option value = "nsaLogo">NSA</option>
 					<option value = "airForceLogo">Air Force</option>
@@ -55,133 +55,156 @@
 				</select>
 			</div>
 
-			<div id = "changeHeaderSecurityClassificationTextPopup" title = "Header Security Classification">
+			<div id = "changeHeaderSecurityClassificationTextDialog" title = "Header Security Classification">
 				<table>
 					<tr>
-						<td><b>Text:&nbsp;</b></td>
-						<td><input id = "headerSecurityClassificationTextInput" type = "text" value = "${securityClassification}"/></td>
+						<td><b>Text:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input id = "headerSecurityClassificationTextInput" type = "text"/></td>
 					</tr>
 					<tr>	
-						<td><b>Color:&nbsp;</b></td>
-						<td><input class = "color" id = "headerSecurityClassificationTextColor" size = "6" value = "ADD8E6"/></td>
+						<td><b>Color:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input class = "color" id = "headerSecurityClassificationTextColorInput" size = "6" value = "ADD8E6"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id = "changeHeaderTitleTextPopup" title = "Title">
+			<div id = "changeHeaderTitleTextDialog" title = "Title">
 				<table>
 					<tr>
-						<td><b>Text:&nbsp;</b></td>
-						<td><input id = "headerTitleTextInput" type = "text" value = "${imageId}"/></td>
+						<td><b>Text:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input id = "headerTitleTextInput" type = "text"/></td>
 					</tr>
 					<tr>
-						<td><b>Color:&nbsp;</b></td>
-						<td><input class = "color" id = "headerTitleTextColor" size = "6" value = "FFFF00"/></td>
+						<td><b>Color:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input class = "color" id = "headerTitleTextColorInput" size = "6" value = "FFFF00"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id = "changeHeaderDescriptionTextPopup" title = "Description">
+			<div id = "changeHeaderDescriptionTextDialog" title = "Description">
 				<table>
 					<tr>
-						<td><b>Text:&nbsp;</b></td>
-						<td><input id = "headerDescriptionTextInput" type = "text" value = "Country: ${countryCode}"/></td>
+						<td><b>Text:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input id = "headerDescriptionTextInput" type = "text"/></td>
 					</tr>
 					<tr>
-						<td><b>Color:&nbsp;</b></td>
-						<td><input class = "color" id = "headerDescriptionTextColor" size = "6" value = "FFFFFF"/></td>
+						<td><b>Color:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input class = "color" id = "headerDescriptionTextColorInput" size = "6" value = "FFFFFF"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id = "changeOverviewMapPopup" title = "Overview Map">
+			<div id = "changeOverviewMapDialog" title = "Overview Map">
 				<table>
 					<tr>
-						<td><b>Include:&nbsp;</b></td>
+						<td><b>Include:&nbsp;&nbsp;&nbsp;</b></td>
 						<td><input id = "includeOverviewMapCheckbox" type = "checkbox"/></td>
 					</tr>
 					<tr>
-						<td><b>Country:&nbsp;</b></td>
+						<td><b>Country:&nbsp;&nbsp;&nbsp;</b></td>
 						<td><g:render template = "overviewMapSelectOptions"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id = "changeNorthArrowPopup" title = "North Arrow">
+			<div id = "changeNorthArrowDialog" title = "North Arrow">
 				<table style = "white-space: nowrap">
 					<tr>
-						<td><b>Angle From North:&nbsp;</b></td>
-						<td><input id = "northAngleInput" size = "4" type = "text" value = "${northArrowAngle}"/>deg</td>
+						<td><b>Angle From North:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input id = "northAngleInput" size = "4" type = "text"/>deg</td>
 					</tr>
 					<tr>
-						<td><b>Arrow Color:&nbsp;&nbsp;</b></td>
-						<td><input class = "color" id = "northArrowColor" size = "6" type = "text" value = "FFFFFF"/></td>
+						<td><b>Arrow Color:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input class = "color" id = "northArrowColorInput" size = "6" type = "text" value = "FFFFFF"/></td>
 					</tr>
 					<tr>
-						<td><b>Background Color:&nbsp;</b></td>
-						<td><input class = "color" id = "northArrowBackgroundColor" size = "6" type = "text" value = "000000"/></td>
+						<td><b>Background Color:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input class = "color" id = "northArrowBackgroundColorInput" size = "6" type = "text" value = "000000"/></td>
 					</tr>
 				</table>
 			</div>	
 
-			<div id = "changeFooterSecurityClassificationTextPopup" title = "Footer Security Classification">
+			<div id = "changeFooterSecurityClassificationTextDialog" title = "Footer Security Classification">
 				<table>
 					<tr>
-						<td><b>Text:&nbsp;</b></td>
-						<td><input id = "footerSecurityClassificationTextInput" type = "text" value = "${securityClassification}"/></td>
+						<td><b>Text:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input id = "footerSecurityClassificationTextInput" type = "text"/></td>
 					</tr>
 					<tr>
-						<td><b>Color:&nbsp;</b></td>
-						<td><input class = "color" id = "footerSecurityClassificationTextColor" size = "6" value = "ADD8E6"/></td>
+						<td><b>Color:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input class = "color" id = "footerSecurityClassificationTextColorInput" size = "6" value = "ADD8E6"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id = "changeFooterLocationTextPopup" title = "Location">
+			<div id = "changeFooterLocationTextDialog" title = "Location">
 				<table>
 					<tr>
-						<td><b>Text:&nbsp;</b></td>
-						<td><input id = "footerLocationTextInput" type = "text" value = "${centerGeo}"/></td>
+						<td><b>Text:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input id = "footerLocationTextInput" type = "text"/></td>
 					</tr>
 					<tr>
-						<td><b>Color:&nbsp;</b></td>
-						<td><input class = "color" id = "footerLocationTextColor" size = "6" value = "ADD8E6"/></td>
+						<td><b>Color:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input class = "color" id = "footerLocationTextColorInput" size = "6" value = "ADD8E6"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id = "changeFooterAcquisitionDateTextPopup" title = "Acquisition Date">
+			<div id = "changeFooterAcquisitionDateTextDialog" title = "Acquisition Date">
 				<table>
 					<tr>
-						<td><b>Text:&nbsp;</b></td>
-						<td><input id = "footerAcquisitionDateTextInput" type = "text" value = "${acquisitionDate}"/></td>
+						<td><b>Text:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input id = "footerAcquisitionDateTextInput" type = "text"/></td>
 					</tr>
 					<tr>
-						<td><b>Color:&nbsp;</b></td>
-						<td><input class = "color" id = "footerAcquisitionDateTextColor" size = "6" value = "ADD8E6"/></td>
+						<td><b>Color:&nbsp;&nbsp;&nbsp;</b></td>
+						<td><input class = "color" id = "footerAcquisitionDateTextColorInput" size = "6" value = "ADD8E6"/></td>
 					</tr>
 				</table>
 			</div>
 
-			<div id = "loadingDialogPopup" title = "Generating Template...">
+			<div id = "loadingDialog" title = "Generating Template...">
 				<br><br><br><div align = "center" id = "spinner" valign = "bottom"></div>
 			</div>
-				
-			<div id = "downloadDialogPopup" title = "Downloading...">The download will start automatically once the template is complete.</div>
+			
+			<div align = "left" id = "productGenerationProgressDialog" title = "Generating Product...">
+				<table>
+					<tr>
+						<td><b>Current Progress:</b>&nbsp;&nbsp;&nbsp;</td>
+						<td><div id = "currentProductProgressDiv">0%</div></td>
+					</tr>
+					<tr>
+						<td><b>Product Link:</b>&nbsp;&nbsp;&nbsp;</td>
+						<td><div id = "productLinkDiv">...</div></td>
+					</tr>
+				</table>
+			</div>
+	
+			<div id = "downloadDialog" title = "Downloading...">The download will start automatically once the template is complete.</div>
 			<div id = "fontSize"></div>
 			<div id = "jsColorImagesDirectory">${resource(dir: 'images/jsColor/', plugin: 'omar-image-magick')}</div>
 		</content>
 		<content tag = "bottom"></content>
 		<r:script>
-			var countryCode = "${countryCode.toLowerCase()}";
-                        var formActionUrl = "${createLink(action: 'export')}";
+			var countryCode = "${countryCode}";
+			var footerAcquisitionDateTextArray = ["${footerAcquisitionDateTextArray?.join("\",\"")}"];
+			var footerLocationTextArray = ["${footerLocationTextArray?.join("\",\"")}"];
+			var footerSecurityClassificationTextArray = ["${footerSecurityClassificationTextArray?.join("\",\"")}"];
+			var format = "${format}";
+			var headerDescriptionTextArray = ["${headerDescriptionTextArray?.join("\",\"")}"];
+			var headerSecurityClassificationTextArray = ["${headerSecurityClassificationTextArray?.join("\",\"")}"];
+			var headerTitleTextArray = ["${headerTitleTextArray?.join("\",\"")}"];
+			var imageUrlArray = ["${imageUrlArray?.join("\",\"")}"];
+			var northAngleArray = ["${northAngleArray?.join("\",\"")}"];
+			
+                        var exportImageFormUrl = "${createLink(action: 'export')}";
+			var exportAnimationFormUrl = "${createLink(action: 'flipBookGenerator')}";
                         var footerGradientGeneratorUrl = "${createLink(action: 'footerGradientGenerator')}";
                         var headerGradientGeneratorUrl = "${createLink(action: 'headerGradientGenerator')}";
                         var logoImagesDirectory = "${resource(dir: 'images/', plugin: 'omar-image-magick')}";
-			var markerIcon = "${resource(dir: 'js/img/', file: 'marker-blue.png', plugin: 'openlayers')}";
-			var markers = ["${markers.join("\",\"")}"];
                         var northArrowGeneratorUrl = "${createLink(action: 'northArrowGenerator')}";
                         var overviewMapImagesDirectory = "${resource(dir: 'images/overviewMaps/', plugin: 'omar-image-magick')}";
+			var viewProductUrl = "${createLink(action: 'viewProduct')}";
 		</r:script>
 	</body>
 </html>

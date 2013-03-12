@@ -2,15 +2,16 @@ package omar.time.lapse
 
 class TimeLapseController 
 {
-	def exportTimeLapseGifService
-	def exportTimeLapsePdfService
+	def imageSpaceService
 	def rasterEntrySearchService
 
-	def timeLapse() 
+	def viewer() 
 	{ 
 	
 		def rasterEntries = rasterEntrySearchService.findRasterEntries(params.layer?.split(","))
 		def bbox = params.bbox ?: [-180,-90,180,90]
+		def upAngle
+
 		def timeLapseJson = '\n' + 
 			'{\n' + 
 			'	"bbox" : [' + bbox +'],\n' +
@@ -19,11 +20,18 @@ class TimeLapseController
 
 		rasterEntries.eachWithIndex 
 		{ 
-			obj, i -> timeLapseJson += 
+			obj, i -> 
+			upAngle = imageSpaceService.computeUpIsUp(obj.filename, obj.entryId.toInteger())
+			timeLapseJson += 
 			'		{\n' + 
 			'			"acquisitionDate" : "' + obj.acquisitionDate + '",\n' +
+			'			"azimuth" : "' + obj.azimuthAngle + '",\n' +
+			'			"countryCode" : "' + obj.countryCode + '",\n' +
+			'			"graze" : "' + obj.grazingAngle + '",\n' +
+			'			"id" : "' + obj.id + '",\n' +
 			'			"indexId" : "' + obj.indexId + '",\n' +
-			'			"imageId" : "' + obj.title + '"\n' +
+			'			"imageId" : "' + obj.title + '",\n' +
+			'			"upAngle" : "' + upAngle + '"\n' +
 			'		}'
 
 			if (i != rasterEntries.size() - 1) { timeLapseJson += ',\n' }
@@ -34,55 +42,9 @@ class TimeLapseController
 			'	]\n' +
 			'}'
 	
-		def markers = params.markers?.split(",") ?: ["null"]
 		render(
 			view: "timeLapse.gsp",
-			model:
-			[
-				acquisitionDates: rasterEntries.acquisitionDate,
-				bbox: bbox,
-				countryCodes: rasterEntries.countryCode,
-				entryIds: rasterEntries.id,
-				imageIds: rasterEntries.title,
-				indexIds: rasterEntries.indexId,
-				markers: markers,
-				niirsValues: rasterEntries.niirs,
-				timeLapseObject: timeLapseJson
-			]	
+			model: [timeLapseObject: timeLapseJson]	
 		)		
-	}
-
-	def exportTimeLapseGif()
-	{
-		def imageUrls = params.imageUrls.split(">")
-		def filename = exportTimeLapseGifService.exportGif(imageUrls)
-		def file = new File( "${filename}" )
-		if ( file.exists() )
-		{
-			response.setContentType( "application/octet-stream" )
-			response.setHeader( "Content-disposition", "attachment; filename=${file.name}" )
-			response.outputStream << file.bytes
-
-			def removeImageFile = "rm ${file}"
-			def removeImageFileProc = removeImageFile.execute()
-			removeImageFileProc.waitFor()
-		}
-	}
-
-	def exportTimeLapsePdf()
-	{
-		def imageUrls = params.imageUrls.split(">")
-		def filename = exportTimeLapsePdfService.exportPdf(imageUrls)
-		def file = new File( "${filename}" )
-		if ( file.exists() )
-		{
-			response.setContentType( "application/octet-stream" )
-			response.setHeader( "Content-disposition", "attachment; filename=${file.name}" )
-			response.outputStream << file.bytes
-
-			def removeImageFile = "rm ${file}"
-			def removeImageFileProc = removeImageFile.execute()
-			removeImageFileProc.waitFor()
-		}
 	}
 }

@@ -12,21 +12,11 @@
 							<li class = "yuimenuitem">
 								<a class = "yuimenuitemlabel" href = "javascript:exportLink()" title = "Export Link">Link</a>
 							</li>
-						</ul>
-						<ul>
 							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = "javascript:exportImage()" title = "Export Image (Ortho)">Image (Ortho)</a>
+								<a class = "yuimenuitemlabel" href = 'javascript:$("#exportImageDialog").dialog("open")' title = "Export Image">Image</a>
 							</li>
 							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = "javascript:getUpIsUpImageChipUrl()" title = "Export Image (Up Is Up)">Image (Up Is Up)</a>
-							</li>
-						</ul>
-						<ul>
-							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = "javascript:exportTimeLapseGif()" title = "Export As GIF">GIF</a>
-							</li>
-							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = "javascript:exportTimeLapsePdf()" title = "Export As PDF">PDF</a>
+								<a class = "yuimenuitemlabel" href = 'javascript:$("#exportAnimationDialog").dialog("open")' title = "Export Animation">Animation</a>
 							</li>
 						</ul>
 					</div>
