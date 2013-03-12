@@ -17,7 +17,8 @@ OMAR.views.MenuView = Backbone.View.extend({
         "click #ExportGeoJsonId": "exportGeoJson",
         "click #ExportGml2Id": "exportGml2",
         "click #ExportCsvId": "exportCsv",
-        "click #TimeLapseId": "exportTimeLapse"
+        "click #TimeLapseId": "exportTimeLapse",
+        "click #ExportGeoCellId": "exportGeoCell"
     },
     exportKmlQuery:function() {
         //OMAR.federatedRasterSearch.setupExports("kmlQuery");
@@ -41,6 +42,9 @@ OMAR.views.MenuView = Backbone.View.extend({
     },
     exportTimeLapse:function(){
         this.trigger("onTimeLapseClicked")
+    },
+    exportGeoCell:function(){
+        this.trigger("onGeoCellClicked")
     },
     render:function()
     {

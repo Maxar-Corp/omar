@@ -12,6 +12,20 @@ class RasterEntryExportController
   {
   }
 
+  def exportGclProject( )
+  {
+      def fNames = params?.filenames?.split(",")
+      def cNames = params?.classnames?.split(",")
+
+      def (file, mimeType) = exportService.exportGcl(fNames, cNames)
+
+      response.setHeader( "Content-disposition", "attachment; filename=${file.name}" );
+      response.contentType = mimeType
+      response.outputStream << file.newInputStream()
+      response.outputStream.flush()
+      file.delete();
+  }
+
   def export( )
   {
       def format = params.format
