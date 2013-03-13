@@ -434,13 +434,13 @@ function setupMap()
 //	map.events.register("moveend", map, function() { theMapHasMoved(); });
 //	map.events.register("zoomend", map, function() { theMapHasZoomed(); });
 
-	//cacheWrite = new OpenLayers.Control.CacheWrite
-	//({
-	//	autoActivate: true,
-	//	imageFormat: "image/jpeg"
-	//});
-	//cacheRead = new OpenLayers.Control.CacheRead();
-	//map.addControls([cacheWrite, cacheRead]);
+	cacheWrite = new OpenLayers.Control.CacheWrite
+	({
+		autoActivate: true,
+		imageFormat: "image/jpeg"
+	});
+	cacheRead = new OpenLayers.Control.CacheRead();
+	map.addControls([cacheWrite, cacheRead]);
 }
 
 function setupTimeLapseButtons()
@@ -501,6 +501,10 @@ function sortLayers(sortingIndex)
 	rewind();
 	fastForward();
 }
+
+function spawnExportAnimationDialog() { $("#exportAnimationDialog").dialog("open"); }
+
+function spawnExportImageDialog() { $("#exportImageDialog").dialog("open"); }
 
 function speedUp() { if (playSpeed > 500) { playSpeed /= 2; } }
 
