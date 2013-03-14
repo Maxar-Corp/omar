@@ -13,10 +13,10 @@
 								<a class = "yuimenuitemlabel" href = "javascript:exportLink()" title = "Export Link">Link</a>
 							</li>
 							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = 'javascript:$("#exportImageDialog").dialog("open")' title = "Export Image">Image</a>
+								<a class = "yuimenuitemlabel" href = 'javascript:spawnExportImageDialog()' title = "Export Image">Image</a>
 							</li>
 							<li class = "yuimenuitem">
-								<a class = "yuimenuitemlabel" href = 'javascript:$("#exportAnimationDialog").dialog("open")' title = "Export Animation">Animation</a>
+								<a class = "yuimenuitemlabel" href = 'javascript:spawnExportAnimationDialog()' title = "Export Animation">Animation</a>
 							</li>
 						</ul>
 					</div>
