@@ -254,7 +254,8 @@ class ExportService
             def dir = new File(directory)
             dir.eachFileMatch(~/${baseName}.*/) {files.add(it.parent+"/"+it.name)}
 
-            // Check for NavData sub-directory
+            // Add custom directory structures
+            //   - check for NavData sub-directory
             dir.eachFile {
                 if (it.isDirectory()) {
                     if (it.name == "NavData") {
@@ -262,8 +263,7 @@ class ExportService
                     }
                 }
             }
-
-            // Check for NavData parallel directory
+            //   - check for NavData parallel directory
             def dirPar = new File(dir.parent)
             dirPar.eachFile {
                 if (it.isDirectory()) {
@@ -273,11 +273,12 @@ class ExportService
                 }
             }
 
+
             associatedFiles = files.unique()
 
             def downloadedFilename = preface + fileName.substring(1, fileName.size())
 
-            // Fill project file entries
+            // Fill basic project file entries
             outputString << objString + /.description:/ + "\n"
             outputString << objString + /.filename: / + downloadedFilename + "\n"
             outputString << objString + /.enable_cache:  0/ + "\n"
