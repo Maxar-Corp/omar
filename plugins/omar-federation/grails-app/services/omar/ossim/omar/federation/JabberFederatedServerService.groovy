@@ -69,7 +69,7 @@ class JabberFederatedServerService implements InitializingBean{
             vcardList.each{vcard->
                 try{
                     def user = vcard.jabberId.split("@")[0];
-                     println user
+                     //println user
                     makeAvailable(user)
                 }
                 catch(def e)
