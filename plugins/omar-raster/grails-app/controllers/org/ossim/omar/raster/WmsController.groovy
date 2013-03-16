@@ -29,6 +29,26 @@ class WmsController extends OgcController implements InitializingBean
 
   def wms()
   {
+	def wmsParamsIgnoreCase = new CaseInsensitiveMap( params )
+	if (wmsParamsIgnoreCase.bbox && wmsParamsIgnoreCase.offsetLon && wmsParamsIgnoreCase.offsetLat)
+	{
+		def wmsBbox = wmsParamsIgnoreCase.bbox.split(",")
+		def minimumLongitude = wmsBbox[0] as Double
+		def minimumLatitude = wmsBbox[1] as Double
+		def maximumLongitude = wmsBbox[2] as Double
+		def maximumLatitude = wmsBbox[3] as Double
+
+		def deltaLongitude = wmsParamsIgnoreCase.offsetLon as Double
+		def deltaLatitude = wmsParamsIgnoreCase.offsetLat as Double
+
+		wmsBbox[0] = minimumLongitude + deltaLongitude
+		wmsBbox[1] = minimumLatitude + deltaLatitude
+		wmsBbox[2] = maximumLongitude + deltaLongitude
+		wmsBbox[3] = maximumLatitude + deltaLatitude
+
+		if (params.bbox) { params.bbox = wmsBbox }
+		else if (params.BBOX) { params.BBOX = wmsBbox }
+	}
     //println params
 
     WmsCommand cmd = new WmsCommand()
