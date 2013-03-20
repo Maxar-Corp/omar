@@ -159,7 +159,7 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
             ,{name:"acquisition_date", label:"Acquisition Date", type:"datetime"}
             ,{name:"access_date", label:"Access Date", type:"datetime"}
             ,{name:"ingest_date", label:"Ingest Date", type:"datetime"}
-            ,{name:"receive_date", label:"Recieve Date", type:"datetime"}
+            ,{name:"receive_date", label:"Receive Date", type:"datetime"}
             ,{name:"ground_geom", label:"Ground Geom", type:"geometry"}
             ,{name:"entry_id", label:"Entry Id", type:"string"}
             ,{name:"width", label:"Width", type:"numeric"}
