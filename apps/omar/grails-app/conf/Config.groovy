@@ -3,6 +3,14 @@ import grails.util.Environment
 import org.joda.time.*
 import org.joda.time.contrib.hibernate.*
 
+// on windows this seems to return the MAC Address
+//omar.serverIP = org.ossim.omar.app.NetUtil.ipAddress
+omar.serverIP = InetAddress.localHost.hostAddress
+omar.serverURL = "http://${ omar.serverIP }:${ System.properties['server.port'] ?: '8080' }/${ appName }"
+
+
+println "*"*20 + omar.serverIP
+
 //import org.ossim.omar.core.DbAppender
 
 grails.gorm.default.mapping = {
@@ -64,10 +72,6 @@ grails.converters.encoding = "UTF-8"
 
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
-
-
-omar.serverIP = org.ossim.omar.app.NetUtil.ipAddress
-omar.serverURL = "http://${ omar.serverIP }:${ System.properties['server.port'] ?: '8080' }/${ appName }"
 
 //
 //// set per-environment serverURL stem for creating absolute links
@@ -717,28 +721,7 @@ stager {
   }
   onDemand = true
 }
-/*
-federation{
-    vcard{
-        fields=[
-                firstName: "",
-                lastName : "",
-                nickName:"${System.properties['user.name']}"
-               ]
-    }
-    server{
-        ip=       "omar.ngaiost.org"
-        port=     5222
-        username= "admin"
-        password= "abc123!@#"
-    }
-    chatRoom{
-        id       = "omar@conference.omar.ngaiost.org"
-        password = "abc123!@#"
-    }
-}
 
-*/
 grails.resources.mappers.yuicssminify.includes = ['**/*.css']
 grails.resources.mappers.yuijsminify.includes = ['**/*.js']
 grails.resources.mappers.yuicssminify.excludes = ['**/*.min.css']
