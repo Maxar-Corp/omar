@@ -9,7 +9,6 @@ omar.serverIP = InetAddress.localHost.hostAddress
 omar.serverURL = "http://${ omar.serverIP }:${ System.properties['server.port'] ?: '8080' }/${ appName }"
 
 
-println "*"*20 + omar.serverIP
 
 //import org.ossim.omar.core.DbAppender
 
