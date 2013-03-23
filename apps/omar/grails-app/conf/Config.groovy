@@ -8,8 +8,6 @@ import org.joda.time.contrib.hibernate.*
 omar.serverIP = InetAddress.localHost.hostAddress
 omar.serverURL = "http://${ omar.serverIP }:${ System.properties['server.port'] ?: '8080' }/${ appName }"
 
-
-
 //import org.ossim.omar.core.DbAppender
 
 grails.gorm.default.mapping = {
@@ -29,10 +27,10 @@ if ( new File( "${ userHome }/.grails/${ appName }-config.groovy" ).exists() )
 {
   grails.config.locations << "file:${ userHome }/.grails/${ appName }-config.groovy"
 }
-//if ( System.env.OMAR_CONFIG )
-//{
+if ( System.env.OMAR_CONFIG )
+{
   grails.config.locations << "file:${ System.env.OMAR_CONFIG }"
-//}
+}
 if ( System.env.QUARTZ_CONFIG )
 {
   grails.config.locations << "file:${ System.env.QUARTZ_CONFIG }"
