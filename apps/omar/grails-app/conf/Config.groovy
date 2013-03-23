@@ -21,22 +21,18 @@ grails.gorm.default.mapping = {
 
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
-
-grails.config.locations = [
-//  "classpath:${appName}-config.properties",
-//  "classpath:${appName}-config.groovy",
-//  "file:${userHome}/.grails/${appName}-config.properties",
-//     "file:${userHome}/.grails/${appName}-config.groovy"
-]
+if (!grails.config.locations || !(grails.config.locations instanceof List)) {
+    grails.config.locations = []
+}
 
 if ( new File( "${ userHome }/.grails/${ appName }-config.groovy" ).exists() )
 {
   grails.config.locations << "file:${ userHome }/.grails/${ appName }-config.groovy"
 }
-if ( System.env.OMAR_CONFIG )
-{
+//if ( System.env.OMAR_CONFIG )
+//{
   grails.config.locations << "file:${ System.env.OMAR_CONFIG }"
-}
+//}
 if ( System.env.QUARTZ_CONFIG )
 {
   grails.config.locations << "file:${ System.env.QUARTZ_CONFIG }"
