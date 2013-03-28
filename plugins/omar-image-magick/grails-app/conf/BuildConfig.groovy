@@ -27,7 +27,7 @@ grails.project.dependency.resolution = {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
     // runtime 'mysql:mysql-connector-java:5.1.5'
-    compile "org.codehaus.gpars:gpars:0.12"
+    compile "org.codehaus.gpars:gpars:1.0.0"
   }
 
   plugins {
