@@ -9,9 +9,10 @@ class VideoKmlUrlMappings {
  *  With kmlQuery/topVideos instead of  videoKmlQuery/topVideos.
  *  Commenting out the URL mappings fixes this.  Not sure why yet.
   */
-//    "/kmlQuery/topVideos"(controller: "videoKmlQuery", action: "topVideos")
-//    "/kmlQuery/videoFootprints"(controller: "videoKmlQuery", action: "videoFootprints")
-//    "/kmlQuery/getVideosKml"(controller: "videoKmlQuery", action: "getVideosKml")
+
+    "/kmlQuery/topVideos"(controller: "videoKmlQuery", action: "topVideos")
+    "/kmlQuery/videoFootprints"(controller: "videoKmlQuery", action: "videoFootprints")
+    "/kmlQuery/getVideosKml"(controller: "videoKmlQuery", action: "getVideosKml")
 
 		"/$controller/$action?/$id?"{
 			constraints {
