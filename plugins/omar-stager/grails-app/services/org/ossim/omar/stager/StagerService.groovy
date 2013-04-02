@@ -10,58 +10,62 @@ import static groovyx.gpars.GParsPool.withPool
 
 class StagerService
 {
-    static transactional = true
-    def dataManagerService
-    def grailsApplication
-    def sessionFactory
-    def runStager(Repository repository)
-    {
+  static transactional = true
+  def dataManagerService
+  def grailsApplication
+  def sessionFactory
 
-        repository.scanStartDate = new Date()
-        repository.scanEndDate = null
-        repository.save()
+  def runStager(Repository repository)
+  {
 
-        StagerJob.triggerNow([baseDir: repository.baseDir])
-    }
-    def cleanUpGorm( )
-    {
-        def session = sessionFactory.currentSession
-        session.flush()
-        session.clear()
-    }
-    def popAndAddStagerQueueItem()
-    {
-        def result = 0
-        def nthreads = grailsApplication.config.stager.queue.threads?:4
-        try{
-            StagerQueueItem.withTransaction{
-                def records = StagerQueueItem.list(cache:false,
-                        sort:"dateCreated",
-                        max:100,
-                        order:"desc")
-                records.each{record->
-                    record.status = "indexing"
-                    record.save()
-                }
-                withPool() {
-                    records.collectParallel{item->
-                        def msg = new HttpStatusMessage();
-                        dataManagerService.add(msg, [datainfo:item.dataInfo])
-                    }
+    repository.scanStartDate = new Date()
+    repository.scanEndDate = null
+    repository.save()
 
-                }
-                result += records.size();
-                records.each{record->
-                    record.delete()
-                }
-            }
+    StagerJob.triggerNow( [baseDir: repository.baseDir] )
+  }
+
+  def cleanUpGorm()
+  {
+    def session = sessionFactory.currentSession
+    session.flush()
+    session.clear()
+  }
+
+  def popAndAddStagerQueueItem()
+  {
+    def result = 0
+    def nthreads = grailsApplication.config.stager.queue.threads ?: 4
+    try
+    {
+      StagerQueueItem.withTransaction {
+        def records = StagerQueueItem.list( cache: false,
+            sort: "dateCreated",
+            max: 100,
+            order: "desc" )
+        records.each { record ->
+          record.status = "indexing"
+          record.save()
         }
-        catch(def e)
-        {
-            println e
-        }
+        withPool() {
+          records.collectParallel { item ->
+            def msg = new HttpStatusMessage();
+            dataManagerService.add( msg, [datainfo: item.dataInfo] )
+          }
 
-        cleanUpGorm()
-        result
+        }
+        result += records.size();
+        records.each { record ->
+          record.delete()
+        }
+      }
     }
+    catch ( def e )
+    {
+      println e
+    }
+
+    cleanUpGorm()
+    result
+  }
 }

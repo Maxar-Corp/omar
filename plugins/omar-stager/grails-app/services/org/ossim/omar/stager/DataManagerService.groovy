@@ -25,7 +25,7 @@ class DataManagerService implements ApplicationContextAware
 
   ApplicationContext applicationContext
 
-  def add( httpStatusMessage, params )
+  def add(httpStatusMessage, params)
   {
     def tempMap = new CaseInsensitiveMap( params )
     if ( tempMap.datainfo )
@@ -52,11 +52,11 @@ class DataManagerService implements ApplicationContextAware
           omsInfoParsers?.each { name, value ->
             def dataSets = value.processDataSets( oms, repository )
 
-            dataSets?.each {dataSet ->
+            dataSets?.each { dataSet ->
               def fileObject = dataSet.fileObjects.find { it.type == "main" }
               if ( dataSet.save() )
               {
-               // log.info( "Saved ${fileObject.name}" )
+                // log.info( "Saved ${fileObject.name}" )
               }
               else
               {
@@ -83,7 +83,7 @@ class DataManagerService implements ApplicationContextAware
     }
   }
 
-  synchronized def findRepositoryForFile( def file )
+  synchronized def findRepositoryForFile(def file)
   {
     def repositories = ( Repository.list()?.sort { it.baseDir.size() } )?.reverse()
     def repository = null
