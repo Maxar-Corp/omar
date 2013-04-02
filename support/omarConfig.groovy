@@ -5,7 +5,7 @@
 
 thumbnail.cacheDir="${wms.referenceDataDirectory}/omar-cache"
 //videoStreaming.flashDirRoot=
-image.download.prefix = "http://${omr.serverIP}"
+image.download.prefix = "http://${omar.serverIP}"
 
 wms.base.defaultOptions = [isBaseLayer: true, buffer: 0, transitionEffect: "resize"]
 wms.data.mapFile = "${wms.referenceDataDirectory}/bmng.map"
