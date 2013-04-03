@@ -1,14 +1,13 @@
 //omar.serverIP=
 //omar.serverURL=
-//wms.referenceDataDirectory=""
-//wms.data.mapFile=
+//wms.referenceDataDirectory=
+//wms.mapFile=
 
 thumbnail.cacheDir="${wms.referenceDataDirectory}/omar-cache"
 //videoStreaming.flashDirRoot=
 image.download.prefix = "http://${omar.serverIP}"
 
 wms.base.defaultOptions = [isBaseLayer: true, buffer: 0, transitionEffect: "resize"]
-wms.data.mapFile = "${wms.referenceDataDirectory}/bmng.map"
 wms.supportIE6=true
 
 wms.base.layers = [
