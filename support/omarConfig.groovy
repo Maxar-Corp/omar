@@ -1,7 +1,7 @@
 //omar.serverIP=
 //omar.serverURL=
 //wms.referenceDataDirectory=""
-//wms.mapFile=
+//wms.data.mapFile=
 
 thumbnail.cacheDir="${wms.referenceDataDirectory}/omar-cache"
 //videoStreaming.flashDirRoot=
@@ -13,7 +13,7 @@ wms.supportIE6=true
 
 wms.base.layers = [
         [
-                url: "http://${omar.serverIP}/cgi-bin/mapserv.exe?map=${wms.mapFile}",
+                url: "http://${omar.serverIP}/cgi-bin/mapserv.exe?map=${wms.data.mapFile}",
                 params: [layers: "Reference", format: "image/jpeg"],
                 name: "Reference Data",
                 options: wms.base.defaultOptions
