@@ -12,7 +12,7 @@ wms.supportIE6=true
 
 wms.base.layers = [
         [
-                url: "http://${omar.serverIP}/cgi-bin/mapserv.exe?map=${wms.data.mapFile}",
+                url: "http://${omar.serverIP}/cgi-bin/mapserv.exe?map=${wms.mapFile}",
                 params: [layers: "Reference", format: "image/jpeg"],
                 name: "Reference Data",
                 options: wms.base.defaultOptions
@@ -40,14 +40,14 @@ login.registration.userVerification="manual"
 login.registration.createLdapUser=false
 login.registration.useMail=(login.registration.userVerification== "email")
 
-security {
+//security {
 //  level = 'UNCLASS'
 //level = 'SECRET'
 //level = 'TOPSECRET'
-    UNCLASS = [description: "Unclassified", color: "green"]
-    SECRET = [description: "Secret // NOFORN", color: "red"]
-    TOPSECRET = [description: "Top Secret", color: "yellow"]
-    sessionTimeout = 60
-    level = "UNCLASS"
-}
+//    UNCLASS = [description: "Unclassified", color: "green"]
+//    SECRET = [description: "Secret // NOFORN", color: "red"]
+//    TOPSECRET = [description: "Top Secret", color: "yellow"]
+//    sessionTimeout = 60
+//    level = "UNCLASS"
+//}
 
