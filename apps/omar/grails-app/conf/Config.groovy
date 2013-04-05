@@ -379,7 +379,8 @@ bundle {
 
 export {
   prefix = "omar-export-"
-  workDir = "/tmp"
+  workDir = ( System.properties["os.name"].contains("Windows") ) ? "c:/temp" : "/tmp"
+
   superoverlay {
     baseDir = "/data/omar/superoverlay"
     outputKmz = true
@@ -634,11 +635,6 @@ rss {
         height: 'Height',
     ]
   }
-}
-
-thumbnail {
-  cacheDir = ( System.properties["os.name"] == "Windows XP" ) ? "c:/temp" : "${ wms.referenceDataDirectory }/omar-cache"
-  defaultSize = 512
 }
 
 /**
