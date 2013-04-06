@@ -245,13 +245,14 @@ class ExportService
         for ( index in 0..fNames.size()-1 )
         {
             def objString = baseString + "${index}"
-            def fileName = fNames[index]
+            def fileName = fNames[index] as File
             def type = cNames[index]
 
             // Get associated file names & add to list
-            def baseName = fileName.substring(fileName.lastIndexOf('/')+1, fileName.lastIndexOf('.'))
-            def directory = fileName.substring(0, fileName.lastIndexOf('/')+1)
+            def baseName = FilenameUtils.getBaseName(fileName.absoluteFile.toString())//fileName.substring(fileName.lastIndexOf('/')+1, fileName.lastIndexOf('.'))
+            def directory = FilenameUtils.getFullPath(fileName.absoluteFile.toString())//fileName.substring(0, fileName.lastIndexOf('/')+1)
             def dir = new File(directory)
+
             dir.eachFileMatch(~/${baseName}.*/) {files.add(it.parent+"/"+it.name)}
 
             // Add custom directory structures
@@ -276,8 +277,8 @@ class ExportService
 
             associatedFiles = files.unique()
 
-            def downloadedFilename = preface + fileName.substring(1, fileName.size())
-
+            def downloadedFilename = preface + FilenameUtils.getPath(fileName.absoluteFile.toString())+
+                                     FilenameUtils.getName(fileName.absoluteFile.toString())//fileName.substring(1, fileName.size())
             // Fill basic project file entries
             outputString << objString + /.description:/ + "\n"
             outputString << objString + /.filename: / + downloadedFilename + "\n"
