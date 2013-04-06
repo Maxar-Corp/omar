@@ -416,8 +416,13 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                 var modelRecord = this.dataModelView.model.get(item.id);
                 if(modelRecord)
                 {
-                    fileNames += modelRecord.get("filename") + ",";
-                    classNames += modelRecord.get("class_name") + ",";
+                    fileNames += modelRecord.get("filename");
+                    classNames += modelRecord.get("class_name");
+                }
+                if(idx < currentSelection.size()-1)
+                {
+                  fileNames += ",";
+                  classNames += ",";
                 }
             }
 
