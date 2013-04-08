@@ -242,7 +242,7 @@ class ExportService
         List files = new ArrayList()
         def associatedFiles
 
-        for ( index in 0..fNames.size()-1 )
+        for ( index in 0..<fNames.size() )
         {
             def objString = baseString + "${index}"
             def fileName = fNames[index] as File
@@ -277,8 +277,9 @@ class ExportService
 
             associatedFiles = files.unique()
 
-            def downloadedFilename = preface + FilenameUtils.getPath(fileName.absoluteFile.toString())+
-                                     FilenameUtils.getName(fileName.absoluteFile.toString())//fileName.substring(1, fileName.size())
+            def downloadedFilename = preface +
+                                     FilenameUtils.concat(FilenameUtils.getPath(fileName.absoluteFile.toString()),
+                                                          FilenameUtils.getName(fileName.absoluteFile.toString()))//fileName.substring(1, fileName.size())
             // Fill basic project file entries
             outputString << objString + /.description:/ + "\n"
             outputString << objString + /.filename: / + downloadedFilename + "\n"
