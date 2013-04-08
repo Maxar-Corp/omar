@@ -12,7 +12,7 @@ OMAR.models.PointModel = Backbone.Model.extend(
 
     validate:function(attrs)
     {
-        if(attrs.y && (!OMAR.isFloat(attrs.y.toString())))
+        /*if(attrs.y && (!OMAR.isFloat(attrs.y.toString())))
         {
             return ("Y value is invalid: " + attrs.y);
         }
@@ -24,7 +24,7 @@ OMAR.models.PointModel = Backbone.Model.extend(
         {
             return ("Radius value is invalid: " + attrs.radius);
         }
-        return null;
+        return null;*/
     },
 
     toCql:function(columnName)
@@ -59,6 +59,7 @@ OMAR.views.PointView = Backbone.View.extend({
         this.model = new OMAR.models.PointModel();
         this.centerPointEl = $("#center");//$(this.el).find(#center)[0]
         this.radiusEl = $("#radius");
+        this.displayUnitEl = $("#displayUnit");
         this.model.on("error",
             function(model,err) {
                 alert("Point has errors: " + err);
@@ -96,8 +97,24 @@ OMAR.views.PointView = Backbone.View.extend({
     },
     render:function()
     {
-        this.centerPointEl.val(this.model.get("y") + ","
+        if(this.displayUnitEl.val() == "DMS") {
+            this.centerPointEl.val(convert.deg_to_dms(this.model.get("y")) + ", "
+            + convert.deg_to_dms(this.model.get("x")));
+            
+            this.radiusEl.val(this.model.get("radius"));
+        }
+
+        else if(this.displayUnitEl.val() == "MGRS") {
+            this.centerPointEl.val(convert.ddToMgrs(this.model.get("y") , this.model.get("x")));
+            
+            this.radiusEl.val(this.model.get("radius"));
+        }
+
+        else {
+            this.centerPointEl.val(this.model.get("y") + ", "
             + this.model.get("x"));
-        this.radiusEl.val(this.model.get("radius"));
-    }
+        
+            this.radiusEl.val(this.model.get("radius"));
+    }}
+
 });

@@ -1,5 +1,4 @@
 <div id='boundBoxId'>
-	
 	<div class="niceBox">
     	<div class="niceBoxHeader">
         	<b>Bound Box Search:</b>

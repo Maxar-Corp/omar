@@ -18,7 +18,9 @@
     <div class="middle-center">
 
         <div class="inner-west">
-            <p>Units<g:select styles="z-index:-1" name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></p>
+            <div id='displayUnitId'>
+                <p>Units <g:select styles="z-index:-1" name="displayUnit" from="${['DD', 'DMS', 'MGRS']}"/></p>
+            </div>
             <g:render plugin="omar-common-ui" template="/templates/wfsTypeNameTemplate"></g:render>
             <p><g:checkBox id="spatialSearchFlag" value="" checked="true"/> Use Spatial</p>
 
