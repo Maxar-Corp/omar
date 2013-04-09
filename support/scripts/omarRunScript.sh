@@ -9,7 +9,7 @@ environmentVariables =[
    POST_COMMAND_LINE:"NO",
    LOG_FILE:"",
    PID_FILE:"",
-   CLASSPATH:"${System.env.OSSIM_DIST_ROOT}/tomcat/webapps/omar/WEB-INF/lib", 
+   CLASSPATH:"${System.env.OSSIM_DIST_ROOT?:System.env.OSSIM_INSTALL_PREFIX}/tomcat/webapps/omar/WEB-INF/lib", 
    //STAGE_FILE_FILTER:"", 
    STAGE_FILE_FILTER:"hsi,hri,tiff,tif,ntf,nitf,img",
    HISTOGRAM_OPTIONS:"--create-histogram-fast",
