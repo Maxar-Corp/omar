@@ -190,6 +190,8 @@ class RunScriptController implements ApplicationContextAware{
         url = grailsApplication.config.omar.serverURL
         username = grailsApplication.config.dataSource.username
         password = grailsApplication.config.dataSource.password
-        omarRunScript = "omarRunScript.sh --dbuser ${username} --dbpassword ${password} --omardb ${omardb}"
+        def tempRunScript = grailsApplication.config.stager.scripts.runScript
+
+        omarRunScript = "${tempRunScript?:'omarRunScript.sh'} --dbuser ${username} --dbpassword ${password} --omardb ${omardb}"
     }
 }
