@@ -287,7 +287,6 @@ class OmarRunScript{
          if(System.properties['os.name'].toLowerCase().contains("windows"))
          {
             def command = "tasklist /FI \"PID eq ${PID}\" /fo csv /nh"
-            println command
             def output  = command.execute();
             output.waitFor()
             def text = output.text
