@@ -275,6 +275,7 @@ class OmarRunScript{
       pid
    }
 
+
    def checkPidRunning()
    {
       def result=false
@@ -282,15 +283,32 @@ class OmarRunScript{
       if(env.PID_FILE.exists())
       {
          PID = Integer.parseInt(env.PID_FILE.text)
-         def command = "kill -s 0 ${PID}"
-         def output = command.execute();
 
-         output.waitFor()
-         def text = output.err.text //output.consumeProcessOutput()
-
-         if(!text)
+         if(System.properties['os.name'].toLowerCase().contains("windows"))
          {
-            result = true
+            def command = "tasklist /FI \"PID eq ${PID}\" /fo csv /nh"
+            println command
+            def output  = command.execute();
+            output.waitFor()
+            def text = output.text
+
+            if(text.startsWith('"'))
+            {
+             result = true
+            }
+         }
+         else
+         {
+            def command = "kill -s 0 ${PID}"
+            def output = command.execute();
+
+            output.waitFor()
+            def text = output.err.text //output.consumeProcessOutput()
+
+            if(!text)
+            {
+               result = true
+            }
          }
       }
 
