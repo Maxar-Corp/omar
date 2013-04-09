@@ -244,22 +244,24 @@ class OmarRunScript{
       def splitClasspath = env.CLASSPATH.split(":");
       splitClasspath.each{
          def file = new File(it)
-
-         if(file.name.endsWith(".jar"))
+         if(file.exists())
          {
-            jars.each { loader.addURL(file.toURI().toURL()) }
-         }
-         else
-         {
-            try{
-               file.traverse( type:FileType.FILES, nameFilter:~/.*.jar/ ) {
-                  loader.addURL(it.toURI().toURL())
-               }
-
-            }
-            catch(def e)
+            if(file.name.endsWith(".jar"))
             {
-               outputLog(e)
+               jars.each { loader.addURL(file.toURI().toURL()) }
+            }
+            else
+            {
+               try{
+                  file.traverse( type:FileType.FILES, nameFilter:~/.*.jar/ ) {
+                     loader.addURL(it.toURI().toURL())
+                  }
+
+               }
+               catch(def e)
+               {
+                  outputLog(e)
+               }
             }
          }
       }
