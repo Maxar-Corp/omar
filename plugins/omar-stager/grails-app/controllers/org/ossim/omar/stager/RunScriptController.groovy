@@ -186,12 +186,24 @@ class RunScriptController implements ApplicationContextAware{
     }
     void setApplicationContext( org.springframework.context.ApplicationContext applicationContext )
     {
-        omardb = grailsApplication.config.dataSource.url.split(":")[-1]
+        //omardb = grailsApplication.config.dataSource.url.split(":")[-1]
         url = grailsApplication.config.omar.serverURL
         username = grailsApplication.config.dataSource.username
         password = grailsApplication.config.dataSource.password
         def tempRunScript = grailsApplication.config.stager.scripts.runScript
 
+        def tempDbUrl = (grailsApplication.config.dataSource.url =~ "jdbc:(postgresql(_postGIS)?):(//(.*):(\\d+)/)?(.*)" )
+        def omardbParts = [
+                host: tempDbUrl[0][4],
+                port: tempDbUrl[0][5],
+                database: tempDbUrl[0][6]
+        ]
+        omardb = ""
+        if (omardbParts.host&&omardbParts.port)
+        {
+            omardb += "//${omardbParts.host}:${omardbParts.port}/"
+        }
+        omardb += omardbParts.database
         omarRunScript = "${tempRunScript?:'omarRunScript.sh'} --dbuser ${username} --dbpassword ${password} --omardb ${omardb}"
     }
 }
