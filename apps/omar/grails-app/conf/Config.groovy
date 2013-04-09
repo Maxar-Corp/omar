@@ -669,7 +669,7 @@ stager {
   scripts{
       defaultThreadCount = 4
       maxThreadCount = 8
-
+      runScript="omarRunScript.sh"
       /**
        * This will force the scripts page on reload to always use the formatters
        * listed.
