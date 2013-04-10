@@ -5,13 +5,12 @@ class FooterGradientGeneratorService
 	def DEBUG = false
 	def grailsApplication
 
-	def command
 	def serviceMethod(def gradientColorTop, def gradientColorBottom, def gradientHeight)
 	{
 		def date = new Date().getTime()
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
 
-		command = [
+		def command = [
 				"convert", 
 				"-size", 
 				"1x${gradientHeight}", 
@@ -25,8 +24,6 @@ class FooterGradientGeneratorService
 
 	def executeCommand(def executableCommand)
 	{
-		def script = executableCommand.execute()
-		script.waitFor()
-		return script.text
+        return Utility.executeCommand(executableCommand, true).text
 	}
 }

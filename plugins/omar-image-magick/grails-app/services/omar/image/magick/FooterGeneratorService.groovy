@@ -5,7 +5,6 @@ class FooterGeneratorService
 	def DEBUG = false
 	def grailsApplication
 
-	def command
 	def serviceMethod( def footerAcquisitionDateText, def footerAcquisitionDateTextColor, def footerLocationText, def footerLocationTextColor, def footerSecurityClassificationText, def footerSecurityClassificationTextColor, def gradientColorBottom, def gradientColorTop, def imageHeight, def imageWidth )
 	{
 		def date = new Date().getTime()
@@ -27,7 +26,7 @@ class FooterGeneratorService
 
 		//########## Generate the blank footer
 		if (DEBUG) { println "Generate the blank footer:" }
-		command = [
+		def command = [
                                 "convert",
                                 "-size",
                                 "${footerWidth}x${footerHeight}",
@@ -208,8 +207,6 @@ class FooterGeneratorService
 
 	def executeCommand(def executableCommand)
 	{
-		def script = executableCommand.execute()
-		script.waitFor()
-		return script.text
+        return Utility.executeCommand(executableCommand, true).text
 	}
 }
