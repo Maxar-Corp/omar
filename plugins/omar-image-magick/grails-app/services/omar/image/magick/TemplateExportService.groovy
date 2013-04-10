@@ -201,7 +201,7 @@ class TemplateExportService
 
 	def executeCommand(def executableCommand)
 	{
-        return Utility.executeCommand(executableCommand)
+        return Utility.executeCommand(executableCommand, true).text
         /*
 		def script = executableCommand.execute()
         def err = new ByteArrayOutputStream()

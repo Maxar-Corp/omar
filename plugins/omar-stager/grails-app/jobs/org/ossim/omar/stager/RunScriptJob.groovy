@@ -1,6 +1,7 @@
 package org.ossim.omar.stager
 
 import org.quartz.JobDataMap
+import org.ossim.omar.core.Utility
 import groovy.util.logging.Log4j
 @Log4j
 class RunScriptJob{
@@ -11,12 +12,14 @@ class RunScriptJob{
 
     def execute(org.quartz.JobExecutionContext context) {
         JobDataMap dataMap = context.getMergedJobDataMap();
-  		
+  		// println dataMap
   		//println "Executing ${dataMap.commandLineScript}"
-  		def proc = dataMap.commandLineScript.execute();
-        proc.in.eachLine { line -> log.info(line) }
+  		def out = Utility.executeCommand(dataMap.commandLineScript, true).text//.execute();
+        log.info(out)
 
-        proc?.waitFor()
+        //proc.in.eachLine { line -> log.info(line) }
+
+        //proc?.waitFor()
   	 	
   	 	//println "Finished ${dataMap.commandLineScript}"
     }
