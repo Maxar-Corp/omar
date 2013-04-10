@@ -35,7 +35,7 @@ class OgcController
     }
     else
     {
-      println( "cheese" )
+      //println( "cheese" )
     }
 
     // def url = "http://localhost"+ "${createLink(controller: "ogc", action: "wms")}" + "?"
