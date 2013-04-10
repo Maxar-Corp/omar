@@ -7,7 +7,7 @@ class TemplateExportService
 {
 	LinkGenerator grailsLinkGenerator
 
-	def DEBUG = false
+	def DEBUG = true
 	def grailsApplication
 	def northArrowGeneratorService
 
