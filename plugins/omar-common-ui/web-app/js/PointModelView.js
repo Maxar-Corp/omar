@@ -82,7 +82,7 @@ OMAR.views.PointView = Backbone.View.extend({
             this.model.off("change", this.pointModelChange, this);
             this.model.set({y:values[0],x:values[1]});
             this.model.on("change", this.pointModelChange, this);
-            alert("DD Match");
+            //alert("DD Match");
         }
         else if(v.match(OMAR.dmsRegExp)) {
             var match = OMAR.dmsRegExp.exec(v);
@@ -92,7 +92,7 @@ OMAR.views.PointView = Backbone.View.extend({
             this.model.off("change", this.pointModelChange, this);
             this.model.set({y:lat,x:lon});
             this.model.on("change", this.pointModelChange, this);
-            alert("DMS Match");
+            //alert("DMS Match");
         }
         else if(v.match(OMAR.mgrsRegExp)) {
             var match = OMAR.mgrsRegExp.exec(v);
@@ -104,7 +104,7 @@ OMAR.views.PointView = Backbone.View.extend({
             this.model.off("change", this.pointModelChange, this);
             this.model.set({y:lat,x:lon});
             this.model.on("change", this.pointModelChange, this);
-            alert("MGRS Match");
+            //alert("MGRS Match");
         }
         this.render();
     },
