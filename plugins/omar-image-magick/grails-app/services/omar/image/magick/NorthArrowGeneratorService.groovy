@@ -1,6 +1,7 @@
 package omar.image.magick
 
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
+import org.ossim.omar.core.Utility
 
 class NorthArrowGeneratorService 
 {
