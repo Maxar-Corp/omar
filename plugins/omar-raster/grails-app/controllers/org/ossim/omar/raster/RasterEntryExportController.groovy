@@ -1,34 +1,56 @@
 package org.ossim.omar.raster
 
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 import org.ossim.omar.core.DateUtil
+import org.ossim.omar.core.HttpStatusMessage
+import org.ossim.omar.core.HttpStatus
 
 class RasterEntryExportController
 {
   def exportService
   def rasterEntrySearchService
   def grailsApplication
-
+  def ogcExceptionService
   def index( )
   {
   }
 
   def exportGclProject( )
   {
-      def fNames = params?.filenames?.split(",")
-      def cNames = params?.classnames?.split(",")
+      if (SpringSecurityUtils.ifAllGranted("ROLE_DOWNLOAD"))
+      {
+          def fNames = params?.filenames?.split(",")
+          def cNames = params?.classnames?.split(",")
 
-      def (file, mimeType) = exportService.exportGcl(fNames, cNames)
+          def (file, mimeType) = exportService.exportGcl(fNames, cNames)
 
-      response.setHeader( "Content-disposition", "attachment; filename=${file.name}" );
-      response.contentType = mimeType
-      response.outputStream << file.newInputStream()
-      response.outputStream.flush()
-      file.delete();
+          response.setHeader( "Content-disposition", "attachment; filename=${file.name}" );
+          response.contentType = mimeType
+          response.outputStream << file.newInputStream()
+          response.outputStream.flush()
+          if (file.exists())
+          {
+              file.delete();
+
+          }
+      }
+      else
+      {
+          def httpResponse = new HttpStatusMessage()
+          httpResponse.status = HttpStatus.UNAUTHORIZED
+          httpResponse.message = "You are unauthorized to download the files.  " +
+                                 "You must be logged into OMARª \n and have download privileges."
+
+          httpResponse.initializeResponse(response)
+          response.contentType = "text/plain"
+          response.outputStream << httpResponse.message
+          response.outputStream.flush()
+      }
   }
 
   def export( )
   {
-      def format = params.format
+    def format = params.format
     def queryParams = new RasterEntryQuery()
     bindData( queryParams, params )
 
