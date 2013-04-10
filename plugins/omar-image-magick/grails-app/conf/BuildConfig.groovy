@@ -33,3 +33,5 @@ grails.project.dependency.resolution = {
   plugins {
   }
 }
+
+grails.plugin.location.omarCore = "${System.env['OMAR_DEV_HOME']}/plugins/omar-core"

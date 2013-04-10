@@ -329,7 +329,22 @@ class Utility implements ApplicationContextAware
   {
     this.applicationContext = applicationContext
   }
-
+  static def executeCommand(def commandString, def needResult)
+  {
+      def err  = new ByteArrayOutputStream()
+      def out  = new ByteArrayOutputStream()
+      def proc = commandString.execute()
+      if (needResult)
+      {
+          proc?.consumeProcessOutput(out, err)
+          proc?.waitFor()
+      }
+      else
+      {
+        proc?.consumeProcessOutput()
+      }
+      return [text:out.toString(), err:err.toString()]
+  }
   def lookupDomainInfo( def className )
   {
     def service = applicationContext.getBean( "domainClassLookupService" )

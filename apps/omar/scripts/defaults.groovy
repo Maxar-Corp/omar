@@ -1,3 +1,4 @@
+import groovy.sql.Sql
 import org.ossim.omar.security.SecRole
 import org.ossim.omar.security.SecUser
 import org.ossim.omar.security.SecUserSecRole
@@ -143,3 +144,31 @@ if ( Repository.count() == 0 )
     Repository.findOrSaveWhere( baseDir: baseDir )
   }
 }
+
+def ds=grailsApplication.config.dataSource
+def sql = Sql.newInstance(ds.url,
+        ds.username,
+        ds.password, ds.driverClassName)
+
+sql.execute("ALTER TABLE raster_entry alter column access_date type timestamp with time zone")
+sql.execute("ALTER TABLE raster_entry alter column acquisition_date type timestamp with time zone")
+sql.execute("ALTER TABLE raster_entry alter column ingest_date type timestamp with time zone")
+sql.execute("ALTER TABLE raster_entry alter column receive_date type timestamp with time zone")
+
+sql.execute("ALTER TABLE video_data_set alter column start_date type timestamp with time zone")
+sql.execute("ALTER TABLE video_data_set alter column end_date type timestamp with time zone")
+
+sql.execute("ALTER TABLE wms_log alter column start_date type timestamp with time zone")
+sql.execute("ALTER TABLE wms_log alter column end_date type timestamp with time zone")
+
+sql.execute("ALTER TABLE get_tile_log alter column start_date type timestamp with time zone")
+sql.execute("ALTER TABLE get_tile_log alter column end_date type timestamp with time zone")
+
+sql.execute("ALTER TABLE report alter column date_created type timestamp with time zone")
+sql.execute("ALTER TABLE report alter column last_updated type timestamp with time zone")
+
+sql.execute("ALTER TABLE repository alter column scan_start_date type timestamp with time zone")
+sql.execute("ALTER TABLE repository alter column scan_end_date type timestamp with time zone")
+
+sql.execute("ALTER TABLE stager_queue_item alter column date_created type timestamp with time zone")
+sql.execute("ALTER TABLE stager_queue_item alter column last_updated type timestamp with time zone")
