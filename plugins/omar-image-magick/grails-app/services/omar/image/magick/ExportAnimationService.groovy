@@ -1,4 +1,5 @@
 package omar.image.magick
+import org.ossim.omar.core.Utility
 
 class ExportAnimationService 
 {
@@ -31,8 +32,6 @@ class ExportAnimationService
 
 	def executeCommand(def executableCommand)
 	{
-		def script = executableCommand.execute()
-		script.waitFor()
-		return script.text
+        return Utility.executeCommand(executableCommand, true).text
 	}
 }

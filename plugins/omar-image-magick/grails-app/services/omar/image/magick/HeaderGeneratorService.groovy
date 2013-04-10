@@ -1,6 +1,7 @@
 package omar.image.magick
 
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
+import org.ossim.omar.core.Utility
 
 class HeaderGeneratorService 
 {
@@ -10,9 +11,9 @@ class HeaderGeneratorService
 	def grailsApplication
 	def northArrowGeneratorService
 
-	def command
 	def serviceMethod(def gradientColorBottom, def gradientColorTop, def headerDescriptionText, def headerDescriptionTextColor, def headerSecurityClassificationText, def headerSecurityClassificationTextColor, def headerTitleText, def headerTitleTextColor, def imageHeight, def imageWidth, def logo)
 	{
+        def command
 		def date = new Date().getTime()
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
 		def logoFilesLocation = grailsLinkGenerator.resource(absolute: true, dir: 'images', plugin: 'omar-image-magick') + "/"
@@ -306,8 +307,6 @@ class HeaderGeneratorService
 
 	def executeCommand(def executableCommand)
 	{
-		def script = executableCommand.execute()
-		script.waitFor()
-		return script.text
+        return Utility.executeCommand(executableCommand, true).text
 	}
 }

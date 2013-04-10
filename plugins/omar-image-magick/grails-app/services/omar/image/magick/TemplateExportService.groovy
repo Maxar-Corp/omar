@@ -1,8 +1,9 @@
 package omar.image.magick
 
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
+import org.ossim.omar.core.Utility
 
-class TemplateExportService 
+class TemplateExportService
 {
 	LinkGenerator grailsLinkGenerator
 
@@ -10,9 +11,9 @@ class TemplateExportService
 	def grailsApplication
 	def northArrowGeneratorService
 
-	def command
 	def serviceMethod(def country, def footerFile, def headerFile, def imageFile, def imageHeight, def includeOverviewMap, def northArrowFile)
 	{
+        def command
 		def date = new Date().getTime()
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
 		def logoFilesLocation = grailsLinkGenerator.resource(absolute: true, dir: 'images', plugin: 'omar-image-magick') + "/"
@@ -200,8 +201,14 @@ class TemplateExportService
 
 	def executeCommand(def executableCommand)
 	{
+        return Utility.executeCommand(executableCommand, true).text
+        /*
 		def script = executableCommand.execute()
+        def err = new ByteArrayOutputStream()
+        def out = new ByteArrayOutputStream()
+        script.consumeProcessOutput(out, err)
 		script.waitFor()
-		return script.text
+		return out.toString()
+		*/
 	}
 }

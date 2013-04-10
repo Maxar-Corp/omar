@@ -60,6 +60,10 @@ OMAR.models.Date = Backbone.Model.extend(
             {
                 milliFractionString = milliFractionString.substring(1, milliFractionString.length);
             }
+            else
+            {
+               milliFractionString = ""
+            }
             var result = (this.date.getUTCFullYear()+'-'
                 + pad(this.date.getUTCMonth()+1)+'-'
                 + pad(this.date.getUTCDate())+'T'

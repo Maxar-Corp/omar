@@ -336,10 +336,26 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                 var omarUrlSuperOverlayLink ="<li><a href='"+omarUrlSuperOverlay +"'>Super Overlay</a></li>"
                 // "<li><label class='link_cursor' onclick='javascript:window.open(\""+omarUrlSuperOverlay+"\");'>Super Overlay</label></li>"
                 var centerPoint = bboxModel.getCenter();
-                var acquisition_date = new OMAR.models.Date({date:model.get("acquisition_date")}).toISOString(true);
-                var ingest_date = new OMAR.models.Date({date:model.get("ingest_date")}).toISOString(true);
-                var access_date = new OMAR.models.Date({date:model.get("access_date")}).toISOString(true);
-                var receive_date = new OMAR.models.Date({date:model.get("receive_date")}).toISOString(true);
+                var acquisition_date="";
+                var ingest_date="";
+                var access_date="";
+                var receive_date="";
+                if(model.get("acquisition_date") != '')
+                {
+                    acquisition_date = new OMAR.models.Date({date:model.get("acquisition_date")}).toISOString(true);
+                }
+                if(model.get("access_date") != '')
+                {
+                    access_date = new OMAR.models.Date({date:model.get("access_date")}).toISOString(true);
+                }
+                if(model.get("ingest_date") != '')
+                {
+                    ingest_date = new OMAR.models.Date({date:model.get("ingest_date")}).toISOString(true);
+                }
+                if(model.get("receive_date") != '')
+                {
+                    receive_date = new OMAR.models.Date({date:model.get("receive_date")}).toISOString(true);
+                }
 
                 model.set({
                     min_lat_lon:bboxModel.get("miny")+","+bboxModel.get("minx")
