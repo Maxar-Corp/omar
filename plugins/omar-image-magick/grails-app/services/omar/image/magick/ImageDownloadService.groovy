@@ -8,9 +8,9 @@ class ImageDownloadService
 
 	def grailsApplication
 
-	def command
 	def serviceMethod(def imageUrl)
-	{ 
+	{
+        def command
 		def date = new Date().getTime()
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
 
@@ -64,8 +64,9 @@ class ImageDownloadService
 
 	def executeCommand(def executableCommand)
 	{
-		def script = executableCommand.execute()
-		script.waitFor()
-		return script.text
+        return Utility.executeCommand(executableCommand, true).text
+//		def script = executableCommand.execute()
+//		script.waitFor()
+//		return script.text
 	}
 }

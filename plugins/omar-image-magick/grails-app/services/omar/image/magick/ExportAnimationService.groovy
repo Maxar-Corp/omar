@@ -31,8 +31,6 @@ class ExportAnimationService
 
 	def executeCommand(def executableCommand)
 	{
-		def script = executableCommand.execute()
-		script.waitFor()
-		return script.text
+        return Utility.executeCommand(executableCommand, true).text
 	}
 }

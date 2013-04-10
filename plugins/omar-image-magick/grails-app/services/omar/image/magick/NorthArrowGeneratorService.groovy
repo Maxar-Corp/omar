@@ -9,9 +9,9 @@ class NorthArrowGeneratorService
 	def DEBUG = false
 	def grailsApplication
 
-	def command
 	def serviceMethod(def northAngle, def northArrowBackgroundColor, def northArrowColor, def northArrowSize)
 	{
+        def command
 		def date = new Date().getTime()
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
 		def logoFilesLocation = grailsLinkGenerator.resource(absolute: true, dir: 'images', plugin: 'omar-image-magick') + "/"
@@ -374,8 +374,9 @@ class NorthArrowGeneratorService
 
 	def executeCommand(def executableCommand)
 	{
-		def script = executableCommand.execute()
-		script.waitFor()
-		return script.text
+         return Utility.executeCommand(executableCommand, true).text
+		//def script = executableCommand.execute()
+		//script.waitFor()
+		//return script.text
 	}
 }
