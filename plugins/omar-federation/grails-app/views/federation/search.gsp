@@ -55,7 +55,7 @@
             <g:render plugin="omar-common-ui" template="/templates/measurementTemplate"/>
 
             <p><div class="niceBox">
-            <div class="niceBoxHeader">Layer Switcher:</div>
+            <div class="niceBoxHeader">Map Layers:</div>
             <div class="niceBoxBody">
                 <div id="layerSwitcher" class="layerSwitcher"></div>
             </div>

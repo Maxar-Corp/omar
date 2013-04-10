@@ -25,7 +25,7 @@
   <li><a class="fNiv">Search</a>
     <ul>
       <li class="arrow"></li>
-      <li id="SearchRasterId"><a>Search</a></li>
+      <li name="SearchId" id="SearchId"><a>Search</a></li>
     </ul>
   </li>
 </ul>
