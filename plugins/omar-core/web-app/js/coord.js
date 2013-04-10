@@ -3,7 +3,7 @@ function CoordinateConversion()
 
 
 
-this.deg_to_dms = function(deg, xy) {
+this.deg_to_dms = function(deg) {
    var d = Math.floor (deg);
    var minfloat = (deg-d)*60;
    var m = Math.floor(minfloat);
@@ -21,13 +21,6 @@ this.deg_to_dms = function(deg, xy) {
    }
    return ("" + d + "°" + m + "'" + s + "''");
 }
-
-
-
-
-
-
-
 
 	var latDegAbs, latDeg, latMinAbs, latMin, latSec, latOri, latDms;
 	var lonDegAbs, lonDeg, lonMinAbs, lonMin, lonSec, lonOri, lonDms;
@@ -339,16 +332,22 @@ this.deg_to_dms = function(deg, xy) {
                 return false;
             }
 
-            var mgrsRegExp = /^(\d{1,2})([a-zA-Z])([a-zA-Z])([a-zA-Z])(\d{10})?/
+            /*var regExp = /^(\d{1,2})([a-zA-Z])([a-zA-Z])([a-zA-Z])(\d{10})?/
 
-            if(($("point").value.match(mgrsRegExp)))
+            if($("point").value.match(regExp))
             {
                 var lonZone = parseInt(RegExp.$1, 10);
                 var latZone = RegExp.$2;
                 var easting = RegExp.$3;
                 var northing = RegExp.$4;
                 var remainder = parseInt(RegExp.$5, 10);
-            }
+            }*/
+
+            var lonZone = one;
+            var latZone = two;
+            var easting = three;
+            var northing = four;       
+            var remainder = five;
 
             if (latZone == "C" || latZone == "D" || latZone == "E" || latZone == "F" || latZone == "G" || latZone == "H"
                     || latZone == "J" || latZone == "K" || latZone == "L" || latZone == "M")
