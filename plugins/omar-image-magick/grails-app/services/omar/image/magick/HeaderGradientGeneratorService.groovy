@@ -1,4 +1,5 @@
 package omar.image.magick
+import org.ossim.omar.core.Utility
 
 class HeaderGradientGeneratorService 
 {
