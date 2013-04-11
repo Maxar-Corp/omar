@@ -10,17 +10,24 @@ class HeaderGradientGeneratorService
 	{
 		def date = new Date().getTime()
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
+        def tempFilesLocationAsFile = new File(tempFilesLocation)
+        def tempFileGradient = File.createTempFile("gradient",
+                ".png", tempFilesLocationAsFile);
+        if (tempFilesLocationAsFile.exists())
+        {
 
-		def command = [
-				"convert", 
-				"-size", 
-				"1x${gradientHeight}", 
-				"gradient: #${gradientColorTop}-#${gradientColorBottom}", 
-				"${tempFilesLocation}${date}gradient.png"
-		]
-		executeCommand(command)
+            def command = [
+                    "convert",
+                    "-size",
+                    "1x${gradientHeight}",
+                    "gradient: #${gradientColorTop}-#${gradientColorBottom}",
+                    "${tempFilesLocation}${date}gradient.png"
+            ]
+            executeCommand(command)
+            return tempFileGradient.toString()
+        }
 
-		return "${tempFilesLocation}${date}gradient.png"
+		return ""
 	}
 
 	def executeCommand(def executableCommand)

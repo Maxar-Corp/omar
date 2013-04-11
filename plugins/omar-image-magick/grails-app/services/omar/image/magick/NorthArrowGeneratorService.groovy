@@ -3,7 +3,7 @@ package omar.image.magick
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 import org.ossim.omar.core.Utility
 
-class NorthArrowGeneratorService 
+class NorthArrowGeneratorService
 {
 	LinkGenerator grailsLinkGenerator
 
@@ -15,7 +15,25 @@ class NorthArrowGeneratorService
         def command
 		def date = new Date().getTime()
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
-		def logoFilesLocation = grailsLinkGenerator.resource(absolute: true, dir: 'images', plugin: 'omar-image-magick') + "/"
+		def tempFilesLocationAsFile = new File(tempFilesLocation)
+        def logoFilesLocation = grailsLinkGenerator.resource(absolute: true, dir: 'images', plugin: 'omar-image-magick') + "/"
+
+        def tempFileNorthArrow = File.createTempFile("northArrow",
+                ".png", tempFilesLocationAsFile);
+        def tempFileNorthArrowInnerCircle = File.createTempFile("northArrowInnerCircle",
+                ".png", tempFilesLocationAsFile);
+        def tempFileNorthArrowCircle = File.createTempFile("northArrowCircle",
+                ".png", tempFilesLocationAsFile);
+        def tempFileNorthArrowTriangle = File.createTempFile("northArrowTriangle",
+                ".png", tempFilesLocationAsFile);
+        def tempFileNorthArrowN = File.createTempFile("northArrowN",
+                ".png", tempFilesLocationAsFile);
+        def tempFileNorthArrowLine = File.createTempFile("northArrowLine",
+                ".png", tempFilesLocationAsFile);
+        def tempFileNorthArrowScaled = File.createTempFile("northArrowScaled",
+                ".png", tempFilesLocationAsFile);
+        def tempFileNorthArrowRotated = File.createTempFile("northArrowRotated",
+                ".png", tempFilesLocationAsFile);
 
 		//######################################################################################################################
 		//################################################## North Arrow Base ##################################################
@@ -56,7 +74,7 @@ class NorthArrowGeneratorService
 			"#${northArrowBackgroundColor}",
 			"-draw",
 			"circle ${northArrowCircleBaseCenterX},${northArrowCircleBaseCenterY} ${northArrowCircleBaseCenterX},${northArrowSizeFullResolution}",
-			"${tempFilesLocation}${date}northArrow.png"			
+			tempFileNorthArrow.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -79,7 +97,7 @@ class NorthArrowGeneratorService
 			"-size",
 			"${northArrowInnerCircleSize + strokeWidth}x${northArrowInnerCircleSize + strokeWidth}",
 			"xc: #00000000",
-			"${tempFilesLocation}${date}northArrowInnerCircle.png"
+			tempFileNorthArrowInnerCircle.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -119,7 +137,7 @@ class NorthArrowGeneratorService
 			"${strokeWidth}",
 			"-draw",
 			"circle ${northArrowCircleCenterX},${northArrowCircleCenterY} ${northArrowCircleCenterX},${strokeWidth}",
-			"${tempFilesLocation}${date}northArrowCircle.png"
+			tempFileNorthArrowCircle.toString()
         	]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -127,11 +145,11 @@ class NorthArrowGeneratorService
 		if (DEBUG) { println "Combine the north arrow circle with the north arrow inner circle:" }
 		command = [
 			"composite",
-			"${tempFilesLocation}${date}northArrowCircle.png",
+                tempFileNorthArrowCircle.toString(),
 			"-gravity",
 			"South",
-			"${tempFilesLocation}${date}northArrowInnerCircle.png",
-			"${tempFilesLocation}${date}northArrowInnerCircle.png"
+			tempFileNorthArrowInnerCircle.toString(),
+            tempFileNorthArrowInnerCircle.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -160,7 +178,7 @@ class NorthArrowGeneratorService
 			"#${northArrowColor}",
 			"-draw",
 			"polygon 0,${northArrowTriangleSize} ${northArrowTriangleMidPoint},0 ${northArrowTriangleSize},${northArrowTriangleSize} 0,$northArrowTriangleSize}",
-			"${tempFilesLocation}${date}northArrowTriangle.png"
+			tempFileNorthArrowTriangle.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -168,11 +186,11 @@ class NorthArrowGeneratorService
 		if (DEBUG) { println "Combine the north arrow triangle with the north arrow inner circle:" }
 		command = [
 			"composite",
-			"${tempFilesLocation}${date}northArrowTriangle.png",
+            tempFileNorthArrowTriangle.toString(),
 			"-gravity",
 			"North",
-			"${tempFilesLocation}${date}northArrowInnerCircle.png",
-			"${tempFilesLocation}${date}northArrowInnerCircle.png"
+            tempFileNorthArrowInnerCircle.toString(),
+            tempFileNorthArrowInnerCircle.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)		
@@ -217,7 +235,7 @@ class NorthArrowGeneratorService
 			"${strokeWidth}",
 			"-draw",
 			"polyline ${strokeWidth},${northArrowNHeight} ${strokeWidth},0 ${northArrowNWidth},${northArrowNHeight} ${northArrowNWidth},0",
-			"${tempFilesLocation}${date}northArrowN.png"
+			tempFileNorthArrowN.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -225,13 +243,13 @@ class NorthArrowGeneratorService
 		if (DEBUG) { println "Combine the north arrow N with the north arrow inner circle:" }
 		command = [
 			"composite",
-			"${tempFilesLocation}${date}northArrowN.png",
+                tempFileNorthArrowN.toString(),
 			"-gravity",
 			"Center",
 			"-geometry",
 			"-${northArrowNWidthMidPoint - (strokeWidth / 2) + 1}+${northArrowNHeightMidPoint}",
-			"${tempFilesLocation}${date}northArrowInnerCircle.png",
-			"${tempFilesLocation}${date}northArrowInnerCircle.png"
+                tempFileNorthArrowInnerCircle.toString(),
+                tempFileNorthArrowInnerCircle.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -247,7 +265,7 @@ class NorthArrowGeneratorService
 			"-size",
 			"${strokeWidth + 1}x${northArrowLineLength}",
 			"xc: #${northArrowColor}",
-			"${tempFilesLocation}${date}northArrowLine.png"
+                tempFileNorthArrowLine.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -255,11 +273,11 @@ class NorthArrowGeneratorService
 		if (DEBUG) { println "Combine the north arrow line with the north arrow inner circle:" }
 		command = [
 			"composite",
-			"${tempFilesLocation}${date}northArrowLine.png",
+                tempFileNorthArrowLine.toString(),
 			"-gravity",
 			"Center",
-			"${tempFilesLocation}${date}northArrowInnerCircle.png",
-			"${tempFilesLocation}${date}northArrowInnerCircle.png"
+                tempFileNorthArrowInnerCircle.toString(),
+                tempFileNorthArrowInnerCircle.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -267,11 +285,11 @@ class NorthArrowGeneratorService
 		if (DEBUG) { println "Generate the north arrow:" }
 		command = [
 			"composite",
-			"${tempFilesLocation}${date}northArrowInnerCircle.png",
+                tempFileNorthArrowInnerCircle.toString(),
 			"-gravity",
 			"Center",
-			"${tempFilesLocation}${date}northArrow.png",
-			"${tempFilesLocation}${date}northArrow.png"
+			tempFileNorthArrow.toString(),
+                tempFileNorthArrow.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -285,11 +303,11 @@ class NorthArrowGeneratorService
 		//########## Scale the north arrow
 		if (DEBUG) { println "Scale the north arrow:" }
 		command = [
-				"convert", 
-				"${tempFilesLocation}${date}northArrow.png", 
+				"convert",
+                tempFileNorthArrow.toString(),
 				"-resize", 
 				"${northArrowWidth}x${northArrowHeight}", 
-				"${tempFilesLocation}${date}northArrowScaled.png"
+				tempFileNorthArrowScaled.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -302,10 +320,10 @@ class NorthArrowGeneratorService
 				"set",
 				"-background",
 				"none",
-				"${tempFilesLocation}${date}northArrowScaled.png", 
+                tempFileNorthArrowScaled.toString(),
 				"-rotate", 
-				"${northAngle}", 
-				"${tempFilesLocation}${date}northArrowRotated.png"
+				"${northAngle}",
+                tempFileNorthArrowRotated.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -314,12 +332,12 @@ class NorthArrowGeneratorService
 		if (DEBUG) { println "Crop the rotated north arrow:" }
 		command = [
 				"convert",
-				"${tempFilesLocation}${date}northArrowRotated.png",
+                tempFileNorthArrowRotated.toString(),
 				"+repage",
 				"-gravity",
 				"center", 
-				"-crop", "${northArrowWidth}x${northArrowHeight}+0+0",   
-				"${tempFilesLocation}${date}northArrowRotated.png"
+				"-crop", "${northArrowWidth}x${northArrowHeight}+0+0",
+                tempFileNorthArrowRotated.toString()
 		]
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
@@ -327,50 +345,15 @@ class NorthArrowGeneratorService
 		//#############################################################################################################################
 		//################################################## Temporary File Deletion ##################################################
 		//#############################################################################################################################
+        tempFileNorthArrow.delete()
+        tempFileNorthArrowInnerCircle.delete()
+        tempFileNorthArrowCircle.delete()
+        tempFileNorthArrowTriangle.delete()
+        tempFileNorthArrowN.delete()
+        tempFileNorthArrowLine.delete()
+        tempFileNorthArrowScaled.delete()
 
-		//########## Delete the north arrow
-		if (DEBUG) { println "Delete the north arrow:" }
-		command = "rm ${tempFilesLocation}${date}northArrow.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the north arrow circle file
-		if (DEBUG) { println "Delete the north arrow circle file:" }
-		command = "rm ${tempFilesLocation}${date}northArrowCircle.png"
-       		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the north arrow inner circle file
-		if (DEBUG) { println "Delete the north arrow inner circle file:" }
-        	command = "rm ${tempFilesLocation}${date}northArrowInnerCircle.png"
-        	if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the north arrow line file
-		if (DEBUG) { println "Delete the north arrow line file:" }
-        	command = "rm ${tempFilesLocation}${date}northArrowLine.png"
-        	if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-        	//########## Delete the north arrow N file
-		if (DEBUG) { println "Delete the north arrow N file:" }
-		command = "rm ${tempFilesLocation}${date}northArrowN.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the north arrow scaled file
-		if (DEBUG) { println "Delete the scaled north arrow file:" }
-		command = "rm ${tempFilesLocation}${date}northArrowScaled.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		//########## Delete the north arrow triangle file
-		if (DEBUG) { println "Delete the north arrow triangle file:" }
-		command = "rm ${tempFilesLocation}${date}northArrowTriangle.png"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
-
-		return "${tempFilesLocation}${date}northArrowRotated.png"
+		return tempFileNorthArrowRotated.toString()
 	}
 
 	def executeCommand(def executableCommand)
