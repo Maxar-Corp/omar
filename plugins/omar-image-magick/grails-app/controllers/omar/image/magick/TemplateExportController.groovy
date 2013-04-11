@@ -88,18 +88,26 @@ class TemplateExportController
 		def northArrowBackgroundColor = params.northArrowBackgroundColor
 		def northArrowSize = params.northArrowSize
 
-		final def footerFilename = new DataflowVariable()
-		final def headerFilename = new DataflowVariable()
-		final def imageFilename = new DataflowVariable()
-		final def northArrowFilename = new DataflowVariable()
+        def footerFilename = new DataflowVariable()
+        def headerFilename = new DataflowVariable()
+        def imageFilename = new DataflowVariable()
+        def northArrowFilename = new DataflowVariable()
 
-		task { imageFilename << imageDownloadService.serviceMethod(imageFile) }
+        task { imageFilename      << imageDownloadService.serviceMethod(imageFile) }
 		task { northArrowFilename << northArrowGeneratorService.serviceMethod(northAngle, northArrowBackgroundColor, northArrowColor, northArrowSize) }
-		task { headerFilename << headerGeneratorService.serviceMethod(gradientColorBottom, gradientColorTop, headerDescriptionText, headerDescriptionTextColor, headerSecurityClassificationText, headerSecurityClassificationTextColor, headerTitleText, headerTitleTextColor, imageHeight, imageWidth, logo) }
-		task { footerFilename << footerGeneratorService.serviceMethod(footerAcquisitionDateText, footerAcquisitionDateTextColor, footerLocationText, footerLocationTextColor, footerSecurityClassificationText, footerSecurityClassificationTextColor, gradientColorBottom, gradientColorTop, imageHeight, imageWidth) }	
-		
-		def finishedProductFileName = templateExportService.serviceMethod(country, footerFilename.val, headerFilename.val, imageFilename.val, imageHeight, includeOverviewMap, northArrowFilename.val)
-		render finishedProductFileName
+		task { headerFilename     << headerGeneratorService.serviceMethod(gradientColorBottom, gradientColorTop, headerDescriptionText, headerDescriptionTextColor, headerSecurityClassificationText, headerSecurityClassificationTextColor, headerTitleText, headerTitleTextColor, imageHeight, imageWidth, logo) }
+		task { footerFilename     << footerGeneratorService.serviceMethod(footerAcquisitionDateText, footerAcquisitionDateTextColor, footerLocationText, footerLocationTextColor, footerSecurityClassificationText, footerSecurityClassificationTextColor, gradientColorBottom, gradientColorTop, imageHeight, imageWidth) }
+
+ 		def finishedProductFileName =
+             templateExportService.serviceMethod(country,
+                     footerFilename.val,
+                     headerFilename.val,
+                     imageFilename.val,
+                     imageHeight,
+                     includeOverviewMap,
+                     northArrowFilename.val)
+
+        render finishedProductFileName
 	}
 
 	def flipBookGenerator()

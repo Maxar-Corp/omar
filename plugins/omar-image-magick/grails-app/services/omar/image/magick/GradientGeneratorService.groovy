@@ -3,12 +3,11 @@ import org.ossim.omar.core.Utility
 
 class GradientGeneratorService 
 {
-	def DEBUG = true
+	def DEBUG = false
 	def grailsApplication
 
 	def serviceMethod(def gradientColorTop, def gradientColorBottom, def gradientHeight)
 	{
-		def date = new Date().getTime()
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
         def tempFilesLocationAsFile = new File(tempFilesLocation)
         def tempFileGradient = File.createTempFile("gradient",

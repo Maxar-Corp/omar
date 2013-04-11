@@ -7,14 +7,13 @@ class TemplateExportService
 {
     LinkGenerator grailsLinkGenerator
 
-    def DEBUG = true
+    def DEBUG = false
     def grailsApplication
     def northArrowGeneratorService
 
     def serviceMethod(def country, def footerFile, def headerFile, def imageFile, def imageHeight, def includeOverviewMap, def northArrowFile)
     {
         def command
-        def date = new Date().getTime()
         def tempFilesLocation = grailsApplication.config.export.workDir + "/"
         def tempFilesLocationAsFile = new File(tempFilesLocation)
         def logoFilesLocation = grailsLinkGenerator.resource(absolute: true, dir: 'images', plugin: 'omar-image-magick') + "/"
