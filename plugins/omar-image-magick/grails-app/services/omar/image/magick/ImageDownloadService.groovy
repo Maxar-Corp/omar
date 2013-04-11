@@ -32,17 +32,20 @@ class ImageDownloadService
 
 		//########## Download the image file
 		if (DEBUG) { println "Download the image file:" }
-		command = 
+		command =
 		[
-				"curl", 
-				"${imageUrl}", 
-				"-o", 
+				"curl",
+				"${imageUrl}",
+                "-s", // silent
+                "-k", // no cert verification
+                "-o",
 				"${imageFile}"
 		]
 		if (DEBUG) { println "${command}" }
+
 		executeCommand(command)
 
-        if(tempFileOmarImage.exists())
+        if(tempFileOmarImagePng.exists())
         {
             //########## Change the image to RGB colorspace
             if (DEBUG) { println "Change the image to RGB colorspace:" }
@@ -69,7 +72,7 @@ class ImageDownloadService
 		//executeCommand(command)
         tempFileOmarImagePng.delete()
 
-		return tempFileOmarImageTif.tif()
+		return tempFileOmarImageTif.toString()
 	}
 
 	def executeCommand(def executableCommand)
