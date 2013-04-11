@@ -197,10 +197,8 @@ OMAR.views.BBOX = Backbone.View.extend({
     render:function()
     {
         if(this.displayUnitEl.val() == "DMS") {
-            this.lowerLeftBboxEl.val(convert.deg_to_dms(this.model.get("miny")) + ", "
-                + convert.deg_to_dms(this.model.get("minx")));
-            this.upperRightBboxEl.val(convert.deg_to_dms(this.model.get("maxy")) + ", "
-                + convert.deg_to_dms(this.model.get("maxx")));
+            this.lowerLeftBboxEl.val(convert.ddToDms(this.model.get("miny"), this.model.get("minx")));
+            this.upperRightBboxEl.val(convert.ddToDms(this.model.get("maxy"), this.model.get("maxx")));
         }
 
         else if(this.displayUnitEl.val() == "MGRS") {
