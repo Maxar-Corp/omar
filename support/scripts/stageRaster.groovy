@@ -255,6 +255,8 @@ if(parent.scriptArgs.size())
    }
    //def count = 0;
    dirList.each{dir->
+    if(dir.isDirectory())
+    {
       dir.traverse( options){file->
          def row = sql?.firstRow("SELECT name FROM raster_file where name = ${file.toString()}")
          if(!row)
@@ -262,6 +264,16 @@ if(parent.scriptArgs.size())
             futures << threadPool.submit({-> stageAndAddClosure file } as Callable);
          }
       }
+    }
+    else 
+    {
+      def file = dir
+      def row = sql?.firstRow("SELECT name FROM raster_file where name = ${file.toString()}")
+      if(!row)
+      {
+        futures << threadPool.submit({-> stageAndAddClosure file } as Callable);
+      }
+    }
    }
 
    // make sure the list is called

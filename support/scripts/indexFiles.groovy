@@ -266,7 +266,9 @@ class indexFileQueue
 
 
         withPool(nThreads) {
-            baseDir?.traverse(options) { file ->
+            if(baseDir.isFile())
+            {
+                def file = baseDir
                def sql = sqlPool.borrowObject()
                def row = sql?.firstRow(testFileSQL, [file:file.absolutePath])
                 sqlPool.returnObject(sql)
@@ -278,6 +280,24 @@ class indexFileQueue
                     {
                         this.&insertBatch.callAsync(batch.clone(), count.intValue())
                         batch = []
+                    }
+                }
+            }
+            else
+            {
+                baseDir?.traverse(options) { file ->
+                   def sql = sqlPool.borrowObject()
+                   def row = sql?.firstRow(testFileSQL, [file:file.absolutePath])
+                    sqlPool.returnObject(sql)
+                    if(!row)
+                    {
+                        batch << file
+
+                        if ( count?.incrementAndGet() % batchSize == 0 )
+                        {
+                            this.&insertBatch.callAsync(batch.clone(), count.intValue())
+                            batch = []
+                        }
                     }
                 }
             }
