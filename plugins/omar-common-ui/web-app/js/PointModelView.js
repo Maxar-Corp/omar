@@ -75,12 +75,36 @@ OMAR.views.PointView = Backbone.View.extend({
     },
     centerOnChange: function(e){
         var v = this.centerPointEl.val();
-        var values = v.split(",");
-        if(values.length ==2)
-        {
+
+        if(v.match(OMAR.ddRegExp)) {
+            var values = v.split(",");
+
             this.model.off("change", this.pointModelChange, this);
             this.model.set({y:values[0],x:values[1]});
             this.model.on("change", this.pointModelChange, this);
+            //alert("DD Match");
+        }
+        else if(v.match(OMAR.dmsRegExp)) {
+            var match = OMAR.dmsRegExp.exec(v);
+            var lat = convert.dmsToDd(match[1], match[2], match[3] + match[4], match[5]);
+            var lon = convert.dmsToDd(match[6], match[7], match[8] + match[9], match[10]);
+            
+            this.model.off("change", this.pointModelChange, this);
+            this.model.set({y:lat,x:lon});
+            this.model.on("change", this.pointModelChange, this);
+            //alert("DMS Match");
+        }
+        else if(v.match(OMAR.mgrsRegExp)) {
+            var match = OMAR.mgrsRegExp.exec(v);
+            var mgrs = convert.mgrsToDd(match[1], match[2], match[3], match[4], match[5], match[6]);
+            var match2 = OMAR.ddRegExp.exec(mgrs);
+            var lat = match2[1] + match2[2];
+            var lon = match2[3] + match2[4];
+
+            this.model.off("change", this.pointModelChange, this);
+            this.model.set({y:lat,x:lon});
+            this.model.on("change", this.pointModelChange, this);
+            //alert("MGRS Match");
         }
         this.render();
     },
@@ -98,8 +122,7 @@ OMAR.views.PointView = Backbone.View.extend({
     render:function()
     {
         if(this.displayUnitEl.val() == "DMS") {
-            this.centerPointEl.val(convert.deg_to_dms(this.model.get("y")) + ", "
-            + convert.deg_to_dms(this.model.get("x")));
+            this.centerPointEl.val(convert.ddToDms(this.model.get("y"), this.model.get("x")));
             
             this.radiusEl.val(this.model.get("radius"));
         }
