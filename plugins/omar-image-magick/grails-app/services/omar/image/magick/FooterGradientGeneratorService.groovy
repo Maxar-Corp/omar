@@ -10,6 +10,7 @@ class FooterGradientGeneratorService
 	{
 		def date = new Date().getTime()
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
+        def tempFilesLocationAsFile = new File(tempFilesLocation)
 
 		def command = [
 				"convert", 

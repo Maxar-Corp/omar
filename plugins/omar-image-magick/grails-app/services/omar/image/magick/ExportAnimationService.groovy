@@ -9,11 +9,14 @@ class ExportAnimationService
 	{
 		def date = new Date().getTime()
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
+        def tempFilesLocationAsFile = new File(tempFilesLocation)
+        def tempFileTimeLapse = File.createTempFile("timeLapse",
+                ".${format}", tempFilesLocationAsFile);
 
 		def command = []
 		command[0] = "convert"
 		for (item in imageFileNames) { command += item }
-		command += "${tempFilesLocation}${date}timeLapse.${format}"
+		command += tempFileNorthArrow.toString()
 		executeCommand(command)
 
 		def file
@@ -22,12 +25,13 @@ class ExportAnimationService
 			file = new File( "${item}" )
 			if ( file.exists() )
 			{
-				command = "rm ${file}"
-				executeCommand(command) 
+                file.delete()
+				//command = "rm ${file}"
+				//executeCommand(command)
 			}
 		}
 
-                return "${tempFilesLocation}${date}timeLapse.${format}"
+                return tempFileTimeLapse.toString()
 	}
 
 	def executeCommand(def executableCommand)

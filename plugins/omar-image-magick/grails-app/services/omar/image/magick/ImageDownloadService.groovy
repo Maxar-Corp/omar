@@ -14,6 +14,11 @@ class ImageDownloadService
         def command
 		def date = new Date().getTime()
 		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
+        def tempFilesLocationAsFile = new File(tempFilesLocation)
+        def tempFileOmarImageTif = File.createTempFile("omarImage",
+                ".tif", tempFilesLocationAsFile);
+        def tempFileOmarImagePng = File.createTempFile("omarImage",
+                ".png", tempFilesLocationAsFile);
 
 		//##############################################################################################################################
 		//############################################################ Image Download ##################################################
@@ -22,7 +27,7 @@ class ImageDownloadService
 
 		//########## Image filename once it is downloaded
 		if (DEBUG) { println "Image filename once it is downloaded: " }
-		def imageFile = "${tempFilesLocation}${date}omarImage.png";
+		def imageFile = tempFileOmarImagePng.toString();
 		if (DEBUG) { println "${imageFile}" }
 
 		//########## Download the image file
@@ -37,37 +42,38 @@ class ImageDownloadService
 		if (DEBUG) { println "${command}" }
 		executeCommand(command)
 
-		//########## Change the image to RGB colorspace
-		if (DEBUG) { println "Change the image to RGB colorspace:" }
-		command = 
-		[
-				"convert",
-				"${imageFile}",
-				"-type",
-				"TrueColor",
-				"${tempFilesLocation}${date}omarImage.tif"
-		]
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
+        if(tempFileOmarImage.exists())
+        {
+            //########## Change the image to RGB colorspace
+            if (DEBUG) { println "Change the image to RGB colorspace:" }
+            command =
+                [
+                        "convert",
+                        "${imageFile}",
+                        "-type",
+                        "TrueColor",
+                        tempFileOmarImageTif.toString()
+                ]
+            if (DEBUG) { println "${command}" }
+            executeCommand(command)
+        }
 
 		//#############################################################################################################################
 		//################################################## Temporary File Deletion ##################################################
 		//#############################################################################################################################
 
 		//########## Delete the image file
-		if (DEBUG) { println "Delete the image file:" }
-		command = "rm ${imageFile}"
-		if (DEBUG) { println "${command}" }
-		executeCommand(command)
+		//if (DEBUG) { println "Delete the image file:" }
+		//command = "rm ${imageFile}"
+		//if (DEBUG) { println "${command}" }
+		//executeCommand(command)
+        tempFileOmarImagePng.delete()
 
-		return "${tempFilesLocation}${date}omarImage.tif"
+		return tempFileOmarImageTif.tif()
 	}
 
 	def executeCommand(def executableCommand)
 	{
-        return Utility.executeCommand(executableCommand, true).text
-//		def script = executableCommand.execute()
-//		script.waitFor()
-//		return script.text
+        Utility.executeCommand(executableCommand, true).text
 	}
 }

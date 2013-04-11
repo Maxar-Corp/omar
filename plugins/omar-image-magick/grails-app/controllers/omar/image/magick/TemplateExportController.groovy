@@ -127,9 +127,7 @@ class TemplateExportController
 			response.outputStream << file.bytes
 			response.outputStream.flush()
 
-			def removeImageFile = "rm ${file}"
-			def removeImageFileProc = removeImageFile.execute()
-			removeImageFileProc.waitFor()
+            file.delete()
 		}
 	}
 
@@ -142,16 +140,14 @@ class TemplateExportController
                 def fileName = headerGradientGeneratorService.serviceMethod( gradientColorTop, gradientColorBottom, gradientHeight )
 
                 def file = new File( "${fileName}" )
-                if ( file.exists() )
+                if ( file?.exists() )
                 {
-                        response.setHeader( "Content-length", "" + file.bytes.length )
-                        response.contentType = "image/png"
-                        response.outputStream << file.bytes
-                        response.outputStream.flush()
+                    response.setHeader( "Content-length", "" + file.bytes.length )
+                    response.contentType = "image/png"
+                    response.outputStream << file.bytes
+                    response.outputStream.flush()
 
-                        def removeImageFile = "rm ${file}"
-                        def removeImageFileProc = removeImageFile.execute()
-                        removeImageFileProc.waitFor()
+                    file.delete()
                 }
         }
 
@@ -171,10 +167,8 @@ class TemplateExportController
 			response.contentType = "image/png"
 			response.outputStream << file.bytes
 			response.outputStream.flush()
-			
-			def removeImageFile = "rm ${file}"
-			def removeImageFileProc = removeImageFile.execute()
-			removeImageFileProc.waitFor()
+
+            file.delete()
 		}
 	}
 
@@ -188,9 +182,7 @@ class TemplateExportController
 			response.setHeader( "Content-disposition", "attachment; filename=${file.name}" )
 			response.outputStream << file.bytes
 
-			def removeImageFile = "rm ${file}"
-			def removeImageFileProc = removeImageFile.execute()
-			removeImageFileProc.waitFor()
+            file.delete()
 		}
 	}
 
