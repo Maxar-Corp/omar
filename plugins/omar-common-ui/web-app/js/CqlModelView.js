@@ -166,7 +166,7 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
             ,{name:"height", label:"Height", type:"numeric"}
             ,{name:"number_of_bands", label:"Number of Bands", type:"numeric"}
             ,{name:"number_of_res_levels", label:"Number of Res Levels", type:"numeric"}
-            ,{name:"gsd_unit", label:"GSD Unit", type:"numeric"}
+            ,{name:"gsd_unit", label:"GSD Unit", type:"string"}
             ,{name:"gsdx", label:"GSD X", type:"numeric"}
             ,{name:"gsdy", label:"GSD Y", type:"numeric"}
             ,{name:"bit_depth", label:"Bit Depth", type:"numeric"}
