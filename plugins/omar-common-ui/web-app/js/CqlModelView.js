@@ -131,6 +131,9 @@ OMAR.models.CqlVideoColumnDefCollection = Backbone.Collection.extend({
             ,{name:"end_date", label:"End Date", type:"datetime"}
             ,{name:"index_id", label:"Index Id", type:"string"}
             ]);
+    },
+    comparator: function(model) {
+        return model.get('label');
     }
 });
 
@@ -141,7 +144,7 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
 
         this.add([
 
-            {name:"id", label:"Record id", type:"id"}
+             {name:"id", label:"Record id", type:"id"}
             ,{name:"be_number", label:"BE Number", type:"string"}
             ,{name:"title", label:"IID2", type:"string"}
             ,{name:"class_name", label:"Class Name", type:"string"}
@@ -153,7 +156,7 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
             ,{name:"niirs", label:"NIIRS", type:"numeric"}
             ,{name:"sensor_id", label:"Sensor", type:"string"}
             ,{name:"target_id", label:"Target Id", type:"string"}
-            ,{name:"image_representation", label:"Image Representation", type:"string"}
+            ,{name:"image_representation", label:"IREP", type:"string"}
             ,{name:"azimuth_angle", label:"Azimuth Angle", type:"numeric"}
             ,{name:"grazing_angle", label:"Grazing Angle", type:"numeric"}
             ,{name:"acquisition_date", label:"Acquisition Date", type:"datetime"}
@@ -190,6 +193,9 @@ OMAR.models.CqlRasterColumnDefCollection = Backbone.Collection.extend({
             //,{name:"keep_forever", label:"Keep Forever", type:"numeric"}
            // ,{name:"valid_model", label:"Valid Model", type:"string"}
         ]);
+    },
+    comparator: function(model) {
+        return model.get('label');
     }
 });
 
@@ -582,7 +588,7 @@ OMAR.views.CqlView = Backbone.View.extend({
         this.cqlBtnValidateEl = $(this.el).find("#cqlBtnValidate");
         this.cqlSelectNamedQueriesEl = $(this.el).find("#cqlSelectNamedQueries");
         this.columnDefs = new OMAR.models.CqlRasterColumnDefCollection();
-
+        this.columnDefs.sort();
         $(this.cqlBtnResetEl).click(this.cqlBtnResetClicked.bind(this));
         $(this.cqlBtnShowEl).click(this.cqlBtnShowClicked.bind(this));
         $(this.cqlBtnValidateEl).click(this.cqlBtnValidateClicked.bind(this));
@@ -611,6 +617,7 @@ OMAR.views.CqlView = Backbone.View.extend({
             this.columnDefs = new OMAR.models.CqlVideoColumnDefCollection();
         }
 
+        this.columnDefs.sort();
         this.clearQuery();
     },
     getRootCondition:function(condition){
