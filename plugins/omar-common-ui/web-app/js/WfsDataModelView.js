@@ -789,7 +789,15 @@ OMAR.views.DataModelView = Backbone.View.extend({
     renderColumn:function(column,data, type, full){
         var url = this.wfsModel.toUrl();
         var omarUrl = url.substr(0,url.indexOf("omar")+4);
-        var urlLink = omarUrl + "/rasterEntry/show/" +data;
+        var urlLink = null;
+        if(this.wfsTypeNameModel.get("typeName").search("raster_entry")>-1)
+        {
+           urlLink = omarUrl + "/rasterEntry/show/" +data;
+        }
+        else
+        {
+            urlLink = omarUrl + "/videoDataSet/show/" +data;
+        }
         return "<label class='link_cursor' onclick='javascript:window.open(\""+urlLink+"\");'>" + data + "</label>";
     },
     drawCallback:function(){
