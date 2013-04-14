@@ -50,10 +50,24 @@ class DataManagerService implements ApplicationContextAware
           def omsInfoParsers = applicationContext.getBeansOfType( OmsInfoParser.class )
           def repository = findRepositoryForFile( new File( "/" ) )
           omsInfoParsers?.each { name, value ->
-            def dataSets = value.processDataSets( oms, repository )
+
+            def dataSets = value.processDataSets( oms )
 
             dataSets?.each { dataSet ->
+
               def fileObject = dataSet.fileObjects.find { it.type == "main" }
+
+              //println "*"*30
+              //  println dataSet.fileObjects
+              //println fileObject.name
+              if (fileObject)
+              {
+                  dataSet.repository = findRepositoryForFile(new File(fileObject.name))
+              }
+              if (!dataSet.repository)
+              {
+                  dataSet.respository = repository
+              }
               if ( dataSet.save() )
               {
                 // log.info( "Saved ${fileObject.name}" )
@@ -76,6 +90,7 @@ class DataManagerService implements ApplicationContextAware
       }
       catch ( java.lang.Exception e )
       {
+
         log.error( e.message )
         httpStatusMessage.status = HttpStatus.EXPECTATION_FAILED
         httpStatusMessage.message = "Error adding OMS formatted XML"
@@ -88,7 +103,7 @@ class DataManagerService implements ApplicationContextAware
     def repositories = ( Repository.list()?.sort { it.baseDir.size() } )?.reverse()
     def repository = null
 
-    repository = Repository.findByRepositoryBaseDir(file);
+    repository = Repository.findByBaseDir(file.toString());
     if (repository) return repository;
     if ( repositories )
     {
