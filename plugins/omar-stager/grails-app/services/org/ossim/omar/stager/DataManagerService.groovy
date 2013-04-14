@@ -57,9 +57,6 @@ class DataManagerService implements ApplicationContextAware
 
               def fileObject = dataSet.fileObjects.find { it.type == "main" }
 
-              //println "*"*30
-              //  println dataSet.fileObjects
-              //println fileObject.name
               if (fileObject)
               {
                   dataSet.repository = findRepositoryForFile(new File(fileObject.name))
