@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import org.ossim.omar.core.HttpStatus
 import org.ossim.omar.core.Repository
-
+import org.apache.commons.io.FilenameUtils
 /**
  * This is a service class that manages adding and removing data within the OMAR tables.
  * Currently we implement the add and remove for raster and video.
@@ -88,6 +88,8 @@ class DataManagerService implements ApplicationContextAware
     def repositories = ( Repository.list()?.sort { it.baseDir.size() } )?.reverse()
     def repository = null
 
+    repository = Repository.findByRepositoryBaseDir(file);
+    if (repository) return repository;
     if ( repositories )
     {
       def filename = file?.absolutePath
