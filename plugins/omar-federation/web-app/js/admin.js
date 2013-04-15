@@ -186,6 +186,7 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
         //alert("reloadClicked");
     },
     applyClicked:function(){
+        var thisPtr = this;
         if(this.dirty)
         {
             var spinner = new Spinner(OMAR.defaultSpinnerOptions);
@@ -217,7 +218,7 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
                                                 data:{cache:false}});
                     },
                     error:function(){alert("New settings could not be applied");spinner.stop();},
-                    update: true, remove: false,data:{cache:false}
+                    update: true, remove: false
                 });
             this.dirty = false;
         }
