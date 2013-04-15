@@ -984,7 +984,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
                 this.modelRequest = model.fetch({dataType: "jsonp",
                     update: false,
                     remove: true,
-                    date:{cache:false},
+                    data:{cache:false},
                     "success":function(){
                         thisPtr.spinner.stop();
                         wfsModel.dirty              = false;
