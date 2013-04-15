@@ -259,5 +259,6 @@ OMAR.pages.FederationAdmin = (function($, params){
 });
 
 $(document).ready(function () {
+    $.ajaxSetup({ cache: false });
     init();
 });
