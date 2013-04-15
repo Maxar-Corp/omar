@@ -182,7 +182,7 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
     reloadClicked:function(){
         var model = this.model;
         this.model.fetch({success:function(){model.trigger("change")},
-            update: true, remove: false,date:{cache:false}});
+            update: true, remove: false,data:{cache:false}});
         //alert("reloadClicked");
     },
     applyClicked:function(){
@@ -214,7 +214,7 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
                             },
                                                 update: true,
                                                 remove: false,
-                                                date:{cache:false}});
+                                                data:{cache:false}});
                     },
                     error:function(){alert("New settings could not be applied");spinner.stop();},
                     update: true, remove: false,data:{cache:false}
