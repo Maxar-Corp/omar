@@ -497,7 +497,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             var collection =  this.omarServerCollectionView;
 
             collection.model.fetch({success:function(){collection.render()},
-                update: true, remove: false,date:{cache:false}});
+                update: true, remove: false,data:{cache:false}});
             window.setTimeout(this.updateServers.bind(this),5000);
         }
 
@@ -514,7 +514,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     updateServers:function(){
         var collection =  this.omarServerCollectionView;
         collection.model.fetch({success:function(){},
-            update: true, remove: false,date:{cache:false}});
+            update: true, remove: false,data:{cache:false}});
         window.setTimeout(this.updateServers.bind(this),5000);
     },
     toCql:function(){
