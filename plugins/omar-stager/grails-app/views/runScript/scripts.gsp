@@ -70,25 +70,44 @@
           <td>&nbsp;</td>
       </tr>
 
-      <g:form controller="RunScript" action="removeRaster" method="post">
-      <tr bgcolor="#cccccc">
-          <td>omarRunScript</td>
-          <td></td>
-          <td><g:textField  style="width:100%" name="runScriptRemoveRasterArgs" value="${runScriptRemoveRasterArgs}" /></td>
-          <td>removeRaster</td>
-           <td><g:textField name="removeRasterArgs" style="width:100%" value="${removeRasterArgs}" /></td>
-        <td><span class="button"><input type="submit" value="Remove Raster" /></span></td>
-      </tr>   
-      </g:form>
+        <g:form controller="RunScript" action="removeRaster" method="post">
+            <tr bgcolor="#cccccc">
+                <td>omarRunScript</td>
+                <td></td>
+                <td><g:textField  style="width:100%" name="runScriptRemoveRasterArgs" value="${runScriptRemoveRasterArgs}" /></td>
+                <td>removeRaster</td>
+                <td><g:textField name="removeRasterArgs" style="width:100%" value="${removeRasterArgs}" /></td>
+                <td><span class="button"><input type="submit" value="Remove Raster" /></span></td>
+            </tr>
+        </g:form>
 
-      <tr bgcolor="#999999">
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-      </tr>
+        <tr bgcolor="#999999">
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <g:form controller="RunScript" action="removeVideo" method="post">
+            <tr bgcolor="#cccccc">
+                <td>omarRunScript</td>
+                <td></td>
+                <td><g:textField  style="width:100%" name="runScriptRemoveVideoArgs" value="${runScriptRemoveVideoArgs}" /></td>
+                <td>removeVideo</td>
+                <td><g:textField name="removeVideoArgs" style="width:100%" value="${removeVideoArgs}" /></td>
+                <td><span class="button"><input type="submit" value="Remove Video" /></span></td>
+            </tr>
+        </g:form>
+
+        <tr bgcolor="#999999">
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
 
       <g:form controller="RunScript" action="synchFiles" method="post">
       <tr bgcolor="#cccccc">
