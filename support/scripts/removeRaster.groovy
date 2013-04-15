@@ -109,7 +109,7 @@ def removeRasterFiles()
 def synchronizeThumbnails()
 {
    def dir = new File(parent.env.OMAR_THUMBNAIL_CACHE) 
-   dir.traverse( type:FileType.FILES, nameFilter:~/.*jpg/ ) 
+   dir.traverse( type:FileType.FILES, nameFilter:~/.*imagespace.jpg/ ) 
    { file->
      def filenameOnly =  file.name;
      def splitDash = filenameOnly.split("-");
