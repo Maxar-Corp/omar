@@ -217,7 +217,7 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
                                                 date:{cache:false}});
                     },
                     error:function(){alert("New settings could not be applied");spinner.stop();},
-                    update: true, remove: false,date:{cache:false}
+                    update: true, remove: false,data:{cache:false}
                 });
             this.dirty = false;
         }
