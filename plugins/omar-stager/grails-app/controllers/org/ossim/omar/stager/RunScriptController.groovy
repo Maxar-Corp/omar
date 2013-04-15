@@ -122,6 +122,32 @@ class RunScriptController implements ApplicationContextAware{
 
         redirect(action: 'scripts', params:params)
     }
+    def removeVideo()
+    {
+        def runScriptArgs = params.runScriptRemoveVideoArgs?:""
+        def removeVideoArgs = params?.removeVideoArgs?.split(" ").join("% ") + "%"
+        if (!params?.removeVideoArgs)
+        {
+            flash.message = "Must specify a value to search and remove from tables."
+        }
+        else if(!quartzScheduler?.getTrigger("removeVideo ${removeVideoArgs}", "STAGER_SCRIPTS"))
+        {
+            def jobDataMap = new JobDataMap()
+            jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} removeVideo ${removeVideoArgs}"
+
+            def trigger = new SimpleTrigger("removeRaster ${removeVideoArgs}", "STAGER_SCRIPTS");
+            trigger.setJobDataMap(jobDataMap);
+            RunScriptJob.schedule(trigger);
+
+            flash.message = "removeVideo ${removeVideoArgs} Submitted into Job Queue."
+        }
+        else
+        {
+            flash.message = "removeVideo Job already running."
+        }
+
+        redirect(action: 'scripts', params:params)
+    }
 
     def stageRaster()
     {
