@@ -17,6 +17,9 @@ class RasterEntryExportController
 
   def exportGclProject( )
   {
+    try{
+
+
       if (SpringSecurityUtils.ifAllGranted("ROLE_DOWNLOAD"))
       {
         def fNames = params?.filenames?.split(",")
@@ -82,6 +85,11 @@ class RasterEntryExportController
           response.outputStream << httpResponse.message
           response.outputStream.flush()
       }
+    }
+    catch(def e)
+    {
+      println "EXCEPTION!!! ${e}"
+    }
     null
   }
 
