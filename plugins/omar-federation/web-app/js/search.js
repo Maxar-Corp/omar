@@ -413,26 +413,29 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             // Build file name and type parameter strings
             for(var idx=0; idx < currentSelection.size(); idx++){
                 var item = currentSelection.at(idx);
-                var modelRecord = this.dataModelView.model.get(item.id);
-                if(modelRecord)
-                {
-                    fileNames += modelRecord.get("filename");
-                    classNames += modelRecord.get("class_name");
-                }
+
+                fileNames += item.id.toString();
+                //var modelRecord = this.dataModelView.model.get(item.id);
+                //if(modelRecord)
+                //{
+                //    fileNames += modelRecord.get("filename");
+                //    classNames += modelRecord.get("class_name");
+                //}
                 if(idx < currentSelection.size()-1)
                 {
                   fileNames += ",";
-                  classNames += ",";
+                //  classNames += ",";
                 }
             }
 
+            alert(fileNames);
             // Initialize with controller string
             exportURL = "/omar/rasterEntryExport/exportGclProject";
 
             // Add image file name and type parameters
             exportURL += "?filenames=" + fileNames + "&classnames=" + classNames;
 
-            alert("Project export initiated - this may take awhile.\nClick OK and wait for download prompt...");
+            //alert("Project export initiated - this may take awhile.\nClick OK and wait for download prompt...");
 
             window.open(exportURL, "_parent");
         }
