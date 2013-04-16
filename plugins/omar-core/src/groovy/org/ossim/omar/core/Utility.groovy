@@ -40,7 +40,7 @@ class Utility implements ApplicationContextAware
    */
   static def zipFilesToZipOutputStream(def fileList, def zipOut)
   {
-    byte[] readBuffer = new byte[4096];
+    byte[] readBuffer = new byte[65536];
     def bytesIn
     fileList.each{
       def entry = new ZipEntry(it.target);
