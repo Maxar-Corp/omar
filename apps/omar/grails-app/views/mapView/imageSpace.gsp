@@ -58,7 +58,7 @@
                     id="selectAoiTemplateId"
                     noSelection="['Custom':'Custom']"
                     from="${ChipFormat.list()}"
-                    onclick="genAOI(this.value)">
+                    onclick="selectAoiTemplateClicked(this.value)">
             </g:select>
         Output Scale:<g:select
                 from="${['Screen']}"
@@ -535,7 +535,7 @@ map.events.manipulator = OMAR.imageManipulator;
     {
         autosubmenudisplay: true,
           showdelay: 0,
-          hidedelay: 750,
+          hidedelay: 99999,
           lazyload: true
       });
     oMenu.render();
@@ -1489,23 +1489,45 @@ function updateCenter()
                     );
 
     }
+    function updateCustomAOI()
+    {
+        dimensionsAOI = prompt("Enter AOI dimensions (wxh)",customAoi.w+"x"+customAoi.h);
+        var dimxy = dimensionsAOI.split("x");
+        dimensionsAOI = "Custom:" + dimensionsAOI;
+        customAoi.w = parseInt(dimxy[0]);
+        customAoi.h = parseInt(dimxy[1]);
+    }
+    function selectAoiTemplateClicked(value)
+    {
+       if(value == "Custom")
+       {
+          updateCustomAOI();
+       }
+       genAOI(value);
+    }
     function genAOI(dimensionsAOI)
     {
         var currentDimensions = getSelectionBoxDimensions();
 //OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.BOX_AOI);
         if (OMAR.imageManipulator.toolMode == OMAR.ToolModeType.BOX_AOI)
         {
+            var dimxy = null;
             //OMAR.imageManipulator.removeSelectionBox();
             // Handle "Custom" selection
             if (dimensionsAOI == "Custom")
             {
-                dimensionsAOI = prompt("Enter AOI dimensions (wxh)",customAoi.w+"x"+customAoi.h);
-                dimensionsAOI = " :" + dimensionsAOI;
+            //    dimensionsAOI = prompt("Enter AOI dimensions (wxh)",customAoi.w+"x"+customAoi.h);
+            //    dimensionsAOI = " :" + dimensionsAOI;
+            //    dimensionsAOI = "Custom:"+customAoi.w+"x"+customAoi.h;
+                  dimxy = [customAoi.w, customAoi.h];
+            }
+            else
+            {
+                var labDim = dimensionsAOI.split(":");
+                dimxy = labDim[1].split("x");
             }
 
             // Parse dimensions
-            var labDim = dimensionsAOI.split(":");
-            var dimxy = labDim[1].split("x");
 
             if (dimxy.length == 2)
             {
