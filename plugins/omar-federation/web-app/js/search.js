@@ -428,7 +428,6 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                 }
             }
 
-            alert(fileNames);
             // Initialize with controller string
             exportURL = "/omar/rasterEntryExport/exportGclProject";
 
