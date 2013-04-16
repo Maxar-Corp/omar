@@ -19,9 +19,43 @@ class RasterEntryExportController
   {
       if (SpringSecurityUtils.ifAllGranted("ROLE_DOWNLOAD"))
       {
-          def fNames = params?.filenames?.split(",")
-          def cNames = params?.classnames?.split(",")
+        def fNames = params?.filenames?.split(",")
+        def files = []
 
+        fNames.each{file->
+          def tempFile
+          try{
+            tempFile = new File(file);
+          }
+          catch(def e)
+          {
+            tempFile = null;
+          }
+          if (tempFile&&!tempFile.exists())
+          {
+            def rasterEntry = RasterEntry.compositeId( file ).findWhere()
+
+            if (rasterEntry)
+            {
+              def mainFile = rasterEntry.mainFile;
+              tempFile = new File(mainFile.name);
+              if (tempFile.exists())
+              {
+                files << tempFile.toString()
+              }
+              rasterEntry.fileObjects.each{
+                files << it.name
+              }
+            }
+          }
+          else if (tempFile.exists())
+          {
+            files<<tempFile.toString()
+          }
+        }
+
+        exportService.exportGclWithResponse(files, response)
+        /*
           def (file, mimeType) = exportService.exportGcl(fNames, cNames)
 
           response.setHeader( "Content-disposition", "attachment; filename=${file.name}" );
@@ -33,6 +67,8 @@ class RasterEntryExportController
               file.delete();
 
           }
+          */
+        response.outputStream.flush()
       }
       else
       {
@@ -46,6 +82,7 @@ class RasterEntryExportController
           response.outputStream << httpResponse.message
           response.outputStream.flush()
       }
+    null
   }
 
   def export( )

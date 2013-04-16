@@ -20,6 +20,50 @@ class Utility implements ApplicationContextAware
 {
   ApplicationContext applicationContext
 
+  /**
+   *
+   * @param fileList is a hashmap of the form
+   *        [
+   *          [file:
+   *           target:
+   *          ],
+   *          :
+   *          :
+   *          [file:
+   *          target:
+   *          ]
+   *        ]
+   *        where file is the input file to write to the stream
+   *        and the target is the entry name to give the file in the zip stream
+   * @param zipOut is a type ZipOutputStream
+   * @return
+   */
+  static def zipFilesToZipOutputStream(def fileList, def zipOut)
+  {
+    byte[] readBuffer = new byte[4096];
+    def bytesIn
+    fileList.each{
+      def entry = new ZipEntry(it.target);
+      zipOut.putNextEntry( entry );
+
+      FileInputStream fis = new FileInputStream( it.file );
+
+      while ( ( bytesIn = fis.read( readBuffer ) ) != -1 )
+      {
+        zipOut.write( readBuffer, 0, bytesIn );
+      }
+      //close the Stream
+      fis.close();
+      // def path =FilenameUtils.getPathNoEndSeparator(it)
+      // def filename = FilenameUtils.getName(it)
+      // println "PATH ==== ${path}"
+      // println "filename ==== ${filename}"
+      // println new File(path, filename)
+      //println it.file
+      //println it.target
+    }
+  }
+
 //here is the code for the method
 //here is the code for the method
   static def zipDir( String dir2zip, String outputFile, String prefix = null )
@@ -239,41 +283,41 @@ class Utility implements ApplicationContextAware
       def defaultConstraint = ""
       switch ( property.type )
       {
-      case Double.class:
-        domainType = "Double"
-        xmlType = "xsd:double"
-        defaultConstraint = "="
-        break
-      case Integer.class:
-        domainType = "Double"
-        xmlType = "xsd:int"
-        defaultConstraint = "="
-        break
-      case Long.class:
-        domainType = "Double"
-        xmlType = "xsd:long"
-        defaultConstraint = "="
-        break
-      case Date.class:
-        domainType = "Date"
-        xmlType = "xsd:dateTime"
-        defaultConstraint = "<"
-        break
-      case org.joda.time.DateTime.class:
-        domainType = "DateTime"
-        xmlType = "xsd:dateTime"
-        defaultConstraint = "<"
-        break
-      case String.class:
-        domainType = "String"
-        xmlType = "xsd:string"
-        defaultConstraint = "like"
-        break
+        case Double.class:
+          domainType = "Double"
+          xmlType = "xsd:double"
+          defaultConstraint = "="
+          break
+        case Integer.class:
+          domainType = "Double"
+          xmlType = "xsd:int"
+          defaultConstraint = "="
+          break
+        case Long.class:
+          domainType = "Double"
+          xmlType = "xsd:long"
+          defaultConstraint = "="
+          break
+        case Date.class:
+          domainType = "Date"
+          xmlType = "xsd:dateTime"
+          defaultConstraint = "<"
+          break
+        case org.joda.time.DateTime.class:
+          domainType = "DateTime"
+          xmlType = "xsd:dateTime"
+          defaultConstraint = "<"
+          break
+        case String.class:
+          domainType = "String"
+          xmlType = "xsd:string"
+          defaultConstraint = "like"
+          break
 
-      case com.vividsolutions.jts.geom.Geometry.class:
-        domainType = "Geometry"
-        xmlType = "gml:PolygonPropertyType"
-        break
+        case com.vividsolutions.jts.geom.Geometry.class:
+          domainType = "Geometry"
+          xmlType = "gml:PolygonPropertyType"
+          break
       }
       if ( xmlType )
       {
@@ -331,19 +375,19 @@ class Utility implements ApplicationContextAware
   }
   static def executeCommand(def commandString, def needResult)
   {
-      def err  = new ByteArrayOutputStream()
-      def out  = new ByteArrayOutputStream()
-      def proc = commandString.execute()
-      if (needResult)
-      {
-          proc?.consumeProcessOutput(out, err)
-          proc?.waitFor()
-      }
-      else
-      {
-        proc?.consumeProcessOutput()
-      }
-      return [text:out.toString(), err:err.toString()]
+    def err  = new ByteArrayOutputStream()
+    def out  = new ByteArrayOutputStream()
+    def proc = commandString.execute()
+    if (needResult)
+    {
+      proc?.consumeProcessOutput(out, err)
+      proc?.waitFor()
+    }
+    else
+    {
+      proc?.consumeProcessOutput()
+    }
+    return [text:out.toString(), err:err.toString()]
   }
   def lookupDomainInfo( def className )
   {

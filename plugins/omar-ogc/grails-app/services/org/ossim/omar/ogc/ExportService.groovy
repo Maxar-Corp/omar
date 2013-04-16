@@ -2,6 +2,10 @@ package org.ossim.omar.ogc
 
 import au.com.bytecode.opencsv.CSVWriter
 import org.apache.commons.io.FilenameUtils
+import org.ossim.omar.core.Utility
+
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 class ExportService
 {
@@ -225,8 +229,56 @@ class ExportService
 
     }
 
+    def exportGclWithResponse(def fNames, def response)
+    {
+      def files = []
+      response.setHeader( "Content-disposition", "attachment; filename=geocell-export.zip" );
+      response.contentType = "application/octet-stream"
+      def outputString = new StringBuilder();
+      def baseString = "dataManager.objectList.object"
+      def index = 0
+      def zos = new ZipOutputStream(response.outputStream);
+      fNames.each{file->
+        def objString = baseString + "${index}"
+        def path =FilenameUtils.getPathNoEndSeparator(file)
+        def filename = FilenameUtils.getName(file)
+        def target = (new File(new File("ossim-geocell",path).toString(), filename)).toString()
+        files << [file:file,
+                  target:(new File(new File("ossim-geocell",path).toString(), filename)).toString()
+                 ]
+
+        // Fill basic project file entries
+        outputString << objString + /.description:/ + "\n"
+        outputString << objString + /.filename: / + target + "\n"
+        outputString << objString + /.enable_cache:  0/ + "\n"
+        outputString << objString + /.enabled:  1/ + "\n"
+        outputString << objString + /.entry:  0/ + "\n"
+        outputString << objString + /.image_id:/ + "\n"
+        outputString << objString + /.open_overview_flag:  1/ + "\n"
+        outputString << objString + /.input_list_fixed:  1/ + "\n"
+        outputString << objString + /.name:  """ Entry 0: / + target + /"""/ + "\n"
+        outputString << objString + /.number_inputs:  0/ + "\n"
+        outputString << objString + /.number_outputs:  0/ + "\n"
+        outputString << objString + /.output_list_fixed:  0/ + "\n"
+//        outputString << objString + /.overview_file: / + downloadedFilename.substring(0, downloadedFilename.lastIndexOf('.')) + ".ovr" + "\n"
+        outputString << objString + /.start_res_level:  0/ + "\n"
+        outputString << objString + /.supplementary_directory:/ + "\n"
+        outputString << objString + /.type: ossimImageHandler/ +  "\n"
+        outputString << /dataManager.type:  DataManager/ + "\n"
+
+        ++index
+      }
+
+      Utility.zipFilesToZipOutputStream(files, zos);
+      def outputBuffer = outputString.toString().bytes
+      zos.putNextEntry(new ZipEntry("ossim-geocell.gcl"));
+      zos.write(outputBuffer, 0, outputBuffer.length)
+      zos.close();
+    }
+
     def exportGcl(def fNames, def cNames)
     {
+
         def prefix = grailsApplication.config.export.prefix ?: "omar-export-"
         def workDir = grailsApplication.config.export.workDir ?: "/tmp"
 
