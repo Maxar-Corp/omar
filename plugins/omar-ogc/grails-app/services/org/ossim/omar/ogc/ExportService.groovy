@@ -305,7 +305,7 @@ class ExportService
           println e
         }
       }
-      Utility.zipFilesToZipOutputStream(files, zos);
+      Utility.zipFilesToZipOutputStream(files.unique(), zos);
       def outputBuffer = outputString.toString().bytes
       zos.putNextEntry(new ZipEntry("ossim-geocell.gcl"));
       zos.write(outputBuffer, 0, outputBuffer.length)
