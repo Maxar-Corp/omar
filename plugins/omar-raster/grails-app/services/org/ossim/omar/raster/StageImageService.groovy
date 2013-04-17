@@ -27,7 +27,7 @@ class StageRunnable implements Runnable
     }
     catch ( def e )
     {
-      println e
+      //println e
     }
   }
 }
@@ -97,7 +97,6 @@ class StageImageService
       try
       {
         dataInfo = dataInfoService.getInfo( file?.name, rasterEntry.entryId as Integer );
-        // println dataInfo
       }
       catch ( def e )
       {
@@ -156,8 +155,11 @@ class StageImageService
       //println "STAGING................."
       def histoOption = "--create-histogram"
       def img2rr = "ossim-img2rr --entry ${entryId} ${histoOption} --compression-type ${compressionType} --compression-quality ${compressionQuality} ${file}"
-      def proc = img2rr.execute()
-      proc.waitFor()
+      org.ossim.omar.core.Utility.executeCommand(img2rr, true)
+
+      //println "DONE STAGING NOW TRYING TO UPDATE"
+      //def proc = img2rr.execute()
+      //proc.waitFor()
       RasterEntry.withTransaction {
         def rasterEntry = null
         try
@@ -169,6 +171,7 @@ class StageImageService
         }
         catch ( def e )
         {
+          //println e
           rasterEntry = null
         }
         updateInfo( rasterEntry )

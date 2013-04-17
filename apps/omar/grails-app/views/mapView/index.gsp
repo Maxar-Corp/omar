@@ -389,7 +389,7 @@ function checkOverview(){
     var url = "/omar/rasterEntryExport/export";
 
     var request = OpenLayers.Request.POST({
-    url: url+"?id=${(rasterEntries.id).join(',')}&max=10&format=json&fields=numberOfResLevels&labels=rlevels",
+    url: url+"?id=${(rasterEntries.id).join(',')}&max=10&format=json&fields=numberOfResLevels&labels=rlevels"+new Date().getTime(),
     callback: function (transport){
         var temp = YAHOO.lang.JSON.parse(transport.responseText);
         if(temp&&temp.length>0)
