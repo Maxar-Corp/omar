@@ -3,7 +3,7 @@ environmentVariables =[
    OMAR_URL:"http://localhost/omar",
    OMAR_THUMBNAIL_CACHE:"/data/omar/omar-cache",
    NTHREADS: 4,
-   OMARDB:"omardb-${System.env.OSSIM_RELEASE_VERSION_NUMBER?:System.env.OSSIM_VERSION}-prod",
+   OMARDB:"omardb-${System.env.OSSIM_RELEASE_VERSION_NUMBER?:System.env.OSSIM_VERSION}-dev",
    POSTGRES_USER:"postgres",
    POSTGRES_PASSWORD:"postgres",
    POST_COMMAND_LINE:"NO",
@@ -11,7 +11,7 @@ environmentVariables =[
    PID_FILE:"",
    CLASSPATH:"${System.env.OSSIM_DIST_ROOT?:System.env.OSSIM_INSTALL_PREFIX}/tomcat/webapps/omar/WEB-INF/lib", 
    //STAGE_FILE_FILTER:"", 
-   STAGE_FILE_FILTER:"hsi,hri,tiff,tif,ntf,nitf,img",
+   STAGE_FILE_FILTER:"mpg,toc,ras,jpg,jpeg,hsi,hri,tiff,tif,ntf,nitf,img",
    HISTOGRAM_OPTIONS:"--create-histogram-fast",
    OVERVIEW_OPTIONS:"--compression-type JPEG --compression-quality 75"
 ]
@@ -123,8 +123,8 @@ class OmarRunScript{
       {
          env.CLASSPATH="${options.cp}"
       }
-      //println options.arguments()
-      //println env
+      println options.arguments()
+      println env
       if(!args.length )
       {
          cli.usage()
