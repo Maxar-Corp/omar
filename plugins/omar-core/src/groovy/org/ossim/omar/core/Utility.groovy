@@ -1,5 +1,6 @@
 package org.ossim.omar.core
 
+import groovy.io.FileType
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import java.awt.image.BufferedImage
 import java.awt.image.ColorModel
@@ -38,29 +39,30 @@ class Utility implements ApplicationContextAware
    * @param zipOut is a type ZipOutputStream
    * @return
    */
-  static def zipFilesToZipOutputStream(def fileList, def zipOut)
+  static def zipFilesToZipOutputStream(def fileList, def zipOut, def blockSize=4096)
   {
-    byte[] readBuffer = new byte[65536];
+    byte[] readBuffer = new byte[blockSize];
     def bytesIn
     fileList.each{
-      def entry = new ZipEntry(it.target);
-      zipOut.putNextEntry( entry );
-
-      FileInputStream fis = new FileInputStream( it.file );
-
-      while ( ( bytesIn = fis.read( readBuffer ) ) != -1 )
+      def testFile = new File(it.file);
+      if (testFile.isDirectory())
       {
-        zipOut.write( readBuffer, 0, bytesIn );
+        testFile.eachFileRecurse (FileType.FILES) { file ->
+          def tempString = file.toString()
+          def tempTarget = tempString.replace(it.file, it.target)
+          def entry = new ZipEntry(tempTarget);
+          zipOut.putNextEntry( entry );
+
+          writeFileToOutputStream(file, zipOut, blockSize)
+        }
       }
-      //close the Stream
-      fis.close();
-      // def path =FilenameUtils.getPathNoEndSeparator(it)
-      // def filename = FilenameUtils.getName(it)
-      // println "PATH ==== ${path}"
-      // println "filename ==== ${filename}"
-      // println new File(path, filename)
-      //println it.file
-      //println it.target
+      else
+      {
+        def entry = new ZipEntry(it.target);
+        zipOut.putNextEntry( entry );
+
+        writeFileToOutputStream(it.file, zipOut, blockSize)
+      }
     }
   }
 

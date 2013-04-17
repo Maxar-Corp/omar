@@ -18,14 +18,13 @@ class RasterEntryExportController
   def exportGclProject( )
   {
     try{
-
-
       if (SpringSecurityUtils.ifAllGranted("ROLE_DOWNLOAD"))
       {
         def fNames = params?.filenames?.split(",")
         def files = []
 
         fNames.each{file->
+          def fileObjects = []
           def tempFile
           try{
             tempFile = new File(file);
@@ -42,21 +41,23 @@ class RasterEntryExportController
             {
               def mainFile = rasterEntry.mainFile;
               tempFile = new File(mainFile.name);
-              if (tempFile.exists())
+              if (tempFile.exists()&&tempFile.canRead())
               {
-                files << tempFile.toString()
-              }
-              rasterEntry.fileObjects.each{
-                files << it.name
+                rasterEntry.fileObjects.each{
+                  fileObjects << [name:it.name,
+                                      type:it.type]
+                }
+                files << [mainFile:tempFile.toString(),
+                          fileObjects:fileObjects]
               }
             }
           }
           else if (tempFile.exists())
           {
-            files<<tempFile.toString()
+            files << [mainFile:tempFile.toString(),
+                      fileObjects:[]]
           }
         }
-
         exportService.exportGclWithResponse(files, response)
         /*
           def (file, mimeType) = exportService.exportGcl(fNames, cNames)

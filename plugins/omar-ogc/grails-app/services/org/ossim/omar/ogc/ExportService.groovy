@@ -238,37 +238,73 @@ class ExportService
       def baseString = "dataManager.objectList.object"
       def index = 0
       def zos = new ZipOutputStream(response.outputStream);
-      fNames.each{file->
-        def objString = baseString + "${index}"
-        def path =FilenameUtils.getPathNoEndSeparator(file)
-        def filename = FilenameUtils.getName(file)
-        def target = (new File(new File("ossim-geocell",path).toString(), filename)).toString()
-        files << [file:file,
+      fNames.each{entry->
+        def testFile
+        try{
+          def file = entry.mainFile
+          def objString = baseString + "${index}"
+          def path =FilenameUtils.getPathNoEndSeparator(file)
+          def filename = FilenameUtils.getName(file)
+          def target = (new File(new File("ossim-geocell",path).toString(), filename)).toString()
+          files << [file:file,
                   target:(new File(new File("ossim-geocell",path).toString(), filename)).toString()
-                 ]
+          ]
+          def overview = entry.fileObjects.find{it->
+            if(it.type.contains("overv")) return true
 
-        // Fill basic project file entries
-        outputString << objString + /.description:/ + "\n"
-        outputString << objString + /.filename: / + target + "\n"
-        outputString << objString + /.enable_cache:  0/ + "\n"
-        outputString << objString + /.enabled:  1/ + "\n"
-        outputString << objString + /.entry:  0/ + "\n"
-        outputString << objString + /.image_id:/ + "\n"
-        outputString << objString + /.open_overview_flag:  1/ + "\n"
-        outputString << objString + /.input_list_fixed:  1/ + "\n"
-        outputString << objString + /.name:  """ Entry 0: / + target + /"""/ + "\n"
-        outputString << objString + /.number_inputs:  0/ + "\n"
-        outputString << objString + /.number_outputs:  0/ + "\n"
-        outputString << objString + /.output_list_fixed:  0/ + "\n"
-//        outputString << objString + /.overview_file: / + downloadedFilename.substring(0, downloadedFilename.lastIndexOf('.')) + ".ovr" + "\n"
-        outputString << objString + /.start_res_level:  0/ + "\n"
-        outputString << objString + /.supplementary_directory:/ + "\n"
-        outputString << objString + /.type: ossimImageHandler/ +  "\n"
-        outputString << /dataManager.type:  DataManager/ + "\n"
+            return false
+          }
+          // Fill basic project file entries
+          outputString << objString + /.description:/ + "\n"
+          outputString << objString + /.filename: / + target + "\n"
+          outputString << objString + /.enable_cache:  0/ + "\n"
+          outputString << objString + /.enabled:  1/ + "\n"
+          outputString << objString + /.entry:  0/ + "\n"
+          outputString << objString + /.image_id:/ + "\n"
+          outputString << objString + /.open_overview_flag:  1/ + "\n"
+          outputString << objString + /.input_list_fixed:  1/ + "\n"
+          outputString << objString + /.name:  """ Entry 0: / + target + /"""/ + "\n"
+          outputString << objString + /.number_inputs:  0/ + "\n"
+          outputString << objString + /.number_outputs:  0/ + "\n"
+          outputString << objString + /.output_list_fixed:  0/ + "\n"
+          if (overview)
+          {
+            outputString << objString + /.overview_file: / + overview + "\n"
+          }
+          outputString << objString + /.start_res_level:  0/ + "\n"
+          outputString << objString + /.supplementary_directory:/ + "\n"
+          outputString << objString + /.type: ossimImageHandler/ +  "\n"
+          outputString << /dataManager.type:  DataManager/ + "\n"
 
-        ++index
+          ++index
+
+          /*
+          * Add all associated files to the path
+          */
+          entry.fileObjects.each{fileObject->
+            try{
+              testFile = new File(fileObject.name);
+              if (testFile.exists()&&testFile.canRead())
+              {
+                path =FilenameUtils.getPathNoEndSeparator(fileObject.name)
+                filename = FilenameUtils.getName(fileObject.name)
+                target = (new File(new File("ossim-geocell",path).toString(), filename)).toString()
+                files << [file:testFile.toString(),
+                          target:(new File(new File("ossim-geocell",path).toString(), filename)).toString()
+                ]
+              }
+            }
+            catch(def e){
+               println e
+            }
+          }
+
+        }
+        catch(def e)
+        {
+          println e
+        }
       }
-
       Utility.zipFilesToZipOutputStream(files, zos);
       def outputBuffer = outputString.toString().bytes
       zos.putNextEntry(new ZipEntry("ossim-geocell.gcl"));
