@@ -48,6 +48,7 @@ class RasterEntryExportController
                                       type:it.type]
                 }
                 files << [mainFile:tempFile.toString(),
+                          entryId:rasterEntry.entryId,
                           fileObjects:fileObjects]
               }
             }
@@ -58,7 +59,7 @@ class RasterEntryExportController
                       fileObjects:[]]
           }
         }
-        exportService.exportGclWithResponse(files, response)
+        exportService.exportGclWithResponse(files.unique{it.mainFile}, response)
         /*
           def (file, mimeType) = exportService.exportGcl(fNames, cNames)
 

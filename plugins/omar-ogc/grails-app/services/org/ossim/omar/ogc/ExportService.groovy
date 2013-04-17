@@ -259,7 +259,10 @@ class ExportService
           outputString << objString + /.filename: / + target + "\n"
           outputString << objString + /.enable_cache:  0/ + "\n"
           outputString << objString + /.enabled:  1/ + "\n"
-          outputString << objString + /.entry:  0/ + "\n"
+          if (entry.entryId != null)
+          {
+            outputString << objString + /.entry:  / +entry.entryId+ "\n"
+          }
           outputString << objString + /.image_id:/ + "\n"
           outputString << objString + /.open_overview_flag:  1/ + "\n"
           outputString << objString + /.input_list_fixed:  1/ + "\n"
