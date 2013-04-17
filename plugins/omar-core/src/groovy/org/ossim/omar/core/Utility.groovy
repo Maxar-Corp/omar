@@ -1,6 +1,7 @@
 package org.ossim.omar.core
 
 import groovy.io.FileType
+import liquibase.util.file.FilenameUtils
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import java.awt.image.BufferedImage
 import java.awt.image.ColorModel
@@ -50,7 +51,7 @@ class Utility implements ApplicationContextAware
         testFile.eachFileRecurse (FileType.FILES) { file ->
           def tempString = file.toString()
           def tempTarget = tempString.replace(it.file, it.target)
-          def entry = new ZipEntry(tempTarget);
+          def entry = new ZipEntry(FilenameUtils.separatorsToUnix(tempTarget));
           zipOut.putNextEntry( entry );
 
           writeFileToOutputStream(file, zipOut, blockSize)
@@ -58,7 +59,7 @@ class Utility implements ApplicationContextAware
       }
       else
       {
-        def entry = new ZipEntry(it.target);
+        def entry = new ZipEntry(FilenameUtils.separatorsToUnix(it.target));
         zipOut.putNextEntry( entry );
 
         writeFileToOutputStream(it.file, zipOut, blockSize)
