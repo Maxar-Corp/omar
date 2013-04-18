@@ -155,7 +155,18 @@ OMAR.views.BBOX = Backbone.View.extend({
         this.model = new OMAR.models.BBOX();
         this.lowerLeftBboxEl = $("#lowerLeftBbox");
         this.upperRightBboxEl = $("#upperRightBbox");
-        this.displayUnitEl = $("#displayUnit");
+        //this.displayUnitEl = $("#displayUnit");
+        if(params)
+        {
+            if(params.displayUnitModel)
+            {
+                this.displayUnitModel = params.displayUnitModel;
+            }
+        }
+        if(this.displayUnitModel)
+        {
+            this.displayUnitModel.on('change', this.displayUnitModelChanged, this);
+        }
 
         this.model.on("error",
             function(model,err) {
@@ -166,6 +177,9 @@ OMAR.views.BBOX = Backbone.View.extend({
     events:{
         "change #lowerLeftBbox": "llOnChange",
         "change #upperRightBbox": "urOnChange"
+    },
+    displayUnitModelChanged:function(){
+      this.render();
     },
     bboxModelChange: function() {
         this.render();
@@ -196,21 +210,25 @@ OMAR.views.BBOX = Backbone.View.extend({
     },
     render:function()
     {
-        if(this.displayUnitEl.val() == "DMS") {
-            this.lowerLeftBboxEl.val(convert.ddToDms(this.model.get("miny"), this.model.get("minx")));
-            this.upperRightBboxEl.val(convert.ddToDms(this.model.get("maxy"), this.model.get("maxx")));
+        if(this.displayUnitModel)
+        {
+            switch(this.displayUnitModel.get("unit"))
+            {
+                case "DMS":
+                    this.lowerLeftBboxEl.val(convert.ddToDms(this.model.get("miny"), this.model.get("minx")));
+                    this.upperRightBboxEl.val(convert.ddToDms(this.model.get("maxy"), this.model.get("maxx")));
+                    break;
+                case "MGRS":
+                    this.lowerLeftBboxEl.val(convert.ddToMgrs(this.model.get("miny") , this.model.get("minx")));
+                    this.upperRightBboxEl.val(convert.ddToMgrs(this.model.get("maxy") , this.model.get("maxx")));
+                    break;
+                default:
+                    this.lowerLeftBboxEl.val(this.model.get("miny") + ", "
+                        + this.model.get("minx"));
+                    this.upperRightBboxEl.val(this.model.get("maxy") + ", "
+                        + this.model.get("maxx"));
+                    break;
+            }
         }
-
-        else if(this.displayUnitEl.val() == "MGRS") {
-            this.lowerLeftBboxEl.val(convert.ddToMgrs(this.model.get("miny") , this.model.get("minx")));
-            this.upperRightBboxEl.val(convert.ddToMgrs(this.model.get("maxy") , this.model.get("maxx")));
-        }
-
-        else {
-            this.lowerLeftBboxEl.val(this.model.get("miny") + ", "
-               + this.model.get("minx"));
-            this.upperRightBboxEl.val(this.model.get("maxy") + ", "
-                + this.model.get("maxx"));
-        }
-    }
+     }
 });

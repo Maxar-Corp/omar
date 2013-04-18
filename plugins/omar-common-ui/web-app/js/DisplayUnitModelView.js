@@ -5,6 +5,10 @@
  * Time: 10:34 AM
  * To change this template use File | Settings | File Templates.
  */
+/**
+ *
+ * DD, MGRS, DMS
+ */
 OMAR.models.DisplayUnitModel = Backbone.Model.extend({
     defaults:{
         unit:""
@@ -19,13 +23,14 @@ OMAR.views.DisplayUnitModelView = Backbone.View.extend({
         this.setElement(this.el);
         this.model = new OMAR.models.DisplayUnitModel();
         this.displayUnitEl = $("#displayUnit");
-        this.model.on('change', this.unitSelectorChange, this);
+       // this.model.on('change', this.unitSelectorChange, this);
     },
     events:{
         "change #displayUnit": "displayUnitOnChange"
-                 },
+    },
+
     displayUnitOnChange:function(params){
-        alert("Display Unit Changed");
+        this.model.set({unit:$(this.displayUnitEl).val()});
       // this.render();
     },
     unitSelectorChange: function(){
