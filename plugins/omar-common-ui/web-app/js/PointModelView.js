@@ -64,12 +64,26 @@ OMAR.views.PointView = Backbone.View.extend({
             function(model,err) {
                 alert("Point has errors: " + err);
             });
+        if(params)
+        {
+            if(params.displayUnitModel)
+            {
+                this.displayUnitModel = params.displayUnitModel;
+            }
+        }
+        if(this.displayUnitModel)
+        {
+            this.displayUnitModel.on('change', this.displayUnitModelChanged, this);
+        }
         this.model.on('change', this.pointModelChange, this);
     },
     events:{
         "change #center": "centerOnChange",
         "change #radius": "radiusOnChange"
 
+    },
+    displayUnitModelChanged: function(){
+      this.render();
     },
     pointModelChange: function() {
         this.render();
@@ -122,9 +136,32 @@ OMAR.views.PointView = Backbone.View.extend({
     },
     render:function()
     {
+        if(this.displayUnitModel)
+        {
+            switch(this.displayUnitModel.get("unit"))
+            {
+                case "DMS":
+                    this.centerPointEl.val(convert.ddToDms(this.model.get("y"), this.model.get("x")));
+
+                    this.radiusEl.val(this.model.get("radius"));
+                   break;
+                case "MGRS":
+                    this.centerPointEl.val(convert.ddToMgrs(this.model.get("y") , this.model.get("x")));
+
+                    this.radiusEl.val(this.model.get("radius"));
+                    break;
+                default:
+                    this.centerPointEl.val(this.model.get("y") + ", "
+                        + this.model.get("x"));
+
+                    this.radiusEl.val(this.model.get("radius"));
+                     break;
+            }
+        }
+        /*
         if(this.displayUnitEl.val() == "DMS") {
             this.centerPointEl.val(convert.ddToDms(this.model.get("y"), this.model.get("x")));
-            
+
             this.radiusEl.val(this.model.get("radius"));
         }
 
@@ -139,6 +176,8 @@ OMAR.views.PointView = Backbone.View.extend({
             + this.model.get("x"));
         
             this.radiusEl.val(this.model.get("radius"));
-    }}
+        }
+        */
+    }
 
 });

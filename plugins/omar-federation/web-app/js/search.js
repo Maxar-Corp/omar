@@ -69,15 +69,15 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.cqlModel = new OMAR.models.CqlModel();
         this.wfsTypeNameModel = new OMAR.models.WfsTypeNameModel();
         this.wfsTypeNameView = new OMAR.views.WfsTypeNameView({model:this.wfsTypeNameModel});
-
-        this.bboxView = new OMAR.views.BBOX();
-        this.bboxModel = this.bboxView.model;
-
-        this.pointView = new OMAR.views.PointView();
-        this.pointModel = this.pointView.model;
-
         this.displayUnitView = new OMAR.views.DisplayUnitModelView();
         this.displayUnitModel = this.displayUnitView.model;
+
+        this.bboxView = new OMAR.views.BBOX({displayUnitModel:this.displayUnitModel});
+        this.bboxModel = this.bboxView.model;
+
+        this.pointView = new OMAR.views.PointView({displayUnitModel:this.displayUnitModel});
+        this.pointModel = this.pointView.model;
+
 
         this.menuView = new OMAR.views.MenuView();
         this.menuModel = this.menuView.model;
