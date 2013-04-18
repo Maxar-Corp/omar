@@ -18,6 +18,7 @@ modules = {
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'EllipsoidModel.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'BboxModelView.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'PointModelView.js']
+        resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'DisplayUnitModelView.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'UnitsModelView.js']
         resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'CqlModelView.js']
        resource url: [plugin: 'omar-ogc', dir: 'js', file: 'WfsModel.js']
