@@ -69,6 +69,7 @@ OMAR.views.PointView = Backbone.View.extend({
     events:{
         "change #center": "centerOnChange",
         "change #radius": "radiusOnChange"
+
     },
     pointModelChange: function() {
         this.render();

@@ -76,6 +76,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.pointView = new OMAR.views.PointView();
         this.pointModel = this.pointView.model;
 
+        this.displayUnitView = new OMAR.views.DisplayUnitModelView();
+        this.displayUnitModel = this.displayUnitView.model;
+
         this.menuView = new OMAR.views.MenuView();
         this.menuModel = this.menuView.model;
 
