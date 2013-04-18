@@ -700,11 +700,11 @@ OMAR.views.Map = Backbone.View.extend({
         }
     },
     serverCollectionChanged:function(){
-        alert("CHANGED");
+        //alert("CHANGED");
     },
     bboxMapChanged:function()
     {
-        alert(this.bboxModel.get("minx"));
+        //alert(this.bboxModel.get("minx"));
     },
 
     pointModelChanged:function()
