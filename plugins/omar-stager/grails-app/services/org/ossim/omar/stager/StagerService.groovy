@@ -39,20 +39,34 @@ class StagerService
     try
     {
       StagerQueueItem.withTransaction {
-        def records = StagerQueueItem.list( cache: false,
-            sort: "dateCreated",
-            max: 100,
-            order: "desc" )
-        records.each { record ->
-          record.status = "indexing"
-          record.save()
+        def records=[];
+
+        try{
+         records = StagerQueueItem.list( cache: false,
+                  sort: "dateCreated",
+                  max: 100,
+                  order: "desc" )
+
+        }
+        catch(def e)
+        {
+          cleanUpGorm()
+        }
+        try{
+          records.each { record ->
+            record.status = "indexing"
+            record.save()
+          }
+        }
+        catch(def e)
+        {
+          cleanUpGorm()
         }
         withPool() {
           records.collectParallel { item ->
             def msg = new HttpStatusMessage();
             dataManagerService.add( msg, [datainfo: item.dataInfo] )
           }
-
         }
         result += records.size();
         records.each { record ->
