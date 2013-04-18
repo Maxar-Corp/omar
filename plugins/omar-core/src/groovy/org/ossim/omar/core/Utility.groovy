@@ -1,8 +1,9 @@
 package org.ossim.omar.core
 
 import groovy.io.FileType
-import liquibase.util.file.FilenameUtils
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.apache.commons.io.FilenameUtils
+
 import java.awt.image.BufferedImage
 import java.awt.image.ColorModel
 import java.awt.image.WritableRaster
@@ -13,8 +14,6 @@ import java.awt.image.DataBuffer;
 import grails.converters.JSON
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
-import org.codehaus.groovy.grails.commons.GrailsApplication
-import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.springframework.context.ApplicationContextAware
 import org.springframework.context.ApplicationContext
 
