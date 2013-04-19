@@ -21,7 +21,7 @@ class HeaderGradientGeneratorService
                     "-size",
                     "1x${gradientHeight}",
                     "gradient: #${gradientColorTop}-#${gradientColorBottom}",
-                    "${tempFilesLocation}${date}gradient.png"
+                    tempFileGradient.toString()
             ]
             executeCommand(command)
             return tempFileGradient.toString()
