@@ -83,6 +83,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
 
     },
     initialize:function(params){
+        this.refreshServerList = [];
         this.omarServerView = new OMAR.views.OmarServerView();
         var wfsServerCountModel;
         if(params)
@@ -240,8 +241,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
      *  so we do not flood the browsers with hundreds
      *  of background threads
      */
-    refreshServerCounts:function(){
-        this.refreshServerList = [];
+    refreshServerCounts:function(appendCurrent){
         var idx = 0;
         var thisPtr = this;
         function nextServer (id){
@@ -250,6 +250,10 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                 var modelId = thisPtr.refreshServerList.pop();
                 thisPtr.fetchAndSetCount(modelId, nextServer);
             }
+        }
+        if(appendCurrent)
+        {
+            this.refreshServerList.concat(appendCurrent);
         }
         var n = this.model.size();
         if(n>0)
@@ -291,6 +295,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         {
             $(childrenToDelete[idx]).remove();
         }
+        var appendCurrent = [];
         for(idx = 0; idx < this.model.size();++idx)
         {
             var model = this.model.at(idx);
@@ -306,12 +311,18 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                 $(this.el).delegate("#omar-server-image-"+modelId,
                     "click",
                     $.proxy(this.modelClicked,this, model.id));
+
+                appendCurrent.push(modelId);
             }
             else
             {
                 var countElement = $(el).find("#omar-server-count").get();
                 $(countElement).text(model.get("count"));
                 $("#omar-server-name-"+model.id).text(model.get("nickname"));
+            }
+            if(appendCurrent.size() > 0)
+            {
+                this.refreshServerCounts(appendCurrent);
             }
         }
 

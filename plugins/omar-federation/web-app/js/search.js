@@ -183,6 +183,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     el:"#rasterSearchPageId",
     bboxView:null,
     initialize:function(params){
+        this.initializing = true;
         var thisPtr = this;
         this.model = new OMAR.models.FederatedRasterSearchModel();
 
@@ -218,7 +219,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         this.omarServerCollectionView = new OMAR.views.OmarServerCollectionView(
             {"model":new OMAR.models.OmarServerCollection(),
-             "wfsServerCountModel":this.model.attributes.wfsServerCountModel,
+             "wfsServerCountModel":this.model.get("wfsServerCountModel"),
              "wfsTypeNameModel":this.model.get("wfsTypeNameModel")
             }
         );
@@ -272,6 +273,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             thisPtr.model.set("spatialSearchType", "point");
             thisPtr.setCriteriaDirty();
         });
+        this.initializing = false;
       //  alert("Map?" + this.model.get("mapCriteriaDirtyFlag"));
 
     },
@@ -655,7 +657,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
             collection.model.fetch({success:function(){collection.render()},
                 update: true, remove: false});
-            window.setTimeout(this.updateServers.bind(this),5000);
+            window.setTimeout(this.updateServers.bind(this), 5000);
         }
 
         if(this.mapView) this.mapView.setCqlFilterToFootprintLayers(this.toCql());//this.toFootprintCql());
@@ -730,7 +732,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     updateCounts:function(){
         var cqlFilter = this.toCql();
-        this.model.attributes.wfsServerCountModel.attributes.filter = cqlFilter;
+        this.model.get("wfsServerCountModel").attributes.filter = cqlFilter;
         this.model.attributes.wfsServerCountModel.trigger("change");
     },
     updateDataTable:function(){
@@ -816,9 +818,6 @@ $(document).ready(function () {
     {
         init();
         OMAR.federatedRasterSearch.centerResize();
-
-        // we will give a little delay before doing a search
-        window.setTimeout(function(){OMAR.federatedRasterSearch.search()}, 100);
     }
     //$( "#accordion" ).accordion();
 });
