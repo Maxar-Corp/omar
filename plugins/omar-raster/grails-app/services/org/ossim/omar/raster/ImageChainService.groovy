@@ -358,11 +358,10 @@ class ImageChainService
         def requestFormat = params?.format?.toLowerCase()
         def temporaryDirectory = params?.temporaryDirectory
         def tempFilenamePrefix = params?.filenamePrefix ?: "imageChainService"
-
         def ext = null
         def contentType = null
         def kwlString = ""
-        switch ( requestFormat )
+      switch ( requestFormat )
         {
             case ~/.*jpeg.*/:
                 kwlString += "type:ossimJpegWriter\n"
@@ -389,10 +388,17 @@ class ImageChainService
                 contentType = "image/png"
                 ext = ".png"
                 break
+            case ~/.*pdf.*/:
+              kwlString += "type:${requestFormat}\n"
+              kwlString += "create_external_geometry:false\n"
+              contentType = "${requestFormat}"
+              ext = ".pdf"
+              break;
             default:
                 log.error( "Unsupported FORMAT=${requestFormat}" )
                 break
         }
+
         def writer = null
         def outputFileName = null
         def tempFile = null

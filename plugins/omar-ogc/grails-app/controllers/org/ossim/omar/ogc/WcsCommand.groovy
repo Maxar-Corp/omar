@@ -15,7 +15,7 @@ import grails.validation.Validateable
 class WcsCommand
 {
   static final def OUTPUT_FORMATS = ["jpeg", "image/jpeg", "png", "image/png", "png_uint8",
-          "image/tiff", "geotiff", "geotiff_uint8", "geojp2_uint8",
+          "image/tiff", "image/pdf","application/pdf", "geotiff", "geotiff_uint8", "geojp2_uint8",
           "geojp2"]
   String bbox
   String width

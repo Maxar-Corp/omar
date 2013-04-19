@@ -44,12 +44,17 @@
                    href="javascript:getProjectedImage({'format':'geotiff_uint8', 'crs':'EPSG:4326', 'coverage':'${( rasterEntries*.indexId ).join( ',' )}'})"
                    title="Export GeoTIFF 8-Bit">GeoTIFF 8-Bit</a>
               </li>
-              <li class="yuimenuitem">
-                <a class="yuimenuitemlabel"
-                   href="javascript:getProjectedImage({'format':'geojp2', 'crs':'EPSG:4326', 'coverage':'${( rasterEntries*.indexId ).join( ',' )}'})"
-                   title="Export Geo JPEG 2000">Geo JPEG 2000</a>
-              </li>
-              <li class="yuimenuitem">
+                <li class="yuimenuitem">
+                    <a class="yuimenuitemlabel"
+                       href="javascript:getProjectedImage({'format':'application/pdf', 'crs':'EPSG:4326', 'coverage':'${( rasterEntries*.indexId ).join( ',' )}'})"
+                       title="Export Geo PDF">Geo Pdf</a>
+                </li>
+                <li class="yuimenuitem">
+                    <a class="yuimenuitemlabel"
+                       href="javascript:getProjectedImage({'format':'geojp2', 'crs':'EPSG:4326', 'coverage':'${( rasterEntries*.indexId ).join( ',' )}'})"
+                       title="Export Geo JPEG 2000">Geo JPEG 2000</a>
+                </li>
+                <li class="yuimenuitem">
                 <a class="yuimenuitemlabel"
                    href="javascript:getProjectedImage({'format':'geojp2_uint8', 'crs':'EPSG:4326', 'coverage':'${( rasterEntries*.indexId ).join( ',' )}'})"
                    title="Export Geo JPEG 2000 8-Bit">Geo JPEG 2000 8-Bit</a>
