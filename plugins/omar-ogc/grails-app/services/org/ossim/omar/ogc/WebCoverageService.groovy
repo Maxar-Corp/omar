@@ -117,7 +117,6 @@ class WebCoverageService implements InitializingBean
     srcChains.each {srcChain ->
       mosaic.connectMyInputTo(srcChain)
     }
-
     def writer = imageChainService.createWriterChain([format: wcsParams.format,
             temporaryDirectory: "${temporaryDirectory}",
             filenamePrefix: "wcs"])
