@@ -246,7 +246,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.cqlView = new OMAR.views.CqlView(cqlViewParams);
         this.model.attributes.cqlModel = this.cqlView.model;
         this.model.attributes.dateTimeRangeModel.bind('change',this.setCriteriaDirty, this);
-        this.model.get("bboxModel").bind('change', this.setCriteriaDirty, this);
+        this.model.get("bboxModel").bind('change', this.bboxModelChanged, this);
+        this.model.get("pointModel").bind('change', this.pointModelChanged, this);
         this.model.attributes.cqlModel.bind('change', this.setCriteriaDirty, this);
 
         this.omarServerCollectionView.bind("onModelClicked", this.serverClicked, this);
@@ -584,6 +585,20 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     wfsTypeNameChanged:function()
     {
         this.search();
+    },
+    bboxModelChanged:function()
+    {
+        if(this.model.get("spatialSearchType") == "bbox")
+        {
+            this.setCriteriaDirty();
+        }
+    },
+    pointModelChanged:function()
+    {
+        if(this.model.get("spatialSearchType") == "point")
+        {
+            this.setCriteriaDirty();
+        }
     },
     setCriteriaDirty:function()
     {
