@@ -25,10 +25,10 @@
             <p><g:checkBox id="spatialSearchFlag" value="" checked="true"/> Use Spatial</p>
 
             <form>
-                <p><input type="radio" id="bbox" name="spatialSearchType" value="bbox" checked="checked">Use Bound Box</p>
+                <p><input type="radio" id="bboxRadioButton" name="spatialSearchType" value="bbox" checked="checked">Use Bound Box</p>
                 <p><g:render plugin="omar-common-ui" template="/templates/boundBoxTemplate"/></p>
 
-                <p><input type="radio" id="point" name="spatialSearchType" value="point">Use Point Radius</p>
+                <p><input type="radio" id="pointRadioButton" name="spatialSearchType" value="point">Use Point Radius</p>
             </form>
             <p><g:render plugin="omar-common-ui" template="/templates/pointRadiusTemplate"/></p>
 
