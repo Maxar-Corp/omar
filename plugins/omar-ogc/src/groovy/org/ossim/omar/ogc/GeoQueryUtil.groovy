@@ -129,8 +129,19 @@ class GeoQueryUtil
         geom?.setSRID(Integer.parseInt(srs))
         result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
-               // geom,
+                // geom,
                 SpatialRelation.WITHIN)
+      }
+      else if ( filter instanceof org.geotools.filter.spatial.DWithinImpl )
+      {
+        def withinFilter = filter as org.geotools.filter.spatial.DWithinImpl
+        def paramsFix = fixBinaryExpression(fieldTypeMap, withinFilter.expression1.toString(),
+                withinFilter.expression2.toString());
+        def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
+        geom?.setSRID(Integer.parseInt(srs))
+        result = new org.hibernatespatial.criterion.DWithinExpression(paramsFix.leftValue,
+                geom,
+                withinFilter.getDistance())
       }
       else if ( filter instanceof org.geotools.filter.spatial.ContainsImpl )
       {
