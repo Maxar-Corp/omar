@@ -1,11 +1,13 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 	<head>
 		<meta content = "timeLapseLayout" name = "layout">
 	</head>
 	<body class = "yui-skin-sam">
-		<content tag = "top"></content>
+    <content tag = "top"></content>
 		<content tag = "center">
 			<g:render template="timeLapseMenu"/>
+
 			<div id = "map"></div>
 			<div id = "imageIdHyperlinkDiv">Image Id Hyperlink</div>
 			<div id = "acquisitionDateTextDiv">Acquisition Date Text</div>
