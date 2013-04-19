@@ -59,28 +59,149 @@ OMAR.views.WfsTypeNameView = Backbone.View.extend({
         this.model.set({typeName:"omar:raster_entry"});
         this.model.bind("change", this.modelChanged, this);
     }
-})
+});
+
+OMAR.models.FederatedRasterSearchModel = Backbone.Model.extend({
+    defaults:{
+        mapCriteriaDirtyFlag:false
+       ,dataTableCriteriaDirtyFlag:false
+       ,spatialSearchType:"bbox"
+       ,useSpatialFlag:true
+       ,activeTab:0
+       ,cqlModel:null
+       ,displayUnitModel:null
+       ,bboxModel:null
+       ,pointModel:null
+       ,menuModel:null
+       ,measurementUnitModel:null
+       ,wfsServerCountModel:null
+       ,dateTimeRangeModel:null
+       ,wfsTypeNameModel:null
+    },
+    initialize:function(params)
+    {
+        if(params)
+        {
+            if(params.mapCriteriaDirtyFlag)
+            {
+                this.attributes.mapCriteriaDirtyFlag = params.mapCriteriaDirtyFlag;
+            }
+            if(params.dataTableCriteriaDirtyFlag)
+            {
+                this.attributes.dataTableCriteriaDirtyFlag = params.dataTableCriteriaDirtyFlag;
+            }
+            if(params.spatialSearchType)
+            {
+                this.attributes.spatialSearchType = params.spatialSearchType;
+            }
+            if(params.useSpatialFlag)
+            {
+                this.attributes.useSpatialFlag = params.useSpatialFlag;
+            }
+            if(params.activeTab)
+            {
+                this.attributes.activeTab = params.activeTab;
+            }
+            if(params.cqlModel)
+            {
+                this.attributes.cqlModel = params.cqlModel;
+            }
+            if(params.displayUnitModel)
+            {
+                this.attributes.displayUnitModel = params.displayUnitModel;
+            }
+            if(params.bboxModel)
+            {
+                this.attributes.bboxModel = params.bboxModel;
+            }
+            if(params.pointModel)
+            {
+                this.attributes.pointModel = params.pointModel;
+            }
+            if(params.menuModel)
+            {
+                this.attributes.menuModel = params.menuModel;
+            }
+            if(params.measurementUnitModel)
+            {
+                this.attributes.measurementUnitModel = params.measurementUnitModel;
+            }
+            if(params.wfsServerCountModel)
+            {
+                this.attributes.wfsServerCountModel = params.wfsServerCountModel;
+            }
+            if(params.dateTimeRangeModel)
+            {
+                this.attributes.dateTimeRangeModel = params.dateTimeRangeModel;
+            }
+            if(params.wfsTypeNameModel)
+            {
+                this.attributes.wfsTypeNameModel = params.wfsTypeNameModel;
+            }
+        }
+
+        if(!this.cqlModel)
+        {
+            this.attributes.cqlModel = new OMAR.models.CqlModel();
+        }
+        if(!this.displayUnitModel)
+        {
+            this.attributes.displayUnitModel = new OMAR.models.DisplayUnitModel();
+        }
+        if(!this.bboxModel)
+        {
+            this.attributes.bboxModel = new OMAR.models.BBOX();
+        }
+        if(!this.pointModel)
+        {
+            this.attributes.pointModel = new OMAR.models.PointModel();
+        }
+        if(!this.menuModel)
+        {
+            this.attributes.menuModel = new OMAR.models.MenuModel();
+        }
+        if(!this.measurementUnitModel)
+        {
+            this.attributes.measurementUnitModel = new OMAR.models.UnitModel();
+        }
+        if(!this.wfsServerCountModel)
+        {
+            this.attributes.wfsServerCountModel = new OMAR.models.WfsModel({"resultType":"hits"});
+        }
+        if(!this.dateTimeRangeModel)
+        {
+            this.attributes.dateTimeRangeModel = new OMAR.models.SimpleDateRangeModel();
+        }
+        if(!this.wfsTypeNameModel)
+        {
+            this.attributes.wfsTypeNameModel = new OMAR.models.WfsTypeNameModel();
+        }
+    }
+});
 
 OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     el:"#rasterSearchPageId",
     bboxView:null,
     initialize:function(params){
         var thisPtr = this;
-        this.cqlModel = new OMAR.models.CqlModel();
-        this.wfsTypeNameModel = new OMAR.models.WfsTypeNameModel();
-        this.wfsTypeNameView = new OMAR.views.WfsTypeNameView({model:this.wfsTypeNameModel});
+        this.model = new OMAR.models.FederatedRasterSearchModel();
+
+        this.wfsTypeNameView = new OMAR.views.WfsTypeNameView({model:this.model.get("wfsTypeNameModel")});
         this.displayUnitView = new OMAR.views.DisplayUnitModelView();
-        this.displayUnitModel = this.displayUnitView.model;
+        this.model.set("displayUnitModel",this.displayUnitView.model);
 
-        this.bboxView = new OMAR.views.BBOX({displayUnitModel:this.displayUnitModel});
-        this.bboxModel = this.bboxView.model;
+        this.bboxView = new OMAR.views.BBOX({displayUnitModel:this.model.get("displayUnitModel")});
+        this.model.set("bboxModel",this.bboxView.model);
 
-        this.pointView = new OMAR.views.PointView({displayUnitModel:this.displayUnitModel});
-        this.pointModel = this.pointView.model;
-
-
+        this.pointView = new OMAR.views.PointView({displayUnitModel:this.model.get("displayUnitModel")});
+        this.model.set("pointModel",this.pointView.model);
+/*
+    The Menu model is a place holder for now.  We need to figure out how to
+    Use backbone as a true model for a menu and build the menu up dynamically.
+    Currently its just a place holder and we will build it here.
+*/
         this.menuView = new OMAR.views.MenuView();
-        this.menuModel = this.menuView.model;
+        this.model.set("menuModel",this.menuView.model);
 
         this.menuView.bind("onKmlQueryClicked", $.proxy(this.kmlQueryClicked, this, false));
         this.menuView.bind("onKmlQueryFloatBboxClicked", $.proxy(this.kmlQueryClicked, this, true));//this.kmlQueryFloatBboxClicked, this);
@@ -92,41 +213,40 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.menuView.bind("onGeoCellClicked", this.gclClicked, this);
 
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
-        this.dateTimeRangeModel = this.dateTimeRangeView.model;
-        this.wfsServerCountModel = new OMAR.models.WfsModel({"resultType":"hits"});
+        this.model.attributes.dateTimeRangeModel = this.dateTimeRangeView.model;
+        this.model.set("wfsServerCountModel",new OMAR.models.WfsModel({"resultType":"hits"}));
 
         this.omarServerCollectionView = new OMAR.views.OmarServerCollectionView(
             {"model":new OMAR.models.OmarServerCollection(),
-             "wfsServerCountModel":this.wfsServerCountModel,
-             "wfsTypeNameModel":this.wfsTypeNameModel
+             "wfsServerCountModel":this.model.attributes.wfsServerCountModel,
+             "wfsTypeNameModel":this.model.get("wfsTypeNameModel")
             }
         );
         this.measurementUnitView = new OMAR.views.UnitModelView({el:"#measurementUnitViewId"});
-        this.measurementUnitModel = this.measurementUnitView.model;
+        this.model.set("measurementUnitModel", this.measurementUnitView.model);
 
         var mapParams = params.map;
         mapParams.unitModelView = this.measurementUnitView;
         this.mapView = new OMAR.views.Map(mapParams);
-        this.mapView.setSearchType(this.wfsTypeNameModel);
-        this.mapView.setBboxModel(this.bboxModel);
-        this.mapView.setPointModel(this.pointModel);
-        this.measurementUnitModel.set("unit", "meters");
+        this.mapView.setSearchType(this.model.get("wfsTypeNameModel"));
+        this.mapView.setBboxModel(this.model.get("bboxModel"));
+        this.mapView.setPointModel(this.model.get("pointModel"));
+        this.model.attributes.measurementUnitModel.set("unit", "meters");
         this.mapView.setUnitModelView(this.measurementUnitView);
 
         this.mapView.setServerCollection(this.omarServerCollectionView.model);
         this.setElement(this.el);
 
         // construct with a shared wfsTypeName model
-        this.dataModelView = new OMAR.views.DataModelView({wfsTypeNameModel:this.wfsTypeNameModel});
+        this.dataModelView = new OMAR.views.DataModelView({wfsTypeNameModel:this.model.attributes.wfsTypeNameModel});
 
         var cqlViewParams = params.cql;
-        cqlViewParams.wfsTypeNameModel = this.wfsTypeNameModel;
+        cqlViewParams.wfsTypeNameModel = this.model.get("wfsTypeNameModel");
         this.cqlView = new OMAR.views.CqlView(cqlViewParams);
-        this.cqlView.bind("onCqlChanged",this.cqlCustomQueryChanged, this);
-        this.currentCqlModel = this.cqlView.model;
-        this.dateTimeRangeModel.bind('change',this.updateFootprintCql, this);
-        this.bboxModel.bind('change', this.updateFootprintCql, this);
-        this.currentCqlModel.bind('change', this.updateFootprintCql, this);
+        this.model.attributes.cqlModel = this.cqlView.model;
+        this.model.attributes.dateTimeRangeModel.bind('change',this.setCriteriaDirty, this);
+        this.model.get("bboxModel").bind('change', this.setCriteriaDirty, this);
+        this.model.attributes.cqlModel.bind('change', this.setCriteriaDirty, this);
 
         this.omarServerCollectionView.bind("onModelClicked", this.serverClicked, this);
         this.omarServerCollectionView.activeServerModel.bind("change", this.serverClicked, this);
@@ -136,48 +256,61 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                                                                 "#MapView",
                                                                 "#ResultsView"]});
         this.viewSelector.bind("show", this.showTab, this);
-        this.wfsTypeNameModel.bind("change", this.wfsTypeNameChanged, this);
-        this.cqlModel.bind("change", this.cqlModelChanged, this);
+        this.model.attributes.wfsTypeNameModel.bind("change", this.wfsTypeNameChanged, this);
+        this.model.get("cqlModel").bind("change", this.cqlModelChanged, this);
         this.useSpatialFlag = $('#spatialSearchFlag').is(":checked");
         $('#spatialSearchFlag').click(function() {
             thisPtr.useSpatialFlag = $(this).is(':checked');
-            thisPtr.search();
+            thisPtr.setCriteriaDirty();
+            //thisPtr.search();
         });
+        $('#bboxRadioButton').click(function(){
+            thisPtr.model.set("spatialSearchType", "bbox");
+            thisPtr.setCriteriaDirty();
+        });
+        $('#pointRadioButton').click(function(){
+            thisPtr.model.set("spatialSearchType", "point");
+            thisPtr.setCriteriaDirty();
+        });
+      //  alert("Map?" + this.model.get("mapCriteriaDirtyFlag"));
+
     },
     events: {
         "click #SearchId": "search"
     },
-    cqlCustomQueryChanged:function(){
-        //this.updateFootprintCql();
-        this.search();
-    },
     showTab:function(idx){
-        if(idx == 0)
+        this.model.set("activeTab", idx);
+        switch(idx.toString())
         {
-        }
-        else if(idx == 1)
-        {
-            this.centerResize();
-        }
-        if(idx == 2)
-        {
-            this.dataModelView.resizeView();
+            case "0":
+                break;
+            case "1":
+                if(this.model.get("mapCriteriaDirtyFlag"))
+                {
+                    this.updateFootprintCql();
+                    this.model.set("mapCriteriaDirtyFlag",false);
+                }
+                this.centerResize();
+                break;
+            case "2":
+                this.dataModelView.resizeView();
+                if(this.model.get("dataTableCriteriaDirtyFlag"))
+                {
+                    this.updateDataTable();
+                    this.model.set("dataTableCriteriaDirtyFlag",false);
+                }
+                break;
         }
     },
     serverClicked:function(){
-        var cqlFilter = this.toCql();
-        var model =  this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
-        this.omarServerCollectionView.wfsServerCountModel.set({"filter":cqlFilter,
-                                                          "typeName":this.wfsTypeNameModel.get("typeName")});
+        var model =  this.omarServerCollectionView.model.get(
+                               this.omarServerCollectionView.activeServerModel.get("id"));
         if(model)
         {
-            var settings = {"url":model.get("url")+"/wfs",
-                "filter":cqlFilter,
-                "typeName":this.wfsTypeNameModel.get("typeName")};
-            this.dataModelView.wfsModel.set(settings);
             this.viewSelector.click(2);
             this.viewSelector.setText(2, model.get("nickname"));
         }
+        this.updateDataTable();
     },
     timeLapseClicked:function(){
         var currentSelection = this.dataModelView.getCurrentSelection();
@@ -450,9 +583,28 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     {
         this.search();
     },
+    setCriteriaDirty:function()
+    {
+        switch(this.model.get("activeTab").toString())
+        {
+            case "0": // cql
+                this.model.set("dataTableCriteriaDirtyFlag",true);
+                this.model.set("mapCriteriaDirtyFlag",true);
+                break;
+            case "1": // map
+                this.model.set("dataTableCriteriaDirtyFlag",true);
+                this.updateFootprintCql();
+                break;
+            case "2": // data table
+                this.model.set("mapCriteriaDirtyFlag",true);
+                this.updateDataTable();
+                break;
+        }
+        this.updateCounts();
+    },
     cqlModelChanged:function()
     {
-        this.search();
+        this.setCriteriaDirty();
     },
     render:function(){
         if(this.wfsTypeNameView)
@@ -525,28 +677,28 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     toCql:function(){
         var result = "";
         var timeQueryCql = null;
-        var wfsTypeName = this.wfsTypeNameModel.get("typeName");
-        var customQueryFilter = this.currentCqlModel.toCql();
+        var wfsTypeName = this.model.attributes.wfsTypeNameModel.get("typeName");
+        var customQueryFilter = this.model.attributes.cqlModel.toCql();
 
         if(wfsTypeName.search("raster_entry") > -1)
         {
-            timeQueryCql = this.dateTimeRangeModel.toCql("acquisition_date");
+            timeQueryCql = this.model.attributes.dateTimeRangeModel.toCql("acquisition_date");
         }
         else if(wfsTypeName.search("video_data_set")>-1)
         {
-            timeQueryCql = this.dateTimeRangeModel.toCql("start_date", "end_date");
+            timeQueryCql = this.model.attributes.dateTimeRangeModel.toCql("start_date", "end_date");
         }
         var spatialQueryCql;
 
-        //if ($('#spatialSearchFlag').is(':checked')) {
         if (this.useSpatialFlag) {
-            if( $('input[name=spatialSearchType]:checked').val() == "bbox" )
+            switch(this.model.get("spatialSearchType"))
             {
-                spatialQueryCql = this.bboxModel.toCql("ground_geom");
-            }
-            else if( $('input[name=spatialSearchType]:checked').val() == "point" )
-            { 
-                spatialQueryCql = this.pointModel.toCql("ground_geom");
+                case "bbox":
+                    spatialQueryCql = this.model.get("bboxModel").toCql("ground_geom");
+                    break;
+                case "point":
+                    spatialQueryCql = this.model.get("pointModel").toCql("ground_geom");
+                    break;
             }
         }
 
@@ -578,33 +730,41 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     updateCounts:function(){
         var cqlFilter = this.toCql();
-        this.wfsServerCountModel.attributes.filter = cqlFilter;
-        this.wfsServerCountModel.trigger("change");
+        this.model.attributes.wfsServerCountModel.attributes.filter = cqlFilter;
+        this.model.attributes.wfsServerCountModel.trigger("change");
     },
-    search:function(){
-        this.updateCounts();
+    updateDataTable:function(){
         var cqlFilter = this.toCql();
-       // alert(cqlFilter);
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
         if(model)
         {
             this.dataModelView.wfsModel.attributes.url      = model.get("url")+"/wfs";
             this.dataModelView.wfsModel.attributes.filter   = cqlFilter;
-            this.dataModelView.wfsModel.attributes.typeName = this.wfsTypeNameModel.get("typeName");
-          //      this.dataModelView.wfsModel.set(
-          //      {"url":model.get("url")+"/wfs",
-          //       "filter":cqlFilter,
-          //       "typeName":this.wfsTypeNameModel.get("typeName")}
-          //  );
+            this.dataModelView.wfsModel.attributes.typeName = this.model.attributes.wfsTypeNameModel.get("typeName");
+            //      this.dataModelView.wfsModel.set(
+            //      {"url":model.get("url")+"/wfs",
+            //       "filter":cqlFilter,
+            //       "typeName":this.model.attributes.wfsTypeNameModel.get("typeName")}
+            //  );
             this.dataModelView.wfsModel.trigger("change");
         }
-        //;
+    },
+    search:function(){
+        this.updateCounts();
+        this.updateDataTable();
     }
 });
 
 OMAR.federatedRasterSearch = null;
 OMAR.pages.FederatedRasterSearch = (function($, params){
-    OMAR.federatedRasterSearch = new OMAR.views.FederatedRasterSearch(params);
+    if(!OMAR.federatedRasterSearch)
+    {
+        OMAR.federatedRasterSearch = new OMAR.views.FederatedRasterSearch(params);
+    }
+    else
+    {
+
+    }
     return OMAR.federatedRasterSearch;
 });
 
@@ -652,15 +812,15 @@ $(document).ready(function () {
             }
         });
     // initialize one time the html parsing for datatable
+    if(!OMAR.federatedRasterSearch)
+    {
+        init();
+        OMAR.federatedRasterSearch.centerResize();
 
-    init();
-    OMAR.federatedRasterSearch.centerResize();
+        // we will give a little delay before doing a search
+        window.setTimeout(function(){OMAR.federatedRasterSearch.search()}, 100);
+    }
     //$( "#accordion" ).accordion();
-
-  
-  
-
-
 });
 
 
