@@ -123,8 +123,8 @@ class OmarRunScript{
       {
          env.CLASSPATH="${options.cp}"
       }
-      println options.arguments()
-      println env
+     // println options.arguments()
+     // println env
       if(!args.length )
       {
          cli.usage()
