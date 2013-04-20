@@ -39,7 +39,7 @@ class Utility implements ApplicationContextAware
    * @param zipOut is a type ZipOutputStream
    * @return
    */
-  static def zipFilesToZipOutputStream(def fileList, def zipOut, def blockSize=4096)
+  static def zipFilesToZipOutputStream(def fileList, def zipOut, def blockSize=32768)
   {
     byte[] readBuffer = new byte[blockSize];
     def bytesIn
