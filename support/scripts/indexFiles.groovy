@@ -7,7 +7,10 @@
 //])
 
 import groovy.io.FileType
+import groovy.io.FileVisitResult
 import groovy.sql.Sql
+
+import java.util.concurrent.Callable
 
 import static groovyx.gpars.GParsPool.withPool
 
@@ -257,12 +260,44 @@ class indexFileQueue
 */
     def scan()
     {
-        def options = [
-            type: FileType.FILES,
-            nameFilter: nameFilter
-        ]
+      def options = [
+              type: FileType.FILES,
+              nameFilter: nameFilter,
+              preDir:{dir->
+                def status = FileVisitResult.CONTINUE
+                def file = new File(dir, "a.toc")
+                def skipVpf = new File(dir, "dht")
+                if(skipVpf.exists())
+                {
+                  status =  FileVisitResult.SKIP_SUBTREE
+                }
+                if ( file.exists())
+                {
+                  if("toc" in nameFilter)
+                  {
 
-  //      baseDir?.traverse(options, this.&processFile)
+                    def sql = sqlPool.borrowObject()
+                    def row = sql?.firstRow(testFileSQL, [file:file.absolutePath])
+                    sqlPool.returnObject(sql)
+                    if(!row)
+                    {
+                      batch << file
+
+                      if ( count?.incrementAndGet() % batchSize == 0 )
+                      {
+                        this.&insertBatch.callAsync(batch.clone(), count.intValue())
+                        batch = []
+                      }
+                    }
+                  }
+                  status =  FileVisitResult.SKIP_SUBTREE
+                }
+                return status
+              }
+      ]
+
+
+      //      baseDir?.traverse(options, this.&processFile)
 
 
         withPool(nThreads) {
