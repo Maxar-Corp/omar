@@ -280,6 +280,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.model.get("mapModel").bind("onSelectBbox", this.selectBbox, this);
         this.pointView.bind("onCenterChanged", this.pointViewEdited, this);
         this.pointView.bind("onRadiusChanged", this.pointViewEdited, this);
+        this.bboxView.bind("onLlChanged", this.bboxViewEdited, this);
+        this.bboxView.bind("onUrChanged", this.bboxViewEdited, this);
         this.initializing = false;
     },
     events: {
@@ -310,6 +312,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         }
     },
     selectBbox:function(bboxModel){
+        $('#bboxRadioButton').click();
+    },
+    bboxViewEdited:function(pointModel)
+    {
         $('#bboxRadioButton').click();
     },
     pointViewEdited:function(pointModel)
