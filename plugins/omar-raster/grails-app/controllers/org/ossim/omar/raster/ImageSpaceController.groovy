@@ -171,6 +171,10 @@ class ImageSpaceController
       format = "image/gif"
       ext = ".gif"
       break
+      case ~/.*pdf.*/:
+        format = "application/pdf"
+        ext = ".pdf"
+        break;
     default:
       format = "image/jpeg"
       ext = ".jpg"
