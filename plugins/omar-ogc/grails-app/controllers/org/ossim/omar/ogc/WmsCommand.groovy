@@ -157,10 +157,11 @@ class WmsCommand
         {
           def formatTemp = val.toLowerCase()
           if ( !( formatTemp == "image/png" ||
-              formatTemp == "image/jpeg" ||
+                  formatTemp == "image/jpeg" ||
+                  formatTemp == "appliction/pdf" ||
               formatTemp == "image/gif" ) )
           {
-            message = "FORMAT parameter invalid.  Values can only be image/jpeg, image/png, or image/gif"
+            message = "FORMAT parameter invalid.  Values can only be image/jpeg, application/pdf, image/png, or image/gif"
           }
         }
       }
