@@ -32,10 +32,16 @@
                 <a class="yuimenuitemlabel" href="javascript: chipImage('png')"
                    title="Export PNG">PNG</a>
               </li>
-              <li class="yuimenuitem">
-                <a class="yuimenuitemlabel" href="javascript: chipImage('gif')"
-                   title="Export GIF">GIF</a>
-              </li>
+                  <li class="yuimenuitem">
+                      <a class="yuimenuitemlabel" href="javascript: chipImage('gif')"
+                         title="Export GIF">GIF</a>
+                  </li>
+                  <!--
+                  <li class="yuimenuitem">
+                      <a class="yuimenuitemlabel" href="javascript: chipImage('pdf')"
+                         title="Export PDF">PDF</a>
+                  </li>
+                  -->
             </ul>
 	        <ul>
               <li class="yuimenuitem">
