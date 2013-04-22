@@ -104,7 +104,7 @@ OMAR.models.BBOX = Backbone.Model.extend(
         },
         validate:function(attrs)
         {
-            /*if(attrs.minx && (!OMAR.isFloat(attrs.minx.toString())))
+            if(attrs.minx && (!OMAR.isFloat(attrs.minx.toString())))
             {
                 return ("Minx value is invalid: " + attrs.minx);
             }
@@ -120,7 +120,24 @@ OMAR.models.BBOX = Backbone.Model.extend(
             {
                 return ("Maxy value is invalid: " + attrs.maxy);
             }
-            return null;*/
+
+            if(typeof attrs.minx == "string")
+            {
+                attrs.minx = parseFloat(attrs.minx);
+            }
+            if(typeof attrs.miny == "string")
+            {
+                attrs.miny = parseFloat(attrs.miny);
+            }
+            if(typeof attrs.maxx  == "string")
+            {
+                attrs.maxx = parseFloat(attrs.maxx);
+            }
+            if(typeof attrs.maxy  == "string")
+            {
+                attrs.maxy = parseFloat(attrs.maxy);
+            }
+            return null;
         },
         setFromWmsString:function(s)
         {
@@ -190,8 +207,9 @@ OMAR.views.BBOX = Backbone.View.extend({
         if(values.length ==2)
         {
             this.model.off("change", this.bboxModelChange, this);
-            this.model.set({minx:values[1],miny:values[0]});
+            this.model.set({minx:values[1].trim(),miny:values[0].trim()});
             this.model.on("change", this.bboxModelChange, this);
+            this.trigger("onLlChanged", this.model);
         }
         this.render();
     },
@@ -201,8 +219,10 @@ OMAR.views.BBOX = Backbone.View.extend({
         if(values.length ==2)
         {
             this.model.off("change", this.bboxModelChange, this);
-            this.model.set({maxx:values[1],maxy:values[0]});
+            this.model.set({maxx:values[1].trim(),maxy:values[0].trim()});
             this.model.on("change", this.bboxModelChange, this);
+            this.trigger("onUrChanged", this.model);
+
         }
         this.render();
     },
@@ -232,3 +252,4 @@ OMAR.views.BBOX = Backbone.View.extend({
         }
      }
 });
+
