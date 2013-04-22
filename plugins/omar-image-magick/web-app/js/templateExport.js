@@ -160,15 +160,6 @@ function fontSize(text, desiredSizeHeight, desiredSizeWidth)
 	return (textSize - 1); 
 }
 
-function footerGradientUrlGenerator(topColor, bottomColor, height)
-{
-        var gradientGeneratorUrl = footerGradientGeneratorUrl;
-        gradientGeneratorUrl += "?gradientColorTop=" + topColor;
-        gradientGeneratorUrl += "&gradientColorBottom=" + bottomColor;
-        gradientGeneratorUrl += "&gradientHeight=" + height;
-        return gradientGeneratorUrl;
-}
-
 function generateFooter()
 {
 	var footerHeight = 0.035 * previewImageHeight;
@@ -178,7 +169,7 @@ function generateFooter()
 
 	var gradientColorBottom = $("#gradientColorBottomInput").val();
 	var gradientColorTop = $("#gradientColorTopInput").val();
-	$("#footerDiv").css("backgroundImage", "url('" + footerGradientUrlGenerator(gradientColorTop, gradientColorBottom, footerHeight) + "')");	
+	$("#footerDiv").css("backgroundImage", "url('" + gradientGeneratorUrl + "?gradientHeight=" + footerHeight + "')");	
 }
 
 function generateFooterAcquisitionDateText()
@@ -232,7 +223,7 @@ function generateHeader()
 
 	var gradientColorBottom = $("#gradientColorBottomInput").val();
 	var gradientColorTop = $("#gradientColorTopInput").val();
-	$("#headerDiv").css("backgroundImage", "url('" + headerGradientUrlGenerator(gradientColorTop, gradientColorBottom, headerHeight) + "')");
+	$("#headerDiv").css("backgroundImage", "url('" + gradientGeneratorUrl + "?gradientHeight=" + headerHeight + "')");
 }
 
 function generateHeaderDescriptionText()
@@ -417,15 +408,6 @@ function goToPreviousImage()
 	$("#previewImage" + currentLayer).show();
 
 	updateTemplate();
-}
-
-function headerGradientUrlGenerator(topColor, bottomColor, height)
-{
-        var gradientGeneratorUrl = headerGradientGeneratorUrl;
-        gradientGeneratorUrl += "?gradientColorTop=" + topColor;
-        gradientGeneratorUrl += "&gradientColorBottom=" + bottomColor;
-        gradientGeneratorUrl += "&gradientHeight=" + height;
-        return gradientGeneratorUrl;
 }
 
 function init()
