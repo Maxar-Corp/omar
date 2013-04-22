@@ -1,32 +1,28 @@
 package omar.image.magick
-import org.ossim.omar.core.Utility
+
+import java.awt.Color
+import java.awt.GradientPaint
+import java.awt.image.BufferedImage
+
+import javax.imageio.ImageIO
 
 class GradientGeneratorService 
 {
-	def DEBUG = false
-	def grailsApplication
-
-	def serviceMethod(def gradientColorTop, def gradientColorBottom, def gradientHeight)
+	def serviceMethod(def gradientHeight)
 	{
-		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
-        def tempFilesLocationAsFile = new File(tempFilesLocation)
-        def tempFileGradient = File.createTempFile("gradient",
-                ".png", tempFilesLocationAsFile);
+		gradientHeight = gradientHeight as Double
+		int gradientBufferedImageHeight = gradientHeight as Integer
+		def gradientBufferedImage = new BufferedImage(1, gradientBufferedImageHeight, BufferedImage.TYPE_4BYTE_ABGR)
 
-		def command = [
-				"convert", 
-				"-size", 
-				"1x${gradientHeight}", 
-				"gradient: #${gradientColorTop}-#${gradientColorBottom}",
-                tempFileGradient.toString()
-		]
-		executeCommand(command)
+		float gradientColorHeight = (float) gradientHeight as Integer
+		def gradientPaint = new GradientPaint(0, 0, Color.GRAY, 1, gradientColorHeight, Color.BLACK);
+		
+		def gradientGraphic = gradientBufferedImage.createGraphics()
+		gradientGraphic.setPaint(gradientPaint)
+		gradientGraphic.fillRect(0, 0, 1, gradientBufferedImageHeight)
 
-		return tempFileGradient.toString()
-	}
+		gradientGraphic.dispose()
 
-	def executeCommand(def executableCommand)
-	{
-        return Utility.executeCommand(executableCommand, true).text
+		return gradientBufferedImage
 	}
 }

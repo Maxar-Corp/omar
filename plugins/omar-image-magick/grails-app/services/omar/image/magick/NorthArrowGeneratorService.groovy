@@ -4,23 +4,13 @@ import java.awt.Color
 import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import java.awt.RenderingHints
+
 import javax.imageio.ImageIO
-import org.codehaus.groovy.grails.web.mapping.LinkGenerator
-import org.ossim.omar.core.Utility
 
 class NorthArrowGeneratorService
 {
-	LinkGenerator grailsLinkGenerator
-
-	def grailsApplication
-
-	def serviceMethod(def northAngle, def northArrowBackgroundColor, def northArrowColor, def northArrowSize)
+	def serviceMethod(def northAngle, def northArrowSize)
 	{
-		def command
-		def date = new Date().getTime()
-		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
-		def tempFilesLocationAsFile = new File(tempFilesLocation)
-
 		def size = 1000
 		def strokeWidth = 50
 		def buffer = 50
@@ -77,10 +67,6 @@ class NorthArrowGeneratorService
 
 		graph.dispose()
 
-		def tempNorthArrowFile = File.createTempFile("northArrow", ".png", tempFilesLocationAsFile);
-		ImageIO.write(image,  'png', tempNorthArrowFile.toString() as File)
-
-
-		return tempNorthArrowFile.toString()
+		return image
 	}
 }
