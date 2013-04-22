@@ -199,8 +199,7 @@
 			
                         var exportImageFormUrl = "${createLink(action: 'export')}";
 			var exportAnimationFormUrl = "${createLink(action: 'flipBookGenerator')}";
-                        var footerGradientGeneratorUrl = "${createLink(action: 'footerGradientGenerator')}";
-                        var headerGradientGeneratorUrl = "${createLink(action: 'headerGradientGenerator')}";
+			var gradientGeneratorUrl = "${createLink(action: 'gradientGenerator')}";
                         var logoImagesDirectory = "${resource(dir: 'images/', plugin: 'omar-image-magick')}";
                         var northArrowGeneratorUrl = "${createLink(action: 'northArrowGenerator')}";
                         var overviewMapImagesDirectory = "${resource(dir: 'images/overviewMaps/', plugin: 'omar-image-magick')}";

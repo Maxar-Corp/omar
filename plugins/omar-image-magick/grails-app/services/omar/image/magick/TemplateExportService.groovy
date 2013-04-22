@@ -1,189 +1,131 @@
 package omar.image.magick
 
+import java.awt.Color
+import java.awt.image.BufferedImage
+import java.awt.RenderingHints
+
+import javax.imageio.ImageIO
+
 import org.codehaus.groovy.grails.web.mapping.LinkGenerator
 import org.ossim.omar.core.Utility
 
 class TemplateExportService
 {
-    LinkGenerator grailsLinkGenerator
+	LinkGenerator grailsLinkGenerator
 
-    def DEBUG = false
-    def grailsApplication
-    def northArrowGeneratorService
+	def gradientGeneratorService
+	def grailsApplication
+	def logoGeneratorService
+	def northArrowGeneratorService
+	def textGeneratorService
 
-    def serviceMethod(def country, def footerFile, def headerFile, def imageFile, def imageHeight, def includeOverviewMap, def northArrowFile)
-    {
-        def command
-        def tempFilesLocation = grailsApplication.config.export.workDir + "/"
-        def tempFilesLocationAsFile = new File(tempFilesLocation)
-        def logoFilesLocation = grailsLinkGenerator.resource(absolute: true, dir: 'images', plugin: 'omar-image-magick') + "/"
-        def mapFilesLocation = logoFilesLocation + "overviewMaps/"
-        def tempFileFinishedProduct = File.createTempFile("finishedProduct",
-                ".png", tempFilesLocationAsFile);
-        def tempFileOverviewMapScaled = File.createTempFile("overviewMapScaled",
-                ".png", tempFilesLocationAsFile);
-        def tempFileOverviewMapScaledShadow = File.createTempFile("overviewMapScaledShadow",
-                ".png", tempFilesLocationAsFile);
+	def serviceMethod(def footerAcquisitionDateText, def footerLocationText, def footerSecurityClassificationText, def headerDescriptionText, def headerSecurityClassificationText, def headerTitleText, def imageUrl, def logo, def northAngle)
+	{
+		// download image
+		def omarImageUrl = new URL("${imageUrl}")
+		def omarImageBufferedImage = ImageIO.read(omarImageUrl)
+		def omarImageHeight = omarImageBufferedImage.getHeight()
+		def omarImageWidth = omarImageBufferedImage.getWidth()
+		
+		// generate blank template
+		def templateHeight = 1.16 * omarImageHeight as Integer
+		def templateWidth = omarImageWidth
+		def templateBufferedImage = new BufferedImage(templateWidth, templateHeight, BufferedImage.TYPE_4BYTE_ABGR)
+		def templateGraphic = templateBufferedImage.createGraphics()
+		templateGraphic.setRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON))
+		templateGraphic.setRenderingHints(new RenderingHints(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR))
 
-        //#####################################################################################################################
-        //################################################## Header Addition ##################################################
-        //#####################################################################################################################
-        if (DEBUG) { println "##### Header Addition #####" }
+		// generate header
+		def headerHeight = 0.1 * omarImageHeight as Integer
+		def headerGradientBufferedImage = gradientGeneratorService.serviceMethod(headerHeight)
+		for (i in 0..omarImageWidth) { templateGraphic.drawImage(headerGradientBufferedImage, i, 0, null) }
 
-        //########## Add the header file to the image file
-        if (DEBUG) { println "Add the header file to the image file:" }
-        command = [
-                "convert",
-                "${headerFile}",
-                "${imageFile}",
-                "${footerFile}",
-                "-append",
-                tempFileFinishedProduct.toString()
-        ]
-        if (DEBUG) { println "${command}" }
-        executeCommand(command)
+		// generate logo
+		def logoSize = 0.8 * headerHeight
+		def logoBufferedImage = logoGeneratorService.serviceMethod(logo, logoSize)		
 
-        //##################################################################################################################
-        //################################################## Overview Map ##################################################
-        //##################################################################################################################
-        if (DEBUG) { println "##### Overview Map #####" }
+		def logoOffset = (headerHeight - logoSize) / 2 as Integer
+		templateGraphic.drawImage(logoBufferedImage, logoOffset, logoOffset, null)
 
-        def overviewMapWidth = 0
-        if (("${includeOverviewMap}".toString()).equals("true"))
-        {
-            //########## Determine the height of the overview map
-            if (DEBUG) { println "Determine the height of the overview map:" }
-            def overviewMapHeight = 0.2 * imageHeight.toInteger()
-            if (DEBUG) { print "${overviewMapHeight} pixels" }
+		// header security classification
+		def headerSecurityClassificationTextHeight = 0.25 * logoSize as Integer 
+		def headerSecurityClassificationTextWidth = omarImageWidth - 2 * logoSize - 4 * logoOffset as Integer
+		def headerSecurityClassificationTextBufferedImage = textGeneratorService.serviceMethod(headerSecurityClassificationText, "left", Color.CYAN, headerSecurityClassificationTextHeight, headerSecurityClassificationTextWidth)
 
-            //########## Scale the overview map
-            if (DEBUG) { println "Scale the overview map:" }
-            command = [
-                    "convert",
-                    "${mapFilesLocation}${country}.gif",
-                    "-resize",
-                    "x${overviewMapHeight}",
-                    tempFileOverviewMapScaled.toString()
-            ]
-            if (DEBUG) { println "${command}" }
-            executeCommand(command)
+		def headerSecurityClassificationTextOffsetX = logoSize + 2 * logoOffset as Integer
+		def headerSecurityClassificationTextOffsetY = logoOffset as Integer
+		templateGraphic.drawImage(headerSecurityClassificationTextBufferedImage, headerSecurityClassificationTextOffsetX, headerSecurityClassificationTextOffsetY, null)
 
-            //########## Add a shadow to the overview map
-            if (DEBUG) { println "Generate a shadow image for the overview map:" }
-            command = [
-                    "convert",
-                    tempFileOverviewMapScaled.toString(),
-                    "-background",
-                    "black",
-                    "-shadow",
-                    "60x4+4+4",
-                    tempFileOverviewMapScaledShadow.toString()
-            ]
-            if (DEBUG) { println "${command}" }
-            executeCommand(command)
+		// header title text
+		def headerTitleTextHeight = 0.43 * logoSize as Integer
+		def headerTitleTextWidth = omarImageWidth - 2 * logoSize - 4 * logoOffset as Integer
+		def headerTitleTextBufferedImage = textGeneratorService.serviceMethod(headerTitleText, "left", Color.YELLOW, headerTitleTextHeight, headerTitleTextWidth)
 
-            if (DEBUG) { println "Add the shadow image to the overview map:" }
-            command = [
-                    "convert",
-                    "-page",
-                    "+4+4",
-                    tempFileOverviewMapScaled.toString(),
-                    "-matte",
-                    tempFileOverviewMapScaledShadow.toString(),
-                    "+swap",
-                    "-background",
-                    "none",
-                    "-mosaic",
-                    tempFileOverviewMapScaled.toString()
-            ]
-            if (DEBUG) { println "${command}" }
-            executeCommand(command)
+		def headerTitleTextOffsetX = logoSize + 2 * logoOffset as Integer
+		def headerTitleTextOffsetY = headerSecurityClassificationTextOffsetY + headerSecurityClassificationTextHeight as Integer
+		templateGraphic.drawImage(headerTitleTextBufferedImage, headerTitleTextOffsetX, headerTitleTextOffsetY, null)
+		 
+		// header description text	
+		def headerDescriptionTextHeight = 0.32 * logoSize as Integer
+		def headerDescriptionTextWidth = omarImageWidth - 2 * logoSize - 4 * logoOffset as Integer
+		def headerDescriptionTextBufferedImage = textGeneratorService.serviceMethod(headerDescriptionText, "left", Color.WHITE, headerDescriptionTextHeight, headerDescriptionTextWidth)
 
-            //########## Determine the width of the overview map
-            if (DEBUG) { println "Determine the width of the overview map:" }
-            command = [
-                    "identify",
-                    "-format",
-                    "%w",
-                    tempFileOverviewMapScaled.toString()
-            ]
-            overviewMapWidth = executeCommand(command)
-            overviewMapWidth = overviewMapWidth.replaceAll("\n", "")
-            overviewMapWidth = overviewMapWidth.toInteger()
-            if (DEBUG) { println "${overviewMapWidth} pixels" }
-        }
+		def headerDescriptionTextOffsetX = logoSize + 2 * logoOffset as Integer
+		def headerDescriptionTextOffsetY = headerTitleTextOffsetY + headerTitleTextHeight as Integer
+		templateGraphic.drawImage(headerDescriptionTextBufferedImage, headerDescriptionTextOffsetX, headerDescriptionTextOffsetY, null)
+	
+		// generate north arrow
+		def northArrowSize = logoSize
+		def northArrowBufferedImage = northArrowGeneratorService.serviceMethod(northAngle, northArrowSize)
 
-        //#######################################################################################################################
-        //################################################## Report Adjustment ##################################################
-        //#######################################################################################################################
-        if (DEBUG) { println "##### Report Adjustment #####" }
+		def northArrowOffsetX = omarImageWidth - northArrowSize - logoOffset as Integer
+		def northArrowOffsetY = logoOffset as Integer
+		templateGraphic.drawImage(northArrowBufferedImage, northArrowOffsetX, northArrowOffsetY, null)		
 
-        //########## Add the overview map to the finished product
-        if (("${includeOverviewMap}".toString()).equals("true"))
-        {
-            if (DEBUG) { println "Add the overview map to the finished product:" }
-            command = [
-                    "composite",
-                    tempFileOverviewMapScaled.toString(),
-                    "-gravity",
-                    "NorthEast",
-                    tempFileFinishedProduct.toString(),
-                    tempFileFinishedProduct.toString()
-            ]
-            if (DEBUG) { println "${command}" }
-            executeCommand(command)
-        }
-        else
-        {
-            if (DEBUG) { println "The overview map is not included" }
-        }
+		// add omar image
+		def omarImageOffsetY = headerHeight as Integer
+		templateGraphic.drawImage(omarImageBufferedImage, 0, omarImageOffsetY, null)
 
-        //##########################################################################################################################
-        //################################################## North Arrow Addition ##################################################
-        //##########################################################################################################################
-        if (DEBUG) { println "##### North Arrow Addition #####" }
+		// generate footer
+                def footerHeight = 0.03 * omarImageHeight as Integer
+                def footerGradientBufferedImage = gradientGeneratorService.serviceMethod(footerHeight)
 
-        //########## Add the north arrow to the finished product
-        if (DEBUG) { println "Determine the north arrow offset:" }
-        def northArrowOffset = 0.01 * imageHeight.toInteger()
-        if (DEBUG) { println "${northArrowOffset} pixels" }
+		def footerGradientImageOffsetY = headerHeight + omarImageHeight as Integer
+                for (i in 0..omarImageWidth) { templateGraphic.drawImage(headerGradientBufferedImage, i, footerGradientImageOffsetY, null) }
 
-        if (DEBUG) { println "Add the north arrow to the finished product:"  }
-        command = [
-                "composite",
-                "${northArrowFile}",
-                "-gravity",
-                "NorthEast",
-                "-geometry",
-                "+${northArrowOffset + overviewMapWidth}+${northArrowOffset}",
-                tempFileFinishedProduct.toString(),
-                tempFileFinishedProduct.toString()
-        ]
-        if (DEBUG) { println "${command}" }
-        executeCommand(command)
+		// footer security classification
+		def footerSecurityClassificationTextHeight = footerHeight as Integer
+		def footerSecurityClassificationTextWidth = omarImageWidth / 3 as Integer
+		def footerSecurityClassificationTextBufferedImage = textGeneratorService.serviceMethod(footerSecurityClassificationText, "left", Color.CYAN, footerSecurityClassificationTextHeight, footerSecurityClassificationTextWidth)
+ 
+		def footerSecurityClassificationTextOffsetX = logoOffset as Integer
+		def footerSecurityClassificationTextOffsetY = headerHeight + omarImageHeight as Integer
+		templateGraphic.drawImage(footerSecurityClassificationTextBufferedImage, footerSecurityClassificationTextOffsetX, footerSecurityClassificationTextOffsetY, null)
 
+		// footer location text
+		def footerLocationTextHeight = footerHeight as Integer
+                def footerLocationTextWidth = omarImageWidth / 3 as Integer
+                def footerLocationTextBufferedImage = textGeneratorService.serviceMethod(footerLocationText, "center", Color.CYAN, footerLocationTextHeight, footerLocationTextWidth)
 
-        //#############################################################################################################################
-        //################################################## Temporary File Deletion ##################################################
-        //#############################################################################################################################
+                def footerLocationTextOffsetX = omarImageWidth / 3 as Integer
+                def footerLocationTextOffsetY = headerHeight + omarImageHeight as Integer
+                templateGraphic.drawImage(footerLocationTextBufferedImage, footerLocationTextOffsetX, footerLocationTextOffsetY, null)
 
-        try{
-            new File(imageFile).delete()
-            new File(footerFile).delete()
-            new File(headerFile).delete()
-            new File(northArrowFile).delete()
-            tempFileOverviewMapScaled.delete()
-            tempFileOverviewMapScaledShadow.delete()
-        }
-        catch(def e)
-        {
-        }
+		// footer acquisition date text
+		def footerAcquisitionDateTextHeight = footerHeight as Integer
+                def footerAcquisitionDateTextWidth = omarImageWidth / 3 as Integer
+                def footerAcquisitionDateTextBufferedImage = textGeneratorService.serviceMethod(footerAcquisitionDateText, "right", Color.CYAN, footerAcquisitionDateTextHeight, footerAcquisitionDateTextWidth)
 
-        return tempFileFinishedProduct.toString()
-    }
+                def footerAcquisitionDateTextOffsetX = omarImageWidth * 2/3 as Integer
+                def footerAcquisitionDateTextOffsetY = headerHeight + omarImageHeight as Integer
+                templateGraphic.drawImage(footerAcquisitionDateTextBufferedImage, footerAcquisitionDateTextOffsetX, footerAcquisitionDateTextOffsetY, null)
 
-    def executeCommand(def executableCommand)
-    {
-        return Utility.executeCommand(executableCommand, true).text
-    }
+		templateGraphic.dispose()
+
+		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
+                def tempFilesLocationAsFile = new File(tempFilesLocation)
+                def templateFile = File.createTempFile("finishedProduct", ".png", tempFilesLocationAsFile)
+		ImageIO.write(templateBufferedImage, "png", templateFile as File)
+		return templateFile.toString()
+	}
 }
