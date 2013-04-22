@@ -28,15 +28,9 @@
                 <img src="${resource( dir: 'images', file: 'discover.gif' )}" alt="">
             </a>
         </td>
-
-        <td>
-          <ol>
-            <!--  <li><g:link plugin="omar-federation" controller="federation" action="search">Search</g:link></li> -->
-           <!-- <li><g:link controller="rasterEntry" action="search">Imagery</g:link></li>
-            <li><g:link controller="videoDataSet" action="search">Video</g:link></li>
-          -->
-          </ol>
-        </td>
+         <td align="center">
+             <g:link plugin="omar-federation" controller="federation" action="search">Search</g:link>
+         </td>
       </tr>
     </table>
   </div>
