@@ -1,17 +1,15 @@
 package omar.image.magick
 
+import javax.imageio.ImageIO
+
 import static groovyx.gpars.dataflow.Dataflow.task
 import groovyx.gpars.dataflow.DataflowVariable
 
 class TemplateExportController
 {
 	def exportAnimationService
-	def footerGeneratorService
-	def footerGradientGeneratorService
+	def gradientGeneratorService
 	def grailsApplication
-	def headerGeneratorService
-	def headerGradientGeneratorService
-	def imageDownloadService
 	def northArrowGeneratorService
 	def templateExportService
 
@@ -78,7 +76,7 @@ class TemplateExportController
 		def headerTitleTextColor = params.headerTitleTextColor
 		def headerSecurityClassificationText = params.headerSecurityClassificationText
 		def headerSecurityClassificationTextColor = params.headerSecurityClassificationTextColor
-		def imageFile = params.imageUrl
+		def imageUrl = params.imageUrl
 		def imageHeight = params.imageHeight
 		def imageWidth = params.imageWidth
 		def includeOverviewMap = params.includeOverviewMap
@@ -88,26 +86,9 @@ class TemplateExportController
 		def northArrowBackgroundColor = params.northArrowBackgroundColor
 		def northArrowSize = params.northArrowSize
 
-        def footerFilename = new DataflowVariable()
-        def headerFilename = new DataflowVariable()
-        def imageFilename = new DataflowVariable()
-        def northArrowFilename = new DataflowVariable()
-
-        task { imageFilename      << imageDownloadService.serviceMethod(imageFile) }
-		task { northArrowFilename << northArrowGeneratorService.serviceMethod(northAngle, northArrowBackgroundColor, northArrowColor, northArrowSize) }
-		task { headerFilename     << headerGeneratorService.serviceMethod(gradientColorBottom, gradientColorTop, headerDescriptionText, headerDescriptionTextColor, headerSecurityClassificationText, headerSecurityClassificationTextColor, headerTitleText, headerTitleTextColor, imageHeight, imageWidth, logo) }
-		task { footerFilename     << footerGeneratorService.serviceMethod(footerAcquisitionDateText, footerAcquisitionDateTextColor, footerLocationText, footerLocationTextColor, footerSecurityClassificationText, footerSecurityClassificationTextColor, gradientColorBottom, gradientColorTop, imageHeight, imageWidth) }
-
- 		def finishedProductFileName =
-             templateExportService.serviceMethod(country,
-                     footerFilename.val,
-                     headerFilename.val,
-                     imageFilename.val,
-                     imageHeight,
-                     includeOverviewMap,
-                     northArrowFilename.val)
-
-        render finishedProductFileName
+		def templateImageFilename = templateExportService.serviceMethod(footerAcquisitionDateText, footerLocationText, footerSecurityClassificationText, headerDescriptionText, headerSecurityClassificationText, headerTitleText, imageUrl, logo, northAngle)
+		render templateImageFilename
+		
 	}
 
 	def flipBookGenerator()
@@ -119,65 +100,23 @@ class TemplateExportController
 		render finishedProductFileName
         }
 
-	def footerGradientGenerator()
+	def gradientGenerator()
 	{
-		def gradientColorTop = params.gradientColorTop
-		def gradientColorBottom = params.gradientColorBottom
 		def gradientHeight = params.gradientHeight
+		def gradientImage = gradientGeneratorService.serviceMethod( gradientHeight )
 
-		def fileName = footerGradientGeneratorService.serviceMethod( gradientColorTop, gradientColorBottom, gradientHeight )
-
-		def file = new File( "${fileName}" )
-		if ( file.exists() )
-		{
-			response.setHeader( "Content-length", "" + file.bytes.length )
-			response.contentType = "image/png"
-			response.outputStream << file.bytes
-			response.outputStream.flush()
-
-            file.delete()
-		}
+		response.contentType = "image/png"
+		ImageIO.write(gradientImage, 'png', response.outputStream)
 	}
-
-	def headerGradientGenerator()
-	{
-                def gradientColorTop = params.gradientColorTop
-                def gradientColorBottom = params.gradientColorBottom
-                def gradientHeight = params.gradientHeight
-
-                def fileName = headerGradientGeneratorService.serviceMethod( gradientColorTop, gradientColorBottom, gradientHeight )
-
-                def file = new File( "${fileName}" )
-                if ( file?.exists() )
-                {
-                    response.setHeader( "Content-length", "" + file.bytes.length )
-                    response.contentType = "image/png"
-                    response.outputStream << file.bytes
-                    response.outputStream.flush()
-
-                    file.delete()
-                }
-        }
 
 	def northArrowGenerator()
 	{
 		def northAngle = params.northAngle
-		def northArrowBackgroundColor = params.northArrowBackgroundColor
-		def northArrowColor = params.northArrowColor
 		def northArrowSize = params.northArrowSize
 
-		def fileName = northArrowGeneratorService.serviceMethod(northAngle, northArrowBackgroundColor, northArrowColor, northArrowSize)
-
-		def file = new File( "${fileName}" )
-		if ( file.exists() )
-		{
-			response.setHeader( "Content-length", "" + file.bytes.length )
-			response.contentType = "image/png"
-			response.outputStream << file.bytes
-			response.outputStream.flush()
-
-            file.delete()
-		}
+		def northArrowImage = northArrowGeneratorService.serviceMethod(northAngle, northArrowSize)
+		response.contentType = "image/png"
+		ImageIO.write(northArrowImage, "png", response.outputStream)
 	}
 
 	def viewProduct()
