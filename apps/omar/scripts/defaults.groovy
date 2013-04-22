@@ -95,6 +95,7 @@ if ( Requestmap.count() == 0 )
   Requestmap.findOrSaveWhere( configAttribute: "ROLE_ADMIN", url: "/runscript/**" )
 
   Requestmap.findOrSaveWhere( configAttribute: "ROLE_ADMIN", url: "/configSettings/**" )
+  Requestmap.findOrSaveWhere( configAttribute: "ROLE_USER,ROLE_ADMIN", url: "/federation/search/**" )
   Requestmap.findOrSaveWhere( configAttribute: "ROLE_ADMIN", url: "/federation/admin/**" )
   Requestmap.findOrSaveWhere( configAttribute: "ROLE_ADMIN", url: "/federation/reconnect/**" )
 }
