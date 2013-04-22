@@ -67,7 +67,8 @@ OMAR.models.FederatedRasterSearchModel = Backbone.Model.extend({
        ,dataTableCriteriaDirtyFlag:false
        ,spatialSearchType:"bbox"
        ,useSpatialFlag:true
-       ,activeTab:0
+        ,mapModel:null
+        ,activeTab:0
        ,cqlModel:null
        ,displayUnitModel:null
        ,bboxModel:null
@@ -229,6 +230,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var mapParams = params.map;
         mapParams.unitModelView = this.measurementUnitView;
         this.mapView = new OMAR.views.Map(mapParams);
+        this.model.set("mapModel", this.mapView.model);
         this.mapView.setSearchType(this.model.get("wfsTypeNameModel"));
         this.mapView.setBboxModel(this.model.get("bboxModel"));
         this.mapView.setPointModel(this.model.get("pointModel"));
@@ -273,10 +275,12 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         $('#pointRadioButton').click(function(){
             thisPtr.model.set("spatialSearchType", "point");
             thisPtr.setCriteriaDirty();
+            thisPtr.mapView.clearBoundBox();
         });
+        this.model.get("mapModel").bind("onSelectBbox", this.selectBbox, this);
+        this.pointView.bind("onCenterChanged", this.pointViewEdited, this);
+        this.pointView.bind("onRadiusChanged", this.pointViewEdited, this);
         this.initializing = false;
-      //  alert("Map?" + this.model.get("mapCriteriaDirtyFlag"));
-
     },
     events: {
         "click #SearchId": "search"
@@ -304,6 +308,13 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                 }
                 break;
         }
+    },
+    selectBbox:function(bboxModel){
+        $('#bboxRadioButton').click();
+    },
+    pointViewEdited:function(pointModel)
+    {
+        $('#pointRadioButton').click();
     },
     serverClicked:function(){
         var model =  this.omarServerCollectionView.model.get(

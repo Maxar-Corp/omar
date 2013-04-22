@@ -122,6 +122,8 @@ OMAR.views.PointView = Backbone.View.extend({
             //alert("MGRS Match");
         }
         this.render();
+
+        this.trigger("onCenterChanged", this.model);
     },
     radiusOnChange: function(e){
         var v = this.radiusEl.val();
@@ -131,6 +133,7 @@ OMAR.views.PointView = Backbone.View.extend({
             this.model.on("change", this.pointModelChange, this);
         }
         this.render();
+        this.trigger("onRadiusChanged", this.model);
     },
     pointError:function(model, err){
     },

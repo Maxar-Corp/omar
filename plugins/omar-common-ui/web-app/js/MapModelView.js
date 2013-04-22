@@ -1,5 +1,7 @@
 OMAR.models.Map = Backbone.Model.extend({
-
+    defaults:{
+        theme:null
+    }
 });
 
 //var zoomInButton;
@@ -12,21 +14,18 @@ var convert = new CoordinateConversion();
 OMAR.views.Map = Backbone.View.extend({
     el:"#MapContainer",
     initialize:function(params){
+        this.model = new OMAR.models.Map();
         this.baseZIndex = 100;
         this.setElement(this.el);
-        if(params.theme)
+        if(params)
         {
-            this.theme = params.theme;
+            this.model.attributes.theme = params.theme;
+            this.model.attributes.baseLayers = params.baseLayers;
+            this.unitModelView = params.unitModelView;
         }
-        else
-        {
-            this.theme = null;
-        }
-        this.unitModelView = params.unitModelView?params.unitModelView:null;
         this.mapEl = $(this.el).find("#map")[0];
         this.toolBar = $(this.el).find("#mapToolBar")[0];
         this.layers = new OMAR.HashMap();
-        this.baseLayers = params.baseLayers;
         this.zoomInButton = null;
         this.zoomFullResScale = null;
         this.bounds = null;
@@ -44,17 +43,16 @@ OMAR.views.Map = Backbone.View.extend({
         {
             var layers = [];
 
-            if(this.baseLayers)
+            if(this.model.attributes.baseLayers)
             {
-                for(var idx = 0; idx < this.baseLayers.size();++idx)
+                for(var idx = 0; idx < this.model.attributes.baseLayers.size();++idx)
                 {
-                    var layer =   new OpenLayers.Layer.WMS( this.baseLayers[idx].name,
-                        this.baseLayers[idx].url,
-                        this.baseLayers[idx].params,
-                        this.baseLayers[idx].options
+                    var layer =   new OpenLayers.Layer.WMS( this.model.attributes.baseLayers[idx].name,
+                        this.model.attributes.baseLayers[idx].url,
+                        this.model.attributes.baseLayers[idx].params,
+                        this.model.attributes.baseLayers[idx].options
                     );
                     layers.push(layer);
-
                 }
             }
             // var osm = new OpenLayers.Layer.OSM();
@@ -80,7 +78,7 @@ OMAR.views.Map = Backbone.View.extend({
             //layers.push(osm);
             this.map = new OpenLayers.Map({
                 div: this.mapEl,
-                theme:this.theme,
+                theme:this.model.attributes.theme,
                 //layers: [
                 //    new OpenLayers.Layer.WMS( "OpenLayers WMS",
                 //        "http://vmap0.tiles.osgeo.org/wms/vmap0",
@@ -176,6 +174,7 @@ OMAR.views.Map = Backbone.View.extend({
 
         this.aoiLayer.destroyFeatures();
         this.aoiLayer.addFeatures( feature, {silent:true} );
+        this.model.trigger("onSelectBbox", this.bboxModel);
     },
 
     setupToolbar:function()
