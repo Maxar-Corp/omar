@@ -330,7 +330,7 @@ function chipImage(format)
                         'rotate': -parseFloat(${"rotateAngle"}.value),
                         'width':w,
                         'height':h,
-                        'format':"image/"+format,
+                        'format': format=="pdf"?"application/"+format:"image/"+format,
                         'id' : "${rasterEntry?.id}",
                         'pivot' : pivot
     });
@@ -703,7 +703,8 @@ OMAR.imageManipulator.events.on({
     }
     else
     {
-        map.zoomToExtent(bounds,{closest:true});
+        map.zoomTo(map.getZoomForExtent(bounds)-1);
+        //map.zoomToExtent(bounds);//,{closest:true});
     }
     finishedInit = true;
     updateCenter();
@@ -1124,7 +1125,15 @@ data: YAHOO.lang.JSON.stringify({id:${rasterEntry.id},
             }
             function zoomMaxExtentClicked()
             {
-                map.zoomToMaxExtent();
+                var maxExtent = map.getMaxExtent();
+                if(numberOfResLevels >1)
+                {
+                    map.setCenter(maxExtent.getCenterLonLat(),map.getZoomForExtent(maxExtent)-1);
+                }
+                else
+                {
+                    map.zoomToMaxExtent();
+                }
                 if (OMAR.imageManipulator.outScaleAOI == 'Image')
                 {
                     //OMAR.imageManipulator.removeSelectionBox();
