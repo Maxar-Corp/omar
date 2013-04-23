@@ -601,6 +601,23 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     wfsTypeNameChanged:function()
     {
+        var wfsTypeName = this.model.attributes.wfsTypeNameModel.get("typeName");
+
+        if(wfsTypeName.contains("video"))
+        {
+            $("#TimeLapseId").attr("class","ui-state-disabled");
+            $("#ExportGeoCellId").attr("class","ui-state-disabled");
+            this.menuView.unbind("onTimeLapseClicked", this.timeLapseClicked, this);
+            this.menuView.unbind("onGeoCellClicked", this.gclClicked, this);
+        }
+        else
+        {
+            $("#TimeLapseId").attr("class","ui-state-enabled");
+            $("#ExportGeoCellId").attr("class","ui-state-enabled");
+            this.menuView.bind("onTimeLapseClicked", this.timeLapseClicked, this);
+            this.menuView.bind("onGeoCellClicked", this.gclClicked, this);
+        }
+
         this.search();
     },
     bboxModelChanged:function()
