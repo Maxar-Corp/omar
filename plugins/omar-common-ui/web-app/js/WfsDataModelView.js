@@ -595,7 +595,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
     url: '',
     el:"#ResultsView",
     initialize:function(params){
-        this.maxCount = 100000;
+        this.maxCount = 10000;
         this.dataTableEl = $(this.el).find("#DataTable")[0];
         this.dataTableElClone =  $(this.dataTableEl).clone();
         this.selectedCollection = new OMAR.models.SelectedCollection();
