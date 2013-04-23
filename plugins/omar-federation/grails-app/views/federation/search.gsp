@@ -85,10 +85,11 @@
         <table>
            <tr><td>
                <div id="omar-server-enabled" class="omar-server-enabled">
-               <input id="omar-server-enabled-checkbox"
+<!--               <input id="omar-server-enabled-checkbox"
                       type="checkbox" class="omar-server-enabled-checkbox1"
                       checked=${'<%=enabled%>'}>
                </input>
+-->
                <label id="omar-server-count" class="omar-server-count">${'<%=count%>'}
                </label>
            </div>
