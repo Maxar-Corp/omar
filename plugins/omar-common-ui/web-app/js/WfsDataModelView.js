@@ -427,7 +427,7 @@ OMAR.models.RasterEntryColumnGroups=Backbone.Collection.extend({
                 mDataProperties:[
                     "checked","thumbnail","id", ,"view", "acquisition_date","file_type"
                     ,"class_name","mission_id","country_code","target_id"
-                    ,"be_number","sensor_id","title"
+                    ,"be_number","sensor_id","title", "image_id"
                 ],
                 selected:false
             }
@@ -525,8 +525,8 @@ OMAR.models.RasterEntryColumnDefs=Backbone.Collection.extend({
                 ,{ "aTargets":[], "sTitle": "TARGET ID",  "sName":"target_id", "mDataProp": "target_id" }
                 ,{ "aTargets":[], "sTitle": "BE",  "sName":"be_number", "mDataProp": "be_number" }
                 ,{ "aTargets":[], "sTitle": "SENSOR ID",  "sName":"sensor_id", "mDataProp": "sensor_id" }
-                ,{ "aTargets":[], "sTitle": "IID",  "sClass":"image_id", "sType":"string","sName":"title", "mDataProp": "title" }
-                ,{ "aTargets":[], "sTitle": "IID2", "sClass":"title",  "sType":"string","sName":"image_id", "mDataProp": "image_id" }
+                ,{ "aTargets":[], "sTitle": "IID",  "sClass":"image_id", "sType":"string","sName":"image_id", "mDataProp": "image_id" }
+                ,{ "aTargets":[], "sTitle": "IID2", "sClass":"title",  "sType":"string","sName":"title", "mDataProp": "title" }
                 ,{ "aTargets":[], "sTitle": "PRODUCT ID", "sName":"product_id",  "mDataProp": "product_id" }
                 ,{ "aTargets":[], "sTitle": "NIIRS",  "sClass":"niirs", "sType":"numeric", "sName":"niirs", "mDataProp": "niirs" }
                 ,{ "aTargets":[], "sTitle": "ORGANIZATION",  "sClass":"organization", "sType":"string","sName":"organization","mDataProp": "organization" }
