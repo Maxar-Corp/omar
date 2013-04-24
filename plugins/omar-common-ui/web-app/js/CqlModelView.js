@@ -358,6 +358,7 @@ OMAR.models.CqlModel = Backbone.Model.extend({
                             }
                             break;
                         case "string":
+                            var needsBackslashConversion = true;
                             if(!expr.val){
                                 errorMessage.message =  "No value present, please input value";
                                 errors.push(errorMessage);
@@ -371,6 +372,7 @@ OMAR.models.CqlModel = Backbone.Model.extend({
                                 case "contains":
                                     opval = "LIKE";
                                     val = " '%"+val+"%'";
+
                                     break;
                                 case "icontains":
                                     opval = "ILIKE";
@@ -398,8 +400,18 @@ OMAR.models.CqlModel = Backbone.Model.extend({
 
                                     break;
                                 default:
+                                    needsBackslashConversion = false;
                                     val = "'"+val+"'";
                                     break;
+                            }
+
+                            /*
+                            This is a quick workaround for windows searching
+                            that contain backslashes
+                             */
+                            if(needsBackslashConversion && val.contains("\\"))
+                            {
+                              val = val.replace(/\\/g, "\\\\\\\\");
                             }
                             fullExpression = expr.colval + " " + opval + val;
                             break;
