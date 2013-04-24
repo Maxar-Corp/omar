@@ -358,7 +358,7 @@ OMAR.models.CqlModel = Backbone.Model.extend({
                             }
                             break;
                         case "string":
-                            var needsBackslashConversion = true;
+                            var needsBackslashConversion = expr.colval == "filename";
                             if(!expr.val){
                                 errorMessage.message =  "No value present, please input value";
                                 errors.push(errorMessage);
