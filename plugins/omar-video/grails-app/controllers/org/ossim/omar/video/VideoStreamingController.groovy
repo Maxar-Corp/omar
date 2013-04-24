@@ -1,5 +1,6 @@
 package org.ossim.omar.video
 
+import org.ossim.omar.core.Utility
 import org.springframework.beans.factory.InitializingBean
 
 import org.apache.commons.io.FilenameUtils
