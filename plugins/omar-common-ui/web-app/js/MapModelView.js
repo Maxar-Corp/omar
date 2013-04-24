@@ -616,7 +616,7 @@ OMAR.views.Map = Backbone.View.extend({
         {
             if(this.searchType.get("typeName").search("video_data_set")>-1)
             {
-                tempLayers = "Video";
+                tempLayers = "Videos";
             }
         }
         return new OpenLayers.Layer.WMS( model.get("nickname"),
@@ -662,7 +662,7 @@ OMAR.views.Map = Backbone.View.extend({
                         {
                             if(scope.searchType.get("typeName").search("video_data_set")>-1)
                             {
-                                layer.setOptions({layers:"Video"});
+                                layer.setOptions({layers:"Videos"});
                             }
                             else
                             {
