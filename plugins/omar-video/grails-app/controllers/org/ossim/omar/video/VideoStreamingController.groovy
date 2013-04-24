@@ -50,6 +50,8 @@ class VideoStreamingController implements InitializingBean
                         "15",
                         "${flvFile.absolutePath}"]
           Utility.executeCommand(command, true)
+
+
           //def process = cmd.execute()
           //process.waitFor()
         }
