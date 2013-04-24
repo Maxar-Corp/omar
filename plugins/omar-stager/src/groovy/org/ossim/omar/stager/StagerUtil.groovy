@@ -103,9 +103,8 @@ class StagerUtil
     def fileRoot = file.name.substring( 0, file.name.lastIndexOf( '.' ) )
     def hisFile = new File( file.parent, "${fileRoot}.his" )
     def hisFlag = ( hisFile.exists() ) ? '' : '--create-histogram-fast'
-    def cmd = "ossim-img2rr ${hisFlag} ${file.absolutePath}"
+    def cmd = ["ossim-img2rr", "${hisFlag}", "${file.absolutePath}"]
     def proc = cmd.execute()
-
     proc.consumeProcessOutput()
 
     def exitCode = proc.waitFor()
