@@ -397,6 +397,7 @@ OMAR.models.CqlModel = Backbone.Model.extend({
                                 case "in":
                                     var splitVal = val.split(",");
                                     val = "('"+splitVal.join("','") + "')";
+                                    needsBackslashConversion = false;
 
                                     break;
                                 default:
