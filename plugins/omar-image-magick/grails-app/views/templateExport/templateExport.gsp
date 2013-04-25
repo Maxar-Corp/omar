@@ -44,6 +44,7 @@
 					<option value = "dhsLogo">DHS</option>
 					<option value = "dodLogo">DOD</option>
 					<option value = "dosLogo">DOS</option>
+					<option value = "jccLogo">JCC</option>
 					<option selected value = "ngaLogo">NGA</option>
 					<option value = "nroLogo">NRO</option>
 					<option value = "nsaLogo">NSA</option>

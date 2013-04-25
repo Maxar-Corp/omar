@@ -298,12 +298,13 @@ function generateNorthArrow()
 	$("#northArrowImage").css("height", northArrowHeight);
 	$("#northArrowImage").css("width", northArrowWidth);
 
+	northAngleArray[currentLayer] = $("#northAngleInput").val();
 	var northArrowColor = $("#northArrowColorInput").val();
 	var northArrowBackgroundColor = $("#northArrowBackgroundColorInput").val();
 
 	var northArrowUrl = northArrowGeneratorUrl;
 	northArrowUrl += "?northArrowSize=" + northArrowHeight;
-	northArrowUrl += "&northAngle=" + $("#northAngleInput").val();;
+	northArrowUrl += "&northAngle=" + $("#northAngleInput").val();
 	northArrowUrl += "&northArrowColor=" + northArrowColor;
 	northArrowUrl += "&northArrowBackgroundColor=" + northArrowBackgroundColor;
 	$("#northArrowImage").attr("src", northArrowUrl);
@@ -336,7 +337,7 @@ function generateOverviewMap()
 		}
 	}
 
-	var overviewMapImageHeight = 0.2 * previewImageHeight;
+	var overviewMapImageHeight = 1.2 * headerHeight;
 	$("#overviewMapImage").css("height", overviewMapImageHeight);
 	$("#overviewMapImage").attr("src", overviewMapImagesDirectory + overviewMapCountry + ".gif");
 	if (!$("#includeOverviewMapCheckbox").prop("checked")) { $("#overviewMapImage").fadeTo("fast", 0.5); }
@@ -362,8 +363,6 @@ function getExportUrlParams(layerIndex)
         exportUrlParams += "&headerTitleText=" + headerTitleTextArray[layerIndex];
         exportUrlParams += "&headerTitleTextColor=" + $("#headerTitleTextColorInput").val();
         exportUrlParams += "&imageUrl=" + imageUrlArray[layerIndex];
-        exportUrlParams += "&imageHeight=" + previewImageHeight;
-        exportUrlParams += "&imageWidth=" + previewImageWidth;
         exportUrlParams += "&includeOverviewMap=" + $("#includeOverviewMapCheckbox")[0].checked;
         exportUrlParams += "&logo=" + $("#logo").val();
         exportUrlParams += "&northArrowAngle=" + northAngleArray[layerIndex];
