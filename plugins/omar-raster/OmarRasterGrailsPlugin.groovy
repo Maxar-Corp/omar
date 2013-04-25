@@ -53,10 +53,11 @@ OMAR Raster support
       propertyName = 'fileType'
       outlineLookupTable = [
           //aaigrid: 4,
-          cadrg: new Color( 0, 255, 255, 255 ), // cyan
-          ccf: new Color( 128, 100, 255, 255 ), // cyan
-          adrg: new Color( 50, 111, 111, 255 ), // cyan
-          //cib: 2,
+          cadrg: new Color( 0, 255, 255, 255 ),
+          cib: new Color(0,128,128,255),
+          ccf: new Color( 128, 100, 255, 255 ),
+          adrg: new Color( 50, 111, 111, 255 ),
+          mrsid: new Color(0,188,0,255),
           //doqq: 2,
           dted: new Color( 0, 255, 0, 255 ), // green
           jpeg: new Color( 255, 255, 0, 255 ), // yellow
@@ -64,8 +65,8 @@ OMAR Raster support
           landsat7: new Color( 255, 0, 255, 255 ), // purple
           nitf: new Color( 0, 0, 255, 255 ),  // blue
           tiff: new Color( 255, 0, 0, 255 ),  // red
-          mpeg: new Color(164,254,255,255)
-          //unspecified: 14
+          mpeg: new Color(164,254,255,255),
+          unspecified: new Color(255,255,255,255) // white
       ]
     }
 
@@ -79,7 +80,8 @@ OMAR Raster support
           ALPHA: new Color( 255, 0, 255, 255 ),
           BRAVO: new Color( 0, 255, 0, 255 ),
           CHARLIE: new Color( 0, 255, 255, 255 ),
-          DELTA: new Color( 0, 0, 255, 255 )
+          DELTA: new Color( 0, 0, 255, 255 ),
+          unspecified: new Color(255,255,255,255) // white
       ]
     }
 
