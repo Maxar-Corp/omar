@@ -15,9 +15,9 @@
 							<li class = "yuimenuitem">
 								<a class = "yuimenuitemlabel" href = 'javascript:spawnExportImageDialog()' title = "Export Image">Image</a>
 							</li>
-							<li class = "yuimenuitem">
+						<!--	<li class = "yuimenuitem">
 								<a class = "yuimenuitemlabel" href = 'javascript:spawnExportAnimationDialog()' title = "Export Animation">Animation</a>
-							</li>
+							</li> -->
 						</ul>
 					</div>
 				</div>
