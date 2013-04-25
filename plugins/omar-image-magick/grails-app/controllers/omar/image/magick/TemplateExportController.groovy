@@ -1,5 +1,7 @@
 package omar.image.magick
 
+import java.awt.Color
+
 import javax.imageio.ImageIO
 
 import static groovyx.gpars.dataflow.Dataflow.task
@@ -61,8 +63,7 @@ class TemplateExportController
 	def export()
 	{
 		def country = params.country
-		def footerAcquisitionDateText = params.footerAcquisitionDateText
-		
+		def footerAcquisitionDateText = params.footerAcquisitionDateText	
 		def footerAcquisitionDateTextColor = params.footerAcquisitionDateTextColor
 		def footerLocationText = params.footerLocationText
 		def footerLocationTextColor = params.footerLocationTextColor
@@ -77,19 +78,53 @@ class TemplateExportController
 		def headerSecurityClassificationText = params.headerSecurityClassificationText
 		def headerSecurityClassificationTextColor = params.headerSecurityClassificationTextColor
 		def imageUrl = params.imageUrl
-		def imageHeight = params.imageHeight
-		def imageWidth = params.imageWidth
 		def includeOverviewMap = params.includeOverviewMap
 		def logo = params.logo
 		def northAngle = params.northArrowAngle
 		def northArrowColor = params.northArrowColor
 		def northArrowBackgroundColor = params.northArrowBackgroundColor
 		def northArrowSize = params.northArrowSize
+		//def templateImageFilename = templateExportService.serviceMethod(country, footerAcquisitionDateText, footerAcquisitionDateTextColor, footerLocationText, footerLocationTextColor, footerSecurityClassificationText, footerSecurityClassificationTextColor, headerDescriptionText, headerDescriptionTextColor, headerSecurityClassificationText, headerSecurityClassificationTextColor, headerTitleText, headerTitleTextColor, imageUrl, includeOverviewMap, logo, northAngle, northArrowColor, northArrowBackgroundColor)
+		//render templateImageFilename
+    def bufferedImage = templateExportService.serviceMethod(country,
+            footerAcquisitionDateText,
+            footerAcquisitionDateTextColor,
+            footerLocationText,
+            footerLocationTextColor,
+            footerSecurityClassificationText,
+            footerSecurityClassificationTextColor,
+            headerDescriptionText,
+            headerDescriptionTextColor,
+            headerSecurityClassificationText,
+            headerSecurityClassificationTextColor,
+            headerTitleText,
+            headerTitleTextColor,
+            imageUrl,
+            includeOverviewMap,
+            logo,
+            northAngle,
+            northArrowColor,
+            northArrowBackgroundColor)
 
-		def templateImageFilename = templateExportService.serviceMethod(footerAcquisitionDateText, footerLocationText, footerSecurityClassificationText, headerDescriptionText, headerSecurityClassificationText, headerTitleText, imageUrl, logo, northAngle)
-		render templateImageFilename
-		
-	}
+    try
+    {
+      def ostream = new ByteArrayOutputStream()
+      response.contentType = "image/png"
+      ImageIO.write(bufferedImage, "png", ostream )
+
+      def bytes = ostream.toByteArray()
+      if (params.filename)
+      {
+        response.setHeader( "Content-disposition", "attachment; filename=${params.filename}" )
+      }
+
+      response.contentLength = bytes.size()
+      response.outputStream << bytes
+    }
+    catch ( Exception e )
+    {}
+    null
+  }
 
 	def flipBookGenerator()
 	{
@@ -103,7 +138,7 @@ class TemplateExportController
 	def gradientGenerator()
 	{
 		def gradientHeight = params.gradientHeight
-		def gradientImage = gradientGeneratorService.serviceMethod( gradientHeight )
+		def gradientImage = gradientGeneratorService.serviceMethod(Color.BLACK, gradientHeight, Color.GRAY)
 
 		response.contentType = "image/png"
 		ImageIO.write(gradientImage, 'png', response.outputStream)
@@ -112,9 +147,12 @@ class TemplateExportController
 	def northArrowGenerator()
 	{
 		def northAngle = params.northAngle
+		def northArrowColor = params.northArrowColor
+                def northArrowBackgroundColor = params.northArrowBackgroundColor
 		def northArrowSize = params.northArrowSize
+		
 
-		def northArrowImage = northArrowGeneratorService.serviceMethod(northAngle, northArrowSize)
+		def northArrowImage = northArrowGeneratorService.serviceMethod(northAngle, northArrowColor, northArrowBackgroundColor, northArrowSize)
 		response.contentType = "image/png"
 		ImageIO.write(northArrowImage, "png", response.outputStream)
 	}

@@ -1,7 +1,6 @@
 package omar.image.magick
 
 import java.awt.Color
-import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import java.awt.RenderingHints
 
@@ -9,7 +8,7 @@ import javax.imageio.ImageIO
 
 class NorthArrowGeneratorService
 {
-	def serviceMethod(def northAngle, def northArrowSize)
+	def serviceMethod(def northAngle, def northArrowColor, def northArrowBackgroundColor, def northArrowSize)
 	{
 		def size = 1000
 		def strokeWidth = 50
@@ -31,27 +30,27 @@ class NorthArrowGeneratorService
 		graph.setColor(new Color(0, 0, 0, 0))
 		graph.fillRect(0, 0, size, size)
 
-		graph.setColor(new Color(0, 0, 0, 255))
+		graph.setColor(Color.decode("#${northArrowBackgroundColor}"))
 		graph.drawOval(0, 0, size, size)
 		graph.fillOval(0, 0, size, size)
 
 		def outterCircleDiameter = (0.66 * size).toInteger()
 		def outterCircleX = ((size - outterCircleDiameter) / 2).toInteger()
 		def outterCircleY = size - outterCircleDiameter - buffer
-		graph.setColor(new Color(255, 255, 255, 255))
+		graph.setColor(Color.decode("#${northArrowColor}"))
 		graph.fillOval(outterCircleX, outterCircleY, outterCircleDiameter, outterCircleDiameter)
 
 		def innerCircleDiameter = outterCircleDiameter - 2 * strokeWidth
 		def innerCircleX = outterCircleX + strokeWidth
 		def innerCircleY = outterCircleY + strokeWidth
-		graph.setColor(new Color(0, 0, 0, 255))
+		graph.setColor(Color.decode("#${northArrowBackgroundColor}"))
 		graph.fillOval(innerCircleX, innerCircleY, innerCircleDiameter, innerCircleDiameter)
 
 		def rectangleHeight = outterCircleY - 2 * buffer
 		def rectangleWidth = rectangleHeight
 		int[] triangleX = [size/2, size/2 + rectangleWidth/2, size/2 - rectangleWidth / 2]
 		int[] triangleY = [buffer, buffer + rectangleHeight, buffer + rectangleHeight]
-		graph.setColor(new Color(255, 255, 255, 255))
+		graph.setColor(Color.decode("#${northArrowColor}"))
 		graph.fillPolygon(triangleX, triangleY, 3)
 
 		def nHeight = 0.5 * innerCircleDiameter

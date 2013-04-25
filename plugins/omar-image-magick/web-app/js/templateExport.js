@@ -95,28 +95,37 @@ function changeOverviewMap() { $("#changeOverviewMapDialog").dialog("open"); }
 function download()
 {
 	if (imageUrlArray.length == 1)
-	{
+    {
+        var filename = prompt("What filename would you like", "omarTemplateExport"+(new Date()).getTime()+".png");
+        if((filename!=null)&&filename!="")
+        {
+            window.open(exportImageFormUrl+"?"+getExportUrlParams(currentLayer, filename), "_parent");
+        }
+
+
+        /*
 		$.ajax
 		({
 			async: true,
-			data: getExportUrlParams(currentLayer),
+			data: getExportUrlParams(currentLayer, "template.png"),
 			dataType: "text",
 			success: function(data) 
-			{ 
-				$("#currentProductProgressDiv").html("100%");
-				$("#productLinkDiv").html
-				( 
-					"<a " + 
-						"href = '" + viewProductUrl + "?fileName=" + data + "' " + 
-						"onclick = 'javascript:$(\"#productGenerationStatusDialog\").dialog(\"close\")' " +
-						"style = 'color: blue'" +
-						"target = '_blank'><u>Link</u>" +
-					"</a>"
-				);
+			{
+			//	$("#currentProductProgressDiv").html("100%");
+			//	$("#productLinkDiv").html
+			//	(
+			//		"<a " +
+			//			"href = '" + viewProductUrl + "?fileName=" + data + "' " +
+			//			"onclick = 'javascript:$(\"#productGenerationStatusDialog\").dialog(\"close\")' " +
+			//			"style = 'color: blue'" +
+			//			"target = '_blank'><u>Link</u>" +
+			//		"</a>"
+			//	);
 			},
 			type: "POST",
 			url: exportImageFormUrl
 		});
+		*/
 	}
 	else if (imageUrlArray.length > 1)
 	{
@@ -140,8 +149,8 @@ function download()
 				break;
 			}
 		}
+        $("#productGenerationProgressDialog").dialog("open");
 	}
-	$("#productGenerationProgressDialog").dialog("open");
 }
 
 function fontSize(text, desiredSizeHeight, desiredSizeWidth)
@@ -298,12 +307,13 @@ function generateNorthArrow()
 	$("#northArrowImage").css("height", northArrowHeight);
 	$("#northArrowImage").css("width", northArrowWidth);
 
+	northAngleArray[currentLayer] = $("#northAngleInput").val();
 	var northArrowColor = $("#northArrowColorInput").val();
 	var northArrowBackgroundColor = $("#northArrowBackgroundColorInput").val();
 
 	var northArrowUrl = northArrowGeneratorUrl;
 	northArrowUrl += "?northArrowSize=" + northArrowHeight;
-	northArrowUrl += "&northAngle=" + $("#northAngleInput").val();;
+	northArrowUrl += "&northAngle=" + $("#northAngleInput").val();
 	northArrowUrl += "&northArrowColor=" + northArrowColor;
 	northArrowUrl += "&northArrowBackgroundColor=" + northArrowBackgroundColor;
 	$("#northArrowImage").attr("src", northArrowUrl);
@@ -336,13 +346,13 @@ function generateOverviewMap()
 		}
 	}
 
-	var overviewMapImageHeight = 0.2 * previewImageHeight;
+	var overviewMapImageHeight = 1.2 * headerHeight;
 	$("#overviewMapImage").css("height", overviewMapImageHeight);
 	$("#overviewMapImage").attr("src", overviewMapImagesDirectory + overviewMapCountry + ".gif");
 	if (!$("#includeOverviewMapCheckbox").prop("checked")) { $("#overviewMapImage").fadeTo("fast", 0.5); }
 }
 
-function getExportUrlParams(layerIndex)
+function getExportUrlParams(layerIndex, filename)
 {
 	var exportUrlParams = "";
 	exportUrlParams += "country=" + $("#overviewMapCountry").val();
@@ -362,14 +372,16 @@ function getExportUrlParams(layerIndex)
         exportUrlParams += "&headerTitleText=" + headerTitleTextArray[layerIndex];
         exportUrlParams += "&headerTitleTextColor=" + $("#headerTitleTextColorInput").val();
         exportUrlParams += "&imageUrl=" + imageUrlArray[layerIndex];
-        exportUrlParams += "&imageHeight=" + previewImageHeight;
-        exportUrlParams += "&imageWidth=" + previewImageWidth;
         exportUrlParams += "&includeOverviewMap=" + $("#includeOverviewMapCheckbox")[0].checked;
         exportUrlParams += "&logo=" + $("#logo").val();
         exportUrlParams += "&northArrowAngle=" + northAngleArray[layerIndex];
         exportUrlParams += "&northArrowBackgroundColor=" + $("#northArrowBackgroundColorInput").val();
         exportUrlParams += "&northArrowColor=" + $("#northArrowColorInput").val();
         exportUrlParams += "&northArrowSize=" + $("#northArrowImage").height();
+    if(filename)
+    {
+        exportUrlParams += "&filename=" + filename;
+    }
 
 	return exportUrlParams;
 }

@@ -12,54 +12,51 @@ class TextGeneratorService
 {
 	def serviceMethod(def text, def textAlignment, def textColor, def textHeight, def textWidth)
 	{
+		// convert the over height and width values to integers
 		textHeight = textHeight as Integer
 		textWidth = textWidth as Integer
-		def font = new Font("Arial", Font.PLAIN, textHeight);
 
+		// create a blank image upon widht the text will be drawn
 		def textBufferedImage = new BufferedImage(textWidth, textHeight, BufferedImage.TYPE_4BYTE_ABGR)
 		def textGraphic = textBufferedImage.createGraphics()
 
+		// turn on anti-aliasing		
 		def renderingHints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON)
 		textGraphic.setRenderingHints(renderingHints)
 
-		textGraphic.setFont(font)
-		def fontMetrics = textGraphic.getFontMetrics()
+		// set the color of the text
+		textGraphic.setColor(Color.decode("#${textColor}"))
 
-		def textOffsetX
-		if (textAlignment == "left")
+		// iteratively scale the text to fill the entire box
+		def font
+		def fontMetrics
+		def fontSize = 0
+		def stringHeight = 0
+		def stringWidth = 0
+		while (stringHeight < textHeight && stringWidth < textWidth)
 		{
-			textOffsetX = 0
-		}
-		else if (textAlignment == "center")
-		{
-			def stringWidth = 0
-			//def fontSize = 1 as Integer
-			//while (stringWidth < textWidth) // || textHeight < fontMetrics.getHeight())
-			//{
-			//	font = new Font("Arial", Font.PLAIN, fontSize)
-			//	textGraphic.setFont(font)
-			//	stringWidth = fontMetrics.stringWidth("${text}")
-			//	println stringWidth
-			//	println textWidth
-			//	println fontMetrics.getHeight()
-			//	fontSize++
-			//}
-
-			//fontSize--
-			//font = new Font("Arial", Font.PLAIN, fontSize)
-			//textGraphic.setFont(font)
+			fontSize++
+			font = new Font("Arial", Font.BOLD, fontSize)
+			textGraphic.setFont(font)
+			fontMetrics = textGraphic.getFontMetrics()
 			stringWidth = fontMetrics.stringWidth("${text}")
-			textOffsetX = (textWidth - stringWidth) / 2 as Integer
+			stringHeight = fontMetrics.getHeight() - fontMetrics.getDescent()
 		}
-		else if (textAlignment == "right")
-		{
-			def stringWidth = fontMetrics.stringWidth("${text}")
-			textOffsetX = textWidth - stringWidth
-		}
+		fontSize--
+		font = new Font("Arial", Font.BOLD, fontSize)
+		textGraphic.setFont(font)
+		fontMetrics = textGraphic.getFontMetrics()
 
-		textGraphic.setColor(textColor)
-		textGraphic.drawString("${text}", textOffsetX, textHeight)
+		// determine the text offset for the appropriate alingment
+		def textOffsetX
+		if (textAlignment == "left") { textOffsetX = 0 }
+		else if (textAlignment == "center") { textOffsetX = (textWidth - fontMetrics.stringWidth("${text}")) / 2 as Integer }
+		else if (textAlignment == "right") { textOffsetX = textWidth - fontMetrics.stringWidth("${text}") }
 
+		// draw the text
+		textGraphic.drawString("${text}", textOffsetX, textHeight - fontMetrics.getDescent())
+
+		// clean up
 		textGraphic.dispose()
 
 

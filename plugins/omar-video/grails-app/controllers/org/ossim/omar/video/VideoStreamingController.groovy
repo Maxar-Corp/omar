@@ -1,5 +1,6 @@
 package org.ossim.omar.video
 
+import org.ossim.omar.core.Utility
 import org.springframework.beans.factory.InitializingBean
 
 import org.apache.commons.io.FilenameUtils
@@ -40,10 +41,20 @@ class VideoStreamingController implements InitializingBean
 
         if ( !flvFile.exists() )
         {
-          def cmd = "ffmpeg -i ${videoFile.absolutePath} -an -vb 2048k -r 15 ${flvFile.absolutePath}"
-          println cmd
-          def process = cmd.execute()
-          process.waitFor()
+          def command = ["ffmpeg",
+                        "-i",
+                        "${videoFile.absolutePath}",
+                        "-an",
+                        "-vb",
+                        "2048k",
+                        "-r",
+                        "15",
+                        "${flvFile.absolutePath}"]
+          Utility.executeCommand(command, true)
+
+
+          //def process = cmd.execute()
+          //process.waitFor()
         }
 
         flvUrl = new URL( "${flashUrlRoot}/${flvFile.name}" )
