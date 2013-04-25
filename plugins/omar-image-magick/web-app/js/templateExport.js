@@ -99,9 +99,12 @@ function download()
         var filename = prompt("What filename would you like", "omarTemplateExport"+(new Date()).getTime()+".png");
         if((filename!=null)&&filename!="")
         {
+            if(filename.search("\.png") == -1)
+            {
+                filename = filename + ".png";
+            }
             window.open(exportImageFormUrl+"?"+getExportUrlParams(currentLayer, filename), "_parent");
         }
-
 
         /*
 		$.ajax
