@@ -153,11 +153,11 @@ class TemplateExportService
 		templateGraphic.drawImage(disclaimerTextBufferedImage, disclaimerTextOffsetX, disclaimerTextOffsetY, null)
 
 		templateGraphic.dispose()
-
-		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
-                def tempFilesLocationAsFile = new File(tempFilesLocation)
-                def templateFile = File.createTempFile("finishedProduct", ".png", tempFilesLocationAsFile)
-		ImageIO.write(templateBufferedImage, "png", templateFile as File)
-		return templateFile.toString()
+    return templateBufferedImage;
+//		def tempFilesLocation = grailsApplication.config.export.workDir + "/"
+//                def tempFilesLocationAsFile = new File(tempFilesLocation)
+//                def templateFile = File.createTempFile("finishedProduct", ".png", tempFilesLocationAsFile)
+//		ImageIO.write(templateBufferedImage, "png", templateFile as File)
+//		return templateFile.toString()
 	}
 }

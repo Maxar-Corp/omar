@@ -84,11 +84,47 @@ class TemplateExportController
 		def northArrowColor = params.northArrowColor
 		def northArrowBackgroundColor = params.northArrowBackgroundColor
 		def northArrowSize = params.northArrowSize
+		//def templateImageFilename = templateExportService.serviceMethod(country, footerAcquisitionDateText, footerAcquisitionDateTextColor, footerLocationText, footerLocationTextColor, footerSecurityClassificationText, footerSecurityClassificationTextColor, headerDescriptionText, headerDescriptionTextColor, headerSecurityClassificationText, headerSecurityClassificationTextColor, headerTitleText, headerTitleTextColor, imageUrl, includeOverviewMap, logo, northAngle, northArrowColor, northArrowBackgroundColor)
+		//render templateImageFilename
+    def bufferedImage = templateExportService.serviceMethod(country,
+            footerAcquisitionDateText,
+            footerAcquisitionDateTextColor,
+            footerLocationText,
+            footerLocationTextColor,
+            footerSecurityClassificationText,
+            footerSecurityClassificationTextColor,
+            headerDescriptionText,
+            headerDescriptionTextColor,
+            headerSecurityClassificationText,
+            headerSecurityClassificationTextColor,
+            headerTitleText,
+            headerTitleTextColor,
+            imageUrl,
+            includeOverviewMap,
+            logo,
+            northAngle,
+            northArrowColor,
+            northArrowBackgroundColor)
 
-		def templateImageFilename = templateExportService.serviceMethod(country, footerAcquisitionDateText, footerAcquisitionDateTextColor, footerLocationText, footerLocationTextColor, footerSecurityClassificationText, footerSecurityClassificationTextColor, headerDescriptionText, headerDescriptionTextColor, headerSecurityClassificationText, headerSecurityClassificationTextColor, headerTitleText, headerTitleTextColor, imageUrl, includeOverviewMap, logo, northAngle, northArrowColor, northArrowBackgroundColor)
-		render templateImageFilename
-		
-	}
+    try
+    {
+      def ostream = new ByteArrayOutputStream()
+      response.contentType = "image/png"
+      ImageIO.write(bufferedImage, "png", ostream )
+
+      def bytes = ostream.toByteArray()
+      if (params.filename)
+      {
+        response.setHeader( "Content-disposition", "attachment; filename=${params.filename}" )
+      }
+
+      response.contentLength = bytes.size()
+      response.outputStream << bytes
+    }
+    catch ( Exception e )
+    {}
+    null
+  }
 
 	def flipBookGenerator()
 	{

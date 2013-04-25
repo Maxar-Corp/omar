@@ -95,28 +95,37 @@ function changeOverviewMap() { $("#changeOverviewMapDialog").dialog("open"); }
 function download()
 {
 	if (imageUrlArray.length == 1)
-	{
+    {
+        var filename = prompt("What filename would you like", "omarTemplateExport"+(new Date()).getTime()+".png");
+        if((filename!=null)&&filename!="")
+        {
+            window.open(exportImageFormUrl+"?"+getExportUrlParams(currentLayer, filename), "_parent");
+        }
+
+
+        /*
 		$.ajax
 		({
 			async: true,
-			data: getExportUrlParams(currentLayer),
+			data: getExportUrlParams(currentLayer, "template.png"),
 			dataType: "text",
 			success: function(data) 
-			{ 
-				$("#currentProductProgressDiv").html("100%");
-				$("#productLinkDiv").html
-				( 
-					"<a " + 
-						"href = '" + viewProductUrl + "?fileName=" + data + "' " + 
-						"onclick = 'javascript:$(\"#productGenerationStatusDialog\").dialog(\"close\")' " +
-						"style = 'color: blue'" +
-						"target = '_blank'><u>Link</u>" +
-					"</a>"
-				);
+			{
+			//	$("#currentProductProgressDiv").html("100%");
+			//	$("#productLinkDiv").html
+			//	(
+			//		"<a " +
+			//			"href = '" + viewProductUrl + "?fileName=" + data + "' " +
+			//			"onclick = 'javascript:$(\"#productGenerationStatusDialog\").dialog(\"close\")' " +
+			//			"style = 'color: blue'" +
+			//			"target = '_blank'><u>Link</u>" +
+			//		"</a>"
+			//	);
 			},
 			type: "POST",
 			url: exportImageFormUrl
 		});
+		*/
 	}
 	else if (imageUrlArray.length > 1)
 	{
@@ -140,8 +149,8 @@ function download()
 				break;
 			}
 		}
+        $("#productGenerationProgressDialog").dialog("open");
 	}
-	$("#productGenerationProgressDialog").dialog("open");
 }
 
 function fontSize(text, desiredSizeHeight, desiredSizeWidth)
@@ -343,7 +352,7 @@ function generateOverviewMap()
 	if (!$("#includeOverviewMapCheckbox").prop("checked")) { $("#overviewMapImage").fadeTo("fast", 0.5); }
 }
 
-function getExportUrlParams(layerIndex)
+function getExportUrlParams(layerIndex, filename)
 {
 	var exportUrlParams = "";
 	exportUrlParams += "country=" + $("#overviewMapCountry").val();
@@ -369,6 +378,10 @@ function getExportUrlParams(layerIndex)
         exportUrlParams += "&northArrowBackgroundColor=" + $("#northArrowBackgroundColorInput").val();
         exportUrlParams += "&northArrowColor=" + $("#northArrowColorInput").val();
         exportUrlParams += "&northArrowSize=" + $("#northArrowImage").height();
+    if(filename)
+    {
+        exportUrlParams += "&filename=" + filename;
+    }
 
 	return exportUrlParams;
 }
