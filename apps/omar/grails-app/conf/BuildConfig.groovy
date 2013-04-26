@@ -42,6 +42,9 @@ grails.project.dependency.resolution = {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
 
     // runtime 'mysql:mysql-connector-java:5.1.20'
+      // Workarounds for Grails not shipping ant in WAR
+      runtime 'org.apache.ant:ant:1.7.1'    //you can also use runtime
+      runtime 'org.apache.ant:ant-launcher:1.7.1'
   }
 
   plugins {
