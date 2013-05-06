@@ -202,7 +202,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     Use backbone as a true model for a menu and build the menu up dynamically.
     Currently its just a place holder and we will build it here.
 */
-        this.menuView = new OMAR.views.MenuView();
+        this.menuView = new OMAR.views.SearchMenuView();
         this.model.set("menuModel",this.menuView.model);
 
         this.menuView.bind("onKmlQueryClicked", $.proxy(this.kmlQueryClicked, this, false));
