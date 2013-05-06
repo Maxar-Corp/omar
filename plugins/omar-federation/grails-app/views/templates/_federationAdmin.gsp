@@ -25,6 +25,10 @@
                     <td><input id="OmarFederationServerIp" type="text"></input></td>
                 </tr>
                 <tr>
+                    <td>Domain</td>
+                    <td><input id="OmarFederationServerDomain" type="text"></input></td>
+                </tr>
+                <tr>
                     <td>Port</td>
                     <td><input id="OmarFederationServerPort" type="text" value="5222"></input></td>
                 </tr>

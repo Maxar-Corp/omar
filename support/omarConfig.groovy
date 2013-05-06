@@ -39,6 +39,8 @@ login.registration.userVerification="manual"
 login.registration.createLdapUser=false
 login.registration.useMail=(login.registration.userVerification== "email")
 
+jabber.securityMode = "disabled"
+
 //security {
 //  level = 'UNCLASS'
 //level = 'SECRET'

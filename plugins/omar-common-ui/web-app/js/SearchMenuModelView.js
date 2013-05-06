@@ -4,7 +4,7 @@ OMAR.models.MenuModel = Backbone.Model.extend(
 }
 );
 
-OMAR.views.MenuView = Backbone.View.extend({
+OMAR.views.SearchMenuView = Backbone.View.extend({
     el:"#federatedSearchMenuId",
     initialize: function(params)
     {

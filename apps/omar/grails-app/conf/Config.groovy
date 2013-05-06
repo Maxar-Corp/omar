@@ -711,6 +711,13 @@ stager {
   onDemand = true
 }
 
+jabber{
+  /**
+   * Can be disabled, enabled, required
+   */
+  securityMode = "disabled"
+}
+
 grails.resources.mappers.yuicssminify.includes = ['**/*.css']
 grails.resources.mappers.yuijsminify.includes = ['**/*.js']
 grails.resources.mappers.yuicssminify.excludes = ['**/*.min.css']
