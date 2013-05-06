@@ -18,7 +18,7 @@ OMAR.models.FederationSettingsModel = Backbone.Model.extend({
         name:"",
         settings:{
             "vcard":{nickName:"", firstName:"",lastName:""},
-            "server":{ip:"",port:"5222",username:"",password:""},
+            "server":{ip:"",domain:"",port:"5222",username:"",password:""},
             "chatRoom":{id:"", password:"", enabled:false}
         }
     },
@@ -35,7 +35,7 @@ OMAR.models.FederationSettingsModel = Backbone.Model.extend({
         }
         if(!result.settings.server)
         {
-            result.settings.server = {ip:"",port:"5222",username:"",password:""};
+            result.settings.server = {ip:"",domain:"",port:"5222",username:"",password:""};
         }
         if(!result.settings.chatRoom)
         {
@@ -57,19 +57,20 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
         }
 
         this.model.bind("change", this.modelChanged, this);
-        this.omarFederationVcardNickName  = $(this.el).find("#OmarFederationVcardNickName");
-        this.omarFederationVcardFirstName      = $(this.el).find("#OmarFederationVcardFirstName");
-        this.omarFederationVcardLastName       = $(this.el).find("#OmarFederationVcardLastName");
-        this.omarFederationServerIp            = $(this.el).find("#OmarFederationServerIp");
-        this.omarFederationServerPort          = $(this.el).find("#OmarFederationServerPort");
-        this.omarFederationServerUsername = $(this.el).find("#OmarFederationServerUsername");
-        this.omarFederationServerPassword = $(this.el).find("#OmarFederationServerPassword");
-        this.omarFederationChatRoomId          = $(this.el).find("#OmarFederationChatRoomId");
-        this.omarFederationChatRoomPassword    = $(this.el).find("#OmarFederationChatRoomPassword");
-        this.omarFederationChatRoomEnabled     = $(this.el).find("#OmarFederationChatRoomEnabled");
+        this.omarFederationVcardNickName    = $(this.el).find("#OmarFederationVcardNickName");
+        this.omarFederationVcardFirstName   = $(this.el).find("#OmarFederationVcardFirstName");
+        this.omarFederationVcardLastName    = $(this.el).find("#OmarFederationVcardLastName");
+        this.omarFederationServerIp         = $(this.el).find("#OmarFederationServerIp");
+        this.omarFederationServerDomain     = $(this.el).find("#OmarFederationServerDomain");
+        this.omarFederationServerPort       = $(this.el).find("#OmarFederationServerPort");
+        this.omarFederationServerUsername   = $(this.el).find("#OmarFederationServerUsername");
+        this.omarFederationServerPassword   = $(this.el).find("#OmarFederationServerPassword");
+        this.omarFederationChatRoomId       = $(this.el).find("#OmarFederationChatRoomId");
+        this.omarFederationChatRoomPassword = $(this.el).find("#OmarFederationChatRoomPassword");
+        this.omarFederationChatRoomEnabled  = $(this.el).find("#OmarFederationChatRoomEnabled");
 
-        this.refreshButton                      = $(this.el).find("#RefreshId");
-        this.applyButton                     = $(this.el).find("#ApplyId");
+        this.refreshButton                  = $(this.el).find("#RefreshId");
+        this.applyButton                    = $(this.el).find("#ApplyId");
        // this.disconnectButton                  = $(this.el).find("#DisconnectId");
 
         this.dirty = false;
@@ -79,6 +80,7 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
         $(this.omarFederationVcardLastName).change(this.lastNameChanged.bind(this));
 
         $(this.omarFederationServerIp).change(this.serverIpChanged.bind(this));
+        $(this.omarFederationServerDomain).change(this.serverDomainChanged.bind(this));
         $(this.omarFederationServerPort).change(this.serverPortChanged.bind(this));
         $(this.omarFederationServerUsername).change(this.serverUsernameChanged.bind(this));
         $(this.omarFederationServerPassword).change(this.serverPasswordChanged.bind(this));
@@ -125,6 +127,14 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
     serverIpChanged:function(){
         var settings = this.model.get("settings");
         settings.server.ip = $(this.omarFederationServerIp).val();
+        // set is not working in IE maybe because of the nested settings so
+        // lets force change
+        // this.model.set("settings", settings);
+        this.model.trigger("change");
+    },
+    serverDomainChanged:function(){
+        var settings = this.model.get("settings");
+        settings.server.domain = $(this.omarFederationServerDomain).val();
         //set is not working in IE maybe because of the nested settings so
         // lets force change
         //this.model.set("settings", settings);
@@ -241,6 +251,7 @@ OMAR.views.FederationAdmin = Backbone.View.extend({
         $(this.omarFederationVcardFirstName).val(settings.vcard.firstName);
         $(this.omarFederationVcardLastName).val(settings.vcard.lastName);
         $(this.omarFederationServerIp).val(settings.server.ip);
+        $(this.omarFederationServerDomain).val(settings.server.domain);
         $(this.omarFederationServerPort).val(settings.server.port);
         $(this.omarFederationServerUsername).val(settings.server.username);
         $(this.omarFederationServerPassword).val(settings.server.password);
@@ -261,4 +272,21 @@ OMAR.pages.FederationAdmin = (function($, params){
 $(document).ready(function () {
     $.ajaxSetup({ cache: false });
     init();
+    $("#federationAdminMenuId").jMenu({
+        openClick: false,
+        ulWidth: 100,
+        effects: {
+            effectSpeedOpen: 0,
+            effectSpeedClose: 0,
+            effectTypeOpen: 'slide',
+            effectTypeClose: 'hide',
+            effectOpen: 'linear',
+            effectClose: 'linear'
+        },
+        TimeBeforeOpening: 0,
+        TimeBeforeClosing: 0,
+        animatedText: true,
+        paddingLeft: 10
+    });
+
 });
