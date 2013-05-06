@@ -63,6 +63,7 @@ modules = {
         resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'layout-default-latest.css']
         resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery/smoothness', file: 'jquery-ui-1.9.2.custom.css']
         resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'jquery-ui-timepicker-addon.css']
+        resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'jMenu.jquery.js']
         resource url: [dir: 'js', file: 'spin-min.js', plugin: 'omar-core']
         resource url: [dir: 'css', file: 'admin.css']
         resource url: [dir: 'js', file: 'admin.js']
