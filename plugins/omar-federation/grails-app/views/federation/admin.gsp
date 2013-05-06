@@ -8,7 +8,10 @@
 </head>
 <body>
 <div class="outer-center" id="federatedAdminPageId">
-        <g:render plugin="omar-federation" template="/templates/federationAdmin"/>
+    <omar:securityClassificationBanner/>
+    <g:render plugin="omar-common-ui" template="/templates/federationAdminMenu"/>
+    <g:render plugin="omar-federation" template="/templates/federationAdmin"/>
+    <omar:securityClassificationBanner/>
 </div>
 <r:layoutResources/>
 
