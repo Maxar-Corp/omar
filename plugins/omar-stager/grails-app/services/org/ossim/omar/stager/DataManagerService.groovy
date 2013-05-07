@@ -97,63 +97,60 @@ class DataManagerService implements ApplicationContextAware
 
   synchronized def findRepositoryForFile(def file)
   {
-    def repository
-    def repoList = Repository.executeQuery("select baseDir from Repository where baseDir = ?", [file.toString()])
-    if(!repoList)
-    {
-      repoList = Repository.executeQuery("select baseDir from Repository where baseDir = ?", [file.parentFile.toString()])
-    }
-
-    if(!repoList)
-    {
-       if(file.isDirectory())
-       {
-        repository = new Repository( baseDir: file.toString() )
-        repository.save( flush: true )
-        log.debug( "Creating default repository ${file?.parentFile?.absolutePath}" )
-      }
-    }
-    else
-    {
-      repository = Repository.findByBaseDir(repoList[0]);
-    }
-
-    if(!repository)
-    {
-      def splitChar = File.separatorChar.toString();
-      if(splitChar == '\\')
+    Repository.withTransaction{
+      def repository
+      def repoList = Repository.executeQuery("select baseDir from Repository where baseDir = ?", [file.toString()])
+      if(!repoList)
       {
-        splitChar = splitChar+splitChar;
+        repoList = Repository.executeQuery("select baseDir from Repository where baseDir = ?", [file.parentFile.toString()])
       }
-      def arrayOfParts = file?.parentFile.toString().split(splitChar);
-      def baseDir
 
-      if(arrayOfParts.size()>1)
+      if(!repoList)
       {
-        baseDir = arrayOfParts[0..1].join(File.separatorChar.toString())
+        if(file.isDirectory())
+        {
+          repository = new Repository( baseDir: file.toString() )
+          repository.save( flush: true )
+          log.debug( "Creating default repository ${file?.parentFile?.absolutePath}" )
+        }
       }
       else
       {
-        baseDir = arrayOfParts[0];
+        repository = Repository.findByBaseDir(repoList[0]);
       }
-
-      if(!baseDir)
-      {
-        baseDir = File.separatorChar.toString()
-      }
-      if(baseDir.trim().empty)
-      {
-        baseDir = File.separatorChar.toString()
-      }
-      repository = Repository.findByBaseDir(baseDir);
 
       if(!repository)
       {
-        repository = new Repository( baseDir: baseDir )
-        repository.save( flush: true )
-        log.debug( "Creating default repository ${baseDir}" )
+        def splitChar = File.separatorChar.toString();
+        if(splitChar == '\\')
+        {
+          splitChar = splitChar+splitChar;
+        }
+        def arrayOfParts = file?.parentFile.toString().split(splitChar);
+        def baseDir
+
+        if(arrayOfParts.size()>1)
+        {
+          baseDir = arrayOfParts[0..1].join(File.separatorChar.toString())
+        }
+        else
+        {
+          baseDir = arrayOfParts[0];
+        }
+        baseDir = baseDir?.trim();
+        if(!baseDir)
+        {
+          baseDir = File.separatorChar.toString()
+        }
+        repository = Repository.findByBaseDir(baseDir);
+
+        if(!repository)
+        {
+          repository = new Repository( baseDir: baseDir )
+          repository.save( flush: true )
+          log.debug( "Creating default repository ${baseDir}" )
+        }
       }
-    }
 /*
     def repositories = ( Repository.list()?.sort { it.baseDir.size() } )?.reverse()
     def repository = null
@@ -185,6 +182,7 @@ class DataManagerService implements ApplicationContextAware
       log.debug( "Found repository ${repository.baseDir}" )
     }
     */
-    return repository
+      return repository
+    }
   }
 }
