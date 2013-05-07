@@ -674,7 +674,7 @@ stager {
        * This will force the scripts page on reload to always use the formatters
        * listed.
        */
-      forceUseFormatterOnReload = true
+      forceUseFormatterOnReload = false
       formatter = [
               /**
                * This formats the arguments to the indexFilesArgs on the scripts page
