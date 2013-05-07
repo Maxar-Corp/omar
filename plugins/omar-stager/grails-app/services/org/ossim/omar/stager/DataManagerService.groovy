@@ -97,6 +97,7 @@ class DataManagerService implements ApplicationContextAware
 
   synchronized def findRepositoryForFile(def file)
   {
+    println file
     def repository
     def repoList = Repository.executeQuery("select baseDir from Repository where baseDir = ?", [file.toString()])
     if(!repoList)
