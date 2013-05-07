@@ -48,7 +48,7 @@ class DataManagerService implements ApplicationContextAware
         if ( oms )
         {
           def omsInfoParsers = applicationContext.getBeansOfType( OmsInfoParser.class )
-          def repository = findRepositoryForFile( new File( "/" ) )
+          //def repository = findRepositoryForFile( new File( "/" ) )
           omsInfoParsers?.each { name, value ->
 
             def dataSets = value.processDataSets( oms )
@@ -97,7 +97,6 @@ class DataManagerService implements ApplicationContextAware
 
   synchronized def findRepositoryForFile(def file)
   {
-    println file
     def repository
     def repoList = Repository.executeQuery("select baseDir from Repository where baseDir = ?", [file.toString()])
     if(!repoList)
@@ -107,12 +106,12 @@ class DataManagerService implements ApplicationContextAware
 
     if(!repoList)
     {
-      //if(file.isDirectory())
-     // {
-     //   repository = new Repository( baseDir: file.toString() )
-     //   repository.save( flush: true )
-     //   log.debug( "Creating default repository ${file?.parentFile?.absolutePath}" )
-     // }
+       if(file.isDirectory())
+       {
+        repository = new Repository( baseDir: file.toString() )
+        repository.save( flush: true )
+        log.debug( "Creating default repository ${file?.parentFile?.absolutePath}" )
+      }
     }
     else
     {
@@ -137,6 +136,15 @@ class DataManagerService implements ApplicationContextAware
       {
         baseDir = arrayOfParts[0];
       }
+
+      if(!baseDir)
+      {
+        baseDir = File.separatorChar.toString()
+      }
+      if(baseDir.trim().empty)
+      {
+        baseDir = File.separatorChar.toString()
+      }
       repository = Repository.findByBaseDir(baseDir);
 
       if(!repository)
@@ -145,7 +153,6 @@ class DataManagerService implements ApplicationContextAware
         repository.save( flush: true )
         log.debug( "Creating default repository ${baseDir}" )
       }
-      println baseDir
     }
 /*
     def repositories = ( Repository.list()?.sort { it.baseDir.size() } )?.reverse()
@@ -178,7 +185,6 @@ class DataManagerService implements ApplicationContextAware
       log.debug( "Found repository ${repository.baseDir}" )
     }
     */
-    println "REPO: ${repository}"
     return repository
   }
 }
