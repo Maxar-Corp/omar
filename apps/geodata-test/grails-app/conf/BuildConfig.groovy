@@ -58,6 +58,7 @@ grails.project.dependency.resolution = {
 
     runtime ":database-migration:1.3.2"
 
+    compile ':filterpane:2.1.6'
     compile ':cache:1.0.1'
   }
 }
@@ -84,5 +85,5 @@ grails.plugin.location.geodata = "${System.env['OMAR_DEV_HOME']}/plugins/geodata
 grails.plugin.location.omarImageMagick = "${System.env['OMAR_DEV_HOME']}/plugins/omar-image-magick"
 grails.plugin.location.omarTimeLapse = "${System.env['OMAR_DEV_HOME']}/plugins/omar-time-lapse"
 
-grails.plugin.location.filterpane = "${System.env['OMAR_DEV_HOME']}/plugins/filterpane"
+//grails.plugin.location.filterpane = "${System.env['OMAR_DEV_HOME']}/plugins/filterpane"
 grails.plugin.location.icodeAis = "${System.env['OMAR_DEV_HOME']}/plugins/icode-ais"
