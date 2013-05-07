@@ -43,7 +43,10 @@ class WfsController
 
       //println wfsCommand
 
-      switch ( wfsCommand.request?.toUpperCase() )
+      // CITE Test seem to pass in request twice!
+      wfsCommand?.request = wfsCommand?.request?.split( ',' )?.first();
+
+      switch ( wfsCommand?.request?.toUpperCase() )
       {
       case "GETCAPABILITIES":
         (results, contentType) = webFeatureService.getCapabilities( wfsCommand )
