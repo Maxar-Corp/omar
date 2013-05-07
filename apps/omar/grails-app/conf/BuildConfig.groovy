@@ -1,4 +1,8 @@
 grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
+
+grails.work.dir="${System.env.OMAR_DEV_HOME}/.grails"
+grails.dependency.cache.dir = "${System.env.OMAR_DEV_HOME}/.grails/ivy-cache"
+
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
