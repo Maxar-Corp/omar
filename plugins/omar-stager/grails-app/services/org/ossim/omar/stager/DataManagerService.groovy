@@ -97,8 +97,24 @@ class DataManagerService implements ApplicationContextAware
 
   synchronized def findRepositoryForFile(def file)
   {
+    def repository
+    if(File.separatorChar == '\\')
+    {
+      // I am having troubles with windows.  We will address this when we refactor the
+      // repo implementation
+      //
+      repository = Repository.findByBaseDir("/");
+      if(!repository)
+      {
+        repository = new Repository( baseDir: "/" )
+        repository.save( flush: true )
+        log.debug( "Creating default repository /" )
+      }
+
+      return repository
+    }
+
     Repository.withTransaction{
-      def repository
       def repoList = Repository.executeQuery("select baseDir from Repository where baseDir = ?", [file.toString()])
       if(!repoList)
       {
