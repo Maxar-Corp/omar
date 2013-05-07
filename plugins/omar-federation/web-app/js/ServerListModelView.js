@@ -7,6 +7,15 @@ OMAR.models.OmarActiveServerModel=Backbone.Model.extend({
 
     }
 });
+OMAR.models.OmarServerListConnectModel=Backbone.Model.extend({
+    url:"/omar/federation/reconnect",
+    idAttribute:"id",
+    defaults:{
+        id:"",
+        user:"",
+        connected:null
+    }
+});
 
 OMAR.models.OmarServerModel=Backbone.Model.extend({
     idAttribute:"id",
@@ -83,6 +92,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
 
     },
     initialize:function(params){
+        var thisPtr = this;
         this.refreshServerList = [];
         this.omarServerView = new OMAR.views.OmarServerView();
         var wfsServerCountModel;
@@ -122,6 +132,34 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
         {
             this.setWfsServerCountModel(wfsServerCountModel);
         }
+
+       // $(this.el).bind("contextmenu", function(event) {
+
+            var menu1 = [
+                {'Reconnect':function(menuItem,menu) {
+                    var m = new OMAR.models.OmarServerListConnectModel();
+                    m.fetch({success: function(model, response) {
+                        if(model.get("connected") == true)
+                        {
+                            alert("Successful reconnect to federation server.");
+                        }
+                        else
+                        {
+                            alert("Unable to reconnect to federation server.");
+                        }
+                    }});
+                } },
+                //$.contextMenu.separator,
+                {'Goto Login':function(menuItem,menu) {
+                    var activeServerModel =  thisPtr.model.get(thisPtr.activeServerModel.get("id"))
+                    window.open(activeServerModel.get("url")+"/login");
+                } }
+            ];
+            $(this.el).contextMenu(menu1,{theme:'vista'});
+
+//            alert("DOING MENU");
+//            event.preventDefault();
+       // });
     },
     setWfsTypeNameModel:function(wfsTypeNameModel)
     {
