@@ -106,12 +106,12 @@ class DataManagerService implements ApplicationContextAware
 
     if(!repoList)
     {
-      if(file.isDirectory())
-      {
-        repository = new Repository( baseDir: file.toString() )
-        repository.save( flush: true )
-        log.debug( "Creating default repository ${file?.parentFile?.absolutePath}" )
-      }
+      //if(file.isDirectory())
+     // {
+     //   repository = new Repository( baseDir: file.toString() )
+     //   repository.save( flush: true )
+     //   log.debug( "Creating default repository ${file?.parentFile?.absolutePath}" )
+     // }
     }
     else
     {
@@ -144,6 +144,7 @@ class DataManagerService implements ApplicationContextAware
         repository.save( flush: true )
         log.debug( "Creating default repository ${baseDir}" )
       }
+      println baseDir
     }
 /*
     def repositories = ( Repository.list()?.sort { it.baseDir.size() } )?.reverse()
@@ -176,8 +177,7 @@ class DataManagerService implements ApplicationContextAware
       log.debug( "Found repository ${repository.baseDir}" )
     }
     */
-
-    println repository
+    println "REPO: ${repository}"
     return repository
   }
 }
