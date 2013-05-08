@@ -23,6 +23,7 @@ OMAR.models.OmarServerModel=Backbone.Model.extend({
         id:"",
         ip:"",
         url:"",
+        config:"",
         phone:"",
         firstName:"",
         lastName:"",
@@ -45,6 +46,9 @@ OMAR.models.OmarServerModel=Backbone.Model.extend({
             this.userDefinedData.spinner = new Spinner(this.userDefinedData.spinnerOptions);
         }
         return this.userDefinedData.spinner;
+    },
+    getConfigAsJson:function(){
+        return JSON.parse(this.get("config"));
     }
 });
 
@@ -65,7 +69,6 @@ OMAR.models.OmarServerCollection=Backbone.Collection.extend({
         var size = response.size();
         for(var idx=0;idx<size;++idx)
         {
-
             var model = new OMAR.models.OmarServerModel(response[idx]);
             model.id = model.id;
             var tempM = this.get(model.id);
@@ -340,6 +343,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             var el = $(this.el).find("#"+model.id);
             if(el.size()==0)
             {
+                var thisPtr = this;
                 var server = this.makeServer(model);
                 $(server).appendTo(this.el);
                 var modelId = model.id;
@@ -350,7 +354,12 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                     "click",
                     $.proxy(this.modelClicked,this, model.id));
 
-                appendCurrent.push(modelId);
+                $(this.el).delegate("#omar-server-name-"+modelId,
+                    "dblclick",function(){alert("HEY!!!")});
+                    appendCurrent.push(modelId);
+                    //thisPtr.refreshServerCounts(appendCurrent);
+                //})
+              //  appendCurrent.push(modelId);
             }
             else
             {
@@ -360,7 +369,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             }
             if(appendCurrent.size() > 0)
             {
-                this.refreshServerCounts(appendCurrent);
+               this.refreshServerCounts(appendCurrent);
             }
         }
 

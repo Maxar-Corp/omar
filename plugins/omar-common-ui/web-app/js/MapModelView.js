@@ -609,9 +609,15 @@ OMAR.views.Map = Backbone.View.extend({
             this.serverCollection.on("reset", this.serverCollectionReset, this)
         }
     },
-    newLayer:function(model)
+    newLayer:function(model, masterModel)
     {
-        var tempLayers = "Imagery";
+        var tempLayers   = "Imagery";
+        var config       = model.getConfigAsJson();
+        var masterConfig = masterModel?masterModel.getConfigAsJson():null;
+        var url          = model.get("url")+"/wms/footprints";
+        var params       = {styles: "byFileType", layers: tempLayers, format:"image/gif", transparent:true};
+        var options      = {isBaseLayer:false};
+
         if(this.searchType)
         {
             if(this.searchType.get("typeName").search("video_data_set")>-1)
@@ -619,10 +625,36 @@ OMAR.views.Map = Backbone.View.extend({
                 tempLayers = "Videos";
             }
         }
+        if(config&&config.wms&&config.wms.data)
+        {
+            if(tempLayers == "Imagery")
+            {
+                if(config.wms.data.raster)
+                {
+                    url     = config.wms.data.raster.url;
+                    params  = masterConfig.wms.data.raster.params;
+                    options = masterConfig.wms.data.raster.options;
+                }
+            }
+            else
+            {
+                if(config.wms.data.video)
+                {
+                    url = config.wms.data.video.url;
+
+                    params = config.wms.data.video.params;
+                    options = config.wms.data.video.options;
+                }
+            }
+        }
+        //options.buffer = 0;
+        //options.displayOutsideMaxExtent=false;
+        //options.singleTile=true;
         return new OpenLayers.Layer.WMS( model.get("nickname"),
-            model.get("url")+"/wms/footprints",
-            {layers: tempLayers, format:"image/gif",
-                styles: "byFileType", transparent:true});
+            url,
+            params,
+            options
+            );
     },
     setCqlFilterToFootprintLayers:function(cqlFilterString){
         this.layers.forEach(function(value, key) {
@@ -634,11 +666,11 @@ OMAR.views.Map = Backbone.View.extend({
         // add new layers needed
         var mapLayers = [];
         if(this.layers.count() < 1)
-        {
+        {   var masterModel = this.serverCollection.at(0);
             for(var idx = 0; idx < this.serverCollection.size();++idx)
             {
                 var model = this.serverCollection.at(idx);
-                var layer = this.newLayer(model);
+                var layer = this.newLayer(model, masterModel);
                 mapLayers.push(layer);
                 this.layers.set(model.id, layer);
             }
@@ -678,7 +710,7 @@ OMAR.views.Map = Backbone.View.extend({
                 this.map.removeLayer(this.layers.get(layersToRemove[idx1]));
                 this.layers.remove(layersToRemove[idx1]);
             }
-
+             var masterModel = this.serverCollection.at(0);
             // now add new layers
             for(var idx2 = 0; idx2 < this.serverCollection.size();++idx2)
             {
@@ -686,7 +718,7 @@ OMAR.views.Map = Backbone.View.extend({
 
                 if(!this.layers.get(model.id))
                 {
-                    var layer = this.newLayer(model);
+                    var layer = this.newLayer(model, masterModel);
 
                     mapLayers.push(layer);
                     this.layers.set(model.id, layer);

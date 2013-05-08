@@ -2,6 +2,7 @@ package org.ossim.omar.federation
 
 import grails.converters.JSON
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 class FederationController  {
   def jabberFederatedServerService
@@ -14,7 +15,7 @@ class FederationController  {
     def wmsBaseLayers = (grailsApplication.config.wms as JSON).toString()
 
     render view: 'search', model:[wmsBaseLayers:wmsBaseLayers,
-            footprintStyle: grailsApplication.mainContext.getBean( grailsApplication.config?.wms?.data?.raster?.options?.styles)
+            footprintStyle: grailsApplication.mainContext.getBean( grailsApplication.config?.wms?.data?.raster?.params?.styles)
     ]
   }
   def serverList(){
@@ -29,10 +30,14 @@ class FederationController  {
     render contentType: 'application/json', text: result.toString()
   }
   def reconnect(){
-    jabberFederatedServerService.reconnect();
+    if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
+    {
+      jabberFederatedServerService.reconnect();
+    }
+
     def tempParam = new CaseInsensitiveMap(params);
     def userAndId = jabberFederatedServerService.makeFullUserNameAndId(jabberFederatedServerService.jabberUser);
-    def result = [id:"${userAndId.id}", user:userAndId.user, connected:jabberFederatedServerService.isConnected()] as JSON
+    def result = [error:"", id:"${userAndId.id}", user:userAndId.user, connected:jabberFederatedServerService.isConnected()] as JSON
     def callback = ""
     if (tempParam.callback) callback = tempParam.callback
     if (callback){

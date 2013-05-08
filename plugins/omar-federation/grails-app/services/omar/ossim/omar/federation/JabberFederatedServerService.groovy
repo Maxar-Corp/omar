@@ -42,7 +42,9 @@ class JabberFederatedServerService implements InitializingBean{
 
         vCard.setField("IP", settings?.vcard?.IP)
         vCard.setField("URL", settings?.vcard?.URL)
-
+        if(settings?.vcard?.config){
+          vCard.setField("config", settings?.vcard?.config.toString())
+        }
         jabberIp                  = settings?.server?.ip
         jabberDomain              = settings?.server?.domain
         jabberPort                = Integer.parseInt(settings?.server?.port)
@@ -129,8 +131,6 @@ class JabberFederatedServerService implements InitializingBean{
   }
   def makeUnavailable(def userName)
   {
-    def fullUserId = makeFullUserNameAndId(userName)//userName + "@" + jabberDomain
-    def tempCard = new VCard();
     try{
       def fullUser = makeFullUserNameAndId(userName)
       FederatedServer.withTransaction{
@@ -155,12 +155,26 @@ class JabberFederatedServerService implements InitializingBean{
                 nickname:vcard.nickName,
                 organization:vcard.organization,
                 ip:vcard.getField("IP"),
+                config:vcard.getField("config"),
                 url:vcard.getField("URL"),
                 phone:vcard.getPhoneHome("VOICE")?:vcard.getPhoneWork("VOICE")
         ]
       }
     }
-
+    if(!result)
+    {
+      result << [
+              id: makeFullUserNameAndId(jabberUser).id,//userName + "@" + jabberDomain
+              firstName:vCard.firstName,
+              lastName:vCard.lastName,
+              nickname:vCard.nickName,
+              organization:vCard.organization,
+              ip:vCard.getField("IP"),
+              config:vCard.getField("config"),
+              url:vCard.getField("URL"),
+              phone:vCard.getPhoneHome("VOICE")?:vCard.getPhoneWork("VOICE")
+      ]
+    }
     result
   }
   def reconnect()

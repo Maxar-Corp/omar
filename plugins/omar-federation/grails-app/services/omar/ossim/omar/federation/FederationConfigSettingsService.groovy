@@ -17,15 +17,27 @@ class FederationConfigSettingsService {
         {
             federationSettingsRecord = new ConfigSettings([name:"omar-federation",settings:"{}"])
         }
-        def settings = JSON.parse(federationSettingsRecord.settings);
+        def settings
+        try{
+          settings = JSON.parse(federationSettingsRecord.settings);
+        }
+        catch(e)
+        {
+          settings = JSON.parse("{}");
+        }
 
         if (settings.vcard==null||settings.server==null||settings.chatRoom==null)
         {
-            def builder = new JsonBuilder(settings)
+            def builder = new JsonBuilder()
             builder{
                 if(!settings.vcard)
                 {
                     vcard{
+                        config{
+                          wms(
+                             grailsApplication.config.wms
+                          )
+                        }
                         if(!settings?.vcard?.URL)
                         {
                             URL "${tempURL}"
@@ -60,8 +72,20 @@ class FederationConfigSettingsService {
         }
         else
         {
-            settings.vcard.URL = "${tempURL}"
-            settings.vcard.IP  = "${tempIP}"
+          settings.vcard.URL = "${tempURL}"
+          settings.vcard.IP  = "${tempIP}"
+          if(!settings?.vcard?.config)
+          {
+            def tempBuilder = new JsonBuilder()
+            tempBuilder{
+              config{
+                wms(
+                   grailsApplication.config.wms
+                )
+              }
+            }
+            settings.vcard.config = JSON.parse(tempBuilder.toString())
+          }
         }
         federationSettingsRecord.settings = settings.toString()
         federationSettingsRecord.save(flush: true)

@@ -167,7 +167,8 @@ wms {
 //            options: defaultOptions
 //        ],
         [
-            url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://${ serverAddress }/cgi-bin/mapserv${ wms.mapServExt }?map=${ mapFile }",
+               // url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://${ serverAddress }/cgi-bin/mapserv${ wms.mapServExt }?map=${ mapFile }",
+                url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://omar.ngaiost.org/cgi-bin/mapserv.sh?map=${ mapFile }",
             params: [layers: ( useTileCache ) ? "omar" : "Reference", format: "image/jpeg"],
             name: "Reference Data",
             options: defaultOptions
@@ -195,17 +196,18 @@ wms {
     }
 
     raster = [
-        url: "${ omar.serverURL }/wms/footprints",
-        params: [layers: ( supportIE6 ) ? "Imagery" : "ImageData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
+       // url: "${ omar.serverURL }/wms/footprints",
+        url: "http://omardb-test/omar/wms/footprints",
+        params: [transparent:true, styles: "byFileType", layers: ( supportIE6 ) ? "Imagery" : "ImageData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
         name: "OMAR Imagery Coverage",
-        options: [styles: "byFileType", footprintLayers: "Imagery"]
+        options: [isBaseLayer:false, footprintLayers: "Imagery"]
     ]
 
     video = [
         url: "${ omar.serverURL }/wms/footprints",
-        params: [layers: ( supportIE6 ) ? "Videos" : "VideoData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
+        params: [transparent:true, styles: "byFileType", layers: ( supportIE6 ) ? "Videos" : "VideoData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
         name: "OMAR Video Coverage",
-        options: [styles: "red", footprintLayers: "Videos"]
+        options: [isBaseLayer:false, footprintLayers: "Videos"]
     ]
   }
 
