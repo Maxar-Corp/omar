@@ -1,4 +1,8 @@
 grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
+
+grails.work.dir="${System.env.OMAR_DEV_HOME}/.grails"
+grails.dependency.cache.dir = "${System.env.OMAR_DEV_HOME}/.grails/ivy-cache"
+
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -42,12 +46,13 @@ grails.project.dependency.resolution = {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
 
     // runtime 'mysql:mysql-connector-java:5.1.20'
-      // Workarounds for Grails not shipping ant in WAR
-      runtime 'org.apache.ant:ant:1.7.1'    //you can also use runtime
-      runtime 'org.apache.ant:ant-launcher:1.7.1'
+    // Workarounds for Grails not shipping ant in WAR
+    runtime 'org.apache.ant:ant:1.7.1'    //you can also use runtime
+    runtime 'org.apache.ant:ant-launcher:1.7.1'
   }
 
   plugins {
+    compile ':filterpane:2.1.6'
     runtime ":hibernate:$grailsVersion"
     //runtime ":jquery:1.8.3"
     runtime ":resources:1.1.6"
@@ -60,7 +65,7 @@ grails.project.dependency.resolution = {
 
     build ":tomcat:$grailsVersion"
 
-    runtime ":database-migration:1.3.2"
+    runtime ":database-migration:1.3.3"
 
     compile ':cache:1.0.1'
   }
@@ -88,4 +93,4 @@ grails.plugin.location.omarSuperoverlay = "${System.env['OMAR_DEV_HOME']}/plugin
 grails.plugin.location.omarImageMagick = "${System.env['OMAR_DEV_HOME']}/plugins/omar-image-magick"
 grails.plugin.location.omarTimeLapse = "${System.env['OMAR_DEV_HOME']}/plugins/omar-time-lapse"
 
-grails.plugin.location.filterpane = "${System.env['OMAR_DEV_HOME']}/plugins/filterpane"
+//grails.plugin.location.filterpane = "${System.env['OMAR_DEV_HOME']}/plugins/filterpane"

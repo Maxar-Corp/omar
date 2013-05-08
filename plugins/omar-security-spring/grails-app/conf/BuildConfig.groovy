@@ -1,3 +1,6 @@
+grails.work.dir="${System.env.OMAR_DEV_HOME}/.grails"
+grails.dependency.cache.dir = "${System.env.OMAR_DEV_HOME}/.grails/ivy-cache"
+
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -29,7 +32,7 @@ grails.project.dependency.resolution = {
     compile ':spring-security-core:1.2.7.3'
     compile ':spring-security-ldap:1.0.6'
     compile ':csv:0.3.1'
-    //compile ':filterpane:2.0.1.1'
+    compile ':filterpane:2.1.6'
     runtime ':mail:1.0.1'
   }
 
@@ -42,4 +45,4 @@ grails.project.dependency.resolution = {
 }
 
 //grails.plugin.location.omarCommonUi = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-common-ui"
-grails.plugin.location.filterpane = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/filterpane"
+//grails.plugin.location.filterpane = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/filterpane"

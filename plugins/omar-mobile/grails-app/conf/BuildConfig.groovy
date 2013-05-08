@@ -1,3 +1,6 @@
+grails.work.dir="${System.env.OMAR_DEV_HOME}/.grails"
+grails.dependency.cache.dir = "${System.env.OMAR_DEV_HOME}/.grails/ivy-cache"
+
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"

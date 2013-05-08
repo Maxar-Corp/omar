@@ -1,3 +1,6 @@
+grails.work.dir="${System.env.OMAR_DEV_HOME}/.grails"
+grails.dependency.cache.dir = "${System.env.OMAR_DEV_HOME}/.grails/ivy-cache"
+
 import org.apache.ivy.plugins.latest.LatestTimeStrategy
 import org.apache.ivy.plugins.resolver.FileSystemResolver
 

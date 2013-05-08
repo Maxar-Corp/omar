@@ -1,3 +1,6 @@
+grails.work.dir="${System.env.OMAR_DEV_HOME}/.grails"
+grails.dependency.cache.dir = "${System.env.OMAR_DEV_HOME}/.grails/ivy-cache"
+
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -31,7 +34,7 @@ grails.project.dependency.resolution = {
   }
   plugins {
     compile ":csv:0.3.1"
-    //compile ':filterpane:2.0.1.1'
+    compile ':filterpane:2.1.6'
   }
 }
 
@@ -39,4 +42,4 @@ grails.plugin.location.postgis = "${System.getenv('OMAR_DEV_HOME')}/plugins/post
 grails.plugin.location.openlayers = "${System.getenv('OMAR_DEV_HOME')}/plugins/openlayers"
 grails.plugin.location.geoscript = "${System.getenv('OMAR_DEV_HOME')}/plugins/geoscript"
 
-grails.plugin.location.filterpane = "../../plugins/filterpane"
+//grails.plugin.location.filterpane = "../../plugins/filterpane"
