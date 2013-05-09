@@ -115,7 +115,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
 //      g2d.draw( shp )
 //
 //    }
-
+    def drawCount = 0;
     def closure = { feature ->
       LiteShape shp = new LiteShape( feature.groundGeom, affine, false )
 
@@ -124,16 +124,26 @@ class DrawService implements ApplicationContextAware, InitializingBean
 
       if ( fillColor && ( feature.groundGeom instanceof Polygon || feature.groundGeom instanceof MultiPolygon ) )
       {
+        def isTransparent = (fillColor.transparency == Color.TRANSLUCENT)||
+                            (fillColor.transparency == Color.BITMASK)
         g2d.color = fillColor
         g2d.composite = AlphaComposite.getInstance( AlphaComposite.SRC_OVER, 1 )
-        g2d.fill( shp )
+        if(!(isTransparent&&
+            (fillColor.alpha==0)))
+        {
+          g2d.fill( shp )
+        }
       }
 
-      g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON )
+      g2d.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF )
+      g2d.setRenderingHint( RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_SPEED )
+      g2d.setRenderingHint( RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED )
+      g2d.setRenderingHint( RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR )
+      g2d.setRenderingHint( RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED )
       g2d.stroke = new BasicStroke( 1, /*style.width*/ )
       g2d.color = outlineColor
       g2d.draw( shp )
-
+      ++drawCount;
     }
 
 
@@ -141,10 +151,8 @@ class DrawService implements ApplicationContextAware, InitializingBean
         max: grailsApplication.config.wms.vector.maxcount,
         fieldName: style.propertyName
     ]
-
     //searchService?.scrollGeometries( queryParams, pageParams, closure )
     searchService?.scrollFeatures( queryParams, options, closure )
-
   }
 
   byte[] drawLayers(def wmsRequest, def startDate, def endDate, def params)
