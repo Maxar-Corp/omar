@@ -196,8 +196,7 @@ wms {
     }
 
     raster = [
-       // url: "${ omar.serverURL }/wms/footprints",
-        url: "http://omardb-test/omar/wms/footprints",
+        url: "${ omar.serverURL }/wms/footprints",
         params: [transparent:true, styles: "byFileType", layers: ( supportIE6 ) ? "Imagery" : "ImageData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
         name: "OMAR Imagery Coverage",
         options: [isBaseLayer:false, footprintLayers: "Imagery"]
