@@ -225,18 +225,10 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
 
     //[i for(i in document)].filter(function(i){return i.substring(0,2)=='on'&&(document[i]==null||typeof document[i]=='function');})
    },
-   setup : function(containerDiv, mapObj, annDiv, topDiv, compass){
+   setupvector : function(){
 
-    this.map           = mapObj;
-    this.eventDiv      = this.getDivElement(topDiv);
-    this.annotationDiv = this.getDivElement(annDiv);
-    this.containerDiv  = this.getDivElement(containerDiv);
-    this.compassDiv    = this.getDivElement(compass);
-    this.containerDivRegion = YAHOO.util.Region.getRegion(this.containerDiv);
     this.vectorLayer = new OpenLayers.Layer.Vector();
     this.map.addLayer(this.vectorLayer);
-    this.events = new OpenLayers.Events(this, this.eventDiv, this.EVENT_TYPES, true);
-    //this.map.events.includeXY = false;
 
        var crossStyle =  new OpenLayers.Style({"default": {fillColor: "#000000"},
            "temporary": {fillColor: "#000000", graphicName: "cross"}});
@@ -393,6 +385,16 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     this.mapEventsDiv = OpenLayers.Util.getElement(this.map.id + "_events");
     this.containerResized(true);
   },
+setup: function(containerDiv, mapObj, annDiv, topDiv, compass) 
+{
+	this.map           = mapObj;
+	this.eventDiv      = this.getDivElement(topDiv);
+	this.annotationDiv = this.getDivElement(annDiv);
+	this.containerDiv  = this.getDivElement(containerDiv);
+	this.compassDiv    = this.getDivElement(compass);
+	this.containerDivRegion = YAHOO.util.Region.getRegion(this.containerDiv);
+	this.events = new OpenLayers.Events(this, this.eventDiv, this.EVENT_TYPES, true);
+},
 //handleBrowserEvent: function(evt)
 //{
 
@@ -499,6 +501,8 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
             }
         }
         if(removedMeasurements) this.events.triggerEvent("onFeatureRemoved");
+
+	if (!this.vectorLayer) { this.setupvector(); }
     },
   getAffineParams : function(){
     return this.affineParams;
