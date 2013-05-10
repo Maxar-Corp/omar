@@ -709,7 +709,7 @@ OMAR.imageManipulator.events.on({
     finishedInit = true;
     updateCenter();
 
-
+	OMAR.imageManipulator.setupvector();
 }
 
 function setupOverviewCheck(){
