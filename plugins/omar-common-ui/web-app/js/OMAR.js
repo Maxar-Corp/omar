@@ -10,8 +10,8 @@ OMAR.mgrsRegExp=/^(\d{1,2})\s?([C-X])\s?([A-Z])\s?([A-Z])\s?(\d{1,5})\s?(\d{1,5}
 
 OMAR.regexp = {}
 
-OMAR.regexp.float= /[-+]?[0-9]*\.?[0-9]*/;
-OMAR.regexp.integer= /[-+]?[0-9]*/;
+OMAR.regexp.floatExpression= /[-+]?[0-9]*\.?[0-9]*/;
+OMAR.regexp.integerExpression= /[-+]?[0-9]*/;
 OMAR.regexp.isoDate= /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/
 OMAR.regexp.isoPeriod=/^P(?:\d+Y|Y)?(?:\d+M|M)?(?:\d+D|D)?(?:T(?:\d+H|H)?(?:\d+M|M)?(?:\d+(?:\.\d{1,2})?S|S)?)?$/
 
@@ -82,12 +82,12 @@ OMAR.testArray = function(values, comparator)
 
 OMAR.isFloat = function(value)
 {
-    return OMAR.matchesCompletely(value, OMAR.regexp.float);
+    return OMAR.matchesCompletely(value, OMAR.regexp.floatExpression);
 }
 
 OMAR.isInteger = function(value)
 {
-    return OMAR.matchesCompletely(value, OMAR.regexp.integer);
+    return OMAR.matchesCompletely(value, OMAR.regexp.integerExpression);
 }
 
 
