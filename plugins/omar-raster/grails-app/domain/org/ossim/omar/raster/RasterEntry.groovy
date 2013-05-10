@@ -8,6 +8,8 @@ import org.ossim.omar.core.DateUtil
 
 class RasterEntry
 {
+  def grailsApplication
+
   String entryId
   String excludePolicy
   Long width
@@ -360,7 +362,10 @@ class RasterEntry
     def metadataNode = rasterEntryNode.metadata
 
     initRasterEntryMetadata( metadataNode, rasterEntry )
-    initRasterEntryOtherTagsXml( rasterEntry )
+    if(rasterEntry.grailsApplication.config.stager.includeOtherTags)
+    {
+      initRasterEntryOtherTagsXml( rasterEntry )
+    }
 
     def mainFile = rasterEntry.rasterDataSet.getFileFromObjects( "main" )
     def filename = mainFile?.name
@@ -611,7 +616,10 @@ class RasterEntry
             }
             break;
           default:
-            rasterEntry.otherTagsMap[name] = value
+            if(rasterEntry.grailsApplication.config.stager.includeOtherTags)
+            {
+              rasterEntry.otherTagsMap[name] = value
+            }
           }
         }
       }
