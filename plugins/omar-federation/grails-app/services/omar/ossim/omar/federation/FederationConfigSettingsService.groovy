@@ -87,6 +87,7 @@ class FederationConfigSettingsService {
             settings.vcard.config = JSON.parse(tempBuilder.toString())
           }
         }
+     // println federationSettingsRecord.settings
         federationSettingsRecord.settings = settings.toString()
         federationSettingsRecord.save(flush: true)
 
@@ -97,9 +98,9 @@ class FederationConfigSettingsService {
     {
         def federationSettingsRecord = getSettingsRecord();
 
-        federationSettingsRecord.settings = settings;
+        federationSettingsRecord?.settings = settings;
 
-        federationSettingsRecord.save(flush: true)
+        federationSettingsRecord?.save(flush: true)
 
         federationSettingsRecord
     }
