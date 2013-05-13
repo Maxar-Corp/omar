@@ -169,8 +169,8 @@ wms {
 //            options: defaultOptions
 //        ],
         [
-               // url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://${ serverAddress }/cgi-bin/mapserv${ wms.mapServExt }?map=${ mapFile }",
-                url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://omar.ngaiost.org/cgi-bin/mapserv.sh?map=${ mapFile }",
+                url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://${ serverAddress }/cgi-bin/mapserv${ wms.mapServExt }?map=${ mapFile }",
+                //url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://omar.ngaiost.org/cgi-bin/mapserv.sh?map=${ mapFile }",
             params: [layers: ( useTileCache ) ? "omar" : "Reference", format: "image/jpeg"],
             name: "Reference Data",
             options: defaultOptions
