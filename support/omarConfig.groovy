@@ -24,16 +24,16 @@ wms.base.layers = [
 
 wms.data.raster = [
         url: "${ omar.serverURL }/wms/footprints",
-        params: [styles: "byFileType", layers: ( wms.supportIE6) ? "Imagery" : "ImageData", format: ( wms.supportIE6) ? "image/gif" : "image/png"],
+        params: [styles: "byFileType", transparent:true, layers: ( wms.supportIE6) ? "Imagery" : "ImageData", format: ( wms.supportIE6) ? "image/gif" : "image/png"],
         name: "OMAR Imagery Coverage",
-        options: [footprintLayers: "Imagery"]
+        options: [isBaseLayer:false, footprintLayers: "Imagery"]
 ]
 
 wms.data.video = [
         url: "${ omar.serverURL }/wms/footprints",
-        params: [styles: "byFileType", layers: ( wms.supportIE6) ? "Videos" : "VideoData", format: ( wms.supportIE6) ? "image/gif" : "image/png"],
+        params: [styles: "byFileType", transparent:true, layers: ( wms.supportIE6) ? "Videos" : "VideoData", format: ( wms.supportIE6) ? "image/gif" : "image/png"],
         name: "OMAR Video Coverage",
-        options: [footprintLayers: "Videos"]
+        options: [isBaseLayer:false, footprintLayers: "Videos"]
 ]
 
 styles = [
