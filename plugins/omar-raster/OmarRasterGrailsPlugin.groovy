@@ -49,6 +49,7 @@ OMAR Raster support
       grailsApplication = ref( "grailsApplication" )
     }
 
+    /*
     byFileType( org.ossim.omar.raster.PropertyNameStyle ) { bean ->
       propertyName = 'fileType'
       outlineLookupTable = [
@@ -90,7 +91,7 @@ OMAR Raster support
       propertyName = 'id'
       defaultOutlineColor = new Color( 255, 0, 0, 255 )  // red
     }
-
+    */
   }
 
   def doWithDynamicMethods = { ctx ->
@@ -101,6 +102,33 @@ OMAR Raster support
     applicationContext.registerAlias( "imageryQueryParam", "imageDataQueryParam" )
     applicationContext.registerAlias( "imagerySearchService", "imageDataSearchService" )
 
+    def params = [propertyName:"fileType",
+            outlineLookupTable:[:]]
+    def styles = application.config.rasterEntry?.styles
+    def beanNames = []
+    def beans = beans{
+      styles?.each{style->
+         def beanName = "by${style?.propertyName.capitalize()}"
+         beanNames << beanName
+         "${beanName}"(org.ossim.omar.raster.PropertyNameStyle){bean->
+          propertyName = style.propertyName
+          outlineLookupTable = style.outlineLookupTable
+          fillLookupTable = style.fillLookupTable?:[:]
+          defaultFillColor = style.defaultFillColor?:new Color( 0, 0, 0, 0 )
+          defaultOutlineColor = style.defaultOutlineColor?:new Color( 255, 255, 255, 255 )
+        }
+      }
+    }
+
+    beanNames.each{beanName->
+      applicationContext.registerBeanDefinition(beanName,
+              beans.getBeanDefinition(beanName))
+    }
+      //applicationContext.registerBeanDefinition("byFileType",
+      //        beans.getBeanDefinition("byFileType"))
+    //}
+
+    //println fileType?.propertyName
   }
 
   def onChange = { event ->
