@@ -74,20 +74,14 @@ class FederationConfigSettingsService {
         {
           settings.vcard.URL = "${tempURL}"
           settings.vcard.IP  = "${tempIP}"
-          if(!settings?.vcard?.config)
-          {
             def tempBuilder = new JsonBuilder()
             tempBuilder{
-              config{
-                wms(
-                   grailsApplication.config.wms
-                )
-              }
+              wms(
+                grailsApplication.config.wms
+              )
             }
             settings.vcard.config = JSON.parse(tempBuilder.toString())
-          }
         }
-     // println federationSettingsRecord.settings
         federationSettingsRecord.settings = settings.toString()
         federationSettingsRecord.save(flush: true)
 
