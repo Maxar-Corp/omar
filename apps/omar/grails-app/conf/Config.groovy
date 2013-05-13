@@ -137,9 +137,9 @@ log4j = {
 //   debug 'org.springframework.security',
 //         'com.sun.jndi.ldap',
 
-//  root {
-//        debug 'stdout'
-//    }
+ // root {
+ //       debug 'stdout'
+ //   }
 
 }
 
@@ -642,6 +642,12 @@ rss {
  * This is the settings for the stager threads and jobs in the OMAR system
  */
 stager {
+  /**
+   * Currently used by raster entry for the tag dump can get very large
+   * and can increase the size of the database.  If you want to keep
+   * the database much smaller then you can turn off including other tags
+   */
+  includeOtherTags = false
     /**
      * Worker threads are currently for building on demand overviews and histograms
      * This will specify how many simultaneous threads that can be active
@@ -717,6 +723,10 @@ jabber{
    * Can be disabled, enabled, required
    */
   securityMode = "disabled"
+}
+
+federation{
+
 }
 
 grails.resources.mappers.yuicssminify.includes = ['**/*.css']
