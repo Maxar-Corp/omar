@@ -58,8 +58,6 @@ OMAR Raster support
     applicationContext.registerAlias( "imageryQueryParam", "imageDataQueryParam" )
     applicationContext.registerAlias( "imagerySearchService", "imageDataSearchService" )
 
-    def params = [propertyName:"fileType",
-            outlineLookupTable:[:]]
     def styles = application.config.rasterEntry?.styles
     def beanNames = []
     def beans = beans{
@@ -75,16 +73,10 @@ OMAR Raster support
         }
       }
     }
-
     beanNames.each{beanName->
       applicationContext.registerBeanDefinition(beanName,
               beans.getBeanDefinition(beanName))
     }
-      //applicationContext.registerBeanDefinition("byFileType",
-      //        beans.getBeanDefinition("byFileType"))
-    //}
-
-    //println fileType?.propertyName
   }
 
   def onChange = { event ->
