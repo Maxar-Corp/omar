@@ -104,25 +104,27 @@
 </script>
 
 <script type="text/javascript">
-    function init(){
-        var wmsConfig = ${wmsBaseLayers}
-            // application specific initialize that will need access to grails models
-            //
-                OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
-        var params = {
-            map:{theme:"${resource(plugin:'openlayers', dir:'js/theme/default', file:'style.css')}",
-                baseLayers:wmsConfig.base.layers
-            },
-            cql:{resourceImages:
-                    {remove:"${resource(plugin:'omar-common-ui', dir:'images', file:'remove.gif')}",
-                     add:"${resource(plugin:'omar-common-ui', dir:'images', file:'add.gif')}"
-                    }
-            }
-        };
-        var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);
-        searchPageController.render();
+function init(){
+    var userRoles = ${roles};
+    var wmsConfig = ${wmsBaseLayers}
+        // application specific initialize that will need access to grails models
+        //
+            OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
+    var params = {
+        map:{theme:"${resource(plugin:'openlayers', dir:'js/theme/default', file:'style.css')}",
+            baseLayers:wmsConfig.base.layers
+        },
+        cql:{resourceImages:
+        {remove:"${resource(plugin:'omar-common-ui', dir:'images', file:'remove.gif')}",
+            add:"${resource(plugin:'omar-common-ui', dir:'images', file:'add.gif')}"
+        }
+        },
+        userRoles:userRoles
+    };
+    var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);
+    searchPageController.render();
 
-    }
+}
 </script>
 
 </body>

@@ -78,6 +78,7 @@ OMAR.models.FederatedRasterSearchModel = Backbone.Model.extend({
        ,wfsServerCountModel:null
        ,dateTimeRangeModel:null
        ,wfsTypeNameModel:null
+       ,userRoles:[]
     },
     initialize:function(params)
     {
@@ -86,6 +87,10 @@ OMAR.models.FederatedRasterSearchModel = Backbone.Model.extend({
             if(params.mapCriteriaDirtyFlag)
             {
                 this.attributes.mapCriteriaDirtyFlag = params.mapCriteriaDirtyFlag;
+            }
+            if(params.userRoles)
+            {
+                this.attributes.userRoles = params.userRoles
             }
             if(params.dataTableCriteriaDirtyFlag)
             {
@@ -186,7 +191,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     initialize:function(params){
         this.initializing = true;
         var thisPtr = this;
-        this.model = new OMAR.models.FederatedRasterSearchModel();
+        this.model = new OMAR.models.FederatedRasterSearchModel(params);
 
         this.wfsTypeNameView = new OMAR.views.WfsTypeNameView({model:this.model.get("wfsTypeNameModel")});
         this.displayUnitView = new OMAR.views.DisplayUnitModelView();
@@ -221,7 +226,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.omarServerCollectionView = new OMAR.views.OmarServerCollectionView(
             {"model":new OMAR.models.OmarServerCollection(),
              "wfsServerCountModel":this.model.get("wfsServerCountModel"),
-             "wfsTypeNameModel":this.model.get("wfsTypeNameModel")
+             "wfsTypeNameModel":this.model.get("wfsTypeNameModel"),
+             "userRoles":this.model.get("userRoles")
             }
         );
         this.measurementUnitView = new OMAR.views.UnitModelView({el:"#measurementUnitViewId"});
@@ -562,41 +568,56 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     gclClicked:function(){
         var fileNames = "";
         var classNames = "";
+        if(!this.omarServerCollectionView.isFirstSelected())
+        {
+           alert("Please select the first server.  Currently, you can only export geocell " +
+               "projects from the first server.  " +
+               "Sorry We do not federate geocell " +
+               "project exports at this time.");
 
+            return;
+        }
         var currentSelection = this.dataModelView.getCurrentSelection();
-        if(currentSelection.size() > 0) {
+        if(this.model.attributes.userRoles.indexOf("ROLE_DOWNLOAD") >=0)
+        {
+            if(currentSelection.size() > 0) {
 
-            // Build file name and type parameter strings
-            for(var idx=0; idx < currentSelection.size(); idx++){
-                var item = currentSelection.at(idx);
+                // Build file name and type parameter strings
+                for(var idx=0; idx < currentSelection.size(); idx++){
+                    var item = currentSelection.at(idx);
 
-                fileNames += item.id.toString();
-                //var modelRecord = this.dataModelView.model.get(item.id);
-                //if(modelRecord)
-                //{
-                //    fileNames += modelRecord.get("filename");
-                //    classNames += modelRecord.get("class_name");
-                //}
-                if(idx < currentSelection.size()-1)
-                {
-                  fileNames += ",";
-                //  classNames += ",";
+                    fileNames += item.id.toString();
+                    //var modelRecord = this.dataModelView.model.get(item.id);
+                    //if(modelRecord)
+                    //{
+                    //    fileNames += modelRecord.get("filename");
+                    //    classNames += modelRecord.get("class_name");
+                    //}
+                    if(idx < currentSelection.size()-1)
+                    {
+                        fileNames += ",";
+                        //  classNames += ",";
+                    }
                 }
+
+                // Initialize with controller string
+                exportURL = "/omar/rasterEntryExport/exportGclProject";
+
+                // Add image file name and type parameters
+                exportURL += "?filenames=" + fileNames + "&classnames=" + classNames;
+
+                //alert("Project export initiated - this may take awhile.\nClick OK and wait for download prompt...");
+
+                window.open(exportURL, "_parent");
             }
 
-            // Initialize with controller string
-            exportURL = "/omar/rasterEntryExport/exportGclProject";
-
-            // Add image file name and type parameters
-            exportURL += "?filenames=" + fileNames + "&classnames=" + classNames;
-
-            //alert("Project export initiated - this may take awhile.\nClick OK and wait for download prompt...");
-
-            window.open(exportURL, "_parent");
+            else {
+                alert("No images were selected for project export...");
+            }
         }
-
-        else {
-            alert("No images were selected for project export...");
+        else
+        {
+            alert("You currently do not have download privileges.")
         }
     },
     wfsTypeNameChanged:function()

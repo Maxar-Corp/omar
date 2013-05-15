@@ -96,6 +96,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     },
     initialize:function(params){
         var thisPtr = this;
+
         this.refreshServerList = [];
         this.omarServerView = new OMAR.views.OmarServerView();
         var wfsServerCountModel;
@@ -112,6 +113,14 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             if(params.wfsTypeNameModel)
             {
                 this.setWfsTypeNameModel(params.wfsTypeNameModel);
+            }
+            if(params.userRoles)
+            {
+                this.userRoles = params.userRoles;
+            }
+            else
+            {
+                this.userRoles = []
             }
         }
         if(!this.model)
@@ -140,17 +149,30 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
 
             var menu1 = [
                 {'Reconnect':function(menuItem,menu) {
-                    var m = new OMAR.models.OmarServerListConnectModel();
-                    m.fetch({success: function(model, response) {
-                        if(model.get("connected") == true)
+                    var isAdmin = thisPtr.userRoles.indexOf("ROLE_ADMIN")>=0;
+                    if(isAdmin)
+                    {
+                        var m = new OMAR.models.OmarServerListConnectModel();
+                        if(thisPtr.reconnectAjax&&(thisPtr.reconnectAjax.readState !=4))
                         {
-                            alert("Successful reconnect to federation server.");
+                            thisPtr.reconnectAjax.abort();
                         }
-                        else
-                        {
-                            alert("Unable to reconnect to federation server.");
-                        }
-                    }});
+                        thisPtr.reconnectAjax = m.fetch({success: function(model, response) {
+                            if(model.get("connected") == true)
+                            {
+                                alert("Successful reconnect to federation server.");
+                            }
+                            else
+                            {
+                                alert("Unable to reconnect to federation server.");
+                            }
+                        }});
+                    }
+                    else
+                    {
+                        alert("In order to force a federation reconnect\nYou must be logged into the OMAR server with an Admin role");
+                    }
+
                 } },
                 //$.contextMenu.separator,
                 {'Goto Login':function(menuItem,menu) {
@@ -416,6 +438,9 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
 
         $($(this.el).find("#"+id)).attr("class","omar-server-selected");//.class(".omar-server-selected");
 
+    },
+    isFirstSelected:function(){
+        return $($(this.el).children()[0]).attr("class") == "omar-server-selected";
     },
     setAllBusy:function(flag)
     {

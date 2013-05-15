@@ -7,16 +7,19 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 class FederationController  {
   def jabberFederatedServerService
   def grailsApplication
-
+  def springSecurityService
   def index(){
     forward controller: "federation", action: "search"
   }
   def search() {
+    def authorities = springSecurityService.principal.authorities
+
+    def roles = authorities.collect(){it.authority}
     def wmsBaseLayers = (grailsApplication.config.wms as JSON).toString()
     def footprintStyle = grailsApplication.config?.wms?.data?.raster?.params?.styles?grailsApplication.mainContext.getBean(grailsApplication.config?.wms?.data?.raster?.params?.styles):null
-
     render view: 'search', model:[wmsBaseLayers:wmsBaseLayers,
-            footprintStyle: footprintStyle
+                                  footprintStyle: footprintStyle,
+                                  roles: roles as JSON
     ]
   }
   def serverList(){
