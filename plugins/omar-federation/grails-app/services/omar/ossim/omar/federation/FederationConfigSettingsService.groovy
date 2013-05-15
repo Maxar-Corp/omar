@@ -11,6 +11,7 @@ class FederationConfigSettingsService {
     {
         def federationSettingsRecord = ConfigSettings.findByName("omar-federation");
 
+
         def tempIP  = grailsApplication?.config?.omar?.serverIP
         def tempURL = grailsApplication?.config?.omar?.serverURL
         if (!federationSettingsRecord)
@@ -34,10 +35,14 @@ class FederationConfigSettingsService {
                 {
                     vcard{
                         config{
+
                           wms(
                              grailsApplication.config.wms
                           )
                         }
+                        version(
+                             grailsApplication.metadata['app.version']
+                        )
                         if(!settings?.vcard?.URL)
                         {
                             URL "${tempURL}"
@@ -74,7 +79,9 @@ class FederationConfigSettingsService {
         {
           settings.vcard.URL = "${tempURL}"
           settings.vcard.IP  = "${tempIP}"
-            def tempBuilder = new JsonBuilder()
+          settings.vcard.version = "${grailsApplication.metadata['app.version']}"
+
+          def tempBuilder = new JsonBuilder()
             tempBuilder{
               wms(
                 grailsApplication.config.wms
