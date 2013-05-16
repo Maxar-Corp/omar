@@ -28,6 +28,8 @@ class JabberFederatedServerService implements InitializingBean{
   def jabber
   def participantListener
   def enabled
+  def wasConnected
+
   void loadFromTable(){
     def record = federationConfigSettingsService.getSettingsRecord()
     if(record)
@@ -201,6 +203,9 @@ class JabberFederatedServerService implements InitializingBean{
     {
 
     }
+
+    wasConnected = false;
+
     jabber = [:]
   }
   def connect()
@@ -283,6 +288,11 @@ class JabberFederatedServerService implements InitializingBean{
       }
     }
     refreshServerTable()
+
+    if(isConnected())
+    {
+      wasConnected = true;
+    }
     return jabber
   }
   /*

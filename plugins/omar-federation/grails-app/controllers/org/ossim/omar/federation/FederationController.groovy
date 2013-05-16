@@ -24,6 +24,14 @@ class FederationController  {
   }
   def serverList(){
     def tempParam = new CaseInsensitiveMap(params);
+    if(!jabberFederatedServerService.isConnected()&&
+        jabberFederatedServerService.wasConnected&&
+        jabberFederatedServerService.enabled
+    )
+    {
+      println "Reconnecting"
+      jabberFederatedServerService.reconnect()
+    }
     def result = jabberFederatedServerService.serverList as JSON
     def callback = ""
     if (tempParam.callback) callback = tempParam.callback
