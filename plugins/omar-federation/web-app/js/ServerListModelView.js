@@ -49,6 +49,34 @@ OMAR.models.OmarServerModel=Backbone.Model.extend({
     },
     getConfigAsJson:function(){
         return JSON.parse(this.get("config"));
+    },
+    getWmsConfig:function(){
+        var config = this.getConfigAsJson();
+        var result = null;
+        if(config)
+        {
+           result = config.wms;
+        }
+
+        return result;
+    },
+    getVideoFootprintSettings:function(){
+        var wmsConfig = this.getWmsConfig();
+        var result = null;
+        if(wmsConfig)
+        {
+            result = wmsConfig.data.video;
+        }
+        return result;
+    },
+    getRasterFootprintSettings:function(){
+        var wmsConfig = this.getWmsConfig();
+        var result = null;
+        if(wmsConfig)
+        {
+            result = wmsConfig.data.raster;
+        }
+        return result;
     }
 });
 
@@ -392,6 +420,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             if(appendCurrent.size() > 0)
             {
                this.refreshServerCounts(appendCurrent);
+               this.trigger("onServersAdded", this.model, appendCurrent);
             }
         }
 
@@ -441,6 +470,14 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     },
     isFirstSelected:function(){
         return $($(this.el).children()[0]).attr("class") == "omar-server-selected";
+    },
+    getFirstModel:function(){
+        if(this.model.size() > 0)
+        {
+            return this.model.at(0);
+        }
+
+        return null;
     },
     setAllBusy:function(flag)
     {

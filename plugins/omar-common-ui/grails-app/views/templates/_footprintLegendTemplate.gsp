@@ -2,7 +2,12 @@
     <div class="niceBoxHeader">Footprint Legend:</div>
 
     <div class="niceBoxBody">
-        <table>
+        <div id= "footprintLegendId">
+            <table id="footprintLegendTableId">
+            </table>
+        </div>
+<!--
+        <table id="footprintLegendId">
             <g:each var="entry" in="${style?.outlineLookupTable}">
                 <tr>
                     <td bgcolor="${entry?.value?.encodeAsHexColor()}">&nbsp;</td>
@@ -11,5 +16,6 @@
                 </tr>
             </g:each>
         </table>
+-->
     </div>
 </div>

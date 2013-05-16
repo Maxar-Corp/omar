@@ -78,6 +78,7 @@ OMAR.models.FederatedRasterSearchModel = Backbone.Model.extend({
        ,wfsServerCountModel:null
        ,dateTimeRangeModel:null
        ,wfsTypeNameModel:null
+        ,footprintLegendModelView:null
        ,userRoles:[]
     },
     initialize:function(params)
@@ -193,6 +194,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var thisPtr = this;
         this.model = new OMAR.models.FederatedRasterSearchModel(params);
 
+        this.footprintLegendModelView = new OMAR.views.FootprintLegendView(params?params.legend:null);
+
         this.wfsTypeNameView = new OMAR.views.WfsTypeNameView({model:this.model.get("wfsTypeNameModel")});
         this.displayUnitView = new OMAR.views.DisplayUnitModelView();
         this.model.set("displayUnitModel",this.displayUnitView.model);
@@ -288,6 +291,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.pointView.bind("onRadiusChanged", this.pointViewEdited, this);
         this.bboxView.bind("onLlChanged", this.bboxViewEdited, this);
         this.bboxView.bind("onUrChanged", this.bboxViewEdited, this);
+        this.omarServerCollectionView.bind("onServersAdded", this.omarServerCollectionChanged, this);
         this.initializing = false;
     },
     events: {
@@ -639,6 +643,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.menuView.bind("onGeoCellClicked", this.gclClicked, this);
         }
 
+        this.updateLegend();
         this.search();
     },
     bboxModelChanged:function()
@@ -679,6 +684,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.setCriteriaDirty();
     },
     render:function(){
+        this.footprintLegendModelView.render();
         if(this.wfsTypeNameView)
         {
             this.wfsTypeNameView.render();
@@ -745,6 +751,40 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         collection.model.fetch({success:function(){},
             update: true, remove: false});
         window.setTimeout(this.updateServers.bind(this),5000);
+    },
+    omarServerCollectionChanged:function(model, newModelIdList)
+    {
+        var firstModel = model.at(0);
+
+        this.updateLegend();
+        //alert("Added models");
+    },
+    updateLegend:function(){
+        var model = this.omarServerCollectionView.getFirstModel();
+
+        if(model)
+        {
+            var wfsTypeName = this.model.attributes.wfsTypeNameModel.get("typeName");
+
+            var settings = null;
+            if(wfsTypeName.contains("video"))
+            {
+                settings = model.getVideoFootprintSettings();
+            }
+            else
+            {
+                settings = model.getRasterFootprintSettings();
+            }
+
+            if(settings&&settings.params)
+            {
+                if(settings.params.styles)
+                {
+                    this.footprintLegendModelView.footprintStyle.set({style:settings.params.styles});
+                }
+            }
+        }
+
     },
     toCql:function(){
         var result = "";

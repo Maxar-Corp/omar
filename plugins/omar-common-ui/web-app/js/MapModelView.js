@@ -586,15 +586,38 @@ OMAR.views.Map = Backbone.View.extend({
         }
     },
     searchTypeChanged:function(){
-        //alert("Map View: searchTypeChanged");
-        //this.serverCollectionReset();
+        var config = this.serverCollection.at(0).getConfigAsJson();
         var tempLayers =  "Imagery";
+        var params = null;
         if(this.searchType.get("typeName").search("video_data_set")>-1)
         {
             tempLayers = "Videos";
         }
+        if(tempLayers == "Imagery")
+        {
+            if(config.wms.data.raster)
+            {
+                params  = masterConfig.wms.data.raster.params;
+            }
+        }
+        else
+        {
+            if(config&&config.wms.data.video)
+            {
+
+                params = config.wms.data.video.params;
+            }
+        }
+        if(params)
+        {
+            params.layers = tempLayers;
+        }
+        else
+        {
+            params = {layers:tempLayers};
+        }
         this.layers.forEach(function(value, key) {
-            value.mergeNewParams({layers:tempLayers});
+            value.mergeNewParams(params);
         });
     },
     setServerCollection:function(serverCollection){

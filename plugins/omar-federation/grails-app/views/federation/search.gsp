@@ -106,7 +106,8 @@
 <script type="text/javascript">
 function init(){
     var userRoles = ${roles};
-    var wmsConfig = ${wmsBaseLayers}
+    var wmsConfig = ${wmsBaseLayers};
+    var styles    = ${styles};
         // application specific initialize that will need access to grails models
         //
             OpenLayers.ImgPath = "${resource(plugin:'openlayers', dir:'js/img')}/";
@@ -119,7 +120,10 @@ function init(){
             add:"${resource(plugin:'omar-common-ui', dir:'images', file:'add.gif')}"
         }
         },
-        userRoles:userRoles
+        userRoles:userRoles,
+        legend:{
+                 styles:styles
+               }
     };
     var searchPageController = new OMAR.pages.FederatedRasterSearch(jQuery, params);
     searchPageController.render();
