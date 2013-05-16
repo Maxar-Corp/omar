@@ -228,6 +228,16 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
     },
     fetchAndSetCount:function(id, callback){
         var model = this.model.get(id);
+        if(model&&model.userDefinedData&&model.userDefinedData.ajaxCountQuery &&
+            (model.userDefinedData.ajaxCountQuery.readyState != 4))
+        {
+            model.userDefinedData.ajaxCountQuery.abort();
+            model.userDefinedData.ajaxCountQuery = null;
+            if(this.omarServerCollectionView)
+            {
+                this.omarServerCollectionView.setBusy(model.id, false);
+            }
+        }
         if(model&&model.get("enabled"))
         {
             var modelId = model.id;
@@ -238,16 +248,6 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
             cloneWfsServerCountModel.attributes.url = model.get("url")+"/wfs";
            // this.wfsServerCountModel.attributes.url = model.get("url")+"/wfs";
             //wfs.set("url",model.get("url")+"/wfs");
-            if(model.userDefinedData.ajaxCountQuery &&
-                (model.userDefinedData.ajaxCountQuery.readyState != 4))
-            {
-                model.userDefinedData.ajaxCountQuery.abort();
-                model.userDefinedData.ajaxCountQuery = null;
-                if(this.omarServerCollectionView)
-                {
-                    this.omarServerCollectionView.setBusy(model.id, false);
-                }
-            }
             model.userDefinedData.ajaxCountQuery = $.ajax({
                 url: cloneWfsServerCountModel.toUrl()+"&callback=?",
                 cache:false,
