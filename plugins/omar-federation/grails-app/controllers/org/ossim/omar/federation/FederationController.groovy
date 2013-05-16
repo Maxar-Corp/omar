@@ -29,7 +29,6 @@ class FederationController  {
         jabberFederatedServerService.enabled
     )
     {
-      println "Reconnecting"
       jabberFederatedServerService.reconnect()
     }
     def result = jabberFederatedServerService.serverList as JSON
