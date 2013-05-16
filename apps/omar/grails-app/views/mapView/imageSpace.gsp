@@ -703,8 +703,8 @@ OMAR.imageManipulator.events.on({
     }
     else
     {
-        map.zoomTo(map.getZoomForExtent(bounds)-1);
-        //map.zoomToExtent(bounds);//,{closest:true});
+        //map.zoomTo(map.getZoomForExtent(bounds)-1);
+        map.zoomToExtent(bounds);//,{closest:true});
     }
     finishedInit = true;
     updateCenter();
