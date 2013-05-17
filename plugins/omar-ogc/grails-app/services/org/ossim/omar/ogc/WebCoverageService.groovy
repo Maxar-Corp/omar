@@ -20,6 +20,7 @@ class WebCoverageService implements InitializingBean
   def getCoverage(def entries, def wcsCommand)
   {
     def srcChains = []
+    def maxBands = 1
     def crs = wcsCommand?.response_crs ? wcsCommand?.response_crs : wcsCommand?.crs
     def requestFormat = wcsCommand?.format?.toLowerCase()
     def stretchMode = wcsCommand?.stretch_mode ? wcsCommand?.stretch_mode.toLowerCase() : null
@@ -58,6 +59,8 @@ class WebCoverageService implements InitializingBean
       def chainMap = imageChainService.createImageChain(entry, wcsParams)
       if ( chainMap.chain && (chainMap.chain.getChain() != null) )
       {
+        def outputBands = chainMap.chain?.getChainAsImageSource()?.getNumberOfOutputBands()
+        if (outputBands&&(outputBands > maxBands) ) maxBands = outputBands
         srcChains.add(chainMap.chain)
       }
     }
@@ -81,6 +84,22 @@ class WebCoverageService implements InitializingBean
         kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
         ++connectionId
         ++objectPrefixIdx
+      }
+      if((maxBands > 3)&&
+         (requestFormat.contains("gif") ||
+          requestFormat.contains("png")||
+          requestFormat.contains("jpeg")||
+          requestFormat.contains("jpg")
+         ))
+      {
+        if ( maxBands > 3 )
+        {
+          kwlString += "object${ objectPrefixIdx }.type:ossimBandSelector\n"
+          kwlString += "object${ objectPrefixIdx }.bands:(0,1,2)\n"
+          kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+          ++connectionId
+          ++objectPrefixIdx
+        }
       }
       kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
       kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
