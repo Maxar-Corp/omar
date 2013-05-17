@@ -6,6 +6,10 @@ import joms.oms.Init
 import joms.oms.StringVector
 import joms.oms.DataInfo
 import joms.oms.ImageStager
+import org.apache.commons.pool.BasePoolableObjectFactory
+import org.apache.commons.pool.impl.GenericObjectPool
+
+import java.sql.Timestamp
 import java.util.concurrent.Executors
 import groovy.sql.Sql
 import java.util.concurrent.Callable
@@ -69,6 +73,61 @@ Staging examples:
 
   """
 }
+
+class DataInfoPoolableObjectFactory extends BasePoolableObjectFactory
+{
+  public void destroyObject(Object dataInfo) throws Exception
+  {
+    dataInfo?.close()
+    //dataInfo?.delete()
+    dataInfo = null
+  }
+
+  public Object makeObject()
+  {
+    return new DataInfo()
+  }
+
+  public void passivateObject(Object dataInfo)
+  {
+    dataInfo?.close()
+  }
+}
+
+class SqlPoolableObjectFactory extends BasePoolableObjectFactory
+{
+  def url
+  def user
+  def password
+  def driver
+
+  public void destroyObject(Object sql) throws Exception
+  {
+    sql.close()
+  }
+
+  public Object makeObject()
+  {
+    return Sql.newInstance(url, user, password, driver)
+  }
+}
+
+db = [
+        url: "jdbc:postgresql:${parent.env.OMARDB}",
+        //url:'jdbc:postgresql:omardb-1.8.14-prod',
+        user: parent.env.POSTGRES_USER,//'postgres',
+        password:parent.env.POSTGRES_PASSWORD,
+        driver:'org.postgresql.Driver'
+]
+insertSQL = """
+        INSERT INTO stager_queue_item (version, status, file, base_dir, data_info, date_created, last_updated)
+        VALUES (:version, :status, :file, :base_dir, :data_info, :date_created, :last_updated)
+        """
+testFileSQL = "SELECT id FROM stager_queue_item where file = :file"
+
+dataInfoPool = new GenericObjectPool(new DataInfoPoolableObjectFactory() )
+sqlPool = new GenericObjectPool(new SqlPoolableObjectFactory(db) )
+
 
 if(!parent.scriptArgs.size() ||parent.scriptArgs[0] == "--help")
 {
@@ -169,11 +228,63 @@ nThreads = parent.env.NTHREADS?:4
 threadPool = Executors.newFixedThreadPool(nThreads);
 futures = []
 
+def runDataInfo(def file)
+{
+  def xml = null
+  def dataInfo = dataInfoPool?.borrowObject()
 
+  try{
+    if ( dataInfo?.open(file.absolutePath) )
+    {
+      xml = dataInfo?.info
+    }
+  }
+  catch(def e)
+  {
+  }
+  dataInfo.close();
+  dataInfoPool?.returnObject(dataInfo)
+
+  return xml
+}
+
+def createRecord(def item, def timestamp)
+{
+  def flag = true
+  def xml = (flag) ? runDataInfo(item) : null
+  def record
+  if(flag&&xml || (!flag))
+  {
+    record= [
+            version: 0,
+            status: 'new',
+            file: item.absolutePath,
+            base_dir: "",
+            data_info: xml,
+            date_created: timestamp,
+            last_updated: timestamp
+    ]
+  }
+
+  record
+}
 
 def stageAndAddClosure ={file->
-   def imageStager = new ImageStager();
-   if(imageStager.open(file.toString()))
+
+  def testSql = sqlPool.borrowObject()
+  def row
+  try{
+    row = testSql?.firstRow(testFileSQL, [file:file.absolutePath])
+  }
+  catch(e)
+  {
+    println e
+  }
+  sqlPool.returnObject(testSql)
+  def needAdding = !row;
+
+    def imageStager = new ImageStager();
+   if(needAdding&&imageStager.open(file.toString()))
    {
       def commandLine = ""; 
       def noExt = FilenameUtils.removeExtension(file.toString());
@@ -196,14 +307,28 @@ def stageAndAddClosure ={file->
       def exitCode = 0
       if(commandLine)
       {
-         def process = commandLine.execute()
-         process.consumeProcessOutput()
-
-         exitCode = process.waitFor()
+        def err  = new ByteArrayOutputStream()
+        def out  = new ByteArrayOutputStream()
+        def proc = commandLine.execute()
+        proc?.consumeProcessOutput(out, err)
+        exitCode = proc?.waitFor()
       }
       if(!exitCode)
       {
-        outputLog("${timeStamp()}: " + parent.postDataManager(file, "addRaster"))
+        def sqlItem = sqlPool.borrowObject()
+        try{
+          def batchStart = System.currentTimeMillis()
+          def timestamp = new Timestamp(batchStart)
+
+          sqlItem.execute(insertSQL,createRecord(file, timestamp));
+        }
+        catch(e)
+        {
+          println e
+        }
+        sqlPool.returnObject(sqlItem)
+
+        //  outputLog("${timeStamp()}: " + parent.postDataManager(file, "addRaster"))
          //println "${new DateTime(DateTimeZone.UTC)}: " + postDataManager(parent.env.OMAR_URL, file, "addRaster");
       }
    }
