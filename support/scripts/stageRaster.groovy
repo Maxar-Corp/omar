@@ -112,6 +112,8 @@ class SqlPoolableObjectFactory extends BasePoolableObjectFactory
   }
 }
 
+fileStaged = 0
+filesScanned = 0
 db = [
         url: "jdbc:postgresql:${parent.env.OMARDB}",
         //url:'jdbc:postgresql:omardb-1.8.14-prod',
@@ -286,6 +288,7 @@ def stageAndAddClosure ={file->
     def imageStager = new ImageStager();
    if(needAdding&&imageStager.open(file.toString()))
    {
+     fileStaged++
       def commandLine = ""; 
       def noExt = FilenameUtils.removeExtension(file.toString());
 
@@ -383,6 +386,7 @@ if(parent.scriptArgs.size())
     if(dir.isDirectory())
     {
       dir.traverse( options){file->
+        filesScanned++
          def row = sql?.firstRow("SELECT name FROM raster_file where name = ${file.toString()}")
          if(!row)
          {
@@ -392,6 +396,7 @@ if(parent.scriptArgs.size())
     }
     else 
     {
+      filesScanned++
       def file = dir
       def row = sql?.firstRow("SELECT name FROM raster_file where name = ${file.toString()}")
       if(!row)
@@ -411,6 +416,8 @@ sql.close();
 def stopTime = System.currentTimeMillis()
 def multiplier = 1/(1000*60)
 
+outputLog("parallelStager id ${parallelStagerPid} Scanned ${filesScanned} files" );
+outputLog("parallelStager id ${parallelStagerPid} Staged ${fileStaged} files" );
 outputLog("parallelStager id ${parallelStagerPid} ended: ${timeStamp()} and took ${calculateDisplayTimeString(stopTime - startTime)}" )
 
 
