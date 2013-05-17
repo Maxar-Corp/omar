@@ -1046,7 +1046,7 @@ OMAR.views.CqlView = Backbone.View.extend({
                     }
                     break;
                 default:
-                    $(textEl).val("");
+                    //$(textEl).val("");
                     break;
             }
         }
