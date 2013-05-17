@@ -389,38 +389,38 @@ function checkOverview(){
     var url = "/omar/rasterEntryExport/export";
 
     var request = OpenLayers.Request.POST({
-    url: url+"?id=${(rasterEntries.id).join(',')}&max=10&format=json&fields=numberOfResLevels&labels=rlevels"+new Date().getTime(),
-    callback: function (transport){
-        var temp = YAHOO.lang.JSON.parse(transport.responseText);
-        if(temp&&temp.length>0)
-        {
-            var ok = true;
-            var idx = 0;
-            for(idx=0; idx < temp.length;++idx)
+        url: url+"?id=${(rasterEntries.id).join(',')}&max=10&format=json&fields=numberOfResLevels&labels=rlevels&_="+new Date().getTime(),
+        callback: function (transport){
+            var temp = YAHOO.lang.JSON.parse(transport.responseText);
+            if(temp&&temp.length>0)
             {
-                if(parseInt(temp[idx].rlevels) < 2)
+                var ok = true;
+                var idx = 0;
+                for(idx=0; idx < temp.length;++idx)
                 {
-                  ok = false
+                    if(parseInt(temp[idx].rlevels) < 2)
+                    {
+                      ok = false
+                    }
                 }
-            }
-            if(ok)
-            {
-                var label = YAHOO.util.Dom.get("busyCursorLabel");
-                if(label)
+                if(ok)
                 {
-                    YAHOO.util.Dom.setStyle("busyCursorImage", "display", "none");
-                    YAHOO.util.Dom.setStyle("busyCursorLabel", "text-decoration", "underline");
-                    label.innerHTML = "Click now to refresh";
-                    label.onclick=function(){window.location = window.location};
+                    var label = YAHOO.util.Dom.get("busyCursorLabel");
+                    if(label)
+                    {
+                        YAHOO.util.Dom.setStyle("busyCursorImage", "display", "none");
+                        YAHOO.util.Dom.setStyle("busyCursorLabel", "text-decoration", "underline");
+                        label.innerHTML = "Click now to refresh";
+                        label.onclick=function(){window.location = window.location};
+                    }
                 }
-            }
-            else
-            {
-                setTimeout(checkOverview, 5000);
-            }
-        } // endif
-    } // callback
-    });
+                else
+                {
+                    setTimeout(checkOverview, 5000);
+                }
+            } // endif
+        } // callback
+        });
 }
 
 function setMapCtrTxt()
