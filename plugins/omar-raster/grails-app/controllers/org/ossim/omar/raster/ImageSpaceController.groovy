@@ -29,7 +29,7 @@ class ImageSpaceController
 	def rasterEntries = rasterEntrySearchService.findRasterEntries([paramsIgnoreCase.id])
 	if (paramsIgnoreCase.rotate == "up")
 	{
-		def upAngle = imageSpaceService.computeUpIsUp(rasterEntries[0].filename, rasterEntries[0].entryId.toInteger())
+		def upAngle = imageSpaceService.computeUpIsUp(rasterEntries[0].mainFile.name, rasterEntries[0].entryId.toInteger())
 		paramsIgnoreCase.rotate = -1 * upAngle
 	}
 	else if (paramsIgnoreCase.rotate == "north") { paramsIgnoreCase.rotate = -1 * rasterEntries[0].azimuthAngle }	
@@ -58,7 +58,7 @@ class ImageSpaceController
 		def mapCenterLongitude = (bbox[0].toDouble() + bbox[2].toDouble()) / 2
 		def mapCenterLatitude = (bbox[1].toDouble() + bbox[3].toDouble()) / 2
 
-		String inputFile = rasterEntries[0].filename
+		String inputFile = rasterEntries[0].mainFile.name
 		def entryId = rasterEntries[0].entryId as Integer
 
 		// convert ground coordinates into pixel locations
