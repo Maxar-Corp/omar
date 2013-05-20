@@ -58,7 +58,7 @@
                     id="selectAoiTemplateId"
                     noSelection="['Custom':'Custom']"
                     from="${ChipFormat.list()}"
-                    onclick="selectAoiTemplateClicked(this.value)">
+                    onchange="selectAoiTemplateClicked(this.value)">
             </g:select>
         Output Scale:<g:select
                 from="${['Screen']}"
