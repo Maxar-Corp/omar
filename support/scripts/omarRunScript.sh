@@ -3,7 +3,7 @@ environmentVariables =[
    OMAR_URL:"http://localhost/omar",
    OMAR_THUMBNAIL_CACHE:"/data/omar/omar-cache",
    NTHREADS: 4,
-   OMARDB:"omardb-${System.env.OSSIM_RELEASE_VERSION_NUMBER?:System.env.OSSIM_VERSION}-dev",
+   OMARDB:"omardb-${System.env.OSSIM_RELEASE_VERSION_NUMBER?:System.env.OSSIM_VERSION}-prod",
    POSTGRES_USER:"postgres",
    POSTGRES_PASSWORD:"postgres",
    POST_COMMAND_LINE:"NO",
