@@ -26,6 +26,7 @@ import java.util.regex.Pattern
 import joms.oms.StringVector
 import joms.oms.ossimImageHandlerRegistry
 
+
 def outputHelp()
 {
     println "Help for indexFiles!!"
@@ -50,6 +51,12 @@ if(options.h)
     cli.usage()
     return 0;
 }
+
+/*
+* Initialize OSSIM core for plugins
+*/
+Init.instance().initialize();
+
 if(options.filefilter)
 {
     parent.env.STAGE_FILE_FILTER = "${options.filefilter}"
