@@ -14,9 +14,16 @@ class FederationController  {
     forward controller: "federation", action: "search"
   }
   def search() {
-    def authorities = springSecurityService.principal.authorities
-
-    def roles = authorities.collect(){it.authority}
+    def roles = []
+    if(springSecurityService.isLoggedIn())
+    {
+      def authorities = springSecurityService.principal.authorities
+      roles = authorities.collect(){it.authority}
+    }
+    else
+    {
+      roles = ["ROLE_USER"]
+    }
     def styles = grailsApplication.config.rasterEntry.styles
     def jsonStyles = []
     styles.each{style->

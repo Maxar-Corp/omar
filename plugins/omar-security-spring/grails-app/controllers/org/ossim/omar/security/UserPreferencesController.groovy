@@ -63,70 +63,77 @@ class UserPreferencesController
 
   def changePassword = { ChangePasswordCommand command ->
 
-
-    if ( !request.post )
+    if(!springSecurityService.isLoggedIn())
     {
-      def user = null
-
-      if ( command.username )
-      {
-        user = SecUser.findByUsername(command.username)
-      }
-      else if ( params.id )
-      {
-        user = SecUser.get(params.id)
-      }
-
-      boolean isNotAdmin = SpringSecurityUtils.ifNotGranted("ROLE_ADMIN")
-
-      if ( !user )
-      {
-        flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'secUser.label', default: 'SecUser'), command.username])}"
-        redirect(controller: "home", action: "index")
-      }
-      else if ( user.id != springSecurityService.principal.id && isNotAdmin)
-      {
-        flash.message = "You don't have permissions to edit that user!"
-        redirect(controller: "home", action: "index")
-      }
-
-      command.username = user.username
-      command.password = user.password
-      command.password2 = user.password
-
-      return [command: command]
-    }
-
-    command.validate()
-
-    if ( command.hasErrors() )
-    {
-      return [command: command]
-    }
-
-    def user = SecUser.findByUsername(command.username)
-
-    String salt = saltSource instanceof NullSaltSource ? null : user.username
-    String newPassword = springSecurityService.encodePassword(command.password, salt)
-    if ( user?.password == "Authenticated by LDAP" )
-    {
-      ldapUtilService.changePassword([username: user.username, password: newPassword])
+      flash.message = "Can't change password for user anonymous"
+     redirect(controller: "home", action: "index")
     }
     else
     {
-      SecUser.withTransaction { status ->
-        user.password = newPassword
-        user.save()
+      if ( !request.post )
+      {
+        def user = null
+
+        if ( command.username )
+        {
+          user = SecUser.findByUsername(command.username)
+        }
+        else if ( params.id )
+        {
+          user = SecUser.get(params.id)
+        }
+
+        boolean isNotAdmin = SpringSecurityUtils.ifNotGranted("ROLE_ADMIN")
+
+        if ( !user )
+        {
+          flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'secUser.label', default: 'SecUser'), command.username])}"
+          redirect(controller: "home", action: "index")
+        }
+        else if ( user.id != springSecurityService.principal.id && isNotAdmin)
+        {
+          flash.message = "You don't have permissions to edit that user!"
+          redirect(controller: "home", action: "index")
+        }
+
+        command.username = user.username
+        command.password = user.password
+        command.password2 = user.password
+
+        return [command: command]
       }
+
+      command.validate()
+
+      if ( command.hasErrors() )
+      {
+        return [command: command]
+      }
+
+      def user = SecUser.findByUsername(command.username)
+
+      String salt = saltSource instanceof NullSaltSource ? null : user.username
+      String newPassword = springSecurityService.encodePassword(command.password, salt)
+      if ( user?.password == "Authenticated by LDAP" )
+      {
+        ldapUtilService.changePassword([username: user.username, password: newPassword])
+      }
+      else
+      {
+        SecUser.withTransaction { status ->
+          user.password = newPassword
+          user.save()
+        }
+      }
+
+      springSecurityService.reauthenticate user.username
+
+      //flash.message = message(code: 'spring.security.ui.resetPassword.success')
+      flash.message = "Successfully changed password for user: ${user.username}"
+
+      redirect(controller: "home", action: "index")
     }
-
-    springSecurityService.reauthenticate user.username
-
-    //flash.message = message(code: 'spring.security.ui.resetPassword.success')
-    flash.message = "Successfully changed password for user: ${user.username}"
-
-    redirect(controller: "home", action: "index")
-  }
+   }
 }
 
 class ChangePasswordCommand

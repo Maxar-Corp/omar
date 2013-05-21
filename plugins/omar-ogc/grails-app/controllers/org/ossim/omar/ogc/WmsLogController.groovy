@@ -42,14 +42,18 @@ class WmsLogController {
             wmsLogInstanceList = WmsLog.list( params )
             wmsLogInstanceTotal = WmsLog.count()
         }
-        else
+        else if(springSecurityService.isLoggedIn())
         {
             wmsLogInstanceList = WmsLog.createCriteria().list( params ) {
                 eq( "userName", springSecurityService.principal.username )
             }
             wmsLogInstanceTotal = wmsLogInstanceList.totalCount
         }
-
+        else
+        {
+          flash.message = "You are not authorized to list logs"
+          redirect( controller: "home" )
+        }
         if (!wmsLogInstanceTotal)
         {
             flash.message = "WMS log is empty"
@@ -85,9 +89,9 @@ class WmsLogController {
     def show() {
         def wmsLogInstance = WmsLog.get(params.id)
         if (!wmsLogInstance) {
-			flash.message = message(code: 'default.not.found.message', args: [message(code: 'wmsLog.label', default: 'WmsLog'), params.id])
-            redirect(action: "list")
-            return
+          flash.message = message(code: 'default.not.found.message', args: [message(code: 'wmsLog.label', default: 'WmsLog'), params.id])
+          redirect(action: "list")
+          return
         }
 
         [wmsLogInstance: wmsLogInstance]

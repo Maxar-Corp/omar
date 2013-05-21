@@ -18,65 +18,84 @@ class ReportController
 
   def list( )
   {
-    params.max = Math.min( params.max ? params.int( 'max' ) : 10, 100 )
-
-    def reportInstanceList
-    def reportInstanceTotal
-
-    if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
+    if(springSecurityService.isLoggedIn())
     {
-      reportInstanceList = Report.list( params )
-      reportInstanceTotal = Report.count()
+      params.max = Math.min( params.max ? params.int( 'max' ) : 10, 100 )
+
+      def reportInstanceList
+      def reportInstanceTotal
+
+      if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
+      {
+        reportInstanceList = Report.list( params )
+        reportInstanceTotal = Report.count()
+      }
+      else
+      {
+        reportInstanceList = Report.createCriteria().list( params ) {
+          eq( "name", springSecurityService.principal.username )
+        }
+
+        reportInstanceTotal = reportInstanceList.totalCount
+      }
+
+      [reportInstanceList: reportInstanceList, reportInstanceTotal: reportInstanceTotal]
     }
     else
     {
-      reportInstanceList = Report.createCriteria().list( params ) {
-        eq( "name", springSecurityService.principal.username )
-      }
-
-      reportInstanceTotal = reportInstanceList.totalCount
+      flash.message = "Not authorized to list reports"
+      redirect( controller: "home" )
     }
-
-    [reportInstanceList: reportInstanceList, reportInstanceTotal: reportInstanceTotal]
   }
 
   def create( )
   {
-    def user = SecUser.findByUsername( springSecurityService.principal.username )
+    if(springSecurityService.isLoggedIn())
+    {
+      def user = SecUser.findByUsername( springSecurityService.principal.username )
 
-    def reportInstance = new Report(
-            name: user.username,
-            email: user.email,
-            phone: user.phoneNumber
-    )
-    reportInstance.properties = params
-    return [reportInstance: reportInstance]
+      def reportInstance = new Report(
+              name: user.username,
+              email: user.email,
+              phone: user.phoneNumber
+      )
+      reportInstance.properties = params
+      return [reportInstance: reportInstance]
+    }
+    null
   }
 
   def save( )
   {
-    def reportInstance = new Report( params )
-    def user = SecUser.findByUsername( springSecurityService.principal.username )
+   if(springSecurityService.isLoggedIn()){
+     def reportInstance = new Report( params )
+     def user = SecUser.findByUsername( springSecurityService.principal.username )
 
-    if ( user.username == reportInstance.name || SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
-    {
-      if ( reportInstance.save( flush: true ) )
-      {
-        flash.message = "Thank you for comments. Someone should respond to you as soon as possible."
-        //flash.message = "${message(code: 'default.created.message', args: [message(code: 'report.label', default: 'Report'), reportInstance.id])}"
-        //redirect(action: "show", id: reportInstance.id)
-        redirect( controller: "home" )
-      }
-      else
-      {
-        render( view: "create", model: [reportInstance: reportInstance] )
-      }
-    }
-    else
-    {
-      flash.message = "Not authorized to save that record"
-      redirect( controller: "home" )
-    }
+     if ( user.username == reportInstance.name || SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
+     {
+       if ( reportInstance.save( flush: true ) )
+       {
+         flash.message = "Thank you for comments. Someone should respond to you as soon as possible."
+         //flash.message = "${message(code: 'default.created.message', args: [message(code: 'report.label', default: 'Report'), reportInstance.id])}"
+         //redirect(action: "show", id: reportInstance.id)
+         redirect( controller: "home" )
+       }
+       else
+       {
+         render( view: "create", model: [reportInstance: reportInstance] )
+       }
+     }
+     else
+     {
+       flash.message = "Not authorized to save that record"
+       redirect( controller: "home" )
+     }
+   }
+     else
+   {
+     flash.message = "Not authorized to save that record"
+     redirect( controller: "home" )
+   }
   }
 
   def show( )

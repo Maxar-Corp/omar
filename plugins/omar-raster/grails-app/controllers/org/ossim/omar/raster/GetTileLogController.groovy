@@ -42,7 +42,7 @@ class GetTileLogController {
             getTileLogInstanceList  = GetTileLog.list(params)
             getTileLogInstanceTotal = GetTileLog.count()
         }
-        else if (springSecurityService?.principal?.username)
+        else if (springSecurityService.isLoggedIn()&&springSecurityService?.principal?.username)
         {
             def username = springSecurityService?.principal?.username
             if (username)
@@ -58,7 +58,12 @@ class GetTileLogController {
                 getTileLogInstanceTotal = 0
             }
         }
+        else
+        {
+          flash.message = "You are not authorized to list logs"
+          redirect( controller: "home" )
 
+        }
         if (!getTileLogInstanceTotal)
         {
             flash.message = "Image space chipping log is empty"
