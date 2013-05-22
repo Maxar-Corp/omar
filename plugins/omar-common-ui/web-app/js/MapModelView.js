@@ -597,7 +597,7 @@ OMAR.views.Map = Backbone.View.extend({
         {
             if(config.wms.data.raster)
             {
-                params  = masterConfig.wms.data.raster.params;
+                params  = config.wms.data.raster.params;
             }
         }
         else
