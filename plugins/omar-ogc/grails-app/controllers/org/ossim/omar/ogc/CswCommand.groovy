@@ -23,6 +23,17 @@ class CswCommand
   String version
   String request
 
+  Integer maxRecords
+  Integer startPosition
+
+  String elementSetName
+  String resultType
+  String typeNames
+  String outputFormat
+
+  String constraint
+  String constraintLanguage
+
   static CswCommand fromXML(String xmlText)
   {
     fromXML( new XmlSlurper().parseText( xmlText ) )
@@ -34,7 +45,6 @@ class CswCommand
         service: xml.@service?.text(),
         version: xml.@version?.text(),
         request: xml?.name(),
-//        maxFeatures: xml.@maxFeatures.text()?.toInteger() ?: 1000
     ]
 
     switch ( params.request )
@@ -45,17 +55,27 @@ class CswCommand
 
     case "DescribeRecord":
       break
-/*
-    case 'DescribeFeatureType':
-      params.typeName = xml.TypeName.text()
-      break
-    case 'GetFeature':
-      params.with {
-        typeName = xml.Query.collect { it.@typeName.text() }?.first()
-        filter = xml.Query.collect { new StreamingMarkupBuilder().bindNode( it.Filter ).toString().trim() }?.first()
+
+    case "GetRecords":
+      params.maxRecords = xml.@maxRecords?.text()?.toInteger() ?: 10
+      params.startPosition = ( xml.@startPosition?.text() ) ? xml.@startPosition?.text()?.toInteger() : 1
+      params.resultType = xml.@resultType?.text()
+      params.typeNames = xml.Query?.@typeNames?.text()
+      params.outputFormat = xml.Query?.@outputFormat?.text()
+      params.elementSetName = xml.Query?.ElementSetName?.text()
+      params.constraintLanguage = xml?.Query?.Constraint?.childNodes()?.next()?.name()?.toUpperCase()
+
+      switch ( params.constraintLanguage )
+      {
+      case "CQLTEXT":
+        params.constraint = xml?.Query?.Constraint?.childNodes()?.next()?.text()
+        break
+      case "FILTER":
+        params.constraint = xml.Query.collect { new StreamingMarkupBuilder().bindNode( it.Filter ).toString().trim() }?.first()
+
+        break
       }
       break
-*/
     }
 
     new CswCommand( params )

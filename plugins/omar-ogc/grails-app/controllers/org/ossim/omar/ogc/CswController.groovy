@@ -1,5 +1,6 @@
 package org.ossim.omar.ogc
 
+import groovy.xml.StreamingMarkupBuilder
 import org.apache.commons.collections.map.CaseInsensitiveMap
 
 class CswController
@@ -19,6 +20,7 @@ class CswController
       bindData( cswCmd, cswParams )
       break
     case "POST":
+      println new StreamingMarkupBuilder().bind { mkp.yield request.XML }.toString()
       cswCmd = CswCommand.fromXML( request?.XML )
       break
     }
@@ -30,16 +32,16 @@ class CswController
     switch ( cswCmd?.request?.toLowerCase() )
     {
     case "getcapabilities":
-      results = catalogWebService.getCapabiltiies()
+      results = catalogWebService.getCapabiltiies( cswCmd )
       break
     case "describerecord":
-      results = catalogWebService.describeRecord()
+      results = catalogWebService.describeRecord( cswCmd )
       break
     case "getrecordbyid":
-      results = catalogWebService.getRecordById()
+      results = catalogWebService.getRecordById( cswCmd )
       break
     case "getrecords":
-      results = catalogWebService.getRecords()
+      results = catalogWebService.getRecords( cswCmd )
       break
     }
 

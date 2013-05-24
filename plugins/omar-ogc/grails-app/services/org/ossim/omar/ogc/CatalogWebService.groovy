@@ -6,8 +6,12 @@ class CatalogWebService
 {
   static transactional = false
 
-  def getCapabiltiies()
+  def grailsApplication
+
+  def getCapabiltiies(CswCommand cswCommand)
   {
+    def serverAddress = grailsApplication.config.omar.serverURL
+
     def cswCaps = {
       mkp.xmlDeclaration()
 //	mkp.declareNamespace(apiso: "http://www.opengis.net/cat/csw/apiso/1.0")
@@ -72,7 +76,7 @@ class CatalogWebService
                 ows.Country()
                 ows.ElectronicMailAddress()
               }
-              ows.OnlineResource( 'xlink:type': "simple", 'xlink:href': "" )
+              ows.OnlineResource( 'xlink:type': "simple",  'xlink:href':"${serverAddress}/csw" )
               ows.HoursOfService()
               ows.ContactInstructions()
             }
@@ -83,8 +87,8 @@ class CatalogWebService
           ows.Operation( name: "GetCapabilities" ) {
             ows.DCP {
               ows.HTTP {
-                ows.Get( 'xlink:type': "simple", 'xlink:href': "" )
-//						ows.Post( 'xlink:type': "simple", 'xlink:href': "" )
+                ows.Get( 'xlink:type': "simple", 'xlink:href': "${serverAddress}/csw" )
+                ows.Post( 'xlink:type': "simple", 'xlink:href': "${serverAddress}/csw" )
               }
             }
             ows.Parameter( name: "sections" ) {
@@ -98,7 +102,7 @@ class CatalogWebService
 			ows.Operation(name: "GetRepositoryItem") {
       			ows.DCP {
         			ows.HTTP {
-          				ows.Get( 'xlink:type': "simple", 'xlink:href': "")
+          				ows.Get( 'xlink:type': "simple",  'xlink:href':"${serverAddress}/csw")
         			}
       			}
     		}
@@ -106,8 +110,8 @@ class CatalogWebService
           ows.Operation( name: "DescribeRecord" ) {
             ows.DCP {
               ows.HTTP {
-                ows.Get( 'xlink:type': "simple", 'xlink:href': "" )
-//						ows.Post( 'xlink:type': "simple", 'xlink:href': "")
+                ows.Get( 'xlink:type': "simple",  'xlink:href':"${serverAddress}/csw" )
+                ows.Post( 'xlink:type': "simple",  'xlink:href':"${serverAddress}/csw" )
               }
             }
             ows.Parameter( name: "typeName" ) {
@@ -133,8 +137,8 @@ class CatalogWebService
 		    ows.Operation( name: "GetDomain") {
 		      ows.DCP {
 		        ows.HTTP {
-		          ows.Get( 'xlink:type': "simple", 'xlink:href': "http://maps.opensandiego.org/catalogue/csw")
-//		          ows.Post( 'xlink:type': "simple", 'xlink:href': "http://maps.opensandiego.org/catalogue/csw")
+		          ows.Get( 'xlink:type': "simple", 'xlink:href': "${serverAddress}/csw")
+		          ows.Post( 'xlink:type': "simple", 'xlink:href': "${serverAddress}/csw")
 		        }
 		      }
 		      ows.Parameter( name: "ParameterName") {
@@ -157,8 +161,8 @@ class CatalogWebService
           ows.Operation( name: 'GetRecords' ) {
             ows.DCP {
               ows.HTTP {
-                ows.Get( 'xlink:type': 'simple', 'xlink:href': '' )
-//			          ows.Post( 'xlink:type': 'simple', 'xlink:href': '')
+                ows.Get( 'xlink:type': 'simple', 'xlink:href': "${serverAddress}/csw" )
+                ows.Post( 'xlink:type': 'simple', 'xlink:href': "${serverAddress}/csw" )
               }
             }
             ows.Parameter( name: 'resultType' ) {
@@ -402,8 +406,8 @@ class CatalogWebService
           ows.Operation( name: 'GetRecordById' ) {
             ows.DCP {
               ows.HTTP {
-                ows.Get( 'xlink:type': 'simple', 'xlink:href': '' )
-//		          ows.Post('xlink:type': 'simple', 'xlink:href': '')
+                ows.Get( 'xlink:type': 'simple', 'xlink:href': "${serverAddress}/csw" )
+                ows.Post( 'xlink:type': 'simple', 'xlink:href': "${serverAddress}/csw" )
               }
             }
             ows.Parameter( name: 'outputSchema' ) {
@@ -497,8 +501,10 @@ class CatalogWebService
     return new StreamingMarkupBuilder( encoding: "UTF-8" ).bind( cswCaps )
   }
 
-  def getRecords()
+  def getRecords(CswCommand cswCommand)
   {
+    def serverAddress = grailsApplication.config.omar.serverURL
+
     def dcCols = [
         'identifier',
         'type',
@@ -524,6 +530,74 @@ class CatalogWebService
         elementSet: "full"
     ]
 
+    LinkedHashMap<String, Serializable> results = getResults()
+
+    def xml = {
+      mkp.xmlDeclaration()
+//      mkp.declareNamespace( atom: "http://www.w3.org/2005/Atom" )
+      mkp.declareNamespace( csw: "http://www.opengis.net/cat/csw/2.0.2" )
+      mkp.declareNamespace( dc: "http://purl.org/dc/elements/1.1/" )
+      mkp.declareNamespace( dct: "http://purl.org/dc/terms/" )
+//      mkp.declareNamespace( dif: "http://gcmd.gsfc.nasa.gov/Aboutus/xml/dif/" )
+//      mkp.declareNamespace( fgdc: "http://www.opengis.net/cat/csw/csdgm" )
+//      mkp.declareNamespace( gmd: "http://www.isotc211.org/2005/gmd" )
+      mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
+      mkp.declareNamespace( ogc: "http://www.opengis.net/ogc" )
+//      mkp.declareNamespace( os: "http://a9.com/-/spec/opensearch/1.1/" )
+      mkp.declareNamespace( ows: "http://www.opengis.net/ows" )
+//      mkp.declareNamespace( rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#" )
+//      mkp.declareNamespace( sitemap: "http://www.sitemaps.org/schemas/sitemap/0.9" )
+//      mkp.declareNamespace( soapenv: "http://www.w3.org/2003/05/soap-envelope" )
+      mkp.declareNamespace( xlink: "http://www.w3.org/1999/xlink" )
+      mkp.declareNamespace( xs: "http://www.w3.org/2001/XMLSchema" )
+      mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
+      csw.GetRecordsResponse(
+          version: "2.0.2",
+          'xsi:schemaLocation': "http://www.opengis.net/cat/csw/2.0.2 http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd"
+      ) {
+        csw.SearchStatus( timestamp: results.timestamp )
+        csw.SearchResults(
+            nextRecord: results.nextRecord,
+            numberOfRecordsMatched: results.numberOfRecordsMatched,
+            numberOfRecordsReturned: results.numberOfRecordsReturned,
+            recordSchema: "http://www.opengis.net/cat/csw/2.0.2",
+            elementSet: params.elementSet
+        ) {
+          for ( def x in results?.data )
+          {
+            csw.Record {
+              for ( def y in dcCols )
+              {
+                if ( x[y] != null )
+                {
+                  "dc:${y}"( "${x[y]}" )
+                }
+              }
+              for ( def y in dctCols )
+              {
+                if ( x[y] != null )
+                {
+                  "dct:${y}"( "${x[y]}" )
+                }
+              }
+              if ( x.bbox != null )
+              {
+                "ows:BoundingBox"( crs: x.bbox.crs ) {
+                  "ows:LowerCorner"( "${x.bbox.minX} ${x.bbox.minY}" )
+                  "ows:UpperCorner"( "${x.bbox.maxX} ${x.bbox.maxY}" )
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return new StreamingMarkupBuilder( encoding: 'utf-8' ).bind( xml )
+  }
+
+  private LinkedHashMap<String, Serializable> getResults()
+  {
     def results = [
         timestamp: "2013-05-21T06:36:24Z",
         nextRecord: "11",
@@ -610,78 +684,19 @@ class CatalogWebService
             ]
         ]
     ]
-
-    def xml = {
-      mkp.xmlDeclaration()
-      mkp.declareNamespace( atom: "http://www.w3.org/2005/Atom" )
-      mkp.declareNamespace( csw: "http://www.opengis.net/cat/csw/2.0.2" )
-      mkp.declareNamespace( dc: "http://purl.org/dc/elements/1.1/" )
-      mkp.declareNamespace( dct: "http://purl.org/dc/terms/" )
-      mkp.declareNamespace( dif: "http://gcmd.gsfc.nasa.gov/Aboutus/xml/dif/" )
-      mkp.declareNamespace( fgdc: "http://www.opengis.net/cat/csw/csdgm" )
-      mkp.declareNamespace( gmd: "http://www.isotc211.org/2005/gmd" )
-      mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
-      mkp.declareNamespace( ogc: "http://www.opengis.net/ogc" )
-      mkp.declareNamespace( os: "http://a9.com/-/spec/opensearch/1.1/" )
-      mkp.declareNamespace( ows: "http://www.opengis.net/ows" )
-      mkp.declareNamespace( rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#" )
-      mkp.declareNamespace( sitemap: "http://www.sitemaps.org/schemas/sitemap/0.9" )
-      mkp.declareNamespace( soapenv: "http://www.w3.org/2003/05/soap-envelope" )
-      mkp.declareNamespace( xlink: "http://www.w3.org/1999/xlink" )
-      mkp.declareNamespace( xs: "http://www.w3.org/2001/XMLSchema" )
-      mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
-      csw.GetRecordsResponse(
-          version: "2.0.2",
-          'xsi:schemaLocation': "http://www.opengis.net/cat/csw/2.0.2 http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd"
-      ) {
-        csw.SearchStatus( timestamp: results.timestamp )
-        csw.SearchResults(
-            nextRecord: results.nextRecord,
-            numberOfRecordsMatched: results.numberOfRecordsMatched,
-            numberOfRecordsReturned: results.numberOfRecordsReturned,
-            recordSchema: "http://www.opengis.net/cat/csw/2.0.2",
-            elementSet: params.elementSet
-        ) {
-          for ( def x in results?.data )
-          {
-            csw.Record {
-              for ( def y in dcCols )
-              {
-                if ( x[y] != null )
-                {
-                  "dc:${y}"( "${x[y]}" )
-                }
-              }
-              for ( def y in dctCols )
-              {
-                if ( x[y] != null )
-                {
-                  "dct:${y}"( "${x[y]}" )
-                }
-              }
-              if ( x.bbox != null )
-              {
-                "ows:BoundingBox"( crs: x.bbox.crs ) {
-                  "ows:LowerCorner"( "${x.bbox.minX} ${x.bbox.minY}" )
-                  "ows:UpperCorner"( "${x.bbox.maxX} ${x.bbox.maxY}" )
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    return new StreamingMarkupBuilder( encoding: 'utf-8' ).bind( xml )
+    results
   }
 
-  def getRecordById()
+  def getRecordById(CswCommand cswCommand)
   {
+    def serverAddress = grailsApplication.config.omar.serverURL
 
   }
 
-  def describeRecord()
+  def describeRecord(CswCommand cswCommand)
   {
+    def serverAddress = grailsApplication.config.omar.serverURL
+
     def descRec = {
       mkp.xmlDeclaration()
 //      mkp.declareNamespace( apiso: "http://www.opengis.net/cat/csw/apiso/1.0" )
