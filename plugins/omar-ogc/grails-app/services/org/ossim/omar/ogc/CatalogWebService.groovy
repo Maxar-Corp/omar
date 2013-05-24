@@ -1,0 +1,804 @@
+package org.ossim.omar.ogc
+
+import groovy.xml.StreamingMarkupBuilder
+
+class CatalogWebService
+{
+  static transactional = false
+
+  def getCapabiltiies()
+  {
+    def cswCaps = {
+      mkp.xmlDeclaration()
+//	mkp.declareNamespace(apiso: "http://www.opengis.net/cat/csw/apiso/1.0")
+//	mkp.declareNamespace(atom: "http://www.w3.org/2005/Atom")
+      mkp.declareNamespace( csw: "http://www.opengis.net/cat/csw/2.0.2" )
+      mkp.declareNamespace( dc: "http://purl.org/dc/elements/1.1/" )
+      mkp.declareNamespace( dct: "http://purl.org/dc/terms/" )
+//	mkp.declareNamespace(dif: "http://gcmd.gsfc.nasa.gov/Aboutus/xml/dif/")
+//	mkp.declareNamespace(fgdc: "http://www.opengis.net/cat/csw/csdgm")
+//	mkp.declareNamespace(gco: "http://www.isotc211.org/2005/gco")
+//	mkp.declareNamespace(georss: "http://www.georss.org/georss")
+//      mkp.declareNamespace( gmd: "http://www.isotc211.org/2005/gmd" )
+      mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
+//	mkp.declareNamespace(inspire_common: "http://inspire.ec.europa.eu/schemas/common/1.0")
+//	mkp.declareNamespace(inspire_ds: "http://inspire.ec.europa.eu/schemas/inspire_ds/1.0")
+      mkp.declareNamespace( ogc: "http://www.opengis.net/ogc" )
+//	mkp.declareNamespace(os: "http://a9.com/-/spec/opensearch/1.1/")
+      mkp.declareNamespace( ows: "http://www.opengis.net/ows" )
+//	mkp.declareNamespace(rim: "urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0")
+//	mkp.declareNamespace(sitemap: "http://www.sitemaps.org/schemas/sitemap/0.9")
+//	mkp.declareNamespace(soapenv: "http://www.w3.org/2003/05/soap-envelope")
+//	mkp.declareNamespace(wrs: "http://www.opengis.net/cat/wrs/1.0")
+//	mkp.declareNamespace(srv: "http://www.isotc211.org/2005/srv")
+      mkp.declareNamespace( xlink: "http://www.w3.org/1999/xlink" )
+      mkp.declareNamespace( xs: "http://www.w3.org/2001/XMLSchema" )
+      mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
+      csw.Capabilities(
+//		updateSequence: "1366821893",
+          version: "2.0.2",
+          'xsi:schemaLocation': "http://www.opengis.net/cat/csw/2.0.2 http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd"
+      ) {
+        ows.ServiceIdentification {
+          ows.Title()
+          ows.Abstract()
+          ows.Keywords {
+            ows.Keyword()
+            ows.Keyword()
+            ows.Keyword()
+            ows.Type( codeSpace: "ISOTC211/19115", "theme" )
+          }
+          ows.ServiceType( codeSpace: "OGC", "CSW" )
+          ows.ServiceTypeVersion( "2.0.2" )
+          ows.Fees( "None" )
+          ows.AccessConstraints( "None" )
+        }
+        ows.ServiceProvider {
+          ows.ProviderName()
+          ows.ProviderSite( 'xlink:type': "simple", 'xlink:href': "" )
+          ows.ServiceContact {
+            ows.IndividualName()
+            ows.PositionName()
+            ows.ContactInfo {
+              ows.Phone {
+                ows.Voice()
+                ows.Facsimile()
+              }
+              ows.Address {
+                ows.DeliveryPoint()
+                ows.City()
+                ows.AdministrativeArea()
+                ows.PostalCode()
+                ows.Country()
+                ows.ElectronicMailAddress()
+              }
+              ows.OnlineResource( 'xlink:type': "simple", 'xlink:href': "" )
+              ows.HoursOfService()
+              ows.ContactInstructions()
+            }
+            ows.Role( codeSpace: "ISOTC211/19115", "" )
+          }
+        }
+        ows.OperationsMetadata {
+          ows.Operation( name: "GetCapabilities" ) {
+            ows.DCP {
+              ows.HTTP {
+                ows.Get( 'xlink:type': "simple", 'xlink:href': "" )
+//						ows.Post( 'xlink:type': "simple", 'xlink:href': "" )
+              }
+            }
+            ows.Parameter( name: "sections" ) {
+              ows.Value( "ServiceIdentification" )
+              ows.Value( "ServiceProvider" )
+              ows.Value( "OperationsMetadata" )
+              ows.Value( "Filter_Capabilities" )
+            }
+          }
+/*
+			ows.Operation(name: "GetRepositoryItem") {
+      			ows.DCP {
+        			ows.HTTP {
+          				ows.Get( 'xlink:type': "simple", 'xlink:href': "")
+        			}
+      			}
+    		}
+*/
+          ows.Operation( name: "DescribeRecord" ) {
+            ows.DCP {
+              ows.HTTP {
+                ows.Get( 'xlink:type': "simple", 'xlink:href': "" )
+//						ows.Post( 'xlink:type': "simple", 'xlink:href': "")
+              }
+            }
+            ows.Parameter( name: "typeName" ) {
+              ows.Value( "csw:Record" )
+/*
+					ows.Value("dif:DIF")
+					ows.Value("gmd:MD_Metadata")
+					ows.Value("rim:RegistryObject")
+					ows.Value("fgdc:metadata")
+					ows.Value("atom:entry")
+*/
+            }
+            ows.Parameter( name: "outputFormat" ) {
+              ows.Value( "application/xml" )
+              ows.Value( "application/json" )
+            }
+            ows.Parameter( name: "schemaLanguage" ) {
+//					ows.Value("http://www.w3.org/XML/Schema")
+              ows.Value( "http://www.w3.org/TR/xmlschema-1/" )
+            }
+          }
+/*
+		    ows.Operation( name: "GetDomain") {
+		      ows.DCP {
+		        ows.HTTP {
+		          ows.Get( 'xlink:type': "simple", 'xlink:href': "http://maps.opensandiego.org/catalogue/csw")
+//		          ows.Post( 'xlink:type': "simple", 'xlink:href': "http://maps.opensandiego.org/catalogue/csw")
+		        }
+		      }
+		      ows.Parameter( name: "ParameterName") {
+		        ows.Value("GetRecords.outputFormat")
+		        ows.Value("GetRecords.outputSchema")
+		        ows.Value("GetRecords.CONSTRAINTLANGUAGE")
+		        ows.Value("GetRecords.resultType")
+		        ows.Value("GetRecords.typeNames")
+		        ows.Value("GetRecords.ElementSetName")
+		        ows.Value("GetCapabilities.sections")
+		        ows.Value("GetRecordById.outputFormat")
+		        ows.Value("GetRecordById.outputSchema")
+		        ows.Value("GetRecordById.ElementSetName")
+		        ows.Value("DescribeRecord.schemaLanguage")
+		        ows.Value("DescribeRecord.outputFormat")
+		        ows.Value("DescribeRecord.typeName")
+		      }
+		    }
+*/
+          ows.Operation( name: 'GetRecords' ) {
+            ows.DCP {
+              ows.HTTP {
+                ows.Get( 'xlink:type': 'simple', 'xlink:href': '' )
+//			          ows.Post( 'xlink:type': 'simple', 'xlink:href': '')
+              }
+            }
+            ows.Parameter( name: 'resultType' ) {
+              ows.Value( "hits" )
+              ows.Value( "results" )
+              ows.Value( "validate" )
+            }
+            ows.Parameter( name: 'outputFormat' ) {
+              ows.Value( "application/xml" )
+              ows.Value( "application/json" )
+            }
+            ows.Parameter( name: 'outputSchema' ) {
+              ows.Value( "http://www.opengis.net/cat/csw/2.0.2" )
+/*
+			        ows.Value("http://gcmd.gsfc.nasa.gov/Aboutus/xml/dif/")
+			        ows.Value("http://www.isotc211.org/2005/gmd")
+			        ows.Value("urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0")
+			        ows.Value("http://www.opengis.net/cat/csw/csdgm")
+			        ows.Value("http://www.w3.org/2005/Atom")
+*/
+            }
+            ows.Parameter( name: 'typeNames' ) {
+              ows.Value( "csw:Record" )
+/*
+			        ows.Value("dif:DIF")
+			        ows.Value("gmd:MD_Metadata")
+			        ows.Value("rim:RegistryObject")
+			        ows.Value("fgdc:metadata")
+			        ows.Value("atom:entry")
+*/
+            }
+            ows.Parameter( name: 'CONSTRAINTLANGUAGE' ) {
+              ows.Value( "FILTER" )
+              ows.Value( "CQL_TEXT" )
+            }
+/*
+			      ows.Parameter(name:'ElementSetName') {
+			        ows.Value("brief")
+			        ows.Value("summary")
+			        ows.Value("full")
+			      }
+			      ows.Constraint(name:'SupportedISOQueryables') {
+			        ows.Value("apiso:DistanceValue")
+			        ows.Value("apiso:Abstract")
+			        ows.Value("apiso:RevisionDate")
+			        ows.Value("apiso:Subject")
+			        ows.Value("apiso:KeywordType")
+			        ows.Value("apiso:Title")
+			        ows.Value("apiso:CRS")
+			        ows.Value("apiso:PublicationDate")
+			        ows.Value("apiso:Type")
+			        ows.Value("apiso:AlternateTitle")
+			        ows.Value("apiso:BoundingBox")
+			        ows.Value("apiso:AnyText")
+			        ows.Value("apiso:ParentIdentifier")
+			        ows.Value("apiso:Modified")
+			        ows.Value("apiso:Operation")
+			        ows.Value("apiso:Format")
+			        ows.Value("apiso:TempExtent_end")
+			        ows.Value("apiso:DistanceUOM")
+			        ows.Value("apiso:OrganisationName")
+			        ows.Value("apiso:ServiceType")
+			        ows.Value("apiso:TempExtent_begin")
+			        ows.Value("apiso:ResourceLanguage")
+			        ows.Value("apiso:ServiceTypeVersion")
+			        ows.Value("apiso:OperatesOn")
+			        ows.Value("apiso:Denominator")
+			        ows.Value("apiso:HasSecurityConstraints")
+			        ows.Value("apiso:OperatesOnIdentifier")
+			        ows.Value("apiso:GeographicDescriptionCode")
+			        ows.Value("apiso:Language")
+			        ows.Value("apiso:Identifier")
+			        ows.Value("apiso:OperatesOnName")
+			        ows.Value("apiso:TopicCategory")
+			        ows.Value("apiso:CreationDate")
+			        ows.Value("apiso:CouplingType")
+			    }
+				ows.Constraint(name:'AdditionalQueryables') {
+					ows.Value("apiso:Lineage")
+					ows.Value("apiso:Classification")
+					ows.Value("apiso:Creator")
+					ows.Value("apiso:Relation")
+					ows.Value("apiso:OtherConstraints")
+					ows.Value("apiso:SpecificationTitle")
+					ows.Value("apiso:ResponsiblePartyRole")
+					ows.Value("apiso:SpecificationDateType")
+					ows.Value("apiso:Degree")
+					ows.Value("apiso:Contributor")
+					ows.Value("apiso:ConditionApplyingToAccessAndUse")
+					ows.Value("apiso:SpecificationDate")
+					ows.Value("apiso:AccessConstraints")
+					ows.Value("apiso:Publisher")
+				}
+				ows.Constraint(name:'SupportedDIFQueryables') {
+					ows.Value("dif:Keyword")
+					ows.Value("dif:Data_Presentation_Form")
+					ows.Value("dif:Summary")
+					ows.Value("dif:Stop_Date")
+					ows.Value("dif:Identifier")
+					ows.Value("dif:ISO_Topic_Category")
+					ows.Value("dif:Originating_Center")
+					ows.Value("dif:DIF_Creation_Date")
+					ows.Value("dif:Dataset_Publisher")
+					ows.Value("dif:Dataset_Release_Date")
+					ows.Value("dif:Related_URL")
+					ows.Value("dif:AnyText")
+					ows.Value("dif:Data_Set_Language")
+					ows.Value("dif:Access_Constraints")
+					ows.Value("dif:Spatial_Coverage")
+					ows.Value("dif:Entry_Title")
+					ows.Value("dif:Start_Date")
+					ows.Value("dif:Dataset_Creator")
+				}
+				ows.Constraint(name:'SupportedDublinCoreQueryables') {
+					ows.Value("dc:contributor")
+					ows.Value("dc:source")
+					ows.Value("dc:language")
+					ows.Value("dc:title")
+					ows.Value("dc:subject")
+					ows.Value("dc:creator")
+					ows.Value("dc:type")
+					ows.Value("ows:BoundingBox")
+					ows.Value("dct:modified")
+					ows.Value("dct:abstract")
+					ows.Value("dc:relation")
+					ows.Value("dc:date")
+					ows.Value("dc:identifier")
+					ows.Value("dc:publisher")
+					ows.Value("dc:format")
+					ows.Value("csw:AnyText")
+					ows.Value("dc:rights")
+				}
+				ows.Constraint(name:'SupportedFGDCQueryables') {
+					ows.Value("fgdc:Contributor")
+					ows.Value("fgdc:GeospatialPresentationForm")
+					ows.Value("fgdc:Publisher")
+					ows.Value("fgdc:AccessConstraints")
+					ows.Value("fgdc:AnyText")
+					ows.Value("fgdc:Source")
+					ows.Value("fgdc:Origin")
+					ows.Value("fgdc:Type")
+					ows.Value("fgdc:Format")
+					ows.Value("fgdc:Originator")
+					ows.Value("fgdc:Modified")
+					ows.Value("fgdc:Envelope")
+					ows.Value("fgdc:ThemeKeywords")
+					ows.Value("fgdc:PublicationDate")
+					ows.Value("fgdc:Title")
+					ows.Value("fgdc:Purpose")
+					ows.Value("fgdc:Abstract")
+					ows.Value("fgdc:Identifier")
+					ows.Value("fgdc:Progress")
+					ows.Value("fgdc:BeginDate")
+					ows.Value("fgdc:EndDate")
+					ows.Value("fgdc:Relation")
+				}
+				ows.Constraint(name:'SupportedAtomQueryables') {
+					ows.Value("atom:updated")
+					ows.Value("georss:where")
+					ows.Value("atom:id")
+					ows.Value("atom:rights")
+					ows.Value("atom:AnyText")
+					ows.Value("atom:author")
+					ows.Value("atom:summary")
+					ows.Value("atom:contributor")
+					ows.Value("atom:source")
+					ows.Value("atom:published")
+					ows.Value("atom:category")
+					ows.Value("atom:title")
+				}
+*/
+          }
+/*
+			ows.Constraint( name:'XPathQueryables') {
+				ows.Value("allowed")
+			}
+			ows.Constraint(name:'PostEncoding') {
+				ows.Value("XML")
+				ows.Value("SOAP")
+			}
+			inspire_ds.ExtendedCapabilities('xsi:schemaLocation': 'http://inspire.ec.europa.eu/schemas/inspire_ds/1.0 http://inspire.ec.europa.eu/schemas/inspire_ds/1.0/inspire_ds.xsd') {
+      			inspire_common.ResourceLocator {
+        			inspire_common.URL {
+          				mkp.yieldUnescaped "<![CDATA[http://maps.opensandiego.org/catalogue/csw?service=CSW&version=2.0.2&request=GetCapabilities]]>"
+					}
+        			inspire_common.MediaType("application/xml")
+      			}
+		      	inspire_common.ResourceType("service")
+		      	inspire_common.TemporalReference {
+		        	inspire_common.TemporalExtent {
+		          		inspire_common.IntervalOfDates {
+		            		inspire_common.StartingDate("YYYY-MM-DD")
+		            		inspire_common.EndDate("YYYY-MM-DD")
+		          		}
+		        	}
+		      	}
+		      	inspire_common.Conformity {
+		        	inspire_common.Specification('xsi:type': 'inspire_common:citationInspireInteroperabilityRegulation_eng') {
+		          		inspire_common.Title("COMMISSION REGULATION (EU) No 1089/2010 of 23 November 2010 implementing Directive 2007/2/EC of the European Parliament and of the Council as regards interoperability of spatial data sets and services")
+		          		inspire_common.DateOfPublication("2010-12-08")
+		         		inspire_common.URI("OJ:L:2010:323:0011:0102:EN:PDF")
+		          		inspire_common.ResourceLocator {
+		            		inspire_common.URL("http://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=OJ:L:2010:323:0011:0102:EN:PDF")
+		            		inspire_common.MediaType("application/pdf")
+		          		}
+		          	}
+		        	inspire_common.Degree("notEvaluated")
+		      	}
+				inspire_common.MetadataPointOfContact {
+					inspire_common.OrganisationName("Organization Name")
+					inspire_common.EmailAddress("Email Address")
+				}
+				inspire_common.MetadataDate("YYYY-MM-DD")
+				inspire_common.SpatialDataServiceType("discovery")
+				inspire_common.MandatoryKeyword('xsi:type': 'inspire_common:classificationOfSpatialDataService') {
+					inspire_common.KeywordValue("infoCatalogueService")
+				}
+		      	inspire_common.Keyword('xsi:type': 'inspire_common:inspireTheme_eng') {
+		        	inspire_common.OriginatingControlledVocabulary {
+		          		inspire_common.Title("GEMET - INSPIRE themes")
+		          		inspire_common.DateOfPublication("2008-06-01")
+		        	}
+		        	inspire_common.KeywordValue("Utility and governmental services")
+		      	}
+				inspire_common.SupportedLanguages {
+					inspire_common.DefaultLanguage {
+						inspire_common.Language("eng")
+					}
+					inspire_common.SupportedLanguage {
+						inspire_common.Language("eng")
+					}
+					inspire_common.SupportedLanguage {
+						inspire_common.Language("gre")
+					}
+				}
+				inspire_common.ResponseLanguage {
+					inspire_common.Language("eng")
+				}
+			}
+*/
+          ows.Operation( name: 'GetRecordById' ) {
+            ows.DCP {
+              ows.HTTP {
+                ows.Get( 'xlink:type': 'simple', 'xlink:href': '' )
+//		          ows.Post('xlink:type': 'simple', 'xlink:href': '')
+              }
+            }
+            ows.Parameter( name: 'outputSchema' ) {
+              ows.Value( "http://www.opengis.net/cat/csw/2.0.2" )
+/*
+		        ows.Value("http://gcmd.gsfc.nasa.gov/Aboutus/xml/dif/")
+		        ows.Value("http://www.isotc211.org/2005/gmd")
+		        ows.Value("urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0")
+		        ows.Value("http://www.opengis.net/cat/csw/csdgm")
+		        ows.Value("http://www.w3.org/2005/Atom")
+*/
+            }
+            ows.Parameter( name: 'outputFormat' ) {
+              ows.Value( "application/xml" )
+              ows.Value( "application/json" )
+            }
+            ows.Parameter( name: 'resultType' ) {
+              ows.Value( "hits" )
+              ows.Value( "results" )
+              ows.Value( "validate" )
+            }
+            ows.Parameter( name: 'ElementSetName' ) {
+              ows.Value( "brief" )
+              ows.Value( "summary" )
+              ows.Value( "full" )
+            }
+          }
+          ows.Parameter( name: 'service' ) {
+            ows.Value( "http://www.opengis.net/cat/csw/2.0.2" )
+          }
+          ows.Parameter( name: 'version' ) {
+            ows.Value( "2.0.2" )
+          }
+        }
+        ogc.Filter_Capabilities {
+          ogc.Spatial_Capabilities {
+            ogc.GeometryOperands {
+              ogc.GeometryOperand( "gml:Point" )
+              ogc.GeometryOperand( "gml:LineString" )
+              ogc.GeometryOperand( "gml:Polygon" )
+              ogc.GeometryOperand( "gml:Envelope" )
+            }
+            ogc.SpatialOperators {
+              ogc.SpatialOperator( name: 'BBOX' )
+              ogc.SpatialOperator( name: 'Beyond' )
+              ogc.SpatialOperator( name: 'Contains' )
+              ogc.SpatialOperator( name: 'Crosses' )
+              ogc.SpatialOperator( name: 'Disjoint' )
+              ogc.SpatialOperator( name: 'DWithin' )
+              ogc.SpatialOperator( name: 'Equals' )
+              ogc.SpatialOperator( name: 'Intersects' )
+              ogc.SpatialOperator( name: 'Overlaps' )
+              ogc.SpatialOperator( name: 'Touches' )
+              ogc.SpatialOperator( name: 'Within' )
+            }
+          }
+          ogc.Scalar_Capabilities {
+            ogc.LogicalOperators()
+            ogc.ComparisonOperators {
+              ogc.ComparisonOperator( "Between" )
+              ogc.ComparisonOperator( "EqualTo" )
+              ogc.ComparisonOperator( "GreaterThan" )
+              ogc.ComparisonOperator( "GreaterThanEqualTo" )
+              ogc.ComparisonOperator( "LessThan" )
+              ogc.ComparisonOperator( "LessThanEqualTo" )
+              ogc.ComparisonOperator( "Like" )
+              ogc.ComparisonOperator( "NotEqualTo" )
+              ogc.ComparisonOperator( "NullCheck" )
+            }
+            ogc.ArithmeticOperators {
+              ogc.Functions {
+                ogc.FunctionNames {
+                  ogc.FunctionName( nArgs: '1', 'length' )
+                  ogc.FunctionName( nArgs: '1', 'lower' )
+                  ogc.FunctionName( nArgs: '1', 'ltrim' )
+                  ogc.FunctionName( nArgs: '1', 'rtrim' )
+                  ogc.FunctionName( nArgs: '1', 'trim' )
+                  ogc.FunctionName( nArgs: '1', 'upper' )
+                }
+              }
+            }
+          }
+          ogc.Id_Capabilities {
+            ogc.EID()
+            ogc.FID()
+          }
+        }
+      }
+    }
+
+    return new StreamingMarkupBuilder( encoding: "UTF-8" ).bind( cswCaps )
+  }
+
+  def getRecords()
+  {
+    def dcCols = [
+        'identifier',
+        'type',
+        'title',
+        'subject',
+        'date',
+        'relation',
+        'format',
+        'creator',
+        'publisher',
+        'contributer',
+        'source',
+        'language',
+        'coverage',
+        'rights',
+        'description'
+    ]
+
+    def dctCols = ['spatial', 'abstract']
+    def owsCols = ['bbox']
+
+    def params = [
+        elementSet: "full"
+    ]
+
+    def results = [
+        timestamp: "2013-05-21T06:36:24Z",
+        nextRecord: "11",
+        numberOfRecordsMatched: "12",
+        numberOfRecordsReturned: "10",
+        data: [
+            [
+                identifier: 'urn:uuid:9a669547-b69b-469f-a11f-2d875366bbdc',
+                type: 'http://purl.org/dc/dcmitype/Dataset',
+                title: 'Ñunç elementum',
+                subject: /*scheme='http://www.digest.org/2.1'*/ 'Hydrography-Oceanographic',
+                date: '2005-10-24Z',
+                bbox: [crs: 'urn:x-ogc:def:crs:EPSG:6.11:4326', minX: '44.792', minY: '-6.171', maxX: '51.126', maxY: '-2.228']
+            ],
+            [
+                identifier: 'urn:uuid:6a3de50b-fa66-4b58-a0e6-ca146fdd18d4',
+                type: 'http://purl.org/dc/dcmitype/Service',
+                title: 'Ut facilisis justo ut lacus',
+                subject: /*scheme='http://www.digest.org/2.1'*/ 'Vegetation',
+                relation: 'urn:uuid:94bc9c83-97f6-4b40-9eb8-a8e8787a5c63',
+            ],
+            [
+                identifier: 'urn:uuid:19887a8a-f6b0-4a63-ae56-7fba0e17801f',
+                type: 'http://purl.org/dc/dcmitype/Image',
+                title: 'Lorem ipsum',
+                subject: 'Tourism--Greece',
+                format: 'image/svg+xml',
+                spatial: 'GR-22',
+                'abstract': 'Quisque lacus diam, placerat mollis, pharetra in, commodo sed, augue. Duis iaculis arcu vel arcu.'
+            ],
+            [
+                identifier: 'urn:uuid:e9330592-0932-474b-be34-c3a3bb67c7db',
+                type: 'http://purl.org/dc/dcmitype/Text',
+                title: 'Fuscé vitae ligulä',
+                subject: 'Land titles',
+                date: '2003-05-09Z',
+                format: 'text/rtf',
+                'abstract': 'Morbi ultriçes, dui suscipit vestibulum prètium, velit ante pretium tortor, egët tincidunt pede odio ac nulla.'
+            ],
+            [
+                identifier: 'urn:uuid:88247b56-4cbc-4df9-9860-db3f8042e357',
+                type: 'http://purl.org/dc/dcmitype/Dataset',
+                subject: /*scheme='http://www.digest.org/2.1'*/ 'Physiography-Landforms',
+                spatial: 'FI-ES',
+                'abstract': 'Donec scelerisque pede ut nisl luctus accumsan. Quisque ultrices, lorem eget feugiat fringilla, lorem dui porttitor ante, cursus ultrices magna odio eu neque.'
+            ],
+            [
+                identifier: 'urn:uuid:829babb0-b2f1-49e1-8cd5-7b489fe71a1e',
+                type: 'http://purl.org/dc/dcmitype/Image',
+                format: 'image/jp2',
+                title: 'Vestibulum massa purus',
+                relation: 'urn:uuid:9a669547-b69b-469f-a11f-2d875366bbdc',
+            ],
+            [
+                identifier: 'urn:uuid:784e2afd-a9fd-44a6-9a92-a3848371c8ec',
+                title: 'Aliquam fermentum purus quis arcu',
+                type: 'http://purl.org/dc/dcmitype/Text',
+                subject: 'Hydrography--Dictionaries',
+                format: 'application/pdf',
+                date: '2006-05-12Z',
+                'abstract': 'Vestibulum quis ipsum sit amet metus imperdiet vehicula. Nulla scelerisque cursus mi.'
+            ],
+            [
+                identifier: 'urn:uuid:1ef30a8b-876d-4828-9246-c37ab4510bbd',
+                type: 'http://purl.org/dc/dcmitype/Service',
+                'abstract': 'Proin sit amet justo. In justo. Aenean adipiscing nulla id tellus.',
+                bbox: [crs: 'urn:x-ogc:def:crs:EPSG:6.11:4326', minX: '60.042', minY: '13.754', maxX: '68.410', maxY: '17.920']
+            ],
+            [
+                identifier: 'urn:uuid:ab42a8c4-95e8-4630-bf79-33e59241605a',
+                type: 'http://purl.org/dc/dcmitype/Service',
+                subject: /*scheme='http://www.digest.org/2.1'*/ 'Physiography',
+                'abstract': 'Suspendisse accumsan molestie lorem. Nullam velit turpis, mattis ut, varius bibendum, laoreet non, quam.',
+                relation: 'urn:uuid:88247b56-4cbc-4df9-9860-db3f8042e357',
+            ],
+            [
+                identifier: 'urn:uuid:94bc9c83-97f6-4b40-9eb8-a8e8787a5c63',
+                type: 'http://purl.org/dc/dcmitype/Dataset',
+                title: 'Mauris sed neque',
+                subject: /*scheme='http://www.digest.org/2.1'*/ 'Vegetation-Cropland',
+                'abstract': 'Curabitur lacinia, ante non porta tempus, mi lorem feugiat odio, eget suscipit eros pede ac velit.',
+                date: '2006-03-26Z',
+                bbox: [crs: 'urn:x-ogc:def:crs:EPSG:6.11:4326', minX: '47.595', minY: '-4.097', maxX: '51.217', maxY: '0.889']
+            ]
+        ]
+    ]
+
+    def xml = {
+      mkp.xmlDeclaration()
+      mkp.declareNamespace( atom: "http://www.w3.org/2005/Atom" )
+      mkp.declareNamespace( csw: "http://www.opengis.net/cat/csw/2.0.2" )
+      mkp.declareNamespace( dc: "http://purl.org/dc/elements/1.1/" )
+      mkp.declareNamespace( dct: "http://purl.org/dc/terms/" )
+      mkp.declareNamespace( dif: "http://gcmd.gsfc.nasa.gov/Aboutus/xml/dif/" )
+      mkp.declareNamespace( fgdc: "http://www.opengis.net/cat/csw/csdgm" )
+      mkp.declareNamespace( gmd: "http://www.isotc211.org/2005/gmd" )
+      mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
+      mkp.declareNamespace( ogc: "http://www.opengis.net/ogc" )
+      mkp.declareNamespace( os: "http://a9.com/-/spec/opensearch/1.1/" )
+      mkp.declareNamespace( ows: "http://www.opengis.net/ows" )
+      mkp.declareNamespace( rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#" )
+      mkp.declareNamespace( sitemap: "http://www.sitemaps.org/schemas/sitemap/0.9" )
+      mkp.declareNamespace( soapenv: "http://www.w3.org/2003/05/soap-envelope" )
+      mkp.declareNamespace( xlink: "http://www.w3.org/1999/xlink" )
+      mkp.declareNamespace( xs: "http://www.w3.org/2001/XMLSchema" )
+      mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
+      csw.GetRecordsResponse(
+          version: "2.0.2",
+          'xsi:schemaLocation': "http://www.opengis.net/cat/csw/2.0.2 http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd"
+      ) {
+        csw.SearchStatus( timestamp: results.timestamp )
+        csw.SearchResults(
+            nextRecord: results.nextRecord,
+            numberOfRecordsMatched: results.numberOfRecordsMatched,
+            numberOfRecordsReturned: results.numberOfRecordsReturned,
+            recordSchema: "http://www.opengis.net/cat/csw/2.0.2",
+            elementSet: params.elementSet
+        ) {
+          for ( def x in results?.data )
+          {
+            csw.Record {
+              for ( def y in dcCols )
+              {
+                if ( x[y] != null )
+                {
+                  "dc:${y}"( "${x[y]}" )
+                }
+              }
+              for ( def y in dctCols )
+              {
+                if ( x[y] != null )
+                {
+                  "dct:${y}"( "${x[y]}" )
+                }
+              }
+              if ( x.bbox != null )
+              {
+                "ows:BoundingBox"( crs: x.bbox.crs ) {
+                  "ows:LowerCorner"( "${x.bbox.minX} ${x.bbox.minY}" )
+                  "ows:UpperCorner"( "${x.bbox.maxX} ${x.bbox.maxY}" )
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return new StreamingMarkupBuilder( encoding: 'utf-8' ).bind( xml )
+  }
+
+  def getRecordById()
+  {
+
+  }
+
+  def describeRecord()
+  {
+    def descRec = {
+      mkp.xmlDeclaration()
+//      mkp.declareNamespace( apiso: "http://www.opengis.net/cat/csw/apiso/1.0" )
+//      mkp.declareNamespace( atom: "http://www.w3.org/2005/Atom" )
+      mkp.declareNamespace( csw: "http://www.opengis.net/cat/csw/2.0.2" )
+      mkp.declareNamespace( dc: "http://purl.org/dc/elements/1.1/" )
+      mkp.declareNamespace( dct: "http://purl.org/dc/terms/" )
+//      mkp.declareNamespace( dif: "http://gcmd.gsfc.nasa.gov/Aboutus/xml/dif/" )
+//      mkp.declareNamespace( fgdc: "http://www.opengis.net/cat/csw/csdgm" )
+//      mkp.declareNamespace( gco: "http://www.isotc211.org/2005/gco" )
+//      mkp.declareNamespace( georss: "http://www.georss.org/georss" )
+//      mkp.declareNamespace( gmd: "http://www.isotc211.org/2005/gmd" )
+      mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
+//      mkp.declareNamespace( inspire_common: "http://inspire.ec.europa.eu/schemas/common/1.0" )
+//      mkp.declareNamespace( inspire_ds: "http://inspire.ec.europa.eu/schemas/inspire_ds/1.0" )
+      mkp.declareNamespace( ogc: "http://www.opengis.net/ogc" )
+//      mkp.declareNamespace( os: "http://a9.com/-/spec/opensearch/1.1/" )
+      mkp.declareNamespace( ows: "http://www.opengis.net/ows" )
+//      mkp.declareNamespace( rim: "urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" )
+//      mkp.declareNamespace( sitemap: "http://www.sitemaps.org/schemas/sitemap/0.9" )
+//      mkp.declareNamespace( soapenv: "http://www.w3.org/2003/05/soap-envelope" )
+//      mkp.declareNamespace( srv: "http://www.isotc211.org/2005/srv" )
+//      mkp.declareNamespace( wrs: "http://www.opengis.net/cat/wrs/1.0" )
+      mkp.declareNamespace( xlink: "http://www.w3.org/1999/xlink" )
+      mkp.declareNamespace( xs: "http://www.w3.org/2001/XMLSchema" )
+      mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
+
+      csw.DescribeRecordResponse(
+          'xsi:schemaLocation': "http://www.opengis.net/cat/csw/2.0.2 http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd"
+      ) {
+        csw.SchemaComponent( schemaLanguage: "XMLSCHEMA", targetNamespace: "http://www.opengis.net/cat/csw/2.0.2" ) {
+          xs.schema( id: "csw-record", targetNamespace: "http://www.opengis.net/cat/csw/2.0.2",
+              elementFormDefault: "qualified", version: "2.0.2 2010-01-22" ) {
+            xs.annotation {
+              xs.appinfo {
+                dc.identifier( "http://schemas.opengis.net/csw/2.0.2/record.xsd</dc:identifier" )
+              }
+              xs.documentation( 'xml:lang': "en", "This schema defines the basic record types that must be supported by all CSW implementations. These correspond to full, summary, and brief views based on DCMI metadata terms. CSW is an OGC Standard. Copyright (c) 2004,2010 Open Geospatial Consortium, Inc. All Rights Reserved. To obtain additional rights of use, visit http://www.opengeospatial.org/legal/ ." )
+            }
+            xs.import( namespace: "http://purl.org/dc/terms/", schemaLocation: "rec-dcterms.xsd" )
+            xs.import( namespace: "http://purl.org/dc/elements/1.1/", schemaLocation: "rec-dcmes.xsd" )
+            xs.import( namespace: "http://www.opengis.net/ows", schemaLocation: "../../ows/1.0.0/owsAll.xsd" )
+            xs.element( name: "AbstractRecord", id: "AbstractRecord", type: "csw:AbstractRecordType", abstract: "true" )
+            xs.complexType( name: "AbstractRecordType", id: "AbstractRecordType", 'abstract': "true" )
+            xs.element( name: "DCMIRecord", type: "csw:DCMIRecordType", substitutionGroup: "csw:AbstractRecord" )
+
+            xs.complexType( name: "DCMIRecordType" ) {
+
+              xs.annotation {
+                xs.documentation( 'xml:lang': "en", "This type encapsulates all of the standard DCMI metadata terms, including the Dublin Core refinements; these terms may be mapped to the profile-specific information model." )
+              }
+              xs.complexContent {
+                xs.extension( base: "csw:AbstractRecordType" ) {
+                  xs.sequence {
+                    xs.group( ref: "dct:DCMI-terms" )
+                  }
+                }
+              }
+            }
+            xs.element( name: "BriefRecord", type: "csw:BriefRecordType", substitutionGroup: "csw:AbstractRecord" )
+            xs.complexType( name: "BriefRecordType", 'final': "#all" ) {
+              xs.annotation {
+                xs.documentation( 'xml:lang': "en", "This type defines a brief representation of the common record format. It extends AbstractRecordType to include only the dc:identifier and dc:type properties." )
+              }
+              xs.complexContent {
+                xs.extension( base: "csw:AbstractRecordType" ) {
+                  xs.sequence {
+                    xs.element( ref: "dc:identifier", minOccurs: "1", maxOccurs: "unbounded" )
+                    xs.element( ref: "dc:title", minOccurs: "1", maxOccurs: "unbounded" )
+                    xs.element( ref: "dc:type", minOccurs: "0" )
+                    xs.element( ref: "ows:BoundingBox", minOccurs: "0", maxOccurs: "unbounded" )
+                  }
+                }
+              }
+            }
+            xs.element( name: "SummaryRecord", type: "csw:SummaryRecordType", substitutionGroup: "csw:AbstractRecord" )
+            xs.complexType( name: "SummaryRecordType", 'final': "#all" ) {
+              xs.annotation {
+                xs.documentation( 'xml:lang': "en", "This type defines a summary representation of the common record format. It extends AbstractRecordType to include the core properties." )
+              }
+              xs.complexContent {
+                xs.extension( base: "csw:AbstractRecordType" ) {
+                  xs.sequence {
+                    xs.element( ref: "dc:identifier", minOccurs: "1", maxOccurs: "unbounded" )
+                    xs.element( ref: "dc:title", minOccurs: "1", maxOccurs: "unbounded" )
+                    xs.element( ref: "dc:type", minOccurs: "0" )
+                    xs.element( ref: "dc:subject", minOccurs: "0", maxOccurs: "unbounded" )
+                    xs.element( ref: "dc:format", minOccurs: "0", maxOccurs: "unbounded" )
+                    xs.element( ref: "dc:relation", minOccurs: "0", maxOccurs: "unbounded" )
+                    xs.element( ref: "dct:modified", minOccurs: "0", maxOccurs: "unbounded" )
+                    xs.element( ref: "dct:abstract", minOccurs: "0", maxOccurs: "unbounded" )
+                    xs.element( ref: "dct:spatial", minOccurs: "0", maxOccurs: "unbounded" )
+                    xs.element( ref: "ows:BoundingBox", minOccurs: "0", maxOccurs: "unbounded" )
+                  }
+                }
+              }
+            }
+            xs.element( name: "Record", type: "csw:RecordType", substitutionGroup: "csw:AbstractRecord" )
+            xs.complexType( name: "RecordType", 'final': "#all" ) {
+              xs.annotation {
+                xs.documentation( 'xml:lang': "en", "This type extends DCMIRecordType to add ows:BoundingBox; it may be used to specify a spatial envelope for the catalogued resource." )
+              }
+              xs.complexContent {
+                xs.extension( base: "csw:DCMIRecordType" ) {
+                  xs.sequence {
+                    xs.element( name: "AnyText", type: "csw:EmptyType", minOccurs: "0", maxOccurs: "unbounded" )
+                    xs.element( ref: "ows:BoundingBox", minOccurs: "0", maxOccurs: "unbounded" )
+                  }
+                }
+              }
+            }
+            xs.complexType( name: "EmptyType" )
+          }
+        }
+      }
+    }
+
+    return new StreamingMarkupBuilder( encoding: "UTF-8" ).bind( descRec )
+  }
+}
