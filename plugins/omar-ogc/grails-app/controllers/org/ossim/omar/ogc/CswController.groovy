@@ -14,9 +14,11 @@ class CswController
     switch ( request.method.toUpperCase() )
     {
     case "GET":
-      def cswParams = new CaseInsensitiveMap( params )
-
       cswCmd = new CswCommand()
+
+      def cswParams = new CaseInsensitiveMap( params ).subMap(
+          cswCmd.properties.keySet() )
+
       bindData( cswCmd, cswParams )
       break
     case "POST":

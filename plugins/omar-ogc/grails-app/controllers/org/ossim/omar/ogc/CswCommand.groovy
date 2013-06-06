@@ -68,6 +68,7 @@ class CswCommand
       switch ( params.constraintLanguage )
       {
       case "CQLTEXT":
+      case "CQL_TEXT":
         params.constraint = xml?.Query?.Constraint?.childNodes()?.next()?.text()
         break
       case "FILTER":
