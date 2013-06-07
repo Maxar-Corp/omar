@@ -563,14 +563,27 @@ class CatalogWebService
   {
     def sql = """
       select
+        (
+          coalesce(mission_id, '') || ' ' ||
+          coalesce(sensor_id, '') || ' ' ||
+          coalesce(country_code, '') || ' ' ||
+          coalesce(image_category, '') || ' ' ||
+          coalesce(image_representation, '')
+        ) as subject,
+        title as title,
+       ''::varchar as abstract,
+       ''::varchar as anytext,
+        file_type as format,
         index_id as identifier,
-        mission_id || ' ' || sensor_id as subject,
-        acquisition_date as date,
-        st_envelope(ground_geom) as bbox
+        acquisition_date as modified,
+        'Image'::varchar as type,
+        st_envelope(ground_geom) as boundingbox,
+        filename as source,
+        ''::varchar as association
       from raster_entry
       """
 
-    def layer = workspace.addSqlQuery( 'csw', sql, 'bbox', 'Polygon', 4326, ['identifier'] )
+    def layer = workspace.addSqlQuery( 'csw', sql, 'boundingBox', 'Polygon', 4326, ['identifier'] )
     layer
   }
 
@@ -603,7 +616,7 @@ class CatalogWebService
         'type',
         'title',
         'subject',
-        'date',
+        'modified',
         'relation',
         'format',
         'creator',
@@ -617,7 +630,7 @@ class CatalogWebService
     ]
 
     def dctCols = ['spatial', 'abstract']
-    def owsCols = ['bbox']
+    def owsCols = ['boundingBox']
 
     def params = [
         elementSet: "full"
@@ -673,9 +686,9 @@ class CatalogWebService
                   "dct:${y}"( "${x[y]}" )
                 }
               }
-              if ( x.bbox != null )
+              if ( x.boundingBox != null )
               {
-                def bounds = x.bbox.bounds
+                def bounds = x.boundingBox.bounds
 
                 "ows:BoundingBox"( crs: bounds?.proj?.id ) {
                   "ows:LowerCorner"( "${bounds?.minX} ${bounds?.minY}" )
