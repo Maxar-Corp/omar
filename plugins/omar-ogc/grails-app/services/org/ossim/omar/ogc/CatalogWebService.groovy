@@ -524,12 +524,14 @@ class CatalogWebService
 
   private def executeQuery(def layer, def cswCommand)
   {
-    def c = layer?.getCursor(
+    def o = [
         max: cswCommand.maxRecords ?: 10,
-        start: ( cswCommand?.startPosition - 1 ) ?: 1,
-        filter: cswCommand.constraint ?: Filter.PASS
-    )
+        start: ( cswCommand?.startPosition ?: 1 ) - 1,
+        filter: cswCommand.constraint ?: Filter.PASS,
+        sort: ( cswCommand?.sortBy ) ? cswCommand?.convertSortByToArray(): [['identifier', 'ASC']]
+    ]
 
+    def c = layer?.getCursor( o )
     def records = []
 
     while ( c?.hasNext() )

@@ -34,6 +34,8 @@ class CswCommand
   String constraint
   String constraintLanguage
 
+  String sortBy
+
   static CswCommand fromXML(String xmlText)
   {
     fromXML( new XmlSlurper().parseText( xmlText ) )
@@ -65,6 +67,10 @@ class CswCommand
       params.elementSetName = xml.Query?.ElementSetName?.text()
       params.constraintLanguage = xml?.Query?.Constraint?.childNodes()?.next()?.name()?.toUpperCase()
 
+      params.sortBy = xml?.Query?.SortBy?.SortProperty?.collect {
+        [it?.PropertyName?.text(), it?.SortOrder?.text()?.toUpperCase()]?.join(':')
+      }?.join(',')
+
       switch ( params.constraintLanguage )
       {
       case "CQLTEXT":
@@ -81,4 +87,37 @@ class CswCommand
 
     new CswCommand( params )
   }
+
+  def convertSortByToArray()
+  {
+    def result = [];
+
+
+    if ( !sortBy )
+    {
+      return null
+    };
+    def arrayOfValues = sortBy.split( "," )
+    def idx = 0;
+    arrayOfValues.each { element ->
+      def splitParam = element.split( /\+|:/ );
+      if ( splitParam.length == 1 )
+      {
+        result << [splitParam]
+      }
+      else
+      {
+        if ( splitParam[1].toLowerCase() == "a" )
+        {
+          result << [splitParam[0], "ASC"]
+        }
+        else
+        {
+          result << [splitParam[0], "DESC"]
+        }
+      }
+    }
+    result;
+  }
+
 }
