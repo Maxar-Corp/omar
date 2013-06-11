@@ -314,6 +314,8 @@ class ImageChainService
             {
                 kwlString += "object${objectPrefixIdx}.image_view_trans.pivot: (${pivot})\n"
             }
+            ++objectPrefixIdx
+
             //CONSTRUCT VIEW CACHE
             //
             kwlString += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
@@ -346,6 +348,8 @@ class ImageChainService
             chain = new joms.oms.Chain()
             chain.loadChainKwlString( kwlString )
         }
+
+      //println "INPUT CHAIN *******************\n${kwlString}\n*************"
         [chain: chain, kwl: kwlString, prefixIdx: objectPrefixIdx]
     }
 
