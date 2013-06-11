@@ -73,7 +73,7 @@ class WfsCommand
     def arrayOfValues = sortBy.split( "," )
     def idx = 0;
     arrayOfValues.each { element ->
-      def splitParam = element.split( "\\+" );
+      def splitParam = element.split( /\+|:/ );
       if ( splitParam.length == 1 )
       {
         result << [splitParam]

@@ -1,13 +1,22 @@
 package org.ossim.omar.ogc
 
+import geoscript.filter.Filter
+import geoscript.layer.Layer
+import geoscript.workspace.Database
+import geoscript.workspace.Workspace
 import groovy.xml.StreamingMarkupBuilder
 
 class CatalogWebService
 {
   static transactional = false
 
-  def getCapabiltiies()
+  def grailsApplication
+  def dataSourceUnproxied
+
+  def getCapabiltiies(CswCommand cswCommand)
   {
+    def serverAddress = grailsApplication.config.omar.serverURL
+
     def cswCaps = {
       mkp.xmlDeclaration()
 //	mkp.declareNamespace(apiso: "http://www.opengis.net/cat/csw/apiso/1.0")
@@ -72,7 +81,7 @@ class CatalogWebService
                 ows.Country()
                 ows.ElectronicMailAddress()
               }
-              ows.OnlineResource( 'xlink:type': "simple", 'xlink:href': "" )
+              ows.OnlineResource( 'xlink:type': "simple", 'xlink:href': "${serverAddress}/csw" )
               ows.HoursOfService()
               ows.ContactInstructions()
             }
@@ -83,8 +92,8 @@ class CatalogWebService
           ows.Operation( name: "GetCapabilities" ) {
             ows.DCP {
               ows.HTTP {
-                ows.Get( 'xlink:type': "simple", 'xlink:href': "" )
-//						ows.Post( 'xlink:type': "simple", 'xlink:href': "" )
+                ows.Get( 'xlink:type': "simple", 'xlink:href': "${serverAddress}/csw" )
+                ows.Post( 'xlink:type': "simple", 'xlink:href': "${serverAddress}/csw" )
               }
             }
             ows.Parameter( name: "sections" ) {
@@ -98,7 +107,7 @@ class CatalogWebService
 			ows.Operation(name: "GetRepositoryItem") {
       			ows.DCP {
         			ows.HTTP {
-          				ows.Get( 'xlink:type': "simple", 'xlink:href': "")
+          				ows.Get( 'xlink:type': "simple",  'xlink:href':"${serverAddress}/csw")
         			}
       			}
     		}
@@ -106,8 +115,8 @@ class CatalogWebService
           ows.Operation( name: "DescribeRecord" ) {
             ows.DCP {
               ows.HTTP {
-                ows.Get( 'xlink:type': "simple", 'xlink:href': "" )
-//						ows.Post( 'xlink:type': "simple", 'xlink:href': "")
+                ows.Get( 'xlink:type': "simple", 'xlink:href': "${serverAddress}/csw" )
+                ows.Post( 'xlink:type': "simple", 'xlink:href': "${serverAddress}/csw" )
               }
             }
             ows.Parameter( name: "typeName" ) {
@@ -133,8 +142,8 @@ class CatalogWebService
 		    ows.Operation( name: "GetDomain") {
 		      ows.DCP {
 		        ows.HTTP {
-		          ows.Get( 'xlink:type': "simple", 'xlink:href': "http://maps.opensandiego.org/catalogue/csw")
-//		          ows.Post( 'xlink:type': "simple", 'xlink:href': "http://maps.opensandiego.org/catalogue/csw")
+		          ows.Get( 'xlink:type': "simple", 'xlink:href': "${serverAddress}/csw")
+		          ows.Post( 'xlink:type': "simple", 'xlink:href': "${serverAddress}/csw")
 		        }
 		      }
 		      ows.Parameter( name: "ParameterName") {
@@ -157,8 +166,8 @@ class CatalogWebService
           ows.Operation( name: 'GetRecords' ) {
             ows.DCP {
               ows.HTTP {
-                ows.Get( 'xlink:type': 'simple', 'xlink:href': '' )
-//			          ows.Post( 'xlink:type': 'simple', 'xlink:href': '')
+                ows.Get( 'xlink:type': 'simple', 'xlink:href': "${serverAddress}/csw" )
+                ows.Post( 'xlink:type': 'simple', 'xlink:href': "${serverAddress}/csw" )
               }
             }
             ows.Parameter( name: 'resultType' ) {
@@ -402,8 +411,8 @@ class CatalogWebService
           ows.Operation( name: 'GetRecordById' ) {
             ows.DCP {
               ows.HTTP {
-                ows.Get( 'xlink:type': 'simple', 'xlink:href': '' )
-//		          ows.Post('xlink:type': 'simple', 'xlink:href': '')
+                ows.Get( 'xlink:type': 'simple', 'xlink:href': "${serverAddress}/csw" )
+                ows.Post( 'xlink:type': 'simple', 'xlink:href': "${serverAddress}/csw" )
               }
             }
             ows.Parameter( name: 'outputSchema' ) {
@@ -476,19 +485,19 @@ class CatalogWebService
             ogc.ArithmeticOperators {
               ogc.Functions {
                 ogc.FunctionNames {
-                  ogc.FunctionName( nArgs: '1', 'length' )
-                  ogc.FunctionName( nArgs: '1', 'lower' )
-                  ogc.FunctionName( nArgs: '1', 'ltrim' )
-                  ogc.FunctionName( nArgs: '1', 'rtrim' )
-                  ogc.FunctionName( nArgs: '1', 'trim' )
-                  ogc.FunctionName( nArgs: '1', 'upper' )
+//                  ogc.FunctionName( nArgs: '1', 'length' )
+//                  ogc.FunctionName( nArgs: '1', 'lower' )
+//                  ogc.FunctionName( nArgs: '1', 'ltrim' )
+//                  ogc.FunctionName( nArgs: '1', 'rtrim' )
+//                  ogc.FunctionName( nArgs: '1', 'trim' )
+//                  ogc.FunctionName( nArgs: '1', 'upper' )
                 }
               }
             }
           }
           ogc.Id_Capabilities {
-            ogc.EID()
-            ogc.FID()
+//            ogc.EID()
+//            ogc.FID()
           }
         }
       }
@@ -497,14 +506,119 @@ class CatalogWebService
     return new StreamingMarkupBuilder( encoding: "UTF-8" ).bind( cswCaps )
   }
 
-  def getRecords()
+  private def getResults(CswCommand cswCommand)
   {
+    Database workspace = createWorkspace()
+    Layer layer = createLayer( workspace )
+    def results = getHitCount( layer, cswCommand )
+
+    if ( cswCommand.resultType?.toLowerCase() == 'results' )
+    {
+      results.data = executeQuery( layer, cswCommand )
+    }
+
+    workspace?.close()
+
+    return results
+  }
+
+  private def executeQuery(def layer, def cswCommand)
+  {
+    def o = [
+        max: cswCommand.maxRecords ?: 10,
+        start: ( cswCommand?.startPosition ?: 1 ) - 1,
+        filter: cswCommand.constraint ?: Filter.PASS,
+        sort: ( cswCommand?.sortBy ) ? cswCommand?.convertSortByToArray(): [['identifier', 'ASC']]
+    ]
+
+    def c = layer?.getCursor( o )
+    def records = []
+
+    while ( c?.hasNext() )
+    {
+      def f = c?.next()
+
+      records << f.attributes
+    }
+
+    c?.close()
+
+    return records
+  }
+
+
+  private getHitCount(Layer layer, CswCommand cswCommand)
+  {
+    def numberOfRecordsMatched = layer.count( cswCommand.constraint ?: Filter.PASS )
+    def numberOfRecordsReturned = Math.min( numberOfRecordsMatched, cswCommand.maxRecords ?: 10 )
+    def nextRecord = ( cswCommand.startPosition ?: 1 ) + ( cswCommand.maxRecords ?: 10 )
+
+    [
+        timestamp: new Date().format( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" ),
+        numberOfRecordsMatched: numberOfRecordsMatched,
+        numberOfRecordsReturned: numberOfRecordsReturned,
+        nextRecord: nextRecord
+    ]
+  }
+
+  private Layer createLayer(Database workspace)
+  {
+    def sql = """
+      select
+        (
+          coalesce(mission_id, '') || ' ' ||
+          coalesce(sensor_id, '') || ' ' ||
+          coalesce(country_code, '') || ' ' ||
+          coalesce(image_category, '') || ' ' ||
+          coalesce(image_representation, '')
+        ) as subject,
+        title as title,
+       ''::varchar as abstract,
+       ''::varchar as anytext,
+        file_type as format,
+        index_id as identifier,
+        acquisition_date as modified,
+        'Image'::varchar as type,
+        st_envelope(ground_geom) as boundingbox,
+        filename as source,
+        ''::varchar as association
+      from raster_entry
+      """
+
+    def layer = workspace.addSqlQuery( 'csw', sql, 'boundingBox', 'Polygon', 4326, ['identifier'] )
+    layer
+  }
+
+  private Database createWorkspace()
+  {
+    def workspace = new Database( new Workspace(
+        dbtype: 'postgis',
+
+        // All these can be blank (except for port for some reason)
+        // The dataSource is provided by Hibernate.
+        database: '',
+        host: '',
+        port: 5432,
+        user: '',
+        password: '',
+
+        'Data Source': dataSourceUnproxied,
+        'Expose primary keys': true,
+        namespace: 'http://omar.ossim.org'
+    )?.ds )
+    workspace
+  }
+
+  def getRecords(CswCommand cswCommand)
+  {
+    def serverAddress = grailsApplication.config.omar.serverURL
+
     def dcCols = [
         'identifier',
         'type',
         'title',
         'subject',
-        'date',
+        'modified',
         'relation',
         'format',
         'creator',
@@ -518,115 +632,30 @@ class CatalogWebService
     ]
 
     def dctCols = ['spatial', 'abstract']
-    def owsCols = ['bbox']
+    def owsCols = ['boundingBox']
 
     def params = [
         elementSet: "full"
     ]
 
-    def results = [
-        timestamp: "2013-05-21T06:36:24Z",
-        nextRecord: "11",
-        numberOfRecordsMatched: "12",
-        numberOfRecordsReturned: "10",
-        data: [
-            [
-                identifier: 'urn:uuid:9a669547-b69b-469f-a11f-2d875366bbdc',
-                type: 'http://purl.org/dc/dcmitype/Dataset',
-                title: 'Ñunç elementum',
-                subject: /*scheme='http://www.digest.org/2.1'*/ 'Hydrography-Oceanographic',
-                date: '2005-10-24Z',
-                bbox: [crs: 'urn:x-ogc:def:crs:EPSG:6.11:4326', minX: '44.792', minY: '-6.171', maxX: '51.126', maxY: '-2.228']
-            ],
-            [
-                identifier: 'urn:uuid:6a3de50b-fa66-4b58-a0e6-ca146fdd18d4',
-                type: 'http://purl.org/dc/dcmitype/Service',
-                title: 'Ut facilisis justo ut lacus',
-                subject: /*scheme='http://www.digest.org/2.1'*/ 'Vegetation',
-                relation: 'urn:uuid:94bc9c83-97f6-4b40-9eb8-a8e8787a5c63',
-            ],
-            [
-                identifier: 'urn:uuid:19887a8a-f6b0-4a63-ae56-7fba0e17801f',
-                type: 'http://purl.org/dc/dcmitype/Image',
-                title: 'Lorem ipsum',
-                subject: 'Tourism--Greece',
-                format: 'image/svg+xml',
-                spatial: 'GR-22',
-                'abstract': 'Quisque lacus diam, placerat mollis, pharetra in, commodo sed, augue. Duis iaculis arcu vel arcu.'
-            ],
-            [
-                identifier: 'urn:uuid:e9330592-0932-474b-be34-c3a3bb67c7db',
-                type: 'http://purl.org/dc/dcmitype/Text',
-                title: 'Fuscé vitae ligulä',
-                subject: 'Land titles',
-                date: '2003-05-09Z',
-                format: 'text/rtf',
-                'abstract': 'Morbi ultriçes, dui suscipit vestibulum prètium, velit ante pretium tortor, egët tincidunt pede odio ac nulla.'
-            ],
-            [
-                identifier: 'urn:uuid:88247b56-4cbc-4df9-9860-db3f8042e357',
-                type: 'http://purl.org/dc/dcmitype/Dataset',
-                subject: /*scheme='http://www.digest.org/2.1'*/ 'Physiography-Landforms',
-                spatial: 'FI-ES',
-                'abstract': 'Donec scelerisque pede ut nisl luctus accumsan. Quisque ultrices, lorem eget feugiat fringilla, lorem dui porttitor ante, cursus ultrices magna odio eu neque.'
-            ],
-            [
-                identifier: 'urn:uuid:829babb0-b2f1-49e1-8cd5-7b489fe71a1e',
-                type: 'http://purl.org/dc/dcmitype/Image',
-                format: 'image/jp2',
-                title: 'Vestibulum massa purus',
-                relation: 'urn:uuid:9a669547-b69b-469f-a11f-2d875366bbdc',
-            ],
-            [
-                identifier: 'urn:uuid:784e2afd-a9fd-44a6-9a92-a3848371c8ec',
-                title: 'Aliquam fermentum purus quis arcu',
-                type: 'http://purl.org/dc/dcmitype/Text',
-                subject: 'Hydrography--Dictionaries',
-                format: 'application/pdf',
-                date: '2006-05-12Z',
-                'abstract': 'Vestibulum quis ipsum sit amet metus imperdiet vehicula. Nulla scelerisque cursus mi.'
-            ],
-            [
-                identifier: 'urn:uuid:1ef30a8b-876d-4828-9246-c37ab4510bbd',
-                type: 'http://purl.org/dc/dcmitype/Service',
-                'abstract': 'Proin sit amet justo. In justo. Aenean adipiscing nulla id tellus.',
-                bbox: [crs: 'urn:x-ogc:def:crs:EPSG:6.11:4326', minX: '60.042', minY: '13.754', maxX: '68.410', maxY: '17.920']
-            ],
-            [
-                identifier: 'urn:uuid:ab42a8c4-95e8-4630-bf79-33e59241605a',
-                type: 'http://purl.org/dc/dcmitype/Service',
-                subject: /*scheme='http://www.digest.org/2.1'*/ 'Physiography',
-                'abstract': 'Suspendisse accumsan molestie lorem. Nullam velit turpis, mattis ut, varius bibendum, laoreet non, quam.',
-                relation: 'urn:uuid:88247b56-4cbc-4df9-9860-db3f8042e357',
-            ],
-            [
-                identifier: 'urn:uuid:94bc9c83-97f6-4b40-9eb8-a8e8787a5c63',
-                type: 'http://purl.org/dc/dcmitype/Dataset',
-                title: 'Mauris sed neque',
-                subject: /*scheme='http://www.digest.org/2.1'*/ 'Vegetation-Cropland',
-                'abstract': 'Curabitur lacinia, ante non porta tempus, mi lorem feugiat odio, eget suscipit eros pede ac velit.',
-                date: '2006-03-26Z',
-                bbox: [crs: 'urn:x-ogc:def:crs:EPSG:6.11:4326', minX: '47.595', minY: '-4.097', maxX: '51.217', maxY: '0.889']
-            ]
-        ]
-    ]
+    def results = getResults( cswCommand )
 
     def xml = {
       mkp.xmlDeclaration()
-      mkp.declareNamespace( atom: "http://www.w3.org/2005/Atom" )
+//      mkp.declareNamespace( atom: "http://www.w3.org/2005/Atom" )
       mkp.declareNamespace( csw: "http://www.opengis.net/cat/csw/2.0.2" )
       mkp.declareNamespace( dc: "http://purl.org/dc/elements/1.1/" )
       mkp.declareNamespace( dct: "http://purl.org/dc/terms/" )
-      mkp.declareNamespace( dif: "http://gcmd.gsfc.nasa.gov/Aboutus/xml/dif/" )
-      mkp.declareNamespace( fgdc: "http://www.opengis.net/cat/csw/csdgm" )
-      mkp.declareNamespace( gmd: "http://www.isotc211.org/2005/gmd" )
+//      mkp.declareNamespace( dif: "http://gcmd.gsfc.nasa.gov/Aboutus/xml/dif/" )
+//      mkp.declareNamespace( fgdc: "http://www.opengis.net/cat/csw/csdgm" )
+//      mkp.declareNamespace( gmd: "http://www.isotc211.org/2005/gmd" )
       mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
       mkp.declareNamespace( ogc: "http://www.opengis.net/ogc" )
-      mkp.declareNamespace( os: "http://a9.com/-/spec/opensearch/1.1/" )
+//      mkp.declareNamespace( os: "http://a9.com/-/spec/opensearch/1.1/" )
       mkp.declareNamespace( ows: "http://www.opengis.net/ows" )
-      mkp.declareNamespace( rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#" )
-      mkp.declareNamespace( sitemap: "http://www.sitemaps.org/schemas/sitemap/0.9" )
-      mkp.declareNamespace( soapenv: "http://www.w3.org/2003/05/soap-envelope" )
+//      mkp.declareNamespace( rdf: "http://www.w3.org/1999/02/22-rdf-syntax-ns#" )
+//      mkp.declareNamespace( sitemap: "http://www.sitemaps.org/schemas/sitemap/0.9" )
+//      mkp.declareNamespace( soapenv: "http://www.w3.org/2003/05/soap-envelope" )
       mkp.declareNamespace( xlink: "http://www.w3.org/1999/xlink" )
       mkp.declareNamespace( xs: "http://www.w3.org/2001/XMLSchema" )
       mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
@@ -659,11 +688,13 @@ class CatalogWebService
                   "dct:${y}"( "${x[y]}" )
                 }
               }
-              if ( x.bbox != null )
+              if ( x.boundingBox != null )
               {
-                "ows:BoundingBox"( crs: x.bbox.crs ) {
-                  "ows:LowerCorner"( "${x.bbox.minX} ${x.bbox.minY}" )
-                  "ows:UpperCorner"( "${x.bbox.maxX} ${x.bbox.maxY}" )
+                def bounds = x.boundingBox.bounds
+
+                "ows:BoundingBox"( crs: bounds?.proj?.id ) {
+                  "ows:LowerCorner"( "${bounds?.minX} ${bounds?.minY}" )
+                  "ows:UpperCorner"( "${bounds?.maxX} ${bounds?.maxY}" )
                 }
               }
             }
@@ -675,13 +706,16 @@ class CatalogWebService
     return new StreamingMarkupBuilder( encoding: 'utf-8' ).bind( xml )
   }
 
-  def getRecordById()
+  def getRecordById(CswCommand cswCommand)
   {
+    def serverAddress = grailsApplication.config.omar.serverURL
 
   }
 
-  def describeRecord()
+  def describeRecord(CswCommand cswCommand)
   {
+    def serverAddress = grailsApplication.config.omar.serverURL
+
     def descRec = {
       mkp.xmlDeclaration()
 //      mkp.declareNamespace( apiso: "http://www.opengis.net/cat/csw/apiso/1.0" )
