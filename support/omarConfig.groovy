@@ -1,3 +1,8 @@
+// If you need access to the appName or app version you must use the following
+// grails.util.Metadata.current.'app.name'
+// grails.util.Metadata.current.'app.version'
+//
+//
 import java.awt.Color
 
 //omar.serverIP=
