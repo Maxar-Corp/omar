@@ -45,6 +45,8 @@ class CswController
     case "getrecords":
       results = catalogWebService.getRecords( cswCmd )
       break
+    default:
+      results = catalogWebService.getCapabiltiies( cswCmd )
     }
 
     render contentType: 'application/xml', text: results

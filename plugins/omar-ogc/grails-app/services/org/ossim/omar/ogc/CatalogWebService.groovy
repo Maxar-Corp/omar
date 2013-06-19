@@ -528,7 +528,7 @@ class CatalogWebService
         max: cswCommand.maxRecords ?: 10,
         start: ( cswCommand?.startPosition ?: 1 ) - 1,
         filter: cswCommand.constraint ?: Filter.PASS,
-        sort: ( cswCommand?.sortBy ) ? cswCommand?.convertSortByToArray(): [['identifier', 'ASC']]
+        sort: ( cswCommand?.sortBy ) ? cswCommand?.convertSortByToArray() : [['identifier', 'ASC']]
     ]
 
     def c = layer?.getCursor( o )
@@ -613,25 +613,45 @@ class CatalogWebService
   {
     def serverAddress = grailsApplication.config.omar.serverURL
 
-    def dcCols = [
-        'identifier',
-        'type',
-        'title',
-        'subject',
-        'modified',
-        'relation',
-        'format',
-        'creator',
-        'publisher',
-        'contributer',
-        'source',
-        'language',
-        'coverage',
-        'rights',
-        'description'
+    def dcTag = [
+        full: 'Record',
+        brief: 'BriefRecord',
+        summary: 'SummaryRecord'
     ]
 
-    def dctCols = ['spatial', 'abstract']
+    def dcCols = [
+        full: [
+            'identifier',
+            'type',
+            'title',
+            'subject',
+            'relation',
+            'format',
+            'creator',
+            'publisher',
+            'contributer',
+            'source',
+            'language',
+            'coverage',
+            'rights',
+            'description'
+        ],
+        brief: [
+            'identifier',
+            'type',
+            'title',
+        ],
+        summary: [
+            'identifier',
+            'type',
+            'title',
+            'subject',
+            'relation',
+            'format'
+        ]
+    ]
+
+    def dctCols = ['spatial', 'abstract', 'modified']
     def owsCols = ['boundingBox']
 
     def params = [
@@ -673,8 +693,10 @@ class CatalogWebService
         ) {
           for ( def x in results?.data )
           {
-            csw.Record {
-              for ( def y in dcCols )
+            def elementSetName = cswCommand.elementSetName ?: 'full'
+
+            csw."${dcTag[elementSetName]}" {
+              for ( def y in dcCols[elementSetName] )
               {
                 if ( x[y] != null )
                 {
