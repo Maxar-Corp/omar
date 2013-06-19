@@ -30,25 +30,43 @@ class CswController
     println cswCmd
 
     def results = null
+    def contentType = 'application/xml'
 
-    switch ( cswCmd?.request?.toLowerCase() )
+    try
     {
-    case "getcapabilities":
-      results = catalogWebService.getCapabiltiies( cswCmd )
-      break
-    case "describerecord":
-      results = catalogWebService.describeRecord( cswCmd )
-      break
-    case "getrecordbyid":
-      results = catalogWebService.getRecordById( cswCmd )
-      break
-    case "getrecords":
-      results = catalogWebService.getRecords( cswCmd )
-      break
-    default:
-      results = catalogWebService.getCapabiltiies( cswCmd )
+      switch ( cswCmd?.request?.toLowerCase() )
+      {
+      case "getcapabilities":
+        results = catalogWebService.getCapabiltiies( cswCmd )
+        break
+      case "describerecord":
+        results = catalogWebService.describeRecord( cswCmd )
+        break
+      case "getrecordbyid":
+        results = catalogWebService.getRecordById( cswCmd )
+        break
+      case "getrecords":
+        results = catalogWebService.getRecords( cswCmd )
+        break
+      default:
+        results = catalogWebService.getCapabiltiies( cswCmd )
+      }
     }
-
-    render contentType: 'application/xml', text: results
+    catch ( Exception e )
+    {
+      results = new StreamingMarkupBuilder().bind() {
+        mkp.xmlDeclaration()
+        mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
+        ServiceExceptionReport( version: "1.2.0", xmlns: "http://www.opengis.net/ogc",
+            'xsi:schemaLocation': "http://www.opengis.net/ogc http://schemas.opengis.net/wfs/1.0.0/OGC-exception.xsd" ) {
+          ServiceException( code: "GeneralException", e.message )
+        }
+      }.toString()
+      contentType = 'application/vnd.ogc.se_xml'
+    }
+    finally
+    {
+      render contentType: contentType, text: results
+    }
   }
 }

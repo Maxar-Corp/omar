@@ -509,15 +509,24 @@ class CatalogWebService
   private def getResults(CswCommand cswCommand)
   {
     Database workspace = createWorkspace()
-    Layer layer = createLayer( workspace )
-    def results = getHitCount( layer, cswCommand )
+    def results = null
 
-    if ( cswCommand.resultType?.toLowerCase() == 'results' )
+    try
     {
-      results.data = executeQuery( layer, cswCommand )
-    }
 
-    workspace?.close()
+      Layer layer = createLayer( workspace )
+
+      results = getHitCount( layer, cswCommand )
+
+      if ( cswCommand.resultType?.toLowerCase() == 'results' )
+      {
+        results.data = executeQuery( layer, cswCommand )
+      }
+    }
+    finally
+    {
+      workspace?.close()
+    }
 
     return results
   }
