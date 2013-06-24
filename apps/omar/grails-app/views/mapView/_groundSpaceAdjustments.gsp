@@ -92,6 +92,7 @@
                   onChange="mergeNewParams()"/>
       </li>
 
+<%--
       <g:if test="${rasterEntries[0]?.numberOfBands == 1}">
         <li>Band:</li>
         <li><g:select id="bands" name="bands" value="${params.bands ?: 'default'}" from="${['default','0']}"
@@ -108,6 +109,65 @@
             <g:select id="bands" name="bands" value="${params.bands ?: 'default'}"
                       from="${['default','0,1,2', '2,1,0', '1,0,2', '1,2,0', '2,0,1', '0,2,1', '0', '1', '2']}" onChange="mergeNewParams()"/></li>
       </g:if>
+--%>
+
+        <g:if test="${rasterEntries[0]?.numberOfBands > 1}">
+
+            <li>Bands:</li>
+
+            <li>
+                <g:select name="colorModel" from="${['Default', 'Color', 'Gray']}" onchange="bandsChanged()"/>
+                <g:set var="bandList" value="${( 0..<rasterEntries[0]?.numberOfBands )}"/>
+
+                <g:select name="redBand" from="${bandList}" onchange="bandsChanged()" value="0"/>
+                <g:select name="greenBand" from="${bandList}" onchange="bandsChanged()" value="1"/>
+                <g:select name="blueBand" from="${bandList}" onchange="bandsChanged()"
+                          value="${( rasterEntries[0]?.numberOfBands > 2 ) ? 2 : 0}"/>
+
+                <g:hiddenField name="bands" value="${params.bands ?: 'default'}"/>
+
+                <r:script>
+                    function bandsChanged()
+                    {
+                        var colorModel = $( 'colorModel' ).value;
+
+                        if ( colorModel === 'Default' )
+                        {
+                            $( 'redBand' ).style.visibility = 'hidden';
+                            $( 'greenBand' ).style.visibility = 'hidden';
+                            $( 'blueBand' ).style.visibility = 'hidden';
+                            $( 'bands' ).value = 'default'
+                        }
+                        else if ( colorModel === 'Gray' )
+                        {
+                            $( 'greenBand' ).style.visibility = 'hidden';
+                            $( 'blueBand' ).style.visibility = 'hidden';
+                            $( 'bands' ).value = $( 'redBand' ).value;
+                        }
+                        else if ( colorModel === 'Color' )
+                        {
+                            $( 'redBand' ).style.visibility = 'visible';
+                            $( 'greenBand' ).style.visibility = 'visible';
+                            $( 'blueBand' ).style.visibility = 'visible';
+
+                            $( 'bands' ).value = [
+                                $( 'redBand' ).value,
+                                $( 'greenBand' ).value,
+                                $( 'blueBand' ).value
+                            ].join( ',' );
+                        }
+
+                        changeBandsOpts();
+                    }
+
+                    $( 'redBand' ).style.visibility = 'hidden';
+                    $( 'greenBand' ).style.visibility = 'hidden';
+                    $( 'blueBand' ).style.visibility = 'hidden';
+
+                </r:script>
+            </li>
+        </g:if>
+
 
       <li>Orthorectification:</li>
       <li>
