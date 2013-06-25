@@ -775,3 +775,42 @@ grails.resources.mappers.yuicssminify.includes = ['**/*.css']
 grails.resources.mappers.yuijsminify.includes = ['**/*.js']
 grails.resources.mappers.yuicssminify.excludes = ['**/*.min.css']
 grails.resources.mappers.yuijsminify.excludes = ['**/*.min.js']
+
+
+csw {
+  sql = """
+      ( select
+        (
+            coalesce(mission_id, '') || ' ' ||
+            coalesce(sensor_id, '') || ' ' ||
+            coalesce(country_code, '') || ' ' ||
+            coalesce(image_category, '') || ' ' ||
+            coalesce(image_representation, '')
+        ) as subject,
+        title as title,
+        ''::varchar as abstract,
+        ''::varchar as anytext,
+        file_type as format,
+        index_id as identifier,
+        acquisition_date as modified,
+        'Image'::varchar as type,
+        st_envelope(ground_geom) as boundingbox,
+        filename as source,
+        ''::varchar as association
+        from raster_entry
+    ) union all ( select
+        ''::varchar as subject,
+        ''::varchar as title,
+        ''::varchar as abstract,
+        ''::varchar as anytext,
+        format as format,
+        index_id as identifier,
+        start_date as modified,
+        'Video'::varchar as type,
+        st_envelope(ground_geom) as boundingbox,
+        filename as source,
+        ''::varchar as association
+        from video_data_set inner join video_file on (video_data_set.id = video_file.video_data_set_id and type='main')
+    )
+  """
+}

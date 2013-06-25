@@ -572,6 +572,7 @@ class CatalogWebService
 
   private Layer createLayer(Database workspace)
   {
+    /*
     def sql = """
       select
         (
@@ -593,7 +594,8 @@ class CatalogWebService
         ''::varchar as association
       from raster_entry
       """
-
+    */
+    def sql = grailsApplication.config.csw.sql
     def layer = workspace.addSqlQuery( 'csw', sql, 'boundingBox', 'Polygon', 4326, ['identifier'] )
     layer
   }
