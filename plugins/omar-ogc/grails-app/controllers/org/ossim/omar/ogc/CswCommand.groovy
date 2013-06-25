@@ -59,7 +59,7 @@ class CswCommand
       break
 
     case "GetRecords":
-      params.maxRecords = xml.@maxRecords?.text()?.toInteger() ?: 10
+      params.maxRecords = Math.min( xml.@maxRecords?.text()?.toInteger() ?: 10, 100 )
       params.startPosition = ( xml.@startPosition?.text() ) ? xml.@startPosition?.text()?.toInteger() : 1
       params.resultType = xml.@resultType?.text()
       params.typeNames = xml.Query?.@typeNames?.text()
@@ -68,8 +68,8 @@ class CswCommand
       params.constraintLanguage = xml?.Query?.Constraint?.childNodes()?.next()?.name()?.toUpperCase()
 
       params.sortBy = xml?.Query?.SortBy?.SortProperty?.collect {
-        [it?.PropertyName?.text(), it?.SortOrder?.text()?.toUpperCase()]?.join(':')
-      }?.join(',')
+        [it?.PropertyName?.text(), it?.SortOrder?.text()?.toUpperCase()]?.join( ':' )
+      }?.join( ',' )
 
       switch ( params.constraintLanguage )
       {
@@ -82,6 +82,19 @@ class CswCommand
 
         break
       }
+      break
+    case "GetRecordById":
+      def ids = xml.Id.collect { "'${it.text().trim()}'" }?.join( "," )
+
+      if ( ids )
+      {
+        params.resultType = 'results'
+        params.constraintLanguage = 'CQL_TEXT'
+        params.constraint = "identifier in (${ids})"
+      }
+
+      params.elementSetName = xml.ElementSetName.text()
+
       break
     }
 

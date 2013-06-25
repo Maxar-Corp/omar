@@ -20,6 +20,19 @@ class CswController
           cswCmd.properties.keySet() )
 
       bindData( cswCmd, cswParams )
+
+      // Hack for GetRecordById
+      def idKey = params.keySet().find { it.toLowerCase() == 'id' }
+
+      def ids = params[idKey]?.toString()?.split( ',' )?.collect {
+        "'${it.trim()}'"
+      }?.join( "," )
+
+      if ( ids )
+      {
+        cswCmd.resultType = 'results'
+        cswCmd.constraint = "identifier in (${ids})"
+      }
       break
     case "POST":
       println new StreamingMarkupBuilder().bind { mkp.yield request.XML }.toString()

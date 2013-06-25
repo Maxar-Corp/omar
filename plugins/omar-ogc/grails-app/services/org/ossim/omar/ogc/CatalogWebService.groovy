@@ -13,6 +13,49 @@ class CatalogWebService
   def grailsApplication
   def dataSourceUnproxied
 
+
+  private static final dcTag = [
+      full: 'Record',
+      brief: 'BriefRecord',
+      summary: 'SummaryRecord'
+  ]
+
+  private static final dcCols = [
+      full: [
+          'identifier',
+          'type',
+          'title',
+          'subject',
+          'relation',
+          'format',
+          'creator',
+          'publisher',
+          'contributer',
+          'source',
+          'language',
+          'coverage',
+          'rights',
+          'description'
+      ],
+      brief: [
+          'identifier',
+          'type',
+          'title',
+      ],
+      summary: [
+          'identifier',
+          'type',
+          'title',
+          'subject',
+          'relation',
+          'format'
+      ]
+  ]
+
+  private static final dctCols = ['spatial', 'abstract', 'modified']
+  private static final owsCols = ['boundingBox']
+
+
   def getCapabiltiies(CswCommand cswCommand)
   {
     def serverAddress = grailsApplication.config.omar.serverURL
@@ -534,7 +577,7 @@ class CatalogWebService
   private def executeQuery(def layer, def cswCommand)
   {
     def o = [
-        max: cswCommand.maxRecords ?: 10,
+        max: Math.min( cswCommand.maxRecords ?: 10, 100 ),
         start: ( cswCommand?.startPosition ?: 1 ) - 1,
         filter: cswCommand.constraint ?: Filter.PASS,
         sort: ( cswCommand?.sortBy ) ? cswCommand?.convertSortByToArray() : [['identifier', 'ASC']]
@@ -572,29 +615,6 @@ class CatalogWebService
 
   private Layer createLayer(Database workspace)
   {
-    /*
-    def sql = """
-      select
-        (
-          coalesce(mission_id, '') || ' ' ||
-          coalesce(sensor_id, '') || ' ' ||
-          coalesce(country_code, '') || ' ' ||
-          coalesce(image_category, '') || ' ' ||
-          coalesce(image_representation, '')
-        ) as subject,
-        title as title,
-       ''::varchar as abstract,
-       ''::varchar as anytext,
-        file_type as format,
-        index_id as identifier,
-        acquisition_date as modified,
-        'Image'::varchar as type,
-        st_envelope(ground_geom) as boundingbox,
-        filename as source,
-        ''::varchar as association
-      from raster_entry
-      """
-    */
     def sql = grailsApplication.config.csw.sql
     def layer = workspace.addSqlQuery( 'csw', sql, 'boundingBox', 'Polygon', 4326, ['identifier'] )
     layer
@@ -624,46 +644,7 @@ class CatalogWebService
   {
     def serverAddress = grailsApplication.config.omar.serverURL
 
-    def dcTag = [
-        full: 'Record',
-        brief: 'BriefRecord',
-        summary: 'SummaryRecord'
-    ]
 
-    def dcCols = [
-        full: [
-            'identifier',
-            'type',
-            'title',
-            'subject',
-            'relation',
-            'format',
-            'creator',
-            'publisher',
-            'contributer',
-            'source',
-            'language',
-            'coverage',
-            'rights',
-            'description'
-        ],
-        brief: [
-            'identifier',
-            'type',
-            'title',
-        ],
-        summary: [
-            'identifier',
-            'type',
-            'title',
-            'subject',
-            'relation',
-            'format'
-        ]
-    ]
-
-    def dctCols = ['spatial', 'abstract', 'modified']
-    def owsCols = ['boundingBox']
 
     def params = [
         elementSet: "full"
@@ -743,6 +724,60 @@ class CatalogWebService
   {
     def serverAddress = grailsApplication.config.omar.serverURL
 
+
+    def getRecById = {
+      mkp.xmlDeclaration()
+      mkp.declareNamespace( csw: "http://www.opengis.net/cat/csw/2.0.2" )
+      mkp.declareNamespace( dc: "http://purl.org/dc/elements/1.1/" )
+      mkp.declareNamespace( dct: "http://purl.org/dc/terms/" )
+      mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
+      mkp.declareNamespace( ows: "http://www.opengis.net/ows" )
+      //mkp.declareNamespace( rim: "urn:oasis:names:tc:ebxml-regrep:xsd:rim:3.0" )
+      //mkp.declareNamespace( wrs: "http://www.opengis.net/cat/wrs/1.0" )
+      mkp.declareNamespace( xlink: "http://www.w3.org/1999/xlink" )
+      mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
+      mkp.declareNamespace( xml: "http://www.w3.org/XML/1998/namespace" )
+      csw.GetRecordByIdResponse(
+          'xsi:schemaLocation': "http://www.opengis.net/cat/csw/2.0.2 http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd" ) {
+
+        def results = getResults( cswCommand )
+
+        //println results
+
+        for ( def x in results?.data )
+        {
+          def elementSetName = cswCommand.elementSetName ?: 'full'
+
+          csw."${dcTag[elementSetName]}" {
+            for ( def y in dcCols[elementSetName] )
+            {
+              if ( x[y] != null )
+              {
+                "dc:${y}"( "${x[y]}" )
+              }
+            }
+            for ( def y in dctCols )
+            {
+              if ( x[y] != null )
+              {
+                "dct:${y}"( "${x[y]}" )
+              }
+            }
+            if ( x.boundingBox != null )
+            {
+              def bounds = x.boundingBox.bounds
+
+              "ows:BoundingBox"( crs: bounds?.proj?.id ) {
+                "ows:LowerCorner"( "${bounds?.minX} ${bounds?.minY}" )
+                "ows:UpperCorner"( "${bounds?.maxX} ${bounds?.maxY}" )
+              }
+            }
+          }
+        }
+      }
+    }
+
+    return new StreamingMarkupBuilder( encoding: "UTF-8" ).bind( getRecById )
   }
 
   def describeRecord(CswCommand cswCommand)
