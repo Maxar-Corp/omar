@@ -25,7 +25,10 @@ environments {
   test {
     dataSource {
       dbCreate = "update"
-      url = "jdbc:postgresql_postGIS:omardb-${appVersion}-test"
+//      url = "jdbc:postgresql_postGIS:omardb-${appVersion}-test"
+//      url = "jdbc:postgresql_postGIS:raleigh-prod"
+      url = "jdbc:postgresql_postGIS://10.0.10.82/omardb-1.8.16-test"
+
     }
   }
   production {
