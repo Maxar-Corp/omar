@@ -33,200 +33,215 @@
         <ol>
             <li>Interpolation:</li>
             <li>
-<g:select
-        id="interpolation"
-        name="interpolation"
-        value="${params.interpolation ?: bilinear}"
-        from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}"
-        onChange="chgInterpolation()"/>
-</li>
-<hr/>
-<label>Brightness: <input type="text" readonly="true" id="brightnessTextField" size="3"
-                          maxlength="5" value="">
-</label>
-<li>
-    <div id="slider-brightness-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
-        <div id="slider-brightness-thumb" class="yui-slider-thumb"><img
-                src="${resource( plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif' )}"></div>
-    </div>
-</li>
+                <g:select
+                        id="interpolation"
+                        name="interpolation"
+                        value="${params.interpolation ?: bilinear}"
+                        from="${['bilinear', 'nearest neighbor', 'cubic', 'sinc']}"
+                        onChange="chgInterpolation()"/>
+            </li>
+            <hr/>
+            <label>Brightness: <input type="text" readonly="true" id="brightnessTextField" size="3"
+                                      maxlength="5" value="">
+            </label>
+            <li>
+                <div id="slider-brightness-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
+                    <div id="slider-brightness-thumb" class="yui-slider-thumb"><img
+                            src="${resource( plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif' )}"></div>
+                </div>
+            </li>
 
-<label>Contrast: <input type="text" readonly="true" id="contrastTextField" size="3"
-                        maxlength="5" value="">
-</label>
-<li>
-    <div id="slider-contrast-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
-        <div id="slider-contrast-thumb" class="yui-slider-thumb"><img
-                src="${resource( plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif' )}"></div>
-    </div>
-</li>
+            <label>Contrast: <input type="text" readonly="true" id="contrastTextField" size="3"
+                                    maxlength="5" value="">
+            </label>
+            <li>
+                <div id="slider-contrast-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
+                    <div id="slider-contrast-thumb" class="yui-slider-thumb"><img
+                            src="${resource( plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif' )}"></div>
+                </div>
+            </li>
 
-<div align="center"><button id="brightnessContrastReset" type="button"
-                            onclick="javascript:resetBrightnessContrast()">Reset</button></div>
-<hr/>
+            <div align="center"><button id="brightnessContrastReset" type="button"
+                                        onclick="javascript:resetBrightnessContrast()">Reset</button></div>
+            <hr/>
 
-<li>Sharpen:</li>
-<li>
-    <g:select
-            id="sharpen_mode"
-            name="sharpen_mode"
-            value="${params.sharpen_mode ?: 'none'}"
-            from="${['none', 'light', 'heavy']}"
-            onChange="changeSharpenOpts()"/>
-</li>
+            <li>Sharpen:</li>
+            <li>
+                <g:select
+                        id="sharpen_mode"
+                        name="sharpen_mode"
+                        value="${params.sharpen_mode ?: 'none'}"
+                        from="${['none', 'light', 'heavy']}"
+                        onChange="changeSharpenOpts()"/>
+            </li>
 
-<li>Dynamic Range Adjustment:</li>
-<li>
-    <g:select
-            id="stretch_mode"
-            name="stretch_mode"
-            value="${params.stretch_mode ?: 'linear_auto_min_max'}"
-            from="${[[name: 'Automatic', value: 'linear_auto_min_max'], [name: '1st Std', value: 'linear_1std_from_mean'], [name: '2nd Std', value: 'linear_2std_from_mean'], [name: '3rd Std', value: 'linear_3std_from_mean'], [name: 'No Adjustment', value: 'none']]}"
-            optionValue="name"
-            optionKey="value"
-            onChange="changeHistoOpts()"/>
-</li>
+            <li>Dynamic Range Adjustment:</li>
+            <li>
+                <g:select
+                        id="stretch_mode"
+                        name="stretch_mode"
+                        value="${params.stretch_mode ?: 'linear_auto_min_max'}"
+                        from="${[[name: 'Automatic', value: 'linear_auto_min_max'], [name: '1st Std', value: 'linear_1std_from_mean'], [name: '2nd Std', value: 'linear_2std_from_mean'], [name: '3rd Std', value: 'linear_3std_from_mean'], [name: 'No Adjustment', value: 'none']]}"
+                        optionValue="name"
+                        optionKey="value"
+                        onChange="changeHistoOpts()"/>
+            </li>
 
-<li>Region:</li>
-<li>
-    <g:select
-            id="stretch_mode_region"
-            name="stretch_mode_region"
-            from="${['global', 'viewport']}"
-            onChange="changeHistoOpts()"
-            value="${params.stretch_mode_region ?: 'viewport'}"/>
-</li>
-<g:if test="${rasterEntry?.numberOfBands > 1}">
+            <li>Region:</li>
+            <li>
+                <g:select
+                        id="stretch_mode_region"
+                        name="stretch_mode_region"
+                        from="${['global', 'viewport']}"
+                        onChange="changeHistoOpts()"
+                        value="${params.stretch_mode_region ?: 'viewport'}"/>
+            </li>
+            <g:if test="${rasterEntry?.numberOfBands > 1}">
 
-    <li>Bands:</li>
+                <li>Bands:</li>
 
-    <li>
-    <g:select name="colorModel" from="${['Default', 'Color', 'Gray']}" onchange="bandsChanged()"/>
-    <g:set var="bandList" value="${( 0..<rasterEntry?.numberOfBands )}"/>
-
-    <g:select name="redBand" from="${bandList}" onchange="bandsChanged()" value="0"/>
-    <g:select name="greenBand" from="${bandList}" onchange="bandsChanged()" value="1"/>
-    <g:select name="blueBand" from="${bandList}" onchange="bandsChanged()"
-              value="${( rasterEntry?.numberOfBands > 2 ) ? 2 : 0}"/>
-
-    <g:hiddenField name="bands" value="${params.bands ?: 'default'}"/>
-
-        <r:script>
-            function bandsChanged()
-            {
-                var colorModel = $( 'colorModel' ).value;
-
-                if ( colorModel === 'Default' )
-                {
-                    $( 'redBand' ).style.visibility = 'hidden';
-                    $( 'greenBand' ).style.visibility = 'hidden';
-                    $( 'blueBand' ).style.visibility = 'hidden';
-                    $( 'bands' ).value = 'default'
-                }
-                else if ( colorModel === 'Gray' )
-                {
-                    $( 'greenBand' ).style.visibility = 'hidden';
-                    $( 'blueBand' ).style.visibility = 'hidden';
-                    $( 'bands' ).value = $( 'redBand' ).value;
-                }
-                else if ( colorModel === 'Color' )
-                {
-                    $( 'redBand' ).style.visibility = 'visible';
-                    $( 'greenBand' ).style.visibility = 'visible';
-                    $( 'blueBand' ).style.visibility = 'visible';
-
-                    $( 'bands' ).value = [
-                        $( 'redBand' ).value,
-                        $( 'greenBand' ).value,
-                        $( 'blueBand' ).value
-                    ].join( ',' );
-                }
-
-                changeBandsOpts();
-            }
-
-            $( 'redBand' ).style.visibility = 'hidden';
-            $( 'greenBand' ).style.visibility = 'hidden';
-            $( 'blueBand' ).style.visibility = 'hidden';
-
-        </r:script>
-        </li>
-    </g:if>
-    <hr/>
-
-    <li>Rotate:</li>
-    <li>
-        <g:textField name="rotateAngle" value="${params.rotation ?: 0}"
-                     onChange="rotateTextFieldChange(this.value)"
-                     size="1"/>
-        <button id="rotateApply" type="button" onclick="">Apply</button>
-        <br>
-
-    <li>
-        <div id="slider-rotate-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
-            <div id="slider-rotate-thumb" class="yui-slider-thumb"><img
-                    src="${resource( plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif' )}"></div>
-        </div>
-    </li>
-
-    <div align="center">
-        <button id="resetButtonId" type="button"
-                onclick="javascript:resetRotate()">Reset</button>
-        <button id="northUpUpButtonId" type="button"
-                onclick="javascript:rotateNorthUp()">North</button>
-        <button id="upIsUpButtonId" type="button"
-                onclick="javascript:rotateUpIsUp();">Up</button>
-    </div>
-    </li>
-    </ol>
-</div>
-</div>
-
-
-    <div class="niceBox">
-        <div class="niceBoxHd">Map Measurement Tool:</div>
-
-        <div class="niceBoxBody">
-            <ul>
-                <li><P ALIGN=Center><i><small>NOT CERTIFIED FOR TARGETING</small></i></li><hr>
-                <li>Measurement Units:</li>
-                <li><g:select
-                        id="unitSelectionID"
-                        name="Units"
-                        value="meters"
-                        from="${['kilometers', 'meters', 'feet', 'yards', 'miles', 'nautical miles']}"
-                        onChange="unitsChanged(this.value)"/>
-                </li>
-
-                <div id="mensurationDivId"></div>
-
-            </ul>
-        </div>
-    </div>
-
-
-    <div class="niceBox">
-        <div class="niceBoxHd">Position Quality Evaluator:</div>
-
-        <div class="niceBoxBody">
-            <ul>
-                <li><P ALIGN=Center><i><small>NOT CERTIFIED FOR TARGETING</small></i></li><hr>
-
-                <div id="pqeDivId"></div>
-
-                <li><p>Confidence: <g:select
-                        from="${['0.95P', '0.5P']}"
-                        name="probLevel"
-                        noSelection="['0.9P': '0.9P']"
-                        onChange="setPropLevel(this.value)"/></p>
-                </li>
                 <li>
-                    <p>Display Unit: <g:select id="pqeDisplayUnit" name="pqeDisplayUnit" from="${['DD', 'DMS', 'MGRS']}"
-                                               title="Select decimal degrees, degrees minutes seconds, or military grid reference system for coordinate readouts."
-                                               onChange="javascript:setCurrentPqeDisplayUnit(this.value);"/></p>
+                    <g:select name="colorModel" from="${['Default', 'Color', 'Gray']}" onchange="bandsChanged()"/>
+                    <g:set var="bandList" value="${( 0..<rasterEntry?.numberOfBands )}"/>
 
+                    <table>
+                        <tr id="redRow">
+                            <td><label id='band0'>Red</label></td>
+                            <td><g:select name="redBand" from="${bandList}" onchange="bandsChanged()" value="0"/></td>
+                        </tr>
+                        <tr id="greenRow">
+                            <td>Green</td>
+                            <td><g:select name="greenBand" from="${bandList}" onchange="bandsChanged()" value="1"/></td>
+                        </tr>
+                        <tr id="blueRow">
+                            <td>Blue</td>
+                            <td><g:select name="blueBand" from="${bandList}" onchange="bandsChanged()"
+                                          value="${( rasterEntry?.numberOfBands > 2 ) ? 2 : 0}"/></td>
+                        </tr>
+
+                    </table>
+
+                    <g:hiddenField name="bands" value="${params.bands ?: 'default'}"/>
+
+                    <r:script>
+                        function bandsChanged()
+                        {
+                            var colorModel = $( 'colorModel' ).value;
+
+                            if ( colorModel === 'Default' )
+                            {
+                                $( 'redRow' ).style.visibility = 'hidden';
+                                $( 'greenRow' ).style.visibility = 'hidden';
+                                $( 'blueRow' ).style.visibility = 'hidden';
+                                $( 'bands' ).value = 'default'
+                            }
+                            else if ( colorModel === 'Gray' )
+                            {
+                                $( 'redRow' ).style.visibility = 'visible';
+                                $( 'greenRow' ).style.visibility = 'hidden';
+                                $( 'blueRow' ).style.visibility = 'hidden';
+                                $( 'band0' ).innerHTML = "Band";
+                                $( 'bands' ).value = $( 'redBand' ).value;
+                            }
+                            else if ( colorModel === 'Color' )
+                            {
+                                $( 'redRow' ).style.visibility = 'visible';
+                                $( 'greenRow' ).style.visibility = 'visible';
+                                $( 'blueRow' ).style.visibility = 'visible';
+                                $( 'band0' ).innerHTML = "Red";
+
+                                $( 'bands' ).value = [
+                                    $( 'redBand' ).value,
+                                    $( 'greenBand' ).value,
+                                    $( 'blueBand' ).value
+                                ].join( ',' );
+                            }
+
+                            changeBandsOpts();
+                        }
+
+                        $( 'redRow' ).style.visibility = 'hidden';
+                        $( 'greenRow' ).style.visibility = 'hidden';
+                        $( 'blueRow' ).style.visibility = 'hidden';
+
+                    </r:script>
                 </li>
-            </ul>
-        </div>
+            </g:if>
+            <hr/>
+
+            <li>Rotate:</li>
+            <li>
+                <g:textField name="rotateAngle" value="${params.rotation ?: 0}"
+                             onChange="rotateTextFieldChange(this.value)"
+                             size="1"/>
+                <button id="rotateApply" type="button" onclick="">Apply</button>
+                <br>
+
+            <li>
+                <div id="slider-rotate-bg" class="yui-h-slider" tabindex="-1" hidefocus="false">
+                    <div id="slider-rotate-thumb" class="yui-slider-thumb"><img
+                            src="${resource( plugin: 'yui', dir: 'js/yui/slider/assets', file: 'thumb-n.gif' )}"></div>
+                </div>
+            </li>
+
+            <div align="center">
+                <button id="resetButtonId" type="button"
+                        onclick="javascript:resetRotate()">Reset</button>
+                <button id="northUpUpButtonId" type="button"
+                        onclick="javascript:rotateNorthUp()">North</button>
+                <button id="upIsUpButtonId" type="button"
+                        onclick="javascript:rotateUpIsUp();">Up</button>
+            </div>
+        </li>
+        </ol>
     </div>
+</div>
+
+
+<div class="niceBox">
+    <div class="niceBoxHd">Map Measurement Tool:</div>
+
+    <div class="niceBoxBody">
+        <ul>
+            <li><P ALIGN=Center><i><small>NOT CERTIFIED FOR TARGETING</small></i></li><hr>
+            <li>Measurement Units:</li>
+            <li><g:select
+                    id="unitSelectionID"
+                    name="Units"
+                    value="meters"
+                    from="${['kilometers', 'meters', 'feet', 'yards', 'miles', 'nautical miles']}"
+                    onChange="unitsChanged(this.value)"/>
+            </li>
+
+            <div id="mensurationDivId"></div>
+
+        </ul>
+    </div>
+</div>
+
+
+<div class="niceBox">
+    <div class="niceBoxHd">Position Quality Evaluator:</div>
+
+    <div class="niceBoxBody">
+        <ul>
+            <li><P ALIGN=Center><i><small>NOT CERTIFIED FOR TARGETING</small></i></li><hr>
+
+            <div id="pqeDivId"></div>
+
+            <li><p>Confidence: <g:select
+                    from="${['0.95P', '0.5P']}"
+                    name="probLevel"
+                    noSelection="['0.9P': '0.9P']"
+                    onChange="setPropLevel(this.value)"/></p>
+            </li>
+            <li>
+                <p>Display Unit: <g:select id="pqeDisplayUnit" name="pqeDisplayUnit" from="${['DD', 'DMS', 'MGRS']}"
+                                           title="Select decimal degrees, degrees minutes seconds, or military grid reference system for coordinate readouts."
+                                           onChange="javascript:setCurrentPqeDisplayUnit(this.value);"/></p>
+
+            </li>
+        </ul>
+    </div>
+</div>
 
