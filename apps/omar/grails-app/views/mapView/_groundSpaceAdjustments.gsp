@@ -115,7 +115,7 @@
                     <g:select name="colorModel" from="${['Default', 'Color', 'Gray']}" onchange="bandsChanged()"/>
                     <g:set var="bandList" value="${( 0..<rasterEntries[0]?.numberOfBands )}"/>
 
-                    <table>
+                    <table id = "displayGunTable">
                         <tr id="redRow">
                             <td><label id='band0'>Red</label></td>
                             <td><g:select name="redBand" from="${bandList}" onchange="bandsChanged()" value="0"/></td>
@@ -138,27 +138,29 @@
                         function bandsChanged()
                         {
                             var colorModel = $( 'colorModel' ).value;
+				$( 'displayGunTable' ).style.display = "block";
 
                             if ( colorModel === 'Default' )
                             {
-                                $( 'redRow' ).style.visibility = 'hidden';
-                                $( 'greenRow' ).style.visibility = 'hidden';
-                                $( 'blueRow' ).style.visibility = 'hidden';
-                                $( 'bands' ).value = 'default'
+				$( 'displayGunTable' ).style.display = "none";
+                                $( 'redRow' ).style.display = 'none';
+                                $( 'greenRow' ).style.display = 'none';
+                                $( 'blueRow' ).style.display = 'none';
+                                $( 'bands' ).value = 'default';
                             }
                             else if ( colorModel === 'Gray' )
                             {
-                                $( 'redRow' ).style.visibility = 'visible';
-                                $( 'greenRow' ).style.visibility = 'hidden';
-                                $( 'blueRow' ).style.visibility = 'hidden';
+                                $( 'redRow' ).style.display = 'block';
+                                $( 'greenRow' ).style.display = 'none';
+                                $( 'blueRow' ).style.display = 'none';
                                 $( 'band0' ).innerHTML = "Band";
                                 $( 'bands' ).value = $( 'redBand' ).value;
                             }
                             else if ( colorModel === 'Color' )
                             {
-                                $( 'redRow' ).style.visibility = 'visible';
-                                $( 'greenRow' ).style.visibility = 'visible';
-                                $( 'blueRow' ).style.visibility = 'visible';
+                                $( 'redRow' ).style.display = 'block';
+                                $( 'greenRow' ).style.display = 'block';
+                                $( 'blueRow' ).style.display = 'block';
                                 $( 'band0' ).innerHTML = "Red";
 
                                 $( 'bands' ).value = [
@@ -171,9 +173,10 @@
                             changeBandsOpts();
                         }
 
-                        $( 'redRow' ).style.visibility = 'hidden';
-                        $( 'greenRow' ).style.visibility = 'hidden';
-                        $( 'blueRow' ).style.visibility = 'hidden';
+			$( 'displayGunTable' ).style.display = "none";
+                        $( 'redRow' ).style.display = 'none';
+                        $( 'greenRow' ).style.display = 'none';
+                        $( 'blueRow' ).style.display = 'none';
 
                     </r:script>
                 </li>
