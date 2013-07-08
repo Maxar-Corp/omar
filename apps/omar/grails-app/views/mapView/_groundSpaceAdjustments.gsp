@@ -106,6 +106,7 @@
                               from="${['default','0,1,2', '2,1,0', '1,0,2', '1,2,0', '2,0,1', '0,2,1', '0', '1', '2']}" onChange="mergeNewParams()"/></li>
               </g:if>
         --%>
+            <g:hiddenField id="bands" name="bands" value="${params.bands ?: 'default'}"/>
 
             <g:if test="${rasterEntries[0]?.numberOfBands > 1}">
 
@@ -132,7 +133,6 @@
 
                     </table>
 
-                    <g:hiddenField name="bands" value="${params.bands ?: 'default'}"/>
 
                     <r:script>
                         function bandsChanged()

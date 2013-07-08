@@ -96,6 +96,7 @@
                         onChange="changeHistoOpts()"
                         value="${params.stretch_mode_region ?: 'viewport'}"/>
             </li>
+            <g:hiddenField id="bands" name="bands" value="${params.bands ?: 'default'}"/>
             <g:if test="${rasterEntry?.numberOfBands > 1}">
 
                 <li>Bands:</li>
@@ -121,7 +122,7 @@
 
                     </table>
 
-                    <g:hiddenField name="bands" value="${params.bands ?: 'default'}"/>
+                    <g:hiddenField id="bands" name="bands" value="${params.bands ?: 'default'}"/>
 
                     <r:script>
                         function bandsChanged()

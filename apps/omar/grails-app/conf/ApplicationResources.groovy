@@ -173,7 +173,7 @@ modules = {
 
     resource url: [dir: 'js', file: 'application.js']
     resource url: [dir: 'js', file: 'matrix.js']
-    resource url: [dir: 'js', file: 'OpenLayersImageManipulator.js']
+   // resource url: [dir: 'js', file: 'OpenLayersImageManipulator.js']
     //resource url: [dir: 'js', file: 'datechooser.js']
 
     resource url: [dir: 'css', file: 'groundSpacePageLayout.css']
