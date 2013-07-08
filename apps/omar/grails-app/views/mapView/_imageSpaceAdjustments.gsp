@@ -105,17 +105,17 @@
                     <g:select name="colorModel" from="${['Default', 'Color', 'Gray']}" onchange="bandsChanged()"/>
                     <g:set var="bandList" value="${( 0..<rasterEntry?.numberOfBands )}"/>
 
-                    <table>
+                    <table id = "displayGunTable">
                         <tr id="redRow">
-                            <td><label id='band0'>Red</label></td>
+                            <td><label id='band0'>Red:&nbsp;</label></td>
                             <td><g:select name="redBand" from="${bandList}" onchange="bandsChanged()" value="0"/></td>
                         </tr>
                         <tr id="greenRow">
-                            <td>Green</td>
+                            <td>Green:&nbsp;</td>
                             <td><g:select name="greenBand" from="${bandList}" onchange="bandsChanged()" value="1"/></td>
                         </tr>
                         <tr id="blueRow">
-                            <td>Blue</td>
+                            <td>Blue:&nbsp;</td>
                             <td><g:select name="blueBand" from="${bandList}" onchange="bandsChanged()"
                                           value="${( rasterEntry?.numberOfBands > 2 ) ? 2 : 0}"/></td>
                         </tr>
@@ -128,28 +128,30 @@
                         function bandsChanged()
                         {
                             var colorModel = $( 'colorModel' ).value;
+				$( 'displayGunTable' ).style.display = 'table-row';
 
                             if ( colorModel === 'Default' )
                             {
-                                $( 'redRow' ).style.visibility = 'hidden';
-                                $( 'greenRow' ).style.visibility = 'hidden';
-                                $( 'blueRow' ).style.visibility = 'hidden';
-                                $( 'bands' ).value = 'default'
+				$( 'displayGunTable' ).style.display = 'none';
+                                $( 'redRow' ).style.display = 'none';
+                                $( 'greenRow' ).style.display = 'none';
+                                $( 'blueRow' ).style.display = 'none';
+                                $( 'bands' ).value = 'default';
                             }
                             else if ( colorModel === 'Gray' )
                             {
-                                $( 'redRow' ).style.visibility = 'visible';
-                                $( 'greenRow' ).style.visibility = 'hidden';
-                                $( 'blueRow' ).style.visibility = 'hidden';
-                                $( 'band0' ).innerHTML = "Band";
+                                $( 'redRow' ).style.display = 'table-row';
+                                $( 'greenRow' ).style.display = 'none';
+                                $( 'blueRow' ).style.display = 'none';
+                                $( 'band0' ).innerHTML = "Band:&nbsp;";
                                 $( 'bands' ).value = $( 'redBand' ).value;
                             }
                             else if ( colorModel === 'Color' )
                             {
-                                $( 'redRow' ).style.visibility = 'visible';
-                                $( 'greenRow' ).style.visibility = 'visible';
-                                $( 'blueRow' ).style.visibility = 'visible';
-                                $( 'band0' ).innerHTML = "Red";
+                                $( 'redRow' ).style.display = 'table-row';
+                                $( 'greenRow' ).style.display = 'table-row';
+                                $( 'blueRow' ).style.display = 'table-row';
+                                $( 'band0' ).innerHTML = "Red:&nbsp;";
 
                                 $( 'bands' ).value = [
                                     $( 'redBand' ).value,
@@ -160,10 +162,11 @@
 
                             changeBandsOpts();
                         }
-
-                        $( 'redRow' ).style.visibility = 'hidden';
-                        $( 'greenRow' ).style.visibility = 'hidden';
-                        $( 'blueRow' ).style.visibility = 'hidden';
+			
+			$( 'displayGunTable' ).style.display = 'none';
+                        $( 'redRow' ).style.display = 'none';
+                        $( 'greenRow' ).style.display = 'none';
+                        $( 'blueRow' ).style.display = 'none';
 
                     </r:script>
                 </li>

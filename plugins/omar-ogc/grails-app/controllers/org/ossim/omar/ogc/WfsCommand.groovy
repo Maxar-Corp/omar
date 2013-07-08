@@ -104,7 +104,7 @@ class WfsCommand
         service: xml.@service.text(),
         version: xml.@version.text(),
         request: xml.name(),
-        maxFeatures: xml.@maxFeatures.text()?.toInteger() ?: 1000
+        maxFeatures: ( xml.@maxFeatures?.text() ) ? xml.@maxFeatures?.text()?.toInteger() : 1000
     ]
 
     switch ( params.request )
@@ -114,11 +114,12 @@ class WfsCommand
       break
     case 'GetFeature':
       params.with {
-        typeName = xml.Query.collect { it.@typeName.text() }?.first()
+        typeName = xml.Query.collect { it.@typeName?.text() }?.first()
         filter = xml.Query.collect { new StreamingMarkupBuilder().bindNode( it.Filter ).toString().trim() }?.first()
       }
       break
     }
+
 
     new WfsCommand( params )
   }
