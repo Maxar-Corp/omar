@@ -105,17 +105,17 @@
                     <g:select name="colorModel" from="${['Default', 'Color', 'Gray']}" onchange="bandsChanged()"/>
                     <g:set var="bandList" value="${( 0..<rasterEntry?.numberOfBands )}"/>
 
-                    <table id = "displayGunTable">
+                    <table>
                         <tr id="redRow">
-                            <td><label id='band0'>Red:&nbsp;</label></td>
+                            <td><label id='band0'>Red</label></td>
                             <td><g:select name="redBand" from="${bandList}" onchange="bandsChanged()" value="0"/></td>
                         </tr>
                         <tr id="greenRow">
-                            <td>Green:&nbsp;</td>
+                            <td>Green</td>
                             <td><g:select name="greenBand" from="${bandList}" onchange="bandsChanged()" value="1"/></td>
                         </tr>
                         <tr id="blueRow">
-                            <td>Blue:&nbsp;</td>
+                            <td>Blue</td>
                             <td><g:select name="blueBand" from="${bandList}" onchange="bandsChanged()"
                                           value="${( rasterEntry?.numberOfBands > 2 ) ? 2 : 0}"/></td>
                         </tr>
@@ -125,33 +125,61 @@
                     <g:hiddenField id="bands" name="bands" value="${params.bands ?: 'default'}"/>
 
                     <r:script>
+                        function initBands()
+                        {
+                            var colorModel = $("colorModel");
+                            if(colorModel)
+                            {
+                                if($("bands").value == "default")
+                                {
+                                    colorModel.value = "Default";
+                                }
+                                else
+                                {
+                                    var bandList = $("bands").value.split(",");
+                                    if(bandList.length >=3)
+                                    {
+                                        colorModel.value = "Color";
+                                        $("redBand").value = bandList[0];
+                                        $("greenBand").value = bandList[1];
+                                        $("blueBand").value = bandList[2];
+                                    }
+                                    else
+                                    {
+                                        colorModel.value = "Gray";
+                                        $("redBand").value = bandList[0];
+                                        $("greenBand").value = bandList[0];
+                                        $("blueBand").value = bandList[0];
+                                    }
+                                }
+                            }
+                            bandsChanged();
+                        }
                         function bandsChanged()
                         {
                             var colorModel = $( 'colorModel' ).value;
-				$( 'displayGunTable' ).style.display = 'table-row';
 
                             if ( colorModel === 'Default' )
                             {
-				$( 'displayGunTable' ).style.display = 'none';
-                                $( 'redRow' ).style.display = 'none';
-                                $( 'greenRow' ).style.display = 'none';
-                                $( 'blueRow' ).style.display = 'none';
-                                $( 'bands' ).value = 'default';
+                                $( 'redRow' ).style.visibility = 'hidden';
+                                $( 'greenRow' ).style.visibility = 'hidden';
+                                $( 'blueRow' ).style.visibility = 'hidden';
+                                $( 'bands' ).value = 'default'
                             }
                             else if ( colorModel === 'Gray' )
                             {
-                                $( 'redRow' ).style.display = 'table-row';
-                                $( 'greenRow' ).style.display = 'none';
-                                $( 'blueRow' ).style.display = 'none';
-                                $( 'band0' ).innerHTML = "Band:&nbsp;";
+                                $( 'redRow' ).style.visibility = 'visible';
+                                $( 'greenRow' ).style.visibility = 'hidden';
+                                $( 'blueRow' ).style.visibility = 'hidden';
+                                $( 'band0' ).innerHTML = "Band";
                                 $( 'bands' ).value = $( 'redBand' ).value;
                             }
                             else if ( colorModel === 'Color' )
                             {
-                                $( 'redRow' ).style.display = 'table-row';
-                                $( 'greenRow' ).style.display = 'table-row';
-                                $( 'blueRow' ).style.display = 'table-row';
-                                $( 'band0' ).innerHTML = "Red:&nbsp;";
+                                $( 'redRow' ).style.visibility = 'visible';
+                                $( 'greenRow' ).style.visibility = 'visible';
+                                $( 'blueRow' ).style.visibility = 'visible';
+                                $( 'band0' ).innerHTML = "Red";
 
                                 $( 'bands' ).value = [
                                     $( 'redBand' ).value,
@@ -162,11 +190,10 @@
 
                             changeBandsOpts();
                         }
-			
-			$( 'displayGunTable' ).style.display = 'none';
-                        $( 'redRow' ).style.display = 'none';
-                        $( 'greenRow' ).style.display = 'none';
-                        $( 'blueRow' ).style.display = 'none';
+
+                        $( 'redRow' ).style.visibility = 'hidden';
+                        $( 'greenRow' ).style.visibility = 'hidden';
+                        $( 'blueRow' ).style.visibility = 'hidden';
 
                     </r:script>
                 </li>
