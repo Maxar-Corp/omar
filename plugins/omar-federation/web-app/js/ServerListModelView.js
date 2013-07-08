@@ -405,8 +405,8 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                     $.proxy(this.modelClicked,this, model.id));
 
                 $(this.el).delegate("#omar-server-name-"+modelId,
-                    "dblclick",function(){alert("HEY!!!")});
-                    appendCurrent.push(modelId);
+                    "dblclick",function(){});
+                    //appendCurrent.push(modelId);
                     //thisPtr.refreshServerCounts(appendCurrent);
                 //})
               //  appendCurrent.push(modelId);
