@@ -366,6 +366,7 @@ mapWidget.setupAoiLayer();
 
     setupOverviewCheck();
     var target = document.getElementById('map');
+    initBands();
 }
 
 function setupOverviewCheck(){

@@ -710,6 +710,7 @@ OMAR.imageManipulator.events.on({
     updateCenter();
 
 	OMAR.imageManipulator.setupvector();
+    initBands();
 }
 
 function setupOverviewCheck(){
