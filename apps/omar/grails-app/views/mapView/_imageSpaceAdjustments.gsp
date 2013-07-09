@@ -152,8 +152,8 @@
                                         $("blueBand").value = bandList[0];
                                     }
                                 }
+                                bandsChanged();
                             }
-                            bandsChanged();
                         }
                         function bandsChanged()
                         {
