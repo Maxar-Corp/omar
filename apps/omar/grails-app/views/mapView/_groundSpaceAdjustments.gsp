@@ -140,6 +140,7 @@
                             var colorModel = $("colorModel");
                             if(colorModel)
                             {
+
                                 if($("bands").value == "default")
                                 {
                                     colorModel.value = "Default";
@@ -162,8 +163,8 @@
                                         $("blueBand").value = bandList[0];
                                     }
                                 }
+                                bandsChanged();
                             }
-                            bandsChanged();
                         }
 
                         function bandsChanged()
