@@ -125,36 +125,6 @@
                     <g:hiddenField id="bands" name="bands" value="${params.bands ?: 'default'}"/>
 
                     <r:script>
-                        function initBands()
-                        {
-                            var colorModel = $("colorModel");
-                            if(colorModel)
-                            {
-                                if($("bands").value == "default")
-                                {
-                                    colorModel.value = "Default";
-                                }
-                                else
-                                {
-                                    var bandList = $("bands").value.split(",");
-                                    if(bandList.length >=3)
-                                    {
-                                        colorModel.value = "Color";
-                                        $("redBand").value = bandList[0];
-                                        $("greenBand").value = bandList[1];
-                                        $("blueBand").value = bandList[2];
-                                    }
-                                    else
-                                    {
-                                        colorModel.value = "Gray";
-                                        $("redBand").value = bandList[0];
-                                        $("greenBand").value = bandList[0];
-                                        $("blueBand").value = bandList[0];
-                                    }
-                                }
-                                bandsChanged();
-                            }
-                        }
                         function bandsChanged()
                         {
                             var colorModel = $( 'colorModel' ).value;
