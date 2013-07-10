@@ -62,7 +62,7 @@ OMAR.models.Date = Backbone.Model.extend(
             }
             else
             {
-               milliFractionString = ""
+               milliFractionString = ".0"
             }
             var result = (this.date.getUTCFullYear()+'-'
                 + pad(this.date.getUTCMonth()+1)+'-'
@@ -587,6 +587,7 @@ OMAR.models.SimpleDateRangeModel=Backbone.Model.extend({
 OMAR.views.SimpleDateRangeView=Backbone.View.extend({
     el:"#dateTimeId",
     initialize:function(params){
+        var thisPtr = this;
         this.model = new OMAR.models.SimpleDateRangeModel();
         this.setElement(this.el);
         this.startDateTimeEl = $("#startDateTime");
@@ -598,6 +599,7 @@ OMAR.views.SimpleDateRangeView=Backbone.View.extend({
             showSecond: true,
             showMillisec: true,
             showOn: "button",
+            timezone:'Z',
             timezoneIso8601: true,
             //buttonImage: "images/calendar.gif",
             buttonText:"...",
@@ -610,12 +612,22 @@ OMAR.views.SimpleDateRangeView=Backbone.View.extend({
             separator: 'T',
             showSecond: true,
             showMillisec: true,
+            timezone:'Z',
             showOn: "button",
            // buttonImage: "images/calendar.gif",
             timezoneIso8601: true,
             buttonText:"...",
             buttonImageOnly: false
         });
+        $(this.endDateTimeEl).change(function(){
+            }
+        );
+
+        // this is just test and is here for example how to set date manually
+        //
+       // this.startDateTimeEl.datetimepicker().click(function() {
+       //     $(this).datetimepicker('setDate',"2001-01-01T03:03:03Z");
+       // });
     },
     render:function(){
     },
@@ -624,6 +636,7 @@ OMAR.views.SimpleDateRangeView=Backbone.View.extend({
         "change #endDateTime"   : "endDateTimeChange"
     },
     startDateTimeChange:function(){
+        //$(this.startDateTimeEl).datetimepicker('setDate',this.startDateTimeEl.val());
         var v = this.startDateTimeEl.val();
         if(!v ||(v==""))
         {
@@ -636,6 +649,7 @@ OMAR.views.SimpleDateRangeView=Backbone.View.extend({
     },
     endDateTimeChange:function(){
         var v = this.endDateTimeEl.val();
+        //$(this.endDateTimeEl).datetimepicker('setDate',this.endDateTimeEl.val());
         if(!v ||(v==""))
         {
             this.model.set("endDate", "");
