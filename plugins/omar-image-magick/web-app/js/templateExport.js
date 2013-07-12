@@ -14,8 +14,8 @@ var previewImageWidth;
 
 $(document).ready
 (
-	function () 
-	{ 
+	function ()
+	{
 		Event = YAHOO.util.Event;
 		Event.onDOMReady( 
 			function ()
@@ -30,57 +30,59 @@ $(document).ready
 					]
 				});
 				layout.on('render', function () { dom.setStyle(document.body, 'visibility', 'visible'); });
-				layout.render();
+
+                layout.render();
+                startupInit();
 			}
 		);
-
-		$.ajax({ cache: false });
-		setupDialogs();
-		generateLoadingDialog();
-
-		$("#previewImageDiv").append("<img id = 'previewImage0' src = '" + imageUrlArray[0].replace(/%26/g, "&") + "'/>");
-		$("#previewImage0").load
-		(
-			function() 
-			{ 
-				previewImageHeight = $("#previewImage0").height();
-				previewImageWidth = $("#previewImage0").width();
-				$("#previewImageDiv").css("height", previewImageHeight);
-				$("#previewImageDiv").css("width", previewImageWidth);	
-
-				for (var i = 1; i < imageUrlArray.length; i++)
-				{
-					$("#previewImageDiv").append("<img id = 'previewImage" + i + "' src = '" + imageUrlArray[i].replace(/%26/g, "&") + "'/>");
-					$("#previewImage" + i).hide();
-					flipBookChipReadinessArray[i] = "Not Ready";
-				}
-				init(); 
-			}
-		);
-		
-		var oMenu = new YAHOO.widget.MenuBar
-		(
-			"templateExportMenu",
-			{ autosubmenudisplay: true, hidedelay: 750, showdelay: 0, lazyload: true, zIndex:9999 }
-		);
-		oMenu.render();
-
-		$("#headerSecurityClassificationTextInput").val(headerSecurityClassificationTextArray[0]);
-		$("#headerTitleTextInput").val(headerTitleTextArray[0]);
-		$("#headerDescriptionTextInput").val(headerDescriptionTextArray[0]);
-		$("#northAngleInput").val(northAngleArray[0]);
-		$("#footerSecurityClassificationTextInput").val(footerSecurityClassificationTextArray[0]);
-		$("#footerLocationTextInput").val(footerLocationTextArray[0]);
-		$("#footerAcquisitionDateTextInput").val(footerAcquisitionDateTextArray[0]);
-				
-		//$(window).resize(function() { windowResize(); });
-		$("#previousImageButton").attr("disabled", true);
-		$("#previousImageButton").css("opacity", 0.3);
-		$("#nextImageButton").attr("disabled", true);
-		$("#nextImageButton").css("opacity", 0.3);
 	}
 );
+function startupInit(){
+    $.ajax({ cache: false });
+    setupDialogs();
+    generateLoadingDialog();
+    $("#previewImageDiv").append("<img id = 'previewImage0' src = '" + imageUrlArray[0].replace(/%26/g, "&") + "'/>");
+    $("#previewImage0").load
+    (
+        function()
+        {
+            previewImageHeight = $("#previewImage0").height();
+            previewImageWidth = $("#previewImage0").width();
+            $("#previewImageDiv").css("height", previewImageHeight);
+            $("#previewImageDiv").css("width", previewImageWidth);
 
+            for (var i = 1; i < imageUrlArray.length; i++)
+            {
+                $("#previewImageDiv").append("<img id = 'previewImage" + i + "' src = '" + imageUrlArray[i].replace(/%26/g, "&") + "'/>");
+                $("#previewImage" + i).hide();
+                flipBookChipReadinessArray[i] = "Not Ready";
+            }
+            init();
+        }
+    );
+
+    var oMenu = new YAHOO.widget.MenuBar
+    (
+        "templateExportMenu",
+        { autosubmenudisplay: true, hidedelay: 750, showdelay: 0, lazyload: true, zIndex:9999 }
+    );
+    oMenu.render();
+
+    $("#headerSecurityClassificationTextInput").val(headerSecurityClassificationTextArray[0]);
+    $("#headerTitleTextInput").val(headerTitleTextArray[0]);
+    $("#headerDescriptionTextInput").val(headerDescriptionTextArray[0]);
+    $("#northAngleInput").val(northAngleArray[0]);
+    $("#footerSecurityClassificationTextInput").val(footerSecurityClassificationTextArray[0]);
+    $("#footerLocationTextInput").val(footerLocationTextArray[0]);
+    $("#footerAcquisitionDateTextInput").val(footerAcquisitionDateTextArray[0]);
+
+    //$(window).resize(function() { windowResize(); });
+    $("#previousImageButton").attr("disabled", true);
+    $("#previousImageButton").css("opacity", 0.3);
+    $("#nextImageButton").attr("disabled", true);
+    $("#nextImageButton").css("opacity", 0.3);
+
+}
 function changeColorGradient() { $("#changeColorGradientDialog").dialog("open"); $(".ui-dialog: input").blur(); }
 function changeFooterAcquisitionDateText() { $("#changeFooterAcquisitionDateTextDialog").dialog("open"); }
 function changeFooterLocationText() { $("#changeFooterLocationTextDialog").dialog("open"); }
