@@ -692,14 +692,14 @@ class CatalogWebService
               {
                 if ( x[y] != null )
                 {
-                  "dc:${y}"( "${x[y]}" )
+                  "dc:${y}"( formatAsString( x[y] ) )
                 }
               }
               for ( def y in dctCols )
               {
                 if ( x[y] != null )
                 {
-                  "dct:${y}"( "${x[y]}" )
+                  "dct:${y}"( formatAsString( x[y] ) )
                 }
               }
               if ( x.boundingBox != null )
@@ -753,14 +753,14 @@ class CatalogWebService
             {
               if ( x[y] != null )
               {
-                "dc:${y}"( "${x[y]}" )
+                "dc:${y}"( formatAsString( x[y] ) )
               }
             }
             for ( def y in dctCols )
             {
               if ( x[y] != null )
               {
-                "dct:${y}"( "${x[y]}" )
+                "dct:${y}"( formatAsString( x[y] ) )
               }
             }
             if ( x.boundingBox != null )
@@ -902,5 +902,21 @@ class CatalogWebService
     }
 
     return new StreamingMarkupBuilder( encoding: "UTF-8" ).bind( descRec )
+  }
+
+  private static String formatAsString(def value)
+  {
+    String results = null
+
+    switch ( value?.class )
+    {
+    case java.sql.Timestamp:
+      results = value.format( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getTimeZone( 'GMT' ) )
+      break
+    default:
+      results = "${value}"
+    }
+
+    return results
   }
 }

@@ -79,9 +79,14 @@ class CswCommand
         break
       case "FILTER":
         params.constraint = xml.Query?.Constraint?.collect { new StreamingMarkupBuilder().bindNode( it.Filter ).toString().trim() }?.first()
-
         break
       }
+
+      if ( params.constraint ==~ /.*AnyText.*/ )
+      {
+        params.constraint = params.constraint.replace("AnyText", "anytext")
+      }
+
       break
     case "GetRecordById":
       def ids = xml.Id.collect { "'${it.text().trim()}'" }?.join( "," )
