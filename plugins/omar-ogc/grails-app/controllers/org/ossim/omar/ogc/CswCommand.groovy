@@ -78,7 +78,7 @@ class CswCommand
         params.constraint = xml?.Query?.Constraint?.childNodes()?.next()?.text()
         break
       case "FILTER":
-        params.constraint = xml.Query.collect { new StreamingMarkupBuilder().bindNode( it.Filter ).toString().trim() }?.first()
+        params.constraint = xml.Query?.Constraint?.collect { new StreamingMarkupBuilder().bindNode( it.Filter ).toString().trim() }?.first()
 
         break
       }
