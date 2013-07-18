@@ -135,7 +135,7 @@ log4j = {
   warn 'org.mortbay.log'
 
   fatal 'org.grails.plugin.resource'
-
+//  debug 'org.hibernate.SQL'
 //   debug 'org.springframework.security',
 //         'com.sun.jndi.ldap',
 
