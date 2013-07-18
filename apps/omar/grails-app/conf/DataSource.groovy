@@ -6,6 +6,8 @@ dataSource {
   username = "postgres"
   password = "postgres"
   dialect = org.ossim.omar.postgis.PostGISDialect
+  //logSql = true
+
 }
 hibernate {
   cache.use_second_level_cache = true
