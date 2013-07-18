@@ -53,7 +53,7 @@ class CatalogWebService
   ]
 
   private static final dctCols = ['spatial', 'abstract', 'modified']
-  private static final owsCols = ['boundingBox']
+  private static final owsCols = ['boundingbox']
 
 
   def getCapabiltiies(CswCommand cswCommand)
@@ -606,7 +606,7 @@ class CatalogWebService
     def nextRecord = ( cswCommand.startPosition ?: 1 ) + ( cswCommand.maxRecords ?: 10 )
 
     [
-        timestamp: new Date().format( "yyyy-MM-dd'T'HH:mm:ss.SSSZ" ),
+        timestamp: new Date().toTimestamp(),
         numberOfRecordsMatched: numberOfRecordsMatched,
         numberOfRecordsReturned: numberOfRecordsReturned,
         nextRecord: nextRecord
@@ -675,7 +675,7 @@ class CatalogWebService
           version: "2.0.2",
           'xsi:schemaLocation': "http://www.opengis.net/cat/csw/2.0.2 http://schemas.opengis.net/csw/2.0.2/CSW-discovery.xsd"
       ) {
-        csw.SearchStatus( timestamp: results.timestamp )
+        csw.SearchStatus( timestamp: formatAsString( results.timestamp ) )
         csw.SearchResults(
             nextRecord: results.nextRecord,
             numberOfRecordsMatched: results.numberOfRecordsMatched,
@@ -692,19 +692,19 @@ class CatalogWebService
               {
                 if ( x[y] != null )
                 {
-                  "dc:${y}"( "${x[y]}" )
+                  "dc:${y}"( formatAsString( x[y] ) )
                 }
               }
               for ( def y in dctCols )
               {
                 if ( x[y] != null )
                 {
-                  "dct:${y}"( "${x[y]}" )
+                  "dct:${y}"( formatAsString( x[y] ) )
                 }
               }
-              if ( x.boundingBox != null )
+              if ( x.boundingbox != null )
               {
-                def bounds = x.boundingBox.bounds
+                def bounds = x.boundingbox.bounds
 
                 "ows:BoundingBox"( crs: bounds?.proj?.id ) {
                   "ows:LowerCorner"( "${bounds?.minX} ${bounds?.minY}" )
@@ -753,14 +753,14 @@ class CatalogWebService
             {
               if ( x[y] != null )
               {
-                "dc:${y}"( "${x[y]}" )
+                "dc:${y}"( formatAsString( x[y] ) )
               }
             }
             for ( def y in dctCols )
             {
               if ( x[y] != null )
               {
-                "dct:${y}"( "${x[y]}" )
+                "dct:${y}"( formatAsString( x[y] ) )
               }
             }
             if ( x.boundingBox != null )
@@ -902,5 +902,21 @@ class CatalogWebService
     }
 
     return new StreamingMarkupBuilder( encoding: "UTF-8" ).bind( descRec )
+  }
+
+  private static String formatAsString(def value)
+  {
+    String results = null
+
+    switch ( value?.class )
+    {
+    case java.sql.Timestamp:
+      results = value.format( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", TimeZone.getTimeZone( 'GMT' ) )
+      break
+    default:
+      results = "${value}"
+    }
+
+    return results
   }
 }

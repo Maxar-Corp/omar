@@ -789,7 +789,18 @@ csw {
         ) as subject,
         title as title,
         ''::varchar as abstract,
-        ''::varchar as anytext,
+        (
+            coalesce(mission_id, '') || ' ' ||
+            coalesce(sensor_id, '') || ' ' ||
+            coalesce(country_code, '') || ' ' ||
+            coalesce(image_category, '') || ' ' ||
+            coalesce(image_representation, '')  ||
+            coalesce(filename, '') ||  ' ' ||
+            coalesce(to_char(acquisition_date, 'yyyy-MM-dd"T"HH:mm:ss"Z"'), '') || ' ' ||
+            coalesce(file_type, '') || ' ' ||
+            coalesce(index_id, '') || ' ' ||
+            coalesce(title, '')
+        )::varchar as AnyText,
         file_type as format,
         index_id as identifier,
         acquisition_date as modified,
@@ -802,7 +813,13 @@ csw {
         ''::varchar as subject,
         ''::varchar as title,
         ''::varchar as abstract,
-        ''::varchar as anytext,
+        (
+           coalesce(format, 'format') || ' ' ||
+           coalesce(filename, 'format') || ' ' ||
+           coalesce(index_id, '') || ' ' ||
+           coalesce(to_char(start_date, 'yyyy-MM-dd"T"HH:mm:ss"Z"'), '') || ' ' ||
+           coalesce(to_char(end_date, 'yyyy-MM-dd"T"HH:mm:ss"Z"'), '')
+        )::varchar as AnyText,
         format as format,
         index_id as identifier,
         start_date as modified,
