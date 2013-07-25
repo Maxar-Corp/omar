@@ -583,6 +583,8 @@ class CatalogWebService
         sort: ( cswCommand?.sortBy ) ? cswCommand?.convertSortByToArray() : [['identifier', 'ASC']]
     ]
 
+    //println o
+
     def c = layer?.getCursor( o )
     def records = []
 
@@ -600,11 +602,24 @@ class CatalogWebService
 
   private static String parseFilter(cswCommand)
   {
-    def cql = new Filter( cswCommand.constraint ?: Filter.PASS )?.cql
+    def filter = null
 
-    cql = cql?.replaceAll( "(?i)(ows:)?BoundingBox", "boundingbox" )
-    cql = cql?.replaceAll( "(?i)(csw:)?AnyText", "anytext" )
-    cql
+    if ( cswCommand?.constraint )
+    {
+      def constraint = cswCommand?.constraint
+
+      constraint = constraint.replaceAll( "(?i)(ows:)?BoundingBox", "boundingbox" )
+      constraint = constraint.replaceAll( "(?i)(csw:)?AnyText", "anytext" )
+      filter = constraint
+    }
+    else
+    {
+      filter = Filter.PASS
+    }
+
+    //println filter
+
+    filter
   }
 
 
@@ -624,7 +639,7 @@ class CatalogWebService
       e.printStackTrace()
     }
 
-    def numberOfRecordsReturned = Math.min( numberOfRecordsMatched, cswCommand.maxRecords ?: 10 )
+    def numberOfRecordsReturned = Math.min( numberOfRecordsMatched ?: 0, cswCommand.maxRecords ?: 10 )
 
     def nextRecord = ( cswCommand.startPosition ?: 1 ) + ( cswCommand.maxRecords ?: 10 )
 

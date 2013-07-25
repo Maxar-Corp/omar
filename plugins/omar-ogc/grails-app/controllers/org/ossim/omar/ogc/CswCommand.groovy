@@ -82,11 +82,6 @@ class CswCommand
         break
       }
 
-      if ( params.constraint ==~ /.*AnyText.*/ )
-      {
-        params.constraint = params.constraint.replace("AnyText", "anytext")
-      }
-
       break
     case "GetRecordById":
       def ids = xml.Id.collect { "'${it.text().trim()}'" }?.join( "," )
