@@ -602,7 +602,9 @@ class CatalogWebService
   {
     def cql = new Filter( cswCommand.constraint ?: Filter.PASS )?.cql
 
-    cql?.replaceAll( "(?i)(ows:)?BoundingBox", "boundingbox" )
+    cql = cql?.replaceAll( "(?i)(ows:)?BoundingBox", "boundingbox" )
+    cql = cql?.replaceAll( "(?i)(csw:)?AnyText", "anytext" )
+    cql
   }
 
 

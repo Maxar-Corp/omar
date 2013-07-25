@@ -805,9 +805,10 @@ csw {
         index_id as identifier,
         acquisition_date as modified,
         'Image'::varchar as type,
-        st_envelope(ground_geom) as boundingbox,
+        st_setsrid(st_envelope(ground_geom), -1) as boundingbox,
         filename as source,
-        ''::varchar as association
+        ''::varchar as association,
+        coalesce(security_classification, '') as rights
         from raster_entry
     ) union all ( select
         ''::varchar as subject,
@@ -824,9 +825,10 @@ csw {
         index_id as identifier,
         start_date as modified,
         'Video'::varchar as type,
-        st_envelope(ground_geom) as boundingbox,
+        st_setsrid(st_envelope(ground_geom), -1) as boundingbox,
         filename as source,
-        ''::varchar as association
+        ''::varchar as association,
+        ''::varchar as rights
         from video_data_set inner join video_file on (video_data_set.id = video_file.video_data_set_id and type='main')
     )
   """
