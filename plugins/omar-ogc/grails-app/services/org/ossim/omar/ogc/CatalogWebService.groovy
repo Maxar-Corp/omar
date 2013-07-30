@@ -579,11 +579,17 @@ class CatalogWebService
     def o = [
         max: Math.min( cswCommand.maxRecords ?: 10, 100 ),
         start: ( cswCommand?.startPosition ?: 1 ) - 1,
-        filter: parseFilter( cswCommand ),
         sort: ( cswCommand?.sortBy ) ? cswCommand?.convertSortByToArray() : [['identifier', 'ASC']]
     ]
 
-    //println o
+    def filter = parseFilter( cswCommand )
+
+    if ( filter )
+    {
+      o.filter = filter
+    }
+
+    println o
 
     def c = layer?.getCursor( o )
     def records = []
@@ -604,7 +610,7 @@ class CatalogWebService
   {
     def filter = null
 
-    if ( cswCommand?.constraint )
+    if ( cswCommand?.constraint?.trim() )
     {
       def constraint = cswCommand?.constraint
 
@@ -612,12 +618,8 @@ class CatalogWebService
       constraint = constraint.replaceAll( "(?i)(csw:)?AnyText", "anytext" )
       filter = constraint
     }
-    else
-    {
-      filter = Filter.PASS
-    }
 
-    //println filter
+    //println "filter: $filter"
 
     filter
   }
@@ -631,8 +633,8 @@ class CatalogWebService
     {
       //println layer.proj
       def filter = parseFilter( cswCommand )
-      //println filter
-      numberOfRecordsMatched = layer.count( filter )
+
+      numberOfRecordsMatched = ( filter ) ? layer.count( filter ) : layer.count()
     }
     catch ( Exception e )
     {
