@@ -105,7 +105,7 @@ class RasterEntry
     imageCategory index: 'raster_entry_image_category_idx'
     imageId index: 'raster_entry_image_id_idx'
     imageRepresentation index: 'raster_entry_image_representation_idx'
-    indexId index: 'raster_entry_index_id_idx'
+    indexId index: 'raster_entry_index_id_idx', unique:true
     ingestDate index: 'raster_entry_ingest_date_idx'
     missionId index: 'raster_entry_mission_id_idx'
     niirs index: 'raster_entry_niirs_idx'

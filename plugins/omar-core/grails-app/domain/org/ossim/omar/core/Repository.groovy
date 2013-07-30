@@ -13,7 +13,7 @@ class Repository
 
   static mapping = {
     columns {
-      baseDir column: 'repository_base_dir', index: 'repository_base_dir_idx'
+      baseDir column: 'repository_base_dir', index: 'repository_base_dir_idx' , unique:true
     }
   }
 }

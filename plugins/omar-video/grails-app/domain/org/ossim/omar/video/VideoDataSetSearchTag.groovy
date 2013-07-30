@@ -6,12 +6,12 @@ class VideoDataSetSearchTag
 
   static constraints = {
     name(unique: true)
-    description(unique: true)
+    description(unique: false)
   }
 
   static mapping = {
     columns {
-      name index: "video_data_set_search_tag_name_idx"
+      name index: "video_data_set_search_tag_name_idx", unique:true
     }
   }
 }
