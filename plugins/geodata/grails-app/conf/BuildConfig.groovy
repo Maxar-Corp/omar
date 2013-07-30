@@ -34,7 +34,7 @@ grails.project.dependency.resolution = {
   }
   plugins {
     compile ":csv:0.3.1"
-    compile ':filterpane:2.1.6'
+    compile ':filterpane:2.2.1'
   }
 }
 
