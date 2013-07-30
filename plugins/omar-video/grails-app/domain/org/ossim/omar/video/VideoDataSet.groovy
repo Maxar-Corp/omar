@@ -40,7 +40,7 @@ class VideoDataSet
   BigInteger styleId
 
   static mapping = {
-    indexId index: 'video_data_set_index_id_idx'
+    indexId index: 'video_data_set_index_id_idx', unique:true
     filename index: 'video_data_set_filename_idx'
     otherTagsXml type: 'text'//, index: 'video_data_set_metadata_other_tags_idx'
     startDate column: 'start_date', type: 'timestamp', index: 'video_data_set_start_date_idx,video_data_set_time_idx'

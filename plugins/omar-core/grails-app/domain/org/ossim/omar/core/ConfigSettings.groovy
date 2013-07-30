@@ -10,7 +10,7 @@ class ConfigSettings {
     static mapping = {
         columns {
             settings type: 'text'
-            name index: 'config_settings_name_idx'
+            name index: 'config_settings_name_idx', unique: true
        }
     }
 

@@ -15,7 +15,7 @@ class VideoFile
   }
 
   static mapping = {
-      name index: 'video_file_name_idx'
+      name index: 'video_file_name_idx', unique:true
       type index: 'video_file_type_idx'
       format index: 'video_file_format_idx'
       videoDataSet index: 'video_file_video_data_set_idx'

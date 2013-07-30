@@ -5,12 +5,12 @@ class RasterEntrySearchTag {
 
   static constraints = {
     name(unique:true, blank:false)
-    description(unique:true, blank:false)
+    description(unique:false, blank:false)
   }
 
   static mapping = {
     columns {
-      name index: "raster_entry_search_tag_name_idx"
+      name index: "raster_entry_search_tag_name_idx", unique:true
     }
   }
 }

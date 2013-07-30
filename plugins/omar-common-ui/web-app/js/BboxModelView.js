@@ -137,6 +137,12 @@ OMAR.models.BBOX = Backbone.Model.extend(
             {
                 attrs.maxy = parseFloat(attrs.maxy);
             }
+
+            if(attrs.minx < -180.0) attrs.minx = -180.0;
+            if(attrs.maxx > 180.0) attrs.maxx = 180.0;
+            if(attrs.miny < -90.0) attrs.miny = -90.0;
+            if(attrs.maxy > 90.0) attrs.maxy = 90.0;
+
             return null;
         },
         setFromWmsString:function(s)
@@ -144,10 +150,14 @@ OMAR.models.BBOX = Backbone.Model.extend(
             var splitBounds = s.split(",");
             if(splitBounds.length == 4)
             {
-                this.minx = parseFloat(splitBounds[0]);
-                this.miny = parseFloat(splitBounds[1]);
-                this.maxx = parseFloat(splitBounds[2]);
-                this.maxy = parseFloat(splitBounds[3]);
+                this.set({minx:parseFloat(splitBounds[0]),
+                          miny:parseFloat(splitBounds[1]),
+                          maxx:parseFloat(splitBounds[2]),
+                          maxy:parseFloat(splitBounds[3])});
+ //               this.minx = parseFloat(splitBounds[0]);
+ //               this.miny = parseFloat(splitBounds[1]);
+ //               this.maxx = parseFloat(splitBounds[2]);
+  //              this.maxy = parseFloat(splitBounds[3]);
             }
             return this;
         },
@@ -230,6 +240,9 @@ OMAR.views.BBOX = Backbone.View.extend({
     },
     render:function()
     {
+        // lets validate the params before showing them so the get clamped
+        //
+        this.model.set(this.model.attributes);
         if(this.displayUnitModel)
         {
             switch(this.displayUnitModel.get("unit"))
