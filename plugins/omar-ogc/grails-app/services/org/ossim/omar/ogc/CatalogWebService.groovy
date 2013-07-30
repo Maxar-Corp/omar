@@ -579,9 +579,11 @@ class CatalogWebService
     def o = [
         max: Math.min( cswCommand.maxRecords ?: 10, 100 ),
         start: ( cswCommand?.startPosition ?: 1 ) - 1,
-        filter: cswCommand.constraint ?: Filter.PASS,
+        filter: parseFilter( cswCommand ),
         sort: ( cswCommand?.sortBy ) ? cswCommand?.convertSortByToArray() : [['identifier', 'ASC']]
     ]
+
+    //println o
 
     def c = layer?.getCursor( o )
     def records = []
@@ -598,11 +600,47 @@ class CatalogWebService
     return records
   }
 
+  private static String parseFilter(cswCommand)
+  {
+    def filter = null
+
+    if ( cswCommand?.constraint )
+    {
+      def constraint = cswCommand?.constraint
+
+      constraint = constraint.replaceAll( "(?i)(ows:)?BoundingBox", "boundingbox" )
+      constraint = constraint.replaceAll( "(?i)(csw:)?AnyText", "anytext" )
+      filter = constraint
+    }
+    else
+    {
+      filter = Filter.PASS
+    }
+
+    //println filter
+
+    filter
+  }
+
 
   private getHitCount(Layer layer, CswCommand cswCommand)
   {
-    def numberOfRecordsMatched = layer.count( cswCommand.constraint ?: Filter.PASS )
-    def numberOfRecordsReturned = Math.min( numberOfRecordsMatched, cswCommand.maxRecords ?: 10 )
+    def numberOfRecordsMatched = null
+
+    try
+    {
+      //println layer.proj
+      def filter = parseFilter( cswCommand )
+      //println filter
+      numberOfRecordsMatched = layer.count( filter )
+    }
+    catch ( Exception e )
+    {
+      e.printStackTrace()
+    }
+
+    def numberOfRecordsReturned = Math.min( numberOfRecordsMatched ?: 0, cswCommand.maxRecords ?: 10 )
+
     def nextRecord = ( cswCommand.startPosition ?: 1 ) + ( cswCommand.maxRecords ?: 10 )
 
     [

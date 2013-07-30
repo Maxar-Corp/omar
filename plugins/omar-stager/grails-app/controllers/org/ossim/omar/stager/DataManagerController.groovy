@@ -25,6 +25,7 @@ class DataManagerController implements ApplicationContextAware
 
   def action( )
   {
+    println params
     def method = request.method.toUpperCase()
     def httpStatusMessage = new HttpStatusMessage()
 
