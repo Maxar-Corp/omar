@@ -52,7 +52,7 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    compile ':filterpane:2.1.6'
+    compile ':filterpane:2.2.1'
     runtime ":hibernate:$grailsVersion"
     //runtime ":jquery:1.8.3"
     runtime ":resources:1.1.6"

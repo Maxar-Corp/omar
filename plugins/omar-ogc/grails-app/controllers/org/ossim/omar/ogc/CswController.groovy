@@ -76,9 +76,11 @@ class CswController
         }
       }.toString()
       contentType = 'application/vnd.ogc.se_xml'
+      e.printStackTrace()
     }
     finally
     {
+      //println results
       render contentType: contentType, text: results
     }
   }
