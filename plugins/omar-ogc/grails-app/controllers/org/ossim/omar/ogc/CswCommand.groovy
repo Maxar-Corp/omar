@@ -120,12 +120,13 @@ class CswCommand
       }
       else
       {
-        if ( splitParam[1].toLowerCase() == "a" )
+        switch ( splitParam[1]?.toLowerCase() )
         {
+        case "a":
+        case "asc":
           result << [splitParam[0], "ASC"]
-        }
-        else
-        {
+          break
+        default:
           result << [splitParam[0], "DESC"]
         }
       }
