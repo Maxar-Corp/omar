@@ -656,7 +656,8 @@ class CatalogWebService
   private Layer createLayer(Database workspace)
   {
     def sql = grailsApplication.config.csw.sql
-    def layer = workspace.addSqlQuery( 'csw', sql, 'boundingBox', 'Polygon', 4326, ['identifier'] )
+    //def layer = workspace.addSqlQuery( 'csw', sql, 'boundingBox', 'Polygon', 4326, ['identifier'] )
+    def layer = workspace['cswview']
     layer
   }
 

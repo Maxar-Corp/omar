@@ -779,6 +779,7 @@ grails.resources.mappers.yuijsminify.excludes = ['**/*.min.js']
 
 csw {
   sql = """
+      create or replace view cswview as
       ( select
         (
             coalesce(mission_id, '') || ' ' ||
@@ -805,7 +806,7 @@ csw {
         index_id as identifier,
         acquisition_date as modified,
         'Image'::varchar as type,
-        st_setsrid(st_envelope(ground_geom), -1) as boundingbox,
+        st_setsrid(st_envelope(ground_geom), 4326) as boundingbox,
         filename as source,
         ''::varchar as association,
         coalesce(security_classification, '') as rights
@@ -825,7 +826,7 @@ csw {
         index_id as identifier,
         start_date as modified,
         'Video'::varchar as type,
-        st_setsrid(st_envelope(ground_geom), -1) as boundingbox,
+        st_setsrid(st_envelope(ground_geom), 4326) as boundingbox,
         filename as source,
         ''::varchar as association,
         ''::varchar as rights
