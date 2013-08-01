@@ -736,6 +736,11 @@ class CatalogWebService
                   "dc:${y}"( formatAsString( x[y] ) )
                 }
               }
+
+              //  Hack to put in Viewer URL
+              dc.relation( lookupViewerURL( x ) )
+
+
               for ( def y in dctCols )
               {
                 if ( x[y] != null )
@@ -797,6 +802,10 @@ class CatalogWebService
                 "dc:${y}"( formatAsString( x[y] ) )
               }
             }
+
+            //  Hack to put in Viewer URL
+            dc.relation( lookupViewerURL( x ) )
+
             for ( def y in dctCols )
             {
               if ( x[y] != null )
@@ -959,5 +968,22 @@ class CatalogWebService
     }
 
     return results
+  }
+
+  private URL lookupViewerURL(def cswRecord)
+  {
+    def url = null
+
+    switch ( cswRecord.type )
+    {
+    case "Image":
+      url = new URL( "${grailsApplication.config.omar.serverURL}/mapView?layers=${cswRecord.identifier}" )
+      break
+    case "Video":
+      url = new URL( "${grailsApplication.config.omar.serverURL}/videoStreaming/show/${cswRecord.identifier}" )
+      break
+    }
+
+    return url
   }
 }
