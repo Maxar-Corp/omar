@@ -589,7 +589,7 @@ class CatalogWebService
       o.filter = filter
     }
 
-    println o
+    //println o
 
     def c = layer?.getCursor( o )
     def records = []
@@ -746,7 +746,7 @@ class CatalogWebService
               {
                 def bounds = x.boundingbox.bounds
 
-                "ows:BoundingBox"( crs: bounds?.proj?.id ) {
+                "ows:BoundingBox"( crs: "EPSG:4326"/*bounds?.proj?.id*/ ) {
                   "ows:LowerCorner"( "${bounds?.minX} ${bounds?.minY}" )
                   "ows:UpperCorner"( "${bounds?.maxX} ${bounds?.maxY}" )
                 }
