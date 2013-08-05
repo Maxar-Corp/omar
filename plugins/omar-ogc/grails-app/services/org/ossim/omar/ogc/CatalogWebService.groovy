@@ -813,11 +813,11 @@ class CatalogWebService
                 "dct:${y}"( formatAsString( x[y] ) )
               }
             }
-            if ( x.boundingBox != null )
+            if ( x.boundingbox != null )
             {
-              def bounds = x.boundingBox.bounds
+              def bounds = x.boundingbox.bounds
 
-              "ows:BoundingBox"( crs: bounds?.proj?.id ) {
+              "ows:BoundingBox"( crs: "EPSG:4326"/*bounds?.proj?.id*/ ) {
                 "ows:LowerCorner"( "${bounds?.minX} ${bounds?.minY}" )
                 "ows:UpperCorner"( "${bounds?.maxX} ${bounds?.maxY}" )
               }
