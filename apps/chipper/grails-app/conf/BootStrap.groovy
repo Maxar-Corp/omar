@@ -1,7 +1,8 @@
-class BootStrap {
-
-    def init = { servletContext ->
-    }
-    def destroy = {
-    }
+class BootStrap
+{
+  def init = { servletContext ->
+    joms.oms.Init.instance().initialize()
+  }
+  def destroy = {
+  }
 }
