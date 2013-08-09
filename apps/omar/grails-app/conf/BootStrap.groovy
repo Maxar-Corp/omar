@@ -17,9 +17,6 @@ class BootStrap
 
     def sql = new Sql( dataSourceUnproxied )
 
-    sql.executeUpdate( grailsApplication.config.csw.sql )
-    sql.close()
-
     if ( GrailsUtil.isDevelopmentEnv() )
     {
       def shell = new GroovyShell( (ClassLoader)grailsApplication.classLoader,
@@ -34,6 +31,9 @@ class BootStrap
 //      }
 
     }
+
+    sql.executeUpdate( grailsApplication.config.csw.sql )
+    sql.close()
   }
 
   def destroy = {
