@@ -72,10 +72,10 @@ class ChipperService
                         {
                            for ( int x = 0; x < w; x++ ) // Sample loop
                            {
-                              int argb = ( (data[i]&0xFF) << 8) | ( (data[i+1] & 0xFF) << 16) |
-                                 ( (data[i+2] & 0xFF) << 24) | ( (data[i+3] & 0xFF) << 0)
+                              int abgr = ( (data[i]&0xFF) << 16) | ( (data[i+1] & 0xFF) << 8) |
+                                 ( (data[i+2] & 0xFF) << 0) | ( (data[i+3] & 0xFF) << 24)
 
-                              image.setRGB( x, y, argb )
+                              image.setRGB( x, y, abgr )
                               i += 4
                            }
                         }
