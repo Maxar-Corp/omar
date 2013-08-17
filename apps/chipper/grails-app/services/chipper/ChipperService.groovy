@@ -1,100 +1,109 @@
 package chipper
 
-import java.util.Map
-import javax.imageio.ImageIO
+import java.awt.Point
+import java.awt.Transparency
+import java.awt.color.ColorSpace
 import java.awt.image.BufferedImage
+import java.awt.image.ComponentColorModel
+import java.awt.image.DataBuffer
+import java.awt.image.PixelInterleavedSampleModel
 import java.awt.image.Raster
+
+import javax.imageio.ImageIO
 import joms.oms.Chipper
 
 class ChipperService
 {
-   enum RenderMode { BLANK, CHIPPER }
-   
-   def getChip(def chpCmd)
-   {
-      // println chpCmd
+  enum RenderMode {
+    BLANK, CHIPPER
+  }
 
-      // def renderMode = RenderMode.BLANK
-      def renderMode = RenderMode.CHIPPER
-      def ostream = new ByteArrayOutputStream()
+  def getChip(def chpCmd)
+  {
+    // println chpCmd
 
-      switch ( renderMode )
+    // def renderMode = RenderMode.BLANK
+    def renderMode = RenderMode.CHIPPER
+    def ostream = new ByteArrayOutputStream()
+
+    switch ( renderMode )
+    {
+    case RenderMode.BLANK:
+      def image = new BufferedImage(
+          chpCmd?.width, chpCmd?.height, BufferedImage.TYPE_INT_ARGB )
+      ImageIO.write( image, chpCmd?.format.split( '/' )[-1], ostream )
+      break
+
+    case RenderMode.CHIPPER:
+
+      joms.oms.Chipper chipper = new joms.oms.Chipper()
+
+      def bboxArray = chpCmd?.bbox.split( ',' )
+      if ( bboxArray.size() == 4 )
       {
-         case RenderMode.BLANK:
-            def image = new BufferedImage(
-               chpCmd?.width, chpCmd?.height, BufferedImage.TYPE_INT_ARGB )
-            ImageIO.write( image, chpCmd?.format.split( '/' )[-1], ostream )
-            break
+        int w = chpCmd?.width
+        int h = chpCmd?.height
+        int sizeInPixels = w * h
 
-         case RenderMode.CHIPPER:
+        if ( sizeInPixels )
+        {
+          def chipperOptionsMap = [
+              'cut_min_lon': bboxArray[0],
+              'cut_min_lat': bboxArray[1],
+              'cut_max_lon': bboxArray[2],
+              'cut_max_lat': bboxArray[3],
+              'cut_height': h as String,
+              'cut_width': w as String,
+              // 'hist-op'         : 'auto-minmax',
+              //'image0.file': '/data/bmng/world.200406.A1.tif', // Temp hard coded.
+              'image0.file': '/data/celtic/staged/001/celtic/rpf_cadrg_1060889007_48858/a.toc',
+              'operation': 'ortho',
+              'scale_2_8_bit': 'true',
+              'src': 'chpCmp?.srs',
+              'three_band_out': 'true'
+          ]
 
-            joms.oms.Chipper chipper = new joms.oms.Chipper()
-           
-            def bboxArray = chpCmd?.bbox.split( ',' )
-            if ( bboxArray.size() == 4 )
+          // println "calling chipper.initialize( myMap )"
+          if ( chipper.initialize( chipperOptionsMap ) )
+          {
+            def sampleModel = new PixelInterleavedSampleModel(
+                DataBuffer.TYPE_BYTE,
+                w,                     // width
+                h,                     // height
+                4,                     // pixelStride
+                w * 4,                 // scanlineStride
+                [0, 1, 2, 3] as int[]  // band offsets
+            )
+
+            def dataBuffer = sampleModel.createDataBuffer()
+
+            if ( chipper.getChip( dataBuffer.data, true ) )
             {
-               int w = chpCmd?.width
-               int h = chpCmd?.height
-               int sizeInPixels = w * h
+              // println "chipper.getChip good..."
 
-               if ( sizeInPixels )
-               {
-                  def chipperOptionsMap =
-                  [ 'cut_min_lon'     : bboxArray[0],
-                    'cut_min_lat'     : bboxArray[1],
-                    'cut_max_lon'     : bboxArray[2],
-                    'cut_max_lat'     : bboxArray[3],
-                    'cut_height'      : h as String,
-                    'cut_width'       : w as String,
-                    // 'hist-op'         : 'auto-minmax',
-                    'image0.file'     : '/data1/bmng/world_200406.tif', // Temp hard coded.
-                    'operation'       : 'ortho',
-                    'scale_2_8_bit'   : 'true',
-                    'src'            : 'chpCmp?.srs',
-                    'three_band_out'  : 'true'
-                  ]
+              def cs = ColorSpace.getInstance( ColorSpace.CS_sRGB )
 
-                  // println "calling chipper.initialize( myMap )"
-                  if ( chipper.initialize( chipperOptionsMap ) )
-                  {
-                     def sizeInBytes =  sizeInPixels * 4
+              def colorModel = new ComponentColorModel( cs, [8, 8, 8, 8] as int[],
+                  true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE )
 
-                     byte [] data = new byte[sizeInBytes]
+              def raster = Raster.createRaster( sampleModel, dataBuffer, new Point( 0, 0 ) )
+              def image = new BufferedImage( colorModel, raster, false, null )
 
-                     if ( chipper.getChip( data, true ) )
-                     {
-                        // println "chipper.getChip good..."
-                        def image = new BufferedImage( w, h, BufferedImage.TYPE_4BYTE_ABGR )
-                        // def image = new BufferedImage( w, h, BufferedImage.TYPE_INT_ARGB )
-
-                        int i = 0;
-                        for ( int y = 0; y < h; y++) // line loop
-                        {
-                           for ( int x = 0; x < w; x++ ) // Sample loop
-                           {
-                              int abgr = ( (data[i]&0xFF) << 16) | ( (data[i+1] & 0xFF) << 8) |
-                                 ( (data[i+2] & 0xFF) << 0) | ( (data[i+3] & 0xFF) << 24)
-
-                              image.setRGB( x, y, abgr )
-                              i += 4
-                           }
-                        }
-
-                        ImageIO.write( image, chpCmd?.format.split( '/' )[-1], ostream )
-                     }
-                  }
-               }
+              ImageIO.write( image, chpCmd?.format?.split( '/' )[-1], ostream )
             }
+          }
+        }
+      }
 
-            chipper.delete()
-            break
+      chipper.delete()
+      break
 
-         // End: case RenderMode.CHIPPER:
+    // End: case RenderMode.CHIPPER:
 
-      } // End: switch( renderMode
+    } // End: switch( renderMode
 
-      [contentType: chpCmd?.format, buffer: ostream.toByteArray()]
+    [contentType: chpCmd?.format, buffer: ostream.toByteArray()]
 
-   } // End: def getChip(def chpCmd)
-   
+  } // End: def getChip(def chpCmd)
+
 } // End: class ChipperService
