@@ -84,6 +84,9 @@ class ImageSpaceService
       kwlStringBuilder << "object${objectPrefixIdx}.cut_type:null_outside\n"
       kwlStringBuilder << "object${objectPrefixIdx}.id:${++idStart}\n"
       ++objectPrefixIdx
+      kwlStringBuilder << "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+      kwlStringBuilder << "object${objectPrefixIdx}.id:${++idStart}\n"
+      ++objectPrefixIdx
 
       kwlString = kwlStringBuilder.toString()
       //kwlString = kwlStringBuilder.toString();
