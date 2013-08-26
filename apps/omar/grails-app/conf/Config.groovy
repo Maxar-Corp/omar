@@ -779,6 +779,7 @@ grails.resources.mappers.yuijsminify.excludes = ['**/*.min.js']
 
 csw {
   sql = """
+      create or replace view cswview as
       ( select
         (
             coalesce(mission_id, '') || ' ' ||
