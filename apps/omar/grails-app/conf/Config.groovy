@@ -135,7 +135,7 @@ log4j = {
   warn 'org.mortbay.log'
 
   fatal 'org.grails.plugin.resource'
-
+//  debug 'org.hibernate.SQL'
 //   debug 'org.springframework.security',
 //         'com.sun.jndi.ldap',
 
@@ -790,27 +790,46 @@ csw {
         ) as subject,
         title as title,
         ''::varchar as abstract,
-        ''::varchar as anytext,
+        (
+            coalesce(mission_id, '') || ' ' ||
+            coalesce(sensor_id, '') || ' ' ||
+            coalesce(country_code, '') || ' ' ||
+            coalesce(image_category, '') || ' ' ||
+            coalesce(image_representation, '')  ||
+            coalesce(filename, '') ||  ' ' ||
+            coalesce(to_char(acquisition_date, 'yyyy-MM-dd"T"HH:mm:ss"Z"'), '') || ' ' ||
+            coalesce(file_type, '') || ' ' ||
+            coalesce(index_id, '') || ' ' ||
+            coalesce(title, '')
+        )::varchar as AnyText,
         file_type as format,
         index_id as identifier,
         acquisition_date as modified,
         'Image'::varchar as type,
-        st_envelope(ground_geom) as boundingbox,
+        st_setsrid(st_envelope(ground_geom), 4326) as boundingbox,
         filename as source,
-        ''::varchar as association
+        ''::varchar as association,
+        coalesce(security_classification, '') as rights
         from raster_entry
     ) union all ( select
         ''::varchar as subject,
         ''::varchar as title,
         ''::varchar as abstract,
-        ''::varchar as anytext,
+        (
+           coalesce(format, 'format') || ' ' ||
+           coalesce(filename, 'format') || ' ' ||
+           coalesce(index_id, '') || ' ' ||
+           coalesce(to_char(start_date, 'yyyy-MM-dd"T"HH:mm:ss"Z"'), '') || ' ' ||
+           coalesce(to_char(end_date, 'yyyy-MM-dd"T"HH:mm:ss"Z"'), '')
+        )::varchar as AnyText,
         format as format,
         index_id as identifier,
         start_date as modified,
         'Video'::varchar as type,
-        st_envelope(ground_geom) as boundingbox,
+        st_setsrid(st_envelope(ground_geom), 4326) as boundingbox,
         filename as source,
-        ''::varchar as association
+        ''::varchar as association,
+        ''::varchar as rights
         from video_data_set inner join video_file on (video_data_set.id = video_file.video_data_set_id and type='main')
     )
   """

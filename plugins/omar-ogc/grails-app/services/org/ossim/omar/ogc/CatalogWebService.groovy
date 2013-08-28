@@ -589,7 +589,7 @@ class CatalogWebService
       o.filter = filter
     }
 
-    println o
+    //println o
 
     def c = layer?.getCursor( o )
     def records = []
@@ -656,7 +656,8 @@ class CatalogWebService
   private Layer createLayer(Database workspace)
   {
     def sql = grailsApplication.config.csw.sql
-    def layer = workspace.addSqlQuery( 'csw', sql, 'boundingBox', 'Polygon', 4326, ['identifier'] )
+    //def layer = workspace.addSqlQuery( 'csw', sql, 'boundingBox', 'Polygon', 4326, ['identifier'] )
+    def layer = workspace['cswview']
     layer
   }
 
@@ -735,6 +736,11 @@ class CatalogWebService
                   "dc:${y}"( formatAsString( x[y] ) )
                 }
               }
+
+              //  Hack to put in Viewer URL
+              dc.relation( lookupViewerURL( x ) )
+
+
               for ( def y in dctCols )
               {
                 if ( x[y] != null )
@@ -746,7 +752,7 @@ class CatalogWebService
               {
                 def bounds = x.boundingbox.bounds
 
-                "ows:BoundingBox"( crs: bounds?.proj?.id ) {
+                "ows:BoundingBox"( crs: "EPSG:4326"/*bounds?.proj?.id*/ ) {
                   "ows:LowerCorner"( "${bounds?.minX} ${bounds?.minY}" )
                   "ows:UpperCorner"( "${bounds?.maxX} ${bounds?.maxY}" )
                 }
@@ -796,6 +802,10 @@ class CatalogWebService
                 "dc:${y}"( formatAsString( x[y] ) )
               }
             }
+
+            //  Hack to put in Viewer URL
+            dc.relation( lookupViewerURL( x ) )
+
             for ( def y in dctCols )
             {
               if ( x[y] != null )
@@ -803,11 +813,11 @@ class CatalogWebService
                 "dct:${y}"( formatAsString( x[y] ) )
               }
             }
-            if ( x.boundingBox != null )
+            if ( x.boundingbox != null )
             {
-              def bounds = x.boundingBox.bounds
+              def bounds = x.boundingbox.bounds
 
-              "ows:BoundingBox"( crs: bounds?.proj?.id ) {
+              "ows:BoundingBox"( crs: "EPSG:4326"/*bounds?.proj?.id*/ ) {
                 "ows:LowerCorner"( "${bounds?.minX} ${bounds?.minY}" )
                 "ows:UpperCorner"( "${bounds?.maxX} ${bounds?.maxY}" )
               }
@@ -958,5 +968,22 @@ class CatalogWebService
     }
 
     return results
+  }
+
+  private URL lookupViewerURL(def cswRecord)
+  {
+    def url = null
+
+    switch ( cswRecord.type )
+    {
+    case "Image":
+      url = new URL( "${grailsApplication.config.omar.serverURL}/mapView?layers=${cswRecord.identifier}" )
+      break
+    case "Video":
+      url = new URL( "${grailsApplication.config.omar.serverURL}/videoStreaming/show/${cswRecord.identifier}" )
+      break
+    }
+
+    return url
   }
 }
