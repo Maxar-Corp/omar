@@ -32,7 +32,7 @@ class BootStrap
 
     }
 
-    sql.executeUpdate( 'drop view cswview' )
+    sql.executeUpdate( 'drop view if exists cswview' )
     sql.executeUpdate( grailsApplication.config.csw.sql )
     sql.close()
   }

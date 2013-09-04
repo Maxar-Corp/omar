@@ -16,11 +16,14 @@ package org.ossim.omar.security
  */
 
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
+import org.springframework.beans.BeansException
+import org.springframework.context.ApplicationContext
+import org.springframework.context.ApplicationContextAware
 
 /**
  * @author <a href='mailto:burt@burtbeckwith.com'>Burt Beckwith</a>
  */
-abstract class AbstractS2UiController
+abstract class AbstractS2UiController implements ApplicationContextAware
 {
 
   static allowedMethods = [save: 'POST', update: 'POST', delete: 'POST']
@@ -29,6 +32,8 @@ abstract class AbstractS2UiController
   def grailsApplication
   def springSecurityService
   def springSecurityUiService
+
+  ApplicationContext applicationContext
 
   protected boolean versionCheck(String messageCode, String messageCodeDefault, instance, model)
   {
@@ -95,5 +100,11 @@ abstract class AbstractS2UiController
   protected Class<?> lookupRequestmapClass()
   {
     grailsApplication.getDomainClass(lookupRequestmapClassName()).clazz
+  }
+
+  void setApplicationContext(ApplicationContext applicationContext) throws BeansException
+  {
+    this.applicationContext = applicationContext
+    this.grailsApplication = applicationContext.grailsApplication
   }
 }
