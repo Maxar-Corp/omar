@@ -182,7 +182,7 @@ class ImageSpaceController
     }
     try
     {
-      if ( !params.id )
+      if ( !paramsIgnoreCase.id )
       {
         throw new Exception( "No 'id' value given to chip a tile from, please use id=<value>" )
       }
