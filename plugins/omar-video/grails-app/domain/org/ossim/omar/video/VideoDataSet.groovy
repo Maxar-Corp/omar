@@ -59,6 +59,7 @@ class VideoDataSet
     groundGeom( nullable: true )
     indexId( nullable: false, blank: false, unique: true )
     styleId( nullable: true )
+    repository( nullable: true )
 //    metadata(nullable: true)
   }
 
