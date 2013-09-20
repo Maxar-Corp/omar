@@ -123,53 +123,6 @@
                     </table>
 
                     <g:hiddenField id="bands" name="bands" value="${params.bands ?: 'default'}"/>
-
-                    <r:script>
-                        function bandsChanged()
-                        {
-                            var colorModel = $( 'colorModel' ).value;
-
-                            if ( colorModel === 'Default' )
-                            {
-                                $( 'redRow' ).style.display = 'none';
-                                $( 'greenRow' ).style.display = 'none';
-                                $( 'blueRow' ).style.display = 'none';
-                                $( 'bands' ).value = 'default';
-				$( 'bandSwitcherTable' ).style.display = 'none';
-                            }
-                            else if ( colorModel === 'Gray' )
-                            {
-				$( 'bandSwitcherTable' ).style.display = 'block';
-                                $( 'redRow' ).style.display = 'table-row';
-                                $( 'greenRow' ).style.display = 'none';
-                                $( 'blueRow' ).style.display = 'none';
-                                $( 'band0' ).innerHTML = "Band:&nbsp;";
-                                $( 'bands' ).value = $( 'redBand' ).value;
-                            }
-                            else if ( colorModel === 'Color' )
-                            {
-				$( 'bandSwitcherTable' ).style.display = 'block';
-                                $( 'redRow' ).style.display = 'table-row';
-                                $( 'greenRow' ).style.display = 'table-row';
-                                $( 'blueRow' ).style.display = 'table-row';
-                                $( 'band0' ).innerHTML = "Red:&nbsp;";
-
-                                $( 'bands' ).value = [
-                                    $( 'redBand' ).value,
-                                    $( 'greenBand' ).value,
-                                    $( 'blueBand' ).value
-                                ].join( ',' );
-                            }
-
-                            changeBandsOpts();
-                        }
-
-                        $( 'redRow' ).style.display = 'none';
-                        $( 'greenRow' ).style.display = 'none';
-                        $( 'blueRow' ).style.display = 'none';
-			$( 'bandSwitcherTable' ).style.display = 'none';
-
-                    </r:script>
                 </li>
             </g:if>
             <hr/>

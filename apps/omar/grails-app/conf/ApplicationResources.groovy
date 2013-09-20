@@ -226,6 +226,7 @@ modules = {
     //resource url: [dir: 'js', file: 'datechooser.js']
 
     resource url: [dir: 'css', file: 'imageSpacePageLayout.css']
+    resource url: [dir: 'js', file: 'imageSpaceLogic.js']
     resource url: [dir: 'js', file: 'imageSpacePageLayout.js']
   }
 
