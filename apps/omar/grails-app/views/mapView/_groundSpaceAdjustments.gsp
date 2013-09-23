@@ -65,7 +65,7 @@
 
             <div align="center">
                 <button id="brightnessContrastReset" type="button"
-                        onclick="javascript:resetBrightnessContrast()">Reset</button>
+                        onclick="javascript:brightnessContrastEditor.resetBrightnessContrast()">Reset</button>
 
             </div>
             <hr/>
