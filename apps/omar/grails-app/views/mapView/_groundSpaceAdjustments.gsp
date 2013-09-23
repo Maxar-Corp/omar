@@ -113,21 +113,24 @@
                 <li>Bands:</li>
 
                 <li>
-                    <g:select name="colorModel" from="${['Default', 'Color', 'Gray']}" onchange="bandsChanged()"/>
+                    <g:select name="colorModel" from="${['Default', 'Color', 'Gray']}" onchange="bandSelectorEditor.bandsChanged()"/>
                     <g:set var="bandList" value="${( 0..<rasterEntries[0]?.numberOfBands )}"/>
 
                     <table id="bandSwitcherTable">
                         <tr id="redRow">
                             <td><label id='band0'>Red:&nbsp;</label></td>
-                            <td><g:select name="redBand" from="${bandList}" onchange="bandsChanged()" value="0"/></td>
+                            <td><g:select name="redBand" from="${bandList}" onchange="bandSelectorEditor.bandsChanged()"
+                                          value="0"/></td>
                         </tr>
                         <tr id="greenRow">
                             <td>Green:&nbsp;</td>
-                            <td><g:select name="greenBand" from="${bandList}" onchange="bandsChanged()" value="1"/></td>
+                            <td><g:select name="greenBand" from="${bandList}"
+                                          onchange="bandSelectorEditor.bandsChanged()" value="1"/></td>
                         </tr>
                         <tr id="blueRow">
                             <td>Blue:&nbsp;</td>
-                            <td><g:select name="blueBand" from="${bandList}" onchange="bandsChanged()"
+                            <td><g:select name="blueBand" from="${bandList}"
+                                          onchange="bandSelectorEditor.bandsChanged()"
                                           value="${( rasterEntries[0]?.numberOfBands > 2 ) ? 2 : 0}"/></td>
                         </tr>
 

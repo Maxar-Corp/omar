@@ -6,6 +6,8 @@
  * To change this template use File | Settings | File Templates.
  */
 
+/*********************************************************************************************************************/
+
 function BusyIndicator()
 {
     this.spinControl = null;
@@ -63,6 +65,8 @@ function BusyIndicator()
         }
     };
 }
+
+/*********************************************************************************************************************/
 
 function BrightnessContrastEditor( params )
 {
@@ -150,76 +154,78 @@ function BrightnessContrastEditor( params )
 }
 
 /*********************************************************************************************************************/
-function initBands()
+function BandSelectorEditor()
 {
-    var colorModel = $( "colorModel" );
-    if ( colorModel )
+    this.initBands = function ()
     {
+        var colorModel = $( "colorModel" );
+        if ( colorModel )
+        {
 
-        if ( $( "bands" ).value == "default" )
-        {
-            colorModel.value = "Default";
-        }
-        else
-        {
-            var bandList = $( "bands" ).value.split( "," );
-            if ( bandList.length >= 3 )
+            if ( $( "bands" ).value == "default" )
             {
-                colorModel.value = "Color";
-                $( "redBand" ).value = bandList[0];
-                $( "greenBand" ).value = bandList[1];
-                $( "blueBand" ).value = bandList[2];
+                colorModel.value = "Default";
             }
             else
             {
-                colorModel.value = "Gray";
-                $( "redBand" ).value = bandList[0];
-                $( "greenBand" ).value = bandList[0];
-                $( "blueBand" ).value = bandList[0];
+                var bandList = $( "bands" ).value.split( "," );
+                if ( bandList.length >= 3 )
+                {
+                    colorModel.value = "Color";
+                    $( "redBand" ).value = bandList[0];
+                    $( "greenBand" ).value = bandList[1];
+                    $( "blueBand" ).value = bandList[2];
+                }
+                else
+                {
+                    colorModel.value = "Gray";
+                    $( "redBand" ).value = bandList[0];
+                    $( "greenBand" ).value = bandList[0];
+                    $( "blueBand" ).value = bandList[0];
+                }
             }
+            this.bandsChanged();
         }
-        bandsChanged();
-    }
-}
+    };
 
-function bandsChanged()
-{
-    var colorModel = $( 'colorModel' ).value;
-
-    if ( colorModel === 'Default' )
+    this.bandsChanged = function ()
     {
-        $( 'redRow' ).style.display = 'none';
-        $( 'greenRow' ).style.display = 'none';
-        $( 'blueRow' ).style.display = 'none';
-        $( 'bands' ).value = 'default';
-        $( 'bandSwitcherTable' ).style.display = 'none';
-    }
-    else if ( colorModel === 'Gray' )
-    {
-        $( 'bandSwitcherTable' ).style.display = 'block';
-        $( 'redRow' ).style.display = 'table-row';
-        $( 'greenRow' ).style.display = 'none';
-        $( 'blueRow' ).style.display = 'none';
-        $( 'band0' ).innerHTML = "Band:&nbsp;";
-        $( 'bands' ).value = $( 'redBand' ).value;
-    }
-    else if ( colorModel === 'Color' )
-    {
-        $( 'bandSwitcherTable' ).style.display = 'block';
-        $( 'redRow' ).style.display = 'table-row';
-        $( 'greenRow' ).style.display = 'table-row';
-        $( 'blueRow' ).style.display = 'table-row';
-        $( 'band0' ).innerHTML = "Red:&nbsp;";
+        var colorModel = $( 'colorModel' ).value;
 
-        $( 'bands' ).value = [
-            $( 'redBand' ).value,
-            $( 'greenBand' ).value,
-            $( 'blueBand' ).value
-        ].join( ',' );
-    }
+        if ( colorModel === 'Default' )
+        {
+            $( 'redRow' ).style.display = 'none';
+            $( 'greenRow' ).style.display = 'none';
+            $( 'blueRow' ).style.display = 'none';
+            $( 'bands' ).value = 'default';
+            $( 'bandSwitcherTable' ).style.display = 'none';
+        }
+        else if ( colorModel === 'Gray' )
+        {
+            $( 'bandSwitcherTable' ).style.display = 'block';
+            $( 'redRow' ).style.display = 'table-row';
+            $( 'greenRow' ).style.display = 'none';
+            $( 'blueRow' ).style.display = 'none';
+            $( 'band0' ).innerHTML = "Band:&nbsp;";
+            $( 'bands' ).value = $( 'redBand' ).value;
+        }
+        else if ( colorModel === 'Color' )
+        {
+            $( 'bandSwitcherTable' ).style.display = 'block';
+            $( 'redRow' ).style.display = 'table-row';
+            $( 'greenRow' ).style.display = 'table-row';
+            $( 'blueRow' ).style.display = 'table-row';
+            $( 'band0' ).innerHTML = "Red:&nbsp;";
 
-    changeBandsOpts();
-}
+            $( 'bands' ).value = [
+                $( 'redBand' ).value,
+                $( 'greenBand' ).value,
+                $( 'blueBand' ).value
+            ].join( ',' );
+        }
+
+        this.changeBandsOpts();
+    };
 
 //  Initialize these values?
 //    $( 'redRow' ).style.display = 'none';
@@ -227,18 +233,196 @@ function bandsChanged()
 //    $( 'blueRow' ).style.display = 'none';
 //    $( 'bandSwitcherTable' ).style.display = 'none';
 
-/*********************************************************************************************************************/
+    this.changeBandsOpts = function ()
+    {
+        var bands = $( "bands" ).value;
+        var obj = {bands: bands};
+        wcsParams.setProperties( obj );
 
-var popup;
+        for ( var layer in rasterLayers )
+        {
+            rasterLayers[layer].mergeNewParams( obj );
+        }
+    }
+
+
+}
+
+
+/*********************************************************************************************************************/
+function KmlFeatureSelector()
+{
+    this.popup = null;
+    this.select = null;
+
+    this.onFeatureSelect = function ( event )
+    {
+        var feature = event.feature;
+
+        var content = "<h2>" + feature.attributes.name + "</h2>" + feature.attributes.description;
+        if ( content.search( "<script" ) != -1 )
+        {
+            content = "Content contained Javascript! Escaped content below.<br />" + content.replace( /</g, "&lt;" );
+        }
+        this.popup = new OpenLayers.Popup.FramedCloud( "chicken",
+            feature.geometry.getBounds().getCenterLonLat(),
+            new OpenLayers.Size( 100, 100 ),
+            content,
+            null, true, onPopupClose );
+        feature.popup = popup;
+        mapWidget.getMap().addPopup( this.popup );
+    };
+
+    this.onFeatureUnselect = function ( event )
+    {
+        var feature = event.feature;
+        if ( feature.popup )
+        {
+            mapWidget.getMap().removePopup( feature.popup );
+            feature.popup.destroy();
+            delete feature.popup;
+        }
+    };
+
+    this.onPopupClose = function ( evt )
+    {
+        select.unselectAll();
+    };
+
+    var kmlLayers = [];
+
+    for ( var i = 0; i < kmlOverlays.length; i++ )
+    {
+
+        var kmlLayer = new OpenLayers.Layer.Vector( kmlOverlays[i].name, {
+            visibility: defaultOverlayVisiblity,
+            projection: mapWidget.getMap().displayProjection,
+            strategies: [new OpenLayers.Strategy.Fixed()],
+            protocol: new OpenLayers.Protocol.HTTP( {
+                url: kmlOverlays[i].url,
+                format: new OpenLayers.Format.KML( {
+                    extractStyles: true,
+                    extractAttributes: true} )} )
+        } );
+
+        kmlLayers.push( kmlLayer );
+        kmlLayer.events.on( {
+            "featureselected": this.onFeatureSelect,
+            "featureunselected": this.onFeatureUnselect
+        } );
+
+        mapWidget.getMap().addLayers( kmlLayers );
+        this.select = new OpenLayers.Control.SelectFeature( kmlLayers );
+        mapWidget.getMap().addControl( this.select );
+        this.select.activate();
+    }
+}
+/*********************************************************************************************************************/
+function MapViewEditor()
+{
+    this.ddRegExp = /^(\-?\d{1,2})(\.\d+)?\,?\s?(\-?\d{1,3})(\.\d+)?$/;
+    this.dmsRegExp = /^(\d{1,2})\°?\s?(\d{1,2})\'?\s?(\d{1,2})\s?(\.\d+)?\"?\s?([NnSs])?\,?\s?(\d{1,3})\°?\s?(\d{1,2})\'?\s?(\d{1,2})\s?(\.\d+)?\"?\s?([EeWw])?$/;
+    this.mgrsRegExp = /^(\d{1,2})\s?([C-X])\s?([A-Z])\s?([A-Z])\s?(\d{1,5})\s?(\d{1,5})?/;
+    this.coordConvert = new CoordinateConversion();
+
+    this.setMapCtr = function ( unit, value )
+    {
+        if ( unit == "dd" )
+        {
+
+            if ( $( "ddMapCtr" ).value.match( this.ddRegExp ) )
+            {
+                var match = this.ddRegExp.exec( $( "ddMapCtr" ).value );
+                var lat = match[1] + match[2];
+                var lon = match[3] + match[4];
+                var center = new OpenLayers.LonLat( lon, lat );
+
+                mapWidget.getMap().setCenter( center, mapWidget.getMap().getZoom() );
+            }
+            else
+            {
+                alert( "Invalid DD Input." );
+            }
+        }
+        else if ( unit == "dms" )
+        {
+            if ( $( "dmsMapCtr" ).value.match( this.dmsRegExp ) )
+            {
+                var match = this.dmsRegExp.exec( $( "dmsMapCtr" ).value );
+                var lat = this.coordConvert.dmsToDd( match[1], match[2], match[3] + match[4], match[5] );
+                var lon = this.coordConvert.dmsToDd( match[6], match[7], match[8] + match[9], match[10] );
+                var center = new OpenLayers.LonLat( lon, lat );
+
+                mapWidget.getMap().setCenter( center, mapWidget.getMap().getZoom() );
+            }
+            else
+            {
+                alert( "Invalid DMS Input." );
+            }
+        }
+        else if ( unit == "mgrs" )
+        {
+            if ( $( "point" ).value.match( this.mgrsRegExp ) )
+            {
+                var match = this.mgrsRegExp.exec( $( "point" ).value );
+                var mgrs = this.coordConvert.mgrsToDd( match[1], match[2], match[3], match[4], match[5], match[6] );
+                var match2 = this.ddRegExp.exec( mgrs );
+                var lat = match2[1] + match2[2];
+                var lon = match2[3] + match2[4];
+                var center = new OpenLayers.LonLat( lon, lat );
+
+                mapWidget.getMap().setCenter( center, mapWidget.getMap().getZoom() );
+            }
+            else
+            {
+                alert( "Invalid MGRS Input." );
+            }
+        }
+
+        // call this because the center is clamped so we need to reset the center on the
+        // display just in case a user typed a number outside the bounds of the image
+        this.setMapCtrTxt();
+    };
+
+    this.setMapCtrTxt = function ()
+    {
+
+        var center = mapWidget.getMap().getCenter();
+        $( "ddMapCtr" ).value = center.lat + ", " + center.lon;
+        $( "dmsMapCtr" ).value = this.coordConvert.ddToDms( center.lat, center.lon );
+        $( "point" ).value = this.coordConvert.ddToMgrs( center.lat, center.lon );
+    };
+
+    this.setMouseMapCtrTxt = function ( evt )
+    {
+        var center = mapWidget.getMap().getLonLatFromViewPortPx( new OpenLayers.Pixel( evt.xy.x, evt.xy.y ) );
+        var fixed = 6;
+
+        if ( center )
+        {
+            var ddMouseCtr = document.getElementById( "ddMouseMapCtr" );
+            ddMouseMapCtr.innerHTML = "DD: " + center.lat.toFixed( fixed ) + ", " + center.lon.toFixed( fixed );
+
+            var dmsMouseCtr = document.getElementById( "dmsMouseMapCtr" );
+            dmsMouseMapCtr.innerHTML = "DMS: " + this.coordConvert.ddToDms( center.lat, center.lon );
+
+            var mgrsMouseCtr = document.getElementById( "mgrsMouseMapCtr" );
+            mgrsMouseMapCtr.innerHTML = "MGRS: " + this.coordConvert.ddToMgrs( center.lat, center.lon );
+        }
+    }
+
+}
+
+
 var mapWidget;
-var select;
 
 var busyIndicator = new BusyIndicator();
+var bandSelectorEditor = new BandSelectorEditor();
 var brightnessContrastEditor;
+var kmlFeatureSelector;
+var mapViewEditor = new MapViewEditor();
 
-var coordConvert = new CoordinateConversion();
 var wcsParams = new OmarWcsParams();
-var kmlLayers;
 var rasterLayers;
 var templateParams;
 var minLon;
@@ -250,10 +434,6 @@ var largestScale;
 var smallestScale;
 var fullResScale;
 var counter = 0;
-
-var ddRegExp = /^(\-?\d{1,2})(\.\d+)?\,?\s?(\-?\d{1,3})(\.\d+)?$/;
-var dmsRegExp = /^(\d{1,2})\°?\s?(\d{1,2})\'?\s?(\d{1,2})\s?(\.\d+)?\"?\s?([NnSs])?\,?\s?(\d{1,3})\°?\s?(\d{1,2})\'?\s?(\d{1,2})\s?(\.\d+)?\"?\s?([EeWw])?$/;
-var mgrsRegExp = /^(\d{1,2})\s?([C-X])\s?([A-Z])\s?([A-Z])\s?(\d{1,5})\s?(\d{1,5})?/;
 
 
 function rotateUpIsUp()
@@ -268,8 +448,8 @@ function rotateNorthUp()
 
 function resetMapCenter()
 {
-    bounds = new OpenLayers.Bounds( minLon, minLat, maxLon, maxLat );
-    zoom = mapWidget.getMap().getZoom();
+    var bounds = new OpenLayers.Bounds( minLon, minLat, maxLon, maxLat );
+    var zoom = mapWidget.getMap().getZoom();
     mapWidget.getMap().setCenter( bounds.getCenterLonLat(), zoom );
 }
 
@@ -312,39 +492,6 @@ function toUrlParamString( params )
     return urlParams
 }
 
-function onFeatureSelect( event )
-{
-    var feature = event.feature;
-
-    var content = "<h2>" + feature.attributes.name + "</h2>" + feature.attributes.description;
-    if ( content.search( "<script" ) != -1 )
-    {
-        content = "Content contained Javascript! Escaped content below.<br />" + content.replace( /</g, "&lt;" );
-    }
-    popup = new OpenLayers.Popup.FramedCloud( "chicken",
-        feature.geometry.getBounds().getCenterLonLat(),
-        new OpenLayers.Size( 100, 100 ),
-        content,
-        null, true, onPopupClose );
-    feature.popup = popup;
-    mapWidget.getMap().addPopup( popup );
-}
-
-function onFeatureUnselect( event )
-{
-    var feature = event.feature;
-    if ( feature.popup )
-    {
-        mapWidget.getMap().removePopup( feature.popup );
-        feature.popup.destroy();
-        delete feature.popup;
-    }
-}
-
-function onPopupClose( evt )
-{
-    select.unselectAll();
-}
 
 function calculateMetersPerPixel()
 {
@@ -353,77 +500,10 @@ function calculateMetersPerPixel()
         OpenLayers.METERS_PER_INCH);
 }
 
-function setMapCtrTxt()
-{
-
-    var center = mapWidget.getMap().getCenter();
-    $( "ddMapCtr" ).value = center.lat + ", " + center.lon;
-    $( "dmsMapCtr" ).value = coordConvert.ddToDms( center.lat, center.lon );
-    $( "point" ).value = coordConvert.ddToMgrs( center.lat, center.lon );
-}
-
-function setMapCtr( unit, value )
-{
-    if ( unit == "dd" )
-    {
-
-        if ( $( "ddMapCtr" ).value.match( ddRegExp ) )
-        {
-            var match = ddRegExp.exec( $( "ddMapCtr" ).value );
-            var lat = match[1] + match[2];
-            var lon = match[3] + match[4];
-            var center = new OpenLayers.LonLat( lon, lat );
-
-            mapWidget.getMap().setCenter( center, mapWidget.getMap().getZoom() );
-        }
-        else
-        {
-            alert( "Invalid DD Input." );
-        }
-    }
-    else if ( unit == "dms" )
-    {
-        if ( $( "dmsMapCtr" ).value.match( dmsRegExp ) )
-        {
-            var match = dmsRegExp.exec( $( "dmsMapCtr" ).value );
-            var lat = coordConvert.dmsToDd( match[1], match[2], match[3] + match[4], match[5] );
-            var lon = coordConvert.dmsToDd( match[6], match[7], match[8] + match[9], match[10] );
-            var center = new OpenLayers.LonLat( lon, lat );
-
-            mapWidget.getMap().setCenter( center, mapWidget.getMap().getZoom() );
-        }
-        else
-        {
-            alert( "Invalid DMS Input." );
-        }
-    }
-    else if ( unit == "mgrs" )
-    {
-        if ( $( "point" ).value.match( mgrsRegExp ) )
-        {
-            var match = mgrsRegExp.exec( $( "point" ).value );
-            var mgrs = coordConvert.mgrsToDd( match[1], match[2], match[3], match[4], match[5], match[6] );
-            var match2 = ddRegExp.exec( mgrs );
-            var lat = match2[1] + match2[2];
-            var lon = match2[3] + match2[4];
-            var center = new OpenLayers.LonLat( lon, lat );
-
-            mapWidget.getMap().setCenter( center, mapWidget.getMap().getZoom() );
-        }
-        else
-        {
-            alert( "Invalid MGRS Input." );
-        }
-    }
-
-    // call this because the center is clamped so we need to reset the center on the
-    // display just in case a user typed a number outside the bounds of the image
-    setMapCtrTxt();
-}
 
 function mergeNewParams()
 {
-    obj = {
+    var obj = {
         interpolation: $( "interpolation" ).value,
         sharpen_mode: $( "sharpen_mode" ).value,
         stretch_mode: $( "stretch_mode" ).value,
@@ -443,7 +523,7 @@ function mergeNewParams()
 function chgInterpolation()
 {
     var interpolation = $( "interpolation" ).value;
-    obj = {interpolation: interpolation};
+    var obj = {interpolation: interpolation};
     wcsParams.setProperties( obj );
 
     for ( var layer in rasterLayers )
@@ -455,7 +535,7 @@ function chgInterpolation()
 function chgSharpenMode()
 {
     var sharpen_mode = $( "sharpen_mode" ).value;
-    obj = {sharpen_mode: sharpen_mode};
+    var obj = {sharpen_mode: sharpen_mode};
     wcsParams.setProperties( obj );
 
     for ( var layer in rasterLayers )
@@ -468,7 +548,7 @@ function chgStretchMode()
 {
     var stretch_mode = $( "stretch_mode" ).value;
     var stretch_mode_region = $( "stretch_mode_region" ).value;
-    obj = {stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region};
+    var obj = {stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region};
     wcsParams.setProperties( obj );
     for ( var layer in rasterLayers )
     {
@@ -478,41 +558,11 @@ function chgStretchMode()
 
 function chgQuickLookMode()
 {
-    obj = {quicklook: $( "quicklook" ).value};
+    var obj = {quicklook: $( "quicklook" ).value};
     wcsParams.setProperties( obj );
     for ( var layer in rasterLayers )
     {
         rasterLayers[layer].mergeNewParams( obj );
-    }
-}
-
-function changeBandsOpts()
-{
-    var bands = $( "bands" ).value;
-    obj = {bands: bands};
-    wcsParams.setProperties( obj );
-
-    for ( var layer in rasterLayers )
-    {
-        rasterLayers[layer].mergeNewParams( obj );
-    }
-}
-
-function setMouseMapCtrTxt( evt )
-{
-    var center = mapWidget.getMap().getLonLatFromViewPortPx( new OpenLayers.Pixel( evt.xy.x, evt.xy.y ) );
-    var fixed = 6;
-
-    if ( center )
-    {
-        var ddMouseCtr = document.getElementById( "ddMouseMapCtr" );
-        ddMouseMapCtr.innerHTML = "DD: " + center.lat.toFixed( fixed ) + ", " + center.lon.toFixed( fixed );
-
-        var dmsMouseCtr = document.getElementById( "dmsMouseMapCtr" );
-        dmsMouseMapCtr.innerHTML = "DMS: " + coordConvert.ddToDms( center.lat, center.lon );
-
-        var mgrsMouseCtr = document.getElementById( "mgrsMouseMapCtr" );
-        mgrsMouseMapCtr.innerHTML = "MGRS: " + coordConvert.ddToMgrs( center.lat, center.lon );
     }
 }
 
@@ -812,8 +862,8 @@ function init( mapWidth, mapHeight )
     mapWidget.getMap().addControl( new OpenLayers.Control.Scale() );
     mapWidget.getMap().addControl( new OpenLayers.Control.ScaleLine() );
 
-    mapWidget.getMap().events.register( 'mousemove', map, setMouseMapCtrTxt );
-    mapWidget.getMap().events.register( "mouseup", map, this.setMapCtrTxt );
+    mapWidget.getMap().events.register( 'mousemove', mapViewEditor, mapViewEditor.setMouseMapCtrTxt );
+    mapWidget.getMap().events.register( "mouseup", mapViewEditor, mapViewEditor.setMapCtrTxt );
 
     var viewParam = params.view || null;
     if ( viewParam )
@@ -842,8 +892,6 @@ function init( mapWidth, mapHeight )
             zoom = zoomBbox
         }
 
-        zoom--;
-
         var mapCenterLatitude = params.latitude || bounds.getCenterLonLat().lat;
         var mapCenterLongitude = params.longitude || bounds.getCenterLonLat().lon;
         var mapCenter = new OpenLayers.LonLat( mapCenterLongitude, mapCenterLatitude );
@@ -851,10 +899,10 @@ function init( mapWidth, mapHeight )
         mapWidget.getMap().setCenter( mapCenter, zoom );
     }
 
-    setMapCtrTxt();
+    mapViewEditor.setMapCtrTxt();
     setupOverviewCheck();
     var target = $( 'map' );
-    initBands();
+    bandSelectorEditor.initBands();
 
 
 }
@@ -943,8 +991,6 @@ function setupLayers()
     var stretch_mode = $( "stretch_mode" ).value;
     var stretch_mode_region = $( "stretch_mode_region" ).value;
 
-    console.log( 'before' );
-
     rasterLayers = [
         new OpenLayers.Layer.WMS( "Raster", links.getMap,
             {layers: rasterEntries.indexIds,
@@ -968,40 +1014,11 @@ function setupLayers()
                 }
             } )];
 
-    console.log( 'after' );
-
     mapWidget.getMap().addLayers( rasterLayers );
 
-    if ( !kmlLayers )
-    {
-        kmlLayers = [];
-    }
+    kmlFeatureSelector = new KmlFeatureSelector();
 
-    for ( var i = 0; i < kmlOverlays.length; i++ )
-    {
 
-        kmlLayer = new OpenLayers.Layer.Vector( kmlOverlays[i].name, {
-            visibility: defaultOverlayVisiblity,
-            projection: mapWidget.getMap().displayProjection,
-            strategies: [new OpenLayers.Strategy.Fixed()],
-            protocol: new OpenLayers.Protocol.HTTP( {
-                url: kmlOverlays[i].url,
-                format: new OpenLayers.Format.KML( {
-                    extractStyles: true,
-                    extractAttributes: true} )} )
-        } );
-
-        kmlLayers.push( kmlLayer );
-        kmlLayer.events.on( {
-            "featureselected": onFeatureSelect,
-            "featureunselected": onFeatureUnselect
-        } );
-
-        mapWidget.getMap().addLayers( kmlLayers );
-        select = new OpenLayers.Control.SelectFeature( kmlLayers );
-        mapWidget.getMap().addControl( select );
-        select.activate();
-    }
 }
 
 function getKmlSuperOverlay()
@@ -1024,8 +1041,8 @@ function exportTemplate()
 {
     var centerLatitude = mapWidget.getMap().getCenter().lat;
     var centerLongitude = mapWidget.getMap().getCenter().lon;
-    var dms = coordConvert.ddToDms( centerLatitude, centerLongitude );
-    var mgrs = coordConvert.ddToMgrs( centerLatitude, centerLongitude );
+    var dms = mapViewEditor.coordConvert.ddToDms( centerLatitude, centerLongitude );
+    var mgrs = mapViewEditor.coordConvert.ddToMgrs( centerLatitude, centerLongitude );
     var centerGeo = "GEO: " + dms + " MGRS: " + mgrs;
 
     var acquisitionDate = rasterEntries.acquisitionDates;
