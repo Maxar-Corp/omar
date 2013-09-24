@@ -416,24 +416,16 @@ function MapViewEditor()
 
 var mapWidget;
 
-var busyIndicator = new BusyIndicator();
+
+// Need to be global b/c referenced in the adjustment page
 var bandSelectorEditor = new BandSelectorEditor();
 var brightnessContrastEditor;
-var kmlFeatureSelector;
+
 var mapViewEditor = new MapViewEditor();
-
 var wcsParams = new OmarWcsParams();
-var rasterLayers;
-var templateParams;
-var minLon;
-var minLat;
-var maxLon;
-var maxLat;
 
-var largestScale;
-var smallestScale;
-var fullResScale;
-var counter = 0;
+var rasterLayers;
+
 
 
 function rotateUpIsUp()
@@ -804,8 +796,6 @@ function shareImage()
 function init( mapWidth, mapHeight )
 {
 
-    brightnessContrastEditor = new BrightnessContrastEditor( params );
-
 
     setImageId();
     OpenLayers.ImgPath = links.openLayersImgPath;
@@ -847,7 +837,10 @@ function init( mapWidth, mapHeight )
     // }
     var bounds = new OpenLayers.Bounds( minLon, minLat, maxLon, maxLat );
     mapWidget = new MapWidget();
-    mapWidget.setupMapWidgetWithOptions( "map", {controls: [], maxExtent: bounds, theme: null, maxResolution: largestScale, minResolution: smallestScale} );
+    mapWidget.setupMapWidgetWithOptions( "map", {
+        controls: [], maxExtent: bounds, theme: null,
+        maxResolution: largestScale, minResolution: smallestScale
+    } );
     mapWidget.setFullResScale( fullResScale );
 
     changeMapSize( mapWidth, mapHeight );
@@ -982,7 +975,11 @@ function checkOverview()
 
 function setupLayers()
 {
+    var busyIndicator = new BusyIndicator();
+    var brightnessContrastEditor = new BrightnessContrastEditor( params );
+
     var format = "image/jpeg";
+
     //var format = "image/png";
     //var format = "image/gif";
     var transparent = false;
@@ -1016,7 +1013,7 @@ function setupLayers()
 
     mapWidget.getMap().addLayers( rasterLayers );
 
-    kmlFeatureSelector = new KmlFeatureSelector();
+    var kmlFeatureSelector = new KmlFeatureSelector();
 
 
 }
@@ -1074,7 +1071,7 @@ function exportTemplate()
         "width": size.w
     };
 
-    templateParams = new OmarWmsParams();
+    var templateParams = new OmarWmsParams();
     templateParams.setProperties( wmsProperties );
     var imageUrl = baseURL + "?" + templateParams.toUrlParams();
     imageUrl = imageUrl.replace( /&/g, "%26" );
