@@ -24,6 +24,11 @@ class ImageSpaceController
   {
     def paramsIgnoreCase = new CaseInsensitiveMap( params )
 
+    if (paramsIgnoreCase.ignoreProj == "true") 
+    { 
+        paramsIgnoreCase.srs = null 
+        paramsIgnoreCase.crs = null
+    }
     if (paramsIgnoreCase.rotate == "up" || paramsIgnoreCase.rotate == "north" || paramsIgnoreCase.bbox || (paramsIgnoreCase.centerLat && paramsIgnoreCase.centerLon && paramsIgnoreCase.radius))
     {
 	def rasterEntries = rasterEntrySearchService.findRasterEntries([paramsIgnoreCase.id])
@@ -94,7 +99,7 @@ class ImageSpaceController
 		paramsIgnoreCase.scale = scale
 		paramsIgnoreCase.x = x 
 		paramsIgnoreCase.y = y 
-		paramsIgnoreCase.pivot = result[4].x + "," + result[4].y	
+		paramsIgnoreCase.pivot = result[4].x + "," + result[4].y
 	}
     }
 
