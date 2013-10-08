@@ -154,7 +154,7 @@ class ThumbnailService
     //
     def thumbnailFile = rasterEntry.getAssociationType("thumbnail")
 
-    def projectionType = params.projectionType;
+    def projectionType = params.projectionType?:"imagespace";
     RasterDataSet rasterDataSet = rasterEntry.rasterDataSet
     RasterFile rasterFile = RasterFile.findWhere(rasterDataSet: rasterDataSet, type: "main")
     def size = params.size?.toInteger()
