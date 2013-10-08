@@ -116,7 +116,7 @@
                     <g:select name="colorModel" from="${['Default', 'Color', 'Gray']}" onchange="bandsChanged()"/>
                     <g:set var="bandList" value="${( 0..<rasterEntries[0]?.numberOfBands )}"/>
 
-                    <table id = "bandSwitcherTable">
+                    <table id="bandSwitcherTable">
                         <tr id="redRow">
                             <td><label id='band0'>Red:&nbsp;</label></td>
                             <td><g:select name="redBand" from="${bandList}" onchange="bandsChanged()" value="0"/></td>
@@ -132,55 +132,6 @@
                         </tr>
 
                     </table>
-
-
-                    <r:script>
-
-                        function bandsChanged()
-                        {
-                            var colorModel = $( 'colorModel' ).value;
-
-                            if ( colorModel === 'Default' )
-                            {
-                                $( 'redRow' ).style.display = 'none';
-                                $( 'greenRow' ).style.display = 'none';
-                                $( 'blueRow' ).style.display = 'none';
-                                $( 'bands' ).value = 'default';
-				$( 'bandSwitcherTable' ).style.display = 'none';
-                            }
-                            else if ( colorModel === 'Gray' )
-                            {
-				$( 'bandSwitcherTable' ).style.display = 'block';
-                                $( 'redRow' ).style.display = 'table-row';
-                                $( 'greenRow' ).style.display = 'none';
-                                $( 'blueRow' ).style.display = 'none';
-                                $( 'band0' ).innerHTML = "Band:&nbsp;";
-                                $( 'bands' ).value = $( 'redBand' ).value;
-                            }
-                            else if ( colorModel === 'Color' )
-                            {
-				$( 'bandSwitcherTable' ).style.display = 'block';
-                                $( 'redRow' ).style.display = 'table-row';
-                                $( 'greenRow' ).style.display = 'table-row';
-                                $( 'blueRow' ).style.display = 'table-row';
-                                $( 'band0' ).innerHTML = "Red:&nbsp;";
-
-                                $( 'bands' ).value = [
-                                    $( 'redBand' ).value,
-                                    $( 'greenBand' ).value,
-                                    $( 'blueBand' ).value
-                                ].join( ',' );
-                            }
-
-                            changeBandsOpts();
-                        }
-
-                        $( 'redRow' ).style.display = 'none';
-                        $( 'greenRow' ).style.display = 'none';
-                        $( 'blueRow' ).style.display = 'none';
-			$( 'bandSwitcherTable' ).style.display = 'none';
-
-                    </r:script>
                 </li>
             </g:if>
 
