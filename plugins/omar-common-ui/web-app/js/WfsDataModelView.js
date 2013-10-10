@@ -45,21 +45,26 @@ OMAR.models.VideoDatasetCollection=Backbone.Collection.extend({
 
         if(response.features)
         {   var size = response.features.size();
+            var tempUrl = document.createElement('a');
             for(var idx=0;idx<size;++idx)
             {
                 var feature = response.features[idx];
                 var model = new OMAR.models.VideoDatasetDataModel(feature.properties);
                 var modelId = model.id;
-                var omarUrl = this.url.substr(0,this.url.indexOf("omar")+4);
+                tempUrl.href = this.url;
                 if(feature.geometry.type.toLowerCase() == "multipolygon")
                 {
                     feature.geometry.coordinates[0][0][0];
                 }
-                var showVideo = omarUrl +"/videoStreaming/show/" + model.get("index_id");
+                tempUrl.pathname = "/omar/videoStreaming/show/"+ model.get("index_id");
+                tempUrl.search = "";
+                var showVideo = tempUrl.href;
                 var showVideoJavascript = "javascript:" + "window.open(\"" + showVideo + "\")";
                // var omarUrlGetKML = omarUrl + "/videoStreaming/getKML/" + model.id;
                 var tempWfsValue =  "filter=id in(" + model.get("id")+")";
-                var omarUrlGetKML = omarUrl + "/wfs?service=WFS&version=1.1.0&request=GetFeature&outputFormat=kml&typeName=omar:video_data_set&"+tempWfsValue;
+                tempUrl.pathname="/omar/wfs";
+                tempUrl.search="service=WFS&version=1.1.0&request=GetFeature&outputFormat=kml&typeName=omar:video_data_set&"+tempWfsValue;
+                var omarUrlGetKML = tempUrl.href;
                 var omarUrlGetKMLLink ="<li><a href='"+omarUrlGetKML +"'>Get KML</a></li>"
 
                 var bboxModel = new OMAR.models.BBOX();
@@ -68,9 +73,11 @@ OMAR.models.VideoDatasetCollection=Backbone.Collection.extend({
                 var centerPoint = bboxModel.getCenter();
                 //alert(showVideoJavascript);
                 //alert(bbox);
+                tempUrl.pathname = "/omar/thumbnail/frame/"+modelId;
+                tempUrl.search="size=128";
                 model.set({
                     thumbnail:"<a class='link_cursor' onclick='"+showVideoJavascript+"'> " +
-                        "<img class='thumbnail-img;' src='"+omarUrl+"/thumbnail/frame/"+modelId+"?size=128'></img>" +
+                        "<img class='thumbnail-img;' src='"+tempUrl.href+"'></img>" +
                         "</a>"
                     ,min_lat_lon:bboxModel.get("miny")+","+bboxModel.get("minx")
                     ,max_lat_lon:bboxModel.get("maxy")+","+bboxModel.get("maxx")
@@ -80,6 +87,7 @@ OMAR.models.VideoDatasetCollection=Backbone.Collection.extend({
                 });
                 result.push(model);
             }
+            tempUrl = null;
         }
 
         return result;
@@ -263,14 +271,21 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
 
         if(response.features)
         {   var size = response.features.size();
+            var tempUrl = document.createElement('a');
             for(var idx=0;idx<size;++idx)
             {
                 var feature = response.features[idx];
                 var model = new OMAR.models.RasterEntryDataModel(feature.properties)
                 var modelId = model.id;
-                var omarUrl = this.url.substr(0,this.url.indexOf("omar")+4);
-                var omarUrlRaw = omarUrl+"/mapView/imageSpace?layers="+modelId;
-                var omarUrlOrtho = omarUrl+"/mapView/index?layers="+modelId;
+
+                tempUrl.href = this.url;
+                tempUrl.search = "";
+                //tempUrl.pathname.replace(/(^\/?)/,"/");
+                tempUrl.pathname = "/omar/mapView/imageSpace";
+                tempUrl.search = "?layers="+modelId;
+                var omarUrlRaw = tempUrl.href;
+                tempUrl.pathname = "/omar/mapView/index";
+                var omarUrlOrtho = tempUrl.href;
                 var thumbnailOpenUrl = "javascript:window.open(\'"+omarUrlRaw+"\')"
                 //var omarUrlRawButton ="<button onclick=\"javascript:window.open(\'"+omarUrlRaw+"\')\">Raw</button>";
                 var omarUrlRawButton ="<button onclick=\"javascript:window.open(\'"+omarUrlRaw+"\')\">Raw</button>";
@@ -300,12 +315,18 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                 var bboxModel = new OMAR.models.BBOX();
                 bboxModel.setFromWfsFeatureGeom(feature.geometry);
                 var bbox = bboxModel.toWmsString();
-                var omarUrlCapabilities = omarUrl + '/ogc/wms?request=GetCapabilities&layers=' + model.id;
+                tempUrl.pathname = '/omar/ogc/wms';
+                tempUrl.search = "?request=GetCapabilities&layers="+modelId;
+
+                var omarUrlCapabilities =  tempUrl.href;
                 var omarUrlCapabilitiesLink ="<li><label class='link_cursor' onclick='javascript:window.open(\""+omarUrlCapabilities+"\");'>WMS Capabilities</label></li>"
-                var omarUrlGetMap = omarUrl + '/ogc/wms?request=GetMap&layers=' + model.id+"&bbox="+bbox+"&srs=EPSG:4326&width="+chipWidth+"&height="+chipHeight+"&format=image/jpeg";
+                tempUrl.search = "?request=GetMap&layers=" + model.id+"&bbox="+bbox+"&srs=EPSG:4326&width="+chipWidth+"&height="+chipHeight+"&format=image/jpeg";
+                var omarUrlGetMap = tempUrl.href;
                 var omarUrlGetMapLink ="<li><label class='link_cursor' onclick='javascript:window.open(\""+omarUrlGetMap+"\");'>WMS GetMap</label></li>"
                 var tempWfsValue =  "filter=id in(" + model.get("id")+")";
-                var omarUrlGetKML = omarUrl + "/wfs?service=WFS&version=1.1.0&request=GetFeature&outputFormat=kml&typeName=omar:raster_entry&"+tempWfsValue;
+                tempUrl.pathname = '/omar/wfs';
+                tempUrl.search = "?service=WFS&version=1.1.0&request=GetFeature&outputFormat=kml&typeName=omar:raster_entry&"+tempWfsValue;
+                var omarUrlGetKML = tempUrl.href;
 
                // var omarUrlGetKML = omarUrl + '/ogc/wms?request=GetKML&layers=' + model.id+"&format=image/png&transparent=true";
 
@@ -319,7 +340,9 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                 //var omarUrlGetKMLLink ="<li><label class='link_cursor' onclick='javascript:window.open(\""+omarUrlGetKML+"\");'>KML</label></li>"
                 var omarUrlGetKMLLink ="<li><a href='"+omarUrlGetKML +"'>Get KML</a></li>"
 
-                var omarUrlSuperOverlay = omarUrl + "/superOverlay/createKml/" + model.id+"?"
+                tempUrl.pathname =  "/omar/superOverlay/createKml/" + model.id;
+                tempUrl.search = "";
+                var omarUrlSuperOverlay = tempUrl.href;
                 if(model.bit_depth > 8)
                 {
                     omarUrlSuperOverlay += "stretch_mode=linear_auto_min_max&";
@@ -357,13 +380,16 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                     receive_date = new OMAR.models.Date({date:model.get("receive_date")}).toISOString(true);
                 }
 
+                tempUrl.pathname = "/omar/thumbnail/show/" +modelId;
+                tempUrl.search = "";
+                var thumbnailUrl =tempUrl.href;
                 model.set({
                     min_lat_lon:bboxModel.get("miny")+","+bboxModel.get("minx")
                     ,max_lat_lon:bboxModel.get("maxy")+","+bboxModel.get("maxx")
                     ,center_lat_lon:centerPoint.y+","+centerPoint.x
                     ,"ground_geom":JSON.stringify(feature.geometry)
                     ,"thumbnail":"<a onclick="+thumbnailOpenUrl+" class='link_cursor' >" +
-                        "<img class='thumbnail-img' src='"+omarUrl+"/thumbnail/show/"+modelId+"?size=128'></img></a>"
+                        "<img class='thumbnail-img' src='"+thumbnailUrl+"' size='128'></img></a>"
                     ,"view": "<ul>"+omarUrlRawButton + omarUrlOrthoButton+"</ul>"
                     ,"links": "<ul>"+omarUrlCapabilitiesLink+omarUrlGetMapLink+omarUrlGetKMLLink+omarUrlSuperOverlayLink+"</ul>"
                     ,"acquisition_date":acquisition_date
@@ -375,6 +401,7 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                 });
                 result.push(model);
             }
+            tempUrl = null;
         }
         return result;
     }
@@ -788,16 +815,23 @@ OMAR.views.DataModelView = Backbone.View.extend({
     },
     renderColumn:function(column,data, type, full){
         var url = this.wfsModel.toUrl();
+        var tempUrl = document.createElement('a');
+        tempUrl.href = url;
+        tempUrl.search = "";
+        tempUrl.pathname = "/omar/rasterEntry/show";
         var omarUrl = url.substr(0,url.indexOf("omar")+4);
         var urlLink = null;
         if(this.wfsTypeNameModel.get("typeName").search("raster_entry")>-1)
         {
-           urlLink = omarUrl + "/rasterEntry/show/" +data;
+            tempUrl.pathname = "/omar/rasterEntry/show/"+data;
+            urlLink = tempUrl.href;
         }
         else
         {
-            urlLink = omarUrl + "/videoDataSet/show/" +data;
+            tempUrl.pathname = "/videoDataSet/show/"+data;
+            urlLink = tempUrl.href;
         }
+        tempUrl = null;
         return "<label class='link_cursor' onclick='javascript:window.open(\""+urlLink+"\");'>" + data + "</label>";
     },
     drawCallback:function(){
