@@ -40,7 +40,9 @@
 <r:script>
     $( document ).ready( function ()
     {
-        var map = new OpenLayers.Map( 'map' );
+        var map = new OpenLayers.Map( 'map', {
+            numZoomLevels: 32
+        } );
 
         var layers = [
             new OpenLayers.Layer.WMS( "BMNG",
@@ -48,16 +50,33 @@
                     {map: '/data/omar/bmng.map', layers: 'Reference', format: 'image/jpeg'},
                     {buffer: 0} ),
 
-            new OpenLayers.Layer.WMS( "Chipper",
+            new OpenLayers.Layer.WMS( "Chipper - getChip",
                     "${createLink( action: 'getChip' )}",
-                    {layers: '', format: 'image/png', transparent: true},
+                    {layers: '${orthoImage}', format: 'image/png', transparent: true},
+                    {buffer: 0, isBaseLayer: false} ),
+
+/*
+            new OpenLayers.Layer.WMS( "Chipper - getChip - Color",
+                    "${createLink( action: 'getChip' )}",
+                    {layers: '${colorImage}', format: 'image/png', transparent: true},
+                    {buffer: 0, isBaseLayer: false} ),
+
+            new OpenLayers.Layer.WMS( "Chipper - getPSM - Pan",
+                    "${createLink( action: 'getChip' )}",
+                    {layers: '${panImage}', format: 'image/png', transparent: true},
+                    {buffer: 0, isBaseLayer: false} ),
+*/
+            new OpenLayers.Layer.WMS( "Chipper - getPSM - Product",
+                    "${createLink( action: 'getPSM' )}",
+                    {layers: '${psmImage}', format: 'image/png', transparent: true},
                     {buffer: 0, isBaseLayer: false} )
 
         ];
         map.addLayers( layers );
 
         var controls = [
-            new OpenLayers.Control.LayerSwitcher()
+            new OpenLayers.Control.LayerSwitcher(),
+            new OpenLayers.Control.MousePosition()
         ];
         map.addControls( controls );
 
