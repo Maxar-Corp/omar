@@ -101,8 +101,10 @@ class ImageSpaceService
       //println "-"*40
       chipChain.connectMyInputTo( rasterChain )
       result = imageChainService.grabOptimizedImageFromChain( chipChain, params )
-      chipChain.deleteChain();
-      rasterChain.deleteChain();
+      chipChain.deleteChain()
+      rasterChain.deleteChain()
+      chipChain.delete()
+      rasterChain.delete()
       chipChain = null
       rasterChain = null
     }
