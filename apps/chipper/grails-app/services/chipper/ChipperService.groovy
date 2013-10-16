@@ -62,7 +62,7 @@ class ChipperService
                 'image0.file': chpCmd.layers,
                 'operation': 'ortho',
                 'scale_2_8_bit': 'true',
-                'src': 'chpCmp?.srs',
+                'src': chpCmd?.srs,
                 'three_band_out': 'true'
             ]
 
