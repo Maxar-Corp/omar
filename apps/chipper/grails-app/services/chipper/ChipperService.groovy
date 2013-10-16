@@ -38,64 +38,73 @@ class ChipperService
 
       Chipper chipper = new Chipper()
 
-      def bboxArray = chpCmd?.bbox?.split( ',' )
-      if ( bboxArray.size() == 4 )
+      try
       {
-        int w = chpCmd?.width
-        int h = chpCmd?.height
-        int sizeInPixels = w * h
-
-        if ( sizeInPixels )
+        def bboxArray = chpCmd?.bbox?.split( ',' )
+        if ( bboxArray.size() == 4 )
         {
-          def chipperOptionsMap = [
-              'cut_min_lon': bboxArray[0],
-              'cut_min_lat': bboxArray[1],
-              'cut_max_lon': bboxArray[2],
-              'cut_max_lat': bboxArray[3],
-              'cut_height': h as String,
-              'cut_width': w as String,
-              'hist-op': 'auto-minmax',
-              'image0.file': chpCmd.layers,
-              'operation': 'ortho',
-              'scale_2_8_bit': 'true',
-              'src': 'chpCmp?.srs',
-              'three_band_out': 'true'
-          ]
+          int w = chpCmd?.width
+          int h = chpCmd?.height
+          int sizeInPixels = w * h
 
-          println "calling chipper.initialize( ${chipperOptionsMap} )"
-
-          if ( chipper.initialize( chipperOptionsMap ) )
+          if ( sizeInPixels )
           {
-            def sampleModel = new PixelInterleavedSampleModel(
-                DataBuffer.TYPE_BYTE,
-                w,                     // width
-                h,                     // height
-                4,                     // pixelStride
-                w * 4,                 // scanlineStride
-                [0, 1, 2, 3] as int[]  // band offsets
-            )
+            def chipperOptionsMap = [
+                'cut_min_lon': bboxArray[0],
+                'cut_min_lat': bboxArray[1],
+                'cut_max_lon': bboxArray[2],
+                'cut_max_lat': bboxArray[3],
+                'cut_height': h as String,
+                'cut_width': w as String,
+                'hist-op': 'auto-minmax',
+                'image0.file': chpCmd.layers,
+                'operation': 'ortho',
+                'scale_2_8_bit': 'true',
+                'src': 'chpCmp?.srs',
+                'three_band_out': 'true'
+            ]
 
-            def dataBuffer = sampleModel.createDataBuffer()
+            println "calling chipper.initialize( ${chipperOptionsMap} )"
 
-            if ( chipper.getChip( dataBuffer.data, true ) )
+            if ( chipper.initialize( chipperOptionsMap ) )
             {
-              // println "chipper.getChip good..."
+              def sampleModel = new PixelInterleavedSampleModel(
+                  DataBuffer.TYPE_BYTE,
+                  w,                     // width
+                  h,                     // height
+                  4,                     // pixelStride
+                  w * 4,                 // scanlineStride
+                  [0, 1, 2, 3] as int[]  // band offsets
+              )
 
-              def cs = ColorSpace.getInstance( ColorSpace.CS_sRGB )
+              def dataBuffer = sampleModel.createDataBuffer()
 
-              def colorModel = new ComponentColorModel( cs, [8, 8, 8, 8] as int[],
-                  true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE )
+              if ( chipper.getChip( dataBuffer.data, true ) )
+              {
+                // println "chipper.getChip good..."
 
-              def raster = Raster.createRaster( sampleModel, dataBuffer, new Point( 0, 0 ) )
-              def image = new BufferedImage( colorModel, raster, false, null )
+                def cs = ColorSpace.getInstance( ColorSpace.CS_sRGB )
 
-              ImageIO.write( image, chpCmd?.format?.split( '/' )[-1], ostream )
+                def colorModel = new ComponentColorModel( cs, [8, 8, 8, 8] as int[],
+                    true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE )
+
+                def raster = Raster.createRaster( sampleModel, dataBuffer, new Point( 0, 0 ) )
+                def image = new BufferedImage( colorModel, raster, false, null )
+
+                ImageIO.write( image, chpCmd?.format?.split( '/' )[-1], ostream )
+              }
             }
           }
         }
       }
-
-      chipper.delete()
+      catch ( e )
+      {
+        e.printStackTrace()
+      }
+      finally
+      {
+        chipper.delete()
+      }
       break
 
     // End: case RenderMode.CHIPPER:
@@ -126,67 +135,76 @@ class ChipperService
 
       Chipper chipper = new Chipper()
 
-      def bboxArray = chpCmd?.bbox?.split( ',' )
-      if ( bboxArray.size() == 4 )
+      try
       {
-        int w = chpCmd?.width
-        int h = chpCmd?.height
-        int sizeInPixels = w * h
-        def layers = chpCmd?.layers?.split( ',' )
-
-        if ( sizeInPixels )
+        def bboxArray = chpCmd?.bbox?.split( ',' )
+        if ( bboxArray.size() == 4 )
         {
-          def chipperOptionsMap = [
-              'cut_min_lon': bboxArray[0],
-              'cut_min_lat': bboxArray[1],
-              'cut_max_lon': bboxArray[2],
-              'cut_max_lat': bboxArray[3],
-              'cut_height': h as String,
-              'cut_width': w as String,
-              'scale_2_8_bit': 'true',
-              'src': 'chpCmp?.srs',
-              bands: '3,2,1',
-              'hist-op': 'auto-minmax',
-              'image0.file': layers[0],
-              'image1.file': layers[1],
+          int w = chpCmd?.width
+          int h = chpCmd?.height
+          int sizeInPixels = w * h
+          def layers = chpCmd?.layers?.split( ',' )
 
-              operation: 'psm',
-              resampler_filter: 'sinc'
-          ]
-
-          // println "calling chipper.initialize( myMap )"
-          if ( chipper.initialize( chipperOptionsMap ) )
+          if ( sizeInPixels )
           {
-            def sampleModel = new PixelInterleavedSampleModel(
-                DataBuffer.TYPE_BYTE,
-                w,                     // width
-                h,                     // height
-                4,                     // pixelStride
-                w * 4,                 // scanlineStride
-                [0, 1, 2, 3] as int[]  // band offsets
-            )
+            def chipperOptionsMap = [
+                'cut_min_lon': bboxArray[0],
+                'cut_min_lat': bboxArray[1],
+                'cut_max_lon': bboxArray[2],
+                'cut_max_lat': bboxArray[3],
+                'cut_height': h as String,
+                'cut_width': w as String,
+                'scale_2_8_bit': 'true',
+                'src': 'chpCmp?.srs',
+                bands: '3,2,1',
+                'hist-op': 'auto-minmax',
+                'image0.file': layers[0],
+                'image1.file': layers[1],
 
-            def dataBuffer = sampleModel.createDataBuffer()
+                operation: 'psm',
+                resampler_filter: 'sinc'
+            ]
 
-            if ( chipper.getChip( dataBuffer.data, true ) )
+            // println "calling chipper.initialize( myMap )"
+            if ( chipper.initialize( chipperOptionsMap ) )
             {
-              // println "chipper.getChip good..."
+              def sampleModel = new PixelInterleavedSampleModel(
+                  DataBuffer.TYPE_BYTE,
+                  w,                     // width
+                  h,                     // height
+                  4,                     // pixelStride
+                  w * 4,                 // scanlineStride
+                  [0, 1, 2, 3] as int[]  // band offsets
+              )
 
-              def cs = ColorSpace.getInstance( ColorSpace.CS_sRGB )
+              def dataBuffer = sampleModel.createDataBuffer()
 
-              def colorModel = new ComponentColorModel( cs, [8, 8, 8, 8] as int[],
-                  true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE )
+              if ( chipper.getChip( dataBuffer.data, true ) )
+              {
+                // println "chipper.getChip good..."
 
-              def raster = Raster.createRaster( sampleModel, dataBuffer, new Point( 0, 0 ) )
-              def image = new BufferedImage( colorModel, raster, false, null )
+                def cs = ColorSpace.getInstance( ColorSpace.CS_sRGB )
 
-              ImageIO.write( image, chpCmd?.format?.split( '/' )[-1], ostream )
+                def colorModel = new ComponentColorModel( cs, [8, 8, 8, 8] as int[],
+                    true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE )
+
+                def raster = Raster.createRaster( sampleModel, dataBuffer, new Point( 0, 0 ) )
+                def image = new BufferedImage( colorModel, raster, false, null )
+
+                ImageIO.write( image, chpCmd?.format?.split( '/' )[-1], ostream )
+              }
             }
           }
         }
       }
-
-      chipper.delete()
+      catch ( e )
+      {
+        e.printStackTrace()
+      }
+      finally
+      {
+        chipper.delete()
+      }
       break
 
     // End: case RenderMode.CHIPPER:
