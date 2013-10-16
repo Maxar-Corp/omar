@@ -475,8 +475,12 @@ class ImageChainService
 
     def grabOptimizedImageFromChain(def inputChain, def params)
     {
-        def imageSource = new omsImageSource( inputChain.getChainAsImageSource() )
-        def renderedImage = new omsRenderedImage( imageSource )
+      def imageSource   = new omsImageSource( inputChain.getChainAsImageSource() )
+      def renderedImage = new omsRenderedImage( imageSource )
+      def result        = null
+
+      try{
+
         def image = renderedImage.getData();
 
         ColorModel colorModel = renderedImage.colorModel
@@ -484,35 +488,43 @@ class ImageChainService
         boolean isRasterPremultiplied = true
         Hashtable<?, ?> properties = null
 
-        def result = null
         def transparentFlag = params?.transparent?.equalsIgnoreCase( "true" )
         if ( image.numBands == 1 )
         {
-            result = Utility.convertToColorIndexModel( image.dataBuffer,
-                    image.width,
-                    image.height,
-                    transparentFlag )
+          result = Utility.convertToColorIndexModel( image.dataBuffer,
+                  image.width,
+                  image.height,
+                  transparentFlag )
         }
         else
         {
-            result = new BufferedImage(
-                    colorModel,
-                    image,
-                    isRasterPremultiplied,
-                    properties
-            )
-            if ( image.numBands == 3 )
+          result = new BufferedImage(
+                  colorModel,
+                  image,
+                  isRasterPremultiplied,
+                  properties
+          )
+          if ( image.numBands == 3 )
+          {
+            if ( transparentFlag )
             {
-                if ( transparentFlag )
-                {
-                    result = TransparentFilter.fixTransparency( new TransparentFilter(), result )
-                }
-                if ( params?.format?.equalsIgnoreCase( "image/gif" ) )
-                {
-                    result = ImageGenerator.convertRGBAToIndexed( result )
-                }
+              result = TransparentFilter.fixTransparency( new TransparentFilter(), result )
             }
+            if ( params?.format?.equalsIgnoreCase( "image/gif" ) )
+            {
+              result = ImageGenerator.convertRGBAToIndexed( result )
+            }
+          }
         }
-        result
+
+      }
+      catch(def e)
+      {
+      }
+      renderedImage.setImageSource(null)
+      imageSource.setImageSource(null)
+
+
+      result
     }
 }
