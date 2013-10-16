@@ -14,6 +14,8 @@ import joms.oms.Chipper
 
 class ChipperService
 {
+  static transactional = false
+
   enum RenderMode {
     BLANK, CHIPPER
   }
