@@ -19,30 +19,38 @@ class ViewerController
 
   def getChip()
   {
-    def chpCmd = new ChipCommand()
+    def ctx = startAsync()
+    ctx.start {
+      def chpCmd = new ChipCommand()
 
-    bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
+      bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
 
-    //println chpCmd
+      //println chpCmd
 
-    def results = chipperService.getChip( chpCmd )
+      def results = chipperService.getChip( chpCmd )
 
-    response.contentType = results.contentType
-    response.outputStream << results.buffer
+      response.contentType = results.contentType
+      response.outputStream << results.buffer
+      ctx.complete()
+    }
   }
 
   def getPSM()
   {
-    def chpCmd = new ChipCommand()
+    def ctx = startAsync()
+    ctx.start {
+      def chpCmd = new ChipCommand()
 
-    bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
+      bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
 
-    //println chpCmd
+      //println chpCmd
 
-    def results = chipperService.getPSM( chpCmd )
+      def results = chipperService.getPSM( chpCmd )
 
-    response.contentType = results.contentType
-    response.outputStream << results.buffer
+      response.contentType = results.contentType
+      response.outputStream << results.buffer
+      ctx.dispatch()
+    }
   }
 
 }
