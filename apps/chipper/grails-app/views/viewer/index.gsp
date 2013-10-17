@@ -57,7 +57,7 @@
 
             new OpenLayers.Layer.WMS( "Chipper - getChip - Color",
                     "${createLink( action: 'getChip' )}",
-                    {layers: '${colorImage}', format: 'image/png', transparent: true},
+                    {layers: '${colorImage}', format: 'image/png', transparent: true, bands: '3,2,1'},
                     {buffer: 0, isBaseLayer: false, visibility: true} ),
 
             new OpenLayers.Layer.WMS( "Chipper - getChip - Pan",
@@ -67,7 +67,7 @@
 
             new OpenLayers.Layer.WMS( "Chipper - getPSM - Product",
                     "${createLink( action: 'getPSM' )}",
-                    {layers: '${psmImage}', format: 'image/png', transparent: true},
+                    {layers: '${psmImage}', format: 'image/png', transparent: true, bands: '3,2,1'},
                     {buffer: 0, isBaseLayer: false, visibility: false} )
 
         ];

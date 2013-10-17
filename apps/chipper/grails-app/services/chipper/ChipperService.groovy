@@ -47,6 +47,13 @@ class ChipperService
     ]
 //    }
 
+
+    if ( chpCmd['bands'] )
+    {
+      chipperOptionsMap['bands'] = chpCmd?.bands
+    }
+
+
     return chipperOptionsMap
   }
 
@@ -64,7 +71,6 @@ class ChipperService
         'cut_width': chpCmd.width as String,
         'scale_2_8_bit': 'true',
         'src': chpCmd?.srs,
-        bands: '3,2,1',
         'hist-op': 'auto-minmax',
         'image0.file': layers[0],
         'image1.file': layers[1],
@@ -72,6 +78,11 @@ class ChipperService
         operation: 'psm',
         resampler_filter: 'sinc'
     ]
+
+    if ( chpCmd['bands'] )
+    {
+      chipperOptionsMap['bands'] = chpCmd?.bands
+    }
 
     return chipperOptionsMap
   }

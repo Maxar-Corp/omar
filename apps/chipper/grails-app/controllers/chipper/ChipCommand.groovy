@@ -14,6 +14,7 @@ import groovy.transform.ToString
 @Validateable()
 class ChipCommand
 {
+  // WMS Parameters
   Boolean transparent
 
   Integer height
@@ -27,4 +28,9 @@ class ChipCommand
   String srs
   String styles
   String version
+
+
+  // OSSIM Parameters
+  String bands
+  String entry
 }
