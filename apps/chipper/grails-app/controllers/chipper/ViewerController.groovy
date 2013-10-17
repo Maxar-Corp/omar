@@ -49,7 +49,7 @@ class ViewerController
 
       response.contentType = results.contentType
       response.outputStream << results.buffer
-      ctx.dispatch()
+      ctx.complete()
     }
   }
 
