@@ -31,20 +31,20 @@ class ChipperService
 
 //    if ( bounds.geometry.intersects(new Bounds( 0, 0, 90, 90, 'epsg:4326').geometry ) )
 //    {
-      chipperOptionsMap = [
-          'cut_min_lon': minLon as String,
-          'cut_min_lat': minLat as String,
-          'cut_max_lon': maxLon as String,
-          'cut_max_lat': maxLat as String,
-          'cut_height': chpCmd?.height as String,
-          'cut_width': chpCmd?.width as String,
-          'hist-op': 'auto-minmax',
-          'image0.file': chpCmd.layers,
-          'operation': 'ortho',
-          'scale_2_8_bit': 'true',
-          'src': chpCmd?.srs,
-          'three_band_out': 'true'
-      ]
+    chipperOptionsMap = [
+        'cut_min_lon': minLon as String,
+        'cut_min_lat': minLat as String,
+        'cut_max_lon': maxLon as String,
+        'cut_max_lat': maxLat as String,
+        'cut_height': chpCmd?.height as String,
+        'cut_width': chpCmd?.width as String,
+        'hist-op': 'auto-minmax',
+        'image0.file': chpCmd.layers,
+        'operation': 'ortho',
+        'scale_2_8_bit': 'true',
+        'src': chpCmd?.srs,
+        'three_band_out': 'true'
+    ]
 //    }
 
     return chipperOptionsMap
@@ -76,8 +76,6 @@ class ChipperService
     return chipperOptionsMap
   }
 
-
-
   def getChip(ChipCommand chpCmd)
   {
     // println chpCmd
@@ -97,13 +95,11 @@ class ChipperService
 
       if ( chipperOptionsMap )
       {
-        populateTile( chipperOptionsMap, chpCmd, ostream )
+        if ( !populateTile( chipperOptionsMap, chpCmd, ostream ) )
+        {
+          createBlankTile( chpCmd, ostream )
+        }
       }
-      else
-      {
-        createBlankTile( chpCmd, ostream )
-      }
-
       break
 
     // End: case RenderMode.CHIPPER:
@@ -120,9 +116,10 @@ class ChipperService
     ImageIO.write( image, chpCmd?.format?.split( '/' )[-1], ostream )
   }
 
-  private void populateTile(chipperOptionsMap, ChipCommand chpCmd, ByteArrayOutputStream ostream)
+  private boolean populateTile(chipperOptionsMap, ChipCommand chpCmd, ByteArrayOutputStream ostream)
   {
     Chipper chipper = new Chipper()
+    boolean status = false
 
     try
     {
@@ -154,6 +151,7 @@ class ChipperService
           def image = new BufferedImage( colorModel, raster, false, null )
 
           ImageIO.write( image, chpCmd?.format?.split( '/' )[-1], ostream )
+          status = true
         }
       }
     }
@@ -165,6 +163,8 @@ class ChipperService
     {
       chipper.delete()
     }
+
+    return status
   } // End: def getChip(def chpCmd)
 
   def getPSM(ChipCommand chpCmd)
@@ -186,20 +186,16 @@ class ChipperService
 
       if ( chipperOptionsMap )
       {
-        populateTile( chipperOptionsMap, chpCmd, ostream )
-      }
-      else
-      {
-        createBlankTile( chpCmd, ostream )
-      }
-      break
+        if ( !populateTile( chipperOptionsMap, chpCmd, ostream ) )
+        {
+          createBlankTile( chpCmd, ostream )
+        }
+        break
+        // End: case RenderMode.CHIPPER:
 
-    // End: case RenderMode.CHIPPER:
-
-    } // End: switch( renderMode
-
+      } // End: switch( renderMode
+    }
     [contentType: chpCmd?.format, buffer: ostream.toByteArray()]
-
   } // End: def getPSM(def chpCmd)
 
 } // End: class ChipperService
