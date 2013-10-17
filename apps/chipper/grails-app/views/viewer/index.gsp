@@ -53,22 +53,22 @@
             new OpenLayers.Layer.WMS( "Chipper - getChip",
                     "${createLink( action: 'getChip' )}",
                     {layers: '${orthoImage}', format: 'image/png', transparent: true},
-                    {buffer: 0, isBaseLayer: false} )//,
+                    {buffer: 0, isBaseLayer: false} ),
 
-            %{--new OpenLayers.Layer.WMS( "Chipper - getChip - Color",--}%
-                    %{--"${createLink( action: 'getChip' )}",--}%
-                    %{--{layers: '${colorImage}', format: 'image/png', transparent: true},--}%
-                    %{--{buffer: 0, isBaseLayer: false, visibility: false} ),--}%
+            new OpenLayers.Layer.WMS( "Chipper - getChip - Color",
+                    "${createLink( action: 'getChip' )}",
+                    {layers: '${colorImage}', format: 'image/png', transparent: true},
+                    {buffer: 0, isBaseLayer: false, visibility: true} ),
 
-            %{--new OpenLayers.Layer.WMS( "Chipper - getChip - Pan",--}%
-                    %{--"${createLink( action: 'getChip' )}",--}%
-                    %{--{layers: '${panImage}', format: 'image/png', transparent: true},--}%
-                    %{--{buffer: 0, isBaseLayer: false, visibility: false} ),--}%
+            new OpenLayers.Layer.WMS( "Chipper - getChip - Pan",
+                    "${createLink( action: 'getChip' )}",
+                    {layers: '${panImage}', format: 'image/png', transparent: true},
+                    {buffer: 0, isBaseLayer: false, visibility: true} ),
 
-            %{--new OpenLayers.Layer.WMS( "Chipper - getPSM - Product",--}%
-                    %{--"${createLink( action: 'getPSM' )}",--}%
-                    %{--{layers: '${psmImage}', format: 'image/png', transparent: true},--}%
-                    %{--{buffer: 0, isBaseLayer: false, visibility: false} )--}%
+            new OpenLayers.Layer.WMS( "Chipper - getPSM - Product",
+                    "${createLink( action: 'getPSM' )}",
+                    {layers: '${psmImage}', format: 'image/png', transparent: true},
+                    {buffer: 0, isBaseLayer: false, visibility: false} )
 
         ];
         map.addLayers( layers );

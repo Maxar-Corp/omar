@@ -92,6 +92,6 @@ log4j = {
 
 chipper {
   orthoImage = '/data/celtic/staged/001/celtic/rpf_cadrg_1060889007_48858/a.toc'
-  colorImage = '/data/psm-test/5V090205M0001912264B220000100072M_001508507.ntf'
-  panImage = '/data/psm-test/5V090205P0001912264B220000100282M_001508507.ntf'
+  colorImage = '/data/psm-test/color.tif'
+  panImage = '/data/psm-test/pan.tif'
 }

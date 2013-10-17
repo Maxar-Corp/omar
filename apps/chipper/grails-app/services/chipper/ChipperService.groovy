@@ -29,8 +29,8 @@ class ChipperService
     def chipperOptionsMap = null
     def bounds = new Bounds( minLon, minLat, maxLon, maxLat, chpCmd.srs )
 
-    if ( bounds.geometry.intersects(new Bounds( 0, 0, 90, 90, 'epsg:4326').geometry ) )
-    {
+//    if ( bounds.geometry.intersects(new Bounds( 0, 0, 90, 90, 'epsg:4326').geometry ) )
+//    {
       chipperOptionsMap = [
           'cut_min_lon': minLon as String,
           'cut_min_lat': minLat as String,
@@ -45,7 +45,7 @@ class ChipperService
           'src': chpCmd?.srs,
           'three_band_out': 'true'
       ]
-    }
+//    }
 
     return chipperOptionsMap
   }
