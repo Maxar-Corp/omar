@@ -19,9 +19,9 @@
 
 <div data-options="region:'north',title:'North Title',split:true" style="height:100px;"></div>
 
-<div data-options="region:'south',title:'South Title',split:true" style="height:100px;"></div>
+<div data-options="region:'south',title:'South Title',split:true,collapsed:true" style="height:100px;"></div>
 
-<div data-options="region:'east',title:'East',split:true" style="width:100px;"></div>
+<div data-options="region:'east',title:'East',split:true,collapsed:true" style="width:100px;"></div>
 
 <div data-options="region:'west',title:'West',split:true" style="width:100px;"></div>
 
@@ -32,12 +32,13 @@
 <r:script>
     $( document ).ready( function ()
     {
-        var lon = 5;
-        var lat = 40;
-        var zoom = 5;
+
+        var bbox = new OpenLayers.Bounds(${minX}, ${minY}, ${maxX}, ${maxY});
         var map, layers, controls;
 
-        map = new OpenLayers.Map( 'map' );
+        map = new OpenLayers.Map( 'map', {
+            numZoomLevels: 32
+        } );
 
         layers = [
             new OpenLayers.Layer.WMS(
@@ -45,7 +46,23 @@
                     "http://omar.ngaiost.org/cgi-bin/mapserv.sh",
                     {layers: 'Reference', map: '/data/omar/bmng.map'},
                     {buffer: 0}
-            )
+            ),
+
+            new OpenLayers.Layer.WMS( "Chipper - getChip - Color",
+                    "${createLink( controller: 'viewer', action: 'getChip' )}",
+                    {layers: '${colorImage}', format: 'image/png', transparent: true, bands: '3,2,1'},
+                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} ),
+
+            new OpenLayers.Layer.WMS( "Chipper - getChip - Pan",
+                    "${createLink( controller: 'viewer', action: 'getChip' )}",
+                    {layers: '${panImage}', format: 'image/png', transparent: true},
+                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} ),
+
+            new OpenLayers.Layer.WMS( "Chipper - getPSM - Product",
+                    "${createLink( controller: 'viewer', action: 'getPSM' )}",
+                    {layers: '${psmImage}', format: 'image/png', transparent: true, bands: '3,2,1'},
+                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
+
         ];
         map.addLayers( layers );
 
@@ -54,8 +71,9 @@
         ];
         map.addControls( controls );
 
+        //map.zoomToExtent( bbox, true );
 
-        map.setCenter( new OpenLayers.LonLat( lon, lat ), zoom );
+        map.setCenter(new OpenLayers.LonLat(147.258526555874, -42.8605875658741), map.getZoomForExtent(bbox));
 
         $( 'body' ).layout( 'panel', 'center' ).panel( {
             onResize: function ()
