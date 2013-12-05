@@ -87,6 +87,32 @@ class ChipperService
     return chipperOptionsMap
   }
 
+  private Map<String, String> createTwoColorMultiParams(ChipCommand chpCmd)
+  {
+    def layers = chpCmd?.layers?.split( ',' )
+    def (minLon, minLat, maxLon, maxLat) = chpCmd?.bbox?.split( ',' )?.collect { it as double }
+
+    def chipperOptionsMap = [
+        'cut_min_lon': minLon as String,
+        'cut_min_lat': minLat as String,
+        'cut_max_lon': maxLon as String,
+        'cut_max_lat': maxLat as String,
+        'cut_height': chpCmd.height as String,
+        'cut_width': chpCmd.width as String,
+        'scale_2_8_bit': 'true',
+        'src': chpCmd?.srs,
+        'hist-op': 'auto-minmax',
+        'image0.file': layers[0],
+        'image1.file': layers[1],
+
+        operation: '2cmv',
+        resampler_filter: 'sinc'
+    ]
+
+    return chipperOptionsMap
+  }
+
+
   def getChip(ChipCommand chpCmd)
   {
     // println chpCmd
@@ -194,6 +220,37 @@ class ChipperService
 
     case RenderMode.CHIPPER:
       Map<String, String> chipperOptionsMap = createPanSharpenParams( chpCmd )
+
+      if ( chipperOptionsMap )
+      {
+        if ( !populateTile( chipperOptionsMap, chpCmd, ostream ) )
+        {
+          createBlankTile( chpCmd, ostream )
+        }
+        break
+        // End: case RenderMode.CHIPPER:
+
+      } // End: switch( renderMode
+    }
+    [contentType: chpCmd?.format, buffer: ostream.toByteArray()]
+  } // End: def getPSM(def chpCmd)
+
+  def get2CMV(ChipCommand chpCmd)
+  {
+    // println chpCmd
+
+    // def renderMode = RenderMode.BLANK
+    def renderMode = RenderMode.CHIPPER
+    def ostream = new ByteArrayOutputStream()
+
+    switch ( renderMode )
+    {
+    case RenderMode.BLANK:
+      createBlankTile( chpCmd, ostream )
+      break
+
+    case RenderMode.CHIPPER:
+      Map<String, String> chipperOptionsMap = createTwoColorMultiParams( chpCmd )
 
       if ( chipperOptionsMap )
       {

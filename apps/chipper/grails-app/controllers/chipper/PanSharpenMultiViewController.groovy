@@ -5,9 +5,9 @@ class PanSharpenMultiViewController
 
   def index()
   {
-    def orthoImage = grailsApplication.config.chipper.orthoImage
-    def colorImage = grailsApplication.config.chipper.colorImage
-    def panImage = grailsApplication.config.chipper.panImage
+    def orthoImage = grailsApplication.config.chipper.chipImage.orthoImage
+    def colorImage = grailsApplication.config.chipper.panSharpen.colorImage
+    def panImage = grailsApplication.config.chipper.panSharpen.panImage
     def psmImage = [colorImage, panImage].join( ',' )
 
     def minX = 147.164803569264

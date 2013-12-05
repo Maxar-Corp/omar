@@ -48,19 +48,19 @@
                     {buffer: 0}
             ),
 
-            new OpenLayers.Layer.WMS( "Chipper - getChip - Color",
+            new OpenLayers.Layer.WMS( "Chipper - 2CMV - Red",
                     "${createLink( controller: 'chipper', action: 'getChip' )}",
-                    {layers: '${colorImage}', format: 'image/png', transparent: true, bands: '3,2,1'},
+                    {layers: '${redImage}', format: 'image/png', transparent: true},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} ),
 
-            new OpenLayers.Layer.WMS( "Chipper - getChip - Pan",
+            new OpenLayers.Layer.WMS( "Chipper - 2CMV - Blue",
                     "${createLink( controller: 'chipper', action: 'getChip' )}",
-                    {layers: '${panImage}', format: 'image/png', transparent: true},
-                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} ),
+                    {layers: '${blueImage}', format: 'image/png', transparent: true},
+                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} ),
 
-            new OpenLayers.Layer.WMS( "Chipper - getPSM - Product",
-                    "${createLink( controller: 'chipper', action: 'getPSM' )}",
-                    {layers: '${psmImage}', format: 'image/png', transparent: true, bands: '3,2,1'},
+            new OpenLayers.Layer.WMS( "Chipper - 2CMV - Product",
+                    "${createLink( controller: 'chipper', action: 'get2CMV' )}",
+                    {layers: '${redImage},${blueImage}', format: 'image/png', transparent: true},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
 
         ];
@@ -73,7 +73,7 @@
 
         //map.zoomToExtent( bbox, true );
 
-        map.setCenter(new OpenLayers.LonLat(147.258526555874, -42.8605875658741), map.getZoomForExtent(bbox));
+        map.setCenter(new OpenLayers.LonLat(-80.6613377851508, 28.5826952339945), map.getZoomForExtent(bbox));
 
         $( 'body' ).layout( 'panel', 'center' ).panel( {
             onResize: function ()
