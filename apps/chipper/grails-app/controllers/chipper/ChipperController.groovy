@@ -59,4 +59,22 @@ class ChipperController
       ctx.complete()
     }
   }
+
+  def getHillShade()
+  {
+    def ctx = startAsync()
+    ctx.start {
+      def chpCmd = new ChipCommand()
+
+      bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
+
+      //println chpCmd
+
+      def results = chipperService.getHillShade( chpCmd )
+
+      response.contentType = results.contentType
+      response.outputStream << results.buffer
+      ctx.complete()
+    }
+  }
 }

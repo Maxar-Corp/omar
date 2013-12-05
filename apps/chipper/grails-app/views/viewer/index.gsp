@@ -56,17 +56,17 @@
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false} ),
 
             new OpenLayers.Layer.WMS( "Chipper - getChip - Color",
-                    "${createLink(  controller: 'chipper',action: 'getChip' )}",
+                    "${createLink( controller: 'chipper', action: 'getChip' )}",
                     {layers: '${colorImage}', format: 'image/png', transparent: true, bands: '3,2,1'},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} ),
 
             new OpenLayers.Layer.WMS( "Chipper - getChip - Pan",
-                    "${createLink(  controller: 'chipper',action: 'getChip' )}",
+                    "${createLink( controller: 'chipper', action: 'getChip' )}",
                     {layers: '${panImage}', format: 'image/png', transparent: true},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} ),
 
             new OpenLayers.Layer.WMS( "Chipper - getPSM - Product",
-                    "${createLink(  controller: 'chipper',action: 'getPSM' )}",
+                    "${createLink( controller: 'chipper', action: 'getPSM' )}",
                     {layers: '${psmImage}', format: 'image/png', transparent: true, bands: '3,2,1'},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
 

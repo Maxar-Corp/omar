@@ -14,4 +14,7 @@ chipper {
 		blueImage='/data1/space_coast_metric_private/po_176062_pan_0000000.tif'		
 	}
 
+  hillShade {
+    mapImage='/data1/ossim-dem-test/san_fran.ccf'
+  }
 }
