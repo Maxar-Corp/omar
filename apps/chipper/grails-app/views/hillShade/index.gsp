@@ -10,21 +10,55 @@
 <html>
 <head>
     <title>HillShade</title>
+    <style type="text/css">
+    #north {
+        height: 100px;
+    }
+
+    #south {
+        height: 100px;
+    }
+
+    #east {
+        width: 100px;
+    }
+
+    #west {
+        width: 200px;
+    }
+
+    #center {
+        padding: 5px;
+        background: #eee;
+    }
+
+    #pg {
+        width: 300px;
+    }
+    </style>
     <r:require modules="easyui_scaffold"/>
     <r:layoutResources/>
 </head>
 
 <body class="easyui-layout">
 
-<div data-options="region:'north',title:'North Title',split:true" style="height:100px;"></div>
+<div id="north" data-options="region:'north',title:'North Title',split:true"></div>
 
-<div data-options="region:'south',title:'South Title',split:true,collapsed:true" style="height:100px;"></div>
+<div id="south" data-options="region:'south',title:'South Title',split:true,collapsed:true"></div>
 
-<div data-options="region:'east',title:'East',split:true,collapsed:true" style="width:100px;"></div>
+<div id="east" data-options="region:'east',title:'East',split:true,collapsed:true"></div>
 
-<div data-options="region:'west',title:'West',split:true" style="width:100px;"></div>
+<div id="west" data-options="region:'west',title:'West',split:true">
+    <table id="pg" class="easyui-propertygrid"
+           data-options="url:'${createLink( action: 'getOptions' )}',showGroup:true,scrollbarSize:0"></table>
+    <br/>
 
-<div data-options="region:'center',title:'center title'" style="padding:5px;background:#eee;">
+    <div align='center'>
+        <button id="refresh">Refresh</button>
+    </div>
+</div>
+
+<div id="center" data-options="region:'center',title:'center title'">
     <div id="map"></div>
 </div>
 <r:external plugin='openlayers' file='OpenLayers.js' dir='js'/>
@@ -87,6 +121,20 @@
         }
     } );
 
+    $('#refresh').click(function(){
+        var data = $('#pg').propertygrid('getData').rows;
+        var obj = {};
+
+        data.forEach(function(item){
+            obj[item.name] = item.value;
+        }) ;
+
+        //console.log(obj);
+        var layer = map.getLayersByName("Chipper - HillShade - Product")[0];
+
+        layer.mergeNewParams(obj);
+
+    })
 } );
 </r:script>
 

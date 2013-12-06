@@ -11,7 +11,7 @@ import groovy.transform.ToString
  * To change this template use File | Settings | File Templates.
  */
 @ToString( )
-@Validateable()
+@Validateable( )
 class ChipCommand
 {
   // WMS Parameters
@@ -29,8 +29,18 @@ class ChipCommand
   String styles
   String version
 
-
   // OSSIM Parameters
   String bands
   String entry
+  String resampler_filter
+  String writer
+
+  // HillShade Parameters
+  String azimuth_angle
+  String color_blue
+  String color_green
+  String color_red
+  String elevation_angle
+  String gain
+
 }

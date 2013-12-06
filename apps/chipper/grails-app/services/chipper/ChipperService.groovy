@@ -118,29 +118,32 @@ class ChipperService
     def (minLon, minLat, maxLon, maxLat) = chpCmd?.bbox?.split( ',' )?.collect { it as double }
 
     def chipperOptionsMap = [
-        azimuth_angle:  '270',
-        color_blue:  '139',
-        color_green:  '26',
-        color_red:  '85',
+
+        azimuth_angle: chpCmd.azimuth_angle ?: '270',
+        color_blue: chpCmd.color_blue ?: '139',
+        color_green: chpCmd.color_green ?: '26',
+        color_red: chpCmd.color_red ?: '85',
+
         cut_min_lon: minLon as String,
         cut_min_lat: minLat as String,
         cut_max_lon: maxLon as String,
         cut_max_lat: maxLat as String,
         cut_height: chpCmd.height as String,
         cut_width: chpCmd.width as String,
-        'dem0.file':  layers[1],
-        'dem1.file':  layers[2],
-        elevation_angle:  '45',
-        gain:  '1.5',
-        'image0.file':  layers[0],
+        'dem0.file': layers[1],
+        'dem1.file': layers[2],
+        elevation_angle: chpCmd.elevation_angle ?: '45',
+        gain: chpCmd.gain ?: '1.5',
+        'image0.file': layers[0],
 //        meters:  '20',
-        operation:  'hillshade',
+        operation: 'hillshade',
 //        output_file:  '/data1/pmr_20131209/outputs/hillshade.png',
-        output_radiometry:  'U8',
+        output_radiometry: 'U8',
 //        projection:  'geo-scaled',
-        projection:  'geo',
-        resampler_filter:  'cubic',
-        writer:  'ossim_png'
+//        projection:  'geo',
+        srs: chpCmd.srs,
+        resampler_filter: chpCmd.resampler_filter ?: 'cubic',
+        writer: chpCmd.writer ?: 'ossim_png'
     ]
 
     return chipperOptionsMap
@@ -309,7 +312,7 @@ class ChipperService
 
   def getHillShade(ChipCommand chpCmd)
   {
-    // println chpCmd
+    println chpCmd
 
     // def renderMode = RenderMode.BLANK
     def renderMode = RenderMode.CHIPPER
