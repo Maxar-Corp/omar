@@ -1,22 +1,32 @@
 package chipper
 
+import geoscript.geom.Bounds
 import grails.converters.JSON
 
 class HillShadeController
 {
   def grailsApplication
+  def chipperService
 
   def index()
   {
-    [
-        mapImage: grailsApplication.config.chipper.hillShade.mapImage,
-        demImage1: grailsApplication.config.chipper.hillShade.demImage1,
-        demImage2: grailsApplication.config.chipper.hillShade.demImage2,
+    def mapImage = GeospatialImage.findByFilename( grailsApplication?.config?.chipper?.hillShade?.mapImage as String )
+    def bounds = mapImage?.geometry?.bounds
 
-        minY: 37.6654930872174,
-        minX: -122.567038179736,
-        maxY: 38.0233940932067,
-        maxX: -122.109265804213
+    def demImages = chipperService.findElevationCells(
+        grailsApplication?.config?.chipper?.hillShade?.elevationPath as String,
+        new Bounds(bounds.minLon as double, bounds.minLat as double,
+            bounds.maxLon as double, bounds.maxLat as double)
+    )
+
+    [
+        mapImage: mapImage.filename,
+        demImages: demImages,
+
+        minY: bounds?.minLat,
+        minX: bounds?.minLon,
+        maxY: bounds?.maxLat,
+        maxX: bounds?.maxLon
     ]
   }
 

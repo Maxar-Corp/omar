@@ -61,6 +61,7 @@
 <div id="center" data-options="region:'center',title:'center title'">
     <div id="map"></div>
 </div>
+
 <r:external plugin='openlayers' file='OpenLayers.js' dir='js'/>
 <r:script>
     $( document ).ready( function ()
@@ -86,21 +87,19 @@
                     {layers: '${mapImage}', format: 'image/png', transparent: true},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} ),
 
-            new OpenLayers.Layer.WMS( "Chipper - getChip - Elevation 1",
-                "${createLink( controller: 'chipper', action: 'getChip' )}",
-                {layers: '${demImage1}', format: 'image/png', transparent: true},
-                {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} ),
+    <g:each var="x" in="${( 0..<demImages.size() )}">
+        new OpenLayers.Layer.WMS( "Chipper - getChip - Elevation ${x}",
+                            "${createLink( controller: 'chipper', action: 'getChip' )}",
+                            {layers: '${demImages[x]}', format: 'image/png', transparent: true},
+                            {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} ),
+
+    </g:each>
 
 
-            new OpenLayers.Layer.WMS( "Chipper - getChip - Elevation 2",
-                "${createLink( controller: 'chipper', action: 'getChip' )}",
-                {layers: '${demImage2}', format: 'image/png', transparent: true},
-                {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} ),
-
-            new OpenLayers.Layer.WMS( "Chipper - HillShade - Product",
-                "${createLink( controller: 'chipper', action: 'getHillShade' )}",
-                {layers: '${mapImage},${demImage1},${demImage2}', format: 'image/png', transparent: true},
-                {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
+    new OpenLayers.Layer.WMS( "Chipper - HillShade - Product",
+        "${createLink( controller: 'chipper', action: 'getHillShade' )}",
+                    {layers: '${mapImage}', format: 'image/png', transparent: true},
+                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
 
     ];
     map.addLayers( layers );
@@ -110,9 +109,7 @@
     ];
     map.addControls( controls );
 
-    //map.zoomToExtent( bbox, true );
-
-    map.setCenter(new OpenLayers.LonLat(-122.338705028894, 37.8446739098626), map.getZoomForExtent(bbox));
+    map.zoomToExtent( bbox, true );
 
     $( 'body' ).layout( 'panel', 'center' ).panel( {
         onResize: function ()

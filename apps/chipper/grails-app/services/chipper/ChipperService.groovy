@@ -11,12 +11,16 @@ import java.awt.image.Raster
 
 import javax.imageio.ImageIO
 import joms.oms.Chipper
+import joms.oms.ElevMgr
+import joms.oms.StringVector
+
 
 import geoscript.geom.Bounds
 
 class ChipperService
 {
   static transactional = false
+  def grailsApplication
 
   enum RenderMode {
     BLANK, CHIPPER
@@ -116,6 +120,7 @@ class ChipperService
   {
     def layers = chpCmd?.layers?.split( ',' )
     def (minLon, minLat, maxLon, maxLat) = chpCmd?.bbox?.split( ',' )?.collect { it as double }
+    def bounds = new Bounds( minLon, minLat, maxLon, maxLat )
 
     def chipperOptionsMap = [
 
@@ -130,8 +135,6 @@ class ChipperService
         cut_max_lat: maxLat as String,
         cut_height: chpCmd.height as String,
         cut_width: chpCmd.width as String,
-        'dem0.file': layers[1],
-        'dem1.file': layers[2],
         elevation_angle: chpCmd.elevation_angle ?: '45',
         gain: chpCmd.gain ?: '1.5',
         'image0.file': layers[0],
@@ -145,6 +148,13 @@ class ChipperService
         resampler_filter: chpCmd.resampler_filter ?: 'cubic',
         writer: chpCmd.writer ?: 'ossim_png'
     ]
+
+    // Add DEMs
+
+    def dems = findElevationCells(  grailsApplication?.config?.chipper?.hillShade?.elevationPath as String, bounds )
+
+    dems?.eachWithIndex { file, index -> chipperOptionsMap["dem${index}.file"] = file }
+
 
     return chipperOptionsMap
   }
@@ -307,7 +317,7 @@ class ChipperService
       } // End: switch( renderMode
     }
     [contentType: chpCmd?.format, buffer: ostream.toByteArray()]
-  } // End: def getPSM(def chpCmd)
+  } // End: def get2CMV(def chpCmd)
 
 
   def getHillShade(ChipCommand chpCmd)
@@ -339,6 +349,21 @@ class ChipperService
       } // End: switch( renderMode
     }
     [contentType: chpCmd?.format, buffer: ostream.toByteArray()]
-  } // End: def getPSM(def chpCmd)
+  } // End: def getHillShade(def chpCmd)
+
+  def findElevationCells(String path, Bounds bounds)
+  {
+    def cells = new StringVector()
+    def filenames = []
+
+    ElevMgr.instance().getCellsForBounds( path, bounds.minY, bounds.minX, bounds.maxY, bounds.maxX, cells )
+
+    for ( x in ( 0..<cells?.size() ) )
+    {
+      filenames << cells?.get( x as int )
+    }
+
+    return filenames
+  }
 
 } // End: class ChipperService

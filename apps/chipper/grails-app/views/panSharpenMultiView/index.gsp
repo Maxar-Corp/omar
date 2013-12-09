@@ -71,9 +71,7 @@
         ];
         map.addControls( controls );
 
-        //map.zoomToExtent( bbox, true );
-
-        map.setCenter(new OpenLayers.LonLat(147.258526555874, -42.8605875658741), map.getZoomForExtent(bbox));
+        map.zoomToExtent( bbox, true );
 
         $( 'body' ).layout( 'panel', 'center' ).panel( {
             onResize: function ()

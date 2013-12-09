@@ -2,27 +2,25 @@ package chipper
 
 class PanSharpenMultiViewController
 {
+  def grailsApplication
 
   def index()
   {
-    def orthoImage = grailsApplication.config.chipper.chipImage.orthoImage
-    def colorImage = grailsApplication.config.chipper.panSharpen.colorImage
-    def panImage = grailsApplication.config.chipper.panSharpen.panImage
-    def psmImage = [colorImage, panImage].join( ',' )
+    def colorImage = GeospatialImage.findByFilename( grailsApplication?.config?.chipper?.panSharpen?.colorImage as String )
+    def panImage = GeospatialImage.findByFilename( grailsApplication?.config?.chipper?.panSharpen?.panImage as String )
+    def bounds = colorImage.geometry.intersection( panImage.geometry )?.bounds
+    def (minX, minY, maxX, maxY) = [bounds?.minLon, bounds?.minLat, bounds?.maxLon, bounds?.maxLat]
 
-    def minX = 147.164803569264
-    def minY = -42.9392433157082
-    def maxX = 147.259377599723
-    def maxY = -42.8613244680972
+//    println bounds
 
-
-    [
-        colorImage: colorImage,
-        panImage: panImage,
-        orthoImage: orthoImage,
-        psmImage: psmImage,
+    def model = [
+        colorImage: colorImage.filename,
+        panImage: panImage.filename,
+        psmImage: [colorImage.filename, panImage.filename].join( ',' ),
         minX: minX, minY: minY, maxX: maxX, maxY: maxY
     ]
 
+//    println model
+    model
   }
 }

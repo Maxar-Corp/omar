@@ -65,3 +65,5 @@ grails.project.dependency.resolution = {
 
 grails.plugin.location.openlayers = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/openlayers"
 grails.plugin.location.oms = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-oms"
+grails.plugin.location.postgis ="${System.getenv('OMAR_DEV_HOME')}/plugins/postgis"
+grails.plugin.location.geoscript ="${System.getenv('OMAR_DEV_HOME')}/plugins/geoscript"

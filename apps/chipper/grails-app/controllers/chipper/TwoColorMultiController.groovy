@@ -2,18 +2,21 @@ package chipper
 
 class TwoColorMultiController
 {
+  def grailsApplication
 
   def index()
   {
 
-    def redImage = grailsApplication.config.chipper.twoColorMulti.redImage
-    def blueImage = grailsApplication.config.chipper.twoColorMulti.blueImage
-//    def panImage = grailsApplication.config.chipper.panSharpen.panImage
-//    def psmImage = [colorImage, panImage].join( ',' )
+    def redImage = GeospatialImage.findByFilename( grailsApplication?.config?.chipper?.twoColorMulti?.redImage as String )
+    def blueImage = GeospatialImage.findByFilename( grailsApplication?.config?.chipper?.twoColorMulti?.blueImage as String )
+    def bounds = redImage?.geometry?.intersection( blueImage?.geometry )?.bounds
+    def (minX, minY, maxX, maxY) = [bounds?.minLon, bounds?.minLat, bounds?.maxLon, bounds?.maxLat]
 
-    def model =  [
-        redImage: redImage, blueImage: blueImage,
-        minX:  -80.7890731698967, minY: 28.5112219064134, maxX: -80.6612985456409, maxY: 8.5827095687647
+    def model = [
+        redImage: redImage.filename, blueImage: blueImage.filename,
+        minX: minX, minY: minY, maxX: maxX, maxY: maxY
     ]
+
+    model
   }
 }
