@@ -43,13 +43,16 @@ class ChipperService
         cut_height: chpCmd?.height as String,
         cut_width: chpCmd?.width as String,
         'hist-op': 'auto-minmax',
-        'image0.file': chpCmd.layers,
         operation: 'ortho',
         scale_2_8_bit: 'true',
         'srs': chpCmd?.srs,
         three_band_out: 'true'
     ]
 //    }
+
+    chpCmd?.layers?.split( ',' )?.eachWithIndex { file, i ->
+      chipperOptionsMap["image${i}.file"] = file
+    }
 
 
     if ( chpCmd['bands'] )
@@ -76,12 +79,14 @@ class ChipperService
         scale_2_8_bit: 'true',
         srs: chpCmd?.srs,
         'hist-op': 'auto-minmax',
-        'image0.file': layers[0],
-        'image1.file': layers[1],
-
         operation: 'psm',
         resampler_filter: 'sinc'
     ]
+
+    chpCmd?.layers?.split( ',' )?.eachWithIndex { file, i ->
+      chipperOptionsMap["image${i}.file"] = file
+    }
+
 
     if ( chpCmd['bands'] )
     {
@@ -106,12 +111,13 @@ class ChipperService
         scale_2_8_bit: 'true',
         srs: chpCmd?.srs,
         'hist-op': 'auto-minmax',
-        'image0.file': layers[0],
-        'image1.file': layers[1],
-
         operation: '2cmv',
         resampler_filter: 'sinc'
     ]
+
+    chpCmd?.layers?.split( ',' )?.eachWithIndex { file, i ->
+      chipperOptionsMap["image${i}.file"] = file
+    }
 
     return chipperOptionsMap
   }
@@ -137,7 +143,6 @@ class ChipperService
         cut_width: chpCmd.width as String,
         elevation_angle: chpCmd.elevation_angle ?: '45',
         gain: chpCmd.gain ?: '1.5',
-        'image0.file': layers[0],
 //        meters:  '20',
         operation: 'hillshade',
 //        output_file:  '/data1/pmr_20131209/outputs/hillshade.png',
@@ -151,10 +156,14 @@ class ChipperService
 
     // Add DEMs
 
-    def dems = findElevationCells(  grailsApplication?.config?.chipper?.hillShade?.elevationPath as String, bounds )
+    def dems = findElevationCells( grailsApplication?.config?.chipper?.hillShade?.elevationPath as String, bounds )
 
     dems?.eachWithIndex { file, index -> chipperOptionsMap["dem${index}.file"] = file }
 
+    // Add Images
+    chpCmd?.layers?.split( ',' )?.eachWithIndex { file, i ->
+      chipperOptionsMap["image${i}.file"] = file
+    }
 
     return chipperOptionsMap
   }

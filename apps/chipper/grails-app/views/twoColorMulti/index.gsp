@@ -10,24 +10,18 @@
 <html>
 <head>
     <title>PanSharpenMultiView</title>
-    <r:require modules="easyui_scaffold"/>
-    <r:layoutResources/>
+    <meta name="layout" content="standard"/>
 </head>
 
-<body class="easyui-layout">
-</body>
+<body>
 
-<div data-options="region:'north',title:'North Title',split:true" style="height:100px;"></div>
-
-<div data-options="region:'south',title:'South Title',split:true,collapsed:true" style="height:100px;"></div>
-
-<div data-options="region:'east',title:'East',split:true,collapsed:true" style="width:100px;"></div>
-
-<div data-options="region:'west',title:'West',split:true" style="width:100px;"></div>
-
-<div data-options="region:'center',title:'center title'" style="padding:5px;background:#eee;">
+<content tag="north"></content>
+<content tag="south"></content>
+<content tag="east"></content>
+<content tag="west"></content>
+<content tag="center">
     <div id="map"></div>
-</div>
+</content>
 <r:external plugin='openlayers' file='OpenLayers.js' dir='js'/>
 <r:script>
     $( document ).ready( function ()
@@ -83,5 +77,6 @@
     } );
 </r:script>
 
-<r:layoutResources/>
+</body>
+
 </html>
