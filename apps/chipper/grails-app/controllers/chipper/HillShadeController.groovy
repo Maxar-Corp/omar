@@ -15,8 +15,8 @@ class HillShadeController
 
     def demImages = chipperService.findElevationCells(
         grailsApplication?.config?.chipper?.hillShade?.elevationPath as String,
-        new Bounds(bounds.minLon as double, bounds.minLat as double,
-            bounds.maxLon as double, bounds.maxLat as double)
+        new Bounds( bounds.minLon as double, bounds.minLat as double,
+            bounds.maxLon as double, bounds.maxLat as double )
     )
 
     [
@@ -44,7 +44,16 @@ class HillShadeController
 
 */
     def options = [
-        [name: "azimuth_angle", value: "270", group: "Hill Shade", editor: "text"],
+        [name: "azimuth_angle", value: '270',  group: "Hill Shade", editor: 'text'
+//            editor: [
+//                type: 'slider',
+//                options: [
+//                    min: '0',
+//                    max: '360',
+//                    value: '270'
+//                ]
+//            ]
+        ],
         [name: "color_blue", value: "139", group: "Hill Shade", editor: "text"],
         [name: "color_green", value: "26", group: "Hill Shade", editor: "text"],
         [name: "color_red", value: "85", group: "Hill Shade", editor: "text"],
