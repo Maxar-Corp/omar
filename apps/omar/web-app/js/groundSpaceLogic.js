@@ -687,7 +687,7 @@ function getWmsLog()
 
 function getProjectedImage( params )
 {
-    var link = wcsGetCoverage;
+    var link = links.wcsGetCoverage;
     var extent = mapWidget.getSelectedExtents();
 
     if ( extent && extent.left )
