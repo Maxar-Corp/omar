@@ -12,7 +12,7 @@ class ChipperController
     ctx.start {
       def chpCmd = new ChipCommand()
 
-      bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties?*.toUpperCase() )
+      bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties.keySet().collect { it.toUpperCase() } )
 
       //println chpCmd
 
