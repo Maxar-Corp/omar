@@ -976,7 +976,8 @@ function checkOverview()
 function setupLayers()
 {
     var busyIndicator = new BusyIndicator();
-    var brightnessContrastEditor = new BrightnessContrastEditor( params );
+
+     brightnessContrastEditor = new BrightnessContrastEditor( params );
 
     var format = "image/jpeg";
 
