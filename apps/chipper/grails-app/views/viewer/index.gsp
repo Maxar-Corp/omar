@@ -34,7 +34,7 @@
         <div id='map'></div>
     </div>
 </div>
-<r:external plugin='jquery' dir='js/jquery' file='jquery-1.8.3.min.js'/>
+<r:external plugin='jquery' dir='js/jquery' file='jquery-1.10.2.min.js'/>
 <r:external plugin='openlayers' dir='js' file='OpenLayers.js'/>
 
 <r:script>
@@ -48,12 +48,14 @@
             new OpenLayers.Layer.WMS( "BMNG",
                     "${baseWMS}",
                     {map: '/data/omar/bmng.map', layers: 'Reference', format: 'image/jpeg'},
-                    {buffer: 0} ) //,
-/*
+                    {buffer: 0} ),
+
             new OpenLayers.Layer.WMS( "Chipper - getChip",
                     "${createLink( controller: 'chipper', action: 'getChip' )}",
                     {layers: '${orthoImage}', format: 'image/png', transparent: true},
-                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false} ),
+                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false} )//,
+
+/*
 
             new OpenLayers.Layer.WMS( "Chipper - getChip - Color",
                     "${createLink( controller: 'chipper', action: 'getChip' )}",
