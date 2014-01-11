@@ -8,10 +8,27 @@ class GeospatialImage
   String filename
   String entry
   Polygon geometry
+  Date acquisitionDate
+  String mission
+  String sensor
+  String fileType
+  Integer width
+  Integer height
+  Integer numBands
+  String dataType
 
   static constraints = {
     filename()
+    entry()
     geometry()
+    acquisitionDate( nullable: true )
+    mission( nullable: true )
+    sensor( nullable: true )
+    fileType( nullable: true )
+    numBands( nullable: true )
+    dataType( nullable: true )
+    width( nullable: true )
+    height( nullable: true )
   }
 
   static mapping = {
