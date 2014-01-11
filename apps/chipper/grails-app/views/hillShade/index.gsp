@@ -22,7 +22,9 @@
 
 <content tag="north"></content>
 <content tag="south"></content>
-<content tag="east"></content>
+<content tag="east">
+    <div id="layerMgr"></div>
+</content>
 <content tag="west">
     <table id="pg" class="easyui-propertygrid"
            data-options="url:'${createLink( action: 'getOptions' )}',showGroup:true,scrollbarSize:0"></table>
@@ -80,7 +82,7 @@
     map.addLayers( layers );
 
     controls = [
-        new OpenLayers.Control.LayerSwitcher()
+        new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerMgr')})
     ];
     map.addControls( controls );
 

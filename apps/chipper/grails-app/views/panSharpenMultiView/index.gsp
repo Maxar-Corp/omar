@@ -18,7 +18,9 @@
 <content tag="north"></content>
 <content tag="south"></content>
 
-<content tag="east"></content>
+<content tag="east">
+    <div id="layerMgr"></div>
+</content>
 <content tag="west"></content>
 
 <content tag="center">
@@ -64,7 +66,7 @@
         map.addLayers( layers );
 
         controls = [
-            new OpenLayers.Control.LayerSwitcher()
+            new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerMgr')})
         ];
         map.addControls( controls );
 

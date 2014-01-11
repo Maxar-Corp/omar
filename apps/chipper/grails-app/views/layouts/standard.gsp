@@ -48,7 +48,7 @@
 
 </div>
 
-<div id="east" data-options="region:'east',title:'East',split:true,collapsed:true">
+<div id="east" data-options="region:'east',title:'East',split:true,collapsed:false">
     <g:pageProperty name="page.east"/>
 
 </div>
