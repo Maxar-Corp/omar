@@ -15,7 +15,14 @@
 
 <body>
 
-<content tag="north"></content>
+<content tag="north">
+    <div style="padding:5px;">
+        <g:link controller="twoColorMulti" class="easyui-linkbutton"
+                data-options="disabled:true">Two Color Multiview</g:link>
+        <g:link controller="panSharpenMultiView" class="easyui-linkbutton" data-options="">Pan Sharpen Fusion</g:link>
+        <g:link controller="hillShade" class="easyui-linkbutton" data-options="">Hillshade</g:link>
+    </div>
+</content>
 <content tag="south"></content>
 <content tag="east">
     <div id="layerMgr"></div>
@@ -69,13 +76,16 @@
 
         map.zoomToExtent( bbox, true );
 
-        $( 'body' ).layout( 'panel', 'center' ).panel( {
+        var body = $( 'body' );
+
+        body.layout( 'panel', 'center' ).panel( {
             onResize: function ()
             {
                 map.updateSize();
             }
         } );
 
+        body.layout('collapse','west');
     } );
 </r:script>
 

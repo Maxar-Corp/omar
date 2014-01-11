@@ -15,7 +15,7 @@
     <r:layoutResources/>
     <style type="text/css">
     #north {
-        height: 100px;
+        height: 75px;
     }
 
     #south {
