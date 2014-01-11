@@ -42,13 +42,15 @@ grails.project.dependency.resolution = {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
 
     // runtime 'mysql:mysql-connector-java:5.1.22'
+    compile "org.codehaus.gpars:gpars:1.1.0"
+    compile "org.codehaus.jsr166-mirror:jsr166y:1.7.0"
   }
 
   plugins {
     compile ":easyui:1.6"
     runtime ":hibernate:$grailsVersion"
-    runtime ":jquery:1.8.3"
-    runtime ":resources:1.2"
+    runtime ":jquery:1.10.2.2"
+    runtime ":resources:1.2.1"
 
     // Uncomment these (or add new ones) to enable additional resources capabilities
     //runtime ":zipped-resources:1.0"
@@ -57,9 +59,9 @@ grails.project.dependency.resolution = {
 
     build ":tomcat:$grailsVersion"
 
-    runtime ":database-migration:1.3.2"
+    runtime ":database-migration:1.3.8"
 
-    compile ':cache:1.0.1'
+    compile ':cache:1.1.1'
   }
 }
 
