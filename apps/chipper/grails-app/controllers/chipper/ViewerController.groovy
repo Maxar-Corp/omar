@@ -12,8 +12,16 @@ class ViewerController
     def colorImage = grailsApplication.config.chipper.panSharpen.colorImage
     def panImage = grailsApplication.config.chipper.panSharpen.panImage
     def psmImage = [colorImage, panImage].join( ',' )
+    def baseWMS = grailsApplication.config.chipper.baseWMS
 
-    [colorImage: colorImage, panImage: panImage, orthoImage: orthoImage, psmImage: psmImage]
+
+    [
+        baseWMS: baseWMS,
+        colorImage: colorImage,
+        panImage: panImage,
+        orthoImage: orthoImage,
+        psmImage: psmImage
+    ]
   }
 
 

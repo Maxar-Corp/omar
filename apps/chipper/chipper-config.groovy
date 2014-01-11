@@ -1,5 +1,7 @@
 chipper {
 
+  baseWMS = "http://omar.ngaiost.org/cgi-bin/mapserv.sh"
+
 	chipImage {
 		orthoImage='/data/celtic/staged/001/celtic/rpf__cadrg_1060889977_67001/a.toc'
 	}	

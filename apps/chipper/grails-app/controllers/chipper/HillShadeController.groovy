@@ -19,7 +19,10 @@ class HillShadeController
             bounds.maxLon as double, bounds.maxLat as double )
     )
 
+    def baseWMS = grailsApplication.config.chipper.baseWMS
+
     [
+        baseWMS: baseWMS,
         mapImage: mapImage.filename,
         demImages: demImages,
 

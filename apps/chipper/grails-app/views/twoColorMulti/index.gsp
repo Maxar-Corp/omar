@@ -37,7 +37,7 @@
         layers = [
             new OpenLayers.Layer.WMS(
                     "NASA BMNG",
-                    "http://omar.ngaiost.org/cgi-bin/mapserv.sh",
+                    "${baseWMS}",
                     {layers: 'Reference', map: '/data/omar/bmng.map'},
                     {buffer: 0}
             ),

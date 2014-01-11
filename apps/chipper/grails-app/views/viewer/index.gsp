@@ -46,10 +46,10 @@
 
         var layers = [
             new OpenLayers.Layer.WMS( "BMNG",
-                    "http://omar.ngaiost.org/cgi-bin/mapserv.sh",
+                    "${baseWMS}",
                     {map: '/data/omar/bmng.map', layers: 'Reference', format: 'image/jpeg'},
-                    {buffer: 0} ),
-
+                    {buffer: 0} ) //,
+/*
             new OpenLayers.Layer.WMS( "Chipper - getChip",
                     "${createLink( controller: 'chipper', action: 'getChip' )}",
                     {layers: '${orthoImage}', format: 'image/png', transparent: true},
@@ -70,6 +70,7 @@
                     {layers: '${psmImage}', format: 'image/png', transparent: true, bands: '3,2,1'},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
 
+*/
         ];
         map.addLayers( layers );
 

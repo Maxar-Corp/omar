@@ -10,10 +10,12 @@ class PanSharpenMultiViewController
     def panImage = GeospatialImage.findByFilename( grailsApplication?.config?.chipper?.panSharpen?.panImage as String )
     def bounds = colorImage.geometry.intersection( panImage.geometry )?.bounds
     def (minX, minY, maxX, maxY) = [bounds?.minLon, bounds?.minLat, bounds?.maxLon, bounds?.maxLat]
+    def baseWMS = grailsApplication.config.chipper.baseWMS
 
 //    println bounds
 
     def model = [
+        baseWMS: baseWMS,
         colorImage: colorImage.filename,
         panImage: panImage.filename,
         psmImage: [colorImage.filename, panImage.filename].join( ',' ),
