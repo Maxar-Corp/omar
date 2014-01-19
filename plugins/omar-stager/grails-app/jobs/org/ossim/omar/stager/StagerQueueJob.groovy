@@ -3,7 +3,6 @@ package org.ossim.omar.stager
 import java.util.concurrent.atomic.AtomicInteger
 import org.quartz.JobExecutionContext
 import org.quartz.JobDataMap
-import scala.actors.threadpool.AtomicInteger
 import org.ossim.omar.core.HttpStatusMessage
 
 

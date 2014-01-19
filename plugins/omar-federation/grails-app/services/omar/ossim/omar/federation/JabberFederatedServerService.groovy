@@ -1,7 +1,7 @@
 package omar.ossim.omar.federation
 
 import grails.converters.JSON
-import org.apache.xerces.util.ParserConfigurationSettings
+//import org.apache.xerces.util.ParserConfigurationSettings
 import org.jivesoftware.smack.ConnectionConfiguration
 import org.jivesoftware.smack.XMPPConnection
 import org.jivesoftware.smack.packet.Presence
