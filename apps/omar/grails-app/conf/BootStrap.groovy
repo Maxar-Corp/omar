@@ -1,4 +1,5 @@
 import groovy.sql.Sql
+import org.ossim.omar.security.Requestmap
 import org.springframework.context.ApplicationContext
 import org.codehaus.groovy.grails.commons.GrailsApplication
 import grails.util.GrailsUtil
@@ -35,6 +36,8 @@ class BootStrap
     sql.executeUpdate( "drop view if exists cswview" )
     sql.executeUpdate( grailsApplication.config.csw.sql )
     sql.close()
+
+    new Requestmap( url: '/download/**', configAttribute: 'ROLE_DOWNLOAD' ).save()
   }
 
   def destroy = {
