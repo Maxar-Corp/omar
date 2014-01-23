@@ -16,7 +16,7 @@ class DownloadController
 
     if ( rasterEntry )
     {
-      def rasterFiles = RasterFile.findByRasterDataSet( rasterEntry.rasterDataSet )
+      def rasterFiles = RasterFile.findAllByRasterDataSet( rasterEntry.rasterDataSet )
 
       withPool {
         fileList = rasterFiles?.collectParallel {
