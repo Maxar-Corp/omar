@@ -6,11 +6,12 @@
   To change this template use File | Settings | File Templates.
 --%>
 
+<!DOCTYPE html>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title><g:layoutTitle/></title>
-    <r:require modules="easyui_scaffold"/>
+    <r:require modules="standard"/>
     <g:layoutHead/>
     <r:layoutResources/>
     <style type="text/css">
