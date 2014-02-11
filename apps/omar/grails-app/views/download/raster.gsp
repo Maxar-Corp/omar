@@ -43,7 +43,7 @@
                     <tr class="${( i % 2 ) == 0 ? 'even' : 'odd'}">
                         <td>
                             <g:set var="downloadURL"
-                                   value="http://${grailsApplication.config.omar.serverIP}/${file.name}"/>
+                                   value="${createLink( action: 'file', params: [type: 'raster', id: file.id] )}"/>
                             <a href="#" onclick="javascript:window.open( '${downloadURL}' )">${file.name}</a>
                         </td>
                         <td>${file.size}</td>
