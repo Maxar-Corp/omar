@@ -1,8 +1,12 @@
 chipper {
 
-//  baseWMS = "http://omar.ngaiost.org/cgi-bin/mapserv.sh"
-  baseWMS = "http://${chipper.NetUtil.ipAddress}/cgi-bin/mapserv"
-
+  baseWMS {
+	//  server = "http://omar.ngaiost.org/cgi-bin/mapserv.sh"
+	//  server = "http://${chipper.NetUtil.ipAddress}/cgi-bin/mapserv"
+	//  params =  [layers: 'Reference', map: '/data/omar/bmng.map']
+  	server = "http://${chipper.NetUtil.ipAddress}/tilecache/tilecache.py"
+	params = [layers: 'omar']
+  }
 
 	chipImage {
 		orthoImage='/data/celtic/staged/001/celtic/rpf__cadrg_1060889977_67001/a.toc'

@@ -46,8 +46,8 @@
         layers = [
             new OpenLayers.Layer.WMS(
                     "NASA BMNG",
-                    "${baseWMS}",
-                    {layers: 'Reference', map: '/data/omar/bmng.map'},
+                    "${baseWMS.server}",
+                    ${baseWMS.params as grails.converters.JSON},
                     {buffer: 0}
             ),
 

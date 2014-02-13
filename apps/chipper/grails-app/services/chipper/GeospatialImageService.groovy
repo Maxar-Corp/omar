@@ -26,7 +26,16 @@ class GeospatialImageService
       def image = new GeospatialImage(
           filename: filename,
           entry: rasterEntry?.entryId?.text(),
-          geometry: GeoScript.unwrap( reader.read( rasterEntry?.groundGeom?.text() ) )
+          geometry: GeoScript.unwrap( reader.read( rasterEntry?.groundGeom?.text() ) ),
+
+          acquisitionDate: null,
+          mission: null,
+          sensor: null,
+          fileType: null,
+          width: null,
+          height: null,
+          numBands: null,
+          dataType: null
       )
 
       if ( !image.save() )
