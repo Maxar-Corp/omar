@@ -238,7 +238,9 @@ wms {
   }
 }
 
-
+//---
+// Note: defaultSize of 512 was killing speed on search page when browser is forced to resample.
+//---
 thumbnail {
     cacheDir = ( System.properties["os.name"].contains("Windows") ) ? "c:/temp" : "${ wms.referenceDataDirectory }/omar-cache"
     defaultSize = 128
