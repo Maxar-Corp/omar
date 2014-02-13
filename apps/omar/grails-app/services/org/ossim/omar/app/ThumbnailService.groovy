@@ -157,7 +157,13 @@ class ThumbnailService
     def projectionType = params.projectionType?:"imagespace";
     RasterDataSet rasterDataSet = rasterEntry.rasterDataSet
     RasterFile rasterFile = RasterFile.findWhere(rasterDataSet: rasterDataSet, type: "main")
-    def size = params.size?.toInteger()
+    
+    //---
+    // This controls the thumbnail cache "size" part of name.  e.g. 44-512-imagespace.jpg
+    // Doing just size = params.size?.toInteger() was resulting in: 44-null-imagespace.jpg
+    //---
+    def size = params.size?.toInteger() ?: grailsApplication.config.thumbnail.defaultSize;
+    
     def mimeType = params?.mimeType ?: "image/jpeg"
     boolean overwrite = params.overwrite ?: false
     int resLevels = rasterEntry.numberOfResLevels;
