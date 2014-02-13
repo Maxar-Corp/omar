@@ -241,7 +241,7 @@ wms {
 
 thumbnail {
     cacheDir = ( System.properties["os.name"].contains("Windows") ) ? "c:/temp" : "${ wms.referenceDataDirectory }/omar-cache"
-    defaultSize = 512
+    defaultSize = 128
 }
 
 security {
