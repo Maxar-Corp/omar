@@ -506,7 +506,7 @@ class RasterEntry
             }
             break;
           case "country":
-          case "countryCode":
+          case "countrycode":
             if ( value && !rasterEntry.countryCode )
             {
               rasterEntry.countryCode = value
