@@ -156,12 +156,7 @@ class ThumbnailController implements InitializingBean
 
     def asHTML()
     {
-        def size = params.size
-
-        if ( !size )
-        {
-            grailsApplication.config.thumbnail.defaultSize
-        }
+        def size = params.size ?: grailsApplication.config.thumbnail.defaultSize;
 
         render( contentType: "text/html" ) {
             html {
