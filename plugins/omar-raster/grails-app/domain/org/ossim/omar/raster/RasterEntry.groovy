@@ -553,10 +553,33 @@ class RasterEntry
             break;
 
           case "securityclassification":
-          case "isclas":
             if ( value && !rasterEntry.securityClassification )
             {
               rasterEntry.securityClassification = value
+            }
+            break
+          case "isclas":
+            if ( value && !rasterEntry.securityClassification )
+            {
+              switch(value.toUpperUpperCase())
+              {
+                case "U":
+                  rasterEntry.securityClassification = "UNCLASSIFIED"
+                  break
+                case "R":
+                  rasterEntry.securityClassification = "RESTRICTED"
+                  break
+                case "S":
+                  rasterEntry.securityClassification = "SECRET"
+                  break
+                case "T":
+                case "TS":
+                  rasterEntry.securityClassification = "TOP SECRET"
+                  break
+                default:
+                  rasterEntry.securityClassification = value
+                  break
+              }
             }
             break;
           case "title":
