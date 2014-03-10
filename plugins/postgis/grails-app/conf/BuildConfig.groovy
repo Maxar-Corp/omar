@@ -29,6 +29,9 @@ grails.project.dependency.resolution = {
     mavenRepo "http://download.osgeo.org/webdav/geotools"
     mavenRepo "http://www.hibernatespatial.org/repository"
   }
+  plugins {
+    compile ":hibernate:$grailsVersion"
+  }
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
     // runtime 'mysql:mysql-connector-java:5.1.5'
