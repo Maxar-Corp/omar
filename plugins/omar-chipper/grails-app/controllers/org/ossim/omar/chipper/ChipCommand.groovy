@@ -14,6 +14,9 @@ import groovy.transform.ToString
 @Validateable( )
 class ChipCommand
 {
+  String service
+  String version
+  String request
   // WMS Parameters
   Boolean transparent
 
@@ -23,13 +26,9 @@ class ChipCommand
   String bbox
   String format
   String layers
-  String request
-  String service
   String srs
   String styles
-  String version
 
-  /*
   static constraints = {
     bbox( nullable: false, validator: { val, obj ->
       def message = true
@@ -67,16 +66,15 @@ class ChipCommand
     width( nullable: true, validator: { val, obj ->
       def message = true
       def tempRequest = obj.request?.toLowerCase()
-      if ( !val )
+      if ( val == null )
       {
         message = "WIDTH parameter not found.  You are required to specify WIDTH, HEIGHT."
       }
-      if ( val )
+      else
       {
         try
         {
-          def test = Integer.parseInt( val )
-          if ( test < 1 )
+          if ( val < 1 )
           {
             message = "WIDTH parameter invalid.  WIDTH is smaller than 1"
           }
@@ -88,19 +86,18 @@ class ChipCommand
       }
       message
     } )
-    height( nullable: true, validator: { val, obj ->
+    height( nullable: false, validator: { val, obj ->
       def message = true
       def tempRequest = obj.request?.toLowerCase()
-      if ( !val )
+      if ( val == null )
       {
         message = "HEIGHT parameter not found.  You are required to specify WIDTH, HEIGHT."
       }
-      if ( val )
+      else
       {
         try
         {
-          def test = Integer.parseInt( val )
-          if ( test < 1 )
+          if ( val < 1 )
           {
             message = "HEIGHT parameter invalid.  HEIGHT is smaller than 1"
           }
@@ -112,6 +109,52 @@ class ChipCommand
       }
       message
     } )
+    srs(nullable: false, validator: { val, obj ->
+      def message = true
+
+      if(!val)
+      {
+        message = "SRS parameter not found.  You are required to specify SRS."
+      }
+      else
+      {
+        // need to add the format test here and is it of the form EPSG:<number>
+      }
+
+      message
+    })
   }
-  */
+
+  def toMap()
+  {
+    return [bbox: bbox, width: width,
+            height: height, format: format,
+            layers: layers, srs: srs, service: service,
+            version: version, request: request,
+            styles:styles]
+  }
+  def createErrorPairs()
+  {
+    def result = [[:]]
+    errors?.each { err ->
+      def field = "${err.fieldError.arguments[0]}"
+      def code = err.getFieldError( field )?.code
+      result << [field: field, code: code]
+    }
+    result
+  }
+
+  def createErrorString()
+  {
+    def errorString = ""
+    def errorPairs = createErrorPairs()
+    errorPairs.each { pair ->
+      if ( pair.code )
+      {
+        errorString += ( "${pair.field}: ${pair.code}\n" )
+      }
+    }
+
+    errorString
+  }
 }

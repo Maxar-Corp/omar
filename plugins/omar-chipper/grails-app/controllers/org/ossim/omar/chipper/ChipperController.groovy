@@ -6,6 +6,7 @@ import org.ossim.omar.chipper.ChipCommand
 class ChipperController
 {
   def chipperService
+  def ogcExceptionService
 
   def getChip()
   {
@@ -29,8 +30,6 @@ class ChipperController
 
   def get2CMV()
   {
-    println "get2CMV!!!!!!!!!!!!"
-
     //def ctx = startAsync()
     //println "CTX ============= ${ctx}"
     //ctx.start {
@@ -40,9 +39,9 @@ class ChipperController
 
       if ( !chpCmd.validate() )
       {
-        log.error( cmd.createErrorString() )
+        log.error( chpCmd.createErrorString() )
         //   println cmd.createErrorString()
-        ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
+        ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( chpCmd ) )
       }
       else
       {

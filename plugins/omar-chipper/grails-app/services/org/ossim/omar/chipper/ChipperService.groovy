@@ -101,13 +101,13 @@ class ChipperService
 */
   private Map<String, String> createTwoColorMultiParams(def chpCmd)
   {
-    println "createTwoColorMultiParams: entered............."
+   // println "createTwoColorMultiParams: entered............."
     def filenames = []
     def entries   = []
     def layers    = chpCmd?.layers?.split( ',' )
     if(layers)
     {
-      println "************************${layers}"
+     // println "************************${layers}"
       layers.each{
         def rasterEntry = RasterEntry.get(it)
 
@@ -341,7 +341,7 @@ class ChipperService
 */
   def get2CMV(ChipCommand chpCmd)
   {
-    println chpCmd
+   // println chpCmd
 
     //def renderMode = RenderMode.BLANK
     def renderMode = RenderMode.CHIPPER
