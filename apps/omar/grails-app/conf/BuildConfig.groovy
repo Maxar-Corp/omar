@@ -1,4 +1,5 @@
-grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
+//grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
+grails.servlet.version = "3.0"
 
 grails.work.dir="${System.env.OMAR_DEV_HOME}/.grails"
 grails.dependency.cache.dir = "${System.env.OMAR_DEV_HOME}/.grails/ivy-cache"
@@ -85,6 +86,7 @@ grails.plugin.location.omarSecuritySpring = "${System.env['OMAR_DEV_HOME']}/plug
 grails.plugin.location.omarRss = "${System.env['OMAR_DEV_HOME']}/plugins/omar-rss"
 //grails.plugin.location.omarScheduler = "${System.env['OMAR_DEV_HOME']}/plugins/omar-scheduler"
 grails.plugin.location.omarSuperoverlay = "${System.env['OMAR_DEV_HOME']}/plugins/omar-superoverlay"
+grails.plugin.location.omarChipper = "${System.env['OMAR_DEV_HOME']}/plugins/omar-chipper"
 //grails.plugin.location.omarMobile="${System.env['OMAR_DEV_HOME']}/plugins/omar-mobile"
 
 //grails.plugin.location.geodata = "${System.env['OMAR_DEV_HOME']}/plugins/geodata"
@@ -92,5 +94,6 @@ grails.plugin.location.omarSuperoverlay = "${System.env['OMAR_DEV_HOME']}/plugin
 //grails.plugin.location.omarOgcCore="${System.env['OMAR_DEV_HOME']}/plugins/omar-ogc-core"
 grails.plugin.location.omarImageMagick = "${System.env['OMAR_DEV_HOME']}/plugins/omar-image-magick"
 grails.plugin.location.omarTimeLapse = "${System.env['OMAR_DEV_HOME']}/plugins/omar-time-lapse"
+grails.plugin.location.omarChipper = "${System.env['OMAR_DEV_HOME']}/plugins/omar-chipper"
 
 //grails.plugin.location.filterpane = "${System.env['OMAR_DEV_HOME']}/plugins/filterpane"
