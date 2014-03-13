@@ -28,10 +28,17 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        build(":tomcat:$grailsVersion",
-              ":release:2.2.1",
-              ":rest-client-builder:1.0.3") {
-            export = false
-        }
+      build(":tomcat:$grailsVersion",
+            ":release:2.2.1",
+            ":rest-client-builder:1.0.3") {
+          export = false
+      }
+      runtime ":hibernate:$grailsVersion"
     }
 }
+
+grails.plugin.location.geoscript = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/geoscript"
+grails.plugin.location.omarCore  = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-core"
+grails.plugin.location.postgis   = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/postgis"
+grails.plugin.location.omarOgc   = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-ogc"
+grails.plugin.location.omarRaster   = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-raster"
