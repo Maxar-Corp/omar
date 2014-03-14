@@ -33,25 +33,27 @@ class ChipperController
     //def ctx = startAsync()
     //println "CTX ============= ${ctx}"
     //ctx.start {
-      def chpCmd = new TwoColorMultiCommand()
+    def chpCmd = new TwoColorMultiCommand()
 
-      bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
+    def caseParams =   new CaseInsensitiveMap( params )
 
-      if ( !chpCmd.validate() )
-      {
-        log.error( chpCmd.createErrorString() )
-        //   println cmd.createErrorString()
-        ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( chpCmd ) )
-      }
-      else
-      {
-        //println chpCmd
+    bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
 
-        def results = chipperService.get2CMV( chpCmd )
+    if ( !chpCmd.validate() )
+    {
+      log.error( chpCmd.createErrorString() )
+      //   println cmd.createErrorString()
+      ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( chpCmd ) )
+    }
+    else
+    {
+      //println chpCmd
 
-        response.contentType = results.contentType
-        response.outputStream << results.buffer
-      }
+      def results = chipperService.get2CMV( chpCmd )
+
+      response.contentType = results.contentType
+      response.outputStream << results.buffer
+    }
      // ctx.complete()
    // }
     //println "Leaving get2CMV!!!!!!!!!!!!"

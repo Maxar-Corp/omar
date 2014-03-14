@@ -11,13 +11,15 @@ import org.ossim.omar.chipper.ChipCommand
 @Validateable( )
 class TwoColorMultiCommand extends ChipCommand
 {
-  String newLayers
-  String oldLayers
+  String new_layers
+  String old_layers
 
+  /*
   static constraints = {
     newLayers(nullable:true, validator:{val, obj->
       def message = true
 
+      println "VALUE ================== ${val}"
       if(val == null)
       {
         message = "newLayers must be supplied for algorithm 2 color multi view"
@@ -34,12 +36,12 @@ class TwoColorMultiCommand extends ChipCommand
       message
     })
   }
-
+    */
   def toMap()
   {
     def result = super.toMap()
 
-    result << [newLayers:newLayers, oldLayers:oldLayers]
+    result << [new_layers:new_layers, oldLayers:old_layers]
 
     result
   }

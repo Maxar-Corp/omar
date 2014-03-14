@@ -29,6 +29,7 @@ class ChipCommand
   String srs
   String styles
 
+
   static constraints = {
     bbox( nullable: false, validator: { val, obj ->
       def message = true
