@@ -33,7 +33,7 @@ class ChipperController
     //def ctx = startAsync()
     //println "CTX ============= ${ctx}"
     //ctx.start {
-      def chpCmd = new ChipCommand()
+      def chpCmd = new TwoColorMultiCommand()
 
       bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
 
