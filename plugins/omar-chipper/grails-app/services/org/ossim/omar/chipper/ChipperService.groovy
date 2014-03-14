@@ -104,7 +104,14 @@ class ChipperService
    // println "createTwoColorMultiParams: entered............."
     def filenames = []
     def entries   = []
-    def layers    = chpCmd?.layers?.split( ',' )
+    def newLayers    = chpCmd?.new_layers?.split( ',' )
+    def oldLayers    = chpCmd?.old_layers?.split( ',' )
+    def layers = []
+
+    // later we will support 2 different layers for now merge them back in
+    //
+    newLayers.each{layers<<it}
+    oldLayers.each{layers<<it}
     if(layers)
     {
      // println "************************${layers}"
