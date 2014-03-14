@@ -14,19 +14,17 @@ class TwoColorMultiCommand extends ChipCommand
   String new_layers
   String old_layers
 
-  /*
   static constraints = {
-    newLayers(nullable:true, validator:{val, obj->
+    new_layers(nullable:true, validator:{val, obj->
       def message = true
 
-      println "VALUE ================== ${val}"
       if(val == null)
       {
         message = "newLayers must be supplied for algorithm 2 color multi view"
       }
       message
     })
-    oldLayers(nullable:true, validator:{val, obj->
+    old_layers(nullable:true, validator:{val, obj->
       def message = true
 
       if(val == null)
@@ -36,7 +34,6 @@ class TwoColorMultiCommand extends ChipCommand
       message
     })
   }
-    */
   def toMap()
   {
     def result = super.toMap()
