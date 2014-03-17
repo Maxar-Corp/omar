@@ -82,7 +82,7 @@ grails.project.dependency.resolution = {
         'jfree:jcommon:1.0.13',
         'jfree:jfreechart:1.0.10',
         'jgridshift:jgridshift:1.0',
-        'junit:junit:4.7',
+//        'junit:junit:4.7',
         'mysql:mysql-connector-java:5.1.17',
         'net.java.dev.jsr-275:jsr-275:1.0-beta-2',
 //        'net.sf.ehcache:ehcache:1.6.2',

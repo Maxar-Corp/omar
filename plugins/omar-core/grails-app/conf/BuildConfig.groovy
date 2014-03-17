@@ -32,7 +32,7 @@ grails.project.dependency.resolution = {
 
     // runtime 'mysql:mysql-connector-java:5.1.5'
     compile( "joda-time:joda-time-hibernate:1.3" ) {
-      excludes "joda-time", "hibernate"
+      excludes "joda-time", "hibernate", "junit"
     }
   }
 
