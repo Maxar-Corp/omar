@@ -19,7 +19,8 @@ grails.project.dependency.resolution = {
   }
   log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
   checksums true // Whether to verify checksums on resolve
-  legacyResolve true // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
+  legacyResolve true
+  // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
 
   repositories {
     inherits true // Whether to inherit repository definitions from plugins
@@ -44,10 +45,12 @@ grails.project.dependency.resolution = {
     // runtime 'mysql:mysql-connector-java:5.1.22'
     compile "org.codehaus.gpars:gpars:1.1.0"
     compile "org.codehaus.jsr166-mirror:jsr166y:1.7.0"
+    compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7'
+
   }
 
   plugins {
-    compile ":easyui:1.6"
+    //compile ":easyui:1.6"
     runtime ":hibernate:$grailsVersion"
     runtime ":jquery:1.10.2.2"
     runtime ":resources:1.2.1"
@@ -67,5 +70,5 @@ grails.project.dependency.resolution = {
 
 grails.plugin.location.openlayers = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/openlayers"
 grails.plugin.location.oms = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-oms"
-grails.plugin.location.postgis ="${System.getenv('OMAR_DEV_HOME')}/plugins/postgis"
-grails.plugin.location.geoscript ="${System.getenv('OMAR_DEV_HOME')}/plugins/geoscript"
+grails.plugin.location.postgis = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/postgis"
+grails.plugin.location.geoscript = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/geoscript"
