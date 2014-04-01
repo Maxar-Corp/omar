@@ -1743,7 +1743,14 @@ function init( mapWidth, mapHeight )
 //    updateCenter();
     var lat = params.latitude || null;
     var lon = params.longitude || null;
-    var view = params.view || null;
+
+    var view = null;
+    if ( params.view )
+    {
+       // Convert string to object:
+       view = YAHOO.lang.JSON.parse( params.view );
+    } 
+
     var url = "/omar/imageSpace/groundToImage";
 
     if ( view )
@@ -1758,23 +1765,22 @@ function init( mapWidth, mapHeight )
     }
     if ( lat && lon )
     {
-        var request = OpenLayers.Request.POST( {
-            url: url,
-            data: YAHOO.lang.JSON.stringify( {
-                id: rasterEntry.id,
-                groundPoints: [
-                    {"lat": lat, "lon": lon}
-                ]
-            } ),
-            callback: function ( transport )
-            {
-                var view = params.view || null;
-                var temp = YAHOO.lang.JSON.parse( transport.responseText );
-                var zoom = OMAR.imageManipulator.findZoomForMetersPerPixel( view.mpp );
-                OMAR.imageManipulator.setCenterGivenImagePoint( temp[0], zoom );
-                updateCenter();
-            }
-        } );
+
+       var request = OpenLayers.Request.POST(
+       {
+          url: url,
+          data: YAHOO.lang.JSON.stringify( {
+          id: rasterEntry.id,
+          groundPoints: [ {"lat": lat, "lon": lon} ] } ),
+          callback: function ( transport )
+          {
+             // var view = params.view || null;
+             var temp = YAHOO.lang.JSON.parse( transport.responseText );
+             var zoom = OMAR.imageManipulator.findZoomForMetersPerPixel( view.mpp );
+             OMAR.imageManipulator.setCenterGivenImagePoint( temp[0], zoom );
+             updateCenter();
+          }
+       } );
     }
     setupOverviewCheck();
     // mapDiv.style.display = "inline";
