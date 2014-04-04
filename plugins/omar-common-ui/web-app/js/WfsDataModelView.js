@@ -286,14 +286,14 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                 var omarUrlRaw = tempUrl.href;
                 tempUrl.pathname = "/omar/mapView/index";
                 var omarUrlOrtho = tempUrl.href;
-                tempUrl.pathname = "/omar/download/raster";
-                tempUrl.search = "?rasterEntryId="+modelId;
-                var omarUrlDownload = tempUrl.href;
+               // tempUrl.pathname = "/omar/download/raster";
+               // tempUrl.search = "?rasterEntryId="+modelId;
+               // var omarUrlDownload = tempUrl.href;
                 var thumbnailOpenUrl = "javascript:window.open(\'"+omarUrlRaw+"\')";
                 //var omarUrlRawButton ="<button onclick=\"javascript:window.open(\'"+omarUrlRaw+"\')\">Raw</button>";
                 var omarUrlRawButton ="<button onclick=\"javascript:window.open(\'"+omarUrlRaw+"\')\">Raw</button>";
                 var omarUrlOrthoButton ="<button onclick=\"javascript:window.open(\'"+omarUrlOrtho+"\')\">Ortho</button>";
-                var omarUrlDownloadButton = "<button onclick=\"javascript:window.open(\'"+omarUrlDownload+"\')\">Download</button>";
+               // var omarUrlDownloadButton = "<button onclick=\"javascript:window.open(\'"+omarUrlDownload+"\')\">Download</button>";
 
                 var chipWidth=model.get("width");
                 var chipHeight = model.get("height");
@@ -394,7 +394,7 @@ OMAR.models.RasterEntryDataCollection=Backbone.Collection.extend({
                     ,"ground_geom":JSON.stringify(feature.geometry)
                     ,"thumbnail":"<a onclick="+thumbnailOpenUrl+" class='link_cursor' >" +
                         "<img class='thumbnail-img' src='"+thumbnailUrl+"' size='128'></img></a>"
-                    ,"view": "<ul>"+omarUrlRawButton + omarUrlOrthoButton+omarUrlDownloadButton+"</ul>"
+                    ,"view": "<ul>"+omarUrlRawButton + omarUrlOrthoButton+"</ul>"
                     ,"links": "<ul>"+omarUrlCapabilitiesLink+omarUrlGetMapLink+omarUrlGetKMLLink+omarUrlSuperOverlayLink+"</ul>"
                     ,"acquisition_date":acquisition_date
                     ,"ingest_date":ingest_date
