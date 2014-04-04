@@ -229,10 +229,12 @@ class ExportService
 
     }
 
-    def exportGclWithResponse(def fNames, def response)
+    def exportGclWithResponse(def fNames, def options, def response)
     {
       def files = []
-      response.setHeader( "Content-disposition", "attachment; filename=geocell-export.zip" );
+      def rootPathName = options.rootPathName?:"ossim-geocell"
+      def includeGeocellProject = (options.includeGeocellProject!=null)?:true
+      response.setHeader( "Content-disposition", "attachment; filename=${rootPathName}.zip" );
       response.contentType = "application/octet-stream"
       def outputString = new StringBuilder();
       def baseString = "dataManager.objectList.object"
@@ -245,41 +247,45 @@ class ExportService
           def objString = baseString + "${index}"
           def path =FilenameUtils.getPathNoEndSeparator(file)
           def filename = FilenameUtils.getName(file)
-          def target = (new File(new File("ossim-geocell",path).toString(), filename)).toString()
+          def target = (new File(new File(rootPathName,path).toString(), filename)).toString()
           files << [file:file,
-                  target:(new File(new File("ossim-geocell",path).toString(), filename)).toString()
+                  target:(new File(new File(rootPathName,path).toString(), filename)).toString()
           ]
-          def overview = entry.fileObjects.find{it->
-            if(it.type.contains("overv")) return true
-
-            return false
-          }
-          // Fill basic project file entries
-          outputString << objString + /.description:/ + "\n"
-          outputString << objString + /.filename: / + target + "\n"
-          outputString << objString + /.enable_cache:  0/ + "\n"
-          outputString << objString + /.enabled:  1/ + "\n"
-          if (entry.entryId != null)
+          if(includeGeocellProject)
           {
-            outputString << objString + /.entry:  / +entry.entryId+ "\n"
-          }
-          outputString << objString + /.image_id:/ + "\n"
-          outputString << objString + /.open_overview_flag:  1/ + "\n"
-          outputString << objString + /.input_list_fixed:  1/ + "\n"
-          outputString << objString + /.name:  """ Entry 0: / + target + /"""/ + "\n"
-          outputString << objString + /.number_inputs:  0/ + "\n"
-          outputString << objString + /.number_outputs:  0/ + "\n"
-          outputString << objString + /.output_list_fixed:  0/ + "\n"
-          if (overview)
-          {
-            outputString << objString + /.overview_file: / + overview + "\n"
-          }
-          outputString << objString + /.start_res_level:  0/ + "\n"
-          outputString << objString + /.supplementary_directory:/ + "\n"
-          outputString << objString + /.type: ossimImageHandler/ +  "\n"
-          outputString << /dataManager.type:  DataManager/ + "\n"
+            def overview = entry.fileObjects.find{it->
+              if(it.type.contains("overv")) return true
 
-          ++index
+              return false
+            }
+            // Fill basic project file entries
+            outputString << objString + /.description:/ + "\n"
+            outputString << objString + /.filename: / + target + "\n"
+            outputString << objString + /.enable_cache:  0/ + "\n"
+            outputString << objString + /.enabled:  1/ + "\n"
+            if (entry.entryId != null)
+            {
+              outputString << objString + /.entry:  / +entry.entryId+ "\n"
+            }
+            outputString << objString + /.image_id:/ + "\n"
+            outputString << objString + /.open_overview_flag:  1/ + "\n"
+            outputString << objString + /.input_list_fixed:  1/ + "\n"
+            outputString << objString + /.name:  """ Entry 0: / + target + /"""/ + "\n"
+            outputString << objString + /.number_inputs:  0/ + "\n"
+            outputString << objString + /.number_outputs:  0/ + "\n"
+            outputString << objString + /.output_list_fixed:  0/ + "\n"
+            if (overview)
+            {
+              outputString << objString + /.overview_file: / + overview + "\n"
+            }
+            outputString << objString + /.start_res_level:  0/ + "\n"
+            outputString << objString + /.supplementary_directory:/ + "\n"
+            outputString << objString + /.type: ossimImageHandler/ +  "\n"
+            outputString << /dataManager.type:  DataManager/ + "\n"
+
+            ++index
+
+          }
 
           /*
           * Add all associated files to the path
@@ -291,9 +297,9 @@ class ExportService
               {
                 path =FilenameUtils.getPathNoEndSeparator(fileObject.name)
                 filename = FilenameUtils.getName(fileObject.name)
-                target = (new File(new File("ossim-geocell",path).toString(), filename)).toString()
+                target = (new File(new File(rootPathName,path).toString(), filename)).toString()
                 files << [file:testFile.toString(),
-                          target:(new File(new File("ossim-geocell",path).toString(), filename)).toString()
+                          target:(new File(new File(rootPathName,path).toString(), filename)).toString()
                 ]
               }
             }
@@ -309,9 +315,12 @@ class ExportService
         }
       }
       Utility.zipFilesToZipOutputStream(files.unique(), zos);
-      def outputBuffer = outputString.toString().bytes
-      zos.putNextEntry(new ZipEntry("ossim-geocell.gcl"));
-      zos.write(outputBuffer, 0, outputBuffer.length)
+      if(includeGeocellProject)
+      {
+        def outputBuffer = outputString.toString().bytes
+        zos.putNextEntry(new ZipEntry("ossim-geocell.gcl"));
+        zos.write(outputBuffer, 0, outputBuffer.length)
+      }
       zos.close();
     }
 

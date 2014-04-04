@@ -18,7 +18,8 @@ OMAR.views.SearchMenuView = Backbone.View.extend({
         "click #ExportGml2Id": "exportGml2",
         "click #ExportCsvId": "exportCsv",
         "click #TimeLapseId": "exportTimeLapse",
-        "click #ExportGeoCellId": "exportGeoCell"
+        "click #ExportGeoCellId": "exportGeoCell",
+        "click #DownloadId": "downloadFiles"
     },
     exportKmlQuery:function() {
         //OMAR.federatedRasterSearch.setupExports("kmlQuery");
@@ -45,6 +46,9 @@ OMAR.views.SearchMenuView = Backbone.View.extend({
     },
     exportGeoCell:function(){
         this.trigger("onGeoCellClicked")
+    },
+    downloadFiles:function(){
+        this.trigger("onDownloadFilesClicked")
     },
     render:function()
     {

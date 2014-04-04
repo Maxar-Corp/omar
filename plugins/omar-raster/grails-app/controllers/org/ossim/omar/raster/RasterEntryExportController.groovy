@@ -59,7 +59,13 @@ class RasterEntryExportController
                       fileObjects:[]]
           }
         }
-        exportService.exportGclWithResponse(files.unique{it.mainFile}, response)
+
+        def includeGeocellProject = params.includeGeocellProject!=null?params.includeGeocellProject.toBoolean():true
+        def rootPathName = params.rootPathName!=null?params.rootPathName:"ossim-geocell"
+        def options = [includeGeocellProject:includeGeocellProject, 
+                       rootPathName:rootPathName]
+        println "OPTIONS: ${options}"
+        exportService.exportGclWithResponse(files.unique{it.mainFile}, options, response)
         /*
           def (file, mimeType) = exportService.exportGcl(fNames, cNames)
 

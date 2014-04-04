@@ -221,6 +221,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.menuView.bind("onCsvClicked", this.csvClicked, this);
         this.menuView.bind("onTimeLapseClicked", this.timeLapseClicked, this);
         this.menuView.bind("onGeoCellClicked", this.gclClicked, this);
+        this.menuView.bind("onDownloadFilesClicked", this.downloadFilesClicked, this);
 
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
         this.model.attributes.dateTimeRangeModel = this.dateTimeRangeView.model;
@@ -569,6 +570,61 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         window.open(wfsModel.toUrl(),"_parent");
     },
+    downloadFilesClicked:function(){
+        var fileNames = "";
+        var classNames = "";
+        if(!this.omarServerCollectionView.isFirstSelected())
+        {
+           alert("Please select the first server.  Currently, you can only export geocell " +
+               "projects from the first server.  " +
+               "Sorry We do not federate geocell " +
+               "project exports at this time.");
+
+            return;
+        }
+        var currentSelection = this.dataModelView.getCurrentSelection();
+        if(this.model.attributes.userRoles.indexOf("ROLE_DOWNLOAD") >=0)
+        {
+            if(currentSelection.size() > 0) {
+
+                // Build file name and type parameter strings
+                for(var idx=0; idx < currentSelection.size(); idx++){
+                    var item = currentSelection.at(idx);
+
+                    fileNames += item.id.toString();
+                    //var modelRecord = this.dataModelView.model.get(item.id);
+                    //if(modelRecord)
+                    //{
+                    //    fileNames += modelRecord.get("filename");
+                    //    classNames += modelRecord.get("class_name");
+                    //}
+                    if(idx < currentSelection.size()-1)
+                    {
+                        fileNames += ",";
+                        //  classNames += ",";
+                    }
+                }
+
+                // Initialize with controller string
+                exportURL = "/omar/rasterEntryExport/exportGclProject";
+
+                // Add image file name and type parameters
+                exportURL += "?filenames=" + fileNames + "&classnames=" + classNames;
+                exportURL += "&rootPathName=omar-download&includeGeocellProject=false"
+                //alert("Project export initiated - this may take awhile.\nClick OK and wait for download prompt...");
+
+                window.open(exportURL, "_parent");
+            }
+
+            else {
+                alert("No images were selected for project export...");
+            }
+        }
+        else
+        {
+            alert("You currently do not have download privileges.")
+        }
+    },
     gclClicked:function(){
         var fileNames = "";
         var classNames = "";
@@ -632,15 +688,19 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         {
             $("#TimeLapseId").attr("class","ui-state-disabled");
             $("#ExportGeoCellId").attr("class","ui-state-disabled");
+            $("#DownloadId").attr("class","ui-state-disabled");
             this.menuView.unbind("onTimeLapseClicked", this.timeLapseClicked, this);
             this.menuView.unbind("onGeoCellClicked", this.gclClicked, this);
+            this.menuView.unbind("onDownloadFilesClicked", this.downloadFilesClicked, this);
         }
         else
         {
             $("#TimeLapseId").attr("class","ui-state-enabled");
             $("#ExportGeoCellId").attr("class","ui-state-enabled");
+            $("#DownloadId").attr("class","ui-state-disabled");
             this.menuView.bind("onTimeLapseClicked", this.timeLapseClicked, this);
             this.menuView.bind("onGeoCellClicked", this.gclClicked, this);
+            this.menuView.bind("onDownloadFilesClicked", this.downloadFilesClicked, this);
         }
 
         this.updateLegend();
