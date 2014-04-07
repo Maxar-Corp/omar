@@ -15,14 +15,14 @@ class PanSharpenMultiViewController
 //    println bounds
 
     def model = [
-        baseWMS: baseWMS,
+        baseWMS   : baseWMS,
         colorImage: colorImage.filename,
-        panImage: panImage.filename,
-        psmImage: [colorImage.filename, panImage.filename].join( ',' ),
-        minX: minX, minY: minY, maxX: maxX, maxY: maxY
+        panImage  : panImage.filename,
+        psmImage  : [colorImage.filename, panImage.filename].join( ',' ),
+        minX      : minX, minY: minY, maxX: maxX, maxY: maxY
     ]
 
 //    println model
-    model
+    render view: 'index', model: [model: model]
   }
 }

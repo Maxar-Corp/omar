@@ -1,75 +1,96 @@
 <%--
   Created by IntelliJ IDEA.
   User: sbortman
-  Date: 12/4/13
-  Time: 3:43 PM
-  To change this template use File | Settings | File Templates.
+  Date: 4/7/14
+  Time: 11:09 AM
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>PanSharpenMultiView</title>
-    <meta name="layout" content="standard"/>
+    <style type="text/css">
+    #layerMgr {
+        width: 100%;
+        height: 100%;
+    }
+
+    #center {
+        padding: 5px;
+        background: #eee;
+    }
+    </style>
+    <r:require module="standard"/>
+    <r:layoutResources/>
 </head>
 
-<body>
+<body class="easyui-layout">
 
-<content tag="north">
+<div data-options="region:'north'" style="height:50px">
     <div style="padding:5px;">
         <g:link controller="twoColorMulti" class="easyui-linkbutton"
-                data-options="disabled:true">Two Color Multiview</g:link>
-        <g:link controller="panSharpenMultiView" class="easyui-linkbutton" data-options="">Pan Sharpen Fusion</g:link>
-        <g:link controller="hillShade" class="easyui-linkbutton" data-options="">Hillshade</g:link>
+                data-options="toggle:true,group:'g1',selected:true">Two Color Multiview</g:link>
+        <g:link controller="panSharpenMultiView" class="easyui-linkbutton"
+                data-options="toggle:true,group:'g1'">Pan Sharpen Fusion</g:link>
+        <g:link controller="hillShade" class="easyui-linkbutton"
+                data-options="toggle:true,group:'g1'">Hillshade</g:link>
     </div>
-</content>
-<content tag="south"></content>
-<content tag="east">
+</div>
+
+<%--
+<div data-options="region:'south',split:true" style="height:50px;"></div>
+<div data-options="region:'west',split:true" title="West" style="width:100px;"></div>
+--%>
+
+<div data-options="region:'east',split:true" title="East" style="width:200px;">
     <div id="layerMgr"></div>
-</content>
-<content tag="west"></content>
-<content tag="center">
+</div>
+
+
+<div id="center" data-options="region:'center'">
     <div id="map"></div>
-</content>
+</div>
+
 <r:external plugin='openlayers' file='OpenLayers.js' dir='js'/>
 <r:script>
     $( document ).ready( function ()
     {
+        var model = ${model as JSON};
+        var chipUrl = "${createLink( controller: 'chipper', action: 'getChip' )}";
+        var productUrl = "${createLink( controller: 'chipper', action: 'get2CMV' )}";
 
-        var bbox = new OpenLayers.Bounds(${minX}, ${minY}, ${maxX}, ${maxY});
-        var map, layers, controls;
+        var bbox = new OpenLayers.Bounds(model.minX, model.minY, model.maxX, model.maxY);
 
-        map = new OpenLayers.Map( 'map', {
+        var map = new OpenLayers.Map( 'map', {
             numZoomLevels: 32
         } );
 
-        layers = [
+        var layers = [
             new OpenLayers.Layer.WMS(
                     "NASA BMNG",
-                    "${baseWMS.server}",
-                    ${baseWMS.params as grails.converters.JSON},
+                    model.baseWMS.server, model.baseWMS.params,
                     {buffer: 0}
             ),
 
             new OpenLayers.Layer.WMS( "Chipper - 2CMV - Red",
-                    "${createLink( controller: 'chipper', action: 'getChip' )}",
-                    {layers: '${redImage}', format: 'image/png', transparent: true},
+                    chipUrl,
+                    {layers: model.redImage, format: 'image/png', transparent: true},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} ),
 
             new OpenLayers.Layer.WMS( "Chipper - 2CMV - Blue",
-                    "${createLink( controller: 'chipper', action: 'getChip' )}",
-                    {layers: '${blueImage}', format: 'image/png', transparent: true},
+                    chipUrl,
+                    {layers: model.blueImage, format: 'image/png', transparent: true},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} ),
 
             new OpenLayers.Layer.WMS( "Chipper - 2CMV - Product",
-                    "${createLink( controller: 'chipper', action: 'get2CMV' )}",
-                    {layers: '${redImage},${blueImage}', format: 'image/png', transparent: true},
+                    productUrl,
+                    {layers: model.redImage + "," + model.blueImage, format: 'image/png', transparent: true},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
 
         ];
         map.addLayers( layers );
 
-        controls = [
+        var controls = [
             new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerMgr')})
         ];
         map.addControls( controls );
@@ -84,11 +105,8 @@
                 map.updateSize();
             }
         } );
-
-        body.layout('collapse','west');
     } );
 </r:script>
-
+<r:layoutResources/>
 </body>
-
 </html>

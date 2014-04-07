@@ -21,16 +21,18 @@ class HillShadeController
 
     def baseWMS = grailsApplication.config.chipper.baseWMS
 
-    [
-        baseWMS: baseWMS,
-        mapImage: mapImage.filename,
-        demImages: demImages,
 
-        minY: bounds?.minLat,
-        minX: bounds?.minLon,
-        maxY: bounds?.maxLat,
-        maxX: bounds?.maxLon
+    def model = [
+        baseWMS  : baseWMS,
+        mapImage : mapImage.filename,
+        demImages: demImages,
+        minY     : bounds?.minLat,
+        minX     : bounds?.minLon,
+        maxY     : bounds?.maxLat,
+        maxX     : bounds?.maxLon
     ]
+
+    render view: 'index', model: [model: model]
   }
 
   def getOptions()
@@ -47,7 +49,7 @@ class HillShadeController
 
 */
     def options = [
-        [name: "azimuth_angle", value: '270',  group: "Hill Shade", editor: 'text'
+        [name: "azimuth_angle", value: '270', group: "Hill Shade", editor: 'text'
 //            editor: [
 //                type: 'slider',
 //                options: [
