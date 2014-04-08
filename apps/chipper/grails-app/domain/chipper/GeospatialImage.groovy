@@ -15,6 +15,7 @@ class GeospatialImage
   Integer width
   Integer height
   Integer numBands
+  Integer numResLevels
   String dataType
 
   static constraints = {
@@ -27,6 +28,7 @@ class GeospatialImage
     fileType( nullable: true )
     numBands( nullable: true )
     dataType( nullable: true )
+    numResLevels( nullable: true )
     width( nullable: true )
     height( nullable: true )
   }

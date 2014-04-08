@@ -1,4 +1,9 @@
 import chipper.GeospatialImage
+import com.vividsolutions.jts.geom.Geometry
+import geoscript.GeoScript
+import grails.converters.JSON
+import groovy.json.JsonSlurper
+
 
 import static groovyx.gpars.GParsPool.withPool
 
@@ -27,11 +32,18 @@ class BootStrap
 
 //      withPool {
 //        fileList.eachParallel { filename ->
-        fileList.each { filename ->
-          geospatialImageService.processFile( filename )
-        }
+      fileList.each { filename ->
+        geospatialImageService.processFile( filename )
+      }
 //      }
     }
+
+    JSON.registerObjectMarshaller( Geometry ) {
+      def json = GeoScript.wrap( it ).geoJSON
+
+      new JsonSlurper().parseText( json )
+    }
+
   }
 
 
