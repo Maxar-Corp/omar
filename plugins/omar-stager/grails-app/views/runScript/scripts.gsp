@@ -68,14 +68,12 @@
       </tr>
 
     <tr bgcolor="#cccccc">
-        <g:form controller="RunScript" action="removeRaster" method="post">
             <td>omarRunScript</td>
             <td></td>
             <td><g:textField  style="width:100%" id="runScriptRemoveRasterArgsId" name="runScriptRemoveRasterArgs" value="${runScriptRemoveRasterArgs}" /></td>
             <td>removeRaster</td>
             <td><g:textField id="removeRasterArgsId" name="removeRasterArgs" style="width:100%" value="${removeRasterArgs}" /></td>
             <td><span class="button"><input type="button" onclick="submitRemoveRaster()" value="Remove Raster" /></span></td>
-        </g:form>
     </tr>
 
         <tr bgcolor="#999999">
@@ -87,14 +85,12 @@
             <td>&nbsp;</td>
         </tr>
             <tr bgcolor="#cccccc">
-                <g:form controller="RunScript" action="removeVideo" method="post">
                     <td>omarRunScript</td>
                     <td></td>
                     <td><g:textField  style="width:100%" id="runScriptRemoveVideoArgsId" name="runScriptRemoveVideoArgs" value="${runScriptRemoveVideoArgs}" /></td>
                     <td>removeVideo</td>
                     <td><g:textField id="removeVideoArgsId" name="removeVideoArgs" style="width:100%" value="${removeVideoArgs}" /></td>
                     <td><span class="button"><input type="button" onclick="submitRemoveVideo()" value="Remove Video" /></span></td>
-                </g:form>
             </tr>
 
         <tr bgcolor="#999999">
