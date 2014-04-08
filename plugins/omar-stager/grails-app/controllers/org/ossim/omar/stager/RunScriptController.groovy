@@ -135,7 +135,7 @@ class RunScriptController implements ApplicationContextAware{
             def jobDataMap = new JobDataMap()
             jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} removeVideo ${removeVideoArgs}"
 
-            def trigger = new SimpleTrigger("removeRaster ${removeVideoArgs}", "STAGER_SCRIPTS");
+            def trigger = new SimpleTrigger("removeVideo ${removeVideoArgs}", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
