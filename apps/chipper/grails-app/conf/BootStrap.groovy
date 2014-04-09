@@ -19,6 +19,8 @@ class BootStrap
 //    Init.instance().initialize(3, ['', '-T', 'ossimChipper'] as String[])
     Init.instance().initialize()
 
+    //System.setProperty( 'com.sun.media.imageio.disableCodecLib', 'true' )
+
     if ( GeospatialImage.count() == 0 )
     {
       def fileList = [

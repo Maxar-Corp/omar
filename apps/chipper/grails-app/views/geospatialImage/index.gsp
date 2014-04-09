@@ -15,21 +15,29 @@
 
 <body>
 <table id="tbl"></table>
+
+<div id="tb">
+    <div style="margin-bottom:5px">
+        <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true">Filter</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">2CMV</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true">PSM</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true">HillShade</a>
+    </div>
+</div>
+
 <div id="#tb"></div>
 <r:script>
     function showThumbnail( val, row )
     {
-        var markup = '';
-/*
         var size = 128;
-        var serviceAddress = "http://omar.ngaiost.org/omar";
-        var thumbnailURL = serviceAddress + "/thumbnail/show/" + row.id + "?size=128";
-        var viewerURL = serviceAddress + "/mapView/index?layers=" + row.id;
-        var markup = "<a href='" + viewerURL + "'><img src='" + thumbnailURL + "' width='" + size + "'  height='" + size + "'/></a>";
-//        var markup = "<a href='" + viewerURL + "'><img src='" + thumbnailURL + "'/></a>";
-*/
 
-        return markup;
+        var thumbnailURL = "${g.createLink(controller: 'chipper', action: 'getThumbnail')}?layers="
+            + row.filename + "&size=" + size;
+
+        var imgTag = "<img src='" + thumbnailURL + "' width='" + size + "'  height='" + size + "'/>";
+
+//        return '';
+        return imgTag;
     }
 
     function styleThumbnail( value, row, index )
@@ -45,7 +53,7 @@
             toolbar: '#tb',
             frozenColumns: [[
                 {field: 'ck', checkbox: true},
-                {field: 'thumbnail', title: 'Thumbnail', formmater: showThumbnail, styler: styleThumbnail}
+                {field: 'thumbnail', title: 'Thumbnail', formatter: showThumbnail, styler: styleThumbnail}
             ]],
             striped: true,
             rownumbers: true,

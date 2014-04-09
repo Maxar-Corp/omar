@@ -52,7 +52,10 @@ class GeospatialImageService
     def d = null
     try
     {
-      d = Date.parse( "yyyy-MM-dd'T'HH:mm:ss'Z'", s )
+      if ( s )
+      {
+        d = Date.parse( "yyyy-MM-dd'T'HH:mm:ss'Z'", s )
+      }
     }
     catch ( e )
     {

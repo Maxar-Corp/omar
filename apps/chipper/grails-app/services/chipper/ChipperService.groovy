@@ -36,16 +36,16 @@ class ChipperService
 //    if ( bounds.geometry.intersects(new Bounds( 0, 0, 90, 90, 'epsg:4326').geometry ) )
 //    {
     chipperOptionsMap = [
-        cut_min_lon: minLon as String,
-        cut_min_lat: minLat as String,
-        cut_max_lon: maxLon as String,
-        cut_max_lat: maxLat as String,
-        cut_height: chpCmd?.height as String,
-        cut_width: chpCmd?.width as String,
-        'hist-op': 'auto-minmax',
-        operation: 'ortho',
-        scale_2_8_bit: 'true',
-        'srs': chpCmd?.srs,
+        cut_min_lon   : minLon as String,
+        cut_min_lat   : minLat as String,
+        cut_max_lon   : maxLon as String,
+        cut_max_lat   : maxLat as String,
+        cut_height    : chpCmd?.height as String,
+        cut_width     : chpCmd?.width as String,
+        'hist-op'     : 'auto-minmax',
+        operation     : 'ortho',
+        scale_2_8_bit : 'true',
+        'srs'         : chpCmd?.srs,
         three_band_out: 'true'
     ]
 //    }
@@ -70,16 +70,16 @@ class ChipperService
     def (minLon, minLat, maxLon, maxLat) = chpCmd?.bbox?.split( ',' )?.collect { it as double }
 
     def chipperOptionsMap = [
-        cut_min_lon: minLon as String,
-        cut_min_lat: minLat as String,
-        cut_max_lon: maxLon as String,
-        cut_max_lat: maxLat as String,
-        cut_height: chpCmd.height as String,
-        cut_width: chpCmd.width as String,
-        scale_2_8_bit: 'true',
-        srs: chpCmd?.srs,
-        'hist-op': 'auto-minmax',
-        operation: 'psm',
+        cut_min_lon     : minLon as String,
+        cut_min_lat     : minLat as String,
+        cut_max_lon     : maxLon as String,
+        cut_max_lat     : maxLat as String,
+        cut_height      : chpCmd.height as String,
+        cut_width       : chpCmd.width as String,
+        scale_2_8_bit   : 'true',
+        srs             : chpCmd?.srs,
+        'hist-op'       : 'auto-minmax',
+        operation       : 'psm',
         resampler_filter: 'sinc'
     ]
 
@@ -102,16 +102,16 @@ class ChipperService
     def (minLon, minLat, maxLon, maxLat) = chpCmd?.bbox?.split( ',' )?.collect { it as double }
 
     def chipperOptionsMap = [
-        cut_min_lon: minLon as String,
-        cut_min_lat: minLat as String,
-        cut_max_lon: maxLon as String,
-        cut_max_lat: maxLat as String,
-        cut_height: chpCmd.height as String,
-        cut_width: chpCmd.width as String,
-        scale_2_8_bit: 'true',
-        srs: chpCmd?.srs,
-        'hist-op': 'auto-minmax',
-        operation: '2cmv',
+        cut_min_lon     : minLon as String,
+        cut_min_lat     : minLat as String,
+        cut_max_lon     : maxLon as String,
+        cut_max_lat     : maxLat as String,
+        cut_height      : chpCmd.height as String,
+        cut_width       : chpCmd.width as String,
+        scale_2_8_bit   : 'true',
+        srs             : chpCmd?.srs,
+        'hist-op'       : 'auto-minmax',
+        operation       : '2cmv',
         resampler_filter: 'sinc'
     ]
 
@@ -130,28 +130,28 @@ class ChipperService
 
     def chipperOptionsMap = [
 
-        azimuth_angle: chpCmd.azimuth_angle ?: '270',
-        color_blue: chpCmd.color_blue ?: '139',
-        color_green: chpCmd.color_green ?: '26',
-        color_red: chpCmd.color_red ?: '85',
+        azimuth_angle    : chpCmd.azimuth_angle ?: '270',
+        color_blue       : chpCmd.color_blue ?: '139',
+        color_green      : chpCmd.color_green ?: '26',
+        color_red        : chpCmd.color_red ?: '85',
 
-        cut_min_lon: minLon as String,
-        cut_min_lat: minLat as String,
-        cut_max_lon: maxLon as String,
-        cut_max_lat: maxLat as String,
-        cut_height: chpCmd.height as String,
-        cut_width: chpCmd.width as String,
-        elevation_angle: chpCmd.elevation_angle ?: '45',
-        gain: chpCmd.gain ?: '1.5',
+        cut_min_lon      : minLon as String,
+        cut_min_lat      : minLat as String,
+        cut_max_lon      : maxLon as String,
+        cut_max_lat      : maxLat as String,
+        cut_height       : chpCmd.height as String,
+        cut_width        : chpCmd.width as String,
+        elevation_angle  : chpCmd.elevation_angle ?: '45',
+        gain             : chpCmd.gain ?: '1.5',
 //        meters:  '20',
-        operation: 'hillshade',
+        operation        : 'hillshade',
 //        output_file:  '/data1/pmr_20131209/outputs/hillshade.png',
         output_radiometry: 'U8',
 //        projection:  'geo-scaled',
 //        projection:  'geo',
-        srs: chpCmd.srs,
-        resampler_filter: chpCmd.resampler_filter ?: 'cubic',
-        writer: chpCmd.writer ?: 'ossim_png'
+        srs              : chpCmd.srs,
+        resampler_filter : chpCmd.resampler_filter ?: 'cubic',
+        writer           : chpCmd.writer ?: 'ossim_png'
     ]
 
     // Add DEMs
@@ -226,12 +226,16 @@ class ChipperService
 
       if ( chipper.initialize( chipperOptionsMap ) )
       {
+        def width = chpCmd?.width ?: chpCmd.size
+        def height = chpCmd?.height ?: chpCmd.size
+        def format = ( chpCmd?.format ) ? chpCmd?.format?.split( '/' )[-1] : 'png'
+
         def sampleModel = new PixelInterleavedSampleModel(
             DataBuffer.TYPE_BYTE,
-            chpCmd.width,             // width
-            chpCmd.height,            // height
-            numBands,                 // pixelStride
-            chpCmd.width * numBands,  // scanlineStride
+            width,             // width
+            height,            // height
+            numBands,          // pixelStride
+            width * numBands,  // scanlineStride
             ( 0..<numBands ) as int[] // band offsets
         )
 
@@ -239,7 +243,7 @@ class ChipperService
 
         if ( chipper.getChip( dataBuffer.data, true ) )
         {
-          // println "chipper.getChip good..."
+          println "chipper.getChip good..."
 
           def cs = ColorSpace.getInstance( ColorSpace.CS_sRGB )
 
@@ -249,8 +253,12 @@ class ChipperService
           def raster = Raster.createRaster( sampleModel, dataBuffer, new Point( 0, 0 ) )
           def image = new BufferedImage( colorModel, raster, false, null )
 
-          ImageIO.write( image, chpCmd?.format?.split( '/' )[-1], ostream )
+          ImageIO.write( image, format, ostream )
           status = true
+        }
+        else
+        {
+          println 'chipper.getChip not good...'
         }
       }
     }
@@ -374,5 +382,66 @@ class ChipperService
 
     return filenames
   }
+
+
+  private Map<String, String> createThumbnailParams(ChipCommand chpCmd)
+  {
+    def chipperOptionsMap = null
+
+    chipperOptionsMap = [
+        thumbnail_resolution: chpCmd.size as String,
+        'hist-op'           : 'auto-minmax',
+        operation           : 'ortho',
+        scale_2_8_bit       : 'true',
+        'srs'               : chpCmd?.srs ?: 'epsg:4326',
+        three_band_out      : 'true'
+    ]
+
+    chpCmd?.layers?.split( ',' )?.eachWithIndex { file, i ->
+      chipperOptionsMap["image${i}.file"] = file
+    }
+
+    if ( chpCmd['bands'] )
+    {
+      chipperOptionsMap['bands'] = chpCmd?.bands
+    }
+
+
+    return chipperOptionsMap
+  }
+
+  def getThumbnail(ChipCommand chpCmd)
+  {
+    // println chpCmd
+
+    // def renderMode = RenderMode.BLANK
+    def renderMode = RenderMode.CHIPPER
+    def ostream = new ByteArrayOutputStream()
+
+    switch ( renderMode )
+    {
+    case RenderMode.BLANK:
+      createBlankTile( chpCmd, ostream )
+      break
+
+    case RenderMode.CHIPPER:
+      Map<String, String> chipperOptionsMap = createThumbnailParams( chpCmd )
+
+      if ( chipperOptionsMap )
+      {
+        if ( !populateTile( chipperOptionsMap, chpCmd, ostream ) )
+        {
+          createBlankTile( chpCmd, ostream )
+        }
+      }
+      break
+
+    // End: case RenderMode.CHIPPER:
+
+    } // End: switch( renderMode
+
+    [contentType: chpCmd?.format, buffer: ostream.toByteArray()]
+  }
+
 
 } // End: class ChipperService
