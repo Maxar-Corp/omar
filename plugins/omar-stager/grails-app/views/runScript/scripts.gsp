@@ -146,8 +146,8 @@
         var runScriptIndexFilesArgs = document.getElementById("runScriptIndexFilesArgsId");
         var indexFilesArgs = document.getElementById("indexFilesArgsId");
         formPost.action="/omar/RunScript/indexFiles?threads="+threads.value+
-                              "&runScriptIndexFilesArgs="+runScriptIndexFilesArgs.value +
-                              "&indexFilesArgs="+indexFilesArgs.value;
+                              "&runScriptIndexFilesArgs="+encodeURIComponent(runScriptIndexFilesArgs.value) +
+                              "&indexFilesArgs="+encodeURIComponent(indexFilesArgs.value);
         formPost.submit();
     }
     function submitStageRaster(){
@@ -156,16 +156,16 @@
         var runScriptStageRasterArgs = document.getElementById("runScriptStageRasterArgsId");
         var stageRasterArgs = document.getElementById("stageRasterArgsId");
         formPost.action="/omar/RunScript/stageRaster?threads="+threads.value+
-                              "&runScriptStageRasterArgs="+runScriptStageRasterArgs.value +
-                              "&stageRasterArgs="+stageRasterArgs.value;
+                              "&runScriptStageRasterArgs="+encodeURIComponent(runScriptStageRasterArgs.value) +
+                              "&stageRasterArgs="+encodeURIComponent(stageRasterArgs.value);
         formPost.submit();
     }
     function submitRemoveRaster(){
         var formPost = document.getElementById("formPostId");
         var runScriptRemoveRasterArgs = document.getElementById("runScriptRemoveRasterArgsId");
         var removeRasterArgs = document.getElementById("removeRasterArgsId");
-        formPost.action="/omar/RunScript/removeRaster?runScriptRemoveRasterArgs="+runScriptRemoveRasterArgs.value +
-                              "&removeRasterArgs="+removeRasterArgs.value;
+        formPost.action="/omar/RunScript/removeRaster?runScriptRemoveRasterArgs="+encodeURIComponent(runScriptRemoveRasterArgs.value) +
+                              "&removeRasterArgs="+encodeURIComponent(removeRasterArgs.value);
         formPost.submit();
 
     }
@@ -173,15 +173,15 @@
         var formPost = document.getElementById("formPostId");
         var runScriptRemoveVideoArgs = document.getElementById("runScriptRemoveVideoArgsId");
         var removeVideoArgs = document.getElementById("removeVideoArgsId");
-        formPost.action="/omar/RunScript/removeVideo?runScriptRemoveVideoArgs="+runScriptRemoveVideoArgs.value +
-                              "&removeVideoArgs="+removeVideoArgs.value;
+        formPost.action="/omar/RunScript/removeVideo?runScriptRemoveVideoArgs="+encodeURIComponent(runScriptRemoveVideoArgs.value) +
+                              "&removeVideoArgs="+encodeURIComponent(removeVideoArgs.value);
         formPost.submit();
 
     }
     function submitSynchFiles(){
         var formPost = document.getElementById("formPostId");
         var runScriptSynchFilesArgs = document.getElementById("runScriptSynchFilesArgsId");
-        formPost.action="/omar/RunScript/synchFiles?runScriptSynchFilesArgs="+runScriptSynchFilesArgs.value;
+        formPost.action="/omar/RunScript/synchFiles?runScriptSynchFilesArgs="+encodeURIComponent(runScriptSynchFilesArgs.value);
         formPost.submit();
     }
     function submitClearCache(){
