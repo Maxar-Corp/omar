@@ -262,8 +262,6 @@
     {
        renderTable(jobTriggers);
        setTimeout(getJobs,5000);
-
-       var tableDiv = YAHOO.util.Dom.get(jobTableDivId);
     }
 </r:script>
 </body>
