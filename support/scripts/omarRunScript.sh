@@ -70,9 +70,7 @@ class OmarRunScript{
          _ longOpt:"omardb", args:1, argName:"omardb", "omardb"
          _ longOpt:"dbuser", args:1, argName:"postgres_user", "postgres username"
          _ longOpt:"dbpassword", args:1, argName:"postgres_password", "postgres password"
-         _ longOpt:"filefilter", args:1, argName:"filefilter", "specify a comma separated list of file extensions without 
-
-spaces.  If empty will try all files supported"
+         _ longOpt:"filefilter", args:1, argName:"filefilter", "specify a comma separated list of file extensions without spaces.  If empty will try all files supported"
          _ longOpt:"url", args:1, argName:"url", "URL to the OMAR server ex: http://<ip>/omar"
          _ longOpt:"ovropt", args:1, argName:"ovropt", "Overview options surrounded by quotes"
          _ longOpt:"cp", args:1, argName:"cp", "CLASSPATH for where the jar files are located"
