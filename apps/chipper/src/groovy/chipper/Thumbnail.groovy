@@ -31,13 +31,15 @@ class Thumbnail extends Chip
   Map<String, String> createChipperOptions()
   {
     def chipperOptionsMap = [
+        //        operation           : 'chip',
+        operation           : 'ortho',
         thumbnail_resolution: ( this.size.width as Integer ) as String,
         'hist-op'           : 'auto-minmax',
-        operation           : 'chip',
-        scale_2_8_bit       : 'true',
-        //'srs'               : 'epsg:4326',
+        'srs'               : 'epsg:4326',
         three_band_out      : 'true',
-        'image0.file'       : image.filename
+        'image0.file'       : image.filename,
+        pad_thumbnail       : 'true',
+        output_radiometry   : 'U8'
     ]
 
     // HACK - Need a better way to determine default bands
