@@ -19,34 +19,92 @@
 <div id="tb">
     <div style="margin-bottom:5px">
         <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true">Filter</a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">2CMV</a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true">PSM</a>
-        <a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true">HillShade</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true" onclick="create2CMV()">2CMV</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true" onclick="createPSM()">PSM</a>
+        <a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true" onclick="createHillShade()">HillShade</a>
     </div>
 </div>
 
 <div id="#tb"></div>
 <r:script>
-    function showThumbnail( val, row )
+
+    function getSelectedImages()
     {
-        var size = 128;
+        var rows = $('#tbl').datagrid('getSelections');
 
-        var thumbnailURL = "${g.createLink(controller: 'chipper', action: 'getThumbnail')}?layers="
-            + row.filename + "&size=" + size;
-
-        var imgTag = "<img src='" + thumbnailURL + "' width='" + size + "'  height='" + size + "'/>";
-
-//        return '';
-        return imgTag;
+        return rows;
     }
 
-    function styleThumbnail( value, row, index )
+    function create2CMV()
     {
-        return {style: 'width:128px; height:128px'};
+        var images = getSelectedImages();
+
+        if ( images.length === 2 )
+        {
+            var redImage = images[0].filename;
+            var blueImage =  images[1].filename;
+
+            window.location = '../twoColorMulti?redImage=' + redImage + '&blueImage=' + blueImage;
+        }
+        else
+        {
+            alert('must pick exactly 2 images');
+        }
+    }
+
+    function createPSM()
+    {
+        var images = getSelectedImages();
+
+        if ( images.length === 2 )
+        {
+            var panImage = (images[0].numBands === 1) ? images[0].filename : images[1].filename;
+            var colorImage = (images[0].numBands > 1) ? images[0].filename : images[1].filename;
+
+            window.location = '../panSharpenMultiView?panImage=' + panImage + '&colorImage=' + colorImage;
+        }
+        else
+        {
+            alert('must pick exactly 2 images');
+        }
+    }
+
+    function createHillShade()
+    {
+        var images = getSelectedImages();
+
+        if ( images.length === 1 )
+        {
+            var mapImage = images[0].filename;
+
+            window.location = '../hillShade?mapImage=' + mapImage;
+        }
+        else
+        {
+            alert('must pick exactly 1 image');
+        }
     }
 
     $( document ).ready( function ()
     {
+
+        function showThumbnail( val, row )
+        {
+            var size = 128;
+
+            var thumbnailURL = "${g.createLink( controller: 'chipper', action: 'getThumbnail' )}?layers="
+                + row.filename + "&size=" + size;
+
+            var imgTag = "<img src='" + thumbnailURL + "' width='" + size + "' height='" + size + "'/>";
+
+            return imgTag;
+        }
+
+        function styleThumbnail( value, row, index )
+        {
+            return {style: 'width:128px; height:128px'};
+        }
+
         var tableModel = ${tableModel as JSON};
 
         $.extend(true, tableModel, {

@@ -10,29 +10,35 @@ class HillShadeController
 
   def index()
   {
-    def mapImage = GeospatialImage.findByFilename( grailsApplication?.config?.chipper?.hillShade?.mapImage as String )
-    def bounds = mapImage?.geometry?.bounds
+    if ( params.mapImage == null )
+    {
+      redirect( controller: 'geospatialImage' )
+    }
+    else
+    {
+      def mapImage = GeospatialImage.findByFilename( params.mapImage as String )
+      def bounds = mapImage?.geometry?.bounds
 
-    def demImages = chipperService.findElevationCells(
-        grailsApplication?.config?.chipper?.hillShade?.elevationPath as String,
-        new Bounds( bounds.minLon as double, bounds.minLat as double,
-            bounds.maxLon as double, bounds.maxLat as double )
-    )
+      def demImages = chipperService.findElevationCells(
+          grailsApplication?.config?.chipper?.hillShade?.elevationPath as String,
+          new Bounds( bounds.minLon as double, bounds.minLat as double,
+              bounds.maxLon as double, bounds.maxLat as double )
+      )
 
-    def baseWMS = grailsApplication.config.chipper.baseWMS
+      def baseWMS = grailsApplication.config.chipper.baseWMS
 
+      def model = [
+          baseWMS  : baseWMS,
+          mapImage : mapImage.filename,
+          demImages: demImages,
+          minY     : bounds?.minLat,
+          minX     : bounds?.minLon,
+          maxY     : bounds?.maxLat,
+          maxX     : bounds?.maxLon
+      ]
 
-    def model = [
-        baseWMS  : baseWMS,
-        mapImage : mapImage.filename,
-        demImages: demImages,
-        minY     : bounds?.minLat,
-        minX     : bounds?.minLon,
-        maxY     : bounds?.maxLat,
-        maxX     : bounds?.maxLon
-    ]
-
-    render view: 'index', model: [model: model]
+      render view: 'index', model: [model: model]
+    }
   }
 
   def getOptions()

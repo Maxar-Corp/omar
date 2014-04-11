@@ -1,6 +1,9 @@
 package chipper
 
+import geoscript.geom.Bounds
 import org.apache.commons.collections.map.CaseInsensitiveMap
+
+import java.awt.Dimension
 
 class ChipperController
 {
@@ -10,11 +13,11 @@ class ChipperController
   {
     def ctx = startAsync()
     ctx.start {
-      def chpCmd = new ChipCommand()
+      def chpCmd = new Chip( new CaseInsensitiveMap( params ) )
 
-      bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties.keySet().collect { it.toUpperCase() } )
+      //bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties.keySet().collect { it.toUpperCase() } )
 
-      //println chpCmd
+      println chpCmd
 
       def results = chipperService.getChip( chpCmd )
 
@@ -28,11 +31,12 @@ class ChipperController
   {
     def ctx = startAsync()
     ctx.start {
-      def chpCmd = new ChipCommand()
+      println params
+      def chpCmd = new PanSharpen( new CaseInsensitiveMap( params ) )
 
-      bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
+      //bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
 
-      //println chpCmd
+      println chpCmd
 
       def results = chipperService.getPSM( chpCmd )
 
@@ -46,11 +50,12 @@ class ChipperController
   {
     def ctx = startAsync()
     ctx.start {
-      def chpCmd = new ChipCommand()
+      println params
+      def chpCmd = new TwoColorMultiView( new CaseInsensitiveMap( params ) )
 
-      bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
+      //bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
 
-      //println chpCmd
+      println chpCmd
 
       def results = chipperService.get2CMV( chpCmd )
 
@@ -82,9 +87,12 @@ class ChipperController
   {
     def ctx = startAsync()
     ctx.start {
-      def chpCmd = new ChipCommand()
 
-      bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
+//      println params
+
+      def chpCmd = new Thumbnail( new CaseInsensitiveMap( params ) )
+
+      //bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
 
       //println chpCmd
 

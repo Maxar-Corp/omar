@@ -8,7 +8,7 @@
 <%@ page import="grails.converters.JSON" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <title>PanSharpenMultiView</title>
+    <title>Two Color MultiView</title>
     <style type="text/css">
     #layerMgr {
         width: 100%;
