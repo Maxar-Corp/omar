@@ -15,7 +15,9 @@
       </ul>
   </div>
   <div class="body">
-    <h1>OMAR: Staging Scripts</h1>
+<g:form name="formPostId" controller="RunScript" action="" method="post"></g:form>
+
+<h1>OMAR: Staging Scripts</h1>
     <g:if test="${flash.message}">
       <div class="message">${flash.message}</div>
     </g:if>
@@ -31,14 +33,12 @@
       </tr>
 
       <tr bgcolor="#cccccc">
-          <g:form controller="RunScript" action="indexFiles" method="post">
               <td>omarRunScript</td>
-              <td><g:select name="threads" from="${1..grailsApplication.config.stager.scripts.maxThreadCount}" value="${grailsApplication.config.stager.scripts.defaultThreadCount}" /></td>
-              <td><g:textField  style="width:100%" name="runScriptIndexFilesArgs" value="${runScriptIndexFilesArgs}" /></td>
+              <td><g:select id="indexFilesThreadCountId" name="threads" from="${1..grailsApplication.config.stager.scripts.maxThreadCount}" value="${grailsApplication.config.stager.scripts.defaultThreadCount}" /></td>
+              <td><g:textField  style="width:100%" id="runScriptIndexFilesArgsId" name="runScriptIndexFilesArgs" value="${runScriptIndexFilesArgs}" /></td>
               <td>indexFiles</td>
-              <td><g:textField  style="width:100%" name="indexFilesArgs" value="${indexFilesArgs}" /></td>
-              <td><span class="button"><input type="submit" value="Index Files" /></span></td>
-          </g:form>
+              <td><g:textField  style="width:100%" id="indexFilesArgsId" name="indexFilesArgs" value="${indexFilesArgs}" /></td>
+              <td><span class="button"><input type="button" onclick="submitIndexFiles()" value="Index Files" /></span></td>
       </tr>
 
       <tr bgcolor="#999999">
@@ -49,16 +49,13 @@
         <td>&nbsp;</td>
         <td>&nbsp;</td>
       </tr>
-
       <tr bgcolor="#cccccc">
-          <g:form controller="RunScript" action="stageRaster" method="post">
             <td>omarRunScript</td>
-            <td><g:select name="threads" from="${1..grailsApplication.config.stager.scripts.maxThreadCount}" value="${grailsApplication.config.stager.scripts.defaultThreadCount}" /></td>
-            <td><g:textField  style="width:100%" name="runScriptStageRasterArgs" value="${runScriptStageRasterArgs}" /></td>
+            <td><g:select name="stageRasterThreadCountId" from="${1..grailsApplication.config.stager.scripts.maxThreadCount}" value="${grailsApplication.config.stager.scripts.defaultThreadCount}" /></td>
+            <td><g:textField  style="width:100%" id="runScriptStageRasterArgsId" name="runScriptStageRasterArgs" value="${runScriptStageRasterArgs}" /></td>
             <td>stageRaster</td>
-            <td><g:textField name="stageRasterArgs" style="width:100%" value="${stageRasterArgs}" /></td>
-            <td><span class="button"><input type="submit" value="Stage Raster" /></span></td>
-          </g:form>
+            <td><g:textField id="stageRasterArgsId" name="stageRasterArgs" style="width:100%" value="${stageRasterArgs}" /></td>
+            <td><span class="button"><input type="button" onclick="submitStageRaster()" value="Stage Raster" /></span></td>
       </tr>
 
       <tr bgcolor="#999999">
@@ -71,14 +68,12 @@
       </tr>
 
     <tr bgcolor="#cccccc">
-        <g:form controller="RunScript" action="removeRaster" method="post">
             <td>omarRunScript</td>
             <td></td>
-            <td><g:textField  style="width:100%" name="runScriptRemoveRasterArgs" value="${runScriptRemoveRasterArgs}" /></td>
+            <td><g:textField  style="width:100%" id="runScriptRemoveRasterArgsId" name="runScriptRemoveRasterArgs" value="${runScriptRemoveRasterArgs}" /></td>
             <td>removeRaster</td>
-            <td><g:textField name="removeRasterArgs" style="width:100%" value="${removeRasterArgs}" /></td>
-            <td><span class="button"><input type="submit" value="Remove Raster" /></span></td>
-        </g:form>
+            <td><g:textField id="removeRasterArgsId" name="removeRasterArgs" style="width:100%" value="${removeRasterArgs}" /></td>
+            <td><span class="button"><input type="button" onclick="submitRemoveRaster()" value="Remove Raster" /></span></td>
     </tr>
 
         <tr bgcolor="#999999">
@@ -90,14 +85,12 @@
             <td>&nbsp;</td>
         </tr>
             <tr bgcolor="#cccccc">
-                <g:form controller="RunScript" action="removeVideo" method="post">
                     <td>omarRunScript</td>
                     <td></td>
-                    <td><g:textField  style="width:100%" name="runScriptRemoveVideoArgs" value="${runScriptRemoveVideoArgs}" /></td>
+                    <td><g:textField  style="width:100%" id="runScriptRemoveVideoArgsId" name="runScriptRemoveVideoArgs" value="${runScriptRemoveVideoArgs}" /></td>
                     <td>removeVideo</td>
-                    <td><g:textField name="removeVideoArgs" style="width:100%" value="${removeVideoArgs}" /></td>
-                    <td><span class="button"><input type="submit" value="Remove Video" /></span></td>
-                </g:form>
+                    <td><g:textField id="removeVideoArgsId" name="removeVideoArgs" style="width:100%" value="${removeVideoArgs}" /></td>
+                    <td><span class="button"><input type="button" onclick="submitRemoveVideo()" value="Remove Video" /></span></td>
             </tr>
 
         <tr bgcolor="#999999">
@@ -110,14 +103,12 @@
         </tr>
 
       <tr bgcolor="#cccccc">
-          <g:form controller="RunScript" action="synchFiles" method="post">
           <td>omarRunScript</td>
           <td></td>
-          <td><g:textField  style="width:100%" name="runScriptSynchFilesArgs" value="${runScriptSynchFilesArgs}" /></td>
+          <td><g:textField  style="width:100%" id="runScriptSynchFilesArgsId" name="runScriptSynchFilesArgs" value="${runScriptSynchFilesArgs}" /></td>
           <td>synchFiles</td>
           <td></td>
-          <td><span class="button"><input type="submit" value="Synch Files" /></span></td>
-          </g:form>
+          <td><span class="button"><input type="button" onclick="submitSynchFiles()" value="Synch Files" /></span></td>
       </tr>
 
       <tr bgcolor="#999999">
@@ -130,17 +121,14 @@
       </tr>
 
       <tr bgcolor="#cccccc">
-          <g:form controller="RunScript" action="clearCache" method="post">
           <td></td>
           <td></td>
           <td></td>
           <td>clearCache</td>
         <td></td>
-        <td><span class="button"><input type="submit" value="Clear Cache" /></span></td>
-          </g:form>
+        <td><span class="button"><input type="button" onclick="submitClearCache()" value="Clear Cache" /></span></td>
       </tr>
     </table>
-
       <div id="jobTableDivId">
         <h1>Current Jobs (Updated every 5 seconds...)</h1>
       </div>
@@ -151,6 +139,56 @@
 <r:script>
     var jobTriggers = ${jobTriggers}
 
+    function submitIndexFiles(){
+        var formPost = document.getElementById("formPostId");
+
+        var threads = document.getElementById("indexFilesThreadCountId");
+        var runScriptIndexFilesArgs = document.getElementById("runScriptIndexFilesArgsId");
+        var indexFilesArgs = document.getElementById("indexFilesArgsId");
+        formPost.action="/omar/RunScript/indexFiles?threads="+threads.value+
+                              "&runScriptIndexFilesArgs="+encodeURIComponent(runScriptIndexFilesArgs.value) +
+                              "&indexFilesArgs="+encodeURIComponent(indexFilesArgs.value);
+        formPost.submit();
+    }
+    function submitStageRaster(){
+        var formPost = document.getElementById("formPostId");
+        var threads = document.getElementById("stageRasterThreadCountId");
+        var runScriptStageRasterArgs = document.getElementById("runScriptStageRasterArgsId");
+        var stageRasterArgs = document.getElementById("stageRasterArgsId");
+        formPost.action="/omar/RunScript/stageRaster?threads="+threads.value+
+                              "&runScriptStageRasterArgs="+encodeURIComponent(runScriptStageRasterArgs.value) +
+                              "&stageRasterArgs="+encodeURIComponent(stageRasterArgs.value);
+        formPost.submit();
+    }
+    function submitRemoveRaster(){
+        var formPost = document.getElementById("formPostId");
+        var runScriptRemoveRasterArgs = document.getElementById("runScriptRemoveRasterArgsId");
+        var removeRasterArgs = document.getElementById("removeRasterArgsId");
+        formPost.action="/omar/RunScript/removeRaster?runScriptRemoveRasterArgs="+encodeURIComponent(runScriptRemoveRasterArgs.value) +
+                              "&removeRasterArgs="+encodeURIComponent(removeRasterArgs.value);
+        formPost.submit();
+
+    }
+    function submitRemoveVideo(){
+        var formPost = document.getElementById("formPostId");
+        var runScriptRemoveVideoArgs = document.getElementById("runScriptRemoveVideoArgsId");
+        var removeVideoArgs = document.getElementById("removeVideoArgsId");
+        formPost.action="/omar/RunScript/removeVideo?runScriptRemoveVideoArgs="+encodeURIComponent(runScriptRemoveVideoArgs.value) +
+                              "&removeVideoArgs="+encodeURIComponent(removeVideoArgs.value);
+        formPost.submit();
+
+    }
+    function submitSynchFiles(){
+        var formPost = document.getElementById("formPostId");
+        var runScriptSynchFilesArgs = document.getElementById("runScriptSynchFilesArgsId");
+        formPost.action="/omar/RunScript/synchFiles?runScriptSynchFilesArgs="+encodeURIComponent(runScriptSynchFilesArgs.value);
+        formPost.submit();
+    }
+    function submitClearCache(){
+        var formPost = document.getElementById("formPostId");
+        formPost.action="/omar/RunScript/clearCache";
+        formPost.submit();
+    }
     function clearTable(tableId)
     {
         var el = YAHOO.util.Dom.get(tableId);
@@ -224,7 +262,6 @@
     {
        renderTable(jobTriggers);
        setTimeout(getJobs,5000);
-
     }
 </r:script>
 </body>

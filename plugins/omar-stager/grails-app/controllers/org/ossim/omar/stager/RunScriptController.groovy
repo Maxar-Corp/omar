@@ -81,7 +81,7 @@ class RunScriptController implements ApplicationContextAware{
         else if(!quartzScheduler?.getTrigger("indexFiles ${indexFilesArgs}", "STAGER_SCRIPTS"))
         {
             def jobDataMap = new JobDataMap()
-            jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} --nthreads ${params.threads} indexFiles ${indexFilesArgs}"
+            jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} --threadcount ${params.threads} indexFiles ${indexFilesArgs}"
            // println jobDataMap.commandLineScript
             def trigger = new SimpleTrigger("indexFiles ${indexFilesArgs}", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
@@ -135,7 +135,7 @@ class RunScriptController implements ApplicationContextAware{
             def jobDataMap = new JobDataMap()
             jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} removeVideo ${removeVideoArgs}"
 
-            def trigger = new SimpleTrigger("removeRaster ${removeVideoArgs}", "STAGER_SCRIPTS");
+            def trigger = new SimpleTrigger("removeVideo ${removeVideoArgs}", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
@@ -160,7 +160,7 @@ class RunScriptController implements ApplicationContextAware{
         else if(!quartzScheduler?.getTrigger("stageRaster ${stageRasterArgs}", "STAGER_SCRIPTS"))
         {
             def jobDataMap = new JobDataMap()
-            jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} --nthreads ${params.threads} stageRaster ${stageRasterArgs}"
+            jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} --threadcount ${params.threads} stageRaster ${stageRasterArgs}"
             def trigger = new SimpleTrigger("stageRaster ${stageRasterArgs}", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);

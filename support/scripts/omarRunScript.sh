@@ -1,4 +1,5 @@
 #!/usr/bin/env groovy
+
 environmentVariables =[
    OMAR_URL:"http://localhost/omar",
    OMAR_THUMBNAIL_CACHE:"/data/omar/omar-cache",
@@ -10,8 +11,7 @@ environmentVariables =[
    LOG_FILE:"",
    PID_FILE:"",
    CLASSPATH:"${System.env.OSSIM_DIST_ROOT?:System.env.OSSIM_INSTALL_PREFIX}/tomcat/webapps/omar/WEB-INF/lib", 
-   //STAGE_FILE_FILTER:"", 
-   STAGE_FILE_FILTER:"tfd,idop,tfrd,e0,sid,mpg,mpeg,jp2,j2k,toc,ras,jpg,jpeg,hsi,hri,tiff,tif,ntf,nitf,img",
+   STAGE_FILE_FILTER:"tfd,idop,tfrd,e0,sid,ts,mpg,mpeg,jp2,j2k,toc,ras,jpg,jpeg,hsi,hri,tiff,tif,ntf,nitf,img",
    HISTOGRAM_OPTIONS:"--create-histogram-fast",
    OVERVIEW_OPTIONS:"--compression-type JPEG --compression-quality 75"
 ]
@@ -66,7 +66,7 @@ class OmarRunScript{
       cli.stopAtNonOption = true
       cli.with{
          h longOpt: 'help', 'Show usage information'
-         _ longOpt:"nthreads", args:1, argName:"nthreads", "nthreads"
+         _ longOpt:"threadcount", args:1, argName:"threadcount", "threadcount"
          _ longOpt:"omardb", args:1, argName:"omardb", "omardb"
          _ longOpt:"dbuser", args:1, argName:"postgres_user", "postgres username"
          _ longOpt:"dbpassword", args:1, argName:"postgres_password", "postgres password"
@@ -91,9 +91,9 @@ class OmarRunScript{
          return 0;
       }
 
-      if(options.nthreads)
+      if(options.threadcount)
       {
-         env.NTHREADS = "${options.nthreads}" as Integer
+         env.NTHREADS = "${options.threadcount}" as Integer
       }
       if(options.omardb)
          {
