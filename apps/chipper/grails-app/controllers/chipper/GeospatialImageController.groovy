@@ -1,5 +1,6 @@
 package chipper
 
+import geoscript.filter.Function
 import grails.converters.JSON
 
 class GeospatialImageController
@@ -17,10 +18,15 @@ class GeospatialImageController
       [field: it.name, title: it.naturalName, type: it.type, sortable: true]
     }
 
+    def operators = Function.functionNames.collect {
+      [field: it, title: it]
+    }
+
     def tableModel = [
-        url       : grailsLinkGenerator.link( action: 'getData' ),
-        method    : 'get',
-        columns   : [columns]
+        url      : grailsLinkGenerator.link( action: 'getData' ),
+        method   : 'get',
+        columns  : [columns],
+        operators: operators
     ]
 
     [tableModel: tableModel]

@@ -1,0 +1,24 @@
+.head {
+    /* for IE */
+    filter: alpha(opacity=50);
+    /* CSS 3 standard */
+    opacity: 0.5;
+}
+
+.seperator {
+    border-right: 2px solid brown;
+}
+
+.add {
+    width: 16px;
+    height: 16px;
+    background: url('res/add.png');
+    float: left;
+}
+
+.remove {
+    width: 16px;
+    height: 16px;
+    background: url('res/remove.png');
+    float: left;
+}

@@ -28,12 +28,7 @@
 
 <div data-options="region:'north'" style="height:50px">
     <div style="padding:5px;">
-        <g:link controller="twoColorMulti" class="easyui-linkbutton"
-                data-options="toggle:true,group:'g1',selected:true">Two Color Multiview</g:link>
-        <g:link controller="panSharpenMultiView" class="easyui-linkbutton"
-                data-options="toggle:true,group:'g1'">Pan Sharpen Fusion</g:link>
-        <g:link controller="hillShade" class="easyui-linkbutton"
-                data-options="toggle:true,group:'g1'">Hillshade</g:link>
+        <g:link controller="geospatialImage" class="easyui-linkbutton">Home</g:link>
     </div>
 </div>
 
