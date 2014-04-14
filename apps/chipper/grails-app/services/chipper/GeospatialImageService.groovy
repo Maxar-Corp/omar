@@ -28,14 +28,16 @@ class GeospatialImageService
           entry: rasterEntry?.entryId?.text(),
           geometry: GeoScript.unwrap( reader.read( rasterEntry?.groundGeom?.text() ) ),
 
-          acquisitionDate: null,
-          mission: null,
-          sensor: null,
-          fileType: null,
-          width: null,
-          height: null,
-          numBands: null,
-          dataType: null
+          width: rasterEntry?.width?.text() as Integer,
+          height: rasterEntry?.height?.text() as Integer,
+          numBands: rasterEntry?.numberOfBands?.text() as Integer,
+          numResLevels: rasterEntry?.numberOfResLevels?.text() as Integer,
+          dataType: rasterEntry?.dataType?.text(),
+
+          acquisitionDate: parseDate( rasterEntry?.TimeStamp?.when?.text() ),
+          mission: rasterEntry?.metadata?.missionId?.text(),
+          sensor: rasterEntry?.metadata?.sensorId?.text(),
+          fileType: rasterEntry?.metadata?.fileType?.text()
       )
 
       if ( !image.save() )
@@ -43,5 +45,22 @@ class GeospatialImageService
         image.errors.allErrors.each { println messageSource.getMessage( it, null ) }
       }
     }
+  }
+
+  def parseDate(String s)
+  {
+    def d = null
+    try
+    {
+      if ( s )
+      {
+        d = Date.parse( "yyyy-MM-dd'T'HH:mm:ss'Z'", s )
+      }
+    }
+    catch ( e )
+    {
+      println e.message
+    }
+    return d
   }
 }

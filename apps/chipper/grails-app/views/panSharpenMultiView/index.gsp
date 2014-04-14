@@ -6,73 +6,82 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>PanSharpenMultiView</title>
-    <meta name="layout" content="standard"/>
+
+    <style type="text/css">
+    #layerMgr {
+        width: 100%;
+        height: 100%;
+    }
+
+    #center {
+        padding: 5px;
+        background: #eee;
+    }
+    </style>
+    <r:require modules="standard"/>
+    <r:layoutResources/>
 </head>
 
-<body>
+<body class="easyui-layout">
 
-<content tag="north">
+<div data-options="region:'north'" style="height:50px">
     <div style="padding:5px;">
-        <g:link controller="twoColorMulti" class="easyui-linkbutton" data-options="">Two Color Multiview</g:link>
-        <g:link controller="panSharpenMultiView" class="easyui-linkbutton"
-                data-options="disabled:true">Pan Sharpen Fusion</g:link>
-        <g:link controller="hillShade" class="easyui-linkbutton" data-options="">Hillshade</g:link>
+        <g:link controller="geospatialImage" class="easyui-linkbutton">Home</g:link>
     </div>
-</content>
-<content tag="south"></content>
+</div>
 
-<content tag="east">
+<div data-options="region:'east',split:true" title="East" style="width:200px;">
     <div id="layerMgr"></div>
-</content>
-<content tag="west"></content>
+</div>
 
-<content tag="center">
+<div id="center" data-options="region:'center'">
     <div id="map"></div>
-</content>
+</div>
 
 <r:external plugin='openlayers' file='OpenLayers.js' dir='js'/>
 <r:script>
     $( document ).ready( function ()
     {
+        var model = ${model as JSON};
+        var chipUrl = "${createLink( controller: 'chipper', action: 'getChip' )}";
+        var productUrl = "${createLink( controller: 'chipper', action: 'getPSM' )}";
 
-        var bbox = new OpenLayers.Bounds(${minX}, ${minY}, ${maxX}, ${maxY});
-        var map, layers, controls;
+        var bbox = new OpenLayers.Bounds(model.minX, model.minY, model.maxX, model.maxY);
 
-        map = new OpenLayers.Map( 'map', {
+        var map = new OpenLayers.Map( 'map', {
             numZoomLevels: 32
         } );
 
-        layers = [
+        var layers = [
             new OpenLayers.Layer.WMS(
                     "NASA BMNG",
-                    "${baseWMS.server}",
-                    ${baseWMS.params as grails.converters.JSON},
+                    model.baseWMS.server, model.baseWMS.params,
                     {buffer: 0}
             ),
 
             new OpenLayers.Layer.WMS( "Chipper - getChip - Color",
-                    "${createLink( controller: 'chipper', action: 'getChip' )}",
-                    {layers: '${colorImage}', format: 'image/png', transparent: true, bands: '3,2,1'},
+                    chipUrl,
+                    {layers: model.colorImage, format: 'image/png', transparent: true, bands: '3,2,1'},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} ),
 
             new OpenLayers.Layer.WMS( "Chipper - getChip - Pan",
-                    "${createLink( controller: 'chipper', action: 'getChip' )}",
-                    {layers: '${panImage}', format: 'image/png', transparent: true},
+                    chipUrl,
+                    {layers: model.panImage, format: 'image/png', transparent: true},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} ),
 
             new OpenLayers.Layer.WMS( "Chipper - getPSM - Product",
-                    "${createLink( controller: 'chipper', action: 'getPSM' )}",
-                    {layers: '${psmImage}', format: 'image/png', transparent: true, bands: '3,2,1'},
+                    productUrl,
+                    {layers: model.psmImage, format: 'image/png', transparent: true, bands: '3,2,1'},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
 
         ];
         map.addLayers( layers );
 
-        controls = [
+        var controls = [
             new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerMgr')})
         ];
         map.addControls( controls );
@@ -87,11 +96,10 @@
                 map.updateSize();
             }
         } );
-
-        body.layout('collapse','west');
-
     } );
 </r:script>
+<r:layoutResources/>
+
 </body>
 
 </html>

@@ -6,32 +6,32 @@
   To change this template use File | Settings | File Templates.
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="grails.converters.JSON" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>HillShade</title>
-    <meta name="layout" content="standard"/>
     <style type="text/css">
     #pg {
         width: 300px;
     }
     </style>
+    <r:require module="standard"/>
+    <r:layoutResources/>
 </head>
 
-<body>
+<body class="easyui-layout">
 
-<content tag="north">
+<div data-options="region:'north'" style="height:50px">
     <div style="padding:5px;">
-        <g:link controller="twoColorMulti" class="easyui-linkbutton" data-options="">Two Color Multiview</g:link>
-        <g:link controller="panSharpenMultiView" class="easyui-linkbutton" data-options="">Pan Sharpen Fusion</g:link>
-        <g:link controller="hillShade" class="easyui-linkbutton" data-options="disabled:true">Hillshade</g:link>
+        <g:link controller="geospatialImage" class="easyui-linkbutton">Home</g:link>
     </div>
-</content>
-<content tag="south"></content>
-<content tag="east">
+</div>
+
+<div data-options="region:'east',split:true" title="East" style="width:200px;">
     <div id="layerMgr"></div>
-</content>
-<content tag="west">
+</div>
+
+<div id="west" data-options="region:'west',title:'West',split:true" style="width:200px;">
     <table id="pg" class="easyui-propertygrid"
            data-options="url:'${createLink( action: 'getOptions' )}',showGroup:true,scrollbarSize:0"></table>
     <br/>
@@ -40,54 +40,54 @@
         <button id="refresh">Refresh</button>
     </div>
 
-</content>
-<content tag="center">
+</div>
+
+<div id="center" data-options="region:'center'">
     <div id="map"></div>
-</content>
+</div>
 
 <r:external plugin='openlayers' file='OpenLayers.js' dir='js'/>
 <r:script>
     $( document ).ready( function ()
     {
+        var model = ${model as JSON};
+        var chipUrl = "${createLink( controller: 'chipper', action: 'getChip' )}";
+        var productUrl =  "${createLink( controller: 'chipper', action: 'getHillShade' )}";
+        var bbox = new OpenLayers.Bounds(model.minX, model.minY, model.maxX, model.maxY);
 
-        var bbox = new OpenLayers.Bounds(${minX}, ${minY}, ${maxX}, ${maxY});
-        var map, layers, controls;
+        var map = new OpenLayers.Map( 'map', {numZoomLevels: 32} );
 
-        map = new OpenLayers.Map( 'map', {
-            numZoomLevels: 32
-        } );
-
-        layers = [
-            new OpenLayers.Layer.WMS(
-                    "NASA BMNG",
-                    "${baseWMS.server}",
-                    ${baseWMS.params as grails.converters.JSON},
-                    {buffer: 0}
-            ),
+        var layers = [
+            new OpenLayers.Layer.WMS("NASA BMNG", model.baseWMS.server, model.baseWMS.params, {buffer: 0}),
 
             new OpenLayers.Layer.WMS( "Chipper - getChip - Map",
-                    "${createLink( controller: 'chipper', action: 'getChip' )}",
-                    {layers: '${mapImage}', format: 'image/png', transparent: true},
+                    chipUrl,
+                    {layers: model.mapImage, format: 'image/png', transparent: true},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} ),
-
-    <g:each var="x" in="${( 0..<demImages.size() )}">
-        new OpenLayers.Layer.WMS( "Chipper - getChip - Elevation ${x}",
-                            "${createLink( controller: 'chipper', action: 'getChip' )}",
-                            {layers: '${demImages[x]}', format: 'image/png', transparent: true},
-                            {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} ),
-
-    </g:each>
+        ];
 
 
-    new OpenLayers.Layer.WMS( "Chipper - HillShade - Product",
-        "${createLink( controller: 'chipper', action: 'getHillShade' )}",
-                    {layers: '${mapImage}', format: 'image/png', transparent: true},
+
+        for (  var x = 0; x < model.demImages.length; x++ )
+        {
+            layers.push( new OpenLayers.Layer.WMS( "Chipper - getChip - Elevation " + x,
+                            chipUrl,
+                            {layers: model.demImages[x], format: 'image/png', transparent: true},
+                            {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
+            );
+        }
+
+
+    layers.push( new OpenLayers.Layer.WMS( "Chipper - HillShade - Product",
+        productUrl,
+                    {layers: model.mapImage, format: 'image/png', transparent: true},
                     {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
 
-    ];
+    );
+
     map.addLayers( layers );
 
-    controls = [
+    var controls = [
         new OpenLayers.Control.LayerSwitcher({'div':OpenLayers.Util.getElement('layerMgr')})
     ];
     map.addControls( controls );
@@ -117,6 +117,7 @@
     })
 } );
 </r:script>
+<r:layoutResources/>
 </body>
 
 </html>

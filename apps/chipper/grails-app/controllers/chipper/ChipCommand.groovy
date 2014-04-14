@@ -29,6 +29,9 @@ class ChipCommand
   String styles
   String version
 
+  // Thumbnail Parameters
+  Integer size
+
   // OSSIM Parameters
   String bands
   String entry
