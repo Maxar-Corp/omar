@@ -73,44 +73,68 @@ class WebCoverageService implements InitializingBean
       // now establish mosaic and cut to match the output dimensions
       kwlString = "type:ossimImageChain\n"
       kwlString += "object${objectPrefixIdx}.type:ossimImageMosaic\n"
+      kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
       ++objectPrefixIdx
+      ++connectionId
       if ( requestFormat.contains("uint8") ||
               requestFormat.contains("jpeg") ||
+              requestFormat.contains("pdf") ||
               ((stretchModeRegion == "viewport") &&
                       (stretchMode != "none"))
       )
       {
         kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
         kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+        kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId-1}\n"
+        kwlString += "object${ objectPrefixIdx }.enabled:true\n"
         ++connectionId
         ++objectPrefixIdx
       }
       if((maxBands > 3)&&
          (requestFormat.contains("gif") ||
+          requestFormat.contains("pdf")||
           requestFormat.contains("png")||
           requestFormat.contains("jpeg")||
           requestFormat.contains("jpg")
          ))
       {
-        if ( maxBands > 3 )
-        {
+        //if ( maxBands > 3 )
+        //{
           kwlString += "object${ objectPrefixIdx }.type:ossimBandSelector\n"
           kwlString += "object${ objectPrefixIdx }.bands:(0,1,2)\n"
+          kwlString += "object${ objectPrefixIdx }.enabled:true\n"
+          kwlString += "object${ objectPrefixIdx }.input_connection1:${connectionId-1}\n"
+
           kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
           ++connectionId
           ++objectPrefixIdx
-        }
+        //}
+      }
+      else if((maxBands == 2)&&(requestFormat.contains("gif") ||
+              requestFormat.contains("pdf")||
+              requestFormat.contains("png")||
+              requestFormat.contains("jpeg")||
+              requestFormat.contains("jpg")))
+      {
+        kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+        kwlString += "object${objectPrefixIdx}.bands:(0)\n"
+        kwlString += "object${objectPrefixIdx}.id:${ connectionId }\n"
+        kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId-1}\n"
+        ++connectionId
+        ++objectPrefixIdx
       }
       kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
       kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
       kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
       kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+      kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId-1}\n"
       ++objectPrefixIdx
       if ( (stretchModeRegion == "viewport") &&
               (stretchMode != "none") )
       {
         kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
         kwlString += "object${objectPrefixIdx}.id:${connectionId + 1}\n"
+        kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId}\n"
         ++objectPrefixIdx
         kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
         kwlString += "object${objectPrefixIdx}.id:${connectionId + 2}\n"
@@ -131,11 +155,14 @@ class WebCoverageService implements InitializingBean
         kwlString += "number_bands:1\n"
       }
     }
+
     def mosaic = new joms.oms.Chain();
     mosaic.loadChainKwlString(kwlString)
     srcChains.each {srcChain ->
       mosaic.connectMyInputTo(srcChain)
     }
+    // after connection so everything is in synch make sure the chain is iniialized!
+    mosaic.initialize();
     def writer = imageChainService.createWriterChain([format: wcsParams.format,
             temporaryDirectory: "${temporaryDirectory}",
             filenamePrefix: "wcs"])
