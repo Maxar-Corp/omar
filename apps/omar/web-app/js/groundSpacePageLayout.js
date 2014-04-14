@@ -29,7 +29,7 @@
         } );
         outerLayout.on( 'resize', function ( evt )
         {
-            //bodyOnResize();
+            bodyOnResize();
         } );
         outerLayout.on( 'render', function ()
         {
