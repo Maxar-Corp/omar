@@ -74,11 +74,11 @@
 
 var bodyOnResize = function ()
 {
-    console.log("bodyOnResize called");
+   // console.log("bodyOnResize called");
 
     if(OMAR.imageManipulator)
     {
-        console.log("resizing");
+      //  console.log("resizing");
         //window.location.reload()
         OMAR.imageManipulator.checkResize();
     }

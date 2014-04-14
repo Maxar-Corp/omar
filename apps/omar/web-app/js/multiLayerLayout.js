@@ -27,7 +27,7 @@
             ]
         } );
         outerLayout.on('resize', function(evt) {
-            console.log("resize");
+           // console.log("resize");
             bodyOnResize();
 
         });
