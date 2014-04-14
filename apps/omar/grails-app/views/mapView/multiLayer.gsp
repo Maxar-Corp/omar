@@ -69,9 +69,21 @@
   }
   function changeMapSize()
   {
-    var Dom = YAHOO.util.Dom;
+  if(!mapWidget.getMap()) return;
 
-    if(mapWidget) mapWidget.changeMapSize( );
+    //var Dom = YAHOO.util.Dom;
+
+
+    mapViewportDivRegion = YAHOO.util.Region.getRegion(document.getElementById("center2"));//mapWidget.getMap().div);
+    console.log(JSON.stringify(mapViewportDivRegion));
+
+   OpenLayers.Util.modifyDOMElement(mapWidget.getMap().div, null, null,
+                               {w:mapViewportDivRegion.width,
+                                h:mapViewportDivRegion.height});
+
+mapWidget.getMap().updateSize();
+     //if(mapWidget) mapWidget.changeMapSize( );
+  // alert(mapViewportDivRegion)  ;
   }
 
   function setupBaseLayers()
@@ -183,6 +195,7 @@
 
     var zoom = mapWidget.getMap().getZoomForExtent(bounds, true);
     mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
+    changeMapSize();
 }
 
 function getProjectedImage(params)
