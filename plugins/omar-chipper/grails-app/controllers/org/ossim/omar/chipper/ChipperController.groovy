@@ -26,38 +26,74 @@ class ChipperController
       ctx.complete()
     }
     */
+
+    def data = chipperService.getChip( new CaseInsensitiveMap( params ) )
+
+    response.contentType = data.contentType
+    response.outputStream << data.content
+
+  }
+
+//  def get2CMV()
+//  {
+//    //def ctx = startAsync()
+//    //println "CTX ============= ${ctx}"
+//    //ctx.start {
+//    def chpCmd = new TwoColorMultiCommand()
+//
+//    def caseParams = new CaseInsensitiveMap( params )
+//
+//    bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
+//
+//    if ( !chpCmd.validate() )
+//    {
+//      log.error( chpCmd.createErrorString() )
+//      //   println cmd.createErrorString()
+//      ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( chpCmd ) )
+//    }
+//    else
+//    {
+//      //println chpCmd
+//
+//      def results = chipperService.get2CMV( chpCmd )
+//
+//      response.contentType = results.contentType
+//      response.outputStream << results.buffer
+//    }
+//    // ctx.complete()
+//    // }
+//    //println "Leaving get2CMV!!!!!!!!!!!!"
+//    null
+//  }
+
+
+  def getThumbnail()
+  {
+//    def ctx = startAsync()
+//    println "CTX ============= ${ctx}"
+//    ctx.start {
+    def data = chipperService.getThumbnail( new CaseInsensitiveMap( params ) )
+
+    response.contentType = data.contentType
+    response.outputStream << data.content
+//      ctx.complete()
+//    }
   }
 
   def get2CMV()
   {
-    //def ctx = startAsync()
-    //println "CTX ============= ${ctx}"
-    //ctx.start {
-    def chpCmd = new TwoColorMultiCommand()
+    def data = chipperService.get2CMV( new CaseInsensitiveMap( params ) )
 
-    def caseParams =   new CaseInsensitiveMap( params )
+    response.contentType = data.contentType
+    response.outputStream << data.content
+  }
 
-    bindData( chpCmd, new CaseInsensitiveMap( params ), chpCmd.properties )
+  def getPSM()
+  {
+    def data = chipperService.getPSM( new CaseInsensitiveMap( params ) )
 
-    if ( !chpCmd.validate() )
-    {
-      log.error( chpCmd.createErrorString() )
-      //   println cmd.createErrorString()
-      ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( chpCmd ) )
-    }
-    else
-    {
-      //println chpCmd
-
-      def results = chipperService.get2CMV( chpCmd )
-
-      response.contentType = results.contentType
-      response.outputStream << results.buffer
-    }
-     // ctx.complete()
-   // }
-    //println "Leaving get2CMV!!!!!!!!!!!!"
-    null
+    response.contentType = data.contentType
+    response.outputStream << data.content
   }
 
 }
