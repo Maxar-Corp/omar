@@ -862,7 +862,7 @@ function init( mapWidth, mapHeight )
     if ( viewParam )
     {
         viewParam = YAHOO.lang.JSON.parse( viewParam );
-        console.log( viewParam );
+       // console.log( viewParam );
         var mapCenter = new OpenLayers.LonLat( viewParam.lon, viewParam.lat );
         var normScale = OpenLayers.Util.normalizeScale( viewParam.mpp );
         resolution = (1.0 / OpenLayers.INCHES_PER_UNIT["degrees"]) *
