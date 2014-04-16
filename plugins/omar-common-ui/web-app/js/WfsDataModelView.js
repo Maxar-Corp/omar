@@ -565,7 +565,7 @@ OMAR.models.RasterEntryColumnDefs=Backbone.Collection.extend({
                 ,{ "aTargets":[], "sTitle": "GRAZING","sType":"numeric",  "sName":"grazing_angle", "mDataProp": "grazing_angle" }
                 ,{ "aTargets":[], "sTitle": "SECURITY CLASS",  "sName":"security_classification", "mDataProp": "security_classification" }
                 ,{ "aTargets":[], "sTitle": "SECURITY_CODE",  "sName":"security_code", "mDataProp": "security_code" }
-                ,{ "aTargets":[], "sTitle": "GEOM",  "sName":"ground_geom", "mDataProp": "ground_geom", "bSearchable": false, "asSorting": [] }
+               // ,{ "aTargets":[], "sTitle": "GEOM",  "sName":"ground_geom", "mDataProp": "ground_geom", "bSearchable": false, "asSorting": [] }
                 ,{ "aTargets":[], "sTitle": "WIDTH",  "sName":"width", "sType":"numeric", "mDataProp": "width" }
                 ,{ "aTargets":[], "sTitle": "HEIGHT", "sName":"height", "sType":"numeric", "mDataProp": "height" }
                 ,{ "aTargets":[], "sTitle": "BANDS",  "sName":"number_of_bands", "sType":"numeric", "mDataProp": "number_of_bands" }
