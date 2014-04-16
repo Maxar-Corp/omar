@@ -119,8 +119,9 @@ class RasterKmlService extends KmlService
             def mpp = rasterEntry.getMetersPerPixel()
             // calculate a crude metric for putting an image that almost fits within the google viewport
             //
-            def defaultRange = mpp * Math.sqrt( ( rasterEntry.width ** 2 ) + ( rasterEntry.height ** 2 ) );
-            if ( defaultRange < 1 )
+            def maxWH = Math.max(rasterEntry.width, rasterEntry.height);
+            def defaultRange = Math.sqrt(mpp**2) * maxWH;
+            if ( defaultRange < 100 )
             {
               defaultRange = 15000
             }
