@@ -5,6 +5,8 @@ import org.ossim.omar.chipper.ChipCommand
 
 
 import org.ossim.omar.raster.RasterEntry
+import org.ossim.omar.core.TransparentFilter
+
 import java.awt.Point
 import java.awt.Transparency
 import java.awt.color.ColorSpace
@@ -33,6 +35,17 @@ class ChipperService
     BLANK, CHIPPER
   }
 
+
+  def defaultHillShadeOpts = [
+      azimuthAngle   : 270,
+      colorBlue      : 139,
+      colorGreen     : 26,
+      colorRed       : 85,
+      elevationAngle : 45,
+      gain           : 2.5,
+      resamplerFilter: 'cubic',
+      writer         : 'ossim_png'
+  ]
 /*
   private Map<String, String> createPanSharpenParams(ChipCommand chpCmd)
   {
@@ -116,6 +129,101 @@ class ChipperService
     }
 
     return chipperOptionsMap
+  }
+
+  def getHillShade(def params)
+  {
+//    println '*' * 40
+//    println params
+//    println '*' * 40
+
+    def inputParams = [
+        mapImage       : RasterEntry.read( params.layers as Long ),
+        azimuthAngle   : ( params.azimuthAngle ?: defaultHillShadeOpts.azimuthAngle ) as Double,
+        colorBlue      : ( params.colorBlue ?: defaultHillShadeOpts.colorBlue ) as Integer,
+        colorGreen     : ( params.colorGreen ?: defaultHillShadeOpts.colorGreen ) as Integer,
+        colorRed       : ( params.colorRed ?: defaultHillShadeOpts.colorRed ) as Integer,
+        elevationAngle : ( params.elevationAngle ?: defaultHillShadeOpts.elevationAngle ) as Double,
+        gain           : ( params.gain ?: defaultHillShadeOpts.gain ) as Double,
+        resamplerFilter: params.resamplerfilter ?: defaultHillShadeOpts.resampleFilter,
+        writer         : params.writer ?: defaultHillShadeOpts.writer
+    ]
+
+//    println "@" * 40
+//    println inputParams
+//    println "@" * 40
+
+    def type = 'png'
+    def (minX, minY, maxX, maxY) = params.bbox.split( ',' ).collect { it as double }
+    def bbox = new Bounds( minX, minY, maxX, maxY, params.srs )
+    def ostream = new ByteArrayOutputStream()
+
+    def outputParams = [
+        bbox       : bbox,
+        size       : [width: params.width as Integer, height: params.height as Integer],
+        type       : type,
+        output     : ostream,
+        transparent: true
+    ]
+
+    createHillShade( inputParams, outputParams )
+
+    [contentType: "image/${type}", content: ostream.toByteArray()]
+  }
+
+  def createHillShade(def inputParams, def outputParams)
+  {
+    def opts = [
+        operation       : 'hillshade',
+
+        cut_min_lon     : outputParams.bbox?.minX as String,
+        cut_min_lat     : outputParams.bbox?.minY as String,
+        cut_max_lon     : outputParams.bbox?.maxX as String,
+        cut_max_lat     : outputParams.bbox?.maxY as String,
+        cut_height      : ( outputParams.size?.height as Integer ) as String,
+        cut_width       : ( outputParams.size?.width as Integer ) as String,
+        srs             : outputParams.bbox?.proj?.id,
+
+
+        azimuth_angle   : inputParams.azimuthAngle as String,
+        color_blue      : inputParams.colorBlue as String,
+        color_green     : inputParams.colorGreen as String,
+        color_red       : inputParams.colorRed as String,
+        elevation_angle : inputParams.elevationAngle as String,
+        gain            : inputParams.gain as String,
+
+        scale_2_8_bit   : 'true',
+        'hist-op'       : 'auto-minmax',
+        resampler_filter: 'bilinear',
+
+        'image0.file'   : inputParams.mapImage?.filename,
+        'image0.entry'  : inputParams.mapImage?.entryId,
+    ]
+
+    def dems = findElevationCells(
+        grailsApplication?.config?.chipper?.hillShade?.elevationPath as String,
+        outputParams.bbox )
+
+    println "dems: ${dems}"
+
+    dems?.eachWithIndex { file, index -> opts["dem${index}.file"] = file }
+
+    runChipper( opts, outputParams )
+  }
+
+  def findElevationCells(String path, def bounds)
+  {
+    def cells = new StringVector()
+    def filenames = []
+
+    ElevMgr.instance().getCellsForBounds( path, bounds.minY, bounds.minX, bounds.maxY, bounds.maxX, cells )
+
+    for ( x in ( 0..<cells?.size() ) )
+    {
+      filenames << cells?.get( x as int )
+    }
+
+    return filenames
   }
 
 /*
@@ -447,11 +555,24 @@ class ChipperService
 
   def getChip(def params)
   {
-    def inputParams = [
-        layers: [
-            RasterEntry.read( params.layers.split( ',' ) )
-        ]
-    ]
+    def inputParams
+
+    if ( params.layers )
+    {
+      inputParams = [
+          layers: [
+              RasterEntry.read( params.layers )
+          ]
+      ]
+    }
+    else if ( params.filename )
+    {
+      inputParams = [
+          layers: [
+              [filename: params.filename, entryId: '0']
+          ]
+      ]
+    }
 
     def type = 'png'
     def (minX, minY, maxX, maxY) = params.bbox.split( ',' ).collect { it as double }
@@ -639,6 +760,13 @@ class ChipperService
 
     def raster = Raster.createRaster( sampleModel, dataBuffer, new Point( 0, 0 ) )
     def image = new BufferedImage( colorModel, raster, false, null )
+
+//    if ( outputParams.transparent )
+//    {
+//      println 'running filter'
+//      image = TransparentFilter.fixTransparency( new TransparentFilter(), image )
+//    }
+
 
     ImageIO.write( image, outputParams.type, outputParams.output )
   }

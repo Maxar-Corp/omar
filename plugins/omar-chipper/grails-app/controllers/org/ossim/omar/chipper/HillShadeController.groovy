@@ -1,30 +1,46 @@
 package org.ossim.omar.chipper
 
 import geoscript.GeoScript
+import geoscript.geom.Bounds
 import grails.converters.JSON
 import org.ossim.omar.raster.RasterEntry
 
 class HillShadeController
 {
+  def chipperService
 
   def index()
   {
-    def mapImage = RasterEntry.findByFilename( '/data1/sanfran/sanfran_map.tif' )
-    def bounds = ( GeoScript.wrap( mapImage?.groundGeom ) )?.bounds
-    def (minX, minY, maxX, maxY) = [bounds?.minX, bounds?.minY, bounds?.maxX, bounds?.maxY]
-    def baseWMS = grailsApplication.config.wms.base.layers[-1]
+    if ( params.mapImage == null )
+    {
+      redirect( controller: 'imageList' )
+    }
+    else
+    {
+      //def mapImage = RasterEntry.findByFilename( '/data1/sanfran/sanfran_map.tif' )
+      def mapImage = RasterEntry.read( params?.mapImage as Long )
+      def bounds = ( GeoScript.wrap( mapImage?.groundGeom ) )?.bounds
+      def (minX, minY, maxX, maxY) = [bounds?.minX, bounds?.minY, bounds?.maxX, bounds?.maxY]
+      def baseWMS = grailsApplication.config.wms.base.layers[-1]
 
-    def model = [
-        baseWMS : baseWMS,
-        mapImage: mapImage.id,
-        minX    : minX,
-        minY    : minY,
-        maxX    : maxX,
-        maxY    : maxY
-    ]
+      def demImages = chipperService.findElevationCells(
+          grailsApplication?.config?.chipper?.hillShade?.elevationPath as String,
+          bounds
+      )
 
-    render view: 'index', model: [model: model]
 
+      def model = [
+          baseWMS  : baseWMS,
+          mapImage : mapImage?.id,
+          demImages: demImages,
+          minX     : minX,
+          minY     : minY,
+          maxX     : maxX,
+          maxY     : maxY
+      ]
+
+      render view: 'index', model: [model: model]
+    }
   }
 
   def getOptions()
@@ -40,27 +56,12 @@ class HillShadeController
         writer:  'ossim_png'
 
 */
-    def options = [
-        [name: "azimuth_angle", value: '270', group: "Hill Shade", editor: 'text'
-//            editor: [
-//                type: 'slider',
-//                options: [
-//                    min: '0',
-//                    max: '360',
-//                    value: '270'
-//                ]
-//            ]
-        ],
-        [name: "color_blue", value: "139", group: "Hill Shade", editor: "text"],
-        [name: "color_green", value: "26", group: "Hill Shade", editor: "text"],
-        [name: "color_red", value: "85", group: "Hill Shade", editor: "text"],
-        [name: "elevation_angle", value: "45", group: "Hill Shade", editor: "text"],
-        [name: "gain", value: "1.5", group: "Hill Shade", editor: "text"],
 
-        [name: "resampler_filter", value: "cubic", group: "Image", editor: "text"],
-        [name: "writer", value: "ossim_png", group: "Image", editor: "text"]
-    ]
+    def options = chipperService.defaultHillShadeOpts.collect {
+      def group = ( it.key in ['writer', 'resamplerFilter'] ) ? 'Image' : 'Hill Shade'
 
+      [name: it.key, value: it.value, group: group, editor: "text"]
+    }
     render contentType: 'application/json', text: [total: options.size(), rows: options] as JSON
   }
 

@@ -8,7 +8,7 @@ import java.awt.Color
 // on windows this seems to return the MAC Address
 //omar.serverIP = org.ossim.omar.app.NetUtil.ipAddress
 omar.serverIP = InetAddress.localHost.hostAddress
-omar.serverURL = "http://${ omar.serverIP }:${ System.properties['server.port'] ?: '8080' }/${ appName }"
+omar.serverURL = "http://${omar.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
 
 //import org.ossim.omar.core.DbAppender
 
@@ -21,43 +21,44 @@ grails.gorm.default.mapping = {
 
 // locations to search for config files that get merged into the main config
 // config files can either be Java properties files or ConfigSlurper scripts
-if (!grails.config.locations || !(grails.config.locations instanceof List)) {
-    grails.config.locations = []
+if ( !grails.config.locations || !( grails.config.locations instanceof List ) )
+{
+  grails.config.locations = []
 }
 
-if ( new File( "${ userHome }/.grails/${ appName }-config.groovy" ).exists() )
+if ( new File( "${userHome}/.grails/${appName}-config.groovy" ).exists() )
 {
-  grails.config.locations << "file:${ userHome }/.grails/${ appName }-config.groovy"
+  grails.config.locations << "file:${userHome}/.grails/${appName}-config.groovy"
 }
 if ( System.env.OMAR_CONFIG )
 {
-  grails.config.locations << "file:${ System.env.OMAR_CONFIG }"
+  grails.config.locations << "file:${System.env.OMAR_CONFIG}"
 }
 if ( System.env.QUARTZ_CONFIG )
 {
-  grails.config.locations << "file:${ System.env.QUARTZ_CONFIG }"
+  grails.config.locations << "file:${System.env.QUARTZ_CONFIG}"
 }
 // if(System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
-grails.mime.types = [html: ['text/html', 'application/xhtml+xml'],
-    xml: ['text/xml', 'application/xml'],
-    text: 'text-plain',
-    jpeg: 'image/jpeg',
-    jpg: 'image/jpeg',
-    png: 'image/png',
-    js: 'text/javascript',
-    rss: 'application/rss+xml',
-    atom: 'application/atom+xml',
-    css: 'text/css',
-    csv: 'text/csv',
-    all: '*/*',
-    json: ['application/json', 'text/json'],
-    form: 'application/x-www-form-urlencoded',
-    multipartForm: 'multipart/form-data',
-    kml: 'application/vnd.google+earth.kml+xml',
-    kmz: 'application/vnd.google-earth.kmz'
+grails.mime.types = [html         : ['text/html', 'application/xhtml+xml'],
+                     xml          : ['text/xml', 'application/xml'],
+                     text         : 'text-plain',
+                     jpeg         : 'image/jpeg',
+                     jpg          : 'image/jpeg',
+                     png          : 'image/png',
+                     js           : 'text/javascript',
+                     rss          : 'application/rss+xml',
+                     atom         : 'application/atom+xml',
+                     css          : 'text/css',
+                     csv          : 'text/csv',
+                     all          : '*/*',
+                     json         : ['application/json', 'text/json'],
+                     form         : 'application/x-www-form-urlencoded',
+                     multipartForm: 'multipart/form-data',
+                     kml          : 'application/vnd.google+earth.kml+xml',
+                     kmz          : 'application/vnd.google-earth.kmz'
 ]
 
 // The default codec used to encode data with ${}
@@ -139,9 +140,9 @@ log4j = {
 //   debug 'org.springframework.security',
 //         'com.sun.jndi.ldap',
 
- // root {
- //       debug 'stdout'
- //   }
+  // root {
+  //       debug 'stdout'
+  //   }
 
 }
 
@@ -150,11 +151,11 @@ wms {
   referenceDataDirectory = "/data/omar"
   mapServExt = ( System.properties['os.name'].startsWith( 'Windows' ) ) ? ".exe" : ""
   serverAddress = omar.serverIP
-  useTileCache = false
-  mapFile = "${ referenceDataDirectory }/bmng.map"
+  useTileCache = true
+  mapFile = "${referenceDataDirectory}/bmng.map"
 
   base {
-    defaultOptions = [isBaseLayer: true, numZoomLevels:17, buffer: 0, transitionEffect: "resize"]
+    defaultOptions = [isBaseLayer: true, numZoomLevels: 17, buffer: 0, transitionEffect: "resize"]
     layers = [
 //        [
 //            url: "http://hyperquad.ucsd.edu/cgi-bin/i-cubed",
@@ -164,17 +165,17 @@ wms {
 //        ],
 //        [
 //            url: "http://hyperquad.ucsd.edu/cgi-bin/onearth",
- //           params: [layers: "OnEarth", format: "image/png", transparent: true, bgcolor: '#99B3CC'],
+//           params: [layers: "OnEarth", format: "image/png", transparent: true, bgcolor: '#99B3CC'],
 //            name: "OnEarth LandSat",
 //            options: defaultOptions
 //        ],
-        [
-                url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://${ serverAddress }/cgi-bin/mapserv${ wms.mapServExt }?map=${ mapFile }",
-                //url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://omar.ngaiost.org/cgi-bin/mapserv.sh?map=${ mapFile }",
-            params: [layers: ( useTileCache ) ? "omar" : "Reference", format: "image/jpeg"],
-            name: "Reference Data",
-            options: defaultOptions
-        ]
+[
+    url    : ( useTileCache ) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
+    //url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://omar.ngaiost.org/cgi-bin/mapserv.sh?map=${ mapFile }",
+    params : [layers: ( useTileCache ) ? "omar" : "Reference", format: "image/jpeg"],
+    name   : "Reference Data",
+    options: defaultOptions
+]
 
     ]
   }
@@ -187,28 +188,28 @@ wms {
     switch ( Environment.current.name.toUpperCase() )
     {
     case "DEVELOPMENT":
-      mapFile = "${ referenceDataDirectory }/omar-2.0-dev.map"
+      mapFile = "${referenceDataDirectory}/omar-2.0-dev.map"
       break
     case "PRODUCTION":
-      mapFile = "${ referenceDataDirectory }/omar-2.0-prod.map"
+      mapFile = "${referenceDataDirectory}/omar-2.0-prod.map"
       break
     case "TEST":
-      mapFile = "${ referenceDataDirectory }/omar-2.0-test.map"
+      mapFile = "${referenceDataDirectory}/omar-2.0-test.map"
       break
     }
 
     raster = [
-        url: "${ omar.serverURL }/wms/footprints",
-        params: [transparent:true, styles: "byFileType", layers: ( supportIE6 ) ? "Imagery" : "ImageData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
-        name: "OMAR Imagery Coverage",
-        options: [isBaseLayer:false, footprintLayers: "Imagery"]
+        url    : "${omar.serverURL}/wms/footprints",
+        params : [transparent: true, styles: "byFileType", layers: ( supportIE6 ) ? "Imagery" : "ImageData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
+        name   : "OMAR Imagery Coverage",
+        options: [isBaseLayer: false, footprintLayers: "Imagery"]
     ]
 
     video = [
-        url: "${ omar.serverURL }/wms/footprints",
-        params: [transparent:true, styles: "byFileType", layers: ( supportIE6 ) ? "Videos" : "VideoData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
-        name: "OMAR Video Coverage",
-        options: [isBaseLayer:false, footprintLayers: "Videos"]
+        url    : "${omar.serverURL}/wms/footprints",
+        params : [transparent: true, styles: "byFileType", layers: ( supportIE6 ) ? "Videos" : "VideoData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
+        name   : "OMAR Video Coverage",
+        options: [isBaseLayer: false, footprintLayers: "Videos"]
     ]
   }
 
@@ -242,8 +243,8 @@ wms {
 // Note: defaultSize of 512 was killing speed on search page when browser is forced to resample.
 //---
 thumbnail {
-    cacheDir = ( System.properties["os.name"].contains("Windows") ) ? "c:/temp" : "${ wms.referenceDataDirectory }/omar-cache"
-    defaultSize = 128
+  cacheDir = ( System.properties["os.name"].contains( "Windows" ) ) ? "c:/temp" : "${wms.referenceDataDirectory}/omar-cache"
+  defaultSize = 128
 }
 
 security {
@@ -257,7 +258,7 @@ security {
   level = "UNCLASS"
 }
 
-image.download.prefix = "http://${ omar.serverIP }"
+image.download.prefix = "http://${omar.serverIP}"
 
 /** ********************************* CONDITIONALS FOR VIEWS                           ***********************************************/
 // flags for different views
@@ -276,7 +277,7 @@ views {
 videoStreaming {
   flashDirRoot = "/opt/local/apache2/htdocs/videos"
   //flashDirRoot = "/var/www/html/videos"
-  flashUrlRoot = "http://${ omar.serverIP }/videos"
+  flashUrlRoot = "http://${omar.serverIP}/videos"
 }
 
 rasterEntry {
@@ -318,40 +319,40 @@ rasterEntry {
 
   styles = [
       [
-        propertyName : "fileType",
-        outlineLookupTable :[
-          //aaigrid: 4,
-          cadrg: new Color( 0, 255, 255, 255 ),
-          cib: new Color(0,128,128,255),
-          ccf: new Color( 128, 100, 255, 255 ),
-          adrg: new Color( 50, 111, 111, 255 ),
-          mrsid: new Color(0,188,0,255),
-          //doqq: 2,
-          dted: new Color( 0, 255, 0, 255 ), // green
-          jpeg: new Color( 255, 255, 0, 255 ), // yellow
-          jpeg2000: new Color( 255, 200, 0, 255 ), //
-          landsat7: new Color( 255, 0, 255, 255 ), // purple
-          nitf: new Color( 0, 0, 255, 255 ),  // blue
-          tiff: new Color( 255, 0, 0, 255 ),  // red
-          mpeg: new Color(164,254,255,255),
-          unspecified: new Color(255,255,255,255) // white
-        ],
+          propertyName      : "fileType",
+          outlineLookupTable: [
+              //aaigrid: 4,
+              cadrg      : new Color( 0, 255, 255, 255 ),
+              cib        : new Color( 0, 128, 128, 255 ),
+              ccf        : new Color( 128, 100, 255, 255 ),
+              adrg       : new Color( 50, 111, 111, 255 ),
+              mrsid      : new Color( 0, 188, 0, 255 ),
+              //doqq: 2,
+              dted       : new Color( 0, 255, 0, 255 ), // green
+              jpeg       : new Color( 255, 255, 0, 255 ), // yellow
+              jpeg2000   : new Color( 255, 200, 0, 255 ), //
+              landsat7   : new Color( 255, 0, 255, 255 ), // purple
+              nitf       : new Color( 0, 0, 255, 255 ),  // blue
+              tiff       : new Color( 255, 0, 0, 255 ),  // red
+              mpeg       : new Color( 164, 254, 255, 255 ),
+              unspecified: new Color( 255, 255, 255, 255 ) // white
+          ],
       ],
       [
-          propertyName : "sensorId",
-          defaultOutlineColor : new Color( 255, 255, 255, 255 ),
-          defaultFillColor : new Color( 0, 0, 0, 0 ),
+          propertyName       : "sensorId",
+          defaultOutlineColor: new Color( 255, 255, 255, 255 ),
+          defaultFillColor   : new Color( 0, 0, 0, 0 ),
 
-          outlineLookupTable :[
-                  'ACES_YOGI-HRI1': new Color( 255, 0, 0, 255 ),
-                  'ACES_YOGI-HRI2': new Color( 255, 0, 0, 255 ),
-                  'ACES_YOGI-HRI3': new Color( 255, 0, 0, 255 ),
-                  'ACES_YOGI-HSI': new Color( 255, 255, 0, 255 ),
-                  ALPHA: new Color( 255, 0, 255, 255 ),
-                  BRAVO: new Color( 0, 255, 0, 255 ),
-                  CHARLIE: new Color( 0, 255, 255, 255 ),
-                  DELTA: new Color( 0, 0, 255, 255 ),
-                  unspecified: new Color(255,255,255,255) // white
+          outlineLookupTable : [
+              'ACES_YOGI-HRI1': new Color( 255, 0, 0, 255 ),
+              'ACES_YOGI-HRI2': new Color( 255, 0, 0, 255 ),
+              'ACES_YOGI-HRI3': new Color( 255, 0, 0, 255 ),
+              'ACES_YOGI-HSI' : new Color( 255, 255, 0, 255 ),
+              ALPHA           : new Color( 255, 0, 255, 255 ),
+              BRAVO           : new Color( 0, 255, 0, 255 ),
+              CHARLIE         : new Color( 0, 255, 255, 255 ),
+              DELTA           : new Color( 0, 0, 255, 255 ),
+              unspecified     : new Color( 255, 255, 255, 255 ) // white
           ]
       ]
   ]
@@ -424,7 +425,7 @@ bundle {
 
 export {
   prefix = "omar-export-"
-  workDir = ( System.properties["os.name"].contains("Windows") ) ? "c:/temp" : "/tmp"
+  workDir = ( System.properties["os.name"].contains( "Windows" ) ) ? "c:/temp" : "/tmp"
 
   superoverlay {
     baseDir = "/data/omar/superoverlay"
@@ -516,12 +517,12 @@ export {
 
     formatters = [
         groundGeom: {
-            def convertValue = it;
-           // if(it instanceof String)
-           // {
-           //     convertValue = geoscript.geom.Geometry.fromWKT(it);
-           // }
-            def bounds = convertValue.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' )
+          def convertValue = it;
+          // if(it instanceof String)
+          // {
+          //     convertValue = geoscript.geom.Geometry.fromWKT(it);
+          // }
+          def bounds = convertValue.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' )
         }
     ]
   }
@@ -548,7 +549,9 @@ export {
         'Width'
     ]
     formatters = [
-        groundGeom: { def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' ) }
+        groundGeom: {
+          def bounds = it.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' )
+        }
     ]
 
   }
@@ -669,15 +672,15 @@ If you did make the request, then click <a href="$url">here</a> to reset your pa
 rss {
   rasterEntry {
     properties = [
-        imageId: 'Image ID',
-        missionId: 'Mission ID',
+        imageId               : 'Image ID',
+        missionId             : 'Mission ID',
         securityClassification: 'Security Class',
-        niirs: 'NIIRS',
-        countryCode: 'Country Code',
-        beNumber: 'BE Number',
-        acquisitionDate: 'Acquisition Date',
-        width: 'Width',
-        height: 'Height',
+        niirs                 : 'NIIRS',
+        countryCode           : 'Country Code',
+        beNumber              : 'BE Number',
+        acquisitionDate       : 'Acquisition Date',
+        width                 : 'Width',
+        height                : 'Height',
     ]
   }
 }
@@ -692,67 +695,67 @@ stager {
    * the database much smaller then you can turn off including other tags
    */
   includeOtherTags = false
-    /**
-     * Worker threads are currently for building on demand overviews and histograms
-     * This will specify how many simultaneous threads that can be active
-     *
-     */
-  worker{
-      threads = 3
-      maxQueueSize=1000
+  /**
+   * Worker threads are currently for building on demand overviews and histograms
+   * This will specify how many simultaneous threads that can be active
+   *
+   */
+  worker {
+    threads = 3
+    maxQueueSize = 1000
   }
 
-    /**
-     * When files are being indexed into the system this specifies how
-     * many threads can be used to pop off the table queue in the database
-     *
-     * Currently this is used for indexing new data into the system
-     */
+  /**
+   * When files are being indexed into the system this specifies how
+   * many threads can be used to pop off the table queue in the database
+   *
+   * Currently this is used for indexing new data into the system
+   */
   queue {
     threads = 4
   }
 
+  /**
+   * This is passed to external scripts that support threading.  You can specify
+   * the default value and the max thread count that is used in the UI for
+   * user input to the executing thread
+   */
+  scripts {
+    defaultThreadCount = 4
+    maxThreadCount = 8
+    runScript = "omarRunScript.sh"
     /**
-     * This is passed to external scripts that support threading.  You can specify
-     * the default value and the max thread count that is used in the UI for
-     * user input to the executing thread
+     * This will force the scripts page on reload to always use the formatters
+     * listed.
      */
-  scripts{
-      defaultThreadCount = 4
-      maxThreadCount = 8
-      runScript="omarRunScript.sh"
-      /**
-       * This will force the scripts page on reload to always use the formatters
-       * listed.
-       */
-      forceUseFormatterOnReload = false
-      formatter = [
-              /**
-               * This formats the arguments to the indexFilesArgs on the scripts page
-               */
-              indexFilesArgs:{
-                  def date = new org.joda.time.DateTime()
-                  "/data"
+    forceUseFormatterOnReload = false
+    formatter = [
+        /**
+         * This formats the arguments to the indexFilesArgs on the scripts page
+         */
+        indexFilesArgs : {
+          def date = new org.joda.time.DateTime()
+          "/data"
 //                  "/data/${date.toString('YYYY-MM-dd')}"
-                    },
-              /**
-               * This formats the arguments to the stageFilesArgs on the scripts page
-               */
-              stageFilesArgs:{
-                  def date = new org.joda.time.DateTime()
-                  "/data"
+        },
+        /**
+         * This formats the arguments to the stageFilesArgs on the scripts page
+         */
+        stageFilesArgs : {
+          def date = new org.joda.time.DateTime()
+          "/data"
 //                  "/data/${date.toString('YYYY-MM-dd')}"
-              },
-              /**
-               * This formats the arguments to the removeFilesArgs on the scripts page
-               */
-              removeFilesArgs:{
-                  def date = new org.joda.time.DateTime()
-                  date = date.plusDays(-30);
-                  "/data"
+        },
+        /**
+         * This formats the arguments to the removeFilesArgs on the scripts page
+         */
+        removeFilesArgs: {
+          def date = new org.joda.time.DateTime()
+          date = date.plusDays( -30 );
+          "/data"
 //                  "/data/${date.toString('YYYY-MM-dd')}"
-              }
-              ]
+        }
+    ]
   }
   histogramOptions = ""
   overview {
@@ -762,14 +765,14 @@ stager {
   onDemand = true
 }
 
-jabber{
+jabber {
   /**
    * Can be disabled, enabled, required
    */
   securityMode = "disabled"
 }
 
-federation{
+federation {
 
 }
 
@@ -835,4 +838,10 @@ csw {
         from video_data_set inner join video_file on (video_data_set.id = video_file.video_data_set_id and type='main')
     )
   """
+}
+
+chipper {
+  hillShade {
+    elevationPath = '/data1/ossim-dem-test'
+  }
 }

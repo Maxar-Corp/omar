@@ -123,7 +123,7 @@
 
         if ( images.length === 1 )
         {
-            var mapImage = images[0].filename;
+            var mapImage = images[0].id;
 
             window.location = '../hillShade?mapImage=' + mapImage;
         }

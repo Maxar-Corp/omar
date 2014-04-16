@@ -96,4 +96,18 @@ class ChipperController
     response.outputStream << data.content
   }
 
+  def getHillShade()
+  {
+//    println '*' * 40
+//    println params
+//    println '*' * 40
+
+
+
+    def data = chipperService.getHillShade( new CaseInsensitiveMap( params ) )
+
+    response.contentType = data.contentType
+    response.outputStream << data.content
+  }
+
 }
