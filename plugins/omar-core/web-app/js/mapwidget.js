@@ -12,6 +12,34 @@ function MapWidget()
     var zoomFullResScale = null;
     var lastTick = (new Date()).getTime();
     var panButton = null;
+    var sketchSymbolizers = {
+        "Point": {
+            pointRadius: 4,
+            graphicName: "circle",
+            fillColor: "orange",
+            fillOpacity:0.5,
+            strokeWidth: 1,
+            strokeOpacity: 1,
+            strokeColor: "orange"
+        },
+        "Line": {
+            strokeWidth: 3,
+            strokeOpacity: 1,
+            strokeColor: "orange"//,
+            //strokeDashstyle: "dash"
+        },
+        "Polygon": {
+            strokeWidth: 2,
+            strokeOpacity: 1,
+            strokeColor: "orange",
+            fillColor: "orange",
+            fillOpacity: 0.5
+        }
+    };
+    var style = null;
+    var styleMap = null;
+    var crossStryle = null;
+
     this.getZoomInButton = function()
     {
         return zoomInButton;
@@ -43,6 +71,14 @@ function MapWidget()
         {
             this.touchhandler = new TouchHandler( map, 4 );
         }
+        style = new OpenLayers.Style();
+        style.addRules([
+            new OpenLayers.Rule({symbolizer: sketchSymbolizers})
+        ]);
+        styleMap = new OpenLayers.StyleMap({"default": style});
+
+        crossStyle =  new OpenLayers.Style({"default": {fillColor: "#000000"},
+            "temporary": {fillColor: "#000000", graphicName: "cross"}});
     }
     this.setCenterForLayers = function()
     {
@@ -641,6 +677,11 @@ function MapWidget()
         if ( $( "measurementUnits" ) && pathMeasurement )
         {
             pathMeasurementButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Path, {
+                    handlerOptions: {
+                        layerOptions: {
+                            styleMap: styleMap
+                        }
+                    },
                 title:"Click path measurement button to activate. Once activated click points on the map to create a path that you wish to measure. When you are done creating your path double click to end.",
                 displayClass: "olControlMeasureDistance", geodesic:true, persist: true,
                 eventListeners:
@@ -729,6 +770,11 @@ function MapWidget()
         if ( polygonMeasurement && $( "measurementUnits" ) )
         {
             polygonMeasurementButton = new OpenLayers.Control.Measure( OpenLayers.Handler.Polygon, {
+                handlerOptions: {
+                    layerOptions: {
+                        styleMap: styleMap
+                    }
+                },
                 title:"Click polygon measurement button to activate. Once activated click points on the map to create a polygon that you wish to measure. When you are done creating your polygon double click to end.",
                 displayClass: "olControlMeasureArea", geodesic:true, displaySystem: "metric", persist: true,
                 eventListeners:
