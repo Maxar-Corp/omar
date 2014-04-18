@@ -37,18 +37,30 @@ class ImageListService
 
     //println params
 
-    def total = RasterEntry.count()
-
     def max = ( params?.rows as Integer ) ?: 10
     def offset = ( ( params?.page as Integer ?: 1 ) - 1 ) * max
     def sort = params?.sort ?: 'id'
-    def order = params?.order ?: 'asc'
-    def x = [max: max, offset: offset, sort: sort, order: order]
+    def dir = params?.order ?: 'asc'
+    def x = [max: max, offset: offset, sort: sort, dir: dir]
 
     println x
 
-    def rows = RasterEntry.list( x )
+    def total = RasterEntry.createCriteria().count {
+      if ( params.filter )
+      {
+        sqlRestriction params.filter
+      }
+    }
 
+    def rows = RasterEntry.withCriteria {
+      if ( params.filter )
+      {
+        sqlRestriction params.filter
+      }
+      maxResults( max )
+      order( sort, dir )
+      firstResult( offset )
+    }
     rows = rows.collect { row ->
       columnNames.inject( [:] ) { a, b -> a[b] = row[b]; a }
     }

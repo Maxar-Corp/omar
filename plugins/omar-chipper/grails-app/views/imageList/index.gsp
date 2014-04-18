@@ -33,52 +33,52 @@
 
 <div region="center">
 
-    <div class="easyui-layout" fit="true">
-        <div region="north" style="height:35px">
-            <div class="easyui-panel" style="padding:5px;">
-                <g:link class="easyui-linkbutton" plain="true" uri="/">Home</g:link>
-            </div>
+<div class="easyui-layout" fit="true">
+    <div region="north" style="height:35px">
+        <div class="easyui-panel" style="padding:5px;">
+            <g:link class="easyui-linkbutton" plain="true" uri="/">Home</g:link>
         </div>
-
-        <%--
-        <div region="south" style="height: 100px"></div>
-
-        <div region="east" style="width: 100px"></div>
-       --%>
-
-        <div region="west" style="width: 200px">
-            <table id="pg" class="easyui-propertygrid"
-                   url="${createLink( action: 'getFilterParams' )}"
-                   showGroup="true" showHeader="false" scrollbarSize="0">
-            </table>
-            <br/>
-
-            <div align='center'>
-                <button id="applyFilter">Apply Filter</button>
-            </div>
-        </div>
-
-        <div region="center">
-            <table id="tbl" class="easyui-datagrid" rownumbers="true" pagination="true" fit="true"
-                   striped="true" url="${createLink( action: 'getData' )}"></table>
-
-            <div id="tb">
-                <div style="margin-bottom:5px">
-                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true"
-                       onclick="showFilter()">Filter</a>
-                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true"
-                       onclick="create2CMV()">2CMV</a>
-                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true"
-                       onclick="createPSM()">PSM</a>
-                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cut" plain="true"
-                       onclick="createHillShade()">HillShade</a>
-                </div></div>
-        </div>
-
     </div>
 
-    <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.easyui.min.js"/>
-    <r:script>
+    <%--
+    <div region="south" style="height: 100px"></div>
+
+    <div region="east" style="width: 100px"></div>
+   --%>
+
+    <div region="west" style="width: 200px">
+        <table id="pg" class="easyui-propertygrid"
+               url="${createLink( action: 'getFilterParams' )}"
+               showGroup="true" showHeader="false" scrollbarSize="0">
+        </table>
+        <br/>
+
+        <div align='center'>
+            <button id="applyFilter">Apply Filter</button>
+        </div>
+    </div>
+
+    <div region="center">
+        <table id="tbl" class="easyui-datagrid" rownumbers="true" pagination="true" fit="true"
+               striped="true" url="${createLink( action: 'getData' )}"></table>
+
+        <div id="tb">
+            <div style="margin-bottom:5px">
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true"
+                   onclick="showFilter()">Filter</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true"
+                   onclick="create2CMV()">2CMV</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true"
+                   onclick="createPSM()">PSM</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cut" plain="true"
+                   onclick="createHillShade()">HillShade</a>
+            </div></div>
+    </div>
+
+</div>
+
+<r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.easyui.min.js"/>
+<r:script>
 
     function showFilter()
     {
@@ -119,7 +119,7 @@
             var panImage = (images[0].numberOfBands === 1) ? images[0].id : images[1].id;
             var colorImage = (images[0].numberOfBands > 1) ? images[0].id : images[1].id;
 
-            window.location = '../panSharpen?panImage=' + panImage + '&colorImage=' + colorImage;
+            window.location = '${createLink( controller: "panSharpen" )}?panImage=' + panImage + '&colorImage=' + colorImage;
         }
         else
         {
@@ -135,7 +135,7 @@
         {
             var mapImage = images[0].id;
 
-            window.location = '../hillShade?mapImage=' + mapImage;
+            window.location = '${createLink( controller: "hillShade" )}?mapImage=' + mapImage;
         }
         else
         {
@@ -161,13 +161,45 @@
 
          $('#applyFilter').click(function(){
             var data = $('#pg').propertygrid('getData').rows;
-            var obj = {};
+            var filter = "";
 
             data.forEach(function(item){
-                obj[item.name] = item.value;
+                if ( item.value )
+                {
+                    if ( ! ( filter === "" ) )
+                    {
+                        filter += " AND ";
+                    }
+
+                    if ( item.name === "Format")
+                    {
+                        filter += "file_type='" + item.value + "'";
+                    }
+                    else if ( item.name === "Start Date")
+                    {
+                        filter += "acquisition_date >='" + item.value + "'";
+                    }
+                    else if ( item.name === "End Date")
+                    {
+                        filter += "acquisition_date <='" + item.value + "'";
+                    }
+                    else if ( item.name === "Mission")
+                    {
+                        filter += "mission_id='" + item.value + "'";
+                    }
+                    else if ( item.name === "Sensor")
+                    {
+                        filter += "sensor_id='" + item.value + "'";
+                    }
+                    else if ( item.name === "Filename")
+                    {
+                        filter += "filename ilike '" + item.value + "'";
+                    }
+                }
             });
 
-            console.log(obj);
+            $('#tbl').datagrid('load', {filter: filter});
+            console.log(filter);
         });
 
         function styleThumbnail( value, row, index )
@@ -211,7 +243,7 @@
         });
 */
     } );
-    </r:script>
-    <r:layoutResources/>
+</r:script>
+<r:layoutResources/>
 </body>
 </html>

@@ -27,9 +27,9 @@
 
 <div region="center">
     <div class="easyui-layout" fit="true">
-        <div region="north" style="height:35px">
+        <div region="north" style="height:50px">
             <div class="easyui-panel" style="padding:5px;">
-                <g:link class="easyui-linkbutton" plain="true" uri="/">Home</g:link>
+                <g:link class="easyui-linkbutton" plain="true" uri="/"><b>Home</b></g:link>
                 <g:link class="easyui-linkbutton" plain="true" controller="imageList"><b>Images</b></g:link>
             </div>
         </div>
@@ -44,7 +44,10 @@
     </div>
 </div>
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.easyui.min.js"/>
+<r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.js"/>
+<%--
 <r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.light.js"/>
+--%>
 <r:script>
     $( document ).ready( function ()
     {
@@ -71,7 +74,7 @@
             new OpenLayers.Layer.WMS( "Chipper - PSM - Color",
                     chipUrl,
                     {layers: model.colorImage, format: 'image/png', transparent: true},
-                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} ),
+                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} ),
 
             new OpenLayers.Layer.WMS( "Chipper - PSM - Pan",
                     chipUrl,
@@ -81,7 +84,7 @@
             new OpenLayers.Layer.WMS( "Chipper - PSM - Product",
                     productUrl,
                     {layers: '', colorImage: model.colorImage, panImage: model.panImage, format: 'image/png', transparent: true},
-                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
+                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} )
         ];
         map.addLayers( layers );
 

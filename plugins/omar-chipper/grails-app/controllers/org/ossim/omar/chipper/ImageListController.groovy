@@ -1,6 +1,7 @@
 package org.ossim.omar.chipper
 
 import grails.converters.JSON
+import org.ossim.omar.raster.RasterEntry
 
 class ImageListController
 {
@@ -19,17 +20,51 @@ class ImageListController
 
   def getFilterParams()
   {
+    def missions = RasterEntry.withCriteria {
+      projections {
+        distinct( 'missionId' )
+      }
+    }?.sort()?.collect {
+      [label: it, value: it]
+    }
+
+    def sensors = RasterEntry.withCriteria {
+      projections {
+        distinct( 'sensorId' )
+      }
+    }?.sort()?.collect {
+      [label: it, value: it]
+    }
+
+    def fileTypes = RasterEntry.withCriteria {
+      projections {
+        distinct( 'fileType' )
+      }
+    }?.sort()?.collect {
+      [label: it, value: it]
+    }
+
+
     def filterParams = [
-        [group: 'Acquisition Date', name: 'Start Date', editor: 'datetimebox'],
+        [group: 'Acquisition Date', name: 'Start Date', editor: 'datebox'],
         [group: 'Acquisition Date', name: 'End Date', editor: 'datebox'],
-        [group: 'Image Metadata', name: 'Mission', editor: 'combobox'],
-        [group: 'Image Metadata', name: 'Sensor', editor: 'combobox'],
+
+        [group: 'Image Metadata', name: 'Mission', editor: [
+            type: 'combobox', options: [valueField: 'label', textField: 'value', data: missions]]
+        ],
+        [group: 'Image Metadata', name: 'Sensor', editor: [
+            type: 'combobox', options: [valueField: 'label', textField: 'value', data: sensors]]
+        ],
         [group: 'Image Metadata', name: 'Image Id', editor: 'text'],
         [group: 'File', name: 'Filename', editor: 'text'],
+        [group: 'File', name: 'Format', editor: [
+            type: 'combobox', options: [valueField: 'label', textField: 'value', data: fileTypes]]
+        ],
 
 
     ]
 
     render contentType: 'application/json', text: [total: filterParams.size(), rows: filterParams] as JSON
   }
+
 }
