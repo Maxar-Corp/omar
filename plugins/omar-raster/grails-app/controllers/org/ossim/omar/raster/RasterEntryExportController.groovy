@@ -64,7 +64,7 @@ class RasterEntryExportController
         def rootPathName = params.rootPathName!=null?params.rootPathName:"ossim-geocell"
         def options = [includeGeocellProject:includeGeocellProject, 
                        rootPathName:rootPathName]
-        println "OPTIONS: ${options}"
+       // println "OPTIONS: ${options}"
         exportService.exportGclWithResponse(files.unique{it.mainFile}, options, response)
         /*
           def (file, mimeType) = exportService.exportGcl(fNames, cNames)
@@ -86,7 +86,7 @@ class RasterEntryExportController
           def httpResponse = new HttpStatusMessage()
           httpResponse.status = HttpStatus.UNAUTHORIZED
           httpResponse.message = "You are unauthorized to download the files.  " +
-                                 "You must be logged into OMARª \n and have download privileges."
+                                 "You must be logged into OMARï¿½ \n and have download privileges."
 
           httpResponse.initializeResponse(response)
           response.contentType = "text/plain"

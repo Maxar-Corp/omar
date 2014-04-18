@@ -172,10 +172,15 @@ class WebMappingService implements ApplicationContextAware
         midPoint = null
 
         // for now scale all WMS requests to 8-bit
-        kwlString += "object${ objectPrefixIdx }.type:ossimScalarRemapper\n"
-        kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
-        ++connectionId
-        ++objectPrefixIdx
+        // let's see what happens when I move this after the viewport stretch
+        // so our stretch is done in full bit depth
+        //
+//        kwlString += "object${ objectPrefixIdx }.type:ossimScalarRemapper\n"
+//        kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+//        ++connectionId
+//        ++objectPrefixIdx
+
+
         // and make it either 1 band or 3 band output
         //
         if ( maxBands <= 2 )
@@ -213,6 +218,11 @@ class WebMappingService implements ApplicationContextAware
           ++objectPrefixIdx
           connectionId += 2
         }
+        // for now scale all WMS requests to 8-bit
+        kwlString += "object${ objectPrefixIdx }.type:ossimScalarRemapper\n"
+        kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+        ++connectionId
+        ++objectPrefixIdx
       }
       else
       {

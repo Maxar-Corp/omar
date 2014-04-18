@@ -231,15 +231,17 @@ class ExportService
 
     def exportGclWithResponse(def fNames, def options, def response)
     {
+      //println options
       def files = []
       def rootPathName = options.rootPathName?:"ossim-geocell"
-      def includeGeocellProject = (options.includeGeocellProject!=null)?:true
+      def includeGeocellProject = (options.includeGeocellProject!=null)?options.includeGeocellProject.toBoolean():true
       response.setHeader( "Content-disposition", "attachment; filename=${rootPathName}.zip" );
       response.contentType = "application/octet-stream"
       def outputString = new StringBuilder();
       def baseString = "dataManager.objectList.object"
       def index = 0
       def zos = new ZipOutputStream(response.outputStream);
+      //println "INCLUDE GEOCELL PROJECT???? ${includeGeocellProject}"
       fNames.each{entry->
         def testFile
         try{

@@ -12,6 +12,11 @@ body {
     overflow: hidden;
 }
 
+#map {
+    width: 100%;
+    height: 100%;
+}
+
 #toggle {
     text-align: center;
     padding: 1em;
@@ -25,3 +30,9 @@ body {
 #tRight {
     border-left: none !important;
 }
+/*
+#map {
+    width: 1024px;
+    height: 512px;
+}
+*/

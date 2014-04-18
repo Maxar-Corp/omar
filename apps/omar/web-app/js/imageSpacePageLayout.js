@@ -27,10 +27,7 @@
             ]
         } );
         outerLayout.on('resize', function(evt) {
-            if(OMAR.imageManipulator)
-            {
-                //OMAR.imageManipulator.checkResize();
-            }
+            bodyOnResize();
         });
         outerLayout.on( 'render', function ()
         {
@@ -77,8 +74,11 @@
 
 var bodyOnResize = function ()
 {
+   // console.log("bodyOnResize called");
+
     if(OMAR.imageManipulator)
     {
+      //  console.log("resizing");
         //window.location.reload()
         OMAR.imageManipulator.checkResize();
     }
