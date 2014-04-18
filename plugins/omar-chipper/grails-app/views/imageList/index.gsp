@@ -44,9 +44,19 @@
         <div region="south" style="height: 100px"></div>
 
         <div region="east" style="width: 100px"></div>
+       --%>
 
-        <div region="west" style="width: 100px"></div>
-        --%>
+        <div region="west" style="width: 200px">
+            <table id="pg" class="easyui-propertygrid"
+                   url="${createLink( action: 'getFilterParams' )}"
+                   showGroup="true" showHeader="false" scrollbarSize="0">
+            </table>
+            <br/>
+
+            <div align='center'>
+                <button id="applyFilter">Apply Filter</button>
+            </div>
+        </div>
 
         <div region="center">
             <table id="tbl" class="easyui-datagrid" rownumbers="true" pagination="true" fit="true"
@@ -92,7 +102,7 @@
             var redImage = images[0].id;
             var blueImage =  images[1].id;
 
-            window.location = '${createLink(controller: "twoColorMulti")}?redImage=' + redImage + '&blueImage=' + blueImage;
+            window.location = '${createLink( controller: "twoColorMulti" )}?redImage=' + redImage + '&blueImage=' + blueImage;
         }
         else
         {
@@ -149,6 +159,17 @@
             return imgTag;
         }
 
+         $('#applyFilter').click(function(){
+            var data = $('#pg').propertygrid('getData').rows;
+            var obj = {};
+
+            data.forEach(function(item){
+                obj[item.name] = item.value;
+            });
+
+            console.log(obj);
+        });
+
         function styleThumbnail( value, row, index )
         {
             return {style: 'width:128px; height:128px'};
@@ -162,7 +183,33 @@
                 {field: 'thumbnail', title: 'Thumbnail', formatter: showThumbnail, styler: styleThumbnail}
             ]]
         });
-        $('#tbl').datagrid(tableModel);
+        var dg  = $('#tbl').datagrid(tableModel);
+
+
+// Need to figure out how add date/time editor
+
+/*
+        $.extend($.fn.propertygrid.defaults.editors, {
+            datetimebox: {
+                init: function(container, options){
+                    var input = $('<input class="easyui-datebox">').appendTo(container);
+                    return input;
+                },
+                destroy: function(target){
+                    $(target).remove();
+                },
+                getValue: function(target){
+                    return $(target).val();
+                },
+                setValue: function(target, value){
+                    $(target).val(value);
+                },
+                resize: function(target, width){
+                    $(target)._outerWidth(width);
+                }
+            }
+        });
+*/
     } );
     </r:script>
     <r:layoutResources/>

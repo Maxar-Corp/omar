@@ -30,6 +30,7 @@
         <div region="north" style="height:35px">
             <div class="easyui-panel" style="padding:5px;">
                 <g:link class="easyui-linkbutton" plain="true" uri="/"><b>Home</b></g:link>
+                <g:link class="easyui-linkbutton" plain="true" controller="imageList"><b>Images</b></g:link>
             </div>
         </div>
 
