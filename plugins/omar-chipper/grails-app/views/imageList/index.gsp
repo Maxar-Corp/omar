@@ -9,7 +9,6 @@
 <html>
 <head>
     <title>Image List</title>
-    <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.min.js"/>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes" file="icon.css"/>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>
     <r:layoutResources/>
@@ -46,7 +45,7 @@
     <div region="east" style="width: 100px"></div>
    --%>
 
-    <div region="west" style="width: 200px">
+    <div region="west" style="width: 325px" split="true" title="Query Parameters">
         <table id="pg" class="easyui-propertygrid"
                url="${createLink( action: 'getFilterParams' )}"
                showGroup="true" showHeader="false" scrollbarSize="0">
@@ -77,6 +76,7 @@
 
 </div>
 
+<r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.min.js"/>
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.easyui.min.js"/>
 <r:script>
 
@@ -147,6 +147,29 @@
     {
         var tableModel = ${tableModel as JSON};
 
+
+        $.extend($.fn.propertygrid.defaults.editors, {
+            datetimebox: {
+                init: function(container, options){
+                    var input = $('<input>').appendTo(container);
+                    input.datetimebox(options);
+                    return input
+                },
+                destroy: function(target){
+                    $(target).datetimebox('destroy');
+                },
+                getValue: function(target){
+                    return $(target).datetimebox('getValue');
+                },
+                setValue: function(target, value){
+                    $(target).datetimebox('setValue', value);
+                },
+                resize: function(target, width){
+                    $(target).datetimebox('resize', width);
+                }
+            }
+    	});
+
         function showThumbnail( val, row )
         {
             var size = 128;
@@ -193,7 +216,7 @@
                     }
                     else if ( item.name === "Filename")
                     {
-                        filter += "filename ilike '" + item.value + "'";
+                        filter += "filename ilike '%" + item.value + "%'";
                     }
                 }
             });

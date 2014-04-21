@@ -9,7 +9,6 @@
 <html>
 <head>
     <title>Two Color MultiView</title>
-    <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.min.js"/>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes" file="icon.css"/>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>
     <r:external plugin="omar-chipper" dir="js/openlayers/theme/default" file="style.css"/>
@@ -43,11 +42,12 @@
         </div>
     </div>
 </div>
+<r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.min.js"/>
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.easyui.min.js"/>
-<r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.js"/>
 <%--
-<r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.light.js"/>
+<r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.js"/>
 --%>
+<r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.light.js"/>
 <r:script>
     $( document ).ready( function ()
     {
@@ -57,11 +57,10 @@
         var bbox = new OpenLayers.Bounds(model.minX, model.minY, model.maxX, model.maxY);
 
         var map = new OpenLayers.Map( 'map', {
-            numZoomLevels: 32,
             themes: null
         } );
 
-        //OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
+        OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
 
         var layers = [
             new OpenLayers.Layer.WMS(

@@ -46,8 +46,8 @@ class ImageListController
 
 
     def filterParams = [
-        [group: 'Acquisition Date', name: 'Start Date', editor: 'datebox'],
-        [group: 'Acquisition Date', name: 'End Date', editor: 'datebox'],
+        [group: 'Acquisition Date', name: 'Start Date', editor: 'datetimebox'],
+        [group: 'Acquisition Date', name: 'End Date', editor: 'datetimebox'],
 
         [group: 'Image Metadata', name: 'Mission', editor: [
             type: 'combobox', options: [valueField: 'label', textField: 'value', data: missions]]
