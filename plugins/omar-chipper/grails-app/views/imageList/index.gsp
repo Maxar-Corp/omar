@@ -54,6 +54,7 @@
 
         <div align='center'>
             <button id="applyFilter">Apply Filter</button>
+            <button id="reset">Reset</button>
         </div>
     </div>
 
@@ -76,14 +77,32 @@
 
 </div>
 
+<div id="dlg" class="easyui-dialog" title="Filter" closed="true" style="width:400px;height:200px;padding:10px"
+     data-options="buttons: [{
+    text:'Ok',
+    plain: true,
+    iconCls:'icon-ok',
+    handler:function(){
+    alert('ok');
+    }
+    },{
+    text:'Cancel',
+    plain: true,
+    handler:function(){
+    alert('cancel');;
+    }
+    }]">
+</div>
+
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.min.js"/>
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.easyui.min.js"/>
+<r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.light.js"/>
+
 <r:script>
 
     function showFilter()
     {
-        $( '#dlg' ).dialog( 'center' );
-        $( '#dlg' ).dialog( 'open' );
+        $( '#dlg' ).dialog( 'center' ).dialog( 'open' );
     }
 
     function getSelectedImages()
@@ -106,7 +125,7 @@
         }
         else
         {
-            alert('must pick exactly 2 images');
+            $.messager.alert('2CMV', 'Must pick exactly 2 images', 'error');
         }
     }
 
@@ -123,7 +142,7 @@
         }
         else
         {
-            alert('must pick exactly 2 images');
+            $.messager.alert('PSM', 'Must pick exactly 2 images', 'error');
         }
     }
 
@@ -139,7 +158,7 @@
         }
         else
         {
-            alert('must pick exactly 1 image');
+            $.messager.alert('HillShade', 'Must pick exactly 1 image', 'error');
         }
     }
 
@@ -149,6 +168,25 @@
 
 
         $.extend($.fn.propertygrid.defaults.editors, {
+            mapbox: {
+                init: function(container, options){
+                    var input = $('<input>').appendTo(container);
+                    input.datetimebox(options);
+                    return input
+                },
+                destroy: function(target){
+                    $(target).datetimebox('destroy');
+                },
+                getValue: function(target){
+                    return $(target).datetimebox('getValue');
+                },
+                setValue: function(target, value){
+                    $(target).datetimebox('setValue', value);
+                },
+                resize: function(target, width){
+                    $(target).datetimebox('resize', width);
+                }
+            },
             datetimebox: {
                 init: function(container, options){
                     var input = $('<input>').appendTo(container);
@@ -181,6 +219,10 @@
 
             return imgTag;
         }
+
+        $('#reset').click(function(){
+          $('#pg').propertygrid('reload');
+        });
 
          $('#applyFilter').click(function(){
             var data = $('#pg').propertygrid('getData').rows;
@@ -218,12 +260,17 @@
                     {
                         filter += "filename ilike '%" + item.value + "%'";
                     }
+                    else if ( item.name === "Image Id")
+                    {
+                        filter += "image_id ilike '%" + item.value + "%'";
+                    }
                 }
             });
 
             $('#tbl').datagrid('load', {filter: filter});
             console.log(filter);
         });
+
 
         function styleThumbnail( value, row, index )
         {
@@ -240,31 +287,6 @@
         });
         var dg  = $('#tbl').datagrid(tableModel);
 
-
-// Need to figure out how add date/time editor
-
-/*
-        $.extend($.fn.propertygrid.defaults.editors, {
-            datetimebox: {
-                init: function(container, options){
-                    var input = $('<input class="easyui-datebox">').appendTo(container);
-                    return input;
-                },
-                destroy: function(target){
-                    $(target).remove();
-                },
-                getValue: function(target){
-                    return $(target).val();
-                },
-                setValue: function(target, value){
-                    $(target).val(value);
-                },
-                resize: function(target, width){
-                    $(target)._outerWidth(width);
-                }
-            }
-        });
-*/
     } );
 </r:script>
 <r:layoutResources/>

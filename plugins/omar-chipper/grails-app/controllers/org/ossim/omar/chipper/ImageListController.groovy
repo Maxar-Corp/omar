@@ -12,9 +12,11 @@ class ImageListController
     [tableModel: imageListService.createTableModel()]
   }
 
-  def getData()
+  def getData(FetchDataCommand cmd)
   {
-    def data = imageListService.getData( params )
+
+    def data = imageListService.getData( cmd )
+
     render contentType: 'application/json', text: data as JSON
   }
 

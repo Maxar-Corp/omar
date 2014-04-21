@@ -32,34 +32,40 @@ class ImageListService
     return tableModel
   }
 
-  def getData(def params)
+  def getData(FetchDataCommand cmd)
   {
 
     //println params
 
-    def max = ( params?.rows as Integer ) ?: 10
-    def offset = ( ( params?.page as Integer ?: 1 ) - 1 ) * max
-    def sort = params?.sort ?: 'id'
-    def dir = params?.order ?: 'asc'
-    def x = [max: max, offset: offset, sort: sort, dir: dir]
+//    def max = ( params?.rows as Integer ) ?: 10
+//    def offset = ( ( params?.page as Integer ?: 1 ) - 1 ) * max
+//    def sort = params?.sort ?: 'id'
+//    def dir = params?.order ?: 'asc'
+//    def x = [max: max, offset: offset, sort: sort, dir: dir]
+//
+//    println x
 
-    println x
 
     def total = RasterEntry.createCriteria().count {
-      if ( params.filter )
+      if ( cmd.filter )
       {
-        sqlRestriction params.filter
+        sqlRestriction cmd.filter
       }
     }
 
     def rows = RasterEntry.withCriteria {
-      if ( params.filter )
+      if ( cmd.filter )
       {
-        sqlRestriction params.filter
+        sqlRestriction cmd.filter
       }
-      maxResults( max )
-      order( sort, dir )
-      firstResult( offset )
+//      projections {
+//        columnNames.each {
+//          property(it)
+//        }
+//      }
+      maxResults( cmd.rows )
+      order( cmd.sort, cmd.order )
+      firstResult( ( cmd.page - 1 ) * cmd.rows )
     }
     rows = rows.collect { row ->
       columnNames.inject( [:] ) { a, b -> a[b] = row[b]; a }
