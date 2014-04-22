@@ -14,7 +14,7 @@
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>
     <r:external plugin="omar-chipper" dir="js/openlayers/theme/default" file="style.css"/>
     --%>
-    <r:require modules="jeasyui,chipperOpenLayers"/>
+    <r:require modules="jeasyui,chipperBackbone,chipperOpenLayers"/>
     <r:layoutResources/>
 </head>
 
@@ -263,7 +263,7 @@
             var data = $('#pg').propertygrid('getData').rows;
             var filter = "";
 
-            data.forEach(function(item){
+            _.each( data, function(item){
                 if ( item.value )
                 {
                     if ( ! ( filter === "" ) )

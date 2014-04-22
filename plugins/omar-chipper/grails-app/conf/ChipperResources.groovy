@@ -21,4 +21,13 @@ modules = {
     resource url: [plugin: 'omar-chipper', dir: 'js/openlayers/theme/default', file: 'style.css']
     resource url: [plugin: 'omar-chipper', dir: 'js/openlayers', file: 'OpenLayers.light.js']
   }
+
+  chipperUnderscore {
+    resource url: [plugin: 'omar-chipper', dir: 'js/backbone', file: 'underscore-min.js']
+  }
+  chipperBackbone {
+    dependsOn( 'chipperUnderscore' )
+    resource url: [plugin: 'omar-chipper', dir: 'js/backbone', file: 'backbone-min.js']
+  }
+
 }
