@@ -9,9 +9,12 @@
 <html>
 <head>
     <title>Image List</title>
+    <%--
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes" file="icon.css"/>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>
     <r:external plugin="omar-chipper" dir="js/openlayers/theme/default" file="style.css"/>
+    --%>
+    <r:require modules="jeasyui,chipperOpenLayers"/>
     <r:layoutResources/>
 </head>
 
@@ -107,10 +110,11 @@
     </div>
 </div>
 
+<%--
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.min.js"/>
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.easyui.min.js"/>
 <r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.light.js"/>
-
+--%>
 <r:script>
 
     function showFilter()
@@ -340,8 +344,9 @@
                 }
             });
 
+            var baseWMS = ${baseWMS as JSON};
             var layers = [
-                new OpenLayers.Layer.WMS( "OpenLayers WMS",  "http://vmap0.tiles.osgeo.org/wms/vmap0",{layers: 'basic'} )
+                new OpenLayers.Layer.WMS(baseWMS.name,baseWMS.url,baseWMS.params,baseWMS.options)
             ]
 
             map.addLayers(layers);

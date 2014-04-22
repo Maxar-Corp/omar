@@ -21,13 +21,13 @@ class HillShadeController
       def mapImage = RasterEntry.read( params?.mapImage as Long )
       def bounds = ( GeoScript.wrap( mapImage?.groundGeom ) )?.bounds
       def (minX, minY, maxX, maxY) = [bounds?.minX, bounds?.minY, bounds?.maxX, bounds?.maxY]
-      def baseWMS = grailsApplication.config.wms.base.layers[-1]
 
       def demImages = chipperService.findElevationCells(
           grailsApplication?.config?.chipper?.hillShade?.elevationPath as String,
           bounds
       )
 
+      def baseWMS = grailsApplication.config.wms.base.layers[-1]
 
       def model = [
           baseWMS  : baseWMS,

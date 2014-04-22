@@ -9,9 +9,12 @@
 <html>
 <head>
     <title>Two Color MultiView</title>
+    <%--
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes" file="icon.css"/>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>
     <r:external plugin="omar-chipper" dir="js/openlayers/theme/default" file="style.css"/>
+    --%>
+    <r:require modules="jeasyui,chipperOpenLayers"/>
     <r:layoutResources/>
 </head>
 
@@ -42,12 +45,11 @@
         </div>
     </div>
 </div>
+<%--
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.min.js"/>
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.easyui.min.js"/>
-<%--
-<r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.js"/>
---%>
 <r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.light.js"/>
+--%>
 <r:script>
     $( document ).ready( function ()
     {

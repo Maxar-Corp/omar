@@ -6,10 +6,13 @@ import org.ossim.omar.raster.RasterEntry
 class ImageListController
 {
   def imageListService
+  def grailsApplication
 
   def index()
   {
-    [tableModel: imageListService.createTableModel()]
+
+    [baseWMS   : grailsApplication.config.wms.base.layers[-1],
+     tableModel: imageListService.createTableModel()]
   }
 
   def getData(FetchDataCommand cmd)

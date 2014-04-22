@@ -32,6 +32,7 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
+    runtime ":jquery:1.11.0.1"
     build( ":tomcat:$grailsVersion",
         ":release:2.2.1",
         ":rest-client-builder:1.0.3" ) {
@@ -47,5 +48,5 @@ grails.plugin.location.postgis = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/po
 grails.plugin.location.omarOgc = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-ogc"
 grails.plugin.location.omarRaster = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-raster"
 
-grails.plugin.location.openlayers = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/openlayers"
+//grails.plugin.location.openlayers = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/openlayers"
 
