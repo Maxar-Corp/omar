@@ -11,6 +11,7 @@
     <title>Image List</title>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes" file="icon.css"/>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>
+    <r:external plugin="omar-chipper" dir="js/openlayers/theme/default" file="style.css"/>
     <r:layoutResources/>
 </head>
 
@@ -94,6 +95,18 @@
     }]">
 </div>
 
+<div id="sp" class="easyui-layout" fit="true">
+    <div region="south" style="padding:5px;"> 
+        <a href="javascript:void(0)" id="setBBOX" class="easyui-linkbutton" iconCls="icon-ok" plain="true">Ok</a>
+        <a href="javascript:void(0)" id="unsetBBOX" class="easyui-linkbutton" iconCls="icon-cancel"
+           plain="true">Cancel</a>
+    </div>
+
+    <div region="center">
+        <div id="map" style="width: 512px;height: 256px"></div>
+    </div>
+</div>
+
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.min.js"/>
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.easyui.min.js"/>
 <r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.light.js"/>
@@ -170,21 +183,39 @@
         $.extend($.fn.propertygrid.defaults.editors, {
             mapbox: {
                 init: function(container, options){
-                    var input = $('<input>').appendTo(container);
-                    input.datetimebox(options);
+                    var input = $('<select id="cc">').appendTo(container);
+
+                    input.combo(options);
+                    this.map = initMap();
+                    $('#sp').appendTo(input.combo('panel'));
+                    $('#setBBOX').click({map: this.map}, function(e){
+                        var bbox = e.data.map.getExtent().toString();
+
+                        //console.log(bbox);
+                        $('#cc').combo('setValue', bbox).combo('setText', bbox).combo('hidePanel');
+                    });
+                   $('#unsetBBOX').click({map: this.map}, function(e){
+                        e.data.map.zoomToMaxExtent();
+                        console.log(e.data.map.getExtent());
+                        var bbox = e.data.map.getExtent().toString();
+
+                        //console.log(bbox);
+                        $('#cc').combo('setValue', null).combo('setText', null).combo('hidePanel');
+                    });
                     return input
                 },
                 destroy: function(target){
-                    $(target).datetimebox('destroy');
+                    this.map.destroy();
+                    $(target).combo('destroy');
                 },
                 getValue: function(target){
-                    return $(target).datetimebox('getValue');
+                    return $(target).combo('getValue');
                 },
                 setValue: function(target, value){
-                    $(target).datetimebox('setValue', value);
+                    $(target).combo('setValue', value);
                 },
                 resize: function(target, width){
-                    $(target).datetimebox('resize', width);
+                    $(target).combo('resize', width);
                 }
             },
             datetimebox: {
@@ -264,11 +295,15 @@
                     {
                         filter += "image_id ilike '%" + item.value + "%'";
                     }
+                    else if ( item.name === "Intersects")
+                    {
+                        filter += "ground_geom && ST_MakeEnvelope(" + item.value + ", 4326)";
+                    }
                 }
             });
+            console.log(filter);
 
             $('#tbl').datagrid('load', {filter: filter});
-            console.log(filter);
         });
 
 
@@ -287,6 +322,33 @@
         });
         var dg  = $('#tbl').datagrid(tableModel);
 
+
+        OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
+
+        function zoomChanged(e)
+        {
+            //console.log(e);
+        }
+
+
+        function initMap()
+        {
+            var map = new OpenLayers.Map('map', {
+                themes: null,
+                eventListeners: {
+                    'zoomend': zoomChanged
+                }
+            });
+
+            var layers = [
+                new OpenLayers.Layer.WMS( "OpenLayers WMS",  "http://vmap0.tiles.osgeo.org/wms/vmap0",{layers: 'basic'} )
+            ]
+
+            map.addLayers(layers);
+            map.zoomToMaxExtent();
+
+            return map
+        }
     } );
 </r:script>
 <r:layoutResources/>

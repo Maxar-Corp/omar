@@ -67,12 +67,12 @@ class ChipperController
 //  }
 
 
-  def getThumbnail()
+  def getThumbnail(ThumbnailCommand cmd)
   {
 //    def ctx = startAsync()
 //    println "CTX ============= ${ctx}"
 //    ctx.start {
-    def data = chipperService.getThumbnail( new CaseInsensitiveMap( params ) )
+    def data = chipperService.getThumbnail( cmd )
 
     response.contentType = data.contentType
     response.outputStream << data.content

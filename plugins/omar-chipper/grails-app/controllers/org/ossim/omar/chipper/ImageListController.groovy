@@ -48,6 +48,9 @@ class ImageListController
 
 
     def filterParams = [
+        [group: 'Ground Geometry', name: 'Intersects', editor: [
+            type: 'mapbox', options: [panelWidth: 512, panelHeight: 256]]
+        ],
         [group: 'Acquisition Date', name: 'Start Date', editor: 'datetimebox'],
         [group: 'Acquisition Date', name: 'End Date', editor: 'datetimebox'],
 

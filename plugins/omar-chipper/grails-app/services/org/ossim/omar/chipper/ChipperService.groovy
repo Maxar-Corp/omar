@@ -506,20 +506,20 @@ class ChipperService
   }
   */
 
-  def getThumbnail(def params)
+  def getThumbnail(ThumbnailCommand cmd)
   {
-    def rasterEntry = RasterEntry.read( params.id )
+    def rasterEntry = RasterEntry.read( cmd.id )
 
     def inputParams = [
         filename: rasterEntry.filename,
         entryId : rasterEntry.entryId
     ]
 
-    def type = 'jpeg'
+    def type = cmd.type
     def ostream = new ByteArrayOutputStream()
 
     def outputParams = [
-        size       : [width: ( params.size as Integer ) ?: 128, height: ( params.size as Integer ) ?: 128],
+        size       : [width: cmd.size, height: cmd.size],
         type       : type,
         output     : ostream,
         transparent: false
