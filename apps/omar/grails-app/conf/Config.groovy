@@ -151,7 +151,7 @@ wms {
   referenceDataDirectory = "/data/omar"
   mapServExt = ( System.properties['os.name'].startsWith( 'Windows' ) ) ? ".exe" : ""
   serverAddress = omar.serverIP
-  useTileCache = true
+  useTileCache = false
   mapFile = "${referenceDataDirectory}/bmng.map"
 
   base {
