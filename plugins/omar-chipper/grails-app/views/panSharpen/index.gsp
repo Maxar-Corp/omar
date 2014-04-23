@@ -28,7 +28,7 @@
 </div>
 
 <div region="center">
-    <div class="easyui-layout" fit="true">
+    <div id="content" class="easyui-layout" fit="true">
         <div region="north" style="height:50px">
             <div class="easyui-panel" style="padding:5px;">
                 <g:link class="easyui-linkbutton" plain="true" uri="/"><b>Home</b></g:link>
@@ -59,7 +59,9 @@
         var bbox = new OpenLayers.Bounds(model.minX, model.minY, model.maxX, model.maxY);
 
         var map = new OpenLayers.Map( 'map', {
-            themes: null
+            themes: null//,
+            //numZoomLevels: 99,
+            //allOverlays: true
         } );
 
         OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
@@ -71,7 +73,6 @@
                     model.baseWMS.params,
                     model.baseWMS.options
             ),
-
             new OpenLayers.Layer.WMS( "Chipper - PSM - Color",
                     chipUrl,
                     {layers: model.colorImage, format: 'image/png', transparent: true},
@@ -96,7 +97,7 @@
 
         map.zoomToExtent( bbox, true );
 
-        var body = $( 'body' );
+        var body = $( '#content' );
 
         body.layout( 'panel', 'center' ).panel( {
             onResize: function ()

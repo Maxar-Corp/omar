@@ -28,7 +28,7 @@
 </div>
 
 <div region="center">
-    <div class="easyui-layout" fit="true">
+    <div id="content" class="easyui-layout" fit="true">
         <div region="north" style="height:50px">
             <div class="easyui-panel" style="padding:5px;">
                 <g:link class="easyui-linkbutton" plain="true" uri="/"><b>Home</b></g:link>
@@ -96,7 +96,7 @@
 
         map.zoomToExtent( bbox, true );
 
-        var body = $( 'body' );
+        var body = $( '#content' );
 
         body.layout( 'panel', 'center' ).panel( {
             onResize: function ()

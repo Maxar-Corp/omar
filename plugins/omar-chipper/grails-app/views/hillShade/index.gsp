@@ -28,8 +28,8 @@
 </div>
 
 <div region="center">
-    <div class="easyui-layout" fit="true">
-        <div region="north" style="height:50px">
+    <div id="content" class="easyui-layout" fit="true">
+        <div  region="north" style="height:50px">
             <div class="easyui-panel" style="padding:5px;">
                 <g:link class="easyui-linkbutton" plain="true" uri="/"><b>Home</b></g:link>
                 <g:link class="easyui-linkbutton" plain="true" controller="imageList"><b>Images</b></g:link>
@@ -114,9 +114,10 @@
 
         map.zoomToExtent( bbox, true );
 
-        $( 'body' ).layout( 'panel', 'center' ).panel( {
+        $( '#content' ).layout( 'panel', 'center' ).panel( {
             onResize: function ()
             {
+                console.log('resized');
                 map.updateSize();
             }
         } );
