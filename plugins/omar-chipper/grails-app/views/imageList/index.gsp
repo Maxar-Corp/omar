@@ -9,6 +9,47 @@
 <html>
 <head>
     <title>Image List</title>
+    <style type="text/css">
+    .customEditingToolbar {
+        float: right;
+        right: 0px;
+        height: 30px;
+        background-color: lightgray;
+    }
+
+    .customEditingToolbar div {
+        float: right;
+        margin: 5px;
+        width: 24px;
+        height: 24px;
+    }
+
+    .okItemInactive {
+        background-image: url(${resource(plugin: 'omar-chipper', dir: 'js/jquery-easyui/themes/icons', file: 'ok.png')});
+        background-repeat: no-repeat;
+        /*background-position: 0 1px;*/
+
+        /*background: #30d5c8;
+        border: 1px solid #000000;
+        */
+        width: 18px;
+        height: 18px;
+    }
+
+    .cancelItemInactive {
+        background-image: url(${resource(plugin: 'omar-chipper', dir: 'js/jquery-easyui/themes/icons', file: 'cancel.png')});
+        background-repeat: no-repeat;
+        background-position: 0 1px;
+
+        /*background: #ffffdd;
+        border: 1px solid #000000;
+        */
+        width: 18px;
+        height: 18px;
+    }
+
+    </style>
+
     <%--
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes" file="icon.css"/>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>
@@ -98,18 +139,6 @@
     }]">
 </div>
 
-<div id="sp" class="easyui-layout" fit="true">
-    <div region="south" style="padding:5px;"> 
-        <a href="javascript:void(0)" id="setBBOX" class="easyui-linkbutton" iconCls="icon-ok" plain="true">Ok</a>
-        <a href="javascript:void(0)" id="unsetBBOX" class="easyui-linkbutton" iconCls="icon-cancel"
-           plain="true">Cancel</a>
-    </div>
-
-    <div region="center">
-        <div id="map" style="width: 512px;height: 256px"></div>
-    </div>
-</div>
-
 <%--
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.min.js"/>
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.easyui.min.js"/>
@@ -182,48 +211,113 @@
     $( document ).ready( function ()
     {
         var tableModel = ${tableModel as JSON};
-        var map = initMap();
 
-        $('#sp #setBBOX').click(function(e){
-            var bbox = map.getExtent().toString();
-
-            $('#cc').combo('setText', bbox).combo('hidePanel');
-            console.log(bbox);
-
-        });
-        $('#sp #unsetBBOX').click(function(e){
-            map.zoomToMaxExtent();
-            var bbox = map.getExtent().toString();
-
-            console.log(bbox);
-            $('#cc').combo('setText', null).combo('hidePanel');
-        });
+        OpenLayers.ImgPath = "${resource( plugin: 'omar-chipper', dir: 'js/openlayers/img' )}/";
 
         $.extend($.fn.propertygrid.defaults.editors, {
             mapbox: {
-                init: function(container, options){
-                    console.log('init');
-                    var input = $('<input id="cc">').appendTo(container);
-                    input.combo(options);
-                    $( '#sp' ).appendTo( input.combo( 'panel' ) );
+                init: function ( container, options )
+                {
+                    //console.log( 'init' );
+                    var input = $( '<select>' ).appendTo( container );
+                    input.combo( options );
 
+                    $( "<div id='map' style='width: 512px; height: 256px;'></div>" ).appendTo( input.combo( 'panel' ) );
+
+                    this.map = new OpenLayers.Map('map', {theme: null});
+
+                    var baseWMS = ${baseWMS as JSON};
+                    var layers = [
+                        new OpenLayers.Layer.WMS(
+                            baseWMS.name,
+                            baseWMS.url,
+                            baseWMS.params,
+                            baseWMS.options
+                        )
+                    ];
+                    this.map.addLayers( layers );
+
+                    var panel = new OpenLayers.Control.Panel( {
+                        type: OpenLayers.Control.TYPE_BUTTON,
+                        displayClass: 'customEditingToolbar',
+                        allowDepress: true
+                    } )
+
+                    var buttons = [
+                        new OpenLayers.Control.Button( {
+                            title: 'Cancel',
+                            trigger: function ()
+                            {
+                                //console.log(this);
+
+                                this.map.zoomToMaxExtent();
+                                var bbox = this.map.getExtent().toString();
+
+                                //console.log(bbox);
+                                input.combo( 'setValue', null ).combo( 'setText', bbox ).combo( 'hidePanel' );
+                            },
+                            displayClass: "cancel"
+                        } ),
+                        new OpenLayers.Control.Button( {
+                            title: 'Ok',
+                            trigger: function ()
+                            {
+                                //console.log(this);
+                                var bbox = this.map.getExtent().toString();
+
+                                //console.log(bbox);
+                                input.combo( 'setValue', bbox ).combo( 'setText', bbox ).combo( 'hidePanel' );
+                            },
+                            displayClass: "ok"
+                        } )
+                    ]
+                    panel.addControls( buttons );
+
+                    var controls = [
+                        panel
+                    ];
+                    this.map.addControls( controls );
+                    //map.extent = new OpenLayers.Bounds(-180, -90, 180, 90);
+                    this.map.updateSize();
+                    this.map.zoomToMaxExtent();
                     return input
                 },
-                destroy: function(target){
-                    console.log('destroy');
-                    $(target).combo('destroy');
+                destroy: function ( target )
+                {
+                    //console.log( 'destroy' );
+                    this.map.destroy();
+                    $( target ).combo( 'destroy' );
                 },
-                getValue: function(target){
-                    console.log('getValue');
-                    return $(target).combo('getValue');
+                getValue: function ( target )
+                {
+                    //console.log( 'getValue' );
+                    var bbox = this.map.getExtent().toString();
+
+                    //console.log( bbox );
+                    $( target ).combo( 'setValue', bbox );
+
+                    return $( target ).combo( 'getValue' );
                 },
-                setValue: function(target, value){
-                    console.log('setValue');
-                    $(target).combo('setValue', value);
+                setValue: function ( target, value )
+                {
+                    //console.log( 'setValue' + value );
+
+                    if ( typeof value === 'undefined' || value === "" )
+                    {
+                        this.map.zoomToMaxExtent();
+                    }
+                    else
+                    {
+                        this.map.zoomToExtent( new OpenLayers.Bounds( value.split( ',' ) ), true );
+                    }
+
+                    $( target ).combo( 'setValue', value );
                 },
-                resize: function(target, width){
-                    console.log('resize');
-                    $(target).combo('resize', width);
+                resize: function ( target, width )
+                {
+                    //console.log( 'resize' );
+                    this.map.updateSize();
+                    $( target ).combo( 'resize', width );
                 }
             },
             datetimebox: {
@@ -341,11 +435,15 @@
 
         function initMap()
         {
+            var baseWMS = ${baseWMS as JSON};
             var map = new OpenLayers.Map('map', {theme: null});
             var layers = [
-            new OpenLayers.Layer.WMS( "OpenLayers WMS",
-                "http://vmap0.tiles.osgeo.org/wms/vmap0",
-                {layers: 'basic'}    )
+                new OpenLayers.Layer.WMS(
+                    baseWMS.name,
+                    baseWMS.url,
+                    baseWMS.params,
+                    baseWMS.options
+                )
             ];
             map.addLayers(layers);
             //map.extent = new OpenLayers.Bounds(-180, -90, 180, 90);

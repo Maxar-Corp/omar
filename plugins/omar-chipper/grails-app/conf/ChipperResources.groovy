@@ -19,7 +19,7 @@ modules = {
 <r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.light.js"/>
 */
     resource url: [plugin: 'omar-chipper', dir: 'js/openlayers/theme/default', file: 'style.css']
-    resource url: [plugin: 'omar-chipper', dir: 'js/openlayers', file: 'OpenLayers.light.js']
+    resource url: [plugin: 'omar-chipper', dir: 'js/openlayers', file: 'OpenLayers.js']
   }
 
   chipperUnderscore {
