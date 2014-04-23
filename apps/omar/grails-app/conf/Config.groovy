@@ -155,7 +155,7 @@ wms {
   mapFile = "${referenceDataDirectory}/bmng.map"
 
   base {
-    defaultOptions = [isBaseLayer: true, numZoomLevels: 17, buffer: 0, transitionEffect: "resize"]
+    defaultOptions = [isBaseLayer: true, numZoomLevels: 20, buffer: 0, transitionEffect: "resize"]
     layers = [
 //        [
 //            url: "http://hyperquad.ucsd.edu/cgi-bin/i-cubed",

@@ -182,43 +182,47 @@
     $( document ).ready( function ()
     {
         var tableModel = ${tableModel as JSON};
+        var map = initMap();
 
+        $('#sp #setBBOX').click(function(e){
+            var bbox = map.getExtent().toString();
+
+            $('#cc').combo('setText', bbox).combo('hidePanel');
+            console.log(bbox);
+
+        });
+        $('#sp #unsetBBOX').click(function(e){
+            map.zoomToMaxExtent();
+            var bbox = map.getExtent().toString();
+
+            console.log(bbox);
+            $('#cc').combo('setText', null).combo('hidePanel');
+        });
 
         $.extend($.fn.propertygrid.defaults.editors, {
             mapbox: {
                 init: function(container, options){
-                    var input = $('<select id="cc">').appendTo(container);
-
+                    console.log('init');
+                    var input = $('<input id="cc">').appendTo(container);
                     input.combo(options);
-                    this.map = initMap();
-                    $('#sp').appendTo(input.combo('panel'));
-                    $('#setBBOX').click({map: this.map}, function(e){
-                        var bbox = e.data.map.getExtent().toString();
+                    $( '#sp' ).appendTo( input.combo( 'panel' ) );
 
-                        //console.log(bbox);
-                        $('#cc').combo('setValue', bbox).combo('setText', bbox).combo('hidePanel');
-                    });
-                   $('#unsetBBOX').click({map: this.map}, function(e){
-                        e.data.map.zoomToMaxExtent();
-                        console.log(e.data.map.getExtent());
-                        var bbox = e.data.map.getExtent().toString();
-
-                        //console.log(bbox);
-                        $('#cc').combo('setValue', null).combo('setText', null).combo('hidePanel');
-                    });
                     return input
                 },
                 destroy: function(target){
-                    this.map.destroy();
+                    console.log('destroy');
                     $(target).combo('destroy');
                 },
                 getValue: function(target){
+                    console.log('getValue');
                     return $(target).combo('getValue');
                 },
                 setValue: function(target, value){
+                    console.log('setValue');
                     $(target).combo('setValue', value);
                 },
                 resize: function(target, width){
+                    console.log('resize');
                     $(target).combo('resize', width);
                 }
             },
@@ -337,21 +341,16 @@
 
         function initMap()
         {
-            var map = new OpenLayers.Map('map', {
-                themes: null,
-                eventListeners: {
-                    'zoomend': zoomChanged
-                }
-            });
-
-            var baseWMS = ${baseWMS as JSON};
+            var map = new OpenLayers.Map('map', {theme: null});
             var layers = [
-                new OpenLayers.Layer.WMS(baseWMS.name,baseWMS.url,baseWMS.params,baseWMS.options)
-            ]
-
+            new OpenLayers.Layer.WMS( "OpenLayers WMS",
+                "http://vmap0.tiles.osgeo.org/wms/vmap0",
+                {layers: 'basic'}    )
+            ];
             map.addLayers(layers);
+            //map.extent = new OpenLayers.Bounds(-180, -90, 180, 90);
+            map.updateSize();
             map.zoomToMaxExtent();
-
             return map
         }
     } );
