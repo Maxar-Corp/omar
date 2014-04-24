@@ -1,5 +1,6 @@
 package org.ossim.omar.chipper
 
+import geoscript.GeoScript
 import geoscript.geom.Bounds
 import org.ossim.omar.chipper.ChipCommand
 
@@ -200,9 +201,15 @@ class ChipperService
         'image0.entry'  : inputParams.mapImage?.entryId,
     ]
 
+    //println "image: ${GeoScript.wrap( inputParams.mapImage.groundGeom ).bounds}"
+    //println "view: ${outputParams.bbox}"
+
+
+    def demBounds = ( outputParams.bbox ).intersection( GeoScript.wrap( inputParams.mapImage.groundGeom ).bounds )
+
     def dems = findElevationCells(
         grailsApplication?.config?.chipper?.hillShade?.elevationPath as String,
-        outputParams.bbox )
+        demBounds )
 
     println "dems: ${dems}"
 
