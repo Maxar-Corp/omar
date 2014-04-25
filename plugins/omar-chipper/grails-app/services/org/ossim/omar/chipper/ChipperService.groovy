@@ -223,7 +223,8 @@ class ChipperService
     def cells = new StringVector()
     def filenames = []
 
-    ElevMgr.instance().getCellsForBounds( path, bounds.minY, bounds.minX, bounds.maxY, bounds.maxX, cells )
+
+    ElevMgr.instance().getCellsForBounds( bounds.minY, bounds.minX, bounds.maxY, bounds.maxX, cells )
 
     for ( x in ( 0..<cells?.size() ) )
     {
@@ -612,8 +613,8 @@ class ChipperService
         'hist-op'     : 'auto-minmax',
         scale_2_8_bit : 'true',
         srs           : outputParams?.bbox?.proj?.id,
-        three_band_out: 'true'
-
+        three_band_out: 'true',
+        resampler_filter: 'cubic'
     ]
 
 
