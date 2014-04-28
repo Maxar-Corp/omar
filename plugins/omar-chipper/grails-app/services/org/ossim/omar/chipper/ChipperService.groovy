@@ -39,9 +39,9 @@ class ChipperService
 
   def defaultHillShadeOpts = [
       azimuthAngle   : 270,
-      colorBlue      : 139,
-      colorGreen     : 26,
-      colorRed       : 85,
+      colorBlue      : 255,
+      colorGreen     : 255,
+      colorRed       : 255,
       elevationAngle : 45,
       gain           : 2.5,
       resamplerFilter: 'cubic',
@@ -603,24 +603,28 @@ class ChipperService
   def createChip(def inputParams, def outputParams)
   {
     def opts = [
-        operation     : 'ortho',
-        cut_min_lon   : outputParams?.bbox.minX as String,
-        cut_min_lat   : outputParams?.bbox.minY as String,
-        cut_max_lon   : outputParams?.bbox.maxX as String,
-        cut_max_lat   : outputParams?.bbox.maxY as String,
-        cut_height    : outputParams?.size.height as String,
-        cut_width     : outputParams?.size.width as String,
-        'hist-op'     : 'auto-minmax',
-        scale_2_8_bit : 'true',
-        srs           : outputParams?.bbox?.proj?.id,
-        three_band_out: 'true',
+        operation       : 'ortho',
+        cut_min_lon     : outputParams?.bbox.minX as String,
+        cut_min_lat     : outputParams?.bbox.minY as String,
+        cut_max_lon     : outputParams?.bbox.maxX as String,
+        cut_max_lat     : outputParams?.bbox.maxY as String,
+        cut_height      : outputParams?.size.height as String,
+        cut_width       : outputParams?.size.width as String,
+        'hist-op'       : 'auto-minmax',
+        scale_2_8_bit   : 'true',
+        srs             : outputParams?.bbox?.proj?.id,
+        three_band_out  : 'true',
         resampler_filter: 'cubic'
     ]
-
 
     inputParams?.layers?.eachWithIndex { image, i ->
       opts["image${i}.file"] = image.filename
       opts["image${i}.entry"] = image.entryId
+
+      if ( image?.missionId?.toLowerCase()?.startsWith( 'geoeye1' ) && image.numberOfBands == 4 )
+      {
+        opts["bands"] = "3,2,1"
+      }
     }
 
     runChipper( opts, outputParams )

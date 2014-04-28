@@ -14,7 +14,7 @@
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>
     <r:external plugin="omar-chipper" dir="js/openlayers/theme/default" file="style.css"/>
     --%>
-    <r:require modules="jeasyui,chipperOpenLayers"/>
+    <r:require modules="jeasyui,chipperOpenLayers,spinner"/>
     <r:layoutResources/>
 </head>
 
@@ -27,9 +27,9 @@
     <omar:securityClassificationBanner/>
 </div>
 
-<div region="center">
+<div region="center" class="mapContainerDiv">
     <div id="content" class="easyui-layout" fit="true">
-        <div  region="north" style="height:50px">
+        <div region="north" style="height:50px">
             <div class="easyui-panel" style="padding:5px;">
                 <g:link class="easyui-linkbutton" plain="true" uri="/"><b>Home</b></g:link>
                 <g:link class="easyui-linkbutton" plain="true" controller="imageList"><b>Images</b></g:link>
@@ -70,10 +70,43 @@
         var bbox = new OpenLayers.Bounds(model.minX, model.minY, model.maxX, model.maxY);
 
         var map = new OpenLayers.Map( 'map', {
-            themes: null
+            theme: null
         } );
 
         OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
+
+       var layerEvents = {
+            spinner: null,
+            loadstart: function ()
+            {
+                //console.log( 'loadStart' );
+                var opts = {
+                    lines: 13, // The number of lines to draw
+                    length: 8, // The length of each line
+                    width: 4, // The line thickness
+                    radius: 10, // The radius of the inner circle
+                    corners: 1, // Corner roundness (0..1)
+                    rotate: 0, // The rotation offset
+                    color: '#FFFFFF', // #rgb or #rrggbb
+                    speed: 1, // Rounds per second
+                    trail: 60, // Afterglow percentage
+                    shadow: true, // Whether to render a shadow
+                    hwaccel: false, // Whether to use hardware acceleration
+                    className: 'spinnerControl', // The CSS class to assign to the spinner
+                    zIndex: 2e9, // The z-index (defaults to 2000000000)
+                    top: 'auto', // Top position relative to parent in px
+                    left: 'auto' // Left position relative to parent in px
+                };
+                this.spinner = new Spinner( opts ).spin($('#map')[0]);
+            },
+            loadend: function ()
+            {
+                this.spinner.stop();
+                this.spinner = null;
+                //console.log( 'loadEnd' );
+            },
+            scope: this
+        };
 
         var layers = [
             new OpenLayers.Layer.WMS(
@@ -86,7 +119,7 @@
             new OpenLayers.Layer.WMS( "Chipper - getChip - Map",
                     chipUrl,
                     {layers: model.mapImage, format: 'image/png', transparent: true},
-                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
+                    {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false, eventListeners: layerEvents} )
         ];
 
         for (  var x = 0; x < model.demImages.length; x++ )
@@ -94,14 +127,14 @@
             layers.push( new OpenLayers.Layer.WMS( "Chipper - getChip - Elevation " + x,
                             chipUrl,
                             {layers: '', filename: model.demImages[x], format: 'image/png', transparent: true},
-                            {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false} )
+                            {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: false, eventListeners: layerEvents} )
             );
         }
 
         layers.push( new OpenLayers.Layer.WMS( "Chipper - HillShade - Product",
             productUrl,
             {layers: model.mapImage, format: 'image/png', transparent: true},
-            {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true} )
+            {buffer: 0, singleTile: true, ratio: 1.0, isBaseLayer: false, visibility: true, eventListeners: layerEvents} )
 
         );
 

@@ -30,4 +30,8 @@ modules = {
     resource url: [plugin: 'omar-chipper', dir: 'js/backbone', file: 'backbone-min.js']
   }
 
+  spinner {
+    resource url: [plugin: 'omar-chipper', dir: 'js', file: 'spin.min.js']
+    resource url: [plugin: 'omar-chipper', dir: 'js', file: 'utils.js']
+  }
 }
