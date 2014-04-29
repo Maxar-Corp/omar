@@ -11,8 +11,9 @@ class ImageListController
   def index()
   {
 
-    [baseWMS   : grailsApplication.config.wms.base.layers[-1],
-     tableModel: imageListService.createTableModel()]
+    [baseWMS     : grailsApplication.config.wms.base.layers[-1],
+     tableModel  : imageListService.createTableModel(),
+     filterParams: this.initFilterParams()]
   }
 
   def getData(FetchDataCommand cmd)
@@ -24,6 +25,13 @@ class ImageListController
   }
 
   def getFilterParams()
+  {
+    ArrayList<LinkedHashMap<String, Serializable>> filterParams = initFilterParams()
+
+    render contentType: 'application/json', text: [total: filterParams.size(), rows: filterParams] as JSON
+  }
+
+  private ArrayList<LinkedHashMap<String, Serializable>> initFilterParams()
   {
     def missions = RasterEntry.withCriteria {
       projections {
@@ -67,12 +75,9 @@ class ImageListController
         [group: 'File', name: 'Filename', editor: 'text'],
         [group: 'File', name: 'Format', editor: [
             type: 'combobox', options: [valueField: 'label', textField: 'value', data: fileTypes]]
-        ],
-
-
+        ]
     ]
-
-    render contentType: 'application/json', text: [total: filterParams.size(), rows: filterParams] as JSON
+    filterParams
   }
 
 }

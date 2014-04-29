@@ -92,7 +92,6 @@
 
     <div region="west" style="width: 325px" split="true" title="Query Parameters">
         <table id="pg" class="easyui-propertygrid"
-               url="${createLink( action: 'getFilterParams' )}"
                showGroup="true" showHeader="false" scrollbarSize="0">
         </table>
         <br/>
@@ -353,8 +352,21 @@
             return imgTag;
         }
 
+        var filterParams = ${filterParams as JSON};
+
+        $('#pg').propertygrid({
+            data: filterParams
+        });
+
         $('#reset').click(function(){
-          $('#pg').propertygrid('reload');
+            _.each( filterParams, function(row) {
+                row.value = null;
+            } );
+
+            $('#pg').propertygrid({
+                data: filterParams
+            });
+            //console.log(filterParams);
         });
 
          $('#applyFilter').click(function(){
