@@ -11,7 +11,7 @@ class ImageListService
 
   static columnNames = [
       'id', 'fileType', 'filename', 'entryId', 'acquisitionDate', 'missionId', 'sensorId', 'imageId', 'niirs',
-      'groundGeom', 'width', 'height', 'numberOfBands'
+      'groundGeom', 'width', 'height', 'numberOfBands', 'gsdY'
   ]
 
   def createTableModel()

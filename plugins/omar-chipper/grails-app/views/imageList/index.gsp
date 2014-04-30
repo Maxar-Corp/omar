@@ -180,10 +180,31 @@
 
         if ( images.length === 2 )
         {
-            var panImage = (images[0].numberOfBands === 1) ? images[0].id : images[1].id;
-            var colorImage = (images[0].numberOfBands > 1) ? images[0].id : images[1].id;
+            if ( ! ( images[0].numberOfBands === 1 || images[1].numberOfBands === 1 ) )
+            {
+                $.messager.alert('PSM', 'At least one image must be a Pan Chromatic.');
+                return;
+            }
+            else if ( images[0].numberOfBands === 1 && images[1].numberOfBands === 1)
+            {
+                $.messager.alert('PSM', 'At least one image must have 3 or more bands.');
+                return;
+            }
 
-            window.location = '${createLink( controller: "panSharpen" )}?panImage=' + panImage + '&colorImage=' + colorImage;
+            var panImage = (images[0].numberOfBands === 1) ? images[0] : images[1];
+            var colorImage = (images[0].numberOfBands > 1) ? images[0] : images[1];
+
+            console.log(panImage);
+            console.log(colorImage);
+
+            if ( panImage.gsdY > colorImage.gsdY )
+            {
+                $.messager.alert('PSM', 'Pan Image is lower resolution than Color Image.');
+                return;
+            }
+
+            window.location = '${createLink( controller: "panSharpen" )}?panImage='
+                + panImage.id + '&colorImage=' + colorImage.id;
         }
         else
         {
