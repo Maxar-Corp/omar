@@ -62,7 +62,7 @@ class ChipperService
             cut_width: chpCmd.width as String,
             scale_2_8_bit: 'true',
             srs: chpCmd?.srs,
-            'hist-op': 'auto-minmax',
+            'hist_op': 'auto-minmax',
             operation: 'psm',
             resampler_filter: 'sinc'
     ]
@@ -118,7 +118,7 @@ class ChipperService
         cut_width       : chpCmd.width as String,
         scale_2_8_bit   : 'true',
         srs             : chpCmd?.srs,
-        'hist-op'       : 'auto-minmax',
+        'hist_op'       : 'auto-minmax',
         operation       : '2cmv',
         resampler_filter: 'bilinear',
         bands           : "0"
@@ -194,7 +194,7 @@ class ChipperService
         gain            : inputParams.gain as String,
 
         scale_2_8_bit   : 'true',
-        'hist-op'       : 'auto-minmax',
+        'hist_op'       : 'auto-minmax',
         resampler_filter: 'bilinear',
 
         'image0.file'   : inputParams.mapImage?.filename,
@@ -549,7 +549,7 @@ class ChipperService
     def opts = [
         operation           : 'ortho',
         thumbnail_resolution: outputParams.size.width as String,
-        'hist-op'           : 'auto-minmax',
+        'hist_op'           : 'auto-minmax',
         srs                 : 'epsg:4326',
         three_band_out      : 'true',
         'image0.file'       : inputParams.filename,
@@ -610,7 +610,7 @@ class ChipperService
         cut_max_lat     : outputParams?.bbox.maxY as String,
         cut_height      : outputParams?.size.height as String,
         cut_width       : outputParams?.size.width as String,
-        'hist-op'       : 'auto-minmax',
+        'hist_op'       : 'auto-minmax',
         scale_2_8_bit   : 'true',
         srs             : outputParams?.bbox?.proj?.id,
         three_band_out  : 'true',
@@ -667,7 +667,7 @@ class ChipperService
         cut_width       : ( outputParams.size?.width as Integer ) as String,
         scale_2_8_bit   : 'true',
         srs             : outputParams.bbox?.proj?.id,
-        'hist-op'       : 'auto-minmax',
+        'hist_op'       : 'auto-minmax',
         resampler_filter: 'bilinear',
         'image0.file'   : inputParams.redImage?.filename,
         'image0.entry'  : inputParams.redImage?.entryId,
@@ -715,7 +715,7 @@ class ChipperService
         cut_width       : ( outputParams.size?.width as Integer ) as String,
         scale_2_8_bit   : 'true',
         srs             : outputParams.bbox?.proj?.id,
-        'hist-op'       : 'auto-minmax',
+        'hist_op'       : 'auto-minmax',
         resampler_filter: 'bilinear',
         'image0.file'   : inputParams.colorImage?.filename,
         'image0.entry'  : inputParams.colorImage?.entryId,
