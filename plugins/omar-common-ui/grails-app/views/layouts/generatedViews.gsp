@@ -1,6 +1,7 @@
 <html>
 <head>
   <title><g:layoutTitle default="Grails"/></title>
+  <piwik:trackPageview />
   <style>
   body {
     margin: 0;
