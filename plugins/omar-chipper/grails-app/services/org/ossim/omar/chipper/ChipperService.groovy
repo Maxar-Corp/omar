@@ -517,23 +517,36 @@ class ChipperService
   def getThumbnail(ThumbnailCommand cmd)
   {
     def rasterEntry = RasterEntry.read( cmd.id )
-
-    def inputParams = [
-        filename: rasterEntry.filename,
-        entryId : rasterEntry.entryId
-    ]
-
     def type = cmd.type
     def ostream = new ByteArrayOutputStream()
 
-    def outputParams = [
-        size       : [width: cmd.size, height: cmd.size],
-        type       : type,
-        output     : ostream,
-        transparent: false
-    ]
+    def cacheDir = new File( grailsApplication?.config?.thumbnail?.cacheDir as String )
+    def cacheFile = new File( cacheDir, "ortho-${cmd.id}-${cmd.size}.${type}" )
 
-    createThumbnail( inputParams, outputParams )
+    if ( cacheFile.exists() )
+    {
+      println "Reading ${cmd.id} thumbnail from cache."
+      ostream << cacheFile.newInputStream()
+    }
+    else
+    {
+      println "Creating thumbnail for ${cmd.id}."
+
+      def inputParams = [
+          filename: rasterEntry.filename,
+          entryId : rasterEntry.entryId
+      ]
+
+      def outputParams = [
+          size       : [width: cmd.size, height: cmd.size],
+          type       : type,
+          output     : ostream,
+          transparent: false
+      ]
+
+      createThumbnail( inputParams, outputParams )
+      cacheFile.newOutputStream() << ostream.toByteArray()
+    }
 
     [contentType: "image/${type}", content: ostream.toByteArray()]
 //
