@@ -64,7 +64,7 @@ class ChipperService
             srs: chpCmd?.srs,
             'hist_op': 'auto-minmax',
             operation: 'psm',
-            resampler_filter: 'sinc'
+            resampler_filter: inputParams.resamplerFilter ?: 'sinc'
     ]
 
     chpCmd?.layers?.split( ',' )?.eachWithIndex { file, i ->
@@ -120,7 +120,7 @@ class ChipperService
         srs             : chpCmd?.srs,
         'hist_op'       : 'auto-minmax',
         operation       : '2cmv',
-        resampler_filter: 'bilinear',
+        resampler_filter: inputParams.resamplerFilter ?: 'bilinear',
         bands           : "0"
     ]
 
@@ -146,7 +146,7 @@ class ChipperService
         colorRed       : ( params.colorRed ?: defaultHillShadeOpts.colorRed ) as Integer,
         elevationAngle : ( params.elevationAngle ?: defaultHillShadeOpts.elevationAngle ) as Double,
         gain           : ( params.gain ?: defaultHillShadeOpts.gain ) as Double,
-        resamplerFilter: params.resamplerfilter ?: defaultHillShadeOpts.resampleFilter,
+        resamplerFilter: params.resamplerfilter ?: defaultHillShadeOpts.resamplerFilter,
         writer         : params.writer ?: defaultHillShadeOpts.writer
     ]
 
@@ -195,7 +195,7 @@ class ChipperService
 
         scale_2_8_bit   : 'true',
         'hist_op'       : 'auto-minmax',
-        resampler_filter: 'bilinear',
+        resampler_filter: inputParams.resamplerFilter ?: 'bilinear',
 
         'image0.file'   : inputParams.mapImage?.filename,
         'image0.entry'  : inputParams.mapImage?.entryId,
@@ -614,7 +614,7 @@ class ChipperService
         scale_2_8_bit   : 'true',
         srs             : outputParams?.bbox?.proj?.id,
         three_band_out  : 'true',
-        resampler_filter: 'cubic'
+        resampler_filter: inputParams.resamplerFilter ?: 'cubic'
     ]
 
     inputParams?.layers?.eachWithIndex { image, i ->
@@ -668,7 +668,7 @@ class ChipperService
         scale_2_8_bit   : 'true',
         srs             : outputParams.bbox?.proj?.id,
         'hist_op'       : 'auto-minmax',
-        resampler_filter: 'bilinear',
+        resampler_filter: inputParams.resamplerFilter ?: 'bilinear',
         'image0.file'   : inputParams.redImage?.filename,
         'image0.entry'  : inputParams.redImage?.entryId,
         'image1.file'   : inputParams.blueImage?.filename,
@@ -716,7 +716,7 @@ class ChipperService
         scale_2_8_bit   : 'true',
         srs             : outputParams.bbox?.proj?.id,
         'hist_op'       : 'auto-minmax',
-        resampler_filter: 'bilinear',
+        resampler_filter: inputParams.resamplerFilter ?: 'bilinear',
         'image0.file'   : inputParams.colorImage?.filename,
         'image0.entry'  : inputParams.colorImage?.entryId,
         'image1.file'   : inputParams.panImage?.filename,
