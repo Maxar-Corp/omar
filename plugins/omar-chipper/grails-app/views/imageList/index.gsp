@@ -157,12 +157,31 @@
         return rows;
     }
 
+    function checkForIntersect(images)
+    {
+        var polygons = _.collect( images, function(image){
+            var points = _.collect( image.groundGeom.coordinates[0], function(point) {
+                return new OpenLayers.Geometry.Point(point[0], point[1]);
+            } );
+            var ring = new OpenLayers.Geometry.LinearRing(points)
+            return new OpenLayers.Geometry.Polygon(ring);
+        });
+
+        return polygons[0].intersects(polygons[1]);
+    }
+
     function create2CMV()
     {
         var images = getSelectedImages();
 
         if ( images.length === 2 )
         {
+            if ( ! checkForIntersect(images))
+            {
+              $.messager.alert('2CMV', 'Images do not intersect.', 'error');
+              return;
+            }
+
             var redImage = images[0].id;
             var blueImage =  images[1].id;
 
@@ -180,6 +199,12 @@
 
         if ( images.length === 2 )
         {
+            if ( ! checkForIntersect(images))
+            {
+              $.messager.alert('PSM', 'Images do not intersect.', 'error');
+              return;
+            }
+
             if ( ! ( images[0].numberOfBands === 1 || images[1].numberOfBands === 1 ) )
             {
                 $.messager.alert('PSM', 'At least one image must be a Pan Chromatic.');
