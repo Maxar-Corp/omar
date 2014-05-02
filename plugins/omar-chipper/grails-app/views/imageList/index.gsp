@@ -158,14 +158,19 @@
         return rows;
     }
 
+    function createPolygon(image)
+    {
+        var points = _.collect( image.groundGeom.coordinates[0], function(point) {
+                return new OpenLayers.Geometry.Point(point[0], point[1]);
+            } );
+        var ring = new OpenLayers.Geometry.LinearRing(points)
+        return new OpenLayers.Geometry.Polygon(ring);
+    }
+
     function checkForIntersect(images)
     {
         var polygons = _.collect( images, function(image){
-            var points = _.collect( image.groundGeom.coordinates[0], function(point) {
-                return new OpenLayers.Geometry.Point(point[0], point[1]);
-            } );
-            var ring = new OpenLayers.Geometry.LinearRing(points)
-            return new OpenLayers.Geometry.Polygon(ring);
+            return createPolygon(image);
         });
 
         return polygons[0].intersects(polygons[1]);
@@ -257,6 +262,15 @@
     $( document ).ready( function ()
     {
         var tableModel = ${tableModel as JSON};
+
+        var geomCol = _.find( tableModel.columns[0], function(it) {
+            return (it.field === 'groundGeom');
+        } );
+
+        if ( geomCol )
+        {
+            geomCol.formatter =  showBBOX;
+        }
 
         OpenLayers.ImgPath = "${resource( plugin: 'omar-chipper', dir: 'js/openlayers/img' )}/";
 
@@ -397,6 +411,12 @@
             var imgTag = "<img src='" + thumbnailURL + "' width='" + size + "' height='" + size + "'/>";
 
             return imgTag;
+        }
+
+
+        function showBBOX( val, row )
+        {
+            return createPolygon(row).getBounds();
         }
 
         var filterParams = ${filterParams as JSON};
