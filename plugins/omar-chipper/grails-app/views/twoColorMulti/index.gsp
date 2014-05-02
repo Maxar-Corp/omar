@@ -9,6 +9,7 @@
 <html>
 <head>
     <title>Two Color MultiView</title>
+    <piwik:trackPageview />
     <%--
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes" file="icon.css"/>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>

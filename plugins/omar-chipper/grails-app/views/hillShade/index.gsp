@@ -9,6 +9,8 @@
 <html>
 <head>
     <title>Hill Shade</title>
+    <piwik:trackPageview />
+
     <%--
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes" file="icon.css"/>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>

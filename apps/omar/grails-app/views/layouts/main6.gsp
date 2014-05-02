@@ -10,7 +10,7 @@
 <html>
 <head>
   <title><g:layoutTitle default="Grails"/></title>
-
+  <piwik:trackPageview />
   <omar:bundle contentType="css" files="${[
       [dir: 'css', file: 'main.css'],
       [dir: 'css', file: 'omar-2.0.css']

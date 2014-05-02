@@ -4,6 +4,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <!--meta name="viewport" content="minimum-scale=1.0, width='device-width', maximum-scale=1.6, user-scalable=yes" /-->
   <title><g:layoutTitle default="Grails" /></title>
+  <piwik:trackPageview />
   <link rel="stylesheet" href="${resource(dir:'css',file:'main.css')}" />
   <link rel="stylesheet" type="text/css" href="${resource(plugin: 'yui', dir: 'js/yui/reset-fonts-grids', file: 'reset-fonts-grids.css')}"/>
   <%--

@@ -9,6 +9,7 @@
 <html>
 <head>
     <title>Image List</title>
+    <piwik:trackPageview />
     <style type="text/css">
     .customEditingToolbar {
         float: right;

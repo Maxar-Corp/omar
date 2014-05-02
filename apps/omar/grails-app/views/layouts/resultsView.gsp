@@ -53,6 +53,7 @@
   }
   </style>
   <title><g:layoutTitle default="Grails"/></title>
+  <piwik:trackPageview />
   <g:layoutHead/>
   <r:require modules="resultsView"/>
   <r:layoutResources/>

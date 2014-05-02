@@ -842,6 +842,12 @@ csw {
 
 chipper {
   hillShade {
-    elevationPath = '/data1/ossim-dem-test'
+    //elevationPath = '/data1/ossim-dem-test'
+    //elevationPath = '/data/elevation/dted/1k'
+    elevationPath = '/data/elevation/srtm/1arc'
+    //elevationPath = '/data/elevation/srtm/3arc'
   }
 }
+piwik.analytics.enabled = false
+piwik.analytics.url = "http://example.com/piwik"
+piwik.analytics.siteid = 1

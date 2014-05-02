@@ -44,6 +44,7 @@ footer {
 }
 </style>
 <title><g:layoutTitle default="Grails"/></title>
+<piwik:trackPageview />
 <g:layoutHead/>
 <r:require modules="singleColumn"/>
 <r:layoutResources/>

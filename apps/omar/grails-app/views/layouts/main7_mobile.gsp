@@ -10,6 +10,7 @@
 <html>
 <head>
   <title><g:layoutTitle default="Grails"/></title>
+  <piwik:trackPageview />
 
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'main.css')}"/>
   <link rel="stylesheet" href="${resource(dir: 'css', file: 'omar-2.0.css')}"/>
