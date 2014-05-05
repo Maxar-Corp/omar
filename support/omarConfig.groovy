@@ -90,6 +90,9 @@ login.registration.useMail=(login.registration.userVerification== "email")
 
 jabber.securityMode = "disabled"
 
+piwik.analytics.enabled = false
+piwik.analytics.url = "http://example.com/piwik"
+piwik.analytics.siteid = 1
 
 //security {
 //  level = 'UNCLASS'
