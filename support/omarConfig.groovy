@@ -13,7 +13,7 @@ import java.awt.Color
 //videoStreaming.flashDirRoot=
 //image.download.prefix = "http://${omar.serverIP}"
 
-wms.base.defaultOptions = [isBaseLayer: true, buffer: 0, transitionEffect: "resize"]
+wms.base.defaultOptions = [isBaseLayer: true, numZoomLevels: 20, buffer: 0, transitionEffect: "resize"]
 wms.supportIE6=true
 
 wms.base.layers = [
