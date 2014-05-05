@@ -77,8 +77,10 @@
 
         OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
 
+        var  spinner = null;
+        var  spinnerCount = 0;
+
        var layerEvents = {
-            spinner: null,
             loadstart: function ()
             {
                 //console.log( 'loadStart' );
@@ -99,12 +101,22 @@
                     top: '50%', // Top position relative to parent in px
                     left: '50%' // Left position relative to parent in px
                 };
-                this.spinner = new Spinner( opts ).spin($('#map')[0]);
+                if ( spinnerCount === 0 )
+                {
+                    spinner = new Spinner( opts ).spin($('#map')[0]);
+                }
+                spinnerCount++;
+                //console.log("spinnerCount: " + spinnerCount);
             },
             loadend: function ()
             {
-                this.spinner.stop();
-                this.spinner = null;
+                spinnerCount--;
+                //console.log("spinnerCount: " + spinnerCount);
+                if ( spinnerCount === 0 )
+                {
+                    spinner.stop();
+                    spinner = null;
+                }
                 //console.log( 'loadEnd' );
             },
             scope: this

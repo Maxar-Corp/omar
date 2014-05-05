@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>Two Color MultiView</title>
-    <piwik:trackPageview />
+    <piwik:trackPageview/>
     <%--
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes" file="icon.css"/>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>
@@ -65,7 +65,8 @@
 
         OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
 
-      var  spinner =  null;
+      var spinner =  null;
+      var spinnerCount = 0;
 
       var layerEvents = {
             loadstart: function ()
@@ -88,12 +89,23 @@
                     top: '50%', // Top position relative to parent in px
                     left: '50%' // Left position relative to parent in px
                 };
-                spinner = new Spinner( opts ).spin($('#map')[0]);
+                if ( spinnerCount === 0 )
+                {
+                    spinner = new Spinner( opts ).spin($('#map')[0]);
+                }
+                spinnerCount++;
+                console.log("spinnerCount: " + spinnerCount);
+
             },
             loadend: function ()
             {
-                spinner.stop();
-                spinner = null;
+                spinnerCount--;
+                console.log("spinnerCount: " + spinnerCount);
+                if ( spinnerCount === 0 )
+                {
+                    spinner.stop();
+                    spinner = null;
+                }
                 //console.log( 'loadEnd' );
             },
             scope: this
