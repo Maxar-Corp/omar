@@ -454,11 +454,11 @@
                     }
                     else if ( item.name === "Start Date")
                     {
-                        filter += "acquisition_date >='" + item.value + "'";
+                        filter += "acquisition_date >= TIMESTAMP WITH TIME ZONE '" + item.value + "Z'";
                     }
                     else if ( item.name === "End Date")
                     {
-                        filter += "acquisition_date <='" + item.value + "'";
+                        filter += "acquisition_date <= TIMESTAMP WITH TIME ZONE '" + item.value + "Z'";
                     }
                     else if ( item.name === "Mission")
                     {
