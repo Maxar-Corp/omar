@@ -22,7 +22,7 @@ class DownloadController
         fileList = rasterFiles?.collectParallel {
           def file = it.name as File
           [
-              id: it.id,
+              id  : it.id,
               name: file.absolutePath,
               size: FileUtils.byteCountToDisplaySize( file.size() ),
               date: new Date( file.lastModified() )
@@ -44,9 +44,29 @@ class DownloadController
     switch ( type )
     {
     case 'raster':
-      def file = RasterFile.read( id )
-      response.setHeader( 'Content-disposition', "attachment; filename=${file.name}" )
-      response.sendRedirect( "http://${grailsApplication.config.omar.serverIP}/${file.name}" )
+      def rasterFile = RasterFile.read( id )
+
+      //response.setHeader( 'Content-disposition', "attachment; filename=${file.name}" )
+      //response.sendRedirect( "http://${grailsApplication.config.omar.serverIP}/${file.name}" )
+
+      if ( rasterFile )
+      {
+        def file = new File( rasterFile.name )
+
+        response.contentType = 'application/octet-stream'
+        response.setHeader 'Content-disposition', "attachment; filename=\"${file.name}\""
+
+        def istream = file.newInputStream()
+
+        response.outputStream << istream
+        response.outputStream.flush()
+        istream.close()
+      }
+      else
+      {
+        flash.message = "RasterFile with Id ${id} not found."
+        redirect( [action: 'raster'] )
+      }
       break
     }
   }
