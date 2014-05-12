@@ -211,7 +211,7 @@ class ChipperService
         grailsApplication?.config?.chipper?.hillShade?.elevationPath as String,
         demBounds )
 
-    println "dems: ${dems}"
+   // println "dems: ${dems}"
 
     dems?.eachWithIndex { file, index -> opts["dem${index}.file"] = file }
 
@@ -525,12 +525,12 @@ class ChipperService
 
     if ( cacheFile.exists() )
     {
-      println "Reading ${cmd.id} thumbnail from cache."
+      //println "Reading ${cmd.id} thumbnail from cache."
       ostream << cacheFile.newInputStream()
     }
     else
     {
-      println "Creating thumbnail for ${cmd.id}."
+      //println "Creating thumbnail for ${cmd.id}."
 
       def inputParams = [
           filename: rasterEntry.filename,
@@ -742,7 +742,7 @@ class ChipperService
 
   private synchronized def runChipper(def opts, def outputParams)
   {
-    println opts
+    //println opts
 
     def numBands = ( outputParams.transparent ) ? 4 : 3
     def buffer = new byte[outputParams.size.width * outputParams.size.height * numBands]
@@ -750,19 +750,19 @@ class ChipperService
 
     if ( chipper.initialize( opts ) )
     {
-      println 'initialize: good'
+      //println 'initialize: good'
       if ( chipper.getChip( buffer, outputParams.transparent ) > 1 )
       {
-        println 'getChip: good'
+        //println 'getChip: good'
       }
       else
       {
-        println 'getChip: bad'
+       // println 'getChip: bad'
       }
     }
     else
     {
-      println 'initialize: bad'
+     // println 'initialize: bad'
     }
 
     def dataBuffer = new DataBufferByte( buffer, buffer.size() )
