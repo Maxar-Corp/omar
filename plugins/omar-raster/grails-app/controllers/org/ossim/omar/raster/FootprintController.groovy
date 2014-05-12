@@ -43,24 +43,29 @@ class FootprintController
 
   def footprints( )
   {
-    //def ostream = response.outputStream
-    def ostream = new ByteArrayOutputStream()
+    try {
+      //def ostream = response.outputStream
+      def ostream = new ByteArrayOutputStream()
 
-    def caseInsensitiveParams = new CaseInsensitiveMap( params )
-    def start = System.currentTimeMillis()
+      def caseInsensitiveParams = new CaseInsensitiveMap( params )
+      def start = System.currentTimeMillis()
 
-    response.contentType = caseInsensitiveParams.get( "format", "image/png" )
-    footprintService.render( params, ostream )
-    //ostream.flush()
-    //ostream.close()
+      response.contentType = caseInsensitiveParams.get( "format", "image/png" )
+      footprintService.render( params, ostream )
+      //ostream.flush()
+      //ostream.close()
 
-    def end = System.currentTimeMillis()
+      def end = System.currentTimeMillis()
 
-    //println "${params}, elapsed: ${end - start}ms"
-    response.outputStream << ostream
-    response.outputStream.flush()
-    response.outputStream.close()
-
+      //println "${params}, elapsed: ${end - start}ms"
+      response.outputStream << ostream
+      response.outputStream.flush()
+      response.outputStream.close()
+    }
+    catch(def e)
+    {
+      println "CAUGHT EXCEPTION: ${e}"
+    }
   }
 
   def features = {
