@@ -39,10 +39,22 @@ class RasterEntryExportController
 
             if (rasterEntry)
             {
-              def mainFile = rasterEntry.mainFile;
+              def mainFile
+              if(rasterEntry.rasterDataSet)
+              {
+                mainFile = rasterEntry.rasterDataSet.getFileFromObjects()
+              }
+              if(!mainFile) mainFile = rasterEntry.mainFile;
               tempFile = new File(mainFile.name);
               if (tempFile.exists()&&tempFile.canRead())
               {
+                rasterEntry?.rasterDataSet?.fileObjects.each{
+                  if(it!= "main")
+                  {
+                    fileObjects << [name:it.name,
+                            type:it.type]
+                  }
+                }
                 rasterEntry.fileObjects.each{
                   fileObjects << [name:it.name,
                                       type:it.type]
@@ -86,7 +98,7 @@ class RasterEntryExportController
           def httpResponse = new HttpStatusMessage()
           httpResponse.status = HttpStatus.UNAUTHORIZED
           httpResponse.message = "You are unauthorized to download the files.  " +
-                                 "You must be logged into OMAR� \n and have download privileges."
+                                 "You must be logged into OMAR™ \n and have download privileges."
 
           httpResponse.initializeResponse(response)
           response.contentType = "text/plain"
@@ -96,7 +108,7 @@ class RasterEntryExportController
     }
     catch(def e)
     {
-      println "EXCEPTION!!! ${e}"
+      //println "EXCEPTION!!! ${e}"
     }
     null
   }
