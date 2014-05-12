@@ -211,8 +211,6 @@ class ChipperService
         grailsApplication?.config?.chipper?.hillShade?.elevationPath as String,
         demBounds )
 
-   // println "dems: ${dems}"
-
     dems?.eachWithIndex { file, index -> opts["dem${index}.file"] = file }
 
     runChipper( opts, outputParams )
@@ -224,7 +222,7 @@ class ChipperService
     def filenames = []
 
 
-    ElevMgr.instance().getCellsForBounds( bounds.minY, bounds.minX, bounds.maxY, bounds.maxX, cells )
+    ElevMgr.instance().getCellsForBounds( bounds.minY, bounds.minX, bounds.maxY, bounds.maxX, cells, 25 )
 
     for ( x in ( 0..<cells?.size() ) )
     {
