@@ -121,7 +121,7 @@ class ChipperService
         'hist_op'       : 'auto-minmax',
         operation       : '2cmv',
         resampler_filter: inputParams.resamplerFilter ?: 'bilinear',
-        bands           : "0"
+        bands           : "1"
     ]
 
     filenames?.eachWithIndex { file, i ->
@@ -684,7 +684,7 @@ class ChipperService
         'image0.entry'  : inputParams.redImage?.entryId,
         'image1.file'   : inputParams.blueImage?.filename,
         'image1.entry'  : inputParams.blueImage?.entryId,
-        bands           : '0'
+        bands           : '1'
     ]
 
     runChipper( opts, outputParams )
