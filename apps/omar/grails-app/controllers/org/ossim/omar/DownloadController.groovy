@@ -39,12 +39,12 @@ class DownloadController
     [type: 'raster', fileList: fileList]
   }
 
-  def file(String type, Long id)
+  def file(String type, Long rasterFileId)
   {
     switch ( type )
     {
     case 'raster':
-      def rasterFile = RasterFile.read( id )
+      def rasterFile = RasterFile.read( rasterFileId )
 
       //response.setHeader( 'Content-disposition', "attachment; filename=${file.name}" )
       //response.sendRedirect( "http://${grailsApplication.config.omar.serverIP}/${file.name}" )
@@ -64,7 +64,7 @@ class DownloadController
       }
       else
       {
-        flash.message = "RasterFile with Id ${id} not found."
+        flash.message = "RasterFile with Id ${rasterFileId} not found."
         redirect( [action: 'raster'] )
       }
       break
