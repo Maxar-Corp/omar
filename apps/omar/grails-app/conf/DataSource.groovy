@@ -21,7 +21,8 @@ environments {
     dataSource {
       dbCreate = "create-drop" // one of 'create', 'create-drop','update'
       //dbCreate = "update"
-      url = "jdbc:postgresql_postGIS:omardb-${appVersion}-dev"
+//     url = "jdbc:postgresql_postGIS:omardb-${appVersion}-dev"
+     url = "jdbc:postgresql_postGIS://10.0.10.232/omardb-${appVersion}-dev"
     }
   }
   test {
