@@ -793,7 +793,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
             collection.model.fetch({success:function(){collection.render()},
                 update: true, remove: false});
-            window.setTimeout(this.updateServers.bind(this), 5000);
+           // window.setTimeout(this.updateServers.bind(this), 5000);
         }
 
         if(this.mapView) this.mapView.setCqlFilterToFootprintLayers(this.toCql());//this.toFootprintCql());
@@ -810,7 +810,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var collection =  this.omarServerCollectionView;
         collection.model.fetch({success:function(){},
             update: true, remove: false});
-        window.setTimeout(this.updateServers.bind(this),5000);
+       // window.setTimeout(this.updateServers.bind(this),5000);
     },
     omarServerCollectionChanged:function(model, newModelIdList)
     {
