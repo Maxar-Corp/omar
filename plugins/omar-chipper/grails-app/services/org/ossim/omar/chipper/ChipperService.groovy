@@ -19,8 +19,8 @@ import java.awt.image.PixelInterleavedSampleModel
 import java.awt.image.Raster
 
 import javax.imageio.ImageIO
-import javax.media.jai.JAI
-import javax.media.jai.PlanarImage
+//import javax.media.jai.JAI
+//import javax.media.jai.PlanarImage
 import joms.oms.Chipper
 import joms.oms.ElevMgr
 import joms.oms.StringVector
@@ -121,7 +121,8 @@ class ChipperService
         'hist_op'       : 'auto-minmax',
         operation       : '2cmv',
         resampler_filter: inputParams.resamplerFilter ?: 'bilinear',
-        bands           : "1"
+        bands           : "1",
+        three_band_out : "true"
     ]
 
     filenames?.eachWithIndex { file, i ->
@@ -199,6 +200,7 @@ class ChipperService
 
         'image0.file'   : inputParams.mapImage?.filename,
         'image0.entry'  : inputParams.mapImage?.entryId,
+        three_band_out : "true"
     ]
 
     //println "image: ${GeoScript.wrap( inputParams.mapImage.groundGeom ).bounds}"
@@ -319,7 +321,7 @@ class ChipperService
         chpCmd?.width, chpCmd?.height, BufferedImage.TYPE_INT_ARGB )
     ImageIO.write( image, chpCmd?.format?.split( '/' )[-1], ostream )
   }
-
+  /*
   private def fixImageForOutputFormat(def inputImage, def outputFormat)
   {
     def image = inputImage
@@ -339,12 +341,13 @@ class ChipperService
     }
     image
   }
-
+    */
   private boolean populateTile(chipperOptionsMap, ChipCommand chpCmd, ByteArrayOutputStream ostream)
   {
+    def outputFormat = chpCmd?.format?.split( '/' )[-1];
     Chipper chipper = new Chipper()
     boolean status = false
-
+    outputFormat = outputFormat?.toLowerCase()
 //    def numBands = chipperOptionsMap?.bands?.split(',')?.size() ?: 3
     def numBands = 4
     def mask = ( ( 0..<numBands ).collect { 8 } ) as int[]
@@ -368,19 +371,21 @@ class ChipperService
 
         def dataBuffer = sampleModel.createDataBuffer()
 
-        if ( chipper.getChip( dataBuffer.data, true ) )
+        def outputSupportsTransparent = (outputFormat!="jpg" && outputFormat!="jpeg")
+        if ( chipper.getChip( dataBuffer.data, outputSupportsTransparent ) )
         {
           // println "chipper.getChip good..."
 
           def cs = ColorSpace.getInstance( ColorSpace.CS_sRGB )
 
           def colorModel = new ComponentColorModel( cs, mask,
-              true, false, Transparency.TRANSLUCENT, DataBuffer.TYPE_BYTE )
+              outputSupportsTransparent, false,
+                  outputSupportsTransparent?Transparency.TRANSLUCENT:Transparency.OPAQUE,
+                  DataBuffer.TYPE_BYTE )
 
           def raster = Raster.createRaster( sampleModel, dataBuffer, new Point( 0, 0 ) )
           def image = new BufferedImage( colorModel, raster, false, null )
-          def outputFormat = chpCmd?.format?.split( '/' )[-1];
-          image = fixImageForOutputFormat( image, outputFormat )
+          //image = fixImageForOutputFormat( image, outputFormat )
           ImageIO.write( image, outputFormat, ostream )
 
           status = true
@@ -684,7 +689,8 @@ class ChipperService
         'image0.entry'  : inputParams.redImage?.entryId,
         'image1.file'   : inputParams.blueImage?.filename,
         'image1.entry'  : inputParams.blueImage?.entryId,
-        bands           : '1'
+        bands           : '1',
+        three_band_out : "true"
     ]
 
     runChipper( opts, outputParams )
@@ -732,7 +738,8 @@ class ChipperService
         'image0.entry'  : inputParams.colorImage?.entryId,
         'image1.file'   : inputParams.panImage?.filename,
         'image1.entry'  : inputParams.panImage?.entryId,
-        bands           : '3,2,1'
+        bands           : '3,2,1',
+        three_band_out : "true"
     ]
 
     runChipper( opts, outputParams )
@@ -745,6 +752,7 @@ class ChipperService
     def numBands = ( outputParams.transparent ) ? 4 : 3
     def buffer = new byte[outputParams.size.width * outputParams.size.height * numBands]
     def chipper = new Chipper()
+
 
     if ( chipper.initialize( opts ) )
     {
