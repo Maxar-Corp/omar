@@ -23,7 +23,6 @@ wms.base.layers = [
                 name: "Reference Data",
                 options: wms.base.defaultOptions
         ]
-
 ]
 
 
@@ -105,3 +104,11 @@ piwik.analytics.siteid = 1
 //    level = "UNCLASS"
 //}
 
+//dataSource.pooled = true
+//dataSource.driverClassName = ( useP6Spy ) ? "com.p6spy.engine.spy.P6SpyDriver" : "org.postgis.DriverWrapper"
+//dataSource.username = "postgres"
+//dataSource.password = "postgres"
+//dataSource.dialect = org.ossim.omar.postgis.PostGISDialect
+//dataSource.logSql = true
+//dataSource.url="jdbc:postgresql_postGIS://localhost/omardb-${appVersion}-prod"
+}
