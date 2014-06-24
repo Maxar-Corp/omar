@@ -1,6 +1,7 @@
 package org.ossim.omar.oms
 
 import joms.oms.ImageModel
+import joms.oms.MapProjection
 import joms.oms.ossimDpt
 import joms.oms.ossimGpt
 import joms.oms.ossimEcefPoint
@@ -97,6 +98,7 @@ class ProjectionService
         def area = 0.0;
         def result = [gdist:0.0, distance:0.0, area: 0.0, unit: "m", azimuth: 0.0];
         def coordinateList = []
+        def utmCoordinateList = []
         def geodeticEvaluator = new GeodeticEvaluator()
         double [] daArray = new double[3]
 
@@ -113,13 +115,20 @@ class ProjectionService
             gdist = 0.0;
             area = 0.0;
             def imageSpaceModel = new ImageModel()
+            def mapProjection
             if( imageSpaceModel.setModelFromFile(params.filename, params.entryId) )
             {
                 def coordinates = geom.getCoordinates();
+
                 coordinates.each{pt->
                     imagePoint.x = pt.x;
                     imagePoint.y = pt.y;
                     imageSpaceModel.imageToGround(imagePoint, groundPoint);
+                    if(!mapProjection)
+                    {
+                      mapProjection = new MapProjection();
+                      mapProjection.createUtmProjection(groundPoint);
+                    }
                     if(lastGroundPoint)
                     {
                         // Linear distance
@@ -132,19 +141,28 @@ class ProjectionService
                         lastGroundPoint.assign(groundPoint);
                         ecefPoint.assign(groundPoint);
                         coordinateList << [ecefPoint.x, ecefPoint.y, ecefPoint.z];
+
+                        mapProjection.worldToLocal(groundPoint, imagePoint)
+                        utmCoordinateList << [imagePoint.x, imagePoint.y]
                     }
                     else
                     {
                         lastGroundPoint = new ossimGpt(groundPoint);
                         ecefPoint.assign(lastGroundPoint);
                         coordinateList << [ecefPoint.x, ecefPoint.y, ecefPoint.z];
+                        mapProjection.worldToLocal(lastGroundPoint, imagePoint)
+                        utmCoordinateList << [imagePoint.x, imagePoint.y]
                     }
                 }
 
                 // Add area calculations
                 if(geom instanceof geoscript.geom.Polygon)
                 {
-                    def tempPoly = new geoscript.geom.Polygon([coordinateList])
+                  def tempPoly = new geoscript.geom.Polygon([utmCoordinateList])
+                  //def tempPoly = new geoscript.geom.Polygon([coordinateList])
+                  //def tempPoly2 = new geoscript.geom.Polygon([utmCoordinateList])
+
+                  //println "original area: ${tempPoly.area}  NEW Area: ${tempPoly2.area}"
                     area = tempPoly.area;
                 }
                 result.gdist = gdist
@@ -153,6 +171,8 @@ class ProjectionService
                 result.azimuth = daArray[1]
           }
           imageSpaceModel.delete()
+          mapProjection?.delete()
+          mapProjection = null
           imageSpaceModel = null
         }
         imagePoint.delete()
