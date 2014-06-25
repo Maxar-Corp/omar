@@ -3,7 +3,6 @@
 	<name>geoscript</name>
 	<comment></comment>
 	<projects>
-		<project>postgis</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -13,7 +12,7 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>com.springsource.sts.grails.core.nature</nature>
+		<nature>org.grails.ide.eclipse.core.nature</nature>
 		<nature>org.eclipse.jdt.groovy.core.groovyNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>

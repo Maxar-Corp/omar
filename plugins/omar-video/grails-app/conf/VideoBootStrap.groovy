@@ -14,8 +14,8 @@ class VideoBootStrap
 
     if ( VideoDataSet.count() == 0 )
     {
-      sql.execute( "ALTER TABLE video_data_set alter column start_date type timestamp with time zone" )
-      sql.execute( "ALTER TABLE video_data_set alter column end_date type timestamp with time zone" )
+//      sql.execute( "ALTER TABLE video_data_set alter column start_date type timestamp with time zone" )
+//      sql.execute( "ALTER TABLE video_data_set alter column end_date type timestamp with time zone" )
     }
 
     sql?.close()

@@ -22,9 +22,7 @@ div.olControlOverviewMap {
 }
 
 .olControlLoadingPanel {
-    /*background-image:url('../images/themes/default/loading.gif'); */
     background-image:url('../images/themes/default/spinner.gif');
-    /*background-image:url('../images/themes/default/loading-gif-animation.gif');  */
     background-color: rgba(0, 0, 0, 0.0);
     position: absolute;
     width: 100%;
@@ -59,7 +57,6 @@ div.olControlOverviewMap {
     width: 150px;
     margin: 5px;
     border: 1px solid #ccc;
-    /*background: url('../images/themes/gis/csg-4c9cd9fa89479.gif') no-repeat top left;*/
     background: url('../images/themes/gis/csg-5000521933771.gif') no-repeat top left;
 
 }

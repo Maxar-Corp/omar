@@ -1,15 +1,8 @@
-import org.ossim.omar.federation.FederatedServer
-
-import java.util.concurrent.TimeUnit
-import org.jivesoftware.smackx.provider.VCardProvider
-import org.jivesoftware.smackx.packet.VCard
 class OmarFederationGrailsPlugin {
     // the plugin version
     def version = "0.1"
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "2.0 > *"
-    // the other plugins this plugin depends on
-    def dependsOn = [:]
+    def grailsVersion = "2.2 > *"
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
         "grails-app/views/error.gsp"
@@ -41,7 +34,7 @@ Brief summary/description of the plugin.
 //    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
 
     // Online location of the plugin's browseable source code.
-//    def scm = [ url: "http://svn.grails-plugins.codehaus.org/browse/grails-plugins/" ]
+//    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before
@@ -56,12 +49,6 @@ Brief summary/description of the plugin.
     }
 
     def doWithApplicationContext = { applicationContext ->
-        // initialize settings record
-        applicationContext.federationConfigSettingsService.getSettingsRecord()
-
-        // now initialize server service
-        applicationContext.jabberFederatedServerService
-
         // TODO Implement post initialization spring config (optional)
     }
 

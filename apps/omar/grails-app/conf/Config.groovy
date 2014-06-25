@@ -19,12 +19,16 @@ grails.gorm.default.mapping = {
   "user-type" type: PersistentLocalDate, class: LocalDate
 }
 
-// locations to search for config files that get merged into the main config
-// config files can either be Java properties files or ConfigSlurper scripts
-if ( !grails.config.locations || !( grails.config.locations instanceof List ) )
-{
-  grails.config.locations = []
-}
+// locations to search for config files that get merged into the main config;
+// config files can be ConfigSlurper scripts, Java properties files, or classes
+// in the classpath in ConfigSlurper format
+
+grails.config.locations = [
+// "classpath:${appName}-config.properties",
+// "classpath:${appName}-config.groovy",
+// "file:${userHome}/.grails/${appName}-config.properties",
+// "file:${userHome}/.grails/${appName}-config.groovy"
+]
 
 if ( new File( "${userHome}/.grails/${appName}-config.groovy" ).exists() )
 {
@@ -38,112 +42,93 @@ if ( System.env.QUARTZ_CONFIG )
 {
   grails.config.locations << "file:${System.env.QUARTZ_CONFIG}"
 }
-// if(System.properties["${appName}.config.location"]) {
+
+// if (System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
+
+grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 grails.mime.file.extensions = true // enables the parsing of file extensions from URLs into the request format
-grails.mime.types = [html         : ['text/html', 'application/xhtml+xml'],
-                     xml          : ['text/xml', 'application/xml'],
-                     text         : 'text-plain',
-                     jpeg         : 'image/jpeg',
-                     jpg          : 'image/jpeg',
-                     png          : 'image/png',
-                     js           : 'text/javascript',
-                     rss          : 'application/rss+xml',
-                     atom         : 'application/atom+xml',
-                     css          : 'text/css',
-                     csv          : 'text/csv',
-                     all          : '*/*',
-                     json         : ['application/json', 'text/json'],
-                     form         : 'application/x-www-form-urlencoded',
-                     multipartForm: 'multipart/form-data',
-                     kml          : 'application/vnd.google+earth.kml+xml',
-                     kmz          : 'application/vnd.google-earth.kmz'
+grails.mime.use.accept.header = false
+grails.mime.types = [
+    all          : '*/*',
+    atom         : 'application/atom+xml',
+    css          : 'text/css',
+    csv          : 'text/csv',
+    form         : 'application/x-www-form-urlencoded',
+    html         : ['text/html', 'application/xhtml+xml'],
+    js           : 'text/javascript',
+    json         : ['application/json', 'text/json'],
+    multipartForm: 'multipart/form-data',
+    rss          : 'application/rss+xml',
+    text         : 'text/plain',
+    xml          : ['text/xml', 'application/xml'],
+    kml          : 'application/vnd.google+earth.kml+xml',
+    kmz          : 'application/vnd.google-earth.kmz',
+    jpeg         : 'image/jpeg',
+    jpg          : 'image/jpeg',
+    png          : 'image/png'
 ]
 
+// URL Mapping Cache Max Size, defaults to 5000
+//grails.urlmapping.cache.maxsize = 1000
+
+// What URL patterns should be processed by the resources plugin
+grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*']
+
 // The default codec used to encode data with ${}
-grails.views.default.codec = "none" // noxne, html, base64
+grails.views.default.codec = "none" // none, html, base64
 grails.views.gsp.encoding = "UTF-8"
 grails.converters.encoding = "UTF-8"
+// enable Sitemesh preprocessing of GSP pages
+grails.views.gsp.sitemesh.preprocess = true
+// scaffolding templates configuration
+grails.scaffolding.templates.domainSuffix = 'Instance'
 
+// Set to false to use the new Grails 1.2 JSONBuilder in the render method
+grails.json.legacy.builder = false
 // enabled native2ascii conversion of i18n properties files
 grails.enable.native2ascii = true
+// packages to include in Spring bean scanning
+grails.spring.bean.packages = []
+// whether to disable processing of multi part requests
+grails.web.disable.multipart = false
 
-//
-//// set per-environment serverURL stem for creating absolute links
-//environments {
-//  development {
-//    databaseName = "omardb-${appVersion}-dev"
-//    serverURL = "http://${serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
-//  }
-//  test {
-//    databaseName = "omardb-${appVersion}-test"
-//    serverURL = "http://${serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
-//  }
-//  production {
-//    databaseName = "omardb-${appVersion}-prod"
-//    serverURL = "http://${serverIP}/${appName}"
-//
-//  }
-//}
+// request parameters to mask when logging exceptions
+grails.exceptionresolver.params.exclude = ['password']
+
+// configure auto-caching of queries by default (if false you can cache individual queries with 'cache: true')
+grails.hibernate.cache.queries = false
+
+environments {
+  development {
+    grails.logging.jul.usebridge = true
+  }
+  production {
+    grails.logging.jul.usebridge = false
+    // TODO: grails.serverURL = "http://www.changeme.com"
+  }
+}
 
 // log4j configuration
 log4j = {
-  // Example of changing the log pattern for the default console
-  // appender:
+  // Example of changing the log pattern for the default console appender:
   //
-  appenders {
+  //appenders {
+  //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+  //}
 
-    // uncomment for DB appending.  Do this after the first build of OMAR.
-    // Then uncomment the wmsLoggingAppender redirection below.
-    // add in the import org.ossim.omar.DbAppender at the top
-//    appender new DbAppender(name: "wmsLoggingAppender",
-//            threshold: org.apache.log4j.Level.INFO,
-//            tableMapping: [width: ":width", height: ":height", layers: ":layers", styles: ":styles",
-//                    format: ":format", request: ":request", bbox: ":bbox", internal_time: ":internalTime",
-//                    render_time: ":renderTime", total_time: ":totalTime", start_date: ":startDate",
-//                    end_date: ":endDate", user_name: ":userName", ip: ":ip", url: ":url", mean_gsd: ":meanGsd",
-//                    geometry: "ST_GeomFromText(:geometry, 4326)"],
-//            tableName: "wms_log"
-//    )
-    appender new org.apache.log4j.DailyRollingFileAppender( name: "omarDataManagerAppender",
-        datePattern: "'.'yyyy-MM-dd",
-        file: "/tmp/logs/omarDataManagerAppender.log",
-        layout: pattern( conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5} %m%n' ) )
-    appender new org.apache.log4j.DailyRollingFileAppender( name: "omarAppender",
-        datePattern: "'.'yyyy-MM-dd",
-        file: "/tmp/logs/omar.log",
-        layout: pattern( conversionPattern: '[%d{yyyy-MM-dd hh:mm:ss.SSS}] %p %c{5}  %m%n' ) )
-  }
-
-//  info wmsLoggingAppender: 'grails.app.service.org.ossim.omar.WmsLogService', additivity: false
-  info 'omarDataManagerAppender': '*DataManagerService', additivity: false
-  info omarAppender: 'grails.app', additivity: false
-  info omarAppender: 'omar', additivity: false
-
-  error 'org.codehaus.groovy.grails.web.servlet',  //  controllers
-      'org.codehaus.groovy.grails.web.pages', //  GSP
-      'org.codehaus.groovy.grails.web.sitemesh', //  layouts
+  error 'org.codehaus.groovy.grails.web.servlet',        // controllers
+      'org.codehaus.groovy.grails.web.pages',          // GSP
+      'org.codehaus.groovy.grails.web.sitemesh',       // layouts
       'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-      'org.codehaus.groovy.grails.web.mapping', // URL mapping
-      'org.codehaus.groovy.grails.commons', // core / classloading
-      'org.codehaus.groovy.grails.plugins', // plugins
-      'org.codehaus.groovy.grails.orm.hibernate', // hibernate integration
+      'org.codehaus.groovy.grails.web.mapping',        // URL mapping
+      'org.codehaus.groovy.grails.commons',            // core / classloading
+      'org.codehaus.groovy.grails.plugins',            // plugins
+      'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
       'org.springframework',
       'org.hibernate',
       'net.sf.ehcache.hibernate'
-
-  warn 'org.mortbay.log'
-
-  fatal 'org.grails.plugin.resource'
-//  debug 'org.hibernate.SQL'
-//   debug 'org.springframework.security',
-//         'com.sun.jndi.ldap',
-
-  // root {
-  //       debug 'stdout'
-  //   }
-
 }
 
 /** *********************************************************************************************************/

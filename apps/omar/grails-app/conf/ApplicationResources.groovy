@@ -1,4 +1,7 @@
 modules = {
+application {
+        resource url:'js/application.js'
+    }
   singleColumn {
     resource url: [dir: 'css', file: 'main.css']
     resource url: [dir: 'css', file: 'omar-2.0.css']

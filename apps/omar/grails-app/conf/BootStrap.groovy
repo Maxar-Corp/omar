@@ -12,8 +12,6 @@ import grails.util.GrailsUtil
 
 import javax.sql.DataSource
 
-//import geodata.City
-//import geodata.CityData
 
 class BootStrap
 {
@@ -22,9 +20,6 @@ class BootStrap
   def stagerService
 
   def init = { servletContext ->
-
-    joms.oms.Init.instance().initialize()
-
     if ( ChipFormat.count() == 0 )
     {
       def chips = [
@@ -75,7 +70,6 @@ class BootStrap
 //      stagerService.runStager( testRepo )
 //    }
   }
-
   def destroy = {
   }
 }

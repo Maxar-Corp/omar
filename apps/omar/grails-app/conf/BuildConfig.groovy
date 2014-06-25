@@ -1,9 +1,7 @@
-//grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
-grails.servlet.version = "3.0"
-
-grails.work.dir="${System.env.OMAR_DEV_HOME}/.grails"
+grails.work.dir = "${System.env.OMAR_DEV_HOME}/.grails"
 grails.dependency.cache.dir = "${System.env.OMAR_DEV_HOME}/.grails/ivy-cache"
 
+grails.servlet.version = "3.0" // Change depending on target container compliance (2.5 or 3.0)
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
@@ -22,16 +20,19 @@ grails.project.dependency.resolution = {
     // specify dependency exclusions here; for example, uncomment this to disable ehcache:
     // excludes 'ehcache'
   }
-  log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+  log "error" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
   checksums true // Whether to verify checksums on resolve
-  legacyResolve true // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
+  legacyResolve false
+  // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
 
   repositories {
     inherits true // Whether to inherit repository definitions from plugins
 
+    mavenRepo "http://repo.grails.org/grails/plugins/"
+
     grailsPlugins()
     grailsHome()
-    grailsCentral()
+    //grailsCentral()
 
     mavenLocal()
     mavenCentral()
@@ -46,20 +47,13 @@ grails.project.dependency.resolution = {
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes e.g.
 
-    // runtime 'mysql:mysql-connector-java:5.1.20'
-    // Workarounds for Grails not shipping ant in WAR
-    runtime 'org.apache.ant:ant:1.7.1'    //you can also use runtime
-    runtime 'org.apache.ant:ant-launcher:1.7.1'
+    // runtime 'mysql:mysql-connector-java:5.1.22'
   }
 
   plugins {
-    compile ':filterpane:2.2.1'
     runtime ":hibernate:$grailsVersion"
-    //runtime ":jquery:1.10.2"
-    runtime ":resources:1.1.6"
-    runtime ":p6spy:0.5"
-
-    compile ":piwik:0.1"
+    runtime ":jquery:1.10.2"
+    runtime ":resources:1.2.6"
 
     // Uncomment these (or add new ones) to enable additional resources capabilities
     //runtime ":zipped-resources:1.0"
@@ -68,34 +62,15 @@ grails.project.dependency.resolution = {
 
     build ":tomcat:$grailsVersion"
 
-    runtime ":database-migration:1.3.5"
+    runtime ":database-migration:1.3.8"
+    runtime ":p6spy:0.5"
 
-    compile ':cache:1.0.1'
+    compile ':cache:1.1.1'
   }
 }
-grails.plugin.location.postgis = "${System.env['OMAR_DEV_HOME']}/plugins/postgis"
-grails.plugin.location.openlayers = "${System.env['OMAR_DEV_HOME']}/plugins/openlayers"
-grails.plugin.location.geoscript = "${System.env['OMAR_DEV_HOME']}/plugins/geoscript"
-grails.plugin.location.omarCommonUi = "${System.env['OMAR_DEV_HOME']}/plugins/omar-common-ui"
-grails.plugin.location.omarCore = "${System.env['OMAR_DEV_HOME']}/plugins/omar-core"
+
+grails.plugin.location.omarRSS = "${System.env['OMAR_DEV_HOME']}/plugins/omar-rss"
 grails.plugin.location.omarFederation = "${System.env['OMAR_DEV_HOME']}/plugins/omar-federation"
-grails.plugin.location.omarOms = "${System.env['OMAR_DEV_HOME']}/plugins/omar-oms"
-grails.plugin.location.omarOgc = "${System.env['OMAR_DEV_HOME']}/plugins/omar-ogc"
-grails.plugin.location.omarStager = "${System.env['OMAR_DEV_HOME']}/plugins/omar-stager"
-grails.plugin.location.omarRaster = "${System.env['OMAR_DEV_HOME']}/plugins/omar-raster"
-grails.plugin.location.omarVideo = "${System.env['OMAR_DEV_HOME']}/plugins/omar-video"
-grails.plugin.location.omarSecuritySpring = "${System.env['OMAR_DEV_HOME']}/plugins/omar-security-spring"
-grails.plugin.location.omarRss = "${System.env['OMAR_DEV_HOME']}/plugins/omar-rss"
-//grails.plugin.location.omarScheduler = "${System.env['OMAR_DEV_HOME']}/plugins/omar-scheduler"
-grails.plugin.location.omarSuperoverlay = "${System.env['OMAR_DEV_HOME']}/plugins/omar-superoverlay"
-grails.plugin.location.omarChipper = "${System.env['OMAR_DEV_HOME']}/plugins/omar-chipper"
-//grails.plugin.location.omarMobile="${System.env['OMAR_DEV_HOME']}/plugins/omar-mobile"
-
-//grails.plugin.location.geodata = "${System.env['OMAR_DEV_HOME']}/plugins/geodata"
-
-//grails.plugin.location.omarOgcCore="${System.env['OMAR_DEV_HOME']}/plugins/omar-ogc-core"
-grails.plugin.location.omarImageMagick = "${System.env['OMAR_DEV_HOME']}/plugins/omar-image-magick"
-grails.plugin.location.omarTimeLapse = "${System.env['OMAR_DEV_HOME']}/plugins/omar-time-lapse"
 grails.plugin.location.omarChipper = "${System.env['OMAR_DEV_HOME']}/plugins/omar-chipper"
 
-//grails.plugin.location.filterpane = "${System.env['OMAR_DEV_HOME']}/plugins/filterpane"
+

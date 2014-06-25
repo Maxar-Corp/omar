@@ -15,14 +15,14 @@ class CoreBootStrap
 
     if ( Report.count() == 0 )
     {
-      sql.execute( "ALTER TABLE report alter column date_created type timestamp with time zone" )
-      sql.execute( "ALTER TABLE report alter column last_updated type timestamp with time zone" )
+//      sql.execute( "ALTER TABLE report alter column date_created type timestamp with time zone" )
+//      sql.execute( "ALTER TABLE report alter column last_updated type timestamp with time zone" )
     }
 
     if ( Repository.count() == 0 )
     {
-      sql.execute( "ALTER TABLE repository alter column scan_start_date type timestamp with time zone" )
-      sql.execute( "ALTER TABLE repository alter column scan_end_date type timestamp with time zone" )
+//      sql.execute( "ALTER TABLE repository alter column scan_start_date type timestamp with time zone" )
+//      sql.execute( "ALTER TABLE repository alter column scan_end_date type timestamp with time zone" )
 
       def baseDirs
 

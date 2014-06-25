@@ -4,6 +4,10 @@ input, select, textarea {
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
+h1, h2, h3, h4, h5, h6 {
+	line-height: 1.1;
+}
+
 /* BASE LAYOUT */
 
 html {
@@ -37,9 +41,8 @@ body {
 	color: #333333;
 	margin: 0 auto;
 	max-width: 960px;
-	/*overflow-x: hidden;*/ /* prevents box-shadow causing a horizontal scrollbar in firefox when viewport < 960px wide */
-    overflow: hidden;
-    -moz-box-shadow: 0 0 0.3em #255b17;
+	overflow-x: hidden; /* prevents box-shadow causing a horizontal scrollbar in firefox when viewport < 960px wide */
+	   -moz-box-shadow: 0 0 0.3em #255b17;
 	-webkit-box-shadow: 0 0 0.3em #255b17;
 	        box-shadow: 0 0 0.3em #255b17;
 }
@@ -48,13 +51,6 @@ body {
 	background-color: #abbf78;
 }
 
-.logout{
-    position:absolute;
-    top:auto;
-    right:10px;
-    left:auto;
-    z-index:100;
-}
 /* replace with .no-boxshadow body if you have modernizr available */
 .ie6 body,
 .ie7 body,
@@ -188,7 +184,7 @@ img {
 	text-decoration: underline;
 }
 
-.nav a.home, .nav a.list, .nav a.create, .nav a.delete {
+.nav a.home, .nav a.list, .nav a.create {
 	background-position: 0.7em center;
 	background-repeat: no-repeat;
 	text-indent: 25px;
@@ -204,10 +200,6 @@ img {
 
 .nav a.create {
 	background-image: url(../images/skin/database_add.png);
-}
-
-.nav a.delete {
-	background-image: url(../images/skin/database_delete.png);
 }
 
 /* CREATE/EDIT FORMS AND SHOW PAGES */
@@ -319,6 +311,8 @@ ul.one-to-many li.add {
 fieldset.embedded {
 	background-color: transparent;
 	border: 1px solid #CCCCCC;
+	margin-left: 0;
+	margin-right: 0;
 	padding-left: 0;
 	padding-right: 0;
 	   -moz-box-shadow: none;
@@ -331,35 +325,22 @@ fieldset.embedded legend {
 }
 
 /* MESSAGES AND ERRORS */
-.messageNoBorder {
-    font-size: 0.8em;
-    line-height: 2;
-    left-margin: 1em;
-    padding: 0em;
-    /*border: 1px solid #b2d1ff;*/
-    color: #006dba;
-    -moz-box-shadow: 0 0 0.25em #b2d1ff;
-    -webkit-box-shadow: 0 0 0.25em #b2d1ff;
-    box-shadow: 0 0 0.25em #b2d1ff;
-    background: transparent url(../images/skin/information.png) 0 50% no-repeat;
-    text-indent: 22px;
-}
 
 .errors,
 .message {
 	font-size: 0.8em;
 	line-height: 2;
 	margin: 1em 2em;
-	padding: 0.5em;
+	padding: 0.25em;
 }
 
 .message {
-    background: #f3f3ff;
-    border: 1px solid #b2d1ff;
-    color: #006dba;
-    -moz-box-shadow: 0 0 0.25em #b2d1ff;
-    -webkit-box-shadow: 0 0 0.25em #b2d1ff;
-    box-shadow: 0 0 0.25em #b2d1ff;
+	background: #f3f3ff;
+	border: 1px solid #b2d1ff;
+	color: #006dba;
+	   -moz-box-shadow: 0 0 0.25em #b2d1ff;
+	-webkit-box-shadow: 0 0 0.25em #b2d1ff;
+	        box-shadow: 0 0 0.25em #b2d1ff;
 }
 
 .errors {
@@ -378,13 +359,13 @@ fieldset.embedded legend {
 
 .errors li {
 	list-style: none;
-	background: transparent url(../images/skin/exclamation.png) 0 50% no-repeat;
-	text-indent: 22px;
+	background: transparent url(../images/skin/exclamation.png) 0.5em 50% no-repeat;
+	text-indent: 2.2em;
 }
 
 .message {
-	background: transparent url(../images/skin/information.png) 0 50% no-repeat;
-	text-indent: 22px;
+	background: transparent url(../images/skin/information.png) 0.5em 50% no-repeat;
+	text-indent: 2.2em;
 }
 
 /* form fields with errors */
@@ -499,12 +480,12 @@ th:hover, tr:hover {
 }
 
 /* PAGINATION */
+
 .pagination {
 	border-top: 0;
 	margin: 0;
 	padding: 0.3em 0.2em;
-    align:left;
-	text-align: left;
+	text-align: center;
 	   -moz-box-shadow: 0 0 3px 1px #AAAAAA;
 	-webkit-box-shadow: 0 0 3px 1px #AAAAAA;
 	        box-shadow: 0 0 3px 1px #AAAAAA;
@@ -515,11 +496,10 @@ th:hover, tr:hover {
 .pagination .currentStep {
 	color: #666666;
 	display: inline-block;
-    margin: 0 0.1em;
+	margin: 0 0.1em;
 	padding: 0.25em 0.7em;
 	text-decoration: none;
-    text-align: left;
-    -moz-border-radius: 0.3em;
+	   -moz-border-radius: 0.3em;
 	-webkit-border-radius: 0.3em;
 	        border-radius: 0.3em;
 }
@@ -593,6 +573,11 @@ th:hover, tr:hover {
 	text-indent: 25px;
 }
 
+.ie6 .buttons input.delete, .ie6 .buttons input.edit, .ie6 .buttons input.save,
+.ie7 .buttons input.delete, .ie7 .buttons input.edit, .ie7 .buttons input.save {
+	padding-left: 36px;
+}
+
 .buttons .delete {
 	background-image: url(../images/skin/database_delete.png);
 }
@@ -608,4 +593,13 @@ th:hover, tr:hover {
 a.skip {
 	position: absolute;
 	left: -9999px;
+}
+
+
+.logout{
+    position:absolute;
+    top:auto;
+    right:10px;
+    left:auto;
+    z-index:100;
 }

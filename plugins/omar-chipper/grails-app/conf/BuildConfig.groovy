@@ -1,4 +1,4 @@
-grails.work.dir = "${System.env.OMAR_DEV_HOME}/.grails"
+grails.work.dir="${System.env.OMAR_DEV_HOME}/.grails"
 grails.dependency.cache.dir = "${System.env.OMAR_DEV_HOME}/.grails/ivy-cache"
 
 grails.project.class.dir = "target/classes"
@@ -6,47 +6,39 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 
 grails.project.dependency.resolution = {
-  // inherit Grails' default dependencies
-  inherits( "global" ) {
-    // uncomment to disable ehcache
-    // excludes 'ehcache'
-  }
-  log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
-  legacyResolve true
-  // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
-  repositories {
-    grailsCentral()
-    // uncomment the below to enable remote dependency resolution
-    // from public Maven repositories
-    mavenCentral()
-    mavenLocal()
-    //mavenRepo "http://snapshots.repository.codehaus.org"
-    //mavenRepo "http://repository.codehaus.org"
-    //mavenRepo "http://download.java.net/maven/2/"
-    //mavenRepo "http://repository.jboss.com/maven2/"
-  }
-  dependencies {
-    // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-
-    // runtime 'mysql:mysql-connector-java:5.1.21'
-  }
-
-  plugins {
-    runtime ":jquery:1.11.0.1"
-    build( ":tomcat:$grailsVersion",
-        ":release:2.2.1",
-        ":rest-client-builder:1.0.3" ) {
-      export = false
+    // inherit Grails' default dependencies
+    inherits("global") {
+        // uncomment to disable ehcache
+        // excludes 'ehcache'
     }
-    runtime ":hibernate:$grailsVersion"
-  }
+    log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    legacyResolve false // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
+    repositories {
+        mavenRepo "http://repo.grails.org/grails/plugins/"
+
+        //grailsCentral()
+        mavenCentral()
+        // uncomment the below to enable remote dependency resolution
+        // from public Maven repositories
+        mavenLocal()
+        //mavenRepo "http://snapshots.repository.codehaus.org"
+        //mavenRepo "http://repository.codehaus.org"
+        //mavenRepo "http://download.java.net/maven/2/"
+        //mavenRepo "http://repository.jboss.com/maven2/"
+    }
+    dependencies {
+        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+
+        // runtime 'mysql:mysql-connector-java:5.1.21'
+    }
+
+    plugins {
+        build(":tomcat:$grailsVersion",
+              ":release:2.2.1",
+              ":rest-client-builder:1.0.3") {
+            export = false
+        }
+    }
 }
 
-grails.plugin.location.geoscript = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/geoscript"
-grails.plugin.location.omarCore = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-core"
-grails.plugin.location.postgis = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/postgis"
-grails.plugin.location.omarOgc = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-ogc"
-grails.plugin.location.omarRaster = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-raster"
-
-//grails.plugin.location.openlayers = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/openlayers"
-
+grails.plugin.location.omarRaster="${System.getenv('OMAR_DEV_HOME')}/plugins/omar-raster"

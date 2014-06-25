@@ -1,42 +1,43 @@
-def useP6Spy = false // use this to enable p6spy logging
-def appVersion = "1.8.12"
-
 dataSource {
-  pooled = true
-  driverClassName = (useP6Spy) ? "com.p6spy.engine.spy.P6SpyDriver" : "org.postgis.DriverWrapper"
-  username = "postgres"
-  password = "postgres"
-//  dialect = "org.ossim.postgis.PostGISDialectNG"
-  dialect = org.hibernatespatial.postgis.PostgisDialect
-
-//  loggingSql = true
+    pooled = true
+    driverClassName = "org.h2.Driver"
+    username = "sa"
+    password = ""
 }
 hibernate {
-  cache.use_second_level_cache = true
-  cache.use_query_cache = true
-  cache.provider_class = 'org.hibernate.cache.EhCacheProvider'
-  jdbc.batch_size = 20
+    cache.use_second_level_cache = true
+    cache.use_query_cache = false
+    cache.region.factory_class = 'net.sf.ehcache.hibernate.EhCacheRegionFactory'
 }
 // environment specific settings
 environments {
-  development {
-    dataSource {
-      dbCreate = "create-drop" // one of 'create', 'create-drop','update'
-      //dbCreate = "update"
-      url = "jdbc:postgresql_postGIS:omardb-${appVersion}-dev"
+    development {
+        dataSource {
+            dbCreate = "create-drop" // one of 'create', 'create-drop', 'update', 'validate', ''
+            url = "jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
+        }
     }
-  }
-  test {
-    dataSource {
-      dbCreate = "update"
-      //url = "jdbc:postgresql_postGIS:omardb-2.0-test"
-      url = "jdbc:postgresql_postGIS:omardb-${appVersion}-test"
+    test {
+        dataSource {
+            dbCreate = "update"
+            url = "jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
+        }
     }
-  }
-  production {
-    dataSource {
-      dbCreate = "update"
-      url = "jdbc:postgresql_postGIS:omardb-${appVersion}-prod"
+    production {
+        dataSource {
+            dbCreate = "update"
+            url = "jdbc:h2:prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000"
+            pooled = true
+            properties {
+               maxActive = -1
+               minEvictableIdleTimeMillis=1800000
+               timeBetweenEvictionRunsMillis=1800000
+               numTestsPerEvictionRun=3
+               testOnBorrow=true
+               testWhileIdle=true
+               testOnReturn=true
+               validationQuery="SELECT 1"
+            }
+        }
     }
-  }
 }
