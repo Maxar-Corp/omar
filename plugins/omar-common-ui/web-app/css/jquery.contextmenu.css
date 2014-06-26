@@ -186,6 +186,7 @@
 /* Gloss Theme */
 /* =========== */
 .context-menu-theme-gloss {
+	background:#f4f4f4 url(cmenu-gloss-bg.gif) repeat-y left center;
 	border:1px solid #f4f4f4;
 	padding:1px;
 	padding-right:0;
@@ -207,7 +208,7 @@
 	border-bottom:1px solid #F5F5F5;
 }
 .context-menu-theme-gloss .context-menu-item-hover {
-/*	background:transparent url(cmenu-gloss-menu-item-hover.gif) repeat-x left center;*/
+	background:transparent url(cmenu-gloss-menu-item-hover.gif) repeat-x left center;
 	color:#fff;
 	border-color:#000;
   	border-radius: 3px;
@@ -234,7 +235,7 @@
 }
 
 .context-menu-theme-gloss-semitransparent .context-menu-item-hover {
-/*	background-image:url(cmenu-item-gloss-semitransparent-menu-item-hover.png);*/
+	background-image:url(cmenu-item-gloss-semitransparent-menu-item-hover.png);
 	border-color:#00c;
 	background-color:#30f;
 }

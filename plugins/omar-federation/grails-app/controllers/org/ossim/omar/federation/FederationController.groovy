@@ -6,19 +6,24 @@ import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
 import java.awt.Color
 
-class FederationController  {
+class FederationController
+{
   def jabberFederatedServerService
   def grailsApplication
   def springSecurityService
-  def index(){
+
+  def index()
+  {
     forward controller: "federation", action: "search"
   }
-  def search() {
+
+  def search()
+  {
     def roles = []
-    if(springSecurityService.isLoggedIn())
+    if ( springSecurityService.isLoggedIn() )
     {
       def authorities = springSecurityService.principal.authorities
-      roles = authorities.collect(){it.authority}
+      roles = authorities.collect() { it.authority }
     }
     else
     {
@@ -26,27 +31,29 @@ class FederationController  {
     }
     def styles = grailsApplication.config.rasterEntry.styles
     def jsonStyles = []
-    styles.each{style->
+    styles.each { style ->
       def colorlookup = [:]
-      style.outlineLookupTable.each{name,value->
+      style.outlineLookupTable.each { name, value ->
         value = value.encodeAsHexColor()
         colorlookup."${name}" = value
       }
-      jsonStyles << ["styleName": "by${style.propertyName.capitalize()}",
-                     "colorTable":colorlookup]
+      jsonStyles << ["styleName" : "by${style.propertyName.capitalize()}",
+                     "colorTable": colorlookup]
     }
-    def wmsBaseLayers = (grailsApplication.config.wms as JSON).toString()
-    def footprintStyle = grailsApplication.config?.wms?.data?.raster?.params?.styles?grailsApplication.mainContext.getBean(grailsApplication.config?.wms?.data?.raster?.params?.styles):null
-    render view: 'search', model:[wmsBaseLayers:wmsBaseLayers,
-                                  footprintStyle: footprintStyle,
-                                  roles: roles as JSON,
-                                  styles:jsonStyles as JSON
+    def wmsBaseLayers = ( grailsApplication.config.wms as JSON ).toString()
+    def footprintStyle = grailsApplication.config?.wms?.data?.raster?.params?.styles ? grailsApplication.mainContext.getBean( grailsApplication.config?.wms?.data?.raster?.params?.styles ) : null
+    render view: 'search', model: [wmsBaseLayers : wmsBaseLayers,
+                                   footprintStyle: footprintStyle,
+                                   roles         : roles as JSON,
+                                   styles        : jsonStyles as JSON
     ]
   }
-  def serverList(){
-    def tempParam = new CaseInsensitiveMap(params);
-    if(!jabberFederatedServerService.isConnected()&&
-        jabberFederatedServerService.wasConnected&&
+
+  def serverList()
+  {
+    def tempParam = new CaseInsensitiveMap( params );
+    if ( !jabberFederatedServerService.isConnected() &&
+        jabberFederatedServerService.wasConnected &&
         jabberFederatedServerService.enabled
     )
     {
@@ -54,30 +61,45 @@ class FederationController  {
     }
     def result = jabberFederatedServerService.serverList as JSON
     def callback = ""
-    if (tempParam.callback) callback = tempParam.callback
-    else if (tempParam.jsonCallback) callback = tempParam.jsonCallback
-    if (callback){
+    if ( tempParam.callback )
+    {
+      callback = tempParam.callback
+    }
+    else if ( tempParam.jsonCallback )
+    {
+      callback = tempParam.jsonCallback
+    }
+    if ( callback )
+    {
       result = "${callback}(${result})"// added for cross domain support
     }
     render contentType: 'application/json', text: result.toString()
   }
-  def reconnect(){
+
+  def reconnect()
+  {
     if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
     {
       jabberFederatedServerService.reconnect();
     }
 
-    def tempParam = new CaseInsensitiveMap(params);
-    def userAndId = jabberFederatedServerService.makeFullUserNameAndId(jabberFederatedServerService.jabberUser);
-    def result = [error:"", id:"${userAndId.id}", user:userAndId.user, connected:jabberFederatedServerService.isConnected()] as JSON
+    def tempParam = new CaseInsensitiveMap( params );
+    def userAndId = jabberFederatedServerService.makeFullUserNameAndId( jabberFederatedServerService.jabberUser );
+    def result = [error: "", id: "${userAndId.id}", user: userAndId.user, connected: jabberFederatedServerService.isConnected()] as JSON
     def callback = ""
-    if (tempParam.callback) callback = tempParam.callback
-    if (callback){
+    if ( tempParam.callback )
+    {
+      callback = tempParam.callback
+    }
+    if ( callback )
+    {
       result = "${callback}(${result})"// added for cross domain support
     }
     render contentType: 'application/json', text: result.toString()
   }
-  def admin(){
+
+  def admin()
+  {
 
   }
 }

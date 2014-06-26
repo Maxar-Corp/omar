@@ -1,3 +1,9 @@
+import org.ossim.omar.federation.FederatedServer
+
+import java.util.concurrent.TimeUnit
+import org.jivesoftware.smackx.provider.VCardProvider
+import org.jivesoftware.smackx.packet.VCard
+
 class OmarFederationGrailsPlugin {
     // the plugin version
     def version = "0.1"
@@ -50,6 +56,12 @@ Brief summary/description of the plugin.
 
     def doWithApplicationContext = { applicationContext ->
         // TODO Implement post initialization spring config (optional)
+        // initialize settings record
+        applicationContext.federationConfigSettingsService.getSettingsRecord()
+
+        // now initialize server service
+        applicationContext.jabberFederatedServerService
+
     }
 
     def onChange = { event ->

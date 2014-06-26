@@ -970,11 +970,15 @@ $(document).ready(function () {
                 // INNER-LAYOUT (child of middle-center-pane)
             ,   center__childOptions: {
                     center__paneSelector:   ".inner-center"
+                ,   north__paneSelector:     ".inner-north"
                 ,   west__paneSelector:     ".inner-west"
                 ,   east__paneSelector:     ".inner-east"
                 ,   west__size:             225
                 ,   west__minSize:          225
                 ,   east__size:             175
+                ,   north__size:             25
+                ,   north__minSize:             25
+                ,   north__maxSize:             25
                 ,   spacing_open:           8  // ALL panes
                 ,   spacing_closed:         8  // ALL panes
                 ,   west__spacing_closed:   12

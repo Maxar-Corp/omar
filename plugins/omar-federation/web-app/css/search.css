@@ -204,11 +204,12 @@ div.groupViewSelection{
 #tabView{
     margin:0;
     border:0;
+    /*
     width:100%;
-    /*height:100%;*/
+    height:100%;*/
     display: inline;
-    position: absolute;
-    text-align: center;
+    position: relative;
+    text-align: left;
     background: transparent;
 
     z-index: -1;
@@ -379,25 +380,25 @@ table.dataTable td {
 }
 
 .paginate_disabled_previous {
-    /*background: url('../images/back_disabled.png') no-repeat top left;*/
+    background: url('../images/back_disabled.png') no-repeat top left;
 }
 
 .paginate_enabled_previous {
-    /*background: url('../images/back_enabled.png') no-repeat top left;*/
+    background: url('../images/back_enabled.png') no-repeat top left;
 }
 .paginate_enabled_previous:hover {
-    /*background: url('../images/back_enabled_hover.png') no-repeat top left;*/
+    background: url('../images/back_enabled_hover.png') no-repeat top left;
 }
 
 .paginate_disabled_next {
-    /*background: url('../images/forward_disabled.png') no-repeat top right;*/
+    background: url('../images/forward_disabled.png') no-repeat top right;
 }
 
 .paginate_enabled_next {
-    /*background: url('../images/forward_enabled.png') no-repeat top right;*/
+    background: url('../images/forward_enabled.png') no-repeat top right;
 }
 .paginate_enabled_next:hover {
-    /*background: url('../images/forward_enabled_hover.png') no-repeat top right;*/
+    background: url('../images/forward_enabled_hover.png') no-repeat top right;
 }
 
 

@@ -11,11 +11,14 @@
 
     <div class="ui-layout-north">
         <omar:securityClassificationBanner/>
-        <g:render plugin="omar-federation" template="/templates/searchTabView"/>
         <g:render plugin="omar-common-ui" template="/templates/federatedSearchMenu"/>
     </div>
 
     <div class="middle-center">
+
+        <div class="inner-north">
+            <g:render plugin="omar-federation" template="/templates/searchTabView"/>
+        </div>
 
         <div class="inner-west">
             <div id='displayUnitId'>
