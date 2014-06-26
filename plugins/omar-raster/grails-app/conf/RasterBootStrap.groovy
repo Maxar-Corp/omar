@@ -15,10 +15,10 @@ class RasterBootStrap
 
     if ( RasterDataSet.count() == 0 )
     {
-      sql.execute( "ALTER TABLE raster_entry alter column access_date type timestamp with time zone" )
-      sql.execute( "ALTER TABLE raster_entry alter column acquisition_date type timestamp with time zone" )
-      sql.execute( "ALTER TABLE raster_entry alter column ingest_date type timestamp with time zone" )
-      sql.execute( "ALTER TABLE raster_entry alter column receive_date type timestamp with time zone" )
+     // sql.execute( "ALTER TABLE raster_entry alter column access_date type timestamp with time zone" )
+     // sql.execute( "ALTER TABLE raster_entry alter column acquisition_date type timestamp with time zone" )
+     // sql.execute( "ALTER TABLE raster_entry alter column ingest_date type timestamp with time zone" )
+     // sql.execute( "ALTER TABLE raster_entry alter column receive_date type timestamp with time zone" )
     }
 
     sql?.close()
