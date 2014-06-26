@@ -206,9 +206,10 @@ div.groupViewSelection{
     border:0;
     /*
     width:100%;
-    height:100%;*/
+    height:100%;
+    */
     display: inline;
-    position: relative;
+    position: absolute;
     text-align: left;
     background: transparent;
 
