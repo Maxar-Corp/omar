@@ -15,7 +15,7 @@ omar.serverURL="http://${serverIP}/omar"
 
 wms.base.defaultOptions = [isBaseLayer: true, numZoomLevels: 20, buffer: 0, transitionEffect: "resize"]
 wms.supportIE6=true
-serverAddress = omar.serverIP
+wms.serverAddress = omar.serverIP
 
 wms.base.layers = [
         [
