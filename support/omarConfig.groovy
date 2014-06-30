@@ -5,26 +5,25 @@
 //
 import java.awt.Color
 
-//omar.serverIP=""
-//omar.serverURL="http://${omar.serverIP}/omar"
+omar.serverIP="10.0.10.207"
+omar.serverURL="http://${serverIP}/omar"
 //wms.referenceDataDirectory=
 //wms.mapFile=
 //thumbnail.cacheDir="${wms.referenceDataDirectory}/omar-cache"
 //videoStreaming.flashDirRoot=
 //image.download.prefix = "http://${omar.serverIP}"
 
-wms.base.defaultOptions = [isBaseLayer: true, buffer: 0, transitionEffect: "resize"]
+wms.base.defaultOptions = [isBaseLayer: true, numZoomLevels: 20, buffer: 0, transitionEffect: "resize"]
 wms.supportIE6=true
-wms.serverAddress = omar.serverIP
+serverAddress = omar.serverIP
 
 wms.base.layers = [
         [
-                url: "http://${omar.serverIP}/cgi-bin/mapserv?map=${wms.mapFile}",
+                url: "http://${omar.serverIP}/cgi-bin/mapserv.exe?map=${wms.mapFile}",
                 params: [layers: "Reference", format: "image/jpeg"],
                 name: "Reference Data",
                 options: wms.base.defaultOptions
         ]
-
 ]
 
 
@@ -91,6 +90,9 @@ login.registration.useMail=(login.registration.userVerification== "email")
 
 jabber.securityMode = "disabled"
 
+piwik.analytics.enabled = false
+piwik.analytics.url = "http://example.com/piwik"
+piwik.analytics.siteid = 1
 
 //security {
 //  level = 'UNCLASS'
@@ -103,10 +105,6 @@ jabber.securityMode = "disabled"
 //    level = "UNCLASS"
 //}
 
-//piwik.analytics.enabled = true
-//piwik.analytics.url = ""
-//piwik.analytics.siteid = 2
-
 //dataSource.pooled = true
 //dataSource.driverClassName = ( useP6Spy ) ? "com.p6spy.engine.spy.P6SpyDriver" : "org.postgis.DriverWrapper"
 //dataSource.username = "postgres"
@@ -114,4 +112,3 @@ jabber.securityMode = "disabled"
 //dataSource.dialect = org.ossim.omar.postgis.PostGISDialect
 //dataSource.logSql = true
 //dataSource.url="jdbc:postgresql_postGIS://localhost/omardb-${appVersion}-prod"
-
