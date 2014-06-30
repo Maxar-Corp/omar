@@ -6,7 +6,7 @@
 import java.awt.Color
 
 omar.serverIP="10.0.10.207"
-omar.serverURL="http://${serverIP}/omar"
+omar.serverURL="http://${omar.serverIP}/omar"
 //wms.referenceDataDirectory=
 //wms.mapFile=
 //thumbnail.cacheDir="${wms.referenceDataDirectory}/omar-cache"
