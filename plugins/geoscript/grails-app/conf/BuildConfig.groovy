@@ -27,6 +27,7 @@ grails.project.dependency.resolution = {
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
         mavenRepo "http://download.java.net/maven/2/"
+        mavenRepo "http://logicaldoc.sourceforge.net/maven/"
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
     dependencies {
@@ -72,9 +73,10 @@ grails.project.dependency.resolution = {
         'it.geosolutions.imageio-ext:imageio-ext-tiff:1.1.7',
         'it.geosolutions.imageio-ext:imageio-ext-utilities:1.1.7',
         'java3d:vecmath:1.3.2',
-//        'javax.media:jai_codec:1.1.3',
-//        'javax.media:jai_core:1.1.3',
-//        'javax.media:jai_imageio:1.1',
+       // 'javax.media.jai:jai_codec:1.2.1',
+        'javax.media.jai:jai-core:1.2.1',
+        'javax.media.jai:jai-codec:1.2.1',
+        'javax.media:jai_imageio:1.1',
         'jdom:jdom:1.0',
         'jfree:eastwood:1.1.1-20090908',
         'jfree:jcommon:1.0.13',
