@@ -4,37 +4,36 @@ grails.dependency.cache.dir = "${System.env.OMAR_DEV_HOME}/.grails/ivy-cache"
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
-//grails.project.war.file = "target/${appName}-${appVersion}.war"
+
 grails.project.dependency.resolution = {
-  checksums false
+    // inherit Grails' default dependencies
+    inherits("global") {
+        // uncomment to disable ehcache
+        // excludes 'ehcache'
+    }
+    log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    legacyResolve false // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
+    repositories {
+        mavenRepo "http://repo.grails.org/grails/plugins/"
 
-  // inherit Grails' default dependencies
-  inherits( "global" ) {
-    // uncomment to disable ehcache
-    // excludes 'ehcache'
-  }
-  log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
-  legacyResolve true // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
-  repositories {
-    grailsPlugins()
-    grailsHome()
-    grailsCentral()
+        mavenRepo "http://repo.opengeo.org"
+        mavenRepo "http://download.osgeo.org/webdav/geotools"
 
-    // uncomment the below to enable remote dependency resolution
-    // from public Maven repositories
-    mavenLocal()
-    mavenCentral()
-    //mavenRepo "http://snapshots.repository.codehaus.org"
-    //mavenRepo "http://repository.codehaus.org"
-    mavenRepo "http://download.java.net/maven/2/"
-    //mavenRepo "http://repository.jboss.com/maven2/"
-    mavenRepo "http://repo.opengeo.org"
-    mavenRepo "http://download.osgeo.org/webdav/geotools"
-  }
-  dependencies {
-    // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+        //grailsCentral()
+        mavenCentral()
+        // uncomment the below to enable remote dependency resolution
+        // from public Maven repositories
+        mavenLocal()
+        //mavenRepo "http://snapshots.repository.codehaus.org"
+        //mavenRepo "http://repository.codehaus.org"
+        mavenRepo "http://download.java.net/maven/2/"
+        mavenRepo "http://logicaldoc.sourceforge.net/maven/"
+        //mavenRepo "http://repository.jboss.com/maven2/"
+    }
+    dependencies {
+        // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
-    // runtime 'mysql:mysql-connector-java:5.1.5'
+        // runtime 'mysql:mysql-connector-java:5.1.21'
     compile(
         'antlr:antlr:2.7.7',
         'com.googlecode.json-simple:json-simple:1.1',
@@ -74,9 +73,10 @@ grails.project.dependency.resolution = {
         'it.geosolutions.imageio-ext:imageio-ext-tiff:1.1.7',
         'it.geosolutions.imageio-ext:imageio-ext-utilities:1.1.7',
         'java3d:vecmath:1.3.2',
-//        'javax.media:jai_codec:1.1.3',
-//        'javax.media:jai_core:1.1.3',
-//        'javax.media:jai_imageio:1.1',
+       // 'javax.media.jai:jai_codec:1.2.1',
+        'javax.media.jai:jai-core:1.2.1',
+        'javax.media.jai:jai-codec:1.2.1',
+        'javax.media:jai_imageio:1.1',
         'jdom:jdom:1.0',
         'jfree:eastwood:1.1.1-20090908',
         'jfree:jcommon:1.0.13',
@@ -191,6 +191,13 @@ grails.project.dependency.resolution = {
     ) {
       transitive = false
     }
-  }
+    }
 
+    plugins {
+        build(":tomcat:$grailsVersion",
+              ":release:2.2.1",
+              ":rest-client-builder:1.0.3") {
+            export = false
+        }
+    }
 }
