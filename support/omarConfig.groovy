@@ -5,8 +5,8 @@
 //
 import java.awt.Color
 
-omar.serverIP="10.0.10.207"
-omar.serverURL="http://${omar.serverIP}/omar"
+//omar.serverIP="10.0.10.207"
+//omar.serverURL="http://${omar.serverIP}/omar"
 //wms.referenceDataDirectory=
 //wms.mapFile=
 //thumbnail.cacheDir="${wms.referenceDataDirectory}/omar-cache"
@@ -19,7 +19,7 @@ wms.serverAddress = omar.serverIP
 
 wms.base.layers = [
         [
-                url: "http://${omar.serverIP}/cgi-bin/mapserv.exe?map=${wms.mapFile}",
+                url: "http://${omar.serverIP}/cgi-bin/mapserv?map=${wms.mapFile}",
                 params: [layers: "Reference", format: "image/jpeg"],
                 name: "Reference Data",
                 options: wms.base.defaultOptions
