@@ -5,8 +5,8 @@
 //
 import java.awt.Color
 
-//omar.serverIP=
-//omar.serverURL=
+omar.serverIP="10.0.10.207"
+omar.serverURL="http://${omar.serverIP}/omar"
 //wms.referenceDataDirectory=
 //wms.mapFile=
 //thumbnail.cacheDir="${wms.referenceDataDirectory}/omar-cache"
@@ -15,6 +15,7 @@ import java.awt.Color
 
 wms.base.defaultOptions = [isBaseLayer: true, numZoomLevels: 20, buffer: 0, transitionEffect: "resize"]
 wms.supportIE6=true
+wms.serverAddress = omar.serverIP
 
 wms.base.layers = [
         [
@@ -111,4 +112,3 @@ piwik.analytics.siteid = 1
 //dataSource.dialect = org.ossim.omar.postgis.PostGISDialect
 //dataSource.logSql = true
 //dataSource.url="jdbc:postgresql_postGIS://localhost/omardb-${appVersion}-prod"
-}
