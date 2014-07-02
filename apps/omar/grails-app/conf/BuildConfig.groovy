@@ -66,6 +66,7 @@ grails.project.dependency.resolution = {
     runtime ":p6spy:0.5"
 
     compile ':cache:1.1.1'
+    compile ":piwik:0.1"
   }
 }
 
