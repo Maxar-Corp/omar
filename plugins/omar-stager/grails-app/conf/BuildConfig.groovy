@@ -34,7 +34,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile ":hibernate:$grailsVersion"    
+        compile ":hibernate:3.6.10.16"
         compile "org.grails.plugins:quartz:1.0.2"
 
         build(":tomcat:$grailsVersion",

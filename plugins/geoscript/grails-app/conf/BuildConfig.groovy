@@ -44,7 +44,7 @@ grails.project.dependency.resolution = {
 //        'commons-beanutils:commons-beanutils:1.7.0',
 //        'commons-codec:commons-codec:1.2',
 //        'commons-collections:commons-collections:3.1',
-//        'commons-dbcp:commons-dbcp:1.3',
+        'commons-dbcp:commons-dbcp:1.4',
         'commons-httpclient:commons-httpclient:3.1',
         'commons-io:commons-io:2.1',
         'commons-jxpath:commons-jxpath:1.3',
@@ -73,10 +73,9 @@ grails.project.dependency.resolution = {
         'it.geosolutions.imageio-ext:imageio-ext-tiff:1.1.7',
         'it.geosolutions.imageio-ext:imageio-ext-utilities:1.1.7',
         'java3d:vecmath:1.3.2',
-       // 'javax.media.jai:jai_codec:1.2.1',
-        'javax.media.jai:jai-core:1.2.1',
-        'javax.media.jai:jai-codec:1.2.1',
-        'javax.media:jai_imageio:1.1',
+//        'javax.media.jai:jai-core:1.2.1',
+//        'javax.media.jai:jai-codec:1.2.1',
+//        'javax.media:jai_imageio:1.1',
         'jdom:jdom:1.0',
         'jfree:eastwood:1.1.1-20090908',
         'jfree:jcommon:1.0.13',
@@ -194,7 +193,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        build(":tomcat:$grailsVersion",
+        build(":tomcat:7.0.54",
               ":release:2.2.1",
               ":rest-client-builder:1.0.3") {
             export = false

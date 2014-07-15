@@ -59,9 +59,9 @@ Brief summary/description of the plugin.
       bean.singleton = false
     }
 
-    imagerySearchService( RasterEntrySearchService ) {
-      grailsApplication = ref( "grailsApplication" )
-    }
+//    imagerySearchService( RasterEntrySearchService ) {
+//      grailsApplication = ref( "grailsApplication" )
+//    }
   }
 
   def doWithDynamicMethods = { ctx ->
@@ -71,7 +71,8 @@ Brief summary/description of the plugin.
   def doWithApplicationContext = { applicationContext ->
     // TODO Implement post initialization spring config (optional)
     applicationContext.registerAlias( "imageryQueryParam", "imageDataQueryParam" )
-    applicationContext.registerAlias( "imagerySearchService", "imageDataSearchService" )
+    applicationContext.registerAlias( "rasterEntrySearchService", "imagerySearchService" )
+    applicationContext.registerAlias( "rasterEntrySearchService", "imageDataSearchService" )
 
     def styles = application.config.rasterEntry?.styles
     def beanNames = []

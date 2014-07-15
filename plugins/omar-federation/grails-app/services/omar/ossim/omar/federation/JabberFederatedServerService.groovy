@@ -1,6 +1,7 @@
 package omar.ossim.omar.federation
 
 import grails.converters.JSON
+
 //import org.apache.xerces.util.ParserConfigurationSettings
 import org.jivesoftware.smack.ConnectionConfiguration
 import org.jivesoftware.smack.XMPPConnection
@@ -14,7 +15,8 @@ import org.springframework.beans.factory.InitializingBean
 import org.ossim.omar.core.ConfigSettings
 import groovy.json.JsonBuilder
 
-class JabberFederatedServerService implements InitializingBean{
+class JabberFederatedServerService implements InitializingBean
+{
   def grailsApplication
   def federationConfigSettingsService
   def vCard
@@ -30,158 +32,177 @@ class JabberFederatedServerService implements InitializingBean{
   def enabled
   def wasConnected
 
-  void loadFromTable(){
+  void loadFromTable()
+  {
     def record = federationConfigSettingsService.getSettingsRecord()
-    if(record)
+    if ( record )
     {
-      def settings = JSON.parse(record.settings);
-      if(settings)
+      def settings = JSON.parse( record.settings );
+      if ( settings )
       {
         vCard = new VCard()
-        vCard.setNickName(settings?.vcard?.nickName);
-        vCard.setFirstName(settings?.vcard?.firstName);
-        vCard.setLastName(settings?.vcard?.lastName);
+        vCard.setNickName( settings?.vcard?.nickName );
+        vCard.setFirstName( settings?.vcard?.firstName );
+        vCard.setLastName( settings?.vcard?.lastName );
 
-        vCard.setField("IP", settings?.vcard?.IP)
-        vCard.setField("URL", settings?.vcard?.URL)
-        if(settings?.vcard?.config){
-          vCard.setField("config", settings?.vcard?.config.toString())
+        vCard.setField( "IP", settings?.vcard?.IP )
+        vCard.setField( "URL", settings?.vcard?.URL )
+        if ( settings?.vcard?.config )
+        {
+          vCard.setField( "config", settings?.vcard?.config.toString() )
         }
-        jabberIp                  = settings?.server?.ip
-        jabberDomain              = settings?.server?.domain
-        jabberPort                = Integer.parseInt(settings?.server?.port)
-        jabberUser                = settings?.server?.username
-        jabberPassword            = settings?.server?.password
-        jabberChatRoomId          = settings?.chatRoom?.id
-        jabberChatRoomPassword    = settings?.chatRoom?.password
+        jabberIp = settings?.server?.ip
+        jabberDomain = settings?.server?.domain
+        jabberPort = Integer.parseInt( settings?.server?.port )
+        jabberUser = settings?.server?.username
+        jabberPassword = settings?.server?.password
+        jabberChatRoomId = settings?.chatRoom?.id
+        jabberChatRoomPassword = settings?.chatRoom?.password
         enabled = settings?.chatRoom?.enabled
-        if(!jabberDomain) jabberDomain = jabberIp;
+        if ( !jabberDomain )
+        {
+          jabberDomain = jabberIp
+        };
         //vCard.setJabberId("${jabberUser}@${jabberDomain}")//"${config?.omar?.serverIP}@${jabberDomain}")
       }
       //println vCard.toString()
       //println "${jabberDomain}, ${jabberPort}, ${jabberUser}, ${jabberPassword}, ${jabberChatRoomId}, ${jabberChatRoomPassword}"
     }
   }
+
   def isConnected()
   {
-    if (!jabber||!jabber?.connection||!jabber.chatRoom) return false;
-    jabber?.connection?.isConnected()?true:false;
+    if ( !jabber || !jabber?.connection || !jabber.chatRoom )
+    {
+      return false
+    };
+    jabber?.connection?.isConnected() ? true : false;
   }
+
   def refreshServerTable()
   {
     def vcardList = getAllVCards()
     FederatedServer.withTransaction {
-      FederatedServer.executeUpdate('delete from FederatedServer')
-      makeAvailable(jabberUser);
-      vcardList.each{vcard->
-        try{
-          def user = vcard.jabberId.split("@")[0];
+      FederatedServer.executeUpdate( 'delete from FederatedServer' )
+      makeAvailable( jabberUser );
+      vcardList.each { vcard ->
+        try
+        {
+          def user = vcard.jabberId.split( "@" )[0];
           //println user
-          makeAvailable(user)
+          makeAvailable( user )
         }
-        catch(def e)
+        catch ( def e )
         {
 
         }
       }
     }
   }
+
   private replaceSpecialCharacters(def value)
   {
-    return value.replaceAll(~/\@|\.|\ |\&/, "")
+    return value.replaceAll( ~/\@|\.|\ |\&/, "" )
   }
+
   def makeFullUserNameAndId(def userName)
   {
     def full = userName + "@" + jabberDomain
-    def fullId = replaceSpecialCharacters(full)
-    return [user:full, id:fullId]
+    def fullId = replaceSpecialCharacters( full )
+    return [user: full, id: fullId]
   }
+
   def makeAvailable(def userName)
   {
-    try{
-      def fullUserId = makeFullUserNameAndId(userName)//userName + "@" + jabberDomain
+    try
+    {
+      def fullUserId = makeFullUserNameAndId( userName )//userName + "@" + jabberDomain
       def id = fullUserId.id
       def vcard
-      if (userName.equals(jabberUser))
+      if ( userName.equals( jabberUser ) )
       {
         vcard = vCard
       }
       else
       {
         vcard = new VCard();
-        vcard.load(jabber.connection, fullUserId.user);
+        vcard.load( jabber.connection, fullUserId.user );
       }
-      if (vcard)
+      if ( vcard )
       {
-        def ip =  vcard.getField("IP");
-        if(ip)
+        def ip = vcard.getField( "IP" );
+        if ( ip )
         {
-          FederatedServer.withTransaction{
-            def federatedServer = new FederatedServer([serverId:id,
-                    available: true,
-                    vcard: vcard.toString()])
+          FederatedServer.withTransaction {
+            def federatedServer = new FederatedServer( [serverId : id,
+                                                        available: true,
+                                                        vcard    : vcard.toString()] )
             federatedServer.save()
           }
         }
       }
 
     }
-    catch(def e)
+    catch ( def e )
     {
 
     }
   }
+
   def makeUnavailable(def userName)
   {
-    try{
-      def fullUser = makeFullUserNameAndId(userName)
-      FederatedServer.withTransaction{
-        FederatedServer.where{serverId==fullUser.id}.deleteAll()
+    try
+    {
+      def fullUser = makeFullUserNameAndId( userName )
+      FederatedServer.withTransaction {
+        FederatedServer.where { serverId == fullUser.id }.deleteAll()
       }
     }
-    catch(def e)
+    catch ( def e )
     {
 
     }
   }
+
   def getServerList()
   {
     def result = []
-    FederatedServer.withTransaction{
-      FederatedServer.findAll(sort:"id", order: 'asc').each{server->
-        def vcard = VCardProvider.createVCardFromXML(server.vcard)
+    FederatedServer.withTransaction {
+      FederatedServer.list( sort: "id", order: 'asc' ).each { server ->
+        def vcard = VCardProvider.createVCardFromXML( server.vcard )
         result << [
-                id: server.serverId,
-                firstName:vcard.firstName,
-                lastName:vcard.lastName,
-                nickname:vcard.nickName,
-                organization:vcard.organization,
-                ip:vcard.getField("IP"),
-                config:vcard.getField("config"),
-                url:vcard.getField("URL"),
-                phone:vcard.getPhoneHome("VOICE")?:vcard.getPhoneWork("VOICE")
+            id          : server.serverId,
+            firstName   : vcard.firstName,
+            lastName    : vcard.lastName,
+            nickname    : vcard.nickName,
+            organization: vcard.organization,
+            ip          : vcard.getField( "IP" ),
+            config      : vcard.getField( "config" ),
+            url         : vcard.getField( "URL" ),
+            phone       : vcard.getPhoneHome( "VOICE" ) ?: vcard.getPhoneWork( "VOICE" )
         ]
       }
     }
-    if(!result)
+    if ( !result )
     {
       result << [
-              id: makeFullUserNameAndId(jabberUser).id,//userName + "@" + jabberDomain
-              firstName:vCard.firstName,
-              lastName:vCard.lastName,
-              nickname:vCard.nickName,
-              organization:vCard.organization,
-              ip:vCard.getField("IP"),
-              config:vCard.getField("config"),
-              url:vCard.getField("URL"),
-              phone:vCard.getPhoneHome("VOICE")?:vCard.getPhoneWork("VOICE")
+          id          : makeFullUserNameAndId( jabberUser ).id,//userName + "@" + jabberDomain
+          firstName   : vCard.firstName,
+          lastName    : vCard.lastName,
+          nickname    : vCard.nickName,
+          organization: vCard.organization,
+          ip          : vCard.getField( "IP" ),
+          config      : vCard.getField( "config" ),
+          url         : vCard.getField( "URL" ),
+          phone       : vCard.getPhoneHome( "VOICE" ) ?: vCard.getPhoneWork( "VOICE" )
       ]
     }
     result
   }
+
   def reconnect()
   {
-    if (isConnected())
+    if ( isConnected() )
     {
       disconnect()
     }
@@ -189,17 +210,19 @@ class JabberFederatedServerService implements InitializingBean{
 
     connect()
   }
+
   def disconnect()
   {
-    try{
+    try
+    {
 
-      if(isConnected())
+      if ( isConnected() )
       {
-        jabber.chatRoom.removeParticipantStatusListener(participantListener)
+        jabber.chatRoom.removeParticipantStatusListener( participantListener )
         jabber?.connection.disconnect()
       }
     }
-    catch(def e)
+    catch ( def e )
     {
 
     }
@@ -208,75 +231,78 @@ class JabberFederatedServerService implements InitializingBean{
 
     jabber = [:]
   }
+
   def connect()
   {
-    if(!enabled)
+    if ( !enabled )
     {
-      if (isConnected())
+      if ( isConnected() )
       {
         disconnect()
       }
       refreshServerTable()
       return jabber
     }
-    if (isConnected())
+    if ( isConnected() )
     {
       refreshServerTable()
       return jabber
     }
     jabber = [:]
-    try{
-      jabber.config     =  new ConnectionConfiguration(jabberIp,
-                                                       jabberPort);
-      switch (grailsApplication.config.jabber.securityMode)
+    try
+    {
+      jabber.config = new ConnectionConfiguration( jabberIp,
+          jabberPort );
+      switch ( grailsApplication.config.jabber.securityMode )
       {
-        case "disabled":
-          //println "disabled....."
-          jabber.config.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
-          break;
-        case "enabled":
-          //println "enabled....."
-          jabber.config.setSecurityMode(ConnectionConfiguration.SecurityMode.enabled);
-          break;
-        case "required":
-          //println "required....."
-          jabber.config.setSecurityMode(ConnectionConfiguration.SecurityMode.required);
-          break;
-        default:
-          //println "default disable....."
-          jabber.config.setSecurityMode(ConnectionConfiguration.SecurityMode.disabled);
-          break;
+      case "disabled":
+        //println "disabled....."
+        jabber.config.setSecurityMode( ConnectionConfiguration.SecurityMode.disabled );
+        break;
+      case "enabled":
+        //println "enabled....."
+        jabber.config.setSecurityMode( ConnectionConfiguration.SecurityMode.enabled );
+        break;
+      case "required":
+        //println "required....."
+        jabber.config.setSecurityMode( ConnectionConfiguration.SecurityMode.required );
+        break;
+      default:
+        //println "default disable....."
+        jabber.config.setSecurityMode( ConnectionConfiguration.SecurityMode.disabled );
+        break;
       }
 
-      jabber.connection = new XMPPConnection(jabber.config);
+      jabber.connection = new XMPPConnection( jabber.config );
       jabber.connection.connect();
-      jabber.connection.login(jabberUser, jabberPassword)
+      jabber.connection.login( jabberUser, jabberPassword )
 
-      vCard.setJabberId(jabber.connection.getUser().split("/")[0])//"${config?.omar?.serverIP}@${jabberDomain}")
+      vCard.setJabberId( jabber.connection.getUser().split( "/" )[0] )//"${config?.omar?.serverIP}@${jabberDomain}")
 
       //println "${vCard}";
     }
-    catch(def e)
+    catch ( def e )
     {
       refreshServerTable()
       //log.error(e2)
       return [:]
     }
-    if (jabber.connection.isAuthenticated())
+    if ( jabber.connection.isAuthenticated() )
     {
-      try{
+      try
+      {
 
-        vCard.save(jabber.connection)
-        jabber.chatRoom = new MultiUserChat(jabber.connection,
-                                            "${jabberChatRoomId}")
+        vCard.save( jabber.connection )
+        jabber.chatRoom = new MultiUserChat( jabber.connection,
+            "${jabberChatRoomId}" )
 
-        jabber.chatRoom.join(jabberUser,
-                "${jabberChatRoomPassword}")
+        jabber.chatRoom.join( jabberUser,
+            "${jabberChatRoomPassword}" )
 
-        participantListener = new JabberParticipantListener([federatedServerService:this])
-        jabber.chatRoom.addParticipantStatusListener(participantListener)
+        participantListener = new JabberParticipantListener( [federatedServerService: this] )
+        jabber.chatRoom.addParticipantStatusListener( participantListener )
       }
-      catch(def e)
+      catch ( def e )
       {
         //println e
         jabber.chatRoom = null
@@ -289,7 +315,7 @@ class JabberFederatedServerService implements InitializingBean{
     }
     refreshServerTable()
 
-    if(isConnected())
+    if ( isConnected() )
     {
       wasConnected = true;
     }
@@ -341,31 +367,34 @@ class JabberFederatedServerService implements InitializingBean{
       result
   }
   */
+
   def getAllVCards()
   {
     def vCards = []
 
-    try{
-      if (isConnected()&&jabber.chatRoom)
+    try
+    {
+      if ( isConnected() && jabber.chatRoom )
       {
         def occupants = jabber.chatRoom?.occupants
-        occupants.each{
-          def user = it.split("/")[-1] + "@" + jabberDomain
+        occupants.each {
+          def user = it.split( "/" )[-1] + "@" + jabberDomain
           def vCard = new VCard()
-          vCard.load(jabber.connection, user)
+          vCard.load( jabber.connection, user )
           vCards << vCard
         }
       }
     }
-    catch(def e)
+    catch ( def e )
     {
-      log.warn(e.toString());
+      log.warn( e.toString() );
     }
     vCards
   }
 
 
-  void afterPropertiesSet() throws Exception {
+  void afterPropertiesSet() throws Exception
+  {
     loadFromTable()
     connect()
   }

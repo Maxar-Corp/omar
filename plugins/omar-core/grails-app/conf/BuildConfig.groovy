@@ -28,6 +28,7 @@ grails.project.dependency.resolution = {
     }
     dependencies {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+        compile "commons-pool:commons-pool:1.6"
 
         // runtime 'mysql:mysql-connector-java:5.1.21'
         compile( "joda-time:joda-time-hibernate:1.3" ) {
@@ -36,7 +37,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        build(":tomcat:$grailsVersion",
+        build(":tomcat:7.0.54",
               ":release:2.2.1",
               ":rest-client-builder:1.0.3") {
             export = false

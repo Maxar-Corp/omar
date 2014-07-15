@@ -37,10 +37,10 @@ grails.project.dependency.resolution = {
     compile ':spring-security-core:1.2.7.3'
     compile ':spring-security-ldap:1.0.6'
     compile ':csv:0.3.1'
-    compile ':filterpane:2.2.1'
+    compile ':filterpane:2.4.2'
     runtime ':mail:1.0.1'
 
-        build(":tomcat:$grailsVersion",
+        build(":tomcat:7.0.54",
               ":release:2.2.1",
               ":rest-client-builder:1.0.3") {
             export = false
