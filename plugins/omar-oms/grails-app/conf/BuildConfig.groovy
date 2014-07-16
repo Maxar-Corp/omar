@@ -30,7 +30,7 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
 
         // runtime 'mysql:mysql-connector-java:5.1.21'
-        //compile "org.ossim:joms:1.0-SNAPSHOT"
+        compile "org.ossim:joms:${appVersion}"
     }
 
     plugins {
