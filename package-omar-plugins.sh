@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Cleanup old
-rm -rf ~/.grails/ivy-cache
-rm -rf ~/.m2/repository
+#rm -rf ~/.grails/ivy-cache
+#rm -rf ~/.m2/repository
 
 # Setup ivy cache
 #mkdir -p ~/.grails
