@@ -95,6 +95,10 @@ piwik.analytics.enabled = false
 piwik.analytics.url = "http://example.com/piwik"
 piwik.analytics.siteid = 1
 
+federation {
+  enabled = true
+}
+
 //security {
 //  level = 'UNCLASS'
 //level = 'SECRET'
