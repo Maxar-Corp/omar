@@ -10,7 +10,8 @@ import java.awt.Color
 //wms.referenceDataDirectory=
 //wms.mapFile=
 //thumbnail.cacheDir="${wms.referenceDataDirectory}/omar-cache"
-//videoStreaming.flashDirRoot=
+//videoStreaming.flashDirRoot="/var/www/html/videos"
+//videoStreaming.flashUrlRoot="http://${omar.serverIP}/videos"
 //image.download.prefix = "http://${omar.serverIP}"
 
 wms.base.defaultOptions = [isBaseLayer: true, numZoomLevels: 20, buffer: 0, transitionEffect: "resize"]
@@ -93,6 +94,10 @@ jabber.securityMode = "disabled"
 piwik.analytics.enabled = false
 piwik.analytics.url = "http://example.com/piwik"
 piwik.analytics.siteid = 1
+
+federation {
+  enabled = true
+}
 
 //security {
 //  level = 'UNCLASS'
