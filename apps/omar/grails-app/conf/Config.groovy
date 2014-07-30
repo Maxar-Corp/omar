@@ -758,7 +758,7 @@ jabber {
 }
 
 federation {
-
+  enabled = true
 }
 
 grails.resources.mappers.yuicssminify.includes = ['**/*.css']

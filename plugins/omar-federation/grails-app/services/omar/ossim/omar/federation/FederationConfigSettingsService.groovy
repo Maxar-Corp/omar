@@ -7,9 +7,12 @@ import org.ossim.omar.core.ConfigSettings
 class FederationConfigSettingsService {
     def grailsApplication
     static transactional = true
+
     def getSettingsRecord()
     {
-        def federationSettingsRecord = ConfigSettings.findByName("omar-federation");
+      def federationEnabled = grailsApplication.config.federation.enabled
+
+      def federationSettingsRecord = federationEnabled?ConfigSettings.findByName("omar-federation"):null;
 
 
         def tempIP  = grailsApplication?.config?.omar?.serverIP
@@ -90,19 +93,26 @@ class FederationConfigSettingsService {
             settings.vcard.config = JSON.parse(tempBuilder.toString())
         }
         federationSettingsRecord.settings = settings.toString()
-        federationSettingsRecord.save(flush: true)
+        if(federationEnabled)
+        {
+          federationSettingsRecord.save(flush: true)
+        }
 
         federationSettingsRecord
     }
-
     def updateSettings(def settings)
     {
-        def federationSettingsRecord = getSettingsRecord();
+      def federationEnabled = grailsApplication.config.federation.enabled
+      def federationSettingsRecord
+      if(federationEnabled) {
+        federationSettingsRecord = getSettingsRecord();
 
         federationSettingsRecord?.settings = settings;
 
         federationSettingsRecord?.save(flush: true)
 
-        federationSettingsRecord
+      }
+      federationSettingsRecord
+
     }
 }

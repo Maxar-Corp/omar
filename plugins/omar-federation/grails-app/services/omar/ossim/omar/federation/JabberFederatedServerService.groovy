@@ -29,8 +29,10 @@ class JabberFederatedServerService implements InitializingBean{
   def participantListener
   def enabled
   def wasConnected
+  def federationEnabled
 
   void loadFromTable(){
+
     def record = federationConfigSettingsService.getSettingsRecord()
     if(record)
     {
@@ -116,11 +118,15 @@ class JabberFederatedServerService implements InitializingBean{
         def ip =  vcard.getField("IP");
         if(ip)
         {
-          FederatedServer.withTransaction{
-            def federatedServer = new FederatedServer([serverId:id,
-                    available: true,
-                    vcard: vcard.toString()])
-            federatedServer.save()
+          if(federationEnabled)
+          {
+            FederatedServer.withTransaction{
+              def federatedServer = new FederatedServer([serverId:id,
+                                                         available: true,
+                                                         vcard: vcard.toString()])
+              federatedServer.save()
+            }
+
           }
         }
       }
@@ -147,21 +153,25 @@ class JabberFederatedServerService implements InitializingBean{
   def getServerList()
   {
     def result = []
-    FederatedServer.withTransaction{
-      FederatedServer.findAll(sort:"id", order: 'asc').each{server->
-        def vcard = VCardProvider.createVCardFromXML(server.vcard)
-        result << [
-                id: server.serverId,
-                firstName:vcard.firstName,
-                lastName:vcard.lastName,
-                nickname:vcard.nickName,
-                organization:vcard.organization,
-                ip:vcard.getField("IP"),
-                config:vcard.getField("config"),
-                url:vcard.getField("URL"),
-                phone:vcard.getPhoneHome("VOICE")?:vcard.getPhoneWork("VOICE")
-        ]
+    if(federationEnabled)
+    {
+      FederatedServer.withTransaction{
+        FederatedServer.findAll(sort:"id", order: 'asc').each{server->
+          def vcard = VCardProvider.createVCardFromXML(server.vcard)
+          result << [
+                  id: server.serverId,
+                  firstName:vcard.firstName,
+                  lastName:vcard.lastName,
+                  nickname:vcard.nickName,
+                  organization:vcard.organization,
+                  ip:vcard.getField("IP"),
+                  config:vcard.getField("config"),
+                  url:vcard.getField("URL"),
+                  phone:vcard.getPhoneHome("VOICE")?:vcard.getPhoneWork("VOICE")
+          ]
+        }
       }
+
     }
     if(!result)
     {
@@ -210,7 +220,7 @@ class JabberFederatedServerService implements InitializingBean{
   }
   def connect()
   {
-    if(!enabled)
+    if(!enabled||!federationEnabled)
     {
       if (isConnected())
       {
@@ -262,7 +272,7 @@ class JabberFederatedServerService implements InitializingBean{
       //log.error(e2)
       return [:]
     }
-    if (jabber.connection.isAuthenticated())
+    if (jabber.connection.isAuthenticated()&&federationEnabled)
     {
       try{
 
@@ -366,6 +376,7 @@ class JabberFederatedServerService implements InitializingBean{
 
 
   void afterPropertiesSet() throws Exception {
+    federationEnabled = grailsApplication.config.federation.enabled
     loadFromTable()
     connect()
   }
