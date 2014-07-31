@@ -282,10 +282,10 @@ class ImageChainService
             ++objectPrefixIdx
             //CONSTRUCT VIEW CACHE
             //
-            kwlString += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
-            kwlString += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
-            kwlString += "object${objectPrefixIdx}.enable_cache:${enableCache}\n"
-            ++objectPrefixIdx
+           // kwlString += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+           // kwlString += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
+           // kwlString += "object${objectPrefixIdx}.enable_cache:${enableCache}\n"
+           // ++objectPrefixIdx
         }
         else if ( rotate || scale || pivot )
         {
@@ -318,10 +318,10 @@ class ImageChainService
 
             //CONSTRUCT VIEW CACHE
             //
-            kwlString += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
-            kwlString += "object${objectPrefixIdx}.enable_cache:${enableCache}\n"
-            kwlString += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
-            ++objectPrefixIdx
+         //   kwlString += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+         //   kwlString += "object${objectPrefixIdx}.enable_cache:${enableCache}\n"
+         //   kwlString += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
+         //   ++objectPrefixIdx
         }
         else
         {
@@ -329,17 +329,17 @@ class ImageChainService
             //
             if ( params )
             {
-                kwlString += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
-                kwlString += "object${objectPrefixIdx}.enable_cache:${enableCache}\n"
-                kwlString += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
-                ++objectPrefixIdx
+            //    kwlString += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+            //    kwlString += "object${objectPrefixIdx}.enable_cache:${enableCache}\n"
+            //    kwlString += "object${objectPrefixIdx}.tile_size_xy:(64,64)\n"
+            //    ++objectPrefixIdx
             }
             else
             {
                 // because this is straight to an image let's just use the default
                 // tile size
-                kwlString += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
-                ++objectPrefixIdx
+             //   kwlString += "object${objectPrefixIdx}.type:ossimCacheTileSource\n"
+             //   ++objectPrefixIdx
             }
         }
         def chain = null
