@@ -251,8 +251,10 @@ OMAR.views.Map = Backbone.View.extend({
                         thisPtr.measureUnit[4] = evt.measure * 1093.6132983 + " yd";
                         thisPtr.measureUnit[5] = evt.measure * 0.539956803 + " nmi";
 
-                        var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
+                        //var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
 
+                        var selectVal = $( "#selectUnitsId").val();
+                        
                         if ( selectVal == "kilometers" )
                         {
                             pathMeasurement.innerHTML = thisPtr.measureUnit[0];
@@ -287,7 +289,9 @@ OMAR.views.Map = Backbone.View.extend({
                         thisPtr.measureUnit[4] = evt.measure * 1.0936132983 + " yd";
                         thisPtr.measureUnit[5] = evt.measure * 0.000539956803 + " nmi";
 
-                        var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
+                        //var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
+
+                        var selectVal = $( "#selectUnitsId").val();
 
                         if ( selectVal == "kilometers" )
                         {
@@ -336,7 +340,9 @@ OMAR.views.Map = Backbone.View.extend({
                         thisPtr.measureUnit[4] = evt.measure * 1195990.0463 + " yd^2";
                         thisPtr.measureUnit[5] = evt.measure * 0.2915533496  + " nmi^2";
 
-                        var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
+                        //var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
+
+                        var selectVal = $( "#selectUnitsId").val();
 
                         if ( selectVal == "kilometers" )
                         {
@@ -372,8 +378,10 @@ OMAR.views.Map = Backbone.View.extend({
                         thisPtr.measureUnit[4] = evt.measure * 1.1959900463 + " yd^2";
                         thisPtr.measureUnit[5] = evt.measure * 2.915533496 + " nmi^2";
 
+                        //var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
 
-                        var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
+                        var selectVal = $( "#selectUnitsId").val();
+                        
                         if ( selectVal == "kilometers" )
                         {
                             pathMeasurement.innerHTML = thisPtr.measureUnit[0];
