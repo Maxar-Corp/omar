@@ -10,6 +10,8 @@ OMAR.models.Map = Backbone.Model.extend({
 
 //var measureUnit = new Array();
 //    measureUnit = ["", "", "", "", "", ""];
+var bboxFlag = false;
+
 var convert = new CoordinateConversion();
 OMAR.views.Map = Backbone.View.extend({
     el:"#MapContainer",
@@ -175,6 +177,8 @@ OMAR.views.Map = Backbone.View.extend({
         this.aoiLayer.destroyFeatures();
         this.aoiLayer.addFeatures( feature, {silent:true} );
         this.model.trigger("onSelectBbox", this.bboxModel);
+
+        bboxFlag = true;
     },
 
     setupToolbar:function()
@@ -496,6 +500,9 @@ OMAR.views.Map = Backbone.View.extend({
     {
         this.aoiLayer.destroyFeatures();
         this.setExtent();
+
+        bboxFlag = false;
+        this.setExtent();
     },
 
     setCenter:function()
@@ -510,13 +517,16 @@ OMAR.views.Map = Backbone.View.extend({
     },
     setExtent:function()
     {
-        if(this.bboxModel)
+        if(bboxFlag == false)
         {
-            this.bboxModel.off("change", this.bboxMapChanged, this);
-            var extent = this.map.getExtent();
-            this.bboxModel.set({"minx":extent.left, "miny":extent.bottom,
-                "maxx":extent.right, "maxy":extent.top});
-            this.bboxModel.on("change", this.bboxMapChanged, this);
+            if(this.bboxModel)
+            {
+                this.bboxModel.off("change", this.bboxMapChanged, this);
+                var extent = this.map.getExtent();
+                this.bboxModel.set({"minx":extent.left, "miny":extent.bottom,
+                    "maxx":extent.right, "maxy":extent.top});
+                this.bboxModel.on("change", this.bboxMapChanged, this);
+            }
         }
     },
     setMouse:function(evt)
