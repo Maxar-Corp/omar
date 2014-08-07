@@ -10,6 +10,8 @@ OMAR.models.Map = Backbone.Model.extend({
 
 //var measureUnit = new Array();
 //    measureUnit = ["", "", "", "", "", ""];
+var bboxFlag = false;
+
 var convert = new CoordinateConversion();
 OMAR.views.Map = Backbone.View.extend({
     el:"#MapContainer",
@@ -175,6 +177,8 @@ OMAR.views.Map = Backbone.View.extend({
         this.aoiLayer.destroyFeatures();
         this.aoiLayer.addFeatures( feature, {silent:true} );
         this.model.trigger("onSelectBbox", this.bboxModel);
+
+        bboxFlag = true;
     },
 
     setupToolbar:function()
@@ -251,8 +255,10 @@ OMAR.views.Map = Backbone.View.extend({
                         thisPtr.measureUnit[4] = evt.measure * 1093.6132983 + " yd";
                         thisPtr.measureUnit[5] = evt.measure * 0.539956803 + " nmi";
 
-                        var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
+                        //var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
 
+                        var selectVal = $( "#selectUnitsId").val();
+                        
                         if ( selectVal == "kilometers" )
                         {
                             pathMeasurement.innerHTML = thisPtr.measureUnit[0];
@@ -287,7 +293,9 @@ OMAR.views.Map = Backbone.View.extend({
                         thisPtr.measureUnit[4] = evt.measure * 1.0936132983 + " yd";
                         thisPtr.measureUnit[5] = evt.measure * 0.000539956803 + " nmi";
 
-                        var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
+                        //var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
+
+                        var selectVal = $( "#selectUnitsId").val();
 
                         if ( selectVal == "kilometers" )
                         {
@@ -336,7 +344,9 @@ OMAR.views.Map = Backbone.View.extend({
                         thisPtr.measureUnit[4] = evt.measure * 1195990.0463 + " yd^2";
                         thisPtr.measureUnit[5] = evt.measure * 0.2915533496  + " nmi^2";
 
-                        var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
+                        //var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
+
+                        var selectVal = $( "#selectUnitsId").val();
 
                         if ( selectVal == "kilometers" )
                         {
@@ -372,8 +382,10 @@ OMAR.views.Map = Backbone.View.extend({
                         thisPtr.measureUnit[4] = evt.measure * 1.1959900463 + " yd^2";
                         thisPtr.measureUnit[5] = evt.measure * 2.915533496 + " nmi^2";
 
+                        //var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
 
-                        var selectVal = this.unitModel?this.unitModel.get("unit"):"meters";
+                        var selectVal = $( "#selectUnitsId").val();
+                        
                         if ( selectVal == "kilometers" )
                         {
                             pathMeasurement.innerHTML = thisPtr.measureUnit[0];
@@ -488,6 +500,9 @@ OMAR.views.Map = Backbone.View.extend({
     {
         this.aoiLayer.destroyFeatures();
         this.setExtent();
+
+        bboxFlag = false;
+        this.setExtent();
     },
 
     setCenter:function()
@@ -502,13 +517,16 @@ OMAR.views.Map = Backbone.View.extend({
     },
     setExtent:function()
     {
-        if(this.bboxModel)
+        if(bboxFlag == false)
         {
-            this.bboxModel.off("change", this.bboxMapChanged, this);
-            var extent = this.map.getExtent();
-            this.bboxModel.set({"minx":extent.left, "miny":extent.bottom,
-                "maxx":extent.right, "maxy":extent.top});
-            this.bboxModel.on("change", this.bboxMapChanged, this);
+            if(this.bboxModel)
+            {
+                this.bboxModel.off("change", this.bboxMapChanged, this);
+                var extent = this.map.getExtent();
+                this.bboxModel.set({"minx":extent.left, "miny":extent.bottom,
+                    "maxx":extent.right, "maxy":extent.top});
+                this.bboxModel.on("change", this.bboxMapChanged, this);
+            }
         }
     },
     setMouse:function(evt)
