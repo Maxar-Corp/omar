@@ -222,6 +222,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.menuView.bind("onTimeLapseClicked", this.timeLapseClicked, this);
         this.menuView.bind("onGeoCellClicked", this.gclClicked, this);
         this.menuView.bind("onDownloadFilesClicked", this.downloadFilesClicked, this);
+        this.menuView.bind("onCreateProductClicked", this.createProductClicked, this);
 
         this.dateTimeRangeView = new OMAR.views.SimpleDateRangeView();
         this.model.attributes.dateTimeRangeModel = this.dateTimeRangeView.model;
@@ -570,6 +571,33 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         window.open(wfsModel.toUrl(),"_parent");
     },
+
+    createProductClicked:function(){
+
+        if(!this.omarServerCollectionView.isFirstSelected())
+        {
+           alert("Please select the first server.  Currently, you can only export geocell " +
+               "projects from the first server.  " +
+               "Sorry We do not federate geocell " +
+               "project exports at this time.");
+
+            return;
+        }
+
+        var currentSelection = this.dataModelView.getCurrentSelection();
+        
+        if(currentSelection.size() > 0) {
+           
+            var url = "/omar/product/index?layers=" + currentSelection.toStringOfIds() + "&bbox=" + this.model.get("bboxModel").toWmsString();
+
+            window.open(url, "");
+        }
+
+        else {
+            alert("Must select images to define an output product.");
+        }
+    },
+
     downloadFilesClicked:function(){
         var fileNames = "";
         var classNames = "";
