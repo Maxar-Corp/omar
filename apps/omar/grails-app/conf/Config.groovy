@@ -160,8 +160,16 @@ wms {
     params : [layers: ( useTileCache ) ? "omar" : "Reference", format: "image/jpeg"],
     name   : "Reference Data",
     options: defaultOptions
-]
+],
 
+/*
+[
+        url: "${omar.serverURL}/ogc/wms",
+        params: [resampler:bilinear,layers: "raster_entry", filter:"", format: "image/png", transparent: true, EXCEPTIONS:"application/vnd.ogc.se_blank"],
+        name: "OMAR Rasters",
+        options: [isBaseLayer: false, minScale:0.0000001, maxScale:0.0001, buffer: 0, transitionEffect: "resize"]
+]
+*/
     ]
   }
 
@@ -860,3 +868,35 @@ grails {
     }
 }
 remove this line */
+
+/*
+omar.jobstatus.routingKey = "omar.job.status"
+omar.jobstatus.exchange   = "amq.topic"
+omar.product.dirs = ["/mnt/data1/productDir"]
+
+rabbitmq {
+    //connectionfactory {
+    //    username = 'guest'
+    //    password = 'guest'
+    //    hostname = 'localhost'
+    //    consumers = 10
+    //}
+    connection = {
+        //connection name: "server1", host: "rabbitmq-server", username: "omar", password: "abc123!@#"
+        connection name: "server1", host: "10.0.10.93", username: "omar", password: "abc123!@#"
+       // connection host: "rabbit2.example.com", username: "foo", password: "bar"
+    }
+   queues = {
+        queue name: "omar.job.product", durable: true
+        queue name: "omar.job.status", durable: true
+
+    //    exchange name: "omar.exchange", type: "topic", durable:true, {
+    //      queue name: "omarmq.job.status", binding: "omar.job.status"
+    //    }
+        //exchange name: "omar.exchange", type: "topic", durable: true, autoDelete: false
+        //exchange name: "omar.job.exchange", type: "topic", durable: true, autoDelete: false
+    }
+}
+*/
+
+
