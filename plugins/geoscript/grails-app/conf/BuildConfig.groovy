@@ -16,7 +16,7 @@ grails.project.dependency.resolution = {
     repositories {
         mavenRepo "http://repo.grails.org/grails/plugins/"
 
-        mavenRepo "http://repo.opengeo.org"
+        mavenRepo "http://repo.boundlessgeo.com/main"
         mavenRepo "http://download.osgeo.org/webdav/geotools"
 
         //grailsCentral()
