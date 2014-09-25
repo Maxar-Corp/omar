@@ -869,7 +869,7 @@ grails {
 }
 remove this line */
 
-/*
+
 omar.jobstatus.routingKey = "omar.job.status"
 omar.jobstatus.exchange   = "amq.topic"
 omar.product.dirs = ["/mnt/data1/productDir"]
@@ -897,6 +897,6 @@ rabbitmq {
         //exchange name: "omar.job.exchange", type: "topic", durable: true, autoDelete: false
     }
 }
-*/
+
 
 

@@ -67,11 +67,13 @@ grails.project.dependency.resolution = {
 
     compile ':cache:1.1.1'
     compile ":piwik:0.1"
+    compile ":rabbitmq-native:2.0.6"
   }
 }
 
 grails.plugin.location.omarRSS = "${System.env['OMAR_DEV_HOME']}/plugins/omar-rss"
 grails.plugin.location.omarFederation = "${System.env['OMAR_DEV_HOME']}/plugins/omar-federation"
 grails.plugin.location.omarChipper = "${System.env['OMAR_DEV_HOME']}/plugins/omar-chipper"
+
 
 
