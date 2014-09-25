@@ -40,4 +40,4 @@
 # java -Djava.library.path=/path/to/lib -cp $OMAR_HOME/../../plugins/omar-oms/lib/joms.jar org.ossim.oms.apps.DataInfoTest <image(s)>
 # 
 # ---
-java -cp $OMAR_HOME/../../plugins/omar-oms/lib/joms.jar org.ossim.oms.apps.DataInfoTest $1
+java -cp $OSSIM_DEV_HOME/oms/lib/joms.jar org.ossim.oms.apps.DataInfoTest $1
