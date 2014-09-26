@@ -26,16 +26,20 @@ class JobStatusConsumer {
      * @return
      */
     def handleMessage(def body, MessageContext context) {
-        println "---------------${body}------------------"
-        if(body instanceof String)
+        //println "---------------${body.class}------------------"
+        def slurper = new JsonSlurper()
+        def jsonObj
+        if(body instanceof byte[])
         {
-            def slurper = new JsonSlurper()
-            def jsonObj = slurper.parseText(body)
-            
-            jobService.updateJob(jsonObj)
-            
+          jsonObj = slurper.parseText(new String(body,"UTF-8"))
+        }
+        else if(body instanceof String)
+        {
+          jsonObj = slurper.parseText(body)
+
             // publish the message for anyone else listening.
             // publishService.routeStatus(body.toString())
         }
+        if(jsonObj) jobService.updateJob(jsonObj)
     }
 }

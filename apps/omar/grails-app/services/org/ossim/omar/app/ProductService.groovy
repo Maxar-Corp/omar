@@ -23,7 +23,7 @@ class ProductService {
 		
 		Job.withTransaction{
 			def date = new Date()
-			println "def job"
+			//println "def job"
 			def job = new Job(jobId:generatedId.toString(),
 							  jobType:"ProductMessage",
 							  status:JobStatus.READY.toString(),
@@ -32,16 +32,16 @@ class ProductService {
 							  submitDate:date
 							  )
 
-			job.save(flush:true)
-			println "job save"
+			job.save()
+			//println "job save"
 		}
 
 		def messageBuilder = new RabbitMessageBuilder()
 		messageBuilder.send("omar.job.product", messageString)
 		
 		def result = [message:messageString, jobId:generatedId]
-		println result
-		println "end"
+		//println result
+		//println "end"
 		result
     }
 
