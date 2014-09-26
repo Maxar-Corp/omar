@@ -11,13 +11,12 @@
     <omar:securityClassificationBanner/>
    
 
-    <table id="jobTableId"></table>
+    <table id="jobTableId" class="easyui-datagrid"></table>
 
 
 
 
-
-    <omar:securityClassificationBanner/>
+ <!--   <omar:securityClassificationBanner/> -->
 </div>
 <r:layoutResources/>
 

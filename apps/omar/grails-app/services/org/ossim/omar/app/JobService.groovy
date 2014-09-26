@@ -23,7 +23,7 @@ class JobService {
           def record = Job.findByJobId(jsonObj.jobId)
           if(record)
           {
-            println "WILL UPDATE ${jsonObj.jobId} WITH NEW STATUS === ${jsonObj.status}"
+           // println "WILL UPDATE ${jsonObj.jobId} WITH NEW STATUS === ${jsonObj.status}"
 
             def status = "${jsonObj.status?.toUpperCase()}"
             record.statusMessage = jsonObj.statusMessage

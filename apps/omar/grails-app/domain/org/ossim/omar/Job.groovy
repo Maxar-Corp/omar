@@ -31,7 +31,7 @@ class Job {
     endDate         nullable:true
   }
   def toMap(){
-    [jobId:jobId, jobType:jobType, status:status, statusMessage:statusMessage, data:data, percentComplete:percentComplete, submitDate:submitDate,
+    [jobId:jobId, jobType:jobType, status:status.toString(), statusMessage:statusMessage, data:data, percentComplete:percentComplete, submitDate:submitDate,
      startDate:startDate, endDate:endDate]
   }
 }

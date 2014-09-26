@@ -315,7 +315,8 @@ application {
 
     resource url: [plugin: 'omar-chipper', dir: 'js/jquery-easyui/themes', file: 'icon.css']
     resource url: [plugin: 'omar-chipper', dir: 'js/jquery-easyui/themes/default', file: 'easyui.css']
-    resource url: [plugin: 'omar-chipper', dir: 'js/jquery-easyui', file: 'jquery.easyui.min.js']    
+    resource url: [plugin: 'omar-chipper', dir: 'js/jquery-easyui', file: 'jquery.easyui.min.js']
+    resource url: [plugin: 'omar-chipper', dir: 'js/jquery-easyui/extension', file: 'datagrid-detailview.js']
 
     resource url: [dir: "js", file: "jobPage.js"]
   }
