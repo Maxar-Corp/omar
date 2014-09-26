@@ -292,4 +292,32 @@ application {
     //resource url: [dir: 'js', file: 'admin.js']
     resource url: [dir: "js", file: "productPage.js"]
   }
+
+  job {
+    resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
+    resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'OMAR.js']
+    resource url: [plugin: 'omar-core', dir: 'js', file: 'jquery.js']
+    resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery-ui.js']
+    resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery.layout-latest.js']
+    resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'json2.js']
+    resource url: [plugin: 'omar-common-ui', dir: 'js/underscore', file: 'underscore-1.4.2.js']
+    resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'backbone-min.js']
+    resource url: [plugin: 'omar-common-ui', dir: 'css', file: 'jMenu.jquery.css']
+    resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'layout-default-latest.css']
+    resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'layout-default-latest.css']
+    resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery/smoothness', file: 'jquery-ui-1.9.2.custom.css']
+    resource url: [plugin: 'omar-common-ui', dir: 'css/jQuery', file: 'jquery-ui-timepicker-addon.css']
+    resource url: [plugin: 'omar-common-ui', dir: 'js', file: 'jMenu.jquery.js']
+    resource url: [dir: 'js', file: 'spin-min.js', plugin: 'omar-core']
+    //resource url: [dir: 'css', file: 'admin.css']
+    //resource url: [dir: 'js', file: 'admin.js']
+    
+
+    resource url: [plugin: 'omar-chipper', dir: 'js/jquery-easyui/themes', file: 'icon.css']
+    resource url: [plugin: 'omar-chipper', dir: 'js/jquery-easyui/themes/default', file: 'easyui.css']
+    resource url: [plugin: 'omar-chipper', dir: 'js/jquery-easyui', file: 'jquery.easyui.min.js']    
+
+    resource url: [dir: "js", file: "jobPage.js"]
+  }
+
 }

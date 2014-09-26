@@ -15,6 +15,7 @@ class ProductController {
 
   def submitJob()
   {
+    println "GARRETT"
     def caseInsensitiveParams = new CaseInsensitiveMap( params )
 
     switch (request.method.toUpperCase())
