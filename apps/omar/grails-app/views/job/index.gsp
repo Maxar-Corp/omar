@@ -3,30 +3,28 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <r:require modules = "job"/>
-    <title>OMAR <g:meta name="app.version"/>: Federation Admin Page</title>
+    <title>OMAR <g:meta name="app.version"/>: Job Page</title>
     <r:layoutResources/>
 </head>
 <body>
 <div class="outer-center" id="JobPageId">
     <omar:securityClassificationBanner/>
-   
-
-    <table id="jobTableId" class="easyui-datagrid"></table>
 
 
+    <table id="jobTableId" class="easyui-datagrid" rownumbers="true" pagination="true"
+           striped="true" url="${createLink( action: 'getData' )}"></table>
 
 
- <!--   <omar:securityClassificationBanner/> -->
+
+
 </div>
 <r:layoutResources/>
 
 <script type="text/javascript">
     function init(){
-        var params = {model:new OMAR.models.Job({
-          
-        }
-
-        )};
+        var tModel = ${tableModel as grails.converters.JSON};
+        var params = {model:new OMAR.models.Job(),
+                      tableModel:tModel};
         var jobPage = OMAR.pages.JobPage(jQuery, params);
         jobPage.render();
     }

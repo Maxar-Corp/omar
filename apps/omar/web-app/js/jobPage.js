@@ -14,7 +14,7 @@ OMAR.models.Job = Backbone.Model.extend({
     initialize: function(){
 
         // alert("Welcome to this world");
-    },
+    }
     /*
     url:function() {
         result = this.urlRoot + "?";
@@ -36,78 +36,47 @@ OMAR.models.Job = Backbone.Model.extend({
 OMAR.views.JobPageView = Backbone.View.extend({
     el:"#JobPageId",
     initialize:function(params){
+        this.tableModel = params.tableModel;
+        var thisPtr=this;
+        $.extend(true, this.tableModel,{
+            loadFilter:function(param){
+                var rowIdx = 0;
+                var needTimeoutSet = false;
+                for(rowIdx=0;rowIdx<param.rows.length;++rowIdx)
+                {
+                    if(param.rows[rowIdx].status == "RUNNING" ||
+                       param.rows[rowIdx].status == "READY" )
+                    {
+                        needTimeoutSet = true;
+                    }
+                }
+                if(needTimeoutSet)
+                {
+                    if(!thisPtr.timeOut)
+                    {
+                        thisPtr.timeOut = setInterval(thisPtr.refresh, 5000);
+                    }
+                }
+                else if(thisPtr.timeOut)
+                {
+                    clearTimeout(thisPtr.timeOut);
+                    thisPtr.timeOut = null;
+                }
 
+                 //alert(JSON.stringify(param.rows.length));
+                return param;
+             }
+        })
     },
 
     refresh:function(){
         $('#jobTableId').datagrid('reload');
-        setTimeout(OMAR.JobPage.refresh, 15000); // schedule next refresh after 15sec
+       // setTimeout(OMAR.JobPage.refresh, 15000); // schedule next refresh after 15sec
     }, // reload grid
 
     render:function(){
-        $('#jobTableId').datagrid({
-		    title:'Job Status',
-		    width:"100%",
-		    //height:"",
-		    remoteSort:true,
-            pagination:true,
-		    singleSelect:true,
-		    nowrap:false,
-		    fitColumns:true,
-            total:800,
-		    url:'/omar/job/list',
-		    columns:[[
-		        {field:'jobId',title:'JOB_ID',width:80,sortable:true},
-		        {field:'jobType',title:'JOB_TYPE',width:100,sortable:true},
-		        {field:'status',title:'STATUS',width:80,align:'right',sortable:true},
-		        {field:'statusMessage',title:'STATUS_MESSAGE',width:80,align:'right',sortable:true},
-		        {field:'percentComplete',title:'PERCENT_COMPLETE',width:50,sortable:true},
-                {field:'submitDate',title:'SUBMIT_DATE',width:60,align:'center',sortable:true},
-                {field:'startDate',title:'START_DATE',width:60,align:'center',sortable:true},
-                {field:'endDate',title:'END_DATE',width:60,align:'center',sortable:true}
-		    ]]//,
-
-        //   view: default,
-//		    detailFormatter: function(rowIndex, rowData){
-//		        return '<table><tr>' +
-//		                '<td rowspan=2 style="border:0"><img src="images/' + rowData.itemid + '.png" style="height:50px;"></td>' +
-//		                '<td style="border:0">' +
-//		                '<p>Attribute: ' + rowData.attr1 + '</p>' +
-//		                '<p>Status: ' + rowData.status + '</p>' +
-//		                '</td>' +
-//		                '</tr></table>';
-//		    }
-		});
-   /*     var pager = $('#jobTableId').datagrid('getPager');	// get the pager of datagrid
-        pager.pagination({
-            showPageList:true,
-            buttons:[{
-                iconCls:'icon-search',
-                handler:function(){
-                    alert('search');
-                }
-            },{
-                iconCls:'icon-add',
-                handler:function(){
-                    alert('add');
-                }
-            },{
-                iconCls:'icon-edit',
-                handler:function(){
-                    alert('edit');
-                }
-            }],
-            onBeforeRefresh:function(){
-                alert('before refresh');
-                return true;
-            }
-     */
-
-         //   $('#jobTableId').datagrid("getPager").pagination({
-         //   layout:['list','sep','first','prev','sep',$('#p-style').val(),'sep','next','last','sep','refresh']
-        //});
-
-        setTimeout(this.refresh, 5000); // schedule next refresh after 15sec
+        $('#jobTableId').datagrid(this.tableModel);
+      //  setTimeout(this.refresh, 5000); // schedule next refresh after 15sec
     }
 });
 
