@@ -3,7 +3,12 @@ modules = {
 /*
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.min.js"/>
 */
-    dependsOn( 'jquery' )
+ //   dependsOn( 'jquery' )
+
+    resource url: [plugin: 'omar-core', dir: 'js', file: 'jquery.js']
+    resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery-ui.js']
+    resource url: [plugin: 'omar-common-ui', dir: 'js/jQuery', file: 'jquery.layout-latest.js']
+
 /*
 <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes" file="icon.css"/>
 <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>

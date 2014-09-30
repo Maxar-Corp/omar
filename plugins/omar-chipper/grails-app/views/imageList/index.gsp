@@ -48,7 +48,6 @@
         width: 18px;
         height: 18px;
     }
-
     </style>
 
     <%--
@@ -62,11 +61,11 @@
 
 <body class="easyui-layout">
 
-<div region="north" style="height: 20px">
+<div region="north" class="security-banner" style="overflow:hidden;">
     <omar:securityClassificationBanner/>
 </div>
 
-<div region="south" style="height: 20px">
+<div region="south" class="security-banner" style="overflow:hidden">
     <omar:securityClassificationBanner/>
 </div>
 
@@ -78,65 +77,66 @@
 
 <div region="center">
 
-<div class="easyui-layout" fit="true">
-    <div region="north" style="height:35px">
-        <div class="easyui-panel" style="padding:5px;">
-            <g:link class="easyui-linkbutton" plain="true" uri="/">Home</g:link>
+    <div class="easyui-layout" fit="true">
+        <div region="north" style="overflow:hidden;">
+            <div class="easyui-panel" style="overflow:hidden;padding:5px;">
+                <g:link class="easyui-linkbutton" plain="true" uri="/">Home</g:link>
+            </div>
         </div>
-    </div>
 
-    <%--
-    <div region="south" style="height: 100px"></div>
+        <%--
+        <div region="south" style="height: 100px"></div>
 
-    <div region="east" style="width: 100px"></div>
-   --%>
+        <div region="east" style="width: 100px"></div>
+       --%>
 
-    <div region="west" style="width: 325px" split="true" title="Query Parameters">
-        <table id="pg" class="easyui-propertygrid"
-               showGroup="true" showHeader="false" scrollbarSize="0">
-        </table>
-        <br/>
+        <div region="west" style="max-width: 325px" split="true" title="Query Parameters">
+            <table id="pg" class="easyui-propertygrid"
+                   showGroup="true" showHeader="false" scrollbarSize="0">
+            </table>
+            <br/>
 
-        <div align='center'>
-            <button id="applyFilter">Apply Filter</button>
-            <button id="reset">Reset</button>
+            <div align='center'>
+                <button id="applyFilter">Apply Filter</button>
+                <button id="reset">Reset</button>
+            </div>
         </div>
+
+        <div region="center">
+            <table id="tbl" class="easyui-datagrid" rownumbers="true" pagination="true" fit="true"
+                   striped="true" url="${createLink( action: 'getData' )}"></table>
+
+            <div id="tb">
+                <div style="margin-bottom:5px">
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true"
+                       onclick="showFilter()">Filter</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true"
+                       onclick="create2CMV()">2CMV</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true"
+                       onclick="createPSM()">PSM</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cut" plain="true"
+                       onclick="createHillShade()">HillShade</a>
+                </div></div>
+        </div>
+
     </div>
 
-    <div region="center">
-        <table id="tbl" class="easyui-datagrid" rownumbers="true" pagination="true" fit="true"
-               striped="true" url="${createLink( action: 'getData' )}"></table>
-
-        <div id="tb">
-            <div style="margin-bottom:5px">
-                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true"
-                   onclick="showFilter()">Filter</a>
-                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true"
-                   onclick="create2CMV()">2CMV</a>
-                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true"
-                   onclick="createPSM()">PSM</a>
-                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cut" plain="true"
-                   onclick="createHillShade()">HillShade</a>
-            </div></div>
+    <div id="dlg" class="easyui-dialog" title="Filter" closed="true" style="width:400px;height:200px;padding:10px"
+         data-options="buttons: [{
+        text:'Ok',
+        plain: true,
+        iconCls:'icon-ok',
+        handler:function(){
+        alert('ok');
+        }
+        },{
+        text:'Cancel',
+        plain: true,
+        handler:function(){
+        alert('cancel');;
+        }
+        }]">
     </div>
-
-</div>
-
-<div id="dlg" class="easyui-dialog" title="Filter" closed="true" style="width:400px;height:200px;padding:10px"
-     data-options="buttons: [{
-    text:'Ok',
-    plain: true,
-    iconCls:'icon-ok',
-    handler:function(){
-    alert('ok');
-    }
-    },{
-    text:'Cancel',
-    plain: true,
-    handler:function(){
-    alert('cancel');;
-    }
-    }]">
 </div>
 
 <%--
