@@ -898,6 +898,3 @@ rabbitmq {
         //exchange name: "omar.job.exchange", type: "topic", durable: true, autoDelete: false
 //    }
 }
-
-
-
