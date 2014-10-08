@@ -75,7 +75,7 @@ grails.project.dependency.resolution = {
 
     compile ':cache:1.1.1'
     compile ":piwik:0.1"
-    compile ":rabbitmq-native:2.0.6"
+    compile ":rabbitmq-native:2.0.10"
   }
 }
 

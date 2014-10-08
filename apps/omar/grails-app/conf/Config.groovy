@@ -875,27 +875,28 @@ omar.jobstatus.exchange   = "amq.topic"
 omar.product.dirs = ["/mnt/data1/productDir"]
 
 rabbitmq {
+  enabled=false
     //connectionfactory {
     //    username = 'guest'
     //    password = 'guest'
     //    hostname = 'localhost'
     //    consumers = 10
     //}
-    connection = {
+//    connection = {
         //connection name: "server1", host: "rabbitmq-server", username: "omar", password: "abc123!@#"
-        connection name: "server1", host: "10.0.10.93", username: "omar", password: "abc123!@#"
+//        connection name: "server1", host: "10.0.10.93", username: "omar", password: "abc123!@#"
        // connection host: "rabbit2.example.com", username: "foo", password: "bar"
-    }
-   queues = {
-        queue name: "omar.job.product", durable: true
-        queue name: "omar.job.status", durable: true
+//    }
+//   queues = {
+//        queue name: "omar.job.product", durable: true
+//        queue name: "omar.job.status", durable: true
 
     //    exchange name: "omar.exchange", type: "topic", durable:true, {
     //      queue name: "omarmq.job.status", binding: "omar.job.status"
     //    }
         //exchange name: "omar.exchange", type: "topic", durable: true, autoDelete: false
         //exchange name: "omar.job.exchange", type: "topic", durable: true, autoDelete: false
-    }
+//    }
 }
 
 
