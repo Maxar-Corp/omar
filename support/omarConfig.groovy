@@ -116,4 +116,23 @@ federation {
 //dataSource.password = "postgres"
 //dataSource.dialect = org.ossim.omar.postgis.PostGISDialect
 //dataSource.logSql = true
-//dataSource.url="jdbc:postgresql_postGIS://localhost/omardb-${appVersion}-prod"
+//dataSource.url="jdbc:postgresql_postGIS://localhost/omardb-${grails.util.Metadata.current.'app.version'}-prod"
+
+rabbitmq {
+  enabled=false
+    //connectionfactory {
+    //    username = 'guest'
+    //    password = 'guest'
+    //    hostname = 'localhost'
+    //    consumers = 10
+    //}
+//    connection = {
+        //connection name: "server1", host: "rabbitmq-server", username: "omar", password: "abc123!@#"
+//        connection name: "server1", host: "10.0.10.93", username: "omar", password: "abc123!@#"
+       // connection host: "rabbit2.example.com", username: "foo", password: "bar"
+//    }
+//   queues = {
+//        queue name: "omar.job.product", durable: true
+//        queue name: "omar.job.status", durable: true
+//    }
+}
