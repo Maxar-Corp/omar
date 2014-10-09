@@ -38,6 +38,7 @@ grails.project.dependency.resolution = {
       excludes "resources"
     }
     compile ":swfobject:2.2.1"
+    build ":resources:1.1.6"
 
         build(":tomcat:$grailsVersion",
               ":release:2.2.1",
