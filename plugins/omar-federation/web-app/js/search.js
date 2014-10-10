@@ -484,7 +484,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
         var wfsModel = this.dataModelView.wfsModel.clone();
         var cqlFilter = wfsModel.get("filter");
-        
+
         var currentSelection = this.dataModelView.getCurrentSelection();
         wfsModel.set({
             outputFormat:"json"
@@ -514,7 +514,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var model = this.omarServerCollectionView.model.get(this.omarServerCollectionView.activeServerModel.get("id"));
         var wfsModel = this.dataModelView.wfsModel.clone();
         var cqlFilter = wfsModel.get("filter");
-        
+
         var currentSelection = this.dataModelView.getCurrentSelection();
         wfsModel.set({
             outputFormat:"gml2"
@@ -585,9 +585,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         }
 
         var currentSelection = this.dataModelView.getCurrentSelection();
-        
+
         if(currentSelection.size() > 0) {
-           
+
             var url = "/omar/product/index?layers=" + currentSelection.toStringOfIds() + "&bbox=" + this.model.get("bboxModel").toWmsString();
 
             window.open(url, "");
@@ -782,12 +782,12 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.bboxView.render();
         }
         if(this.pointView)
-        { 
+        {
             this.pointView.render();
         }
 
         if(this.menuView)
-        { 
+        {
             this.menuView.render();
         }
 
@@ -926,7 +926,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         //var h = $(".inner-center").height();
         //$("#tabView").height(h-110);
         if(this.dataModelView) this.dataModelView.resizeView();
-        if(this.mapView)       this.mapView.resizeView();
+//        if(this.mapView)       this.mapView.resizeView();
     },
     updateCounts:function(){
         var cqlFilter = this.toCql();

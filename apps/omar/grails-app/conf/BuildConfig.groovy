@@ -1,11 +1,11 @@
-if("${System.env.GRAILS_CACHE_DIR}")
+if ( System.getenv( 'GRAILS_CACHE_DIR' ) )
 {
-  grails.work.dir="${System.env.GRAILS_CACHE_DIR}"
+  grails.work.dir = "${System.env.GRAILS_CACHE_DIR}"
   grails.dependency.cache.dir = "${System.env.GRAILS_CACHE_DIR}/ivy-cache"
 }
 else
 {
-  grails.work.dir="${System.env.OMAR_DEV_HOME}/.grails"
+  grails.work.dir = "${System.env.OMAR_DEV_HOME}/.grails"
   grails.dependency.cache.dir = "${System.env.OMAR_DEV_HOME}/.grails/ivy-cache"
 }
 
