@@ -1,7 +1,7 @@
 //grails.servlet.version = "2.5" // Change depending on target container compliance (2.5 or 3.0)
 grails.servlet.version = "3.0"
 
-if("${System.env.GRAILS_CACHE_DIR}")
+if(System.getenv('GRAILS_CACHE_DIR'))
 {
   grails.work.dir="${System.env.GRAILS_CACHE_DIR}"
   grails.dependency.cache.dir = "${System.env.GRAILS_CACHE_DIR}/ivy-cache"
