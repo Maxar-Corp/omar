@@ -28,7 +28,7 @@
         </div>
     </div>
 
-    <div class=" middle-center">
+    <div class="middle-center">
 
         <div class="inner-west">
 
@@ -54,6 +54,7 @@
             <p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p>
 
             <center><button name="SearchId" id="SearchId">Search OMAR™</button></center>
+
         </div>
 
         <div class="inner-center">
@@ -151,7 +152,6 @@
         };
         var searchPageController = new OMAR.pages.FederatedRasterSearch( jQuery, params );
         searchPageController.render();
-
     }
 </r:script>
 <r:layoutResources/>
