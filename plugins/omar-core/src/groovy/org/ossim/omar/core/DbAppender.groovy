@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils
 
 import org.ossim.omar.core.ISO8601DateParser
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder
+//import org.codehaus.groovy.grails.commons.ApplicationHolder
 import org.apache.commons.lang.StringUtils
 import java.sql.Timestamp
 
@@ -21,12 +21,14 @@ public class DbAppender
   def sql
   def modifyParametersClosure
   def sqlParams
+  def grailsApplication
 
   void append(def params)
   {
     if ( !sql )
     {
-      sql = ApplicationHolder.application.mainContext.getBean("sql")
+      //sql = ApplicationHolder.application.mainContext.getBean("sql")
+      sql = grailsApplication.mainContext.getBean("sql")
       initializeSqlStatement()
       initializeMappings()
       println sqlStatement

@@ -17,7 +17,7 @@ package org.ossim.omar.security
 
 import groovy.text.SimpleTemplateEngine
 
-import org.codehaus.groovy.grails.commons.ApplicationHolder as AH
+//import org.codehaus.groovy.grails.commons.ApplicationHolder as AH
 import org.codehaus.groovy.grails.plugins.springsecurity.NullSaltSource
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
@@ -32,6 +32,7 @@ class RegisterController extends AbstractS2UiController
   def mailService
   def saltSource
   def ldapUtilService
+  def grailsApplication
 
   def index = {
     [command: new RegisterCommand()]
@@ -369,7 +370,8 @@ class RegisterCommand
     username blank: false, validator: { value, command ->
       if ( value )
       {
-        def User = AH.application.getDomainClass(
+        //def User = AH.application.getDomainClass(
+        def User = grailsApplication.getDomainClass(
                 SpringSecurityUtils.securityConfig.userLookup.userDomainClassName).clazz
         if ( User.findByUsername(value) )
         {
