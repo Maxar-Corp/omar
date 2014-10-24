@@ -7,7 +7,7 @@ class RasterEntryFileController
 {
 
   def index( )
-  { redirect( action: list, params: params ) }
+  { redirect( action: "list", params: params ) }
 
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
