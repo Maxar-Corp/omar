@@ -182,6 +182,9 @@
                     <li>
                         <g:link plugin="omar-ogc" controller="WmsLog" action="list">View WMS Log</g:link>
                     </li>
+                    <li>
+                        <g:link controller="Job" action="index">View Jobs</g:link>
+                    </li>
                     <%--</sec:ifAllGranted>--%>
                 </ol>
             </td>
@@ -233,10 +236,11 @@
                         <li><g:link controller="Federation" action="admin">Federation</g:link></li>
                         <li><g:link controller="RunScript" action="scripts">Scripts</g:link></li>
                         <li><g:link controller="ChipFormat" action="list">Chip Formats</g:link></li>
+                        <li><g:link controller="DiskCache" action="index">View Disk Cache Locations</g:link></li>
 
                         <br/>
                         <g:each var="c" in="${editableControllers}">
-                            <g:if test="${!c.name.equals( 'ConfigSettings' ) && !c.name.equals( 'ChipFormat' )}">
+                            <g:if test="${!c.name.equals( 'ConfigSettings' ) && !c.name.equals( 'DiskCache' ) && !c.name.equals( 'ChipFormat' )}">
                                 <li><g:link controller="${c.path}">${c.name}</g:link></li>
                             </g:if>
                         </g:each>

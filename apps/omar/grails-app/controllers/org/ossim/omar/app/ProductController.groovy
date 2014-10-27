@@ -1,22 +1,29 @@
 package org.ossim.omar.app
 import grails.converters.JSON
 import org.apache.commons.collections.map.CaseInsensitiveMap
+import org.ossim.omar.core.Utility
+import org.ossim.omar.Job
 
 class ProductController {
-
+  def springSecurityService
   def grailsApplication
-
+  def jobService
   def productService
 
   def index()
   {
-    render view: 'index', model: [params:params]
+    render view: 'index', model: [params:params,
+                                  tableModel  : jobService.createTableModel()
+    ]
   }
+
 
   def submitJob()
   {
-    def caseInsensitiveParams = new CaseInsensitiveMap( params )
-
+    println "PARAMS =========== ${params}"
+    def tempParams = new HashMap( params )
+    if(springSecurityService?.isLoggedIn())
+      tempParams.username = springSecurityService?.principal?.username
     switch (request.method.toUpperCase())
     {
       case "POST":
@@ -27,18 +34,25 @@ class ProductController {
         break
     }
 
-    def jobResult = productService.newProduct(caseInsensitiveParams)
-    
-    def result = [jobId : jobResult.jobId.toString()] as JSON   //jabberFederatedServerService.serverList as JSON
+    def jobResult = productService.newProduct(tempParams)
+    def result
+    if(!jobResult)
+    {
+      result = [] as JSON
+    }
+    else
+    {
+      result = [jobId : jobResult.jobId.toString()] as JSON
+    }
 
     def callback = ""
-    if ( caseInsensitiveParams.callback )
+    if ( tempParams.callback )
     {
-      callback = caseInsensitiveParams.callback
+      callback = tempParams.callback
     }
-    else if ( caseInsensitiveParams.jsonCallback )
+    else if ( tempParams.jsonCallback )
     {
-      callback = caseInsensitiveParams.jsonCallback
+      callback = tempParams.jsonCallback
     }
     if ( callback )
     {
