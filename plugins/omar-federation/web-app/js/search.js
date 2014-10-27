@@ -64,11 +64,12 @@ OMAR.views.WfsTypeNameView = Backbone.View.extend({
 OMAR.models.FederatedRasterSearchModel = Backbone.Model.extend({
     defaults:{
         mapCriteriaDirtyFlag:false
+       ,maxMosaicSize:5
        ,dataTableCriteriaDirtyFlag:false
        ,spatialSearchType:"bbox"
        ,useSpatialFlag:true
-        ,mapModel:null
-        ,activeTab:0
+       ,mapModel:null
+       ,activeTab:0
        ,cqlModel:null
        ,displayUnitModel:null
        ,bboxModel:null
@@ -78,7 +79,7 @@ OMAR.models.FederatedRasterSearchModel = Backbone.Model.extend({
        ,wfsServerCountModel:null
        ,dateTimeRangeModel:null
        ,wfsTypeNameModel:null
-        ,footprintLegendModelView:null
+       ,footprintLegendModelView:null
        ,userRoles:[]
     },
     initialize:function(params)
@@ -88,6 +89,10 @@ OMAR.models.FederatedRasterSearchModel = Backbone.Model.extend({
             if(params.mapCriteriaDirtyFlag)
             {
                 this.attributes.mapCriteriaDirtyFlag = params.mapCriteriaDirtyFlag;
+            }
+            if(params.maxMosaicSize)
+            {
+                this.attributes.maxMosaicSize = params.maxMosaicSize;
             }
             if(params.userRoles)
             {
@@ -191,6 +196,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     bboxView:null,
     initialize:function(params){
         this.initializing = true;
+        this.maxMosaicSize = 5;
         var thisPtr = this;
         this.model = new OMAR.models.FederatedRasterSearchModel(params);
 
@@ -295,9 +301,32 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.bboxView.bind("onUrChanged", this.bboxViewEdited, this);
         this.omarServerCollectionView.bind("onServersAdded", this.omarServerCollectionChanged, this);
         this.initializing = false;
+        this.dataModelView.selectedCollection.bind("add",    this.resetSelectedImages, this);
+        this.dataModelView.selectedCollection.bind("remove", this.resetSelectedImages, this);
+        //this.selectedImageLayer.on("visibilitychanged", function(){alert("asdasdf")});
     },
     events: {
-        "click #SearchId": "search"
+        "click #SearchId": "search",
+        "click #ClearSelectedRowsId": "clearSelectedRows"
+    },
+    clearSelectedRows:function(){
+        this.dataModelView.clearAllSelection()
+
+        //this.dataModelView.getCurrentSelection().reset();
+        //this.dataModelView.render();
+        this.resetSelectedImages();
+    },
+    resetSelectedImages:function(){
+        var layers = "";
+        if(this.selectedImageLayer)
+        {
+            if(this.selectedImageLayer.getVisibility())
+            {
+                layers = this.dataModelView.getCurrentSelection().toStringOfIds(",",this.model.attributes.maxMosaicSize);
+            }
+            this.selectedImageLayer.mergeNewParams({layers:layers});
+
+        }
     },
     showTab:function(idx){
         this.model.set("activeTab", idx);
@@ -586,10 +615,45 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         var currentSelection = this.dataModelView.getCurrentSelection();
 
+        /* we will need to find the intersecting gsd's.  This means we will find the largest smallest GSD and the
+         *  smallest largest GSD
+         */
         if(currentSelection.size() > 0) {
 
-            var url = "/omar/product/index?layers=" + currentSelection.toStringOfIds() + "&bbox=" + this.model.get("bboxModel").toWmsString();
+            var url = "/omar/product/index?layers=" + currentSelection.toStringOfIds()
+            var idx = 0;
+            var gsdRange = {minGsd:null, maxGsd:null};
+            for(idx = 0; idx < currentSelection.size(); ++ idx)
+            {
+                var item = currentSelection.at(idx);
+                var modelRecord = this.dataModelView.model.get(item.id);
+                var modelRange = modelRecord.getGsdRangeAndRlevels();
 
+                if(gsdRange.minGsd == null)
+                {
+                    gsdRange.minGsd = modelRange.minGsd;
+                    gsdRange.maxGsd = modelRange.maxGsd;
+
+                }
+                else
+                {
+                    if(gsdRange.minGsd < modelRange.minGsd)
+                    {
+                        gsdRange.minGsd = modelRange.minGsd;
+                    }
+                    if(gsdRange.maxGsd > modelRange.minGsd)
+                    {
+                        gsdRange.maxGsd = modelRange.maxGsd;
+                    }
+                }
+             }
+
+            url += "&meters="+gsdRange.minGsd;
+            url += "&gsdRange=" +gsdRange.minGsd+","+gsdRange.maxGsd;
+            if( this.mapView.hasBBOXSelection())
+            {
+                url = url+"&cut_wms_bbox=" + this.model.get("bboxModel").toWmsString();
+            }
             window.open(url, "");
         }
 
@@ -720,6 +784,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.menuView.unbind("onTimeLapseClicked", this.timeLapseClicked, this);
             this.menuView.unbind("onGeoCellClicked", this.gclClicked, this);
             this.menuView.unbind("onDownloadFilesClicked", this.downloadFilesClicked, this);
+            $("#CreateProductId").prop("disabled", true);
+
         }
         else
         {
@@ -729,6 +795,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.menuView.bind("onTimeLapseClicked", this.timeLapseClicked, this);
             this.menuView.bind("onGeoCellClicked", this.gclClicked, this);
             this.menuView.bind("onDownloadFilesClicked", this.downloadFilesClicked, this);
+            $("#CreateProductId").prop("disabled", false);
         }
 
         this.updateLegend();
@@ -799,7 +866,20 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         if(this.mapView)
         {
             this.mapView.render();
+
+            this.selectedImageLayer = this.mapView.addSelectedImageLayer(
+                {url: "http://localhost/omar/ogc/wms",
+                    params:{exceptions:"application/vnd.ogc.se_blank",
+                        layers: "", format:"image/png", transparent:true},
+                    options:{eventListeners:{
+                                            "visibilitychanged":$.proxy(this.resetSelectedImages, this, false)
+                                            },
+                             isBaseLayer:false,singleTile:true},
+                    zindex:-10
+                }
+            );
         }
+
         if(this.cqlView)
         {
             this.cqlView.render();
