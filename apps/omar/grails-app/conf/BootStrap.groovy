@@ -69,6 +69,11 @@ class BootStrap
 //    {
 //      stagerService.runStager( testRepo )
 //    }
+    def job = Requestmap.findByUrl("/job/**");
+    job?.configAttribute = "IS_AUTHENTICATED_ANONYMOUSLY";
+    job?.save()
+
+
   }
   def destroy = {
   }
