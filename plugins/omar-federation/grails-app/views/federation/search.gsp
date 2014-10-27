@@ -53,7 +53,12 @@
 
             <p><g:render plugin="omar-common-ui" template="/templates/dateTimeTemplate"/></p>
 
-            <center><button name="SearchId" id="SearchId">Search OMAR™</button></center>
+            <center>
+                <table><tr>
+                    <td><button name="Search" id="SearchId">Search OMAR™</button></td>
+                    <td><button name="ClearSelectedRows" id="ClearSelectedRowsId">Clear Selected Rows</button></td>
+                </tr></table>
+            </center>
 
         </div>
 
@@ -148,7 +153,8 @@
             userRoles: userRoles,
             legend: {
                 styles: styles
-            }
+            },
+            maxMosaicSize:5
         };
         var searchPageController = new OMAR.pages.FederatedRasterSearch( jQuery, params );
         searchPageController.render();

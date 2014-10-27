@@ -27,7 +27,8 @@
   <li><a class="fNiv">Search</a>
     <ul>
       <li class="arrow"></li>
-      <li name="SearchId" id="SearchId"><a>Search</a></li>
+        <li name="Search" id="SearchId"><a>Search</a></li>
+        <li name="ClearSelectedRows" id="ClearSelectedRowsId"><a>Clear Selected Rows</a></li>
     </ul>
   </li>
 </ul>

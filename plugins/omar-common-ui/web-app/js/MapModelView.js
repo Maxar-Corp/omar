@@ -34,6 +34,10 @@ OMAR.views.Map = Backbone.View.extend({
         this.measureUnit = ["", "", "", "", "", ""];
         this.convert = new CoordinateConversion();
     },
+    getBaseZIndex:function()
+    {
+      return this.baseZIndex;
+    },
     reset:function()
     {
         if(this.map)
@@ -116,9 +120,9 @@ OMAR.views.Map = Backbone.View.extend({
             this.setupAoiLayer();
             this.setupToolbar();
 
-            this.map.setLayerZIndex(this.aoiLayer, this.baseZIndex);
-            this.map.setLayerZIndex(this.ddGraticule.gratLayer, this.baseZIndex+1);
-            this.map.setLayerZIndex(this.dmsGraticule.gratLayer, this.baseZIndex+2);
+            this.map.setLayerZIndex(this.aoiLayer, this.baseZIndex+1);
+            this.map.setLayerZIndex(this.ddGraticule.gratLayer, this.baseZIndex+2);
+            this.map.setLayerZIndex(this.dmsGraticule.gratLayer, this.baseZIndex+3);
         }
     },
     setUnitModelView:function(unitModelView)
@@ -147,6 +151,33 @@ OMAR.views.Map = Backbone.View.extend({
         }
 
         return result;
+    },
+    addSelectedImageLayer:function(setupParams){
+        if(!this.selectedImageLayer)
+        {
+            var url          = setupParams.url;//"http://localhost/omar/ogc/wms";
+            var params       = setupParams.params//{exceptions:"application/vnd.ogc.se_blank",
+            //layers: "", format:"image/png", transparent:true};
+            var options      = setupParams.options//{isBaseLayer:false};
+
+            this.selectedImageLayer =  new OpenLayers.Layer.WMS( "Mosaic Selected Images",
+                url,
+                params,
+                options
+            );
+            this.map.addLayer( this.selectedImageLayer );
+            var z = null
+            if(setupParams.zindex) z = setupParams.zindex;
+            else z = this.baseZIndex-1;
+
+            this.map.setLayerZIndex(this.selectedImageLayer, z);
+        }
+
+        return this.selectedImageLayer;
+    },
+    setCurrentSelection:function()
+    {
+
     },
     setupAoiLayer:function()
     {

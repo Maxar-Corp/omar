@@ -21,19 +21,21 @@ OMAR.models.SelectedCollection = Backbone.Collection.extend({
     model:OMAR.models.Selection,
     initialize:function(){
     },
-    toArrayOfIds:function(){
+    toArrayOfIds:function(maxCount){
         var selectedItem = [];
-        for(var idx=0; idx < this.size(); idx++){
+        if(!maxCount) maxCount = this.length;
+        else if(maxCount > this.length) maxCount = this.length;
+        for(var idx=0; idx < maxCount; idx++){
             var item = this.at(idx);
             selectedItem.push(item.id);
         }
         return selectedItem;
     },
-    toStringOfIds:function(seperator){
+    toStringOfIds:function(seperator, maxCount){
         if(!seperator) {
             seperator = ",";
         }
 
-        return this.toArrayOfIds().join(seperator);
+        return this.toArrayOfIds(maxCount).join(seperator);
     }
 });
