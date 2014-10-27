@@ -10,6 +10,8 @@ import java.awt.Color
 omar.serverIP = InetAddress.localHost.hostAddress
 omar.serverURL = "http://${omar.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
 
+//omar.serverIp = "localhost"
+//omar.serverURL = "http://localhost/omar"
 //import org.ossim.omar.core.DbAppender
 
 grails.gorm.default.mapping = {
@@ -868,11 +870,6 @@ grails {
     }
 }
 remove this line */
-
-
-omar.jobstatus.routingKey = "omar.job.status"
-omar.jobstatus.exchange   = "amq.topic"
-omar.product.dirs = ["/mnt/data1/productDir"]
 
 rabbitmq {
   enabled=false
