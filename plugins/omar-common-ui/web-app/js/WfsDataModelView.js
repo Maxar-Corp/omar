@@ -255,6 +255,12 @@ OMAR.models.RasterEntryDataModel = Backbone.Model.extend({
         ,"center_lat_lon":""
 
     },
+    getGsdRangeAndRlevels:function(){
+        var fullResGsd = this.get("gsdy");
+        var numberOfRLevels = this.get("number_of_res_levels");
+
+        return {rlevels:numberOfRLevels, minGsd:fullResGsd, maxGsd:fullResGsd*(2^numberOfRLevels)};
+    },
     initialize:function(params){
     }
 
@@ -897,6 +903,11 @@ OMAR.views.DataModelView = Backbone.View.extend({
         {
             $("#columnSelectId").attr("checked", false);
         }
+    },
+    clearAllSelection:function(){
+        this.selectedCollection.reset();
+        $("input:checkbox[class=rowCheckbox]:checked").attr("checked",false);
+        $("#columnSelectId").attr("checked", false);
     },
     resetTable:function(){
     },
