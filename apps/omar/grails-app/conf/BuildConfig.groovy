@@ -82,6 +82,7 @@ grails.project.dependency.resolution = {
 grails.plugin.location.omarRSS = "${System.env['OMAR_DEV_HOME']}/plugins/omar-rss"
 grails.plugin.location.omarFederation = "${System.env['OMAR_DEV_HOME']}/plugins/omar-federation"
 grails.plugin.location.omarChipper = "${System.env['OMAR_DEV_HOME']}/plugins/omar-chipper"
+grails.plugin.location.omarOms = "${System.env['OMAR_DEV_HOME']}/plugins/omar-oms"
 
 
 
