@@ -62,6 +62,12 @@ class JobController {
     render contentType: 'application/json', text: data?:[:] as JSON
   }
 
+  def download()
+  {
+    def data = jobService.download(params, response)
+
+    null
+  }
 
   @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def ids(){

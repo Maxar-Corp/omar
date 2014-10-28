@@ -42,7 +42,8 @@ OMAR.views.JobPageView = Backbone.View.extend({
         this.timeoutInterval = 5000; // refresh every 5 seconds
         this.tableModel = params.tableModel;
         this.filter="";
-        this.propertyGridId="#propertyGridId"
+        this.singleSelect=params.singleSelect;
+        this.propertyGridId="#propertyGridId";
         this.jobTableId = "#jobTableId";
         this.usernameId = "#usernameId";
         this.usernameOpTypeId = "#usernameOpTypeId";
@@ -57,13 +58,12 @@ OMAR.views.JobPageView = Backbone.View.extend({
         $(this.resetButtonId).click($.proxy(this.resetFilter, this));
 
         $(this.removeJobId).click($.proxy(this.removeJobClicked, this));
-
+        if(this.singleSelect == null) this.singleSelect = false;
         $.extend(true, this.tableModel,{
             url:params.url,
             idField:"jobId",
-            singleSelect:false,
+            singleSelect:thisPtr.singleSelect,
             loadFilter:function(param){
-             //   alert(JSON.stringify(param));
                 if(param)
                 {
                     thisPtr.resetTimerIfNeeded(param.rows);

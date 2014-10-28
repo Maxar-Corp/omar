@@ -95,9 +95,12 @@
 
         <div region="center" style="overflow:hidden;">
             <table id="jobTableId" class="easyui-datagrid"
-                   rownumbers="true" pagination="true" fit="true" fitColumns="true"
+                   rownumbers="true" toolbar="#toolbarId"  pagination="true" fit="true" fitColumns="true"
                    striped="true" url="${createLink( controller:'job', action: 'getData' )}"></table>
 
+        </div>
+        <div id="toolbarId">
+            <a id="downloadJobId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true">Download Job</a>
         </div>
     </div>
 </div>
@@ -133,8 +136,9 @@
                     meters:meters,
                     gsdMin:gsdMin,
                     gsdMax:gsdMax
-                }
-        )};
+
+                })
+        };
 
         var tModel = ${tableModel as grails.converters.JSON};
         var jobParams = {model:new OMAR.models.Job(),
@@ -142,8 +146,10 @@
             url: "${createLink( controller: 'Job', action: 'getData' )}",
             crudUrls:{"remove":"${createLink( action: 'remove' )}"
             },
-            baseUrl:"${createLink(controller: 'Job', action:'')}"
-        };
+            baseUrl:"${createLink(controller: 'Job', action:'')}",
+            singleSelect:true
+
+    };
 
         var jobPage = OMAR.pages.JobPage(jQuery, jobParams);
         var productPage = OMAR.pages.ProductPage(jQuery, params);

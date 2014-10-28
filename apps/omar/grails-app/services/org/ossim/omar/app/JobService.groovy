@@ -1,5 +1,6 @@
 package org.ossim.omar.app
 
+import org.apache.commons.collections.map.CaseInsensitiveMap
 import org.ossim.omar.Job
 import grails.converters.JSON
 import org.ossim.omar.JobStatus
@@ -10,7 +11,7 @@ class JobService {
   def grailsApplication
   def diskCacheService
   static columnNames = [
-          'id','jobId', 'type', 'name', 'username', 'status', 'statusMessage', 'percentComplete', 'submitDate', 'startDate', 'endDate'
+          'id','jobId', 'jobDir', 'type', 'name', 'username', 'status', 'statusMessage', 'percentComplete', 'submitDate', 'startDate', 'endDate'
   ]
 
   def createTableModel()
@@ -18,19 +19,34 @@ class JobService {
     def clazz = Job.class
     def domain = grailsApplication.getDomainClass( clazz.name )
 
-    def columns = columnNames?.collect {column->
+    def tempColumnNames = columnNames.clone()
+    tempColumnNames.remove("jobDir")
+    def columns = tempColumnNames?.collect {column->
       def property = ( column == 'id' ) ? domain?.identifier : domain?.getPersistentProperty( column )
       def sortable = !(property?.name in ["type"])
       [field: property?.name, type: property?.type, title: property?.naturalName, sortable: sortable]
     }
-
+    columns.remove("jobDir")
     def tableModel = [
             columns: [columns]
     ]
-   // println tableModel
+  //  println tableModel
     return tableModel
   }
+  def download(def params, def response)
+  {
+    def caseInsensitiveParams = new CaseInsensitiveMap( params )
+    def jobBaseDir
 
+    if(caseInsensitiveParams.jobId)
+    {
+      Job.withTransaction{
+        jobBaseDir = Job.findByJobId(caseInsensitiveParams.jobId)?.jobDir as File
+      }
+    }
+
+
+  }
   def remove(def params)
   {
     def result = [success:false]
@@ -114,7 +130,7 @@ class JobService {
   {
     def splitArray = jobIds.split(",")
     def rows
-    println "(${splitArray.collect{"'${it}'" }.join(',')}"
+  //  println "(${splitArray.collect{"'${it}'" }.join(',')}"
     Job.withTransaction{
       def tempRows = Job.withCriteria {
         sqlRestriction "(job_id in (${splitArray.collect{"'${it}'" }.join(',')}))"
