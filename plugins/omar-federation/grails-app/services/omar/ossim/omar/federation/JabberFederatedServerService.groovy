@@ -49,9 +49,14 @@ class JabberFederatedServerService implements InitializingBean{
         if(settings?.vcard?.config){
           vCard.setField("config", settings?.vcard?.config.toString())
         }
+        def port = 5222
+        if(settings?.server?.port)
+        {
+          port =settings?.server?.port?.toInteger()
+        }
         jabberIp                  = settings?.server?.ip
         jabberDomain              = settings?.server?.domain
-        jabberPort                = Integer.parseInt(settings?.server?.port)
+        jabberPort                = port
         jabberUser                = settings?.server?.username
         jabberPassword            = settings?.server?.password
         jabberChatRoomId          = settings?.chatRoom?.id
