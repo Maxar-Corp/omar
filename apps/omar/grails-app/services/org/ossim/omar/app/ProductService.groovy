@@ -30,7 +30,7 @@ class ProductService {
     Job.withTransaction{
       def date = new Date()
       def job = new Job(jobId:chipperMessage.jobId,
-              jobDir:jobDir,
+              jobDir:chipperMessage.jobDir,
               name:params?.name?:"",
               username:params.username?:"anonymous",
               type:chipperMessage.type,
