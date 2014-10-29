@@ -208,6 +208,7 @@ OMAR.views.Map = Backbone.View.extend({
         this.aoiLayer.destroyFeatures();
         this.aoiLayer.addFeatures( feature, {silent:true} );
         this.model.trigger("onSelectBbox", this.bboxModel);
+        this.map.setLayerZIndex(this.aoiLayer, 400);
 
         bboxFlag = true;
     },
@@ -220,6 +221,13 @@ OMAR.views.Map = Backbone.View.extend({
                 autoActivate: true
                 ,title: 'Click button to activate. Once activated, drag the mouse to pan.'
                 ,displayClass: 'olControlPanZoom'
+                ,eventListeners:{
+                // for some rease when changing to the pan zoom the zindex of the aoi layer
+                // is getting reset.  I will just add a force here
+                //
+                   activate:function(evt){
+                       thisPtr.map.setLayerZIndex(thisPtr.aoiLayer, thisPtr.baseZIndex+1);                   }
+                }
 
             }
         );
