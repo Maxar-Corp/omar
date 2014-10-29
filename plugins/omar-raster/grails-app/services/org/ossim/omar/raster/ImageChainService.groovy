@@ -157,6 +157,10 @@ class ImageChainService
                     {
                         kwlString += "object${objectPrefixIdx}.bands:(${bands})\n"
                     }
+		    else if ( entry.numberOfBands > 2 )
+                    {
+                       kwlString += "object${objectPrefixIdx}.bands:rgb\n"
+                    }
                     ++objectPrefixIdx
                 }
                 else
