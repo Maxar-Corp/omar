@@ -2,7 +2,7 @@ OMAR.models.Product = Backbone.Model.extend({
     urlRoot: "/omar/product/submitJob",
     defaults: {
         layers: null,
-        cut_wms_bbox: null,
+        cut_wms_bbox_ll: null,
         combiner_type: null,
         output_file: null,
         resampler_filter: null,
