@@ -88,8 +88,9 @@
     -->
         </div>
         <div id="toolbarId">
-            <a id="editJobId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true">Edit Job</a>
-            <a id="removeJobId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true">Remove Job</a>
+            <a id="downloadId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true">Download Job</a>
+            <a id="removeId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true">Remove Job</a>
+            <a id="reloadId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true">Reload</a>
         </div>
     </div>
 </div>
@@ -108,7 +109,9 @@
         var params = {model:new OMAR.models.Job(),
             tableModel:tModel,
             url: "${createLink( action: 'getData' )}",
-            crudUrls:{"remove":"${createLink( action: 'remove' )}"
+            urls:{"remove":"${createLink( controller:'job', action: 'remove' )}"
+                ,"download":"${createLink( controller:'job', action: 'download' )}"
+                ,"update":"${createLink( controller:'job', action: 'update' )}"
             },
             baseUrl:"${createLink( )}"
         };

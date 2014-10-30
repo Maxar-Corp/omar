@@ -14,7 +14,6 @@ class Job {
   Date      startDate
   Date      endDate
   static mapping = {
-    version false
     jobId  index:"job_jobid_idx"
     jobDir type:'text', index:"job_jobdir_idx"
     status index:"job_status_idx"
@@ -40,7 +39,30 @@ class Job {
     endDate         nullable:true
   }
   def toMap(){
-    [jobId:jobId, jobType:jobType, status:status.toString(), statusMessage:statusMessage, data:data, percentComplete:percentComplete, submitDate:submitDate,
+    [jobId:jobId, jobDir:jobDir, jobType:jobType, status:status.toString(), statusMessage:statusMessage, data:data, percentComplete:percentComplete, submitDate:submitDate,
      startDate:startDate, endDate:endDate]
+  }
+
+  def getArchive(){
+    def result
+
+    if(jobDir)
+    {
+      def testArchive = "${jobDir}.zip" as File
+
+      if(testArchive.exists()){
+        result = testArchive
+      }
+      else
+      {
+        testArchive = "${jobDir}.tgz" as File
+        if(testArchive.exists()){
+          result = testArchive
+        }
+      }
+
+    }
+
+    result
   }
 }
