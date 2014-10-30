@@ -2,9 +2,11 @@ package org.ossim.omar.app
 
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import org.ossim.omar.Job
-import grails.converters.JSON
 import org.ossim.omar.JobStatus
 import org.ossim.omar.chipper.FetchDataCommand
+import org.ossim.omar.core.HttpStatus
+import org.ossim.omar.core.Utility
+import org.apache.commons.io.FilenameUtils
 
 class JobService {
   def springSecurityService
@@ -30,36 +32,27 @@ class JobService {
     def tableModel = [
             columns: [columns]
     ]
-  //  println tableModel
+    //  println tableModel
     return tableModel
-  }
-  def download(def params, def response)
-  {
-    def caseInsensitiveParams = new CaseInsensitiveMap( params )
-    def jobBaseDir
-
-    if(caseInsensitiveParams.jobId)
-    {
-      Job.withTransaction{
-        jobBaseDir = Job.findByJobId(caseInsensitiveParams.jobId)?.jobDir as File
-      }
-    }
-
-
   }
   def remove(def params)
   {
     def result = [success:false]
+    def jobArchive
 
     try{
-      DiskCache.withTransaction {
+      Job.withTransaction {
         def row
 
         if(params?.id != null) row = Job.findById(params?.id?.toInteger());
         else if(params?.jobId) row = Job.findByJobId(params.jobId);
-
         if(row)
         {
+          jobArchive = row.getArchive()
+          if (!jobArchive.exists()) {
+            jobArchive = row.jobDir as File
+          }
+
           row.delete()
           result.success = true;
         }
@@ -70,8 +63,25 @@ class JobService {
       result.success = false;
       result.message = e.toString()
     }
-
-    result;
+    if(result.success)
+    {
+      try {
+        if (jobArchive?.exists()) {
+          if (jobArchive?.isDirectory()) {
+            jobArchive?.deleteDir()
+          } else {
+            jobArchive?.delete()
+          }
+        }
+      }
+      catch(e)
+      {
+        println "ERROR!!!!!!!!!!!!!!!! ${e}"
+        result.success = false;
+        result.message = e.toString()
+      }
+    }
+    result
   }
 
   def updateJob(def jsonObj) {
@@ -80,13 +90,13 @@ class JobService {
       if(jsonObj.jobId != null)
       {
 
-       // println "json"
+        // println "json"
 
         Job.withTransaction{
           def record = Job.findByJobId(jsonObj.jobId)
           if(record)
           {
-           // println "WILL UPDATE ${jsonObj.jobId} WITH NEW STATUS === ${jsonObj.status}"
+            // println "WILL UPDATE ${jsonObj.jobId} WITH NEW STATUS === ${jsonObj.status}"
 
             def status = "${jsonObj.status?.toUpperCase()}"
             record.statusMessage = jsonObj.statusMessage
@@ -130,7 +140,7 @@ class JobService {
   {
     def splitArray = jobIds.split(",")
     def rows
-  //  println "(${splitArray.collect{"'${it}'" }.join(',')}"
+    //  println "(${splitArray.collect{"'${it}'" }.join(',')}"
     Job.withTransaction{
       def tempRows = Job.withCriteria {
         sqlRestriction "(job_id in (${splitArray.collect{"'${it}'" }.join(',')}))"
@@ -154,6 +164,83 @@ class JobService {
 
     result
   }
+  def download(def params, def response)
+  {
+    println params
+    def caseInsensitiveParams = new CaseInsensitiveMap(params)
+    def httpStatus = HttpStatus.OK
+    def errorMessage = ""
+    def archive
+    def contentType = "text/plain"
+    if(caseInsensitiveParams.jobId)
+    {
+      def job
+      Job.withTransaction{
+        job = Job.findByJobId(caseInsensitiveParams.jobId)
+        if(job)
+        {
+          if(job?.status == JobStatus.FINISHED)
+          {
+            archive = job?.getArchive()
+            if(archive)
+            {
+              def ext = FilenameUtils.getExtension(archive.toString()).toLowerCase()
+
+              switch(ext)
+              {
+                case "zip":
+                  contentType = "application/octet-stream"
+                  break
+                case "tgz":
+                  contentType = "application/x-compressed"
+                  break
+              }
+            }
+            else
+            {
+              httpStatus = HttpStatus.NOT_FOUND
+              errorMessage = "ERROR: Archive for Job ${caseInsensitiveParams.jobId} is no longer present"
+            }
+          }
+          else
+          {
+            httpStatus = HttpStatus.NOT_FOUND
+            errorMessage = "ERROR: Can only download finished jobs.  The current status is ${job?.status.toString()}"
+          }
+        }
+        else
+        {
+          httpStatus = HttpStatus.NOT_FOUND
+          errorMessage = "ERROR: Job ${caseInsensitiveParams.jobId} not found"
+        }
+      }
+
+      if(errorMessage)
+      {
+        response.status = httpStatus
+        response.contentType = contentType
+        response.sendError(response.status, errorMessage)
+        //response.outputStream.write(errorMessage.bytes)
+      }
+      else
+      {
+        try
+        {
+          response.setHeader( "Content-disposition", "attachment; filename=${archive.name}" )
+          Utility.writeFileToOutputStream(archive, response.outputStream)
+        }
+        catch(e)
+        {
+          response.status = HttpStatus.BAD_REQUEST
+          errorMessage = "ERROR: ${e}"
+          response.contentType = "text/plain"
+          response.outputStream.write(errorMessage.bytes)
+        }
+      }
+
+    }
+  }
+
   def getData(FetchDataCommand cmd)
   {
 
@@ -169,30 +256,30 @@ class JobService {
     def total = 0
     def rows  = [:]
     Job.withTransaction{
-       total = Job.createCriteria().count {
+      total = Job.createCriteria().count {
         if ( cmd.filter )
         {
           sqlRestriction cmd.filter
         }
-        }
+      }
 
-        def tempRows = Job.withCriteria {
-          if ( cmd.filter )
-          {
-            sqlRestriction cmd.filter
-          }
-  //      projections {
-  //        columnNames.each {
-  //          property(it)
-  //        }
-  //      }
-          maxResults( cmd.rows )
-          order( cmd.sort, cmd.order )
-          firstResult( ( cmd.page - 1 ) * cmd.rows )
+      def tempRows = Job.withCriteria {
+        if ( cmd.filter )
+        {
+          sqlRestriction cmd.filter
         }
-        rows = tempRows.collect { row ->
-          columnNames.inject( [:] ) { a, b -> a[b] = row[b].toString(); a }
-        }
+        //      projections {
+        //        columnNames.each {
+        //          property(it)
+        //        }
+        //      }
+        maxResults( cmd.rows )
+        order( cmd.sort, cmd.order )
+        firstResult( ( cmd.page - 1 ) * cmd.rows )
+      }
+      rows = tempRows.collect { row ->
+        columnNames.inject( [:] ) { a, b -> a[b] = row[b].toString(); a }
+      }
     }
 
     return [total: total, rows: rows]
