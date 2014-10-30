@@ -30,7 +30,6 @@ class JobController {
       {
         usernameRestriction = "(username='anonymous')"
       }
-      println  usernameRestriction
       if(usernameRestriction)
       {
         if(!cmd.filter)
@@ -64,9 +63,8 @@ class JobController {
 
   def download()
   {
-    def data = jobService.download(params, response)
+    jobService.download(params, response)
 
-    null
   }
 
   @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
