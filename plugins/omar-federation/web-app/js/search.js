@@ -196,7 +196,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     bboxView:null,
     initialize:function(params){
         this.initializing = true;
-        this.maxMosaicSize = 5;
+        this.maxMosaicSize = 10;
         var thisPtr = this;
         this.model = new OMAR.models.FederatedRasterSearchModel(params);
 
@@ -620,7 +620,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
          */
         if(currentSelection.size() > 0) {
 
-            var url = "/omar/product/index?layers=" + currentSelection.toStringOfIds()
+            var url = "/omar/product/index?layers=" + currentSelection.toArrayOfIdsReverse()
             var idx = 0;
             var gsdRange = {minGsd:null, maxGsd:null};
             for(idx = 0; idx < currentSelection.size(); ++ idx)
@@ -652,7 +652,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             url += "&gsdRange=" +gsdRange.minGsd+","+gsdRange.maxGsd;
             if( this.mapView.hasBBOXSelection())
             {
-                url = url+"&cut_wms_bbox=" + this.model.get("bboxModel").toWmsString();
+                url = url+"&cut_wms_bbox_ll=" + this.model.get("bboxModel").toWmsString();
             }
             window.open(url, "");
         }
@@ -868,14 +868,14 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.mapView.render();
 
             this.selectedImageLayer = this.mapView.addSelectedImageLayer(
-                {url: "http://localhost/omar/ogc/wms",
+                {url: "/omar/ogc/wms",
                     params:{exceptions:"application/vnd.ogc.se_blank",
                         layers: "", format:"image/png", transparent:true},
                     options:{eventListeners:{
                                             "visibilitychanged":$.proxy(this.resetSelectedImages, this, false)
                                             },
                              isBaseLayer:false,singleTile:true},
-                    zindex:-10
+                    zindex:-11
                 }
             );
         }
