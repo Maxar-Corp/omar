@@ -43,6 +43,7 @@ class ProductService {
       job.save()
     }
 
+    println result.message
     def messageBuilder = new RabbitMessageBuilder()
     messageBuilder.send("omar.job.product", result.message)
     result
@@ -92,12 +93,16 @@ class ProductService {
     def messageString = ""
 
     def rasterEntries = params.layers.split(",")
-
+    def centerX = 0.0
+    def centerY = 0.0
     RasterEntry.withTransaction {
       rasterEntries.each { value ->
         def rasterEntry = RasterEntry.findById(value.toInteger())
         //println rasterEntry
         if (rasterEntry) {
+          def center = rasterEntry.geometryCenter
+          centerY+=center.y
+          centerX+=center.x
           chipperParams.addInput(new org.ossim.oms.job.LocalFile(file: rasterEntry.filename,
                   entries: [new org.ossim.oms.job.FileEntry(entryId: rasterEntry.entryId)]))
           //def fileInfo = [type:"LOCAL_FILE",file:rasterEntry.filename,entries:[[entryId:rasterEntry.entryId]]]
@@ -107,6 +112,8 @@ class ProductService {
       }
     }
 
+    centerY/=rasterEntries.size()
+    centerX/=rasterEntries.size()
     if (!chipperParams.inputs) {
       return null
     }
@@ -129,6 +136,19 @@ class ProductService {
       def productFile = FilenameUtils.concat(productDirFile, "${chipperParams.output_file}")
       chipperMessage.jobDir = productDirFile
       chipperParams.output_file = productFile
+      def testSrs = chipperMessage?.chipperParams?.srs
+      if(testSrs)
+      {
+        if(testSrs.toLowerCase().contains("auto"))
+        {
+          if(!testSrs.contains(","))
+          {
+            testSrs = "${testSrs},${centerX},${centerY}"
+            chipperMessage?.chipperParams?.srs = testSrs
+          }
+        }
+      }
+
     }
     chipperMessage
   }
