@@ -21,6 +21,10 @@ grails.project.dependency.resolution = {
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
         mavenLocal()
+
+        // Added to pick up joms jar from linux liboms rpm install location.
+        flatDir name:"joms.jar", dirs:'/usr/share/java'
+
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
