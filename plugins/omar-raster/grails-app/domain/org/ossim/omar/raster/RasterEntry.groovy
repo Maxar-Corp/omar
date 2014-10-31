@@ -101,7 +101,7 @@ class RasterEntry
     entryId index: 'raster_entry_entry_id_idx'
     fileType index: 'raster_entry_filetype_idx'
     filename index: 'raster_entry_filename_idx'
-    groundGeom type: org.hibernatespatial.GeometryUserType
+    groundGeom type: org.hibernatespatial.GeometryUserType, sqlType: 'geometry(POLYGON, 4326)'
     imageCategory index: 'raster_entry_image_category_idx'
     imageId index: 'raster_entry_image_id_idx'
     imageRepresentation index: 'raster_entry_image_representation_idx'
