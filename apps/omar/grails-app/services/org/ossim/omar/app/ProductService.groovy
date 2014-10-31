@@ -89,6 +89,9 @@ class ProductService {
     chipperParams.properties.each { k, v ->
 
       if (params."${k}" != null) chipperParams."${k}" = params."${k}"
+//      println "*"*40
+//      def temp = params."${k}"
+//      println "${k} = ${temp}"
     }
     def messageString = ""
 

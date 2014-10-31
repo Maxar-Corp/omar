@@ -10,6 +10,7 @@ OMAR.models.DiskCache = Backbone.Model.extend({
     },
     initialize: function(){
 
+
     }
     /*
      url:function() {
