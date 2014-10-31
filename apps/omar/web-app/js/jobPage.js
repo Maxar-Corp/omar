@@ -42,7 +42,8 @@ OMAR.views.JobPageView = Backbone.View.extend({
         this.timeoutInterval = 5000; // refresh every 5 seconds
         this.tableModel = params.tableModel;
         this.filter="";
-        this.propertyGridId="#propertyGridId"
+        this.singleSelect=params.singleSelect;
+        this.propertyGridId="#propertyGridId";
         this.jobTableId = "#jobTableId";
         this.usernameId = "#usernameId";
         this.usernameOpTypeId = "#usernameOpTypeId";
@@ -51,19 +52,22 @@ OMAR.views.JobPageView = Backbone.View.extend({
         this.usernameOpTypeId = "#usernameOpTypeId";
         this.jobStatusGroupCheckedList = "#jobStatusGroupId :checkbox:checked";
         this.jobStatusGroupCheckboxList = "#jobStatusGroupId :checkbox";
-        this.removeJobId = "#removeJobId";
-        this.crudUrls=params.crudUrls;
+        this.removeJobId = "#removeId";
+        this.donwnloadJobId = "#downloadId";
+        this.reloadId = "#reloadId";
+        this.urls=params.urls;
         $(this.applyFilterButtonId).click($.proxy(this.refresh, this));
         $(this.resetButtonId).click($.proxy(this.resetFilter, this));
 
         $(this.removeJobId).click($.proxy(this.removeJobClicked, this));
-
+        $(this.donwnloadJobId).click($.proxy(this.downloadJobClicked, this));
+        $(this.reloadId).click($.proxy(this.reload, this));
+        if(this.singleSelect == null) this.singleSelect = false;
         $.extend(true, this.tableModel,{
             url:params.url,
             idField:"jobId",
-            singleSelect:false,
+            singleSelect:thisPtr.singleSelect,
             loadFilter:function(param){
-             //   alert(JSON.stringify(param));
                 if(param)
                 {
                     thisPtr.resetTimerIfNeeded(param.rows);
@@ -73,33 +77,76 @@ OMAR.views.JobPageView = Backbone.View.extend({
                     thisPtr.resetTimerIfNeeded();
                 }
                 return param;
-             }
+             },
+            frozenColumns: [[
+                {field: 'ck', checkbox: true}
+            ]]
+
+        });
+    },
+    reload:function(){
+        $(this.jobTableId).datagrid('clearSelections');
+        $(this.jobTableId).datagrid('clearChecked');
+        $(this.jobTableId).datagrid('reload');
+    },
+    downloadJobClicked:function(){
+        var thisPtr = this;
+        var rows = $(this.jobTableId).datagrid('getSelections');
+        if(rows)
+        {
+            $(rows).each(function(idx, row){
+                $.fileDownload(thisPtr.urls.download+"?jobId="+row.jobId)
+                    .fail(function (message) { alert(JSON.stringify(message)); });
+            })
+
+        }
+    },
+    removeSelectedRows:function()
+    {
+        var rows = $(this.jobTableId).datagrid('getSelections');
+        var thisPtr = this;
+        var nRows = rows.length;
+        $(rows).each(function(idx,v){
+            $.post(thisPtr.urls.remove,{id:v.id},function(result){
+             })
+                .complete(function(result){
+                    $(thisPtr.jobTableId).datagrid('clearSelections');
+                    thisPtr.refresh();
+                })
         });
     },
     removeJobClicked:function()
     {
         var thisPtr = this;
-        var row = $(this.jobTableId).datagrid('getSelections');
-        if (row){
-  /*          $.messager.confirm('Confirm','Are you sure you want to remove and unregister this location?',function(r){
+        var rows = $(this.jobTableId).datagrid('getSelections');
+        var canRemove =true
+        var errorMessage = "";
+        $(rows).each(function(idx,v){
+            var testV = v.status.toUpperCase();
+            if((testV == "RUNNING")||
+                (testV == "READY"))
+            {
+                canRemove = false;
+                errorMessage = "We can only remove jobs already processed!"
+            }
+            if(!canRemove) return;
+        });
+        if(canRemove)
+        {
+            var values = [];
+            $.messager.confirm('Confirm','Are you sure you want to remove and unregister this location?',function(r){
                 if(r)
                 {
-                    $.post(thisPtr.crudUrls.remove,{id:row.id},function(result){
-                        if (result.success){
-                            $('#diskCacheTableId').datagrid('reload');    // reload the user data
-                        } else {
-                            $.messager.show({    // show error message
-                                title: 'Error',
-                                msg: result.message
-                            });
-                        }
-                    },'json');
+
+                    thisPtr.removeSelectedRows();
                 }
             });
-*/
         }
-
-    },
+        else
+        {
+            $.messager.alert('Warning',errorMessage);
+        }
+     },
     resetFilter:function(){
         $(this.jobStatusGroupCheckedList).each(function() {
             $(this).attr('checked', false);
@@ -239,7 +286,6 @@ OMAR.views.JobPageView = Backbone.View.extend({
     },
     refresh:function(){
         var filter = this.buildFilter();
-
         $('#jobTableId').datagrid('reload', {"filter":filter});
     },
     render:function(){

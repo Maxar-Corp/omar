@@ -30,7 +30,6 @@ class JobController {
       {
         usernameRestriction = "(username='anonymous')"
       }
-      println  usernameRestriction
       if(usernameRestriction)
       {
         if(!cmd.filter)
@@ -62,6 +61,11 @@ class JobController {
     render contentType: 'application/json', text: data?:[:] as JSON
   }
 
+  def download()
+  {
+    jobService.download(params, response)
+
+  }
 
   @Secured(['IS_AUTHENTICATED_ANONYMOUSLY'])
   def ids(){

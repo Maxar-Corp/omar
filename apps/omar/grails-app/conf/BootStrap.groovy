@@ -54,6 +54,7 @@ class BootStrap
     sql.close()
 
     new Requestmap( url: '/download/**', configAttribute: 'ROLE_DOWNLOAD' ).save()
+    new Requestmap( url: '/product/index/**', configAttribute: 'ROLE_USER' ).save()
 
 
     JSON.registerObjectMarshaller( Geometry ) {

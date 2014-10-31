@@ -37,5 +37,22 @@ OMAR.models.SelectedCollection = Backbone.Collection.extend({
         }
 
         return this.toArrayOfIds(maxCount).join(seperator);
-    }
+    },
+    toArrayOfIdsReverse:function(maxCount){
+        var selectedItem = [];
+        if(!maxCount) maxCount = this.length;
+        else if(maxCount > this.length) maxCount = this.length;
+        for(var idx=0; idx < maxCount; idx++){
+            var item = this.at(idx);
+            selectedItem.unshift(item.id);
+        }
+        return selectedItem;
+    },
+    toStringOfIdsReverse:function(seperator, maxCount){
+        if(!seperator) {
+            seperator = ",";
+        }
+
+        return this.toArrayOfIdsReverse(maxCount).join(seperator);
+    },
 });

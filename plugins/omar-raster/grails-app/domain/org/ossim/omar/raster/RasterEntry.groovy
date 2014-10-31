@@ -197,6 +197,33 @@ class RasterEntry
     }
   }
 
+  def getGeometryCenter()
+  {
+    def result = [:]
+    if(groundGeom)
+    {
+      def point = groundGeom.centroid
+      result.x = point.x
+      result.y = point.y
+    }
+
+    result
+  }
+  def getGeometryBounds()
+  {
+    def result = [:]
+
+    if(groundGeom)
+    {
+      def envelope = groundGeom.envelopeInternal
+      result.minx = envelope.minX
+      result.miny = envelope.minY
+      result.maxx = envelope.maxX
+      result.maxy = envelope.maxY
+    }
+
+    result
+  }
   def adjustAccessTimeIfNeeded(def everyNHours = 24)
   {
     if ( !accessDate )
