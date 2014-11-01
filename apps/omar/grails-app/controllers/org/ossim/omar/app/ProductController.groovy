@@ -17,11 +17,14 @@ class ProductController {
     ]
   }
 
-
   def submitJob()
   {
-    println "PARAMS =========== ${params}"
-    def tempParams = new HashMap( params )
+   // println "PARAMS =========== ${params}"
+   // println "JSON FORMAT =========== ${request.JSON}"
+
+    def tempParams
+    if(request.JSON) tempParams = request.JSON
+    else tempParams = new HashMap(params)
     if(springSecurityService?.isLoggedIn())
       tempParams.username = springSecurityService?.principal?.username
     switch (request.method.toUpperCase())

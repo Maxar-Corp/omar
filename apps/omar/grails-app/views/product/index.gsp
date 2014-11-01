@@ -80,15 +80,8 @@
                                     <label>Output Type:</label>
                                 </td>
                                 <td>
-                                    <g:select id="writerId" name="writer" from="${['Geo Package','Tiled Tiff']}" keys="${['ossim_gpkg','tiff_tiled']}" />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <label>Grid Alignment:</label>
-                                </td>
-                                <td>
-                                    <g:select id="gridAlignmentId" name="gridAlignment" from="${['ALIGN_TO_PROJECTION_GRID','ALIGN_TO_IMAGE']}" />
+                                    <g:select id="writerId" name="writer" from="${['Geo Package','Tiff']}" keys="${['gpkg','tiff']}" />
+                                    <button type="button" id="writerPropertiesButtonId">Properties</button>
                                 </td>
                             </tr>
                         </table>
@@ -111,6 +104,110 @@
             <a id="reloadId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true">Reload</a>
         </div>
     </div>
+
+
+    <div id="geopackagePropertiesDlgId" class="easyui-dialog" closed="true" style="width:400px;height:280px;padding:10px 20px"
+         closed="true" buttons="#gpkgWriterPropertiesDldButtonsId">
+        <table>
+            <tr>
+                <td>
+                    <label>Writer Mode:</label>
+                </td>
+                <td>
+                    <g:select name="writer_mode" id="writerModeIdId" value="none" from="${['jpeg','png', 'pnga']}" keys="${['jpeg','png', 'pnga']}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Align To Grid:</label>
+                </td>
+                <td>
+                    <input type="checkbox" name="align_to_grid"  id="gpkgAlignToGridId"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Create Histogram:</label>
+                </td>
+                <td>
+                    <input type="checkbox" name="create_histogram"  id="gpkgCreateHistogramId"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Scale To Eight Bit:</label>
+                </td>
+                <td>
+                    <input type="checkbox" name="scale_to_eight_bit"  id="gpkgScaleToEightBitId"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="tiffPropertiesDlgId" class="easyui-dialog" closed="true" style="width:400px;height:280px;padding:10px 20px"
+         closed="true" buttons="#tiffWriterPropertiesDldButtonsId">
+        <table>
+            <tr>
+                <td>
+                    <label>Image Type:</label>
+                </td>
+                <td>
+                    <g:select name="image_type" id="tiffTypeId" value="tiff_tiled" from="${['Tiled','Tiled Band Separate','Strip', 'Strip Band Separate']}" keys="${['tiff_tiled','tiff_tiled_band_separate','tiff_strip','tiff_strip_band_separate']}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Compression:</label>
+                </td>
+                <td>
+                     <g:select name="compression_type" id="tiffCompressionTypeId" value="none" from="${['None','JPEG', 'Packbits', 'Deflate', 'Zip']}" keys="${['none','jpeg','packbits','deflate','zip']}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Compression Quality:</label>
+                </td>
+                <td>
+                    <input type="text" name="compression_quality"  id="tiffCompressQualityId" class="easyui-textbox"/>
+                    <label>%</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Create Overview:</label>
+                </td>
+                <td>
+                    <input type="checkbox" name="create_overview"  id="tiffCreateOverviewId"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Create Histogram:</label>
+                </td>
+                <td>
+                    <input type="checkbox" name="create_histogram"  id="tiffCreateHistogramId"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Scale To Eight Bit:</label>
+                </td>
+                <td>
+                    <input type="checkbox" name="scale_to_eight_bit"  id="tiffScaleToEightBitId"/>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="tiffWriterPropertiesDldButtonsId">
+        <a id="tiffSavePropertiesButtonId" href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" style="width:90px">Save</a>
+        <a id="tiffCancelPropertiesButtonId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" style="width:90px">Cancel</a>
+    </div>
+    <div id="gpkgWriterPropertiesDldButtonsId">
+        <a id="gpkgSavePropertiesButtonId" href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" style="width:90px">Save</a>
+        <a id="gpkgCancelPropertiesButtonId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" style="width:90px">Cancel</a>
+    </div>
+    -->
+
 </div>
 <r:layoutResources/>
 
