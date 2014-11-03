@@ -39,6 +39,7 @@ class JobService {
   {
     def result = [success:false]
     def jobArchive
+    def jobDir
 
     try{
       Job.withTransaction {
@@ -52,7 +53,7 @@ class JobService {
           if (!jobArchive.exists()) {
             jobArchive = row.jobDir as File
           }
-
+          jobDir = row.jobDir as File
           row.delete()
           result.success = true;
         }
@@ -71,6 +72,14 @@ class JobService {
             jobArchive?.deleteDir()
           } else {
             jobArchive?.delete()
+          }
+        }
+        if(jobDir.exists())
+        {
+          if (jobDir?.isDirectory()) {
+            jobDir?.deleteDir()
+          } else {
+            jobDir?.delete()
           }
         }
       }

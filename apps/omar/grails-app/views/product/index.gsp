@@ -119,6 +119,15 @@
             </tr>
             <tr>
                 <td>
+                    <label>Tile Size x, y:</label>
+                </td>
+                <td>
+                    <g:select name="tile_size_x" id="gpkgTileSizeXId" value="256" from="${['256']}" />
+                    <g:select name="tile_size_y" id="gpkgTileSizeYId" value="256" from="${['256']}" />
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <label>Align To Grid:</label>
                 </td>
                 <td>
@@ -152,6 +161,15 @@
                 </td>
                 <td>
                     <g:select name="image_type" id="tiffTypeId" value="tiff_tiled" from="${['Tiled','Tiled Band Separate','Strip', 'Strip Band Separate']}" keys="${['tiff_tiled','tiff_tiled_band_separate','tiff_strip','tiff_strip_band_separate']}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Tile Size x, y:</label>
+                </td>
+                <td>
+                    <g:select name="output_tile_size_x" id="tiffOutputTileSizeXId" value="256" from="${['32','64', '128', '256','512', '1024']}" />
+                    <g:select name="output_tile_size_y" id="tiffOutputTileSizeYId" value="256" from="${['32','64', '128', '256','512', '1024']}" />
                 </td>
             </tr>
             <tr>

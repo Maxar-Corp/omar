@@ -15,6 +15,8 @@ OMAR.models.TiffWriterProperties = Backbone.Model.extend({
         create_overview:false,
         create_histogram:false,
         scale_to_eight_bit:false
+        //output_tile_size_x:"256",
+        //output_tile_size_y:"256"
     },
     getType:function(){
         return this.get("image_type");
@@ -236,17 +238,14 @@ OMAR.views.ProductPageView = Backbone.View.extend({
     },
     submit:function(){
         $( "#submitButtonId").prop('disabled', true);
+        this.model.set("writer", this.currentWriterPropertyModel.getType());
 
-        //alert(this.model.toJson());
-         //alert(this.model.attributes.writer);
-
+        //alert(JSON.stringify(this.model.attributes));
         $.ajax({
             context:this,
             type: "post",
             contentType:"application/json; charset=utf-8",
             url: this.model.urlRoot,
-//            url: this.model.url(),
-//            dataType: "json",
             data: JSON.stringify(this.model.attributes),
             success: function (msg) {
                 $( "#submitButtonId").prop('disabled', false);
@@ -261,7 +260,6 @@ OMAR.views.ProductPageView = Backbone.View.extend({
                 $( "#submitButtonId").prop('disabled', false);
                 OMAR.jobPage.refresh()
         });
-
   //      $.post(this.model.urlRoot,JSON.stringify(this.model.attributes),function(){},"json").done(function(){
   //          $( "#submitButtonId").prop('disabled', false);
   //      });

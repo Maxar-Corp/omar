@@ -626,25 +626,35 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             for(idx = 0; idx < currentSelection.size(); ++ idx)
             {
                 var item = currentSelection.at(idx);
+
                 var modelRecord = this.dataModelView.model.get(item.id);
-                var modelRange = modelRecord.getGsdRangeAndRlevels();
 
-                if(gsdRange.minGsd == null)
+                // need to fix our selection list to hold the actual model as well
+                // for now when we go back and try to query the id it must be on the current page
+                // or it will not find it.  So we will test here.
+                //
+                if(modelRecord)
                 {
-                    gsdRange.minGsd = modelRange.minGsd;
-                    gsdRange.maxGsd = modelRange.maxGsd;
+                    var modelRange = modelRecord.getGsdRangeAndRlevels();
 
-                }
-                else
-                {
-                    if(gsdRange.minGsd < modelRange.minGsd)
+                    if(gsdRange.minGsd == null)
                     {
                         gsdRange.minGsd = modelRange.minGsd;
-                    }
-                    if(gsdRange.maxGsd > modelRange.minGsd)
-                    {
                         gsdRange.maxGsd = modelRange.maxGsd;
+
                     }
+                    else
+                    {
+                        if(gsdRange.minGsd < modelRange.minGsd)
+                        {
+                            gsdRange.minGsd = modelRange.minGsd;
+                        }
+                        if(gsdRange.maxGsd > modelRange.minGsd)
+                        {
+                            gsdRange.maxGsd = modelRange.maxGsd;
+                        }
+                    }
+
                 }
              }
 
