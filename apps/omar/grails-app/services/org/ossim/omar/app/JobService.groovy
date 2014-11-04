@@ -175,54 +175,54 @@ class JobService {
   }
   def download(def params, def response)
   {
-    println params
+    //println params
     def caseInsensitiveParams = new CaseInsensitiveMap(params)
     def httpStatus = HttpStatus.OK
     def errorMessage = ""
     def archive
+    def jobStatus
+    def jobFound
     def contentType = "text/plain"
     if(caseInsensitiveParams.jobId)
     {
       def job
-      Job.withTransaction{
+      Job.withTransaction {
         job = Job.findByJobId(caseInsensitiveParams.jobId)
-        if(job)
-        {
-          if(job?.status == JobStatus.FINISHED)
-          {
-            archive = job?.getArchive()
-            if(archive)
-            {
-              def ext = FilenameUtils.getExtension(archive.toString()).toLowerCase()
+        archive = job?.getArchive()
+        jobStatus = job?.status
+        jobFound = job != null
+      }
+      if(jobFound) {
+        if (jobStatus == JobStatus.FINISHED) {
+          archive = job?.getArchive()
+         // println "ARCHIVE ====== ${archive}"
+          if (archive) {
+            def ext = FilenameUtils.getExtension(archive.toString()).toLowerCase()
 
-              switch(ext)
-              {
-                case "zip":
-                  contentType = "application/octet-stream"
-                  break
-                case "tgz":
-                  contentType = "application/x-compressed"
-                  break
-              }
+           // println "EXT === ${ext}"
+            switch (ext) {
+              case "zip":
+                contentType = "application/octet-stream"
+                break
+              case "tgz":
+                contentType = "application/x-compressed"
+                break
             }
-            else
-            {
-              httpStatus = HttpStatus.NOT_FOUND
-              errorMessage = "ERROR: Archive for Job ${caseInsensitiveParams.jobId} is no longer present"
-            }
-          }
-          else
-          {
+          } else {
             httpStatus = HttpStatus.NOT_FOUND
-            errorMessage = "ERROR: Can only download finished jobs.  The current status is ${job?.status.toString()}"
+            errorMessage = "ERROR: Archive for Job ${caseInsensitiveParams.jobId} is no longer present"
           }
-        }
-        else
-        {
+        } else {
           httpStatus = HttpStatus.NOT_FOUND
-          errorMessage = "ERROR: Job ${caseInsensitiveParams.jobId} not found"
+          errorMessage = "ERROR: Can only download finished jobs.  The current status is ${job?.status.toString()}"
         }
       }
+      else
+      {
+        httpStatus = HttpStatus.NOT_FOUND
+        errorMessage = "ERROR: Job ${caseInsensitiveParams.jobId} not found"
+      }
+
 
       if(errorMessage)
       {
@@ -235,11 +235,13 @@ class JobService {
       {
         try
         {
+          response.status = httpStatus
           response.setHeader( "Content-disposition", "attachment; filename=${archive.name}" )
           Utility.writeFileToOutputStream(archive, response.outputStream)
         }
         catch(e)
         {
+          println "CAUGHT EXCEPTION!!!!!!!!!!!!!!!!!!!"
           response.status = HttpStatus.BAD_REQUEST
           errorMessage = "ERROR: ${e}"
           response.contentType = "text/plain"

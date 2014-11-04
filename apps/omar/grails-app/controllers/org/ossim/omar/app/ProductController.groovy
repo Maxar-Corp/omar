@@ -20,7 +20,7 @@ class ProductController {
   def submitJob()
   {
    // println "PARAMS =========== ${params}"
-   // println "JSON FORMAT =========== ${request.JSON}"
+    println "JSON FORMAT =========== ${request.JSON}"
 
     def tempParams
     if(request.JSON) tempParams = request.JSON

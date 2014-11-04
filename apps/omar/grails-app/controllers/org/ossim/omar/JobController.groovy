@@ -63,7 +63,13 @@ class JobController {
 
   def download()
   {
-    jobService.download(params, response)
+    try{
+      jobService.download(params, response)
+    }
+    catch(e)
+    {
+      println e
+    }
 
   }
 

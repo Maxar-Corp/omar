@@ -72,9 +72,13 @@
                                 <td>
                                     <g:select id="resamplerFilterId" name="resampler_filter" from="${['nearest neighbor','bilinear', 'cubic', 'lanczos', 'catrom', 'quadratic']}" />
                                 </td>
+                                <td>
+                                    <label>Scale To Eight Bit:</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" id="scaleToEightBitId" name="scale_2_8_bit" value="true"/>
+                                </td>
                             </tr>
-
-
                             <tr>
                                 <td>
                                     <label>Output Type:</label>
@@ -142,14 +146,6 @@
                     <input type="checkbox" name="create_histogram"  id="gpkgCreateHistogramId"/>
                 </td>
             </tr>
-            <tr>
-                <td>
-                    <label>Scale To Eight Bit:</label>
-                </td>
-                <td>
-                    <input type="checkbox" name="scale_to_eight_bit"  id="gpkgScaleToEightBitId"/>
-                </td>
-            </tr>
         </table>
     </div>
     <div id="tiffPropertiesDlgId" class="easyui-dialog" closed="true" style="width:400px;height:280px;padding:10px 20px"
@@ -165,11 +161,10 @@
             </tr>
             <tr>
                 <td>
-                    <label>Tile Size x, y:</label>
+                    <label>Tile Size:</label>
                 </td>
                 <td>
-                    <g:select name="output_tile_size_x" id="tiffOutputTileSizeXId" value="256" from="${['32','64', '128', '256','512', '1024']}" />
-                    <g:select name="output_tile_size_y" id="tiffOutputTileSizeYId" value="256" from="${['32','64', '128', '256','512', '1024']}" />
+                    <g:select name="output_tile_size" id="tiffOutputTileSizeId" value="256" from="${['32','64', '128', '256','512', '1024']}" />
                 </td>
             </tr>
             <tr>
@@ -203,14 +198,6 @@
                 </td>
                 <td>
                     <input type="checkbox" name="create_histogram"  id="tiffCreateHistogramId"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Scale To Eight Bit:</label>
-                </td>
-                <td>
-                    <input type="checkbox" name="scale_to_eight_bit"  id="tiffScaleToEightBitId"/>
                 </td>
             </tr>
         </table>
