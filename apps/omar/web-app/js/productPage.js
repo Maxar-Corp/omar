@@ -24,13 +24,13 @@ OMAR.models.TiffWriterProperties = Backbone.Model.extend({
 
     },
     validate:function(attrs){
-       if(attrs)
-       {
-           if(attrs.compression_quality)
-           {
+        if(attrs)
+        {
+            if(attrs.compression_quality)
+            {
 
-           }
-       }
+            }
+        }
     },
     toJson:function(){
         return this.attributes;
@@ -213,7 +213,7 @@ OMAR.views.ProductPageView = Backbone.View.extend({
         $(this.writerPropertiesButtonId).click($.proxy(this.writerPropertiesClicked, this));
 
         $(this.writerId).change(function(){
-           thisPtr.setCurrentWriterProperties();
+            thisPtr.setCurrentWriterProperties();
         });
         this.model.on("error",function(model,err){
             $.messager.alert("Warning", err);
@@ -276,12 +276,12 @@ OMAR.views.ProductPageView = Backbone.View.extend({
         var thisPtr = this;
         $(this.currentDlgId).show();
         $(this.currentDlgId).dialog('open')
-                .dialog('setTitle','Edit Writer Properties');
+            .dialog('setTitle','Edit Writer Properties');
 
         this.copyWriterPropertiesToDialog();
-       // setTimeout($.proxy(this.copyWriterPropertiesToDialog, this), 1000);
-       // alert($(this.currentDlgId ).find( "#tiffTypeId").val());
-      //  setTimeout(this.testFunc, 1000);
+        // setTimeout($.proxy(this.copyWriterPropertiesToDialog, this), 1000);
+        // alert($(this.currentDlgId ).find( "#tiffTypeId").val());
+        //  setTimeout(this.testFunc, 1000);
 
         //alert($($( this.currentDlgId ).find( "#tiffTypeId")).val('Tiled'));
         //alert($('#tiffTypeId').get());
@@ -305,10 +305,8 @@ OMAR.views.ProductPageView = Backbone.View.extend({
         this.model.set("writer", this.currentWriterPropertyModel.getType());
         this.model.set("scale_2_8_bit", $('form :checkbox[name="scale_2_8_bit"]').is(":checked"))
 
-       if(this.model.isValid())
-       {
-           alert("VALID");
-           /*
+        if(this.model.isValid())
+        {
             $.ajax({
                 context:this,
                 type: "post",
@@ -323,62 +321,38 @@ OMAR.views.ProductPageView = Backbone.View.extend({
                     $( "#submitButtonId").prop('disabled', false);
                 }
 
-                })
+            })
                 .done(function(){
                     $( "#submitButtonId").prop('disabled', false);
                     OMAR.jobPage.refresh()
                 });
-            */
 
-       }
-  //      $.post(this.model.urlRoot,JSON.stringify(this.model.attributes),function(){},"json").done(function(){
-  //          $( "#submitButtonId").prop('disabled', false);
-  //      });
+        }
+        //      $.post(this.model.urlRoot,JSON.stringify(this.model.attributes),function(){},"json").done(function(){
+        //          $( "#submitButtonId").prop('disabled', false);
+        //      });
 
 
- /*
-        $.get(this.model.url(), {}, function(result){
-            if(OMAR.jobPage)
-            {
-                OMAR.jobPage.refresh();
-            }
-           // alert("Job submitted with ID: " + result.jobId);
-        })
-        .done(function() {
-        })
-        .fail(function() {
-        })
-        .always(function() {
-                $( "#submitButtonId").prop('disabled', false);
-        });
+        /*
+         $.get(this.model.url(), {}, function(result){
+         if(OMAR.jobPage)
+         {
+         OMAR.jobPage.refresh();
+         }
+         // alert("Job submitted with ID: " + result.jobId);
+         })
+         .done(function() {
+         })
+         .fail(function() {
+         })
+         .always(function() {
+         $( "#submitButtonId").prop('disabled', false);
+         });
 
- */
+         */
         //alert(JSON.stringify( this.model.toJSON() ));
     },
 
-    render:function(){
-        var thisPtr = this;
-        $("#gsdId").numberbox({
-            value:this.model.get("meters"),
-           // min:this.model.get("gsdMin"),
-           // max:this.model.get("gsdMax"),
-            precision:15,
-            required:true,
-            novalidate:true,
-            name:"gsd"
-        });
-        $("#gsdId").attr("name", "meters");
-        $(this.el).find("#combinerTypeId").val(this.model.attributes.combiner_type);
-        $(this.el).find("#outputFileId").val(this.model.attributes.output_file);
-        this.combinerTypeId = "#combinerTypeId";
-        var thisPtr = this;
-       // $('form input, form select').change(function(){
-       //     thisPtr.model.set($(this).attr("name"), $(this).val());
-       // });
-
-        this.setCurrentWriterProperties();
-    }
-  /*
     render:function(){
         var thisPtr = this;
         $("#gsdId").numberbox({
@@ -393,12 +367,35 @@ OMAR.views.ProductPageView = Backbone.View.extend({
         $("#gsdId").attr("name", "meters");
         $(this.el).find("#combinerTypeId").val(this.model.attributes.combiner_type);
         $(this.el).find("#outputFileId").val(this.model.attributes.output_file);
-        $(this.el).find("#srsId").val(this.model.attributes.outputProjection);
-        $(this.el).find("#combinerTypeId").val(this.model.attributes.combinerType);
-        $(this.el).find("#gsdId").val(this.model.attributes.meters);
-        $(this.el).find("#resamplerFilterId").val(this.model.attributes.resampler_filter);
+        this.combinerTypeId = "#combinerTypeId";
+        var thisPtr = this;
+        // $('form input, form select').change(function(){
+        //     thisPtr.model.set($(this).attr("name"), $(this).val());
+        // });
+
+        this.setCurrentWriterProperties();
     }
-    */
+    /*
+     render:function(){
+     var thisPtr = this;
+     $("#gsdId").numberbox({
+     value:this.model.get("meters"),
+     // min:this.model.get("gsdMin"),
+     // max:this.model.get("gsdMax"),
+     precision:15,
+     required:true,
+     novalidate:true,
+     name:"gsd"
+     });
+     $("#gsdId").attr("name", "meters");
+     $(this.el).find("#combinerTypeId").val(this.model.attributes.combiner_type);
+     $(this.el).find("#outputFileId").val(this.model.attributes.output_file);
+     $(this.el).find("#srsId").val(this.model.attributes.outputProjection);
+     $(this.el).find("#combinerTypeId").val(this.model.attributes.combinerType);
+     $(this.el).find("#gsdId").val(this.model.attributes.meters);
+     $(this.el).find("#resamplerFilterId").val(this.model.attributes.resampler_filter);
+     }
+     */
 });
 
 OMAR.ProductPage = null;

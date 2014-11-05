@@ -196,7 +196,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     bboxView:null,
     initialize:function(params){
         this.initializing = true;
-        this.maxMosaicSize = 10;
+        this.maxMosaicSize = params.maxMosaicSize;
+        this.jobQueueEnabled = params.jobQueueEnabled;
+
         var thisPtr = this;
         this.model = new OMAR.models.FederatedRasterSearchModel(params);
 
@@ -805,7 +807,15 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             this.menuView.bind("onTimeLapseClicked", this.timeLapseClicked, this);
             this.menuView.bind("onGeoCellClicked", this.gclClicked, this);
             this.menuView.bind("onDownloadFilesClicked", this.downloadFilesClicked, this);
-            $("#CreateProductId").prop("disabled", false);
+
+            if(this.jobQueueEnabled)
+            {
+                $("#CreateProductId").prop("disabled", false);
+            }
+            else
+            {
+                $("#CreateProductId").prop("disabled", true);
+            }
         }
 
         this.updateLegend();
@@ -919,6 +929,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         // we must render everything first and fully initialize before we set a selected view
         //
         this.viewSelector.click(1);
+        this.wfsTypeNameChanged();
     },
     updateFootprintCql:function(){
         this.updateCounts();

@@ -45,7 +45,10 @@ class FederationController
     render view: 'search', model: [wmsBaseLayers : wmsBaseLayers,
                                    footprintStyle: footprintStyle,
                                    roles         : roles as JSON,
-                                   styles        : jsonStyles as JSON
+                                   styles        : jsonStyles as JSON,
+                                   maxInputs  :grailsApplication.config.job.maxInputs,
+                                   jobQueueEnabled: grailsApplication.config.rabbitmq?.enabled
+
     ]
   }
 
