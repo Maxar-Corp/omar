@@ -2,6 +2,7 @@ package org.ossim.omar
 
 import com.budjb.rabbitmq.MessageContext
 import groovy.json.*
+import grails.converters.*
 
 
 class JobStatusConsumer {
@@ -26,7 +27,7 @@ class JobStatusConsumer {
      * @return
      */
     def handleMessage(def body, MessageContext context) {
-        //println "---------------${body.class}------------------"
+      //  println "---------------${body}------------------"
         def slurper = new JsonSlurper()
         def jsonObj
         if(body instanceof byte[])
@@ -35,10 +36,15 @@ class JobStatusConsumer {
         }
         else if(body instanceof String)
         {
+        //  println "DOING INSTANCE!!!!"
           jsonObj = slurper.parseText(body)
 
             // publish the message for anyone else listening.
             // publishService.routeStatus(body.toString())
+        }
+        else if(body instanceof HashMap)
+        {
+          jsonObj = body
         }
         if(jsonObj) jobService.updateJob(jsonObj)
     }
