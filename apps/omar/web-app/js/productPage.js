@@ -77,7 +77,7 @@ OMAR.models.Product = Backbone.Model.extend({
         combiner_type: null,
         output_file: null,
         resampler_filter: null,
-        scale_2_8_bit:null,
+        scale_2_8_bit:true,
         srs: null,
         meters:null,
         gsdMin:null,
