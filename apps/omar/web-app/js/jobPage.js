@@ -55,6 +55,7 @@ OMAR.views.JobPageView = Backbone.View.extend({
         this.removeJobId = "#removeId";
         this.donwnloadJobId = "#downloadId";
         this.reloadId = "#reloadId";
+        this.cancelJobId = "#cancelJobId";
         this.urls=params.urls;
         $(this.applyFilterButtonId).click($.proxy(this.refresh, this));
         $(this.resetButtonId).click($.proxy(this.resetFilter, this));
@@ -62,6 +63,7 @@ OMAR.views.JobPageView = Backbone.View.extend({
         $(this.removeJobId).click($.proxy(this.removeJobClicked, this));
         $(this.donwnloadJobId).click($.proxy(this.downloadJobClicked, this));
         $(this.reloadId).click($.proxy(this.reload, this));
+        $(this.cancelJobId).click($.proxy(this.cancelJobClicked, this));
         if(this.singleSelect == null) this.singleSelect = false;
         $.extend(true, this.tableModel,{
             url:params.url,
@@ -96,9 +98,20 @@ OMAR.views.JobPageView = Backbone.View.extend({
         {
             $(rows).each(function(idx, row){
                 $.fileDownload(thisPtr.urls.download+"?jobId="+row.jobId)
-                    .fail(function (message) { alert(JSON.stringify(message)); });
+                    .fail(function (message) { alert(JSON.stringify(message.responseText)); });
             })
 
+        }
+    },
+    cancelJobClicked:function(){
+        var thisPtr = this;
+        var rows = $(this.jobTableId).datagrid('getSelections');
+        if(rows)
+        {
+            $(rows).each(function(idx, row){
+                $.post(thisPtr.urls.cancel+"?jobId="+row.jobId)
+                    .fail(function (message) { alert(JSON.stringify(message.responseText)); });
+            })
         }
     },
     removeSelectedRows:function()

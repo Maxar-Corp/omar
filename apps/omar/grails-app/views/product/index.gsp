@@ -106,6 +106,7 @@
             <a id="downloadId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true">Download Job</a>
             <a id="removeId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true">Remove Job</a>
             <a id="reloadId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true">Reload</a>
+            <a id="cancelJobId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true">Cancel</a>
         </div>
     </div>
 
@@ -255,7 +256,8 @@
             tableModel:tModel,
             url: "${createLink( controller: 'Job', action: 'getData' )}",
             urls:{"remove":"${createLink( controller: 'job', action: 'remove' )}",
-                "download":"${createLink( controller: 'job', action: 'download' )}"
+                "download":"${createLink( controller: 'job', action: 'download' )}",
+                "cancel":"${createLink( controller: 'job', action: 'cancel' )}"
             },
             baseUrl:"${createLink(controller: 'Job', action:'')}",
             singleSelect:false

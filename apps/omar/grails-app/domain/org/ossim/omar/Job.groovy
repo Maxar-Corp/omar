@@ -9,6 +9,7 @@ class Job {
   JobStatus status
   String    statusMessage
   String    message
+  String    jobCallback
   Double    percentComplete
   Date      submitDate
   Date      startDate
@@ -33,14 +34,26 @@ class Job {
     status          nullable:true
     statusMessage   nullable:true
     message         nullable:true
+    jobCallback     nullable:true
     percentComplete nullable:true
     submitDate      nullable:true
     startDate       nullable:true
     endDate         nullable:true
   }
   def toMap(){
-    [jobId:jobId, jobDir:jobDir, jobType:jobType, status:status.toString(), statusMessage:statusMessage, data:data, percentComplete:percentComplete, submitDate:submitDate,
-     startDate:startDate, endDate:endDate]
+    [jobId:jobId,
+     jobDir:jobDir,
+     jobType:type,
+     name:name,
+     username:username,
+     status:status.toString(),
+     statusMessage:statusMessage,
+     message:message,
+     jobCallback:jobCallback,
+     percentComplete:percentComplete,
+     submitDate:submitDate,
+     startDate:startDate,
+     endDate:endDate]
   }
 
   def getArchive(){

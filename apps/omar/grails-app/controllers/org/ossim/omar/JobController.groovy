@@ -60,7 +60,14 @@ class JobController {
     def data = jobService.remove( params )
     render contentType: 'application/json', text: data?:[:] as JSON
   }
+  def cancel()
+  {
+    def result = jobService.cancel( params )
 
+    response.status=result?.httpStatus
+
+    render contentType:"text/plain", text:result.message
+  }
   def download()
   {
     try{
