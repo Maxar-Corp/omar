@@ -42,12 +42,20 @@ class DiskCacheService {
     String result = ""
 
     DiskCache.withTransaction {
-      def row = DiskCache.withCriteria {
-        maxResults( cmd.rows )
-        order( cmd.sort, cmd.order )
-        firstResult( 0 )
-        setReadOnly(true)
-      }.get(0)
+      def row
+
+      try{
+        row = DiskCache.withCriteria {
+          maxResults( cmd.rows )
+          order( cmd.sort, cmd.order )
+          firstResult( 0 )
+          setReadOnly(true)
+        }.get(0)
+      }
+      catch(e)
+      {
+        row = null
+      }
 
       result = row?.directory
     }
