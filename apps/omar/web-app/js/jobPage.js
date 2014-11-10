@@ -3,7 +3,8 @@ OMAR.models.Job = Backbone.Model.extend({
     idAttribute:"jobId",
     defaults: {
         id:null,
-    	jobId: null,
+        jobId: null,
+        name: null,
   		jobType: null,
         status: null,
         statusMessage: null,
@@ -136,11 +137,10 @@ OMAR.views.JobPageView = Backbone.View.extend({
         var errorMessage = "";
         $(rows).each(function(idx,v){
             var testV = v.status.toUpperCase();
-            if((testV == "RUNNING")||
-                (testV == "READY"))
+            if(testV == "RUNNING")
             {
                 canRemove = false;
-                errorMessage = "We can only remove jobs already processed!"
+                errorMessage = "Please cancel any running jobs before removing!"
             }
             if(!canRemove) return;
         });
