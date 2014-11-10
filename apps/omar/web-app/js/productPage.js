@@ -105,6 +105,7 @@ OMAR.models.Product = Backbone.Model.extend({
      */
     validate: function(attrs) {
         var result = null;
+        /*
         if(!attrs) attrs = this.attributes;
         if(attrs.writer&&attrs.srs)
         {
@@ -123,7 +124,7 @@ OMAR.models.Product = Backbone.Model.extend({
         {
             result = "Output type and projection must be set";
         }
-
+        */
         return result;
     },
     url:function() {
