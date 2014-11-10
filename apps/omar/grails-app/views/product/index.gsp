@@ -39,6 +39,14 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <label>Job Name:</label>
+                                </td>
+                                <td>
+                                    <g:textField id="jobNameId" name="name" value="" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <label>Combiner Type:</label>
                                 </td>
                                 <td>
