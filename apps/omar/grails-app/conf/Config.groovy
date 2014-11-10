@@ -870,6 +870,9 @@ grails {
     }
 }
 remove this line */
+job{
+  maxInputs=10
+}
 
 rabbitmq {
   enabled=false

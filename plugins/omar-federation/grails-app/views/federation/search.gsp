@@ -139,6 +139,7 @@
         var userRoles = ${roles};
         var wmsConfig = ${wmsBaseLayers};
         var styles = ${styles};
+        var maxInputs=
         // application specific initialize that will need access to grails models
         //
         OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
@@ -154,7 +155,8 @@
             legend: {
                 styles: styles
             },
-            maxMosaicSize:5
+            maxMosaicSize:${maxInputs},
+            jobQueueEnabled:${jobQueueEnabled}
         };
         var searchPageController = new OMAR.pages.FederatedRasterSearch( jQuery, params );
         searchPageController.render();

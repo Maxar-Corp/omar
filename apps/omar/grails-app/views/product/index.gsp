@@ -39,6 +39,14 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <label>Job Name:</label>
+                                </td>
+                                <td>
+                                    <g:textField id="jobNameId" name="name" value="" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <label>Combiner Type:</label>
                                 </td>
                                 <td>
@@ -72,9 +80,13 @@
                                 <td>
                                     <g:select id="resamplerFilterId" name="resampler_filter" from="${['nearest neighbor','bilinear', 'cubic', 'lanczos', 'catrom', 'quadratic']}" />
                                 </td>
+                                <td>
+                                    <label>Scale To Eight Bit:</label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" id="scaleToEightBitId" name="scale_2_8_bit" value="true"/>
+                                </td>
                             </tr>
-
-
                             <tr>
                                 <td>
                                     <label>Output Type:</label>
@@ -102,6 +114,7 @@
             <a id="downloadId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true">Download Job</a>
             <a id="removeId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true">Remove Job</a>
             <a id="reloadId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true">Reload</a>
+            <a id="cancelJobId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true">Cancel</a>
         </div>
     </div>
 
@@ -115,6 +128,15 @@
                 </td>
                 <td>
                     <g:select name="writer_mode" id="writerModeIdId" value="none" from="${['jpeg','png', 'pnga']}" keys="${['jpeg','png', 'pnga']}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Tile Size x, y:</label>
+                </td>
+                <td>
+                    <g:select name="tile_size_x" id="gpkgTileSizeXId" value="256" from="${['256']}" />
+                    <g:select name="tile_size_y" id="gpkgTileSizeYId" value="256" from="${['256']}" />
                 </td>
             </tr>
             <tr>
@@ -133,14 +155,6 @@
                     <input type="checkbox" name="create_histogram"  id="gpkgCreateHistogramId"/>
                 </td>
             </tr>
-            <tr>
-                <td>
-                    <label>Scale To Eight Bit:</label>
-                </td>
-                <td>
-                    <input type="checkbox" name="scale_to_eight_bit"  id="gpkgScaleToEightBitId"/>
-                </td>
-            </tr>
         </table>
     </div>
     <div id="tiffPropertiesDlgId" class="easyui-dialog" closed="true" style="width:400px;height:280px;padding:10px 20px"
@@ -152,6 +166,14 @@
                 </td>
                 <td>
                     <g:select name="image_type" id="tiffTypeId" value="tiff_tiled" from="${['Tiled','Tiled Band Separate','Strip', 'Strip Band Separate']}" keys="${['tiff_tiled','tiff_tiled_band_separate','tiff_strip','tiff_strip_band_separate']}"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Tile Size:</label>
+                </td>
+                <td>
+                    <g:select name="output_tile_size" id="tiffOutputTileSizeId" value="256" from="${['32','64', '128', '256','512', '1024']}" />
                 </td>
             </tr>
             <tr>
@@ -185,14 +207,6 @@
                 </td>
                 <td>
                     <input type="checkbox" name="create_histogram"  id="tiffCreateHistogramId"/>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label>Scale To Eight Bit:</label>
-                </td>
-                <td>
-                    <input type="checkbox" name="scale_to_eight_bit"  id="tiffScaleToEightBitId"/>
                 </td>
             </tr>
         </table>
@@ -250,7 +264,8 @@
             tableModel:tModel,
             url: "${createLink( controller: 'Job', action: 'getData' )}",
             urls:{"remove":"${createLink( controller: 'job', action: 'remove' )}",
-                "download":"${createLink( controller: 'job', action: 'download' )}"
+                "download":"${createLink( controller: 'job', action: 'download' )}",
+                "cancel":"${createLink( controller: 'job', action: 'cancel' )}"
             },
             baseUrl:"${createLink(controller: 'Job', action:'')}",
             singleSelect:false

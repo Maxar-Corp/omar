@@ -7,6 +7,8 @@ import org.ossim.omar.chipper.FetchDataCommand
 import org.ossim.omar.core.HttpStatus
 import org.ossim.omar.core.Utility
 import org.apache.commons.io.FilenameUtils
+import com.budjb.rabbitmq.RabbitMessageBuilder
+import org.ossim.oms.job.AbortMessage
 
 class JobService {
   def springSecurityService
@@ -35,25 +37,76 @@ class JobService {
     //  println tableModel
     return tableModel
   }
+  def cancel(def params)
+  {
+    def result = [httpStatus:HttpStatus.OK, message:""]
+    def caseInsensitiveParams = new CaseInsensitiveMap(params)
+
+    if(caseInsensitiveParams.jobId)
+    {
+      def jobId = caseInsensitiveParams.jobId
+      def jobCallback
+      def jobStatus
+      Job.withTransaction{
+        def job     = Job.findByJobId(jobId)
+        jobCallback = job?.jobCallback
+        jobStatus   = job?.status
+      }
+
+      if(jobCallback)
+      {
+        if(jobStatus==JobStatus.RUNNING)
+        {
+          try{
+            def messageBuilder = new RabbitMessageBuilder()
+            messageBuilder.send(jobCallback, new AbortMessage(jobId:jobId).toJsonString())
+          }
+          catch(e)
+          {
+            println "CAUGHT EXCEPTION ---------------- ${e}"
+            result.httpStatus = HttpStatus.BAD_REQUEST
+            result.message=e.toString()
+          }
+        }
+        else
+        {
+          result.httpStatus = HttpStatus.BAD_REQUEST
+          result.message="Job ${jobId} not running.  Can only cancel running jobs."
+        }
+      }
+      else
+      {
+        result.httpStatus = HttpStatus.BAD_REQUEST
+        result.message="Job ${jobId} currently has no callback to allow for canceling"
+      }
+    }
+    else
+    {
+      result.httpStatus = HttpStatus.BAD_REQUEST
+      result.message="Can't cancel. No job id given."
+    }
+    result
+  }
   def remove(def params)
   {
     def result = [success:false]
     def jobArchive
+    def jobDir
+    def row
 
     try{
       Job.withTransaction {
-        def row
 
         if(params?.id != null) row = Job.findById(params?.id?.toInteger());
         else if(params?.jobId) row = Job.findByJobId(params.jobId);
         if(row)
         {
           jobArchive = row.getArchive()
-          if (!jobArchive.exists()) {
-            jobArchive = row.jobDir as File
+          jobDir = row.jobDir as File
+          if (!jobArchive?.exists()) {
+            jobArchive = jobDir
           }
-
-          row.delete()
+          row.delete(flush:true)
           result.success = true;
         }
       }
@@ -73,10 +126,18 @@ class JobService {
             jobArchive?.delete()
           }
         }
+        if(jobDir.exists())
+        {
+          if (jobDir?.isDirectory()) {
+            jobDir?.deleteDir()
+          } else {
+            jobDir?.delete()
+          }
+        }
       }
       catch(e)
       {
-        println "ERROR!!!!!!!!!!!!!!!! ${e}"
+        //println "ERROR!!!!!!!!!!!!!!!! ${e}"
         result.success = false;
         result.message = e.toString()
       }
@@ -85,7 +146,6 @@ class JobService {
   }
 
   def updateJob(def jsonObj) {
-
     try{
       if(jsonObj.jobId != null)
       {
@@ -99,26 +159,31 @@ class JobService {
             // println "WILL UPDATE ${jsonObj.jobId} WITH NEW STATUS === ${jsonObj.status}"
 
             def status = "${jsonObj.status?.toUpperCase()}"
-            record.statusMessage = jsonObj.statusMessage
 
-            record.status  = JobStatus."${status}"
-            switch(record.status)
+            if(jsonObj.statusMessage != null) record.statusMessage = jsonObj.statusMessage
+
+            if(jsonObj.status != null)
             {
-              case JobStatus.READY:
-                record.submitDate = new Date()
-                break
-              case JobStatus.CANCELED:
-              case JobStatus.FINISHED:
-              case JobStatus.FAILED:
-                record.endDate = new Date()
-                break
-              case JobStatus.RUNNING:
-                record.startDate = new Date()
-                break
+              record.status  = JobStatus."${status}"
+              switch(record.status)
+              {
+                case JobStatus.READY:
+                  record.submitDate = new Date()
+                  break
+                case JobStatus.CANCELED:
+                case JobStatus.FINISHED:
+                case JobStatus.FAILED:
+                  record.endDate = new Date()
+                  break
+                case JobStatus.RUNNING:
+                  record.startDate = new Date()
+                  break
+              }
             }
+            if(jsonObj.percentComplete != null) record.percentComplete = jsonObj.percentComplete
+            if(jsonObj.jobCallback != null) record.jobCallback = jsonObj.jobCallback
 
-            record.percentComplete = jsonObj.percentComplete
-            record.save()
+            record.save(flush:true)
           }
           else
           {
@@ -166,54 +231,54 @@ class JobService {
   }
   def download(def params, def response)
   {
-    println params
+    //println params
     def caseInsensitiveParams = new CaseInsensitiveMap(params)
     def httpStatus = HttpStatus.OK
     def errorMessage = ""
     def archive
+    def jobStatus
+    def jobFound
     def contentType = "text/plain"
     if(caseInsensitiveParams.jobId)
     {
       def job
-      Job.withTransaction{
+      Job.withTransaction {
         job = Job.findByJobId(caseInsensitiveParams.jobId)
-        if(job)
-        {
-          if(job?.status == JobStatus.FINISHED)
-          {
-            archive = job?.getArchive()
-            if(archive)
-            {
-              def ext = FilenameUtils.getExtension(archive.toString()).toLowerCase()
+        archive = job?.getArchive()
+        jobStatus = job?.status
+        jobFound = job != null
+      }
+      if(jobFound) {
+        if (jobStatus == JobStatus.FINISHED) {
+          archive = job?.getArchive()
+         // println "ARCHIVE ====== ${archive}"
+          if (archive) {
+            def ext = FilenameUtils.getExtension(archive.toString()).toLowerCase()
 
-              switch(ext)
-              {
-                case "zip":
-                  contentType = "application/octet-stream"
-                  break
-                case "tgz":
-                  contentType = "application/x-compressed"
-                  break
-              }
+           // println "EXT === ${ext}"
+            switch (ext) {
+              case "zip":
+                contentType = "application/octet-stream"
+                break
+              case "tgz":
+                contentType = "application/x-compressed"
+                break
             }
-            else
-            {
-              httpStatus = HttpStatus.NOT_FOUND
-              errorMessage = "ERROR: Archive for Job ${caseInsensitiveParams.jobId} is no longer present"
-            }
-          }
-          else
-          {
+          } else {
             httpStatus = HttpStatus.NOT_FOUND
-            errorMessage = "ERROR: Can only download finished jobs.  The current status is ${job?.status.toString()}"
+            errorMessage = "ERROR: Archive for Job ${caseInsensitiveParams.jobId} is no longer present"
           }
-        }
-        else
-        {
+        } else {
           httpStatus = HttpStatus.NOT_FOUND
-          errorMessage = "ERROR: Job ${caseInsensitiveParams.jobId} not found"
+          errorMessage = "ERROR: Can only download finished jobs.  The current status is ${job?.status.toString()}"
         }
       }
+      else
+      {
+        httpStatus = HttpStatus.NOT_FOUND
+        errorMessage = "ERROR: Job ${caseInsensitiveParams.jobId} not found"
+      }
+
 
       if(errorMessage)
       {
@@ -226,6 +291,7 @@ class JobService {
       {
         try
         {
+          response.status = httpStatus
           response.setHeader( "Content-disposition", "attachment; filename=${archive.name}" )
           Utility.writeFileToOutputStream(archive, response.outputStream)
         }

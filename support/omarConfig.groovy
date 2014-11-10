@@ -118,6 +118,10 @@ federation {
 //dataSource.logSql = true
 //dataSource.url="jdbc:postgresql_postGIS://localhost/omardb-${grails.util.Metadata.current.'app.version'}-prod"
 
+job{
+  maxInputs=10
+}
+
 rabbitmq {
   enabled=false
     //connectionfactory {

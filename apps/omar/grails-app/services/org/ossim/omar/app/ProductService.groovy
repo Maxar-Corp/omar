@@ -43,7 +43,7 @@ class ProductService {
       job.save()
     }
 
-    println result.message
+   // println result.message
     def messageBuilder = new RabbitMessageBuilder()
     messageBuilder.send("omar.job.product", result.message)
     result

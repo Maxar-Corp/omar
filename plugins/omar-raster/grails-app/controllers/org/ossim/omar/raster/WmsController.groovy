@@ -58,7 +58,7 @@ class WmsController extends OgcController implements InitializingBean
 
     if ( !cmd.validate() )
     {
-      log.error( cmd.createErrorString() )
+     // log.error( cmd.createErrorString() )
       //   println cmd.createErrorString()
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
@@ -361,7 +361,7 @@ class WmsController extends OgcController implements InitializingBean
     if ( !cmd.validate() )// ['reqeust', 'layers', 'bbox', 'srs', 'width', 'height', 'format'] ) )
     {
       cmd.errors.each { println it }
-      log.error( cmd.createErrorString() )
+     // log.error( cmd.createErrorString() )
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
     else
