@@ -19,7 +19,7 @@ modules =
 		resource url: [dir: 'css/jQuery/cupertino', file: 'jquery-ui.css', plugin: 'omar-common-ui']
 		resource url: [dir: 'css', file: 'timeLapse.css']
 
-//		resource url: [dir: 'js', file: 'OpenLayers_v2_12.js', plugin: 'openlayers']
+		resource url: [dir: 'js', file: 'OpenLayers_v2_12.js', plugin: 'openlayers']
 
 		resource url: [dir: 'js', file: 'jquery.js', plugin: 'omar-core']
 		resource url: [dir: 'js/jQuery', file: 'jquery-ui.js', plugin: 'omar-common-ui']
