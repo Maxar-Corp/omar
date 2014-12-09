@@ -2,14 +2,14 @@
 
 1.	Install Grails:
 
-	1.	Obtain Grails 1.1.1 from:  http://www.grails.org/Download.  Tar/GZ or
+	1.	Obtain Grails 2.2.4 from:  http://www.grails.org/Download.  Tar/GZ or
 		Zip depending on target platform.
 
-	2.	Extract to desired location (archive contains grails-1.1.1 relative
+	2.	Extract to desired location (archive contains grails-2.2.4 relative
 		path internally)
 
 	3.	Set GRAILS_HOME environment variable (i.e. <path to grails installation
-		directory>/grails-1.1.1)
+		directory>/grails-2.2.4)
 
 	4.	Add GRAILS_HOME/bin to PATH 
 
@@ -19,14 +19,14 @@
 2.	Install Groovy (I think this is optional, but helpful for debugging or quick
 	tests):
 
-	1.	Obtain Groovy 1.6.3 from:  http://groovy.codehaus.org/Download  Tar/GZ
+	1.	Obtain Groovy 2.1.9 from:  http://groovy.codehaus.org/Download  Tar/GZ
 		or Zip depending on target platform.
 
-	2.	Extract to desired location (archive contains groovy-1.6.3 relative
+	2.	Extract to desired location (archive contains groovy-2.1.9 relative
 		path internally)
 
 	3.	Set GROOVY_HOME environment variable (i.e. <path to grails installation
-		directory>/groovy-1.6.3)
+		directory>/groovy-2.1.9)
 	
 	4.	Add GROOVY_HOME/bin to PATH 
 
