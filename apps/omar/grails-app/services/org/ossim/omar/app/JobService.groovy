@@ -291,6 +291,13 @@ class JobService {
       {
         try
         {
+
+          if(archive.isFile())
+          {
+            response.setHeader("Accept-Ranges", "bytes");
+            def tempFile = archive as File
+            response.setContentLength((int)tempFile.length());
+          }
           response.status = httpStatus
           response.setHeader( "Content-disposition", "attachment; filename=${archive.name}" )
           Utility.writeFileToOutputStream(archive, response.outputStream)
