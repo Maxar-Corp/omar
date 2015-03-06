@@ -4,17 +4,17 @@
     <div class="niceBoxBody">
         <ol>
             <li>DD:</li>
-            <li><g:textField name="ddMapCtr" id="ddMapCtr" value="" onChange="setMapCtr('dd', this.value)" size="28"
+            <li><g:textField name="ddMapCtr" id="ddMapCtr" value="" onChange="mapViewEditor.setMapCtr('dd', this.value)" size="28"
                              title="Enter decimal degree coordinates and click off the text field to re-center the map. Example: 25.77, -80.18"/></li>
         </ol>
         <ol>
             <li>DMS:</li>
-            <li><g:textField name="dmsMapCtr" id="dmsMapCtr" value="" onChange="setMapCtr('dms', this.value)" size="28"
+            <li><g:textField name="dmsMapCtr" id="dmsMapCtr" value="" onChange="mapViewEditor.setMapCtr('dms', this.value)" size="28"
                              title="Enter degree minute seconds coordinates and click off the text field to re-center the map. Example: 25Â°46'20.66'' N, 80Â°11'23.64'' W"/></li>
         </ol>
         <ol>
             <li>MGRS:</li>
-            <li><g:textField name="point" id="point" value="" onChange="setMapCtr('mgrs', this.value)" size="28"
+            <li><g:textField name="point" id="point" value="" onChange="mapViewEditor.setMapCtr('mgrs', this.value)" size="28"
                              title="Enter MGRS coordinates and click off the text field to re-center the map. Example: 17RNJ8123050729 or 17 RNJ 81230 50729"/></li>
         </ol>
 
