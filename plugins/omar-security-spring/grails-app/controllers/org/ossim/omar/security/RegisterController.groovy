@@ -39,6 +39,7 @@ class RegisterController extends AbstractS2UiController
   }
 
   def register = { RegisterCommand command ->
+
     if ( command.hasErrors() )
     {
       render view: 'index', model: [command: command]
@@ -49,14 +50,14 @@ class RegisterController extends AbstractS2UiController
 
     //String password = (grailsApplication.config.login.registration.createLdapUser) ? command.password : springSecurityService.encodePassword(command.password, salt)
 
-    String password = springSecurityService.encodePassword(command.password, salt)
+    String password = springSecurityService.encodePassword( command.password, salt )
 
 
-    def user = lookupUserClass()?.newInstance(email: command.email, username: command.username,
-            password: password, accountLocked: true, enabled: true, userRealName: command.userRealName,
-            organization: command.organization, phoneNumber: command.phoneNumber)
+    def user = lookupUserClass()?.newInstance( email: command.email, username: command.username,
+        password: password, accountLocked: true, enabled: true, userRealName: command.userRealName,
+        organization: command.organization, phoneNumber: command.phoneNumber )
 
-    if ( !user.validate() || !saveUser(user) )
+    if ( !user.validate() || !saveUser( user ) )
     {
       // TODO
       println "Can't validate User: ${user.username}:"
@@ -67,43 +68,43 @@ class RegisterController extends AbstractS2UiController
     switch ( grailsApplication.config.login.registration.userVerification )
     {
     case "email":
-        if (SpringSecurityUtils.ifAllGranted("ROLE_ADMIN"))
+      if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
+      {
+        if ( !grailsApplication.config.login.registration.createLdapUser )
         {
-            if ( !grailsApplication.config.login.registration.createLdapUser )
+          SecUser.withTransaction {
+            user.accountLocked = false
+            user.save()
+            def UserRole = lookupUserRoleClass()
+            def Role = lookupRoleClass()
+            for ( roleName in conf.ui.register.defaultRoleNames )
             {
-                SecUser.withTransaction {
-                    user.accountLocked = false
-                    user.save()
-                    def UserRole = lookupUserRoleClass()
-                    def Role = lookupRoleClass()
-                    for ( roleName in conf.ui.register.defaultRoleNames )
-                    {
-                        UserRole.create user, Role.findByAuthority(roleName)
-                    }
-                }
+              UserRole.create user, Role.findByAuthority( roleName )
             }
-            flash.message = "User ${user.username} Added"
-            redirect controller: "secUser", action: "list"
+          }
         }
-        else
+        flash.message = "User ${user.username} Added"
+        redirect controller: "secUser", action: "list"
+      }
+      else
+      {
+        def registrationCode = new RegistrationCode( username: user.username ).save()
+        String url = generateLink( 'verifyRegistration', [t: registrationCode.token] )
+
+        def body = conf.ui.register.emailBody
+        if ( body.contains( '$' ) )
         {
-            def registrationCode = new RegistrationCode(username: user.username).save()
-            String url = generateLink('verifyRegistration', [t: registrationCode.token])
-
-            def body = conf.ui.register.emailBody
-            if ( body.contains('$') )
-            {
-                body = evaluate(body, [user: user, url: url])
-            }
-            mailService.sendMail {
-                to command.email
-                from conf.ui.register.emailFrom
-                subject conf.ui.register.emailSubject
-                html body.toString()
-            }
-
-            render view: 'index', model: [emailSent: true]
+          body = evaluate( body, [user: user, url: url] )
         }
+        mailService.sendMail {
+          to command.email
+          from conf.ui.register.emailFrom
+          subject conf.ui.register.emailSubject
+          html body.toString()
+        }
+
+        render view: 'index', model: [emailSent: true]
+      }
       break
     case "none":
       if ( !grailsApplication.config.login.registration.createLdapUser )
@@ -115,40 +116,40 @@ class RegisterController extends AbstractS2UiController
           def Role = lookupRoleClass()
           for ( roleName in conf.ui.register.defaultRoleNames )
           {
-            UserRole.create user, Role.findByAuthority(roleName)
+            UserRole.create user, Role.findByAuthority( roleName )
           }
         }
       }
-        if (SpringSecurityUtils.ifAllGranted("ROLE_ADMIN"))
-        {
-            flash.message = "User ${user.username} Added"
-            redirect controller: "secUser", action: "list"
-        }
-        else
-        {
-            flash.message = "You may now login with your credentials"
-            redirect controller: "login", action: "auth"
-        }
+      if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
+      {
+        flash.message = "User ${user.username} Added"
+        redirect controller: "secUser", action: "list"
+      }
+      else
+      {
+        flash.message = "You may now login with your credentials"
+        redirect controller: "login", action: "auth"
+      }
 
       break
     default:
-        SecUser.withTransaction {
-            def UserRole = lookupUserRoleClass()
-            def Role = lookupRoleClass()
-            for ( roleName in conf.ui.register.defaultRoleNames )
-            {
-                UserRole.create user, Role.findByAuthority(roleName)
-            }
-        }
-        if (SpringSecurityUtils.ifAllGranted("ROLE_ADMIN"))
+      SecUser.withTransaction {
+        def UserRole = lookupUserRoleClass()
+        def Role = lookupRoleClass()
+        for ( roleName in conf.ui.register.defaultRoleNames )
         {
-            redirect controller: "secUser", action: "list"
+          UserRole.create user, Role.findByAuthority( roleName )
         }
-        else
-        {
-            flash.message = "Your account must be approved by an administrator before you can login"
-            redirect controller: "login", action: "auth"
-        }
+      }
+      if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
+      {
+        redirect controller: "secUser", action: "list"
+      }
+      else
+      {
+        flash.message = "Your account must be approved by an administrator before you can login"
+        redirect controller: "login", action: "auth"
+      }
     }
   }
 
@@ -159,17 +160,17 @@ class RegisterController extends AbstractS2UiController
 
     String token = params.t
 
-    def registrationCode = token ? RegistrationCode.findByToken(token) : null
+    def registrationCode = token ? RegistrationCode.findByToken( token ) : null
     if ( !registrationCode )
     {
-      flash.error = message(code: 'spring.security.ui.register.badCode')
+      flash.error = message( code: 'spring.security.ui.register.badCode' )
       redirect uri: defaultTargetUrl
       return
     }
 
     def user
     RegistrationCode.withTransaction { status ->
-      user = lookupUserClass().findByUsername(registrationCode.username)
+      user = lookupUserClass().findByUsername( registrationCode.username )
       if ( !user )
       {
         return
@@ -180,21 +181,21 @@ class RegisterController extends AbstractS2UiController
       def Role = lookupRoleClass()
       for ( roleName in conf.ui.register.defaultRoleNames )
       {
-        UserRole.create user, Role.findByAuthority(roleName)
+        UserRole.create user, Role.findByAuthority( roleName )
       }
       registrationCode.delete()
     }
 
     if ( !user )
     {
-      flash.error = message(code: 'spring.security.ui.register.badCode')
+      flash.error = message( code: 'spring.security.ui.register.badCode' )
       redirect uri: defaultTargetUrl
       return
     }
 
     springSecurityService.reauthenticate user.username
 
-    flash.message = message(code: 'spring.security.ui.register.complete')
+    flash.message = message( code: 'spring.security.ui.register.complete' )
     redirect uri: conf.ui.register.postRegisterUrl ?: defaultTargetUrl
   }
 
@@ -209,26 +210,26 @@ class RegisterController extends AbstractS2UiController
     String username = params.username
     if ( !username )
     {
-      flash.error = message(code: 'spring.security.ui.forgotPassword.username.missing')
+      flash.error = message( code: 'spring.security.ui.forgotPassword.username.missing' )
       return
     }
 
-    def user = lookupUserClass().findByUsername(username)
+    def user = lookupUserClass().findByUsername( username )
     if ( !user )
     {
-      flash.error = message(code: 'spring.security.ui.forgotPassword.user.notFound')
+      flash.error = message( code: 'spring.security.ui.forgotPassword.user.notFound' )
       return
     }
 
-    def registrationCode = new RegistrationCode(username: user.username).save()
+    def registrationCode = new RegistrationCode( username: user.username ).save()
 
-    String url = generateLink('resetPassword', [t: registrationCode.token])
+    String url = generateLink( 'resetPassword', [t: registrationCode.token] )
 
     def conf = SpringSecurityUtils.securityConfig
     def body = conf.ui.forgotPassword.emailBody
-    if ( body.contains('$') )
+    if ( body.contains( '$' ) )
     {
-      body = evaluate(body, [user: user, url: url])
+      body = evaluate( body, [user: user, url: url] )
     }
     mailService.sendMail {
       to user.email
@@ -244,10 +245,10 @@ class RegisterController extends AbstractS2UiController
 
     String token = params.t
 
-    def registrationCode = token ? RegistrationCode.findByToken(token) : null
+    def registrationCode = token ? RegistrationCode.findByToken( token ) : null
     if ( !registrationCode )
     {
-      flash.error = message(code: 'spring.security.ui.resetPassword.badCode')
+      flash.error = message( code: 'spring.security.ui.resetPassword.badCode' )
       redirect uri: SpringSecurityUtils.securityConfig.successHandler.defaultTargetUrl
       return
     }
@@ -267,12 +268,12 @@ class RegisterController extends AbstractS2UiController
 
     String salt = saltSource instanceof NullSaltSource ? null : registrationCode.username
     RegistrationCode.withTransaction { status ->
-      def user = lookupUserClass().findByUsername(registrationCode.username)
-      def newPassword = springSecurityService.encodePassword(command.password, salt)
+      def user = lookupUserClass().findByUsername( registrationCode.username )
+      def newPassword = springSecurityService.encodePassword( command.password, salt )
 
       if ( user?.password == "Authenticated by LDAP" )
       {
-        ldapUtilService.changePassword([username: user.username, password: newPassword])
+        ldapUtilService.changePassword( [username: user.username, password: newPassword] )
       }
       else
       {
@@ -284,7 +285,7 @@ class RegisterController extends AbstractS2UiController
 
     springSecurityService.reauthenticate registrationCode.username
 
-    flash.message = message(code: 'spring.security.ui.resetPassword.success')
+    flash.message = message( code: 'spring.security.ui.resetPassword.success' )
 
     def conf = SpringSecurityUtils.securityConfig
     String postResetUrl = conf.ui.register.postResetUrl ?: conf.successHandler.defaultTargetUrl
@@ -293,27 +294,27 @@ class RegisterController extends AbstractS2UiController
 
   protected String generateLink(String action, linkParams)
   {
-    createLink(base: "$request.scheme://$request.serverName:$request.serverPort$request.contextPath",
-            controller: 'register', action: action,
-            params: linkParams)
+    createLink( base: "$request.scheme://$request.serverName:$request.serverPort$request.contextPath",
+        controller: 'register', action: action,
+        params: linkParams )
 
   }
 
   protected String evaluate(s, binding)
   {
-    new SimpleTemplateEngine().createTemplate(s).make(binding)
+    new SimpleTemplateEngine().createTemplate( s ).make( binding )
   }
 
   static final passwordValidator = { String password, command ->
-    if ( command.username && command.username.equals(password) )
+    if ( command.username && command.username.equals( password ) )
     {
       return 'command.password.error.username'
     }
 
     if ( password && password.length() >= 8 && password.length() <= 64 &&
-            (!password.matches('^.*\\p{Alpha}.*$') ||
-                    !password.matches('^.*\\p{Digit}.*$') ||
-                    !password.matches('^.*[!@#$%^&].*$')) )
+        ( !password.matches( '^.*\\p{Alpha}.*$' ) ||
+            !password.matches( '^.*\\p{Digit}.*$' ) ||
+            !password.matches( '^.*[!@#$%^&].*$' ) ) )
     {
       return 'command.password.error.strength'
     }
@@ -343,7 +344,7 @@ class RegisterController extends AbstractS2UiController
     if ( flag )
     {
       //println "Creating LDAP User"
-      return ldapUtilService.addUser(user) == 0
+      return ldapUtilService.addUser( user ) == 0
     }
     else
     {
@@ -371,9 +372,9 @@ class RegisterCommand
       if ( value )
       {
         //def User = AH.application.getDomainClass(
-        def User = grailsApplication.getDomainClass(
-                SpringSecurityUtils.securityConfig.userLookup.userDomainClassName).clazz
-        if ( User.findByUsername(value) )
+        //def User = grailsApplication.getDomainClass(
+        //    SpringSecurityUtils.securityConfig.userLookup.userDomainClassName ).clazz
+        if ( SecUser.findByUsername( value ) )
         {
           return 'registerCommand.username.unique'
         }
