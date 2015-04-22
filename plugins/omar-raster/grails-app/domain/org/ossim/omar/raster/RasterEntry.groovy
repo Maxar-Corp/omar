@@ -541,10 +541,15 @@ class RasterEntry
             break;
           case "mission":
           case "missionid":
-          case "isorce":
-            if ( value && !rasterEntry.missionId )
+          if ( value && !rasterEntry.missionId )
             {
               rasterEntry.missionId = value
+            }
+            break;	
+          case "isorce":
+            if ( value && !rasterEntry.isorce )
+            {
+              rasterEntry.isorce = value
             }
             break;
           case "imagecategory":
