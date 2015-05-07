@@ -1,7 +1,7 @@
 package org.ossim.omar.postgis;
 
 import org.hibernate.dialect.function.StandardSQLFunction;
-import org.hibernatespatial.postgis.PostgisDialect;
+import org.hibernate.spatial.dialect.postgis.PostgisDialect;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,11 +17,12 @@ public class PostGISDialect extends PostgisDialect
   {
     super.registerTypesAndFunctions();
 
+/*
     registerFunction("collect", new StandardSQLFunction("st_collect",
         geometryCustomType));
 
     registerFunction("geomfromtext", new StandardSQLFunction("st_geomfromtext",
         geometryCustomType));
-
+*/
   }
 }

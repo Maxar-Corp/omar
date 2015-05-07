@@ -161,7 +161,7 @@ class JabberFederatedServerService implements InitializingBean{
     if(federationEnabled)
     {
       FederatedServer.withTransaction{
-        FederatedServer.findAll(sort:"id", order: 'asc').each{server->
+        FederatedServer.list(sort:"id", order: 'asc').each{server->
           def vcard = VCardProvider.createVCardFromXML(server.vcard)
           result << [
                   id: server.serverId,
@@ -382,7 +382,12 @@ class JabberFederatedServerService implements InitializingBean{
 
   void afterPropertiesSet() throws Exception {
     federationEnabled = grailsApplication.config.federation.enabled
+    
+  }
+
+  void initialize()
+  {
     loadFromTable()
-    connect()
+    connect()    
   }
 }

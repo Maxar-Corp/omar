@@ -6,7 +6,7 @@ import com.vividsolutions.jts.geom.GeometryFactory
 import com.vividsolutions.jts.geom.PrecisionModel
 import com.vividsolutions.jts.io.WKTReader
 import org.hibernate.criterion.Criterion
-import org.hibernatespatial.criterion.SpatialFilter
+import org.hibernate.spatial.criterion.SpatialFilter
 import org.ossim.omar.core.DateUtil
 import org.ossim.omar.core.ISO8601DateParser
 

@@ -2,7 +2,7 @@
 <head>
     <title>Welcome to OMAR <g:meta name="app.version"/></title>
     <meta name="layout" content="homePageLayout"/>
-    <r:require modules="homePageLayout"/>
+    <asset:stylesheet src="homePage.css"/>
 </head>
 
 <body class="yui-skin-sam">
@@ -251,6 +251,6 @@
     </div>
 </sec:ifAllGranted>
 </content>
-
+<asset:javascript src="homePage.js"/>
 </body>
 </html>

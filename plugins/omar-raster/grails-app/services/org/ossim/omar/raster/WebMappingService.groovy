@@ -559,7 +559,7 @@ class WebMappingService implements ApplicationContextAware
   {
     def baseWMS = grailsApplication.config.wms.base.layers
 
-
+/*
     def wmsLayers = WmsLayers.list()
 
     for ( def wmsLayer in wmsLayers )
@@ -576,6 +576,7 @@ class WebMappingService implements ApplicationContextAware
         baseWMS << newLayer
       }
     }
+*/
 
     return baseWMS
 

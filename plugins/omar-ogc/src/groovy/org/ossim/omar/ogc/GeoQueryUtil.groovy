@@ -1,6 +1,6 @@
 package org.ossim.omar.ogc
 
-import org.hibernatespatial.SpatialRelation
+import org.hibernate.spatial.SpatialRelation
 import org.ossim.omar.core.Utility
 
 /**
@@ -58,7 +58,7 @@ class GeoQueryUtil
   {
     def result = null
 
-    if ( filter instanceof org.geotools.filter.LogicFilter )
+    if ( filter instanceof org.geotools.filter.LogicFilterImpl )
     {
       if ( filter instanceof org.geotools.filter.AndImpl )
       {
@@ -95,7 +95,7 @@ class GeoQueryUtil
         throw new Exception("Unsupported Logic filter ${filter}")
       }
     }
-    else if ( filter instanceof org.geotools.filter.GeometryFilter )
+    else if ( filter instanceof org.geotools.filter.GeometryFilterImpl )
     {
       def srs = "4326"
       if ( filter instanceof org.geotools.filter.spatial.BBOXImpl )
@@ -106,7 +106,7 @@ class GeoQueryUtil
         def geom = new com.vividsolutions.jts.io.WKTReader().read(bbox.expression2.toString())
         geom?.setSRID(Integer.parseInt(srs))
 
-        result = new org.hibernatespatial.criterion.SpatialFilter(fixField(bbox.expression1.toString()), geom)
+        result = new org.hibernate.spatial.criterion.SpatialFilter(fixField(bbox.expression1.toString()), geom)
       }
       else if ( filter instanceof org.geotools.filter.spatial.EqualsImpl )
       {
@@ -115,7 +115,7 @@ class GeoQueryUtil
                 equalsFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
         geom?.setSRID(Integer.parseInt(srs))
-        result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+        result = new org.hibernate.spatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 //geom,
                 SpatialRelation.EQUALS)
@@ -127,7 +127,7 @@ class GeoQueryUtil
                 withinFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
         geom?.setSRID(Integer.parseInt(srs))
-        result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+        result = new org.hibernate.spatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 // geom,
                 SpatialRelation.WITHIN)
@@ -139,7 +139,7 @@ class GeoQueryUtil
                 withinFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
         geom?.setSRID(Integer.parseInt(srs))
-        result = new org.hibernatespatial.criterion.DWithinExpression(paramsFix.leftValue,
+        result = new org.hibernate.spatial.criterion.DWithinExpression(paramsFix.leftValue,
                 geom,
                 withinFilter.getDistance())
       }
@@ -150,7 +150,7 @@ class GeoQueryUtil
                 tempFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
         geom?.setSRID(Integer.parseInt(srs))
-        result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+        result = new org.hibernate.spatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 SpatialRelation.CONTAINS)
       }
@@ -161,7 +161,7 @@ class GeoQueryUtil
                 tempFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
         geom?.setSRID(Integer.parseInt(srs))
-        result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+        result = new org.hibernate.spatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                // geom,
                 SpatialRelation.CROSSES)
@@ -173,7 +173,7 @@ class GeoQueryUtil
                 tempFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
         geom?.setSRID(Integer.parseInt(srs))
-        result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+        result = new org.hibernate.spatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 null,
                 geom,
                 SpatialRelation.DISJOINT)
@@ -185,7 +185,7 @@ class GeoQueryUtil
                 tempFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
         geom?.setSRID(Integer.parseInt(srs))
-        result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+        result = new org.hibernate.spatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 geom,
                 SpatialRelation.INTERSECTS)
@@ -197,7 +197,7 @@ class GeoQueryUtil
                 tempFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
         geom?.setSRID(Integer.parseInt(srs))
-        result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+        result = new org.hibernate.spatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 geom,
                 SpatialRelation.OVERLAPS)
@@ -209,7 +209,7 @@ class GeoQueryUtil
                 tempFilter.expression2.toString());
         def geom = new com.vividsolutions.jts.io.WKTReader().read(paramsFix.rightValue)
         geom?.setSRID(Integer.parseInt(srs))
-        result = new org.hibernatespatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
+        result = new org.hibernate.spatial.criterion.SpatialRelateExpression(paramsFix.leftValue,
                 geom,
                 geom,
                 SpatialRelation.TOUCHES)
@@ -219,7 +219,7 @@ class GeoQueryUtil
         throw new Exception("Unsupported Geometry filter ${filter}")
       }
     }
-    else if ( filter instanceof org.geotools.filter.CompareFilter )
+    else if ( filter instanceof org.geotools.filter.CompareFilterImpl )
     {
       if ( filter instanceof org.geotools.filter.BetweenFilterImpl )
       {

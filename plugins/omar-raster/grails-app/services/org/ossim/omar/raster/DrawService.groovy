@@ -189,7 +189,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
         image = ImageGenerator.convertRGBAToIndexed( image )
       }
 
-      def formatName = wmsRequest.format?.split( "/" )[-1]
+      def formatName = wmsRequest.format?.split( "/" )?.last() ?: 'png'
       def ostream = new ByteArrayOutputStream()
 
       ImageIO.write( image, formatName, ostream )

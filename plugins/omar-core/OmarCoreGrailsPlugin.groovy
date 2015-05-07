@@ -1,14 +1,8 @@
-import org.ossim.omar.core.MapPropertyEditor
-import org.ossim.omar.core.ISO8601DateParser
-import org.ossim.omar.core.CustomEditorRegistrar
-import org.ossim.omar.core.DbAppender
-import org.ossim.omar.core.XmlParserPool
-
 class OmarCoreGrailsPlugin {
     // the plugin version
     def version = "0.1"
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "2.2 > *"
+    def grailsVersion = "2.5 > *"
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
         "grails-app/views/error.gsp"
@@ -48,77 +42,13 @@ Brief summary/description of the plugin.
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)
-      coreUtility( org.ossim.omar.core.Utility )
-
-      customEditorRegistrar( CustomEditorRegistrar )
-      mapPropertyEditor( MapPropertyEditor )
-
-      wmsLoggingAppender( DbAppender ) {
-        tableMapping = [
-            width: ":width",
-            height: ":height",
-            layers: ":layers",
-            styles: ":styles",
-            format: ":format",
-            request: ":request",
-            bbox: ":bbox",
-            internal_time: ":internalTime",
-            render_time: ":renderTime",
-            total_time: ":totalTime",
-            start_date: ":startDate",
-            end_date: ":endDate",
-            user_name: ":userName",
-            ip: ":ip",
-            url: ":url",
-            mean_gsd: ":meanGsd",
-            geometry: "ST_GeomFromText(:geometry, 4326)"
-        ]
-        tableName = "wms_log"
-      }
-      getTileLoggingAppender( DbAppender ) {
-        tableMapping = [
-            x:":x",
-            y:":y",
-            width:":width",
-            height:":height",
-            format:":format",
-            id:":id",
-            scale:":scale",
-            internalTime:":internalTime",
-            renderTime:":renderTime",
-            totalTime:":totalTime",
-            startDate:":startDate",
-            endDate:":endDate",
-            userName:":userName",
-            ip:":ip",
-            url:":url"
-        ]
-        tableName = "get_tile_log"
-      }
-
-      parserPool( XmlParserPool, 32 )
     }
 
     def doWithDynamicMethods = { ctx ->
         // TODO Implement registering dynamic methods to classes (optional)
-      // TODO Implement registering dynamic methods to classes (optional)
-      String.metaClass.toDateTime {->
-        ISO8601DateParser.parseDateTime( delegate )
-      }
-      String.metaClass.toDate {->
-
-        def date = null
-        def dateTime = ISO8601DateParser.parseDateTime( delegate.trim() )
-        if ( dateTime )
-        {
-          date = new Date( dateTime.millis )
-        }
-
-        date
-      }
     }
 
-    def doWithApplicationContext = { applicationContext ->
+    def doWithApplicationContext = { ctx ->
         // TODO Implement post initialization spring config (optional)
     }
 
