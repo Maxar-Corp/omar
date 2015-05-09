@@ -11,7 +11,7 @@
 <head>
     <title>OMAR <g:meta name="app.version"/>: Image Space - ${( rasterEntry?.filename )}</title>
     <meta content="imageSpacePageLayout" name="layout">
-    <r:require modules="imageSpacePageLayout"/>
+    <asset:stylesheet src="imageSpacePage.css"/>
     <style type="text/css">
     #slider-brightness-bg, #slider-contrast-bg {
         background: url(${resource(plugin: 'yui', dir:'js/yui/slider/assets', file:'bg-fader.gif')}) 5px 0 no-repeat;
@@ -119,23 +119,24 @@
     <input id="northAngleFormInput" name="northAngle" type="hidden"/>
 </form>
 
-<r:script>
+<asset:javascript src="imageSpacePage.js"/>
+<g:javascript>
  
 var links = {
-    getCapabilities: "${createLink( controller: 'ogc', action: 'wms', params: [request: 'GetCapabilities', layers: rasterEntry.indexId] )}",
-     detailedMetadata: "${createLink( controller: 'rasterEntry', action: 'show', params: [id: rasterEntry?.id] )}",
-     tileLog: '${createLink( controller: "GetTileLog", action: "list" )}',
-     orthoView: "${createLink( controller: 'mapView', action: 'index' )}",
-     getTile: "${createLink( controller: 'imageSpace', action: 'getTile' )}",
-     getTileOpenLayers: "${createLink( controller: 'imageSpace', action: 'getTile' )}",
-     baseUrlAbsolute: "${createLink( absolute: 'true', action: 'imageSpace', base: grailsApplication.config.omar.serverURL )}",
-     imageToGround: "${createLink( controller: 'imageSpace', action: 'imageToGround' )}",
-     getTileAbsolute: "${createLink( absolute: 'true', base: grailsApplication.config.omar.serverURL, controller: 'imageSpace', action: 'getTile' )}",
-    openLayersImgPath: "${resource( plugin: 'openlayers', dir: 'js/img' )}/"
+    getCapabilities: "${raw(createLink( controller: 'ogc', action: 'wms', params: [request: 'GetCapabilities', layers: rasterEntry.indexId] ))}",
+     detailedMetadata: "${raw(createLink( controller: 'rasterEntry', action: 'show', params: [id: rasterEntry?.id] ))}",
+     tileLog: '${raw(createLink( controller: "GetTileLog", action: "list" ))}',
+     orthoView: "${raw(createLink( controller: 'mapView', action: 'index' ))}",
+     getTile: "${raw(createLink( controller: 'imageSpace', action: 'getTile' ))}",
+     getTileOpenLayers: "${raw(createLink( controller: 'imageSpace', action: 'getTile' ))}",
+     baseUrlAbsolute: "${raw(createLink( absolute: 'true', action: 'imageSpace', base: grailsApplication.config.omar.serverURL ))}",
+     imageToGround: "${raw(createLink( controller: 'imageSpace', action: 'imageToGround' ))}",
+     getTileAbsolute: "${raw(createLink( absolute: 'true', base: grailsApplication.config.omar.serverURL, controller: 'imageSpace', action: 'getTile' ))}",
+    openLayersImgPath: "${raw(resource( plugin: 'openlayers', dir: 'js/img' ))}/"
 };
 
 var imageIds = "${imageIds}";
-var onDemand = ("${onDemand}" == "true");
+var onDemand = ${onDemand == true};
 var upIsUpRotation = parseFloat("${upIsUpRotation}");
 var pqeDisplayUnit = "${pqeDisplayUnit ?: "DMS"}";
 
@@ -152,8 +153,9 @@ var rasterEntry = {
     title: "${rasterEntry.title}"
 };
 
-var params = <%=params as JSON%>;
+var params = <%= raw((params as JSON).toString()) %>;
 
-</r:script>
+bodyOnResize();
+</g:javascript>
 </body>
 </html>

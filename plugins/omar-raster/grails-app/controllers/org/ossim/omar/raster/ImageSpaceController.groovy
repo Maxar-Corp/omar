@@ -22,6 +22,8 @@ class ImageSpaceController
 
   def getTile()
   {
+    println params
+    
     def paramsIgnoreCase = new CaseInsensitiveMap( params )
 
     if (paramsIgnoreCase.ignoreProj == "true") 
