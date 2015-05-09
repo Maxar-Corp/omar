@@ -41,9 +41,11 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // runtime 'mysql:mysql-connector-java:5.1.27'
 
+       compile 'org.postgresql:postgresql:9.3-1103-jdbc41'
 
        compile( 'org.hibernate:hibernate-spatial:4.3' ) {
-          excludes 'hibernate-core'
+          excludes 'hibernate-core',
+		'postgresql'
        }
     }
 

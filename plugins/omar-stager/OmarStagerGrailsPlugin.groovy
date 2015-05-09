@@ -1,3 +1,7 @@
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
+import grails.spring.BeanBuilder
+
 class OmarStagerGrailsPlugin {
     // the plugin version
     def version = "0.1"
@@ -49,7 +53,19 @@ Brief summary/description of the plugin.
     }
 
     def doWithApplicationContext = { ctx ->
+        def nThreads = application.config.stager.worker.threads ?: 4
+        def maxQueueSize = application.config.stager.worker.maxQueueSize ?: 1000
         // TODO Implement post initialization spring config (optional)
+        def beans = beans {
+          workerThreadPool( org.ossim.omar.stager.StagerThreadPoolExecutor,//java.util.concurrent.ThreadPoolExecutor,
+              nThreads,
+              nThreads,
+              50,
+              TimeUnit.MILLISECONDS,
+              new java.util.concurrent.LinkedBlockingQueue( maxQueueSize ) )
+        }
+        ctx.registerBeanDefinition( "workerThreadPool",
+            beans.getBeanDefinition( "workerThreadPool" ) )
     }
 
     def onChange = { event ->

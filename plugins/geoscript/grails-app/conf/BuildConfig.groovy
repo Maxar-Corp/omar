@@ -40,12 +40,15 @@ grails.project.dependency.resolution = {
         // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
         // runtime 'mysql:mysql-connector-java:5.1.27'
         compile 'net.sf.opencsv:opencsv:2.3'
+        compile 'org.postgresql:postgresql:9.3-1103-jdbc41'
+
         compile( 'org.geoscript:geoscript-groovy:1.5.0' ) {
           excludes "slf4j-log4j12",
               'ehcache',
               "jai-core",
               "jai-codec",
               "jai_imageio",
+              "postgresql"
               "opencsv"
         }        
     }

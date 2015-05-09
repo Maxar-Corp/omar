@@ -1,3 +1,7 @@
+import org.ossim.omar.video.VideoDataSetSearchService
+import org.ossim.omar.video.VideoInfoParser
+import org.ossim.omar.video.VideoDataSetQuery
+
 class OmarVideoGrailsPlugin {
     // the plugin version
     def version = "0.1"
@@ -41,7 +45,16 @@ Brief summary/description of the plugin.
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
+        videoInfoParser( VideoInfoParser )
+
+
+        videosQueryParam( VideoDataSetQuery ) { bean ->
+          bean.singleton = false
+        }
+
+        videosSearchService( VideoDataSetSearchService ) {
+          grailsApplication = ref( "grailsApplication" )
+        }
     }
 
     def doWithDynamicMethods = { ctx ->
@@ -49,7 +62,8 @@ Brief summary/description of the plugin.
     }
 
     def doWithApplicationContext = { ctx ->
-        // TODO Implement post initialization spring config (optional)
+        ctx.registerAlias( "videosQueryParam", "videoDataQueryParam" )
+        ctx.registerAlias( "videosSearchService", "videoDataSearchService" )
     }
 
     def onChange = { event ->

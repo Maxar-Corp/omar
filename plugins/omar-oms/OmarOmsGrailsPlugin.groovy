@@ -1,3 +1,5 @@
+import org.ossim.omar.oms.InfoGetterPool
+
 class OmarOmsGrailsPlugin {
     // the plugin version
     def version = "0.1"
@@ -41,7 +43,7 @@ Brief summary/description of the plugin.
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
+        infoGetterPool( InfoGetterPool, 8 )
     }
 
     def doWithDynamicMethods = { ctx ->

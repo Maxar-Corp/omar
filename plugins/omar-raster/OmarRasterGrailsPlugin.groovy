@@ -46,7 +46,6 @@ Brief summary/description of the plugin.
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
         rasterInfoParser( RasterInfoParser )
 
     //    imageDataQueryParam(org.ossim.omar.raster.RasterEntryQuery) { bean ->
@@ -64,7 +63,6 @@ Brief summary/description of the plugin.
     }
 
     def doWithApplicationContext = { ctx ->
-        // TODO Implement post initialization spring config (optional)
         ctx.registerAlias( "imageryQueryParam", "imageDataQueryParam" )
         ctx.registerAlias( "rasterEntrySearchService", "imagerySearchService" )
         ctx.registerAlias( "rasterEntrySearchService", "imageDataSearchService" )

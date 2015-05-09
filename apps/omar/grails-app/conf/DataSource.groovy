@@ -14,6 +14,7 @@ hibernate {
     cache.region.factory_class = 'org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory' // Hibernate 4
     singleSession = true // configure OSIV singleSession mode
     flush.mode = 'manual' // OSIV session flush mode outside of transactional context
+    jdbc.batch_size = 20
 }
 
 // environment specific settings

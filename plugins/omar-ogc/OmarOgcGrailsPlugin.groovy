@@ -41,7 +41,6 @@ Brief summary/description of the plugin.
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
         csvResultFormat( org.ossim.omar.ogc.wfs.CsvResultFormat ) {
           grailsApplication = ref( 'grailsApplication' )
         }
