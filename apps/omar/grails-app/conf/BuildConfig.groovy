@@ -70,6 +70,7 @@ grails.project.dependency.resolution = {
     runtime ":hibernate4:4.3.5.5" //  <---- This version needed for SpringSecurity RequestMap to work
     runtime ":database-migration:1.4.0"
     runtime ":jquery:1.11.1"
+    compile ":piwik:0.1"
 
     // Uncomment these to enable additional asset-pipeline capabilities
     //compile ":sass-asset-pipeline:1.9.0"

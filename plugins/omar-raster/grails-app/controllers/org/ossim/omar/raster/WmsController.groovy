@@ -28,7 +28,7 @@ class WmsController extends OgcController implements InitializingBean
   def drawService
 
   def wms()
-  {
+  {    
 	def wmsParamsIgnoreCase = new CaseInsensitiveMap( params )
 	if (wmsParamsIgnoreCase.bbox && wmsParamsIgnoreCase.offsetLon && wmsParamsIgnoreCase.offsetLat)
 	{
@@ -59,7 +59,7 @@ class WmsController extends OgcController implements InitializingBean
     if ( !cmd.validate() )
     {
      // log.error( cmd.createErrorString() )
-      //   println cmd.createErrorString()
+         println cmd.createErrorString()
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
     else

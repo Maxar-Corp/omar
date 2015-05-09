@@ -336,6 +336,8 @@ class WmsCommand
         } )
     info_format( nullable: true )
     feature_count( nullable: true )
+    sharpen_width(nullable: true)
+    sharpen_sigma(nullable: true)
   }
 
   def toMap()

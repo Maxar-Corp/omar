@@ -10,7 +10,7 @@
 <head>
     <title>OMAR <g:meta name="app.version"/>: Orthorectified View - ${( rasterEntries*.id )?.join( ', ' )}</title>
     <meta content="groundSpacePageLayout" name="layout">
-    <r:require modules="groundSpacePageLayout"/>
+    <asset:stylesheet src="groundSpacePage.css"/>
     <style type="text/css">
     #slider-brightness-bg, #slider-contrast-bg {
         width: 120px;
@@ -79,7 +79,9 @@
     <input id="northAngleFormInput" name="northAngle" type="hidden"/>
 </form>
 
-<r:script>
+<asset:javascript src="groundSpacePage.js"/>
+
+<g:javascript>
 
 var azimuthAngle = parseFloat("${azimuthAngle}");
 var fullResScale = parseFloat("${fullResScale}");
@@ -90,24 +92,24 @@ var maxLon = parseFloat("${right}");
 var minLat = parseFloat("${bottom}");
 var minLon = parseFloat("${left}");
 var numberOfResLevels = parseInt("${numberOfResLevels}");
-var onDemand = ("${onDemand}" === "true");
+var onDemand = ${raw(onDemand == true)};
 var smallestScale = parseFloat("${smallestScale}");
 var upIsUpAngle  = parseFloat("${upIsUpAngle}");
 
 var defaultOverlayVisiblity = ${grailsApplication.config.views.mapView.defaultOverlayVisiblity};
-var params = <%=params as JSON%>;
+var params = <%=raw((params as JSON).toString())%>;
 
 var links = {
-    getCapabilities: "${createLink( controller: 'ogc', action: 'wms', params: [request: 'GetCapabilities', layers: ( rasterEntries*.indexId ).join( ',' )] )}",
-    getMap: "${createLink( controller: "ogc", action: "wms" )}",
-    detailedMetadata:  "${createLink( controller: 'rasterEntry', action: 'show', params: [id: ( rasterEntries*.id ).join( ',' )] )}",
-    superOverlay: "${createLink( action: "createKml", controller: "superOverlay" )}",
-    wmsLog: '${createLink( controller: "WmsLog", action: "list" )}',
-    imageSpace: "${createLink( controller: 'mapView', action: 'imageSpace' )}",
-    wcsGetCoverage: "${createLink( action: "wcs", controller: "wcs" )}",
-    shareImage: "${createLink( absolute: 'true', action: 'index', base: grailsApplication.config.omar.serverURL )}",
-    getMapAbsolute: "${createLink( absolute: true, action: "wms", base: grailsApplication.config.omar.serverURL, controller: "ogc" )}",
-    openLayersImgPath: "${resource( plugin: 'openlayers', dir: 'js/img' )}/"
+    getCapabilities: "${raw(createLink( controller: 'ogc', action: 'wms', params: [request: 'GetCapabilities', layers: ( rasterEntries*.indexId ).join( ',' )] ))}",
+    getMap: "${raw(createLink( controller: "ogc", action: "wms" ))}",
+    detailedMetadata:  "${raw(createLink( controller: 'rasterEntry', action: 'show', params: [id: ( rasterEntries*.id ).join( ',' )] ))}",
+    superOverlay: "${raw(createLink( action: "createKml", controller: "superOverlay" ))}",
+    wmsLog: '${raw(createLink( controller: "WmsLog", action: "list" ))}',
+    imageSpace: "${raw(createLink( controller: 'mapView', action: 'imageSpace' ))}",
+    wcsGetCoverage: "${raw(createLink( action: "wcs", controller: "wcs" ))}",
+    shareImage: "${raw(createLink( absolute: 'true', action: 'index', base: grailsApplication.config.omar.serverURL ))}",
+    getMapAbsolute: "${raw(createLink( absolute: true, action: "wms", base: grailsApplication.config.omar.serverURL, controller: "ogc" ))}",
+    openLayersImgPath: "${raw(resource( plugin: 'openlayers', dir: 'js/img' ))}/"
 };
 
 var rasterEntries = {
@@ -118,10 +120,10 @@ var rasterEntries = {
   titles:  "${( rasterEntries.title ).join( ',' )}"
 };
 
-var kmlOverlays = <%=kmlOverlays as JSON%>;
+var kmlOverlays = <%= raw((kmlOverlays as JSON).toString())%>;
 
 //console.log(rasterEntries);
 
-</r:script>
+</g:javascript>
 </body>
 </html>

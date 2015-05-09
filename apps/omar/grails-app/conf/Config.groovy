@@ -389,3 +389,22 @@ thumbnail {
   cacheDir = ( System.properties["os.name"].contains( "Windows" ) ) ? "c:/temp" : "${wms.referenceDataDirectory}/omar-cache"
   defaultSize = 128
 }
+
+/** ********************************* CONDITIONALS FOR VIEWS                           ***********************************************/
+// flags for different views
+//
+views {
+  home {
+    // we can conditionally turn off browsing on the home page
+    browseEnabled = true
+  }
+  mapView {
+    defaultOverlayVisiblity = false
+  }
+}
+/** *********************************************************************************************************/
+
+piwik.analytics.enabled = false
+piwik.analytics.url = "http://example.com/piwik"
+piwik.analytics.siteid = 1
+
