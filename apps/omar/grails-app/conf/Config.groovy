@@ -408,3 +408,8 @@ piwik.analytics.enabled = false
 piwik.analytics.url = "http://example.com/piwik"
 piwik.analytics.siteid = 1
 
+videoStreaming {
+  flashDirRoot = "/opt/local/apache2/htdocs/videos"
+  //flashDirRoot = "/var/www/html/videos"
+  flashUrlRoot = "http://${omar.serverIP}/videos"
+}
