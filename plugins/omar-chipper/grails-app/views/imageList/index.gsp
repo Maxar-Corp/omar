@@ -193,7 +193,7 @@ $(document).ready(function(){
             var redImage = images[0].id;
             var blueImage =  images[1].id;
 
-            window.location = '${raw(createLink( controller: "twoColorMulti" ).toString())}?redImage=' + redImage + '&blueImage=' + blueImage;
+            window.location = '${raw( createLink( controller: "twoColorMulti" ).toString() )}?redImage=' + redImage + '&blueImage=' + blueImage;
         }
         else
         {
@@ -236,7 +236,7 @@ $(document).ready(function(){
                 return;
             }
 
-            window.location = '${raw(createLink( controller: "panSharpen" ).toString())}?panImage='
+            window.location = '${raw( createLink( controller: "panSharpen" ).toString() )}?panImage='
                 + panImage.id + '&colorImage=' + colorImage.id;
         }
         else
@@ -253,7 +253,7 @@ $(document).ready(function(){
         {
             var mapImage = images[0].id;
 
-            window.location = '${raw(createLink( controller: "hillShade" ).toString())}?mapImage=' + mapImage;
+            window.location = '${raw( createLink( controller: "hillShade" ).toString() )}?mapImage=' + mapImage;
         }
         else
         {
@@ -261,7 +261,7 @@ $(document).ready(function(){
         }
     }
 
-    $( document ).ready( function ()
+    function init()
     {
         var tableModel = ${raw( ( tableModel as JSON ).toString() )};
 
@@ -407,8 +407,8 @@ $(document).ready(function(){
         {
             var size = 128;
 
-            var thumbnailURL = "${raw(g.createLink( controller: 'chipper', action: 'getThumbnail' ).toString())}?id="
-                + row.id + "&size=" + size;
+            var thumbnailURL = "${raw( g.createLink( controller: 'chipper', action: 'getThumbnail' ).toString() )}?id="
+                + row.id + "&size=" + size + '&type=jpeg';
 
             var imgTag = "<img src='" + thumbnailURL + "' width='" + size + "' height='" + size + "'/>";
 
@@ -506,7 +506,7 @@ $(document).ready(function(){
         var dg  = $('#tbl').datagrid(tableModel);
 
 
-        OpenLayers.ImgPath = "${raw( resource( plugin: 'openlayers', dir: 'js/img' ).toString())}/";
+        OpenLayers.ImgPath = "${raw( resource( plugin: 'openlayers', dir: 'js/img' ).toString() )}/";
 
         function zoomChanged(e)
         {
@@ -532,7 +532,9 @@ $(document).ready(function(){
             map.zoomToMaxExtent();
             return map
         }
-    } );
+    }
+
+    init();
 });
 </g:javascript>
 </body>
