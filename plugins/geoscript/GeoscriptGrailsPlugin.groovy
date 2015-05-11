@@ -1,3 +1,8 @@
+import com.vividsolutions.jts.geom.Geometry
+import geoscript.GeoScript
+import grails.converters.JSON
+import groovy.json.JsonSlurper
+
 class GeoscriptGrailsPlugin {
     // the plugin version
     def version = "0.1"
@@ -45,7 +50,11 @@ Brief summary/description of the plugin.
     }
 
     def doWithDynamicMethods = { ctx ->
-        // TODO Implement registering dynamic methods to classes (optional)
+       JSON.registerObjectMarshaller( Geometry ) {
+         def json = GeoScript.wrap( it ).geoJSON
+
+         new JsonSlurper().parseText( json )
+       }
     }
 
     def doWithApplicationContext = { ctx ->

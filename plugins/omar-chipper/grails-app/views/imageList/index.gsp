@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>Image List</title>
-    <piwik:trackPageview />
+    <piwik:trackPageview/>
     <style type="text/css">
     .customEditingToolbar {
         float: right;
@@ -55,8 +55,7 @@
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>
     <r:external plugin="omar-chipper" dir="js/openlayers/theme/default" file="style.css"/>
     --%>
-    <r:require modules="jeasyui,chipperBackbone,chipperOpenLayers"/>
-    <r:layoutResources/>
+    <asset:stylesheet src="imageList.css"/>
 </head>
 
 <body class="easyui-layout">
@@ -121,22 +120,22 @@
 
     </div>
 
-    <div id="dlg" class="easyui-dialog" title="Filter" closed="true" style="width:400px;height:200px;padding:10px"
-         data-options="buttons: [{
-        text:'Ok',
-        plain: true,
-        iconCls:'icon-ok',
-        handler:function(){
-        alert('ok');
-        }
-        },{
-        text:'Cancel',
-        plain: true,
-        handler:function(){
-        alert('cancel');;
-        }
-        }]">
-    </div>
+    %{--<div id="dlg" class="easyui-dialog" title="Filter" closed="true" style="width:400px;height:200px;padding:10px"--}%
+    %{--data-options="buttons: [{--}%
+    %{--text:'Ok',--}%
+    %{--plain: true,--}%
+    %{--iconCls:'icon-ok',--}%
+    %{--handler:function(){--}%
+    %{--alert('ok');--}%
+    %{--}--}%
+    %{--},{--}%
+    %{--text:'Cancel',--}%
+    %{--plain: true,--}%
+    %{--handler:function(){--}%
+    %{--alert('cancel');;--}%
+    %{--}--}%
+    %{--}]">--}%
+    %{--</div>--}%
 </div>
 
 <%--
@@ -144,7 +143,10 @@
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.easyui.min.js"/>
 <r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.light.js"/>
 --%>
-<r:script>
+<asset:javascript src="imageList.js"/>
+<g:javascript>
+
+$(document).ready(function(){
 
     function showFilter()
     {
@@ -191,7 +193,7 @@
             var redImage = images[0].id;
             var blueImage =  images[1].id;
 
-            window.location = '${createLink( controller: "twoColorMulti" )}?redImage=' + redImage + '&blueImage=' + blueImage;
+            window.location = '${raw(createLink( controller: "twoColorMulti" ).toString())}?redImage=' + redImage + '&blueImage=' + blueImage;
         }
         else
         {
@@ -234,7 +236,7 @@
                 return;
             }
 
-            window.location = '${createLink( controller: "panSharpen" )}?panImage='
+            window.location = '${raw(createLink( controller: "panSharpen" ).toString())}?panImage='
                 + panImage.id + '&colorImage=' + colorImage.id;
         }
         else
@@ -251,7 +253,7 @@
         {
             var mapImage = images[0].id;
 
-            window.location = '${createLink( controller: "hillShade" )}?mapImage=' + mapImage;
+            window.location = '${raw(createLink( controller: "hillShade" ).toString())}?mapImage=' + mapImage;
         }
         else
         {
@@ -261,7 +263,7 @@
 
     $( document ).ready( function ()
     {
-        var tableModel = ${tableModel as JSON};
+        var tableModel = ${raw( ( tableModel as JSON ).toString() )};
 
         var geomCol = _.find( tableModel.columns[0], function(it) {
             return (it.field === 'groundGeom');
@@ -272,7 +274,7 @@
             geomCol.formatter =  showBBOX;
         }
 
-        OpenLayers.ImgPath = "${resource( plugin: 'omar-chipper', dir: 'js/openlayers/img' )}/";
+        OpenLayers.ImgPath = "${raw( resource( plugin: 'omar-chipper', dir: 'js/openlayers/img' ).toString() )}/";
 
         $.extend($.fn.propertygrid.defaults.editors, {
             mapbox: {
@@ -286,7 +288,7 @@
 
                     this.map = new OpenLayers.Map('map', {theme: null});
 
-                    var baseWMS = ${baseWMS as JSON};
+                    var baseWMS = ${raw( ( baseWMS as JSON ).toString() )};
                     var layers = [
                         new OpenLayers.Layer.WMS(
                             baseWMS.name,
@@ -405,7 +407,7 @@
         {
             var size = 128;
 
-            var thumbnailURL = "${g.createLink( controller: 'chipper', action: 'getThumbnail' )}?id="
+            var thumbnailURL = "${raw(g.createLink( controller: 'chipper', action: 'getThumbnail' ).toString())}?id="
                 + row.id + "&size=" + size;
 
             var imgTag = "<img src='" + thumbnailURL + "' width='" + size + "' height='" + size + "'/>";
@@ -419,7 +421,7 @@
             return createPolygon(row).getBounds();
         }
 
-        var filterParams = ${filterParams as JSON};
+        var filterParams = ${raw( ( filterParams as JSON ).toString() )};
 
         $('#pg').propertygrid({
             data: filterParams
@@ -504,7 +506,7 @@
         var dg  = $('#tbl').datagrid(tableModel);
 
 
-        OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
+        OpenLayers.ImgPath = "${raw( resource( plugin: 'openlayers', dir: 'js/img' ).toString())}/";
 
         function zoomChanged(e)
         {
@@ -514,7 +516,7 @@
 
         function initMap()
         {
-            var baseWMS = ${baseWMS as JSON};
+            var baseWMS = ${raw( ( baseWMS as JSON ).toString() )};
             var map = new OpenLayers.Map('map', {theme: null});
             var layers = [
                 new OpenLayers.Layer.WMS(
@@ -531,7 +533,7 @@
             return map
         }
     } );
-</r:script>
-<r:layoutResources/>
+});
+</g:javascript>
 </body>
 </html>
