@@ -197,10 +197,10 @@ class WmsCommand
         }
         else
         {
-          if ( val.toLowerCase().trim() != "epsg:4326" )
-          {
-            message = "SRS parameter ${val} not supported.  We only support value of EPSG:4326."
-          }
+       //   if ( val.toLowerCase().trim() != "epsg:4326" )
+       //   {
+       //     message = "SRS parameter ${val} not supported.  We only support value of EPSG:4326."
+       //   }
         }
       }
       message
