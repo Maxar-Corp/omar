@@ -146,7 +146,6 @@
 <asset:javascript src="imageList.js"/>
 <g:javascript>
 
-$(document).ready(function(){
 
     function showFilter()
     {
@@ -261,7 +260,7 @@ $(document).ready(function(){
         }
     }
 
-    function init()
+    $(document).ready(function(){
     {
         var tableModel = ${raw( ( tableModel as JSON ).toString() )};
 
@@ -533,8 +532,6 @@ $(document).ready(function(){
             return map
         }
     }
-
-    init();
 });
 </g:javascript>
 </body>

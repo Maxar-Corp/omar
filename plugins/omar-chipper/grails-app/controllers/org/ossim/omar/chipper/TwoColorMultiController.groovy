@@ -20,18 +20,18 @@ class TwoColorMultiController
       def redImage = RasterEntry.read( params.redImage as Long )
       def blueImage = RasterEntry.read( params.blueImage as Long )
 
-      def bounds = redImage?.groundGeom?.intersection( blueImage?.groundGeom )?.bounds
-      def (minX, minY, maxX, maxY) = [bounds?.minLon, bounds?.minLat, bounds?.maxLon, bounds?.maxLat]
+      def bounds = redImage?.groundGeom?.intersection( blueImage?.groundGeom )?.envelopeInternal
+      def (minX, minY, maxX, maxY) = [bounds?.minX, bounds?.minY, bounds?.maxX, bounds?.maxY]
       def baseWMS = grailsApplication.config.wms.base.layers[-1]
 
       def model = [
-          baseWMS  : baseWMS,
-          redImage : redImage.id,
+          baseWMS: baseWMS,
+          redImage: redImage.id,
           blueImage: blueImage.id,
-          minX     : minX,
-          minY     : minY,
-          maxX     : maxX,
-          maxY     : maxY
+          minX: minX,
+          minY: minY,
+          maxX: maxX,
+          maxY: maxY
       ]
 
       render view: 'index', model: [model: model]

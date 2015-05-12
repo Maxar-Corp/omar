@@ -197,7 +197,7 @@ class WmsCommand
         }
         else
         {
-          if ( val.toLowerCase().trim() != "epsg:4326" )
+          if ( ! (val.toLowerCase().trim() in ["epsg:4326", "epsg:3857"] ) )
           {
             message = "SRS parameter ${val} not supported.  We only support value of EPSG:4326."
           }
@@ -338,6 +338,8 @@ class WmsCommand
     feature_count( nullable: true )
     sharpen_width(nullable: true)
     sharpen_sigma(nullable: true)
+    sharpen_mode(nullable: true)
+
   }
 
   def toMap()
