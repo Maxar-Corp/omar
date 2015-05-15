@@ -19,7 +19,7 @@ class HillShadeController
     {
       //def mapImage = RasterEntry.findByFilename( '/data1/sanfran/sanfran_map.tif' )
       def mapImage = RasterEntry.read( params?.mapImage as Long )
-      def bounds = ( GeoScript.wrap( mapImage?.groundGeom ) )?.bounds
+      def bounds = ( GeoScript.wrap( mapImage?.groundGeom ) )?.envelopeInternal
       def (minX, minY, maxX, maxY) = [bounds?.minX, bounds?.minY, bounds?.maxX, bounds?.maxY]
 
       def demImages = chipperService.findElevationCells(
