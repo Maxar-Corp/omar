@@ -20,8 +20,8 @@ class PanSharpenController
       def colorImage = RasterEntry.read( params.colorImage as Long )
       def panImage = RasterEntry.read( params.panImage as Long )
 
-      def bounds = colorImage?.groundGeom?.intersection( panImage?.groundGeom )?.bounds
-      def (minX, minY, maxX, maxY) = [bounds?.minLon, bounds?.minLat, bounds?.maxLon, bounds?.maxLat]
+      def bounds = colorImage?.groundGeom?.intersection( panImage?.groundGeom )?.envelopeInternal
+      def (minX, minY, maxX, maxY) = [bounds?.minX, bounds?.minY, bounds?.maxX, bounds?.maxY]
       def baseWMS = grailsApplication.config.wms.base.layers[-1]
 
       def model = [
