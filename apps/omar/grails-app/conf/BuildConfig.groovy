@@ -80,7 +80,21 @@ grails.project.dependency.resolution = {
   }
 }
 
-grails.plugin.location.omarFederation = '../../plugins/omar-federation'
-grails.plugin.location.omarChipper = '../../plugins/omar-chipper'
-grails.plugin.location.omarRSS = '../../plugins/omar-rss'
-grails.plugin.location.omarCommonUI = '../../plugins/omar-common-ui'
+
+grails.plugin.location.geoscript = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/geoscript"
+grails.plugin.location.omarChipper = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-chipper"
+grails.plugin.location.omarCommonUI = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-common-ui"
+grails.plugin.location.omarCore = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-core"
+grails.plugin.location.omarFederation = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-federation"
+//grails.plugin.location.omarImageMagick = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-image-magick"
+grails.plugin.location.omarOGC = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-ogc"
+grails.plugin.location.omarOMS = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-oms"
+grails.plugin.location.omarRaster = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-raster"
+grails.plugin.location.omarRSS = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-rss"
+grails.plugin.location.omarSecuritySpring = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-security-spring"
+grails.plugin.location.omarStager = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-stager"
+//grails.plugin.location.omarSuperOverlay = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-superoverlay"
+//grails.plugin.location.omarTimeLapse = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-timelapse"
+grails.plugin.location.omarVideo = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-video"
+grails.plugin.location.openlayers = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/openlayers"
+grails.plugin.location.postgis = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/postgis"
