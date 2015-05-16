@@ -109,9 +109,9 @@ class RasterKmlService extends KmlService
             def minLatDMS
             def maxLatDMS
             def acquisition = ( rasterEntry?.acquisitionDate ) ? sdf.format( rasterEntry?.acquisitionDate ) : null
-            def bounds = rasterEntry?.groundGeom?.bounds
-            def groundCenterLon = ( bounds?.minLon + bounds?.maxLon ) * 0.5;
-            def groundCenterLat = ( bounds?.minLat + bounds?.maxLat ) * 0.5;
+            def bounds = rasterEntry?.groundGeom?.envelopeInternal
+            def groundCenterLon = ( bounds?.minX + bounds?.maxX ) * 0.5;
+            def groundCenterLat = ( bounds?.minY + bounds?.maxY ) * 0.5;
             wmsParams?.layers = rasterEntry?.indexId
 
             def renderedHtml = "${descriptionMap.get( rasterIdx )}"
@@ -167,10 +167,10 @@ class RasterKmlService extends KmlService
                 }
                 else
                 {
-                  north( bounds?.maxLat )
-                  south( bounds?.minLat )
-                  east( bounds?.maxLon )
-                  west( bounds?.minLon )
+                  north( bounds?.maxY )
+                  south( bounds?.minY )
+                  east( bounds?.maxX )
+                  west( bounds?.minX )
                 }
               }
               if ( acquisition )

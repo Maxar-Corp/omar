@@ -112,7 +112,7 @@ class VideoKmlService extends KmlService
               name(flashbasename)
               def createFlvUrl = tagLibBean.createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}",controller: "videoStreaming", action: "show", id: videoDataSet.indexId)
               def descriptionText = ""
-              def bounds = videoDataSet.groundGeom?.bounds
+              def bounds = videoDataSet.groundGeom?.envelopeInternal
               def logoUrl = "${grailsApplication.config.omar.serverURL}/images/omarLogo.png"
               def thumbnailUrl = tagLibBean.createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "thumbnail", action: "frame", id: videoDataSet.id, params: [size: 128])
 
@@ -125,10 +125,10 @@ class VideoKmlService extends KmlService
 		    </tr>
                     <tr><th align="right">Start Time:</th><td>${videoDataSet.startDate}</td></tr>
                     <tr><th align="right">End Time:</th><td align="left">${videoDataSet.endDate}</td></tr>
-                    <tr><th align="right">Min Lat:</th><td align="left">${bounds?.minLat}</td></tr>
-                    <tr><th align="right">Min Lin:</th><td align="left">${bounds?.minLon}</td></tr>
-                    <tr><th align="right">Max Lat:</th><td align="left">${bounds?.maxLat}</td></tr>
-                    <tr><th align="right">Max Lon:</th><td align="left">${bounds?.maxLon}</td></tr>
+                    <tr><th align="right">Min Lat:</th><td align="left">${bounds?.minY}</td></tr>
+                    <tr><th align="right">Min Lin:</th><td align="left">${bounds?.minX}</td></tr>
+                    <tr><th align="right">Max Lat:</th><td align="left">${bounds?.maxY}</td></tr>
+                    <tr><th align="right">Max Lon:</th><td align="left">${bounds?.maxX}</td></tr>
                     <tr><td>
                       <embed type="application/x-shockwave-flash" src="${flashPlayerUrl}"
                         width="720" height="480" flashvars="file=${flvUrl}&autostart=true"</embed>
@@ -150,10 +150,10 @@ class VideoKmlService extends KmlService
                     </tr>
                     <tr><th align="right">Start Time:</th><td align="left">${videoDataSet.startDate}</td></tr>
                     <tr><th align="right">End Time:</th><td align="left">${videoDataSet.endDate}</td></tr>
-                    <tr><th align="right">Min Lat:</th><td align="left">${bounds?.minLat}</td></tr>
-                    <tr><th align="right">Min Lon: </th><td align="left">${bounds?.minLon}</td></tr>
-                    <tr><th align="right">Max Lat:</th><td align="left">${bounds?.maxLat}</td></tr>
-                    <tr><th align="right">Max Lon:</th><td align="left">${bounds?.maxLon}</td></tr>
+                    <tr><th align="right">Min Lat:</th><td align="left">${bounds?.minY}</td></tr>
+                    <tr><th align="right">Min Lon: </th><td align="left">${bounds?.minX}</td></tr>
+                    <tr><th align="right">Max Lat:</th><td align="left">${bounds?.maxY}</td></tr>
+                    <tr><th align="right">Max Lon:</th><td align="left">${bounds?.maxX}</td></tr>
                     <tfoot>
                       <tr><td colspan="2">
                          <a href='${grailsApplication.config.grails.omar.serverURL}'><img src='${logoUrl}'/></a>

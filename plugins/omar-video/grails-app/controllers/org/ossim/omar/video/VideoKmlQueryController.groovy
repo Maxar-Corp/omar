@@ -7,7 +7,7 @@ import org.ossim.omar.ogc.KmlQueryController
 class VideoKmlQueryController extends KmlQueryController implements InitializingBean
 {
   def videoKmlService
-  def videoDataSetSearchService
+  def videosSearchService
   def flashDirRoot
   def flashUrlRoot
 
@@ -82,7 +82,7 @@ class VideoKmlQueryController extends KmlQueryController implements Initializing
     }
     // println params
     log.info( queryParams.toMap() )
-    def videoEntries = videoDataSetSearchService.runQuery( queryParams, caseInsensitiveParams )
+    def videoEntries = videosSearchService.runQuery( queryParams, caseInsensitiveParams )
     String kmlText = videoKmlService.createVideosKml( videoEntries, caseInsensitiveParams )
 
     response.setHeader( "Content-disposition", "attachment; filename=omar_last_${caseInsensitiveParams.max}_videos.kml" );

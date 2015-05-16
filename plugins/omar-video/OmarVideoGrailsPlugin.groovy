@@ -53,8 +53,10 @@ Brief summary/description of the plugin.
         }
 
         videosSearchService( VideoDataSetSearchService ) {
-          grailsApplication = ref( "grailsApplication" )
+            grailsApplication = ref( "grailsApplication" )
         }
+
+
     }
 
     def doWithDynamicMethods = { ctx ->
@@ -63,7 +65,7 @@ Brief summary/description of the plugin.
 
     def doWithApplicationContext = { ctx ->
         ctx.registerAlias( "videosQueryParam", "videoDataQueryParam" )
-        ctx.registerAlias( "videosSearchService", "videoDataSearchService" )
+        ctx.registerAlias( "videosSearchService", "videoDataSetSearchService" )
     }
 
     def onChange = { event ->

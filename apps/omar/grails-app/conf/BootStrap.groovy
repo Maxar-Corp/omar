@@ -5,7 +5,7 @@ class BootStrap {
 	def sessionFactory
 
     def init = { servletContext ->
-        ['/data/celtic', '/data1' ].each {
+        ['/data/celtic', '/data1', '/data/uav' ].each {
            println it
     	   def repo = Repository.findOrCreateByBaseDir(it)
     	   StagerJob.triggerNow(baseDir: repo.baseDir)
