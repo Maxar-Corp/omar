@@ -413,3 +413,21 @@ videoStreaming {
   //flashDirRoot = "/var/www/html/videos"
   flashUrlRoot = "http://${omar.serverIP}/videos"
 }
+
+
+
+rss {
+  rasterEntry {
+    properties = [
+        imageId               : 'Image ID',
+        missionId             : 'Mission ID',
+        securityClassification: 'Security Class',
+        niirs                 : 'NIIRS',
+        countryCode           : 'Country Code',
+        beNumber              : 'BE Number',
+        acquisitionDate       : 'Acquisition Date',
+        width                 : 'Width',
+        height                : 'Height',
+    ]
+  }
+}
