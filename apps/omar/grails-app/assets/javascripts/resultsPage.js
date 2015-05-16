@@ -8,9 +8,10 @@
 //= require yui/resize/resize-min.js
 //= require yui/animation/animation-min.js
 //= require yui/layout/layout-min.js
+//= require prototype/prototype.js
 
-//resource url: [plugin: "omar-core", dir: "js/prototype", file: "prototype.js"]
 //resource url: [dir: 'js', file: 'application.js']
 
+//= require omar-misc.js
 //= require datechooser.js
 //= require resultsPageLayout.js

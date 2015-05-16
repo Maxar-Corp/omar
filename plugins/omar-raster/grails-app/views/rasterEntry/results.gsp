@@ -15,7 +15,7 @@
     <g:set var="entityName" value="${message( code: 'rasterEntry.label', default: 'RasterEntry' )}"/>
 </head>
 
-<body class=" yui-skin-sam">
+<body class=" yui-skin-sam" onload="init()">
 
 <content tag="top">
     <omar:logout/>

@@ -65,7 +65,7 @@ Brief summary/description of the plugin.
 
     def doWithApplicationContext = { ctx ->
         ctx.registerAlias( "videosQueryParam", "videoDataQueryParam" )
-        ctx.registerAlias( "videosSearchService", "videoDataSetSearchService" )
+        ctx.registerAlias( "videosSearchService", "videosSearchService" )
     }
 
     def onChange = { event ->

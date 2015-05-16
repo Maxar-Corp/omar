@@ -11,11 +11,11 @@
 <head>
   <title>OMAR <g:meta name="app.version"/>: Video Search Results</title>
   <meta content="resultsPageLayout" name="layout"/>
-  <r:require modules="resultsPageLayout"/>
+  <asset:stylesheet src="resultsPage.css"/>
   <g:set var="entityName" value="${message(code: 'videoDataSet.label', default: 'VideoDataSet')}"/>
 </head>
 
-<body class=" yui-skin-sam">
+<body class=" yui-skin-sam" onload="init()">
 
 <content tag="top">
     <omar:logout/>
@@ -65,7 +65,9 @@
   </div>
 </content>
 
-<r:script>
+<asset:javascript src="resultsPage.js"/>
+
+<g:javascript>
 
     var tabView;
     var oMenu;
@@ -75,6 +77,8 @@
 
     function init()
     {
+       console.log('here');
+
       tabView = new YAHOO.widget.TabView( 'demo', { activeIndex: ${videoDataSetResultCurrentTab} } );
 
       tabView.selectTab(${videoDataSetResultCurrentTab});
@@ -95,7 +99,7 @@
       Event = YAHOO.util.Event;
 
       omarSearchResults= new OmarSearchResults();
-      omarSearchResults.setProperties(${params.encodeAsJSON()});
+      omarSearchResults.setProperties(${raw( (params.encodeAsJSON()).toString())});
       omarSearchResults.setProperties(document);
 
       updatePageOffset();
@@ -106,7 +110,7 @@
       form = document.getElementById("exportForm");
       if ( format&&form )
       {
-        var exportURL = "${createLink(controller: 'videoDataSetExport', action: 'export', params: params)}";
+        var exportURL = "${raw(createLink(controller: 'videoDataSetExport', action: 'export', params: params))}";
 
         exportURL += "&format=" + format;
 
@@ -149,7 +153,7 @@
 
               omarSearchResults.setProperties(document);
 
-              var url = "${createLink(action: 'results')}?" + omarSearchResults.toUrlParams();
+              var url = "${raw(createLink(action: 'results'))}?" + omarSearchResults.toUrlParams();
               document.paginateForm.action = url;
               document.paginateForm.submit();
           }
@@ -201,13 +205,13 @@
 
   function updateCurrentTab(variable, tabIndex)
   {
-      var link = "${createLink(action: sessionAction, controller: sessionController)}";
+      var link = "${raw(createLink(action: sessionAction, controller: sessionController))}";
       new Ajax.Request(link+"?"+variable+"="+tabIndex, {method: 'post'});
   }
 
   function handleClickTab(e) {
     updateCurrentTab("videoDataSetResultCurrentTab", tabView.get('activeIndex'));
   }
-</r:script>
+</g:javascript>
 </body>
 </html>

@@ -23,7 +23,7 @@ class VideoDataSetController implements InitializingBean
   { redirect( action: 'list', params: params ) }
 
   def springSecurityService
-  def videoDataSetSearchService
+  def videosSearchService
   def webMappingService
   def grailsApplication
 
@@ -94,8 +94,8 @@ class VideoDataSetController implements InitializingBean
     }
     else
     {
-      videoDataSets = videoDataSetSearchService.runQuery( queryParams, params )
-      totalCount = videoDataSetSearchService.getCount( queryParams )
+      videoDataSets = videosSearchService?.runQuery( queryParams, params )
+      totalCount = videosSearchService?.getCount( queryParams )
 
       if ( videoDataSets )
       {
@@ -316,8 +316,8 @@ class VideoDataSetController implements InitializingBean
 
       def starttime = System.currentTimeMillis()
 
-      def videoDataSets = videoDataSetSearchService.runQuery( queryParams, params )
-      def totalCount = videoDataSetSearchService.getCount( queryParams )
+      def videoDataSets = videosSearchService.runQuery( queryParams, params )
+      def totalCount = videosSearchService.getCount( queryParams )
 
       def videoFiles = []
 
@@ -390,8 +390,8 @@ class VideoDataSetController implements InitializingBean
       def user = springSecurityService.principal.username
       def starttime = System.currentTimeMillis()
 
-      def videoDataSets = videoDataSetSearchService.runQuery( queryParams, params )
-      def totalCount = videoDataSetSearchService.getCount( queryParams )
+      def videoDataSets = videosSearchService.runQuery( queryParams, params )
+      def totalCount = videosSearchService.getCount( queryParams )
 
       def videoFiles = []
 
@@ -500,8 +500,8 @@ class VideoDataSetController implements InitializingBean
 //    }
 //    else
 //    {
-    videoDataSets = videoDataSetSearchService.runQuery( queryParams, params )
-    totalCount = videoDataSetSearchService.getCount( queryParams )
+    videoDataSets = videosSearchService.runQuery( queryParams, params )
+    totalCount = videosSearchService.getCount( queryParams )
 
     if ( videoDataSets )
     {
@@ -584,8 +584,8 @@ class VideoDataSetController implements InitializingBean
     }
     else
     {
-      videoDataSets = videoDataSetSearchService.runQuery( queryParams, params )
-      totalCount = videoDataSetSearchService.getCount( queryParams )
+      videoDataSets = videosSearchService.runQuery( queryParams, params )
+      totalCount = videosSearchService.getCount( queryParams )
 
       if ( videoDataSets )
       {
@@ -759,15 +759,15 @@ class VideoDataSetController implements InitializingBean
 
     def queryParams = initVideoDataSetQuery( params )
 
-    def videoDataSet = videoDataSetSearchService.runQuery( queryParams, params )
-    def videoDataSetTotal = videoDataSetSearchService.getCount( queryParams )
+    def videoDataSet = videosSearchService.runQuery( queryParams, params )
+    def videoDataSetTotal = videosSearchService.getCount( queryParams )
 
     def results = videoDataSet.collect {
       def thumbnailURL = g.createLink( controller: "thumbnail", action: "frame", id: it.id, params: [size: thumbnailSize] )
       def thumbnailTarget = g.createLink( controller: "videoStreaming", action: "show", params: [id: it.indexId] )
       def startDate = it.startDate.toString()
       def endDate = it.endDate.toString()
-      def bounds = it.groundGeom?.bounds
+      def bounds = it.groundGeom?.envelopeInternal
 
       def records = [
               thumbnail: [url: thumbnailURL, href: thumbnailTarget],
@@ -776,10 +776,10 @@ class VideoDataSetController implements InitializingBean
               height: it.height,
               startDate: startDate ?: "",
               endDate: endDate ?: "",
-              minLon: bounds?.minLon,
-              minLat: bounds?.minLat,
-              maxLon: bounds?.maxLon,
-              maxLat: bounds?.maxLat,
+              minLon: bounds?.minX,
+              minLat: bounds?.minY,
+              maxLon: bounds?.maxX,
+              maxLat: bounds?.maxY,
               filename: it.mainFile.name
       ]
       return records
