@@ -18,8 +18,7 @@
   <link rel="stylesheet" href="${resource( dir: 'css', file: 'mobile.css' )}" type="text/css">
   --%>
   <g:layoutHead/>
-  <r:require modules="mainG2"/>
-  <r:layoutResources/>
+  <asset:stylesheet src="mainG2.css"/>
 </head>
 
 <body class="yui-skin-sam">
@@ -52,8 +51,9 @@
 </div>
 
 <g:layoutBody/>
+<asset:javascript src="mainG2.js"/>
 
-<r:script>
+<g:javascript>
   (function ()
   {
     var Dom = YAHOO.util.Dom;
@@ -74,8 +74,7 @@
       layout.render();
     } );
   })();
-</r:script>
+</g:javascript>
 
-<r:layoutResources/>
 </body>
 </html>

@@ -44,12 +44,12 @@
               layers: rasterEntry.indexId])}">WMS GetCapabilities</a>   <br/>
         </td>
         <td>
-          <g:set var="bounds" value="${rasterEntry?.groundGeom?.bounds}"/>
+          <g:set var="bounds" value="${rasterEntry?.groundGeom?.envelopeInternal}"/>
           <g:set var="calcHeight" value="${( Math.rint( rasterEntry.height / rasterEntry.width * 1024 ) as int )}"/>
           <a href="${createLink( controller: "ogc", action: "wms", params: [
               request: "GetMap",
               layers: rasterEntry.indexId,
-              bbox: [bounds?.minLon, bounds?.minLat, bounds?.maxLon, bounds?.maxLat].join( "," ),
+              bbox: [bounds?.minX, bounds?.minY, bounds?.maxX, bounds?.maxY].join( "," ),
               srs: "epsg:4326", width: 1024, height: "${calcHeight}",
               format: "image/jpeg"])}">WMS GetMap</a>
         </td>

@@ -113,11 +113,11 @@
                   <td>${rasterEntry.numberOfResLevels?.encodeAsHTML()}</td>
                   <td>${rasterEntry.bitDepth?.encodeAsHTML()}</td>
                   <td>${rasterEntry.metersPerPixel.encodeAsHTML()}</td>
-                  <g:set var="bounds" value="${rasterEntry?.groundGeom?.bounds}"/>
-                  <td>${bounds?.minLon?.encodeAsHTML()}</td>
-                  <td>${bounds?.minLat?.encodeAsHTML()}</td>
-                  <td>${bounds?.maxLon?.encodeAsHTML()}</td>
-                  <td>${bounds?.maxLat?.encodeAsHTML()}</td>
+                  <g:set var="bounds" value="${rasterEntry?.groundGeom?.envelopeInternal}"/>
+                  <td>${bounds?.minX?.encodeAsHTML()}</td>
+                  <td>${bounds?.minY?.encodeAsHTML()}</td>
+                  <td>${bounds?.maxX?.encodeAsHTML()}</td>
+                  <td>${bounds?.maxY?.encodeAsHTML()}</td>
                 </tr>
               </g:each>
               </tbody>
@@ -205,7 +205,7 @@
                     <img src="${createLink(controller: "thumbnail", action: "show", params: [id: rasterEntry.indexId, size: 128, projectionType: "imagespace"])}" alt="Show Thumbnail"/></a></td>
                     <td><g:link controller="rasterEntry" action="show" id="${rasterEntry.id}">${rasterEntry.id?.encodeAsHTML()}</g:link></td>
                     <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetCapabilities", layers: rasterEntry.indexId])}">WMS GetCapabilities</a></td>
-                    <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetMap", layers: rasterEntry.indexId, bbox: [rasterEntry?.groundGeom?.bounds?.minLon, rasterEntry?.groundGeom?.bounds?.minLat, rasterEntry?.groundGeom?.bounds?.maxLon, rasterEntry?.groundGeom?.bounds?.maxLat].join(","), srs: "epsg:4326", width: 1024, height: 512, format: "image/jpeg"])}">WMS GetMap</a></td>
+                    <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetMap", layers: rasterEntry.indexId, bbox: [rasterEntry?.groundGeom?.envelopeInternal?.minX, rasterEntry?.groundGeom?.envelopeInternal?.minY, rasterEntry?.groundGeom?.envelopeInternal?.maxX, rasterEntry?.groundGeom?.envelopeInternal?.maxY].join(","), srs: "epsg:4326", width: 1024, height: 512, format: "image/jpeg"])}">WMS GetMap</a></td>
                     <td><a href="${createLink(controller: "ogc", action: "wms", params: [request: "GetKML", layers: rasterEntry.indexId, format: "image/png", transparent: "true"])}">Generate KML</a></td>
                   </tr>
                 </g:each>

@@ -9,10 +9,10 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>OMAR <g:meta name="app.version"/>: Raster Search Results</title>
-  <meta content="resultsPageLayout" name="layout"/>
-  <r:require modules="resultsPageLayout"/>
-  <g:set var="entityName" value="${message(code: 'rasterEntry.label', default: 'RasterEntry')}"/>
+    <title>OMAR <g:meta name="app.version"/>: Raster Search Results</title>
+    <meta content="resultsPageLayout" name="layout"/>
+    <asset:stylesheet src="resultsPage.css"/>
+    <g:set var="entityName" value="${message( code: 'rasterEntry.label', default: 'RasterEntry' )}"/>
 </head>
 
 <body class=" yui-skin-sam">
@@ -20,8 +20,9 @@
 <content tag="top">
     <omar:logout/>
     <g:render template="resultsMenu"/>
-  <h1><g:message code="default.list.label" args="[entityName]"/></h1>
-  <g:render template="resultsPaginator" model="${[totalCount: totalCount, queryParams: queryParams, params: params]}"/>
+    <h1><g:message code="default.list.label" args="[entityName]"/></h1>
+    <g:render template="resultsPaginator"
+              model="${[totalCount: totalCount, queryParams: queryParams, params: params]}"/>
 </content>
 
 
@@ -35,44 +36,46 @@
 
 <content tag="center">
 
-  <g:if test="${flash.message}">
-    <div class="message">${flash.message}</div>
-  </g:if>
+    <g:if test="${flash.message}">
+        <div class="message">${flash.message}</div>
+    </g:if>
 
-  <div id="demo" class="yui-navset">
-    <ul class="yui-nav">
-      <li><a href="#tab1"><em>Image</em></a></li>
-      <li><a href="#tab2"><em>Metadata</em></a></li>
-      <li><a href="#tab3"><em>File</em></a></li>
-      <li><a href="#tab4"><em>Links</em></a></li>
-    </ul>
+    <div id="demo" class="yui-navset">
+        <ul class="yui-nav">
+            <li><a href="#tab1"><em>Image</em></a></li>
+            <li><a href="#tab2"><em>Metadata</em></a></li>
+            <li><a href="#tab3"><em>File</em></a></li>
+            <li><a href="#tab4"><em>Links</em></a></li>
+        </ul>
 
-    <div class="yui-content">
-      <div id="tab1">
-        <g:render template="imageTab" model="${[rasterEntries: rasterEntries, queryParams: queryParams]}"/>
-      </div>
+        <div class="yui-content">
+            <div id="tab1">
+                <g:render template="imageTab" model="${[rasterEntries: rasterEntries, queryParams: queryParams]}"/>
+            </div>
 
-      <div id="tab2">
-        <g:render template="metadataTab" model="${[rasterEntries: rasterEntries, tagNameList: tagNameList,
-            tagHeaderList: tagHeaderList, queryParams: queryParams]}"/>
-      </div>
+            <div id="tab2">
+                <g:render template="metadataTab" model="${[rasterEntries: rasterEntries, tagNameList: tagNameList,
+                        tagHeaderList: tagHeaderList, queryParams: queryParams]}"/>
+            </div>
 
-      <div id="tab3">
-        <g:render template="fileTab" model="${[rasterEntries: rasterEntries, queryParams: queryParams]}"/>
-      </div>
+            <div id="tab3">
+                <g:render template="fileTab" model="${[rasterEntries: rasterEntries, queryParams: queryParams]}"/>
+            </div>
 
-      <div id="tab4">
-        <g:render template="linksTab" model="${[rasterEntries: rasterEntries]}"/>
-      </div>
+            <div id="tab4">
+                <g:render template="linksTab" model="${[rasterEntries: rasterEntries]}"/>
+            </div>
 
+        </div>
     </div>
-  </div>
 </content>
 
 <content tag="bottom">
 </content>
 
-<r:script>
+<asset:javascript src="resultsPage.js"/>
+
+<g:javascript>
 
     var tabView;
     var oMenu;
@@ -102,7 +105,7 @@
       Event = YAHOO.util.Event;
 
       omarSearchResults= new OmarSearchResults();
-      omarSearchResults.setProperties(${params.encodeAsJSON()});
+      omarSearchResults.setProperties(${raw( ( params.encodeAsJSON() ).toString() )});
       omarSearchResults.setProperties(document);
 
       updatePageOffset();
@@ -115,7 +118,7 @@
       form = document.getElementById("exportForm");
       if ( format&&form )
       {
-        var exportURL = "${createLink(controller: 'rasterEntryExport', action: 'export', params: params)}";
+        var exportURL = "${createLink( controller: 'rasterEntryExport', action: 'export', params: params )}";
 
         exportURL += "&format=" + format;
 
@@ -158,7 +161,7 @@
 
               omarSearchResults.setProperties(document);
 
-              var url = "${createLink(action: 'results')}?" + omarSearchResults.toUrlParams();
+              var url = "${createLink( action: 'results' )}?" + omarSearchResults.toUrlParams();
               document.paginateForm.action = url;
               document.paginateForm.submit();
           }
@@ -210,7 +213,7 @@
 
   function updateCurrentTab(variable, tabIndex)
   {
-      var link = "${createLink(action: sessionAction, controller: sessionController)}";
+      var link = "${createLink( action: sessionAction, controller: sessionController )}";
       new Ajax.Request(link+"?"+variable+"="+tabIndex, {method: 'post'});
   }
 
@@ -220,10 +223,10 @@
 
 function updateLinks()
 {
-	if ("${params.searchMethod ?: false}" == "BBOX" && ${params.aoiMinLon ?: false} && ${params.aoiMinLat ?: false} 
-		&& ${params.aoiMaxLon ?: false} && ${params.aoiMaxLat ?: false})
+	if ("${params.searchMethod ?: false}" == "BBOX" && ${params.aoiMinLon ?: false} && ${params.aoiMinLat ?: false}
+    && ${params.aoiMaxLon ?: false} && ${params.aoiMaxLat ?: false})
 	{
-		for (var i = 0; i < ${rasterEntries.id}.length; i++)
+		for (var i = 0; i < ${rasterEntries?.size()}; i++)
 		{
 			var centerLongitude = (${params.aoiMinLon ?: 0} + ${params.aoiMaxLon ?: 0}) / 2;
 			var centerLatitude = (${params.aoiMinLat ?: 0} + ${params.aoiMinLat ?: 0}) / 2;
@@ -236,7 +239,7 @@ function updateLinks()
 	}
 	else if ("${params.searchMethod ?: false}" == "RADIUS" && ${params.centerLon ?: false} && ${params.centerLat ?: false} && ${params.aoiRadius ?: false})
 	{
-		for (var i = 0; i < ${rasterEntries.id}.length; i++)
+		for (var i = 0; i < ${rasterEntries?.size()}; i++)
 		{
 			var centerLongitude = ${params.centerLon ?: 0};
 			var centerLatitude = ${params.centerLat ?: 0};
@@ -247,6 +250,6 @@ function updateLinks()
 		}
 	}
 }
-</r:script>
+</g:javascript>
 </body>
 </html>
