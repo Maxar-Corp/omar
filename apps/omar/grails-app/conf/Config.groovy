@@ -13,6 +13,21 @@ import java.awt.Color
 // if (System.properties["${appName}.config.location"]) {
 //    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
 // }
+grails.config.locations = [
+// "classpath:${appName}-config.properties",
+// "classpath:${appName}-config.groovy",
+// "file:${userHome}/.grails/${appName}-config.properties",
+// "file:${userHome}/.grails/${appName}-config.groovy"
+]
+
+if ( new File( "${userHome}/.grails/${appName}-config.groovy" ).exists() )
+{
+  grails.config.locations << "file:${userHome}/.grails/${appName}-config.groovy"
+}
+if ( System.env.OMAR_CONFIG )
+{
+  grails.config.locations << "file:${System.env.OMAR_CONFIG}"
+}
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 
