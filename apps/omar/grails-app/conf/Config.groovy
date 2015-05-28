@@ -122,6 +122,8 @@ log4j.main = {
 grails.gorm.default.mapping = {
   cache true
   id generator: 'identity'
+  "user-type" type: org.jadira.usertype.dateandtime.joda.PersistentDateTime, class: org.joda.time.DateTime
+  "user-type" type: org.jadira.usertype.dateandtime.joda.PersistentLocalDate, class: org.joda.time.LocalDate
 }
 
 security {
