@@ -33,7 +33,7 @@ class KmlResultFormat implements ResultFormat
   {
     def wmsParams = [:]
     def caseInsensitiveParams = new CaseInsensitiveMap( wfsRequest.properties )
-    def pushPin = grailsLinkGenerator.resource( absolute: true, base: "${grailsApplication.config.omar.serverURL}", plugin: "omar-common-ui", dir: "images/google", file: "red-pushpin.png" )
+    def pushPin = grailsLinkGenerator.resource( absolute: true, plugin: "omar-common-ui", dir: "images/google", file: "red-pushpin.png" )
 
     SimpleDateFormat isdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" )
     SimpleDateFormat osdf = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" )
@@ -128,7 +128,7 @@ class KmlResultFormat implements ResultFormat
         kmlwriter << "<visibility>1</visibility>"
         wmsParams.layers = feature['index_id']
         def wmsURL = grailsLinkGenerator.link(
-            absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+            absolute: true,
             controller: "ogc", action: "wms", params: wmsParams
         )
         kmlwriter << "<Icon><href><![CDATA[${wmsURL}]]></href>" <<
@@ -156,10 +156,7 @@ class KmlResultFormat implements ResultFormat
       else
       {
         def flashbasename = "${FilenameUtils.getBaseName( feature['filename'] )}.flv"
-        def createFlvUrl = grailsLinkGenerator.link( absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "videoStreaming", action: "show", id: feature['index_id'] )
-        //  def descriptionText = ""
-        //  def logoUrl = "${grailsApplication.config.omar.serverURL}/images/omarLogo.png"
-        //  def thumbnailUrl = tagLibBean.link(absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "thumbnail", action: "frame", id: feature['id'], params: [size: 128])
+        def createFlvUrl = grailsLinkGenerator.link( absolute: true, controller: "videoStreaming", action: "show", id: feature['index_id'] )
         kmlwriter << "<name>OMAR Videos</name>"
         def styleBuilder = new StreamingMarkupBuilder().bind {
           Style( "id": "sh_red" ) {
@@ -292,9 +289,6 @@ class KmlResultFormat implements ResultFormat
     def thumbnail
     def url
 
-    def omarServerUrl = grailsApplication.config.omar.serverURL
-    // def flvUrl
-    // def flashPlayerUrl = tagLibBean.linkTo(dir: "js", file: "player.swf", base: "${grailsApplication.config.omar.serverURL}", absolute: true)
     def mpegFile = feature["filename"] as File
     def flvFile = "${flashDirRoot}/${mpegFile.name}.flv" as File
 
@@ -305,10 +299,10 @@ class KmlResultFormat implements ResultFormat
       labels = grailsApplication.config.export.rasterEntry.labels
       formatters = grailsApplication.config.export.rasterEntry.formatters
 
-      url = grailsLinkGenerator.link( absolute: true, base: omarServerUrl,
+      url = grailsLinkGenerator.link( absolute: true,
           controller: "mapView", params: [layers: feature["index_id"]] )
 
-      thumbnail = grailsLinkGenerator.link( absolute: true, base: omarServerUrl,
+      thumbnail = grailsLinkGenerator.link( absolute: true,
           controller: "thumbnail", action: "show", id: feature["id"],
           params: [size: 128, projectionType: 'imagespace'] )
     }
@@ -317,12 +311,11 @@ class KmlResultFormat implements ResultFormat
       fields = grailsApplication.config.export.videoDataSet.fields
       labels = grailsApplication.config.export.videoDataSet.labels
       formatters = grailsApplication.config.export.videoDataSet.formatters
-      url = grailsLinkGenerator.link( absolute: true, base: omarServerUrl,
+      url = grailsLinkGenerator.link( absolute: true,
           controller: "videoStreaming",
           action: "show",
           id: feature['index_id'] )
       thumbnail = grailsLinkGenerator.link( absolute: true,
-          base: omarServerUrl,
           controller: "thumbnail",
           action: "frame",
           id: feature['id'],
@@ -366,13 +359,13 @@ class KmlResultFormat implements ResultFormat
       }
     }
 
-    def searchUrl = grailsLinkGenerator.link( absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "federation", action: "search" )
+    def searchUrl = grailsLinkGenerator.link( absolute: true, controller: "federation", action: "search" )
     description << "<tr>"
     description << "<th align='right'>Search:</th>"
     description << "<td><a href='${searchUrl}'>Find More Data</a></td></tr>"
 
-    def logoUrl = "${grailsApplication.config.omar.serverURL}/images/omarLogo.png"
-    description << "<tfoot><tr><td colspan='2'><a href='${grailsApplication.config.omar.serverURL}'><img src='${logoUrl}'/></a></td></tr></tfoot>"
+    def logoUrl = "${grailsLinkGenerator.serverBaseURL}/images/omarLogo.png"
+    description << "<tfoot><tr><td colspan='2'><a href='${grailsLinkGenerator.serverBaseURL}'><img src='${logoUrl}'/></a></td></tr></tfoot>"
     description << "</table>"
 
     description.buffer

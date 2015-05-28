@@ -26,6 +26,7 @@ class WmsController extends OgcController implements InitializingBean
   def exportService
   def grailsApplication
   def drawService
+  def graislLinkGenerator
 
   def wms()
   {    
@@ -217,7 +218,7 @@ class WmsController extends OgcController implements InitializingBean
     else
     {
       //wmsLogParams.request = "getcapabilities"
-      def serviceAddress = createLink( controller: "ogc", action: "wms", base: "${ grailsApplication.config.omar.serverURL }", absolute: true ) as String
+      def serviceAddress = grailsLinkGenerator.link( controller: "ogc", action: "wms", absolute: true ) as String
       def capabilities = webMappingService?.getCapabilities( cmd, serviceAddress )
       //internaltime = System.currentTimeMillis();
       render( contentType: "text/xml", text: capabilities )
@@ -273,9 +274,6 @@ class WmsController extends OgcController implements InitializingBean
       {
         rasterEntries = rasterEntrySearchService.getWmsImageLayers( cmd.filter )
       }
-
-      //  def serviceAddress = createLink(controller: "ogc", action: "wms", base: "${grailsApplication.config.omar.serverURL}", absolute: true)
-      //  def kml = webMappingService.getKML(wmsRequest, serviceAddress)
 
       def filename = "image.kml"
 
@@ -459,7 +457,7 @@ class WmsController extends OgcController implements InitializingBean
         wmsLogParams.ip = request.getRemoteAddr()
       }
 
-      def urlTemp = createLink( [controller: 'ogc', action: 'wms', base: "${ grailsApplication.config.omar.serverURL }", absolute: true, params: params] )
+      def urlTemp = graislLinkGenerator.link( [controller: 'ogc', action: 'wms', absolute: true, params: params] )
       wmsLogParams.with {
         endDate = new Date()
         internalTime = ( internaltime - starttime ) / 1000.0

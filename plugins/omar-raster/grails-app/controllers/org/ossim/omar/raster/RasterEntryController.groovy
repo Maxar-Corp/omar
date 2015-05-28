@@ -9,6 +9,7 @@ import org.ossim.omar.ogc.WMSRequest
 class RasterEntryController implements InitializingBean
 {
   def grailsApplication
+  def grailsLinkGenerator
 /*
   def authenticateService
 */
@@ -730,7 +731,7 @@ class RasterEntryController implements InitializingBean
       }
     }
 
-    def serviceAddress = createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "rasterKmlQuery", action: "getImagesKml", params: params )
+    def serviceAddress = grailsLinkGenerator.link( absolute: true,  controller: "rasterKmlQuery", action: "getImagesKml", params: params )
 
 /*
     def kmlnode = {

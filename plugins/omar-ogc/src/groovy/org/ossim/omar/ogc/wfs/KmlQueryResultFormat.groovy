@@ -96,7 +96,7 @@ class KmlQueryResultFormat implements ResultFormat
     //     caseInsensitiveParams."${k}" = v.encodeAsURL()
     // }
     caseInsensitiveParams.remove( "bbox" );
-    def kmlQueryUrl = grailsLinkGenerator.link( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+    def kmlQueryUrl = grailsLinkGenerator.link( absolute: true,
         controller: "wfs", action: "index", params: caseInsensitiveParams )
     def kmlwriter = new StringWriter()
     kmlwriter << """<?xml version='1.0'?><kml xmlns='http://earth.google.com/kml/2.1'>"""

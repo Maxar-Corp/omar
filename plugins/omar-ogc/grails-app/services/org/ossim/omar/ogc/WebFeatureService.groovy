@@ -39,6 +39,8 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
   def getCapabilities(def wfsRequest)
   {
+    initConfig()
+
     def x = {
       mkp.xmlDeclaration()
 
@@ -63,7 +65,10 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
           Title( service.title )
           Abstract( service.abstract )
           Keywords( service.keywords )
-          OnlineResource( service.onlineResource )
+//          OnlineResource( service.onlineResource )
+//          OnlineResource( grailsLinkGenerator.resource( dir: 'wfs', absolute: true ) )
+          OnlineResource( "${grailsLinkGenerator.serverBaseURL}/wfs" )
+
           Fees( service.fees )
           AccessConstraints( service.accessContraints )
         }
@@ -92,7 +97,10 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
                 ['Get', 'Post'].each { method ->
                   DCPType {
                     HTTP {
-                      "${method}"( onlineResource: requestType.onlineResource[method] )
+//                      "${method}"( onlineResource: requestType.onlineResource[method] )
+//                      "${method}"( onlineResource: grailsLinkGenerator.resource( dir: 'wfs', absolute: true ) )
+                      "${method}"( onlineResource: "${grailsLinkGenerator.serverBaseURL}/wfs" )
+
                     }
                   }
                 }
@@ -157,6 +165,8 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
   def describeFeatureType(def wfsRequest)
   {
+    initConfig()
+
     def (workspaceName, layerName) = wfsRequest?.typeName?.split( ':' )
     def workspace = getWorkspace( workspaceName )
     def layer = workspace[layerName]
@@ -176,11 +186,11 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
                 {
                   def descr = layer.schema.featureType.getDescriptor( field.name )
                   xsd.element(
-                      maxOccurs: "${ descr.maxOccurs }",
-                      minOccurs: "${ descr.minOccurs }",
-                      name: "${ field.name }",
-                      nillable: "${ descr.nillable }",
-                      type: "${ typeMappings.get( field.typ, field.typ ) }" )
+                      maxOccurs: "${descr.maxOccurs}",
+                      minOccurs: "${descr.minOccurs}",
+                      name: "${field.name}",
+                      nillable: "${descr.nillable}",
+                      type: "${typeMappings.get( field.typ, field.typ )}" )
                 }
               }
             }
@@ -199,6 +209,8 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
   def getFeature(def wfsRequest)
   {
+    initConfig()
+
     def results, contentType
     def name = ( wfsRequest['outputFormat']?.toUpperCase() ?: "GML2" )?.toUpperCase()
     def resultFormat = resultFormats[name]?.first()
@@ -252,8 +264,13 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
   void afterPropertiesSet() throws Exception
   {
-    serverAddress = grailsApplication.config.omar.serverURL
     resultFormats = applicationContext.getBeansOfType( ResultFormat ).values().groupBy { it.name }
+
+  }
+
+  private void initConfig()
+  {
+    serverAddress = grailsLinkGenerator.serverBaseURL
 
     wfsConfig = [
         service: [

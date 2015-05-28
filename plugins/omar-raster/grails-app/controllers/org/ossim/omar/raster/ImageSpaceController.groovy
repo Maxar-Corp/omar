@@ -18,7 +18,7 @@ class ImageSpaceController
   def springSecurityService
   def index = {}
   def rasterEntrySearchService
-
+  def grailsLinkGenerator
 
   def getTile()
   {
@@ -283,7 +283,7 @@ class ImageSpaceController
       log.error( e.message )
     }
     endtime = System.currentTimeMillis()
-    getTileLogParams.url = createLink( [controller: 'ImageSpace', action: 'getTile', base: "${ grailsApplication.config.omar.serverURL }", absolute: true, params: params] )
+    getTileLogParams.url = grailsLinkGenerator.link( [controller: 'ImageSpace', action: 'getTile', absolute: true, params: params] )
 
     getTileLogParams.internalTime = ( internaltime - starttime ) / 1000.0;
     getTileLogParams.renderTime = ( endtime - starttime ) / 1000.0;

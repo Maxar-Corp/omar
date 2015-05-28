@@ -8,7 +8,7 @@ class RssFeedController
 
   def coordinateConversionService
   def grailsApplication
-
+  def grailsLinkGenerator
 
 
   def georss( )
@@ -46,13 +46,13 @@ class RssFeedController
       rss( version: "2.0" ) {
         channel {
           title( "OMAR GeoRSS Feed" )
-          link( createLink( plugin: 'omar-rss', controller: 'rssFeed', action: 'georss', base: "${grailsApplication.config.omar.serverURL}", absolute: true ) )
+          link( grailsLinkGenerator.link( plugin: 'omar-rss', controller: 'rssFeed', action: 'georss', absolute: true ) )
           description( "Track the newest images added to OMAR" )
           for ( entry in entries )
           {
             item() {
               title( "${entry.acquisitionDate} ${entry.countryCode} ${entry.targetId} ${entry.imageId}" )
-              link( createLink( controller: "mapView", base: "${grailsApplication.config.omar.serverURL}", params: [layers: entry.indexId], absolute: true ) )
+              link( grailsLinkGenerator.link(  controller: "mapView", params: [layers: entry.indexId], absolute: true ) )
               // Using point because polygon is not supported by ESRI ArcGIS Explorer or OpenLayers
               // The code below will support polygons when everyone else does
               // The polygons array is for adding Multi-polygons in the future.

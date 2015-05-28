@@ -15,7 +15,7 @@ import org.ossim.omar.ogc.WmsCommand
 
 class SuperOverlayService implements InitializingBean
 {
-
+  def grailsLinkGenerator
   def metersPerDegree
   def grailsApplication
   def rasterKmlService
@@ -116,8 +116,8 @@ class SuperOverlayService implements InitializingBean
               href {
                 mkp.yieldUnescaped(
                         """<![CDATA[${
-                          appTagLib.createLink(
-                                  absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+                          grailsLinkGenerator.link(
+                                  absolute: true,
                                   action: params.action, params: newParams )
                         }]]>""" )
               }
@@ -212,8 +212,8 @@ class SuperOverlayService implements InitializingBean
             Icon() {
               href {
                 mkp.yieldUnescaped( """<![CDATA[${
-                  appTagLib.createLink(
-                          absolute: true, base: grailsApplication.config.omar.serverURL, controller: 'ogc',
+                  grailsLinkGenerator.link(
+                          absolute: true, controller: 'ogc',
                           action: 'wms', params: wmsMap )
                 }]]>""" )
               }
@@ -247,7 +247,7 @@ class SuperOverlayService implements InitializingBean
               Link {
                 href {
                   mkp.yieldUnescaped( """<![CDATA[${
-                    appTagLib.createLink( absolute: true, base: grailsApplication.config.omar.serverURL,
+                    grailsLinkGenerator.link( absolute: true,
                             action: params.action, params: newParams )
                   }]]>""" )
                 }
@@ -373,7 +373,7 @@ class SuperOverlayService implements InitializingBean
               Link {
                 href {
                   mkp.yieldUnescaped( """<![CDATA[${
-                    appTagLib.createLink( absolute: true, base: grailsApplication.config.omar.serverURL,
+                    grailsLinkGenerator.link( absolute: true,
                             action: params.action, params: newParams )
                   }]]>""" )
                 }

@@ -11,6 +11,8 @@ class VideoKmlService extends KmlService
   def flashDirRoot
   def flashUrlRoot
   def grailsApplication
+  def grailsLinkGenerator
+
   String createVideosKml(List<VideoDataSet> videoEntries, Map params)
   {
     Boolean embed = params.embed
@@ -105,16 +107,16 @@ class VideoKmlService extends KmlService
             File mpegFile = videoDataSet.mainFile.name as File
             File flvFile = "${flashDirRoot}/${mpegFile.name}.flv" as File
             URL flvUrl = new URL("${flashUrlRoot}/${flvFile.name}")
-            def flashPlayerUrl = tagLibBean.createLinkTo(dir: "js", file: "player.swf", base: "${grailsApplication.config.omar.serverURL}", absolute: true)
+            def flashPlayerUrl = grailsLinkGenerator.link(dir: "js/mediaplayer-5.8", file: "player.swf", absolute: true)
             Placemark() {
               styleUrl("#red")
               def flashbasename = "${FilenameUtils.getBaseName(videoDataSet.mainFile?.name)}.flv"
               name(flashbasename)
-              def createFlvUrl = tagLibBean.createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}",controller: "videoStreaming", action: "show", id: videoDataSet.indexId)
+              def createFlvUrl = grailsLinkGenerator.link(absolute: true, controller: "videoStreaming", action: "show", id: videoDataSet.indexId)
               def descriptionText = ""
               def bounds = videoDataSet.groundGeom?.envelopeInternal
-              def logoUrl = "${grailsApplication.config.omar.serverURL}/images/omarLogo.png"
-              def thumbnailUrl = tagLibBean.createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "thumbnail", action: "frame", id: videoDataSet.id, params: [size: 128])
+              def logoUrl = "${grailsLinkGenerator.serverBaseURL}/images/omarLogo.png"
+              def thumbnailUrl = grailsLinkGenerator.link(absolute: true, controller: "thumbnail", action: "frame", id: videoDataSet.id, params: [size: 128])
 
               if ( embed )
               {
@@ -135,7 +137,7 @@ class VideoKmlService extends KmlService
                     </td></tr>
                     <tfoot>
                       <tr><td colspan="2">
-                         <a href='${grailsApplication.config.omar.serverURL}'><img src='${logoUrl}'/></a>
+                         <a href='${grailsLinkGenerator.serverBaseURL}'><img src='${logoUrl}'/></a>
                       </td></tr>
                     </tfoot>
                   </table>
@@ -156,7 +158,7 @@ class VideoKmlService extends KmlService
                     <tr><th align="right">Max Lon:</th><td align="left">${bounds?.maxX}</td></tr>
                     <tfoot>
                       <tr><td colspan="2">
-                         <a href='${grailsApplication.config.grails.omar.serverURL}'><img src='${logoUrl}'/></a>
+                         <a href='${grailsLinkGenerator.serverBaseURL}'><img src='${logoUrl}'/></a>
                       </td></tr>
                     </tfoot>
                   </table>
@@ -202,7 +204,7 @@ class VideoKmlService extends KmlService
 
   String createTopVideosKml(Map params)
   {
-    def kmlQueryUrl = tagLibBean.createLink(absolute: true, base: "${grailsApplication.config.omar.serverURL}", controller: "videoKmlQuery", action: "getVideosKml", params: params)
+    def kmlQueryUrl = grailsLinkGenerator.link(absolute: true, controller: "videoKmlQuery", action: "getVideosKml", params: params)
     def kmlbuilder = new StreamingMarkupBuilder()
 
     kmlbuilder.encoding = "UTF-8"
