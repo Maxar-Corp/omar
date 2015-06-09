@@ -37,6 +37,7 @@ class MapViewController implements InitializingBean
 
       if ( !rasterEntries )
       {
+        response.status = 404;
         render "Alert: No raster matched with layer param: " + params.layers
         return
       }
