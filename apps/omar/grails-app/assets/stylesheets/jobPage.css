@@ -1,0 +1,14 @@
+/*
+*= require jMenu.jquery.css
+*= require jQuery/layout-default-latest.css
+*= require jQuery/smoothness/jquery-ui-1.9.2.custom.css
+*= require jQuery/jquery-ui-timepicker-addon.css
+*= require jquery-easyui/themes/icon.css
+*= require jquery-easyui/themes/default/easyui.css
+*= require_self
+*/
+
+body{
+    visibility:hidden;
+}
+

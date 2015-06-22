@@ -3,12 +3,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<r:require modules = "job"/>
+<asset:stylesheet src="jobPage.css"/>
 <title>OMAR <g:meta name="app.version"/>: Job Page</title>
-<r:layoutResources/>
 <style type="text/css">
-.banner{
-    overflow:hidden;
+.banner {
+    overflow: hidden;
 }
 </style>
 </head>
@@ -34,7 +33,6 @@
             <table id="propertyGridId" class="easyui-propertygrid" title="Query Parameters"
                    showGroup="true" showHeader="false" scrollbarSize="0">
 
-
                 <tr>
                     <td/>
                     <td>
@@ -42,17 +40,23 @@
                     </td>
                     <td>
                         <div id="jobStatusGroupId" class="jobStatusGroupClass">
-                            <g:checkBox  id="readyCheckboxId"  name="status" checked="false" value="READY">READY</g:checkBox>
+                            <g:checkBox id="readyCheckboxId" name="status" checked="false"
+                                        value="READY">READY</g:checkBox>
                             <label>READY</label><br/>
-                            <g:checkBox  id="runningCheckboxId" name="status" checked="false" value="RUNNING">RUNNING</g:checkBox>
+                            <g:checkBox id="runningCheckboxId" name="status" checked="false"
+                                        value="RUNNING">RUNNING</g:checkBox>
                             <label>RUNNING</label><br/>
-                            <g:checkBox  id="finishedCheckboxId"  name="status" checked="false" value="FINISHED">FINISHED</g:checkBox>
+                            <g:checkBox id="finishedCheckboxId" name="status" checked="false"
+                                        value="FINISHED">FINISHED</g:checkBox>
                             <label>FINISHED</label><br/>
-                            <g:checkBox  id="canceledCheckboxId" name="status" checked="false" value="CANCELED">CANCELED</g:checkBox>
+                            <g:checkBox id="canceledCheckboxId" name="status" checked="false"
+                                        value="CANCELED">CANCELED</g:checkBox>
                             <label>CANCELED</label><br/>
-                            <g:checkBox  id="pausedCheckboxId" name="status" checked="false" value="PAUSED">PAUSED</g:checkBox>
+                            <g:checkBox id="pausedCheckboxId" name="status" checked="false"
+                                        value="PAUSED">PAUSED</g:checkBox>
                             <label>PAUSED</label><br/>
-                            <g:checkBox  id="failedCheckboxId" name="status" checked="false" value="FAILED">FAILED</g:checkBox>
+                            <g:checkBox id="failedCheckboxId" name="status" checked="false"
+                                        value="FAILED">FAILED</g:checkBox>
                             <label>FAILED</label><br/>
                         </div>
                     </td>
@@ -64,20 +68,23 @@
                         <td>
                             <g:textField id="usernameId" name="username"/>      <br/>
                             <label>Comparator:</label>
-                            <g:select id="usernameOpTypeId" name="opType" from="${['equals', 'contains', 'Starts With', 'Ends With']}"></g:select>
+                            <g:select id="usernameOpTypeId" name="opType"
+                                      from="${['equals', 'contains', 'Starts With', 'Ends With']}"></g:select>
                         </td>
                     </tr>
                 </sec:ifAllGranted>
 
             </table>
+
             <div align='center'>
                 <button id="applyFilterButtonId">Apply Filter</button>
                 <button id="resetButtonId">Reset</button>
             </div>
 
         </div>
+
         <div data-options="region:'center'" style="background:#eee;">
-            <table id="jobTableId" class="easyui-datagrid"  class="easyui-datagrid"
+            <table id="jobTableId" class="easyui-datagrid" class="easyui-datagrid"
                    rownumbers="true" toolbar="#toolbarId" pagination="true" fit="true" fitColumns="true"
                    striped="true" url="${createLink( action: 'getData' )}"></table>
 
@@ -87,41 +94,43 @@
 				autoRowHeight:false,pageSize:50" ></table>
     -->
         </div>
+
         <div id="toolbarId">
-            <a id="downloadId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save" plain="true">Download Job</a>
-            <a id="removeId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true">Remove Job</a>
-            <a id="reloadId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload" plain="true">Reload</a>
-            <a id="cancelJobId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" plain="true">Cancel</a>
+            <a id="downloadId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-save"
+               plain="true">Download Job</a>
+            <a id="removeId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove"
+               plain="true">Remove Job</a>
+            <a id="reloadId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-reload"
+               plain="true">Reload</a>
+            <a id="cancelJobId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
+               plain="true">Cancel</a>
         </div>
     </div>
 </div>
 
 </body>
 
+<asset:javascript src="jobPage.js"/>
 
-
-</div>
-<r:layoutResources/>
-
-<script type="text/javascript">
+<g:javascript>
     function init(){
-        // alert("${createLink(controller:"Job", action: "ids")}");
-        var tModel = ${tableModel as grails.converters.JSON};
+        // alert("${raw( createLink( controller: "Job", action: "ids" ) )}");
+        var tModel = ${raw( ( tableModel as grails.converters.JSON ).toString() )};
         var params = {model:new OMAR.models.Job(),
             tableModel:tModel,
-            url: "${createLink( action: 'getData' )}",
-            urls:{"remove":"${createLink( controller:'job', action: 'remove' )}"
-                ,"download":"${createLink( controller:'job', action: 'download' )}"
-                ,"update":"${createLink( controller:'job', action: 'update' )}"
-                ,"cancel":"${createLink( controller:'job', action: 'cancel' )}"
+            url: "${raw( createLink( action: 'getData' ) )}",
+            urls:{"remove":"${raw( createLink( controller: 'job', action: 'remove' ) )}"
+                ,"download":"${raw( createLink( controller: 'job', action: 'download' ) )}"
+                ,"update":"${raw( createLink( controller: 'job', action: 'update' ) )}"
+                ,"cancel":"${raw( createLink( controller: 'job', action: 'cancel' ) )}"
             },
-            baseUrl:"${createLink( )}"
+            baseUrl:"${raw(createLink())}"
         };
         var jobPage = OMAR.pages.JobPage(jQuery, params);
         jobPage.render();
         $("body").css("visibility","visible");
     }
-</script>
+</g:javascript>
 
 </body>
 </html>
