@@ -457,7 +457,7 @@ class WmsController extends OgcController implements InitializingBean
         wmsLogParams.ip = request.getRemoteAddr()
       }
 
-      def urlTemp = graislLinkGenerator.link( [controller: 'ogc', action: 'wms', absolute: true, params: params] )
+      def urlTemp = grailslLinkGenerator.link( [controller: 'ogc', action: 'wms', absolute: true, params: params] )
       wmsLogParams.with {
         endDate = new Date()
         internalTime = ( internaltime - starttime ) / 1000.0
