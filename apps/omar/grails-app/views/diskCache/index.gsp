@@ -3,12 +3,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<r:require modules = "diskCache"/>
+<asset:stylesheet src="diskCachePage.css"/>
 <title>OMAR <g:meta name="app.version"/>: Disk Cache Locations</title>
-<r:layoutResources/>
 <style type="text/css">
-.banner{
-    overflow:hidden;
+.banner {
+    overflow: hidden;
 }
 </style>
 </head>
@@ -30,7 +29,7 @@
             </div>
         </div>
 
-<!--        <div data-options="region:'center'" style="background:#eee;">
+        <!--        <div data-options="region:'center'" style="background:#eee;">
             <table id="diskCacheTableId" class="easyui-datagrid"  class="easyui-datagrid"
                    rownumbers="true" pagination="true" fit="true" fitColumns="true"
                    striped="true" url="${createLink( action: 'getData' )}"></table>
@@ -38,21 +37,26 @@
         </div>
         -->
         <div data-options="region:'center'" style="background:#eee;">
-            <table id="diskCacheTableId" class="easyui-datagrid"  class="easyui-datagrid"
+            <table id="diskCacheTableId" class="easyui-datagrid" class="easyui-datagrid"
                    rownumbers="true" toolbar="#toolbarId" pagination="true" url="${createLink( action: 'list' )}"
                    fit="true" fitColumns="true"
-                   striped="true" >
+                   striped="true">
             </table>
 
         </div>
+
         <div id="toolbarId">
-            <a id="newLocationId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" plain="true">New Location</a>
-            <a id="editLocationId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" plain="true">Edit Location</a>
-            <a id="removeLocationId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove" plain="true">Remove Location</a>
+            <a id="newLocationId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add"
+               plain="true">New Location</a>
+            <a id="editLocationId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit"
+               plain="true">Edit Location</a>
+            <a id="removeLocationId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove"
+               plain="true">Remove Location</a>
         </div>
 
     </div>
 </div>
+
 <div id="diskCacheDlgId" class="easyui-dialog" closed="true" style="width:400px;height:280px;padding:10px 20px"
      closed="true" buttons="#diskCacheDlgButtonsId">
     <form id="diskCacheFormId" method="post" novalidate>
@@ -78,7 +82,7 @@
                     <label>Directory Type:</label>
                 </td>
                 <td>
-                    <select id="directoryTypeId" name="directoryType" class="easyui-combobox" >
+                    <select id="directoryTypeId" name="directoryType" class="easyui-combobox">
                         <option value="SUB_DIRECTORY">Sub Directory</option>
                         <option value="DEDICATED">Dedicated</option>
                     </select>
@@ -114,35 +118,35 @@
 </div>
 
 <div id="diskCacheDlgButtonsId">
-    <a id="saveButtonId" href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok" style="width:90px">Save</a>
-    <a id="cancelButtonId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" style="width:90px">Cancel</a>
--->
+    <a id="saveButtonId" href="javascript:void(0)" class="easyui-linkbutton c6" iconCls="icon-ok"
+       style="width:90px">Save</a>
+    <a id="cancelButtonId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
+       style="width:90px">Cancel</a>
+    -->
 </div>
 
-</body>
+<asset:javascript src="diskCachePage.js"/>
 
-
-
-</div>
-<r:layoutResources/>
-
-<script type="text/javascript">
-    function init(){
-        $(document.body).show();
-        var tModel = ${tableModel as grails.converters.JSON};
-        var params = {model:new OMAR.models.DiskCache(),
-            tableModel:tModel,
+<g:javascript>
+    function init()
+    {
+        $( document.body ).show();
+        var tModel = ${raw( ( tableModel as grails.converters.JSON ).toString() )};
+        var params = {
+            model: new OMAR.models.DiskCache(),
+            tableModel: tModel,
             url: "${createLink( action: 'list' )}",
-            crudUrls:{"remove":"${createLink( action: 'remove' )}",
-                "update":"${createLink( action: 'update' )}",
-                "create":"${createLink( action: 'create' )}"
+            crudUrls: {
+                "remove": "${raw( createLink( action: 'remove' ) )}",
+                "update": "${raw( createLink( action: 'update' ) )}",
+                "create": "${raw( createLink( action: 'create' ) )}"
             }
         };
-        var diskCachePage = OMAR.pages.DiskCachePage(jQuery, params);
+        var diskCachePage = OMAR.pages.DiskCachePage( jQuery, params );
         diskCachePage.render();
-        $("body").css("visibility","visible");
+        $( "body" ).css( "visibility", "visible" );
     }
-</script>
+</g:javascript>
 
 </body>
 </html>

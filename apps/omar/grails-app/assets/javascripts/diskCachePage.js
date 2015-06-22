@@ -1,3 +1,19 @@
+//= require prototype/prototype.js
+//= require OMAR.js
+//= require jquery-1.8.2.js
+//= require jQuery/jquery-ui.js
+//= require jQuery/jquery.layout-latest.js
+//= require json2.js
+//= require underscore/underscore-1.4.2.js
+//= require backbone-min.js
+
+//= require spin-min.js
+//= require jquery-easyui/jquery.easyui.min.js
+//= require jquery-easyui/extension/datagrid-filter.js
+//= require jquery-easyui/extension/datagrid-scrollview.js
+
+//= require_self
+
 OMAR.models.DiskCache = Backbone.Model.extend({
     urlRoot: "/omar/diskCache",
     defaults: {
