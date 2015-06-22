@@ -275,6 +275,8 @@ class RasterEntrySearchService implements InitializingBean
         }
        	inList( "indexId", rasterIdList )
         inList( "title", rasterIdList )
+        inList( "imageId", rasterIdList )
+
       }
     })
 
