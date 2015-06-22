@@ -415,7 +415,7 @@
         }
 
 
-        function showBBOX( val, row )
+        var showBBOX = function ( val, row )
         {
             return createPolygon(row).getBounds();
         }
