@@ -1,6 +1,7 @@
 package org.ossim.omar.stager
 
 import org.quartz.SimpleTrigger
+import org.quartz.TriggerKey
 import org.quartz.impl.matchers.GroupMatcher
 
 class RunScriptService
@@ -25,8 +26,10 @@ class RunScriptService
       def trigger = jobExecutionContext.trigger;
       def strTriggerName = trigger.name;
       def strFireInstanceId = trigger.fireInstanceId;
-      int state = quartzScheduler.getTriggerState( strTriggerName,
-          trigger.group );
+
+
+      def  state = quartzScheduler.getTriggerState( new TriggerKey( strTriggerName, trigger.group ) );
+
       data << strTriggerName
       data << strJobName
       data << trigger.group

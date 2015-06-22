@@ -448,3 +448,83 @@ rss {
     ]
   }
 }
+
+/**
+ * This is the settings for the stager threads and jobs in the OMAR system
+ */
+stager {
+  /**
+   * Currently used by raster entry for the tag dump can get very large
+   * and can increase the size of the database.  If you want to keep
+   * the database much smaller then you can turn off including other tags
+   */
+  includeOtherTags = false
+  /**
+   * Worker threads are currently for building on demand overviews and histograms
+   * This will specify how many simultaneous threads that can be active
+   *
+   */
+  worker {
+    threads = 3
+    maxQueueSize = 1000
+  }
+
+  /**
+   * When files are being indexed into the system this specifies how
+   * many threads can be used to pop off the table queue in the database
+   *
+   * Currently this is used for indexing new data into the system
+   */
+  queue {
+    threads = 4
+  }
+
+  /**
+   * This is passed to external scripts that support threading.  You can specify
+   * the default value and the max thread count that is used in the UI for
+   * user input to the executing thread
+   */
+  scripts {
+    defaultThreadCount = 4
+    maxThreadCount = 8
+    runScript = "omarRunScript.sh"
+    /**
+     * This will force the scripts page on reload to always use the formatters
+     * listed.
+     */
+    forceUseFormatterOnReload = false
+    formatter = [
+        /**
+         * This formats the arguments to the indexFilesArgs on the scripts page
+         */
+        indexFilesArgs : {
+          def date = new org.joda.time.DateTime()
+          "/data"
+//                  "/data/${date.toString('YYYY-MM-dd')}"
+        },
+        /**
+         * This formats the arguments to the stageFilesArgs on the scripts page
+         */
+        stageFilesArgs : {
+          def date = new org.joda.time.DateTime()
+          "/data"
+//                  "/data/${date.toString('YYYY-MM-dd')}"
+        },
+        /**
+         * This formats the arguments to the removeFilesArgs on the scripts page
+         */
+        removeFilesArgs: {
+          def date = new org.joda.time.DateTime()
+          date = date.plusDays( -30 );
+          "/data"
+//                  "/data/${date.toString('YYYY-MM-dd')}"
+        }
+    ]
+  }
+  histogramOptions = ""
+  overview {
+    compressionType = "JPEG"
+    compressionQuality = 75
+  }
+  onDemand = true
+}
