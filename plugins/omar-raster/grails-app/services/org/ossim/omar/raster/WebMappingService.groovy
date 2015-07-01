@@ -55,7 +55,10 @@ class WebMappingService implements ApplicationContextAware
     def params = wmsRequest.toMap();
     wmsQuery.caseInsensitiveBind( wmsRequest.toMap() )
     def max = params.max ? params.max as Integer : 10
-    if ( max > 10 ) max = 10
+    if ( max > 10 )
+    {
+      max = 10
+    }
     wmsQuery.max = max
     if ( wmsQuery.layers?.toLowerCase() == "raster_entry" )
     {
@@ -84,7 +87,7 @@ class WebMappingService implements ApplicationContextAware
     def srs = wmsRequest?.srs
     if ( !wmsView.setProjection( srs ) )
     {
-      result.errorMessage = "Unsupported projection ${ srs }"
+      result.errorMessage = "Unsupported projection ${srs}"
       log.error( result )
       return result
     }
@@ -144,7 +147,10 @@ class WebMappingService implements ApplicationContextAware
         if ( chainMap && chainMap.chain && ( chainMap.chain.getChain() != null ) )
         {
           def outputBands = chainMap.chain?.getChainAsImageSource()?.getNumberOfOutputBands()
-          if ( outputBands > maxBands ) maxBands = outputBands
+          if ( outputBands > maxBands )
+          {
+            maxBands = outputBands
+          }
           srcChains.add( chainMap )
         }
         chainMap = null
@@ -157,7 +163,7 @@ class WebMappingService implements ApplicationContextAware
         if ( srcChains.size() > 1 )
         {
           // now establish mosaic and cut to match the output dimensions
-          kwlString += "object${ objectPrefixIdx }.type:ossimImageMosaic\n"
+          kwlString += "object${objectPrefixIdx}.type:ossimImageMosaic\n"
           ++objectPrefixIdx
         }
         def imageRect = wmsView.getViewImageRect()
@@ -180,47 +186,46 @@ class WebMappingService implements ApplicationContextAware
 //        ++connectionId
 //        ++objectPrefixIdx
 
-
         // and make it either 1 band or 3 band output
         //
         if ( maxBands <= 2 )
         {
-          kwlString += "object${ objectPrefixIdx }.type:ossimBandSelector\n"
-          kwlString += "object${ objectPrefixIdx }.bands:(0)\n"
-          kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+          kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+          kwlString += "object${objectPrefixIdx}.bands:(0)\n"
+          kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
           ++connectionId
           ++objectPrefixIdx
         }
         else if ( maxBands > 3 )
         {
-          kwlString += "object${ objectPrefixIdx }.type:ossimBandSelector\n"
-          kwlString += "object${ objectPrefixIdx }.bands:(0,1,2)\n"
-          kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+          kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
+          kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
+          kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
           ++connectionId
           ++objectPrefixIdx
         }
-        kwlString += "object${ objectPrefixIdx }.type:ossimRectangleCutFilter\n"
-        kwlString += "object${ objectPrefixIdx }.rect:(${ x },${ y },${ w },${ h },lh)\n"
-        kwlString += "object${ objectPrefixIdx }.cut_type:null_outside\n"
-        kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+        kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
+        kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
+        kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
+        kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
         ++objectPrefixIdx
         if ( ( stretchModeRegion == "viewport" ) &&
             ( stretchMode != "none" ) )
         {
-          kwlString += "object${ objectPrefixIdx }.type:ossimImageHistogramSource\n"
-          kwlString += "object${ objectPrefixIdx }.id:${ connectionId + 1 }\n"
+          kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
+          kwlString += "object${objectPrefixIdx}.id:${connectionId + 1}\n"
           ++objectPrefixIdx
-          kwlString += "object${ objectPrefixIdx }.type:ossimHistogramRemapper\n"
-          kwlString += "object${ objectPrefixIdx }.id:${ connectionId + 2 }\n"
-          kwlString += "object${ objectPrefixIdx }.stretch_mode:${ stretchMode }\n"
-          kwlString += "object${ objectPrefixIdx }.input_connection1:${ connectionId }\n"
-          kwlString += "object${ objectPrefixIdx }.input_connection2:${ connectionId + 1 }\n"
+          kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
+          kwlString += "object${objectPrefixIdx}.id:${connectionId + 2}\n"
+          kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
+          kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId}\n"
+          kwlString += "object${objectPrefixIdx}.input_connection2:${connectionId + 1}\n"
           ++objectPrefixIdx
           connectionId += 2
         }
         // for now scale all WMS requests to 8-bit
-        kwlString += "object${ objectPrefixIdx }.type:ossimScalarRemapper\n"
-        kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
+        kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
         ++connectionId
         ++objectPrefixIdx
       }
@@ -230,7 +235,7 @@ class WebMappingService implements ApplicationContextAware
         if ( params.width && params.height )
         {
           kwlString += "image.type:ossimImageData\n"
-          kwlString += "image.rect:(0,0,${ bounds.width },${ bounds.height },lh)\n"
+          kwlString += "image.rect:(0,0,${bounds.width},${bounds.height},lh)\n"
           kwlString += "image.scalar_type:ossim_uint8\n"
           kwlString += "image.number_bands:1\n"
         }
@@ -326,8 +331,8 @@ class WebMappingService implements ApplicationContextAware
     {
       kwl.add( param.key, param.value )
     }
-    kwl.add( "viewable_bands", "${ viewableBandCount }" )
-    kwl.add( "rotate", "${ rotate }" )
+    kwl.add( "viewable_bands", "${viewableBandCount}" )
+    kwl.add( "rotate", "${rotate}" )
     WmsMap.getUnprojectedMap(
         inputFile,
         entry,
@@ -450,14 +455,14 @@ class WebMappingService implements ApplicationContextAware
       }
       if ( rasterEntry.numberOfResLevels )
       {
-        testScale = 2 ** rasterEntry.numberOfResLevels * fullResScale;
+        testScale = 2**rasterEntry.numberOfResLevels * fullResScale;
         if ( testScale > largestScale )
         {
           largestScale = testScale
         }
       }
       // now allow at least 32x zoom in
-      testScale = 1.0 / ( 2 ** 6 ) * fullResScale
+      testScale = 1.0 / ( 2**6 ) * fullResScale
       if ( testScale < smallestScale )
       {
         smallestScale = testScale;
@@ -489,10 +494,22 @@ class WebMappingService implements ApplicationContextAware
     def maxy = -9999999999
     for ( def coord in coords )
     {
-      if ( coord.x < minx ) minx = coord.x
-      if ( coord.x > maxx ) maxx = coord.x
-      if ( coord.y < miny ) miny = coord.y
-      if ( coord.y > maxy ) maxy = coord.y
+      if ( coord.x < minx )
+      {
+        minx = coord.x
+      }
+      if ( coord.x > maxx )
+      {
+        maxx = coord.x
+      }
+      if ( coord.y < miny )
+      {
+        miny = coord.y
+      }
+      if ( coord.y > maxy )
+      {
+        maxy = coord.y
+      }
     }
 
     return [left: minx, right: maxx, top: maxy, bottom: miny]

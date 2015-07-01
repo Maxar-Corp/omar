@@ -29,27 +29,33 @@ class WmsController extends OgcController implements InitializingBean
   def graislLinkGenerator
 
   def wms()
-  {    
-	def wmsParamsIgnoreCase = new CaseInsensitiveMap( params )
-	if (wmsParamsIgnoreCase.bbox && wmsParamsIgnoreCase.offsetLon && wmsParamsIgnoreCase.offsetLat)
-	{
-		def wmsBbox = wmsParamsIgnoreCase.bbox.split(",")
-		def minimumLongitude = wmsBbox[0] as Double
-		def minimumLatitude = wmsBbox[1] as Double
-		def maximumLongitude = wmsBbox[2] as Double
-		def maximumLatitude = wmsBbox[3] as Double
+  {
+    def wmsParamsIgnoreCase = new CaseInsensitiveMap( params )
+    if ( wmsParamsIgnoreCase.bbox && wmsParamsIgnoreCase.offsetLon && wmsParamsIgnoreCase.offsetLat )
+    {
+      def wmsBbox = wmsParamsIgnoreCase.bbox.split( "," )
+      def minimumLongitude = wmsBbox[0] as Double
+      def minimumLatitude = wmsBbox[1] as Double
+      def maximumLongitude = wmsBbox[2] as Double
+      def maximumLatitude = wmsBbox[3] as Double
 
-		def deltaLongitude = wmsParamsIgnoreCase.offsetLon as Double
-		def deltaLatitude = wmsParamsIgnoreCase.offsetLat as Double
+      def deltaLongitude = wmsParamsIgnoreCase.offsetLon as Double
+      def deltaLatitude = wmsParamsIgnoreCase.offsetLat as Double
 
-		wmsBbox[0] = minimumLongitude + deltaLongitude
-		wmsBbox[1] = minimumLatitude + deltaLatitude
-		wmsBbox[2] = maximumLongitude + deltaLongitude
-		wmsBbox[3] = maximumLatitude + deltaLatitude
+      wmsBbox[0] = minimumLongitude + deltaLongitude
+      wmsBbox[1] = minimumLatitude + deltaLatitude
+      wmsBbox[2] = maximumLongitude + deltaLongitude
+      wmsBbox[3] = maximumLatitude + deltaLatitude
 
-		if (params.bbox) { params.bbox = wmsBbox }
-		else if (params.BBOX) { params.BBOX = wmsBbox }
-	}
+      if ( params.bbox )
+      {
+        params.bbox = wmsBbox
+      }
+      else if ( params.BBOX )
+      {
+        params.BBOX = wmsBbox
+      }
+    }
     //println params
 
     WmsCommand cmd = new WmsCommand()
@@ -59,8 +65,8 @@ class WmsController extends OgcController implements InitializingBean
 
     if ( !cmd.validate() )
     {
-     // log.error( cmd.createErrorString() )
-         println cmd.createErrorString()
+      // log.error( cmd.createErrorString() )
+      println cmd.createErrorString()
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
     else
@@ -85,7 +91,7 @@ class WmsController extends OgcController implements InitializingBean
           forward( action: "getKml_", params: params )
           break
         default:
-          log.error( "ERROR: Unknown action: ${ cmd?.request }" )
+          log.error( "ERROR: Unknown action: ${cmd?.request}" )
           break
         }
         /*
@@ -101,7 +107,7 @@ class WmsController extends OgcController implements InitializingBean
       }
       catch ( java.lang.Exception e )
       {
-        log.error( "OGC::WMS exception: ${ e.message }" )
+        log.error( "OGC::WMS exception: ${e.message}" )
       }
     }
 
@@ -202,7 +208,6 @@ class WmsController extends OgcController implements InitializingBean
 
   def getCapabilities_()
   {
-
     WmsCommand cmd = new WmsCommand()
 
     //cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
@@ -283,7 +288,7 @@ class WmsController extends OgcController implements InitializingBean
         def tempMap = new CaseInsensitiveMap( params )
         def file = ( rasterEntries[0].filename as File ).name
 
-        filename = "${ file }.kml"
+        filename = "${file}.kml"
         kml = rasterKmlService.createImagesKml( rasterEntries, cmd.toMap(), tempMap )
       }
       else
@@ -292,7 +297,7 @@ class WmsController extends OgcController implements InitializingBean
         filename = "empty.kml"
       }
       //internaltime = System.currentTimeMillis();
-      response.setHeader( "Content-disposition", "attachment; filename=${ filename }" )
+      response.setHeader( "Content-disposition", "attachment; filename=${filename}" )
       render( contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8" )
     }
 
@@ -340,7 +345,7 @@ class WmsController extends OgcController implements InitializingBean
         [featureClass: RasterEntry.class]
     )
 
-    response.setHeader( "Content-disposition", "attachment; filename=${ file?.name }" );
+    response.setHeader( "Content-disposition", "attachment; filename=${file?.name}" );
     response.contentType = mimeType
     response.outputStream << file?.newInputStream()
     response.outputStream.flush()
@@ -359,7 +364,7 @@ class WmsController extends OgcController implements InitializingBean
     if ( !cmd.validate() )// ['reqeust', 'layers', 'bbox', 'srs', 'width', 'height', 'format'] ) )
     {
       cmd.errors.each { println it }
-     // log.error( cmd.createErrorString() )
+      // log.error( cmd.createErrorString() )
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
     else
@@ -405,7 +410,7 @@ class WmsController extends OgcController implements InitializingBean
 
       if ( mapResult.errorMessage )
       {
-        def message = "WMS server Error: ${ mapResult.errorMessage }"
+        def message = "WMS server Error: ${mapResult.errorMessage}"
         // no data to process
         log.error( message )
 
@@ -427,7 +432,8 @@ class WmsController extends OgcController implements InitializingBean
           response.outputStream << bytes
         }
         catch ( Exception e )
-        {}
+        {
+        }
       }
       endtime = System.currentTimeMillis()
 
@@ -444,7 +450,7 @@ class WmsController extends OgcController implements InitializingBean
       {
         if ( wmsLogParams.ip )
         {
-          wmsLogParams.ip += ", ${ clientIp }"
+          wmsLogParams.ip += ", ${clientIp}"
         }
         else
         {
@@ -516,13 +522,13 @@ class WmsController extends OgcController implements InitializingBean
         kml( "xmlns": "http://earth.google.com/kml/2.1" ) {
           Document() {
             GroundOverlay() {
-              name( "${ nameString }" )
+              name( "${nameString}" )
               Snippet()
-              description { mkp.yieldUnescaped( "<![CDATA[${ tempDescription }]]>" ) }
+              description { mkp.yieldUnescaped( "<![CDATA[${tempDescription}]]>" ) }
               open( "1" )
               visibility( "1" )
               Icon() {
-                href { mkp.yieldUnescaped( "images/image${ ext }" ) }
+                href { mkp.yieldUnescaped( "images/image${ext}" ) }
               }
               LatLonBox() {
                 north( bounds.maxy )
@@ -546,7 +552,7 @@ class WmsController extends OgcController implements InitializingBean
       zos.putNextEntry( anEntry );
 
       zos << kmlbuilder.bind( kmlnode ).toString()
-      anEntry = new ZipEntry( "images/image${ ext }" );
+      anEntry = new ZipEntry( "images/image${ext}" );
       //place the zip entry in the ZipOutputStream object
       zos.putNextEntry( anEntry );
       if ( image )

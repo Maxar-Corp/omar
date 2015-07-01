@@ -7,6 +7,7 @@ class OgcController
 
   def springSecurityService
 
+  def grailsLinkGenerator
 
   def getTile( )
   {

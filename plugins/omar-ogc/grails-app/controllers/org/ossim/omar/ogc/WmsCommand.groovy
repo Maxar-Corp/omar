@@ -50,6 +50,8 @@ class WmsCommand
 
 
   static constraints = {
+    bounds ( nullable: true )
+
     bbox( nullable: true, validator: { val, obj ->
       def message = true
       def requestLowerCase = obj.request?.toLowerCase()
