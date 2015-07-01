@@ -528,3 +528,109 @@ stager {
   }
   onDemand = true
 }
+
+
+export {
+  prefix = "omar-export-"
+  workDir = ( System.properties["os.name"].contains( "Windows" ) ) ? "c:/temp" : "/tmp"
+
+  superoverlay {
+    baseDir = "/data/omar/superoverlay"
+    outputKmz = true
+  }
+  rasterEntry {
+    fields = [
+        'acquisitionDate',
+        'azimuthAngle',
+        'beNumber',
+        'cloudCover',
+        'countryCode',
+        'description',
+        'entryId',
+        'fileType',
+        'filename',
+        'grazingAngle',
+        'groundGeom',
+        'gsdUnit',
+        'gsdX',
+        'gsdY',
+        'height',
+        'id',
+        'imageCategory',
+        'imageId',
+        'imageRepresentation',
+        'indexId',
+        'isorce',
+        'missionId',
+        'niirs',
+        'numberOfBands',
+        'numberOfResLevels',
+        'organization',
+        'productId',
+        'releaseId',
+        'securityClassification',
+        'securityCode',
+        'sensorId',
+        'sunAzimuth',
+        'sunElevation',
+        'targetId',
+        'title',
+        'validModel',
+        'wacCode',
+        'width'
+    ]
+
+    labels = [
+        'Acquisition Date',
+        'Azimuth Angle',
+        'Be Number',
+        'Cloud Cover',
+        'Country Code',
+        'Description',
+        'Entry Id',
+        'File Type',
+        'Filename',
+        'Grazing Angle',
+        'Ground Geom',
+        'Gsd Unit',
+        'Gsd X',
+        'Gsd Y',
+        'Height',
+        'Id',
+        'Image Category',
+        'Image Id',
+        'Image Representation',
+        'Index Id',
+        'Isorce',
+        'Mission Id',
+        'Niirs',
+        'Number Of Bands',
+        'Number Of Res Levels',
+        'Organization',
+        'Product Id',
+        'Release Id',
+        'Security Classification',
+        'Security Code',
+        'Sensor Id',
+        'Sun Azimuth',
+        'Sun Elevation',
+        'Target Id',
+        'Title',
+        'Valid Model',
+        'Wac Code',
+        'Width'
+    ]
+
+
+    formatters = [
+        groundGeom: {
+          def convertValue = it;
+          // if(it instanceof String)
+          // {
+          //     convertValue = geoscript.geom.Geometry.fromWKT(it);
+          // }
+          def bounds = convertValue.envelopeInternal; [bounds.minX, bounds.minY, bounds.maxX, bounds.maxY].join( ',' )
+        }
+    ]
+  }
+}
