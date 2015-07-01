@@ -29,7 +29,7 @@ grails.project.dependency.resolution = {
     mavenRepo 'https://github.com/ElectronicChartCentre/ecc-mvn-repo/raw/master/releases'
 
     grailsCentral()
-    mavenLocal()
+    mavenLocal( System.getenv( 'MAVEN_REPO' ) )
     mavenCentral()
     // uncomment the below to enable remote dependency resolution
     // from public Maven repositories
@@ -46,8 +46,8 @@ grails.project.dependency.resolution = {
     compile( 'org.geoscript:geoscript-groovy:1.5.0' ) {
       excludes "slf4j-log4j12",
           'ehcache',
-          "jai-core",
-          "jai-codec",
+          "jai_core",
+          "jai_codec",
           "jai_imageio",
           "postgresql"
       "opencsv"

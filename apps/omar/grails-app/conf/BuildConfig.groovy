@@ -38,7 +38,7 @@ grails.project.dependency.resolution = {
 
     grailsPlugins()
     grailsHome()
-    mavenLocal()
+    mavenLocal( System.getenv( 'MAVEN_REPO' ) )
     grailsCentral()
     mavenCentral()
     // uncomment these (or add new ones) to enable remote dependency resolution from public Maven repositories
