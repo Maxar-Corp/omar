@@ -25,8 +25,8 @@ class SuperOverlayController implements InitializingBean
 
   def createKml()
   {
-    try{
-
+    try
+    {
       def rasterEntry = null
       try
       {
@@ -65,29 +65,31 @@ class SuperOverlayController implements InitializingBean
         {
           if ( !isRoot )
           {
-            try{
+            try
+            {
               def kmlString = superOverlayService.createTileKml( rasterEntry, params )
               //response.setDateHeader("Expires", System.currentTimeMillis()+(24*24*60*60*1000));
               // response.addHeader("Cache-Control", "max-age=120")
               //   response.setHeader("max-age", "120");
               render( contentType: "application/vnd.google-earth.kml+xml", text: kmlString,
-                      encoding: "UTF-8" )
+                  encoding: "UTF-8" )
             }
-            catch(e)
+            catch ( e )
             {
 
             }
           }
           else
           {
-            try{
+            try
+            {
               def kmlString = superOverlayService.createRootKml( rasterEntry, params )
               response.setHeader( "Content-disposition", "attachment; filename=doc.kml" )
               render( contentType: "application/vnd.google-earth.kml+xml",
-                      text: kmlString,
-                      encoding: "UTF-8" )
+                  text: kmlString,
+                  encoding: "UTF-8" )
             }
-            catch(e)
+            catch ( e )
             {
 
             }
@@ -124,26 +126,26 @@ class SuperOverlayController implements InitializingBean
           }
           else
           {
-            try{
+            try
+            {
               def kmlString = superOverlayService.createRootKml( rasterEntry, params )
               response.setHeader( "Content-disposition", "attachment; filename=doc.kml" )
               render( contentType: "application/vnd.google-earth.kml+xml",
-                      text: kmlString,
-                      encoding: "UTF-8" )
+                  text: kmlString,
+                  encoding: "UTF-8" )
             }
-            catch(e)
+            catch ( e )
             {
-
+              e.printStackTrace()
             }
           }
         }
       }
     }
-    catch(e)
+    catch ( e )
     {
-
+      e.printStackTrace()
     }
-    null
   }
 
   public void afterPropertiesSet()

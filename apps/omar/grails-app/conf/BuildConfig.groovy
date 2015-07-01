@@ -97,4 +97,5 @@ grails.plugin.location.omarStager = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins
 //grails.plugin.location.omarTimeLapse = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-timelapse"
 grails.plugin.location.omarVideo = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-video"
 grails.plugin.location.openlayers = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/openlayers"
-grails.plugin.location.postgis = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/postgis"
+grails.plugin.location.omarSuperOverlay = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-superoverlay"
+
