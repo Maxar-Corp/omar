@@ -2,6 +2,7 @@ import com.vividsolutions.jts.geom.Geometry
 import geoscript.GeoScript
 import grails.converters.JSON
 import groovy.json.JsonSlurper
+import org.geotools.factory.Hints
 
 class GeoscriptGrailsPlugin {
     // the plugin version
@@ -55,6 +56,8 @@ Brief summary/description of the plugin.
 
          new JsonSlurper().parseText( json )
        }
+
+        Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE)
     }
 
     def doWithApplicationContext = { ctx ->
