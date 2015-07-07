@@ -278,7 +278,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
   private Workspace getWorkspace(def workspaceName)
   {
-
+/*
     def url = grailsApplication.config.dataSource.url
 
     def workspace = new Workspace(
@@ -296,6 +296,26 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
         'Expose primary keys': true,
         namespace: 'http://omar.ossim.org'
     )
+*/
+
+    def dataSourceConfig = grailsApplication.config.dataSource
+    def pattern = "jdbc:postgresql:(//(.*)/)?(.*)"
+    def matcher = dataSourceConfig.url =~ pattern
+
+    def dbParams = [
+        dbtype: 'postgis',
+        host: matcher[0][-2] ?: 'localhost',
+        port: '5432',
+        database: matcher[0][-1],
+        user: dataSourceConfig.username,
+        password: dataSourceConfig.password,
+//        'Data Source': dataSourceUnproxied,
+        'Expose primary keys': true
+    ]
+
+    //println dbParams
+
+    def workspace = Workspace.getWorkspace( dbParams )
 
     workspace
   }
