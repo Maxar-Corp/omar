@@ -212,9 +212,9 @@ rabbitmq {
 }
 
 // on windows this seems to return the MAC Address
-//omar.serverIP = org.ossim.omar.app.NetUtil.ipAddress
+omar.serverIP = org.ossim.omar.app.NetUtil.ipAddress
 //omar.serverIP = InetAddress.localHost.hostAddress
-omar.serverIP = "localhost"
+//omar.serverIP = "localhost"
 omar.serverURL = "http://${omar.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
 
 wms {
@@ -634,3 +634,6 @@ export {
     ]
   }
 }
+
+grails.mime.file.extensions = false
+
