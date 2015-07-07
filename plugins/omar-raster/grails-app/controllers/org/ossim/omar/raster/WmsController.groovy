@@ -114,60 +114,66 @@ class WmsController extends OgcController implements InitializingBean
     return null
   }
 
-  def footprints()
+  def footprints(GetMapRequest getMapRequest)
   {
-//    def start = System.currentTimeMillis()
+    //println params
 
-    if ( params.max == null )
-    {
-      params.max = grailsApplication.config.wms.vector.maxcount
-    }
-    def wmsRequest = new WMSRequest()
+    def results = drawService.drawFootprints( getMapRequest )
 
-    def newParams = new CaseInsensitiveMap( params )
-
-    bindData( wmsRequest, newParams )
-
-    // default to geographic bounds
-    if ( !wmsRequest.srs )
-    {
-      wmsRequest.srs = "EPSG:4326"
-    }
-
-    def dateRange = wmsRequest.dateRange
-    def startDate = null
-    def endDate = null
-
-    if ( dateRange )
-    {
-      if ( dateRange.size() > 0 )
-      {
-        startDate = dateRange[0]
-
-        if ( dateRange.size() > 1 )
-        {
-          endDate = dateRange[1]
-        }
-      }
-    }
-
-    if ( !startDate && !endDate )
-    {
-      startDate = DateUtil.initializeDate( "startDate", params )
-      endDate = DateUtil.initializeDate( "endDate", params )
-    }
-
-
-    def bytes = drawService.drawLayers( wmsRequest, startDate, endDate, params )
-
-    response.contentType = wmsRequest.format
-    response.contentLength = bytes?.size()
-    response.outputStream << bytes
-
-    //    def stop = System.currentTimeMillis()
-    //    println "${wmsRequest.bbox}: ${stop - start}ms"
-
-    return null
+    render contentType: results.contentType, file: results.buffer
+//
+////    def start = System.currentTimeMillis()
+//
+//    if ( params.max == null )
+//    {
+//      params.max = grailsApplication.config.wms.vector.maxcount
+//    }
+//    def wmsRequest = new WMSRequest()
+//
+//    def newParams = new CaseInsensitiveMap( params )
+//
+//    bindData( wmsRequest, newParams )
+//
+//    // default to geographic bounds
+//    if ( !wmsRequest.srs )
+//    {
+//      wmsRequest.srs = "EPSG:4326"
+//    }
+//
+//    def dateRange = wmsRequest.dateRange
+//    def startDate = null
+//    def endDate = null
+//
+//    if ( dateRange )
+//    {
+//      if ( dateRange.size() > 0 )
+//      {
+//        startDate = dateRange[0]
+//
+//        if ( dateRange.size() > 1 )
+//        {
+//          endDate = dateRange[1]
+//        }
+//      }
+//    }
+//
+//    if ( !startDate && !endDate )
+//    {
+//      startDate = DateUtil.initializeDate( "startDate", params )
+//      endDate = DateUtil.initializeDate( "endDate", params )
+//    }
+//
+//
+//    def bytes = drawService.drawLayers( wmsRequest, startDate, endDate, params )
+//
+//    response.contentType = wmsRequest.format
+//    response.contentLength = bytes?.size()
+//    response.outputStream << bytes
+//
+//    //    def stop = System.currentTimeMillis()
+//    //    println "${wmsRequest.bbox}: ${stop - start}ms"
+//
+//    return null
   }
 
   def getKmz_()
