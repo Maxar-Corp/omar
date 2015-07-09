@@ -26,7 +26,7 @@ class WmsController extends OgcController implements InitializingBean
   def exportService
   def grailsApplication
   def drawService
-  def graislLinkGenerator
+  def grailslLinkGenerator
 
   def wms()
   {

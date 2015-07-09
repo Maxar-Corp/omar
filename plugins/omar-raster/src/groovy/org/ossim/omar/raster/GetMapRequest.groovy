@@ -2,15 +2,15 @@ package org.ossim.omar.raster
 
 import grails.validation.Validateable
 import groovy.transform.ToString
-import org.grails.databinding.BindUsing
+
+import org.ossim.omar.core.CaseInsensitiveBinder
 
 /**
  * Created by sbortman on 7/6/15.
  */
 @ToString( includeNames = true )
 @Validateable
-@BindUsing( GetMapRequestBindingHelper )
-class GetMapRequest
+class GetMapRequest implements CaseInsensitiveBinder
 {
   String service
   String version
