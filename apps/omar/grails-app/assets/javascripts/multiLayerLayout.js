@@ -6,6 +6,17 @@
  * To change this template use File | Settings | File Templates.
  */
 
+//= require yui/yahoo-dom-event/yahoo-dom-event.js
+//= require yui/element/element-min.js
+//= require yui/layout/layout-min.js
+//= require yui/container/container_core-min.js
+//= require yui/menu/menu-min.js
+//= require OpenLayers.js
+//= require mapwidget.js
+//= require coord.js
+//= require omar-misc.js
+//= require_self
+
 (function ()
 {
     var Dom = YAHOO.util.Dom,

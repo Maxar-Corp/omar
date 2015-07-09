@@ -5,6 +5,17 @@ element position and are not recommended;
 we turn them off as a foundation for YUI
 CSS treatments.
 */
+
+/*
+*= require main.css
+*= require omar-2.0.css
+*= require yui/reset-fonts-grids/reset-fonts-grids.css
+*= require yui/assets/skins/sam/skin.css
+*= require mapwidget2.css
+*= require theme/default/style.css
+*= require_self
+*/
+
 body {
     margin: 0;
     padding: 0;
@@ -40,3 +51,12 @@ body {
     height: 512px;
 }
 */
+
+
+.logout{
+    position:absolute;
+    top:auto;
+    right:10px;
+    left:auto;
+    z-index:100;
+}
