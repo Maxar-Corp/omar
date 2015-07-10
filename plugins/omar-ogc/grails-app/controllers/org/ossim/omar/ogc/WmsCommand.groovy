@@ -1,6 +1,9 @@
 package org.ossim.omar.ogc
 
+import groovy.transform.ToString
+
 import java.awt.Color
+import org.ossim.omar.core.CaseInsensitiveBinder
 import org.ossim.omar.core.ISO8601DateParser
 
 /**
@@ -11,8 +14,10 @@ import org.ossim.omar.core.ISO8601DateParser
  * To change this template use File | Settings | File Templates.
  */
 @grails.validation.Validateable
-class WmsCommand
+@ToString(includeNames = true)
+class WmsCommand implements CaseInsensitiveBinder
 {
+  // WMS GetMap
   String bbox
   String width
   String height
@@ -26,6 +31,10 @@ class WmsCommand
   String transparent
   String bgcolor
   String time
+  String exceptions
+
+
+  // OMS Extensions
   String stretch_mode = "linear_auto_min_max"
   String stretch_mode_region = "global"
   String sharpen_mode
@@ -34,7 +43,6 @@ class WmsCommand
   String rotate
   String quicklook
   String null_flip
-  String exceptions
   String bands
   String filter
   String brightness
@@ -360,11 +368,6 @@ class WmsCommand
         sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, rotate: rotate,
         time: time, null_flip: null_flip, exceptions: exceptions, filter: filter, quicklook: quicklook,
         brightness: brightness, contrast: contrast, interpolation: interpolation].sort() { it.key }
-  }
-
-  public String toString()
-  {
-    return toMap()
   }
 
   String[] getDates()

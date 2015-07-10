@@ -27,6 +27,8 @@ class WmsController extends OgcController implements InitializingBean
   def grailsApplication
   def drawService
   def grailslLinkGenerator
+  def messageSource
+
 
   def wms()
   {
@@ -66,7 +68,9 @@ class WmsController extends OgcController implements InitializingBean
     if ( !cmd.validate() )
     {
       // log.error( cmd.createErrorString() )
-      println cmd.createErrorString()
+      //println cmd.createErrorString()
+      cmd.errors.allErrors.each { println messageSource.getMessage( it, null ) }
+
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
     else
@@ -357,11 +361,15 @@ class WmsController extends OgcController implements InitializingBean
     response.outputStream.flush()
   }
 
-  def getMap_()
+  def getMap_(WmsCommand cmd)
   {
-    WmsCommand cmd = new WmsCommand()
+    println params
 
-    bindData( cmd, new CaseInsensitiveMap( params ) )
+    //WmsCommand cmd = new WmsCommand()
+
+    //bindData( cmd, new CaseInsensitiveMap( params ) )
+
+    println cmd
 
 //	println cmd
 
@@ -369,7 +377,7 @@ class WmsController extends OgcController implements InitializingBean
 
     if ( !cmd.validate() )// ['reqeust', 'layers', 'bbox', 'srs', 'width', 'height', 'format'] ) )
     {
-      cmd.errors.each { println it }
+      cmd.errors.allErrors.each { println messageSource.getMessage( it, null ) }
       // log.error( cmd.createErrorString() )
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
@@ -434,8 +442,9 @@ class WmsController extends OgcController implements InitializingBean
 
           def bytes = ostream.toByteArray()
 
-          response.contentLength = bytes.size()
-          response.outputStream << bytes
+//          response.contentLength = bytes.size()
+//          response.outputStream << bytes
+          render contentType: response.contentType, file: bytes
         }
         catch ( Exception e )
         {

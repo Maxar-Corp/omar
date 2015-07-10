@@ -1,4 +1,5 @@
 import org.ossim.omar.raster.GetMapRequest
+import org.ossim.omar.ogc.WmsCommand
 
 class RasterFilters
 {
@@ -9,5 +10,12 @@ class RasterFilters
         new GetMapRequest().fixParamNames( params )
       }
     }
+    wmsGetMap( controller: 'wms', action: 'getMap_' ) {
+      before = {
+        //println params
+        new WmsCommand().fixParamNames( params )
+      }
+    }
+
   }
 }

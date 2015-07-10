@@ -74,7 +74,7 @@ class WebMappingService implements ApplicationContextAware
     wmsQuery
   }
 
-  def getMap(def wmsRequest, def layers = null)
+  def getMap(WmsCommnd wmsRequest, def layers = null)
   {
     def result = [image: null, errorMessage: null]
     def params = wmsRequest.toMap();
@@ -85,12 +85,15 @@ class WebMappingService implements ApplicationContextAware
     def stretchModeRegion = wmsRequest?.stretch_mode_region ?: null
     def wmsView = new WmsView()
     def srs = wmsRequest?.srs
+
+
     if ( !wmsView.setProjection( srs ) )
     {
       result.errorMessage = "Unsupported projection ${srs}"
       log.error( result )
       return result
     }
+
     if ( !wmsView.setViewDimensionsAndImageSize( bounds.minx,
         bounds.miny,
         bounds.maxx,
@@ -102,8 +105,6 @@ class WebMappingService implements ApplicationContextAware
       log.error( result )
       return result
     }
-
-
 
     def rasterEntries = layers;
 
@@ -135,7 +136,6 @@ class WebMappingService implements ApplicationContextAware
     //params.viewGeom = wmsView.getImageGeometry();
     params.wmsView = wmsView
     params.keepWithinScales = true
-    def kwlString = ""
     if ( rasterEntries )
     {
       rasterEntries = rasterEntries?.reverse()
@@ -155,15 +155,21 @@ class WebMappingService implements ApplicationContextAware
         }
         chainMap = null
       }
+
+      def kwlString = new StringWriter()
+
       if ( srcChains )
       {
         def connectionId = 10000
-        kwlString = "type:ossimImageChain\n"
+
+
+        kwlString.println "type:ossimImageChain"
+
         def objectPrefixIdx = 0
         if ( srcChains.size() > 1 )
         {
           // now establish mosaic and cut to match the output dimensions
-          kwlString += "object${objectPrefixIdx}.type:ossimImageMosaic\n"
+          kwlString.println "object${objectPrefixIdx}.type:ossimImageMosaic"
           ++objectPrefixIdx
         }
         def imageRect = wmsView.getViewImageRect()
@@ -181,8 +187,8 @@ class WebMappingService implements ApplicationContextAware
         // let's see what happens when I move this after the viewport stretch
         // so our stretch is done in full bit depth
         //
-//        kwlString += "object${ objectPrefixIdx }.type:ossimScalarRemapper\n"
-//        kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+//        kwlString.println "object${ objectPrefixIdx }.type:ossimScalarRemapper"
+//        kwlString.println "object${ objectPrefixIdx }.id:${ connectionId }"
 //        ++connectionId
 //        ++objectPrefixIdx
 
@@ -190,58 +196,60 @@ class WebMappingService implements ApplicationContextAware
         //
         if ( maxBands <= 2 )
         {
-          kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-          kwlString += "object${objectPrefixIdx}.bands:(0)\n"
-          kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+          kwlString.println "object${objectPrefixIdx}.type:ossimBandSelector"
+          kwlString.println "object${objectPrefixIdx}.bands:(0)"
+          kwlString.println "object${objectPrefixIdx}.id:${connectionId}"
           ++connectionId
           ++objectPrefixIdx
         }
         else if ( maxBands > 3 )
         {
-          kwlString += "object${objectPrefixIdx}.type:ossimBandSelector\n"
-          kwlString += "object${objectPrefixIdx}.bands:(0,1,2)\n"
-          kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+          kwlString.println "object${objectPrefixIdx}.type:ossimBandSelector"
+          kwlString.println "object${objectPrefixIdx}.bands:(0,1,2)"
+          kwlString.println "object${objectPrefixIdx}.id:${connectionId}"
           ++connectionId
           ++objectPrefixIdx
         }
-        kwlString += "object${objectPrefixIdx}.type:ossimRectangleCutFilter\n"
-        kwlString += "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)\n"
-        kwlString += "object${objectPrefixIdx}.cut_type:null_outside\n"
-        kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+        kwlString.println "object${objectPrefixIdx}.type:ossimRectangleCutFilter"
+        kwlString.println "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)"
+        kwlString.println "object${objectPrefixIdx}.cut_type:null_outside"
+        kwlString.println "object${objectPrefixIdx}.id:${connectionId}"
         ++objectPrefixIdx
         if ( ( stretchModeRegion == "viewport" ) &&
             ( stretchMode != "none" ) )
         {
-          kwlString += "object${objectPrefixIdx}.type:ossimImageHistogramSource\n"
-          kwlString += "object${objectPrefixIdx}.id:${connectionId + 1}\n"
+          kwlString.println "object${objectPrefixIdx}.type:ossimImageHistogramSource"
+          kwlString.println "object${objectPrefixIdx}.id:${connectionId + 1}"
           ++objectPrefixIdx
-          kwlString += "object${objectPrefixIdx}.type:ossimHistogramRemapper\n"
-          kwlString += "object${objectPrefixIdx}.id:${connectionId + 2}\n"
-          kwlString += "object${objectPrefixIdx}.stretch_mode:${stretchMode}\n"
-          kwlString += "object${objectPrefixIdx}.input_connection1:${connectionId}\n"
-          kwlString += "object${objectPrefixIdx}.input_connection2:${connectionId + 1}\n"
+          kwlString.println "object${objectPrefixIdx}.type:ossimHistogramRemapper"
+          kwlString.println "object${objectPrefixIdx}.id:${connectionId + 2}"
+          kwlString.println "object${objectPrefixIdx}.stretch_mode:${stretchMode}"
+          kwlString.println "object${objectPrefixIdx}.input_connection1:${connectionId}"
+          kwlString.println "object${objectPrefixIdx}.input_connection2:${connectionId + 1}"
           ++objectPrefixIdx
           connectionId += 2
         }
         // for now scale all WMS requests to 8-bit
-        kwlString += "object${objectPrefixIdx}.type:ossimScalarRemapper\n"
-        kwlString += "object${objectPrefixIdx}.id:${connectionId}\n"
+        kwlString.println "object${objectPrefixIdx}.type:ossimScalarRemapper"
+        kwlString.println "object${objectPrefixIdx}.id:${connectionId}"
         ++connectionId
         ++objectPrefixIdx
       }
       else
       {
-        kwlString = "type:ossimMemoryImageSource\n"
+        kwlString.println "type:ossimMemoryImageSource"
         if ( params.width && params.height )
         {
-          kwlString += "image.type:ossimImageData\n"
-          kwlString += "image.rect:(0,0,${bounds.width},${bounds.height},lh)\n"
-          kwlString += "image.scalar_type:ossim_uint8\n"
-          kwlString += "image.number_bands:1\n"
+          kwlString.println "image.type:ossimImageData"
+          kwlString.println "image.rect:(0,0,${bounds.width},${bounds.height},lh)"
+          kwlString.println "image.scalar_type:ossim_uint8"
+          kwlString.println "image.number_bands:1"
         }
       }
-      def mosaic = new joms.oms.Chain();
-      mosaic.loadChainKwlString( kwlString )
+
+      def mosaic = new Chain();
+      mosaic.loadChainKwlString( kwlString.toString() )
+
       for ( def srcChain in srcChains )
       {
         mosaic.connectMyInputTo( srcChain.chain )
