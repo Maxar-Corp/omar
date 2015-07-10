@@ -74,7 +74,7 @@ class WebMappingService implements ApplicationContextAware
     wmsQuery
   }
 
-  def getMap(WmsCommnd wmsRequest, def layers = null)
+  def getMap(WmsCommand wmsRequest, def layers = null)
   {
     def result = [image: null, errorMessage: null]
     def params = wmsRequest.toMap();
