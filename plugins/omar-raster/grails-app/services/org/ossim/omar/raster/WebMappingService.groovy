@@ -26,12 +26,13 @@ import org.ossim.oms.image.omsImageSource
 
 import org.ossim.omar.core.TransparentFilter
 import org.ossim.omar.core.Utility
-import org.ossim.omar.core.WmsLayers
+import org.ossim.omar.core.WmsCommand
 
 import org.ossim.omar.ogc.WMSCapabilities
 
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
+
 
 class WebMappingService implements ApplicationContextAware
 {
