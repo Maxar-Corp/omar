@@ -34,8 +34,6 @@ class ImageSpaceController
 
     def rasterEntries = rasterEntrySearchService.findRasterEntries( [paramsIgnoreCase.id] )
 
-    println "rasterEntries: ${rasterEntries}"
-
     if ( !rasterEntries )
     {
       response.status = 404
