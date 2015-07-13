@@ -24,20 +24,20 @@ class CoreBootStrap
 //      sql.execute( "ALTER TABLE repository alter column scan_start_date type timestamp with time zone" )
 //      sql.execute( "ALTER TABLE repository alter column scan_end_date type timestamp with time zone" )
 
-      def baseDirs
+//      def baseDirs
 
-      if ( GrailsUtil.isDevelopmentEnv() )
-      {
-        baseDirs = ["/", "/data/uav", "/Volumes/Iomega_HDD/data"]
-      }
-      else
-      {
-        baseDirs = ["/"]
-      }
+//      if ( GrailsUtil.isDevelopmentEnv() )
+//      {
+//        baseDirs = ["/", "/data/uav", "/Volumes/Iomega_HDD/data"]
+//      }
+//      else
+//      {
+//        baseDirs = ["/"]
+//      }
 
-      baseDirs.each { baseDir ->
-        Repository.findOrSaveWhere( baseDir: baseDir )
-      }
+//      baseDirs.each { baseDir ->
+//        Repository.findOrSaveWhere( baseDir: baseDir )
+//      }
     }
 
     sql?.close()
