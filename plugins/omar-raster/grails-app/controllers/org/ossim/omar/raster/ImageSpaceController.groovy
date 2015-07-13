@@ -23,86 +23,101 @@ class ImageSpaceController
   def getTile()
   {
     println params
-    
+
     def paramsIgnoreCase = new CaseInsensitiveMap( params )
 
-    if (paramsIgnoreCase.ignoreProj == "true") 
-    { 
-        paramsIgnoreCase.srs = null 
-        paramsIgnoreCase.crs = null
-    }
-    if (paramsIgnoreCase.rotate == "up" || paramsIgnoreCase.rotate == "north" || paramsIgnoreCase.bbox || (paramsIgnoreCase.centerLat && paramsIgnoreCase.centerLon && paramsIgnoreCase.radius))
+    if ( paramsIgnoreCase.ignoreProj == "true" )
     {
-	def rasterEntries = rasterEntrySearchService.findRasterEntries([paramsIgnoreCase.id])
-	if (paramsIgnoreCase.rotate == "up")
-	{
-		def upAngle = imageSpaceService.computeUpIsUp(rasterEntries[0].mainFile.name, rasterEntries[0].entryId.toInteger())
-		paramsIgnoreCase.rotate = -1 * upAngle
-	}
-	else if (paramsIgnoreCase.rotate == "north") { paramsIgnoreCase.rotate = -1 * rasterEntries[0].azimuthAngle }	
-	
-	if (paramsIgnoreCase.centerLat && paramsIgnoreCase.centerLon && paramsIgnoreCase.radius)
-	{
-		// get point raius variables from params
-		def latitude = paramsIgnoreCase.centerLat.toDouble()
-		def longitude = paramsIgnoreCase.centerLon.toDouble()
-		def radiusInMeters = paramsIgnoreCase.radius.toDouble()
+      paramsIgnoreCase.srs = null
+      paramsIgnoreCase.crs = null
+    }
 
-		// convert the radius to a latitude and longitude span
-		def radiusInNauticalMiles = radiusInMeters * 0.000539957
-		def deltaLatitude = 1 * radiusInNauticalMiles / 60
-		def deltaLongitude = Math.cos(latitude * Math.PI/180) * deltaLatitude
+    def rasterEntries = rasterEntrySearchService.findRasterEntries( [paramsIgnoreCase.id] )
 
-		// convert the point radius into a bounding box
-		paramsIgnoreCase.bbox = (longitude - deltaLongitude) + "," + (latitude - deltaLatitude) + "," + (longitude + deltaLongitude) + "," + (latitude + deltaLatitude)
-	}
+    println "rasterEntries: ${rasterEntries}"
 
-	if (paramsIgnoreCase.bbox)
-	{
-		def bbox = paramsIgnoreCase.bbox?.split(",")
+    if ( !rasterEntries )
+    {
+      response.status = 404
+      render contentType: 'text/plain', text: "Cannot find image with id ${paramsIgnoreCase.id}"
+      return
+    }
 
-		// calculate the center of the bounding box
-		def mapCenterLongitude = (bbox[0].toDouble() + bbox[2].toDouble()) / 2
-		def mapCenterLatitude = (bbox[1].toDouble() + bbox[3].toDouble()) / 2
+    if ( paramsIgnoreCase.rotate == "up" || paramsIgnoreCase.rotate == "north" || paramsIgnoreCase.bbox || ( paramsIgnoreCase.centerLat && paramsIgnoreCase.centerLon && paramsIgnoreCase.radius ) )
+    {
 
-		String inputFile = rasterEntries[0].mainFile.name
-		def entryId = rasterEntries[0].entryId as Integer
+      if ( paramsIgnoreCase.rotate == "up" )
+      {
+        def upAngle = imageSpaceService.computeUpIsUp( rasterEntries[0].mainFile.name, rasterEntries[0].entryId.toInteger() )
+        paramsIgnoreCase.rotate = -1 * upAngle
+      }
+      else if ( paramsIgnoreCase.rotate == "north" )
+      {
+        paramsIgnoreCase.rotate = -1 * rasterEntries[0].azimuthAngle
+      }
 
-		// convert ground coordinates into pixel locations
-		def groundPointsJson = "{\"groundPoints\":" +
-			"[" +
-				"{\"lat\":" + bbox[3] + ",\"lon\":" + bbox[0] + "}," +
-				"{\"lat\":" + bbox[3] + ",\"lon\":" + bbox[2] + "}," +
-				"{\"lat\":" + bbox[1] + ",\"lon\":" + bbox[0] + "}," +
-				"{\"lat\":" + bbox[1] + ",\"lon\":" + bbox[2] + "}," +
-				"{\"lat\":" + mapCenterLatitude + ",\"lon\":" + mapCenterLongitude + "}" +
-			"]" + 
-		"}"
-		def jsonPoints = JSON.parse(groundPointsJson).groundPoints
-		def result = projectionService.groundSpaceListToImageSpace(inputFile, jsonPoints, entryId)
+      if ( paramsIgnoreCase.centerLat && paramsIgnoreCase.centerLon && paramsIgnoreCase.radius )
+      {
+        // get point raius variables from params
+        def latitude = paramsIgnoreCase.centerLat.toDouble()
+        def longitude = paramsIgnoreCase.centerLon.toDouble()
+        def radiusInMeters = paramsIgnoreCase.radius.toDouble()
 
-		def deltaX1 = result[0].x - result[1].x
-		def deltaY1 = result[0].y - result[1].y
-		def resolutionX = Math.sqrt(Math.pow(deltaX1,2) + Math.pow(deltaY1,2)) / paramsIgnoreCase.width.toInteger()
+        // convert the radius to a latitude and longitude span
+        def radiusInNauticalMiles = radiusInMeters * 0.000539957
+        def deltaLatitude = 1 * radiusInNauticalMiles / 60
+        def deltaLongitude = Math.cos( latitude * Math.PI / 180 ) * deltaLatitude
 
-		def deltaX2 = result[0].x - result[2].x
-		def deltaY2 = result[0].y - result[2].y
-		def resolutionY = Math.sqrt(Math.pow(deltaX2,2) + Math.pow(deltaY2,2)) / paramsIgnoreCase.height.toInteger()
+        // convert the point radius into a bounding box
+        paramsIgnoreCase.bbox = ( longitude - deltaLongitude ) + "," + ( latitude - deltaLatitude ) + "," + ( longitude + deltaLongitude ) + "," + ( latitude + deltaLatitude )
+      }
 
-		def resolution = Math.max(resolutionX, resolutionY)
-		def scale = 1 / resolution
+      if ( paramsIgnoreCase.bbox )
+      {
+        def bbox = paramsIgnoreCase.bbox?.split( "," )
 
-		def xCenter = scale * result[4].x
-		def x = xCenter - paramsIgnoreCase.width.toInteger() / 2;
+        // calculate the center of the bounding box
+        def mapCenterLongitude = ( bbox[0].toDouble() + bbox[2].toDouble() ) / 2
+        def mapCenterLatitude = ( bbox[1].toDouble() + bbox[3].toDouble() ) / 2
 
-		def yCenter = scale * result[4].y
-		def y = yCenter - paramsIgnoreCase.height.toInteger() / 2;
+        String inputFile = rasterEntries[0].mainFile.name
+        def entryId = rasterEntries[0].entryId as Integer
 
-		paramsIgnoreCase.scale = scale
-		paramsIgnoreCase.x = x 
-		paramsIgnoreCase.y = y 
-		paramsIgnoreCase.pivot = result[4].x + "," + result[4].y
-	}
+        // convert ground coordinates into pixel locations
+        def groundPointsJson = "{\"groundPoints\":" +
+            "[" +
+            "{\"lat\":" + bbox[3] + ",\"lon\":" + bbox[0] + "}," +
+            "{\"lat\":" + bbox[3] + ",\"lon\":" + bbox[2] + "}," +
+            "{\"lat\":" + bbox[1] + ",\"lon\":" + bbox[0] + "}," +
+            "{\"lat\":" + bbox[1] + ",\"lon\":" + bbox[2] + "}," +
+            "{\"lat\":" + mapCenterLatitude + ",\"lon\":" + mapCenterLongitude + "}" +
+            "]" +
+            "}"
+        def jsonPoints = JSON.parse( groundPointsJson ).groundPoints
+        def result = projectionService.groundSpaceListToImageSpace( inputFile, jsonPoints, entryId )
+
+        def deltaX1 = result[0].x - result[1].x
+        def deltaY1 = result[0].y - result[1].y
+        def resolutionX = Math.sqrt( Math.pow( deltaX1, 2 ) + Math.pow( deltaY1, 2 ) ) / paramsIgnoreCase.width.toInteger()
+
+        def deltaX2 = result[0].x - result[2].x
+        def deltaY2 = result[0].y - result[2].y
+        def resolutionY = Math.sqrt( Math.pow( deltaX2, 2 ) + Math.pow( deltaY2, 2 ) ) / paramsIgnoreCase.height.toInteger()
+
+        def resolution = Math.max( resolutionX, resolutionY )
+        def scale = 1 / resolution
+
+        def xCenter = scale * result[4].x
+        def x = xCenter - paramsIgnoreCase.width.toInteger() / 2;
+
+        def yCenter = scale * result[4].y
+        def y = yCenter - paramsIgnoreCase.height.toInteger() / 2;
+
+        paramsIgnoreCase.scale = scale
+        paramsIgnoreCase.x = x
+        paramsIgnoreCase.y = y
+        paramsIgnoreCase.pivot = result[4].x + "," + result[4].y
+      }
     }
 
     def image = null
@@ -145,7 +160,7 @@ class ImageSpaceController
     {
       if ( getTileLogParams.ip )
       {
-        getTileLogParams.ip += ", ${ clientIp }"
+        getTileLogParams.ip += ", ${clientIp}"
       }
       else
       {
@@ -178,10 +193,10 @@ class ImageSpaceController
       format = "image/gif"
       ext = ".gif"
       break
-      case ~/.*pdf.*/:
-        format = "application/pdf"
-        ext = ".pdf"
-        break;
+    case ~/.*pdf.*/:
+      format = "application/pdf"
+      ext = ".pdf"
+      break;
     default:
       format = "image/jpeg"
       ext = ".jpg"
