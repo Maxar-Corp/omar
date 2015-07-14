@@ -34,19 +34,19 @@ grails.project.groupId = appName // change this to alter the default package nam
 // The ACCEPT header will not be used for content negotiation for user agents containing the following strings (defaults to the 4 major rendering engines)
 grails.mime.disable.accept.header.userAgents = ['Gecko', 'WebKit', 'Presto', 'Trident']
 grails.mime.types = [ // the first one is the default format
-    all:           '*/*', // 'all' maps to '*' or the first available format in withFormat
-    atom:          'application/atom+xml',
-    css:           'text/css',
-    csv:           'text/csv',
-    form:          'application/x-www-form-urlencoded',
-    html:          ['text/html','application/xhtml+xml'],
-    js:            'text/javascript',
-    json:          ['application/json', 'text/json'],
+    all: '*/*', // 'all' maps to '*' or the first available format in withFormat
+    atom: 'application/atom+xml',
+    css: 'text/css',
+    csv: 'text/csv',
+    form: 'application/x-www-form-urlencoded',
+    html: ['text/html', 'application/xhtml+xml'],
+    js: 'text/javascript',
+    json: ['application/json', 'text/json'],
     multipartForm: 'multipart/form-data',
-    rss:           'application/rss+xml',
-    text:          'text/plain',
-    hal:           ['application/hal+json','application/hal+xml'],
-    xml:           ['text/xml', 'application/xml']
+    rss: 'application/rss+xml',
+    text: 'text/plain',
+    hal: ['application/hal+json', 'application/hal+xml'],
+    xml: ['text/xml', 'application/xml']
 ]
 
 // URL Mapping Cache Max Size, defaults to 5000
@@ -61,20 +61,20 @@ grails.controllers.defaultScope = 'singleton'
 
 // GSP settings
 grails {
-    views {
-        gsp {
-            encoding = 'UTF-8'
-            htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
-            codecs {
-                expression = 'html' // escapes values inside ${}
-                scriptlet = 'html' // escapes output from scriptlets in GSPs
-                taglib = 'none' // escapes output from taglibs
-                staticparts = 'none' // escapes output from static template parts
-            }
-        }
-        // escapes all not-encoded output at final stage of outputting
-        // filteringCodecForContentType.'text/html' = 'html'
+  views {
+    gsp {
+      encoding = 'UTF-8'
+      htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
+      codecs {
+        expression = 'html' // escapes values inside ${}
+        scriptlet = 'html' // escapes output from scriptlets in GSPs
+        taglib = 'none' // escapes output from taglibs
+        staticparts = 'none' // escapes output from static template parts
+      }
     }
+    // escapes all not-encoded output at final stage of outputting
+    // filteringCodecForContentType.'text/html' = 'html'
+  }
 }
 
 
@@ -89,7 +89,7 @@ grails.enable.native2ascii = true
 // packages to include in Spring bean scanning
 grails.spring.bean.packages = []
 // whether to disable processing of multi part requests
-grails.web.disable.multipart=false
+grails.web.disable.multipart = false
 
 // request parameters to mask when logging exceptions
 grails.exceptionresolver.params.exclude = ['password']
@@ -104,34 +104,38 @@ grails.hibernate.pass.readonly = false
 grails.hibernate.osiv.readonly = false
 
 environments {
-    development {
-        grails.logging.jul.usebridge = true
-    }
-    production {
-        grails.logging.jul.usebridge = false
-        // TODO: grails.serverURL = "http://www.changeme.com"
-    }
+  development {
+    grails.logging.jul.usebridge = true
+  }
+  production {
+    grails.logging.jul.usebridge = false
+    // TODO: grails.serverURL = "http://www.changeme.com"
+  }
 }
+
+omar.serverIP = InetAddress.localHost.hostAddress
+omar.serverURL = grails.serverURL
+grails.serverURL = omar.serverURL
 
 // log4j configuration
 log4j.main = {
-    // Example of changing the log pattern for the default console appender:
-    //
-    //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-    //}
+  // Example of changing the log pattern for the default console appender:
+  //
+  //appenders {
+  //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+  //}
 
-    error  'org.codehaus.groovy.grails.web.servlet',        // controllers
-           'org.codehaus.groovy.grails.web.pages',          // GSP
-           'org.codehaus.groovy.grails.web.sitemesh',       // layouts
-           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-           'org.codehaus.groovy.grails.web.mapping',        // URL mapping
-           'org.codehaus.groovy.grails.commons',            // core / classloading
-           'org.codehaus.groovy.grails.plugins',            // plugins
-           'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
-           'org.springframework',
-           'org.hibernate',
-           'net.sf.ehcache.hibernate'
+  error 'org.codehaus.groovy.grails.web.servlet',        // controllers
+      'org.codehaus.groovy.grails.web.pages',          // GSP
+      'org.codehaus.groovy.grails.web.sitemesh',       // layouts
+      'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
+      'org.codehaus.groovy.grails.web.mapping',        // URL mapping
+      'org.codehaus.groovy.grails.commons',            // core / classloading
+      'org.codehaus.groovy.grails.plugins',            // plugins
+      'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
+      'org.springframework',
+      'org.hibernate',
+      'net.sf.ehcache.hibernate'
 }
 
 grails.gorm.default.mapping = {
@@ -150,7 +154,6 @@ security {
   TOPSECRET = [description: "Top Secret", color: "yellow"]
   sessionTimeout = 60
 }
-
 
 // Added by the Spring Security Core plugin:
 grails.plugins.springsecurity.userLookup.userDomainClassName = 'org.ossim.omar.security.SecUser'
@@ -187,35 +190,35 @@ kml {
 
 
 rabbitmq {
-  enabled=false
-    //connectionfactory {
-    //    username = 'guest'
-    //    password = 'guest'
-    //    hostname = 'localhost'
-    //    consumers = 10
-    //}
+  enabled = false
+  //connectionfactory {
+  //    username = 'guest'
+  //    password = 'guest'
+  //    hostname = 'localhost'
+  //    consumers = 10
+  //}
 //    connection = {
-        //connection name: "server1", host: "rabbitmq-server", username: "omar", password: "abc123!@#"
+  //connection name: "server1", host: "rabbitmq-server", username: "omar", password: "abc123!@#"
 //        connection name: "server1", host: "10.0.10.93", username: "omar", password: "abc123!@#"
-       // connection host: "rabbit2.example.com", username: "foo", password: "bar"
+  // connection host: "rabbit2.example.com", username: "foo", password: "bar"
 //    }
 //   queues = {
 //        queue name: "omar.job.product", durable: true
 //        queue name: "omar.job.status", durable: true
 
-    //    exchange name: "omar.exchange", type: "topic", durable:true, {
-    //      queue name: "omarmq.job.status", binding: "omar.job.status"
-    //    }
-        //exchange name: "omar.exchange", type: "topic", durable: true, autoDelete: false
-        //exchange name: "omar.job.exchange", type: "topic", durable: true, autoDelete: false
+  //    exchange name: "omar.exchange", type: "topic", durable:true, {
+  //      queue name: "omarmq.job.status", binding: "omar.job.status"
+  //    }
+  //exchange name: "omar.exchange", type: "topic", durable: true, autoDelete: false
+  //exchange name: "omar.job.exchange", type: "topic", durable: true, autoDelete: false
 //    }
 }
 
 // on windows this seems to return the MAC Address
-omar.serverIP = org.ossim.omar.app.NetUtil.ipAddress
+//omar.serverIP = org.ossim.omar.app.NetUtil.ipAddress
 //omar.serverIP = InetAddress.localHost.hostAddress
 //omar.serverIP = "localhost"
-omar.serverURL = "http://${omar.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
+//omar.serverURL = "http://${omar.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
 
 wms {
   referenceDataDirectory = "/data/omar"
@@ -239,13 +242,13 @@ wms {
 //            name: "OnEarth LandSat",
 //            options: defaultOptions
 //        ],
-[
-    url    : ( useTileCache ) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
-    //url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://omar.ngaiost.org/cgi-bin/mapserv.sh?map=${ mapFile }",
-    params : [layers: ( useTileCache ) ? "omar" : "Reference", format: "image/jpeg"],
-    name   : "Reference Data",
-    options: defaultOptions
-],
+        [
+            url: ( useTileCache ) ? "http://${serverAddress}/tilecache/tilecache.py" : "http://${serverAddress}/cgi-bin/mapserv${wms.mapServExt}?map=${mapFile}",
+            //url: ( useTileCache ) ? "http://${ serverAddress }/tilecache/tilecache.py" : "http://omar.ngaiost.org/cgi-bin/mapserv.sh?map=${ mapFile }",
+            params: [layers: ( useTileCache ) ? "omar" : "Reference", format: "image/jpeg"],
+            name: "Reference Data",
+            options: defaultOptions
+        ],
 
 /*
 [
@@ -277,16 +280,16 @@ wms {
     }
 
     raster = [
-        url    : "${omar.serverURL}/wms/footprints",
-        params : [transparent: true, styles: "byFileType", layers: ( supportIE6 ) ? "Imagery" : "ImageData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
-        name   : "OMAR Imagery Coverage",
+        url: "${omar.serverURL}/wms/footprints",
+        params: [transparent: true, styles: "byFileType", layers: ( supportIE6 ) ? "Imagery" : "ImageData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
+        name: "OMAR Imagery Coverage",
         options: [isBaseLayer: false, footprintLayers: "Imagery"]
     ]
 
     video = [
-        url    : "${omar.serverURL}/wms/footprints",
-        params : [transparent: true, styles: "byFileType", layers: ( supportIE6 ) ? "Videos" : "VideoData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
-        name   : "OMAR Video Coverage",
+        url: "${omar.serverURL}/wms/footprints",
+        params: [transparent: true, styles: "byFileType", layers: ( supportIE6 ) ? "Videos" : "VideoData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
+        name: "OMAR Video Coverage",
         options: [isBaseLayer: false, footprintLayers: "Videos"]
     ]
   }
@@ -356,47 +359,47 @@ rasterEntry {
 
   styles = [
       [
-          propertyName      : "fileType",
+          propertyName: "fileType",
           outlineLookupTable: [
               //aaigrid: 4,
-              cadrg      : new Color( 0, 255, 255, 255 ),
-              cib        : new Color( 0, 128, 128, 255 ),
-              ccf        : new Color( 128, 100, 255, 255 ),
-              adrg       : new Color( 50, 111, 111, 255 ),
-              mrsid      : new Color( 0, 188, 0, 255 ),
+              cadrg: new Color( 0, 255, 255, 255 ),
+              cib: new Color( 0, 128, 128, 255 ),
+              ccf: new Color( 128, 100, 255, 255 ),
+              adrg: new Color( 50, 111, 111, 255 ),
+              mrsid: new Color( 0, 188, 0, 255 ),
               //doqq: 2,
-              dted       : new Color( 0, 255, 0, 255 ), // green
-              jpeg       : new Color( 255, 255, 0, 255 ), // yellow
-              jpeg2000   : new Color( 255, 200, 0, 255 ), //
-              landsat7   : new Color( 255, 0, 255, 255 ), // purple
-              nitf       : new Color( 0, 0, 255, 255 ),  // blue
-              tiff       : new Color( 255, 0, 0, 255 ),  // red
-              mpeg       : new Color( 164, 254, 255, 255 ),
+              dted: new Color( 0, 255, 0, 255 ), // green
+              jpeg: new Color( 255, 255, 0, 255 ), // yellow
+              jpeg2000: new Color( 255, 200, 0, 255 ), //
+              landsat7: new Color( 255, 0, 255, 255 ), // purple
+              nitf: new Color( 0, 0, 255, 255 ),  // blue
+              tiff: new Color( 255, 0, 0, 255 ),  // red
+              mpeg: new Color( 164, 254, 255, 255 ),
               unspecified: new Color( 255, 255, 255, 255 ) // white
           ],
       ],
       [
-          propertyName       : "sensorId",
+          propertyName: "sensorId",
           defaultOutlineColor: new Color( 255, 255, 255, 255 ),
-          defaultFillColor   : new Color( 0, 0, 0, 0 ),
+          defaultFillColor: new Color( 0, 0, 0, 0 ),
 
-          outlineLookupTable : [
+          outlineLookupTable: [
               'ACES_YOGI-HRI1': new Color( 255, 0, 0, 255 ),
               'ACES_YOGI-HRI2': new Color( 255, 0, 0, 255 ),
               'ACES_YOGI-HRI3': new Color( 255, 0, 0, 255 ),
-              'ACES_YOGI-HSI' : new Color( 255, 255, 0, 255 ),
-              ALPHA           : new Color( 255, 0, 255, 255 ),
-              BRAVO           : new Color( 0, 255, 0, 255 ),
-              CHARLIE         : new Color( 0, 255, 255, 255 ),
-              DELTA           : new Color( 0, 0, 255, 255 ),
-              unspecified     : new Color( 255, 255, 255, 255 ) // white
+              'ACES_YOGI-HSI': new Color( 255, 255, 0, 255 ),
+              ALPHA: new Color( 255, 0, 255, 255 ),
+              BRAVO: new Color( 0, 255, 0, 255 ),
+              CHARLIE: new Color( 0, 255, 255, 255 ),
+              DELTA: new Color( 0, 0, 255, 255 ),
+              unspecified: new Color( 255, 255, 255, 255 ) // white
           ]
       ]
   ]
 }
 
-job{
-  maxInputs=10
+job {
+  maxInputs = 10
 }
 
 //---
@@ -436,15 +439,15 @@ videoStreaming {
 rss {
   rasterEntry {
     properties = [
-        imageId               : 'Image ID',
-        missionId             : 'Mission ID',
+        imageId: 'Image ID',
+        missionId: 'Mission ID',
         securityClassification: 'Security Class',
-        niirs                 : 'NIIRS',
-        countryCode           : 'Country Code',
-        beNumber              : 'BE Number',
-        acquisitionDate       : 'Acquisition Date',
-        width                 : 'Width',
-        height                : 'Height',
+        niirs: 'NIIRS',
+        countryCode: 'Country Code',
+        beNumber: 'BE Number',
+        acquisitionDate: 'Acquisition Date',
+        width: 'Width',
+        height: 'Height',
     ]
   }
 }
@@ -497,7 +500,7 @@ stager {
         /**
          * This formats the arguments to the indexFilesArgs on the scripts page
          */
-        indexFilesArgs : {
+        indexFilesArgs: {
           def date = new org.joda.time.DateTime()
           "/data"
 //                  "/data/${date.toString('YYYY-MM-dd')}"
@@ -505,7 +508,7 @@ stager {
         /**
          * This formats the arguments to the stageFilesArgs on the scripts page
          */
-        stageFilesArgs : {
+        stageFilesArgs: {
           def date = new org.joda.time.DateTime()
           "/data"
 //                  "/data/${date.toString('YYYY-MM-dd')}"
