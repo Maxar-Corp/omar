@@ -4,7 +4,7 @@ dataSource {
     driverClassName = "org.postgresql.Driver"
     username = "postgres"
     password = "postgres"
-    dialect = 'org.hibernate.spatial.dialect.postgis.PostgisDialect'
+    dialect = 'org.ossim.omar.PostGISDialect'
 
 }
 hibernate {

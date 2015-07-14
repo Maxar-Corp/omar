@@ -80,7 +80,7 @@ grails.project.dependency.resolution = {
   }
 }
 
-
+grails.plugin.location.postgis = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/postgis"
 grails.plugin.location.geoscript = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/geoscript"
 grails.plugin.location.omarChipper = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-chipper"
 grails.plugin.location.omarCommonUI = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-common-ui"
