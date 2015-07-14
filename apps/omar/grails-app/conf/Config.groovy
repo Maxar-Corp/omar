@@ -114,7 +114,7 @@ environments {
 }
 
 omar.serverIP = InetAddress.localHost.hostAddress
-omar.serverURL = grails.serverURL
+omar.serverURL = "http://${omar.serverIP}/omar"
 grails.serverURL = omar.serverURL
 
 // log4j configuration
