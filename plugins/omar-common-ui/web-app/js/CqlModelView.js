@@ -233,7 +233,7 @@ OMAR.models.CqlModel = Backbone.Model.extend({
                 //
                 //alert(expr.colval + ", " + expr.opval);
 
-                var val   = expr.val;
+                var val   = expr.val.trim();
                 var opval = expr.opval?expr.opval.toUpperCase():expr.opval;
                 var fullExpression = "";
                 var colType = expr.coltype;
