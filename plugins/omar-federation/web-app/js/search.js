@@ -792,7 +792,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         {
             $("#TimeLapseId").attr("class","ui-state-disabled");
             $("#ExportGeoCellId").attr("class","ui-state-disabled");
-            $("#DownloadId").attr("class","ui-state-disabled");
+            //$("#DownloadId").attr("class","ui-state-disabled");
             this.menuView.unbind("onTimeLapseClicked", this.timeLapseClicked, this);
             this.menuView.unbind("onGeoCellClicked", this.gclClicked, this);
             this.menuView.unbind("onDownloadFilesClicked", this.downloadFilesClicked, this);
@@ -803,7 +803,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         {
             $("#TimeLapseId").attr("class","ui-state-enabled");
             $("#ExportGeoCellId").attr("class","ui-state-enabled");
-            $("#DownloadId").attr("class","ui-state-disabled");
+            //$("#DownloadId").attr("class","ui-state-disabled");
             this.menuView.bind("onTimeLapseClicked", this.timeLapseClicked, this);
             this.menuView.bind("onGeoCellClicked", this.gclClicked, this);
             this.menuView.bind("onDownloadFilesClicked", this.downloadFilesClicked, this);
