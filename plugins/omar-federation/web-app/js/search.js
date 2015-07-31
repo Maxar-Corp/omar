@@ -320,13 +320,16 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     resetSelectedImages:function(){
         var layers = "";
-        if(this.selectedImageLayer)
+
+        var selectedImageLayer = this.mapView.selectedImageLayer;
+        if(selectedImageLayer)
         {
-            if(this.selectedImageLayer.getVisibility())
-            {
+            var currentSelection = []
+           // if(selectedImageLayer.getVisibility())
+           // {
                 layers = this.dataModelView.getCurrentSelection().toStringOfIds(",",this.model.attributes.maxMosaicSize);
-            }
-            this.selectedImageLayer.mergeNewParams({layers:layers});
+           // }
+            selectedImageLayer.mergeNewParams({layers:layers});
 
         }
     },
@@ -846,6 +849,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             case "1": // map
                 this.model.set("dataTableCriteriaDirtyFlag",true);
                 this.updateFootprintCql();
+
                 break;
             case "2": // data table
                 this.model.set("mapCriteriaDirtyFlag",true);
@@ -887,6 +891,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         {
             this.mapView.render();
 
+            /*
             this.selectedImageLayer = this.mapView.addSelectedImageLayer(
                 {url: "/omar/ogc/wms",
                     params:{exceptions:"application/vnd.ogc.se_blank",
@@ -898,6 +903,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                     zindex:-11
                 }
             );
+            */
         }
 
         if(this.cqlView)
@@ -924,7 +930,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
            // window.setTimeout(this.updateServers.bind(this), 5000);
         }
 
-        if(this.mapView) this.mapView.setCqlFilterToFootprintLayers(this.toCql());//this.toFootprintCql());
+  //      if(this.mapView){
+  //          this.mapView.setCqlFilterToFootprintLayers(this.toCql());
+  //          this.mapView.setCqlFilterToAutoMosaic(this.toWmsCql());
+  //      }
 
         // we must render everything first and fully initialize before we set a selected view
         //
@@ -933,7 +942,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
     },
     updateFootprintCql:function(){
         this.updateCounts();
-        if(this.mapView) this.mapView.setCqlFilterToFootprintLayers(this.toCql());//this.toFootprintCql());
+        if(this.mapView) {
+            this.mapView.setCqlFilterToFootprintLayers(this.toCql());
+            this.mapView.setCqlFilterToAutoMosaic(this.toWmsCql());
+        }//this.toFootprintCql());
     },
     updateServers:function(){
         var collection =  this.omarServerCollectionView;
@@ -974,6 +986,32 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             }
         }
 
+    },
+    toWmsCql:function(){
+        var result = "";
+        var timeQueryCql = null;
+        var wfsTypeName = this.model.attributes.wfsTypeNameModel.get("typeName");
+        var customQueryFilter = this.model.attributes.cqlModel.toCql();
+
+        if(wfsTypeName.search("raster_entry") > -1)
+        {
+            timeQueryCql = this.model.attributes.dateTimeRangeModel.toCql("acquisition_date");
+        }
+        else if(wfsTypeName.search("video_data_set")>-1)
+        {
+            timeQueryCql = this.model.attributes.dateTimeRangeModel.toCql("start_date", "end_date");
+        }
+
+        if(timeQueryCql)
+        {
+            result = timeQueryCql;
+        }
+        if(customQueryFilter!="")
+        {
+            if(result) result += "AND";
+            result += customQueryFilter;
+        }
+        return result;
     },
     toCql:function(){
         var result = "";
