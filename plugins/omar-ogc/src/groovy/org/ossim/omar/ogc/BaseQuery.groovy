@@ -5,7 +5,9 @@ import com.vividsolutions.jts.geom.Geometry
 import com.vividsolutions.jts.geom.GeometryFactory
 import com.vividsolutions.jts.geom.PrecisionModel
 import com.vividsolutions.jts.io.WKTReader
+import org.hibernate.Criteria
 import org.hibernate.criterion.Criterion
+import org.hibernate.criterion.Order
 import org.hibernate.spatial.criterion.SpatialFilter
 import org.ossim.omar.core.DateUtil
 import org.ossim.omar.core.ISO8601DateParser
@@ -16,6 +18,8 @@ import org.apache.commons.collections.map.CaseInsensitiveMap
 import org.apache.log4j.Logger
 import org.ossim.omar.oms.CoordinateConversionService
 import org.hibernate.criterion.Restrictions
+
+import static org.grails.datastore.mapping.query.api.Criteria.*
 
 /**
  * Created by IntelliJ IDEA.
@@ -234,7 +238,7 @@ class BaseQuery
             startDate: startDateText, endDate: endDateText,
             centerLat: centerLat, centerLon: centerLon, aoiRadius: aoiRadius, searchMethod: searchMethod,
             viewMaxLat: viewMaxLat, viewMinLon: viewMinLon, viewMinLat: viewMinLat, viewMaxLon: viewMaxLon,
-            filter: filter, time: time, spatialSearchFlag: spatialSearchFlag
+            filter: filter, time: time, spatialSearchFlag: spatialSearchFlag , sort:sort, order:order
     ]
 
     (0..<searchTagValues.size()).each {
@@ -245,6 +249,42 @@ class BaseQuery
     data.sort { it.key }
   }
 
+  def splitSortOrder()
+  {
+    def result = []
+    def orderSplit = order.split(",")
+    def sortSplit = sort.split(",")
+
+    if(orderSplit.size() == sortSplit.size())
+    {
+      orderSplit.eachWithIndex { def entry, int i ->
+        result << [order:entry, sort:sortSplit[i]]
+      }
+    }
+
+    result
+  }
+  def createOrder()
+  {
+    def result = []
+    def tempOrder = splitSortOrder()
+
+    tempOrder?.each{
+      result << new Order(it.sort.toString(), it.order.toString()=="asc")
+    }
+
+    result
+  }
+  def addOrderToCriteria(def criteria)
+  {
+    def ordering = createOrder()
+    if(ordering)
+    {
+      ordering.each {
+        criteria.addOrder(it)
+      }
+    }
+  }
   def createClause()
   {
     def clause = createIntersection()
