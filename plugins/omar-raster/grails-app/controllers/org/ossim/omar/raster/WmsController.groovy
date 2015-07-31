@@ -58,7 +58,6 @@ class WmsController extends OgcController implements InitializingBean
         params.BBOX = wmsBbox
       }
     }
-    //println params
 
     WmsCommand cmd = new WmsCommand()
 
@@ -200,7 +199,7 @@ class WmsController extends OgcController implements InitializingBean
         'height'
     ] ) )
     {
-      cmd.errors.each { println it }
+      //cmd.errors.each { println it }
       log.error( cmd.createErrorString() )
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
@@ -226,7 +225,7 @@ class WmsController extends OgcController implements InitializingBean
 
     if ( !cmd.validate( [/*'service', , 'version',*/ 'request'] ) )
     {
-      cmd.errors.each { println it }
+      //cmd.errors.each { println it }
       log.error( cmd.createErrorString() )
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
@@ -363,13 +362,13 @@ class WmsController extends OgcController implements InitializingBean
 
   def getMap_(WmsCommand cmd)
   {
-    println params
+    //println params
 
     //WmsCommand cmd = new WmsCommand()
 
     //bindData( cmd, new CaseInsensitiveMap( params ) )
 
-    println cmd
+    //println cmd
 
 //	println cmd
 
@@ -426,7 +425,7 @@ class WmsController extends OgcController implements InitializingBean
       {
         def message = "WMS server Error: ${mapResult.errorMessage}"
         // no data to process
-        log.error( message )
+        //log.error( message )
 
         def ogcFormattedException = ogcExceptionService.formatOgcException( cmd.toMap(), message )
         ogcExceptionService.writeResponse( response, ogcFormattedException )
