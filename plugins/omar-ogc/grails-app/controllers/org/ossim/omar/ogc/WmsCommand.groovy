@@ -1,6 +1,7 @@
 package org.ossim.omar.ogc
 
 import groovy.transform.ToString
+import joms.oms.ossimGpt
 
 import java.awt.Color
 import org.ossim.omar.core.CaseInsensitiveBinder
@@ -177,6 +178,7 @@ class WmsCommand implements CaseInsensitiveBinder
       }
       message
     } )
+    /*
     layers( nullable: true, validator: { val, obj ->
       def message = true
       if ( obj.request?.toLowerCase() == "getmap" )
@@ -188,6 +190,7 @@ class WmsCommand implements CaseInsensitiveBinder
       }
       message
     } )
+    */
     styles( nullable: true )//,validator: {val, obj ->
     //def message = true
     //if ( val == null )
@@ -404,6 +407,43 @@ class WmsCommand implements CaseInsensitiveBinder
     result
   }
 
+  Integer getEpsgAsInteger()
+  {
+    Integer result = this.srs?.split(":")[-1].toInteger()
+
+    result
+  }
+  Double calculateGsd()
+  {
+    Double result
+
+    def b = this.getBounds()
+    if(b)
+    {
+      result = ((b.maxx-b.minx)/b.width)
+    }
+
+    result
+  }
+  Double calculateGsdInMeters()
+  {
+    Double result = calculateGsd()
+
+
+    if(this.epsgAsInteger == 4326)
+    {
+      def gpt = new ossimGpt()
+      def mpd = gpt.metersPerDegree()
+
+      result = result *= mpd.x
+
+      gpt.delete()
+      mpd.delete()
+    }
+
+    result
+
+  }
   def getDateRange()
   {
     def result = []
