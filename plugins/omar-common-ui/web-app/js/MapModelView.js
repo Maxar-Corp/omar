@@ -33,6 +33,7 @@ OMAR.views.Map = Backbone.View.extend({
         this.bounds = null;
         this.measureUnit = ["", "", "", "", "", ""];
         this.convert = new CoordinateConversion();
+        this.autoMosaicLayers = [];
     },
     getBaseZIndex:function()
     {
@@ -48,16 +49,31 @@ OMAR.views.Map = Backbone.View.extend({
         if(this.mapEl)
         {
             var layers = [];
-
+            this.autoMosaicLayers = [];
             if(this.model.attributes.baseLayers)
             {
                 for(var idx = 0; idx < this.model.attributes.baseLayers.size();++idx)
                 {
+                    if(this.model.attributes.baseLayers[idx].options.tileSize)
+                    {
+                        this.model.attributes.baseLayers[idx].options.tileSize = new OpenLayers.Size(this.model.attributes.baseLayers[idx].options.tileSize.w,
+                             this.model.attributes.baseLayers[idx].options.tileSize.h);
+                    }
                     var layer =   new OpenLayers.Layer.WMS( this.model.attributes.baseLayers[idx].name,
                         this.model.attributes.baseLayers[idx].url,
                         this.model.attributes.baseLayers[idx].params,
                         this.model.attributes.baseLayers[idx].options
                     );
+                    if(this.model.attributes.baseLayers[idx].params.layers == "auto_raster_entry")
+                    {
+                        this.autoMosaicLayers.push(layer);
+                    }
+                    if(this.model.attributes.baseLayers[idx].params.layers == "selected_raster_entry")
+                    {
+                        this.selectedImageLayer = layer;
+                        layer.mergeNewParams({layers:""});
+                    }
+
                     layers.push(layer);
                 }
             }
@@ -152,6 +168,7 @@ OMAR.views.Map = Backbone.View.extend({
 
         return result;
     },
+    /*
     addSelectedImageLayer:function(setupParams){
         if(!this.selectedImageLayer)
         {
@@ -175,6 +192,7 @@ OMAR.views.Map = Backbone.View.extend({
 
         return this.selectedImageLayer;
     },
+    */
     setCurrentSelection:function()
     {
 
@@ -739,6 +757,14 @@ OMAR.views.Map = Backbone.View.extend({
     setCqlFilterToFootprintLayers:function(cqlFilterString){
         this.layers.forEach(function(value, key) {
             value.mergeNewParams({filter:cqlFilterString});
+        });
+     },
+    setCqlFilterToAutoMosaic:function(cqlFilterString){
+        this.autoMosaicLayers.forEach(function(value, key){
+            if(value.params.FILTER != cqlFilterString)
+            {
+                value.mergeNewParams({filter:cqlFilterString});
+            }
         });
     },
     serverCollectionReset:function()
