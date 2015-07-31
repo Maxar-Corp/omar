@@ -250,11 +250,11 @@ class GeoQueryUtil
       else if ( filter instanceof org.geotools.filter.IsNotEqualToImpl )
       {
         def compare = filter as org.geotools.filter.IsNotEqualToImpl
-        def paramsFix = fixBinaryExpression(fieldTypeMap, compare.leftValue.toString(), compare.rightValue.toString());
+        def paramsFix = fixBinaryExpression(fieldTypeMap, compare.expression1.toString(), compare.expression2.toString());
         def type = paramsFix.type
         if ( !type )
         {
-          throw new Exception("invalid field name in expression ${compare.leftValue} <> ${compare.rightValue}")
+          throw new Exception("invalid field name in expression ${compare.expression1} <> ${compare.expression2}")
           // need to throw exception if type not found
         }
         result = org.hibernate.criterion.Restrictions.ne(paramsFix.leftValue,
@@ -263,11 +263,11 @@ class GeoQueryUtil
       else if ( filter instanceof org.geotools.filter.IsEqualsToImpl )
       {
         def compare = filter as org.geotools.filter.IsEqualsToImpl
-        def paramsFix = fixBinaryExpression(fieldTypeMap, compare.leftValue.toString(), compare.rightValue.toString());
+        def paramsFix = fixBinaryExpression(fieldTypeMap, compare.expression1.toString(), compare.expression2.toString());
         def type = paramsFix.type
         if ( !type )
         {
-          throw new Exception("invalid field name in expression ${compare.leftValue} == ${compare.rightValue}")
+          throw new Exception("invalid field name in expression ${compare.expression1} == ${compare.expression2}")
           // need to throw exception if type not found
         }
         result = org.hibernate.criterion.Restrictions.eq(paramsFix.leftValue,
@@ -276,11 +276,11 @@ class GeoQueryUtil
       else if ( filter instanceof org.geotools.filter.IsGreaterThanImpl )
       {
         def compare = filter as org.geotools.filter.IsGreaterThanImpl
-        def paramsFix = fixBinaryExpression(fieldTypeMap, compare.leftValue.toString(), compare.rightValue.toString());
+        def paramsFix = fixBinaryExpression(fieldTypeMap, compare.expression1.toString(), compare.expression2.toString());
         def type = paramsFix.type
         if ( !type )
         {
-          throw new Exception("invalid field name in expression ${compare.leftValue} > ${compare.rightValue}")
+          throw new Exception("invalid field name in expression ${compare.expression1} > ${compare.expression2}")
           // need to throw exception if type not found
         }
         if ( paramsFix.swap == true )
@@ -297,11 +297,11 @@ class GeoQueryUtil
       else if ( filter instanceof org.geotools.filter.IsGreaterThanOrEqualToImpl )
       {
         def compare = filter as org.geotools.filter.IsGreaterThanOrEqualToImpl
-        def paramsFix = fixBinaryExpression(fieldTypeMap, compare.leftValue.toString(), compare.rightValue.toString());
+        def paramsFix = fixBinaryExpression(fieldTypeMap, compare.expression1.toString(), compare.expression2.toString());
         def type = paramsFix.type
         if ( !type )
         {
-          throw new Exception("invalid field name in expression ${compare.leftValue} <= ${compare.rightValue}")
+          throw new Exception("invalid field name in expression ${compare.expression1} <= ${compare.expression2}")
           // need to throw exception if type not found
         }
         if ( paramsFix.swap == true )
@@ -319,11 +319,11 @@ class GeoQueryUtil
       else if ( filter instanceof org.geotools.filter.IsLessThenImpl )
       {
         def compare = filter as org.geotools.filter.IsLessThenImpl
-        def paramsFix = fixBinaryExpression(fieldTypeMap, compare.leftValue.toString(), compare.rightValue.toString());
+        def paramsFix = fixBinaryExpression(fieldTypeMap, compare.expression1.toString(), compare.expression2.toString());
         def type = paramsFix.type
         if ( !type )
         {
-          throw new Exception("invalid field name in expression ${compare.leftValue} < ${compare.rightValue}")
+          throw new Exception("invalid field name in expression ${compare.expression1} < ${compare.expression2}")
           // need to throw exception if type not found
         }
         if ( paramsFix.swap == true )
@@ -340,12 +340,12 @@ class GeoQueryUtil
       else if ( filter instanceof org.geotools.filter.IsLessThenOrEqualToImpl )
       {
         def compare = filter as org.geotools.filter.IsLessThenOrEqualToImpl
-        def paramsFix = fixBinaryExpression(fieldTypeMap, compare.leftValue.toString(), compare.rightValue.toString());
+        def paramsFix = fixBinaryExpression(fieldTypeMap, compare.expression1.toString(), compare.expression2.toString());
         def propSwap = true
         def type = paramsFix.type
         if ( !type )
         {
-          throw new Exception("invalid field name in expression ${compare.leftValue} <= ${compare.rightValue}")
+          throw new Exception("invalid field name in expression ${compare.expression1} <= ${compare.expression2}")
           // need to throw exception if type not found
         }
         if ( paramsFix.swap == true )
