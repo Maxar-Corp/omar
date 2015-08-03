@@ -61,7 +61,7 @@ grails.project.dependency.resolution = {
     // plugins for the compile step
     compile ":scaffolding:2.1.2"
     compile ':cache:1.1.8'
-    compile ":asset-pipeline:2.3.9"
+    compile ":asset-pipeline:2.4.3"
 
     compile ":rabbitmq-native:2.0.10"
 
