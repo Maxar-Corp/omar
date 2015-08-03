@@ -43,7 +43,7 @@ grails.project.dependency.resolution = {
   plugins {
     compile ':spring-security-core:1.2.7.4'
     compile ':spring-security-ldap:1.0.6'
-    compile ':filterpane:2.4.7'
+    compile ':filterpane:2.5.0'
     compile ':csv:0.3.1'
 
     build( ":release:3.1.1",
