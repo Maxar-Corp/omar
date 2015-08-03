@@ -37,17 +37,17 @@ class FederationController
         value = value.encodeAsHexColor()
         colorlookup."${name}" = value
       }
-      jsonStyles << ["styleName" : "by${style.propertyName.capitalize()}",
-                     "colorTable": colorlookup]
+      jsonStyles << ["styleName": "by${style.propertyName.capitalize()}",
+          "colorTable": colorlookup]
     }
     def wmsBaseLayers = ( grailsApplication.config.wms as JSON ).toString()
     def footprintStyle = grailsApplication.config?.wms?.data?.raster?.params?.styles ? grailsApplication.mainContext.getBean( grailsApplication.config?.wms?.data?.raster?.params?.styles ) : null
-    render view: 'search', model: [wmsBaseLayers : wmsBaseLayers,
-                                   footprintStyle: footprintStyle,
-                                   roles         : roles as JSON,
-                                   styles        : jsonStyles as JSON,
-                                   maxInputs  :grailsApplication.config.job.maxInputs,
-                                   jobQueueEnabled: grailsApplication.config.rabbitmq?.enabled
+    render view: 'search', model: [wmsBaseLayers: wmsBaseLayers,
+        footprintStyle: footprintStyle,
+        roles: roles as JSON,
+        styles: jsonStyles as JSON,
+        maxInputs: grailsApplication.config.job.maxInputs,
+        jobQueueEnabled: grailsApplication.config.rabbitmq?.enabled
 
     ]
   }
