@@ -6,7 +6,8 @@
 //= require yui/yahoo-dom-event/yahoo-dom-event.js
 //= require yui/element/element-min.js
 //= require yui/layout/layout-min.js
-//*= require_self
+//= require jquery/jquery-1.11.1.js
+//= require_self
 
 (function ()
 {
