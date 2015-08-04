@@ -35,7 +35,7 @@
                 <input id="niirsMaxId" type="text" value="9.0">
             </div>
             <div class="Cell">
-                <label>0-9.0</label>
+                <label>0 to 9.0</label>
             </div>
         </div>
         <div class="Row">
@@ -52,7 +52,7 @@
                 <input id="azimuthAngleMaxId" type="text" value="360">
             </div>
             <div class="Cell">
-                <label>0-360</label>
+                <label>0 to 360</label>
             </div>
         </div>
         <div class="Row">
@@ -69,7 +69,7 @@
                 <input id="grazingAngleMaxId" type="text" value="90">
             </div>
             <div class="Cell">
-                <label>0-90</label>
+                <label>0 to 90</label>
             </div>
         </div>
 
@@ -107,7 +107,7 @@
                 <input id="sunAzimuthMaxId" type="text" value="360">
             </div>
             <div class="Cell">
-                <label>0-360</label>
+                <label>0 to 360</label>
             </div>
         </div>
         <div class="Row">
@@ -202,8 +202,14 @@
                 <input id="wacId" type="text">
             </div>
         </div>
-    </div>
 
+        <div class="Heading">
+            <div class="Cell">
+                <p><input id="GeneralQueryResetButtonId" type="Button" value="Reset"></input></p>
+            </div>
+        </div>
+
+    </div>
 
 
 </div>

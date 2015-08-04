@@ -24,8 +24,8 @@ OMAR.models.GeneralQueryModel = Backbone.Model.extend({
         missionValue:"",
         beNumberCheckbox:false,
         beNumberValue:"",
-        targetIdCheckbox:false,
-        targetIdValue:"",
+        targetCheckbox:false,
+        targetValue:"",
         wacCheckbox:false,
         wacValue:""
     },
@@ -33,54 +33,99 @@ OMAR.models.GeneralQueryModel = Backbone.Model.extend({
 
         if (params)
         {
+            if(params.niirsCheckbox) this.attributes.niirsCheckbox = params.niirsCheckbox;
+            if(params.niirsMinValue) this.attributes.niirsMinValue = params.niirsMinValue;
+            if(params.niirsMinValue) this.attributes.niirsMinValue = params.niirsMinValue;
+
+            if(params.azimuthAngleCheckbox) this.attributes.azimuthAngleCheckbox = params.azimuthAngleCheckbox;
+            if(params.azimuthAngleMinValue) this.attributes.azimuthAngleMinValue = params.azimuthAngleMinValue;
+            if(params.azimuthAngleMaxValue) this.attributes.azimuthAngleMaxValue = params.azimuthAngleMaxValue;
+
+            if(params.grazingAngleCheckbox) this.attributes.grazingAngleCheckbox = params.grazingAngleCheckbox;
+            if(params.grazingAngleMinValue) this.attributes.grazingAngleMinValue = params.grazingAngleMinValue;
+            if(params.grazingAngleMaxValue) this.attributes.grazingAngleMaxValue = params.grazingAngleMaxValue;
+
+            if(params.sunAzimuthCheckbox) this.attributes.sunAzimuthCheckbox = params.sunAzimuthCheckbox;
+            if(params.sunAzimuthMinValue) this.attributes.sunAzimuthMinValue = params.sunAzimuthMinValue;
+            if(params.sunAzimuthMaxValue) this.attributes.sunAzimuthMaxValue = params.sunAzimuthMaxValue;
+
+            if(params.sunElevationCheckbox) this.attributes.sunElevationCheckbox = params.sunElevationCheckbox;
+            if(params.sunElevationMinValue) this.attributes.sunElevationMinValue = params.sunElevationMinValue;
+            if(params.sunElevationMaxValue) this.attributes.sunElevationMaxValue = params.sunElevationMaxValue;
+
+            if(params.cloudCoverageCheckbox) this.attributes.cloudCoverageCheckbox = params.cloudCoverageCheckbox;
+            if(params.cloudCoverageMaxValue) this.attributes.cloudCoverageMaxValue = params.cloudCoverageMaxValue;
+
+            if(params.missionCheckbox) this.attributes.missionCheckbox = params.missionCheckbox;
+            if(params.missionValue) this.attributes.missionValue = params.missionValue;
+
+            if(params.beNumberCheckbox) this.attributes.beNumberCheckbox = params.beNumberCheckbox;
+            if(params.beNumberValue) this.attributes.beNumberValue = params.beNumberValue;
+
+            if(params.targetCheckbox) this.attributes.targetCheckbox = params.targetCheckbox;
+            if(params.targetValue) this.attributes.targetValue = params.targetValue;
+
+            if(params.wacCheckbox) this.attributes.wacCheckbox = params.wacCheckbox;
+            if(params.wacValue) this.attributes.wacValue = params.wacValue;
         }
     },
     toCql: function (errors)
     {
-        var rangeAttributes = [
+        var dbAttributes = [
             {name:"niirs",dbname:"niirs"},
             {name:"azimuthAngle", dbname:"azimuth_angle"},
             {name:"grazingAngle", dbname:"grazing_angle"},
             {name:"sunElevation", dbname:"sun_elevation"},
             {name:"sunAzimuth", dbname:"sun_azimuth"},
             {name:"cloudCoverage", dbname:"cloud_cover"},
-                              ]
+            {name:"mission",dbname:"mission_id"},
+            {name:"beNumber", dbname:"be_number"},
+            {name:"target", dbname:"target_id"},
+            {name:"wac", dbname:"wac_code"}
+            ]
         var result = "";
         var conjunction = " AND ";
         var thisPtr = this;
 
-        $(rangeAttributes).each(function(idx, obj){
+        $(dbAttributes).each(function(idx, obj){
             var checked  = thisPtr.get(obj.name+"Checkbox");
             var dbname   = obj.dbname;
             var minValue = thisPtr.get(obj.name+"MinValue");
             var maxValue = thisPtr.get(obj.name+"MaxValue");
+            var value    = thisPtr.get(obj.name+"Value");
+            var temp = ""
             if(checked)
             {
-                if(minValue == null)
+                if(value != null)
+                {
+                    temp = "("+dbname+" ILIKE '%" + value + "%')";
+                }
+                else if(minValue == null)
                 {
                     if(!isNaN(maxValue))
                     {
-                        var value = "("+dbname+"<="+maxValue+")";
+                        temp = "("+dbname+"<="+maxValue+")";
                     }
                 }
                 else if(maxValue == null)
                 {
                     if(!isNaN(minValue))
                     {
-                        var value = "("+dbname+">="+minValue+")";
+                        temp = "("+dbname+">="+minValue+")";
                     }
                 }
                 else if( !isNaN(minValue) && !isNaN(maxValue) )
                 {
-                    var value = "(("+dbname+">="+minValue+") AND ("+dbname+"<="+maxValue+"))";
+                    temp = "(("+dbname+">="+minValue+") AND ("+dbname+"<="+maxValue+"))";
                 }
+
                 if(result=="")
                 {
-                    result = value;
+                    result = temp;
                 }
                 else
                 {
-                    result = result +conjunction+value;
+                    result = result +conjunction+temp;
                 }
             }
 
@@ -120,9 +165,22 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
         this.cloudCoverageCheckboxId = $("#cloudCoverageCheckboxId");
         this.cloudCoverageMaxId      = $("#cloudCoverageMaxId");
 
+        this.missionCheckboxId = $("#missionCheckboxId");
+        this.missionId         = $("#missionId");
+
+        this.beNumberCheckboxId = $("#beNumberCheckboxId");
+        this.beNumberId         = $("#beNumberId");
+
+        this.targetCheckboxId = $("#targetCheckboxId");
+        this.targetId           = $("#targetId");
+
+        this.wacCheckboxId = $("#wacCheckboxId");
+        this.wacId         = $("#wacId");
+
+        this.resetButtonId = $("#GeneralQueryResetButtonId")
         if (params.generalQueryMode)
         {
-            this.model = new OMAR.models.GeneralQueryModel(params.generalQueryModel);
+            this.model = new OMAR.models.GeneralQueryModel(params.generalQueryModel.atrributes);
         }
         else
         {
@@ -190,6 +248,38 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
         $(this.cloudCoverageMaxId).change(function(){
             thisPtr.model.set("cloudCoverageMaxValue", parseFloat($(thisPtr.cloudCoverageMaxId).val()));
         });
+
+        $(this.missionCheckboxId).change(function(){
+            thisPtr.model.set("missionCheckbox", $(thisPtr.missionCheckboxId).is(':checked'));
+        });
+        $(this.missionId).change(function(){
+            thisPtr.model.set("missionValue", $(thisPtr.missionId).val());
+        });
+
+        $(this.beNumberCheckboxId).change(function(){
+            thisPtr.model.set("beNumberCheckbox", $(thisPtr.beNumberCheckboxId).is(':checked'));
+        });
+        $(this.beNumberId).change(function(){
+            thisPtr.model.set("beNumberValue", $(thisPtr.beNumberId).val());
+        });
+
+        $(this.targetCheckboxId).change(function(){
+            thisPtr.model.set("targetCheckbox", $(thisPtr.targetCheckboxId).is(':checked'));
+        });
+        $(this.targetId).change(function(){
+            thisPtr.model.set("targetValue", $(thisPtr.targetId).val());
+        });
+
+        $(this.wacCheckboxId).change(function(){
+            thisPtr.model.set("wacCheckbox", $(thisPtr.wacCheckboxId).is(':checked'));
+        });
+        $(this.wacId).change(function(){
+            thisPtr.model.set("wacValue", $(thisPtr.wacId).val());
+        });
+
+        $(this.resetButtonId).click(function(){
+            thisPtr.reset()
+        })
     },
     toCql:function(){
         this.viewToModel();
@@ -202,15 +292,15 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
         this.model.attributes.niirsMinValue = parseFloat($(this.niirsMinId).val());
         this.model.attributes.niirsMaxValue = parseFloat($(this.niirsMaxId).val());
 
-        this.model.attributes.azimuthAngleCheckbox = $(this.azimuthCheckboxId).is(':checked');
-        this.model.attributes.azimuthAngleMinValue = parseFloat($(this.azimuthMinId).val());
-        this.model.attributes.azimuthAngleMaxValue = parseFloat($(this.azimuthMaxId).val());
+        this.model.attributes.azimuthAngleCheckbox = $(this.azimuthAngleCheckboxId).is(':checked');
+        this.model.attributes.azimuthAngleMinValue = parseFloat($(this.azimuthAngleMinId).val());
+        this.model.attributes.azimuthAngleMaxValue = parseFloat($(this.azimuthAngleMaxId).val());
 
         this.model.attributes.grazingAngleCheckbox = $(this.grazingAngleCheckboxId).is(':checked');
         this.model.attributes.grazingAngleMinValue = parseFloat($(this.grazingAngleMinId).val());
         this.model.attributes.grazingAngleMaxValue = parseFloat($(this.grazingAngleMaxId).val());
 
-        this.model.attributes.sunAzimuthCheckbox  = $(this.sunZimuthCheckboxId).is(':checked');
+        this.model.attributes.sunAzimuthCheckbox  = $(this.sunAzimuthCheckboxId).is(':checked');
         this.model.attributes.sunAzimuthMinValue  = parseFloat($(this.sunAzimuthMinId).val());
         this.model.attributes.sunAzimuthMinValue  = parseFloat($(this.sunAzimuthMaxId).val());
 
@@ -221,7 +311,65 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
         this.model.attributes.cloudCoverageCheckbox  = $(this.cloudCoverageCheckboxId).is(':checked');
         this.model.attributes.cloudCoverageMaxValue  = parseFloat($(this.cloudCoverageMaxId).val());
 
+        this.model.attributes.missionCheckbox = $(this.missionCheckboxId).is(':checked');
+        this.model.attributes.missionValue    = $(this.missionId).val();
+
+        this.model.attributes.beNumberCheckbox = $(this.beNumberCheckboxId).is(':checked');
+        this.model.attributes.beNumberValue    = $(this.beNumberId).val();
+
+        this.model.attributes.targetCheckbox = $(this.targetCheckboxId).is(':checked');
+        this.model.attributes.targetValue    = $(this.targetId).val();
+
+        this.model.attributes.wacCheckbox = $(this.wacCheckboxId).is(':checked');
+        this.model.attributes.wacValue    = $(this.wacId).val();
+    },
+    setModel:function(model)
+    {
+        this.model = new OMAR.models.GeneralQueryModel(model.attributes);
+
+        this.render();
+    },
+    reset:function(){
+      this.setModel(new OMAR.models.GeneralQueryModel());
+    },
+    render:function()
+    {
+        $(this.niirsCheckboxId).prop("checked", this.model.get("niirsCheckbox"));
+        $(this.niirsMinId).val(this.model.get("niirsMinValue").toString());
+        $(this.niirsMaxId).val(this.model.get("niirsMaxValue").toString());
+
+        $(this.azimuthAngleCheckboxId).prop("checked", this.model.get("azimuthAngleCheckbox"));
+        $(this.azimuthAngleMinId).val(this.model.get("azimuthAngleMinValue").toString());
+        $(this.azimuthAngleMaxId).val(this.model.get("azimuthAngleMaxValue").toString());
+
+        $(this.grazingAngleCheckboxId).prop("checked", this.model.get("grazingAngleCheckbox"));
+        $(this.grazingAngleMinId).val(this.model.get("grazingAngleMinValue").toString());
+        $(this.grazingAngleMaxId).val(this.model.get("grazingAngleMaxValue").toString());
+
+        $(this.sunAzimuthCheckboxId).prop("checked", this.model.get("sunAzimuthCheckbox"));
+        $(this.sunAzimuthMinId).val(this.model.get("sunAzimuthMinValue").toString());
+        $(this.sunAzimuthMaxId).val(this.model.get("sunAzimuthMaxValue").toString());
+
+        $(this.sunElevationCheckboxId).prop("checked", this.model.get("sunElevationCheckbox"));
+        $(this.sunElevationMinId).val(this.model.get("sunElevationMinValue").toString());
+        $(this.sunElevationMaxId).val(this.model.get("sunElevationMaxValue").toString());
+
+        $(this.cloudCoverageCheckboxId).prop("checked", this.model.get("cloudCoverageCheckbox"));
+        $(this.cloudCoverageMaxId).val(this.model.get("cloudCoverageMaxValue").toString());
+
+        $(this.missionCheckboxId).prop("checked", this.model.get("missionCheckbox"));
+        $(this.missionId).val(this.model.get("missionValue").toString());
+
+        $(this.beNumberCheckboxId).prop("checked", this.model.get("beNumberCheckbox"));
+        $(this.beNumberId).val(this.model.get("beNumberValue").toString());
+
+        $(this.targetCheckboxId).prop("checked", this.model.get("targetCheckbox"));
+        $(this.targetId).val(this.model.get("targetValue").toString());
+
+        $(this.wacCheckboxId).prop("checked", this.model.get("wacCheckbox"));
+        $(this.wacId).val(this.model.get("wacValue").toString());
     }
+
 
 });
 
