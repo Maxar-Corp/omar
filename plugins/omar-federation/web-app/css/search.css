@@ -465,3 +465,68 @@ table.dataTable td {
 #map{
     background-color: black;
 }
+
+#generalQueryId {
+    position : absolute;
+    width    : 100%;
+    margin   : 0 auto;
+    top      : 0px;
+    bottom   : 0px;
+}
+.constraint-heading{
+    width:200px;
+    text-align: center;
+}
+.general-heading{
+    text-align: center;
+}
+
+.Table
+{
+    float:left;
+    display: table;
+    border-spacing: 2;
+    border-color: #000;
+    border:solid;
+    margin: 2px;
+}
+.Title
+{
+
+    /*font-weight: bold;
+    padding: 2px;
+    color: white;
+    background-color: #252326; */
+    display: table-caption;
+    text-align: center;
+    /*font-weight: bold;
+    font-size: 18px;*/
+}
+.Heading
+{
+    display: table-row;
+    font-weight: bold;
+    text-align: center;
+ /*   color: #FFFFFF;         */
+   /* background-color: #111111;*/
+}
+.Row
+{
+    display: table-row;
+    padding: 0;
+    line-height: 30px;
+}
+.Cell
+{
+    display: table-cell;
+    /*border: solid;*/
+    /*border-width: thin;*/
+    padding-left: 2px;
+    padding-right: 2px;
+}
+
+div.niceBoxNoBorder {
+    margin-top: 3px;
+    margin-bottom: 8px;
+    background-color: #dfe5f3;
+}
