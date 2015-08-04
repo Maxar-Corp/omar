@@ -163,7 +163,7 @@
 <asset:javascript src="scriptsPage.js"/>
 
 <g:javascript>
-    var jobTriggers = ${jobTriggers}
+    var jobTriggers = ${raw( jobTriggers.toString() )};
 
     function submitIndexFiles(){
         var formPost = document.getElementById("formPostId");
@@ -275,19 +275,19 @@
     }
     function getJobs()
     {
-        var link = "${raw( createLink( action: 'jobs', params: [time: new Date().time] ))}";
-        new Ajax.Request(link, {
-            method: 'get',
-            onSuccess: function(transport) {
-                 renderTable(YAHOO.lang.JSON.parse(transport.responseText));
-                 setTimeout(getJobs,5000);
+        var link = "${raw( createLink( action: 'jobs', params: [time: new Date().time] ) )}";
+        $.ajax({
+            url: link,
+            success: function(transport) {
+                renderTable(transport);
+                setTimeout(getJobs,5000);
             }
         });
     }
     function init()
     {
-       renderTable(jobTriggers);
-       setTimeout(getJobs,5000);
+        renderTable(jobTriggers);
+        setTimeout(getJobs,5000);
     }
 </g:javascript>
 </body>
