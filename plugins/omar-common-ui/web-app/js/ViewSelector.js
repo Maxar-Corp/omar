@@ -9,7 +9,7 @@ OMAR.views.ViewSelector = Backbone.View.extend({
     el:"#tabView",
     initialize:function(params){
         this.setElement(this.el);
-        this.tabView = $(this.el).buttonset();
+        this.tabView = $(this.el).buttonset();                          ""
 
         this.views = params.views;
 
@@ -23,9 +23,32 @@ OMAR.views.ViewSelector = Backbone.View.extend({
             thisPtr.show($(this).attr("value"));
         });
     },
+
+    getIndex:function(value)
+    {
+        var children = $(this.el).children(":radio");
+
+        var result = -1
+        $(children).each(function(idx, el){
+            if($(el).val() == value)
+            {
+                result = idx;
+
+                return false;
+            }
+        })
+
+        return result;
+    },
     click:function(idx)
     {
         this.hideAll();
+        if( typeof idx  === "string")
+        {
+            idx = this.getIndex(idx);
+        }
+
+
         var children = $(this.el).children(":radio");
         //alert($(children).size());
         //var children = $(this.el).children(":input");
@@ -33,6 +56,7 @@ OMAR.views.ViewSelector = Backbone.View.extend({
         //$(children[idx]).prop('checked', true);
         //$(this.selector() + " :radio").prop('checked', true);
         $(children[idx]).attr('checked','checked').button("refresh");
+
         this.show(idx);
     },
     selector:function(){
@@ -40,11 +64,20 @@ OMAR.views.ViewSelector = Backbone.View.extend({
     },
     show:function(idx){
         this.hideAll();
+        if( typeof idx  === "string")
+        {
+            idx = this.getIndex(idx);
+        }
+
         $(this.views[idx]).css("display","block");
         this.trigger("show", idx);
     },
     setText:function(idx, text){
         //var children = $(this.el).children(":label");
+        if( typeof idx  === "string")
+        {
+            idx = this.getIndex(idx);
+        }
         var children = $(this.el).children(":input");
         $($(children)[idx]).button({ label: text })
     },
