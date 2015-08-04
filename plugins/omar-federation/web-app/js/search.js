@@ -267,7 +267,6 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.cqlView = new OMAR.views.CqlView(cqlViewParams);
         this.generalQueryView = new OMAR.views.GeneralQueryView(cqlViewParams);
         this.model.attributes.generalQueryModel = this.generalQueryView.model;
-        this.model.attributes.generalQueryModel.bind('change',this.setCriteriaDirty, this);
         this.model.attributes.cqlModel = this.cqlView.model;
         this.model.attributes.dateTimeRangeModel.bind('change',this.setCriteriaDirty, this);
         this.model.get("bboxModel").bind('change', this.bboxModelChanged, this);
@@ -285,6 +284,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.viewSelector.bind("show", this.showTab, this);
         this.model.attributes.wfsTypeNameModel.bind("change", this.wfsTypeNameChanged, this);
         this.model.get("cqlModel").bind("change", this.cqlModelChanged, this);
+        this.model.get("generalQueryModel").bind("change", this.cqlModelChanged, this);
         this.useSpatialFlag = $('#spatialSearchFlag').is(":checked");
         $('#spatialSearchFlag').click(function() {
             thisPtr.useSpatialFlag = $(this).is(':checked');
@@ -342,8 +342,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         switch(idx.toString())
         {
             case "0":
-                break;
             case "1":
+                break;
+            case "2":
                 if(this.model.get("mapCriteriaDirtyFlag"))
                 {
                     this.updateFootprintCql();
@@ -351,7 +352,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                 }
                 this.centerResize();
                 break;
-            case "2":
+            case "3":
                 this.dataModelView.resizeView();
                 if(this.model.get("dataTableCriteriaDirtyFlag"))
                 {
@@ -914,6 +915,10 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         if(this.cqlView)
         {
             this.cqlView.render();
+        }
+        if(this.generalQueryView)
+        {
+            this.generalQueryView.render();
         }
         if(this.dataModelView)
         {
