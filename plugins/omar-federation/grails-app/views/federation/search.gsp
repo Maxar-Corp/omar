@@ -9,6 +9,7 @@
         text-align: left;
     }
     </style>
+    <!--<link rel="search" type="application/opensearchdescription+xml" href="/omar/openSearch/settings" title="OMAR Search" /> -->
 </head>
 
 <body class="body">
@@ -64,6 +65,10 @@
             <div id="CustomQueryView">
                 <br/>
                 <g:render plugin="omar-common-ui" template="/templates/cqlTemplate"/>
+            </div>
+            <div id="GeneralQueryView">
+                <g:render plugin="omar-common-ui" template="/templates/generalQueryTemplate"/>
+                <br/>
             </div>
 
             <div id="MapView">

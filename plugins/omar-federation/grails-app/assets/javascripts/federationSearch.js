@@ -31,6 +31,7 @@
 //= require ViewSelector.js
 //= require ServerListModelView.js
 //= require WfsDataModelView.js
+//= require GeneralQueryModelView.js
 //= require search.js
 //= require condition-builder.js
 //= require_self

@@ -265,6 +265,9 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var cqlViewParams = params.cql;
         cqlViewParams.wfsTypeNameModel = this.model.get("wfsTypeNameModel");
         this.cqlView = new OMAR.views.CqlView(cqlViewParams);
+        this.generalQueryView = new OMAR.views.GeneralQueryView(cqlViewParams);
+        this.model.attributes.generalQueryModel = this.generalQueryView.model;
+        this.model.attributes.generalQueryModel.bind('change',this.setCriteriaDirty, this);
         this.model.attributes.cqlModel = this.cqlView.model;
         this.model.attributes.dateTimeRangeModel.bind('change',this.setCriteriaDirty, this);
         this.model.get("bboxModel").bind('change', this.bboxModelChanged, this);
@@ -276,6 +279,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         this.viewSelector = new OMAR.views.ViewSelector({el:"#tabView",
                                                          views:["#CustomQueryView",
+                                                                "#GeneralQueryView",
                                                                 "#MapView",
                                                                 "#ResultsView"]});
         this.viewSelector.bind("show", this.showTab, this);
@@ -373,8 +377,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
                                this.omarServerCollectionView.activeServerModel.get("id"));
         if(model)
         {
-            this.viewSelector.click(2);
-            this.viewSelector.setText(2, model.get("nickname"));
+            this.viewSelector.click("Results");
+            this.viewSelector.setText("Results", model.get("nickname"));
         }
         this.updateDataTable();
     },
@@ -843,15 +847,16 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         switch(this.model.get("activeTab").toString())
         {
             case "0": // cql
+            case "1": // General Query
                 this.model.set("dataTableCriteriaDirtyFlag",true);
                 this.model.set("mapCriteriaDirtyFlag",true);
                 break;
-            case "1": // map
+            case "2": // map
                 this.model.set("dataTableCriteriaDirtyFlag",true);
                 this.updateFootprintCql();
 
                 break;
-            case "2": // data table
+            case "3": // data table
                 this.model.set("mapCriteriaDirtyFlag",true);
                 this.updateDataTable();
                 break;
@@ -937,7 +942,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         // we must render everything first and fully initialize before we set a selected view
         //
-        this.viewSelector.click(1);
+        this.viewSelector.click("Results");
         this.wfsTypeNameChanged();
     },
     updateFootprintCql:function(){
@@ -1018,10 +1023,13 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         var timeQueryCql = null;
         var wfsTypeName = this.model.attributes.wfsTypeNameModel.get("typeName");
         var customQueryFilter = this.model.attributes.cqlModel.toCql();
+        var generalQuery = "";
+
 
         if(wfsTypeName.search("raster_entry") > -1)
         {
             timeQueryCql = this.model.attributes.dateTimeRangeModel.toCql("acquisition_date");
+            generalQuery = this.model.attributes.generalQueryModel.toCql();
         }
         else if(wfsTypeName.search("video_data_set")>-1)
         {
@@ -1058,6 +1066,13 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             if(result) result += "AND";
             result += customQueryFilter;
         }
+        if(generalQuery!="")
+        {
+            if(result) result += "AND";
+            result += generalQuery;
+        }
+
+        //console.log(result);
         return result;
     },
     centerResize:function(){
