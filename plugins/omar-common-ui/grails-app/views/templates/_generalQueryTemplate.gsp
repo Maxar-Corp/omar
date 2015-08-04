@@ -1,7 +1,7 @@
 <div id='generalQueryId'>
     <div class="Table niceBoxNoBorder">
         <div class="Title niceBoxHeader">
-            Common Constraints
+            Constraints
         </div>
         <div class="Heading">
             <div class="Cell">
@@ -72,11 +72,8 @@
                 <label>0-90</label>
             </div>
         </div>
-    </div>
-    <div class="Table niceBoxNoBorder">
-        <div class="Title niceBoxHeader">
-            EO/IR Constraints
-        </div>
+
+        <!--
         <div class="Heading">
             <div class="Cell">
                 <p>Enabled</p>
@@ -94,6 +91,7 @@
                 <p></p>
             </div>
         </div>
+        -->
         <div class="Row">
             <div class="Cell">
                 <input id="sunAzimuthCheckboxId" type="checkbox">
@@ -145,13 +143,9 @@
                 <label>%</label>
             </div>
         </div>
-    </div>
 
 
-    <div class="Table niceBoxNoBorder">
-        <div class="Title niceBoxHeader">
-            Mission Constraints
-        </div>
+
         <div class="Heading">
             <div class="Cell">
                 <p>Enabled</p>
@@ -175,22 +169,6 @@
             </div>
         </div>
 
-    </div>
-    <div class="Table niceBoxNoBorder">
-        <div class="Title niceBoxHeader">
-            Location Constraints
-        </div>
-        <div class="Heading">
-            <div class="Cell">
-                <p>Enabled</p>
-            </div>
-            <div class="Cell">
-                <p>Name</p>
-            </div>
-            <div class="Cell">
-                <p>Value</p>
-            </div>
-        </div>
         <div class="Row">
             <div class="Cell">
                 <input id="beNumberCheckboxId" type="checkbox">
@@ -229,3 +207,56 @@
 
 
 </div>
+
+<!--
+<div class="Table niceBoxNoBorder">
+    <div class="Title niceBoxHeader">
+        EO/IR Constraints
+    </div>
+    <div class="Heading">
+        <div class="Cell">
+            <p>Enabled</p>
+        </div>
+        <div class="Cell">
+            <p>Name</p>
+        </div>
+        <div class="Cell">
+            <p>Min</p>
+        </div>
+        <div class="Cell">
+            <p>Max</p>
+        </div>
+        <div class="Cell">
+            <p></p>
+        </div>
+    </div>
+</div>
+
+
+<div class="Table niceBoxNoBorder">
+    <div class="Title niceBoxHeader">
+        Mission Constraints
+    </div>
+
+</div>
+<div class="Table niceBoxNoBorder">
+    <div class="Title niceBoxHeader">
+        Location Constraints
+    </div>
+    <div class="Heading">
+        <div class="Cell">
+            <p>Enabled</p>
+        </div>
+        <div class="Cell">
+            <p>Name</p>
+        </div>
+        <div class="Cell">
+            <p>Value</p>
+        </div>
+    </div>
+
+</div>
+
+
+</div>
+         -->

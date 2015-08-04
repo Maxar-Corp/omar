@@ -1072,7 +1072,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
             result += generalQuery;
         }
 
-        console.log(result);
+        //console.log(result);
         return result;
     },
     centerResize:function(){
