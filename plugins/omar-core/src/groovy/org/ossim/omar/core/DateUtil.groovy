@@ -93,7 +93,7 @@ class DateUtil
     return date
   }
 
-  static parseDateGivenFormats(String dateString, def dateFormats = null)
+  static def parseDateGivenFormats(String dateString, def dateFormats = null)
   {
     def date = null
 
@@ -234,6 +234,15 @@ class DateUtil
     case ~/[0-9]{4}/:
       format = "yyyy"
       break
+
+    default:
+        if(dateString.endsWith("'Z'"))
+        {
+          timeZone = TimeZone.getTimeZone("UTC")
+        }
+
+        format = dateString
+        break
     }
 
     if ( format )

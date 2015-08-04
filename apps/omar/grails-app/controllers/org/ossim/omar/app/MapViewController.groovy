@@ -1,5 +1,6 @@
 package org.ossim.omar.app
 
+import org.ossim.omar.core.DateUtil
 import org.springframework.beans.factory.InitializingBean
 //import javax.media.jai.JAI
 import org.ossim.omar.raster.WMSQuery
@@ -71,6 +72,11 @@ class MapViewController implements InitializingBean
       {
         imageIds = imageIds ? "${imageIds}, ${( rasterEntry.filename as File ).name}" : ( rasterEntry.filename as File ).name
       }
+      if(rasterEntry?.acquisitionDate)
+      {
+        imageIds += ", ${DateUtil.findDateFormatter("yyyy-MM-dd'T'hh:mm:ss.sss'Z'").format(rasterEntry?.acquisitionDate)}"
+      }
+
       if ( ( rasterEntry.validModel != null ) &&
           ( rasterEntry.validModel < 1 ) )
       {
@@ -188,6 +194,10 @@ class MapViewController implements InitializingBean
       def imageIds = rasterEntry.title ?: ( rasterEntry.filename as File ).name
       def nAdded = 0
 
+      if(rasterEntry?.acquisitionDate)
+      {
+        imageIds += ", ${DateUtil.findDateFormatter("yyyy-MM-dd'T'hh:mm:ss.sss'Z'").format(rasterEntry?.acquisitionDate)}"
+      }
       for ( entry in rasterEntries )
       {
         nAdded = stageImageService.checkAndAddStageImageJob( entry )
