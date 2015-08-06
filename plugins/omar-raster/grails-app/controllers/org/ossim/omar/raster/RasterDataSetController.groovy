@@ -6,16 +6,18 @@ import org.ossim.omar.raster.RasterDataSet
 class RasterDataSetController
 {
 
-  def index( )
+  def index()
   { redirect( action: 'list', params: params ) }
 
   // the delete, save and update actions only accept POST requests
   def static allowedMethods = [delete: 'POST', save: 'POST', update: 'POST']
 
-  def list( )
+  def list()
   {
     if ( !params.max )
+    {
       params.max = 10
+    }
 
     def rasterDataSetList = null
 
@@ -35,36 +37,7 @@ class RasterDataSetController
     [rasterDataSetList: rasterDataSetList]
   }
 
-  def show( )
-  {
-    def rasterDataSet = RasterDataSet.get( params.id )
-
-    if ( !rasterDataSet )
-    {
-      flash.message = "RasterDataSet not found with id ${params.id}"
-      redirect( action: 'list' )
-    }
-    else
-    { return [rasterDataSet: rasterDataSet] }
-  }
-
-  def delete( )
-  {
-    def rasterDataSet = RasterDataSet.get( params.id )
-    if ( rasterDataSet )
-    {
-      rasterDataSet.delete()
-      flash.message = "RasterDataSet ${params.id} deleted"
-      redirect( action: 'list')
-    }
-    else
-    {
-      flash.message = "RasterDataSet not found with id ${params.id}"
-      redirect( action: 'list' )
-    }
-  }
-
-  def edit( )
+  def show()
   {
     def rasterDataSet = RasterDataSet.get( params.id )
 
@@ -79,7 +52,38 @@ class RasterDataSetController
     }
   }
 
-  def update( )
+  def delete()
+  {
+    def rasterDataSet = RasterDataSet.get( params.id )
+    if ( rasterDataSet )
+    {
+      rasterDataSet.delete( flush: true )
+      flash.message = "RasterDataSet ${params.id} deleted"
+      redirect( action: 'list' )
+    }
+    else
+    {
+      flash.message = "RasterDataSet not found with id ${params.id}"
+      redirect( action: 'list' )
+    }
+  }
+
+  def edit()
+  {
+    def rasterDataSet = RasterDataSet.get( params.id )
+
+    if ( !rasterDataSet )
+    {
+      flash.message = "RasterDataSet not found with id ${params.id}"
+      redirect( action: 'list' )
+    }
+    else
+    {
+      return [rasterDataSet: rasterDataSet]
+    }
+  }
+
+  def update()
   {
     def rasterDataSet = RasterDataSet.get( params.id )
     if ( rasterDataSet )
@@ -102,14 +106,14 @@ class RasterDataSetController
     }
   }
 
-  def create( )
+  def create()
   {
     def rasterDataSet = new RasterDataSet()
     rasterDataSet.properties = params
     return ['rasterDataSet': rasterDataSet]
   }
 
-  def save( )
+  def save()
   {
     def rasterDataSet = new RasterDataSet( params )
     if ( !rasterDataSet.hasErrors() && rasterDataSet.save() )
