@@ -15,7 +15,7 @@ class RasterFile
   }
 
   static mapping = {
-    name index: 'raster_file_name_idx', unique: true
+    name index: 'raster_file_name_idx' //, unique: true
     type index: 'raster_file_type_idx'
     format index: 'raster_file_format_idx'
     rasterDataSet index: 'raster_file_raster_data_set_idx'
