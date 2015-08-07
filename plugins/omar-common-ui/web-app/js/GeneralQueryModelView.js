@@ -69,6 +69,11 @@ OMAR.models.GeneralQueryModel = Backbone.Model.extend({
             if(params.wacValue) this.attributes.wacValue = params.wacValue;
         }
     },
+    reset: function()
+    {
+        this.attributes = new OMAR.models.GeneralQueryModel().attributes;
+        this.trigger("change");
+    },
     toCql: function (errors)
     {
         var dbAttributes = [
@@ -325,12 +330,15 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
     },
     setModel:function(model)
     {
-        this.model = new OMAR.models.GeneralQueryModel(model.attributes);
+        this.model = model;
 
         this.render();
     },
     reset:function(){
-      this.setModel(new OMAR.models.GeneralQueryModel());
+        this.model.reset();
+        this.render();
+        //this.model.setAttributes(new OMAR.models.GeneralQueryModel().attributes)
+      //this.setModel(new OMAR.models.GeneralQueryModel());
     },
     render:function()
     {
