@@ -1,3 +1,4 @@
+import org.ossim.omar.raster.PropertyNameStyle
 import org.ossim.omar.raster.RasterEntrySearchService
 import org.ossim.omar.raster.RasterEntryQuery
 import org.ossim.omar.raster.RasterInfoParser
@@ -67,26 +68,26 @@ Brief summary/description of the plugin.
         ctx.registerAlias( "rasterEntrySearchService", "imagerySearchService" )
         ctx.registerAlias( "rasterEntrySearchService", "imageDataSearchService" )
 
-        def styles = application.config?.rasterEntry?.styles
-        
-        def beanNames = []
-        def beans = beans {
-          styles?.each { style ->
-            def beanName = "by${style?.propertyName.capitalize()}"
-            beanNames << beanName
-            "${beanName}"( org.ossim.omar.raster.PropertyNameStyle ) { bean ->
-              propertyName = style.propertyName
-              outlineLookupTable = style.outlineLookupTable
-              fillLookupTable = style.fillLookupTable ?: [:]
-              defaultFillColor = style.defaultFillColor ?: new Color( 0, 0, 0, 0 )
-              defaultOutlineColor = style.defaultOutlineColor ?: new Color( 255, 255, 255, 255 )
-            }
-          }
-        }
-        beanNames.each { beanName ->
-          ctx.registerBeanDefinition( beanName,
-              beans.getBeanDefinition( beanName ) )
-        }        
+//        def styles = application.config?.rasterEntry?.styles
+//
+//        def beanNames = []
+//        def beans = beans {
+//          styles?.each { style ->
+//            def beanName = "by${style?.propertyName.capitalize()}"
+//            beanNames << beanName
+//            "${beanName}"( PropertyNameStyle ) { bean ->
+//              propertyName = style.propertyName
+//              outlineLookupTable = style.outlineLookupTable
+//              fillLookupTable = style.fillLookupTable ?: [:]
+//              defaultFillColor = style.defaultFillColor ?: new Color( 0, 0, 0, 0 )
+//              defaultOutlineColor = style.defaultOutlineColor ?: new Color( 255, 255, 255, 255 )
+//            }
+//          }
+//        }
+//        beanNames.each { beanName ->
+//          ctx.registerBeanDefinition( beanName,
+//              beans.getBeanDefinition( beanName ) )
+//        }
     }
 
     def onChange = { event ->

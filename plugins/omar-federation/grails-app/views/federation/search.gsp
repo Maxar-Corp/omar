@@ -141,7 +141,7 @@
     {
         var userRoles = ${raw(roles?.toString())};
         var wmsConfig = ${raw(wmsBaseLayers?.toString())};
-        var styles = ${raw(styles?.toString())};
+        var styles = ${raw(styles.toString())};
         //var maxInputs=
         // application specific initialize that will need access to grails models
         //

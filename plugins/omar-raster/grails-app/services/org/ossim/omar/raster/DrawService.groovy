@@ -226,7 +226,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
 //    styles = grailsApplication.config.wms.styles
   }
 
-
+/*
   def drawFootprints(GetMapRequest getMapRequest)
   {
     //println getMapRequest
@@ -293,6 +293,67 @@ class DrawService implements ApplicationContextAware, InitializingBean
     map.close()
 //    workspace.ds.dispose()
     workspace.close()
+
+    [contentType: 'image/png', buffer: ostream.toByteArray()]
+  }
+  */
+
+  def drawFootprints(GetMapRequest getMapRequest)
+  {
+    //println getMapRequest
+
+    def ostream = new ByteArrayOutputStream()
+    def dataSourceConfig = grailsApplication.config.dataSource
+    def pattern = "jdbc:postgresql:(//([^:]+)(:(\\d+))?/)?(.*)"
+    def matcher = dataSourceConfig.url =~ pattern
+
+    def workspaceParams = [
+        dbtype: 'postgis',
+        user: dataSourceConfig.username,
+        password: dataSourceConfig.password,
+        host: matcher[0][2] ?: 'localhost',
+        port: matcher[0][4] ?: '5432',
+        database: matcher[0][5],
+//        'Data Source': dataSourceUnproxied,
+        'Expose primary keys': true
+    ]
+
+    Workspace.withWorkspace( workspaceParams ) { workspace ->
+      def layerName = ( getMapRequest.layers == 'Imagery' ) ? 'raster_entry' : 'video_data_set'
+      def layer = workspace[layerName]
+      def styleMap = grailsApplication.config.wms.styles[getMapRequest.styles]
+
+      println styleMap
+
+      def style = styleMap.collect { k, v ->
+        ( stroke( color: v.color ) + fill( opacity: 0.0 ) ).where( v.filter )
+      } as Composite
+
+      def bounds = new Bounds( *( getMapRequest?.bbox?.split( ',' )*.toDouble() ), getMapRequest.srs )
+      def queryLayer = new QueryLayer( layer, style )
+
+      def filter = Filter.bbox( layer.schema.geom.name, bounds )
+
+      if ( getMapRequest.filter )
+      {
+        filter = filter.and( getMapRequest.filter )
+      }
+
+      queryLayer.filter = filter
+
+      def map = new GeoScriptMap(
+          width: getMapRequest.width,
+          height: getMapRequest.height,
+          proj: bounds.proj,
+          bounds: bounds,
+          type: getMapRequest?.format?.split( '/' )?.last() ?: 'png',
+          layers: [queryLayer]
+      )
+
+      map.render( ostream )
+      map.close()
+      workspace.close()
+    }
 
     [contentType: 'image/png', buffer: ostream.toByteArray()]
   }
