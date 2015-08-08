@@ -3,6 +3,7 @@ package org.ossim.omar.app
 class HomeController
 {
   def springSecurityService
+  def grailsApplication
 
   def afterInterceptor = { model, modelAndView ->
     if ( request['isMobile'] )
@@ -14,7 +15,6 @@ class HomeController
     }
   }
 
-  def grailsApplication
 
   def index( )
   {
@@ -41,6 +41,6 @@ class HomeController
       }
     }
 
-    [editableControllers: editableControllers, user: user]
+    [editableControllers: editableControllers, user: user, feedback:grailsApplication.config.feedback]
   }
 }
