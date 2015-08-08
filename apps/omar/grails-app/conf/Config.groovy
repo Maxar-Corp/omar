@@ -740,4 +740,8 @@ grails.mime.file.extensions = false
 
 
 
-
+feedback{
+   enabled=false
+   mailto=""
+   subject="OMAR Feedback"
+}
