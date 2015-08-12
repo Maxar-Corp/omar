@@ -268,11 +268,11 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
         }
       }.toString()
 
-      println results
+     // println results
 
       contentType = 'application/xml'
     }
-
+    //println results
     return [results, contentType]
   }
 
