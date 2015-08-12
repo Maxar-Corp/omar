@@ -406,7 +406,7 @@
         {
             var size = 128;
 
-            var thumbnailURL = "${raw( g.createLink( controller: 'chipper', action: 'getThumbnail' ).toString() )}?id="
+            var thumbnailURL = "${raw( g.createLink( controller: 'thumbnail', action: 'show' ).toString() )}?id="
                 + row.id + "&size=" + size + '&type=jpeg';
 
             var imgTag = "<img src='" + thumbnailURL + "' width='" + size + "' height='" + size + "'/>";
