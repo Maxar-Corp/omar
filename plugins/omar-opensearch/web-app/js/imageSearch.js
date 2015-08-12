@@ -15,11 +15,24 @@ OMAR.views.imageSearch = Backbone.View.extend({
     el:"#ResultsView",
     initialize:function(params)
     {
+
+        var wfsModel = null;
+
+        if(params&&params.cqlFilter)
+        {
+            wfsModel = new OMAR.models.WfsModel({sortBy:"acquisition_date+D", "filter":params.cqlFilter});
+        }
+        else
+        {
+            wfsModel = new OMAR.models.WfsModel();
+        }
+
         this.wfsTypeName = new WfsTypeNameModel();
         this.dataModelView = new OMAR.views.DataModelView({
             wfsTypeNameModel:this.wfsTypeName,
             el:"#ResultsView",
-            containerEl:"#ResultsView"
+            containerEl:"#ResultsView",
+            wfsModel:wfsModel
         });
 
     },
