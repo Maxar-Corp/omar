@@ -323,7 +323,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
       def layer = workspace[layerName]
       def styleMap = grailsApplication.config.wms.styles[getMapRequest.styles]
 
-      println styleMap
+      //println styleMap
 
       def style = styleMap.collect { k, v ->
         ( stroke( color: v.color ) + fill( opacity: 0.0 ) ).where( v.filter )
