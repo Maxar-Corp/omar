@@ -53,3 +53,4 @@ grails.project.dependency.resolution = {
 
 grails.plugin.location.openlayers = '../../plugins/openlayers'
 grails.plugin.location.omarVideo = '../../plugins/omar-video'
+grails.plugin.location.omarOpensearch ="../../plugins/omar-opensearch"
