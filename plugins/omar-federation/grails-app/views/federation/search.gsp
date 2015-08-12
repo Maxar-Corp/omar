@@ -9,6 +9,7 @@
         text-align: left;
     }
     </style>
+    <opensearch:descriptors/>
     <!--<link rel="search" type="application/opensearchdescription+xml" href="/omar/openSearch/settings" title="OMAR Search" /> -->
 </head>
 
