@@ -26,8 +26,8 @@ class OpenSearchController {
         ]
         [initParams:initParams as JSON]
     }
-    def generalSearchDescriptor()
+    def searchDescriptor()
     {
-        render contentType: "application/xml", text: grailsApplication?.config?.opensearch?.generalSearch?.descriptor?:""
+        render contentType: "application/xml", text: grailsApplication?.config?.opensearch?.descriptorList?."${params.name}".descriptor?:""
     }
 }
