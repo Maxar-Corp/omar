@@ -98,4 +98,5 @@ grails.plugin.location.omarStager = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins
 grails.plugin.location.omarVideo = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-video"
 grails.plugin.location.openlayers = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/openlayers"
 grails.plugin.location.omarSuperOverlay = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-superoverlay"
+grails.plugin.location.omarOpensearch = "${System.getenv( 'OMAR_DEV_HOME' )}/plugins/omar-opensearch"
 
