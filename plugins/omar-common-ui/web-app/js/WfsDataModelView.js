@@ -631,8 +631,10 @@ OMAR.models.RasterEntryColumnDefs=Backbone.Collection.extend({
 OMAR.views.DataModelView = Backbone.View.extend({
     url: '',
     el:"#ResultsView",
+    containerEl:".inner-center",
     initialize:function(params){
         this.maxCount = 10000;
+        //this.dataTableEl = $(this.el).find("#DataTable")[0];
         this.dataTableEl = $(this.el).find("#DataTable")[0];
         this.dataTableElClone =  $(this.dataTableEl).clone();
         this.selectedCollection = new OMAR.models.SelectedCollection();
@@ -658,6 +660,14 @@ OMAR.views.DataModelView = Backbone.View.extend({
             if(params.wfsTypeNameModel)
             {
                 this.setWfsTypeNameModel(params.wfsTypeNameModel);
+            }
+            if(params.containerEl)
+            {
+                this.containerEl = params.containerEl;
+            }
+            if(params.el)
+            {
+                this.el = params.el;
             }
         }
         if(!this.columnDefs)
@@ -950,8 +960,8 @@ OMAR.views.DataModelView = Backbone.View.extend({
     resizeView:function()
     {
         if(!this.dataTable) return;
-        var innerHeight =  $(".inner-center").height();
-        var innerWidth =  $(".inner-center").width();
+        var innerHeight =  $(this.containerEl).height();
+        var innerWidth =  $(this.containerEl).width();
         var innerHeightAdjusted = innerHeight - 95;
         //$(this.el).find(".dataTable").height(innerHeightAdjusted);
         //$("data.dataTable").height(innerHeightAdjusted);
@@ -1029,12 +1039,13 @@ OMAR.views.DataModelView = Backbone.View.extend({
                 {
                     this.spinner.stop();
                 }
-                this.spinner.spin($(this.el)[0]);//$(".inner-center")[0]);
+                this.spinner.spin($(this.el)[0]);
                 this.modelRequest = model.fetch({dataType: "jsonp",
                     update: false,
                     remove: true,
                     data:{cache:false},
                     "success":function(){
+                       // alert($("#ResultsView").height() +", " + $("#DataTable").height());
                         thisPtr.spinner.stop();
                         wfsModel.dirty              = false;
                         result.aaData               = model.toJSON();
@@ -1056,6 +1067,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
                         fnCallback(result);
                         thisPtr.dataTable.fnAdjustColumnSizing();
                         thisPtr.blockGetServerData = false;
+
                     },
                     "error":function(){
                         thisPtr.spinner.stop();
@@ -1099,6 +1111,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
        // this.wfsModel.attributes.numberOfFeatures = 0;
 
         this.stopRequests();
+
         //this.dataTable.fnClearTable();
         // now set the URL to load
         //
