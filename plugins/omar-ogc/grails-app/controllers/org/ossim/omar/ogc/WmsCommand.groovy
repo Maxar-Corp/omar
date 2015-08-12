@@ -352,6 +352,7 @@ class WmsCommand implements CaseInsensitiveBinder
     sharpen_width(nullable: true)
     sharpen_sigma(nullable: true)
     sharpen_mode(nullable: true)
+    epsgAsInteger(nullable:true)
 
   }
 
@@ -409,7 +410,9 @@ class WmsCommand implements CaseInsensitiveBinder
 
   Integer getEpsgAsInteger()
   {
-    Integer result = this.srs?.split(":")[-1].toInteger()
+    Integer result
+    def splitArray = this?.srs?.split(":")
+    if(splitArray) result = splitArray[-1]?.toInteger()
 
     result
   }
