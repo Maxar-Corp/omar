@@ -122,7 +122,6 @@
        style="width:90px">Save</a>
     <a id="cancelButtonId" href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel"
        style="width:90px">Cancel</a>
-    -->
 </div>
 
 <asset:javascript src="diskCachePage.js"/>
