@@ -238,15 +238,12 @@
                             <li><g:link controller="RunScript" action="scripts">Scripts</g:link></li>
                             <li><g:link controller="ChipFormat" action="list">Chip Formats</g:link></li>
                             <li><g:link controller="DiskCache" action="index">View Disk Cache Locations</g:link></li>
-
                             <br/>
-                            <!--
                             <g:each var="c" in="${editableControllers}">
                                 <g:if test="${!c.name.equals( 'ConfigSettings' ) && !c.name.equals( 'DiskCache' ) && !c.name.equals( 'ChipFormat' )}">
                                     <li><g:link controller="${c.path}">${c.name}</g:link></li>
                                 </g:if>
                             </g:each>
-                            -->
                         </ol>
                     </td>
                 </tr>

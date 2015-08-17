@@ -214,17 +214,6 @@ rabbitmq {
 //    }
 }
 
-// on windows this seems to return the MAC Address
-
-omar.serverIP = InetAddress.localHost.hostAddress
-//omar.serverURL = "http://${omar.serverIP}/omar"
-grails.serverURL = omar.serverURL
-
-//omar.serverIP = org.ossim.omar.app.NetUtil.ipAddress
-//omar.serverIP = InetAddress.localHost.hostAddress
-//omar.serverIP = "localhost"
-omar.serverURL = "http://${omar.serverIP}:${System.properties['server.port'] ?: '8080'}/${appName}"
-
 wms {
   referenceDataDirectory = "/data/omar"
   mapServExt = ( System.properties['os.name'].startsWith( 'Windows' ) ) ? ".exe" : ""
@@ -471,7 +460,7 @@ autoMosaic {
       color = [1.0, 1.0, 1.0, 0.5]
     }
     // alignment type can be CENTER, TOP_CENTER, BOTTOM_CENTER
-    align = "CENTER"
+    align = "BOTTOM_CENTER"
   }
 
   // defines the maxCount in the mosaic process

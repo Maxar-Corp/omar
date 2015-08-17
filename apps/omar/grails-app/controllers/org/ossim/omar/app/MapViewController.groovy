@@ -74,7 +74,7 @@ class MapViewController implements InitializingBean
       }
       if(rasterEntry?.acquisitionDate)
       {
-        imageIds += ", ${DateUtil.findDateFormatter("yyyy-MM-dd'T'hh:mm:ss.sss'Z'").format(rasterEntry?.acquisitionDate)}"
+        imageIds += ":${DateUtil.findDateFormatter("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").format(rasterEntry?.acquisitionDate)}"
       }
 
       if ( ( rasterEntry.validModel != null ) &&
@@ -196,7 +196,7 @@ class MapViewController implements InitializingBean
 
       if(rasterEntry?.acquisitionDate)
       {
-        imageIds += ", ${DateUtil.findDateFormatter("yyyy-MM-dd'T'hh:mm:ss.sss'Z'").format(rasterEntry?.acquisitionDate)}"
+        imageIds += ":${DateUtil.findDateFormatter("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").format(rasterEntry?.acquisitionDate)}"
       }
       for ( entry in rasterEntries )
       {
