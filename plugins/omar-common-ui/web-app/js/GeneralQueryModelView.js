@@ -187,7 +187,7 @@ OMAR.models.GeneralQueryModel = Backbone.Model.extend({
         });
 
         //alert(result);
-        console.log(result);
+       // console.log(result);
 
         return result;
     }
