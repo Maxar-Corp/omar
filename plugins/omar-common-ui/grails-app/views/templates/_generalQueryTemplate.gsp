@@ -156,6 +156,9 @@
             <div class="Cell">
                 <p>Value</p>
             </div>
+            <div class="Cell">
+                <p>Comparator</p>
+            </div>
         </div>
         <div class="Row">
             <div class="Cell">
@@ -166,6 +169,41 @@
             </div>
             <div class="Cell">
                 <input id="missionId" type="text" value="">
+            </div>
+            <div class="Cell">
+                <select id="missionComparatorId">
+                    <option value="iContains">Sub String (case insensitive)</option>
+                    <option value="Contains">Sub String</option>
+                    <option value="iStartsWith">Starts With (case insensitive)</option>
+                    <option value="StartsWith">Starts With</option>
+                    <option value="iEndsWith">Ends With (case insensitive)</option>
+                    <option value="EndsWith">Ends With</option>
+                    <option value="Equals">Equals</option>
+                    <option value="NotEquals">Not Equals</option>
+                </select>                <%--<input id="missionOperationId" type="text" value="">--%>
+            </div>
+        </div>
+        <div class="Row">
+            <div class="Cell">
+                <input id="sensorCheckboxId" type="checkbox">
+            </div>
+            <div class="Cell">
+                <label>Sensor Id</label>
+            </div>
+            <div class="Cell">
+                <input id="sensorId" type="text" value="">
+            </div>
+            <div class="Cell">
+                <select id="sensorComparatorId">
+                    <option value="iContains">Sub String (case insensitive)</option>
+                    <option value="Contains">Sub String</option>
+                    <option value="iStartsWith">Starts With (case insensitive)</option>
+                    <option value="StartsWith">Starts With</option>
+                    <option value="iEndsWith">Ends With (case insensitive)</option>
+                    <option value="EndsWith">Ends With</option>
+                    <option value="Equals">Equals</option>
+                    <option value="NotEquals">Not Equals</option>
+                </select>                <%--<input id="missionOperationId" type="text" value="">--%>
             </div>
         </div>
 
@@ -179,6 +217,18 @@
             <div class="Cell">
                 <input id="beNumberId" type="text">
             </div>
+            <div class="Cell">
+                <select id="beNumberComparatorId">
+                    <option value="iContains">Sub String (case insensitive)</option>
+                    <option value="Contains">Sub String</option>
+                    <option value="iStartsWith">Starts With (case insensitive)</option>
+                    <option value="StartsWith">Starts With</option>
+                    <option value="iEndsWith">Ends With (case insensitive)</option>
+                    <option value="EndsWith">Ends With</option>
+                    <option value="Equals">Equals</option>
+                    <option value="NotEquals">Not Equals</option>
+                </select>                <%--<input id="missionOperationId" type="text" value="">--%>
+            </div>
         </div>
         <div class="Row">
             <div class="Cell">
@@ -190,6 +240,18 @@
             <div class="Cell">
                 <input id="targetId" type="text">
             </div>
+            <div class="Cell">
+                <select id="targetComparatorId">
+                    <option value="iContains">Sub String (case insensitive)</option>
+                    <option value="Contains">Sub String</option>
+                    <option value="iStartsWith">Starts With (case insensitive)</option>
+                    <option value="StartsWith">Starts With</option>
+                    <option value="iEndsWith">Ends With (case insensitive)</option>
+                    <option value="EndsWith">Ends With</option>
+                    <option value="Equals">Equals</option>
+                    <option value="NotEquals">Not Equals</option>
+                </select>                <%--<input id="missionOperationId" type="text" value="">--%>
+            </div>
         </div>
         <div class="Row">
             <div class="Cell">
@@ -200,6 +262,18 @@
             </div>
             <div class="Cell">
                 <input id="wacId" type="text">
+            </div>
+            <div class="Cell">
+                <select id="wacComparatorId">
+                    <option value="iContains">Sub String (case insensitive)</option>
+                    <option value="Contains">Sub String</option>
+                    <option value="iStartsWith">Starts With (case insensitive)</option>
+                    <option value="StartsWith">Starts With</option>
+                    <option value="iEndsWith">Ends With (case insensitive)</option>
+                    <option value="EndsWith">Ends With</option>
+                    <option value="Equals">Equals</option>
+                    <option value="NotEquals">Not Equals</option>
+                </select>                <%--<input id="missionOperationId" type="text" value="">--%>
             </div>
         </div>
 
