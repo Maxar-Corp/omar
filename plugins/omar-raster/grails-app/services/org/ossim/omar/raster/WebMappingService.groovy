@@ -1,5 +1,7 @@
 package org.ossim.omar.raster
 
+import com.vividsolutions.jts.geom.Geometry
+
 import java.awt.Color
 import java.awt.Font
 import java.awt.FontMetrics
@@ -37,6 +39,8 @@ import org.ossim.omar.ogc.WMSCapabilities
 
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
+
+import java.text.SimpleDateFormat
 
 
 class WebMappingService implements ApplicationContextAware
@@ -84,8 +88,8 @@ class WebMappingService implements ApplicationContextAware
     }
     if(layers == "auto_raster_entry")
     {
-      wmsQuery.sort  = wmsQuery.sort ?: "acquisitionDate,gsdY"
-      wmsQuery.order = wmsQuery.order ?: "desc,asc"
+      wmsQuery.sort  = wmsQuery.sort ?: "acquisitionDate"
+      wmsQuery.order = wmsQuery.order ?: "desc"
     }
     wmsQuery
 
@@ -97,8 +101,18 @@ class WebMappingService implements ApplicationContextAware
 
 
     grailsApplication.config.autoMosaic.annotation.fields.each{
-
-      String value = entry."${it.name}".toString()
+      String value
+      if(entry."${it.name}" instanceof Date)
+      {
+        TimeZone timezone = TimeZone.getTimeZone("UTC")
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss")
+        formatter.timeZone = timezone
+        value = formatter.format(entry."${it.name}")
+      }
+      else
+      {
+        value = entry."${it.name}".toString()
+      }
       if((it.width)&&((it.width >0) && (value.size() > it.width)))
       {
         value = value?.substring(0, it.width)
@@ -172,6 +186,8 @@ class WebMappingService implements ApplicationContextAware
     Double minGsd
     Double maxGsd
 
+    // Check and initialize automosaic paramters
+    //
     if(autoMosaic)
     {
       autoMosaicProperties = grailsApplication.config.autoMosaic
@@ -276,10 +292,49 @@ class WebMappingService implements ApplicationContextAware
     params.wmsView = wmsView
     params.keepWithinScales = true
     def layersToRender = []
+    Geometry geom = wmsRequest.getBoundsAsGeometry("EPSG:4326")
     if ( rasterEntries )
     {
       if(!autoMosaic) rasterEntries = rasterEntries?.reverse()
       def srcChains = []
+
+      // we already are using the rasterEntries for mosaicking.  We will just massage
+      // that list if auto mosaic is enabled.
+      if(autoMosaic)
+      {
+        if(rasterEntries.size() == 1)
+        {
+          RasterEntry rasterEntry = rasterEntries[0]
+          if(!rasterEntry.groundGeom.contains(geom))
+          {
+            rasterEntries = []
+          }
+        }
+        else
+        {
+          def newRasterEntry
+
+          for ( RasterEntry rasterEntry in rasterEntries )
+          {
+            if(rasterEntry.groundGeom.contains(geom))
+            {
+              newRasterEntry = rasterEntry
+              break
+            }
+          }
+          rasterEntries = []
+
+          if(newRasterEntry)
+          {
+             rasterEntries << newRasterEntry
+          }
+//          for ( RasterEntry rasterEntry in rasterEntries )
+//          {
+//            rasterEntry.groundGeom.contains(geom)
+//          }
+
+        }
+      }
       for ( def rasterEntry in rasterEntries )
       {
         def chainMap = imageChainService.createImageChain( rasterEntry, params )
