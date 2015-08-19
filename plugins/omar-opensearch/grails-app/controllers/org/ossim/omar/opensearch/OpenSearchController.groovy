@@ -11,7 +11,6 @@ class OpenSearchController {
     def generalSearch()
     {
         def cqlFilter = ""
-        println params
         if(!params.s)
         {
             // need to create the filter
@@ -29,9 +28,7 @@ class OpenSearchController {
     }
     def searchDescriptor()
     {
-        println params
         String description = grailsApplication?.config?.opensearch?.pluginList?."${params.name}"?.description
-        println description
 
         render contentType: "application/xml", text: description?:""
     }
