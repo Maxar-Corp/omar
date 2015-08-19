@@ -951,10 +951,11 @@ OMAR.views.CqlView = Backbone.View.extend({
                 result+="<option id='"+baseOpId+"3' value='iSTARTSWITH' >Starts With (no case)</option>";
                 result+="<option id='"+baseOpId+"4' value='ENDSWITH' >Ends With</option>";
                 result+="<option id='"+baseOpId+"5' value='iENDSWITH' >Ends With (no case)</option>";
-                result+="<option id='"+baseOpId+"6' value='is null' >IS Null</option>";
-                result+="<option id='"+baseOpId+"7' value='is not null' >IS NOT Null</option>";
-                result+="<option id='"+baseOpId+"8' value='=' >Equal</option>";
-                result+="<option id='"+baseOpId+"9' value='in' >In</option>";
+                result+="<option id='"+baseOpId+"6' value='<>' >Not Equal</option>";
+                result+="<option id='"+baseOpId+"7' value='is null' >IS Null</option>";
+                result+="<option id='"+baseOpId+"8' value='is not null' >IS NOT Null</option>";
+                result+="<option id='"+baseOpId+"9' value='=' >Equal</option>";
+                result+="<option id='"+baseOpId+"10' value='in' >In</option>";
                 break;
             case "numeric":
                 result+="<option id='"+baseOpId+"0' value='<' >Less Than</option>";
@@ -962,9 +963,10 @@ OMAR.views.CqlView = Backbone.View.extend({
                 result+="<option id='"+baseOpId+"2' value='>' >Greater Than</option>";
                 result+="<option id='"+baseOpId+"3' value='>=' >Greater Than Equal</option>";
                 result+="<option id='"+baseOpId+"4' value='=' >Equal</option>";
-                result+="<option id='"+baseOpId+"5' value='is null' >IS Null</option>";
-                result+="<option id='"+baseOpId+"6' value='is not null' >IS NOT Null</option>";
-                result+="<option id='"+baseOpId+"6' value='in' >In</option>";
+                result+="<option id='"+baseOpId+"5' value='<>' >Not Equal</option>";
+                result+="<option id='"+baseOpId+"6' value='is null' >IS Null</option>";
+                result+="<option id='"+baseOpId+"7' value='is not null' >IS NOT Null</option>";
+                result+="<option id='"+baseOpId+"8' value='in' >In</option>";
                 break;
             case "datetime":
                 result+="<option id='"+baseOpId+"0' value='today' >Today</option>";
@@ -976,8 +978,9 @@ OMAR.views.CqlView = Backbone.View.extend({
                 result+="<option id='"+baseOpId+"3' value='>' >Greater Than</option>";
                 result+="<option id='"+baseOpId+"4' value='>=' >Greater Than Equal</option>";
                 result+="<option id='"+baseOpId+"5' value='=' >Equal</option>";
-                result+="<option id='"+baseOpId+"6' value='is null' >IS Null</option>";
-                result+="<option id='"+baseOpId+"7' value='is not null' >IS NOT Null</option>";
+                result+="<option id='"+baseOpId+"6' value='<>' >Not Equal</option>";
+                result+="<option id='"+baseOpId+"7' value='is null' >IS Null</option>";
+                result+="<option id='"+baseOpId+"8' value='is not null' >IS NOT Null</option>";
                 break;
             case "geometry":
                 result+="<option id='"+baseOpId+"0' value='BBOX' >BBOX</option>";
