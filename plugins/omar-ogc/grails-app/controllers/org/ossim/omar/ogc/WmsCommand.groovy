@@ -1,5 +1,8 @@
 package org.ossim.omar.ogc
 
+import com.vividsolutions.jts.geom.Geometry
+import geoscript.geom.Bounds
+import geoscript.proj.Projection
 import groovy.transform.ToString
 import joms.oms.ossimGpt
 
@@ -408,6 +411,21 @@ class WmsCommand implements CaseInsensitiveBinder
     result
   }
 
+  Geometry getBoundsAsGeometry(String targetEpsg)
+  {
+    Geometry result
+    Bounds geoscriptBounds
+    if(!targetEpsg) targetEpsg = "EPSG:${getEpsgAsInteger}"
+    def bounds = getBounds()
+    if(bounds)
+    {
+      geoscriptBounds = new Bounds(bounds.minx, bounds.miny, bounds.maxx, bounds.maxy, srs)
+      geoscriptBounds = geoscriptBounds.reproject(new Projection(targetEpsg))
+    }
+    result = geoscriptBounds.geometry.g
+
+    result
+  }
   Integer getEpsgAsInteger()
   {
     Integer result
