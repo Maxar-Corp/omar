@@ -22,12 +22,19 @@ OMAR.models.GeneralQueryModel = Backbone.Model.extend({
         cloudCoverageMaxValue:100.0,
         missionCheckbox:false,
         missionValue:"",
+        missionComparator:"iContains",
+        sensorCheckbox:false,
+        sensorValue:"",
+        sensorComparator:"iContains",
         beNumberCheckbox:false,
         beNumberValue:"",
+        beNumberComparator:"iContains",
         targetCheckbox:false,
         targetValue:"",
+        targetComparator:"iContains",
         wacCheckbox:false,
-        wacValue:""
+        wacValue:"",
+        wacComparator:"iContains"
     },
     initialize: function (params) {
 
@@ -56,17 +63,25 @@ OMAR.models.GeneralQueryModel = Backbone.Model.extend({
             if(params.cloudCoverageCheckbox) this.attributes.cloudCoverageCheckbox = params.cloudCoverageCheckbox;
             if(params.cloudCoverageMaxValue) this.attributes.cloudCoverageMaxValue = params.cloudCoverageMaxValue;
 
-            if(params.missionCheckbox) this.attributes.missionCheckbox = params.missionCheckbox;
-            if(params.missionValue) this.attributes.missionValue = params.missionValue;
+            if(params.missionCheckbox)   this.attributes.missionCheckbox   = params.missionCheckbox;
+            if(params.missionValue)      this.attributes.missionValue      = params.missionValue;
+            if(params.missionComparator) this.attributes.missionComparator = params.missionComparator;
+
+            if(params.sensorCheckbox) this.attributes.sensorCheckbox = params.sensorCheckbox;
+            if(params.sensorValue) this.attributes.sensorValue = params.sensorValue;
+            if(params.sensorComparator) this.attributes.sensorComparator = params.sensorValue;
 
             if(params.beNumberCheckbox) this.attributes.beNumberCheckbox = params.beNumberCheckbox;
             if(params.beNumberValue) this.attributes.beNumberValue = params.beNumberValue;
+            if(params.beNumberComparator) this.attributes.beNumberComparator = params.beNumberComparator;
 
             if(params.targetCheckbox) this.attributes.targetCheckbox = params.targetCheckbox;
             if(params.targetValue) this.attributes.targetValue = params.targetValue;
+            if(params.targetComparator) this.attributes.targetComparator = params.targetComparator;
 
             if(params.wacCheckbox) this.attributes.wacCheckbox = params.wacCheckbox;
             if(params.wacValue) this.attributes.wacValue = params.wacValue;
+            if(params.wacComparator) this.attributes.wacComparator = params.wacComparator;
         }
     },
     reset: function()
@@ -84,6 +99,7 @@ OMAR.models.GeneralQueryModel = Backbone.Model.extend({
             {name:"sunAzimuth", dbname:"sun_azimuth"},
             {name:"cloudCoverage", dbname:"cloud_cover"},
             {name:"mission",dbname:"mission_id"},
+            {name:"sensor",dbname:"sensor_id"},
             {name:"beNumber", dbname:"be_number"},
             {name:"target", dbname:"target_id"},
             {name:"wac", dbname:"wac_code"}
@@ -98,12 +114,46 @@ OMAR.models.GeneralQueryModel = Backbone.Model.extend({
             var minValue = thisPtr.get(obj.name+"MinValue");
             var maxValue = thisPtr.get(obj.name+"MaxValue");
             var value    = thisPtr.get(obj.name+"Value");
-            var temp = ""
+            var comparator= thisPtr.get(obj.name+"Comparator");
+            var temp = "";
             if(checked)
             {
                 if(value != null)
                 {
-                    temp = "("+dbname+" ILIKE '%" + value + "%')";
+                    if(comparator)
+                    {
+                        switch(comparator.toLowerCase())
+                        {
+                            case "contains":
+                                temp = "("+dbname+" LIKE '%" + value + "%')";
+                                break;
+                            case "icontains":
+                                temp = "("+dbname+" ILIKE '%" + value + "%')";
+                                break;
+                            case "startswith":
+                                temp = "("+dbname+" LIKE '" + value + "%')";
+                                break;
+                            case "endswith":
+                                temp = "("+dbname+" LIKE '%" + value + "')";
+                                break;
+                            case "istartswith":
+                                temp = "("+dbname+" ILIKE '" + value + "%')";
+                                break;
+                            case "iendswith":
+                                temp = "("+dbname+" ILIKE '%" + value + "')";
+                                break;
+                            case "equals":
+                                temp = "("+dbname+" = '" + value + "')";
+                                break;
+                            case "notequals":
+                                temp = "("+dbname+" <> '" + value + "')";
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        temp = "("+dbname+" ILIKE '%" + value + "%')";
+                    }
                 }
                 else if(minValue == null)
                 {
@@ -136,7 +186,8 @@ OMAR.models.GeneralQueryModel = Backbone.Model.extend({
 
         });
 
-        //console.log(result);
+        //alert(result);
+        console.log(result);
 
         return result;
     }
@@ -170,17 +221,25 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
         this.cloudCoverageCheckboxId = $("#cloudCoverageCheckboxId");
         this.cloudCoverageMaxId      = $("#cloudCoverageMaxId");
 
-        this.missionCheckboxId = $("#missionCheckboxId");
-        this.missionId         = $("#missionId");
+        this.missionCheckboxId   = $("#missionCheckboxId");
+        this.missionId           = $("#missionId");
+        this.missionComparatorId = $("#missionComparatorId");
 
-        this.beNumberCheckboxId = $("#beNumberCheckboxId");
-        this.beNumberId         = $("#beNumberId");
+        this.sensorCheckboxId   = $("#sensorCheckboxId");
+        this.sensorId           = $("#sensorId");
+        this.sensorComparatorId = $("#sensorComparatorId");
 
-        this.targetCheckboxId = $("#targetCheckboxId");
+        this.beNumberCheckboxId   = $("#beNumberCheckboxId");
+        this.beNumberId           = $("#beNumberId");
+        this.beNumberComparatorId = $("#beNumberComparatorId");
+
+        this.targetCheckboxId   = $("#targetCheckboxId");
         this.targetId           = $("#targetId");
+        this.targetComparatorId = $("#targetComparatorId");
 
-        this.wacCheckboxId = $("#wacCheckboxId");
-        this.wacId         = $("#wacId");
+        this.wacCheckboxId    = $("#wacCheckboxId");
+        this.wacId            = $("#wacId");
+        this.wacComparatorId  = $("#wacComparatorId");
 
         this.resetButtonId = $("#GeneralQueryResetButtonId")
         if (params.generalQueryMode)
@@ -260,12 +319,18 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
         $(this.missionId).change(function(){
             thisPtr.model.set("missionValue", $(thisPtr.missionId).val());
         });
+        $(this.missionComparatorId).change(function(){
+            thisPtr.model.set("missionComparator", $(thisPtr.missionComparatorId).val());
+        });
 
         $(this.beNumberCheckboxId).change(function(){
             thisPtr.model.set("beNumberCheckbox", $(thisPtr.beNumberCheckboxId).is(':checked'));
         });
         $(this.beNumberId).change(function(){
             thisPtr.model.set("beNumberValue", $(thisPtr.beNumberId).val());
+        });
+        $(this.beNumberComparatorId).change(function(){
+            thisPtr.model.set("beNumberComparator", $(thisPtr.beNumberComparatorId).val());
         });
 
         $(this.targetCheckboxId).change(function(){
@@ -274,12 +339,29 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
         $(this.targetId).change(function(){
             thisPtr.model.set("targetValue", $(thisPtr.targetId).val());
         });
+        $(this.targetComparatorId).change(function(){
+            thisPtr.model.set("targetComparator", $(thisPtr.targetComparatorId).val());
+        });
+
+        $(this.sensorCheckboxId).change(function(){
+            thisPtr.model.set("sensorCheckbox", $(thisPtr.sensorCheckboxId).is(':checked'));
+        });
+        $(this.sensorId).change(function(){
+            thisPtr.model.set("sensorValue", $(thisPtr.sensorId).val());
+        });
+        $(this.sensorComparatorId).change(function(){
+            thisPtr.model.set("sensorComparator", $(thisPtr.sensorComparatorId).val());
+        });
+
 
         $(this.wacCheckboxId).change(function(){
             thisPtr.model.set("wacCheckbox", $(thisPtr.wacCheckboxId).is(':checked'));
         });
         $(this.wacId).change(function(){
             thisPtr.model.set("wacValue", $(thisPtr.wacId).val());
+        });
+        $(this.wacComparatorId).change(function(){
+            thisPtr.model.set("wacComparator", $(thisPtr.wacComparatorId).val());
         });
 
         $(this.resetButtonId).click(function(){
@@ -318,15 +400,19 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
 
         this.model.attributes.missionCheckbox = $(this.missionCheckboxId).is(':checked');
         this.model.attributes.missionValue    = $(this.missionId).val();
+        this.model.attributes.missionComparatorValue    = $(this.missionComparatorId).val();
 
         this.model.attributes.beNumberCheckbox = $(this.beNumberCheckboxId).is(':checked');
         this.model.attributes.beNumberValue    = $(this.beNumberId).val();
+        this.model.attributes.beNumberComparator = $(this.beNumberComparatorId).val();
 
         this.model.attributes.targetCheckbox = $(this.targetCheckboxId).is(':checked');
         this.model.attributes.targetValue    = $(this.targetId).val();
+        this.model.attributes.targetComparator    = $(this.targetComparatorId).val();
 
-        this.model.attributes.wacCheckbox = $(this.wacCheckboxId).is(':checked');
-        this.model.attributes.wacValue    = $(this.wacId).val();
+        this.model.attributes.wacCheckbox   = $(this.wacCheckboxId).is(':checked');
+        this.model.attributes.wacValue      = $(this.wacId).val();
+        this.model.attributes.wacComparator = $(this.wacComparatorId).val();
     },
     setModel:function(model)
     {
@@ -367,15 +453,23 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
 
         $(this.missionCheckboxId).prop("checked", this.model.get("missionCheckbox"));
         $(this.missionId).val(this.model.get("missionValue").toString());
+        $(this.missionComparatorId).val(this.model.get("missionComparator").toString());
+
+        $(this.sensorCheckboxId).prop("checked", this.model.get("sensorCheckbox"));
+        $(this.sensorId).val(this.model.get("sensorValue").toString());
+        $(this.sensorComparatorId).val(this.model.get("sensorComparator").toString());
 
         $(this.beNumberCheckboxId).prop("checked", this.model.get("beNumberCheckbox"));
         $(this.beNumberId).val(this.model.get("beNumberValue").toString());
+        $(this.beNumberComparatorId).val(this.model.get("beNumberComparator").toString());
 
         $(this.targetCheckboxId).prop("checked", this.model.get("targetCheckbox"));
         $(this.targetId).val(this.model.get("targetValue").toString());
+        $(this.targetComparatorId).val(this.model.get("targetComparator").toString());
 
         $(this.wacCheckboxId).prop("checked", this.model.get("wacCheckbox"));
         $(this.wacId).val(this.model.get("wacValue").toString());
+        $(this.wacComparatorId).val(this.model.get("wacComparator").toString());
     }
 
 
