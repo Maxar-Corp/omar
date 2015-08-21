@@ -728,7 +728,7 @@ class RasterEntry
               }
               break
             case "validmodel":
-              if ( value && !rasterEntry.className )
+              if ( value && (rasterEntry.validModel==null ))
               {
                 rasterEntry.validModel = value as Integer
               }
@@ -738,6 +738,30 @@ class RasterEntry
               if(value && !rasterEntry.acquisitionDate)
               {
                 rasterEntry.acquisitionDate = DateUtil.parseDate(value)
+              }
+              break;
+            case "sunazimuth":
+              if(value )
+              {
+                try{
+                  rasterEntry.sunAzimuth = value.toDouble()
+                }
+                catch(e)
+                {
+
+                }
+              }
+              break;
+            case "sunelevation":
+              if(value )
+              {
+                try{
+                  rasterEntry.sunElevation = value.toDouble()
+                }
+                catch(e)
+                {
+
+                }
               }
               break;
             default:
