@@ -464,8 +464,8 @@ class RasterEntry
 //          case "STDIDC":
 //          case "USE00A":
 //            break
-        default:
-          initRasterEntryMetadata( tagNode, rasterEntry )
+          default:
+            initRasterEntryMetadata( tagNode, rasterEntry )
         }
       }
       else
@@ -487,195 +487,264 @@ class RasterEntry
         {
           switch ( name.toLowerCase() )
           {
-          case "filename":
-            if ( value && !rasterEntry.filename )
-            {
-              rasterEntry.filename = value as File
-            }
-            break;
-          case "imageid":
-          case "iid":
-            if ( value && !rasterEntry.imageId )
-            {
-              rasterEntry.imageId = value
-            }
-            break;
-          case "irep":
-            if ( value && !rasterEntry.imageRepresentation )
-            {
-              rasterEntry.imageRepresentation = value
-            }
-            break;
-          case "targetid":
-          case "tgtid":
-            if ( value && !rasterEntry.targetId )
-            {
-              rasterEntry.targetId = value
-            }
-            break;
-          case "productid":
-            if ( value && !rasterEntry.productId )
-            {
-              rasterEntry.productId = value
-            }
-            break;
-          case "benumber":
-            if ( value )
-            {
-              rasterEntry.beNumber = value;
-            }
-            break;
-          case "sensorid":
-          case "sensor_id":
-          case "sensor_type":
-            if ( value && !rasterEntry.sensorId )
-            {
-              rasterEntry.sensorId = value
-            }
-            break;
-          case "country":
-          case "countrycode":
-            if ( value && !rasterEntry.countryCode )
-            {
-              rasterEntry.countryCode = value
-            }
-            break;
-          case "mission":
-          case "missionid":
-          if ( value && !rasterEntry.missionId )
-            {
-              rasterEntry.missionId = value
-            }
-            break;	
-          case "isorce":
-            if ( value && !rasterEntry.isorce )
-            {
-              rasterEntry.isorce = value
-            }
-            break;
-          case "imagecategory":
-          case "icat":
-            if ( value && !rasterEntry.imageCategory )
-            {
-              rasterEntry.imageCategory = value
-            }
-            break;
-          case "azimuthangle":
-            if ( value && value != "nan" )
-            {
-              rasterEntry.azimuthAngle = value as Double
-            }
-            break
-          case "angletonorth":
-            if ( value && value != "nan" && !rasterEntry.azimuthAngle )
-            {
-              rasterEntry.azimuthAngle = ( ( value as Double ) + 90.0 ) % 360.0;
-            }
-            break;
-          case "grazingangle":
-            if ( value && value != "nan" && !rasterEntry.grazingAngle )
-            {
-              rasterEntry.grazingAngle = value as Double
-            }
-            break;
-          case "oblang":
-            if ( value && value != "nan" && !rasterEntry.grazingAngle )
-            {
-              rasterEntry.grazingAngle = 90 - ( value as Double )
-            }
-            break;
-
-          case "securityclassification":
-            if ( value && !rasterEntry.securityClassification )
-            {
-              rasterEntry.securityClassification = value
-            }
-            break
-          case "isclas":
-            if ( value && !rasterEntry.securityClassification )
-            {
-              switch(value.toUpperUpperCase())
+            case "filename":
+              if ( value )
               {
-                case "U":
-                  rasterEntry.securityClassification = "UNCLASSIFIED"
-                  break
-                case "R":
-                  rasterEntry.securityClassification = "RESTRICTED"
-                  break
-                case "S":
-                  rasterEntry.securityClassification = "SECRET"
-                  break
-                case "T":
-                case "TS":
-                  rasterEntry.securityClassification = "TOP SECRET"
-                  break
-                default:
-                  rasterEntry.securityClassification = value
-                  break
+                rasterEntry.filename = value as File
               }
-            }
-            break;
-          case "title":
-          case "ititle":
-          case "iid2":
-            if ( value && !rasterEntry.title )
-            {
-              rasterEntry.title = value
-            }
-            break;
-          case "organization":
-          case "oname":
-            if ( value && !rasterEntry.organization )
-            {
-              rasterEntry.organization = value
-            }
-            break;
-          case "description":
-            if ( value && !rasterEntry.description )
-            {
-              rasterEntry.description = value
-            }
-            break;
-          case "wac":
-            if ( value && !rasterEntry.wacCode )
-            {
-              rasterEntry.wacCode = value
-            }
-            break;
-          case "niirs":
-            if ( value && value != "nan" && !rasterEntry.niirs )
-            {
-              rasterEntry.niirs = value as Double
-            }
-            break;
+              break
+            case "imageid":
+              if ( value )
+              {
+                rasterEntry.imageId = value
+              }
+              break;
+            case "iid":
+              if ( value && !rasterEntry.imageId )
+              {
+                rasterEntry.imageId = value
+              }
+              break
+            case "irep":
+              if ( value && !rasterEntry.imageRepresentation )
+              {
+                rasterEntry.imageRepresentation = value
+              }
+              break
+            case "imagerepresentation":
+              if ( value  )
+              {
+                rasterEntry.imageRepresentation = value
+              }
+              break
+            case "tgtid":
+              if ( value && !rasterEntry.targetId )
+              {
+                rasterEntry.targetId = value
+              }
+              break;
+            case "targetid":
+              if ( value )
+              {
+                rasterEntry.targetId = value
+              }
+              break;
+            case "productid":
+              if ( value )
+              {
+                rasterEntry.productId = value
+              }
+              break;
+            case "be":
+              if ( value &&!rasterEntry.beNumber)
+              {
+                rasterEntry.beNumber = value;
+              }
+              break
+            case "benumber":
+              if ( value )
+              {
+                rasterEntry.beNumber = value;
+              }
+              break;
+            case "sensorid":
+            case "sensor_id":
+              if ( value )
+              {
+                rasterEntry.sensorId = value
+              }
+              break;
+            case "sensor_type":
+              if ( value && !rasterEntry.sensorId )
+              {
+                rasterEntry.sensorId = value
+              }
+              break
+            case "country":
+              if ( value && !rasterEntry.countryCode )
+              {
+                rasterEntry.countryCode = value
+              }
+              break
+            case "countrycode":
+              if ( value )
+              {
+                rasterEntry.countryCode = value
+              }
+              break
+            case "fsctlh":
+              if(value &&!rasterEntry.securityCode)
+              {
+                rasterEntry.securityCode = value
+              }
+              break
+            case "security_code":
+              if ( value && !rasterEntry.securityCode )
+              {
+                rasterEntry.securityCode = value
+              }
+              break;
+            case "securityCode":
+              if ( value )
+              {
+                rasterEntry.securityCode = value
+              }
+              break;
+            case "mission":
+            case "missionid":
+              if ( value && !rasterEntry.missionId )
+              {
+                rasterEntry.missionId = value
+              }
+              break;
+            case "isorce":
+              if ( value && !rasterEntry.isorce )
+              {
+                rasterEntry.isorce = value
+              }
+              break;
+            case "imagecategory":
+              if ( value  )
+              {
+                rasterEntry.imageCategory = value
+              }
+              break
+            case "icat":
+              if ( value && !rasterEntry.imageCategory )
+              {
+                rasterEntry.imageCategory = value
+              }
+              break
+            case "azimuthangle":
+              if ( value && value != "nan" )
+              {
+                rasterEntry.azimuthAngle = value as Double
+              }
+              break
+            case "angletonorth":
+              if ( value && value != "nan" && !rasterEntry.azimuthAngle )
+              {
+                rasterEntry.azimuthAngle = ( ( value as Double ) + 90.0 ) % 360.0;
+              }
+              break;
+            case "grazingangle":
+              if ( value && (value != "nan") )
+              {
+                rasterEntry.grazingAngle = value as Double
+              }
+              break;
+            case "oblang":
+              if ( value && value != "nan" && !rasterEntry.grazingAngle )
+              {
+                rasterEntry.grazingAngle = 90 - ( value as Double )
+              }
+              break;
+
+            case "classification":
+              if ( value &&!rasterEntry.securityClassification )
+              {
+                rasterEntry.securityClassification = value
+              }
+
+              break
+            case "securityclassification":
+              if ( value )
+              {
+                rasterEntry.securityClassification = value
+              }
+              break
+            case "isclas":
+              if ( value && !rasterEntry.securityClassification )
+              {
+                switch(value.toUpperUpperCase())
+                {
+                  case "U":
+                    rasterEntry.securityClassification = "UNCLASSIFIED"
+                    break
+                  case "R":
+                    rasterEntry.securityClassification = "RESTRICTED"
+                    break
+                  case "S":
+                    rasterEntry.securityClassification = "SECRET"
+                    break
+                  case "T":
+                  case "TS":
+                    rasterEntry.securityClassification = "TOP SECRET"
+                    break
+                  default:
+                    rasterEntry.securityClassification = value
+                    break
+                }
+              }
+              break;
+            case "title":
+            case "ititle":
+            case "iid2":
+              if ( value && !rasterEntry.title )
+              {
+                rasterEntry.title = value
+              }
+              break;
+            case "organization":
+            case "oname":
+              if ( value && !rasterEntry.organization )
+              {
+                rasterEntry.organization = value
+              }
+              break;
+            case "description":
+              if ( value && !rasterEntry.description )
+              {
+                rasterEntry.description = value
+              }
+              break;
+            case "wac":
+              if ( value && !rasterEntry.wacCode )
+              {
+                rasterEntry.wacCode = value
+              }
+              break;
+            case "niirs":
+              if ( value && value != "nan" && !rasterEntry.niirs )
+              {
+                rasterEntry.niirs = value as Double
+              }
+              break;
 
           // Just for testing
-          case "filetype":
-          case "file_type":
-            if ( value && !rasterEntry.fileType )
-            {
-              rasterEntry.fileType = value
-            }
-            break
+            case "filetype":
+            case "file_type":
+              if ( value && !rasterEntry.fileType )
+              {
+                rasterEntry.fileType = value
+              }
+              break
 
-          case "classname":
-          case "class_name":
-            if ( value && !rasterEntry.className )
-            {
-              rasterEntry.className = value
-            }
-            break
-          case "validmodel":
-            if ( value && !rasterEntry.className )
-            {
-              rasterEntry.validModel = value as Integer
-            }
-            break;
-          default:
-            if(rasterEntry.grailsApplication.config.stager.includeOtherTags)
-            {
-              rasterEntry.otherTagsMap[name] = value
-            }
+            case "classname":
+            case "class_name":
+              if ( value && !rasterEntry.className )
+              {
+                rasterEntry.className = value
+              }
+              break
+            case "validmodel":
+              if ( value && !rasterEntry.className )
+              {
+                rasterEntry.validModel = value as Integer
+              }
+              break;
+            case "acquisition_date":
+            case "acquisitiondate":
+              if(value && !rasterEntry.acquisitionDate)
+              {
+                rasterEntry.acquisitionDate = DateUtil.parseDate(value)
+              }
+              break;
+            default:
+              if(rasterEntry.grailsApplication.config.stager.includeOtherTags)
+              {
+                rasterEntry.otherTagsMap[name] = value
+              }
           }
         }
       }
