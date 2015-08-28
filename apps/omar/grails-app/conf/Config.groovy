@@ -113,8 +113,8 @@ environments {
   }
 }
 
-omar.serverIP = InetAddress.localHost.hostAddress
-omar.serverURL = "http://${omar.serverIP}/omar"
+omar.serverIP = "localhost"//InetAddress.localHost.hostAddress
+omar.serverURL = "http://${omar.serverIP}:9999/omar"
 grails.serverURL = omar.serverURL
 
 // log4j configuration
@@ -482,6 +482,7 @@ autoMosaic {
   minGsdScale = 1.0 / 16
   maxGsdScale = 16
 
+
 }
 
 
@@ -738,20 +739,20 @@ feedback{
 
 opensearch{
    enabled=false
-   pluginList = [generalSearch:
+   pluginList = [pointRadiusSearch:
                              [
-                                     href:"${grails.serverURL}/openSearch/searchDescriptor?name=generalSearch",
-                                     title:"OMAR General search",
+                                     href:"${grails.serverURL}/openSearch/searchDescriptor?name=pointRadiusSearch",
+                                     title:"OMAR Point Radius search",
                                      description:"""<?xml version="1.0" encoding="UTF-8"?>
                                              <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-                                                 <ShortName>OMAR General Search</ShortName>
-                                                 <Description>Search the OMAR holdings</Description>
+                                                 <ShortName>OMAR Point Radius Search</ShortName>
+                                                 <Description>Search the OMAR holdings given a point radius</Description>
                                                  <InputEncoding>UTF-8</InputEncoding>
                                                  <OutputEncoding>UTF-8</OutputEncoding>
                                                  <AdultContent>false</AdultContent>
                                                  <Language>en-us</Language>
-                                                 <Image height="16" width="16" type="image/vnd.microsoft.icon">http://${grails.serverURL}/favicon.ico</Image>
-                                                 <Url type="text/html" template="${grails.serverURL}/openSearch/generalSearch?s={searchTerms}"/>
+                                                 <Image height="16" width="16" type="image/png">${grails.serverURL}/images/globe_16.png</Image>
+                                                 <Url type="text/html" template="${grails.serverURL}/openSearch/pointRadiusSearch?value={searchTerms}"/>
                                              </OpenSearchDescription>
                                                """,
 
