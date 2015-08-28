@@ -25,7 +25,18 @@ body {
     border-bottom:	1px solid #BBB;
 }
 
-
+.ui-layout-pane-north {
+    border: 0px;
+    padding: 0px;
+}
+.ui-layout-pane-south {
+    border: 0px;
+    padding: 0px;
+}
+.ui-layout-pane-center {
+    border: 0px;
+    padding: 0px;
+}
 
 .seperator
 {
@@ -241,8 +252,14 @@ table.dataTable tr.odd td.sorting_2 { background-color: #DADCFF; }
 table.dataTable tr.odd td.sorting_3 { background-color: #E0E2FF; }
 table.dataTable td {
     border-right: 1px solid black;
+   /* border-left: 1px solid black;*/
 }
 
+table.dataTable {
+    border-collapse: separate;
+    empty-cells: show;
+    border-right: 1px solid black;
+}
 .constraint-heading{
     width:200px;
     text-align: center;
@@ -255,7 +272,7 @@ table.dataTable td {
 {
     float:left;
     display: table;
-    border-spacing: 2;
+    border-spacing: 0;
     border-color: #000;
     border:solid;
     margin: 2px;
@@ -285,6 +302,7 @@ table.dataTable td {
     display: table-row;
     padding: 0;
     line-height: 30px;
+    width:1024px;
 }
 .Cell
 {
@@ -300,4 +318,5 @@ div.niceBoxNoBorder {
     margin-bottom: 8px;
     background-color: #dfe5f3;
 }
+
 

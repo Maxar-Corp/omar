@@ -8,21 +8,15 @@ class OpenSearchController {
 
     def index() { }
 
-    def generalSearch()
+    def pointRadiusSearch()
     {
-        def cqlFilter = ""
-        if(!params.s)
-        {
-            // need to create the filter
-        }
-        forward(action: "imageResults", controller: "openSearch", params: [cqlFilter:cqlFilter])
+        forward(action: "imageResults", controller: "openSearch", params: [pointRadius:params.value])
     }
 
     def imageResults()
     {
         def initParams =[
-                cqlFilter:params?.cqlFilter?:"",
-                //wfsUrl:
+                pointRadius:params?.pointRadius?:"",
         ]
         [initParams:initParams as JSON]
     }

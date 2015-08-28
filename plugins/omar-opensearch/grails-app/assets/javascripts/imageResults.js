@@ -13,6 +13,8 @@
 //= require underscore/underscore-1.4.2.js
 //= require backbone-min.js
 //= require WfsModel.js
+//= require EllipsoidModel.js
+//= require PointModelView.js
 //= require BboxModelView.js
 //= require spin-min.js
 //= require jMenu.jquery.js
