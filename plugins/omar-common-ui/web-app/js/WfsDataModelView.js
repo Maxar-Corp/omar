@@ -231,7 +231,7 @@ OMAR.models.RasterEntryDataModel = Backbone.Model.extend({
         ,"organization":""
         ,"description":""
         ,"country_code":""
-        ,"be_number":""
+        ,"be_number":" "
         ,"niirs":""
         ,"wac_code":""
         ,"sun_elevation":""
@@ -462,7 +462,7 @@ OMAR.models.RasterEntryColumnGroups=Backbone.Collection.extend({
             ,{name:"Metadata",
                 id:"RasterEntryMetadataGroupId",
                 mDataProperties:[
-                    "checked","thumbnail","id", ,"view", "acquisition_date","file_type"
+                    "checked","thumbnail","id","niirs","view", "acquisition_date","file_type"
                     ,"class_name","mission_id","country_code","target_id"
                     ,"be_number","sensor_id","title", "image_id"
                 ],
@@ -553,21 +553,22 @@ OMAR.models.RasterEntryColumnDefs=Backbone.Collection.extend({
         if(this.size()<1){
             this.add([
                 { "aTargets":[],"sTitle": "<input id='columnSelectId' type='checkbox' class ='columnSelect'></input>",sClass:"rowSelect", sType:"html", asSorting: [], "sName":"", mDataProp: "checked", bSearchable:false}
-                ,{ "aTargets":[],"sTitle": "ID","sClass":"id", "sType":"string", "sName":"id", "mDataProp": "id", bSearchable:false}
-                ,{ "aTargets":[], "sTitle": "THUMBNAIL", "sClass":"thumbnail", sType:"html", "mDataProp": "thumbnail", "bSearchable": false, "asSorting": [] }
-                ,{ "aTargets":[], "sTitle": "VIEW", "sClass":"view", sType:"html", "mDataProp": "view", "bSearchable": false, "asSorting": [] }
+                ,{ "aTargets":[],"sTitle": "ID","sClass":"rasterId", "sType":"string", "sName":"id", "mDataProp": "id", bSearchable:false}
+                ,{ "aTargets":[], "sTitle": "THUMBNAIL", "sClass":"rasterThumbnail", sType:"html", "mDataProp": "thumbnail", "bSearchable": false, "asSorting": [] }
+                ,{ "aTargets":[], "sTitle": "VIEW", "sClass":"rasterView", sType:"html", "mDataProp": "view", "bSearchable": false, "asSorting": [] }
                 ,{ "aTargets":[], "sTitle": "ACQUISITION DATE", "sType":"date", "sName":"acquisition_date", "mDataProp": "acquisition_date" }
                 ,{ "aTargets":[], "sTitle": "MISSION",  "sName":"mission_id", "mDataProp": "mission_id" }
                 ,{ "aTargets":[], "sTitle": "COUNTRY",  "sName":"country_code", "mDataProp": "country_code" }
                 ,{ "aTargets":[], "sTitle": "TARGET ID",  "sName":"target_id", "mDataProp": "target_id" }
                 ,{ "aTargets":[], "sTitle": "BE",  "sName":"be_number", "mDataProp": "be_number" }
                 ,{ "aTargets":[], "sTitle": "SENSOR ID",  "sName":"sensor_id", "mDataProp": "sensor_id" }
-                ,{ "aTargets":[], "sTitle": "IID",  "sClass":"image_id", "sType":"string","sName":"image_id", "mDataProp": "image_id" }
-                ,{ "aTargets":[], "sTitle": "IID2", "sClass":"title",  "sType":"string","sName":"title", "mDataProp": "title" }
+                ,{ "aTargets":[], "sTitle": "IID",  "sClass":"rasterImageId", "sType":"string","sName":"image_id", "mDataProp": "image_id" }
+               // ,{ "aTargets":[], "sTitle": "IID2", "sClass":"image_id",  "sType":"string","sName":"image_id", "mDataProp": "image_id" }
+                ,{ "aTargets":[], "sTitle": "IID2", "sClass":"rasterTitle",  "sType":"string","sName":"title", "mDataProp": "title" }
                 ,{ "aTargets":[], "sTitle": "PRODUCT ID", "sName":"product_id",  "mDataProp": "product_id" }
-                ,{ "aTargets":[], "sTitle": "NIIRS",  "sClass":"niirs", "sType":"numeric", "sName":"niirs", "mDataProp": "niirs" }
-                ,{ "aTargets":[], "sTitle": "ORGANIZATION",  "sClass":"organization", "sType":"string","sName":"organization","mDataProp": "organization" }
-                ,{ "aTargets":[], "sTitle": "AZIMUTH","sType":"numeric", "sClass":"azimuth_angle", "sName":"azimuth_angle", "mDataProp": "azimuth_angle" }
+                ,{ "aTargets":[], "sTitle": "NIIRS",  "sClass":"rasterNiirs", "sType":"numeric", "sName":"niirs", "mDataProp": "niirs" }
+                ,{ "aTargets":[], "sTitle": "ORGANIZATION",  "sClass":"rasterOrganization", "sType":"string","sName":"organization","mDataProp": "organization" }
+                ,{ "aTargets":[], "sTitle": "AZIMUTH","sType":"numeric", "sClass":"rasterAzimuthAngle", "sName":"azimuth_angle", "mDataProp": "azimuth_angle" }
                 ,{ "aTargets":[], "sTitle": "GRAZING","sType":"numeric",  "sName":"grazing_angle", "mDataProp": "grazing_angle" }
                 ,{ "aTargets":[], "sTitle": "SECURITY CLASS",  "sName":"security_classification", "mDataProp": "security_classification" }
                 ,{ "aTargets":[], "sTitle": "SECURITY_CODE",  "sName":"security_code", "mDataProp": "security_code" }
@@ -810,7 +811,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
             "aaSorting": [[ 1, 'desc' ]],
             "aLengthMenu": [5,10,25,50,100],
             "fnDrawCallback":$.proxy(this.drawCallback,this),
-            "fnServerData": $.proxy(this.getServerData,this)
+            "fnServerData": $.proxy(this.getServerData,this),
         });
 
         $('.sorting_disabled').unbind('click');
@@ -901,6 +902,8 @@ OMAR.views.DataModelView = Backbone.View.extend({
             // alert(thisPtr.selectedCollection.size());
         });
         this.checkAllRowsChecked();
+        $("td:empty").html("&nbsp;");
+
     },
     checkAllRowsChecked:function(){
         var totalChecked = $("input:checkbox[class=rowCheckbox]:checked").size();
