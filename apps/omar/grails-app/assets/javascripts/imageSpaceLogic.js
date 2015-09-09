@@ -1528,7 +1528,7 @@ function exportTemplate()
 
 function init( mapWidth, mapHeight )
 {
-    console.log('init - start');
+    //console.log('init - start');
 
     //mapDiv.style.display = "block";
     setImageId();
@@ -1708,10 +1708,10 @@ function init( mapWidth, mapHeight )
 
     //OMAR.imageManipulator.updateTransform();
     //OMAR.imageManipulator.transformDiv();
-    //OMAR.imageManipulator.applyRotate(0.0);
-    //OMAR.imageManipulator.applyRotate($("rotateAngle").value);
-    //OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
-    //alert(map.getMaxExtents());
+   // OMAR.imageManipulator.applyRotate(0.0);
+   // OMAR.imageManipulator.applyRotate($("rotateAngle").value);
+   // OMAR.imageManipulator.setToolMode(OMAR.ToolModeType.PAN_ZOOM);
+   // alert(map.getMaxExtents());
     OMAR.imageManipulator.events.on( {
         "onFeatureDone": measureFinished,
         "onFeatureRemoved": measureRemoved,
@@ -1783,6 +1783,13 @@ function init( mapWidth, mapHeight )
        } );
     }
     setupOverviewCheck();
+
+    OMAR.imageManipulator.setupvector();
+    initBands();
+
+   // console.log('init - end');
+    finishedInit = true;
+    updateCenter();
     // mapDiv.style.display = "inline";
     if ( rasterEntry.numberOfResLevels < 2 )
     {
@@ -1793,12 +1800,4 @@ function init( mapWidth, mapHeight )
         //map.zoomTo(map.getZoomForExtent(bounds)-1);
         map.zoomToExtent( bounds );//,{closest:true});
     }
-    finishedInit = true;
-    updateCenter();
-
-    OMAR.imageManipulator.setupvector();
-    initBands();
-
-    console.log('init - end');
-
 }

@@ -640,7 +640,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         h2 = WH2;
         tempAffine.rotate = 0;//this.affineParams.rotate;
         tempAffine.pivot  = new OmarPoint(w*0.5, h*0.5);
-        var center = tempAffine.pivot
+        var center = tempAffine.pivot;
         if(!this.fillAreaFlag)//||(OpenLayers.BROWSER_NAME == "msie"))
         {
             extraW = 0.0;
@@ -666,7 +666,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
         var top    = Math.round(minY);
 
         //alert(left +", " + top + ", " + width + ", "+height + "\n" + w +","+h);
-
+        //alert("x:y == > " + left+","+top + " w, h: " + width +","+height);
         OpenLayers.Util.modifyDOMElement(div, null, {x:left,y:top}, {w:(width),h:(height)});
     },
     containerResized: function(initializing){
@@ -683,6 +683,7 @@ OMAR.OpenLayersImageManipulator = OpenLayers.Class({
     },
     checkResize: function(){
         var region = YAHOO.util.Region.getRegion(this.containerDiv);
+
         if(!this.regionsEqual(region,this.containerDivRegion))
         {
             this.containerResized();
