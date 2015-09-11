@@ -22,7 +22,7 @@ class ImageSpaceController
 
   def getTile()
   {
-    println params
+   // println params
 
     def paramsIgnoreCase = new CaseInsensitiveMap( params )
 
