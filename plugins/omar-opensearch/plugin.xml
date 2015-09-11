@@ -5,5 +5,8 @@
 </description>
   <documentation>http://grails.org/plugin/omar-opensearch</documentation>
   <type>OmarOpensearchGrailsPlugin</type>
-  <resources />
+  <resources>
+    <resource>org.ossim.omar.opensearch.OpenSearchController</resource>
+    <resource>org.ossim.omar.opensearch.tag.OpensearchDescriptorTagLib</resource>
+  </resources>
 </plugin>
