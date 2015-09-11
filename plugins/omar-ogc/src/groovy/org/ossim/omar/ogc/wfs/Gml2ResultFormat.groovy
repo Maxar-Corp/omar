@@ -132,7 +132,7 @@ class Gml2ResultFormat implements ResultFormat
   def getFeature(def wfsRequest, def workspace)
   {
     def results
-    def describeFeatureTypeURL = grailsLinkGenerator.link( base: grailsApplication.config.omar.serverURL, absolute: true,
+    def describeFeatureTypeURL = grailsLinkGenerator.link( absolute: true,
         controller: 'wfs', params: [service: 'WFS', version: '1.0.0', request: 'DescribeFeatureType',
         typeName: "${ wfsRequest.typeName }"] )
 

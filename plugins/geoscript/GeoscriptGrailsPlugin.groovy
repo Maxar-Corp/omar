@@ -1,14 +1,14 @@
-import geoscript.geom.Bounds
-import org.geotools.map.FeatureLayer
-
+import com.vividsolutions.jts.geom.Geometry
+import geoscript.GeoScript
+import grails.converters.JSON
+import groovy.json.JsonSlurper
 import org.geotools.factory.Hints
-
 
 class GeoscriptGrailsPlugin {
     // the plugin version
     def version = "0.1"
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "2.2 > *"
+    def grailsVersion = "2.5 > *"
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
         "grails-app/views/error.gsp"
@@ -48,15 +48,19 @@ Brief summary/description of the plugin.
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)
-
     }
 
     def doWithDynamicMethods = { ctx ->
-        // TODO Implement registering dynamic methods to classes (optional)
-      Hints.putSystemDefault( Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE )
+       JSON.registerObjectMarshaller( Geometry ) {
+         def json = GeoScript.wrap( it ).geoJSON
+
+         new JsonSlurper().parseText( json )
+       }
+
+        Hints.putSystemDefault(Hints.FORCE_LONGITUDE_FIRST_AXIS_ORDER, Boolean.TRUE)
     }
 
-    def doWithApplicationContext = { applicationContext ->
+    def doWithApplicationContext = { ctx ->
         // TODO Implement post initialization spring config (optional)
     }
 

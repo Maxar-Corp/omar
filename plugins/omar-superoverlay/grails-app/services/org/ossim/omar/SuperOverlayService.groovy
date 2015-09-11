@@ -15,7 +15,7 @@ import org.ossim.omar.ogc.WmsCommand
 
 class SuperOverlayService implements InitializingBean
 {
-
+  def grailsLinkGenerator
   def metersPerDegree
   def grailsApplication
   def rasterKmlService
@@ -28,9 +28,10 @@ class SuperOverlayService implements InitializingBean
   def geometryFactory = new GeometryFactory( new PrecisionModel( PrecisionModel.FLOATING ), 4326 )
 
 
-  def createFullResBounds( def rasterEntry )
+  def createFullResBounds(def rasterEntry)
   {
-    def bounds = rasterEntry.groundGeom.bounds
+    def env = rasterEntry.groundGeom.envelopeInternal
+    def bounds = [minLon: env.minX, minLat: env.minY, maxLon: env.maxX, maxLat: env.maxY]
     def fullResBound = [minx: bounds.minLon, miny: bounds.minLat, maxx: bounds.maxLon, maxy: bounds.maxLat]
 
     def fullResMpp = rasterEntry.metersPerPixel;
@@ -50,20 +51,20 @@ class SuperOverlayService implements InitializingBean
     fullResBound
   }
 
-  def createPolygonFromTileBounds( def bounds )
+  def createPolygonFromTileBounds(def bounds)
   {
     def coords = [
-            new Coordinate( bounds.minx, bounds.miny ),
-            new Coordinate( bounds.minx, bounds.maxy ),
-            new Coordinate( bounds.maxx, bounds.maxy ),
-            new Coordinate( bounds.maxx, bounds.miny ),
-            new Coordinate( bounds.minx, bounds.miny )
+        new Coordinate( bounds.minx, bounds.miny ),
+        new Coordinate( bounds.minx, bounds.maxy ),
+        new Coordinate( bounds.maxx, bounds.maxy ),
+        new Coordinate( bounds.maxx, bounds.miny ),
+        new Coordinate( bounds.minx, bounds.miny )
     ] as Coordinate[]
 
     geometryFactory.createPolygon( geometryFactory.createLinearRing( coords ), null )
   }
 
-  def createRootKml( def rasterEntry, def params )
+  def createRootKml(def rasterEntry, def params)
   {
     def fullResBound = createFullResBounds( rasterEntry )
     def kmlbuilder = new StreamingMarkupBuilder()
@@ -81,7 +82,7 @@ class SuperOverlayService implements InitializingBean
         Document() {
           name( "${rasterKmlService.createName( rasterEntry )}" )
           Snippet()
-          description {mkp.yieldUnescaped( "<![CDATA[${rasterEntryDescription}]]>" )}
+          description { mkp.yieldUnescaped( "<![CDATA[${rasterEntryDescription}]]>" ) }
           Style() {
             ListStyle( id: "hideChildren" ) {
               listItemType( "checkHideChildren" )
@@ -115,11 +116,11 @@ class SuperOverlayService implements InitializingBean
 
               href {
                 mkp.yieldUnescaped(
-                        """<![CDATA[${
-                          appTagLib.createLink(
-                                  absolute: true, base: "${grailsApplication.config.omar.serverURL}",
-                                  action: params.action, params: newParams )
-                        }]]>""" )
+                    """<![CDATA[${
+                      grailsLinkGenerator.link(
+                          absolute: true,
+                          action: params.action, params: newParams )
+                    }]]>""" )
               }
               viewRefreshMode( "onExpire" )
             }
@@ -131,7 +132,7 @@ class SuperOverlayService implements InitializingBean
     kmlbuilder.bind( kmlnode ).toString()
   }
 
-  def createTileKml( def rasterEntry, def params )
+  def createTileKml(def rasterEntry, def params)
   {
     def fullResBound = createFullResBounds( rasterEntry )
     def kmlbuilder = new StreamingMarkupBuilder()
@@ -156,15 +157,15 @@ class SuperOverlayService implements InitializingBean
       ext = "png"
     }
     Utility.simpleCaseInsensitiveBind( wmsRequest, [request: 'GetMap',
-            layers: params.id,
-            srs: 'EPSG:4326',
-            format: format,
-            service: 'wms',
-            version: '1.1.1',
-            width: tileSize.width,
-            height: tileSize.height,
-            transparent: transparent,
-            bbox: "${tileBounds.minx},${tileBounds.miny},${tileBounds.maxx},${tileBounds.maxy}"] )
+        layers: params.id,
+        srs: 'EPSG:4326',
+        format: format,
+        service: 'wms',
+        version: '1.1.1',
+        width: tileSize.width,
+        height: tileSize.height,
+        transparent: transparent,
+        bbox: "${tileBounds.minx},${tileBounds.miny},${tileBounds.maxx},${tileBounds.maxy}"] )
     def wmsMap = wmsRequest.toMap()
     Utility.removeEmptyParams( wmsMap )
 
@@ -212,9 +213,9 @@ class SuperOverlayService implements InitializingBean
             Icon() {
               href {
                 mkp.yieldUnescaped( """<![CDATA[${
-                  appTagLib.createLink(
-                          absolute: true, base: grailsApplication.config.omar.serverURL, controller: 'ogc',
-                          action: 'wms', params: wmsMap )
+                  grailsLinkGenerator.link(
+                      absolute: true, controller: 'ogc',
+                      action: 'wms', params: wmsMap )
                 }]]>""" )
               }
               viewRefreshMode( "onExpire" )
@@ -226,7 +227,7 @@ class SuperOverlayService implements InitializingBean
               west( tileBounds.minx )
             }
           }
-          subtiles.each {tile ->
+          subtiles.each { tile ->
             newParams.level = tile.level
             newParams.row = tile.row
             newParams.col = tile.col
@@ -247,8 +248,8 @@ class SuperOverlayService implements InitializingBean
               Link {
                 href {
                   mkp.yieldUnescaped( """<![CDATA[${
-                    appTagLib.createLink( absolute: true, base: grailsApplication.config.omar.serverURL,
-                            action: params.action, params: newParams )
+                    grailsLinkGenerator.link( absolute: true,
+                        action: params.action, params: newParams )
                   }]]>""" )
                 }
                 viewRefreshMode( "onExpire" )
@@ -262,7 +263,7 @@ class SuperOverlayService implements InitializingBean
     kmlbuilder.bind( kmlnode ).toString()
   }
 
-  def createTileKmzInfo( def rasterEntry, def params )
+  def createTileKmzInfo(def rasterEntry, def params)
   {
     def fullResBound = createFullResBounds( rasterEntry )
     def kmlbuilder = new StreamingMarkupBuilder()
@@ -286,16 +287,16 @@ class SuperOverlayService implements InitializingBean
       ext = "png"
     }
     Utility.simpleCaseInsensitiveBind( wmsRequest, [request: 'GetMap',
-            layers: params.id,
-            srs: 'EPSG:4326',
-            format: format,
-            request: "GetMap",
-            version: "1.1.1",
-            service: 'wms',
-            width: tileSize.width,
-            height: tileSize.height,
-            transparent: transparent,
-            bbox: "${tileBounds.minx},${tileBounds.miny},${tileBounds.maxx},${tileBounds.maxy}"] )
+        layers: params.id,
+        srs: 'EPSG:4326',
+        format: format,
+        request: "GetMap",
+        version: "1.1.1",
+        service: 'wms',
+        width: tileSize.width,
+        height: tileSize.height,
+        transparent: transparent,
+        bbox: "${tileBounds.minx},${tileBounds.miny},${tileBounds.maxx},${tileBounds.maxy}"] )
     def wmsMap = wmsRequest.toMap()
     Utility.removeEmptyParams( wmsMap )
 
@@ -352,7 +353,7 @@ class SuperOverlayService implements InitializingBean
               west( tileBounds.minx )
             }
           }
-          subtiles.each {tile ->
+          subtiles.each { tile ->
             newParams.level = tile.level
             newParams.row = tile.row
             newParams.col = tile.col
@@ -373,8 +374,8 @@ class SuperOverlayService implements InitializingBean
               Link {
                 href {
                   mkp.yieldUnescaped( """<![CDATA[${
-                    appTagLib.createLink( absolute: true, base: grailsApplication.config.omar.serverURL,
-                            action: params.action, params: newParams )
+                    grailsLinkGenerator.link( absolute: true,
+                        action: params.action, params: newParams )
                   }]]>""" )
                 }
                 viewRefreshMode( "onExpire" )
@@ -398,7 +399,7 @@ class SuperOverlayService implements InitializingBean
     [kml: kmlbuilder.bind( kmlnode ).toString(), image: mapResult.image, format: "${ext}", imagePath: "images/image.${ext}"]
   }
 
-  def isAnEdgeTile( def rasterEntry, def fullResBbox, def level, def row, def col )//def level, def row, def col)
+  def isAnEdgeTile(def rasterEntry, def fullResBbox, def level, def row, def col)//def level, def row, def col)
   {
     // we will consider edge tiles as all tiles overlapping the bounds of the raster entry
     //
@@ -409,7 +410,7 @@ class SuperOverlayService implements InitializingBean
     result
   }
 
-  def getMetersPerPixel( def tileBounds, def fullResMetersPerPixel )
+  def getMetersPerPixel(def tileBounds, def fullResMetersPerPixel)
   {
     def deltax = ( tileBounds.maxx - tileBounds.minx )
     def deltay = ( tileBounds.maxy - tileBounds.miny )
@@ -417,12 +418,12 @@ class SuperOverlayService implements InitializingBean
     // def maxTileSize = tileSize.width>tileSize.height?tileSize.width:tileSize.height
     //def metersPerPixel = (maxDelta*metersPerDegree)/maxTileSize
     def metersPerPixel = ( ( ( deltax * metersPerDegree ) / tileSize.width ) +
-            ( ( deltay * metersPerDegree ) / tileSize.height ) ) * 0.5
+        ( ( deltay * metersPerDegree ) / tileSize.height ) ) * 0.5
 
     metersPerPixel
   }
 
-  def canSplit( def tileBounds, def fullResMetersPerPixel )
+  def canSplit(def tileBounds, def fullResMetersPerPixel)
   {
     def metersPerPixel = getMetersPerPixel( tileBounds, fullResMetersPerPixel )
 
@@ -430,22 +431,22 @@ class SuperOverlayService implements InitializingBean
     metersPerPixel > fullResMetersPerPixel
   }
 
-  def tileBound( def params, def fullResBbox )
+  def tileBound(def params, def fullResBbox)
   {
     tileBound( params.level ? params.level as Integer : 0,
-            params.row ? params.row as Integer : 0,
-            params.col ? params.col as Integer : 0,
-            fullResBbox )
+        params.row ? params.row as Integer : 0,
+        params.col ? params.col as Integer : 0,
+        fullResBbox )
   }
 
-  def tileBound( def level, def row, def col, def fullResBbox )
+  def tileBound(def level, def row, def col, def fullResBbox)
   {
     def minx = fullResBbox.minx
     def maxx = fullResBbox.maxx
     def miny = fullResBbox.miny
     def maxy = fullResBbox.maxy
-    def deltax = ( maxx - minx ) / ( 2 ** level )
-    def deltay = ( maxy - miny ) / ( 2 ** level )
+    def deltax = ( maxx - minx ) / ( 2**level )
+    def deltay = ( maxy - miny ) / ( 2**level )
 
     def llx = minx + deltax * col
     def lly = miny + deltay * row
@@ -453,7 +454,7 @@ class SuperOverlayService implements InitializingBean
     [minx: llx, miny: lly, maxx: ( llx + deltax ), maxy: ( lly + deltay )]
   }
 
-  def generateSubTiles( def params, def fullResBbox )
+  def generateSubTiles(def params, def fullResBbox)
   {
     def level = ( params.level as Integer ) + 1
     def row = params.row as Integer
@@ -464,20 +465,20 @@ class SuperOverlayService implements InitializingBean
     def maxx = fullResBbox.maxx
     def miny = fullResBbox.miny
     def maxy = fullResBbox.maxy
-    def deltax = ( maxx - minx ) / ( 2 ** level )
-    def deltay = ( maxy - miny ) / ( 2 ** level )
+    def deltax = ( maxx - minx ) / ( 2**level )
+    def deltay = ( maxy - miny ) / ( 2**level )
 
     def llx = minx + deltax * ncol
     def lly = miny + deltay * nrow
 
     [[minx: llx, miny: lly, maxx: ( llx + deltax ), maxy: ( lly + deltay ), level: level, col: ncol, row: nrow],
-            [minx: llx + deltax, miny: lly, maxx: ( llx + 2.0 * deltax ), maxy: ( lly + deltay ), level: level, col: ( ncol + 1 ), row: nrow],
-            [minx: llx + deltax, miny: ( lly + deltay ), maxx: ( llx + 2.0 * deltax ), maxy: ( lly + 2.0 * deltay ), level: level, col: ( ncol + 1 ), row: ( nrow + 1 )],
-            [minx: llx, miny: lly + deltay, maxx: ( llx + deltax ), maxy: ( lly + 2.0 * deltay ), level: level, col: ncol, row: ( nrow + 1 )]
+        [minx: llx + deltax, miny: lly, maxx: ( llx + 2.0 * deltax ), maxy: ( lly + deltay ), level: level, col: ( ncol + 1 ), row: nrow],
+        [minx: llx + deltax, miny: ( lly + deltay ), maxx: ( llx + 2.0 * deltax ), maxy: ( lly + 2.0 * deltay ), level: level, col: ( ncol + 1 ), row: ( nrow + 1 )],
+        [minx: llx, miny: lly + deltay, maxx: ( llx + deltax ), maxy: ( lly + 2.0 * deltay ), level: level, col: ncol, row: ( nrow + 1 )]
     ]
   }
 
-  void afterPropertiesSet( )
+  void afterPropertiesSet()
   {
     def gpt = new ossimGpt()
     def dpt = gpt.metersPerDegree()

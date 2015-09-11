@@ -24,6 +24,8 @@ class RunScriptController implements ApplicationContextAware{
     def password
     def omarRunScript
     def runScriptService
+    def grailsLinkGenerator
+
     def index() { redirect( action: 'scripts', params: params ) }
 
     def kill()
@@ -213,7 +215,7 @@ class RunScriptController implements ApplicationContextAware{
     void setApplicationContext( org.springframework.context.ApplicationContext applicationContext )
     {
         //omardb = grailsApplication.config.dataSource.url.split(":")[-1]
-        url = grailsApplication.config.omar.serverURL
+        url = grailsLinkGenerator.serverBaseURL
         username = grailsApplication.config.dataSource.username
         password = grailsApplication.config.dataSource.password
         def tempRunScript = grailsApplication.config.stager.scripts.runScript

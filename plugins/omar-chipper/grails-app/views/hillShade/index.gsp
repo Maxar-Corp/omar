@@ -9,15 +9,14 @@
 <html>
 <head>
     <title>Hill Shade</title>
-    <piwik:trackPageview />
+    <piwik:trackPageview/>
 
     <%--
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes" file="icon.css"/>
     <r:external plugin="omar-chipper" dir="js/jquery-easyui/themes/default" file="easyui.css"/>
     <r:external plugin="omar-chipper" dir="js/openlayers/theme/default" file="style.css"/>
     --%>
-    <r:require modules="jeasyui,chipperOpenLayers,spinner"/>
-    <r:layoutResources/>
+    <asset:stylesheet src="hillShade.css"/>
 </head>
 
 <body class="easyui-layout">
@@ -63,12 +62,13 @@
 <r:external plugin="omar-chipper" dir="js/jquery-easyui" file="jquery.easyui.min.js"/>
 <r:external plugin="omar-chipper" dir="js/openlayers" file="OpenLayers.light.js"/>
 --%>
-<r:script>
+<asset:javascript src="hillShade.js"/>
+<g:javascript>
     $( document ).ready( function ()
     {
-        var model = ${model as JSON};
-        var chipUrl = "${createLink( controller: 'chipper', action: 'getChip' )}";
-        var productUrl =  "${createLink( controller: 'chipper', action: 'getHillShade' )}";
+        var model = ${raw( ( model as JSON ).toString() )};
+        var chipUrl = "${raw( createLink( controller: 'chipper', action: 'getChip' ) )}";
+        var productUrl =  "${raw( createLink( controller: 'chipper', action: 'getHillShade' ) )}";
         var bbox = new OpenLayers.Bounds(model.minX, model.minY, model.maxX, model.maxY);
 
         var map = new OpenLayers.Map( 'map', {
@@ -183,7 +183,6 @@
             layer.mergeNewParams(obj);
         });
     } );
-</r:script>
-<r:layoutResources/>
+</g:javascript>
 </body>
 </html>

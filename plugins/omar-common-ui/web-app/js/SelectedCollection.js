@@ -54,5 +54,5 @@ OMAR.models.SelectedCollection = Backbone.Collection.extend({
         }
 
         return this.toArrayOfIdsReverse(maxCount).join(seperator);
-    },
+    }
 });

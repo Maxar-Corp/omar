@@ -1,7 +1,14 @@
 package org.ossim.omar.raster
 
+import com.vividsolutions.jts.geom.Geometry
+
+import java.awt.Color
+import java.awt.Font
+import java.awt.FontMetrics
+import java.awt.Graphics
 import java.awt.Point
 import java.awt.Rectangle
+import java.awt.RenderingHints
 import java.awt.image.BufferedImage
 import java.awt.image.ColorModel
 import java.awt.image.DataBuffer
@@ -26,12 +33,15 @@ import org.ossim.oms.image.omsImageSource
 
 import org.ossim.omar.core.TransparentFilter
 import org.ossim.omar.core.Utility
-import org.ossim.omar.core.WmsLayers
+import org.ossim.omar.ogc.WmsCommand
 
 import org.ossim.omar.ogc.WMSCapabilities
 
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
+
+import java.text.SimpleDateFormat
+
 
 class WebMappingService implements ApplicationContextAware
 {
@@ -47,6 +57,7 @@ class WebMappingService implements ApplicationContextAware
   static transactional = false
 
   def transparent = new TransparentFilter()
+  def autoMosaicFontProperties
 
 
   WMSQuery setupQuery(def wmsRequest)
@@ -54,13 +65,20 @@ class WebMappingService implements ApplicationContextAware
     def wmsQuery = new WMSQuery()
     def params = wmsRequest.toMap();
     wmsQuery.caseInsensitiveBind( wmsRequest.toMap() )
+    def layers = wmsQuery.layers?.toLowerCase()
     def max = params.max ? params.max as Integer : 10
-    if ( max > 10 ) max = 10
+    if ( max > 10 )
+    {
+      max = 10
+    }
     wmsQuery.max = max
-    if ( wmsQuery.layers?.toLowerCase() == "raster_entry" )
+    if ( (layers == "raster_entry" )  ||
+         (layers == "selected_raster_entry")||
+         (layers == "auto_raster_entry"))
     {
       wmsQuery.layers = null
     }
+
     // for now we will sort by the date field if no layers are given
     //
     if ( !wmsQuery.layers && ( wmsQuery.time || wmsQuery.startDate || wmsQuery.endDate ) )
@@ -68,60 +86,199 @@ class WebMappingService implements ApplicationContextAware
       wmsQuery.sort = wmsQuery.sort ?: "acquisitionDate"
       wmsQuery.order = wmsQuery.order ?: "desc"
     }
+    if(layers == "auto_raster_entry")
+    {
+      wmsQuery.sort  = wmsQuery.sort ?: "acquisitionDate"
+      wmsQuery.order = wmsQuery.order ?: "desc"
+    }
     wmsQuery
+
   }
 
-  def getMap(def wmsRequest, def layers = null)
+  private def getAnnotations(def entry)
+  {
+    def result = []
+
+
+    grailsApplication.config.autoMosaic.annotation.fields.each{
+      String value
+      if(entry."${it.name}" instanceof Date)
+      {
+        TimeZone timezone = TimeZone.getTimeZone("UTC")
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss")
+        formatter.timeZone = timezone
+        value = formatter.format(entry."${it.name}")
+      }
+      else
+      {
+        value = entry."${it.name}".toString()
+      }
+      if((it.width)&&((it.width >0) && (value.size() > it.width)))
+      {
+        value = value?.substring(0, it.width)
+      }
+      if(value) result << value
+    }
+
+    result
+  }
+//  synchronized
+  private void setupAutoMosaicFont()
+  {
+    // if(autoMosaicFontProperties) return
+
+    autoMosaicFontProperties = [font:null, color:null, antiAlias:true]
+
+    def fontProperties = grailsApplication.config.autoMosaic.annotation.font
+
+    //println fontProperties
+    if(fontProperties)
+    {
+      String name = fontProperties.name?:"TimesRoman"
+      String style = fontProperties.style?:"BOLD"
+      Integer fontSize = fontProperties.size?:24
+      Boolean aliasing = fontProperties.antiAlias==null?true:fontProperties.antiAlias as Boolean
+
+      autoMosaicFontProperties.font = new Font(name, Font."${style}", fontSize)
+
+      if(fontProperties.color)
+      {
+        if(fontProperties.color.size() == 3)
+        {
+          autoMosaicFontProperties.color = new Color(fontProperties.color[0], fontProperties.color[1],
+                  fontProperties.color[2], 1.0)
+
+        }
+        else if(fontProperties.color.size() == 4)
+        {
+          autoMosaicFontProperties.color = new Color(fontProperties.color[0], fontProperties.color[1],
+                  fontProperties.color[2], fontProperties.color[3])
+        }
+        else
+        {
+          autoMosaicFontProperties.color = new Color(1.0,1.0,1.0,1.0)
+        }
+      }
+      else
+      {
+        autoMosaicFontProperties.color = new Color(1.0,1.0,1.0,1.0)
+      }
+    }
+
+
+    autoMosaicFontProperties
+  }
+
+  def getMap(WmsCommand wmsRequest, def layers = null)
   {
     def result = [image: null, errorMessage: null]
     def params = wmsRequest.toMap();
     def bounds = wmsRequest.bounds
     def maxBands = 1
-    def wmsQuery = layers ? null : setupQuery( wmsRequest );
+    def wmsQuery
     def stretchMode = wmsRequest?.stretch_mode ? wmsRequest?.stretch_mode.toLowerCase() : null
     def stretchModeRegion = wmsRequest?.stretch_mode_region ?: null
     def wmsView = new WmsView()
     def srs = wmsRequest?.srs
+    def layerNames = wmsRequest.layers?.toLowerCase()
+    Boolean autoMosaic = (layerNames == "auto_raster_entry")
+    def autoMosaicProperties
+    Double minGsd
+    Double maxGsd
+
+    // Check and initialize automosaic paramters
+    //
+    if(autoMosaic)
+    {
+      autoMosaicProperties = grailsApplication.config.autoMosaic
+      setupAutoMosaicFont()
+
+      Double mpp = wmsRequest.calculateGsdInMeters()
+      String rangeGsd
+      if((!wmsRequest.filter?.contains("gsd_y"))&&(!wmsRequest.filter?.contains("gsd_x")))
+      {
+        // add in config range
+        if(autoMosaicProperties.minGsdScale&&autoMosaicProperties.maxGsdScale)
+        {
+          minGsd = mpp*autoMosaicProperties.minGsdScale
+          maxGsd = mpp*autoMosaicProperties.maxGsdScale
+        }
+        else if(autoMosaicProperties.minGsd&&autoMosaicProperties.maxGsd)
+        {
+          minGsd = autoMosaicProperties.minGsd
+          maxGsd = autoMosaicProperties.maxGsd
+        }
+        if(minGsd&&maxGsd)
+        {
+          rangeGsd = "( (gsd_y >= ${minGsd}) AND (gsd_y <= ${maxGsd}))".toString()
+        }
+      }
+      // if a range gsd was calculated then add it to the filter
+      if(rangeGsd) wmsRequest.filter =  wmsRequest.filter?"((${wmsRequest.filter}) AND ${rangeGsd})".toString():rangeGsd
+    }
+    wmsQuery = layers ? null : setupQuery( wmsRequest );
+
+
+
     if ( !wmsView.setProjection( srs ) )
     {
-      result.errorMessage = "Unsupported projection ${ srs }"
+      result.errorMessage = "Unsupported projection ${srs}"
       log.error( result )
       return result
     }
+
     if ( !wmsView.setViewDimensionsAndImageSize( bounds.minx,
-        bounds.miny,
-        bounds.maxx,
-        bounds.maxy,
-        bounds.width,
-        bounds.height ) )
+            bounds.miny,
+            bounds.maxx,
+            bounds.maxy,
+            bounds.width,
+            bounds.height ) )
     {
       result.errorMessage = "Unable to set the dimensions for the view bounds"
       log.error( result )
       return result
     }
 
-
-
     def rasterEntries = layers;
 
     if ( wmsQuery )
     {
       def x = {
-        maxResults( 10 )
+        if(grailsApplication.config.autoMosaic.maxResults)
+        {
+          maxResults( grailsApplication.config.autoMosaic.maxResults )
+        }
+        else
+        {
+          maxResults( 10 )
+        }
+
       }
 
       def criteriaBuilder = RasterEntry.createCriteria();
       def criteria = criteriaBuilder.buildCriteria( x )
 
       criteria.add( wmsQuery?.createClause() )
-
+      wmsQuery.addOrderToCriteria(criteria)
       def eachCriteria = criteria.scroll()
       def status = eachCriteria.first()
       rasterEntries = []
 
       while ( status )
       {
-        rasterEntries << eachCriteria.get( 0 )
+        def currentRow = eachCriteria.get(0)
+        if(minGsd && maxGsd)
+        {
+
+          if((currentRow.gsdY >= minGsd) && (currentRow.gsdY <= maxGsd))
+          {
+            rasterEntries << currentRow
+          }
+        }
+        else
+        {
+          rasterEntries << currentRow
+        }
 
         status = eachCriteria.next()
       }
@@ -129,14 +286,55 @@ class WebMappingService implements ApplicationContextAware
       eachCriteria.close()
     }
 
+    // now prune if not within gsd if minGsd and maxGsd is set
+
     //params.viewGeom = wmsView.getImageGeometry();
     params.wmsView = wmsView
     params.keepWithinScales = true
-    def kwlString = ""
+    def layersToRender = []
+    Geometry geom = wmsRequest.getBoundsAsGeometry("EPSG:4326")
     if ( rasterEntries )
     {
-      rasterEntries = rasterEntries?.reverse()
+      if(!autoMosaic) rasterEntries = rasterEntries?.reverse()
       def srcChains = []
+
+      // we already are using the rasterEntries for mosaicking.  We will just massage
+      // that list if auto mosaic is enabled.
+      if(autoMosaic)
+      {
+        if(rasterEntries.size() == 1)
+        {
+          RasterEntry rasterEntry = rasterEntries[0]
+          if(!rasterEntry.groundGeom.contains(geom))
+          {
+            rasterEntries = []
+          }
+        }
+        else
+        {
+          def newRasterEntry
+
+          for ( RasterEntry rasterEntry in rasterEntries )
+          {
+            if(rasterEntry.groundGeom.contains(geom))
+            {
+              newRasterEntry = rasterEntry
+              break
+            }
+          }
+          rasterEntries = []
+
+          if(newRasterEntry)
+          {
+             rasterEntries << newRasterEntry
+          }
+//          for ( RasterEntry rasterEntry in rasterEntries )
+//          {
+//            rasterEntry.groundGeom.contains(geom)
+//          }
+
+        }
+      }
       for ( def rasterEntry in rasterEntries )
       {
         def chainMap = imageChainService.createImageChain( rasterEntry, params )
@@ -144,20 +342,30 @@ class WebMappingService implements ApplicationContextAware
         if ( chainMap && chainMap.chain && ( chainMap.chain.getChain() != null ) )
         {
           def outputBands = chainMap.chain?.getChainAsImageSource()?.getNumberOfOutputBands()
-          if ( outputBands > maxBands ) maxBands = outputBands
+          if ( outputBands > maxBands )
+          {
+            maxBands = outputBands
+          }
           srcChains.add( chainMap )
+          layersToRender << rasterEntry
         }
         chainMap = null
       }
+
+      def kwlString = new StringWriter()
+
       if ( srcChains )
       {
         def connectionId = 10000
-        kwlString = "type:ossimImageChain\n"
+
+
+        kwlString.println "type:ossimImageChain"
+
         def objectPrefixIdx = 0
         if ( srcChains.size() > 1 )
         {
           // now establish mosaic and cut to match the output dimensions
-          kwlString += "object${ objectPrefixIdx }.type:ossimImageMosaic\n"
+          kwlString.println "object${objectPrefixIdx}.type:ossimImageMosaic"
           ++objectPrefixIdx
         }
         def imageRect = wmsView.getViewImageRect()
@@ -175,73 +383,124 @@ class WebMappingService implements ApplicationContextAware
         // let's see what happens when I move this after the viewport stretch
         // so our stretch is done in full bit depth
         //
-//        kwlString += "object${ objectPrefixIdx }.type:ossimScalarRemapper\n"
-//        kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+//        kwlString.println "object${ objectPrefixIdx }.type:ossimScalarRemapper"
+//        kwlString.println "object${ objectPrefixIdx }.id:${ connectionId }"
 //        ++connectionId
 //        ++objectPrefixIdx
-
 
         // and make it either 1 band or 3 band output
         //
         if ( maxBands <= 2 )
         {
-          kwlString += "object${ objectPrefixIdx }.type:ossimBandSelector\n"
-          kwlString += "object${ objectPrefixIdx }.bands:(0)\n"
-          kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+          kwlString.println "object${objectPrefixIdx}.type:ossimBandSelector"
+          kwlString.println "object${objectPrefixIdx}.bands:(0)"
+          kwlString.println "object${objectPrefixIdx}.id:${connectionId}"
           ++connectionId
           ++objectPrefixIdx
         }
         else if ( maxBands > 3 )
         {
-          kwlString += "object${ objectPrefixIdx }.type:ossimBandSelector\n"
-          kwlString += "object${ objectPrefixIdx }.bands:(0,1,2)\n"
-          kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+          kwlString.println "object${objectPrefixIdx}.type:ossimBandSelector"
+          kwlString.println "object${objectPrefixIdx}.bands:(0,1,2)"
+          kwlString.println "object${objectPrefixIdx}.id:${connectionId}"
           ++connectionId
           ++objectPrefixIdx
         }
-        kwlString += "object${ objectPrefixIdx }.type:ossimRectangleCutFilter\n"
-        kwlString += "object${ objectPrefixIdx }.rect:(${ x },${ y },${ w },${ h },lh)\n"
-        kwlString += "object${ objectPrefixIdx }.cut_type:null_outside\n"
-        kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+        kwlString.println "object${objectPrefixIdx}.type:ossimRectangleCutFilter"
+        kwlString.println "object${objectPrefixIdx}.rect:(${x},${y},${w},${h},lh)"
+        kwlString.println "object${objectPrefixIdx}.cut_type:null_outside"
+        kwlString.println "object${objectPrefixIdx}.id:${connectionId}"
         ++objectPrefixIdx
         if ( ( stretchModeRegion == "viewport" ) &&
-            ( stretchMode != "none" ) )
+                ( stretchMode != "none" ) )
         {
-          kwlString += "object${ objectPrefixIdx }.type:ossimImageHistogramSource\n"
-          kwlString += "object${ objectPrefixIdx }.id:${ connectionId + 1 }\n"
+          kwlString.println "object${objectPrefixIdx}.type:ossimImageHistogramSource"
+          kwlString.println "object${objectPrefixIdx}.id:${connectionId + 1}"
           ++objectPrefixIdx
-          kwlString += "object${ objectPrefixIdx }.type:ossimHistogramRemapper\n"
-          kwlString += "object${ objectPrefixIdx }.id:${ connectionId + 2 }\n"
-          kwlString += "object${ objectPrefixIdx }.stretch_mode:${ stretchMode }\n"
-          kwlString += "object${ objectPrefixIdx }.input_connection1:${ connectionId }\n"
-          kwlString += "object${ objectPrefixIdx }.input_connection2:${ connectionId + 1 }\n"
+          kwlString.println "object${objectPrefixIdx}.type:ossimHistogramRemapper"
+          kwlString.println "object${objectPrefixIdx}.id:${connectionId + 2}"
+          kwlString.println "object${objectPrefixIdx}.stretch_mode:${stretchMode}"
+          kwlString.println "object${objectPrefixIdx}.input_connection1:${connectionId}"
+          kwlString.println "object${objectPrefixIdx}.input_connection2:${connectionId + 1}"
           ++objectPrefixIdx
           connectionId += 2
         }
         // for now scale all WMS requests to 8-bit
-        kwlString += "object${ objectPrefixIdx }.type:ossimScalarRemapper\n"
-        kwlString += "object${ objectPrefixIdx }.id:${ connectionId }\n"
+        kwlString.println "object${objectPrefixIdx}.type:ossimScalarRemapper"
+        kwlString.println "object${objectPrefixIdx}.id:${connectionId}"
         ++connectionId
         ++objectPrefixIdx
       }
       else
       {
-        kwlString = "type:ossimMemoryImageSource\n"
+        kwlString.println "type:ossimMemoryImageSource"
         if ( params.width && params.height )
         {
-          kwlString += "image.type:ossimImageData\n"
-          kwlString += "image.rect:(0,0,${ bounds.width },${ bounds.height },lh)\n"
-          kwlString += "image.scalar_type:ossim_uint8\n"
-          kwlString += "image.number_bands:1\n"
+          kwlString.println "image.type:ossimImageData"
+          kwlString.println "image.rect:(0,0,${bounds.width},${bounds.height},lh)"
+          kwlString.println "image.scalar_type:ossim_uint8"
+          kwlString.println "image.number_bands:1"
         }
       }
-      def mosaic = new joms.oms.Chain();
-      mosaic.loadChainKwlString( kwlString )
+
+      def mosaic = new Chain();
+      mosaic.loadChainKwlString( kwlString.toString() )
+
       for ( def srcChain in srcChains )
       {
         mosaic.connectMyInputTo( srcChain.chain )
       }
       result.image = imageChainService.grabOptimizedImageFromChain( mosaic, params )
+
+      // Annotate Image if we are automosaic
+      //
+      if(result?.image&&autoMosaic&&layersToRender)
+      {
+         def annotations = getAnnotations(layersToRender[0])
+
+        Graphics g = result.image.graphics
+
+        if(autoMosaicFontProperties.antiAlias)
+        {
+          g.setRenderingHint(
+                  RenderingHints.KEY_TEXT_ANTIALIASING,
+                  RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        }
+
+
+        g.setColor(autoMosaicFontProperties.color)
+        g.setFont(autoMosaicFontProperties.font)
+        FontMetrics fm = g.getFontMetrics();
+        Integer height = fm.ascent+fm.descent
+
+        Integer yOffset = 0
+        Integer x
+        Integer y
+
+        switch(grailsApplication.config.autoMosaic.annotation.align)
+        {
+          case "CENTER":
+            y = (Integer)((result.image.height - (height*annotations.size()))/2)
+            break
+          case "TOP_CENTER":
+            y = height
+            break
+          case "BOTTOM_CENTER":
+            y = result.image.height - (height*annotations.size())
+            break
+          default:
+            break
+        }
+        annotations.each{annotation->
+          Integer width  = fm.bytesWidth(annotation.bytes,0, annotation.size())
+          x = (Integer)((result.image.width-width)/2)
+          g.drawString(annotation,x,y)
+          y += height
+        }
+
+
+        g.dispose()
+      }
       mosaic?.deleteChain()
       for ( def it in srcChains )
       {
@@ -326,15 +585,15 @@ class WebMappingService implements ApplicationContextAware
     {
       kwl.add( param.key, param.value )
     }
-    kwl.add( "viewable_bands", "${ viewableBandCount }" )
-    kwl.add( "rotate", "${ rotate }" )
+    kwl.add( "viewable_bands", "${viewableBandCount}" )
+    kwl.add( "rotate", "${rotate}" )
     WmsMap.getUnprojectedMap(
-        inputFile,
-        entry,
-        scale,
-        startSample, endSample, startLine, endLine,
-        data,
-        kwl
+            inputFile,
+            entry,
+            scale,
+            startSample, endSample, startLine, endLine,
+            data,
+            kwl
     )
     DataBuffer dataBuffer = new DataBufferByte( data, data.size() )
     int pixelStride = viewableBandCount
@@ -357,13 +616,13 @@ class WebMappingService implements ApplicationContextAware
     {
       Point location = null
       WritableRaster raster = WritableRaster.createInterleavedRaster(
-          dataBuffer,
-          rect.width as Integer,
-          rect.height as Integer,
-          lineStride,
-          pixelStride,
-          bandOffsets,
-          location )
+              dataBuffer,
+              rect.width as Integer,
+              rect.height as Integer,
+              lineStride,
+              pixelStride,
+              bandOffsets,
+              location )
 
       ColorModel colorModel = omsImageSource.createColorModel( raster.sampleModel )
 
@@ -371,10 +630,10 @@ class WebMappingService implements ApplicationContextAware
       Hashtable<?, ?> properties = null
 
       image = new BufferedImage(
-          colorModel,
-          raster,
-          isRasterPremultiplied,
-          properties )
+              colorModel,
+              raster,
+              isRasterPremultiplied,
+              properties )
     }
 
     return image
@@ -449,15 +708,16 @@ class WebMappingService implements ApplicationContextAware
         }
       }
       if ( rasterEntry.numberOfResLevels )
+      if ( rasterEntry.numberOfResLevels )
       {
-        testScale = 2 ** rasterEntry.numberOfResLevels * fullResScale;
+        testScale = 2**rasterEntry.numberOfResLevels * fullResScale;
         if ( testScale > largestScale )
         {
           largestScale = testScale
         }
       }
       // now allow at least 32x zoom in
-      testScale = 1.0 / ( 2 ** 6 ) * fullResScale
+      testScale = 1.0 / ( 2**6 ) * fullResScale
       if ( testScale < smallestScale )
       {
         smallestScale = testScale;
@@ -489,10 +749,22 @@ class WebMappingService implements ApplicationContextAware
     def maxy = -9999999999
     for ( def coord in coords )
     {
-      if ( coord.x < minx ) minx = coord.x
-      if ( coord.x > maxx ) maxx = coord.x
-      if ( coord.y < miny ) miny = coord.y
-      if ( coord.y > maxy ) maxy = coord.y
+      if ( coord.x < minx )
+      {
+        minx = coord.x
+      }
+      if ( coord.x > maxx )
+      {
+        maxx = coord.x
+      }
+      if ( coord.y < miny )
+      {
+        miny = coord.y
+      }
+      if ( coord.y > maxy )
+      {
+        maxy = coord.y
+      }
     }
 
     return [left: minx, right: maxx, top: maxy, bottom: miny]
@@ -517,7 +789,7 @@ class WebMappingService implements ApplicationContextAware
         if ( point.size() >= 2 )
         {
           dptArray.add( new ossimDpt( Double.parseDouble( point.getAt( 0 ) ),
-              Double.parseDouble( point.getAt( 1 ) ) ) )
+                  Double.parseDouble( point.getAt( 1 ) ) ) )
         }
       }
       for ( def it in splitGroundCoordinates )
@@ -526,7 +798,7 @@ class WebMappingService implements ApplicationContextAware
         if ( point.size() >= 2 )
         {
           gptArray.add( new ossimGpt( Double.parseDouble( point.getAt( 1 ) ),
-              Double.parseDouble( point.getAt( 0 ) ) ) )
+                  Double.parseDouble( point.getAt( 0 ) ) ) )
         }
       }
     }
@@ -559,7 +831,7 @@ class WebMappingService implements ApplicationContextAware
   {
     def baseWMS = grailsApplication.config.wms.base.layers
 
-
+/*
     def wmsLayers = WmsLayers.list()
 
     for ( def wmsLayer in wmsLayers )
@@ -576,6 +848,7 @@ class WebMappingService implements ApplicationContextAware
         baseWMS << newLayer
       }
     }
+*/
 
     return baseWMS
 

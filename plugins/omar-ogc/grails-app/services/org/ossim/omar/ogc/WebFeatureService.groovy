@@ -39,6 +39,8 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
   def getCapabilities(def wfsRequest)
   {
+    initConfig()
+
     def x = {
       mkp.xmlDeclaration()
 
@@ -54,8 +56,8 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
       // WFS GetCapabilities Document
       WFS_Capabilities(
-          version: '1.0.0',
-          'xsi:schemaLocation': "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd"
+          version: '1.1.0',
+          'xsi:schemaLocation': "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"
       ) {
         def service = wfsConfig.service
         Service {
@@ -63,7 +65,10 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
           Title( service.title )
           Abstract( service.abstract )
           Keywords( service.keywords )
-          OnlineResource( service.onlineResource )
+//          OnlineResource( service.onlineResource )
+//          OnlineResource( grailsLinkGenerator.resource( dir: 'wfs', absolute: true ) )
+          OnlineResource( "${grailsLinkGenerator.serverBaseURL}/wfs" )
+
           Fees( service.fees )
           AccessConstraints( service.accessContraints )
         }
@@ -92,7 +97,17 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
                 ['Get', 'Post'].each { method ->
                   DCPType {
                     HTTP {
-                      "${method}"( onlineResource: requestType.onlineResource[method] )
+//                      "${method}"( onlineResource: requestType.onlineResource[method] )
+//                      "${method}"( onlineResource: grailsLinkGenerator.resource( dir: 'wfs', absolute: true ) )
+                      if ( method == 'Get' )
+                      {
+                        "${method}"( onlineResource: "${grailsLinkGenerator.link( controller: 'wfs', params: [request: requestType.name], absolute: true )}" )
+                      }
+                      else
+                      {
+
+                        "${method}"( onlineResource: "${grailsLinkGenerator.serverBaseURL}/wfs" )
+                      }
                     }
                   }
                 }
@@ -157,48 +172,83 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
   def describeFeatureType(def wfsRequest)
   {
-    def (workspaceName, layerName) = wfsRequest?.typeName?.split( ':' )
-    def workspace = getWorkspace( workspaceName )
-    def layer = workspace[layerName]
+    initConfig()
 
-    def x = {
-      mkp.xmlDeclaration()
-      mkp.declareNamespace( gml: "http://www.opengis.net/gml" )
-      mkp.declareNamespace( xsd: "http://www.w3.org/2001/XMLSchema" )
-      mkp.declareNamespace( "${workspaceName}": layer.schema.uri )
-      xsd.schema( elementFormDefault: "qualified", targetNamespace: layer.schema.uri ) {
-        xsd.import( namespace: "http://www.opengis.net/gml", schemaLocation: "http://schemas.opengis.net/gml/2.1.2/feature.xsd" )
-        xsd.complexType( name: "${layerName}Type" ) {
-          xsd.complexContent {
-            xsd.extension( base: "gml:AbstractFeatureType" ) {
-              xsd.sequence {
-                for ( def field in layer.schema.fields )
-                {
-                  def descr = layer.schema.featureType.getDescriptor( field.name )
-                  xsd.element(
-                      maxOccurs: "${ descr.maxOccurs }",
-                      minOccurs: "${ descr.minOccurs }",
-                      name: "${ field.name }",
-                      nillable: "${ descr.nillable }",
-                      type: "${ typeMappings.get( field.typ, field.typ ) }" )
+    def exposedLayers = 'omar:raster_entry,omar:video_data_set'
+    def gmlSchema = "http://schemas.opengis.net/gml/2.1.2/feature.xsd"
+    def buffer
+
+    if ( wfsRequest.typeName )
+    {
+      def x = {
+        //mkp.xmlDeclaration()
+        mkp.declareNamespace(
+            gml: 'http://www.opengis.net/gml',
+            xsd: 'http://www.w3.org/2001/XMLSchema',
+            omar: 'http://omar.ossim.org',
+        )
+        xsd.schema( elementFormDefault: 'qualified', targetNamespace: 'http://omar.ossim.org' ) {
+          xsd.import( namespace: 'http://www.opengis.net/gml', schemaLocation: gmlSchema )
+          ( wfsRequest.typeName ?: exposedLayers )?.split( ',' ).each { foo ->
+            def (workspaceId, layerName) = foo.split( ':' )
+
+            Workspace.withWorkspace( getWorkspace( workspaceId ) ) { workspace ->
+              def layer = workspace[layerName]
+
+//                println "${layer.name}: ${layer.count()}"
+
+              xsd.complexType( name: "${layer.name}Type" ) {
+                xsd.complexContent {
+                  xsd.extension( base: 'gml:AbstractFeatureType' ) {
+                    xsd.sequence {
+                      for ( def field in layer.schema.fields )
+                      {
+                        def descr = layer.schema.featureType.getDescriptor( field.name )
+                        xsd.element(
+                            maxOccurs: "${descr.maxOccurs}",
+                            minOccurs: "${descr.minOccurs}",
+                            name: "${field.name}",
+                            nillable: "${descr.nillable}",
+                            type: "${typeMappings.get( field.typ, field.typ )}" )
+                      }
+                    }
+                  }
                 }
               }
             }
           }
         }
-        xsd.element( name: layerName, substitutionGroup: "gml:_Feature", type: "${workspaceName}:${layerName}Type" )
       }
+
+      buffer = new StreamingMarkupBuilder( encoding: 'UTF-8' ).bind( x ).toString()
     }
+    else
+    {
+      def x = {
+        mkp.xmlDeclaration()
+        mkp.declareNamespace(
+            omar: 'http://omar.ossim.org',
+            xsd: 'http://www.w3.org/2001/XMLSchema'
+        )
+        xsd.schema( elementFormDefault: 'qualified', targetNamespace: 'http://omar.ossim.org' ) {
+          xsd.import( namespace: 'http://omar.ossim.org',
+              schemaLocation: grailsLinkGenerator.link( absolute: true, controller: 'wfs', params: [
+                  typeName: exposedLayers,
+                  request: 'DescribeFeatureType'
+              ] ) )
+        }
+      }
+      buffer = new StreamingMarkupBuilder( encoding: 'UTF-8' ).bind( x ).toString()
 
-    workspace.close()
-
-    def buffer = new StreamingMarkupBuilder( encoding: 'UTF-8' ).bind( x ).toString()
+    }
 
     [buffer, 'application/xml']
   }
 
   def getFeature(def wfsRequest)
   {
+    initConfig()
+
     def results, contentType
     def name = ( wfsRequest['outputFormat']?.toUpperCase() ?: "GML2" )?.toUpperCase()
     def resultFormat = resultFormats[name]?.first()
@@ -213,22 +263,22 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
         mkp.xmlDeclaration()
         mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
         ServiceExceptionReport( version: "1.2.0", xmlns: "http://www.opengis.net/ogc",
-            'xsi:schemaLocation': "http://www.opengis.net/ogc http://schemas.opengis.net/wfs/1.0.0/OGC-exception.xsd" ) {
+            'xsi:schemaLocation': "http://www.opengis.net/ogc http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" ) {
           ServiceException( code: "GeneralException", "Uknown outputFormat: ${wfsRequest.outputFormat}" )
         }
       }.toString()
 
-      println results
+     // println results
 
       contentType = 'application/xml'
     }
-
+    //println results
     return [results, contentType]
   }
 
   private Workspace getWorkspace(def workspaceName)
   {
-
+/*
     def url = grailsApplication.config.dataSource.url
 
     def workspace = new Workspace(
@@ -246,14 +296,39 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
         'Expose primary keys': true,
         namespace: 'http://omar.ossim.org'
     )
+*/
+
+    def dataSourceConfig = grailsApplication.config.dataSource
+    def pattern = "jdbc:postgresql:(//(.*)/)?(.*)"
+    def matcher = dataSourceConfig.url =~ pattern
+
+    def dbParams = [
+        dbtype: 'postgis',
+        host: matcher[0][-2] ?: 'localhost',
+        port: '5432',
+        database: matcher[0][-1],
+        user: dataSourceConfig.username,
+        password: dataSourceConfig.password,
+//        'Data Source': dataSourceUnproxied,
+        'Expose primary keys': true
+    ]
+
+    //println dbParams
+
+    def workspace = Workspace.getWorkspace( dbParams )
 
     workspace
   }
 
   void afterPropertiesSet() throws Exception
   {
-    serverAddress = grailsApplication.config.omar.serverURL
     resultFormats = applicationContext.getBeansOfType( ResultFormat ).values().groupBy { it.name }
+
+  }
+
+  private void initConfig()
+  {
+    serverAddress = grailsLinkGenerator.serverBaseURL
 
     wfsConfig = [
         service: [
@@ -311,4 +386,5 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
         featureNamespaces: [omar: 'http://omar.ossim.org']
     ]
   }
+
 }

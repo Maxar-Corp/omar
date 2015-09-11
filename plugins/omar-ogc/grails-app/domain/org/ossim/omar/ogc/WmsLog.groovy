@@ -55,7 +55,7 @@ class WmsLog {
     {
       url type:'text'
       layers type: 'text'
-      geometry type: org.hibernatespatial.GeometryUserType
+      geometry type: org.hibernate.spatial.GeometryType
     }
   }
 

@@ -49,7 +49,7 @@ OMAR.views.FootprintLegendView = Backbone.View.extend({
            this.model = new OMAR.models.FootprintLegendStyleCollectionModel();
            if(params.styles)
            {
-               for(var idx = 0; idx < params.styles.size();++idx)
+               for(var idx = 0; idx < params.styles.length;++idx)
                {
                    this.model.add(
                        {

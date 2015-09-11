@@ -1,0 +1,41 @@
+//= require prototype/_prototype.js
+//= require OMAR.js
+//= require hashmap.js
+//= require coord.js
+//= require jquery-1.8.2.js
+//= require jQuery/jquery-ui.js
+//= require jQuery/jquery.layout-latest.js
+//= require jQuery/DataTables-1.9.4/jquery.dataTables.min.js
+//= require jQuery/DataTables-1.9.4/jquery.datatables-ext.js
+//= require jQuery/DataTables-1.9.4/jquery.pagination.js
+//= require jquery.contextmenu.js
+//= require json2.js
+//= require underscore/underscore-1.4.2.js
+//= require backbone-min.js
+//= require SelectedCollection.js
+//= require DisplayUnitModelView.js
+//= require EllipsoidModel.js
+//= require BboxModelView.js
+//= require PointModelView.js
+//= require UnitsModelView.js
+//= require CqlModelView.js
+//= require FootprintLegendModelView.js
+//= require WfsModel.js
+//= require OpenLayers.js
+//= require spin-min.js
+//= require jQuery/jquery-ui-timepicker-addon.js
+//= require jMenu.jquery.js
+//= require DateModelView.js
+//= require SearchMenuModelView.js
+//= require MapModelView.js
+//= require ViewSelector.js
+//= require ServerListModelView.js
+//= require WfsDataModelView.js
+//= require GeneralQueryModelView.js
+//= require search.js
+//= require condition-builder.js
+//= require_self
+_.templateSettings = {
+        interpolate : /\{\{(.+?)\}\}/g,
+        evaluate : /\{!(.+?)!\}/g
+    };

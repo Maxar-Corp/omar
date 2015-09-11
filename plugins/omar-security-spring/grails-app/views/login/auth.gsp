@@ -3,7 +3,7 @@
   <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
   <meta name='layout' content='loginPageLayout'/>
   <title>OMAR <g:meta name="app.version"/>: Login</title>
-  <r:require modules="loginPageLayout"/>
+  <asset:stylesheet src="loginPage.css"/>
 </head>
 
 <body class=" yui-skin-sam">
@@ -54,5 +54,6 @@
     <g:link controller="register" action="forgotPassword">Forgot Password</g:link>
   </div>
 </content>
+<asset:javascript src="loginPage.js"/>
 </body>
 </html>

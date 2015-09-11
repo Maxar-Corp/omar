@@ -24,7 +24,25 @@ wms.base.layers = [
                 params: [layers: "Reference", format: "image/jpeg"],
                 name: "Reference Data",
                 options: wms.base.defaultOptions
-        ]
+        ],
+        [
+                 url: "${omar.serverURL}/ogc/wms",
+                 params: [resampler:bilinear,layers: "auto_raster_entry", filter:"", format: "image/png", transparent: true, EXCEPTIONS:"application/vnd.ogc.se_blank"],
+                 name: "OMAR Auto Mosaic",
+                 //options: [isBaseLayer: false, minScale:0.0000001, maxScale:0.0001, buffer: 0, transitionEffect: "resize"]
+                 options: [visibility:false, isBaseLayer: false,  singleTile: false,  tileSize:[w:512,h:512], buffer: 0, transitionEffect: "resize"]
+         ] ,
+         // this is a hack until we can do it properly. Note,  this is tested in the GUI and then the layers is set to null and is
+         // directly edited by the selected rows to put in the mosaic
+         //
+        [
+                url: "${omar.serverURL}/ogc/wms",
+                params: [resampler:bilinear,layers: "selected_raster_entry", filter:"", format: "image/png", transparent: true, EXCEPTIONS:"application/vnd.ogc.se_blank"],
+                name: "OMAR Selected Image Mosaic",
+                //options: [isBaseLayer: false, minScale:0.0000001, maxScale:0.0001, buffer: 0, transitionEffect: "resize"]
+                options: [visibility:false, isBaseLayer: false,  singleTile: false,  tileSize:[w:512,h:512], buffer: 0, transitionEffect: "resize"]
+                ]
+
 ]
 
 
@@ -140,3 +158,50 @@ rabbitmq {
 //        queue name: "omar.job.status", durable: true
 //    }
 }
+
+// the WMS layer is called "auto_raster_entry" for wms chipping.  If this layer exists, then
+// how the layer is rendered is defined here in the autoMosaic settings.
+//
+autoMosaic{
+   annotation{
+      // Comma separated list of fields to annotate each tile with.
+      // For now we only annotate the tile with the top most field in the
+      // mosaic. For now we will center the text in the tile and render on separate lines
+      fields = [[name:"title", width:24],[name:"acquisitionDate"]]
+      font{
+         // TimesRoman, Courier, SansSerif, Serif, Helvetica
+         name      = "SansSerif"
+
+         // Can be BOLD, ITALIC, PLAIN
+         style     = "BOLD"
+
+         size      = 12
+         antiAlias = true
+         // color is a normalized RGBA component
+         color     = [1.0,1.0,1.0,1.0]
+      }
+      // alignment type can be CENTER, TOP_CENTER, BOTTOM_CENTER
+      align = "CENTER"
+   }
+
+   // defines the maxCount in the mosaic process
+   maxResults = 10
+
+   // GSD is in meters per pixel
+  // minGsd = 0.001
+  // maxGsd = 10
+
+   // If a fixed minGsd and maxGsd range is not set then the gsd range will floa
+   // based on the current zoom location gsd on the requested tile
+   //  if a tile request gives you an average gsd of 1 meter and the minGsd and maxGsd is not set
+   // but the minGsdScale and maxGsdScale is set then the range of imagery used for the mosaic
+   // is
+   //    requestGsd*minGsdScale >= requestGsd <= requestGsd*maxGsdScale
+   //
+   // This is a floating window for the scale range where the center is the calculated request
+   // gsd of the tile being rendered
+   minGsdScale = 1.0/16
+   maxGsdScale = 16
+
+}
+

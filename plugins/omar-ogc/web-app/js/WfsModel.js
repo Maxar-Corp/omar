@@ -17,6 +17,11 @@ OMAR.models.WfsModel = Backbone.Model.extend({
         "getFeatureResult":{}
     },
     initialize:function(params){
+       // if(params&&params.filter)
+       // {
+       //     filter = params.filter;
+       // }
+
     },
     toUrlParams: function(includeNullPropertiesFlag){
         var result = ""

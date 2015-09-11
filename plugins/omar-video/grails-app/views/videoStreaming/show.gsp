@@ -7,11 +7,15 @@
 --%>
 
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page expressionCodec="none" %>
 <html>
 <head>
   <meta content="showVideoPageLayout" name="layout"/>
-  <r:require modules="showVideoPageLayout"/>
+  <asset:stylesheet src="showVideoPage.css"/>
+  <asset:javascript src="swfobject.js"/>
+  <%--
   <swfobject:resources/>
+  --%>
   <title>OMAR Streaming Video</title>
 </head>
 
@@ -46,11 +50,12 @@
     </div>
   </div>
 
-  <g:flashPlayer id="test" varFile="${flvUrl}" width="${videoDataSet.width}" height="${videoDataSet.height}"
-                 varAutostart="true"
-                 paramAllowFullscreen="true"/>
+  <omar:flashPlayer id="test" varFile="${flvUrl}" 
+    width="${videoDataSet.width}" height="${videoDataSet.height}"
+    varAutostart="true" paramAllowFullscreen="true"/>
 
 </content>
+<asset:javascript src="showVideoPage.js"/>
 
 </body>
 </html>

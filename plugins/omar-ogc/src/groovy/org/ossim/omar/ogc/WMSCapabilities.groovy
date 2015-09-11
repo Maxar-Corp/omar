@@ -18,48 +18,48 @@ public class WMSCapabilities
     ]>
 	"""
 
-  def sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+  def sdf = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss'Z'" )
 
   def getCapabilitiesFormats = [
-          "application/vnd.ogc.wms_xml"
+      "application/vnd.ogc.wms_xml"
   ]
 
   def getMapFormats = [
-          "image/png",
-          //"image/gif",
-          "image/jpeg",
-          //"image/tiff",
-          //"image/nitf",
-          //"image/jp2",
-          //"image/vnd.wap.wbmp",
-          //"image/svg+xml"
+      "image/png",
+      //"image/gif",
+      "image/jpeg",
+      //"image/tiff",
+      //"image/nitf",
+      //"image/jp2",
+      //"image/vnd.wap.wbmp",
+      //"image/svg+xml"
   ]
 
   def getFeatureInfoFormats = [
-          "text/csv",
-          "shp"
- //         "application/vnd.ogc.gml"
+      "text/csv",
+      "shp"
+      //         "application/vnd.ogc.gml"
   ]
 
   def describeLayerFormats = [
-          "text/xml"
+      "text/xml"
   ]
 
   def getLegendGraphicFormats = [
-          "image/png",
-          "image/gif",
-          "image/jpeg",
-          //"image/vnd.wap.wbmp"
+      "image/png",
+      "image/gif",
+      "image/jpeg",
+      //"image/vnd.wap.wbmp"
   ]
 
   def getStylesFormats = [
-          "text/xml"
+      "text/xml"
   ]
 
   def exceptionFormats = [
-          "application/vnd.ogc.se_xml",
-          "application/vnd.ogc.se_inimage",
-          "application/vnd.ogc.se_blank"
+      "application/vnd.ogc.se_xml",
+      "application/vnd.ogc.se_inimage",
+      "application/vnd.ogc.se_blank"
   ]
 
   def map
@@ -70,27 +70,32 @@ public class WMSCapabilities
     //println "${layers} ${serviceAddress}"
 
     map = new MapObject(
-            name: "raster_entry",
-            title: "Imagery from OMAR",
-            srs: "EPSG:4326",
-            minX: -180,
-            minY: -90,
-            maxX: 180,
-            maxY: 90,
-            getCapabilitiesURL: "${serviceAddress}?layers=${layers?.indexId?.join(',')}&",
-            getMapURL: serviceAddress
+        name: "raster_entry",
+        title: "Imagery from OMAR",
+        srs: "EPSG:4326",
+        minX: -180,
+        minY: -90,
+        maxX: 180,
+        maxY: 90,
+        getCapabilitiesURL: "${serviceAddress}?layers=${layers?.indexId?.join( ',' )}&",
+        getMapURL: serviceAddress
     )
 
-    layers?.each {rasterEntry ->
+    layers?.each { rasterEntry ->
       if ( rasterEntry )
       {
         def entryId = rasterEntry.entryId
         def srs = "EPSG:4326"//rasterEntry?.groundGeom?.srs
 //        def bounds = rasterEntry?.groundGeom?.bounds
-        def bounds = rasterEntry?.groundGeom?.bounds
+
+        def env = rasterEntry?.groundGeom?.envelopeInternal
+        def bounds = [minLat: env.minY, minLon: env.minX, maxLat: env.maxY, maxLon: env.maxX]
+
+
+
         def file = rasterEntry?.mainFile
 //        def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : ""
-        def acquisition = (rasterEntry?.acquisitionDate) ? sdf.format(rasterEntry?.acquisitionDate) : ""
+        def acquisition = ( rasterEntry?.acquisitionDate ) ? sdf.format( rasterEntry?.acquisitionDate ) : ""
 
         def filename = file.name
         def indexId = rasterEntry.indexId
@@ -102,16 +107,16 @@ public class WMSCapabilities
 //        }
 
         map.layers << new LayerObject(
-                name: rasterEntry.indexId,
-                title: rasterEntry.title,
-                description: "The absolute path to this file is ${file.name} and its entry id is ${entryId}",
-                srs: srs,
-                minX: bounds.minLon,
-                minY: bounds.minLat,
-                maxX: bounds.maxLon,
-                maxY: bounds.maxLat,
-                filename: filename,
-                acquisition: acquisition
+            name: rasterEntry.indexId,
+            title: rasterEntry.title,
+            description: "The absolute path to this file is ${file.name} and its entry id is ${entryId}",
+            srs: srs,
+            minX: bounds.minLon,
+            minY: bounds.minLat,
+            maxX: bounds.maxLon,
+            maxY: bounds.maxLat,
+            filename: filename,
+            acquisition: acquisition
         )
       }
     }
@@ -127,19 +132,19 @@ public class WMSCapabilities
       mkp.xmlDeclaration()
       //mkp.yieldUnescaped(DOCTYPE)
 
-      WMT_MS_Capabilities(version: version) {
+      WMT_MS_Capabilities( version: version ) {
         Service() {
-          Name("WMS")
+          Name( "WMS" )
           Title()
           Abstract()
           KeywordList() {
-            map?.keywords?.each {keyword ->
-              Keyword(keyword)
+            map?.keywords?.each { keyword ->
+              Keyword( keyword )
             }
           }
           OnlineResource(
-                  "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                  "xlink:href": "${map.getMapURL}"
+              "xmlns:xlink": "http://www.w3.org/1999/xlink",
+              "xlink:href": "${map.getMapURL}"
           )
           ContactInformation() {
             ContactPersonPrimary() {
@@ -161,127 +166,127 @@ public class WMSCapabilities
         Capability() {
           Request() {
             GetCapabilities() {
-              getCapabilitiesFormats.each {format ->
-                Format(format)
+              getCapabilitiesFormats.each { format ->
+                Format( format )
               }
               DCPType() {
                 HTTP() {
                   Get() {
                     OnlineResource(
-                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": map.getCapabilitiesURL //.replace("&", "&amp;")
+                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                        "xlink:href": map.getCapabilitiesURL //.replace("&", "&amp;")
                     )
                   }
                   Post {
                     OnlineResource(
-                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": map.getCapabilitiesURL //.replace("&", "&amp;")
+                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                        "xlink:href": map.getCapabilitiesURL //.replace("&", "&amp;")
                     )
                   }
                 }
               }
             }
             GetMap() {
-              getMapFormats.each {format ->
-                Format(format)
+              getMapFormats.each { format ->
+                Format( format )
               }
               DCPType() {
                 HTTP() {
                   Get() {
                     OnlineResource(
-                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": map.getMapURL//.replace("&", "&amp;")
+                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                        "xlink:href": map.getMapURL//.replace("&", "&amp;")
                     )
                   }
                   Post {
                     OnlineResource(
-                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": map.getMapURL //.replace("&", "&amp;")
+                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                        "xlink:href": map.getMapURL //.replace("&", "&amp;")
                     )
                   }
                 }
               }
             }
             GetFeatureInfo() {
-              getFeatureInfoFormats.each {format ->
-                Format(format)
+              getFeatureInfoFormats.each { format ->
+                Format( format )
               }
 
               DCPType() {
                 HTTP() {
                   Get() {
                     OnlineResource(
-                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": "${map.getMapURL}"
+                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                        "xlink:href": "${map.getMapURL}"
                     )
                   }
                   Post {
                     OnlineResource(
-                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": "${map.getMapURL}"
+                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                        "xlink:href": "${map.getMapURL}"
                     )
                   }
                 }
               }
             }
             DescribeLayer() {
-              describeLayerFormats.each {format ->
-                Format(format)
+              describeLayerFormats.each { format ->
+                Format( format )
               }
               DCPType() {
                 HTTP() {
                   Get() {
                     OnlineResource(
-                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": "${map.getMapURL}"
+                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                        "xlink:href": "${map.getMapURL}"
                     )
                   }
                   Post {
                     OnlineResource(
-                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": "${map.getMapURL}"
+                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                        "xlink:href": "${map.getMapURL}"
                     )
                   }
                 }
               }
             }
             GetLegendGraphic() {
-              getLegendGraphicFormats.each {format ->
-                Format(format)
+              getLegendGraphicFormats.each { format ->
+                Format( format )
               }
               DCPType() {
                 HTTP() {
                   Get() {
                     OnlineResource(
-                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": "${map.getMapURL}"
+                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                        "xlink:href": "${map.getMapURL}"
                     )
                   }
                   Post {
                     OnlineResource(
-                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": "${map.getMapURL}"
+                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                        "xlink:href": "${map.getMapURL}"
                     )
                   }
                 }
               }
             }
             GetStyles() {
-              getStylesFormats.each {format ->
-                Format(format)
+              getStylesFormats.each { format ->
+                Format( format )
               }
               DCPType() {
                 HTTP() {
                   Get() {
                     OnlineResource(
-                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": "${map.getMapURL}"
+                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                        "xlink:href": "${map.getMapURL}"
                     )
                   }
                   Post {
                     OnlineResource(
-                            "xmlns:xlink": "http://www.w3.org/1999/xlink",
-                            "xlink:href": "${map.getMapURL}"
+                        "xmlns:xlink": "http://www.w3.org/1999/xlink",
+                        "xlink:href": "${map.getMapURL}"
                     )
                   }
                 }
@@ -289,90 +294,90 @@ public class WMSCapabilities
             }
           }
           Exception() {
-            exceptionFormats.each {format ->
-              Format(format)
+            exceptionFormats.each { format ->
+              Format( format )
             }
           }
-            VendorSpecificCapabilities(){
-                stretch_mode(required:"0"){
-                    Title("Histogram Stretch Type")
-                    Abstract("""Histogram stretch types can be one of the following:
+          VendorSpecificCapabilities() {
+            stretch_mode( required: "0" ) {
+              Title( "Histogram Stretch Type" )
+              Abstract( """Histogram stretch types can be one of the following:
                                 linear_auto_min_max,
                                 linear_1std_from_mean,
                                 linear_2std_from_mean,
-                                linear_3std_from_mean""")
-                }
-                stretch_mode_region(required:"0"){
-                    Title("Defines the region to use for stretching")
-                    Abstract("""The values can be 'global' or 'viewport'.  Viewport says calculate a
+                                linear_3std_from_mean""" )
+            }
+            stretch_mode_region( required: "0" ) {
+              Title( "Defines the region to use for stretching" )
+              Abstract( """The values can be 'global' or 'viewport'.  Viewport says calculate a
                                 histogram for the requesting BBOX.  If the stretch is 'global' then
                                 use the global histogram for all BBOX requests for that image
-                                being chipped.""")
-                }
-                sharpen_mode(required:"0"){
-                    Title("Sharpen an image")
-                    Abstract("""The image is sharpened based on the mode.  The mode can be
+                                being chipped.""" )
+            }
+            sharpen_mode( required: "0" ) {
+              Title( "Sharpen an image" )
+              Abstract( """The image is sharpened based on the mode.  The mode can be
                              light or heavy
-                             """)
-                }
-                sharpen_width(required:"0"){
-                    Title("Defines the width of the sharpen kernel used to sharpen the image.")
-                    Abstract("")
-                }
-                sharpen_sigma(required:"0"){
-                    Title("This is a parameter used to calculate the weights for the kernel")
-                    Abstract("")
-                }
-                rotate(required:"0"){
-                    Title("Image rotation")
-                    Abstract("")
-                }
-                quicklook(required:"0"){
-                    Title("Specifies whether to use the full model to reproject the image or just a quick corner calculation.")
-                    Abstract("")
-                }
-                null_flip(required:"0"){
-                    Title("Flips null pixels to a valid pixel value.")
-                    Abstract("""This will take the images null pixel value, typically 0, and flip it to a valid
-                                pixel value, typically 1""")
-                }
-                bands(required:"0"){
-                    Title("A comma separated list of band indices for the output product")
-                    Abstract("""This is a comma separated list of band numbers
+                             """ )
+            }
+            sharpen_width( required: "0" ) {
+              Title( "Defines the width of the sharpen kernel used to sharpen the image." )
+              Abstract( "" )
+            }
+            sharpen_sigma( required: "0" ) {
+              Title( "This is a parameter used to calculate the weights for the kernel" )
+              Abstract( "" )
+            }
+            rotate( required: "0" ) {
+              Title( "Image rotation" )
+              Abstract( "" )
+            }
+            quicklook( required: "0" ) {
+              Title( "Specifies whether to use the full model to reproject the image or just a quick corner calculation." )
+              Abstract( "" )
+            }
+            null_flip( required: "0" ) {
+              Title( "Flips null pixels to a valid pixel value." )
+              Abstract( """This will take the images null pixel value, typically 0, and flip it to a valid
+                                pixel value, typically 1""" )
+            }
+            bands( required: "0" ) {
+              Title( "A comma separated list of band indices for the output product" )
+              Abstract( """This is a comma separated list of band numbers
                                 used to specify the output product.  Example: bands=2,1,0 defines
-                                a 3 band output product where the first 3 bands are reversed""")
-                }
-                brightness(required:"0"){
-                    Title("Parameter used to brighten the image")
-                    Abstract("This is a normalized parameter between -1 and 1.")
-                }
-                contrast(required:"0"){
-                    Title("This is a multiplier for te image pixel.")
-                    Abstract("")
-                }
-                interpolation(required:"0"){
-                    Title("Interpolation type to use")
-                    Abstract("""This is the interpolation type to use when resampling an image.
+                                a 3 band output product where the first 3 bands are reversed""" )
+            }
+            brightness( required: "0" ) {
+              Title( "Parameter used to brighten the image" )
+              Abstract( "This is a normalized parameter between -1 and 1." )
+            }
+            contrast( required: "0" ) {
+              Title( "This is a multiplier for te image pixel." )
+              Abstract( "" )
+            }
+            interpolation( required: "0" ) {
+              Title( "Interpolation type to use" )
+              Abstract( """This is the interpolation type to use when resampling an image.
                                 The types supported can be: nearest neighbor, bilinear, gaussian, cubic,
                                 hanning, hamming, lanczos, mitchell, catrom, blackman, sinc,
-                                quadratic, hermite, bspline""")
-                }
+                                quadratic, hermite, bspline""" )
             }
+          }
           UserDefinedSymbolization()
-          Layer(queryable:"1") {
-            Name(map?.name)
-            Title(map?.title)
-            SRS(map?.srs)
-            LatLonBoundingBox(minx: "${map?.minX}", miny: "${map?.minY}", maxx: "${map?.maxX}", maxy: "${map?.maxY}")
-            BoundingBox(SRS: "${map?.srs}", minx: "${map?.minX}", miny: "${map?.minY}", maxx: "${map?.maxX}", maxy: "${map?.maxY}")
-            map?.layers?.each {layer ->
-              Layer(queryable:"1") {
-                Name(layer?.name)
-                Title(layer?.title)
-                Abstract(layer?.description)
-                SRS(layer?.srs)
-                LatLonBoundingBox(minx: "${layer?.minX}", miny: "${layer?.minY}", maxx: "${layer?.maxX}", maxy: "${layer?.maxY}")
-                BoundingBox(SRS: "${layer?.srs}", minx: "${layer?.minX}", miny: "${layer?.minY}", maxx: "${layer?.maxX}", maxy: "${layer?.maxY}")
+          Layer( queryable: "1" ) {
+            Name( map?.name )
+            Title( map?.title )
+            SRS( map?.srs )
+            LatLonBoundingBox( minx: "${map?.minX}", miny: "${map?.minY}", maxx: "${map?.maxX}", maxy: "${map?.maxY}" )
+            BoundingBox( SRS: "${map?.srs}", minx: "${map?.minX}", miny: "${map?.minY}", maxx: "${map?.maxX}", maxy: "${map?.maxY}" )
+            map?.layers?.each { layer ->
+              Layer( queryable: "1" ) {
+                Name( layer?.name )
+                Title( layer?.title )
+                Abstract( layer?.description )
+                SRS( layer?.srs )
+                LatLonBoundingBox( minx: "${layer?.minX}", miny: "${layer?.minY}", maxx: "${layer?.maxX}", maxy: "${layer?.maxY}" )
+                BoundingBox( SRS: "${layer?.srs}", minx: "${layer?.minX}", miny: "${layer?.minY}", maxx: "${layer?.maxX}", maxy: "${layer?.maxY}" )
               }
             }
           }
@@ -382,11 +387,10 @@ public class WMSCapabilities
 
     def writer = new StringWriter()
 
-    writer << builder.bind(capabilities)
+    writer << builder.bind( capabilities )
 
     return writer.buffer
   }
-
 
 
   def getKML()
@@ -396,31 +400,31 @@ public class WMSCapabilities
 
     def kmlnode = {
       mkp.xmlDeclaration()
-      kml("xmlns": "http://earth.google.com/kml/2.1") {
+      kml( "xmlns": "http://earth.google.com/kml/2.1" ) {
         Folder() {
-          name("OMAR_WMS")
-          map?.layers?.each {layer ->
+          name( "OMAR_WMS" )
+          map?.layers?.each { layer ->
             GroundOverlay() {
-              name(layer?.filename)
-              open("1")
-              visibility("1")
+              name( layer?.filename )
+              open( "1" )
+              visibility( "1" )
               Icon() {
-                href("${map.getMapURL}?version=${version}&REQUEST=GetMap&layers=${layer?.name}&SRS=${layer?.srs}&TRANSPARENT=TRUE&FORMAT=image/png&")
-                viewRefreshMode("onStop")
-                viewRefreshTime("2")
-                viewBoundScale("0.85")
-                viewFormat("""BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&width=[horizPixels]&height=[vertPixels]""")
+                href( "${map.getMapURL}?version=${version}&REQUEST=GetMap&layers=${layer?.name}&SRS=${layer?.srs}&TRANSPARENT=TRUE&FORMAT=image/png&" )
+                viewRefreshMode( "onStop" )
+                viewRefreshTime( "2" )
+                viewBoundScale( "0.85" )
+                viewFormat( """BBOX=[bboxWest],[bboxSouth],[bboxEast],[bboxNorth]&width=[horizPixels]&height=[vertPixels]""" )
               }
               LatLonBox() {
-                north(layer?.maxY)
-                south(layer?.minY)
-                east(layer?.maxX)
-                west(layer?.minX)
+                north( layer?.maxY )
+                south( layer?.minY )
+                east( layer?.maxX )
+                west( layer?.minX )
               }
               if ( layer?.acquisition )
               {
                 TimeStamp() {
-                  when(layer?.acquisition)
+                  when( layer?.acquisition )
                 }
               }
             }
@@ -430,7 +434,7 @@ public class WMSCapabilities
     }
     def kmlwriter = new StringWriter()
 
-    kmlwriter << kmlbuilder.bind(kmlnode)
+    kmlwriter << kmlbuilder.bind( kmlnode )
 
     //return kmlwriter.buffer.toString().replace("&amp;", "&")
     return kmlwriter.buffer.toString()
@@ -442,23 +446,23 @@ public class WMSCapabilities
   public static void main(def args)
   {
 
-    def layers = new File("/data/bmng").listFiles().collect {
+    def layers = new File( "/data/bmng" ).listFiles().collect {
       it.absolutePath
     }
 
 
     println layers
 
-    WMSCapabilities wms = new WMSCapabilities(layers, "http://localhost/ServiceTest/ogc/wms")
+    WMSCapabilities wms = new WMSCapabilities( layers, "http://localhost/ServiceTest/ogc/wms" )
 
 
 
-    def writer = new File("test.xml")
+    def writer = new File( "test.xml" )
     def xml = wms.getCapabilities()
 
     //println xml
 
-    writer.write(xml as String)
+    writer.write( xml as String )
   }
 
 }

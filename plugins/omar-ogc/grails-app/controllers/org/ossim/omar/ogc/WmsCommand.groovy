@@ -1,6 +1,13 @@
 package org.ossim.omar.ogc
 
+import com.vividsolutions.jts.geom.Geometry
+import geoscript.geom.Bounds
+import geoscript.proj.Projection
+import groovy.transform.ToString
+import joms.oms.ossimGpt
+
 import java.awt.Color
+import org.ossim.omar.core.CaseInsensitiveBinder
 import org.ossim.omar.core.ISO8601DateParser
 
 /**
@@ -11,8 +18,10 @@ import org.ossim.omar.core.ISO8601DateParser
  * To change this template use File | Settings | File Templates.
  */
 @grails.validation.Validateable
-class WmsCommand
+@ToString(includeNames = true)
+class WmsCommand implements CaseInsensitiveBinder
 {
+  // WMS GetMap
   String bbox
   String width
   String height
@@ -26,6 +35,10 @@ class WmsCommand
   String transparent
   String bgcolor
   String time
+  String exceptions
+
+
+  // OMS Extensions
   String stretch_mode = "linear_auto_min_max"
   String stretch_mode_region = "global"
   String sharpen_mode
@@ -34,7 +47,6 @@ class WmsCommand
   String rotate
   String quicklook
   String null_flip
-  String exceptions
   String bands
   String filter
   String brightness
@@ -50,6 +62,8 @@ class WmsCommand
 
 
   static constraints = {
+    bounds ( nullable: true )
+
     bbox( nullable: true, validator: { val, obj ->
       def message = true
       def requestLowerCase = obj.request?.toLowerCase()
@@ -167,6 +181,7 @@ class WmsCommand
       }
       message
     } )
+    /*
     layers( nullable: true, validator: { val, obj ->
       def message = true
       if ( obj.request?.toLowerCase() == "getmap" )
@@ -178,6 +193,7 @@ class WmsCommand
       }
       message
     } )
+    */
     styles( nullable: true )//,validator: {val, obj ->
     //def message = true
     //if ( val == null )
@@ -197,10 +213,10 @@ class WmsCommand
         }
         else
         {
-       //   if ( val.toLowerCase().trim() != "epsg:4326" )
-       //   {
-       //     message = "SRS parameter ${val} not supported.  We only support value of EPSG:4326."
-       //   }
+          if ( ! (val.toLowerCase().trim() in ["epsg:4326", "epsg:3857"] ) )
+          {
+            message = "SRS parameter ${val} not supported.  We only support value of EPSG:4326."
+          }
         }
       }
       message
@@ -336,6 +352,11 @@ class WmsCommand
         } )
     info_format( nullable: true )
     feature_count( nullable: true )
+    sharpen_width(nullable: true)
+    sharpen_sigma(nullable: true)
+    sharpen_mode(nullable: true)
+    epsgAsInteger(nullable:true)
+
   }
 
   def toMap()
@@ -354,11 +375,6 @@ class WmsCommand
         sharpen_width: sharpen_width, sharpen_sigma: sharpen_sigma, rotate: rotate,
         time: time, null_flip: null_flip, exceptions: exceptions, filter: filter, quicklook: quicklook,
         brightness: brightness, contrast: contrast, interpolation: interpolation].sort() { it.key }
-  }
-
-  public String toString()
-  {
-    return toMap()
   }
 
   String[] getDates()
@@ -395,6 +411,60 @@ class WmsCommand
     result
   }
 
+  Geometry getBoundsAsGeometry(String targetEpsg)
+  {
+    Geometry result
+    Bounds geoscriptBounds
+    if(!targetEpsg) targetEpsg = "EPSG:${getEpsgAsInteger}"
+    def bounds = getBounds()
+    if(bounds)
+    {
+      geoscriptBounds = new Bounds(bounds.minx, bounds.miny, bounds.maxx, bounds.maxy, srs)
+      geoscriptBounds = geoscriptBounds.reproject(new Projection(targetEpsg))
+    }
+    result = geoscriptBounds.geometry.g
+
+    result
+  }
+  Integer getEpsgAsInteger()
+  {
+    Integer result
+    def splitArray = this?.srs?.split(":")
+    if(splitArray) result = splitArray[-1]?.toInteger()
+
+    result
+  }
+  Double calculateGsd()
+  {
+    Double result
+
+    def b = this.getBounds()
+    if(b)
+    {
+      result = ((b.maxx-b.minx)/b.width)
+    }
+
+    result
+  }
+  Double calculateGsdInMeters()
+  {
+    Double result = calculateGsd()
+
+
+    if(this.epsgAsInteger == 4326)
+    {
+      def gpt = new ossimGpt()
+      def mpd = gpt.metersPerDegree()
+
+      result = result *= mpd.x
+
+      gpt.delete()
+      mpd.delete()
+    }
+
+    result
+
+  }
   def getDateRange()
   {
     def result = []

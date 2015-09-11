@@ -2,14 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <r:require modules="federationRasterSearch"/>
+    <asset:stylesheet src="federationSearch.css"/>
     <title>OMAR <g:meta name="app.version"/>: Federated Search</title>
-    <r:layoutResources/>
     <style type="text/css">
     .body {
         text-align: left;
     }
     </style>
+    <opensearch:descriptors/>
+    <!--<link rel="search" type="application/opensearchdescription+xml" href="/omar/openSearch/settings" title="OMAR Search" /> -->
 </head>
 
 <body class="body">
@@ -37,8 +38,7 @@
             </div>
 
             <g:render plugin="omar-common-ui" template="/templates/wfsTypeNameTemplate"/>
-            <p><g:checkBox id="spatialSearchFlag" value="" checked="true"/> Use Spatial</p>
-
+            <p><g:checkBox name="spatialSearchFlag" value="${true}" /> Use Spatial</p>
             <form>
                 <p><input type="radio" id="bboxRadioButton" name="spatialSearchType" value="bbox"
                           checked="checked">Use Bound Box</p>
@@ -66,6 +66,10 @@
             <div id="CustomQueryView">
                 <br/>
                 <g:render plugin="omar-common-ui" template="/templates/cqlTemplate"/>
+            </div>
+            <div id="GeneralQueryView">
+                <g:render plugin="omar-common-ui" template="/templates/generalQueryTemplate"/>
+                <br/>
             </div>
 
             <div id="MapView">
@@ -108,60 +112,60 @@
 </div>
 
 <script type="text/html" id="omar-server-template">
-<div class="omar-server" id="${'<%=id%>'}">
+<div class="omar-server" id="{{id}}">
     <table>
         <tr><td>
             <div id="omar-server-enabled" class="omar-server-enabled">
-                <!--
+                <%--
                 <input id="omar-server-enabled-checkbox"
                       type="checkbox" class="omar-server-enabled-checkbox1"
-                      checked=${'<%=enabled%>'}>
+                      checked='{{enabled}}'>
                </input>
-                -->
-                <label id="omar-server-count" class="omar-server-count">${'<%=count%>'}
+                --%>
+                <label id="omar-server-count" class="omar-server-count">{{count}}
                 </label>
             </div>
         </td>
         </tr>
-        <tr><td><img class="omar-server-image" id="omar-server-image-${'<%=id%>'}"
+        <tr><td><img class="omar-server-image" id="omar-server-image-{{id}}"
                      src="${resource( dir: 'images', file: 'server.gif' )}"/></td></tr>
-        <tr><td><label class="omar-server-link-cursor" id="omar-server-name-${'<%=id%>'}">${'<%=name%>'}</label>
+        <tr><td><label class="omar-server-link-cursor" id="omar-server-name-{{id}}">{{name}}</label>
         </td>
         </tr>
     </table>
 
 </div>
 </script>
-
-<r:script>
+<asset:javascript src="federationSearch.js"/>
+<g:javascript>
     function init()
     {
-        var userRoles = ${roles};
-        var wmsConfig = ${wmsBaseLayers};
-        var styles = ${styles};
-        var maxInputs=
+        var userRoles = ${raw(roles?.toString())};
+        var wmsConfig = ${raw(wmsBaseLayers?.toString())};
+        var styles = ${raw(styles.toString())};
+        //var maxInputs=
         // application specific initialize that will need access to grails models
         //
-        OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
+        OpenLayers.ImgPath = "${raw(resource( plugin: 'openlayers', dir: 'js/img' ))}/";
         var params = {
-            map: {theme: "${resource( plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css' )}",
+            map: {theme: "${raw(resource( plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css' ))}",
                 baseLayers: wmsConfig.base.layers
             },
-            cql: {resourceImages: {remove: "${resource( plugin: 'omar-common-ui', dir: 'images', file: 'remove.gif' )}",
-                add: "${resource( plugin: 'omar-common-ui', dir: 'images', file: 'add.gif' )}"
+            cql: {resourceImages: {
+                remove: "${raw(resource( plugin: 'omar-common-ui', dir: 'images', file: 'remove.gif' ))}",
+                add: "${raw(resource( plugin: 'omar-common-ui', dir: 'images', file: 'add.gif' ))}"
             }
             },
             userRoles: userRoles,
             legend: {
                 styles: styles
             },
-            maxMosaicSize:${maxInputs},
-            jobQueueEnabled:${jobQueueEnabled}
+            maxMosaicSize:${raw(maxInputs?.toString())},
+            jobQueueEnabled:${raw(jobQueueEnabled?.toString())}
         };
         var searchPageController = new OMAR.pages.FederatedRasterSearch( jQuery, params );
         searchPageController.render();
     }
-</r:script>
-<r:layoutResources/>
+</g:javascript>
 </body>
 </html>

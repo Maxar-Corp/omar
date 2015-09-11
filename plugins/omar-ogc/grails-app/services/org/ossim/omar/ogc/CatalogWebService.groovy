@@ -12,7 +12,7 @@ class CatalogWebService
 
   def grailsApplication
   def dataSourceUnproxied
-
+	def grailsLinkGenerator
 
   private static final dcTag = [
       full: 'Record',
@@ -58,7 +58,7 @@ class CatalogWebService
 
   def getCapabiltiies(CswCommand cswCommand)
   {
-    def serverAddress = grailsApplication.config.omar.serverURL
+    def serverAddress = grailsLinkGenerator.serverBaseURL
 
     def cswCaps = {
       mkp.xmlDeclaration()
@@ -683,9 +683,7 @@ class CatalogWebService
 
   def getRecords(CswCommand cswCommand)
   {
-    def serverAddress = grailsApplication.config.omar.serverURL
-
-
+    def serverAddress = grailsLinkGenerator.serverBaseURL
 
     def params = [
         elementSet: "full"
@@ -768,8 +766,7 @@ class CatalogWebService
 
   def getRecordById(CswCommand cswCommand)
   {
-    def serverAddress = grailsApplication.config.omar.serverURL
-
+		def serverAddress = grailsLinkGenerator.serverBaseURL
 
     def getRecById = {
       mkp.xmlDeclaration()
@@ -832,7 +829,7 @@ class CatalogWebService
 
   def describeRecord(CswCommand cswCommand)
   {
-    def serverAddress = grailsApplication.config.omar.serverURL
+		def serverAddress = grailsLinkGenerator.serverBaseURL
 
     def descRec = {
       mkp.xmlDeclaration()
@@ -977,10 +974,10 @@ class CatalogWebService
     switch ( cswRecord.type )
     {
     case "Image":
-      url = new URL( "${grailsApplication.config.omar.serverURL}/mapView?layers=${cswRecord.identifier}" )
+      url = new URL( "${grailsLinkGenerator.serverBaseURL}/mapView?layers=${cswRecord.identifier}" )
       break
     case "Video":
-      url = new URL( "${grailsApplication.config.omar.serverURL}/videoStreaming/show/${cswRecord.identifier}" )
+      url = new URL( "${grailsLinkGenerator.serverBaseURL}/videoStreaming/show/${cswRecord.identifier}" )
       break
     }
 

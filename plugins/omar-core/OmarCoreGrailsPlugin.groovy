@@ -8,7 +8,7 @@ class OmarCoreGrailsPlugin {
     // the plugin version
     def version = "0.1"
     // the version or versions of Grails the plugin is designed for
-    def grailsVersion = "2.2 > *"
+    def grailsVersion = "2.5 > *"
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
         "grails-app/views/error.gsp"
@@ -47,7 +47,6 @@ Brief summary/description of the plugin.
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
       coreUtility( org.ossim.omar.core.Utility )
 
       customEditorRegistrar( CustomEditorRegistrar )
@@ -97,28 +96,26 @@ Brief summary/description of the plugin.
       }
 
       parserPool( XmlParserPool, 32 )
-    }
+  }
 
     def doWithDynamicMethods = { ctx ->
-        // TODO Implement registering dynamic methods to classes (optional)
-      // TODO Implement registering dynamic methods to classes (optional)
-      String.metaClass.toDateTime {->
-        ISO8601DateParser.parseDateTime( delegate )
-      }
-      String.metaClass.toDate {->
+        String.metaClass.toDateTime {->
+            ISO8601DateParser.parseDateTime( delegate )
+          }
+          String.metaClass.toDate {->
 
-        def date = null
-        def dateTime = ISO8601DateParser.parseDateTime( delegate.trim() )
-        if ( dateTime )
-        {
-          date = new Date( dateTime.millis )
-        }
+            def date = null
+            def dateTime = ISO8601DateParser.parseDateTime( delegate.trim() )
+            if ( dateTime )
+            {
+              date = new Date( dateTime.millis )
+            }
 
-        date
-      }
+            date
+          }    
     }
 
-    def doWithApplicationContext = { applicationContext ->
+    def doWithApplicationContext = { ctx ->
         // TODO Implement post initialization spring config (optional)
     }
 

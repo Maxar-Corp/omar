@@ -1,0 +1,303 @@
+div#hd {
+  background-color: black;
+  margin: auto;
+  /*
+  height: 100px;
+  */
+}
+
+div img {
+}
+
+div#ft {
+  background-color: black;
+  margin: auto;
+  /*
+  font-size: 77%;
+  */
+  color: white;
+  padding: 4px;
+  text-align: center; /*height: 2em; */
+}
+
+#flash {
+  border: 1px solid #2A8400;
+  background-color: #DDFFDD;
+  margin: 1em;
+  padding: 3px;
+  font-weight: bold;
+}
+
+/*
+SlimTimer Green #CCFFBF / #2AB400
+GMail Blue #E0ECFF
+
+Green  #DDFFDD
+Pink #FCF2E4
+Grey #F0F0F0
+Blue #D8E4F1 
+
+*/
+div.niceBox {
+  margin-top: 3px;
+  margin-bottom: 8px;
+  background-color: #F0F8FF;
+  border: 1px solid #000000;
+}
+
+div.niceBoxHd {
+  font-size: 87%;
+  font-weight: bold;
+  padding: 2px;
+  color: white;
+  background-color: #003366;
+}
+
+div.niceBoxBody {
+  font-size: 87%;
+  padding: 3px;
+}
+
+div.niceBoxMetadataBody {
+  font-size: 87%;
+  padding: 3px;
+ height: 225px;
+/*  overflow-x: hidden;
+  overflow-y: scroll;
+*/
+    overflow : auto;
+}
+
+/* Navigation tabs */
+div#tabs ul {
+  float: left;
+}
+
+div#tabs li {
+  display: inline;
+}
+
+a.feedLink {
+  text-decoration: none
+}
+
+/* Groogle search stuff */
+
+#searchBox {
+  float: right;
+  margin-right: 5px;
+}
+
+#searchField {
+  width: 150px;
+}
+
+#searchButton {
+
+}
+
+li.hit {
+  list-style-type: none;
+}
+
+span.highlight {
+  font-weight: bold;
+}
+
+div#searchCrumbs {
+  text-align: center;
+  margin-bottom: 2em;
+}
+
+div#searchCrumbs li {
+  list-style-type: none;
+  display: inline;
+  margin-left: 1em;
+}
+
+div#searchBody {
+  border-top: 1px solid #0D5798;
+  border-bottom: 1px solid #0D5798;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  color: #616161;
+  margin: auto;
+}
+
+div.body {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+h1 {
+  font-size: 174%;
+  font-weight: bold; /* border-top: 1px solid black; */
+  border-bottom: 1px solid black;
+
+}
+
+/* Stuff on the main blog entries page */
+
+div.entry, div.hit {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+div.entryTitle, p.hitTitle {
+  font-size: 122%;
+}
+
+div.entryDetails, p.hitInfo {
+  font-size: 85%;
+  color: gray;
+  margin-bottom: 2px;
+}
+
+div.entryInfo {
+  font-size: 85%;
+  color: gray;
+  margin: 3px;
+}
+
+div.entryDetails a:hover, div.entryInfo a:hover {
+  text-decoration: underline;
+}
+
+div.entryDetails a, div.entryInfo a {
+  text-decoration: none;
+  color: gray;
+}
+
+ul#recentBloggers {
+  list-style-type: square;
+  padding-left: 15px;
+}
+
+div.entrySummary, p.hitBody {
+
+}
+
+span.translateLink {
+  font-size: 77%;
+}
+
+/* Form Fields */
+
+div.dialog label, input, td {
+  font-size: 114%;
+}
+
+div.dialog td {
+  height: 35px;
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+div.dialog input {
+  width: 300px;
+}
+
+h2 {
+  font-size: 107%;
+  font-weight: bold;
+}
+
+/* In the Ajax preview */
+
+.blogTable {
+  font-size: 87%;
+  width: 100%;
+}
+
+.blogTable tr {
+  height: 2em;
+}
+
+.blogTable td {
+  padding: 3px;
+}
+
+#myBlogs {
+  margin: 1em;
+  padding: 7px;
+  border: 1px solid black;
+  background-color: #DDFFDD;
+}
+
+#blogInfo {
+  margin: 1em;
+  padding: 7px;
+  border: 1px solid black;
+  background-color: #D8E4F1;
+}
+
+#blogTitle {
+  font-size: 122%;
+  font-weight: bold;
+}
+
+#blogType {
+  font-size: 77%;
+}
+
+#blogDesc {
+  font-size: 85%;
+}
+
+.blogEntry {
+  margin-top: 7px;
+}
+
+.blogEntryTitle {
+  font-size: 100%;
+}
+
+.blogEntryDesc {
+  font-size: 85%;
+}
+
+/*
+Tab stuff lifted from http://alistapart.com/articles/slidingdoors/
+*/
+
+#offtabs {
+  float: left;
+  width: 100%;
+  font-size: 93%;
+  line-height: normal;
+}
+
+#tabs ul {
+  margin: 0;
+  padding: 0px 0px 0;
+  list-style: none;
+}
+
+#tabs li {
+  float: left;
+  margin: 0;
+  padding: 0 0 0 9px;
+}
+
+#tabs a {
+  display: block;
+  padding: 5px 15px 4px 6px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #7AC2E5;
+}
+
+#tabs a:hover {
+  color: #333;
+}
+
+#tabs #current {
+}
+
+#tabs #current a {
+  color: #333;
+}
+
+

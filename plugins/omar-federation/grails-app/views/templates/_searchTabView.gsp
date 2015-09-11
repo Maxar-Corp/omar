@@ -1,10 +1,12 @@
 
 <div id="tabView" class="">
-    <input type="radio" id="CqlQueryViewButton" name="radio" value="0" />
-    <label for="CqlQueryViewButton">Query</label>
-    <input type="radio" id="MapViewButton" name="radio" checked="true" value="1" />
+    <input type="radio" id="CqlQueryViewButton" name="radio" value="CqlQuery" />
+    <label for="CqlQueryViewButton">CQL Query</label>
+    <input type="radio" id="GeneralQueryViewButton" name="radio" value="GeneralQuery" />
+    <label for="GeneralQueryViewButton">General Query</label>
+    <input type="radio" id="MapViewButton" name="radio" checked="true" value="Map" />
     <label for="MapViewButton">Map</label>
-    <input type="radio" id="ResultsViewButton" name="radio" checked="" value="2" />
+    <input type="radio" id="ResultsViewButton" name="radio" checked="" value="Results" />
     <label for="ResultsViewButton">Results</label>
 </div>
 

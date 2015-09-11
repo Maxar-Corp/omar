@@ -1,0 +1,12 @@
+<plugin name='omar-opensearch' version='0.1' grailsVersion='2.5 &gt; *'>
+  <author>Your name</author>
+  <title>Omar Opensearch Plugin</title>
+  <description>Brief summary/description of the plugin.
+</description>
+  <documentation>http://grails.org/plugin/omar-opensearch</documentation>
+  <type>OmarOpensearchGrailsPlugin</type>
+  <resources>
+    <resource>org.ossim.omar.opensearch.OpenSearchController</resource>
+    <resource>org.ossim.omar.opensearch.tag.OpensearchDescriptorTagLib</resource>
+  </resources>
+</plugin>

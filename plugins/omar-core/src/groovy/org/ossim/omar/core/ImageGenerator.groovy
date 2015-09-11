@@ -4,7 +4,7 @@ import java.awt.image.*;
 import java.awt.*;
 class ImageGenerator {
 
-  static Image createErrorImage(int w, int h, def message) {
+  static Image createErrorImage(int w, int h, def message="Error") {
     def errorImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB)
     Graphics g = errorImage.getGraphics();
     FontMetrics fontMetrics= g.getFontMetrics()

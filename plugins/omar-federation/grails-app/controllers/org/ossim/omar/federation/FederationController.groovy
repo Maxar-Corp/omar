@@ -4,7 +4,7 @@ import grails.converters.JSON
 import org.apache.commons.collections.map.CaseInsensitiveMap
 import org.codehaus.groovy.grails.plugins.springsecurity.SpringSecurityUtils
 
-import java.awt.Color
+import geoscript.filter.Color
 
 class FederationController
 {
@@ -29,25 +29,37 @@ class FederationController
     {
       roles = ["ROLE_USER"]
     }
-    def styles = grailsApplication.config.rasterEntry.styles
-    def jsonStyles = []
-    styles.each { style ->
-      def colorlookup = [:]
-      style.outlineLookupTable.each { name, value ->
-        value = value.encodeAsHexColor()
-        colorlookup."${name}" = value
-      }
-      jsonStyles << ["styleName" : "by${style.propertyName.capitalize()}",
-                     "colorTable": colorlookup]
-    }
+//    def styles = grailsApplication.config.rasterEntry.styles
+//    def jsonStyles = []
+//    styles.each { style ->
+//      def colorlookup = [:]
+//      style.outlineLookupTable.each { name, value ->
+//        value = value.encodeAsHexColor()
+//        colorlookup."${name}" = value
+//      }
+//      jsonStyles << ["styleName": "by${style.propertyName.capitalize()}",
+//          "colorTable": colorlookup]
+//    }
+
+    def styles = grailsApplication.config.wms.styles
+
+    def jsonStyles = styles.collect { style -> [
+        styleName: style.key,
+        colorTable: style.value.inject([:]) { a, b ->
+          a[b.key] = new Color(b.value.color).hex
+          a
+        }
+    ] }
+
     def wmsBaseLayers = ( grailsApplication.config.wms as JSON ).toString()
-    def footprintStyle = grailsApplication.config?.wms?.data?.raster?.params?.styles ? grailsApplication.mainContext.getBean( grailsApplication.config?.wms?.data?.raster?.params?.styles ) : null
-    render view: 'search', model: [wmsBaseLayers : wmsBaseLayers,
-                                   footprintStyle: footprintStyle,
-                                   roles         : roles as JSON,
-                                   styles        : jsonStyles as JSON,
-                                   maxInputs  :grailsApplication.config.job.maxInputs,
-                                   jobQueueEnabled: grailsApplication.config.rabbitmq?.enabled
+//    def footprintStyle = grailsApplication.config?.wms?.data?.raster?.params?.styles ? grailsApplication.mainContext.getBean( grailsApplication.config?.wms?.data?.raster?.params?.styles ) : null
+//    def footprintStyle = grailsApplication.config.wms.styles[]
+    render view: 'search', model: [wmsBaseLayers: wmsBaseLayers,
+//        footprintStyle: footprintStyle,
+        roles: roles as JSON,
+        styles: jsonStyles as JSON,
+        maxInputs: grailsApplication.config.job.maxInputs,
+        jobQueueEnabled: grailsApplication.config.rabbitmq?.enabled
 
     ]
   }

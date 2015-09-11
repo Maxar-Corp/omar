@@ -15,8 +15,7 @@
 
 
   <g:layoutHead/>
-  <r:require modules="generatedViews"/>
-  <r:layoutResources/>
+  <asset:stylesheet src="generatedViews.css"/>
 </head>
 
 <body class="yui-skin-sam">
@@ -32,8 +31,8 @@
 <div id="bottom">
   <omar:securityClassificationBanner/>
 </div>
-
-<r:script>
+  <asset:javascript src="generatedViews.js"/>
+<g:javascript>
   (function ()
   {
     var Dom = YAHOO.util.Dom;
@@ -59,7 +58,7 @@
         }
     } );
   })();
-</r:script>
-<r:layoutResources/>
+</g:javascript>
+<g:layoutBody/>
 </body>
 </html>

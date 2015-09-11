@@ -1,0 +1,15 @@
+/*
+*= require main.css
+*= require yui/reset-fonts-grids/reset-fonts-grids.css
+*= require yui/assets/skins/sam/skin.css
+*= require homePageLayout.css
+*= require_self
+*/
+
+.logout{
+    position:absolute;
+    top:auto;
+    right:10px;
+    left:auto;
+    z-index:100;
+}

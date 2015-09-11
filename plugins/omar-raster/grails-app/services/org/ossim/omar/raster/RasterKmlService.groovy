@@ -8,6 +8,7 @@ import org.ossim.omar.raster.RasterEntry
 class RasterKmlService extends KmlService
 {
   def grailsApplication
+  def grailsLinkGenerator
 
   String createName( RasterEntry rasterEntry )
   {
@@ -18,14 +19,14 @@ class RasterKmlService extends KmlService
   {
     def description = ""
 
-    def imageUrl = tagLibBean.createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+    def imageUrl = grailsLinkGenerator.link( absolute: true,
             controller: "mapView", params: [layers: rasterEntry.indexId] )
 
-    def thumbnailUrl = tagLibBean.createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+    def thumbnailUrl = grailsLinkGenerator.link( absolute: true,
             controller: "thumbnail", action: "show", id: rasterEntry.id,
             params: [size: 128, projectionType: 'imagespace'] )
 
-    def logoUrl = "${grailsApplication.config.omar.serverURL}/images/omarLogo.png"
+    def logoUrl = "${grailsLinkGenerator.serverBaseURL}/images/omarLogo.png"
 
     def mpp = rasterEntry.getMetersPerPixel()
     def fieldMap = [
@@ -49,7 +50,7 @@ class RasterKmlService extends KmlService
       description += "<th align='right'>${k}:</th>"
       description += "<td>${v}</td></tr>"
     }
-    description += "<tfoot><tr><td colspan='2'><a href='${grailsApplication.config.omar.serverURL}'><img src='${logoUrl}'/></a></td></tr></tfoot>"
+    description += "<tfoot><tr><td colspan='2'><a href='${grailsLinkGenerator.serverBaseURL}'><img src='${logoUrl}'/></a></td></tr></tfoot>"
     description += "</table>"
 
     description
@@ -109,9 +110,9 @@ class RasterKmlService extends KmlService
             def minLatDMS
             def maxLatDMS
             def acquisition = ( rasterEntry?.acquisitionDate ) ? sdf.format( rasterEntry?.acquisitionDate ) : null
-            def bounds = rasterEntry?.groundGeom?.bounds
-            def groundCenterLon = ( bounds?.minLon + bounds?.maxLon ) * 0.5;
-            def groundCenterLat = ( bounds?.minLat + bounds?.maxLat ) * 0.5;
+            def bounds = rasterEntry?.groundGeom?.envelopeInternal
+            def groundCenterLon = ( bounds?.minX + bounds?.maxX ) * 0.5;
+            def groundCenterLat = ( bounds?.minY + bounds?.maxY ) * 0.5;
             wmsParams?.layers = rasterEntry?.indexId
 
             def renderedHtml = "${descriptionMap.get( rasterIdx )}"
@@ -142,8 +143,8 @@ class RasterKmlService extends KmlService
               open( "1" )
               visibility( "1" )
               Icon() {
-                def wmsURL = tagLibBean.createLink(
-                        absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+                def wmsURL = grailsLinkGenerator.link(
+                        absolute: true,
                         controller: "ogc", action: "wms", params: wmsParams
                 )
 
@@ -167,10 +168,10 @@ class RasterKmlService extends KmlService
                 }
                 else
                 {
-                  north( bounds?.maxLat )
-                  south( bounds?.minLat )
-                  east( bounds?.maxLon )
-                  west( bounds?.minLon )
+                  north( bounds?.maxY )
+                  south( bounds?.minY )
+                  east( bounds?.maxX )
+                  west( bounds?.minX )
                 }
               }
               if ( acquisition )
@@ -195,7 +196,7 @@ class RasterKmlService extends KmlService
 
   String createTopImagesKml( Map params )
   {
-    def kmlQueryUrl = tagLibBean.createLink( absolute: true, base: "${grailsApplication.config.omar.serverURL}",
+    def kmlQueryUrl = grailsLinkGenerator.link( absolute: true,
             controller: "rasterKmlQuery", action: "getImagesKml", params: params )
 
     def kmlbuilder = new StreamingMarkupBuilder()

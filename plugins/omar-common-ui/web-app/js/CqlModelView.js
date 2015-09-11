@@ -233,7 +233,7 @@ OMAR.models.CqlModel = Backbone.Model.extend({
                 //
                 //alert(expr.colval + ", " + expr.opval);
 
-                var val   = expr.val;
+                var val   = expr.val.trim();
                 var opval = expr.opval?expr.opval.toUpperCase():expr.opval;
                 var fullExpression = "";
                 var colType = expr.coltype;
@@ -708,6 +708,34 @@ OMAR.views.CqlView = Backbone.View.extend({
         }
         this.model.set("conditions", this.getCondition())
     },
+    getTableObjectStripped:function(){
+        function removeIds(idx, value)
+        {
+            delete this["opid"];
+            delete this["colid"];
+            delete this["valId"];
+
+            if(this.expressions)
+            {
+                $(this.expressions).each(removeIds);
+            }
+            if(this.nestedexpressions)
+            {
+                $(this.nestedexpressions).each(removeIds);
+            }
+        }
+
+        // to clone what we have I will just use the JSON object to stringify and parse
+        // If there is a better way to clone let me know
+        //
+        var table = JSON.stringify(this.getCondition('.cqlQuery >table'));
+        var tableObj = JSON.parse(table);
+
+        $(tableObj.expressions).each(removeIds)
+        $(tableObj.nestedexpressions).each(removeIds)
+
+        return tableObj;
+    },
     getTypesForColumn : function(col){
 
     },
@@ -923,10 +951,11 @@ OMAR.views.CqlView = Backbone.View.extend({
                 result+="<option id='"+baseOpId+"3' value='iSTARTSWITH' >Starts With (no case)</option>";
                 result+="<option id='"+baseOpId+"4' value='ENDSWITH' >Ends With</option>";
                 result+="<option id='"+baseOpId+"5' value='iENDSWITH' >Ends With (no case)</option>";
-                result+="<option id='"+baseOpId+"6' value='is null' >IS Null</option>";
-                result+="<option id='"+baseOpId+"7' value='is not null' >IS NOT Null</option>";
-                result+="<option id='"+baseOpId+"8' value='=' >Equal</option>";
-                result+="<option id='"+baseOpId+"9' value='in' >In</option>";
+                result+="<option id='"+baseOpId+"6' value='<>' >Not Equal</option>";
+                result+="<option id='"+baseOpId+"7' value='is null' >IS Null</option>";
+                result+="<option id='"+baseOpId+"8' value='is not null' >IS NOT Null</option>";
+                result+="<option id='"+baseOpId+"9' value='=' >Equal</option>";
+                result+="<option id='"+baseOpId+"10' value='in' >In</option>";
                 break;
             case "numeric":
                 result+="<option id='"+baseOpId+"0' value='<' >Less Than</option>";
@@ -934,9 +963,10 @@ OMAR.views.CqlView = Backbone.View.extend({
                 result+="<option id='"+baseOpId+"2' value='>' >Greater Than</option>";
                 result+="<option id='"+baseOpId+"3' value='>=' >Greater Than Equal</option>";
                 result+="<option id='"+baseOpId+"4' value='=' >Equal</option>";
-                result+="<option id='"+baseOpId+"5' value='is null' >IS Null</option>";
-                result+="<option id='"+baseOpId+"6' value='is not null' >IS NOT Null</option>";
-                result+="<option id='"+baseOpId+"6' value='in' >In</option>";
+                result+="<option id='"+baseOpId+"5' value='<>' >Not Equal</option>";
+                result+="<option id='"+baseOpId+"6' value='is null' >IS Null</option>";
+                result+="<option id='"+baseOpId+"7' value='is not null' >IS NOT Null</option>";
+                result+="<option id='"+baseOpId+"8' value='in' >In</option>";
                 break;
             case "datetime":
                 result+="<option id='"+baseOpId+"0' value='today' >Today</option>";
@@ -948,8 +978,9 @@ OMAR.views.CqlView = Backbone.View.extend({
                 result+="<option id='"+baseOpId+"3' value='>' >Greater Than</option>";
                 result+="<option id='"+baseOpId+"4' value='>=' >Greater Than Equal</option>";
                 result+="<option id='"+baseOpId+"5' value='=' >Equal</option>";
-                result+="<option id='"+baseOpId+"6' value='is null' >IS Null</option>";
-                result+="<option id='"+baseOpId+"7' value='is not null' >IS NOT Null</option>";
+                result+="<option id='"+baseOpId+"6' value='<>' >Not Equal</option>";
+                result+="<option id='"+baseOpId+"7' value='is null' >IS Null</option>";
+                result+="<option id='"+baseOpId+"8' value='is not null' >IS NOT Null</option>";
                 break;
             case "geometry":
                 result+="<option id='"+baseOpId+"0' value='BBOX' >BBOX</option>";
@@ -1094,6 +1125,18 @@ OMAR.views.CqlView = Backbone.View.extend({
     cqlBtnResetClicked:function(){
         this.clearQuery();
         this.trigger("onCqlChanged");
+
+
+        // alert($(cqlSelectNamedQueries).val());
+        //var testCondition = '{"operator":"or","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "<", "opid": "col1op1OPOPTION_0", "opdisp":"Today", "val": "now", "valId": "col1op1_TEXTFIELD"}],"nestedexpressions":"[]"}';
+       // var testConditionNested = '{"operator":"and","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "colid": "col1op1_COLOPTION_40", "coldisp": "Acquisition Date", "opval": "today", "opid": "col1op1OPOPTION_0", "opdisp": "Today", "val": "now", "valId": "col1op1_TEXTFIELD"}, {"coltype": "numeric", "colval": "bit_depth", "colid": "col3op3_COLOPTION_19", "coldisp": "Bit Depth", "opval": "<", "opid": "col3op3OPOPTION_0", "opdisp": "Less Than", "val": "16", "valId": "col3op3_TEXTFIELD"}],"nestedexpressions":[{"operator": "and", "expressions": [{"coltype": "datetime", "colval": "ingest_date", "colid": "col2op2_COLOPTION_43", "coldisp": "Ingest Date", "opval": "today", "opid": "col2op2OPOPTION_0", "opdisp": "Today", "val": "", "valId": "col2op2_TEXTFIELD"}, {"coltype": "numeric", "colval": "grazing_angle", "colid": "col4op4_COLOPTION_26", "coldisp": "Grazing Angle", "opval": ">", "opid": "col4op4OPOPTION_2", "opdisp": "Greater Than", "val": "45", "valId": "col4op4_TEXTFIELD"}], "nestedexpressions": []}]}';
+       // var testConditionNested = '{"operator":"and","expressions":[{"coltype": "datetime", "colval": "acquisition_date", "coldisp": "Acquisition Date", "opval": "today",  "opdisp": "Today", "val": "now"}, {"coltype": "numeric", "colval": "bit_depth", "coldisp": "Bit Depth", "opval": "<", "opdisp": "Less Than", "val": "16"}],"nestedexpressions":[{"operator": "and", "expressions": [{"coltype": "datetime", "colval": "ingest_date", "coldisp": "Ingest Date", "opval": "today", "opdisp": "Today", "val": ""}, {"coltype": "numeric", "colval": "grazing_angle", "coldisp": "Grazing Angle", "opval": ">", "opdisp": "Greater Than", "val": "45"}], "nestedexpressions": []}]}';
+
+
+       // this.clearQuery(JSON.parse(testConditionNested));
+
+
+       // alert(JSON.stringify(this.getTableObjectStripped()));
     },
     cqlBtnShowClicked:function(){
         var con = this.getCondition('.cqlQuery >table');

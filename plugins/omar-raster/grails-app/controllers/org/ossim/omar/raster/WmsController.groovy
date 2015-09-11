@@ -26,30 +26,38 @@ class WmsController extends OgcController implements InitializingBean
   def exportService
   def grailsApplication
   def drawService
+  def grailslLinkGenerator
+  def messageSource
+
 
   def wms()
   {
-	def wmsParamsIgnoreCase = new CaseInsensitiveMap( params )
-	if (wmsParamsIgnoreCase.bbox && wmsParamsIgnoreCase.offsetLon && wmsParamsIgnoreCase.offsetLat)
-	{
-		def wmsBbox = wmsParamsIgnoreCase.bbox.split(",")
-		def minimumLongitude = wmsBbox[0] as Double
-		def minimumLatitude = wmsBbox[1] as Double
-		def maximumLongitude = wmsBbox[2] as Double
-		def maximumLatitude = wmsBbox[3] as Double
+    def wmsParamsIgnoreCase = new CaseInsensitiveMap( params )
+    if ( wmsParamsIgnoreCase.bbox && wmsParamsIgnoreCase.offsetLon && wmsParamsIgnoreCase.offsetLat )
+    {
+      def wmsBbox = wmsParamsIgnoreCase.bbox.split( "," )
+      def minimumLongitude = wmsBbox[0] as Double
+      def minimumLatitude = wmsBbox[1] as Double
+      def maximumLongitude = wmsBbox[2] as Double
+      def maximumLatitude = wmsBbox[3] as Double
 
-		def deltaLongitude = wmsParamsIgnoreCase.offsetLon as Double
-		def deltaLatitude = wmsParamsIgnoreCase.offsetLat as Double
+      def deltaLongitude = wmsParamsIgnoreCase.offsetLon as Double
+      def deltaLatitude = wmsParamsIgnoreCase.offsetLat as Double
 
-		wmsBbox[0] = minimumLongitude + deltaLongitude
-		wmsBbox[1] = minimumLatitude + deltaLatitude
-		wmsBbox[2] = maximumLongitude + deltaLongitude
-		wmsBbox[3] = maximumLatitude + deltaLatitude
+      wmsBbox[0] = minimumLongitude + deltaLongitude
+      wmsBbox[1] = minimumLatitude + deltaLatitude
+      wmsBbox[2] = maximumLongitude + deltaLongitude
+      wmsBbox[3] = maximumLatitude + deltaLatitude
 
-		if (params.bbox) { params.bbox = wmsBbox }
-		else if (params.BBOX) { params.BBOX = wmsBbox }
-	}
-    //println params
+      if ( params.bbox )
+      {
+        params.bbox = wmsBbox
+      }
+      else if ( params.BBOX )
+      {
+        params.BBOX = wmsBbox
+      }
+    }
 
     WmsCommand cmd = new WmsCommand()
 
@@ -58,8 +66,10 @@ class WmsController extends OgcController implements InitializingBean
 
     if ( !cmd.validate() )
     {
-     // log.error( cmd.createErrorString() )
-      //   println cmd.createErrorString()
+      // log.error( cmd.createErrorString() )
+      //println cmd.createErrorString()
+      cmd.errors.allErrors.each { println messageSource.getMessage( it, null ) }
+
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
     else
@@ -84,7 +94,7 @@ class WmsController extends OgcController implements InitializingBean
           forward( action: "getKml_", params: params )
           break
         default:
-          log.error( "ERROR: Unknown action: ${ cmd?.request }" )
+          log.error( "ERROR: Unknown action: ${cmd?.request}" )
           break
         }
         /*
@@ -100,67 +110,73 @@ class WmsController extends OgcController implements InitializingBean
       }
       catch ( java.lang.Exception e )
       {
-        log.error( "OGC::WMS exception: ${ e.message }" )
+        log.error( "OGC::WMS exception: ${e.message}" )
       }
     }
 
     return null
   }
 
-  def footprints()
+  def footprints(GetMapRequest getMapRequest)
   {
-//    def start = System.currentTimeMillis()
+    //println params
 
-    if ( params.max == null )
-    {
-      params.max = grailsApplication.config.wms.vector.maxcount
-    }
-    def wmsRequest = new WMSRequest()
+    def results = drawService.drawFootprints( getMapRequest )
 
-    def newParams = new CaseInsensitiveMap( params )
-
-    bindData( wmsRequest, newParams )
-
-    // default to geographic bounds
-    if ( !wmsRequest.srs )
-    {
-      wmsRequest.srs = "EPSG:4326"
-    }
-
-    def dateRange = wmsRequest.dateRange
-    def startDate = null
-    def endDate = null
-
-    if ( dateRange )
-    {
-      if ( dateRange.size() > 0 )
-      {
-        startDate = dateRange[0]
-
-        if ( dateRange.size() > 1 )
-        {
-          endDate = dateRange[1]
-        }
-      }
-    }
-
-    if ( !startDate && !endDate )
-    {
-      startDate = DateUtil.initializeDate( "startDate", params )
-      endDate = DateUtil.initializeDate( "endDate", params )
-    }
-
-
-    def bytes = drawService.drawLayers( wmsRequest, startDate, endDate, params )
-
-    response.contentType = wmsRequest.format
-    response.contentLength = bytes?.size()
-    response.outputStream << bytes
-
-    //    def stop = System.currentTimeMillis()
-    //    println "${wmsRequest.bbox}: ${stop - start}ms"
-
-    return null
+    render contentType: results.contentType, file: results.buffer
+//
+////    def start = System.currentTimeMillis()
+//
+//    if ( params.max == null )
+//    {
+//      params.max = grailsApplication.config.wms.vector.maxcount
+//    }
+//    def wmsRequest = new WMSRequest()
+//
+//    def newParams = new CaseInsensitiveMap( params )
+//
+//    bindData( wmsRequest, newParams )
+//
+//    // default to geographic bounds
+//    if ( !wmsRequest.srs )
+//    {
+//      wmsRequest.srs = "EPSG:4326"
+//    }
+//
+//    def dateRange = wmsRequest.dateRange
+//    def startDate = null
+//    def endDate = null
+//
+//    if ( dateRange )
+//    {
+//      if ( dateRange.size() > 0 )
+//      {
+//        startDate = dateRange[0]
+//
+//        if ( dateRange.size() > 1 )
+//        {
+//          endDate = dateRange[1]
+//        }
+//      }
+//    }
+//
+//    if ( !startDate && !endDate )
+//    {
+//      startDate = DateUtil.initializeDate( "startDate", params )
+//      endDate = DateUtil.initializeDate( "endDate", params )
+//    }
+//
+//
+//    def bytes = drawService.drawLayers( wmsRequest, startDate, endDate, params )
+//
+//    response.contentType = wmsRequest.format
+//    response.contentLength = bytes?.size()
+//    response.outputStream << bytes
+//
+//    //    def stop = System.currentTimeMillis()
+//    //    println "${wmsRequest.bbox}: ${stop - start}ms"
+//
+//    return null
   }
 
   def getKmz_()
@@ -183,7 +199,7 @@ class WmsController extends OgcController implements InitializingBean
         'height'
     ] ) )
     {
-      cmd.errors.each { println it }
+      //cmd.errors.each { println it }
       log.error( cmd.createErrorString() )
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
@@ -201,7 +217,6 @@ class WmsController extends OgcController implements InitializingBean
 
   def getCapabilities_()
   {
-
     WmsCommand cmd = new WmsCommand()
 
     //cmd.clearErrors()  // because validation happens on entry so clear errors and re-bind
@@ -210,14 +225,14 @@ class WmsController extends OgcController implements InitializingBean
 
     if ( !cmd.validate( [/*'service', , 'version',*/ 'request'] ) )
     {
-      cmd.errors.each { println it }
+      //cmd.errors.each { println it }
       log.error( cmd.createErrorString() )
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
     else
     {
       //wmsLogParams.request = "getcapabilities"
-      def serviceAddress = createLink( controller: "ogc", action: "wms", base: "${ grailsApplication.config.omar.serverURL }", absolute: true ) as String
+      def serviceAddress = grailsLinkGenerator.link( controller: "ogc", action: "wms", absolute: true ) as String
       def capabilities = webMappingService?.getCapabilities( cmd, serviceAddress )
       //internaltime = System.currentTimeMillis();
       render( contentType: "text/xml", text: capabilities )
@@ -274,9 +289,6 @@ class WmsController extends OgcController implements InitializingBean
         rasterEntries = rasterEntrySearchService.getWmsImageLayers( cmd.filter )
       }
 
-      //  def serviceAddress = createLink(controller: "ogc", action: "wms", base: "${grailsApplication.config.omar.serverURL}", absolute: true)
-      //  def kml = webMappingService.getKML(wmsRequest, serviceAddress)
-
       def filename = "image.kml"
 
       def kml = null;
@@ -285,7 +297,7 @@ class WmsController extends OgcController implements InitializingBean
         def tempMap = new CaseInsensitiveMap( params )
         def file = ( rasterEntries[0].filename as File ).name
 
-        filename = "${ file }.kml"
+        filename = "${file}.kml"
         kml = rasterKmlService.createImagesKml( rasterEntries, cmd.toMap(), tempMap )
       }
       else
@@ -294,7 +306,7 @@ class WmsController extends OgcController implements InitializingBean
         filename = "empty.kml"
       }
       //internaltime = System.currentTimeMillis();
-      response.setHeader( "Content-disposition", "attachment; filename=${ filename }" )
+      response.setHeader( "Content-disposition", "attachment; filename=${filename}" )
       render( contentType: "application/vnd.google-earth.kml+xml", text: kml, encoding: "UTF-8" )
     }
 
@@ -342,17 +354,21 @@ class WmsController extends OgcController implements InitializingBean
         [featureClass: RasterEntry.class]
     )
 
-    response.setHeader( "Content-disposition", "attachment; filename=${ file?.name }" );
+    response.setHeader( "Content-disposition", "attachment; filename=${file?.name}" );
     response.contentType = mimeType
     response.outputStream << file?.newInputStream()
     response.outputStream.flush()
   }
 
-  def getMap_()
+  def getMap_(WmsCommand cmd)
   {
-    WmsCommand cmd = new WmsCommand()
+    //println params
 
-    bindData( cmd, new CaseInsensitiveMap( params ) )
+    //WmsCommand cmd = new WmsCommand()
+
+    //bindData( cmd, new CaseInsensitiveMap( params ) )
+
+    //println cmd
 
 //	println cmd
 
@@ -360,8 +376,8 @@ class WmsController extends OgcController implements InitializingBean
 
     if ( !cmd.validate() )// ['reqeust', 'layers', 'bbox', 'srs', 'width', 'height', 'format'] ) )
     {
-      cmd.errors.each { println it }
-     // log.error( cmd.createErrorString() )
+      cmd.errors.allErrors.each { println messageSource.getMessage( it, null ) }
+      // log.error( cmd.createErrorString() )
       ogcExceptionService.writeResponse( response, ogcExceptionService.formatWmsException( cmd ) )
     }
     else
@@ -407,9 +423,9 @@ class WmsController extends OgcController implements InitializingBean
 
       if ( mapResult.errorMessage )
       {
-        def message = "WMS server Error: ${ mapResult.errorMessage }"
+        def message = "WMS server Error: ${mapResult.errorMessage}"
         // no data to process
-        log.error( message )
+        //log.error( message )
 
         def ogcFormattedException = ogcExceptionService.formatOgcException( cmd.toMap(), message )
         ogcExceptionService.writeResponse( response, ogcFormattedException )
@@ -425,11 +441,13 @@ class WmsController extends OgcController implements InitializingBean
 
           def bytes = ostream.toByteArray()
 
-          response.contentLength = bytes.size()
-          response.outputStream << bytes
+//          response.contentLength = bytes.size()
+//          response.outputStream << bytes
+          render contentType: response.contentType, file: bytes
         }
         catch ( Exception e )
-        {}
+        {
+        }
       }
       endtime = System.currentTimeMillis()
 
@@ -446,7 +464,7 @@ class WmsController extends OgcController implements InitializingBean
       {
         if ( wmsLogParams.ip )
         {
-          wmsLogParams.ip += ", ${ clientIp }"
+          wmsLogParams.ip += ", ${clientIp}"
         }
         else
         {
@@ -459,7 +477,7 @@ class WmsController extends OgcController implements InitializingBean
         wmsLogParams.ip = request.getRemoteAddr()
       }
 
-      def urlTemp = createLink( [controller: 'ogc', action: 'wms', base: "${ grailsApplication.config.omar.serverURL }", absolute: true, params: params] )
+      def urlTemp = grailsLinkGenerator.link( [controller: 'ogc', action: 'wms', absolute: true, params: params] )
       wmsLogParams.with {
         endDate = new Date()
         internalTime = ( internaltime - starttime ) / 1000.0
@@ -518,13 +536,13 @@ class WmsController extends OgcController implements InitializingBean
         kml( "xmlns": "http://earth.google.com/kml/2.1" ) {
           Document() {
             GroundOverlay() {
-              name( "${ nameString }" )
+              name( "${nameString}" )
               Snippet()
-              description { mkp.yieldUnescaped( "<![CDATA[${ tempDescription }]]>" ) }
+              description { mkp.yieldUnescaped( "<![CDATA[${tempDescription}]]>" ) }
               open( "1" )
               visibility( "1" )
               Icon() {
-                href { mkp.yieldUnescaped( "images/image${ ext }" ) }
+                href { mkp.yieldUnescaped( "images/image${ext}" ) }
               }
               LatLonBox() {
                 north( bounds.maxy )
@@ -548,7 +566,7 @@ class WmsController extends OgcController implements InitializingBean
       zos.putNextEntry( anEntry );
 
       zos << kmlbuilder.bind( kmlnode ).toString()
-      anEntry = new ZipEntry( "images/image${ ext }" );
+      anEntry = new ZipEntry( "images/image${ext}" );
       //place the zip entry in the ZipOutputStream object
       zos.putNextEntry( anEntry );
       if ( image )

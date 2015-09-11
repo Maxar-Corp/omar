@@ -11,22 +11,22 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-  <title>OMAR <g:meta name="app.version"/>: Orthorectified Multi-Layer View</title>
-  <meta content="multiLayerLayout" name="layout">
-  <r:require modules="multiLayerLayout"/>
+    <title>OMAR <g:meta name="app.version"/>: Orthorectified Multi-Layer View</title>
+    <meta content="multiLayerLayout" name="layout">
+    <asset:stylesheet src="multiLayerLayout.css"/>
 </head>
 
 <body class=" yui-skin-sam">
 <g:form name="wcsForm" method="POST"/>
 
 <content tag="top1">
-  <omar:securityClassificationBanner/>
+    <omar:securityClassificationBanner/>
     <omar:logout/>
     <g:render template="multiLayerMenu" model="${[rasterEntries: rasterEntries]}"/>
 </content>
 
 <content tag="bottom1">
-  <omar:securityClassificationBanner/>
+    <omar:securityClassificationBanner/>
 </content>
 
 <%--
@@ -38,22 +38,23 @@
 --%>
 
 <content tag="top2">
-  <div id="toolBar" class="olControlPanel"></div>
+    <div id="toolBar" class="olControlPanel"></div>
 </content>
 
 <content tag="bottom2">
-  <table><tr>
-    <td width="33%"><div id="ddMousePosition">&nbsp;</div></td>
-    <td width="33%"><div id="dmsMousePosition">&nbsp;</div></td>
-    <td width="33%"><div id="mgrsMousePosition">&nbsp;</div></td>
-  </tr></table>
+    <table><tr>
+        <td width="33%"><div id="ddMousePosition">&nbsp;</div></td>
+        <td width="33%"><div id="dmsMousePosition">&nbsp;</div></td>
+        <td width="33%"><div id="mgrsMousePosition">&nbsp;</div></td>
+    </tr></table>
 </content>
 
 <content tag="center2">
-  <div id="map"></div>
+    <div id="map"></div>
 </content>
+<asset:javascript src="multiLayerLayout.js"/>
 
-<r:script>
+<g:javascript>
     var mapWidget = new MapWidget();
     var minLon = parseFloat("${left}");
     var minLat = parseFloat("${bottom}");
@@ -90,7 +91,7 @@ mapWidget.getMap().updateSize();
   {
     if(!mapWidget) return;
         var baseLayer = null;
-        var baseWMS=${baseWMS as JSON};
+        var baseWMS=${raw( ( baseWMS as JSON ).toString() )};
 
 
     for ( layer in baseWMS ) {
@@ -112,7 +113,7 @@ mapWidget.getMap().updateSize();
 
   function init()
   {
-    OpenLayers.ImgPath = "${resource(plugin: 'openlayers', dir: 'js/img')}/";
+    OpenLayers.ImgPath = "${raw(resource( plugin: 'openlayers', dir: 'js/img' ))}/";
 
 	var oMenu = new YAHOO.widget.MenuBar("rasterMenu", {
                                                autosubmenudisplay: true,
@@ -156,51 +157,51 @@ mapWidget.getMap().updateSize();
     //map = new OpenLayers.Map( "map", {controls: [], maxExtent:bounds, maxResolution:largestScale, minResolution:smallestScale} );
     setupBaseLayers( );
     var layers = [
-  <g:each var="rasterEntry" in="${rasterEntries}" status="i">
+    <g:each var="rasterEntry" in="${rasterEntries}" status="i">
 
-    <g:if test="${i > 0}">,</g:if>
+        <g:if test="${i > 0}">,</g:if>
 
-    new OpenLayers.Layer.WMS(
-    "Raster ${rasterEntry.id}",
-                "${createLink(controller: 'ogc', action: 'wms')}",
+        new OpenLayers.Layer.WMS(
+        "Raster ${rasterEntry.id}",
+                "${createLink( controller: 'ogc', action: 'wms' )}",
         { layers: "${rasterEntry.indexId}", displayOutsideMaxExtent:true, format: format, stretch_mode_region: "global", stretch_mode:"linear_auto_min_max", transparent:transparent  },
         {isBaseLayer: false,buffer:0, singleTile:true, ratio:1.0, transitionEffect: "resize"}
                 )
-    <g:if test="${kmlOverlays}">
+        <g:if test="${kmlOverlays}">
 
-      , new OpenLayers.Layer.Vector( "KML", {
-   projection: mapWidget.getMap().displayProjection,
-   strategies: [new OpenLayers.Strategy.Fixed( )],
-   protocol: new OpenLayers.Protocol.HTTP( {
-     url: "${createLink(controller: 'rasterEntry', action: 'getKML', params: [rasterEntryIds: rasterEntry.indexId])}",
+            , new OpenLayers.Layer.Vector( "KML", {
+         projection: mapWidget.getMap().displayProjection,
+         strategies: [new OpenLayers.Strategy.Fixed( )],
+         protocol: new OpenLayers.Protocol.HTTP( {
+           url: "${createLink( controller: 'rasterEntry', action: 'getKML', params: [rasterEntryIds: rasterEntry.indexId] )}",
             format: new OpenLayers.Format.KML( {
               extractStyles: true,
               extractAttributes: true
             } )
           } )
         } )
-    </g:if>
-  </g:each>
-  ];
+        </g:if>
+    </g:each>
+    ];
 
-    mapWidget.getMap().addLayers( layers );
-    mapWidget.setupAoiLayer();
-    mapWidget.setupToolBar();
+      mapWidget.getMap().addLayers( layers );
+      mapWidget.setupAoiLayer();
+      mapWidget.setupToolBar();
 
-    mapWidget.getMap().addControl(new OpenLayers.Control.LayerSwitcher());
-    //var overview = new OpenLayers.Control.OverviewMap({maximized: true});
-    //mapWidget.getMap().addControl(overview);
-    mapWidget.getMap().addControl(new OpenLayers.Control.Scale());
-    mapWidget.getMap().addControl(new OpenLayers.Control.ScaleLine());
+      mapWidget.getMap().addControl(new OpenLayers.Control.LayerSwitcher());
+      //var overview = new OpenLayers.Control.OverviewMap({maximized: true});
+      //mapWidget.getMap().addControl(overview);
+      mapWidget.getMap().addControl(new OpenLayers.Control.Scale());
+      mapWidget.getMap().addControl(new OpenLayers.Control.ScaleLine());
 
-    var zoom = mapWidget.getMap().getZoomForExtent(bounds, true);
-    mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
-    changeMapSize();
-}
+      var zoom = mapWidget.getMap().getZoomForExtent(bounds, true);
+      mapWidget.getMap().setCenter(bounds.getCenterLonLat(), zoom);
+      changeMapSize();
+  }
 
-function getProjectedImage(params)
-{
-	 var link   = "${createLink(action: "wcs", controller: "ogc")}";
+  function getProjectedImage(params)
+  {
+       var link   = "${createLink( action: "wcs", controller: "ogc" )}";
 	 var extent = mapWidget.getSelectedOrViewportExtents();
 	 var size   = mapWidget.getSizeInPixelsFromExtents(extent);
 	 var wcsProperties = {"request":"GetCoverage",
@@ -222,7 +223,7 @@ function getProjectedImage(params)
     }
 }
 
-</r:script>
+</g:javascript>
 
 </body>
 </html>

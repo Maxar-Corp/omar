@@ -11,9 +11,9 @@ class ImageListController
   def index()
   {
 
-    [baseWMS     : grailsApplication.config.wms.base.layers[-1],
-     tableModel  : imageListService.createTableModel(),
-     filterParams: this.initFilterParams()]
+    render view: 'index', model: [baseWMS: grailsApplication.config.wms.base.layers[-1],
+        tableModel: imageListService.createTableModel(),
+        filterParams: this.initFilterParams()]
   }
 
   def getData(FetchDataCommand cmd)
@@ -79,5 +79,4 @@ class ImageListController
     ]
     filterParams
   }
-
 }

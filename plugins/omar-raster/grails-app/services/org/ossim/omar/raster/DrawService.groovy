@@ -1,5 +1,13 @@
 package org.ossim.omar.raster
 
+import geoscript.GeoScript
+import geoscript.filter.Filter
+import geoscript.geom.Bounds
+import geoscript.render.Map as GeoScriptMap
+import geoscript.style.Composite
+import geoscript.workspace.Workspace
+import static geoscript.style.Symbolizers.*
+
 import java.awt.AlphaComposite
 import java.awt.BasicStroke
 
@@ -20,6 +28,7 @@ import com.vividsolutions.jts.geom.MultiPolygon
 import org.ossim.omar.core.ImageGenerator
 import java.awt.Color
 
+
 class DrawService implements ApplicationContextAware, InitializingBean
 {
   static transactional = false
@@ -28,6 +37,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
   def grailsApplication
   //def styles
 
+  def dataSourceUnproxied
 
   def wmsToScreen(double minx, double miny, double maxx, double maxy, int imageWidth, int imageHeight)
   {
@@ -79,8 +89,8 @@ class DrawService implements ApplicationContextAware, InitializingBean
 //      style = styles[styleName]
 //    }
 
-    def queryParams = applicationContext.getBean( "${ layerName }QueryParam" )
-    def searchService = applicationContext.getBean( "${ layerName }SearchService" )
+    def queryParams = applicationContext.getBean( "${layerName}QueryParam" )
+    def searchService = applicationContext.getBean( "${layerName}SearchService" )
 
     queryParams.caseInsensitiveBind( params )
 
@@ -189,7 +199,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
         image = ImageGenerator.convertRGBAToIndexed( image )
       }
 
-      def formatName = wmsRequest.format?.split( "/" )[-1]
+      def formatName = wmsRequest.format?.split( "/" )?.last() ?: 'png'
       def ostream = new ByteArrayOutputStream()
 
       ImageIO.write( image, formatName, ostream )
@@ -198,7 +208,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
     }
     catch ( Exception e )
     {
-      log.error( "Exception OGC:FOOTPRINTS: ${ e.message }" )
+      log.error( "Exception OGC:FOOTPRINTS: ${e.message}" )
       e.printStackTrace()
     }
 
@@ -214,5 +224,137 @@ class DrawService implements ApplicationContextAware, InitializingBean
   void afterPropertiesSet()
   {
 //    styles = grailsApplication.config.wms.styles
+  }
+
+/*
+  def drawFootprints(GetMapRequest getMapRequest)
+  {
+    //println getMapRequest
+    def ostream = new ByteArrayOutputStream()
+
+//    def image = new BufferedImage( 256, 256, BufferedImage.TYPE_INT_ARGB )
+//
+//    ImageIO.write( image, 'png', ostream )
+
+    def layerName = ( getMapRequest.layers == 'Imagery' ) ? 'raster_entry' : 'video_data_set'
+    def dataSourceConfig = grailsApplication.config.dataSource
+    def pattern = "jdbc:postgresql:(//(.*)/)?(.*)"
+    def matcher = dataSourceConfig.url =~ pattern
+
+    def dbParams = [
+        dbtype: 'postgis',
+        host: matcher[0][-2] ?: 'localhost',
+        port: '5432',
+        database: matcher[0][-1],
+        user: dataSourceConfig.username,
+        password: dataSourceConfig.password,
+//        'Data Source': dataSourceUnproxied,
+        'Expose primary keys': true
+    ]
+
+    //println dbParams
+
+    def workspace = Workspace.getWorkspace( dbParams )
+    def layer = workspace[layerName]
+
+    def styleMap = grailsApplication.config.rasterEntry.styles.groupBy {
+      "by${it.propertyName.capitalize()}".toString()
+    }
+    def outlineLookupTable = styleMap[getMapRequest.styles].first().outlineLookupTable
+
+    def styles = outlineLookupTable.collect { k, v ->
+      ( stroke( color: v ) + fill( opacity: 0.0 ) ).where( "file_type='${k}'" )
+    }
+
+    def x = outlineLookupTable.keySet().collect { "'${it}'" }.join( ',' )
+
+    styles << ( stroke( color: '#000000' ) + fill( opacity: 0.0 ) ).where( "file_type not in (${x})" )
+
+    def queryLayer = new QueryLayer( layer, styles as Composite )
+    def bbox = new Bounds( *( getMapRequest.bbox.split( ',' )*.toDouble() ), getMapRequest.srs )
+    def filter = Filter.bbox( 'ground_geom', bbox )
+
+    if ( getMapRequest.filter )
+    {
+      filter = filter.and( getMapRequest.filter )
+    }
+
+    queryLayer.filter = filter
+
+    def map = new GeoScriptMap(
+        width: getMapRequest.width,
+        height: getMapRequest.height,
+        proj: bbox.proj,
+        bounds: bbox,
+        layers: [queryLayer]
+    )
+
+    map.render( ostream )
+    map.close()
+//    workspace.ds.dispose()
+    workspace.close()
+
+    [contentType: 'image/png', buffer: ostream.toByteArray()]
+  }
+  */
+
+  def drawFootprints(GetMapRequest getMapRequest)
+  {
+    //println getMapRequest
+
+    def ostream = new ByteArrayOutputStream()
+    def dataSourceConfig = grailsApplication.config.dataSource
+    def pattern = "jdbc:postgresql:(//([^:]+)(:(\\d+))?/)?(.*)"
+    def matcher = dataSourceConfig.url =~ pattern
+
+    def workspaceParams = [
+        dbtype: 'postgis',
+        user: dataSourceConfig.username,
+        password: dataSourceConfig.password,
+        host: matcher[0][2] ?: 'localhost',
+        port: matcher[0][4] ?: '5432',
+        database: matcher[0][5],
+//        'Data Source': dataSourceUnproxied,
+        'Expose primary keys': true
+    ]
+
+    Workspace.withWorkspace( workspaceParams ) { workspace ->
+      def layerName = ( getMapRequest.layers == 'Imagery' ) ? 'raster_entry' : 'video_data_set'
+      def layer = workspace[layerName]
+      def styleMap = grailsApplication.config.wms.styles[getMapRequest.styles]
+
+      //println styleMap
+
+      def style = styleMap.collect { k, v ->
+        ( stroke( color: v.color ) + fill( opacity: 0.0 ) ).where( v.filter )
+      } as Composite
+
+      def bounds = new Bounds( *( getMapRequest?.bbox?.split( ',' )*.toDouble() ), getMapRequest.srs )
+      def queryLayer = new QueryLayer( layer, style )
+
+      def filter = Filter.bbox( layer.schema.geom.name, bounds )
+
+      if ( getMapRequest.filter )
+      {
+        filter = filter.and( getMapRequest.filter )
+      }
+
+      queryLayer.filter = filter
+
+      def map = new GeoScriptMap(
+          width: getMapRequest.width,
+          height: getMapRequest.height,
+          proj: bounds.proj,
+          bounds: bounds,
+          type: getMapRequest?.format?.split( '/' )?.last() ?: 'png',
+          layers: [queryLayer]
+      )
+
+      map.render( ostream )
+      map.close()
+      workspace.close()
+    }
+
+    [contentType: 'image/png', buffer: ostream.toByteArray()]
   }
 }

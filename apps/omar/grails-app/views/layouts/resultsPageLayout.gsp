@@ -12,10 +12,9 @@
   <title><g:layoutTitle default="Grails"/></title>
   <piwik:trackPageview />
   <g:layoutHead/>
-  <r:layoutResources/>
 </head>
 
-<body class="${pageProperty(name: 'body.class')}">
+<body class="${pageProperty(name: 'body.class')}" onload="${pageProperty(name: 'body.onload')}">
 
 <div id="top1">
   <omar:securityClassificationBanner/>
@@ -43,6 +42,5 @@
 
 
 <g:layoutBody/>
-<r:layoutResources/>
 </body>
 </html>

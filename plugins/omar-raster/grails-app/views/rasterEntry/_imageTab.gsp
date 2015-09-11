@@ -54,11 +54,11 @@ To change this template use File | Settings | File Templates.
                 <td>${rasterEntry.numberOfResLevels?.encodeAsHTML()}</td>
                 <td>${rasterEntry.bitDepth?.encodeAsHTML()}</td>
                 <td>${rasterEntry.metersPerPixel.encodeAsHTML()}</td>
-                <g:set var="bounds" value="${rasterEntry?.groundGeom?.bounds}"/>
-                <td>${bounds?.minLon?.encodeAsHTML()}</td>
-                <td>${bounds?.minLat?.encodeAsHTML()}</td>
-                <td>${bounds?.maxLon?.encodeAsHTML()}</td>
-                <td>${bounds?.maxLat?.encodeAsHTML()}</td>
+                <g:set var="bounds" value="${rasterEntry?.groundGeom?.envelopeInternal}"/>
+                <td>${bounds?.minX?.encodeAsHTML()}</td>
+                <td>${bounds?.minY?.encodeAsHTML()}</td>
+                <td>${bounds?.maxX?.encodeAsHTML()}</td>
+                <td>${bounds?.maxY?.encodeAsHTML()}</td>
             </tr>
         </g:each>
         </tbody>

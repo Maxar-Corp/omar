@@ -10,7 +10,47 @@ class ReportController
   static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
 
   def springSecurityService
+  def mailService
 
+  def index()
+  {
+    if(springSecurityService.isLoggedIn())
+    {
+      def user = SecUser.findByUsername( springSecurityService.principal.username )
+
+      def reportInstance = new ReportCommand(
+              name: user.username,
+              phone: user.phoneNumber,
+              emailTo: "foo@foo.com",
+              emailFrom: user.email
+      )
+      return [reportInstance: reportInstance]
+    }
+    null
+  }
+  def sendMail(ReportCommand cmd)
+  {
+    println params
+    if(!cmd.hasErrors())
+    {
+      try{
+        mailService.sendMail {
+          to cmd.emailToArray()?:[]
+          cc cmd.ccToArray()?:[]
+          subject cmd.subject
+          body cmd.report
+        }
+        flash.message = " Mail sent...Thank you for comments. Someone should respond to you as soon as possible."
+      }
+      catch(e)
+      {
+        flash.message = "${e}"
+      }
+    }
+    render( view: "index", model: [reportInstance: cmd] )
+    null
+  }
+/*
   def index( )
   {
     redirect( action: "list", params: params )
@@ -199,8 +239,10 @@ class ReportController
     }
   }
 
+
   def delete( )
   {
+
     if ( SpringSecurityUtils.ifAllGranted( "ROLE_ADMIN" ) )
     {
       def reportInstance = Report.get( params.id )
@@ -230,4 +272,5 @@ class ReportController
       redirect( controller: "home" )
     }
   }
+  */
 }
