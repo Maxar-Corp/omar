@@ -633,6 +633,12 @@ class RasterEntry
                 rasterEntry.grazingAngle = value as Double
               }
               break;
+            case "elevation_angle":
+              if ( value && (value != "nan") &&(rasterEntry.grazingAngle!=null))
+              {
+                rasterEntry.grazingAngle = value as Double
+              }
+              break;
             case "oblang":
               if ( value && value != "nan" && !rasterEntry.grazingAngle )
               {
