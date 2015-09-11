@@ -7,7 +7,8 @@
 export GRAILS_OPTS=${JAVA_OPTS} 
 #export JAVA_OPTS="-server -Xms256m -Xmx1024m -Djava.awt.headless=true  -XX:MaxPermSize=256m -XX:+CMSClassUnloadingEnabled -XX:+UseGCOverheadLimit"
 
-export JAVA_OPTS="-server -Xms256m -Xmx1024m -Djava.awt.headless=true -XX:MaxPermSize=256m -XX:+CMSClassUnloadingEnabled -XX:+UseGCOverheadLimit"
+#export JAVA_OPTS="-server -Xms256m -Xmx1024m -Djava.awt.headless=true -XX:MaxPermSize=256m -XX:+CMSClassUnloadingEnabled -XX:+UseGCOverheadLimit"
+export JAVA_OPTS="-server -Xms256m -Xmx1024m -Djava.awt.headless=false -XX:MaxPermSize=256m -XX:+CMSClassUnloadingEnabled -XX:+UseGCOverheadLimit"
 export GRAILS_OPTS=$JAVA_OPTS
 
 #nohup grails prod run-war &
