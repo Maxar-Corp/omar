@@ -511,7 +511,7 @@ class WmsCommand implements CaseInsensitiveBinder
     def result = false;
     if ( transparent )
     {
-      result = Boolean.toBoolean( transparent )
+      result = transparent.toBoolean();
     }
     return result
   }
