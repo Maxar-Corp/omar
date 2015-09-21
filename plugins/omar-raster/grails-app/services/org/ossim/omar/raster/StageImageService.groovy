@@ -61,7 +61,7 @@ class StageImageService
                 compressionType: grailsApplication.config.stager.overview.compressionType,
                 histogramOptions: grailsApplication.config.stager.histogramOptions
             ] )
-        workerThreadPool.submit( rasterEntry.filename + "_${rasterEntry.entryId}", runnable )
+        workerThreadPool?.submit( rasterEntry.filename + "_${rasterEntry.entryId}", runnable )
       }
 
       /*
