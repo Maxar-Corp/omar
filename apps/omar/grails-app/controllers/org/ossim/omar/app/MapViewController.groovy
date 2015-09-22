@@ -183,25 +183,22 @@ class MapViewController implements InitializingBean
 
   def imageSpace()
   {
-
     def layers = params?.layers?.split( ',' )
     def rasterEntries = rasterEntrySearchService.findRasterEntries( layers )
-
-
     if ( rasterEntries )
     {
       def rasterEntry = rasterEntries?.first()
       def imageIds = rasterEntry.title ?: ( rasterEntry.filename as File ).name
       def nAdded = 0
-
       if(rasterEntry?.acquisitionDate)
       {
         imageIds += ":${DateUtil.findDateFormatter("yyyy-MM-dd'T'HH:mm:ss.sss'Z'").format(rasterEntry?.acquisitionDate)}"
       }
       for ( entry in rasterEntries )
       {
-        nAdded = stageImageService.checkAndAddStageImageJob( entry )
+        nAdded = stageImageService?.checkAndAddStageImageJob( entry )
       }
+
 
       def model = [
           onDemand: "${grailsApplication.config.stager.onDemand}",
@@ -211,6 +208,7 @@ class MapViewController implements InitializingBean
           upIsUpRotation: imageSpaceService?.computeUpIsUp( rasterEntry.filename, rasterEntry.entryId as Integer )
 
       ]
+
       return model
     }
     else
