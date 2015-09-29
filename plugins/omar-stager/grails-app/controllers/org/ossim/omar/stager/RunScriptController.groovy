@@ -1,5 +1,7 @@
 package org.ossim.omar.stager
 
+import org.quartz.TriggerKey
+import org.quartz.core.QuartzScheduler
 import org.quartz.impl.StdSchedulerFactory
 import org.quartz.JobDetail
 import org.quartz.Trigger
@@ -80,12 +82,13 @@ class RunScriptController implements ApplicationContextAware{
         {
             flash.message = "Must specify a directory to index."
         }
-        else if(!quartzScheduler?.getTrigger("indexFiles ${indexFilesArgs}", "STAGER_SCRIPTS"))
+        else if(!quartzScheduler?.getTrigger(new TriggerKey("indexFiles","STAGER_SCRIPTS")))//"indexFiles", "STAGER_SCRIPTS"))
         {
             def jobDataMap = new JobDataMap()
-            jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} --threadcount ${params.threads} indexFiles ${indexFilesArgs}"
+
+            jobDataMap.commandLineScript = "${omarRunScript} -u ${grailsApplication.config.omar.serverURL}  --threads ${params.threads} add ${indexFilesArgs}"
            // println jobDataMap.commandLineScript
-            def trigger = new SimpleTriggerImpl("indexFiles ${indexFilesArgs}", "STAGER_SCRIPTS");
+            def trigger = new SimpleTriggerImpl("indexFiles", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
@@ -101,17 +104,17 @@ class RunScriptController implements ApplicationContextAware{
     def removeRaster()
     {
         def runScriptArgs = params.runScriptRemoveRasterArgs?:""
-        def removeRasterArgs = params?.removeRasterArgs?.split(" ").join("% ") + "%"
+        def removeRasterArgs = params?.removeRasterArgs
         if (!params?.removeRasterArgs)
         {
             flash.message = "Must specify a value to search and remove from tables."
         }
-        else if(!quartzScheduler?.getTrigger("removeRaster ${removeRasterArgs}", "STAGER_SCRIPTS"))
+        else if(!quartzScheduler?.getTrigger(new TriggerKey("removeRaster","STAGER_SCRIPTS")))
         {
             def jobDataMap = new JobDataMap()
-            jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} removeRaster ${removeRasterArgs}"
 
-            def trigger = new SimpleTriggerImpl("removeRaster ${removeRasterArgs}", "STAGER_SCRIPTS");
+            jobDataMap.commandLineScript = "${omarRunScript} -u ${grailsApplication.config.omar.serverURL}  --threads ${params.threads} remove ${removeRasterArgs}"
+            def trigger = new SimpleTriggerImpl("removeRaster", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
@@ -153,30 +156,32 @@ class RunScriptController implements ApplicationContextAware{
 
     def stageRaster()
     {
-        def runScriptArgs = params.runScriptStageRasterArgs?:""
+        def runScriptArgs = params.runScriptStageRasterArgs?:"${grailsApplication.config?.stager?.scripts?.stageRasterOptions}"
         def stageRasterArgs = params.stageRasterArgs
         if (!stageRasterArgs)
         {
             flash.message = "Must specify a directory to do a complete stage and index."
         }
-        else if(!quartzScheduler?.getTrigger("stageRaster ${stageRasterArgs}", "STAGER_SCRIPTS"))
+        else if(!quartzScheduler?.getTrigger(new TriggerKey("stageRaster","STAGER_SCRIPTS")))//"indexFiles", "STAGER_SCRIPTS"))
         {
             def jobDataMap = new JobDataMap()
-            jobDataMap.commandLineScript = "${omarRunScript} ${runScriptArgs} --threadcount ${params.threads} stageRaster ${stageRasterArgs}"
-            def trigger = new SimpleTriggerImpl("stageRaster ${stageRasterArgs}", "STAGER_SCRIPTS");
+
+            jobDataMap.commandLineScript = "${omarRunScript} --preproc ${runScriptArgs} -u ${grailsApplication.config.omar.serverURL}  --threads ${params.threads} add ${stageRasterArgs}"
+            def trigger = new SimpleTriggerImpl("stageRaster", "STAGER_SCRIPTS");
             trigger.setJobDataMap(jobDataMap);
             RunScriptJob.schedule(trigger);
 
-            flash.message = "stageRaster ${stageRasterArgs} submitted into Job Queue."
+            flash.message = "stageRaster ${runScriptArgs} submitted into Job Queue."
         }
         else
         {
-            flash.message = "Job already running."
+            flash.message = "stageRaster Job already running."
         }
 
+        params.runScriptStageRasterArgs = runScriptArgs
         redirect(action: 'scripts', params:params)
     }
-
+   /*
     def synchFiles()
     {
         def runScriptArgs = params.runScriptSynchFilesArgs?:""
@@ -199,7 +204,7 @@ class RunScriptController implements ApplicationContextAware{
 
         redirect(action: 'scripts', params:params)
     }
-
+     */
     def clearCache()
     {
         def ant = new AntBuilder()
@@ -232,6 +237,6 @@ class RunScriptController implements ApplicationContextAware{
             omardb += "//${omardbParts.host}:${omardbParts.port}/"
         }
         omardb += omardbParts.database
-        omarRunScript = "${tempRunScript?:'omarRunScript.sh'} --dbuser ${username} --dbpassword ${password} --omardb ${omardb}"
+        omarRunScript = "${tempRunScript?:'omarRunScript.sh'}"
     }
 }

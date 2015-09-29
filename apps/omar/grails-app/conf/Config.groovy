@@ -113,10 +113,10 @@ environments {
   }
 }
 
-omar.serverIP =InetAddress.localHost.hostAddress
-omar.serverURL = "http://${omar.serverIP}/omar"
-//omar.serverIP = "localhost"//InetAddress.localHost.hostAddress
+//omar.serverIP ="10.0.10.180" //InetAddress.localHost.hostAddress
 //omar.serverURL = "http://${omar.serverIP}:9999/omar"
+omar.serverIP = InetAddress.localHost.hostAddress
+omar.serverURL = "http://${omar.serverIP}:8080/omar"
 grails.serverURL = omar.serverURL
 
 // log4j configuration
@@ -579,8 +579,8 @@ stager {
    */
   scripts {
     defaultThreadCount = 4
-    maxThreadCount = 8
-    runScript = "omarRunScript.sh"
+    maxThreadCount = 32
+    runScript = "omar-data-mgr"
     /**
      * This will force the scripts page on reload to always use the formatters
      * listed.
@@ -613,12 +613,10 @@ stager {
 //                  "/data/${date.toString('YYYY-MM-dd')}"
         }
     ]
+     stageRasterOptions = "--ch --ot ossim_tiff_box --compression-quality 100 --compression-type JPEG"
   }
-  histogramOptions = ""
-  overview {
-    compressionType = "JPEG"
-    compressionQuality = 75
-  }
+  //histogramOptions = "--ch"
+  //overviewOptions  = "--ot osim_tiff_box --compression-quality 100 --compression-type"
   onDemand = true
 }
 
