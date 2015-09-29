@@ -37,7 +37,7 @@
             </tr>
 
             <tr bgcolor="#cccccc">
-                <td>omarRunScript</td>
+                <td>omar-data-mgr</td>
                 <td><g:select id="indexFilesThreadCountId" name="threads"
                               from="${1..grailsApplication.config.stager.scripts.maxThreadCount}"
                               value="${grailsApplication.config.stager.scripts.defaultThreadCount}"/></td>
@@ -59,7 +59,7 @@
                 <td>&nbsp;</td>
             </tr>
             <tr bgcolor="#cccccc">
-                <td>omarRunScript</td>
+                <td>omar-data-mgr</td>
                 <td><g:select name="stageRasterThreadCountId"
                               from="${1..grailsApplication.config.stager.scripts.maxThreadCount}"
                               value="${grailsApplication.config.stager.scripts.defaultThreadCount}"/></td>
@@ -82,8 +82,10 @@
             </tr>
 
             <tr bgcolor="#cccccc">
-                <td>omarRunScript</td>
-                <td></td>
+                <td>omar-data-mgr</td>
+                <td><g:select id="removeRasterThreadCountId" name="threads"
+                              from="${1..grailsApplication.config.stager.scripts.maxThreadCount}"
+                              value="${grailsApplication.config.stager.scripts.defaultThreadCount}"/></td>
                 <td><g:textField style="width:100%" id="runScriptRemoveRasterArgsId" name="runScriptRemoveRasterArgs"
                                  value="${runScriptRemoveRasterArgs}"/></td>
                 <td>removeRaster</td>
@@ -100,18 +102,18 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
-            </tr>
-            <tr bgcolor="#cccccc">
-                <td>omarRunScript</td>
-                <td></td>
-                <td><g:textField style="width:100%" id="runScriptRemoveVideoArgsId" name="runScriptRemoveVideoArgs"
-                                 value="${runScriptRemoveVideoArgs}"/></td>
-                <td>removeVideo</td>
-                <td><g:textField id="removeVideoArgsId" name="removeVideoArgs" style="width:100%"
-                                 value="${removeVideoArgs}"/></td>
-                <td><span class="button"><input type="button" onclick="submitRemoveVideo()" value="Remove Video"/>
-                </span></td>
-            </tr>
+                <%--            </tr>
+                            <tr bgcolor="#cccccc">
+                                <td>omarRunScript</td>
+                                <td></td>
+                                <td><g:textField style="width:100%" id="runScriptRemoveVideoArgsId" name="runScriptRemoveVideoArgs"
+                                                 value="${runScriptRemoveVideoArgs}"/></td>
+                                <td>removeVideo</td>
+                                <td><g:textField id="removeVideoArgsId" name="removeVideoArgs" style="width:100%"
+                                                 value="${removeVideoArgs}"/></td>
+                                <td><span class="button"><input type="button" onclick="submitRemoveVideo()" value="Remove Video"/>
+                                </span></td>
+                            </tr>
 
             <tr bgcolor="#999999">
                 <td>&nbsp;</td>
@@ -141,7 +143,7 @@
                 <td>&nbsp;</td>
                 <td>&nbsp;</td>
             </tr>
-
+                                --%>
             <tr bgcolor="#cccccc">
                 <td></td>
                 <td></td>
@@ -188,9 +190,10 @@
     }
     function submitRemoveRaster(){
         var formPost = document.getElementById("formPostId");
+        var threads = document.getElementById("removeRasterThreadCountId");
         var runScriptRemoveRasterArgs = document.getElementById("runScriptRemoveRasterArgsId");
         var removeRasterArgs = document.getElementById("removeRasterArgsId");
-        formPost.action="/omar/RunScript/removeRaster?runScriptRemoveRasterArgs="+encodeURIComponent(runScriptRemoveRasterArgs.value) +
+        formPost.action="/omar/RunScript/removeRaster?threads="+threads.value+"&runScriptRemoveRasterArgs="+encodeURIComponent(runScriptRemoveRasterArgs.value) +
                               "&removeRasterArgs="+encodeURIComponent(removeRasterArgs.value);
         formPost.submit();
 
