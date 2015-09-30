@@ -116,7 +116,7 @@ environments {
 //omar.serverIP ="10.0.10.180" //InetAddress.localHost.hostAddress
 //omar.serverURL = "http://${omar.serverIP}:9999/omar"
 omar.serverIP = InetAddress.localHost.hostAddress
-omar.serverURL = "http://${omar.serverIP}:8080/omar"
+omar.serverURL = "http://${omar.serverIP}:${System.properties.'server.port'?:'8080'}/omar"
 grails.serverURL = omar.serverURL
 
 // log4j configuration
@@ -613,7 +613,7 @@ stager {
 //                  "/data/${date.toString('YYYY-MM-dd')}"
         }
     ]
-     stageRasterOptions = "--ch --ot ossim_tiff_box --compression-quality 100 --compression-type JPEG"
+     stageRasterOptions = "--ch --ot ossim_tiff_box"
   }
   //histogramOptions = "--ch"
   //overviewOptions  = "--ot osim_tiff_box --compression-quality 100 --compression-type"
