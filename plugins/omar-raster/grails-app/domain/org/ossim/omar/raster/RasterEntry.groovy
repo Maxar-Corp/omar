@@ -53,6 +53,7 @@ class RasterEntry
   Double cloudCover
   BigInteger styleId
   Boolean keepForever
+  Boolean crossesDateline
   Polygon groundGeom
   Date acquisitionDate
   Integer validModel
@@ -171,6 +172,7 @@ class RasterEntry
     releaseId( nullable: true )
     styleId( nullable: true )
     keepForever( nullable: true )
+    crossesDateline( nullable: true )
     validModel( nullable: true )
 
     fileType( nullable: true )
@@ -770,6 +772,18 @@ class RasterEntry
                 }
               }
               break;
+            case "crossesdateline":
+              if(value)
+              {
+                try{
+                  rasterEntry.crossesDateline = value.toBoolean()
+                }
+                catch(e)
+                {
+
+                }
+              }
+              break
             default:
               if(rasterEntry.grailsApplication.config.stager.includeOtherTags)
               {
