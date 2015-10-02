@@ -76,11 +76,10 @@
 
 
     mapViewportDivRegion = YAHOO.util.Region.getRegion(document.getElementById("center2"));//mapWidget.getMap().div);
-    console.log(JSON.stringify(mapViewportDivRegion));
+   // console.log(JSON.stringify(mapViewportDivRegion));
 
    OpenLayers.Util.modifyDOMElement(mapWidget.getMap().div, null, null,
-                               {w:mapViewportDivRegion.width,
-                                h:mapViewportDivRegion.height});
+                               new OpenLayers.Size( mapViewportDivRegion.width, mapViewportDivRegion.height));
 
 mapWidget.getMap().updateSize();
      //if(mapWidget) mapWidget.changeMapSize( );
