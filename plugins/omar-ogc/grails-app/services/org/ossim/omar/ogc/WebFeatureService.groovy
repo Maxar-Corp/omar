@@ -56,8 +56,8 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
       // WFS GetCapabilities Document
       WFS_Capabilities(
-          version: '1.1.0',
-          'xsi:schemaLocation': "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"
+          version: '1.0.0',
+          'xsi:schemaLocation': "http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd"
       ) {
         def service = wfsConfig.service
         Service {
@@ -181,7 +181,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
     if ( wfsRequest.typeName )
     {
       def x = {
-        //mkp.xmlDeclaration()
+        mkp.xmlDeclaration()
         mkp.declareNamespace(
             gml: 'http://www.opengis.net/gml',
             xsd: 'http://www.w3.org/2001/XMLSchema',
@@ -210,15 +210,16 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
                             name: "${field.name}",
                             nillable: "${descr.nillable}",
                             type: "${typeMappings.get( field.typ, field.typ )}" )
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+                      } // for each field
+                    } // xsd sequence
+                  } // xsd extension
+                } // xsd complexContent
+              } // xsd complexType
+            } // for workspace
+            xsd.element( name: layerName, substitutionGroup: 'gml:_Feature', type: "${workspaceId}:${layerName}Type" )
+          } // for each typeName
+        } // xsd schema
+      } // x
 
       buffer = new StreamingMarkupBuilder( encoding: 'UTF-8' ).bind( x ).toString()
     }
@@ -242,7 +243,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
     }
 
-    [buffer, 'application/xml']
+    [buffer, 'text/xml']
   }
 
   def getFeature(def wfsRequest)
@@ -263,14 +264,14 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
         mkp.xmlDeclaration()
         mkp.declareNamespace( xsi: "http://www.w3.org/2001/XMLSchema-instance" )
         ServiceExceptionReport( version: "1.2.0", xmlns: "http://www.opengis.net/ogc",
-            'xsi:schemaLocation': "http://www.opengis.net/ogc http://schemas.opengis.net/wfs/1.1.0/wfs.xsd" ) {
+            'xsi:schemaLocation': "http://www.opengis.net/ogc http://schemas.opengis.net/wfs/1.0.0/WFS-basic.xsd" ) {
           ServiceException( code: "GeneralException", "Uknown outputFormat: ${wfsRequest.outputFormat}" )
         }
       }.toString()
 
-     // println results
+      // println results
 
-      contentType = 'application/xml'
+      contentType = 'text/xml'
     }
     //println results
     return [results, contentType]
