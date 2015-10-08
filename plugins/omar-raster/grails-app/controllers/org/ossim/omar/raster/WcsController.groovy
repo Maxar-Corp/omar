@@ -75,7 +75,7 @@ class WcsController extends OgcController
           }
           if ( !rasterEntries )
           {
-            def message = "WCS server Error: No coverage found for ${coverage}"
+            def message = "WCS server Error: No coverage found for ${params.coverage}"
             // no data to process
             log.error( message )
 
