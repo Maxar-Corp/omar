@@ -28,4 +28,6 @@ class GetMapRequest implements CaseInsensitiveBinder
   String bbox
 
   String filter
+
+  String time
 }
