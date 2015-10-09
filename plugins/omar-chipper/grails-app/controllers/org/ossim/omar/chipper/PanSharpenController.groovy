@@ -22,7 +22,7 @@ class PanSharpenController
 
       def bounds = colorImage?.groundGeom?.intersection( panImage?.groundGeom )?.envelopeInternal
       def (minX, minY, maxX, maxY) = [bounds?.minX, bounds?.minY, bounds?.maxX, bounds?.maxY]
-      def baseWMS = grailsApplication.config.wms.base.layers[-1]
+      def baseWMS = grailsApplication.config.wms.base.layers[0]
 
       def model = [
           baseWMS   : baseWMS,
