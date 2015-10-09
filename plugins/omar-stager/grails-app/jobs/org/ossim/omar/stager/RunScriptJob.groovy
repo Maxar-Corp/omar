@@ -16,7 +16,7 @@ class RunScriptJob{
         // println "COMMAND LINE STUFF: ${dataMap}"
 
         // println dataMap
-        println "Executing ${dataMap.commandLineScript}"
+       // println "Executing ${dataMap.commandLineScript}"
         def err  = new ByteArrayOutputStream()
         def out  = new ByteArrayOutputStream()
         def proc = dataMap.commandLineScript?.execute();
