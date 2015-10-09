@@ -1103,11 +1103,11 @@ function setMapCtr( unit, value )
     if ( unit == "dd" )
     {
 
-        if ( $( "ddMapCtr" ).value.match( OMAR.ddRegExp ) )
+        if ( $( "ddMapCtr" ).value.match( OMAR.regexp.ddRegExp ) )
         {
             var match = OMAR.ddRegExp.exec( $( "ddMapCtr" ).value );
-            lat = match[1] + match[2];
-            lon = match[3] + match[4];
+            lat = match[1];// + match[2];
+            lon = match[3];// + match[4];
 
 
 //  var center = new OpenLayers.LonLat( lon, lat );
@@ -1122,7 +1122,7 @@ function setMapCtr( unit, value )
     }
     else if ( unit == "dms" )
     {
-        if ( $( "dmsMapCtr" ).value.match( OMAR.dmsRegExp ) )
+        if ( $( "dmsMapCtr" ).value.match( OMAR.regexpdmsRegExp ) )
         {
             var match = OMAR.dmsRegExp.exec( $( "dmsMapCtr" ).value );
             lat = OMAR.coordConvert.dmsToDd( match[1], match[2], match[3] + match[4], match[5] );
@@ -1139,13 +1139,15 @@ function setMapCtr( unit, value )
     }
     else if ( unit == "mgrs" )
     {
-        if ( $( "point" ).value.match( OMAR.mgrsRegExp ) )
+        if ( $( "point" ).value.match( OMAR.regexp.mgrsRegExp ) )
         {
-            var match = OMAR.mgrsRegExp.exec( $( "point" ).value );
+            var match = OMAR.regexp.mgrsRegExp.exec( $( "point" ).value );
             var mgrs = OMAR.coordConvert.mgrsToDd( match[1], match[2], match[3], match[4], match[5], match[6] );
-            var match2 = OMAR.ddRegExp.exec( mgrs );
-            lat = match2[1] + match2[2];
-            lon = match2[3] + match2[4];
+            var match2 = OMAR.regexp.ddRegExp.exec( mgrs );
+
+            lat = match2[1];//match2[1] + match2[2];
+            lon = match2[3];//match2[3] + match2[4];
+
 //var center = new OpenLayers.LonLat( lon, lat );
 
 // mapWidget.getMap().setCenter(center, mapWidget.getMap().getZoom());
