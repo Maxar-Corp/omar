@@ -236,7 +236,7 @@ class RasterKmlService extends KmlService
             [VERSION: "1.1.1",
                     REQUEST: "GetMap",
                     LAYERS: "${grailsApplication.config.wms.data.raster.options.footprintLayers}",
-                    STYLES: "${grailsApplication.config.wms.data.raster.options.styles}",
+                    STYLES: "${grailsApplication.config.wms.data.raster.params.styles}",
                     SRS: "EPSG:4326",
                     WIDTH: "1024",
                     HEIGHT: "512",
