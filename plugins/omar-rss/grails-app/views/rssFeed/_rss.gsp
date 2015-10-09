@@ -14,25 +14,25 @@
       </td>
     </tr>
   </g:each>
-  <g:set var="bounds" value="${entry?.groundGeom?.bounds}"/>
+  <g:set var="bounds" value="${entry?.groundGeom?.envelopeInternal}"/>
   <tr>
     <td colspan="2">
-      <b>Minimum Latitude</b>: &nbsp;${bounds?.minLat}&nbsp;${minLatDMS}
+      <b>Minimum Latitude</b>: &nbsp;${bounds?.minY}&nbsp;${minLatDMS}
     </td>
   </tr>
   <tr>
     <td colspan="2">
-      <b>Minimum Longitude</b>: &nbsp;${bounds?.minLon}&nbsp;${minLonDMS}
+      <b>Minimum Longitude</b>: &nbsp;${bounds?.minX}&nbsp;${minLonDMS}
     </td>
   </tr>
   <tr>
     <td colspan="2">
-      <b>Maximum Latitude</b>: &nbsp;${bounds?.maxLat}&nbsp;${maxLatDMS}
+      <b>Maximum Latitude</b>: &nbsp;${bounds?.maxY}&nbsp;${maxLatDMS}
     </td>
   </tr>
   <tr>
     <td colspan="2">
-      <b>Maximum Longitude</b>: &nbsp;${bounds?.maxLon}&nbsp;${maxLonDMS}
+      <b>Maximum Longitude</b>: &nbsp;${bounds?.maxX}&nbsp;${maxLonDMS}
     </td>
   </tr>
   <tr>

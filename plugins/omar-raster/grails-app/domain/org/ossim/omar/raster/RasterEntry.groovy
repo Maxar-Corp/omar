@@ -490,7 +490,7 @@ class RasterEntry
           switch ( name.toLowerCase() )
           {
             case "filename":
-              if ( value )
+              if ( value && !rasterEntry.filename)
               {
                 rasterEntry.filename = value as File
               }
