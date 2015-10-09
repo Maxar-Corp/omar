@@ -20,7 +20,7 @@
 
         <div align="center">
             <button id="applyCenterButton" type="button" onclick="">Apply</button>
-            <button id="resetCenterButton" type="button" onclick="javascript:OMAR.imageManipulator.moveToCenter()"
+            <button id="resetCenterButton" type="button" onclick="javascript:OMAR.imageManipulator.moveToCenter();setMapCtrTxt();"
                     title="Resets the view to the center of the image but keeps the current zoom level">Reset</button>
         </div>
     </div>
