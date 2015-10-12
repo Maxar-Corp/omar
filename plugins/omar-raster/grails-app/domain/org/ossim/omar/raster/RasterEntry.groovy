@@ -1,6 +1,7 @@
 package org.ossim.omar.raster
 
 import com.vividsolutions.jts.geom.Geometry
+import com.vividsolutions.jts.geom.MultiPolygon
 import com.vividsolutions.jts.geom.Polygon
 import com.vividsolutions.jts.io.WKTReader
 import org.hibernate.spatial.GeometryType
@@ -54,7 +55,7 @@ class RasterEntry
   BigInteger styleId
   Boolean keepForever
   Boolean crossesDateline
-  Polygon groundGeom
+  MultiPolygon groundGeom
   Date acquisitionDate
   Integer validModel
 
@@ -103,7 +104,7 @@ class RasterEntry
     entryId index: 'raster_entry_entry_id_idx'
     fileType index: 'raster_entry_filetype_idx'
     filename index: 'raster_entry_filename_idx'
-    groundGeom type: GeometryType, sqlType: 'geometry(POLYGON, 4326)'
+    groundGeom type: GeometryType, sqlType: 'geometry(MultiPolygon, 4326)'
     imageCategory index: 'raster_entry_image_category_idx'
     imageId index: 'raster_entry_image_id_idx'
     imageRepresentation index: 'raster_entry_image_representation_idx'
@@ -355,7 +356,7 @@ class RasterEntry
     }
     rasterEntry.groundGeom = initGroundGeom( rasterEntryNode?.groundGeom )
     rasterEntry.acquisitionDate = initAcquisitionDate( rasterEntryNode )
-
+/*
     if ( rasterEntry.groundGeom && !rasterEntry.tiePointSet )
     {
       def groundGeom = rasterEntry?.groundGeom.geom
@@ -377,6 +378,7 @@ class RasterEntry
         rasterEntry.tiePointSet += "</coordinates></Ground></TiePointSet>"
       }
     }
+    */
     for ( def rasterEntryFileNode in rasterEntryNode.fileObjects?.RasterEntryFile )
     {
       def obj = rasterEntry?.fileObjects?.find { it.name == rasterEntryFileNode?.name?.text() }
