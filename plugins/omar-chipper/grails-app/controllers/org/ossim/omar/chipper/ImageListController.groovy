@@ -11,7 +11,7 @@ class ImageListController
   def index()
   {
 
-    render view: 'index', model: [baseWMS: grailsApplication.config.wms.base.layers[-1],
+    render view: 'index', model: [baseWMS: grailsApplication.config.wms.base.layers[0],
         tableModel: imageListService.createTableModel(),
         filterParams: this.initFilterParams()]
   }
