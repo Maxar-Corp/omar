@@ -6,6 +6,7 @@ import com.vividsolutions.jts.geom.Polygon
 import com.vividsolutions.jts.io.WKTReader
 import org.hibernate.spatial.GeometryType
 import org.joda.time.DateTime
+import org.joda.time.DateTimeZone
 import org.ossim.omar.core.DateUtil
 
 class RasterEntry
@@ -96,8 +97,8 @@ class RasterEntry
   }
 
   static mapping = {
-    accessDate index: 'raster_entry_access_date_idx'
-    acquisitionDate index: 'raster_entry_acquisition_date_idx'
+    accessDate index: 'raster_entry_access_date_idx', sqlType: "timestamp with time zone"
+    acquisitionDate index: 'raster_entry_acquisition_date_idx' , sqlType: "timestamp with time zone"
     beNumber index: 'raster_entry_be_number_idx'
     className index: 'raster_entry_class_name_idx'
     countryCode index: 'raster_entry_country_code_idx'
@@ -109,13 +110,13 @@ class RasterEntry
     imageId index: 'raster_entry_image_id_idx'
     imageRepresentation index: 'raster_entry_image_representation_idx'
     indexId index: 'raster_entry_index_id_idx', unique:true
-    ingestDate index: 'raster_entry_ingest_date_idx'
+    ingestDate index: 'raster_entry_ingest_date_idx', sqlType: "timestamp with time zone"
     missionId index: 'raster_entry_mission_id_idx'
     niirs index: 'raster_entry_niirs_idx'
     otherTagsXml type: 'text'//, index: 'raster_entry_metadata_other_tags_idx'
     productId index: 'raster_entry_product_id_idx'
     rasterDataSet index: 'raster_entry_raster_data_set_idx'
-    receiveDate index: 'raster_entry_receive_date_idx'
+    receiveDate index: 'raster_entry_receive_date_idx' , sqlType: "timestamp with time zone"
     releaseId index: 'raster_entry_release_id_idx'
     securityClassification index: 'raster_entry_security_classification_idx'
     securityCode index: 'raster_entry_security_code_idx'
@@ -188,7 +189,8 @@ class RasterEntry
   def beforeInsert = {
     if ( !ingestDate )
     {
-      ingestDate = new DateTime();
+      ingestDate = new DateTime(DateTimeZone.UTC);
+
       if ( !indexId )
       {
         def mainFile = rasterEntry.rasterDataSet.getFileFromObjects( "main" )
@@ -232,11 +234,11 @@ class RasterEntry
   {
     if ( !accessDate )
     {
-      accessDate = new DateTime();
+      accessDate = new DateTime(DateTimeZone.UTC);
     }
     else
     {
-      DateTime current = new DateTime();
+      DateTime current = new DateTime(DateTimeZone.UTC);
       long currentAccessMil = accessDate.getMillis()
       long currentMil = current.getMillis()
       double millisPerHour = 3600000 // 60*60*1000  <seconds>*<minutes in an hour>*<milliseconds>
