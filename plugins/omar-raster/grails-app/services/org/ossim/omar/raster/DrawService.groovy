@@ -1,11 +1,23 @@
 package org.ossim.omar.raster
 
+import com.vividsolutions.jts.geom.LineString
+import com.vividsolutions.jts.linearref.LinearIterator
 import geoscript.GeoScript
 import geoscript.filter.Filter
 import geoscript.geom.Bounds
 import geoscript.render.Map as GeoScriptMap
 import geoscript.style.Composite
 import geoscript.workspace.Workspace
+import org.geotools.data.FeatureSource
+import org.geotools.feature.FeatureIterator
+import org.geotools.map.FeatureLayer
+import org.ossim.omar.core.DateUtil
+import org.ossim.omar.core.ISO8601DateParser
+
+import java.awt.Graphics
+import java.awt.Graphics2D
+import java.text.SimpleDateFormat
+
 import static geoscript.style.Symbolizers.*
 
 import java.awt.AlphaComposite
@@ -108,6 +120,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
 
     def drawCount = 0;
     def closure = { feature ->
+    //  println feature.class.name
       LiteShape shp = new LiteShape( feature.groundGeom, affine, false )
 
       def outlineColor = style?.getOutlineColor( feature[style?.propertyName] )
@@ -300,7 +313,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
 
   def drawFootprints(GetMapRequest getMapRequest)
   {
-    //println getMapRequest
+   // println getMapRequest
 
     def ostream = new ByteArrayOutputStream()
     def dataSourceConfig = grailsApplication.config.dataSource
@@ -317,29 +330,46 @@ class DrawService implements ApplicationContextAware, InitializingBean
 //        'Data Source': dataSourceUnproxied,
         'Expose primary keys': true
     ]
+     String intervalFilter
+     SimpleDateFormat sdf = DateUtil.findDateFormatter("yyyyMMdd'T'hh:mm:ss'Z'")
+     def intervals = ISO8601DateParser.parseOgcTimeIntervals(getMapRequest.time)
+     if(intervals)
+     {
+        intervals.each{interval->
+           def startDate = new Date(interval.getStart().getMillis());
+           def endDate   = new Date(interval.getEnd().getMillis());
+           String intervalValue = "((acquisition_date >= '${sdf.format(startDate)}') AND (acquisition_date <= '${sdf.format(endDate)}'))"
+           //startDate = DateUtil.setTimeZoneForDate(startDate, TimeZone.getTimeZone("UTC"))
+           //endDate   = DateUtil.setTimeZoneForDate(endDate, TimeZone.getTimeZone("UTC"))
 
-    Workspace.withWorkspace( workspaceParams ) { workspace ->
+            if(intervalFilter) intervalFilter += "AND ${intervalValue}"
+            else intervalFilter = intervalValue
+        }
+     }
+
+
+     Workspace.withWorkspace( workspaceParams ) { workspace ->
       def layerName = ( getMapRequest.layers == 'Imagery' ) ? 'raster_entry' : 'video_data_set'
       def layer = workspace[layerName]
       def styleMap = grailsApplication.config.wms.styles[getMapRequest.styles]
-
-      //println styleMap
 
       def style = styleMap.collect { k, v ->
         ( stroke( color: v.color ) + fill( opacity: 0.0 ) ).where( v.filter )
       } as Composite
 
       def bounds = new Bounds( *( getMapRequest?.bbox?.split( ',' )*.toDouble() ), getMapRequest.srs )
-      def queryLayer = new QueryLayer( layer, style )
+      QueryLayer queryLayer = new QueryLayer( layer, style )
 
       def filter = Filter.bbox( layer.schema.geom.name, bounds )
 
       if ( getMapRequest.filter )
       {
-        filter = filter.and( getMapRequest.filter )
+         filter = filter.and( getMapRequest.filter )
       }
 
-      queryLayer.filter = filter
+      filter = filter.and(intervalFilter)
+
+     queryLayer.filter = filter
 
       def map = new GeoScriptMap(
           width: getMapRequest.width,
@@ -352,6 +382,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
 
       map.render( ostream )
       map.close()
+
       workspace.close()
     }
 
