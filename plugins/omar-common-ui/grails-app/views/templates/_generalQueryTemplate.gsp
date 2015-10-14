@@ -276,6 +276,52 @@
                 </select>                <%--<input id="missionOperationId" type="text" value="">--%>
             </div>
         </div>
+        <div class="Row">
+            <div class="Cell">
+                <input id="filenameCheckboxId" type="checkbox">
+            </div>
+            <div class="Cell">
+                <label>Filename</label>
+            </div>
+            <div class="Cell">
+                <input id="filenameId" type="text">
+            </div>
+            <div class="Cell">
+                <select id="filenameComparatorId">
+                    <option value="iContains">Sub String (case insensitive)</option>
+                    <option value="Contains">Sub String</option>
+                    <option value="iStartsWith">Starts With (case insensitive)</option>
+                    <option value="StartsWith">Starts With</option>
+                    <option value="iEndsWith">Ends With (case insensitive)</option>
+                    <option value="EndsWith">Ends With</option>
+                    <option value="Equals">Equals</option>
+                    <option value="NotEquals">Not Equals</option>
+                </select>
+            </div>
+        </div>
+        <div class="Row">
+            <div class="Cell">
+                <input id="imageIdCheckboxId" type="checkbox">
+            </div>
+            <div class="Cell">
+                <label>Image Id</label>
+            </div>
+            <div class="Cell">
+                <input id="imageIdId" type="text">
+            </div>
+            <div class="Cell">
+                <select id="imageIdComparatorId">
+                    <option value="iContains">Sub String (case insensitive)</option>
+                    <option value="Contains">Sub String</option>
+                    <option value="iStartsWith">Starts With (case insensitive)</option>
+                    <option value="StartsWith">Starts With</option>
+                    <option value="iEndsWith">Ends With (case insensitive)</option>
+                    <option value="EndsWith">Ends With</option>
+                    <option value="Equals">Equals</option>
+                    <option value="NotEquals">Not Equals</option>
+                </select>
+            </div>
+        </div>
 
         <div class="Heading">
             <div class="Cell">

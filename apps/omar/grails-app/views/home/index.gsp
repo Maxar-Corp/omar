@@ -42,6 +42,27 @@
                     <g:link plugin="omar-chipper" controller="imageList" action="index">Product Builder</g:link>
                 </td>
             </tr>
+
+            <g:each in="${grailsApplication.config.views?.home?.search?.additionalLinks}" var="searchLink" >
+                <tr>
+                    <td width="120px">
+                        <g:if test="${searchLink.url}">
+                           <a href="${searchLink.url}">
+                            <g:if test="${searchLink.img}">
+                                    <img src="${searchLink.img}" alt="">
+                            </g:if>
+                            <g:else>
+                                    <img src="${resource( dir: 'images', file: 'discover.gif' )}" alt="">
+                            </g:else>
+                           </a>
+                        </g:if>
+                    </td>
+                    <td align="center">
+                        <a href="${searchLink.url}">${searchLink.label}</a>
+                    </td>
+                </tr>
+
+            </g:each>
         </table>
     </div>
     <!--

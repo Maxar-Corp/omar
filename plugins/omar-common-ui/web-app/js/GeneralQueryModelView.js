@@ -34,7 +34,13 @@ OMAR.models.GeneralQueryModel = Backbone.Model.extend({
         targetComparator:"iContains",
         wacCheckbox:false,
         wacValue:"",
-        wacComparator:"iContains"
+        wacComparator:"iContains",
+        filenameCheckbox:false,
+        filenameValue:"",
+        filenameComparator:"iContains",
+        imageIdCheckbox:false,
+        imageIdValue:"",
+        imageIdComparator:"iContains"
     },
     initialize: function (params) {
 
@@ -82,6 +88,15 @@ OMAR.models.GeneralQueryModel = Backbone.Model.extend({
             if(params.wacCheckbox) this.attributes.wacCheckbox = params.wacCheckbox;
             if(params.wacValue) this.attributes.wacValue = params.wacValue;
             if(params.wacComparator) this.attributes.wacComparator = params.wacComparator;
+
+            if(params.filenameCheckbox) this.attributes.filenameCheckbox = params.filenameCheckbox;
+            if(params.filenameValue) this.attributes.filenameValue = params.filenameValue;
+            if(params.filenameComparator) this.attributes.filenameComparator = params.filenameComparator;
+
+            if(params.imageIdCheckbox) this.attributes.imageIdCheckbox = params.imageIdCheckbox;
+            if(params.imageIdValue) this.attributes.imageIdValue = params.imageIdValue;
+            if(params.imageIdComparator) this.attributes.imageIdComparator = params.imageIdComparator;
+
         }
     },
     reset: function()
@@ -102,7 +117,9 @@ OMAR.models.GeneralQueryModel = Backbone.Model.extend({
             {name:"sensor",dbname:"sensor_id"},
             {name:"beNumber", dbname:"be_number"},
             {name:"target", dbname:"target_id"},
-            {name:"wac", dbname:"wac_code"}
+            {name:"wac", dbname:"wac_code"},
+            {name:"filename", dbname:"filename"},
+            {name:"imageId", dbname:"title"}
             ]
         var result = "";
         var conjunction = " AND ";
@@ -241,6 +258,14 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
         this.wacId            = $("#wacId");
         this.wacComparatorId  = $("#wacComparatorId");
 
+        this.filenameCheckboxId    = $("#filenameCheckboxId");
+        this.filenameId            = $("#filenameId");
+        this.filenameComparatorId  = $("#filenameComparatorId");
+
+        this.imageIdCheckboxId    = $("#imageIdCheckboxId");
+        this.imageIdId            = $("#imageIdId");
+        this.imageIdComparatorId  = $("#imageIdComparatorId");
+
         this.resetButtonId = $("#GeneralQueryResetButtonId")
         if (params.generalQueryMode)
         {
@@ -364,6 +389,26 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
             thisPtr.model.set("wacComparator", $(thisPtr.wacComparatorId).val());
         });
 
+        $(this.filenameCheckboxId).change(function(){
+            thisPtr.model.set("filenameCheckbox", $(thisPtr.filenameCheckboxId).is(':checked'));
+        });
+        $(this.filenameId).change(function(){
+            thisPtr.model.set("filenameValue", $(thisPtr.filenameId).val());
+        });
+        $(this.filenameComparatorId).change(function(){
+            thisPtr.model.set("filenameComparator", $(thisPtr.filenameComparatorId).val());
+        });
+
+        $(this.imageIdCheckboxId).change(function(){
+            thisPtr.model.set("imageIdCheckbox", $(thisPtr.imageIdCheckboxId).is(':checked'));
+        });
+        $(this.imageIdId).change(function(){
+            thisPtr.model.set("imageIdValue", $(thisPtr.imageIdId).val());
+        });
+        $(this.imageIdComparatorId).change(function(){
+            thisPtr.model.set("imageIdComparator", $(thisPtr.imageIdComparatorId).val());
+        });
+
         $(this.resetButtonId).click(function(){
             thisPtr.reset()
         })
@@ -413,6 +458,15 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
         this.model.attributes.wacCheckbox   = $(this.wacCheckboxId).is(':checked');
         this.model.attributes.wacValue      = $(this.wacId).val();
         this.model.attributes.wacComparator = $(this.wacComparatorId).val();
+
+
+        this.model.attributes.filenameCheckbox   = $(this.filenameCheckboxId).is(':checked');
+        this.model.attributes.filenameValue      = $(this.filenameId).val();
+        this.model.attributes.filenameComparator = $(this.filenameComparatorId).val();
+
+        this.model.attributes.imageIdCheckbox   = $(this.imageIdCheckboxId).is(':checked');
+        this.model.attributes.imageIdValue      = $(this.imageIdId).val();
+        this.model.attributes.imageIdComparator = $(this.imageIdComparatorId).val();
     },
     setModel:function(model)
     {
@@ -470,6 +524,15 @@ OMAR.views.GeneralQueryView = Backbone.View.extend({
         $(this.wacCheckboxId).prop("checked", this.model.get("wacCheckbox"));
         $(this.wacId).val(this.model.get("wacValue").toString());
         $(this.wacComparatorId).val(this.model.get("wacComparator").toString());
+
+        $(this.filenameCheckboxId).prop("checked", this.model.get("filenameCheckbox"));
+        $(this.filenameId).val(this.model.get("filenameValue").toString());
+        $(this.filenameComparatorId).val(this.model.get("filenameComparator").toString());
+
+        $(this.imageIdCheckboxId).prop("checked", this.model.get("imageIdCheckbox"));
+        $(this.imageIdId).val(this.model.get("imageIdValue").toString());
+        $(this.imageIdComparatorId).val(this.model.get("imageIdComparator").toString());
+
     }
 
 
