@@ -192,7 +192,8 @@ kml {
 
 
 rabbitmq {
-  enabled = false
+   enabled = false
+   autoStart = false
   //connectionfactory {
   //    username = 'guest'
   //    password = 'guest'
@@ -507,6 +508,11 @@ views {
   home {
     // we can conditionally turn off browsing on the home page
     browseEnabled = true
+
+
+     search{
+        //additionalLinks = [ [url:"http://www.google.com", label:"Google Search", img:"https://www.google.com/images/icons/product/chrome-48.png"] ]
+     }
   }
   mapView {
     defaultOverlayVisiblity = false
