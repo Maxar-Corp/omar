@@ -1,9 +1,9 @@
-ALTER TABLE raster_entry DROP COLUMN ground_geom;
-SELECT AddGeometryColumn( 'raster_entry', 'ground_geom', 4326, 'MULTIPOLYGON', 2 );
+--ALTER TABLE raster_entry DROP COLUMN ground_geom;
+--SELECT AddGeometryColumn( 'raster_entry', 'ground_geom', 4326, 'MULTIPOLYGON', 2 );
 CREATE INDEX raster_entry_ground_geom_idx ON raster_entry USING GIST ( ground_geom );
 
-ALTER TABLE video_data_set DROP COLUMN ground_geom;
-SELECT AddGeometryColumn( 'video_data_set', 'ground_geom', 4326, 'MULTIPOLYGON', 2 );
+--ALTER TABLE video_data_set DROP COLUMN ground_geom;
+--SELECT AddGeometryColumn( 'video_data_set', 'ground_geom', 4326, 'MULTIPOLYGON', 2 );
 CREATE INDEX video_data_set_ground_geom_idx ON video_data_set USING GIST ( ground_geom );
 
 VACUUM ANALYZE;
