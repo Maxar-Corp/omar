@@ -161,19 +161,67 @@
 
     function createPolygon(image)
     {
-        var points = _.collect( image.groundGeom.coordinates[0], function(point) {
-                return new OpenLayers.Geometry.Point(point[0], point[1]);
-            } );
-        var ring = new OpenLayers.Geometry.LinearRing(points)
-        return new OpenLayers.Geometry.Polygon(ring);
+    // G.P.:  I reworked to just use the GeoJson parser so formatted the text to be GeoJSON and then parsed
+    // with openlayers and returned the geometry object.
+        var jsonString = JSON.stringify(image.groundGeom);
+        jsonString = '{"type": "FeatureCollection","features": [{"type": "Feature","properties": {},"geometry":'+jsonString +"}]}";
+
+        var geoJsonParser = new OpenLayers.Format.GeoJSON();
+
+        var objResult =  geoJsonParser.read(jsonString);
+        result = objResult[0].geometry;
+
+    /*
+        console.log(objResult[0].geometry);
+
+        var result = null;
+        var type = image.groundGeom.type.toLowerCase();
+        if( type == "polygon")
+        {
+            result = new OpenLayers.Geometry.Polygon(ring);
+            var points = _.collect( image.groundGeom.coordinates[0], function(point) {
+                    return new OpenLayers.Geometry.Point(point[0], point[1]);
+                } );
+            var ring = new OpenLayers.Geometry.LinearRing(points)
+        }
+        else
+        {
+            var arrayOfPolygons = [];
+            for(var eachPolygon = 0; eachPolygon <image.groundGeom.coordinates.length;++eachPolygon)
+            {
+                var polygon = image.groundGeom.coordinates[eachPolygon];
+                for(var idx = 0; idx < polygon.length;++idx)
+                {
+                    var poly = [];
+                    var ring = polygon[idx];
+
+                    for (var idx2 = 0; idx2 < ring.length; ++idx2)
+                    {
+                    //console.log(JSON.stringify(new OpenLayers.Geometry.Point(ring[idx2][0], ring[idx2][1])));
+                        poly.push(new OpenLayers.Geometry.Point(ring[idx2][0], ring[idx2][1]));
+                    }
+                    arrayOfPolygons.push(
+                         new OpenLayers.Geometry.Polygon(new OpenLayers.Geometry.LinearRing(poly))
+                    );
+                }
+            }
+
+            if(arrayOfPolygons.length&&(arrayOfPolygons.length>0))
+            {
+                result = new  OpenLayers.Geometry.MultiPolygon([arrayOfPolygons]);
+            }
+        }
+      */
+        return result;
     }
+
+
 
     function checkForIntersect(images)
     {
         var polygons = _.collect( images, function(image){
             return createPolygon(image);
         });
-
         return polygons[0].intersects(polygons[1]);
     }
 
