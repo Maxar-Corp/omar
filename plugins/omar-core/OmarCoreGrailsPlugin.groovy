@@ -6,7 +6,7 @@ import org.ossim.omar.core.XmlParserPool
 
 class OmarCoreGrailsPlugin {
     // the plugin version
-    def version = "0.1"
+    def version = "1.8.20"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.5 > *"
     // resources that are excluded from plugin packaging
