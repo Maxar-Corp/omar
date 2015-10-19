@@ -1,9 +1,8 @@
-
 String includeJaiString = System.properties?.includeJai?.toLowerCase()
 Boolean includeJai = true
-if(includeJaiString)
+if ( includeJaiString )
 {
-   includeJai = includeJaiString.toBoolean()
+  includeJai = includeJaiString.toBoolean()
 }
 
 grails.project.class.dir = "target/classes"
@@ -53,28 +52,28 @@ grails.project.dependency.resolution = {
     compile 'net.sf.opencsv:opencsv:2.3'
     compile 'org.postgresql:postgresql:9.3-1103-jdbc41'
 
-     if(includeJai)
-     {
-        compile( 'org.geoscript:geoscript-groovy:1.5.0' ) {
-           excludes "slf4j-log4j12",
-                   'ehcache',
-                   "postgresql"
-           "opencsv"
-        }
+    if ( includeJai )
+    {
+      compile( 'org.geoscript:geoscript-groovy:1.5.0' ) {
+        excludes "slf4j-log4j12",
+            'ehcache',
+            "postgresql"
+        "opencsv"
+      }
 
-     }
-     else
-     {
-        compile( 'org.geoscript:geoscript-groovy:1.5.0' ) {
-           excludes "slf4j-log4j12",
-                   'ehcache',
-                   "jai_core",
-                   "jai_codec",
-                   "jai_imageio",
-                   "postgresql"
-           "opencsv"
-        }
-     }
+    }
+    else
+    {
+      compile( 'org.geoscript:geoscript-groovy:1.5.0' ) {
+        excludes "slf4j-log4j12",
+            'ehcache',
+            "jai_core",
+            "jai_codec",
+            "jai_imageio",
+            "postgresql",
+            "opencsv"
+      }
+    }
   }
 
   plugins {
