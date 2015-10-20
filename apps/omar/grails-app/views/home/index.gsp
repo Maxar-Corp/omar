@@ -9,7 +9,7 @@
 <content tag="top">
     <div align="center">
         <g:link class="home" uri="/">
-            <img src="${resource( plugin: 'omar-common-ui', dir: 'images', file: 'omarLogo.png' )}" alt="OMAR Logo"/>
+            <asset:image src="omarLogo.png" alt="OMAR Logo"/>
         </g:link>
     </div>
 
@@ -25,7 +25,7 @@
             <tr>
                 <td width="120px">
                     <a href="${createLink( controller: 'federation', action: 'search' )}">
-                        <img src="${resource( dir: 'images', file: 'discover.gif' )}" alt="">
+                        <asset:image src="discover.gif"/>
                     </a>
                 </td>
                 <td align="center">
@@ -35,7 +35,7 @@
             <tr>
                 <td width="120px">
                     <a href="${createLink( controller: 'imageList', action: index )}">
-                        <img src="${resource( dir: 'images', file: 'discover.gif' )}" alt="">
+                        <asset:image src="discover.gif"/>
                     </a>
                 </td>
                 <td align="center">
@@ -43,18 +43,18 @@
                 </td>
             </tr>
 
-            <g:each in="${grailsApplication.config.views?.home?.search?.additionalLinks}" var="searchLink" >
+            <g:each in="${grailsApplication.config.views?.home?.search?.additionalLinks}" var="searchLink">
                 <tr>
                     <td width="120px">
                         <g:if test="${searchLink.url}">
-                           <a href="${searchLink.url}">
-                            <g:if test="${searchLink.img}">
+                            <a href="${searchLink.url}">
+                                <g:if test="${searchLink.img}">
                                     <img src="${searchLink.img}" alt="">
-                            </g:if>
-                            <g:else>
-                                    <img src="${resource( dir: 'images', file: 'discover.gif' )}" alt="">
-                            </g:else>
-                           </a>
+                                </g:if>
+                                <g:else>
+                                    <asset:image src="discover.gif"/>
+                                </g:else>
+                            </a>
                         </g:if>
                     </td>
                     <td align="center">
@@ -72,11 +72,11 @@
           <table>
             <tr>
               <td width="120px">
-                <img src="${resource( dir: 'images', file: 'globe_128.gif' )}" width="96" height="96" alt="">
-          </td>
-          <td>
-            <ol>
-              <li><g:link controller="rasterEntry" action="results">Imagery</g:link></li>
+                <asset:image src="globe_128.gif" width="96" height="96"/>
+            </td>
+        <td>
+          <ol>
+            <li><g:link controller="rasterEntry" action="results">Imagery</g:link></li>
               <li><g:link controller="videoDataSet" action="results">Video</g:link></li>
             </ol>
           </td>
@@ -90,7 +90,9 @@
         <table>
             <tr>
                 <td width="120px">
-                    <img src="${resource( dir: 'images', file: 'GoogleEarth_1.gif' )}" width="96 " height="96" alt="">
+
+                    <asset:image src="GoogleEarth_1.gif" width="96" height="96"/>
+
                 </td>
                 <td>
                     <ol>
@@ -110,14 +112,16 @@
                             </g:form>
                         </li>
                         <li>
-                            <g:form name="imageFootprints" url="[controller: 'rasterKmlQuery', action: 'imageFootprints']">
+                            <g:form name="imageFootprints"
+                                    url="[controller: 'rasterKmlQuery', action: 'imageFootprints']">
                                 <g:textField name="imagedays" size="2"
                                              value="${grailsApplication.config.kml.daysCoverage}"/>
                                 <g:submitButton name="submit" value="Most Recent Days Imagery Coverage"/>
                             </g:form>
                         </li>
                         <li>
-                            <g:form name="videoFootprints" url="[controller: 'videoKmlQuery', action: 'videoFootprints']">
+                            <g:form name="videoFootprints"
+                                    url="[controller: 'videoKmlQuery', action: 'videoFootprints']">
                                 <g:textField name="videodays" size="2"
                                              value="${grailsApplication.config.kml.daysCoverage}"/>
                                 <g:submitButton name="submit" value="Most Recent Days Video Coverage"/>
@@ -134,9 +138,8 @@
         <table>
             <tr>
                 <td width="120px">
-                    <img src="${resource( plugin: 'omar-rss', dir: 'images', file: 'georss-1.gif' )}" width="96 "
-                         height="96"
-                         alt="">
+
+                    <asset:image src="georss-1.gif" width="96" height="96"/>
                 </td>
                 <td>
                     <ol>
@@ -167,7 +170,7 @@
             <table>
                 <tr>
                     <td width="120px">
-                        <img src="${resource( dir: 'images', file: 'use.gif' )}" alt="">
+                        <asset:image src="use.gif" width="96" height="96"/>
                     </td>
                     <td>
                         <ol>
@@ -186,7 +189,7 @@
         <table>
             <tr>
                 <td width="120px">
-                    <img src="${resource( dir: 'images', file: 'report.gif' )}" width="96 " height="96" alt="">
+                    <asset:image src="report.gif" width="96" height="96"/>
                 </td>
                 <td>
                     <ol>
@@ -199,7 +202,8 @@
 
                     <%--<sec:ifAllGranted roles="ROLE_ADMIN">--%>
                         <li>
-                            <g:link plugin="omar-raster" controller="GetTileLog" action="list">View Image Space Log</g:link>
+                            <g:link plugin="omar-raster" controller="GetTileLog"
+                                    action="list">View Image Space Log</g:link>
                         </li>
                         <li>
                             <g:link plugin="omar-ogc" controller="WmsLog" action="list">View WMS Log</g:link>
@@ -220,7 +224,7 @@
             <tr>
                 <td>
                     <a href="${createLink( controller: 'logout' )}">
-                        <img src="${resource( dir: 'images', file: 'logout.gif' )}" width="96" height="96" alt="">
+                        <asset:image src="logout.gif" width="96" height="96"/>
                     </a>
                 </td>
             </tr>
@@ -233,7 +237,7 @@
             <table>
                 <tr>
                     <td width="120px">
-                        <img src="${resource( dir: 'images', file: 'use.gif' )}" alt="">
+                        <asset:image src="use.gif" width="96" height="96"/>
                     </td>
                     <td>
                         <ol>
@@ -251,7 +255,7 @@
             <table>
                 <tr>
                     <td width="120px">
-                        <img src="${resource( dir: 'images', file: 'extend.gif' )}" alt="">
+                        <asset:image src="extend.gif" width="96" height="96"/>
                     </td>
                     <td>
                         <ol>

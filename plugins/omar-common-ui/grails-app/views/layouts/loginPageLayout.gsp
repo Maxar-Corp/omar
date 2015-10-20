@@ -12,7 +12,6 @@
   <title><g:layoutTitle default="Grails"/></title>
   <piwik:trackPageview />
   <g:layoutHead/>
-  <r:layoutResources/>
 </head>
 
 <body class="${pageProperty(name: 'body.class')}">
@@ -32,6 +31,5 @@
 </div>
 
 <g:layoutBody/>
-<r:layoutResources/>
 </body>
 </html>
