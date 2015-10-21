@@ -11,7 +11,7 @@
 <content tag="top">
   <div align="center">
     <g:link class="home" uri="/">
-      <img src="${resource( plugin: 'omar-common-ui', dir: 'images', file: 'omarLogo.png' )}" alt="OMAR Logo"/>
+      <asset:image src='omarLogo.png' alt="OMAR Logo"/>
     </g:link>
   </div>
 </content>
