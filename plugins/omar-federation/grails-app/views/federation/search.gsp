@@ -9,7 +9,7 @@
         text-align: left;
     }
     </style>
-    <piwik:trackPageview />
+    <piwik:trackPageview/>
     <opensearch:descriptors/>
     <!--<link rel="search" type="application/opensearchdescription+xml" href="/omar/openSearch/settings" title="OMAR Search" /> -->
 </head>
@@ -39,7 +39,8 @@
             </div>
 
             <g:render plugin="omar-common-ui" template="/templates/wfsTypeNameTemplate"/>
-            <p><g:checkBox name="spatialSearchFlag" value="${true}" /> Use Spatial</p>
+            <p><g:checkBox name="spatialSearchFlag" value="${true}"/> Use Spatial</p>
+
             <form>
                 <p><input type="radio" id="bboxRadioButton" name="spatialSearchType" value="bbox"
                           checked="checked">Use Bound Box</p>
@@ -68,6 +69,7 @@
                 <br/>
                 <g:render plugin="omar-common-ui" template="/templates/cqlTemplate"/>
             </div>
+
             <div id="GeneralQueryView">
                 <g:render plugin="omar-common-ui" template="/templates/generalQueryTemplate"/>
                 <br/>
@@ -128,8 +130,12 @@
             </div>
         </td>
         </tr>
-        <tr><td><img class="omar-server-image" id="omar-server-image-{{id}}"
-                     src="${resource( dir: 'images', file: 'server.gif' )}"/></td></tr>
+        <tr>
+            <td>
+                <asset:image class="omar-server-image" id="omar-server-image-{{id}}"
+                             src='server.gif'/>
+            </td>
+        </tr>
         <tr><td><label class="omar-server-link-cursor" id="omar-server-name-{{id}}">{{name}}</label>
         </td>
         </tr>
@@ -141,32 +147,32 @@
 <g:javascript>
     function init()
     {
-        var userRoles = ${raw(roles?.toString())};
-        var wmsConfig = ${raw(wmsBaseLayers?.toString())};
-        var styles = ${raw(styles.toString())};
+        var userRoles = ${raw( roles?.toString() )};
+        var wmsConfig = ${raw( wmsBaseLayers?.toString() )};
+        var styles = ${raw( styles.toString() )};
         //var maxInputs=
         // application specific initialize that will need access to grails models
         //
-        OpenLayers.ImgPath = "${raw(resource( plugin: 'openlayers', dir: 'js/img' ))}/";
+        OpenLayers.ImgPath = "${raw( resource( plugin: 'openlayers', dir: 'js/img' ) )}/";
         var params = {
-            map: {theme: "${raw(resource( plugin: 'openlayers', dir: 'js/theme/default', file: 'style.css' ))}",
+            map: {theme: "${raw( asset.assetPath( src: 'theme/default/style.css' ) )}",
                 baseLayers: wmsConfig.base.layers
             },
             cql: {resourceImages: {
-                remove: "${raw(resource( plugin: 'omar-common-ui', dir: 'images', file: 'remove.gif' ))}",
-                add: "${raw(resource( plugin: 'omar-common-ui', dir: 'images', file: 'add.gif' ))}"
+                remove: "${raw( asset.assetPath( src: 'remove.gif' ) )}",
+                add: "${raw( asset.assetPath( src: 'add.gif' ) )}"
             }
             },
             userRoles: userRoles,
             legend: {
                 styles: styles
             },
-            maxMosaicSize:${raw(maxInputs?.toString())},
-            jobQueueEnabled:${raw(jobQueueEnabled?.toString())}
-        };
-        var searchPageController = new OMAR.pages.FederatedRasterSearch( jQuery, params );
-        searchPageController.render();
-    }
+            maxMosaicSize:${raw( maxInputs?.toString() )},
+            jobQueueEnabled:${raw( jobQueueEnabled?.toString() )}
+    };
+    var searchPageController = new OMAR.pages.FederatedRasterSearch( jQuery, params );
+    searchPageController.render();
+}
 </g:javascript>
 </body>
 </html>
