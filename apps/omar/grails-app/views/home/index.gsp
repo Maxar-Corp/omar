@@ -9,7 +9,7 @@
 <content tag="top">
     <div align="center">
         <g:link class="home" uri="/">
-            <asset:image src='omarLogo.png' alt="OMAR Logo"/>
+            <asset:image src="omarLogo.png" alt="OMAR Logo"/>
         </g:link>
     </div>
 
@@ -25,7 +25,7 @@
             <tr>
                 <td width="120px">
                     <a href="${createLink( controller: 'federation', action: 'search' )}">
-                        <asset:image src='discover.gif' alt=""/>
+                        <asset:image src="discover.gif"/>
                     </a>
                 </td>
                 <td align="center">
@@ -35,7 +35,7 @@
             <tr>
                 <td width="120px">
                     <a href="${createLink( controller: 'imageList', action: index )}">
-                        <asset:image src='discover.gif' alt=""/>
+                        <asset:image src="discover.gif"/>
                     </a>
                 </td>
                 <td align="center">
@@ -52,7 +52,7 @@
                                     <img src="${searchLink.img}" alt="">
                                 </g:if>
                                 <g:else>
-                                    <asset:image src='discover.gif' alt=""/>
+                                    <asset:image src="discover.gif"/>
                                 </g:else>
                             </a>
                         </g:if>
@@ -72,11 +72,11 @@
           <table>
             <tr>
               <td width="120px">
-                <asset:image src='globe_128.gif' width="96" height="96" alt=""/>
-          </td>
-          <td>
-            <ol>
-              <li><g:link controller="rasterEntry" action="results">Imagery</g:link></li>
+                <asset:image src="globe_128.gif" width="96" height="96"/>
+            </td>
+        <td>
+          <ol>
+            <li><g:link controller="rasterEntry" action="results">Imagery</g:link></li>
               <li><g:link controller="videoDataSet" action="results">Video</g:link></li>
             </ol>
           </td>
@@ -90,7 +90,7 @@
         <table>
             <tr>
                 <td width="120px">
-                    <asset:image src='GoogleEarth_1.gif' width="96" height="96" alt=""/>
+                    <asset:image src="GoogleEarth_1.gif" width="96" height="96"/>
                 </td>
                 <td>
                     <ol>
@@ -136,7 +136,7 @@
         <table>
             <tr>
                 <td width="120px">
-                    <asset:image src='georss-1.gif' width="96" height="96" alt=""/>
+                    <asset:image src="georss-1.gif" width="96" height="96"/>
                 </td>
                 <td>
                     <ol>
@@ -167,7 +167,7 @@
             <table>
                 <tr>
                     <td width="120px">
-                        <asset:image src='use.gif' width="96" height="96" alt=""/>
+                        <asset:image src="use.gif" width="96" height="96"/>
                     </td>
                     <td>
                         <ol>
@@ -186,7 +186,7 @@
         <table>
             <tr>
                 <td width="120px">
-                    <asset:image src='report.gif' width="96" height="96" alt=""/>
+                    <asset:image src="report.gif" width="96" height="96"/>
                 </td>
                 <td>
                     <ol>
@@ -221,7 +221,7 @@
             <tr>
                 <td>
                     <a href="${createLink( controller: 'logout' )}">
-                        <asset:image src='logout.gif' width="96" height="96" alt=""/>
+                        <asset:image src="logout.gif" width="96" height="96"/>
                     </a>
                 </td>
             </tr>
@@ -234,7 +234,7 @@
             <table>
                 <tr>
                     <td width="120px">
-                        <asset:image src='use.gif' width="96" height="96" alt=""/>
+                        <asset:image src="use.gif" width="96" height="96"/>
                     </td>
                     <td>
                         <ol>
@@ -252,7 +252,7 @@
             <table>
                 <tr>
                     <td width="120px">
-                        <asset:image src='extend.gif' width="96" height="96" alt=""/>
+                        <asset:image src="extend.gif" width="96" height="96"/>
                     </td>
                     <td>
                         <ol>
