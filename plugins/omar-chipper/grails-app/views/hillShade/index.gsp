@@ -71,11 +71,12 @@
         var productUrl =  "${raw( createLink( controller: 'chipper', action: 'getHillShade' ) )}";
         var bbox = new OpenLayers.Bounds(model.minX, model.minY, model.maxX, model.maxY);
 
+
+        OpenLayers.ImgPath = "${raw( resource( plugin: 'openlayers', dir: 'js/img' ).toString() )}/";
+
         var map = new OpenLayers.Map( 'map', {
             theme: null
         } );
-
-        OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
 
         var  spinner = null;
         var  spinnerCount = 0;

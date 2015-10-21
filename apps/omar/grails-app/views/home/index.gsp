@@ -90,9 +90,7 @@
         <table>
             <tr>
                 <td width="120px">
-
                     <asset:image src="GoogleEarth_1.gif" width="96" height="96"/>
-
                 </td>
                 <td>
                     <ol>
@@ -138,7 +136,6 @@
         <table>
             <tr>
                 <td width="120px">
-
                     <asset:image src="georss-1.gif" width="96" height="96"/>
                 </td>
                 <td>
