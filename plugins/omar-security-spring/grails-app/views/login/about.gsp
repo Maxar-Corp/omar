@@ -13,7 +13,12 @@
 
   <div class="body">
     <h1>OMAR Version <g:meta name="app.version"/></h1>
+    <br>
 
+    <p>
+       ossim library info: <label id="version"></label> <label id="build_date"></label><label id="revision"></label>
+    </p>
+    <br>
     <h2>
       OSSIM Mapping and ARchive System (OMAR) is developed and supported by RadiantBlue Technologies.  OMAR integrates
       OSSIM, OpenLayers, MapServer, Postgres, PostGIS, GDAL, PROJ4, GeoTrans, and GRAILs to provide web based discovery
@@ -22,12 +27,31 @@
     </h2>
 
     <div align="center">
-      <p><img src="${resource( plugin: 'omar-common-ui', dir: 'images', file: 'RBT.png' )}"
+      <p><asset:image src='RBT.png'
               alt="RadiantBlue Technologies"/></p>
 
       <p><a href="http://www.radiantblue.com">RadiantBlue Technologies</a></p>
     </div>
   </div>
 </content>
+
+<asset:javascript src = "jquery.js"/>
+<asset:script>
+
+$(document).ready(function (){
+
+   $.get( "${createLink(controller:'versionInfo')}", 
+      function( data ) { 
+         $("#version").html(data.ossim.version);
+         $("#build_date").html(data.ossim.build_date);
+         $("#revision").html(data.ossim.revision);
+      }
+   );
+});
+
+</asset:script>
+<asset:deferredScripts/>
+
 </body>
 </html>
+
