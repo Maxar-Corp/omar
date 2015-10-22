@@ -8,24 +8,24 @@ class VersionInfoService
    static transactional = false
 
    /**
-    * @brief 
-    * @return String representing json object.
+    * @brief Returns version info from the ossim library via oms bindings.
+    * @return json object.
     */
-   String getOssimVersionInfo()
+   JSON getOssimVersionInfo()
    {
       joms.oms.Info info = new joms.oms.Info();
       
       String result    = new String();
-      String buildDate = new String();
       String version   = new String();
+      String buildDate = new String();
       String revision  = new String();
       
       buildDate = info.getOssimBuildDate();
       version   = info.getOssimVersion();
       revision  = info.getOssimRevisionNumber();
 
-      def results = [ ossim:[build_date: buildDate,
-                             version: version,
+      def results = [ ossim:[version: version,
+                             build_date: buildDate,
                              revision: revision] ]
       return results as JSON
    }
