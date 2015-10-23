@@ -54,16 +54,17 @@
 <g:javascript>
     $( document ).ready( function ()
     {
-        var model = ${raw((model as JSON).toString())};
-        var chipUrl = "${raw(createLink( controller: 'chipper', action: 'getChip' ))}";
-        var productUrl = "${raw(createLink( controller: 'chipper', action: 'get2CMV' ))}";
+        var model = ${raw( ( model as JSON ).toString() )};
+        var chipUrl = "${raw( createLink( controller: 'chipper', action: 'getChip' ) )}";
+        var productUrl = "${raw( createLink( controller: 'chipper', action: 'get2CMV' ) )}";
         var bbox = new OpenLayers.Bounds(model.minX, model.minY, model.maxX, model.maxY);
+
+
+        OpenLayers.ImgPath = "${raw( resource( plugin: 'openlayers', dir: 'js/img' ).toString() )}/";
 
         var map = new OpenLayers.Map( 'map', {
             theme: null
         } );
-
-        OpenLayers.ImgPath = "${resource( plugin: 'openlayers', dir: 'js/img' )}/";
 
       var spinner =  null;
       var spinnerCount = 0;
