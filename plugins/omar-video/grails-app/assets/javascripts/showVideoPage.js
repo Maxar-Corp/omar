@@ -1,4 +1,4 @@
-//= require js/OMAR.js
+//= require OMAR.js
 //= require yui/yahoo-dom-event/yahoo-dom-event.js
 //= require yui/element/element-min.js
 //= require yui/resize/resize-min.js
