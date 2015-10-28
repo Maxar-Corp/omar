@@ -161,13 +161,24 @@ OMAR.models.BBOX = Backbone.Model.extend(
             }
             return this;
         },
+        bboxToWktPolygon:function()
+        {
+            return "POLYGON((" +
+                this.attributes.minx + " " + this.attributes.miny + "," +
+                this.attributes.minx + " " + this.attributes.maxy + "," +
+                this.attributes.maxx + " " + this.attributes.maxy + "," +
+                this.attributes.maxx + " " + this.attributes.miny + "," +
+                this.attributes.minx + " " + this.attributes.miny + "))";
+        },
         toCql:function(columnName)
         {
             var result = "";
             var bad = this.validate(this.attributes);
             if(!bad)
             {
-                result = "BBOX(" + columnName + "," + this.toWmsString() + ")";
+                // we will use INTERSECTS for this does a more exact query
+                result = "INTERSECTS("+columnName+","+this.bboxToWktPolygon()+")";
+               // result = "BBOX(" + columnName + "," + this.toWmsString() + ")";
             }
             return result;
         }
