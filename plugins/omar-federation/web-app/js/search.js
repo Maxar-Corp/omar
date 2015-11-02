@@ -1085,7 +1085,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         //var h = $(".inner-center").height();
         //$("#tabView").height(h-110);
         if(this.dataModelView) this.dataModelView.resizeView();
-//        if(this.mapView)       this.mapView.resizeView();
+        if(this.mapView)       this.mapView.resizeView();
     },
     updateCounts:function(){
         var cqlFilter = this.toCql();
