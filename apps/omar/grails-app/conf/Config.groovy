@@ -116,7 +116,7 @@ environments {
 //omar.serverIP ="10.0.10.180" //InetAddress.localHost.hostAddress
 //omar.serverURL = "http://${omar.serverIP}:9999/omar"
 omar.serverIP = InetAddress.localHost.hostAddress
-omar.serverURL = "http://${omar.serverIP}:${System.properties.'server.port'?:'8080'}/omar"
+omar.serverURL = "http://${omar.serverIP}:${System.properties.'server.port' ?: '8080'}/omar"
 grails.serverURL = omar.serverURL
 
 // log4j configuration
@@ -192,8 +192,8 @@ kml {
 
 
 rabbitmq {
-   enabled = false
-   autoStart = false
+  enabled = false
+  autoStart = false
   //connectionfactory {
   //    username = 'guest'
   //    password = 'guest'
@@ -253,6 +253,9 @@ wms {
           CHARLIE: [filter: "mission_id='CHARLIE'", color: new Color( 0, 255, 255, 255 )],
           DELTA: [filter: "mission_id='DELTA'", color: new Color( 0, 0, 255, 255 )],
           unspecified: [filter: "mission_id='unspecified'", color: new Color( 255, 255, 255, 255 )] // white
+      ],
+      byVideoType: [
+          mpeg: [filter: "filename like '%mpg'", color: new Color( 255, 0, 0, 255 )]
       ]
 
   ]
@@ -331,7 +334,7 @@ wms {
 
     video = [
         url: "${omar.serverURL}/wms/footprints",
-        params: [transparent: true, styles: "byFileType", layers: ( supportIE6 ) ? "Videos" : "VideoData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
+        params: [transparent: true, styles: "byVideoType", layers: ( supportIE6 ) ? "Videos" : "VideoData", format: ( supportIE6 ) ? "image/gif" : "image/png"],
         name: "OMAR Video Coverage",
         options: [isBaseLayer: false, footprintLayers: "Videos"]
     ]
@@ -510,9 +513,9 @@ views {
     browseEnabled = true
 
 
-     search{
-        //additionalLinks = [ [url:"http://www.google.com", label:"Google Search", img:"https://www.google.com/images/icons/product/chrome-48.png"] ]
-     }
+    search {
+      //additionalLinks = [ [url:"http://www.google.com", label:"Google Search", img:"https://www.google.com/images/icons/product/chrome-48.png"] ]
+    }
   }
   mapView {
     defaultOverlayVisiblity = false
@@ -619,7 +622,7 @@ stager {
 //                  "/data/${date.toString('YYYY-MM-dd')}"
         }
     ]
-     stageRasterOptions = "--ch --ot ossim_tiff_box"
+    stageRasterOptions = "--ch --ot ossim_tiff_box"
   }
   //histogramOptions = "--ch"
   //overviewOptions  = "--ot osim_tiff_box --compression-quality 100 --compression-type"
@@ -736,20 +739,20 @@ grails.mime.file.extensions = false
 
 
 
-feedback{
-   enabled=false
-   mailto=""
-   subject="OMAR Feedback"
+feedback {
+  enabled = false
+  mailto = ""
+  subject = "OMAR Feedback"
 }
 
 
-opensearch{
-   enabled=false
-   pluginList = [pointRadiusSearch:
-                             [
-                                     href:"${grails.serverURL}/openSearch/searchDescriptor?name=pointRadiusSearch",
-                                     title:"OMAR Point Radius search",
-                                     description:"""<?xml version="1.0" encoding="UTF-8"?>
+opensearch {
+  enabled = false
+  pluginList = [pointRadiusSearch:
+      [
+          href: "${grails.serverURL}/openSearch/searchDescriptor?name=pointRadiusSearch",
+          title: "OMAR Point Radius search",
+          description: """<?xml version="1.0" encoding="UTF-8"?>
                                              <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
                                                  <ShortName>OMAR Point Radius Search</ShortName>
                                                  <Description>Search the OMAR holdings given a point radius</Description>
@@ -762,6 +765,6 @@ opensearch{
                                              </OpenSearchDescription>
                                                """,
 
-                             ]
-                     ]
+      ]
+  ]
 }
