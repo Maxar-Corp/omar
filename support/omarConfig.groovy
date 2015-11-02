@@ -60,7 +60,7 @@ wms.data.video = [
         options: [isBaseLayer:false, footprintLayers: "Videos"]
 ]
 
-  styles = [
+wms.styles = [
       byFileType: [
           adrg: [filter: "file_type='adrg'", color: new Color( 50, 111, 111, 255 )],
           aaigrid: [filter: "file_type='aaigrid'", color: 'pink'],
