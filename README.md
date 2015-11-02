@@ -7,3 +7,8 @@ For more information, visit the OMAR™ site at [ossim.org](https://ossim.org)
 Cross-Browser testing generously provided by [BrowserStack](https://s3.amazonaws.com/ossim.org/img/browserstack.png)
 
 [![BrowserStack Logo](https://s3.amazonaws.com/ossim.org/img/browserstack.png)](https://browserstack.com)
+
+
+Can't code without:
+
+[![IntelliJ Idea Logo](https://www.jetbrains.com/idea/docs/logo_intellij_idea.png)](https://www.jetbrains.com/idea)
