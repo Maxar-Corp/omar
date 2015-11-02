@@ -60,45 +60,41 @@ wms.data.video = [
         options: [isBaseLayer:false, footprintLayers: "Videos"]
 ]
 
-styles = [
-      [
-          propertyName : "fileType",
-          outlineLookupTable :[
-                  //aaigrid: 4,
-                  cadrg: new Color( 0, 255, 255, 255 ),
-                  cib: new Color(0,128,128,255),
-                  ccf: new Color( 128, 100, 255, 255 ),
-                  adrg: new Color( 50, 111, 111, 255 ),
-                  mrsid: new Color(0,188,0,255),
-                  //doqq: 2,
-                  dted: new Color( 0, 255, 0, 255 ), // green
-                  jpeg: new Color( 255, 255, 0, 255 ), // yellow
-                  jpeg2000: new Color( 255, 200, 0, 255 ), //
-                  landsat7: new Color( 255, 0, 255, 255 ), // purple
-                  nitf: new Color( 0, 0, 255, 255 ),  // blue
-                  tiff: new Color( 255, 0, 0, 255 ),  // red
-                  mpeg: new Color(164,254,255,255),
-                  unspecified: new Color(255,255,255,255) // white
-          ],
+wms.styles = [
+      byFileType: [
+          adrg: [filter: "file_type='adrg'", color: new Color( 50, 111, 111, 255 )],
+          aaigrid: [filter: "file_type='aaigrid'", color: 'pink'],
+          cadrg: [filter: "file_type='cadrg'", color: new Color( 0, 255, 255, 255 )],
+          ccf: [filter: "file_type='ccf'", color: new Color( 128, 100, 255, 255 )],
+          cib: [filter: "file_type='cib'", color: new Color( 0, 128, 128, 255 )],
+          doqq: [filter: "file_type='doqq'", color: 'purple'],
+          dted: [filter: "file_type='dted'", color: new Color( 0, 255, 0, 255 )],
+          imagine_hfa: [filter: "file_type='imagine_hfa'", color: 'lightGray'],
+          jpeg: [filter: "file_type='jpeg'", color: new Color( 255, 255, 0, 255 )],
+          jpeg2000: [filter: "file_type='jpeg2000'", color: new Color( 255, 200, 0, 255 )],
+          landsat7: [filter: "file_type='landsat7'", color: new Color( 255, 0, 255, 255 )],
+          mrsid: [filter: "file_type='mrsid'", color: new Color( 0, 188, 0, 255 )],
+          nitf: [filter: "file_type='nitf'", color: new Color( 0, 0, 255, 255 )],
+          tiff: [filter: "file_type='tiff'", color: new Color( 255, 0, 0, 255 )],
+          mpeg: [filter: "file_type='mpeg'", color: new Color( 164, 254, 255, 255 )],
+          unspecified: [filter: "file_type='unspecified'", color: 'white']
       ],
-      [
-          propertyName : "sensorId",
-          defaultOutlineColor : new Color( 255, 255, 255, 255 ),
-          defaultFillColor : new Color( 0, 0, 0, 0 ),
+      bySensorType: [
+          'ACES_YOGI-HRI1': [filter: "mission_id='ACES_YOGI-HRI1'", color: new Color( 255, 0, 0, 255 )],
+          'ACES_YOGI-HRI2': [filter: "mission_id='ACES_YOGI-HRI2'", color: new Color( 255, 0, 0, 255 )],
+          'ACES_YOGI-HRI3': [filter: "mission_id='ACES_YOGI-HRI3'", color: new Color( 255, 0, 0, 255 )],
+          'ACES_YOGI-HSI': [filter: "mission_id='ACES_YOGI-HSI'", color: new Color( 255, 255, 0, 255 )],
+          ALPHA: [filter: "mission_id='ALPHA'", color: new Color( 255, 0, 255, 255 )],
+          BRAVO: [filter: "mission_id='BRAVO'", color: new Color( 0, 255, 0, 255 )],
+          CHARLIE: [filter: "mission_id='CHARLIE'", color: new Color( 0, 255, 255, 255 )],
+          DELTA: [filter: "mission_id='DELTA'", color: new Color( 0, 0, 255, 255 )],
+          unspecified: [filter: "mission_id='unspecified'", color: new Color( 255, 255, 255, 255 )] // white
+      ],
+      byVideoType: [
+          mpeg: [filter: "filename like '%mpg'", color: new Color( 255, 0, 0, 255 )]
+      ]
 
-          outlineLookupTable :[
-                  'ACES_YOGI-HRI1': new Color( 255, 0, 0, 255 ),
-                  'ACES_YOGI-HRI2': new Color( 255, 0, 0, 255 ),
-                  'ACES_YOGI-HRI3': new Color( 255, 0, 0, 255 ),
-                  'ACES_YOGI-HSI': new Color( 255, 255, 0, 255 ),
-                  ALPHA: new Color( 255, 0, 255, 255 ),
-                  BRAVO: new Color( 0, 255, 0, 255 ),
-                  CHARLIE: new Color( 0, 255, 255, 255 ),
-                  DELTA: new Color( 0, 0, 255, 255 ),
-                  unspecified: new Color(255,255,255,255) // white
-          ]
-        ]
-]
+  ]
 
 
 
