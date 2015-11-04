@@ -309,6 +309,8 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         this.initializing = false;
         this.dataModelView.selectedCollection.bind("add",    this.resetSelectedImages, this);
         this.dataModelView.selectedCollection.bind("remove", this.resetSelectedImages, this);
+        $("#TimeLapseId").attr("class","ui-state-disabled");
+
         //this.selectedImageLayer.on("visibilitychanged", function(){alert("asdasdf")});
     },
     events: {
@@ -798,7 +800,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
 
         if(wfsTypeName.contains("video"))
         {
-            $("#TimeLapseId").attr("class","ui-state-disabled");
+            //$("#TimeLapseId").attr("class","ui-state-disabled");
             $("#ExportGeoCellId").attr("class","ui-state-disabled");
             //$("#DownloadId").attr("class","ui-state-disabled");
             this.menuView.unbind("onTimeLapseClicked", this.timeLapseClicked, this);
@@ -809,7 +811,7 @@ OMAR.views.FederatedRasterSearch = Backbone.View.extend({
         }
         else
         {
-            $("#TimeLapseId").attr("class","ui-state-enabled");
+            //$("#TimeLapseId").attr("class","ui-state-enabled");
             $("#ExportGeoCellId").attr("class","ui-state-enabled");
             //$("#DownloadId").attr("class","ui-state-disabled");
             this.menuView.bind("onTimeLapseClicked", this.timeLapseClicked, this);
