@@ -25,14 +25,14 @@ class FlashPlayerTagLib {
                 if (val && val instanceof String) {
                     swfPlayerDefault = val
                 } else {
-                    swfPlayerDefault = g.resource(dir: "mediaplayer-5.8", file: "player.swf", plugin: 'flashPlayer')
+                    swfPlayerDefault = asset.assetPath(src: "mediaplayer-5.8/player.swf")
                 }
 
                 val = grailsApplication.config.swf.expressInstall
                 if (val != null && val instanceof String) {
                     swfExpressInstallDefault = val
                 } else {
-                    swfExpressInstallDefault = g.resource(dir: "js/swfobject", file: "expressInstall.swf", plugin: 'swfobject')
+                    swfExpressInstallDefault = asset.assetPath(src: "js/swfobject/expressInstall.swf")
                 }
 
                 val = grailsApplication.config.swf.width
