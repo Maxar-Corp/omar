@@ -1,17 +1,3 @@
-OMAR.ProjectionType = {
-    PIXEL: 0,
-    GEOGRAPHIC: 1
-};
-
-OMAR.ToolModeType = {
-    PAN_ZOOM: "panzoom",
-    ZOOM_BOX: "zoombox",
-    BOX_AOI: "boxaoi",
-    POINT: "point",
-    LINE: "line",
-    POLYGON: "polygon"
-};
-
 if(window.console&&window.console.log)
 {
     //OpenLayers.Util.extend(OpenLayers.Console, window.console);

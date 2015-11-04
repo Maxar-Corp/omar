@@ -28,6 +28,19 @@ OMAR.regexp.dmsrRegExp = /^\s*(\d{1,2})\s*\u00B0?\s*\:?\s?(\d{1,2})\s*\'?\s*\:?\
 OMAR.regexp.mgrsRegExp = /^\s*(\d{1,2})\s*([A-Za-z])\s*([A-Za-z])\s*([A-Za-z])\s*(\d{1,5})\s*(\d{1,5})\s*$/;
 OMAR.regexp.mgrsrRegExp = /^\s*(\d{1,2})\s*([A-Za-z])\s*([A-Za-z])\s*([A-Za-z])\s*(\d{1,5})\s*(\d{1,5})\s*\,\s*(\s*[0-9]*\.?[0-9]*)?$/;
 
+OMAR.ProjectionType = {
+    PIXEL: 0,
+    GEOGRAPHIC: 1
+};
+
+OMAR.ToolModeType = {
+    PAN_ZOOM: "panzoom",
+    ZOOM_BOX: "zoombox",
+    BOX_AOI: "boxaoi",
+    POINT: "point",
+    LINE: "line",
+    POLYGON: "polygon"
+};
 
 OMAR.defaultSpinnerOptions = {
     lines: 13,
