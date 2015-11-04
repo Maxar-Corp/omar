@@ -71,7 +71,8 @@ grails.project.dependency.resolution = {
             "jai_codec",
             "jai_imageio",
             "postgresql",
-            "opencsv"
+            "opencsv",
+            'groovy-all'
       }
     }
   }
