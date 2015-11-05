@@ -43,8 +43,8 @@ class VideoDataSet
     indexId index: 'video_data_set_index_id_idx', unique:true
     filename index: 'video_data_set_filename_idx'
     otherTagsXml type: 'text'//, index: 'video_data_set_metadata_other_tags_idx'
-    startDate column: 'start_date', type: 'timestamp', index: 'video_data_set_start_date_idx,video_data_set_time_idx'
-    endDate column: 'end_date', type: 'timestamp', index: 'video_data_set_end_date_idx,video_data_set_time_idx'
+    startDate column: 'start_date', type: 'timestamp', index: 'video_data_set_start_date_idx,video_data_set_time_idx', sqlType: "timestamp with time zone"
+    endDate column: 'end_date', type: 'timestamp', index: 'video_data_set_end_date_idx,video_data_set_time_idx', sqlType: "timestamp with time zone"
     groundGeom type: org.hibernate.spatial.GeometryType, sqlType: 'geometry(MULTIPOLYGON, 4326)'
     repository index: 'video_data_set_repository_idx'
   }
