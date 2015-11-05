@@ -75,12 +75,24 @@ OMAR.models.VideoDatasetCollection=Backbone.Collection.extend({
                 //alert(bbox);
                 tempUrl.pathname = "/omar/thumbnail/frame/"+modelId;
                 tempUrl.search="size=128";
+                var start_date="";
+                var end_date="";
+                if(model.get("start_date") != '')
+                {
+                    start_date = new OMAR.models.Date({date:model.get("start_date")}).toISOString(true);
+                }
+                if(model.get("end_date") != '')
+                {
+                    end_date = new OMAR.models.Date({date:model.get("end_date")}).toISOString(true);
+                }
                 model.set({
                     thumbnail:"<a class='link_cursor' onclick='"+showVideoJavascript+"'> " +
                         "<img class='thumbnail-img;' src='"+tempUrl.href+"'></img>" +
                         "</a>"
                     ,min_lat_lon:bboxModel.get("miny")+","+bboxModel.get("minx")
                     ,max_lat_lon:bboxModel.get("maxy")+","+bboxModel.get("maxx")
+                    ,start_date:start_date
+                    ,end_date:end_date
                     ,center_lat_lon:centerPoint.y+","+centerPoint.x
                     ,"ground_geom":JSON.stringify(feature.geometry)
                     ,"links": "<ul>"+omarUrlGetKMLLink+"</ul>"
