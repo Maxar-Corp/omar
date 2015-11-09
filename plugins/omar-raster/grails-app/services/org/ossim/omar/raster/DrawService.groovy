@@ -313,7 +313,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
 
   def drawFootprints(GetMapRequest getMapRequest)
   {
-   // println getMapRequest
+    println getMapRequest
 
     def ostream = new ByteArrayOutputStream()
     def dataSourceConfig = grailsApplication.config.dataSource
@@ -361,7 +361,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
       QueryLayer queryLayer = new QueryLayer( layer, style )
      // def filter = Filter.bbox( layer.schema.geom.name, bounds )
       //def filter = new Filter("INTERSECTS(${layer.schema.geom.name},POLYGON((${bounds.minX} ${bounds.minY}, ${bounds.minX bounds.maxY}, ${bounds.maxX bounds.maxY}, ${bounds.maxX bounds.minY}, ${bounds.minX bounds.minY})))")//.intersects( layer.schema.geom.name, bounds.geometry )
-     def filter = Filter.intersects(layer.schema.geom.name, bounds.geometry)
+     def filter = Filter.intersects(layer.schema.geom.name,  bounds.reproject( layer.proj ).geometry)
       if ( getMapRequest.filter )
       {
          filter = filter.and( getMapRequest.filter )

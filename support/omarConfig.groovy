@@ -113,6 +113,12 @@ federation {
   enabled = true
 }
 
+feedback {
+  enabled = false
+  mailto = ""
+  subject = "OMAR Feedback"
+}
+
 //security {
 //  level = 'UNCLASS'
 //level = 'SECRET'
