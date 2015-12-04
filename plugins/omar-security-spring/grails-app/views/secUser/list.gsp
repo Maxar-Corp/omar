@@ -5,7 +5,11 @@
   <meta name="layout" content="mainG2">
   <g:set var="entityName" value="${message( code: 'secUser.label', default: 'SecUser' )}"/>
   <title><g:message code="default.list.label" args="[entityName]"/></title>
+<!--
   <filterpane:includes/>
+-->
+    <asset:stylesheet src="fp.css"/>
+    <asset:javascript src="fp.js"/>
 </head>
 
 <body>
