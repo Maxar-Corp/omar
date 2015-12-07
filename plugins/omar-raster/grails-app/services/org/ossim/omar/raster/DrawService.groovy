@@ -313,7 +313,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
 
   def drawFootprints(GetMapRequest getMapRequest)
   {
-    println getMapRequest
+   // println getMapRequest
 
     def ostream = new ByteArrayOutputStream()
     def dataSourceConfig = grailsApplication.config.dataSource
