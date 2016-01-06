@@ -511,7 +511,7 @@ views {
   home {
     // we can conditionally turn off browsing on the home page
     browseEnabled = true
-
+    rssEnabled = true
 
     search {
       //additionalLinks = [ [url:"http://www.google.com", label:"Google Search", img:"https://www.google.com/images/icons/product/chrome-48.png"] ]
