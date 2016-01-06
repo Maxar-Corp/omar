@@ -131,7 +131,8 @@
         </table>
     </div>
 
-    <div>
+     <g:if test="${grailsApplication.config.views?.home?.rssEnabled}">
+   <div>
         <h1 style="font-size:150%" align="left">GeoRSS Links:</h1>
         <table>
             <tr>
@@ -159,6 +160,7 @@
             </tr>
         </table>
     </div>
+    </g:if>
 
 
     <sec:ifNotGranted roles="ROLE_ADMIN">

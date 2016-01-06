@@ -207,3 +207,10 @@ autoMosaic{
 
 }
 
+views {
+  home {
+    rssEnabled = true
+  }
+}
+
+
