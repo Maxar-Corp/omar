@@ -27,6 +27,7 @@ class WfsCommand
 
   String outputFormat
   Integer maxFeatures
+  Integer startIndex
   Integer offset
   String resultType
   String sortBy
@@ -127,6 +128,14 @@ class WfsCommand
     new WfsCommand( params )
   }
 
+  Integer getOffset()
+  {
+    Integer result = offset
+
+    if(result == null) result = startIndex
+
+    result 
+  }
   String toXML()
   {
     def x = {
