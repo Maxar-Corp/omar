@@ -279,40 +279,47 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
   private Workspace getWorkspace(def workspaceName)
   {
-/*
-    def url = grailsApplication.config.dataSource.url
+    def dbParams
 
-    def workspace = new Workspace(
-        dbtype: 'postgis',
+    if ( grailsApplication.config?.wfs?.shareConnection )
+    {
+      println 'WFS Shared Connection'
 
-        // All these can be blank (except for port for some reason)
-        // The dataSource is provided by Hibernate.
-        database: '',
-        host: '',
-        port: 5432,
-        user: '',
-        password: '',
+      dbParams = [
+          dbtype: 'postgis',
 
-        'Data Source': dataSourceUnproxied,
-        'Expose primary keys': true,
-        namespace: 'http://omar.ossim.org'
-    )
-*/
+          // All these can be blank (except for port for some reason)
+          // The dataSource is provided by Hibernate.
+          database: '',
+          host: '',
+          port: 5432,
+          user: '',
+          password: '',
 
-    def dataSourceConfig = grailsApplication.config.dataSource
-    def pattern = "jdbc:postgresql:(//(.*)/)?(.*)"
-    def matcher = dataSourceConfig.url =~ pattern
+          'Data Source': dataSourceUnproxied,
+          'Expose primary keys': true,
+          namespace: 'http://omar.ossim.org'
+      ]
+    }
+    else
+    {
+      println 'WFS Private Connection'
 
-    def dbParams = [
-        dbtype: 'postgis',
-        host: matcher[0][-2] ?: 'localhost',
-        port: '5432',
-        database: matcher[0][-1],
-        user: dataSourceConfig.username,
-        password: dataSourceConfig.password,
-//        'Data Source': dataSourceUnproxied,
-        'Expose primary keys': true
-    ]
+      def dataSourceConfig = grailsApplication.config.dataSource
+      def pattern = "jdbc:postgresql:(//(.*)/)?(.*)"
+      def matcher = dataSourceConfig.url =~ pattern
+
+      dbParams = [
+          dbtype: 'postgis',
+          host: matcher[0][-2] ?: 'localhost',
+          port: '5432',
+          database: matcher[0][-1],
+          user: dataSourceConfig.username,
+          password: dataSourceConfig.password,
+          'Expose primary keys': true,
+          namespace: 'http://omar.ossim.org'
+      ]
+    }
 
     //println dbParams
 

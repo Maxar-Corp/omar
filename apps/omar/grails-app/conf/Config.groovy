@@ -768,3 +768,5 @@ opensearch {
       ]
   ]
 }
+
+wfs.shareConnection = true
