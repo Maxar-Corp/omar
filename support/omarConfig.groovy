@@ -77,6 +77,7 @@ wms.styles = [
           nitf: [filter: "file_type='nitf'", color: new Color( 0, 0, 255, 255 )],
           tiff: [filter: "file_type='tiff'", color: new Color( 255, 0, 0, 255 )],
           mpeg: [filter: "file_type='mpeg'", color: new Color( 164, 254, 255, 255 )],
+          general_raster: [filter: "file_type='general_raster'", color: new Color( 255, 100, 255, 255 )],
           unspecified: [filter: "file_type='unspecified'", color: 'white']
       ],
       bySensorType: [

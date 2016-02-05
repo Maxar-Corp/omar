@@ -1,6 +1,4 @@
 #!/bin/sh
-export LD_LIBRARY_PATH=$OSSIM_INSTALL_PREFIX/lib:$LD_LIBRARY_PATH
-export DYLD_LIBRARY_PATH=$OSSIM_INSTALL_PREFIX/lib:$DYLD_LIBRARY_PATH
 #---
 # File: getinfo.sh
 #
