@@ -5,6 +5,7 @@ grails.project.test.reports.dir = "target/test-reports"
 grails.project.work.dir = "target/work"
 grails.project.target.level = 1.6
 grails.project.source.level = 1.6
+grails.enable.native2ascii = false
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 grails.project.fork = [
@@ -74,6 +75,8 @@ grails.project.dependency.resolution = {
     compile ":piwik:0.1"
 
     runtime ":cors:1.1.8"
+
+    compile "org.grails.plugins:standalone:1.3"
 
     // Uncomment these to enable additional asset-pipeline capabilities
     //compile ":sass-asset-pipeline:1.9.0"
