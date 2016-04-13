@@ -11,7 +11,7 @@ class BootStrap
     if ( Environment.current == Environment.DEVELOPMENT )
     {
 
-      ['/data/celtic', '/data1', '/data/uav'].each {
+      ['/data/celtic', '/data/uav'].each {
         println it
         def repo = Repository.findOrCreateByBaseDir( it )
         repo.save()
