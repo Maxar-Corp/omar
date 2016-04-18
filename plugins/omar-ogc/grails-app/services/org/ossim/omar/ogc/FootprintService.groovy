@@ -217,7 +217,7 @@ class FootprintService
     {
     case "foo":
       def start = System.currentTimeMillis()
-      def workspace = new PostGIS([user: 'postgres', password: 'postgres'], 'omardb-1.8.12-prod')
+      def workspace = new PostGIS([user: 'postgres', passwd: 'postgres'], 'omardb-1.8.20-prod')
       def srs = new Projection(wmsGetMap['srs'])
       def coords = wmsGetMap['bbox'].split(',').collect { it as double }
       def bbox = new Bounds(coords[0], coords[1], coords[2], coords[3], srs)

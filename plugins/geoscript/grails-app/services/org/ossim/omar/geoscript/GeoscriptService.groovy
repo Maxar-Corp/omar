@@ -108,7 +108,7 @@ class GeoscriptService
               host: matcher[0][3] ?: 'localhost',
               port: matcher[0][5] ?: '5432',
               user: grailsApplication.config.dataSource.username,
-              password: grailsApplication.config.dataSource.password
+              passwd: grailsApplication.config.dataSource.password
       ]
 
       def database = matcher[0][6]
