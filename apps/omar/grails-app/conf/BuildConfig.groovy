@@ -16,7 +16,7 @@ grails.project.fork = [
     test: [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256, daemon: true],
     // configure settings for the run-app JVM
     run: [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256, forkReserve: false, jvmArgs: [
-	"-Djava.library.path=${System.getenv('OSSIM_INSTALL_PREFIX')}/lib" as String
+	"-Djava.library.path=${System.getenv('OSSIM_INSTALL_PREFIX')}/lib64" as String
 	]],
     // configure settings for the run-war JVM
     war: [maxMemory: 1024, minMemory: 256, debug: false, maxPerm: 256, forkReserve: false],

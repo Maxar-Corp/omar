@@ -260,7 +260,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
         port: '5432',
         database: matcher[0][-1],
         user: dataSourceConfig.username,
-        password: dataSourceConfig.password,
+        passwd: dataSourceConfig.password,
 //        'Data Source': dataSourceUnproxied,
         'Expose primary keys': true
     ]

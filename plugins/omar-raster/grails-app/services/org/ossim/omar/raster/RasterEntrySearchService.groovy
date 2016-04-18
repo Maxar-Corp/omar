@@ -251,7 +251,7 @@ class RasterEntrySearchService implements InitializingBean
       def password = grailsApplication.config.dataSource.password
       def database = grailsApplication.config.dataSource.url - 'jdbc:postgresql_postGIS:'
 
-      def workspace = new PostGIS( [user: username, password: password], database )
+      def workspace = new PostGIS( [user: username, passwd: password], database )
       def layerNames = workspace[layerName]?.getFeatures( new Filter( filterText ) )?.collect { it.id.split( '\\.' )[-1] }
 
       layers = getWmsImageLayers( layerNames as String[] )

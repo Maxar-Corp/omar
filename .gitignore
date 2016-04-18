@@ -1,4 +1,5 @@
-/*.iml
+*.tld
+*.iml
 apps/*.iml
 apps/omar/*.iml
 apps/omar/*.ipr
