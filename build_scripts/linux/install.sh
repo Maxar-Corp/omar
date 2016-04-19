@@ -6,8 +6,8 @@ export ROOT_DIR=$PWD
 export OMAR_DEV_HOME=$ROOT_DIR/omar
 export OMAR_HOME=$OMAR_DEV_HOME/apps/omar
 
-if [ -z $INSTALL_PREFIX ]; then
-   export INSTALL_PREFIX=$OSSIM_DEV_HOME/omar-install
+if [ -z $OMAR_INSTALL_PREFIX ]; then
+   export OMAR_INSTALL_PREFIX=$OSSIM_DEV_HOME/install
 fi
 
 if [ -z $OSSIM_VERSION ]; then
@@ -18,18 +18,18 @@ popd >/dev/null
 
 pushd $OMAR_HOME >/dev/null
 
-install -p -m644 -D omar-${OSSIM_VERSION}.war ${INSTALL_PREFIX}/share/omar/omar-${OSSIM_VERSION}.war
-install -p -m644 -D $OMAR_DEV_HOME/support/omarConfig.groovy ${INSTALL_PREFIX}/share/omar/omarConfig-template.groovy
-install -p -m644 -D $OMAR_DEV_HOME/support/sql/alter_timezones.sql ${INSTALL_PREFIX}/share/omar/sql/alter_timezones.sql
-install -p -m644 -D $OMAR_DEV_HOME/support/sql/alter_to_multipolygon.sql ${INSTALL_PREFIX}/share/omar/sql/alter_to_multipolygon.sql
-install -p -m644 -D $OMAR_DEV_HOME/support/sql/config_settings.sql ${INSTALL_PREFIX}/share/omar/sql/config_settings.sql
-install -p -m644 -D $OMAR_DEV_HOME/support/sql/determine_autovacuum.sql ${INSTALL_PREFIX}/share/omar/sql/determine_autovacuum.sql
-install -p -m644 -D $OMAR_DEV_HOME/support/sql/largest_database.sql ${INSTALL_PREFIX}/share/omar/sql/largest_database.sql
-install -p -m644 -D $OMAR_DEV_HOME/support/sql/README.txt ${INSTALL_PREFIX}/share/omar/sql/README.txt
+install -p -m644 -D omar-${OSSIM_VERSION}.war ${OMAR_INSTALL_PREFIX}/share/omar/omar-${OSSIM_VERSION}.war
+install -p -m644 -D $OMAR_DEV_HOME/support/omarConfig.groovy ${OMAR_INSTALL_PREFIX}/share/omar/omarConfig-template.groovy
+install -p -m644 -D $OMAR_DEV_HOME/support/sql/alter_timezones.sql ${OMAR_INSTALL_PREFIX}/share/omar/sql/alter_timezones.sql
+install -p -m644 -D $OMAR_DEV_HOME/support/sql/alter_to_multipolygon.sql ${OMAR_INSTALL_PREFIX}/share/omar/sql/alter_to_multipolygon.sql
+install -p -m644 -D $OMAR_DEV_HOME/support/sql/config_settings.sql ${OMAR_INSTALL_PREFIX}/share/omar/sql/config_settings.sql
+install -p -m644 -D $OMAR_DEV_HOME/support/sql/determine_autovacuum.sql ${OMAR_INSTALL_PREFIX}/share/omar/sql/determine_autovacuum.sql
+install -p -m644 -D $OMAR_DEV_HOME/support/sql/largest_database.sql ${OMAR_INSTALL_PREFIX}/share/omar/sql/largest_database.sql
+install -p -m644 -D $OMAR_DEV_HOME/support/sql/README.txt ${OMAR_INSTALL_PREFIX}/share/omar/sql/README.txt
 
 popd >/dev/null
 
-pushd ${INSTALL_PREFIX}/share/omar
+pushd ${OMAR_INSTALL_PREFIX}/share/omar
 
 if [ ! -f omar.war ]; then
    ln -s omar-${OSSIM_VERSION}.war omar.war
