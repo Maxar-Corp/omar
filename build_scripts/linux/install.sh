@@ -7,7 +7,7 @@ export OMAR_DEV_HOME=$ROOT_DIR/omar
 export OMAR_HOME=$OMAR_DEV_HOME/apps/omar
 
 if [ -z $OMAR_INSTALL_PREFIX ]; then
-   export OMAR_INSTALL_PREFIX=$OSSIM_DEV_HOME/install
+   export OMAR_INSTALL_PREFIX=$ROOT_DIR/install
 fi
 
 if [ -z $OSSIM_VERSION ]; then
