@@ -283,7 +283,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
     if ( grailsApplication.config?.wfs?.shareConnection )
     {
-      println 'WFS Shared Connection'
+      //println 'WFS Shared Connection'
 
       dbParams = [
           dbtype: 'postgis',
