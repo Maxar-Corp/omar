@@ -772,3 +772,8 @@ opensearch {
 }
 
 wfs.shareConnection = true
+
+placemarks {
+  tableName = 'cities'
+  maxResults = 100
+}

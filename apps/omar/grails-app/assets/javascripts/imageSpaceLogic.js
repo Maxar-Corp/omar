@@ -936,8 +936,8 @@ function changeToSingleLayer()
     var x = Math.round( centerView.x - w / 2 );
     var y = Math.round( centerView.y - h / 2 );
     var match = OMAR.ddRegExp.exec( $( "ddMapCtr" ).value );
-    var lat = match[1] + match[2];
-    var lon = match[3] + match[4];
+    var lat = match[1]; // + match[2];
+    var lon = match[3]; // + match[4];
 
     var tempWmsParams = new OmarWmsParams();
 
