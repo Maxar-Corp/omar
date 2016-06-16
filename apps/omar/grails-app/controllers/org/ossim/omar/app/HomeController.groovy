@@ -28,7 +28,11 @@ class HomeController
     def editableControllers = []
 
 
-    ( ( grailsApplication.domainClasses )*.fullName - ["org.ossim.omar.AuthUser", "org.ossim.omar.Role", "org.ossim.omar.security.Requestmap", "org.ossim.omar.security.SecUser", "org.ossim.omar.security.SecRole"] ).sort().each {
+    ( ( grailsApplication.domainClasses )*.fullName - [
+        "org.ossim.omar.AuthUser", "org.ossim.omar.Role", "org.ossim.omar.security.Requestmap",
+        "org.ossim.omar.security.SecUser", "org.ossim.omar.security.SecRole",
+        "org.ossim.omar.raster.RasterEntrySearchTag", "org.ossim.omar.video.VideoDataSetSearchTag"
+    ] ).sort().each {
 
       def editableController = grailsApplication.getArtefact( "Controller", it + "Controller" )
 
