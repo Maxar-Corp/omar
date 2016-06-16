@@ -277,7 +277,7 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
            // this.wfsServerCountModel.attributes.url = model.get("url")+"/wfs";
             //wfs.set("url",model.get("url")+"/wfs");
             model.userDefinedData.ajaxCountQuery = $.ajax({
-                url: cloneWfsServerCountModel.toUrl()+"&callback=?",
+                url: cloneWfsServerCountModel.toUrl() /*+"&callback=?"*/,
                 cache:false,
                 type: "GET",
                 crossDomain:true,
@@ -294,10 +294,10 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                             tempModel.set({"count":numberOfFeatures});
                         }
                     }
-                    if(callback)
-                    {
-                        callback(id);
-                    }
+                    // if(callback)
+                    // {
+                    //     callback(id);
+                    // }
                 },
                 error: function(x, t, m) {
                     var count = "Error";
@@ -312,10 +312,10 @@ OMAR.views.OmarServerCollectionView=Backbone.View.extend({
                     {
                         tempModel.set({"count":count});
                     }
-                    if(callback)
-                    {
-                        callback(id);
-                    }
+                    // if(callback)
+                    // {
+                    //     callback(id);
+                    // }
 
                 }
             });

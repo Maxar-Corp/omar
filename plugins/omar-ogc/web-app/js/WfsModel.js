@@ -94,7 +94,7 @@ OMAR.models.WfsModel = Backbone.Model.extend({
         countClone.attributes.numberOfFeatures = 0;
         countClone.attributes.getFeatureResult = "";
         countClone.attributes.resultType = "hits";
-        countClone.url = countClone.toUrl()+"&callback=?";
+        countClone.url = countClone.toUrl()/*+"&callback=?"*/;
         this.fetchCountAjax = countClone.fetch(
             {cache:false,
                 "success":function(){
@@ -115,7 +115,7 @@ OMAR.models.WfsModel = Backbone.Model.extend({
         countClone.attributes.numberOfFeatures = -1;
         countClone.attributes.getFeatureResult = ""
         countClone.attributes.resultType = "hits";
-        countClone.url = countClone.toUrl()+"&callback=?";
+        countClone.url = countClone.toUrl() /*+"&callback=?"*/;
         this.fetchGetFeatureAjax = countClone.fetch(
             {cache:false,
                 "success":function(){

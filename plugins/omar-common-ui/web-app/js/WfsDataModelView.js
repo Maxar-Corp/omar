@@ -1041,7 +1041,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
             wfsModel.attributes.offset = oSettings._iDisplayStart;
             wfsModel.attributes.sortBy = sort;
             var model = this.model;
-            model.url = this.wfsModel.toUrl()+"&callback=?";
+            model.url = this.wfsModel.toUrl() /*+"&callback=?"*/;
             if(wfsModel.dirty&&sort&&!this.blockGetServerData)
             {
                 this.stopRequests();
@@ -1055,7 +1055,9 @@ OMAR.views.DataModelView = Backbone.View.extend({
                     this.spinner.stop();
                 }
                 this.spinner.spin($(this.el)[0]);
-                this.modelRequest = model.fetch({dataType: "jsonp",
+                this.modelRequest = model.fetch({
+//                    dataType: "jsonp",
+                    dataType: "json",
                     update: false,
                     remove: true,
                     data:{cache:false},
@@ -1130,7 +1132,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
         //this.dataTable.fnClearTable();
         // now set the URL to load
         //
-        this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
+        this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() /*+ "&callback=?"*/);
 
     },
     onNumberOfFeaturesChange:function(){
