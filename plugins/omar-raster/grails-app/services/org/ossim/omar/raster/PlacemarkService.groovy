@@ -47,7 +47,7 @@ class PlacemarkService
       executeWithWorkspace( task )
     }
 
-    println placenames
+    //println placenames
     placenames
   }
 
