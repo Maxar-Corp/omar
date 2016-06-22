@@ -849,7 +849,12 @@ function init( mapWidth, mapHeight )
     setupLayers();
 
     mapWidget.setupAoiLayer();
-    mapWidget.setupPlacemarkLayer2( bounds );
+
+    if ( OMAR.beSearchParams.tableName )
+    {
+        mapWidget.setupPlacemarkLayer2( bounds );
+    }
+
     mapWidget.setupToolBar();
 
     mapWidget.getMap().addControl( new OpenLayers.Control.LayerSwitcher() );

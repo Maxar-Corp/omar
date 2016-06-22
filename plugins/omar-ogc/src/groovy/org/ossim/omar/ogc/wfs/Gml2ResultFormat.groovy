@@ -186,8 +186,8 @@ class Gml2ResultFormat implements ResultFormat
 
 //      xxx.each { println it }
 
-
-        def cursor = layer.getCursor( filterParams )
+        def count = Math.min( filterParams.max, layer.count(filterParams.filter) )
+        def cursor = layer.getCursor( filter: filterParams.filter, sort: filterParams.sort, start: filterParams.start )
 
         mkp.xmlDeclaration()
         mkp.declareNamespace( wfs: "http://www.opengis.net/wfs" )
@@ -203,7 +203,7 @@ class Gml2ResultFormat implements ResultFormat
             gml.'null'( "unknown" )
           }
 
-          while ( cursor?.hasNext() )
+          for ( def i in (0..<count) )
           {
             def feature = cursor.next()
             def featureId = feature.id

@@ -2,6 +2,7 @@ package org.ossim.omar.raster
 
 import geoscript.filter.Filter
 import geoscript.geom.Bounds
+import geoscript.geom.MultiPoint
 import geoscript.workspace.Workspace
 import groovy.xml.MarkupBuilder
 import groovy.xml.StreamingMarkupBuilder
@@ -21,27 +22,31 @@ class PlacemarkService
 
     def placenames = []
 
-    def task = { Workspace workspace ->
+    if ( grailsApplication.config.placemarks )
+    {
+      def task = { Workspace workspace ->
 //      println workspace.names.sort()
 
-      def proj = params?.srs ?: 'epsg:4326'
-      def bbox = params?.bbox?.split( ',' )?.collect { it as double } ?: [-180, -90, 180, 90]
-      def bounds = new Bounds( *bbox, proj )
-      def layer = workspace[grailsApplication?.config?.placemarks?.tableName];
-      def geomColumn = layer.schema.geom.name
+        def proj = params?.srs ?: 'epsg:4326'
+        def bbox = params?.bbox?.split( ',' )?.collect { it as double } ?: [-180, -90, 180, 90]
+        def bounds = new Bounds( *bbox, proj )
+        def layer = workspace[grailsApplication?.config?.placemarks?.tableName];
+        def geomColumn = layer.schema.geom.name
 
-      layer.collectFromFeature(
-          filter: Filter.intersects( geomColumn, bounds.geometry ),
-          max: grailsApplication?.config?.placemarks?.maxResults as int
-      ) { feature ->
-        def data = feature.attributes
+        layer.collectFromFeature(
+            filter: Filter.intersects( geomColumn, bounds.geometry ),
+            max: grailsApplication?.config?.placemarks?.maxResults as int
+        ) { feature ->
+          def data = feature.attributes
 
-        data[geomColumn] = [x: feature.geom.x, y: feature.geom.y, proj: layer.proj.id]
-        placenames << data
+          data[geomColumn] = [x: feature.geom.x, y: feature.geom.y, proj: layer.proj.id]
+          placenames << data
+        }
       }
+
+      executeWithWorkspace( task )
     }
 
-    executeWithWorkspace( task )
     println placenames
     placenames
   }
@@ -50,14 +55,44 @@ class PlacemarkService
   {
     def columnNames = []
 
-    def task = { Workspace workspace ->
-      def layer = workspace[grailsApplication?.config?.placemarks?.tableName];
+    if ( grailsApplication.config.placemarks )
+    {
 
-      columnNames = layer.schema.fields*.name
+      def task = { Workspace workspace ->
+        def layer = workspace[grailsApplication?.config?.placemarks?.tableName];
+
+        columnNames = layer.schema.fields*.name
+      }
+
+      executeWithWorkspace( task )
+    }
+
+    columnNames
+  }
+
+  def createBeFilter(def params)
+  {
+//    println "params=${params}"
+
+    def results = ""
+
+    def task = { Workspace workspace ->
+      def tableName = grailsApplication?.config?.placemarks?.tableName
+      def columnName = grailsApplication?.config?.placemarks?.columnName
+      def layer = workspace[tableName];
+      def geomColumn = layer.schema.geom.name
+      def filter = params?.query?.replace( 'be_number', columnName )
+
+//      println filter
+
+      def points = layer.collectFromFeature( filter ) { it[geomColumn] }
+      def multiPoint = new MultiPoint( points )
+
+      results = multiPoint?.wkt
     }
 
     executeWithWorkspace( task )
-    columnNames
+    results
   }
 
   def getPlacemarkList(def params)
@@ -149,6 +184,7 @@ class PlacemarkService
 
     Workspace.withWorkspace( dbParams ) { Workspace workspace ->
       task( workspace )
+      workspace?.close()
     }
   }
 }

@@ -1,5 +1,7 @@
 package org.ossim.omar.ogc
 
+import geoscript.filter.Function
+import geoscript.geom.GeometryCollection
 import geoscript.workspace.Workspace
 
 import groovy.xml.StreamingMarkupBuilder
@@ -253,10 +255,10 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
     def results, contentType
     def name = ( wfsRequest['outputFormat']?.toUpperCase() ?: "GML2" )?.toUpperCase()
     def resultFormat = resultFormats[name]?.first()
-
+    def workspace = getWorkspace( 'omar' )
     if ( resultFormat )
     {
-      (results, contentType) = resultFormat.getFeature( wfsRequest, getWorkspace( 'omar' ) )
+      (results, contentType) = resultFormat.getFeature( wfsRequest, workspace )
     }
     else
     {
@@ -270,10 +272,10 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
       }.toString()
 
       // println results
-
+      workspace?.close()
       contentType = 'text/xml'
     }
-    //println results
+    //println "${wfsRequest} ${results}"
     return [results, contentType]
   }
 
@@ -303,7 +305,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
     }
     else
     {
-      println 'WFS Private Connection'
+//      println 'WFS Private Connection'
 
       def dataSourceConfig = grailsApplication.config.dataSource
       def pattern = "jdbc:postgresql:(//(.*)/)?(.*)"
@@ -330,13 +332,32 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
 
   void afterPropertiesSet() throws Exception
   {
+//    println 'afterPropertiesSet'
+
     resultFormats = applicationContext.getBeansOfType( ResultFormat ).values().groupBy { it.name }
 
+    Function.registerFunction( "queryCollection" ) { def layerName, def attributeName, def filter ->
+      def workspace = getWorkspace( 'omar' )
+      def results = workspace[layerName].collectFromFeature( filter ) { it[attributeName] }
+      workspace?.close()
+      results
+    }
+
+    Function.registerFunction( 'collectGeometries' ) { def geometries ->
+      def multiType = ( geometries ) ? "geoscript.geom.Multi${geometries[0].class.simpleName}" : new GeometryCollection( geometries )
+
+      Class.forName( multiType ).newInstance( geometries )
+    }
   }
 
   private void initConfig()
   {
+
+//    println 'initConfig'
+
     serverAddress = grailsLinkGenerator.serverBaseURL
+
+
 
     wfsConfig = [
         service: [
@@ -363,7 +384,9 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
             'BBOX'
         ],
         comparisonOperators: ['Simple_Comparisons', 'Between', 'Like', 'NullCheck'],
-        functionNames: CommonFactoryFinder.getFunctionFactories().collect {
+        functionNames: CommonFactoryFinder.getFunctionFactories().findAll {
+          !it.class.name.endsWith( 'GeoScriptFunctionFactory' )
+        }.collect {
           it.functionNames
         }.flatten().sort {
           it.name.toLowerCase()

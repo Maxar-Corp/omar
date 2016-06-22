@@ -59,7 +59,8 @@ class FederationController
         roles: roles as JSON,
         styles: jsonStyles as JSON,
         maxInputs: grailsApplication.config.job.maxInputs,
-        jobQueueEnabled: grailsApplication.config.rabbitmq?.enabled
+        jobQueueEnabled: grailsApplication.config.rabbitmq?.enabled,
+        beSearchParams: grailsApplication.config.placemarks
 
     ]
   }

@@ -775,5 +775,7 @@ wfs.shareConnection = true
 
 placemarks {
   tableName = 'cities'
+  columnName = 'CITY_NAME'
+  geomName = 'geom'
   maxResults = 100
 }

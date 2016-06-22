@@ -97,7 +97,7 @@ class MapViewController implements InitializingBean
 
     def model = [:]
 
-
+    model.beSearchParams = grailsApplication.config.placemarks
     model.rasterEntries = rasterEntries
     model.imageIds = imageIds
     model.numberOfResLevels = numberOfResLevels

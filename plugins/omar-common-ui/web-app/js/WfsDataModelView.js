@@ -1003,17 +1003,21 @@ OMAR.views.DataModelView = Backbone.View.extend({
         }
     },
     getServerData:function( sUrl, aoData, fnCallback, oSettings ) {
+
+        // console.log(sUrl);
+
         var result = {
             "aaData":{},
             "iTotalRecords":0,
             "iTotalDisplayRecords":0
-        }
+        };
         if(this.displayStart) oSettings._iDisplayStart = this.displayStart;
         var wfsModel = this.wfsModel;
         var thisPtr = this;
-       //alert(sUrl);
+        // alert(sUrl);
         if(sUrl&&this.model&&wfsModel)
         {
+            // console.log(wfsModel.toJSON());
             //thisPtr.blockGetServerData = true;
             result.iTotalRecords = wfsModel.get("numberOfFeatures");
             //var searchable = oSettings.aoColumns[oSettings.aaSorting[0][0]].bSearchable;

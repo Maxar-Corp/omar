@@ -1,3 +1,4 @@
+<%@ page import="grails.converters.JSON" %>
 <!DOCTYPE html>
 <!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
 <!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
@@ -152,6 +153,8 @@
 <g:javascript>
     function init()
     {
+        OMAR.beSearchParams = ${raw((beSearchParams as JSON)?.toString())};
+
         var userRoles = ${raw( roles?.toString() )};
         var wmsConfig = ${raw( wmsBaseLayers?.toString() )};
         var styles = ${raw( styles.toString() )};

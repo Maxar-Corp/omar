@@ -83,6 +83,8 @@
 
 <g:javascript>
 
+        OMAR = { beSearchParams: ${raw((beSearchParams as JSON)?.toString())} };
+
 var azimuthAngle = parseFloat("${azimuthAngle}");
 var fullResScale = parseFloat("${fullResScale}");
 var imageIds = '${imageIds}';

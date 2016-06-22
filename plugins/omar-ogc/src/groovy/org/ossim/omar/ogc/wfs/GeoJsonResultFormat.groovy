@@ -25,7 +25,7 @@ class GeoJsonResultFormat implements ResultFormat
 //    println wfsRequest
 
     def results
-    def layerName = wfsRequest?.typeName?.split(':')[-1]
+    def layerName = wfsRequest?.typeName?.split( ':' )[-1]
     def layer = workspace[layerName]
     def filter = [
         filter: wfsRequest?.filter ?: Filter.PASS,
@@ -33,21 +33,24 @@ class GeoJsonResultFormat implements ResultFormat
     ]
     def filterParams = [
         filter: wfsRequest?.filter ?: Filter.PASS,
-        max: wfsRequest.maxFeatures ?: -1,
-        start: wfsRequest?.offset ?: -1,
+        max: wfsRequest.maxFeatures ?: 10,
+        start: wfsRequest?.offset ?: 0,
         //sort: [["<COLUMN NAME>","ASC|DESC"]]
     ]
+
+
     if ( wfsRequest.sortBy )
     {
 
       // filterParams.sort =null//[["TITLE".toUpperCase(),"DESC"]]
-      filterParams.sort = wfsRequest.convertSortByToArray();//wfsRequest.sortBy.substring()//JSON.parse( wfsRequest.sort );
+      filterParams.sort = wfsRequest.convertSortByToArray();
+//wfsRequest.sortBy.substring()//JSON.parse( wfsRequest.sort );
 
       //println filterParams
     }
     try
     {
-      filter = new Filter( filterParams.filter )
+      filterParams.filter = new Filter( filterParams.filter )
     }
     catch ( e )
     {
@@ -63,8 +66,17 @@ class GeoJsonResultFormat implements ResultFormat
     else
     {
       def writer = new GeoJSONWriter()
-      def cursor = layer.getCursor( filterParams );
-      def newLayer = new Layer( cursor.col )
+//      def cursor = layer.getCursor( filterParams )
+      //def newLayer = new Layer( cursor.col )
+      def count = Math.min( filterParams.max, layer.count( filterParams.filter ) )
+      def cursor = layer.getCursor( filter: filterParams.filter, sort: filterParams.sort, start: filterParams.start )
+      def newLayer = new Layer( layer.name, layer.schema )
+
+      for ( def i in ( 0..<count ) )
+      {
+        def f = cursor.next()
+        newLayer.add( f )
+      }
 
       results = writer.write( newLayer )
       cursor?.close()

@@ -19,4 +19,11 @@ class PlacemarkController
 
     render contentType: 'application/json', text: placemarkList
   }
+
+  def createBeFilter()
+  {
+    def results = placemarkService.createBeFilter( params )
+
+    render contentType: 'text/plain', text: results
+  }
 }
