@@ -22,6 +22,8 @@ class RasterEntryController implements InitializingBean
   def tagHeaderList
   def tagNameList
 
+  def placemarkService
+
   def index()
   { redirect( action: 'list', params: params ) }
 
@@ -190,13 +192,17 @@ class RasterEntryController implements InitializingBean
     }
     else
     {
-      return [rasterEntry: rasterEntry]
+      def bounds = rasterEntry.geometryBounds
+      def bbox = "${bounds.minx},${bounds.miny},${bounds.maxx},${bounds.maxy}"
+      def placemarks = placemarkService.getPlacemarks( [bbox: bbox] )
+      def placemarkColumnNames = placemarkService.getPlacenameColumnNames()
+      return [rasterEntry: rasterEntry, placemarks: placemarks, placemarkColumnNames: placemarkColumnNames]
     }
   }
 
   def delete()
   {
-    def rasterEntry = RasterEntry.compositeId( params.id  as String).findWhere()
+    def rasterEntry = RasterEntry.compositeId( params.id as String ).findWhere()
     if ( rasterEntry )
     {
       rasterEntry.delete()
@@ -731,7 +737,7 @@ class RasterEntryController implements InitializingBean
       }
     }
 
-    def serviceAddress = grailsLinkGenerator.link( absolute: true,  controller: "rasterKmlQuery", action: "getImagesKml", params: params )
+    def serviceAddress = grailsLinkGenerator.link( absolute: true, controller: "rasterKmlQuery", action: "getImagesKml", params: params )
 
 /*
     def kmlnode = {

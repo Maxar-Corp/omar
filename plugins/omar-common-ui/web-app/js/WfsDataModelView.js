@@ -1003,17 +1003,21 @@ OMAR.views.DataModelView = Backbone.View.extend({
         }
     },
     getServerData:function( sUrl, aoData, fnCallback, oSettings ) {
+
+        // console.log(sUrl);
+
         var result = {
             "aaData":{},
             "iTotalRecords":0,
             "iTotalDisplayRecords":0
-        }
+        };
         if(this.displayStart) oSettings._iDisplayStart = this.displayStart;
         var wfsModel = this.wfsModel;
         var thisPtr = this;
-       //alert(sUrl);
+        // alert(sUrl);
         if(sUrl&&this.model&&wfsModel)
         {
+            // console.log(wfsModel.toJSON());
             //thisPtr.blockGetServerData = true;
             result.iTotalRecords = wfsModel.get("numberOfFeatures");
             //var searchable = oSettings.aoColumns[oSettings.aaSorting[0][0]].bSearchable;
@@ -1041,7 +1045,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
             wfsModel.attributes.offset = oSettings._iDisplayStart;
             wfsModel.attributes.sortBy = sort;
             var model = this.model;
-            model.url = this.wfsModel.toUrl()+"&callback=?";
+            model.url = this.wfsModel.toUrl() /*+"&callback=?"*/;
             if(wfsModel.dirty&&sort&&!this.blockGetServerData)
             {
                 this.stopRequests();
@@ -1055,7 +1059,9 @@ OMAR.views.DataModelView = Backbone.View.extend({
                     this.spinner.stop();
                 }
                 this.spinner.spin($(this.el)[0]);
-                this.modelRequest = model.fetch({dataType: "jsonp",
+                this.modelRequest = model.fetch({
+//                    dataType: "jsonp",
+                    dataType: "json",
                     update: false,
                     remove: true,
                     data:{cache:false},
@@ -1130,7 +1136,7 @@ OMAR.views.DataModelView = Backbone.View.extend({
         //this.dataTable.fnClearTable();
         // now set the URL to load
         //
-        this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() + "&callback=?");
+        this.dataTable.fnReloadAjax(this.wfsModel.toUrl().toString() /*+ "&callback=?"*/);
 
     },
     onNumberOfFeaturesChange:function(){

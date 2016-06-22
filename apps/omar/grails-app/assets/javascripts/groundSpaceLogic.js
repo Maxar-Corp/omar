@@ -302,7 +302,9 @@ function KmlFeatureSelector()
                 url: kmlOverlays[i].url,
                 format: new OpenLayers.Format.KML( {
                     extractStyles: true,
-                    extractAttributes: true} )} )
+                    extractAttributes: true
+                } )
+            } )
         } );
 
         kmlLayers.push( kmlLayer );
@@ -427,7 +429,6 @@ var wcsParams = new OmarWcsParams();
 var rasterLayers;
 
 
-
 function rotateUpIsUp()
 {
     changeToImageSpace( (upIsUpAngle - azimuthAngle) % 360.0 );
@@ -488,8 +489,8 @@ function toUrlParamString( params )
 function calculateMetersPerPixel()
 {
     return (OpenLayers.INCHES_PER_UNIT[mapWidget.getMap().units] *
-        mapWidget.getMap().getResolution() *
-        OpenLayers.METERS_PER_INCH);
+    mapWidget.getMap().getResolution() *
+    OpenLayers.METERS_PER_INCH);
 }
 
 
@@ -806,7 +807,8 @@ function init( mapWidth, mapHeight )
         hidedelay: 750,
         showdelay: 0,
         lazyload: true,
-        zIndex: 9999} );
+        zIndex: 9999
+    } );
     oMenu.render();
 // we need to pass a json string or object and save to the session
 // and reload here
@@ -847,6 +849,12 @@ function init( mapWidth, mapHeight )
     setupLayers();
 
     mapWidget.setupAoiLayer();
+
+    if ( OMAR.beSearchParams.tableName )
+    {
+        mapWidget.setupPlacemarkLayer2( bounds );
+    }
+
     mapWidget.setupToolBar();
 
     mapWidget.getMap().addControl( new OpenLayers.Control.LayerSwitcher() );
@@ -862,7 +870,7 @@ function init( mapWidth, mapHeight )
     if ( viewParam )
     {
         viewParam = YAHOO.lang.JSON.parse( viewParam );
-       // console.log( viewParam );
+        // console.log( viewParam );
         var mapCenter = new OpenLayers.LonLat( viewParam.lon, viewParam.lat );
         var normScale = OpenLayers.Util.normalizeScale( viewParam.mpp );
         resolution = (1.0 / OpenLayers.INCHES_PER_UNIT["degrees"]) *
@@ -897,7 +905,10 @@ function init( mapWidth, mapHeight )
     var target = $( 'map' );
     bandSelectorEditor.initBands();
 
-
+    if ( params.fullres )
+    {
+        mapWidget.zoomInFullRes();
+    }
 }
 
 function changeToImageSpace( azimuth )
@@ -918,10 +929,12 @@ function changeToImageSpace( azimuth )
         // need to calculate an azimuth if we go to other projectors
         // for now just hard code to 0.0
         //  if we ever to UTM grids we need to modify this
-        wmsParams.view = YAHOO.lang.JSON.stringify( {lat: mapWidget.getMap().getCenter().lat,
+        wmsParams.view = YAHOO.lang.JSON.stringify( {
+            lat: mapWidget.getMap().getCenter().lat,
             lon: mapWidget.getMap().getCenter().lon,
             mpp: mpp,
-            azimuth: rotation} );
+            azimuth: rotation
+        } );
         wmsFormElement.action = url + "?" + wmsParams.toUrlParams();
         wmsFormElement.method = "POST";
         wmsFormElement.submit();
@@ -977,7 +990,7 @@ function setupLayers()
 {
     var busyIndicator = new BusyIndicator();
 
-     brightnessContrastEditor = new BrightnessContrastEditor( params );
+    brightnessContrastEditor = new BrightnessContrastEditor( params );
 
     var format = "image/jpeg";
 
@@ -991,7 +1004,8 @@ function setupLayers()
 
     rasterLayers = [
         new OpenLayers.Layer.WMS( "Raster", links.getMap,
-            {layers: rasterEntries.indexIds,
+            {
+                layers: rasterEntries.indexIds,
                 format: format, sharpen_mode: sharpen_mode,
                 stretch_mode: stretch_mode, stretch_mode_region: stretch_mode_region, transparent: transparent,
                 brightness: brightnessContrastEditor.getBrightness(),
