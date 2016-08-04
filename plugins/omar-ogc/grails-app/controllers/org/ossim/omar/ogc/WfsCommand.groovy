@@ -114,10 +114,8 @@ class WfsCommand
       break
     case 'GetFeature':
       params.with {
-
-        maxFeatures = xml.Query.collect { it.@maxFeatures?.text() }?.first()?.toInteger() ?: 1000
+        maxFeatures = ( xml.Query.collect { it.@maxFeatures?.text() }?.first() ?: 1000 )?.toInteger()
         outputFormat = xml.Query.collect { it.@outputFormat?.text() }?.first() ?: "GML2"
-
         typeName = xml.Query.collect { it.@typeName?.text() }?.first()
         filter = xml.Query.collect { new StreamingMarkupBuilder().bindNode( it.Filter ).toString().trim() }?.first()
       }
@@ -132,10 +130,14 @@ class WfsCommand
   {
     Integer result = offset
 
-    if(result == null) result = startIndex
+    if ( result == null )
+    {
+      result = startIndex
+    }
 
-    result 
+    result
   }
+
   String toXML()
   {
     def x = {
