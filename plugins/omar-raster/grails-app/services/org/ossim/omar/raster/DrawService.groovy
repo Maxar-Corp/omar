@@ -323,7 +323,7 @@ class DrawService implements ApplicationContextAware, InitializingBean
     def workspaceParams = [
         dbtype: 'postgis',
         user: dataSourceConfig.username,
-        password: dataSourceConfig.password,
+        passwd: dataSourceConfig.password,
         host: matcher[0][2] ?: 'localhost',
         port: matcher[0][4] ?: '5432',
         database: matcher[0][5],

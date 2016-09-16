@@ -317,7 +317,7 @@ class WebFeatureService implements InitializingBean, ApplicationContextAware
           port: '5432',
           database: matcher[0][-1],
           user: dataSourceConfig.username,
-          password: dataSourceConfig.password,
+          passwd: dataSourceConfig.password,
           'Expose primary keys': true,
           namespace: 'http://omar.ossim.org'
       ]
