@@ -39,11 +39,13 @@ grails.project.dependency.resolution = {
   repositories {
     inherits true // Whether to inherit repository definitions from plugins
 
+    mavenLocal( System.getenv( 'MAVEN_REPO' ) )
+    if(System.env.OSSIM_MAVEN_PROXY) mavenRepo ( System.env.OSSIM_MAVEN_PROXY)
     grailsPlugins()
     grailsHome()
-    mavenLocal( System.getenv( 'MAVEN_REPO' ) )
     grailsCentral()
-    mavenCentral()
+    mavenCentral()      
+
     // uncomment these (or add new ones) to enable remote dependency resolution from public Maven repositories
     //mavenRepo "http://repository.codehaus.org"
     //mavenRepo "http://download.java.net/maven/2/"

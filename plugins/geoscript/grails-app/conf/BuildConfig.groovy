@@ -34,17 +34,20 @@ grails.project.dependency.resolution = {
   }
   log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
   repositories {
-    mavenRepo 'http://repo.boundlessgeo.com/main'
-    mavenRepo 'https://github.com/ElectronicChartCentre/ecc-mvn-repo/raw/master/releases'
 
-    grailsCentral()
-    mavenLocal( System.getenv( 'MAVEN_REPO' ) )
-    mavenCentral()
-    // uncomment the below to enable remote dependency resolution
-    // from public Maven repositories
-    //mavenRepo "http://repository.codehaus.org"
-    //mavenRepo "http://download.java.net/maven/2/"
-    //mavenRepo "http://repository.jboss.com/maven2/"
+      mavenLocal( System.getenv( 'MAVEN_REPO' ) )
+      if(System.env.OSSIM_MAVEN_PROXY) mavenRepo ( System.env.OSSIM_MAVEN_PROXY )
+
+      mavenRepo 'http://repo.boundlessgeo.com/main'
+      mavenRepo 'https://github.com/ElectronicChartCentre/ecc-mvn-repo/raw/master/releases'
+
+      grailsCentral()
+      mavenCentral()
+      // uncomment the below to enable remote dependency resolution
+      // from public Maven repositories
+      //mavenRepo "http://repository.codehaus.org"
+      //mavenRepo "http://download.java.net/maven/2/"
+      //mavenRepo "http://repository.jboss.com/maven2/"
   }
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.

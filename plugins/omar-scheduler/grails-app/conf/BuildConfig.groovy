@@ -14,13 +14,14 @@ grails.project.dependency.resolution = {
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     legacyResolve false // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
     repositories {
+        mavenLocal( System.getenv( 'MAVEN_REPO' ) )
+    if(System.env.OSSIM_MAVEN_PROXY) mavenRepo ( System.env.OSSIM_MAVEN_PROXY)
         mavenRepo "http://repo.grails.org/grails/plugins/"
 
         //grailsCentral()
         mavenCentral()
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
-        mavenLocal()
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"

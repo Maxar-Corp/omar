@@ -25,8 +25,9 @@ grails.project.dependency.resolution = {
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
+        mavenLocal( System.getenv( 'MAVEN_REPO' ) )
+    if(System.env.OSSIM_MAVEN_PROXY) mavenRepo ( System.env.OSSIM_MAVEN_PROXY)
         grailsCentral()
-        mavenLocal()
         mavenCentral()
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories

@@ -25,11 +25,12 @@ grails.project.dependency.resolution = {
   }
   log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
   repositories {
+    mavenLocal( System.getenv( 'MAVEN_REPO' ) )
+    if(System.env.OSSIM_MAVEN_PROXY) mavenRepo ( System.env.OSSIM_MAVEN_PROXY)
     mavenRepo 'http://download.osgeo.org/webdav/geotools'
     mavenRepo 'http://www.hibernatespatial.org/repository'
 
     grailsCentral()
-    mavenLocal( System.getenv( 'MAVEN_REPO' ) )
     mavenCentral()
     // uncomment the below to enable remote dependency resolution
     // from public Maven repositories
