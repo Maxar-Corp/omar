@@ -22,6 +22,7 @@ else
    echo "******OMAR SETUP ERROR: Environment variable GRAILS_VERSION must be set"
    exit 1
 fi
+export OSSIM_MAVEN_PROXY="https://artifacts.radiantbluecloud.com/artifactory"
 
 #if [ ! -z "$GRADLE_VERSION" ]; then
 #   if [ ! -d "$HOME/.sdkman/gradle/$GRADLE_VERSION" ]; then
