@@ -15,7 +15,7 @@ grails.project.fork = [
     // configure settings for the Console UI JVM
     console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 ]
-
+def versionTag = System.getenv( 'OSSIM_VERSION_TAG' )?"-${System.env.OSSIM_VERSION_TAG}":""
 grails.project.dependency.resolver = "maven" // or ivy
 grails.project.dependency.resolution = {
   // inherit Grails' default dependencies
@@ -38,7 +38,7 @@ grails.project.dependency.resolution = {
   dependencies {
     // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
     // runtime 'mysql:mysql-connector-java:5.1.27'
-    compile "org.ossim:joms:${System.getenv( 'OSSIM_VERSION' )}"
+    compile "org.ossim:joms:${System.getenv( 'OSSIM_VERSION' )}${versionTag}"
   }
 
   plugins {
