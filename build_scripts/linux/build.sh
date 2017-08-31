@@ -17,7 +17,7 @@ popd >/dev/null
 
 #source "$HOME/.sdkman/bin/sdkman-init.sh"
 #sdk use grails $GRAILS_VERSION
-export OSSIM_MAVEN_PROXY="https://artifacts.radiantbluecloud.com/artifactory/ossim-deps"
+export OSSIM_MAVEN_PROXY="https://artifactory.ossim.io/artifactory/ossim-deps"
 
 pushd $OMAR_HOME >/dev/null
 
